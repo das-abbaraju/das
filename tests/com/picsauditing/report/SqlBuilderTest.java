@@ -27,7 +27,7 @@ public class SqlBuilderTest {
 	@Test
 	public void testAccounts() {
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertEquals(2, sql.getFields().size());
 		assertContains("FROM accounts AS a", sql.toString());
@@ -41,7 +41,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("accountStatus"));
 
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertEquals(3, sql.getFields().size());
 
@@ -54,7 +54,7 @@ public class SqlBuilderTest {
 	@Test
 	public void testContractors() {
 		builder.setBase(new AccountContractorModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertEquals(4, sql.getFields().size());
 		String expected = "JOIN contractor_info AS c ON a.id = c.id AND a.type = 'Contractor'";
@@ -67,7 +67,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("contractorScore"));
 
 		builder.setBase(new AccountContractorModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertEquals(3, sql.getFields().size());
 	}
@@ -79,7 +79,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("accountContactName"));
 
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertEquals(3, sql.getFields().size());
 		assertContains("LEFT JOIN users AS accountContact ON accountContact.id = a.contactID", sql.toString());
@@ -95,7 +95,7 @@ public class SqlBuilderTest {
 		definition.getFilters().add(filter);
 
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\'s%'))", sql.toString());
 	}
@@ -114,7 +114,7 @@ public class SqlBuilderTest {
 		definition.getFilters().add(filter);
 
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
 	}
@@ -127,7 +127,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(column);
 
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertContains("COUNT(a.status)", sql.toString());
 		assertContains("GROUP BY a.status", sql.toString());
@@ -157,7 +157,7 @@ public class SqlBuilderTest {
 		}
 
 		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 
 		assertContains("HAVING (COUNT(a.name) > '5')", sql.toString());
 		assertContains("WHERE ((a.nameIndex LIKE 'A%'))", sql.toString());
@@ -172,7 +172,7 @@ public class SqlBuilderTest {
 		contractorNameCount.setFunction(QueryFunction.Count);
 		definition.getColumns().add(contractorNameCount);
 		
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 		System.out.println(sql.toString());
 		assertEquals(1, sql.getFields().size());
 		assertEquals("", sql.getOrderBy());
@@ -184,15 +184,15 @@ public class SqlBuilderTest {
 
 		Sort sort = new Sort("accountStatus");
 		definition.getSorts().add(sort);
-		SelectSQL sql = builder.getSql();
+		SelectSQL sql = builder.initializeSql();
 		assertContains("ORDER BY a.status", sql.toString());
 
 		definition.getColumns().add(new Column("accountStatus"));
-		sql = builder.getSql();
+		sql = builder.initializeSql();
 		assertContains("ORDER BY accountStatus", sql.toString());
 
 		sort.setAscending(false);
-		sql = builder.getSql();
+		sql = builder.initializeSql();
 		assertContains("ORDER BY accountStatus DESC", sql.toString());
 	}
 

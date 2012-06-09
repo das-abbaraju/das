@@ -33,7 +33,7 @@ public class SqlBuilder {
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
-	public SelectSQL getSql() {
+	public SelectSQL initializeSql() {
 		sql = new SelectSQL();
 		availableFields.clear();
 
@@ -396,7 +396,7 @@ public class SqlBuilder {
 
 	// Setters
 
-	public BaseModel setReport(Report report) {
+	public BaseModel setBaseModelFromReport(Report report) {
 		this.baseModel = ModelFactory.getBase(report.getModelType());
 		return this.baseModel;
 	}

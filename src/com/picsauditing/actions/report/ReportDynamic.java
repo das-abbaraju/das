@@ -51,10 +51,10 @@ public class ReportDynamic extends PicsActionSupport {
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
-	private static final boolean DOWNLOAD = true;
+	private static final boolean FOR_DOWNLOAD = true;
 
 	private Report report;
-	private int page = 1;
+	private int pageNumber = 1;
 	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
@@ -71,7 +71,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Deprecated
 	public String find() {
 		try {
-			ensureValidReport();
+			reportController.validate(report);
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
@@ -143,9 +143,9 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
-			ensureValidReport();
-			builder.setReport(report);
-			builder.getSql();
+			reportController.validate(report);
+			builder.setBaseModelFromReport(report);
+			builder.initializeSql();
 
 			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
 			if (field == null)
@@ -199,7 +199,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String download() throws Exception {
 		ExcelSheet excelSheet = new ExcelSheet();
 
-		buildSQL(DOWNLOAD);
+		buildSQL(FOR_DOWNLOAD);
 
 		if (builder.getDefinition().getColumns().size() > 0) {
 			List<BasicDynaBean> rawData = runSQL();
@@ -237,7 +237,7 @@ public class ReportDynamic extends PicsActionSupport {
 		JSONArray fields = new JSONArray();
 
 		for (Field field : builder.getAvailableFields().values()) {
-			if (isCanSeeQueryField(field)) {
+			if (canSeeQueryField(field)) {
 				field.setText(translateLabel(field));
 				JSONObject obj = field.toJSONObject();
 				obj.put("category", translateCategory(field.getCategory().toString()));
@@ -250,10 +250,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 		return fields;
 	}
-
-//	public List<? extends BaseTable> getAvailableReports() {
-//		return dao.findWhere(Report.class, "id > 0", 100);
-//	}
 
 	private void addTranslatedLabelsToReportParameters(Definition definition) {
 		if (definition.getColumns().size() > 0) {
@@ -345,7 +341,7 @@ public class ReportDynamic extends PicsActionSupport {
 					// as contractorNameCount. Convert this to
 					// contractorName
 					jsonRow.put(column, value);
-				} else if (isCanSeeQueryField(field)) {
+				} else if (canSeeQueryField(field)) {
 					if (field.isTranslated()) {
 						jsonRow.put(column, getText(field.getI18nKey(column)));
 					} else if (value.getClass().equals(java.sql.Date.class)) {
@@ -365,7 +361,7 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("data", rows);
 	}
 
-	private boolean isCanSeeQueryField(Field field) {
+	private boolean canSeeQueryField(Field field) {
 		if (field.getRequiredPermissions().isEmpty())
 			return true;
 
@@ -377,21 +373,15 @@ public class ReportDynamic extends PicsActionSupport {
 		return false;
 	}
 
-	private void ensureValidReport() throws Exception {
-		if (report == null)
-			throw new RuntimeException("Please provide a saved or ad hoc report to run");
-
-		if (report.getModelType() == null)
-			throw new RuntimeException("The report is missing its base");
-
-		new JSONParser().parse(report.getParameters());
-	}
-
-	private void addDefinition() {
-		Definition definition = new Definition(report.getParameters());
-		report.setDefinition(definition);
-		builder.setDefinition(definition);
-	}
+//	private void ensureValidReport() throws Exception {
+//		if (report == null)
+//			throw new RuntimeException("Please provide a saved or ad hoc report to run");
+//
+//		if (report.getModelType() == null)
+//			throw new RuntimeException("The report is missing its base");
+//
+//		new JSONParser().parse(report.getParameters());
+//	}
 
 	// TODO: Refactor, because it seems just like the jsonException method. WTF?
 	private void logError(Exception e) {
@@ -467,7 +457,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public void setPage(int page) {
-		this.page = page;
+		this.pageNumber = page;
 	}
 
 	public void setShowSQL(boolean showSQL) {
@@ -504,10 +494,12 @@ public class ReportDynamic extends PicsActionSupport {
 	private void buildSQL(boolean download) throws Exception {
 		reportController.validate(report);
 
-		addDefinition();
+		Definition definition = new Definition(report.getParameters());
+		report.setDefinition(definition);
+		builder.setDefinition(definition);
 
-		builder.setReport(report);
-		sql = builder.getSql();
+		builder.setBaseModelFromReport(report);
+		sql = builder.initializeSql();
 		builder.addPermissions(permissions);
 
 		// TODO: rowsPerPage can be added later
@@ -566,8 +558,8 @@ public class ReportDynamic extends PicsActionSupport {
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
 			builder = new SqlBuilder();
-			builder.setReport(fakeReport);
-			builder.getSql();
+			builder.setBaseModelFromReport(fakeReport);
+			builder.initializeSql();
 			for (Field field : builder.getAvailableFields().values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);
@@ -581,9 +573,9 @@ public class ReportDynamic extends PicsActionSupport {
 	@Deprecated
 	public String availableFields() {
 		try {
-			ensureValidReport();
-			builder.setReport(report);
-			builder.getSql();
+			reportController.validate(report);
+			builder.setBaseModelFromReport(report);
+			builder.initializeSql();
 
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", getAvailableFields());
