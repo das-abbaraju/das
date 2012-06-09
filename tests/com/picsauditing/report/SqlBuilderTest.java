@@ -11,6 +11,7 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
 import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.report.models.AccountContractorModel;
+import com.picsauditing.report.models.BaseModel;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilderTest {
@@ -26,8 +27,7 @@ public class SqlBuilderTest {
 	@Ignore("Not ready to run yet.")
 	@Test
 	public void testAccounts() {
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertEquals(2, sql.getFields().size());
 		assertContains("FROM accounts AS a", sql.toString());
@@ -40,8 +40,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("accountName"));
 		definition.getColumns().add(new Column("accountStatus"));
 
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertEquals(3, sql.getFields().size());
 
@@ -53,8 +52,7 @@ public class SqlBuilderTest {
 	@Ignore("Not ready to run yet.")
 	@Test
 	public void testContractors() {
-		builder.setBase(new AccountContractorModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
 
 		assertEquals(4, sql.getFields().size());
 		String expected = "JOIN contractor_info AS c ON a.id = c.id AND a.type = 'Contractor'";
@@ -66,8 +64,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("contractorName"));
 		definition.getColumns().add(new Column("contractorScore"));
 
-		builder.setBase(new AccountContractorModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
 
 		assertEquals(3, sql.getFields().size());
 	}
@@ -78,8 +75,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("accountName"));
 		definition.getColumns().add(new Column("accountContactName"));
 
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertEquals(3, sql.getFields().size());
 		assertContains("LEFT JOIN users AS accountContact ON accountContact.id = a.contactID", sql.toString());
@@ -94,8 +90,7 @@ public class SqlBuilderTest {
 		filter.setValue("Trevor's");
 		definition.getFilters().add(filter);
 
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\'s%'))", sql.toString());
 	}
@@ -113,8 +108,7 @@ public class SqlBuilderTest {
 
 		definition.getFilters().add(filter);
 
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
 	}
@@ -126,8 +120,7 @@ public class SqlBuilderTest {
 		column.setFunction(QueryFunction.Count);
 		definition.getColumns().add(column);
 
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertContains("COUNT(a.status)", sql.toString());
 		assertContains("GROUP BY a.status", sql.toString());
@@ -156,8 +149,7 @@ public class SqlBuilderTest {
 			definition.getFilters().add(filter);
 		}
 
-		builder.setBase(new AccountModel());
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountModel());
 
 		assertContains("HAVING (COUNT(a.name) > '5')", sql.toString());
 		assertContains("WHERE ((a.nameIndex LIKE 'A%'))", sql.toString());
@@ -166,13 +158,11 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testGroupByContractorName() {
-		builder.setBase(new AccountContractorModel());
-
 		Column contractorNameCount = new Column("contractorNameCount");
 		contractorNameCount.setFunction(QueryFunction.Count);
 		definition.getColumns().add(contractorNameCount);
 		
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
 		System.out.println(sql.toString());
 		assertEquals(1, sql.getFields().size());
 		assertEquals("", sql.getOrderBy());
@@ -180,20 +170,19 @@ public class SqlBuilderTest {
 	
 	@Test
 	public void testSorts() {
-		builder.setBase(new AccountModel());
+		BaseModel accountModelBase = new AccountModel();
 
 		Sort sort = new Sort("accountStatus");
 		definition.getSorts().add(sort);
-		SelectSQL sql = builder.initializeSql();
+		SelectSQL sql = builder.initializeSql(accountModelBase);
 		assertContains("ORDER BY a.status", sql.toString());
 
 		definition.getColumns().add(new Column("accountStatus"));
-		sql = builder.initializeSql();
+		sql = builder.initializeSql(accountModelBase);
 		assertContains("ORDER BY accountStatus", sql.toString());
 
 		sort.setAscending(false);
-		sql = builder.initializeSql();
+		sql = builder.initializeSql(accountModelBase);
 		assertContains("ORDER BY accountStatus DESC", sql.toString());
 	}
-
 }

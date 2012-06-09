@@ -38,6 +38,8 @@ import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.business.ReportController;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.models.BaseModel;
+import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
@@ -155,10 +157,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			reportController.validate(report);
 
-			sqlBuilder.setBaseModelFromReport(report);
-			// I think this is just setting the available fields
-			sqlBuilder.initializeSql();
-
+			sqlBuilder.initializeSql(report.getBaseModel());
 			Field field = sqlBuilder.getAvailableFields().get(fieldName.toUpperCase());
 			if (field == null)
 				throw new Exception("Available field undefined");
@@ -189,6 +188,8 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	@Anonymous
+	@Deprecated
+	// TODO Not called from the front end
 	public String availableBases() {
 		JSONArray rows = new JSONArray();
 		for (ModelType type : ModelType.values()) {
@@ -593,8 +594,7 @@ public class ReportDynamic extends PicsActionSupport {
 			fakeReport.setModelType(type);
 
 			sqlBuilder = new SqlBuilder();
-			sqlBuilder.setBaseModelFromReport(fakeReport);
-			sqlBuilder.initializeSql();
+			sqlBuilder.initializeSql(fakeReport.getBaseModel());
 			for (Field field : sqlBuilder.getAvailableFields().values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);
@@ -609,8 +609,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			reportController.validate(report);
-			sqlBuilder.setBaseModelFromReport(report);
-			sqlBuilder.initializeSql();
+			sqlBuilder.initializeSql(report.getBaseModel());
 
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", getAvailableFields());

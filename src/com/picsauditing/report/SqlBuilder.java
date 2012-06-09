@@ -28,7 +28,7 @@ import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
 
-	private BaseModel baseModel;
+//	private BaseModel baseModel;
 	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();
 	private SelectSQL sql;
@@ -39,14 +39,11 @@ public class SqlBuilder {
 	}
 
 	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) throws Exception {
-		// These two lines are called frequently from ReportDynamic, sometimes
-		// followed by a call to getAvailableFields()
-		setBaseModelFromReport(report);
-		sql = initializeSql();
+		BaseModel baseModel = report.getBaseModel();
+		sql = initializeSql(baseModel);
 
 		sql.addWhere(baseModel.getWhereClause(permissions));
 
-		// TODO: rowsPerPage can be added later
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
 
@@ -60,19 +57,16 @@ public class SqlBuilder {
 		return sql;
 	}
 
-	public SelectSQL initializeSql() {
+	public SelectSQL initializeSql(BaseModel baseModel) {
 		sql = new SelectSQL();
 		availableFields.clear();
 
-		if (baseModel == null)
-			return sql;
-
-		setFrom();
+		setFrom(baseModel);
 		addAvailableFields(baseModel.getPrimaryTable());
 
 		addFieldsAndGroupBy();
 		addRuntimeFilters();
-		addOrderByClauses();
+		addOrderByClauses(baseModel);
 
 		addJoins(baseModel.getPrimaryTable());
 
@@ -89,7 +83,7 @@ public class SqlBuilder {
 		return excelSheet;
 	}
 
-	private void setFrom() {
+	private void setFrom(BaseModel baseModel) {
 		String from = baseModel.getPrimaryTable().getTableName();
 		String alias = baseModel.getPrimaryTable().getAlias();
 		if (!Strings.isEmpty(alias))
@@ -372,7 +366,7 @@ public class SqlBuilder {
 		return value;
 	}
 
-	private void addOrderByClauses() {
+	private void addOrderByClauses(BaseModel baseModel) {
 		if (definition.getSorts().isEmpty()) {
 			if (usesGroupBy())
 				return;
@@ -423,13 +417,13 @@ public class SqlBuilder {
 
 	// Setters
 
-	public void setBaseModelFromReport(Report report) {
-		this.baseModel = ModelFactory.getBase(report.getModelType());
-	}
-
-	public void setBase(BaseModel base) {
-		this.baseModel = base;
-	}
+//	public void setBaseModelFromReport(Report report) {
+//		this.baseModel = ModelFactory.getBase(report.getModelType());
+//	}
+//
+//	public void setBase(BaseModel base) {
+//		this.baseModel = base;
+//	}
 
 	@Deprecated
 	public Definition getDefinition() {
