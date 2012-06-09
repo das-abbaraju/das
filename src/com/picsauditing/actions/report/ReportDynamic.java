@@ -176,23 +176,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	@Deprecated
-	public String availableFields() {
-		try {
-			ensureValidReport();
-			builder.setReport(report);
-			builder.getSql();
-
-			json.put("modelType", report.getModelType().toString());
-			json.put("fields", getAvailableFields());
-			json.put("success", true);
-		} catch (Exception e) {
-			jsonException(e);
-		}
-
-		return JSON;
-	}
-
 	@Anonymous
 	public String availableBases() {
 		JSONArray rows = new JSONArray();
@@ -211,50 +194,6 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("success", true);
 
 		return JSON;
-	}
-
-	// This is in the wrong class, should be in SqlBuilder
-	private void buildSQL(boolean download) throws Exception {
-		reportController.validate(report);
-
-		addDefinition();
-
-		builder.setReport(report);
-		sql = builder.getSql();
-		builder.addPermissions(permissions);
-
-		// TODO: rowsPerPage can be added later
-		if (!download)
-			builder.setPaging(page, report.getRowsPerPage());
-
-		List<Filter> filters = builder.getDefinition().getFilters();
-		if (filters != null && !filters.isEmpty()) {
-			translateFilterValueNames(filters);
-		}
-	}
-
-	// TODO: Rewrite this to PROPERLY log the timing (without System.out)
-	private QueryData queryData() throws SQLException {
-		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> rawData = runSQL();
-		QueryData queryData = new QueryData(rawData);
-
-		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
-		if (queryTime > 1000) {
-			showSQL = true;
-			logger.info("Slow Query: {}", sql.toString());
-			logger.info("Time to query: {} ms", queryTime);
-		}
-
-		return queryData;
-	}
-
-	private List<BasicDynaBean> runSQL() throws SQLException {
-		Database db = new Database();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
-
-		return rows;
 	}
 
 	public String download() throws Exception {
@@ -332,40 +271,6 @@ public class ReportDynamic extends PicsActionSupport {
 				sort.getField().setText(translateLabel(sort.getField()));
 			}
 		}
-	}
-
-	// TODO: Remove this once we figure out what to do with this and why it is doing the same
-	// this as the i18n cache
-	@Deprecated
-	public String fillTranslations() {
-		List<AppTranslation> existingList = dao
-				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
-
-		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
-
-		for (AppTranslation translation : existingList) {
-			existing.put(translation.getKey(), translation);
-		}
-
-		for (FieldCategory category : FieldCategory.values()) {
-			saveTranslation(existing, "Report.Category." + category);
-		}
-
-		for (ModelType type : ModelType.values()) {
-			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
-			Report fakeReport = new Report();
-			fakeReport.setModelType(type);
-			builder = new SqlBuilder();
-			builder.setReport(fakeReport);
-			builder.getSql();
-			for (Field field : builder.getAvailableFields().values()) {
-				String key = "Report." + field.getName();
-				saveTranslation(existing, key);
-				saveTranslation(existing, key + ".help");
-			}
-		}
-
-		return BLANK;
 	}
 
 	@Deprecated
@@ -591,5 +496,102 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
+	}
+
+	// SQL stuff at bottom of file
+
+	// This is in the wrong class, should be in SqlBuilder
+	private void buildSQL(boolean download) throws Exception {
+		reportController.validate(report);
+
+		addDefinition();
+
+		builder.setReport(report);
+		sql = builder.getSql();
+		builder.addPermissions(permissions);
+
+		// TODO: rowsPerPage can be added later
+		if (!download)
+			builder.setPaging(page, report.getRowsPerPage());
+
+		List<Filter> filters = builder.getDefinition().getFilters();
+		if (filters != null && !filters.isEmpty()) {
+			translateFilterValueNames(filters);
+		}
+	}
+
+	// TODO: Rewrite this to PROPERLY log the timing (without System.out)
+	private QueryData queryData() throws SQLException {
+		long queryTime = Calendar.getInstance().getTimeInMillis();
+		List<BasicDynaBean> rawData = runSQL();
+		QueryData queryData = new QueryData(rawData);
+
+		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
+		if (queryTime > 1000) {
+			showSQL = true;
+			logger.info("Slow Query: {}", sql.toString());
+			logger.info("Time to query: {} ms", queryTime);
+		}
+
+		return queryData;
+	}
+
+	private List<BasicDynaBean> runSQL() throws SQLException {
+		Database db = new Database();
+		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		json.put("total", db.getAllRows());
+
+		return rows;
+	}
+
+	// TODO: Remove this once we figure out what to do with this and why it is doing the same
+	// this as the i18n cache
+	@Deprecated
+	public String fillTranslations() {
+		List<AppTranslation> existingList = dao
+				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
+
+		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
+
+		for (AppTranslation translation : existingList) {
+			existing.put(translation.getKey(), translation);
+		}
+
+		for (FieldCategory category : FieldCategory.values()) {
+			saveTranslation(existing, "Report.Category." + category);
+		}
+
+		for (ModelType type : ModelType.values()) {
+			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
+			Report fakeReport = new Report();
+			fakeReport.setModelType(type);
+			builder = new SqlBuilder();
+			builder.setReport(fakeReport);
+			builder.getSql();
+			for (Field field : builder.getAvailableFields().values()) {
+				String key = "Report." + field.getName();
+				saveTranslation(existing, key);
+				saveTranslation(existing, key + ".help");
+			}
+		}
+
+		return BLANK;
+	}
+
+	@Deprecated
+	public String availableFields() {
+		try {
+			ensureValidReport();
+			builder.setReport(report);
+			builder.getSql();
+
+			json.put("modelType", report.getModelType().toString());
+			json.put("fields", getAvailableFields());
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+
+		return JSON;
 	}
 }
