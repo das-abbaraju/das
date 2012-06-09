@@ -18,7 +18,7 @@ public class ReportController {
 
 	// was create() in ReportDynamic
 	public Report copy(Report sourceReport, Permissions permissions) throws Exception {
-		if (!DynamicReportUtil.userCanViewAndCopy(permissions.getUserId(), sourceReport))
+		if (!DynamicReportUtil.canUserViewAndCopy(permissions.getUserId(), sourceReport))
 			throw new NoRightsException("Invalid User, does not have permission.");
 
 		Report newReport = copyReportWithoutPermissions(sourceReport);
@@ -33,7 +33,7 @@ public class ReportController {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
-		if (!DynamicReportUtil.userCanEdit(permissions.getUserId(), report))
+		if (!DynamicReportUtil.canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
 
 		validate(report);

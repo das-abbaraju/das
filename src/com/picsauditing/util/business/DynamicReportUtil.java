@@ -18,7 +18,7 @@ public class DynamicReportUtil {
 	public static final List<Integer> baseReports =
 			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
 
-	public static boolean userCanViewAndCopy(int userId, Report report) {
+	public static boolean canUserViewAndCopy(int userId, Report report) {
 		if (baseReports.contains(report.getId()))
 			return true;
 
@@ -31,7 +31,7 @@ public class DynamicReportUtil {
 		return true;
 	}
 
-	public static boolean userCanEdit(int userId, Report report) {
+	public static boolean canUserEdit(int userId, Report report) {
 		List<ReportUser> reportUserList = basicDao.findWhere(ReportUser.class, "t.user.id = "
 				+ userId + " AND t.report.id = " + report.getId());
 
@@ -44,7 +44,7 @@ public class DynamicReportUtil {
 		return false;
 	}
 
-	public static boolean userCanDelete(int userId, Report report) {
+	public static boolean canUserDelete(int userId, Report report) {
 		if (report.getCreatedBy().getId() == userId)
 			return true;
 

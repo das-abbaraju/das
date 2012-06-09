@@ -171,7 +171,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String getUserStatus() {
 		int userId = permissions.getUserId();
 
-		json.put("is_editable", DynamicReportUtil.userCanEdit(userId, report));
+		json.put("is_editable", DynamicReportUtil.canUserEdit(userId, report));
 
 		return JSON;
 	}
