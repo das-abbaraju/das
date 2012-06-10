@@ -128,9 +128,11 @@ public class ReportDynamic extends PicsActionSupport {
 
 			translateFilterValueNames(definition.getFilters());
 
+			Map<String, Field> availableFields = reportController.buildAvailableFields(report.getBaseModel().getPrimaryTable());
+
 			if (definition.getColumns().size() > 0) {
 				QueryData data = queryData();
-				convertToJson(data);
+				convertToJson(data, availableFields);
 				json.put("success", true);
 			}
 		} catch (SQLException e) {
@@ -154,8 +156,12 @@ public class ReportDynamic extends PicsActionSupport {
 
 			reportController.validate(report);
 
-			sqlBuilder.initializeSql(report.getBaseModel());
-			Field field = sqlBuilder.getAvailableFields().get(fieldName.toUpperCase());
+//			sqlBuilder.initializeSql();
+//			Field field = sqlBuilder.getAvailableFields().get(fieldName.toUpperCase());
+
+			Map<String, Field> availableFields = reportController.buildAvailableFields(report.getBaseModel().getPrimaryTable());
+			Field field = availableFields.get(fieldName.toUpperCase());
+
 			if (field == null)
 				throw new Exception("Available field undefined");
 
@@ -262,22 +268,27 @@ public class ReportDynamic extends PicsActionSupport {
 	 */
 	@Deprecated
 	// TODO possibly move to new ReportController.java class (?)
-	public JSONArray getAvailableFields() {
-		JSONArray fields = new JSONArray();
+	public JSONArray translateAndJsonify(Map<String, Field> availableFields) {
+		JSONArray fieldsJsonArray = new JSONArray();
 
-		for (Field field : sqlBuilder.getAvailableFields().values()) {
-			if (canSeeQueryField(field)) {
-				field.setText(translateLabel(field));
-				JSONObject obj = field.toJSONObject();
-				obj.put("category", translateCategory(field.getCategory().toString()));
-				String help = getText("Report." + field.getName() + ".help");
-				if (help != null)
-					obj.put("help", help);
-				fields.add(obj);
-			}
+//		for (Field field : sqlBuilder.getAvailableFields().values()) {
+		for (Field field : availableFields.values()) {
+			if (!canSeeQueryField(field))
+				continue;
+
+			field.setText(translateLabel(field));
+
+			JSONObject obj = field.toJSONObject();
+			obj.put("category", translateCategory(field.getCategory().toString()));
+
+			String help = getText("Report." + field.getName() + ".help");
+			if (help != null)
+				obj.put("help", help);
+
+			fieldsJsonArray.add(obj);
 		}
 
-		return fields;
+		return fieldsJsonArray;
 	}
 
 	private void addTranslatedLabelsToReportParameters(Definition definition) {
@@ -355,7 +366,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	// TODO refactor this mess
-	private void convertToJson(QueryData data) {
+	private void convertToJson(QueryData data, Map<String, Field> availableFields) {
 		JSONArray rows = new JSONArray();
 		for (Map<String, Object> row : data.getData()) {
 			JSONObject jsonRow = new JSONObject();
@@ -364,7 +375,9 @@ public class ReportDynamic extends PicsActionSupport {
 				if (value == null)
 					continue;
 
-				Field field = sqlBuilder.getAvailableFields().get(column.toUpperCase());
+				Field field = availableFields.get(column.toUpperCase());
+//				Field field = sqlBuilder.getAvailableFields().get(column.toUpperCase());
+
 				if (field == null) {
 					// TODO we get nulls if the column name is custom such
 					// as contractorNameCount. Convert this to
@@ -590,9 +603,10 @@ public class ReportDynamic extends PicsActionSupport {
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
 
-			sqlBuilder = new SqlBuilder();
-			sqlBuilder.initializeSql(fakeReport.getBaseModel());
-			for (Field field : sqlBuilder.getAvailableFields().values()) {
+//			sqlBuilder = new SqlBuilder();
+//			sqlBuilder.initializeSql(fakeReport.getBaseModel());
+			Map<String, Field> availableFields = reportController.buildAvailableFields(fakeReport.getBaseModel().getPrimaryTable());
+			for (Field field : availableFields.values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);
 				saveTranslation(existing, key + ".help");
@@ -606,10 +620,11 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			reportController.validate(report);
-			sqlBuilder.initializeSql(report.getBaseModel());
+//			sqlBuilder.initializeSql(report.getBaseModel());
+			Map<String, Field> availableFields = reportController.buildAvailableFields(report.getBaseModel().getPrimaryTable());
 
 			json.put("modelType", report.getModelType().toString());
-			json.put("fields", getAvailableFields());
+			json.put("fields", translateAndJsonify(availableFields));
 			json.put("success", true);
 		} catch (Exception e) {
 			jsonException(e);

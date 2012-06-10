@@ -1,5 +1,8 @@
 package com.picsauditing.report.business;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,6 +12,8 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.tables.BaseTable;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.business.DynamicReportUtil;
 
 public class ReportController {
@@ -87,5 +92,20 @@ public class ReportController {
 		// TODO this should be like report.updateDatabaseInternalFields(User)
 		report.setAuditColumns(permissions);
 		basicDao.save(report);
+	}
+
+	public Map<String, Field> buildAvailableFields(BaseTable baseTable) {
+		Map<String, Field> availableFields = new HashMap<String, Field>();
+
+		addAllAvailableFields(availableFields, baseTable);
+
+		return availableFields;
+	}
+
+	private void addAllAvailableFields(Map<String, Field> availableFields, BaseTable table) {
+		availableFields.putAll(table.getAvailableFields());
+		for (BaseTable joinTable : table.getJoins()) {
+			addAllAvailableFields(availableFields, joinTable);
+		}
 	}
 }

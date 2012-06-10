@@ -435,7 +435,7 @@ public class SqlBuilder {
 		this.definition = definition;
 	}
 
-	public Map<String, Field> getAvailableFields() {
-		return availableFields;
-	}
+//	public Map<String, Field> getAvailableFields() {
+//		return availableFields;
+//	}
 }
