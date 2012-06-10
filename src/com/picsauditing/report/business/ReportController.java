@@ -1,8 +1,12 @@
 package com.picsauditing.report.business;
 
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,8 +16,10 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.tables.BaseTable;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.tables.BaseTable;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.business.DynamicReportUtil;
 
 public class ReportController {
@@ -94,7 +100,15 @@ public class ReportController {
 		basicDao.save(report);
 	}
 
-	public Map<String, Field> buildAvailableFields(BaseTable baseTable) {
+	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
+		Database db = new Database();
+		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		json.put("total", db.getAllRows());
+
+		return rows;
+	}
+
+	public static Map<String, Field> buildAvailableFields(BaseTable baseTable) {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 
 		addAllAvailableFields(availableFields, baseTable);
@@ -102,7 +116,7 @@ public class ReportController {
 		return availableFields;
 	}
 
-	private void addAllAvailableFields(Map<String, Field> availableFields, BaseTable table) {
+	private static void addAllAvailableFields(Map<String, Field> availableFields, BaseTable table) {
 		availableFields.putAll(table.getAvailableFields());
 		for (BaseTable joinTable : table.getJoins()) {
 			addAllAvailableFields(availableFields, joinTable);

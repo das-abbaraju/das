@@ -14,7 +14,9 @@ import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.BaseModel;
 import com.picsauditing.search.SelectSQL;
 
+// TODO rewrite these tests to account for all recent changes to Dynamic Reports
 public class SqlBuilderTest {
+
 	private SqlBuilder builder;
 	private Definition definition = new Definition();
 

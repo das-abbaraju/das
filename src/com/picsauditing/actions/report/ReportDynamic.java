@@ -39,7 +39,6 @@ import com.picsauditing.report.business.ReportController;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.DynamicReportUtil;
@@ -75,7 +74,7 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
-			jsonException(e);
+			writeJsonErrorMessage(e);
 		}
 
 		return JSON;
@@ -92,7 +91,7 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			// TODO add logging
 			e.printStackTrace();
-			jsonException(e);
+			writeJsonErrorMessage(e);
 		}
 
 		return JSON;
@@ -109,7 +108,7 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			// TODO add logging
 			e.printStackTrace();
-			jsonException(e);
+			writeJsonErrorMessage(e);
 		}
 
 		return JSON;
@@ -128,11 +127,23 @@ public class ReportDynamic extends PicsActionSupport {
 
 			translateFilterValueNames(definition.getFilters());
 
-			Map<String, Field> availableFields = reportController.buildAvailableFields(report.getBaseModel().getPrimaryTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
 
 			if (definition.getColumns().size() > 0) {
-				QueryData data = queryData();
-				convertToJson(data, availableFields);
+//				QueryData data = queryData(sql);
+				long queryTime = Calendar.getInstance().getTimeInMillis();
+				List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
+
+				queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
+				if (queryTime > 1000) {
+					showSQL = true;
+					logger.info("Slow Query: {}", sql.toString());
+					logger.info("Time to query: {} ms", queryTime);
+				}
+				// TODO Alex, we need to fix this
+				// It creates a QueryData object, then immediately converts it to JSON
+				QueryData queryData = new QueryData(rawData);
+				convertToJson(queryData, availableFields);
 				json.put("success", true);
 			}
 		} catch (SQLException e) {
@@ -159,7 +170,7 @@ public class ReportDynamic extends PicsActionSupport {
 //			sqlBuilder.initializeSql();
 //			Field field = sqlBuilder.getAvailableFields().get(fieldName.toUpperCase());
 
-			Map<String, Field> availableFields = reportController.buildAvailableFields(report.getBaseModel().getPrimaryTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)
@@ -176,7 +187,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			json.put("success", true);
 		} catch (Exception e) {
-			jsonException(e);
+			writeJsonErrorMessage(e);
 		}
 
 		return JSON;
@@ -192,7 +203,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	@Anonymous
 	@Deprecated
-	// TODO Not called from the front end
+	// TODO Remove this; it's not called from the front end
 	public String availableBases() {
 		JSONArray rows = new JSONArray();
 		for (ModelType type : ModelType.values()) {
@@ -223,6 +234,46 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	public String availableFields() {
+		try {
+			reportController.validate(report);
+//			sqlBuilder.initializeSql(report.getBaseModel());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
+
+			json.put("modelType", report.getModelType().toString());
+			json.put("fields", translateAndJsonify(availableFields));
+			json.put("success", true);
+		} catch (Exception e) {
+			writeJsonErrorMessage(e);
+		}
+
+		return JSON;
+	}
+
+	// This function is only called by availableFields()
+	private JSONArray translateAndJsonify(Map<String, Field> availableFields) {
+		JSONArray fieldsJsonArray = new JSONArray();
+
+//		for (Field field : sqlBuilder.getAvailableFields().values()) {
+		for (Field field : availableFields.values()) {
+			if (!canSeeQueryField(field))
+				continue;
+
+			field.setText(translateLabel(field));
+
+			JSONObject obj = field.toJSONObject();
+			obj.put("category", translateCategory(field.getCategory().toString()));
+
+			String help = getText("Report." + field.getName() + ".help");
+			if (help != null)
+				obj.put("help", help);
+
+			fieldsJsonArray.add(obj);
+		}
+
+		return fieldsJsonArray;
+	}
+
 	public String download() throws Exception {
 		reportController.validate(report);
 
@@ -236,7 +287,8 @@ public class ReportDynamic extends PicsActionSupport {
 		translateFilterValueNames(definition.getFilters());
 
 		if (definition.getColumns().size() > 0) {
-			List<BasicDynaBean> rawData = runSQL();
+//			List<BasicDynaBean> rawData = runSQL();
+			List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
 
 			ExcelSheet excelSheet = new ExcelSheet();
 			excelSheet.setData(rawData);
@@ -260,35 +312,6 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		return SUCCESS;
-	}
-
-	/**
-	 * Return a set of fields which can be used client side for defining the
-	 * report (columns, sorting, grouping and filtering)
-	 */
-	@Deprecated
-	// TODO possibly move to new ReportController.java class (?)
-	public JSONArray translateAndJsonify(Map<String, Field> availableFields) {
-		JSONArray fieldsJsonArray = new JSONArray();
-
-//		for (Field field : sqlBuilder.getAvailableFields().values()) {
-		for (Field field : availableFields.values()) {
-			if (!canSeeQueryField(field))
-				continue;
-
-			field.setText(translateLabel(field));
-
-			JSONObject obj = field.toJSONObject();
-			obj.put("category", translateCategory(field.getCategory().toString()));
-
-			String help = getText("Report." + field.getName() + ".help");
-			if (help != null)
-				obj.put("help", help);
-
-			fieldsJsonArray.add(obj);
-		}
-
-		return fieldsJsonArray;
 	}
 
 	private void addTranslatedLabelsToReportParameters(Definition definition) {
@@ -360,7 +383,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	// TODO: Change the name of this
-	private void jsonException(Exception e) {
+	private void writeJsonErrorMessage(Exception e) {
 		json.put("success", false);
 		json.put("error", e.getCause() + " " + e.getMessage());
 	}
@@ -535,7 +558,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	// SQL stuff at bottom of file
 
-	// This is in the wrong class, should be in SqlBuilder
+	// TODO get rid of this. it's now in SqlBuilder
 //	private void buildSQL(boolean download) throws Exception {
 //		reportController.validate(report);
 //
@@ -557,29 +580,30 @@ public class ReportDynamic extends PicsActionSupport {
 //		}
 //	}
 
-	// TODO: Rewrite this to PROPERLY log the timing (without System.out)
-	private QueryData queryData() throws SQLException {
-		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> rawData = runSQL();
-		QueryData queryData = new QueryData(rawData);
+	// TODO get rid of this. inlined it into data()
+//	private QueryData queryData(SelectSQL sql) throws SQLException {
+//		long queryTime = Calendar.getInstance().getTimeInMillis();
+//		List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
+//		QueryData queryData = new QueryData(rawData);
+//
+//		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
+//		if (queryTime > 1000) {
+//			showSQL = true;
+//			logger.info("Slow Query: {}", sql.toString());
+//			logger.info("Time to query: {} ms", queryTime);
+//		}
+//
+//		return queryData;
+//	}
 
-		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
-		if (queryTime > 1000) {
-			showSQL = true;
-			logger.info("Slow Query: {}", sql.toString());
-			logger.info("Time to query: {} ms", queryTime);
-		}
-
-		return queryData;
-	}
-
-	private List<BasicDynaBean> runSQL() throws SQLException {
-		Database db = new Database();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
-
-		return rows;
-	}
+	// TODO get rid of this. it's now in ReportController
+//	private List<BasicDynaBean> runSQL() throws SQLException {
+//		Database db = new Database();
+//		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+//		json.put("total", db.getAllRows());
+//
+//		return rows;
+//	}
 
 	// TODO: Remove this once we figure out what to do with this and why it is doing the same
 	// this as the i18n cache
@@ -605,7 +629,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 //			sqlBuilder = new SqlBuilder();
 //			sqlBuilder.initializeSql(fakeReport.getBaseModel());
-			Map<String, Field> availableFields = reportController.buildAvailableFields(fakeReport.getBaseModel().getPrimaryTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getBaseTable());
 			for (Field field : availableFields.values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);
@@ -614,22 +638,5 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		return BLANK;
-	}
-
-	@Deprecated
-	public String availableFields() {
-		try {
-			reportController.validate(report);
-//			sqlBuilder.initializeSql(report.getBaseModel());
-			Map<String, Field> availableFields = reportController.buildAvailableFields(report.getBaseModel().getPrimaryTable());
-
-			json.put("modelType", report.getModelType().toString());
-			json.put("fields", translateAndJsonify(availableFields));
-			json.put("success", true);
-		} catch (Exception e) {
-			jsonException(e);
-		}
-
-		return JSON;
 	}
 }

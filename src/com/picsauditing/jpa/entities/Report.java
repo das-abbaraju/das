@@ -109,4 +109,10 @@ public class Report extends BaseTable {
 	public BaseModel getBaseModel() {
 		return ModelFactory.getBase(modelType);
 	}
+
+	@Transient
+	// TODO find a better name for this class, like BaseView or something
+	public com.picsauditing.report.tables.BaseTable getBaseTable() {
+		return getBaseModel().getPrimaryTable();
+	}
 }

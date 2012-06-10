@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -14,6 +13,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.business.ReportController;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
@@ -28,7 +28,8 @@ import com.picsauditing.util.excel.ExcelSheet;
 public class SqlBuilder {
 
 //	private BaseModel baseModel;
-	private Map<String, Field> availableFields = new TreeMap<String, Field>();
+//	private Map<String, Field> availableFields = new TreeMap<String, Field>();
+	// TODO remove definition, get from Report passed in instead
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
@@ -61,12 +62,13 @@ public class SqlBuilder {
 
 		setFrom(baseModel);
 
-		availableFields.clear();
-		addAvailableFields(baseModel.getPrimaryTable());
+//		availableFields.clear();
+//		addAvailableFields(baseModel.getPrimaryTable());
+		Map<String, Field> availableFields = ReportController.buildAvailableFields(baseModel.getPrimaryTable());
 
-		addFieldsAndGroupBy();
-		addRuntimeFilters();
-		addOrderByClauses(baseModel);
+		addFieldsAndGroupBy(availableFields);
+		addRuntimeFilters(availableFields);
+		addOrderByClauses(baseModel, availableFields);
 
 		addJoins(baseModel.getPrimaryTable());
 
@@ -92,13 +94,13 @@ public class SqlBuilder {
 		sql.setFromTable(from);
 	}
 
-	private void addAvailableFields(BaseTable table) {
-		// We may be able to use the ModelBase.getAvailableFields...
-		availableFields.putAll(table.getAvailableFields());
-		for (BaseTable joinTable : table.getJoins()) {
-			addAvailableFields(joinTable);
-		}
-	}
+//	private void addAvailableFields(BaseTable table) {
+//		// We may be able to use the ModelBase.getAvailableFields...
+//		availableFields.putAll(table.getAvailableFields());
+//		for (BaseTable joinTable : table.getJoins()) {
+//			addAvailableFields(joinTable);
+//		}
+//	}
 
 	private void addJoins(BaseTable table) {
 		for (BaseTable joinTable : table.getJoins()) {
@@ -118,11 +120,13 @@ public class SqlBuilder {
 		}
 	}
 
-	private void addFieldsAndGroupBy() {
+	private void addFieldsAndGroupBy(Map<String, Field> availableFields) {
 		Set<String> dependentFields = new HashSet<String>();
-		boolean usesGroupBy = usesGroupBy();
+		boolean usesGroupBy = usesGroupBy(availableFields);
+
 		for (Column column : definition.getColumns()) {
-			Field field = getFieldFromFieldName(column.getFieldName());
+			Field field = availableFields.get(column.getFieldName().toUpperCase());
+
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
 					// For example: Don't add in accountID automatically if
@@ -130,7 +134,7 @@ public class SqlBuilder {
 					dependentFields.addAll(field.getDependentFields());
 				}
 
-				String columnSql = columnToSql(column);
+				String columnSql = columnToSql(column, availableFields);
 				if (usesGroupBy && !isAggregate(column.getFieldName())) {
 					sql.addGroupBy(columnSql);
 				}
@@ -151,7 +155,7 @@ public class SqlBuilder {
 
 		for (String fieldName : dependentFields) {
 			Column column = new Column(fieldName);
-			String columnSql = columnToSql(column);
+			String columnSql = columnToSql(column, availableFields);
 			sql.addField(columnSql + " AS `" + fieldName + "`");
 		}
 	}
@@ -164,9 +168,10 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private boolean usesGroupBy() {
+	private boolean usesGroupBy(Map<String, Field> availableFields) {
 		for (Column column : definition.getColumns()) {
-			if (getFieldFromFieldName(column.getFieldName()) != null) {
+			Field field = availableFields.get(column.getFieldName().toUpperCase());
+			if (field != null) {
 				if (isAggregate(column.getFieldName())) {
 					return true;
 				}
@@ -175,9 +180,9 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private Field getFieldFromFieldName(String fieldName) {
-		return availableFields.get(fieldName.toUpperCase());
-	}
+//	private Field getFieldFromFieldName(String fieldName) {
+//		return availableFields.get(fieldName.toUpperCase());
+//	}
 
 	private boolean isAggregate(String columnName) {
 		if (columnName == null)
@@ -193,8 +198,9 @@ public class SqlBuilder {
 		return column.getFunction().isAggregate();
 	}
 
-	private String columnToSql(Column column) {
-		Field field = getFieldFromFieldName(column.getFieldName());
+	private String columnToSql(Column column, Map<String, Field> availableFields) {
+		Field field = availableFields.get(column.getFieldName().toUpperCase());
+//		Field field = getFieldFromFieldName(column.getFieldName());
 		String fieldSql = field.getDatabaseColumnName();
 		if (column.getFunction() == null)
 			return fieldSql;
@@ -229,7 +235,7 @@ public class SqlBuilder {
 		return fieldSql;
 	}
 
-	private void addRuntimeFilters() {
+	private void addRuntimeFilters(Map<String, Field> availableFields) {
 		if (definition.getFilters().isEmpty())
 			return;
 
@@ -246,7 +252,8 @@ public class SqlBuilder {
 				whereFilters.add(filter);
 			}
 
-			filter.setField(getFieldFromFieldName(filter.getFieldName()));
+			Field field = availableFields.get(filter.getFieldName().toUpperCase());
+			filter.setField(field);
 		}
 
 		String where = definition.getFilterExpression();
@@ -261,7 +268,7 @@ public class SqlBuilder {
 		int whereIndex = 0;
 		for (Filter filter : whereFilters) {
 			if (!isAggregate(filter.getFieldName())) {
-				String filterExp = toFilterSql(filter);
+				String filterExp = toFilterSql(filter, availableFields);
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
 				whereIndex++;
 			}
@@ -270,7 +277,7 @@ public class SqlBuilder {
 
 		for (Filter filter : havingFilters) {
 			if (isAggregate(filter.getFieldName())) {
-				String filterExp = toFilterSql(filter);
+				String filterExp = toFilterSql(filter, availableFields);
 				sql.addHaving(filterExp);
 			}
 		}
@@ -288,7 +295,7 @@ public class SqlBuilder {
 		return null;
 	}
 
-	private String toFilterSql(Filter filter) {
+	private String toFilterSql(Filter filter, Map<String, Field> availableFields) {
 		if (!filter.isValid())
 			return "true";
 
@@ -298,7 +305,7 @@ public class SqlBuilder {
 			column = new Column(filter.getFieldName());
 		}
 
-		String columnSql = toColumnSql(column);
+		String columnSql = toColumnSql(column, availableFields);
 
 		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
 			return columnSql + " IS NULL OR " + columnSql + " = ''";
@@ -307,13 +314,13 @@ public class SqlBuilder {
 		}
 
 		String operand = filter.getOperator().getOperand();
-		String valueSql = toValueSql(filter, column);
+		String valueSql = toValueSql(filter, column, availableFields);
 
 		return columnSql + " " + operand + " " + valueSql;
 	}
 
-	private String toColumnSql(Column column) {
-		String columnSQL = columnToSql(column);
+	private String toColumnSql(Column column, Map<String, Field> availableFields) {
+		String columnSQL = columnToSql(column, availableFields);
 
 		if (column.getFieldName().equals("accountName"))
 			columnSQL = "a.nameIndex";
@@ -321,11 +328,13 @@ public class SqlBuilder {
 		return columnSQL;
 	}
 
-	private String toValueSql(Filter filter, Column column) {
+	private String toValueSql(Filter filter, Column column, Map<String, Field> availableFields) {
 		String value = filter.getValue();
 
 		// date filter
-		ExtFieldType fieldType = getFieldFromFieldName(column.getFieldName()).getType();
+//		ExtFieldType fieldType = getFieldFromFieldName(column.getFieldName()).getType();
+		Field field = availableFields.get(column.getFieldName().toUpperCase());
+		ExtFieldType fieldType = field.getType();
 		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 
@@ -366,9 +375,9 @@ public class SqlBuilder {
 		return value;
 	}
 
-	private void addOrderByClauses(BaseModel baseModel) {
+	private void addOrderByClauses(BaseModel baseModel, Map<String, Field> availableFields) {
 		if (definition.getSorts().isEmpty()) {
-			if (usesGroupBy())
+			if (usesGroupBy(availableFields))
 				return;
 
 			sql.addOrderBy(baseModel.getDefaultSort());
@@ -389,7 +398,9 @@ public class SqlBuilder {
 				fieldName += " DESC";
 
 			sql.addOrderBy(fieldName);
-			sort.setField(getFieldFromFieldName(sort.getFieldName()));
+			Field field = availableFields.get(sort.getFieldName().toUpperCase());
+//			sort.setField(getFieldFromFieldName(sort.getFieldName()));
+			sort.setField(field);
 		}
 	}
 
