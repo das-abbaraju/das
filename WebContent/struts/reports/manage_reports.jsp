@@ -103,11 +103,6 @@
 							Saved
 						</a>
 					</li>
-					<li>
-						<a class="btn" href="ManageReports.action?filterType=template">
-							Base Reports
-						</a>
-					</li>
 				</ul>
 			</s:if>
 		</fieldset>
@@ -176,10 +171,16 @@
 						<a href="ManageReports!createReport.action?reportId=<s:property value="report.id" />">Copy</a>&nbsp;
 					</td>
 					<td>
-						<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">Remove</a>&nbsp;
 						<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@canUserDelete(permissions.userId, report)}">
-							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">Delete</a>
+							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">
+								Delete
+							</a>
 						</s:if>
+						<s:else>
+							<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">
+								Remove
+							</a>
+						</s:else>
 					</td>
 				</tr>
 			</s:iterator>

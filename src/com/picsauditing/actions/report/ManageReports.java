@@ -14,8 +14,7 @@ public class ManageReports extends PicsActionSupport {
 	private static final String DELETE_REPORT = "delete";
 	private static final String REMOVE_ASSOCIATION = "remove";
 	private static final String SAVED = "saved";
-	private static final String FAVORITE2 = "favorite";
-	private static final String TEMPLATE = "template";
+	private static final String FAVORITE = "favorite";
 
 	private ReportUser reportUser;
 	private Report report;
@@ -34,18 +33,14 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	private void getCustomReport(String filterType) {
-		String filterQuery = "createdBy=" + permissions.getUserId();
+		String filterQuery = "userID = " + permissions.getUserId();
 
-		// TODO: do we even need to have a template filter?
-		if (TEMPLATE.equals(filterType)) {
-			setReportsByUser(dao.findWhere(ReportUser.class, filterQuery, 2));
-		} else if (FAVORITE2.equals(filterType)) {
-			setReportsByUser(dao.findWhere(ReportUser.class,"favorite=1 and " + filterQuery));
+		if (FAVORITE.equals(filterType)) {
+			filterQuery += " AND is_favorite = 1";
 		} else if (SAVED.equals(filterType)) {
-			setReportsByUser(dao.findWhere(ReportUser.class, filterQuery));
-		} else {
-			setReportsByUser(dao.findWhere(ReportUser.class, filterQuery));
 		}
+
+		setReportsByUser(dao.findWhere(ReportUser.class, filterQuery));
 	}
 
 	public String deleteReport() throws Exception {

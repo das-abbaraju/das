@@ -27,11 +27,10 @@ public class MenuBuilder {
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions) {
-		return buildMenubar(permissions, null, null);
+		return buildMenubar(permissions, null);
 	}
 
-	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> favoriteReports,
-			List<ReportUser> savedReports) {
+	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> favoriteReports) {
 		MenuComponent menubar = new MenuComponent();
 
 		if (!permissions.isLoggedIn()) {
@@ -43,7 +42,7 @@ public class MenuBuilder {
 		} else if (permissions.isOperatorCorporate()) {
 			buildOperatorCorporateMenubar(menubar, permissions);
 		} else {
-			buildGeneralMenubar(menubar, permissions, favoriteReports, savedReports);
+			buildGeneralMenubar(menubar, permissions, favoriteReports);
 		}
 
 		handleSingleChildMenu(menubar);
@@ -52,13 +51,12 @@ public class MenuBuilder {
 	}
 
 	// For Operators, Corporate users, and PICS employees
-	private static void buildGeneralMenubar(MenuComponent menubar, Permissions permissions, List<ReportUser> favoriteReports,
-			List<ReportUser> savedReports) {
+	private static void buildGeneralMenubar(MenuComponent menubar, Permissions permissions, List<ReportUser> favoriteReports) {
 		addPicsLogo(menubar);
 
 		addDashboardMenu(menubar);
 
-		addReportsMenu(menubar, favoriteReports, savedReports);
+		addReportsMenu(menubar, favoriteReports);
 
 		//addContractorSubmenu(menu, permissions);
 
@@ -361,8 +359,7 @@ public class MenuBuilder {
 		}
 	}
 
-	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports,
-			List<ReportUser> savedReports) {
+	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
 		if (menubar == null || favoriteReports == null)
 			return;
 
@@ -373,12 +370,6 @@ public class MenuBuilder {
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
 			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
-		}
-
-		MenuComponent savedReportsSubmenu = reportsMenu.addChild("Saved Reports");
-		for (ReportUser userReport : savedReports) {
-			Report report = userReport.getReport();
-			savedReportsSubmenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}
 	}
 

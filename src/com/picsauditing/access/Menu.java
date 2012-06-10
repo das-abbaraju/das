@@ -15,15 +15,10 @@ public class Menu extends PicsActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 
-		String userQuery = "userID = " + permissions.getUserId();
-		List<ReportUser> savedReports = dao.findWhere(ReportUser.class, userQuery);
-
-		String userFavoritesQuery =  userQuery + " and is_favorite = true";
+		String userFavoritesQuery =  "userID = " + permissions.getUserId() + " AND is_favorite = 1";
 		List<ReportUser> favoriteReports = dao.findWhere(ReportUser.class, userFavoritesQuery);
 
-		// TODO remove all favorite reports from saved reports
-
-		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports, savedReports);
+		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
 
 		// TODO make this return plain JSON, not ext-js specific stuff
 		jsonArray = MenuWriter.exportMenuToExtJS(menu);
