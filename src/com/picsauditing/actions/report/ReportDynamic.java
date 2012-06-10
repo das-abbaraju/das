@@ -130,7 +130,6 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
 
 			if (definition.getColumns().size() > 0) {
-//				QueryData data = queryData(sql);
 				long queryTime = Calendar.getInstance().getTimeInMillis();
 				List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
 
@@ -140,8 +139,7 @@ public class ReportDynamic extends PicsActionSupport {
 					logger.info("Slow Query: {}", sql.toString());
 					logger.info("Time to query: {} ms", queryTime);
 				}
-				// TODO Alex, we need to fix this
-				// It creates a QueryData object, then immediately converts it to JSON
+				// TODO remove QueryData class
 				QueryData queryData = new QueryData(rawData);
 				convertToJson(queryData, availableFields);
 				json.put("success", true);
@@ -166,9 +164,6 @@ public class ReportDynamic extends PicsActionSupport {
 				throw new Exception("Please pass a fieldName when calling list");
 
 			reportController.validate(report);
-
-//			sqlBuilder.initializeSql();
-//			Field field = sqlBuilder.getAvailableFields().get(fieldName.toUpperCase());
 
 			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
@@ -237,7 +232,6 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			reportController.validate(report);
-//			sqlBuilder.initializeSql(report.getBaseModel());
 			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
 
 			json.put("modelType", report.getModelType().toString());
@@ -254,7 +248,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private JSONArray translateAndJsonify(Map<String, Field> availableFields) {
 		JSONArray fieldsJsonArray = new JSONArray();
 
-//		for (Field field : sqlBuilder.getAvailableFields().values()) {
 		for (Field field : availableFields.values()) {
 			if (!canSeeQueryField(field))
 				continue;
@@ -287,7 +280,6 @@ public class ReportDynamic extends PicsActionSupport {
 		translateFilterValueNames(definition.getFilters());
 
 		if (definition.getColumns().size() > 0) {
-//			List<BasicDynaBean> rawData = runSQL();
 			List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
 
 			ExcelSheet excelSheet = new ExcelSheet();
@@ -382,7 +374,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return translatedText;
 	}
 
-	// TODO: Change the name of this
 	private void writeJsonErrorMessage(Exception e) {
 		json.put("success", false);
 		json.put("error", e.getCause() + " " + e.getMessage());
@@ -399,12 +390,10 @@ public class ReportDynamic extends PicsActionSupport {
 					continue;
 
 				Field field = availableFields.get(column.toUpperCase());
-//				Field field = sqlBuilder.getAvailableFields().get(column.toUpperCase());
 
 				if (field == null) {
 					// TODO we get nulls if the column name is custom such
-					// as contractorNameCount. Convert this to
-					// contractorName
+					// as contractorNameCount. Convert this to contractorName
 					jsonRow.put(column, value);
 				} else if (canSeeQueryField(field)) {
 					if (field.isTranslated()) {
@@ -437,16 +426,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 		return false;
 	}
-
-//	private void ensureValidReport() throws Exception {
-//		if (report == null)
-//			throw new RuntimeException("Please provide a saved or ad hoc report to run");
-//
-//		if (report.getModelType() == null)
-//			throw new RuntimeException("The report is missing its base");
-//
-//		new JSONParser().parse(report.getParameters());
-//	}
 
 	// TODO: Refactor, because it seems just like the jsonException method. WTF?
 	private void logError(Exception e) {
@@ -556,55 +535,6 @@ public class ReportDynamic extends PicsActionSupport {
 		this.searchQuery = searchQuery;
 	}
 
-	// SQL stuff at bottom of file
-
-	// TODO get rid of this. it's now in SqlBuilder
-//	private void buildSQL(boolean download) throws Exception {
-//		reportController.validate(report);
-//
-//		Definition definition = new Definition(report.getParameters());
-//		report.setDefinition(definition);
-//		builder.setDefinition(definition);
-//
-//		builder.setBaseModelFromReport(report);
-//		sql = builder.initializeSql();
-//		builder.addPermissions(permissions);
-//
-//		// TODO: rowsPerPage can be added later
-//		if (!download)
-//			builder.setPaging(page, report.getRowsPerPage());
-//
-//		List<Filter> filters = builder.getDefinition().getFilters();
-//		if (filters != null && !filters.isEmpty()) {
-//			translateFilterValueNames(filters);
-//		}
-//	}
-
-	// TODO get rid of this. inlined it into data()
-//	private QueryData queryData(SelectSQL sql) throws SQLException {
-//		long queryTime = Calendar.getInstance().getTimeInMillis();
-//		List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
-//		QueryData queryData = new QueryData(rawData);
-//
-//		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
-//		if (queryTime > 1000) {
-//			showSQL = true;
-//			logger.info("Slow Query: {}", sql.toString());
-//			logger.info("Time to query: {} ms", queryTime);
-//		}
-//
-//		return queryData;
-//	}
-
-	// TODO get rid of this. it's now in ReportController
-//	private List<BasicDynaBean> runSQL() throws SQLException {
-//		Database db = new Database();
-//		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-//		json.put("total", db.getAllRows());
-//
-//		return rows;
-//	}
-
 	// TODO: Remove this once we figure out what to do with this and why it is doing the same
 	// this as the i18n cache
 	@Deprecated
@@ -627,8 +557,6 @@ public class ReportDynamic extends PicsActionSupport {
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
 
-//			sqlBuilder = new SqlBuilder();
-//			sqlBuilder.initializeSql(fakeReport.getBaseModel());
 			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getBaseTable());
 			for (Field field : availableFields.values()) {
 				String key = "Report." + field.getName();

@@ -116,6 +116,11 @@ public class ReportController {
 		return availableFields;
 	}
 
+	/**
+	 * This method is recursively building the available fields. It works like this
+	 * because the set of tables that comprise available fields for a model is a tree,
+	 * which we've decided to walk recursively.
+	 */
 	private static void addAllAvailableFields(Map<String, Field> availableFields, BaseTable table) {
 		availableFields.putAll(table.getAvailableFields());
 		for (BaseTable joinTable : table.getJoins()) {
