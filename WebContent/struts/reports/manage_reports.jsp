@@ -177,7 +177,7 @@
 					</td>
 					<td>
 						<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">Remove</a>&nbsp;
-						<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@userCanDelete(permissions.userId, report)}">
+						<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@canUserDelete(permissions.userId, report)}">
 							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">Delete</a>
 						</s:if>
 					</td>
