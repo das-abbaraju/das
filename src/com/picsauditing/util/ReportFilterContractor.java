@@ -66,6 +66,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showLocation = false;
 	protected boolean showFlagOverrideHistory = false;
 	protected boolean showRequiredTags = false;
+	protected boolean showGeneralContractors = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -115,6 +116,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String riskType;
 	protected boolean flagOverrideHistory = false;
 	protected boolean requiredTags = false;
+	protected int[] generalContractor;
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -397,6 +399,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showAccountLevel = showAccountLevel;
 	}
 
+	public boolean isShowGeneralContractors() {
+		return showGeneralContractors;
+	}
+
+	public void setShowGeneralContractors(boolean showGeneralContractors) {
+		this.showGeneralContractors = showGeneralContractors;
+	}
+
 	public int[] getAccountManager() {
 		return accountManager;
 	}
@@ -590,16 +600,16 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 		Map<String, String> deactivationReasons = new HashMap<String, String>();
 		deactivationReasons.put("ChargeBack", cache.getText("Filters.status.Deactivation.ChargeBack", locale));
-		deactivationReasons.put("Did not Complete PICS process", cache.getText(
-				"Filters.status.Deactivation.DidNotCompleteProcess", locale));
-		deactivationReasons.put("Does not work for operator", cache.getText(
-				"Filters.status.Deactivation.DoesNotWorkForOperator", locale));
-		deactivationReasons.put("Duplicate/Merged Account", cache.getText(
-				"Filters.status.Deactivation.DuplicateMerged", locale));
-		deactivationReasons.put("Operator Exemption", cache.getText("Filters.status.Deactivation.OperatorExemption",
-				locale));
-		deactivationReasons.put("Payments not Current", cache.getText("Filters.status.Deactivation.PaymentsNotCurrent",
-				locale));
+		deactivationReasons.put("Did not Complete PICS process",
+				cache.getText("Filters.status.Deactivation.DidNotCompleteProcess", locale));
+		deactivationReasons.put("Does not work for operator",
+				cache.getText("Filters.status.Deactivation.DoesNotWorkForOperator", locale));
+		deactivationReasons.put("Duplicate/Merged Account",
+				cache.getText("Filters.status.Deactivation.DuplicateMerged", locale));
+		deactivationReasons.put("Operator Exemption",
+				cache.getText("Filters.status.Deactivation.OperatorExemption", locale));
+		deactivationReasons.put("Payments not Current",
+				cache.getText("Filters.status.Deactivation.PaymentsNotCurrent", locale));
 		deactivationReasons
 				.put("Bid Only Account", cache.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
 		return Collections.unmodifiableMap(deactivationReasons);
@@ -944,5 +954,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setRequiredTags(boolean requiredTags) {
 		this.requiredTags = requiredTags;
+	}
+
+	public int[] getGeneralContractor() {
+		return generalContractor;
+	}
+
+	public void setGeneralContractor(int[] generalContractor) {
+		this.generalContractor = generalContractor;
 	}
 }

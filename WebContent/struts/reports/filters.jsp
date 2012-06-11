@@ -563,6 +563,28 @@
 				</span>
 			</div>
 		</s:if>
+		
+		<s:if test="filter.showGeneralContractors">
+			<div class="filterOption">
+				<a href="#" class="filterBox">
+					<s:text name="FacilitiesEdit.GeneralContractor" />
+				</a>
+				=
+				<span class="q_status">
+					<s:text name="JS.Filters.status.All" />
+				</span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:textfield
+						rel="GeneralContractor"
+						name="filter.generalContractor"
+						cssClass="tokenAuto" />
+					<a href="#" class="clearLink">
+						<s:text name="Filters.status.Clear" />
+					</a>
+				</span>
+			</div>
+		</s:if>
 
 		<s:if test="filter.showOperatorTags">
 			<div class="filterOption">

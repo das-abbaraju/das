@@ -84,5 +84,9 @@
 		<action name="SubcontractorFacilities" class="com.picsauditing.actions.operators.gc.SubcontractorFacilities">
 			<result>/struts/gc/subcontractor_facilities.jsp</result>
 		</action>
+		
+		<action name="GeneralContractorsList" class="com.picsauditing.actions.operators.gc.GeneralContractorsList">
+			<result>/struts/gc/general_contractors_list.jsp</result>
+		</action>
 	</package>
 </struts>
