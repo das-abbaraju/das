@@ -1,12 +1,14 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorsWithForcedFlags extends ReportAccount {
+	private static AccountStatus[] initialAccountStatus = {AccountStatus.Active, AccountStatus.Demo, AccountStatus.Pending };
 	
 	@Override
 	public void prepare() throws Exception {
@@ -16,6 +18,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		getFilter().setShowInsuranceLimits(false);
 		getFilter().setShowOpertorTagName(false);
 		getFilter().setShowFlagOverrideHistory(true);
+		getFilter().setStatus(initialAccountStatus);
 	}
 	
 	@Override
