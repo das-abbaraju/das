@@ -71,10 +71,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
 
                     this.setReportNameAndDescription();
                     this.getReportSettings().close();
-
-                    if (userStatus.isEditable()) {
-                        this.createNewReport();
-                    }
+                    this.createNewReport();
                 }
             }
         });
@@ -88,6 +85,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
            url: proxy_url,
            success: function (result) {
                var result = Ext.decode(result.responseText);
+
                if (result.error) {
                    Ext.Msg.alert('Status', result.error);
                } else {
