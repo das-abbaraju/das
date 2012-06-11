@@ -558,12 +558,14 @@
     									</a>
     								</p>
     								
-    								<s:if test="(permissions.admin || permissions.operatorCorporate) && contractor.generalContractorOperatorAccounts.size > 0">
+    								<s:if test="contractor.generalContractorOperatorAccounts.size > 0">
     									<s:set name="gc_accounts" value="''" />
     									<s:iterator value="contractor.generalContractorOperatorAccounts" var="gc_op" status="gc_index">
-	    									<s:set name="gc_accounts" value="#gc_accounts + #gc_op.name" />
-	    									<s:if test="!#gc_index.last">
-		    									<s:set name="gc_accounts" value="#gc_accounts + ', '" />
+    										<s:if test="!permissions.operatorCorporate || permissions.visibleAccounts.contains(#gc_op.id)">
+		    									<s:set name="gc_accounts" value="#gc_accounts + #gc_op.name" />
+		    									<s:if test="!#gc_index.last">
+			    									<s:set name="gc_accounts" value="#gc_accounts + ', '" />
+		    									</s:if>
 	    									</s:if>
     									</s:iterator>
     									<s:if test="!isStringEmpty(#gc_accounts)">
