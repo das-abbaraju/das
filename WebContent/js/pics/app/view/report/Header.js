@@ -57,7 +57,7 @@ Ext.define('PICS.view.report.Header', {
             width: 150
         });
 
-        if (configuration.isEditable()) {
+        //if (configuration.isEditable()) {
             var edit = Ext.create('Ext.button.Button', {
                 action: 'edit',
                 cls: 'edit',
@@ -91,7 +91,7 @@ Ext.define('PICS.view.report.Header', {
             });
 
             panel.add(edit, save);
-        }
+        //}
 
         this.add(panel);
     }

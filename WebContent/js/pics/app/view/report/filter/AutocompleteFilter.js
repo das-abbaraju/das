@@ -69,7 +69,7 @@ Ext.define('PICS.view.report.filter.AutocompleteFilter', {
                 listeners: {
                     load: function () {
                         //set valueField to pull from json id
-                        me.child('boxselect').valueField = 'id';
+                        me.child('panel [name=filter_input] boxselect').valueField = 'id';
                     }
                 }
             },
