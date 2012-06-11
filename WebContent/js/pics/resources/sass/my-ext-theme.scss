@@ -230,8 +230,8 @@ $form-field-height: 25px !default;
 	padding: 0px;
 }
 
-#report_filter_expression .hide:hover span,
-#report_filter_expression .more-information:hover span
+#report_filter_expression .hide.x-btn-default-small-over span,
+#report_filter_expression .more-information.x-btn-default-small-over span
 {
 	text-decoration: underline;
 }
@@ -364,16 +364,46 @@ $form-field-height: 25px !default;
 	width: 20px;
 }
 
-#data_grid .paging-toolbar .refresh button .x-tbar-loading
+#data_grid .paging-toolbar button .x-btn-inner
 {
-	background: url(/js/pics/app/resources/images/refresh.png) 50% 50% no-repeat !important;
+	padding-top: 7px !important;
+}
+
+#data_grid .paging-toolbar .icon-large
+{
+	color: #666666;
+}
+
+#data_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large
+{
+	color: #73bbe8;
+}
+
+#data_grid .paging-toolbar .x-disabled .icon-large
+{
+	color: #cccccc;
 }
 
 #data_grid .paging-toolbar .refresh button,
+#data_grid .paging-toolbar .refresh button span
+{
+	width: 28px;
+}
+
+#data_grid .paging-toolbar .refresh .x-btn-inner
+{
+	padding-top: 7px !important;
+}
+
+#data_grid .paging-toolbar .refresh .icon-refresh
+{
+	font-size: 19px;
+}
+
+/*
 #data_grid .paging-toolbar .refresh button .x-tbar-loading
 {
-	margin-right: 10px;
-	width: 24px;
+	background: url(/js/pics/app/resources/images/refresh.png) 50% 50% no-repeat !important;
 }
 
 #data_grid .paging-toolbar .page-first button .x-tbar-page-first
@@ -415,6 +445,7 @@ $form-field-height: 25px !default;
 {
 	background: url(/js/pics/app/resources/images/page-last-disabled.png) 50% 50% no-repeat !important;
 }
+*/
 
 #data_grid .paging-toolbar .x-toolbar-separator
 {

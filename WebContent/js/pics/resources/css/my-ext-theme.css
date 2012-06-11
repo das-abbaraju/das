@@ -227,8 +227,8 @@
   padding: 0px; }
 
 /* line 235, ../sass/my-ext-theme.scss */
-#report_filter_expression .hide:hover span,
-#report_filter_expression .more-information:hover span {
+#report_filter_expression .hide.x-btn-default-small-over span,
+#report_filter_expression .more-information.x-btn-default-small-over span {
   text-decoration: underline; }
 
 /* line 241, ../sass/my-ext-theme.scss */
@@ -345,62 +345,95 @@
   width: 20px; }
 
 /* line 368, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .refresh button .x-tbar-loading {
-  background: url(/js/pics/app/resources/images/refresh.png) 50% 50% no-repeat !important; }
+#data_grid .paging-toolbar button .x-btn-inner {
+  padding-top: 7px !important; }
 
-/* line 374, ../sass/my-ext-theme.scss */
+/* line 373, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .icon-large {
+  color: #666666; }
+
+/* line 378, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large {
+  color: #73bbe8; }
+
+/* line 383, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-disabled .icon-large {
+  color: #cccccc; }
+
+/* line 389, ../sass/my-ext-theme.scss */
 #data_grid .paging-toolbar .refresh button,
-#data_grid .paging-toolbar .refresh button .x-tbar-loading {
-  margin-right: 10px;
-  width: 24px; }
+#data_grid .paging-toolbar .refresh button span {
+  width: 28px; }
 
-/* line 380, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-first button .x-tbar-page-first {
-  background: url(/js/pics/app/resources/images/page-first.png) 50% 50% no-repeat !important; }
+/* line 394, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .refresh .x-btn-inner {
+  padding-top: 7px !important; }
 
-/* line 385, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-first.x-disabled button .x-tbar-page-first {
-  background: url(/js/pics/app/resources/images/page-first-disabled.png) 50% 50% no-repeat !important; }
+/* line 399, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .refresh .icon-refresh {
+  font-size: 19px; }
 
-/* line 390, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-prev button .x-tbar-page-prev {
-  background: url(/js/pics/app/resources/images/page-prev.png) 50% 50% no-repeat !important; }
+/*
+#data_grid .paging-toolbar .refresh button .x-tbar-loading
+{
+	background: url(/js/pics/app/resources/images/refresh.png) 50% 50% no-repeat !important;
+}
 
-/* line 395, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-prev.x-disabled button .x-tbar-page-prev {
-  background: url(/js/pics/app/resources/images/page-prev-disabled.png) 50% 50% no-repeat !important; }
+#data_grid .paging-toolbar .page-first button .x-tbar-page-first
+{
+	background: url(/js/pics/app/resources/images/page-first.png) 50% 50% no-repeat !important;
+}
 
-/* line 400, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-next button .x-tbar-page-next {
-  background: url(/js/pics/app/resources/images/page-next.png) 50% 50% no-repeat !important; }
+#data_grid .paging-toolbar .page-first.x-disabled button .x-tbar-page-first
+{
+	background: url(/js/pics/app/resources/images/page-first-disabled.png) 50% 50% no-repeat !important;
+}
 
-/* line 405, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-next.x-disabled button .x-tbar-page-next {
-  background: url(/js/pics/app/resources/images/page-next-disabled.png) 50% 50% no-repeat !important; }
+#data_grid .paging-toolbar .page-prev button .x-tbar-page-prev
+{
+	background: url(/js/pics/app/resources/images/page-prev.png) 50% 50% no-repeat !important;
+}
 
-/* line 410, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-last button .x-tbar-page-last {
-  background: url(/js/pics/app/resources/images/page-last.png) 50% 50% no-repeat !important; }
+#data_grid .paging-toolbar .page-prev.x-disabled button .x-tbar-page-prev
+{
+	background: url(/js/pics/app/resources/images/page-prev-disabled.png) 50% 50% no-repeat !important;
+}
 
-/* line 415, ../sass/my-ext-theme.scss */
-#data_grid .paging-toolbar .page-last.x-disabled button .x-tbar-page-last {
-  background: url(/js/pics/app/resources/images/page-last-disabled.png) 50% 50% no-repeat !important; }
+#data_grid .paging-toolbar .page-next button .x-tbar-page-next
+{
+	background: url(/js/pics/app/resources/images/page-next.png) 50% 50% no-repeat !important;
+}
 
-/* line 420, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-next.x-disabled button .x-tbar-page-next
+{
+	background: url(/js/pics/app/resources/images/page-next-disabled.png) 50% 50% no-repeat !important;
+}
+
+#data_grid .paging-toolbar .page-last button .x-tbar-page-last
+{
+	background: url(/js/pics/app/resources/images/page-last.png) 50% 50% no-repeat !important;
+}
+
+#data_grid .paging-toolbar .page-last.x-disabled button .x-tbar-page-last
+{
+	background: url(/js/pics/app/resources/images/page-last-disabled.png) 50% 50% no-repeat !important;
+}
+*/
+/* line 451, ../sass/my-ext-theme.scss */
 #data_grid .paging-toolbar .x-toolbar-separator {
   border: 0px;
   border-left: 1px solid #cccccc; }
 
-/* line 426, ../sass/my-ext-theme.scss */
+/* line 457, ../sass/my-ext-theme.scss */
 #data_grid .paging-toolbar .x-toolbar-text {
   color: #666666;
   font-size: 14px; }
 
-/* line 432, ../sass/my-ext-theme.scss */
+/* line 463, ../sass/my-ext-theme.scss */
 #data_grid .paging-toolbar .x-form-text {
   height: 25px; }
 
-/* line 437, ../sass/my-ext-theme.scss */
+/* line 468, ../sass/my-ext-theme.scss */
 #data_grid .paging-toolbar .rows-per-page {
   margin-left: 10px; }
 

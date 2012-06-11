@@ -50,11 +50,11 @@ Ext.define('PICS.view.report.DataSetGrid', {
             return [{
                 cls: 'refresh',
                 handler: me.doRefresh,
-                iconCls: Ext.baseCSSPrefix + 'tbar-loading',
                 itemId: 'refresh',
                 overflowText: me.refreshText,
                 scale: 'large',
                 scope: me,
+                text: '<i class="icon-refresh icon-large"></i>',
                 tooltip: me.refreshText
             }, {
                 xtype: 'tbseparator',
@@ -63,21 +63,21 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 cls: 'page-first',
                 disabled: true,
                 handler: me.moveFirst,
-                iconCls: Ext.baseCSSPrefix + 'tbar-page-first',
                 itemId: 'first',
                 overflowText: me.firstText,
                 scale: 'large',
                 scope: me,
+                text: '<i class="icon-fast-backward icon-large"></i>',
                 tooltip: me.firstText
             }, {
                 cls: 'page-prev',
                 disabled: true,
                 handler: me.movePrevious,
-                iconCls: Ext.baseCSSPrefix + 'tbar-page-prev',
                 itemId: 'prev',
                 overflowText: me.prevText,
                 scale: 'large',
                 scope: me,
+                text: '<i class="icon-caret-left icon-large"></i>',
                 tooltip: me.prevText
             }, {
                 xtype: 'tbseparator',
@@ -116,21 +116,22 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 cls: 'page-next',
                 disabled: true,
                 handler: me.moveNext,
-                iconCls: Ext.baseCSSPrefix + 'tbar-page-next',
                 itemId: 'next',
                 overflowText: me.nextText,
                 scale: 'large',
                 scope: me,
+                text: '<i class="icon-caret-right icon-large"></i>',
                 tooltip: me.nextText
             }, {
                 cls: 'page-last',
                 disabled: true,
                 handler: me.moveLast,
-                iconCls: Ext.baseCSSPrefix + 'tbar-page-last',
+                //iconCls: Ext.baseCSSPrefix + 'tbar-page-last',
                 itemId: 'last',
                 overflowText: me.lastText,
                 scale: 'large',
                 scope: me,
+                text: '<i class="icon-fast-forward icon-large"></i>',
                 tooltip: me.lastText
             }, {
                 xtype: 'tbseparator',
