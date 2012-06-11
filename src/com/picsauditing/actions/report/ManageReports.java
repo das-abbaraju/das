@@ -3,12 +3,18 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.NoResultException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.DynamicReportUtil;
 
 @SuppressWarnings("serial")
@@ -22,14 +28,30 @@ public class ManageReports extends PicsActionSupport {
 	private String viewType;
 	private int reportId;
 
+	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
+
 	public String execute() throws Exception {
 		loadPermissions();
 		runQueryForCurrentView();
+
+		try {
+			Map<String, Object> session = ActionContext.getContext().getSession();
+			String errorMessage = (String) session.get("errorMessage");
+			if (!Strings.isEmpty(errorMessage)) {
+				addActionError(errorMessage);
+				session.put("errorMessage", "");
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 
 		return SUCCESS;
 	}
 
 	private void runQueryForCurrentView() {
+		if (Strings.isEmpty(viewType))
+			viewType = SAVED;
+
 		String filterQuery = "userID = " + permissions.getUserId();
 
 		if (FAVORITE.equals(viewType)) {

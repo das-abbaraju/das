@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -66,6 +67,26 @@ public class ReportDynamic extends PicsActionSupport {
 	ReportController reportController;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
+
+	public String execute() {
+		if (report == null) {
+			try {
+				// No matter what junk we get in the url, redirect
+				redirect("ManageReports.action?viewType=saved");
+
+				String reportId = ServletActionContext.getRequest().getParameter("report");
+
+				if (!DynamicReportUtil.canUserViewAndCopy(permissions.getUserId(), Integer.parseInt(reportId))) {
+					String errorMessage = "You do not have permissions to view that report.";
+					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		}
+
+		return SUCCESS;
+	}
 
 	@Deprecated
 	public String find() {
