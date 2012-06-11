@@ -4,38 +4,7 @@ Ext.define('PICS.view.report.FilterOptions', {
 
     autoScroll: true,
     collapsible: true,
-    dockedItems: [/*{
-        xtype: 'form',
-        defaults: {
-            border: 0
-        },
-        dock: 'bottom',
-        items: [{
-            xtype: 'button',
-            cls: 'tooltipIcon',
-            icon: 'js/pics/resources/images/tools/question_mark.png',
-            iconAlign: 'right',
-            margin: '0 0 5 0',
-            padding: '0 10',
-            scale: 'small',
-            text: 'Advanced',
-            tooltip: 'Advanced Filter Search'
-        }, {
-            xtype: 'form',
-            items: [{
-                xtype: 'textfield',
-                margin: '0 5 0 0',
-                name: 'filterexpression',
-                size: 30
-            }, {
-                xtype: 'button',
-                action: 'update',
-                text: 'Update'
-            }],
-            layout: 'hbox',
-            padding: '0 10 10 10'
-        }]
-    },*/ {
+    dockedItems: [{
         xtype: 'toolbar',
         dock: 'top',
         height: 50,
@@ -53,7 +22,7 @@ Ext.define('PICS.view.report.FilterOptions', {
                 }]
             }),
             text: '<i class="icon-plus icon-large"></i>Add Filter',
-            width: 100
+            width: 90
         }, {
             xtype: 'tbfill'
         }, {
@@ -62,6 +31,52 @@ Ext.define('PICS.view.report.FilterOptions', {
             cls: 'search',
             height: 26,
             text: 'Update Results'
+        }]
+    }, {
+        xtype: 'form',
+        border: 0,
+        id: 'report_filter_expression',
+        dock: 'top',
+        height: 80,
+        items: [{
+            xtype: 'form',
+            border: 0,
+            items: [{
+                xtype: 'textfield',
+                name: 'filterexpression',
+                width: 220
+            }, {
+                xtype: 'tbfill'
+            }, {
+                xtype: 'button',
+                action: 'update',
+                cls: 'update',
+                height: 26,
+                text: 'Apply',
+                tooltip: 'Apply Filter Expression',
+                width: 50
+            }],
+            layout: 'hbox',
+            width: 280
+        }, {
+            xtype: 'form',
+            border: 0,
+            cls: 'actions',
+            items: [{
+                xtype: 'button',
+                action: 'hide',
+                cls: 'hide',
+                text: 'Cancel'
+            }, {
+                xtype: 'tbfill'
+            }, {
+                xtype: 'button',
+                action: 'more-information',
+                cls: 'more-information',
+                text: 'More Information'
+            }],
+            layout: 'hbox',
+            width: 220
         }]
     }],
     floatable: false,

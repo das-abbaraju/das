@@ -18,14 +18,15 @@ Ext.define('PICS.view.report.DataSetGrid', {
         xtype: 'pagingtoolbar',
         store: 'report.DataSets',
 
+        cls: 'paging-toolbar',
         displayInfo: true,
         dock: 'top',
+        height: 50,
         items: [{
-          xtype: 'tbseparator'
-        }, {
             xtype: 'combo',
+            cls: 'rows-per-page',
             editable: false,
-            name: 'visibleRows',
+            name: 'rows_per_page',
             store: [
                 ['10', '10'],
                 ['25', '25'],
@@ -42,8 +43,101 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 this.setValue(50);
             }
         }],
-        padding: '0 20 0 0'
+
+        getPagingItems: function() {
+            var me = this;
+
+            return [{
+                cls: 'refresh',
+                handler: me.doRefresh,
+                iconCls: Ext.baseCSSPrefix + 'tbar-loading',
+                itemId: 'refresh',
+                overflowText: me.refreshText,
+                scale: 'large',
+                scope: me,
+                tooltip: me.refreshText
+            }, {
+                xtype: 'tbseparator',
+                height: 28
+            }, {
+                cls: 'page-first',
+                disabled: true,
+                handler: me.moveFirst,
+                iconCls: Ext.baseCSSPrefix + 'tbar-page-first',
+                itemId: 'first',
+                overflowText: me.firstText,
+                scale: 'large',
+                scope: me,
+                tooltip: me.firstText
+            }, {
+                cls: 'page-prev',
+                disabled: true,
+                handler: me.movePrevious,
+                iconCls: Ext.baseCSSPrefix + 'tbar-page-prev',
+                itemId: 'prev',
+                overflowText: me.prevText,
+                scale: 'large',
+                scope: me,
+                tooltip: me.prevText
+            }, {
+                xtype: 'tbseparator',
+                height: 28
+            },
+            me.beforePageText,
+            {
+                xtype: 'numberfield',
+                allowDecimals: false,
+                cls: Ext.baseCSSPrefix + 'tbar-page-number',
+                enableKeyEvents: true,
+                hideTrigger: true,
+                // mark it as not a field so the form will not catch it when getting fields
+                isFormField: false,
+                itemId: 'inputItem',
+                keyNavEnabled: false,
+                listeners: {
+                    scope: me,
+                    keydown: me.onPagingKeyDown,
+                    blur: me.onPagingBlur
+                },
+                margins: '-1 2 3 2',
+                minValue: 1,
+                name: 'inputItem',
+                selectOnFocus: true,
+                submitValue: false,
+                width: me.inputItemWidth
+            }, {
+                xtype: 'tbtext',
+                itemId: 'afterTextItem',
+                text: Ext.String.format(me.afterPageText, 1)
+            }, {
+                xtype: 'tbseparator',
+                height: 28
+            }, {
+                cls: 'page-next',
+                disabled: true,
+                handler: me.moveNext,
+                iconCls: Ext.baseCSSPrefix + 'tbar-page-next',
+                itemId: 'next',
+                overflowText: me.nextText,
+                scale: 'large',
+                scope: me,
+                tooltip: me.nextText
+            }, {
+                cls: 'page-last',
+                disabled: true,
+                handler: me.moveLast,
+                iconCls: Ext.baseCSSPrefix + 'tbar-page-last',
+                itemId: 'last',
+                overflowText: me.lastText,
+                scale: 'large',
+                scope: me,
+                tooltip: me.lastText
+            }, {
+                xtype: 'tbseparator',
+                height: 28
+            }];
+        },
     }],
-    id: 'dataGrid',
-    margin: '0 0 0 10'
+    id: 'data_grid',
+    margin: '0 20 20 20'
 });

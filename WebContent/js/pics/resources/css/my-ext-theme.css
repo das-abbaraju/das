@@ -141,7 +141,7 @@
   -moz-box-shadow: none;
   box-shadow: none;
   height: 50px;
-  padding: 10px 0px 10px 10px; }
+  padding: 10px 0px 10px 20px; }
 
 /* line 153, ../sass/my-ext-theme.scss */
 #report_filter_options_header span {
@@ -198,26 +198,67 @@
   line-height: 20px !important; }
 
 /* line 205, ../sass/my-ext-theme.scss */
+#report_filter_expression {
+  padding: 20px 20px 10px; }
+
+/* line 210, ../sass/my-ext-theme.scss */
+#report_filter_expression .actions {
+  margin-top: 5px; }
+
+/* line 215, ../sass/my-ext-theme.scss */
+#report_filter_expression .update {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
+  background-image: -webkit-linear-gradient(#73bbe8, #226396);
+  background-image: -moz-linear-gradient(#73bbe8, #226396);
+  background-image: -o-linear-gradient(#73bbe8, #226396);
+  background-image: -ms-linear-gradient(#73bbe8, #226396);
+  background-image: linear-gradient(#73bbe8, #226396);
+  border: 1px solid #226396; }
+
+/* line 221, ../sass/my-ext-theme.scss */
+#report_filter_expression .update span {
+  color: #ffffff; }
+
+/* line 227, ../sass/my-ext-theme.scss */
+#report_filter_expression .hide,
+#report_filter_expression .more-information {
+  background: transparent;
+  border: 0px;
+  padding: 0px; }
+
+/* line 235, ../sass/my-ext-theme.scss */
+#report_filter_expression .hide:hover span,
+#report_filter_expression .more-information:hover span {
+  text-decoration: underline; }
+
+/* line 241, ../sass/my-ext-theme.scss */
+#report_filter_expression .hide span,
+#report_filter_expression .more-information span {
+  color: #ffffff;
+  font-size: 11px;
+  padding: 0px; }
+
+/* line 248, ../sass/my-ext-theme.scss */
 #report_filters {
   border-bottom: 1px solid #999999; }
 
-/* line 213, ../sass/my-ext-theme.scss */
+/* line 256, ../sass/my-ext-theme.scss */
 #report_filters-body,
 #report_filters .filter-container-body,
 #report_filters .filter-body,
 #report_filters .x-box-inner {
   width: 100% !important; }
 
-/* line 218, ../sass/my-ext-theme.scss */
+/* line 261, ../sass/my-ext-theme.scss */
 #report_filters .x-box-inner div:first-child {
   width: auto !important; }
 
-/* line 223, ../sass/my-ext-theme.scss */
+/* line 266, ../sass/my-ext-theme.scss */
 #report_filters .filter {
   background: #f1f1f1;
   border-top: 1px solid #999999; }
 
-/* line 229, ../sass/my-ext-theme.scss */
+/* line 272, ../sass/my-ext-theme.scss */
 #report_filters .filter-number label {
   color: #999999;
   font-size: 18px;
@@ -225,21 +266,143 @@
   margin: 0px !important;
   text-align: center; }
 
-/* line 238, ../sass/my-ext-theme.scss */
+/* line 281, ../sass/my-ext-theme.scss */
 #report_filters .filter-name div {
   color: #333333;
   font-size: 14px;
   font-weight: bold; }
 
-/* line 245, ../sass/my-ext-theme.scss */
+/* line 288, ../sass/my-ext-theme.scss */
 #report_filters .remove-filter {
   background: transparent;
   border: 0px;
   padding: 0px; }
 
-/* line 252, ../sass/my-ext-theme.scss */
+/* line 295, ../sass/my-ext-theme.scss */
 #report_filters .remove-filter span {
   padding: 0px; }
+
+/* line 300, ../sass/my-ext-theme.scss */
+#report_toolbar {
+  background: #73bbe8;
+  border: 1px solid #808285 !important;
+  padding: 10px 20px; }
+
+/* line 307, ../sass/my-ext-theme.scss */
+#report_toolbar .header {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold; }
+
+/* line 314, ../sass/my-ext-theme.scss */
+#report_toolbar .add-column {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -ms-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: linear-gradient(#f1f1f1, #dcdcdc);
+  border: 1px solid #bcbcbc;
+  margin-left: 10px; }
+
+/* line 321, ../sass/my-ext-theme.scss */
+#report_toolbar .add-column em {
+  background-image: url("../images/button/s-arrow.gif"); }
+
+/* line 326, ../sass/my-ext-theme.scss */
+#report_toolbar .add-column button span {
+  color: #333333;
+  font-size: 11px;
+  line-height: 20px !important; }
+
+/* line 333, ../sass/my-ext-theme.scss */
+#report_toolbar .add-column .icon-plus {
+  color: #2caf2c;
+  margin-right: 5px; }
+
+/* line 339, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar {
+  background: #f1f1f1;
+  border: 1px solid #cccccc !important;
+  padding: 0px 20px; }
+
+/* line 346, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-btn-default-toolbar-large-over {
+  background: transparent;
+  border: 0px; }
+
+/* line 352, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-btn {
+  border: 0px; }
+
+/* line 357, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-btn-disabled span {
+  opacity: 1; }
+
+/* line 363, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar button,
+#data_grid .paging-toolbar button span {
+  width: 20px; }
+
+/* line 368, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .refresh button .x-tbar-loading {
+  background: url(/js/pics/app/resources/images/refresh.png) 50% 50% no-repeat !important; }
+
+/* line 374, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .refresh button,
+#data_grid .paging-toolbar .refresh button .x-tbar-loading {
+  margin-right: 10px;
+  width: 24px; }
+
+/* line 380, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-first button .x-tbar-page-first {
+  background: url(/js/pics/app/resources/images/page-first.png) 50% 50% no-repeat !important; }
+
+/* line 385, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-first.x-disabled button .x-tbar-page-first {
+  background: url(/js/pics/app/resources/images/page-first-disabled.png) 50% 50% no-repeat !important; }
+
+/* line 390, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-prev button .x-tbar-page-prev {
+  background: url(/js/pics/app/resources/images/page-prev.png) 50% 50% no-repeat !important; }
+
+/* line 395, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-prev.x-disabled button .x-tbar-page-prev {
+  background: url(/js/pics/app/resources/images/page-prev-disabled.png) 50% 50% no-repeat !important; }
+
+/* line 400, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-next button .x-tbar-page-next {
+  background: url(/js/pics/app/resources/images/page-next.png) 50% 50% no-repeat !important; }
+
+/* line 405, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-next.x-disabled button .x-tbar-page-next {
+  background: url(/js/pics/app/resources/images/page-next-disabled.png) 50% 50% no-repeat !important; }
+
+/* line 410, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-last button .x-tbar-page-last {
+  background: url(/js/pics/app/resources/images/page-last.png) 50% 50% no-repeat !important; }
+
+/* line 415, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .page-last.x-disabled button .x-tbar-page-last {
+  background: url(/js/pics/app/resources/images/page-last-disabled.png) 50% 50% no-repeat !important; }
+
+/* line 420, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-toolbar-separator {
+  border: 0px;
+  border-left: 1px solid #cccccc; }
+
+/* line 426, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-toolbar-text {
+  color: #666666;
+  font-size: 14px; }
+
+/* line 432, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .x-form-text {
+  height: 25px; }
+
+/* line 437, ../sass/my-ext-theme.scss */
+#data_grid .paging-toolbar .rows-per-page {
+  margin-left: 10px; }
 
 /**
  * @var {string} $prefix 

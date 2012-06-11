@@ -21,7 +21,9 @@ Ext.define('PICS.controller.report.FilterController', {
         this.control({
             'filteroptions button[action=add-filter]': {
                 click: function () {
-                    PICS.app.fireEvent('showcolumnselector', {columnSelectorType: 'filter'});
+                    PICS.app.fireEvent('showcolumnselector', {
+                        columnSelectorType: 'filter'
+                    });
                 }
             },
             'filteroptions button[action=search]': {

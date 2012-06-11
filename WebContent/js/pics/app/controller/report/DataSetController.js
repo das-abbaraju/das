@@ -6,7 +6,7 @@ Ext.define('PICS.controller.report.DataSetController', {
         selector: 'reportdatasetgrid pagingtoolbar'
     }, {
         ref: 'rowsPerPage',
-        selector: 'pagingtoolbar combo[name=visibleRows]'
+        selector: 'pagingtoolbar combo[name=rows_per_page]'
     }],
 
     stores: [
@@ -51,7 +51,7 @@ Ext.define('PICS.controller.report.DataSetController', {
                     PICS.app.fireEvent('refreshreport');
                 }
             },
-            'reportdatasetgrid pagingtoolbar combo[name=visibleRows]': {
+            'reportdatasetgrid pagingtoolbar combo[name=rows_per_page]': {
                 select: function (combo, records, options) {
                     this.getReportDataSetsStore().updateReportPaging(records[0].get('field1'));
                 }

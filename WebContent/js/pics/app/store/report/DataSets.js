@@ -32,8 +32,8 @@ Ext.define('PICS.store.report.DataSets', {
                 }
             }
         });
-    },    
-    
+    },
+
     /**
      * Configure Proxy Url
      *
@@ -49,15 +49,15 @@ Ext.define('PICS.store.report.DataSets', {
 
         this.proxy.url = url + Ext.Object.toQueryString(parameters);
     },
-    
+
     initReportPaging: function () {
         var report = Ext.StoreManager.get('report.Reports').first(),
-            paging_combo = Ext.ComponentQuery.query('pagingtoolbar combo[name=visibleRows]')[0];
+            paging_combo = Ext.ComponentQuery.query('pagingtoolbar combo[name=rows_per_page]')[0];
 
         paging_combo.setValue(this.pageSize);
-        
+
         report.set('rowsPerPage', this.pageSize);
-    },    
+    },
 
     /**
      * Reload Report Data Set
@@ -147,7 +147,7 @@ Ext.define('PICS.store.report.DataSets', {
         this.pageSize = value;
 
         this.configureProxyUrl();
-        
+
         paging_toolbar.moveFirst();
     }
 });

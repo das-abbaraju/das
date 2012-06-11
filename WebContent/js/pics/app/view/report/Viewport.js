@@ -34,10 +34,5 @@ Ext.define('PICS.view.report.Viewport', {
             xtype: 'reportdatasetgrid'
         }],
         layout: 'border'
-    }, {
-        region: 'south',
-        xtype: 'layoutfooter',
-
-        id: 'footer'
     }]
 });
