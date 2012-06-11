@@ -1,28 +1,81 @@
 package com.picsauditing.report;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
 
-@SuppressWarnings("unchecked")
 public class DefinitionTest {
-	private Definition definition = new Definition();
+	
+	Definition definition = new Definition();
+	
+	@Spy 
+	Definition spiedDefinition = new Definition();
+	
+	@Spy 
+	Column column = new Column();
+	@Spy 
+	Filter filter = new Filter();
+	@Spy 
+	Sort sort= new Sort();		
+	
 	private JSONObject jsonObj = new JSONObject();
 
-	@Test
-	public void testEmpty() {
-		definition.fromJSON(jsonObj);
-
-		String expected = "{\"rowsPerPage\":10}";
-		assertEquals(expected, definition.toJSON(true).toJSONString());
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
 	}
-
+	
 	@Test
-	public void testColumns() {
+	public void testMerge_NullDefinition() {
+		assertNull(definition.merge(null));
+	}
+	
+	@Test
+	public void testMerge_NonNullDefinitionWithFilterExpression() {
+		commonMergeTestSetup();
+		
+		definition.merge(spiedDefinition);
+		
+		commonMergeTestVerification();
+		assertNull(definition.getFilterExpression());
+	}
+	
+	@Test
+	public void testMerge_NonNullDefinitionWithFilterExpressionAndExistingDefinitionHasNonNullExpression() {
+		commonMergeTestSetup();		
+		when(spiedDefinition.getFilterExpression()).thenReturn("Expression");
+		
+		definition.setFilterExpression("Another Expression");
+		definition.merge(spiedDefinition);
+		
+		commonMergeTestVerification();
+		assertEquals("Another Expression AND Expression", definition.getFilterExpression());
+	}
+	
+	@Test
+	public void testMerge_NonNullDefinitionWithOutFilterExpression() {
+		commonMergeTestSetup();		
+		when(spiedDefinition.getFilterExpression()).thenReturn("Expression");
+		
+		definition.merge(spiedDefinition);
+		
+		commonMergeTestVerification();
+		assertEquals("Expression", definition.getFilterExpression());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testColumnParsing() {
 		JSONArray list = new JSONArray();
 		list.add(new Column("AccountID").toJSON(true));
 		list.add(new Column("AccountName").toJSON(true));
@@ -35,8 +88,9 @@ public class DefinitionTest {
 		assertEquals(expected, definition.toJSON(true).toJSONString());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testFilters() {
+	public void testFilterParsing() {
 		JSONArray list = new JSONArray();
 		jsonObj.put("filters", list);
 
@@ -55,8 +109,9 @@ public class DefinitionTest {
 		assertEquals(expected, definition.toJSON(true).toJSONString());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testSort() {
+	public void testSortParsing() {
 		JSONArray list = new JSONArray();
 		JSONObject sortJson = new Sort("AccountID").toJSON(true);
 		list.add(sortJson);
@@ -69,5 +124,21 @@ public class DefinitionTest {
 
 		String expected = "{\"sorts\":[" + notTestingNow + "]}";
 		assertEquals(expected, definition.toJSON(true).toJSONString());
+	}
+	
+	private void commonMergeTestSetup() {
+		when(column.getFieldName()).thenReturn("Column");
+		when(filter.getValueNames()).thenReturn("Filter Names");
+		when(sort.getFieldName()).thenReturn("Sort FieldName");
+		
+		spiedDefinition.setColumns(Arrays.asList(column));
+		spiedDefinition.setFilters(Arrays.asList(filter));
+		spiedDefinition.setSorts(Arrays.asList(sort));
+	}
+	
+	private void commonMergeTestVerification() {
+		assertEquals("Column", definition.getColumns().get(0).getFieldName());
+		assertEquals("Filter Names", definition.getFilters().get(0).getValueNames());
+		assertEquals("Sort FieldName", definition.getSorts().get(0).getFieldName());
 	}
 }
