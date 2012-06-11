@@ -51,10 +51,7 @@ Ext.define('PICS.store.report.DataSets', {
     },
 
     initReportPaging: function () {
-        var report = Ext.StoreManager.get('report.Reports').first(),
-            paging_combo = Ext.ComponentQuery.query('pagingtoolbar combo[name=rows_per_page]')[0];
-
-        paging_combo.setValue(this.pageSize);
+        var report = Ext.StoreManager.get('report.Reports').first();
 
         report.set('rowsPerPage', this.pageSize);
     },

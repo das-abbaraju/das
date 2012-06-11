@@ -37,11 +37,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 ['250', '250'],
             ],
             width: 50,
-
-            // stupid, but there is no such thing as setting a default value - let alone for a local store
-            beforeRender: function () {
-                this.setValue(50);
-            }
+            value: 50
         }],
 
         getPagingItems: function() {
