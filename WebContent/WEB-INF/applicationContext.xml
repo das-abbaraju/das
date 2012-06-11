@@ -10,6 +10,8 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
+	<import resource="rabbit-config.xml"/>
+
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	<bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
 	

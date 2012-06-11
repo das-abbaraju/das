@@ -51,6 +51,7 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagAlert;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
@@ -70,6 +71,7 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -99,6 +101,8 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private ExceptionService exceptionService;
+	@Autowired
+	private Publisher flagAlertPublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
@@ -460,6 +464,8 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		} else if (!overallColor.equals(co.getFlagColor())) {
+			publishFlagAlert(co, overallColor);
+
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);
@@ -491,6 +497,22 @@ public class ContractorCron extends PicsActionSupport {
 			dao.remove(flagData);
 		}
 		co.setAuditColumns(new User(User.SYSTEM));
+	}
+
+	private void publishFlagAlert(ContractorOperator co, FlagColor overallColor) {
+		FlagAlert flagAlert = createFlagAlert(co, overallColor);
+		JSONObject flagAlertJSON = flagAlert.toJSON();
+		flagAlertPublisher.publish(flagAlertJSON.toJSONString());
+	}
+
+	private FlagAlert createFlagAlert(ContractorOperator co, FlagColor overallColor) {
+		FlagAlert flagAlert = new FlagAlert();
+		flagAlert.setContractor(co.getContractorAccount());
+		flagAlert.setOperator(co.getOperatorAccount());
+		flagAlert.setFromColor(co.getFlagColor());
+		flagAlert.setToColor(overallColor);
+		flagAlert.setTimestamp(new Date());
+		return flagAlert;
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {

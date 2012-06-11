@@ -1,0 +1,23 @@
+<beans:beans xmlns="http://www.springframework.org/schema/rabbit"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd">
+ 
+	<connection-factory id="connectionFactory" host="localhost" port="5672" username="guest" password="guest"/>
+	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
+	
+	<queue id="flag-alerts" name="flag-alerts" />
+	
+	<direct-exchange name="flag-alerts-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	  <bindings>
+	    <binding queue="flag-alerts"/>
+	  </bindings>
+	</direct-exchange>	
+	
+	<template id="flagAlertTemplate" connection-factory="connectionFactory" exchange="flag-alerts-exchange" queue="flag-alerts"/>
+	<beans:bean id="flagAlertPublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
+		<beans:property name="amqpTemplate" ref="flagAlertTemplate" />
+	</beans:bean>
+</beans:beans>
