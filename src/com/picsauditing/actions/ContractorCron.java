@@ -512,6 +512,7 @@ public class ContractorCron extends PicsActionSupport {
 		flagAlert.setFromColor(co.getFlagColor());
 		flagAlert.setToColor(overallColor);
 		flagAlert.setTimestamp(new Date());
+		flagAlert.setDetails(co.getFlagDetail());
 		return flagAlert;
 	}
 

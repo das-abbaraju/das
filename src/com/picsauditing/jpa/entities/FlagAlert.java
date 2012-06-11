@@ -10,6 +10,7 @@ public class FlagAlert implements JSONable {
 	private FlagColor fromColor;
 	private FlagColor toColor;
 	private Date timestamp;
+	private String details;
 	
 	public ContractorAccount getContractor() {
 		return contractor;
@@ -42,6 +43,13 @@ public class FlagAlert implements JSONable {
 		this.timestamp = timestamp;
 	}
 	
+	public void setDetails(String details) {
+		this.details = details;
+	}
+	public String getDetails() {
+		return details;
+	}
+	
 	@Override
 	public void fromJSON(JSONObject o) {
 		
@@ -56,6 +64,7 @@ public class FlagAlert implements JSONable {
 		json.put("fromColor", fromColor.toString());
 		json.put("toColor", toColor.toString());
 		json.put("timestamp", timestamp.toString());
+		json.put("details", details);
 		
 		return json;
 	}
