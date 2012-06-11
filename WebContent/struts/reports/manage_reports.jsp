@@ -94,12 +94,12 @@
 			<s:if test="user != null">
 				<ul class="manage-users-actions">
 					<li>
-						<a class="btn" href="ManageReports.action?filterType=favorite">
+						<a class="btn" href="ManageReports.action?viewType=favorite">
 							Favorites
 						</a>
 					</li>
 					<li>
-						<a class="btn" href="ManageReports.action?filterType=saved">
+						<a class="btn" href="ManageReports.action?viewType=saved">
 							Saved
 						</a>
 					</li>
@@ -107,77 +107,82 @@
 			</s:if>
 		</fieldset>
 	</div>
+
 	<div id="reportTable">
 		<table>
 			<tr>
 				<th></th>
-				<Th>Report</Th>				
+				<th>Report</th>
 				<th></th>
 				<th></th>
 				<th></th>
 				<th></th>
 			</tr>
-		    <s:iterator value="reportsByUser">
+
+		    <s:iterator value="userReports">
 			    <tr>
 			    	<td>
-			    		<s:if test="favorite">
-			    			<a href="ManageReports!changeFavorite.action?reportId=<s:property value="report.id" />&favorite=false">Favorite</a>&nbsp;
-			    		</s:if>
-			    		<s:else>
-			    			<a href="ManageReports!changeFavorite.action?reportId=<s:property value="report.id" />&favorite=true">Normal</a>&nbsp;
-			    		</s:else>
+		    			<a href="ManageReports!toggleFavorite.action?reportId=<s:property value="report.id" />">
+				    		<s:if test="favorite">
+				    			Favorite
+				    		</s:if>
+				    		<s:else>
+				    			Normal
+				    		</s:else>
+			    		</a>&nbsp;
 		    		</td>
+
 			    	<td>
-			    		<a href="ReportDynamic.action?report=<s:property value="report" />"><s:property value="report.name" /></a> 
-			    		created by <s:property value="user.name" />
+			    		<a href="ReportDynamic.action?report=<s:property value="report" />"><s:property value="report.name" /></a>
+			    		Created by <s:property value="user.name" />
 		    		</td>
-					
-					<td>
-						<a href="javascript:" name="modal">Edit</a>&nbsp;
-						<div id="boxes">
-						    <!-- #customize your modal window here -->
-						    <div class="ReportDialog window">
-						        <s:form cssClass="form" id="userSaveReportName">
-						    		<s:hidden name="report.id" />
-									<fieldset>
-									Change Name
-										<li>
-											<s:textfield name="name" value="%{report.name}" />
-											<pics:fieldhelp title="Change Name">
-												<p> Change Name </p>
-											</pics:fieldhelp>
-										</li>
-										Change Description
-										<li>
-											<s:textfield name="description" value="%{report.description}" />
-											<pics:fieldhelp title="Change Description">
-												<p> Change Description </p>
-											</pics:fieldhelp>
-										</li>
-									</fieldset>
-									<fieldset class="form submit">
-										<li>
-										<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="changeReportName" />
-										<a href="#" class="close">Cancel</a>
-										</li>
-									</fieldset>
-								</s:form>
-						    </div>
-						    <!-- Do not remove div#mask, because you'll need it to fill the whole screen --> 
-						    <div id="mask"></div>
-						</div>
-					</td>
-					<td>
-						<a href="ManageReports!createReport.action?reportId=<s:property value="report.id" />">Copy</a>&nbsp;
-					</td>
+
+<!-- 					<td> -->
+<!-- 						<a href="javascript:" name="modal">Edit</a>&nbsp; -->
+<!-- 						<div id="boxes"> -->
+<!-- 						    #customize your modal window here -->
+<!-- 						    <div class="ReportDialog window"> -->
+<%-- 						        <s:form cssClass="form" id="userSaveReportName"> --%>
+<%-- 						    		<s:hidden name="report.id" /> --%>
+<!-- 									<fieldset> -->
+<!-- 									Change Name -->
+<!-- 										<li> -->
+<%-- 											<s:textfield name="name" value="%{report.name}" /> --%>
+<%-- 											<pics:fieldhelp title="Change Name"> --%>
+<!-- 												<p> Change Name </p> -->
+<%-- 											</pics:fieldhelp> --%>
+<!-- 										</li> -->
+<!-- 										Change Description -->
+<!-- 										<li> -->
+<%-- 											<s:textfield name="description" value="%{report.description}" /> --%>
+<%-- 											<pics:fieldhelp title="Change Description"> --%>
+<!-- 												<p> Change Description </p> -->
+<%-- 											</pics:fieldhelp> --%>
+<!-- 										</li> -->
+<!-- 									</fieldset> -->
+<!-- 									<fieldset class="form submit"> -->
+<!-- 										<li> -->
+<%-- 										<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="changeReportName" /> --%>
+<!-- 										<a href="#" class="close">Cancel</a> -->
+<!-- 										</li> -->
+<!-- 									</fieldset> -->
+<%-- 								</s:form> --%>
+<!-- 						    </div> -->
+<!-- 						    Do not remove div#mask, because you'll need it to fill the whole screen -->
+<!-- 						    <div id="mask"></div> -->
+<!-- 						</div> -->
+<!-- 					</td> -->
+<!-- 					<td> -->
+<%-- 						<a href="ManageReports!copyReport.action?reportId=<s:property value="report.id" />">Copy</a>&nbsp; --%>
+<!-- 					</td> -->
 					<td>
 						<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@canUserDelete(permissions.userId, report)}">
-							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">
+							<a href="ManageReports!deleteReport.action?reportId=<s:property value="report.id" />">
 								Delete
 							</a>
 						</s:if>
 						<s:else>
-							<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">
+							<a href="ManageReports!removeReportUserAssociation.action?reportId=<s:property value="report.id" />">
 								Remove
 							</a>
 						</s:else>

@@ -27,8 +27,6 @@ import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
 
-//	private BaseModel baseModel;
-//	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	// TODO remove definition, get from Report passed in instead
 	private Definition definition = new Definition();
 	private SelectSQL sql;
@@ -62,8 +60,6 @@ public class SqlBuilder {
 
 		setFrom(baseModel);
 
-//		availableFields.clear();
-//		addAvailableFields(baseModel.getPrimaryTable());
 		Map<String, Field> availableFields = ReportController.buildAvailableFields(baseModel.getPrimaryTable());
 
 		addFieldsAndGroupBy(availableFields);
@@ -93,14 +89,6 @@ public class SqlBuilder {
 
 		sql.setFromTable(from);
 	}
-
-//	private void addAvailableFields(BaseTable table) {
-//		// We may be able to use the ModelBase.getAvailableFields...
-//		availableFields.putAll(table.getAvailableFields());
-//		for (BaseTable joinTable : table.getJoins()) {
-//			addAvailableFields(joinTable);
-//		}
-//	}
 
 	private void addJoins(BaseTable table) {
 		for (BaseTable joinTable : table.getJoins()) {
@@ -180,10 +168,6 @@ public class SqlBuilder {
 		return false;
 	}
 
-//	private Field getFieldFromFieldName(String fieldName) {
-//		return availableFields.get(fieldName.toUpperCase());
-//	}
-
 	private boolean isAggregate(String columnName) {
 		if (columnName == null)
 			return false;
@@ -200,7 +184,7 @@ public class SqlBuilder {
 
 	private String columnToSql(Column column, Map<String, Field> availableFields) {
 		Field field = availableFields.get(column.getFieldName().toUpperCase());
-//		Field field = getFieldFromFieldName(column.getFieldName());
+
 		String fieldSql = field.getDatabaseColumnName();
 		if (column.getFunction() == null)
 			return fieldSql;
@@ -332,7 +316,6 @@ public class SqlBuilder {
 		String value = filter.getValue();
 
 		// date filter
-//		ExtFieldType fieldType = getFieldFromFieldName(column.getFieldName()).getType();
 		Field field = availableFields.get(column.getFieldName().toUpperCase());
 		ExtFieldType fieldType = field.getType();
 		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
@@ -404,19 +387,6 @@ public class SqlBuilder {
 		}
 	}
 
-//	public void addPermissions(Permissions permissions) {
-//		String where = this.baseModel.getWhereClause(permissions);
-//		sql.addWhere(where);
-//	}
-
-//	public void setPaging(int page, int rowsPerPage) {
-//		if (page > 1)
-//			sql.setStartRow((page - 1) * rowsPerPage);
-//
-//		sql.setLimit(rowsPerPage);
-//		sql.setSQL_CALC_FOUND_ROWS(true);
-//	}
-
 	private Column getColumnFromFieldName(String fieldName) {
 		for (Column column : definition.getColumns()) {
 			if (column.getFieldName().equals(fieldName))
@@ -428,14 +398,6 @@ public class SqlBuilder {
 
 	// Setters
 
-//	public void setBaseModelFromReport(Report report) {
-//		this.baseModel = ModelFactory.getBase(report.getModelType());
-//	}
-//
-//	public void setBase(BaseModel base) {
-//		this.baseModel = base;
-//	}
-
 	@Deprecated
 	public Definition getDefinition() {
 		return definition;
@@ -445,8 +407,4 @@ public class SqlBuilder {
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}
-
-//	public Map<String, Field> getAvailableFields() {
-//		return availableFields;
-//	}
 }

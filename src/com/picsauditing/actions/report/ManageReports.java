@@ -3,6 +3,8 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
@@ -11,129 +13,140 @@ import com.picsauditing.util.business.DynamicReportUtil;
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
-	private static final String DELETE_REPORT = "delete";
-	private static final String REMOVE_ASSOCIATION = "remove";
 	private static final String SAVED = "saved";
 	private static final String FAVORITE = "favorite";
 
-	private ReportUser reportUser;
-	private Report report;
-	private List<ReportUser> reportsByUser = new ArrayList<ReportUser>();
+	private List<ReportUser> userReports = new ArrayList<ReportUser>();
 
-	private String filterType;
+	private String viewType;
 	private int reportId;
-	private boolean favorite;
-	private String deleteType;
 
 	public String execute() throws Exception {
 		loadPermissions();
-		getCustomReport(filterType);
+		runQueryForCurrentView();
 
 		return SUCCESS;
 	}
 
-	private void getCustomReport(String filterType) {
+	private void runQueryForCurrentView() {
 		String filterQuery = "userID = " + permissions.getUserId();
 
-		if (FAVORITE.equals(filterType)) {
+		if (FAVORITE.equals(viewType)) {
 			filterQuery += " AND is_favorite = 1";
-		} else if (SAVED.equals(filterType)) {
+		} else if (SAVED.equals(viewType)) {
 		}
 
-		setReportsByUser(dao.findWhere(ReportUser.class, filterQuery));
+		setUserReports(dao.findWhere(ReportUser.class, filterQuery));
 	}
 
-	public String deleteReport() throws Exception {
-		if (DELETE_REPORT.equalsIgnoreCase(deleteType)) {
-			String query = "t.id = " + reportId;
+	public String removeReportUserAssociation() throws Exception {
+		String query = "t.report.id = " + reportId + " AND t.user.id = " + permissions.getUserId();
+
+		try {
+			ReportUser reportUser = dao.findOne(ReportUser.class, query);
+
+			dao.remove(reportUser);
+		} catch (NoResultException nre) {
+			addActionMessage("The report you're trying to remove no longer exists.");
+		} catch (Exception e) {
+			// An empty catch block is bad, but displaying an exception to the user is worse
+		}
+
+		runQueryForCurrentView();
+
+		return SUCCESS;
+	}
+
+	public String deleteReport()  {
+		String query = "t.id = " + reportId;
+
+		try {
 			Report report = dao.findOne(Report.class, query);
 
-			if (DynamicReportUtil.canUserDelete(permissions.getUserId(), report)) {
-				dao.remove(report);
-
-				// Deleting the report from the report table cascades to the report_user table,
-				// so we don't have to manually delete the entry from the report_user table.
-
-				getCustomReport(filterType);
-				return SUCCESS;
-			} else {
+			if (!DynamicReportUtil.canUserDelete(permissions.getUserId(), report)) {
 				addActionMessage("You do not have the necessary permissions to delete this report.");
+				// TODO this should not return success
 				return SUCCESS;
 			}
+
+			// Deleting the report from the report table cascades to the report_user table,
+			// so we don't have to manually delete the entry from the report_user table.
+			dao.remove(report);
+		} catch (NoResultException nre) {
+			addActionMessage("The report you're trying to delete no longer exists.");
+		} catch (Exception e) {
+			// An empty catch block is bad, but displaying an exception to the user is worse
 		}
 
-		if (REMOVE_ASSOCIATION.equals(deleteType)) {
-			String query = "t.report.id = " + reportId + " AND t.user.id = " + permissions.getUserId();
+		runQueryForCurrentView();
+
+		return SUCCESS;
+	}
+
+	public String changeReportName() {
+		try {
+//			Report report = dao.find(Report.class, reportId);
+//			report.setName(report.getName());
+//			report.setDescription(report.getDescription());
+//			dao.save(report);
+		} catch (Exception e) {
+			// An empty catch block is bad, but displaying an exception to the user is worse
+		}
+
+		runQueryForCurrentView();
+
+		return SUCCESS;
+	}
+
+	public String toggleFavorite() {
+		String query = "t.user.id = " + permissions.getUserId() + " AND t.report.id = " + reportId;
+
+		try {
 			ReportUser reportUser = dao.findOne(ReportUser.class, query);
-			dao.remove(reportUser);
+			reportUser.setFavorite(!reportUser.isFavorite());
+
+			dao.save(reportUser);
+		} catch (NoResultException nre) {
+			addActionMessage("The report you're trying to favorite could not be found.");
 		}
 
-		getCustomReport(filterType);
+		runQueryForCurrentView();
 
 		return SUCCESS;
 	}
 
-	public String changeReportName() throws Exception {
-		Report reportToUpdate = dao.find(Report.class, reportId);
-		reportToUpdate.setName(report.getName());
-		reportToUpdate.setDescription(report.getDescription());
-		dao.save(reportToUpdate);
+	private void giveUserDefaultReports() {
+		// TODO give the user reports 11 and 12
+		// If a user logs in for the first time, they get the default set
+		// If the user deletes their last report, they get the default set
+	}
 
-		getCustomReport(filterType);
+	public String copyReport() {
+		// TODO just call ReportController.copy() or similar
+
+		runQueryForCurrentView();
 
 		return SUCCESS;
 	}
 
-	public String changeFavorite() throws Exception {
-		String userReportQuery = "t.user.id = " + permissions.getUserId() + " AND t.report.id = " + reportId;
-		reportUser = dao.findOne(ReportUser.class, userReportQuery);
-		reportUser.setFavorite(favorite);
-		dao.save(reportUser);
-		getCustomReport(filterType);
-
-		return SUCCESS;
+	public void setUserReports(List<ReportUser> userReports) {
+		if (userReports.isEmpty()) {
+			giveUserDefaultReports();
+		} else {
+			this.userReports = userReports;
+		}
 	}
 
-	public String createReport() {
-		ReportDynamic dr = new ReportDynamic();
-		dr.setReport((Report)reportUser.getReport());
-		dr.create();
-
-		getCustomReport(filterType);
-
-		return SUCCESS;
+	public List<ReportUser> getUserReports() {
+		return userReports;
 	}
 
-	public ReportUser getReportUser() {
-		return reportUser;
+	public String getViewType() {
+		return viewType;
 	}
 
-	public void setReportUser(ReportUser reportUser) {
-		this.reportUser = reportUser;
-	}
-
-	public Report getReport() {
-		return report;
-	}
-
-	public void setReport(Report report) {
-		this.report = report;
-	}
-
-	public void setReportsByUser(List<ReportUser> reportsByUser) {
-		this.reportsByUser = reportsByUser;
-	}
-
-	public List<ReportUser> getReportsByUser() {
-		return reportsByUser;
-	}
-
-	public String getFilterType() {
-		return filterType;
-	}
-
-	public void setFilterType(String reportType) {
-		this.filterType = reportType;
+	public void setViewType(String viewType) {
+		this.viewType = viewType;
 	}
 
 	public int getReportId() {
@@ -142,21 +155,5 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setReportId(int reportId) {
 		this.reportId = reportId;
-	}
-
-	public boolean isFavorite() {
-		return favorite;
-	}
-
-	public void setFavorite(boolean favorite) {
-		this.favorite = favorite;
-	}
-
-	public String getDeleteType() {
-		return deleteType;
-	}
-
-	public void setDeleteType(String deleteType) {
-		this.deleteType = deleteType;
 	}
 }
