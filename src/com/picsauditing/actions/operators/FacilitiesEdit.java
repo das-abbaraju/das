@@ -662,6 +662,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		selectedClients = operator.getLinkedClientSites();
 
 		notSelectedClients.removeAll(selectedClients);
+		notSelectedClients.removeAll(childOperatorList);
 	}
 
 	// TODO: This should be converted to Struts2 Validation
