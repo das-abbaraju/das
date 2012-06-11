@@ -74,9 +74,10 @@ Ext.define('PICS.store.report.DataSets', {
 
         var data_set_grid = Ext.ComponentQuery.query('reportdatasetgrid')[0];
         var column_store = report.columns();
+
         var data_set_columns = [{
             xtype: 'rownumberer',
-            width: 27
+            width: 50
         }];
 
         // See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column

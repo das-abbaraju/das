@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <head>
-    <title><s:property value="report.summary"/></title>
+    <title><s:property value="report.name"/></title>
     
     <%-- <script type="text/javascript" src="js/pics/extjs/ext-neptune.js"></script> --%>
     <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/ext-neptune.css"> -->

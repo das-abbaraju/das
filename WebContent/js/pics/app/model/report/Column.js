@@ -107,7 +107,7 @@ Ext.define('PICS.model.report.Column', {
             case 'int':
                 data_set_column.xtype = 'numbercolumn';
                 data_set_column.align = 'right';
-                data_set_column.format = '0,000';
+                data_set_column.format = '0000';
                 data_set_column.width = 75;
 
                 break;
