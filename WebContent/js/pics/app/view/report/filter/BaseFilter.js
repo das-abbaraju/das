@@ -25,16 +25,16 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
             items: [{
                 xtype: 'displayfield',
                 cls: 'filter-name',
-                labelWidth: 0,
                 name: 'filter_name'
             }, {
-                xtype: 'tbfill'
+               xtype: 'tbfill' 
             }, {
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
                 text: '<a href="#"><img src="js/pics/app/resources/images/remove-filter.png" /></a>',
-                tooltip: 'Remove'
+                tooltip: 'Remove',
+                width: 30
             }],
             layout: {
                 type: 'hbox',
