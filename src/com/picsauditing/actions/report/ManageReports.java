@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -36,7 +37,20 @@ public class ManageReports extends PicsActionSupport {
 		} else if (SAVED.equals(viewType)) {
 		}
 
-		setUserReports(dao.findWhere(ReportUser.class, filterQuery));
+		userReports = dao.findWhere(ReportUser.class, filterQuery);
+
+		if (userReports == null) {
+			userReports = Collections.emptyList();
+			return;
+		}
+
+		if (userHasNoFavoriteReports()) {
+			addActionMessage("You have not favorited any reports.");
+		}
+
+		if (userHasNoSavedReports()) {
+			giveUserDefaultReports();
+		}
 	}
 
 	public String removeReportUserAssociation() throws Exception {
@@ -116,9 +130,32 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	private void giveUserDefaultReports() {
-		// TODO give the user reports 11 and 12
 		// If a user logs in for the first time, they get the default set
 		// If the user deletes their last report, they get the default set
+		// TODO replace this hack with a customize recommendation default report set
+		try {
+			Report report11 = dao.findOne(Report.class, "id = 11");
+			ReportUser reportUser11 = new ReportUser(permissions.getUserId(), report11);
+			reportUser11.setAuditColumns(permissions);
+			dao.save(reportUser11);
+
+			Report report12 = dao.findOne(Report.class, "id = 12");
+			ReportUser reportUser12 = new ReportUser(permissions.getUserId(), report12);
+			reportUser12.setAuditColumns(permissions);
+			dao.save(reportUser12);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		runQueryForCurrentView();
+	}
+
+	private boolean userHasNoSavedReports() {
+		return SAVED.equals(viewType) && userReports.isEmpty();
+	}
+
+	private boolean userHasNoFavoriteReports() {
+		return FAVORITE.equals(viewType) && userReports.isEmpty();
 	}
 
 	public String copyReport() {
@@ -130,11 +167,7 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public void setUserReports(List<ReportUser> userReports) {
-		if (userReports.isEmpty()) {
-			giveUserDefaultReports();
-		} else {
-			this.userReports = userReports;
-		}
+		this.userReports = userReports;
 	}
 
 	public List<ReportUser> getUserReports() {

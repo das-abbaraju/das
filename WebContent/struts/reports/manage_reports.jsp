@@ -112,7 +112,7 @@
 		<table>
 			<tr>
 				<th></th>
-				<th>Report</th>
+				<th>Report Name</th>
 				<th></th>
 				<th></th>
 				<th></th>
@@ -133,8 +133,16 @@
 		    		</td>
 
 			    	<td>
-			    		<a href="ReportDynamic.action?report=<s:property value="report" />"><s:property value="report.name" /></a>
-			    		Created by <s:property value="user.name" />
+			    		<a href="ReportDynamic.action?report=<s:property value="report" />">
+			    			<s:property value="report.name" />
+			    		</a>
+						<!-- TODO remove this hack after the MVP demo -->
+						<s:if test="report.id != 11 && report.id != 12">
+				    		Created by <s:property value="report.createdBy" />
+				    	</s:if>
+				    	<s:else>
+				    		Created by PICS
+				    	</s:else>
 		    		</td>
 
 <!-- 					<td> -->
@@ -176,16 +184,19 @@
 <%-- 						<a href="ManageReports!copyReport.action?reportId=<s:property value="report.id" />">Copy</a>&nbsp; --%>
 <!-- 					</td> -->
 					<td>
-						<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@canUserDelete(permissions.userId, report)}">
-							<a href="ManageReports!deleteReport.action?reportId=<s:property value="report.id" />">
-								Delete
-							</a>
+						<!-- TODO remove this hack after the MVP demo -->
+						<s:if test="report.id != 11 && report.id != 12">
+							<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@canUserDelete(permissions.userId, report)}">
+								<a href="ManageReports!deleteReport.action?reportId=<s:property value="report.id" />">
+									Delete
+								</a>
+							</s:if>
+							<s:else>
+								<a href="ManageReports!removeReportUserAssociation.action?reportId=<s:property value="report.id" />">
+									Remove
+								</a>
+							</s:else>
 						</s:if>
-						<s:else>
-							<a href="ManageReports!removeReportUserAssociation.action?reportId=<s:property value="report.id" />">
-								Remove
-							</a>
-						</s:else>
 					</td>
 				</tr>
 			</s:iterator>

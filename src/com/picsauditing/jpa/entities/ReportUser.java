@@ -16,6 +16,16 @@ public class ReportUser extends BaseTable {
 	private boolean isEditable;
 	private boolean isFavorite;
 
+	public ReportUser() {
+	}
+
+	public ReportUser(int userId, Report report) {
+		this.user = new User(userId);
+		this.report = report;
+		this.isEditable = false;
+		this.isFavorite = false;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false)
 	public User getUser() {

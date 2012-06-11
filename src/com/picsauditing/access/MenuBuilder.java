@@ -365,7 +365,7 @@ public class MenuBuilder {
 
 		MenuComponent reportsMenu = menubar.addChild("Reports");
 
-		reportsMenu.addChild("Manage Reports", "ManageReports.action");
+		reportsMenu.addChild("Manage Reports", "ManageReports.action?viewType=saved");
 
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
