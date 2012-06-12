@@ -42,12 +42,14 @@ public enum ContractorRegistrationStep {
 
 	static public boolean containsAtLeastOneClientSiteForGCFree(ContractorAccount contractor) {
 		for (OperatorAccount generalContractor : contractor.getGeneralContractorOperatorAccounts()) {
-			List<OperatorAccount> intersection = new ArrayList<OperatorAccount>(
-					generalContractor.getLinkedClientSites());
-			intersection.retainAll(contractor.getOperatorAccounts());
+			if ("No".equals(generalContractor.getDoContractorsPay())) {
+				List<OperatorAccount> intersection = new ArrayList<OperatorAccount>(
+						generalContractor.getLinkedClientSites());
+				intersection.retainAll(contractor.getOperatorAccounts());
 
-			if (intersection.isEmpty()) {
-				return false;
+				if (intersection.isEmpty()) {
+					return false;
+				}
 			}
 		}
 
