@@ -27,7 +27,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Utilities;
@@ -938,5 +937,10 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			}
 		}
 		return users;
+	}
+
+	@Transient
+	public boolean isRemoved() {
+		return (status == AccountStatus.Deactivated || status == AccountStatus.Deleted);
 	}
 }

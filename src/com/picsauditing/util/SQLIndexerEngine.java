@@ -95,15 +95,22 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 			try {
 				connection = DBBean.getDBConnection();
 				connection.setAutoCommit(false);
-				indexBatch = connection.prepareStatement(QUERY_INDEX);
-				statsBatch = connection.prepareStatement(QUERY_STATS);
-				indexSingle(toIndex, indexBatch);
-				insertStats(toIndex, statsBatch);
+
+				if (!toIndex.isRemoved()) {
+					indexBatch = connection.prepareStatement(QUERY_INDEX);
+					statsBatch = connection.prepareStatement(QUERY_STATS);
+					indexSingle(toIndex, indexBatch);
+					insertStats(toIndex, statsBatch);
+				}
+
 				deleteSingle(toIndex);
-				indexBatch.executeBatch();
-				statsBatch.executeBatch();
+
+				if (!toIndex.isRemoved()) {
+					indexBatch.executeBatch();
+					statsBatch.executeBatch();
+				}
+
 				connection.commit();
-				//updateIndex(toIndex.getId(), toIndex.getClass());
 			} catch (SQLException e) {
 				// TODO: handle exception
 				// Query didn't work, or db failed. Should we catch?
@@ -150,7 +157,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 	private final void updateStats() {
 		for (String stats : STATS_QUERY_BUILDER) {
 			try {
-					db.executeInsert(stats);
+				db.executeInsert(stats);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

@@ -565,4 +565,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		else
 			return Float.valueOf(4);
 	}
+
+	@Transient
+	public boolean isRemoved() {
+		return false;
+	}
 }

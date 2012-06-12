@@ -830,4 +830,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public boolean hasPermission(OpPerms opPerm) {
 		return this.hasPermission(opPerm, OpType.View);
 	}
+
+	@Transient
+	public boolean isRemoved() {
+		return (isActive == YesNo.No || username.startsWith("DELETE-"));
+	}
 }
