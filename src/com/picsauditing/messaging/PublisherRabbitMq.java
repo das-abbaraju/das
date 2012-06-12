@@ -3,7 +3,6 @@ package com.picsauditing.messaging;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.jpa.entities.Message;
 
 public class PublisherRabbitMq implements Publisher {
 	@Autowired private RabbitTemplate amqpTemplate;
@@ -13,11 +12,11 @@ public class PublisherRabbitMq implements Publisher {
     }
     
 	@Override
-	public void publish(Message message) {
+	public void publish(EnterpriseMessage message) {
 		amqpTemplate.convertAndSend(message.getMessage());
 	}
 
-	public void publish(Message message, String routingKey) {
+	public void publish(EnterpriseMessage message, String routingKey) {
 		amqpTemplate.setRoutingKey(routingKey);
 		amqpTemplate.convertAndSend(message);
 	}

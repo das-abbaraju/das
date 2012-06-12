@@ -1,10 +1,15 @@
-package com.picsauditing.jpa.entities;
+package com.picsauditing.messaging;
 
 import java.util.Date;
 
 import org.json.simple.JSONObject;
 
-public class FlagChange implements JSONable, Message {
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.jpa.entities.OperatorAccount;
+
+public class FlagChange implements JSONable, EnterpriseMessage {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private FlagColor fromColor;
