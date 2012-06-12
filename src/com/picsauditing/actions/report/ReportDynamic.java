@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -33,7 +34,6 @@ import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
-import com.picsauditing.report.QueryData;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.business.ReportController;
@@ -160,9 +160,8 @@ public class ReportDynamic extends PicsActionSupport {
 					logger.info("Slow Query: {}", sql.toString());
 					logger.info("Time to query: {} ms", queryTime);
 				}
-				// TODO remove QueryData class
-				QueryData queryData = new QueryData(rawData);
-				convertToJson(queryData, availableFields);
+
+				convertToJson(rawData, availableFields);
 				json.put("success", true);
 			}
 		} catch (SQLException e) {
@@ -401,12 +400,16 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	// TODO refactor this mess
-	private void convertToJson(QueryData data, Map<String, Field> availableFields) {
+	private void convertToJson(List<BasicDynaBean> rawData, Map<String, Field> availableFields) {
 		JSONArray rows = new JSONArray();
-		for (Map<String, Object> row : data.getData()) {
+
+		for (BasicDynaBean row : rawData) {
 			JSONObject jsonRow = new JSONObject();
-			for (String column : row.keySet()) {
+
+			for (DynaProperty property : row.getDynaClass().getDynaProperties()) {
+				String column = property.getName();
 				Object value = row.get(column);
+
 				if (value == null)
 					continue;
 
@@ -416,16 +419,21 @@ public class ReportDynamic extends PicsActionSupport {
 					// TODO we get nulls if the column name is custom such
 					// as contractorNameCount. Convert this to contractorName
 					jsonRow.put(column, value);
+
 				} else if (canSeeQueryField(field)) {
+
 					if (field.isTranslated()) {
-						String key = field.getI18nKey(column);
+						String key = field.getI18nKey(value.toString());
 						jsonRow.put(column, getText(key));
-					} else if (value.getClass().equals(java.sql.Date.class)) {
-						java.sql.Date value2 = (java.sql.Date) value;
-						jsonRow.put(column, value2.getTime());
-					} else if (value.getClass().equals(java.sql.Timestamp.class)) {
-						Timestamp value2 = (Timestamp) value;
-						jsonRow.put(column, value2.getTime());
+
+					} else if (value instanceof java.sql.Date) {
+						java.sql.Date valueAsDate = (java.sql.Date) value;
+						jsonRow.put(column, valueAsDate.getTime());
+
+					} else if (value instanceof java.sql.Timestamp) {
+						Timestamp valueAsTimestamp = (Timestamp) value;
+						jsonRow.put(column, valueAsTimestamp.getTime());
+
 					} else {
 						jsonRow.put(column, value);
 					}
