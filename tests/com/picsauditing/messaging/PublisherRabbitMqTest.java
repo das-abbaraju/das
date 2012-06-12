@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 
-public class AlerterRabbitMqTest {
+public class PublisherRabbitMqTest {
 	private PublisherRabbitMq publisherRabbitMq;
 	@Mock private EnterpriseMessage message;
 	@Mock private RabbitTemplate amqpTemplate;
