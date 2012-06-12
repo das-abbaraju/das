@@ -869,7 +869,7 @@
 						list="safetyList"
 						listKey="id"
 						listValue="name"
-						multiple="true"
+						multiple="false"
 						size="5"
 						id="form1_closingAuditorId" />
 					<a href="#" class="clearLink">
