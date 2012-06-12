@@ -10,7 +10,7 @@ public class ContractorAuditTable extends AbstractTable {
 	}
 
 	public ContractorAuditTable(String prefix, String alias, String toForeignKey, String fromForeignKey) {
-		super("contractor_audit", prefix, alias, alias + "."+ toForeignKey +" = " + fromForeignKey);
+		super("contractor_audit", prefix, alias, alias + "." + toForeignKey + " = " + fromForeignKey);
 	}
 
 	public ContractorAuditTable(String prefix, String alias, String foreignKey) {
@@ -31,7 +31,7 @@ public class ContractorAuditTable extends AbstractTable {
 		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String);
 		auditTypeName.translate("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
-		auditTypeName.setWidth(300);
+		auditTypeName.setWidth(100);
 	}
 
 	public void addJoins() {
@@ -39,7 +39,7 @@ public class ContractorAuditTable extends AbstractTable {
 
 		addLeftJoin(new UserTable(prefix + "Auditor", alias + ".auditorID"));
 		addLeftJoin(new UserTable(prefix + "ClosingAuditor", alias + ".closingAuditorID"));
-		
+
 		// TODO: Add auditDataTable
 	}
 }

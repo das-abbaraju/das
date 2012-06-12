@@ -114,7 +114,6 @@ public abstract class AbstractTable {
 		return addField(name, fullSql, filter);
 	}
 
-	// TODO this should be: void addField(String, Field).
 	// Method chaining should only be for a single class
 	protected Field addField(String fieldName, String sql, FilterType filter) {
 		Field field = new Field(fieldName, sql, filter);

@@ -25,12 +25,12 @@ public class ContractorTable extends AbstractTable {
 		Field contractorEdit;
 		contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
 		contractorEdit.setUrl("ContractorEdit.action?id={" + prefix + "ID}");
-		contractorEdit.setWidth(300);
+		contractorEdit.setWidth(100);
 
 		Field contractorAudits;
 		contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
 		contractorAudits.setUrl("ContractorDocuments.action?id={" + prefix + "ID}");
-		contractorAudits.setWidth(300);
+		contractorAudits.setWidth(100);
 	}
 
 	public void addJoins() {
