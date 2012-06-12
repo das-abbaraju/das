@@ -1,0 +1,60 @@
+#data_grid .x-grid-header-ct
+{
+	border: 1px solid #333333 !important;
+}
+
+#data_grid .x-column-header
+{
+	border-right: 1px solid #666666;
+	text-shadow: none;
+}
+
+#data_grid-body
+{
+	border: 0px;
+	border: 1px solid #ccc !important;
+	border-top: 0px !important;
+}
+
+#data_grid-body .x-grid-cell
+{
+	border-right: 1px solid #dcdcdc;
+}
+
+#data_grid .x-grid-row .x-grid-cell-special
+{
+	background: #ffffff;
+	background-image: none !important;
+}
+
+#data_grid .x-grid-row-alt .x-grid-cell,
+#data_grid .x-grid-row-alt .x-grid-rowwrap-div
+{
+	background: #f1f1f1;
+	border-top: 0px;
+	border-bottom: 0px;
+}
+
+#data_grid .x-grid-row-over .x-grid-cell-special
+{
+	background: #f1f1f1;
+}
+
+#data_grid .x-grid-cell-inner
+{
+	color: #333333;
+	font-size: 14px;
+	line-height: 18px;
+	padding: 4px 6px 4px;
+}
+
+#data_grid .x-grid-cell-inner a
+{
+	color: #226396;
+	text-decoration: none;
+}
+
+#data_grid .x-grid-cell-inner a:hover
+{
+	text-decoration: underline;
+}

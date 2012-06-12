@@ -1,0 +1,91 @@
+#data_grid .paging-toolbar
+{
+	background: #f1f1f1;
+	border: 1px solid #cccccc !important;
+	padding: 0px 20px;
+}
+
+#data_grid .paging-toolbar .x-btn-default-toolbar-large-over
+{
+	background: transparent;
+	border: 0px;
+}
+
+#data_grid .paging-toolbar .x-btn
+{
+	border: 0px;
+}
+
+#data_grid .paging-toolbar .x-btn-disabled span
+{
+	opacity: 1;
+}
+
+#data_grid .paging-toolbar button,
+#data_grid .paging-toolbar button span
+{
+	width: 20px;
+}
+
+#data_grid .paging-toolbar button .x-btn-inner
+{
+	padding-top: 7px !important;
+}
+
+#data_grid .paging-toolbar .icon-large
+{
+	color: #666666;
+}
+
+#data_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large
+{
+	color: #73bbe8;
+}
+
+#data_grid .paging-toolbar .x-disabled .icon-large
+{
+	color: #cccccc;
+}
+
+#data_grid .paging-toolbar .refresh button,
+#data_grid .paging-toolbar .refresh button span
+{
+	width: 28px;
+}
+
+#data_grid .paging-toolbar .refresh .x-btn-inner
+{
+	padding-top: 7px !important;
+}
+
+#data_grid .paging-toolbar .refresh .icon-refresh
+{
+	font-size: 19px;
+}
+
+#data_grid .paging-toolbar .x-toolbar-separator
+{
+	border: 0px;
+	border-left: 1px solid #cccccc;
+}
+
+#data_grid .paging-toolbar .x-toolbar-text
+{
+	color: #666666;
+	font-size: 14px;
+}
+
+#data_grid .paging-toolbar .x-form-text
+{
+	height: 25px;
+}
+
+#data_grid .paging-toolbar .rows-per-page
+{
+	margin-left: 10px;
+}
+
+#data_grid .paging-toolbar .x-form-trigger
+{
+	height: 25px;
+}

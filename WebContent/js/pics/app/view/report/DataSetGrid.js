@@ -7,9 +7,9 @@ Ext.define('PICS.view.report.DataSetGrid', {
     ],
     store: 'report.DataSets',
 
+    border: 0,
     columns: [{
-        xtype: 'rownumberer',
-        width: 27
+        xtype: 'rownumberer'
     }],
     dockedItems: [{
         xtype: 'reportsorttoolbar',
@@ -26,6 +26,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
             xtype: 'combo',
             cls: 'rows-per-page',
             editable: false,
+            height: 25,
             name: 'rows_per_page',
             store: [
                 ['10', '10'],
@@ -36,6 +37,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 ['200', '200'],
                 ['250', '250'],
             ],
+            text: 'hi',
             width: 50,
             value: 50
         }],
@@ -122,7 +124,6 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 cls: 'page-last',
                 disabled: true,
                 handler: me.moveLast,
-                //iconCls: Ext.baseCSSPrefix + 'tbar-page-last',
                 itemId: 'last',
                 overflowText: me.lastText,
                 scale: 'large',

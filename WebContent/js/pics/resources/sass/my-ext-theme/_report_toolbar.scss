@@ -1,0 +1,38 @@
+#report_toolbar
+{
+	background: #73bbe8;
+	border: 1px solid #808285 !important;
+	padding: 10px 20px;
+}
+
+#report_toolbar .header
+{
+	color: #ffffff;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#report_toolbar .add-column
+{
+	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
+	border: 1px solid #bcbcbc;
+	margin-left: 10px;
+}
+
+#report_toolbar .add-column em
+{
+	background-image: url('../images/button/s-arrow.gif');
+}
+
+#report_toolbar .add-column button span
+{
+	color: #333333;
+	font-size: 11px;
+	line-height: 20px !important;
+}
+
+#report_toolbar .add-column .icon-plus
+{
+	color: #2caf2c;
+	margin-right: 5px;
+}

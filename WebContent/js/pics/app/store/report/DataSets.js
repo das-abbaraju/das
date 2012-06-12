@@ -74,6 +74,7 @@ Ext.define('PICS.store.report.DataSets', {
 
         var data_set_columns = [{
             xtype: 'rownumberer',
+            height: 28,
             width: 50
         }];
 

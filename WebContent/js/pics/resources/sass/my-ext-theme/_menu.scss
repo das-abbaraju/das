@@ -1,0 +1,42 @@
+#site_menu
+{
+	@include background-image(linear-gradient(#ffffff, #eaeaea));
+	@include box-shadow(#cccccc 0px 2px 2px 0px);
+}
+
+#site_menu .x-btn-default-toolbar-large
+{
+	margin: 0px;
+	padding: 0px 10px;
+	top: 0px !important;
+}
+
+#site_menu .x-btn-default-toolbar-large-menu-active,
+#site_menu .x-btn-default-toolbar-large-over,
+#site_menu .x-btn-default-toolbar-large-pressed
+{
+	@include background-image(linear-gradient(#bbbbbb, #eaeaea));
+	@include border-radius(0px);
+	border: 1px solid #bbbbbb;
+	border-top: 2px solid #bbbbbb;
+	border-bottom: 0px;
+}
+
+#site_menu .x-btn-default-toolbar-large .x-btn-inner
+{
+	color: #002441;
+	font-weight: bold;
+}
+
+#site_menu .x-form-text
+{
+	@include border-radius(12px);
+	height: 22px;
+	padding: 12px 5px;
+}
+
+#site_menu .x-toolbar-separator-horizontal
+{
+	border-left-color: #e7e7e7;
+	border-right-color: #fcfcfc;
+}

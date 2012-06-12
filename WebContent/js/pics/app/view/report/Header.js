@@ -16,7 +16,8 @@ Ext.define('PICS.view.report.Header', {
         ]),
         id: 'report_summary',
 
-        beforeRender: function () {
+        // TODO: not sure if this should be refactored
+        afterRender: function () {
             var store = Ext.StoreManager.lookup('report.Reports');
             var cmp = this;
 
