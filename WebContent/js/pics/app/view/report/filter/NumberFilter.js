@@ -1,7 +1,7 @@
 Ext.define('PICS.view.report.filter.NumberFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
     alias: ['widget.numberfilter'],
-    
+
     border: false,
     items: [{
         layout: {
@@ -44,7 +44,7 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
             value: null
         }],
         layout: 'hbox'
-    }], 
+    }],
     record: null,
     constructor: function (data) {
         this.record = data.record;
@@ -53,7 +53,15 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
 
         this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
         this.child('panel displayfield[name=filterName]').setValue(this.record.get('column'));
-        this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
+
+        if (this.record.get('operator') === '') {
+            var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;
+            this.child('panel combo[name=operator]').setValue(firstValue);
+        } else {
+            this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
+        }
+
+
         this.child('panel textfield[name=filterValue]').setValue(this.record.get('value'));
     }
 });

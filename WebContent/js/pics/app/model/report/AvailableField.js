@@ -65,7 +65,7 @@ Ext.define('PICS.model.report.AvailableField', {
 
         //set default operator
         if (filter.get('operator') === "") {
-            filter.set('operator', 'Contains');
+            filter.set('operator', '');
         }
 
         return filter;

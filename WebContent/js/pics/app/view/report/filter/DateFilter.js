@@ -53,7 +53,13 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         this.child('panel displayfield[name=filter_name]').setValue(this.record.get('name'));
 
         // set filter inputs
-        this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
+        if (this.record.get('operator') === '') {
+            var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;
+            this.child('panel combo[name=operator]').setValue(firstValue);
+        } else {
+            this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
+        }
+
         this.child('panel datefield[name=filter_value]').setValue(this.record.get('value'));
     }
 });
