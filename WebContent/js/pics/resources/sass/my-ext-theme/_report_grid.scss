@@ -9,6 +9,17 @@
 	text-shadow: none;
 }
 
+#data_grid .x-column-header .x-column-header-trigger
+{
+	background: url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
+	display: block;
+}
+
+#data_grid .x-column-header .x-column-header-open .x-column-header-trigger
+{
+	background-position: -14px;
+}
+
 #data_grid-body
 {
 	border: 0px;

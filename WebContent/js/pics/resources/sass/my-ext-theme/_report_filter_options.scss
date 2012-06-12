@@ -29,6 +29,24 @@
 	font-size: 18px;
 }
 
+#report_filter_options_header .x-tool
+{
+	left: 273px !important;
+	top: 0px !important;
+}
+
+#report_filter_options_header .x-tool,
+#report_filter_options_header .x-tool-collapse-left
+{
+	height: 28px !important;
+	width: 26px !important;
+}
+
+#report_filter_options_header .x-tool-collapse-left
+{
+	background: url(../../app/resources/images/collapse-off.gif) no-repeat;
+}
+
 #report_filter_actions
 {
 	background: #f1f1f1;
@@ -168,4 +186,10 @@
 #report_filters .remove-filter span
 {
 	padding: 0px;
+}
+
+#report_filter_options-placeholder
+{
+	height: 100px !important;
+	top: 110px !important;
 }

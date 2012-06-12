@@ -37,9 +37,11 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 ['200', '200'],
                 ['250', '250'],
             ],
-            text: 'hi',
             width: 50,
             value: 50
+        }, {
+            xtype: 'tbtext',
+            text: 'Per Page'
         }],
 
         getPagingItems: function() {
