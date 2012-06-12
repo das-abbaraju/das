@@ -10,6 +10,9 @@ Ext.define('PICS.controller.report.FilterController', {
     }, {
         ref: 'filterExpression',
         selector: 'filteroptions textfield[name=filterexpression]'
+    }, {
+        ref: 'filterExpressionForm',
+        selector: 'filteroptions #report_filter_expression'
     }],
 
     stores: [
@@ -38,6 +41,12 @@ Ext.define('PICS.controller.report.FilterController', {
             },
             'filteroptions button[action=remove-filter]': {
                 click: this.removeFilter
+            },
+            'filteroptions menuitem[action=toggle-advanced-filtering]': {
+                click: this.createFilterExpression
+            },
+            '#report_filter_expression button[action=hide]': {
+                click: this.removeFilterExpression
             }
         });
 
@@ -47,6 +56,19 @@ Ext.define('PICS.controller.report.FilterController', {
         });
     },
 
+    createFilterExpression: function () {
+        var filters = this.getFilters(),
+            filterExpression = Ext.create('PICS.view.report.FilterExpression');       
+ 
+        filters.insert(0, filterExpression)
+    },
+    
+    removeFilterExpression: function (button, event, options) {
+        var filters = this.getFilters(),
+            filterExpression = this.getFilterExpressionForm();
+        
+        filters.remove(filterExpression);
+    },    
     applyFilterExpression: function () {
         var report = this.getReportReportsStore().first();
         var expression = this.getFilterExpression().value;
