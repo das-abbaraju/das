@@ -3,7 +3,7 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
-public class UserTable extends BaseTable {
+public class UserTable extends AbstractTable {
 
 	public UserTable(String prefix, String alias, String foreignKey) {
 		super("users", prefix, alias, alias + ".id = " + foreignKey);

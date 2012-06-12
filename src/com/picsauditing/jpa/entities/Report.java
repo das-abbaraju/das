@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
-import com.picsauditing.report.models.BaseModel;
+import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.JSONUtilities;
@@ -106,13 +106,13 @@ public class Report extends BaseTable {
 	}
 
 	@Transient
-	public BaseModel getBaseModel() {
-		return ModelFactory.getBase(modelType);
+	public AbstractModel getModel() {
+		return ModelFactory.build(modelType);
 	}
 
 	@Transient
 	// TODO find a better name for this class, like BaseView or something
-	public com.picsauditing.report.tables.BaseTable getBaseTable() {
-		return getBaseModel().getPrimaryTable();
+	public com.picsauditing.report.tables.AbstractTable getTable() {
+		return getModel().getPrimaryTable();
 	}
 }

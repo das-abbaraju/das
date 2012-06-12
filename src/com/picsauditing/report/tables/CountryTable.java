@@ -3,7 +3,7 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
-public class CountryTable extends BaseTable {
+public class CountryTable extends AbstractTable {
 
 	public CountryTable() {
 		super("ref_country", "country", "country", "");

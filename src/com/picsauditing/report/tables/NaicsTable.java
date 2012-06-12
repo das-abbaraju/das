@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class NaicsTable extends BaseTable {
+public class NaicsTable extends AbstractTable {
 
 	public NaicsTable() {
 		super("naics", "naics", "n", "");

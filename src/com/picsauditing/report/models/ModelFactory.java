@@ -7,7 +7,7 @@ public class ModelFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
 
-	public static BaseModel getBase(ModelType type) {
+	public static AbstractModel build(ModelType type) {
 
 		// We might want to reconsider the naming convention between ModelType and classes that extend BaseModel
 		// We could make them the same and use reflection

@@ -3,7 +3,7 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
-public class OperatorTable extends BaseTable {
+public class OperatorTable extends AbstractTable {
 
 	public OperatorTable() {
 		super("operators", "operator", "o", "a.id = o.id AND a.type in ('Operator','Corporate')");

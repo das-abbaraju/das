@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class AccountTable extends BaseTable {
+public class AccountTable extends AbstractTable {
 
 	public AccountTable() {
 		super("accounts", "account", "a", "");

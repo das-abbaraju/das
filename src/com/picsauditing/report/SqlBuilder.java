@@ -18,8 +18,8 @@ import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.models.BaseModel;
-import com.picsauditing.report.tables.BaseTable;
+import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -36,10 +36,10 @@ public class SqlBuilder {
 	}
 
 	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) throws Exception {
-		BaseModel baseModel = report.getBaseModel();
-		sql = initializeSql(baseModel);
+		AbstractModel model = report.getModel();
+		sql = initializeSql(model);
 
-		sql.addWhere(baseModel.getWhereClause(permissions));
+		sql.addWhere(model.getWhereClause(permissions));
 
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
@@ -55,18 +55,18 @@ public class SqlBuilder {
 	}
 
 	// TODO change this to pass in a report
-	public SelectSQL initializeSql(BaseModel baseModel) {
+	public SelectSQL initializeSql(AbstractModel model) {
 		sql = new SelectSQL();
 
-		setFrom(baseModel);
+		setFrom(model);
 
-		Map<String, Field> availableFields = ReportController.buildAvailableFields(baseModel.getPrimaryTable());
+		Map<String, Field> availableFields = ReportController.buildAvailableFields(model.getPrimaryTable());
 
 		addFieldsAndGroupBy(availableFields);
 		addRuntimeFilters(availableFields);
-		addOrderByClauses(baseModel, availableFields);
+		addOrderByClauses(model, availableFields);
 
-		addJoins(baseModel.getPrimaryTable());
+		addJoins(model.getPrimaryTable());
 
 		return sql;
 	}
@@ -81,17 +81,17 @@ public class SqlBuilder {
 		return excelSheet;
 	}
 
-	private void setFrom(BaseModel baseModel) {
-		String from = baseModel.getPrimaryTable().getTableName();
-		String alias = baseModel.getPrimaryTable().getAlias();
+	private void setFrom(AbstractModel model) {
+		String from = model.getPrimaryTable().getTableName();
+		String alias = model.getPrimaryTable().getAlias();
 		if (!Strings.isEmpty(alias))
 			from += " AS " + alias;
 
 		sql.setFromTable(from);
 	}
 
-	private void addJoins(BaseTable table) {
-		for (BaseTable joinTable : table.getJoins()) {
+	private void addJoins(AbstractTable table) {
+		for (AbstractTable joinTable : table.getJoins()) {
 			if (joinTable.isJoinNeeded(definition)) {
 				String joinExpression = "";
 				if (!joinTable.isInnerJoin())
@@ -358,12 +358,12 @@ public class SqlBuilder {
 		return value;
 	}
 
-	private void addOrderByClauses(BaseModel baseModel, Map<String, Field> availableFields) {
+	private void addOrderByClauses(AbstractModel model, Map<String, Field> availableFields) {
 		if (definition.getSorts().isEmpty()) {
 			if (usesGroupBy(availableFields))
 				return;
 
-			sql.addOrderBy(baseModel.getDefaultSort());
+			sql.addOrderBy(model.getDefaultSort());
 			return;
 		}
 

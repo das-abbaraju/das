@@ -4,7 +4,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.util.PermissionQueryBuilder;
 
-public class AccountModel extends BaseModel {
+public class AccountModel extends AbstractModel {
 	public AccountModel() {
 		super();
 		primaryTable = new AccountTable();

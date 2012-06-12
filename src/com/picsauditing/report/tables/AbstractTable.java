@@ -11,7 +11,7 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
-public abstract class BaseTable {
+public abstract class AbstractTable {
 
 	protected boolean innerJoin = true;
 	protected String tableName;
@@ -21,9 +21,9 @@ public abstract class BaseTable {
 	protected String parentAlias;
 	protected String whereClause;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
-	protected List<BaseTable> joinedTables = new ArrayList<BaseTable>();
+	protected List<AbstractTable> joinedTables = new ArrayList<AbstractTable>();
 
-	public BaseTable(String tableName, String prefix, String alias, String whereClause) {
+	public AbstractTable(String tableName, String prefix, String alias, String whereClause) {
 		this.tableName = tableName;
 		this.prefix = prefix;
 		this.alias = alias;
@@ -123,22 +123,22 @@ public abstract class BaseTable {
 		return field;
 	}
 
-	public List<BaseTable> getJoins() {
+	public List<AbstractTable> getJoins() {
 		return joinedTables;
 	}
 
-	public BaseTable addJoin(BaseTable table) {
+	public AbstractTable addJoin(AbstractTable table) {
 		joinedTables.add(table);
 		return table;
 	}
 
-	public BaseTable addLeftJoin(BaseTable table) {
+	public AbstractTable addLeftJoin(AbstractTable table) {
 		joinedTables.add(table);
 		table.setLeftJoin();
 		return table;
 	}
 
-	public BaseTable addAllFieldsAndJoins(BaseTable table) {
+	public AbstractTable addAllFieldsAndJoins(AbstractTable table) {
 		joinedTables.add(table);
 		table.addFields();
 		table.addJoins();
@@ -156,7 +156,7 @@ public abstract class BaseTable {
 		if (isInnerJoin())
 			return true;
 
-		for (BaseTable joinTable : getJoins()) {
+		for (AbstractTable joinTable : getJoins()) {
 			if (joinTable.isJoinNeeded(definition))
 				return true;
 		}

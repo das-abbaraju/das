@@ -148,7 +148,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			translateFilterValueNames(definition.getFilters());
 
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
 
 			if (definition.getColumns().size() > 0) {
 				long queryTime = Calendar.getInstance().getTimeInMillis();
@@ -186,7 +186,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			reportController.validate(report);
 
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)
@@ -253,7 +253,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			reportController.validate(report);
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getBaseTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
 
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", translateAndJsonify(availableFields));
@@ -578,7 +578,7 @@ public class ReportDynamic extends PicsActionSupport {
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
 
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getBaseTable());
+			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getTable());
 			for (Field field : availableFields.values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);

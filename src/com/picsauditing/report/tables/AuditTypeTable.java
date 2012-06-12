@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class AuditTypeTable extends BaseTable {
+public class AuditTypeTable extends AbstractTable {
 
 	public AuditTypeTable() {
 		super("audit_type", "auditType", "atype", "atype.id = ca.auditTypeID");

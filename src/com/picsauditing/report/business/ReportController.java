@@ -17,7 +17,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.BaseTable;
+import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.business.DynamicReportUtil;
@@ -108,7 +108,7 @@ public class ReportController {
 		return rows;
 	}
 
-	public static Map<String, Field> buildAvailableFields(BaseTable baseTable) {
+	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable) {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 
 		addAllAvailableFields(availableFields, baseTable);
@@ -121,9 +121,9 @@ public class ReportController {
 	 * because the set of tables that comprise available fields for a model is a tree,
 	 * which we've decided to walk recursively.
 	 */
-	private static void addAllAvailableFields(Map<String, Field> availableFields, BaseTable table) {
+	private static void addAllAvailableFields(Map<String, Field> availableFields, AbstractTable table) {
 		availableFields.putAll(table.getAvailableFields());
-		for (BaseTable joinTable : table.getJoins()) {
+		for (AbstractTable joinTable : table.getJoins()) {
 			addAllAvailableFields(availableFields, joinTable);
 		}
 	}

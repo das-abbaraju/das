@@ -3,7 +3,7 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
-public class ContractorTable extends BaseTable {
+public class ContractorTable extends AbstractTable {
 
 	public ContractorTable(String parentPrefix, String parentAlias) {
 		super("contractor_info", "contractor", "c", parentAlias + ".id = c.id AND " + parentAlias

@@ -11,7 +11,7 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
 import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.report.models.AccountContractorModel;
-import com.picsauditing.report.models.BaseModel;
+import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.search.SelectSQL;
 
 // TODO rewrite these tests to account for all recent changes to Dynamic Reports
@@ -178,19 +178,19 @@ public class SqlBuilderTest {
 	
 	@Test
 	public void testSorts() {
-		BaseModel accountModelBase = new AccountModel();
+		AbstractModel accountModel = new AccountModel();
 
 		Sort sort = new Sort("accountStatus");
 		definition.getSorts().add(sort);
-		SelectSQL sql = builder.initializeSql(accountModelBase);
+		SelectSQL sql = builder.initializeSql(accountModel);
 		assertContains("ORDER BY a.status", sql.toString());
 
 		definition.getColumns().add(new Column("accountStatus"));
-		sql = builder.initializeSql(accountModelBase);
+		sql = builder.initializeSql(accountModel);
 		assertContains("ORDER BY accountStatus", sql.toString());
 
 		sort.setAscending(false);
-		sql = builder.initializeSql(accountModelBase);
+		sql = builder.initializeSql(accountModel);
 		assertContains("ORDER BY accountStatus DESC", sql.toString());
 	}
 }
