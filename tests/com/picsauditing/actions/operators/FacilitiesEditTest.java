@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.opensymphony.xwork2.Action;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
@@ -88,7 +87,7 @@ public class FacilitiesEditTest extends PicsTest {
 	private void accountUserRolesCommonAssertions(AccountUser rep) {
 		Date now = new Date();
 		String strutsReturn = facilitiesEdit.addRole();
-		assertEquals(Action.SUCCESS, strutsReturn);
+		assertEquals(PicsActionSupport.REDIRECT, strutsReturn);
 
 		assertEquals("didn't get the expected operator back from the account rep", operator, rep.getAccount());
 		assertNotNull("start date should not be null", rep.getStartDate());

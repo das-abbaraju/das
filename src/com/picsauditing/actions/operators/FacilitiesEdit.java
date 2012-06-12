@@ -166,7 +166,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		accountRep = null;
 		salesRep = null;
 
-		return SUCCESS;
+		return REDIRECT;
 	}
 
 	public String copyToChildAccounts() throws Exception {
