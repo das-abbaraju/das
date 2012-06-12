@@ -51,7 +51,7 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagAlert;
+import com.picsauditing.jpa.entities.FlagChange;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
@@ -102,7 +102,7 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ExceptionService exceptionService;
 	@Autowired
-	private Publisher flagAlertPublisher;
+	private Publisher flagChangePublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
@@ -464,7 +464,8 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		} else if (!overallColor.equals(co.getFlagColor())) {
-			publishFlagAlert(co, overallColor);
+			FlagChange flagChange = getFlagChange(co, overallColor);
+			flagChangePublisher.publish(flagChange);
 
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
@@ -499,21 +500,15 @@ public class ContractorCron extends PicsActionSupport {
 		co.setAuditColumns(new User(User.SYSTEM));
 	}
 
-	private void publishFlagAlert(ContractorOperator co, FlagColor overallColor) {
-		FlagAlert flagAlert = createFlagAlert(co, overallColor);
-		JSONObject flagAlertJSON = flagAlert.toJSON();
-		flagAlertPublisher.publish(flagAlertJSON.toJSONString());
-	}
-
-	private FlagAlert createFlagAlert(ContractorOperator co, FlagColor overallColor) {
-		FlagAlert flagAlert = new FlagAlert();
-		flagAlert.setContractor(co.getContractorAccount());
-		flagAlert.setOperator(co.getOperatorAccount());
-		flagAlert.setFromColor(co.getFlagColor());
-		flagAlert.setToColor(overallColor);
-		flagAlert.setTimestamp(new Date());
-		flagAlert.setDetails(co.getFlagDetail());
-		return flagAlert;
+	private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {
+		FlagChange flagChange = new FlagChange();
+		flagChange.setContractor(co.getContractorAccount());
+		flagChange.setOperator(co.getOperatorAccount());
+		flagChange.setFromColor(co.getFlagColor());
+		flagChange.setToColor(overallColor);
+		flagChange.setTimestamp(new Date());
+		flagChange.setDetails(co.getFlagDetail());
+		return flagChange;
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {

@@ -8,16 +8,16 @@
 	<connection-factory id="connectionFactory" host="localhost" port="5672" username="guest" password="guest"/>
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 	
-	<queue id="flag-alerts" name="flag-alerts" />
+	<queue id="flag-change" name="flag-change" />
 	
-	<direct-exchange name="flag-alerts-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	<fanout-exchange name="flag-change-exchange" xmlns="http://www.springframework.org/schema/rabbit">
 	  <bindings>
-	    <binding queue="flag-alerts"/>
+	    <binding queue="flag-changes"/>
 	  </bindings>
-	</direct-exchange>	
+	</fanout-exchange>	
 	
-	<template id="flagAlertTemplate" connection-factory="connectionFactory" exchange="flag-alerts-exchange" queue="flag-alerts"/>
-	<beans:bean id="flagAlertPublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
-		<beans:property name="amqpTemplate" ref="flagAlertTemplate" />
+	<template id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-change-exchange" queue="flag-changes"/>
+	<beans:bean id="flagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
+		<beans:property name="amqpTemplate" ref="flagChangeTemplate" />
 	</beans:bean>
 </beans:beans>

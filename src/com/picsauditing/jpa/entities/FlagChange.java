@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.json.simple.JSONObject;
 
-public class FlagAlert implements JSONable {
+public class FlagChange implements JSONable, Message {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private FlagColor fromColor;
@@ -71,5 +71,10 @@ public class FlagAlert implements JSONable {
 	
 	public JSONObject toJSON() {
 		return toJSON(false);
+	}
+	
+	@Override
+	public String getMessage() {
+		return toJSON().toJSONString();
 	}
 }
