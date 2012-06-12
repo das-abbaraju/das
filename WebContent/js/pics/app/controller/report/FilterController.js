@@ -5,6 +5,9 @@ Ext.define('PICS.controller.report.FilterController', {
         ref: 'reportColumnSelector',
         selector: 'reportcolumnselector'
     }, {
+        ref: 'filterOptions',
+        selector: 'filteroptions'
+    }, {
         ref: 'filters',
         selector: 'filteroptions #report_filters'
     }, {
@@ -56,19 +59,6 @@ Ext.define('PICS.controller.report.FilterController', {
         });
     },
 
-    createFilterExpression: function () {
-        var filters = this.getFilters(),
-            filterExpression = Ext.create('PICS.view.report.FilterExpression');       
- 
-        filters.insert(0, filterExpression)
-    },
-    
-    removeFilterExpression: function (button, event, options) {
-        var filters = this.getFilters(),
-            filterExpression = this.getFilterExpressionForm();
-        
-        filters.remove(filterExpression);
-    },    
     applyFilterExpression: function () {
         var report = this.getReportReportsStore().first();
         var expression = this.getFilterExpression().value;
@@ -127,6 +117,13 @@ Ext.define('PICS.controller.report.FilterController', {
         PICS.app.fireEvent('refreshreport');
     },
 
+    createFilterExpression: function () {
+        var options = this.getFilterOptions(),
+            expression = Ext.create('PICS.view.report.FilterExpression');
+
+        options.addDocked(expression);
+    },
+
     generateFilterPanels: function () {
         var filter_container = Ext.create('Ext.panel.Panel', {
             bodyCls: 'filter-container-body',
@@ -175,6 +172,13 @@ Ext.define('PICS.controller.report.FilterController', {
 
         PICS.app.fireEvent('refreshfilters');
         PICS.app.fireEvent('refreshreport');
+    },
+
+    removeFilterExpression: function (button, event, options) {
+        var options = this.getFilterOptions(),
+            expression = this.getFilterExpressionForm();
+
+        options.removeDocked(expression);
     },
 
     setFilterPanelClass: function (type) {
