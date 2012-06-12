@@ -8,15 +8,15 @@
 	<connection-factory id="connectionFactory" host="localhost" port="5672" username="guest" password="guest"/>
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 	
-	<queue id="flag-change" name="flag-change" />
+	<queue id="flag-changes" name="flag-changes" />
 	
-	<fanout-exchange name="flag-change-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	<fanout-exchange name="flag-changes-exchange" xmlns="http://www.springframework.org/schema/rabbit">
 	  <bindings>
 	    <binding queue="flag-changes"/>
 	  </bindings>
 	</fanout-exchange>	
 	
-	<template id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-change-exchange" queue="flag-changes"/>
+	<template id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="flagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
 		<beans:property name="amqpTemplate" ref="flagChangeTemplate" />
 	</beans:bean>
