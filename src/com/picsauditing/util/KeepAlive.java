@@ -74,14 +74,12 @@ public class KeepAlive {
 	}
 
 	private boolean isDatabaseAccessible() {
-		boolean dbAccessible = false;
-
 		try {
-			dbAccessible = database.execute("SELECT 1");
+			return database.execute("SELECT 1");
 		} catch (Exception e) {
 		}
 
-		return dbAccessible;
+		return false;
 	}
 
 	private boolean isSiteLoadedBeforeTimeout() {
