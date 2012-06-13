@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.CountryDAO;
@@ -21,7 +22,7 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 	protected Collection<Country> getItems(String q) {
 		Collection<Country> result = new HashSet<Country>();
 		if (!Strings.isEmpty(q)) {
-			if (q.length() == 2) {
+			if (queryContainsIsoCodes(q)) {
 				// search both iso and translated fields for the 2 letter
 				// combinations
 				List<Country> countryList = countryDAO.findWhere("isoCode = '" + Strings.escapeQuotes(q) + "'");
@@ -44,6 +45,23 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 		}
 
 		return Collections.emptyList();
+	}
+	
+	private static boolean queryContainsIsoCodes(String query) {
+		if (Strings.isEmpty(query)) {
+			return false;
+		}
+		
+		String[] parsedIsoCodes = query.split(",");
+		if (ArrayUtils.isNotEmpty(parsedIsoCodes)) {
+			for (String isoCode : parsedIsoCodes) {
+				if (!Strings.isEmpty(isoCode) && isoCode.length() != 2) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 
 	class CountryAutocomplete extends Country {
