@@ -34,7 +34,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                     this.showReportSettingsWindow('Edit', 'edit');
                 }
             },
-            'reportheader menuitem[name=copy]': {
+            'reportheader menuitem[action=copy]': {
                 click: function (component, options) {
                     this.showReportSettingsWindow('Copy', 'copy');
                 }

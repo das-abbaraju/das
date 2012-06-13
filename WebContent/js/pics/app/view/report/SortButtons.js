@@ -3,7 +3,6 @@ Ext.define('PICS.view.report.SortButtons', {
     alias: ['widget.sortbuttons'],
 
     border: false,
-
     defaults: {
         reorderable: true
     },

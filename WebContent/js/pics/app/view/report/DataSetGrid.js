@@ -17,7 +17,6 @@ Ext.define('PICS.view.report.DataSetGrid', {
     }, {
         xtype: 'pagingtoolbar',
         store: 'report.DataSets',
-
         cls: 'paging-toolbar',
         displayInfo: true,
         dock: 'top',
