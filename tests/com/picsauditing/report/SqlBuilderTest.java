@@ -6,24 +6,61 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
-import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.search.SelectSQL;
 
-// TODO rewrite these tests to account for all recent changes to Dynamic Reports
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({SqlBuilder.class})
 public class SqlBuilderTest {
 
 	private SqlBuilder builder;
-	private Definition definition = new Definition();
+	@Deprecated
+	private Definition definition;
 
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+
 		builder = new SqlBuilder();
+		definition = new Definition();
 		builder.setDefinition(definition);
+	}
+
+	@Ignore("Need to check if we need to use another model")
+	@Test
+	public void testSetFrom_NoAlias() throws Exception {
+		AccountModel accountModel = new AccountModel();
+
+		Whitebox.setInternalState(builder, "sql", new SelectSQL());
+		SelectSQL sql = Whitebox.getInternalState(builder, "sql");
+
+		Whitebox.invokeMethod(builder, "setFrom", accountModel);
+		String fromTable = Whitebox.getInternalState(sql, "fromTable");
+
+		assertEquals("accounts", fromTable);
+	}
+
+	@Test
+	public void testSetFrom_WithAlias() throws Exception {
+		AccountModel accountModel = new AccountModel();
+
+		Whitebox.setInternalState(builder, "sql", new SelectSQL());
+		SelectSQL sql = Whitebox.getInternalState(builder, "sql");
+
+		Whitebox.invokeMethod(builder, "setFrom", accountModel);
+		String fromTable = Whitebox.getInternalState(sql, "fromTable");
+
+		assertEquals("accounts AS a", fromTable);
 	}
 
 	@Ignore("Not ready to run yet.")
@@ -169,13 +206,13 @@ public class SqlBuilderTest {
 		Column contractorNameCount = new Column("contractorNameCount");
 		contractorNameCount.setFunction(QueryFunction.Count);
 		definition.getColumns().add(contractorNameCount);
-		
+
 		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
 		System.out.println(sql.toString());
 		assertEquals(1, sql.getFields().size());
 		assertEquals("", sql.getOrderBy());
 	}
-	
+
 	@Test
 	public void testSorts() {
 		AbstractModel accountModel = new AccountModel();
