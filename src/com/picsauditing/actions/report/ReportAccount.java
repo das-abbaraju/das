@@ -46,7 +46,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected SelectAccount sql = new SelectAccount();
 	protected List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
 
-	private ReportFilterContractor filter = new ReportFilterContractor();
+	protected ReportFilterContractor filter = new ReportFilterContractor();
 
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
