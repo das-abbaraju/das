@@ -198,8 +198,6 @@ public class SearchEngine {
 
 		if (currPerm != null) {
 			String accountStatuses = "'Active','Pending'";
-			String employeeStatuses = "'Active', 'Inactive'";
-			String userName = "'DELETE-%'";
 			String userStatuses = "'yes'";
 			if (currPerm.isPicsEmployee() || currPerm.getAccountStatus().isDemo())
 				accountStatuses += ",'Demo'";
@@ -229,12 +227,11 @@ public class SearchEngine {
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
 							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id")
-							.append(" where u.username not like " + userName + " and u.isActive = "+userStatuses + ")");
+							.append(" where u.isActive = "+userStatuses + ")");
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
-							"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in ("
-									+ employeeStatuses + ") join\n"
+							"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n"
 									+ "((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
@@ -251,13 +248,11 @@ public class SearchEngine {
 						.append(") AS acc ON a.id = acc.id WHERE a.status IN (" + accountStatuses + ") )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
-							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.username not like "
-									+ userName + " and u.isActive = "+userStatuses+" and u.accountID =").append(currPerm.getAccountId()).append(')');
+							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.isActive = "+userStatuses+" and u.accountID =").append(currPerm.getAccountId()).append(')');
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
-							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in ("
-									+ employeeStatuses + ") JOIN "
+							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN "
 									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
 							.append(currPerm.getAccountId()).append(")");
 				}
