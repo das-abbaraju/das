@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AmBest;
@@ -55,7 +56,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean unScheduledAudits = false;
 	protected boolean conExpiredLic = false;
 	protected String validLicense = "Valid";
-	protected String[] auditFor;
+	protected String[] auditFor = {String.valueOf(DateBean.getCurrentYear()-1)};
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = -1;
@@ -64,7 +65,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected double incidenceRateAvgMax = 100;
 	protected int amBestRating;
 	protected int amBestClass;
-	protected int verifiedAnnualUpdate;
+	protected int verifiedAnnualUpdate = 1;
 	protected OshaType shaType;
 	protected OshaType shaTypeFlagCriteria;
 	protected String shaLocation;

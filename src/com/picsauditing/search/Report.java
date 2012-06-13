@@ -38,7 +38,9 @@ public class Report extends TranslationActionSupport {
 			}
 		}
 		Database db = new Database();
-		List<BasicDynaBean> pageData = db.select(sql.toString(unionSql), true);
+		String sqlText = sql.toString(unionSql);
+		
+		List<BasicDynaBean> pageData = db.select(sqlText, true);
 		returnedRows = pageData.size();
 		allRows = db.getAllRows();
 		return pageData;
