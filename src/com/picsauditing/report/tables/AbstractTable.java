@@ -103,7 +103,6 @@ public abstract class AbstractTable {
 		availableFields.put(fieldName.toUpperCase(), field);
 	}
 
-	// TODO this should be: addField(String, Field)
 	// Method chaining should only be for a single class
 	protected Field addField(String sql, FilterType filter) {
 		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);

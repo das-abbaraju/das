@@ -151,18 +151,18 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
 
 			if (definition.getColumns().size() > 0) {
-				long queryTime = Calendar.getInstance().getTimeInMillis();
-				List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
+				long startTime = Calendar.getInstance().getTimeInMillis();
 
-				queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
+				List<BasicDynaBean> queryResults = reportController.runQuery(sql, json);
+				convertToJson(queryResults, availableFields);
+				json.put("success", true);
+
+				long queryTime = Calendar.getInstance().getTimeInMillis() - startTime;
 				if (queryTime > 1000) {
 					showSQL = true;
 					logger.info("Slow Query: {}", sql.toString());
 					logger.info("Time to query: {} ms", queryTime);
 				}
-
-				convertToJson(rawData, availableFields);
-				json.put("success", true);
 			}
 		} catch (SQLException e) {
 			logError(e);
@@ -399,11 +399,10 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("error", e.getCause() + " " + e.getMessage());
 	}
 
-	// TODO refactor this mess
-	private void convertToJson(List<BasicDynaBean> rawData, Map<String, Field> availableFields) {
-		JSONArray rows = new JSONArray();
+	private void convertToJson(List<BasicDynaBean> queryResults, Map<String, Field> availableFields) {
+		JSONArray jsonRows = new JSONArray();
 
-		for (BasicDynaBean row : rawData) {
+		for (BasicDynaBean row : queryResults) {
 			JSONObject jsonRow = new JSONObject();
 
 			for (DynaProperty property : row.getDynaClass().getDynaProperties()) {
@@ -424,7 +423,12 @@ public class ReportDynamic extends PicsActionSupport {
 
 					if (field.isTranslated()) {
 						String key = field.getI18nKey(value.toString());
-						jsonRow.put(column, getText(key));
+						try {
+							Integer.parseInt(key);
+							jsonRow.put(column, key);
+						} catch (Exception e) {
+							jsonRow.put(column, getText(key));
+						}
 
 					} else if (value instanceof java.sql.Date) {
 						java.sql.Date valueAsDate = (java.sql.Date) value;
@@ -435,14 +439,14 @@ public class ReportDynamic extends PicsActionSupport {
 						jsonRow.put(column, valueAsTimestamp.getTime());
 
 					} else {
-						jsonRow.put(column, value);
+						jsonRow.put(column, value.toString());
 					}
 				}
 			}
-			rows.add(jsonRow);
+			jsonRows.add(jsonRow);
 		}
 
-		json.put("data", rows);
+		json.put("data", jsonRows);
 	}
 
 	private boolean canSeeQueryField(Field field) {
