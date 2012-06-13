@@ -313,8 +313,34 @@
 
 /* line 192, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_filter_options.scss */
 #report_filter_options-placeholder {
+  background: #acacac;
+  border: 1px solid #666666 !important;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -ms-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -ms-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
   height: 100px !important;
-  top: 110px !important; }
+  padding: 5px;
+  top: 100px !important; }
+
+/* line 204, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_filter_options.scss */
+#report_filter_options-placeholder .x-tool img {
+  background: url(../../app/resources/images/collapse-arrow-off.gif) no-repeat center; }
+
+/* line 209, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_filter_options.scss */
+#report_filter_options-placeholder text {
+  fill: #ffffff;
+  font-size: 13px;
+  letter-spacing: 1px; }
 
 /* line 2, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
 #report_toolbar {
@@ -326,9 +352,39 @@
 #report_toolbar .header {
   color: #ffffff;
   font-size: 18px;
-  font-weight: bold; }
+  font-weight: bold;
+  top: 6px !important; }
 
-/* line 16, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+/* line 17, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+#report_sort {
+  padding: 0px; }
+
+/* line 23, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+#report_sort,
+#report_sort .x-toolbar-default {
+  background: none; }
+
+/* line 28, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+#report_sort .x-btn {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -ms-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: linear-gradient(#f1f1f1, #dcdcdc);
+  border: 1px solid #bcbcbc; }
+
+/* line 34, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+#report_sort .x-btn-split-right {
+  background-image: url("../images/button/s-arrow.gif");
+  padding-right: 14px !important; }
+
+/* line 40, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+#report_sort .x-btn-icon-text-left .x-btn-icon {
+  background-position: center;
+  margin-left: 3px; }
+
+/* line 46, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
 #report_toolbar .add-column {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
@@ -339,17 +395,17 @@
   border: 1px solid #bcbcbc;
   margin-left: 10px; }
 
-/* line 23, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+/* line 53, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
 #report_toolbar .add-column em {
   background-image: url("../images/button/s-arrow.gif"); }
 
-/* line 28, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+/* line 58, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
 #report_toolbar .add-column button span {
   color: #333333;
   font-size: 11px;
   line-height: 20px !important; }
 
-/* line 35, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
+/* line 65, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_toolbar.scss */
 #report_toolbar .add-column .icon-plus {
   color: #2caf2c;
   margin-right: 5px; }

@@ -10,6 +10,36 @@
 	color: #ffffff;
 	font-size: 18px;
 	font-weight: bold;
+	top: 6px !important;
+}
+
+#report_sort
+{
+	padding: 0px;
+}
+
+#report_sort,
+#report_sort .x-toolbar-default
+{
+	background: none;
+}
+
+#report_sort .x-btn
+{
+	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
+	border: 1px solid #bcbcbc;
+}
+
+#report_sort .x-btn-split-right
+{
+	background-image: url('../images/button/s-arrow.gif');
+	padding-right: 14px !important;
+}
+
+#report_sort .x-btn-icon-text-left .x-btn-icon
+{
+	background-position: center;
+	margin-left: 3px;
 }
 
 #report_toolbar .add-column

@@ -190,6 +190,24 @@
 
 #report_filter_options-placeholder
 {
+	background: #acacac;
+	border: 1px solid #666666 !important;
+	@include border-top-right-radius(5px);
+	@include border-bottom-right-radius(5px);
+	@include box-shadow(none);
 	height: 100px !important;
-	top: 110px !important;
+	padding: 5px;
+	top: 100px !important;
+}
+
+#report_filter_options-placeholder .x-tool img
+{
+	background: url(../../app/resources/images/collapse-arrow-off.gif) no-repeat center;
+}
+
+#report_filter_options-placeholder text
+{
+	fill: #ffffff;
+	font-size: 13px;
+	letter-spacing: 1px;
 }

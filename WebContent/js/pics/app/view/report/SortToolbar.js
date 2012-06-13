@@ -10,7 +10,8 @@ Ext.define('PICS.view.report.SortToolbar', {
         cls: 'header',
         text: 'Sort Order:'
     }, {
-        xtype: 'sortbuttons'
+        xtype: 'sortbuttons',
+        id: 'report_sort'
     }, {
         xtype: 'tbfill'
     }, {

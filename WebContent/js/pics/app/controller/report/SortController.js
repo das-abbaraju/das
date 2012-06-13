@@ -18,7 +18,7 @@ Ext.define('PICS.controller.report.SortController', {
             'sortbuttons button[action=sort-report]': {
                 click: this.setSortItemProperties
             },
-            'sortbuttons button[action=remove-sort]': {
+            'sortbuttons menuitem[action=remove-sort]': {
                 click: this.removeSort
             },
             'reportsorttoolbar button[name=downloadexcel]': {
@@ -77,35 +77,36 @@ Ext.define('PICS.controller.report.SortController', {
     },
 
     createSortButton: function (record) {
-        var buttons = [],
-            sortContainer = Ext.create('Ext.toolbar.Toolbar');
+        var buttons = [];
+        var sort_container = Ext.create('Ext.toolbar.Toolbar');
 
         var sort = {
+            xtype: 'splitbutton',
             action: 'sort-report',
             text: record.get('name'),
+            height: 26,
             icon: '../js/pics/resources/themes/images/default/grid/sort_asc.gif',
-            iconAlign: 'right',
+            iconAlign: 'left',
+            menu: new Ext.menu.Menu({
+                items: [{
+                    text: 'Remove',
+                    name: 'remove_sort',
+                    action: 'remove-sort',
+                    record: record
+                }]
+            }),
             record: record
         };
-        
+
         if (record.get('direction') === 'DESC') {
             sort.icon = '../js/pics/resources/themes/images/default/grid/sort_desc.gif';
         }
 
-        var remove = {
-            xtype: 'button',
-            action: 'remove-sort',
-            icon: 'images/cross.png',
-            iconCls: 'remove-filter',
-            record: record,
-            tooltip: 'Remove'
-        };
+        buttons.push(sort);
 
-        buttons.push(sort, remove);
+        sort_container.add(buttons);
 
-        sortContainer.add(buttons);
-
-        return sortContainer;
+        return sort_container;
     },
 
     refreshSorts: function () {
@@ -132,7 +133,7 @@ Ext.define('PICS.controller.report.SortController', {
             component.setIcon('../js/pics/resources/themes/images/default/grid/sort_asc.gif');
             component.record.set('direction', 'ASC')
         }
-        
+
         PICS.app.fireEvent('refreshreport');
     },
 
