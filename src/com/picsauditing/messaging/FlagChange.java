@@ -78,7 +78,7 @@ public class FlagChange implements JSONable, EnterpriseMessage {
 		json.put("operator", operator.toJSON(full));
 		json.put("fromColor", fromColor.toString());
 		json.put("toColor", toColor.toString());
-		json.put("timestamp", timestamp.getTime());
+		json.put("timestamp", timestamp.toString());
 		json.put("details", details);
 
 		return json;
