@@ -41,7 +41,7 @@ Ext.define('PICS.controller.report.DataSetController', {
                     this.getController('report.SortController').addSortItem(columnName, 'DESC');
                 }
             },
-            'reportsorttoolbar button[action=add-column]': {
+            'reporttoolbar button[action=add-column]': {
                 click: function () {
                     PICS.app.fireEvent('showcolumnselector', {columnSelectorType: 'column'});
                 }

@@ -11,7 +11,7 @@
 #header {
   padding: 0px; }
 
-/* line 2, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+/* line 16, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
   background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
@@ -23,37 +23,43 @@
   -moz-box-shadow: #cccccc 0px 2px 2px 0px;
   box-shadow: #cccccc 0px 2px 2px 0px; }
 
-/* line 8, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+/* line 22, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
-/* line 17, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+/* line 31, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large-menu-active,
 #site_menu .x-btn-default-toolbar-large-over,
 #site_menu .x-btn-default-toolbar-large-pressed {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #bbbbbb), color-stop(100%, #eaeaea));
-  background-image: -webkit-linear-gradient(#bbbbbb, #eaeaea);
-  background-image: -moz-linear-gradient(#bbbbbb, #eaeaea);
-  background-image: -o-linear-gradient(#bbbbbb, #eaeaea);
-  background-image: -ms-linear-gradient(#bbbbbb, #eaeaea);
-  background-image: linear-gradient(#bbbbbb, #eaeaea);
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
+  background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -ms-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: linear-gradient(#eaeaea, #f1f1f2);
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   -ms-border-radius: 0px;
   -o-border-radius: 0px;
   border-radius: 0px;
-  border: 1px solid #bbbbbb;
-  border-top: 2px solid #bbbbbb;
+  border: 1px solid #aeaeae;
+  border-top: 1px solid #999999;
   border-bottom: 0px; }
 
-/* line 26, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+/* line 40, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
-/* line 32, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+/* line 48, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
+#site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
+#site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner {
+  color: #c66603; }
+
+/* line 53, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-form-text {
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
@@ -63,7 +69,7 @@
   height: 22px;
   padding: 12px 5px; }
 
-/* line 39, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+/* line 60, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-toolbar-separator-horizontal {
   border-left-color: #e7e7e7;
   border-right-color: #fcfcfc; }
