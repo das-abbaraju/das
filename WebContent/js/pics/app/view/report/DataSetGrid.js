@@ -3,7 +3,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
     alias: ['widget.reportdatasetgrid'],
     requires: [
         'PICS.view.report.LinkColumn',
-        'PICS.view.report.SortToolbar'
+        'PICS.view.report.Toolbar'
     ],
     store: 'report.DataSets',
 
@@ -12,7 +12,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
         xtype: 'rownumberer'
     }],
     dockedItems: [{
-        xtype: 'reportsorttoolbar',
+        xtype: 'reporttoolbar',
         dock: 'top'
     }, {
         xtype: 'pagingtoolbar',
@@ -66,7 +66,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 overflowText: me.firstText,
                 scale: 'large',
                 scope: me,
-                text: '<i class="icon-fast-backward icon-large"></i>',
+                text: '<i class="icon-step-backward icon-large"></i>',
                 tooltip: me.firstText
             }, {
                 cls: 'page-prev',
@@ -129,7 +129,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 overflowText: me.lastText,
                 scale: 'large',
                 scope: me,
-                text: '<i class="icon-fast-forward icon-large"></i>',
+                text: '<i class="icon-step-forward icon-large"></i>',
                 tooltip: me.lastText
             }, {
                 xtype: 'tbseparator',

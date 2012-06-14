@@ -5,11 +5,6 @@
 <head>
     <title><s:property value="report.name"/></title>
     
-    <%-- <script type="text/javascript" src="js/pics/extjs/ext-neptune.js"></script> --%>
-    <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/ext-neptune.css"> -->
-    
-    <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/ext-all.css"> -->
-    
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/font-awesome.css">

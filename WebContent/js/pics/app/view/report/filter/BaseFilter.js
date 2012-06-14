@@ -27,12 +27,13 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
                 cls: 'filter-name',
                 name: 'filter_name'
             }, {
-               xtype: 'tbfill' 
+               xtype: 'tbfill'
             }, {
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
-                text: '<a href="#"><img src="js/pics/app/resources/images/remove-filter.png" /></a>',
+                height: 15,
+                text: '<i class="icon-minus icon-large"></i>',
                 tooltip: 'Remove',
                 width: 30
             }],

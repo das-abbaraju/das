@@ -8,7 +8,7 @@ Ext.define('PICS.store.report.Reports', {
 	extend : 'Ext.data.Store',
 	model : 'PICS.model.report.Report',
 
-	autoLoad: false,
+	autoLoad: true,
     proxy: {
         reader: {
             root: 'report',
@@ -24,7 +24,7 @@ Ext.define('PICS.store.report.Reports', {
 
         this.callParent(arguments);
     },
-    
+
     /**
      * Get Report JSON
      *
@@ -62,7 +62,7 @@ Ext.define('PICS.store.report.Reports', {
 
         return Ext.encode(report_data);
     },
-    
+
     getReportParameters: function () {
         var report = this.first();
 
@@ -86,14 +86,14 @@ Ext.define('PICS.store.report.Reports', {
         parameters['report.description'] = report.get('description');
 
         parameters['report.rowsPerPage'] = report.get('rowsPerPage');
-        
+
         return parameters;
     },
-    
+
     getReportQueryString: function () {
         var parameters = this.getReportParameters();
-        
+
         return Ext.Object.toQueryString(parameters);
-        
+
     }
 });

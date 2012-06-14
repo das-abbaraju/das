@@ -24,17 +24,32 @@ Ext.define('PICS.controller.report.FilterController', {
     ],
 
     init: function() {
+    	var that = this;
+
         this.control({
+        	'filteroptions #report_filters': {
+        		render: function () {
+        			if (this.getReportReportsStore().isLoading()) {
+			        	this.getReportReportsStore().addListener({
+				    		load: function (store, records, successful, eOpts) {
+				    			that.application.fireEvent('refreshfilters');
+				    		}
+				    	});
+			        } else {
+			        	this.application.fireEvent('refreshfilters');
+			        }
+        		}
+        	},
             'filteroptions button[action=add-filter]': {
                 click: function () {
-                    PICS.app.fireEvent('showcolumnselector', {
+                    that.application.fireEvent('showcolumnselector', {
                         columnSelectorType: 'filter'
                     });
                 }
             },
             'filteroptions button[action=search]': {
                 click: function () {
-                    PICS.app.fireEvent('refreshreport');
+                	that.application.fireEvent('refreshreport');
                 }
             },
             'filteroptions button[action=update]': {
@@ -114,7 +129,7 @@ Ext.define('PICS.controller.report.FilterController', {
 
         report.set('filterExpression', expression);
 
-        PICS.app.fireEvent('refreshreport');
+        this.application.fireEvent('refreshreport');
     },
 
     createFilterExpression: function () {
@@ -156,11 +171,9 @@ Ext.define('PICS.controller.report.FilterController', {
 
     refreshFilters: function () {
         var filterContainer = null;
+        var filterContainer = this.generateFilterPanels();
 
         this.getFilters().removeAll();
-
-        filterContainer = this.generateFilterPanels();
-
         this.getFilters().add(filterContainer);
     },
 
@@ -170,8 +183,8 @@ Ext.define('PICS.controller.report.FilterController', {
 
         store.remove(record);
 
-        PICS.app.fireEvent('refreshfilters');
-        PICS.app.fireEvent('refreshreport');
+        this.application.fireEvent('refreshfilters');
+        this.application.fireEvent('refreshreport');
     },
 
     removeFilterExpression: function (button, event, options) {

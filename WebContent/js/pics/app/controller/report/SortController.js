@@ -2,8 +2,8 @@ Ext.define('PICS.controller.report.SortController', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'sortButtons',
-        selector: 'sortbuttons'
+        ref: 'reportSorts',
+        selector: 'reportsorts'
     }, {
         ref: 'dataSetGrid',
         selector: 'reportdatasetgrid'
@@ -14,25 +14,27 @@ Ext.define('PICS.controller.report.SortController', {
     ],
 
     init: function () {
+    	var that = this;
+
         this.control({
-            'sortbuttons button[action=sort-report]': {
+        	'reportsorts': {
+        		render: function () {
+        			if (this.getReportReportsStore().isLoading()) {
+			        	this.getReportReportsStore().addListener({
+				    		load: function (store, records, successful, eOpts) {
+				    			that.application.fireEvent('refreshsorts');
+				    		}
+				    	});
+			        } else {
+			        	this.application.fireEvent('refreshsorts');
+			        }
+        		}
+        	},
+            'reportsorts button[action=sort-report]': {
                 click: this.setSortItemProperties
             },
-            'sortbuttons menuitem[action=remove-sort]': {
+            'reportsorts menuitem[action=remove-sort]': {
                 click: this.removeSort
-            },
-            'reportsorttoolbar button[name=downloadexcel]': {
-                click: function (component) {
-                    var params = PICS.app.getController('report.ReportSaveController').getReportParameters();
-
-                    var reports = this.getReportReportsStore().first();
-
-                    var reportId = reports.getId();
-
-                    var url = 'ReportDynamic!download.action?' + params;
-
-                    document.location.href = url;
-                }
             }
         });
 
@@ -45,18 +47,18 @@ Ext.define('PICS.controller.report.SortController', {
     addReportStoreSorts: function () {
         var me = this,
             sortStore = this.getReportReportsStore().first().sorts(),
-            toolbar = this.getSortButtons();
+            sorts = this.getReportSorts();
 
         sortStore.each(function (record) {
             button = me.createSortButton(record);
-            toolbar.add(button);
+            sorts.add(button);
         });
     },
 
     //entry point from column controls
     addSortItem: function (columnName, selectedDirection) {
         var sortStore = this.getReportReportsStore().first().sorts(),
-            toolbar = this.getSortButtons();
+            sorts = this.getReportSorts();
 
         if (this.sortItemExists(columnName)) {
             this.updateSortItemDirection(columnName, selectedDirection);
@@ -70,9 +72,9 @@ Ext.define('PICS.controller.report.SortController', {
 
             button = this.createSortButton(sortItem);
 
-            toolbar.add(button);
+            sorts.add(button);
 
-            PICS.app.fireEvent('refreshreport');
+            this.application.fireEvent('refreshreport');
         }
     },
 
@@ -83,7 +85,7 @@ Ext.define('PICS.controller.report.SortController', {
         var sort = {
             xtype: 'splitbutton',
             action: 'sort-report',
-            text: record.get('name'),
+            cls: 'sort',
             height: 26,
             icon: '../js/pics/resources/themes/images/default/grid/sort_asc.gif',
             iconAlign: 'left',
@@ -95,7 +97,8 @@ Ext.define('PICS.controller.report.SortController', {
                     record: record
                 }]
             }),
-            record: record
+            record: record,
+            text: record.get('name')
         };
 
         if (record.get('direction') === 'DESC') {
@@ -110,19 +113,18 @@ Ext.define('PICS.controller.report.SortController', {
     },
 
     refreshSorts: function () {
-        this.getSortButtons().removeAll();
+        this.getReportSorts().removeAll();
         this.addReportStoreSorts();
     },
 
     removeSort: function (component) {
-        var sortStore = this.getReportReportsStore().first().sorts(),
-            toolbar = this.getSortButtons();
+        var sortStore = this.getReportReportsStore().first().sorts();
 
         sortStore.remove(component.record);
 
         this.refreshSorts();
 
-        PICS.app.fireEvent('refreshreport');
+        this.application.fireEvent('refreshreport');
     },
 
     setSortItemProperties: function (component) {
@@ -134,7 +136,7 @@ Ext.define('PICS.controller.report.SortController', {
             component.record.set('direction', 'ASC')
         }
 
-        PICS.app.fireEvent('refreshreport');
+        this.application.fireEvent('refreshreport');
     },
 
     sortItemExists: function (columnName) {
@@ -153,7 +155,7 @@ Ext.define('PICS.controller.report.SortController', {
     updateSortItemDirection: function (columnName, selectedDirection) {
         var previousDirection = '',
             sortStore = this.getReportReportsStore().first().sorts(),
-            toolbar = this.getSortButtons();
+            sorts = this.getReportSorts();
 
         previousDirection = sortStore.findRecord('name', columnName).get('direction');
 

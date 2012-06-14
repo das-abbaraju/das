@@ -1,0 +1,61 @@
+#report_filters
+{
+	border-bottom: 1px solid #999999;
+}
+
+#report_filters-body,
+#report_filters .filter-container-body,
+#report_filters .filter-body,
+#report_filters .x-box-inner
+{
+	width: 100% !important;
+}
+
+#report_filters .x-box-inner div:first-child
+{
+	width: auto !important;
+}
+
+#report_filters .filter
+{
+	background: #f1f1f1;
+	border-top: 1px solid #999999;
+}
+
+#report_filters .filter-number label
+{
+	color: #999999;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 0px !important;
+	text-align: center;
+}
+
+#report_filters .filter-name div
+{
+	color: #333333;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#report_filters .remove-filter
+{
+	@include background-image(linear-gradient(#f32e3a, #b30710));
+	border: 1px solid #ac030c;
+	padding: 0px;
+}
+
+#report_filters .remove-filter.x-btn-over
+{
+	background: #b30710;
+}
+
+#report_filters .remove-filter span
+{
+	padding: 0px;
+}
+
+#report_filters .remove-filter .icon-minus
+{
+	color: #ffffff;
+}

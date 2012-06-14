@@ -1,7 +1,9 @@
-Ext.define('PICS.view.report.SortToolbar', {
+Ext.define('PICS.view.report.Toolbar', {
     extend: 'Ext.toolbar.Toolbar',
-    alias: ['widget.reportsorttoolbar'],
-    requires: ['PICS.view.report.SortButtons'],
+    alias: ['widget.reporttoolbar'],
+    requires: [
+       'PICS.view.report.Sorts'
+    ],
 
     height: 50,
     id: 'report_toolbar',
@@ -10,8 +12,8 @@ Ext.define('PICS.view.report.SortToolbar', {
         cls: 'header',
         text: 'Sort Order:'
     }, {
-        xtype: 'sortbuttons',
-        id: 'report_sort'
+        xtype: 'reportsorts',
+        id: 'report_sorts'
     }, {
         xtype: 'tbfill'
     }, {

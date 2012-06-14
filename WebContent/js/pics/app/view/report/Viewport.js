@@ -1,5 +1,6 @@
 Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
+    alias: 'widget.viewport',
 
     requires: [
         'PICS.view.layout.Footer',
@@ -9,30 +10,25 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.report.Header'
     ],
 
-    layout: 'border',
-    listeners: {
-        render: function () {
-             Ext.get('loadingPage').dom.hidden = true;
-        }
-    },
     items: [{
-        region: 'north',
-        xtype: 'layoutheader'
+    	xtype: 'layoutheader',
+        region: 'north'
     }, {
         region: 'center',
 
         border: 0,
         id: 'content',
         items: [{
-            region: 'north',
-            xtype: 'reportheader'
+        	xtype: 'reportheader',
+            region: 'north'
         }, {
-            region: 'west',
-            xtype: 'filteroptions'
+        	xtype: 'filteroptions',
+            region: 'west'
         }, {
-            region: 'center',
-            xtype: 'reportdatasetgrid'
+        	xtype: 'reportdatasetgrid',
+            region: 'center'
         }],
         layout: 'border'
-    }]
+    }],
+    layout: 'border'
 });

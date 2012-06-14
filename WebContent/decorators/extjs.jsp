@@ -10,8 +10,8 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		
-		<script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
-		<%-- <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script> --%>
+		<%-- <script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script> --%>
+		<script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
 		
 		<decorator:head />
 	</head>

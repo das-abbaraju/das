@@ -15,6 +15,11 @@
 	margin-right: 10px;
 }
 
+#report_actions .edit.x-btn-over
+{
+	background: #dcdcdc;
+}
+
 #report_actions .edit button span
 {
 	font-size: 16px;
@@ -32,6 +37,11 @@
 	@include background-image(linear-gradient(#33c033, #229322));
 	border-color: #229322;
 	margin-right: 20px;
+}
+
+#report_actions .save.x-btn-over
+{
+	background: #229322;
 }
 
 #report_actions .save .x-btn-split-right

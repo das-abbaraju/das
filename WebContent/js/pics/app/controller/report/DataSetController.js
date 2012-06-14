@@ -59,7 +59,7 @@ Ext.define('PICS.controller.report.DataSetController', {
         });
     },
 
-    // SHOULD NOT BE HERE
+    // TODO: SHOULD NOT BE HERE
     configureColumnMenu: function (grid) {
         var me = this;
 
@@ -82,19 +82,6 @@ Ext.define('PICS.controller.report.DataSetController', {
                     cls: 'x-hmenu-sort-desc',
                     name: 'sortDESC',
                     text: 'Sort Descending',
-                }, {
-                    text: 'Options',
-                    menu: {
-                        xtype: 'menu',
-                        items: [{
-                            text: 'Temp Option 1'
-                        }, {
-                            text: 'Temp Option 2'
-                        }, {
-                            text: 'Temp Option 3'
-                        }]
-                    },
-                    width: 120
                 }, {
                     name: 'removeColumn',
                     text: 'Remove'

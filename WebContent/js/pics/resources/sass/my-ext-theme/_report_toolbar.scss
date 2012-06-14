@@ -9,34 +9,39 @@
 {
 	color: #ffffff;
 	font-size: 18px;
-	font-weight: bold;
+	font-weight: normal;
 	top: 6px !important;
 }
 
-#report_sort
+#report_sorts
 {
 	padding: 0px;
 }
 
-#report_sort,
-#report_sort .x-toolbar-default
+#report_sorts,
+#report_sorts .x-toolbar-default
 {
 	background: none;
 }
 
-#report_sort .x-btn
+#report_sorts .sort
 {
 	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
 	border: 1px solid #bcbcbc;
 }
 
-#report_sort .x-btn-split-right
+#report_sorts .sort.x-btn-over
+{
+	background: #dcdcdc;
+}
+
+#report_sorts .x-btn-split-right
 {
 	background-image: url('../images/button/s-arrow.gif');
 	padding-right: 14px !important;
 }
 
-#report_sort .x-btn-icon-text-left .x-btn-icon
+#report_sorts .x-btn-icon-text-left .x-btn-icon
 {
 	background-position: center;
 	margin-left: 3px;
@@ -47,6 +52,11 @@
 	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
 	border: 1px solid #bcbcbc;
 	margin-left: 10px;
+}
+
+#report_toolbar .add-column.x-btn-over
+{
+	background: #dcdcdc;
 }
 
 #report_toolbar .add-column em

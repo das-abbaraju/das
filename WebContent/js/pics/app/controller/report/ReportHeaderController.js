@@ -74,6 +74,21 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                     this.createNewReport();
                 }
             }
+
+            // TODO: needs implementing
+            /*'reporttoolbar button[name=downloadexcel]': {
+                click: function (component) {
+                    var params = that.application.getController('report.ReportSaveController').getReportParameters();
+
+                    var reports = this.getReportReportsStore().first();
+
+                    var reportId = reports.getId();
+
+                    var url = 'ReportDynamic!download.action?' + params;
+
+                    document.location.href = url;
+                }
+            }*/
         });
     },
 

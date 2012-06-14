@@ -13,36 +13,31 @@ Ext.define('PICS.controller.report.ReportController', {
     ],
 
     init: function () {
+    	var that = this;
+
+    	this.control({
+    		'reportdatasetgrid': {
+    			render: function () {
+    				if (this.getReportReportsStore().isLoading()) {
+			        	this.getReportReportsStore().addListener({
+				    		load: function (store, records, successful, eOpts) {
+				    			that.application.fireEvent('refreshreport');
+				    		}
+				    	});
+			        } else {
+			        	this.application.fireEvent('refreshreport');
+			        }
+    			}
+    		}
+    	});
+
         this.application.on({
             refreshreport: this.refreshReport,
             scope: this
         });
     },
 
-    onLaunch: function () {
-        this.getReportAvailableFieldsStore().load();
-
-        this.getReportReportsStore().load({
-            scope: this,
-            callback: function(records, operation, success) {
-                this.refreshReport();
-                this.refreshFilters();
-                this.refreshSorts();
-            }
-        });
-    },
-
-    refreshFilters: function () {
-        this.application.fireEvent('refreshfilters');
-    },
-
-    // TODO: fishy
     refreshReport: function () {
-        //this.getController('report.ReportHeaderController').updateReportSettings();
         this.getReportDataSetsStore().buildDataSetGrid();
-    },
-
-    refreshSorts: function () {
-        this.application.fireEvent('refreshsorts');
     }
 });

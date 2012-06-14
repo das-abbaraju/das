@@ -55,12 +55,19 @@ Ext.application({
     ],
 
     launch: function () {
-        PICS.app = this; //save reference to application
+    	var that = this;
 
-        this.getConfiguration();
+    	// save reference to application
+        PICS.app = this;
+
+        this.getConfiguration({
+        	success: function () {
+        		that.createViewport.apply(that);
+        	}
+        });
     },
 
-    getConfiguration: function () {
+    getConfiguration: function (options) {
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({
@@ -68,6 +75,7 @@ Ext.application({
            success: function (result) {
                var result = Ext.decode(result.responseText);
 
+               // configuration closure
                PICS.app.configuration = (function config() {
                    return {
                        isEditable: function () {
@@ -76,8 +84,24 @@ Ext.application({
                    };
                })();
 
-               Ext.create('PICS.view.report.Viewport');
+               // success callback
+               if (options && options.success && typeof options.success == 'function') {
+            	   options.success();
+               }
            }
+        });
+    },
+
+    createViewport: function () {
+    	var that = this;
+
+    	Ext.create('PICS.view.report.Viewport', {
+    		listeners: {
+    			render: function (component, eOpts) {
+    				// remove loading background
+    				Ext.get('loadingPage').dom.hidden = true;
+     		   }
+     	   }
         });
     }
 });

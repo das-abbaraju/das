@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.SortButtons', {
+Ext.define('PICS.view.report.Sorts', {
     extend: 'Ext.toolbar.Toolbar',
-    alias: ['widget.sortbuttons'],
+    alias: ['widget.reportsorts'],
 
     border: false,
     defaults: {
