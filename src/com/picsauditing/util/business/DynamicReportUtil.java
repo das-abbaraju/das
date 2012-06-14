@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.report.Column;
 import com.picsauditing.util.SpringUtils;
 
 public class DynamicReportUtil {
@@ -56,5 +57,17 @@ public class DynamicReportUtil {
 			return true;
 
 		return false;
+	}
+
+	public static Column getColumnFromFieldName(String fieldName, List<Column> columns) {
+		if (fieldName == null)
+			return null;
+
+		for (Column column : columns) {
+			if (column.getFieldName().equals(fieldName))
+				return column;
+		}
+
+		return null;
 	}
 }

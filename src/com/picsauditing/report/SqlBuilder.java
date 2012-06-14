@@ -1,5 +1,7 @@
 package com.picsauditing.report;
 
+import static com.picsauditing.util.business.DynamicReportUtil.getColumnFromFieldName;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -91,9 +93,14 @@ public class SqlBuilder {
 	}
 
 	private void addJoins(AbstractTable table) {
+		if (table == null || table.getJoins() == null)
+			return;
+
 		for (AbstractTable joinTable : table.getJoins()) {
+
 			if (joinTable.isJoinNeeded(definition)) {
 				String joinExpression = "";
+
 				if (!joinTable.isInnerJoin())
 					joinExpression += "LEFT ";
 
@@ -172,7 +179,7 @@ public class SqlBuilder {
 		if (columnName == null)
 			return false;
 
-		Column column = convertColumn(columnName);
+		Column column = getColumnFromFieldName(columnName, definition.getColumns());
 		if (column == null)
 			return false;
 
@@ -184,6 +191,8 @@ public class SqlBuilder {
 
 	private String columnToSql(Column column, Map<String, Field> availableFields) {
 		Field field = availableFields.get(column.getFieldName().toUpperCase());
+		if (field == null)
+			return "";
 
 		String fieldSql = field.getDatabaseColumnName();
 		if (column.getFunction() == null)
@@ -267,23 +276,11 @@ public class SqlBuilder {
 		}
 	}
 
-	private Column convertColumn(String columnName) {
-		if (columnName == null)
-			return null;
-
-		for (Column column : definition.getColumns()) {
-			if (column.getFieldName().equals(columnName))
-				return column;
-		}
-
-		return null;
-	}
-
 	private String toFilterSql(Filter filter, Map<String, Field> availableFields) {
 		if (!filter.isValid())
 			return "true";
 
-		Column column = convertColumn(filter.getFieldName());
+		Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
 
 		if (column == null) {
 			column = new Column(filter.getFieldName());
@@ -346,16 +343,15 @@ public class SqlBuilder {
 		return "'" + value + "'";
 	}
 
-	private String addQuotesToValues(String value) {
-		String[] values = value.split(",");
+	private String addQuotesToValues(String unquotedValuesString) {
+		String[] unquotedValues = unquotedValuesString.split(",");
 		List<String> quotedList = new ArrayList<String>();
-		for(String individualValue : values){
-			individualValue.trim();
-			individualValue = "'"+individualValue+"'";
-			quotedList.add(individualValue);
+
+		for (String unquotedValue : unquotedValues){
+			quotedList.add("'" + unquotedValue.trim() + "'");
 		}
-		value = StringUtils.join(quotedList.toArray(),",");
-		return value;
+
+		return StringUtils.join(quotedList.toArray(),",");
 	}
 
 	private void addOrderByClauses(AbstractModel model, Map<String, Field> availableFields) {
@@ -370,7 +366,7 @@ public class SqlBuilder {
 		for (Sort sort : definition.getSorts()) {
 			String fieldName = sort.getFieldName();
 
-			Column column = getColumnFromFieldName(fieldName);
+			Column column = getColumnFromFieldName(fieldName, definition.getColumns());
 			if (column == null) {
 				Field field = availableFields.get(fieldName.toUpperCase());
 				if (field != null && field.getDatabaseColumnName() != null)
@@ -385,15 +381,6 @@ public class SqlBuilder {
 //			sort.setField(getFieldFromFieldName(sort.getFieldName()));
 			sort.setField(field);
 		}
-	}
-
-	private Column getColumnFromFieldName(String fieldName) {
-		for (Column column : definition.getColumns()) {
-			if (column.getFieldName().equals(fieldName))
-				return column;
-		}
-
-		return null;
 	}
 
 	// Setters
