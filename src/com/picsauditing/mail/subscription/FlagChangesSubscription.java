@@ -64,7 +64,7 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			report.setLimit(100000);
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 
 			List<DynaBean> upgrades = new ArrayList<DynaBean>();
 			List<DynaBean> downgrades = new ArrayList<DynaBean>();

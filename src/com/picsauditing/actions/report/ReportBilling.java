@@ -64,6 +64,7 @@ public class ReportBilling extends ReportAccount {
 				+ "WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'Renewals' "
 				+ "WHEN cf.newAmount > cf.currentAmount THEN 'Upgrades' ELSE 'Other' END billingStatus");
 		sql.addWhere(where);
+		sql.addWhere("cf.feeClass != CASE WHEN c.paymentExpires < ADDDATE(NOW(), INTERVAL 45 DAY) THEN 'ImportFee' ELSE '' END");
 		sql.addWhere("f.maxFacilities > 0");
 		sql.addGroupBy("a.id HAVING SUM(cf.newAmount) > 0");
 	}

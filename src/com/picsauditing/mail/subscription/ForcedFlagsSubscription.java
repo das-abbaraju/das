@@ -61,7 +61,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			report.setLimit(100);
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 
 			List<DynaBean> forcedFlags = new ArrayList<DynaBean>();
 

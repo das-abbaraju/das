@@ -24,7 +24,7 @@ public class Report extends TranslationActionSupport {
 	private HashMap<String, SelectFilter> filters = new HashMap<String, SelectFilter>();
 	private String orderBy;
 
-	public List<BasicDynaBean> getPage() throws SQLException {
+	public List<BasicDynaBean> getPage(boolean debug) throws SQLException {
 		sql.addOrderBy(this.orderBy);
 		for (String filter : filters.keySet()) {
 			sql.addWhere(filters.get(filter).getWhere());
@@ -40,7 +40,21 @@ public class Report extends TranslationActionSupport {
 		Database db = new Database();
 		String sqlText = sql.toString(unionSql);
 		
+		long start = System.currentTimeMillis();
+		if (debug) {
+			System.out.println();
+			System.out.println(sql.toString(unionSql));
+			System.out.println("Start: " + start);
+		}
+
 		List<BasicDynaBean> pageData = db.select(sqlText, true);
+
+		long finish = System.currentTimeMillis();
+		if (debug) {
+			System.out.println("Finish: " + finish);
+			System.out.println("TOTAL: " + (finish-start));
+		}
+
 		returnedRows = pageData.size();
 		allRows = db.getAllRows();
 		return pageData;

@@ -397,7 +397,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addOrderBy("a.country, a.state");
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -415,7 +415,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addWhere("id = " + auditID);
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

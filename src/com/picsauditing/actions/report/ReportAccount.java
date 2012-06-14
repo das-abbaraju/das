@@ -164,21 +164,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (runReport) {
 			buildQuery();
-			
-			long start = System.currentTimeMillis();
-			if (isDebugging()) {
-				System.out.println();
-				System.out.println(sql.toString(unionSql));
-				System.out.println("Start: " + start);
-			}
-
 			run(sql, unionSql);
-
-			long finish = System.currentTimeMillis();
-			if (isDebugging()) {
-				System.out.println("Finish: " + finish);
-				System.out.println("TOTAL: " + (finish-start));
-			}
 
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.clear();
