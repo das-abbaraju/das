@@ -1,6 +1,5 @@
 Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
-    alias: 'widget.viewport',
 
     requires: [
         'PICS.view.layout.Footer',
