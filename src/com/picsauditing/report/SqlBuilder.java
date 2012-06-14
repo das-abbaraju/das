@@ -130,7 +130,7 @@ public class SqlBuilder {
 				}
 
 				String columnSql = columnToSql(column, availableFields);
-				if (usesGroupBy && !isAggregate(column.getFieldName())) {
+				if (usesGroupBy && !isAggregate(column)) {
 					sql.addGroupBy(columnSql);
 				}
 
@@ -167,7 +167,7 @@ public class SqlBuilder {
 		for (Column column : definition.getColumns()) {
 			Field field = availableFields.get(column.getFieldName().toUpperCase());
 			if (field != null) {
-				if (isAggregate(column.getFieldName())) {
+				if (isAggregate(column)) {
 					return true;
 				}
 			}
@@ -175,11 +175,7 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private boolean isAggregate(String columnName) {
-		if (columnName == null)
-			return false;
-
-		Column column = getColumnFromFieldName(columnName, definition.getColumns());
+	private boolean isAggregate(Column column) {
 		if (column == null)
 			return false;
 
@@ -239,7 +235,8 @@ public class SqlBuilder {
 			// TODO we might want to verify the filter is properly defined
 			// before including it
 			// if (filter.isFullyDefined()) { }
-			if (isAggregate(filter.getFieldName())) {
+			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
+			if (isAggregate(column)) {
 				havingFilters.add(filter);
 			} else {
 				whereFilters.add(filter);
@@ -260,7 +257,8 @@ public class SqlBuilder {
 
 		int whereIndex = 0;
 		for (Filter filter : whereFilters) {
-			if (!isAggregate(filter.getFieldName())) {
+			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
+			if (!isAggregate(column)) {
 				String filterExp = toFilterSql(filter, availableFields);
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
 				whereIndex++;
@@ -269,7 +267,8 @@ public class SqlBuilder {
 		sql.addWhere(where);
 
 		for (Filter filter : havingFilters) {
-			if (isAggregate(filter.getFieldName())) {
+			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
+			if (isAggregate(column)) {
 				String filterExp = toFilterSql(filter, availableFields);
 				sql.addHaving(filterExp);
 			}

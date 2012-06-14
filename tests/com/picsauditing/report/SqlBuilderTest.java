@@ -50,6 +50,7 @@ public class SqlBuilderTest {
 	@Mock private SelectSQL sql;
 	@Mock private Definition definition;
 	@Mock private Field field;
+	@Mock private Column column;
 
 	@Before
 	public void setUp() throws Exception {
@@ -272,7 +273,7 @@ public class SqlBuilderTest {
 		assertFalse(result);
 	}
 
-	@Ignore("Need to resolve way to stub private method")
+	@Ignore
 	@Test
 	public void testUsesGroupBy_FalseIfFieldIsNotAggregrate() throws Exception {
 		List<Column> columns = new ArrayList<Column>();
@@ -303,27 +304,11 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testIsAggregate_FalseIfGetColumnFromFieldNameReturnsNull() throws Exception {
-		String columnName = "columnName";
-		List<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("someOtherColumnName"));
-		when(definition.getColumns()).thenReturn(columns);
-
-		boolean result = Whitebox.invokeMethod(builder, "isAggregate", columnName);
-
-		assertFalse(result);
-	}
-
-	@Test
 	public void testIsAggregate_FalseIfColumnFunctionIsNull() throws Exception {
-		String columnName = "columnName";
-		List<Column> columns = new ArrayList<Column>();
-		Column column = new Column("someOtherColumnName");
+		Column column = new Column("columnName");
 		column.setFunction(null);
-		columns.add(column);
-		when(definition.getColumns()).thenReturn(columns);
 
-		boolean result = Whitebox.invokeMethod(builder, "isAggregate", columnName);
+		boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
 
 		assertFalse(result);
 	}
