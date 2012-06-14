@@ -87,6 +87,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	protected String output = null;
 
+	protected String url = null;
+
 	/**
 	 * This is rarely used now because of limitations with i18n on Button names.
 	 * This could still be used for non-translated pages such as PICS facing
@@ -129,7 +131,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> safetyList;
 
 	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
-	
+
 	@Deprecated
 	public static final String getVersion() {
 		return PicsOrganizerVersion.getVersion();
@@ -226,7 +228,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
-					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.", autoLoginID);
+					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
+							autoLoginID);
 					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
 					permissions.login(user);
@@ -535,6 +538,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return output;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
 	public JSONObject getJson() {
 		return json;
 	}
@@ -608,8 +615,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String redirect(String url) throws IOException {
-		ServletActionContext.getResponse().sendRedirect(url);
-		return BLANK;
+		this.url = url;
+		return REDIRECT;
 	}
 
 	public String getFormattedDollarAmount(String answer) {
@@ -623,7 +630,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			response = decimalFormat.format(input);
 		} catch (Exception e) {
-			 logger.error("unable to format as money: {}", answer);
+			logger.error("unable to format as money: {}", answer);
 		}
 		return response;
 	}
