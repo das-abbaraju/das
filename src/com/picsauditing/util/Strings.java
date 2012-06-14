@@ -24,6 +24,8 @@ import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {
+	
+	public static final String EMPTY_STRING = ""; 
 
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
 	public static boolean isEmpty(String value) {
@@ -73,8 +75,9 @@ public class Strings {
 		return newValue.toString().trim();
 	}
 
+	// TODO Put the TODOs about method names at the top of the method
+	// TODO rename this method to escapeSingleQuote
 	public static String escapeQuotes(String value) {
-		// TODO rename this method to escapeSingleQuote
 		if (value == null)
 			return "";
 		String singleQuote = "\'";
@@ -101,7 +104,7 @@ public class Strings {
 
 	public static String implodeForDB(String[] array, String delimiter) {
 		if (array == null)
-			return "";
+			return EMPTY_STRING;
 		StringBuffer buffer = new StringBuffer();
 		for (String o : array) {
 			if (buffer.length() > 0)
@@ -115,7 +118,7 @@ public class Strings {
 
 	public static String implodeForDB(Enum[] array, String delimiter) {
 		if (array == null)
-			return "";
+			return EMPTY_STRING;
 		StringBuffer buffer = new StringBuffer();
 		for (Enum o : array) {
 			if (buffer.length() > 0)
@@ -130,6 +133,7 @@ public class Strings {
 	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";
+		
 		StringBuffer buffer = new StringBuffer();
 		for (Object o : collection) {
 			if (buffer.length() > 0)

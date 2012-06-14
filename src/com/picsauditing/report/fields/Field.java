@@ -1,5 +1,6 @@
 package com.picsauditing.report.fields;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -19,6 +20,7 @@ import com.picsauditing.util.Strings;
  * http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
  */
 public class Field implements JSONAware {
+	
 	private Class<?> fieldClass;
 	private String name;
 	private String text;
@@ -39,15 +41,23 @@ public class Field implements JSONAware {
 	private FieldCategory category = FieldCategory.General;
 	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
 
-	// Currently autocomplete is only supported via entity annotations
+	/**
+	 * Currently autocomplete is only supported via entity annotations
+	 *  
+	 * @param annotation
+	 */
 	public Field(ReportField annotation) {
 		this.filterType = annotation.filterType();
 		this.autocompleteType = annotation.autocomplete();
+		this.width = annotation.width();
+		this.url = annotation.url();
 		this.preTranslation = annotation.i18nKeyPrefix();
 		this.postTranslation = annotation.i18nKeySuffix();
 		this.visible = annotation.visible();
 		this.filterable = annotation.filterable();
 		this.sortable = annotation.sortable();
+		this.category = annotation.category();
+		this.requiredPermissions = new HashSet<OpPerms>(Arrays.asList(annotation.requiredPermissions()));
 	}
 
 	public Field(String name, String databaseColumnName, FilterType filterType) {

@@ -116,6 +116,7 @@ public abstract class AbstractTable {
 	// Method chaining should only be for a single class
 	protected Field addField(String fieldName, String sql, FilterType filter) {
 		Field field = new Field(fieldName, sql, filter);
+		
 		// We don't want to be case sensitive when matching names
 		availableFields.put(fieldName.toUpperCase(), field);
 		return field;
@@ -167,6 +168,7 @@ public abstract class AbstractTable {
 				if (column.getFieldNameWithoutFunction().equals(field.getName()))
 					return true;
 			}
+			
 			for (Filter filter : definition.getFilters()) {
 				if (filter.getFieldName().equals(field.getName()))
 					return true;

@@ -110,8 +110,7 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", false);
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
-			// TODO add logging
-			e.printStackTrace();
+			logger.error("An error occurred while copying a report for user {}", permissions.getUserId(), e);
 			writeJsonErrorMessage(e);
 		}
 
@@ -127,8 +126,8 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", false);
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
-			// TODO add logging
-			e.printStackTrace();
+			logger.error("An error occurred while editing a report id = {} for user {}", 
+					report.getId(), permissions.getUserId());
 			writeJsonErrorMessage(e);
 		}
 
@@ -327,51 +326,80 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private void addTranslatedLabelsToReportParameters(Definition definition) {
-		if (definition.getColumns().size() > 0) {
+		addTranslationLabelsToFields(definition);
+		addTranslationLabelsToFilters(definition);
+		addTranslationLabelsToSorts(definition);
+//		if (definition.getColumns().size() > 0) {
+//			for (Column column : definition.getColumns()) {
+//				column.getField().setText(translateLabel(column.getField()));
+//			}
+//		}
+//		
+//		if (definition.getFilters().size() > 0) {
+//			for (Filter filter : definition.getFilters()) {
+//				filter.getField().setText(translateLabel(filter.getField()));
+//			}
+//		}
+//		
+//		if (definition.getSorts().size() > 0) {
+//			for (Sort sort : definition.getSorts()) {
+//				sort.getField().setText(translateLabel(sort.getField()));
+//			}
+//		}
+	}
+	
+	private void addTranslationLabelsToFields(Definition definition) {
+		if (CollectionUtils.isNotEmpty(definition.getColumns())) {
 			for (Column column : definition.getColumns()) {
 				column.getField().setText(translateLabel(column.getField()));
 			}
 		}
-		if (definition.getFilters().size() > 0) {
+	}
+	
+	private void addTranslationLabelsToFilters(Definition definition) {
+		if (CollectionUtils.isNotEmpty(definition.getFilters())) {
 			for (Filter filter : definition.getFilters()) {
 				filter.getField().setText(translateLabel(filter.getField()));
 			}
 		}
-		if (definition.getSorts().size() > 0) {
+	}
+	
+	private void addTranslationLabelsToSorts(Definition definition) {
+		if (CollectionUtils.isNotEmpty(definition.getSorts())) {
 			for (Sort sort : definition.getSorts()) {
 				sort.getField().setText(translateLabel(sort.getField()));
 			}
 		}
 	}
 
-	@Deprecated
-	private void saveTranslation(Map<String, AppTranslation> existing, String key) {
-		AppTranslation translation = existing.get(key);
-
-		if (translation == null) {
-			translation = new AppTranslation();
-			translation.setKey(key);
-			translation.setLocale("en");
-			translation.setQualityRating(TranslationQualityRating.Bad);
-			translation.setValue("?" + key);
-			translation.setAuditColumns(permissions);
-			System.out.println("Adding " + key);
-			existing.put(key, translation);
-		} else {
-			Calendar yesterday = Calendar.getInstance();
-			yesterday.add(Calendar.DAY_OF_YEAR, -1);
-			if (translation.getLastUsed().after(yesterday.getTime())) {
-				System.out.println("Already updated " + key);
-				return;
-			}
-			System.out.println("Updating " + key);
-		}
-
-		translation.setLastUsed(new Date());
-		translation.setApplicable(true);
-		translation.setContentDriven(true);
-		dao.save(translation);
-	}
+//	@Deprecated
+//	private void saveTranslation(Map<String, AppTranslation> existing, String key) {
+//		AppTranslation translation = existing.get(key);
+//
+//		if (translation == null) {
+//			translation = new AppTranslation();
+//			translation.setKey(key);
+//			translation.setLocale("en");
+//			translation.setQualityRating(TranslationQualityRating.Bad);
+//			translation.setValue("?" + key);
+//			translation.setAuditColumns(permissions);
+//			System.out.println("Adding " + key);
+//			existing.put(key, translation);
+//		} else {
+//			Calendar yesterday = Calendar.getInstance();
+//			yesterday.add(Calendar.DAY_OF_YEAR, -1);
+//			if (translation.getLastUsed().after(yesterday.getTime())) {
+//				System.out.println("Already updated " + key);
+//				return;
+//			}
+//			System.out.println("Updating " + key);
+//		}
+//
+//		translation.setLastUsed(new Date());
+//		translation.setApplicable(true);
+//		translation.setContentDriven(true);
+//		dao.save(translation);
+//	}
 
 	public String translateLabel(Field field) {
 		String translatedText = getText("Report." + field.getName());
@@ -399,6 +427,12 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("error", e.getCause() + " " + e.getMessage());
 	}
 
+	/**
+	 * The purpose of this method is to convert the queryResult into a JSONObject, 
+	 * 
+	 * @param queryResults
+	 * @param availableFields
+	 */
 	private void convertToJson(List<BasicDynaBean> queryResults, Map<String, Field> availableFields) {
 		JSONArray jsonRows = new JSONArray();
 
@@ -437,7 +471,7 @@ public class ReportDynamic extends PicsActionSupport {
 					} else if (value instanceof java.sql.Timestamp) {
 						Timestamp valueAsTimestamp = (Timestamp) value;
 						jsonRow.put(column, valueAsTimestamp.getTime());
-
+						
 					} else {
 						jsonRow.put(column, value.toString());
 					}
@@ -461,7 +495,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return false;
 	}
 
-	// TODO: Refactor, because it seems just like the jsonException method. WTF?
+	// TODO: Refactor, because it seems just like the jsonException method.
 	private void logError(Exception e) {
 		json.put("success", false);
 		String message = e.getMessage();
@@ -522,7 +556,7 @@ public class ReportDynamic extends PicsActionSupport {
 			initialTranslationKey = keyPrefix + "." + initialTranslationKey;
 		}
 
-		if(!Strings.isEmpty(keySuffix)){
+		if(!Strings.isEmpty(keySuffix)) {
 			initialTranslationKey = initialTranslationKey + "." + keySuffix;
 		}
 
@@ -571,34 +605,35 @@ public class ReportDynamic extends PicsActionSupport {
 
 	// TODO: Remove this once we figure out what to do with this and why it is doing the same
 	// this as the i18n cache
-	@Deprecated
-	public String fillTranslations() {
-		List<AppTranslation> existingList = dao
-				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
-
-		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
-
-		for (AppTranslation translation : existingList) {
-			existing.put(translation.getKey(), translation);
-		}
-
-		for (FieldCategory category : FieldCategory.values()) {
-			saveTranslation(existing, "Report.Category." + category);
-		}
-
-		for (ModelType type : ModelType.values()) {
-			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
-			Report fakeReport = new Report();
-			fakeReport.setModelType(type);
-
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getTable());
-			for (Field field : availableFields.values()) {
-				String key = "Report." + field.getName();
-				saveTranslation(existing, key);
-				saveTranslation(existing, key + ".help");
-			}
-		}
-
-		return BLANK;
-	}
+//	@Deprecated
+//	public String fillTranslations() {
+//		List<AppTranslation> existingList = dao
+//				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
+//
+//		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
+//
+//		for (AppTranslation translation : existingList) {
+//			existing.put(translation.getKey(), translation);
+//		}
+//
+//		for (FieldCategory category : FieldCategory.values()) {
+//			saveTranslation(existing, "Report.Category." + category);
+//		}
+//
+//		for (ModelType type : ModelType.values()) {
+//			logger.debug("-- filling fields for {}", type);
+//			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
+//			Report fakeReport = new Report();
+//			fakeReport.setModelType(type);
+//
+//			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getTable());
+//			for (Field field : availableFields.values()) {
+//				String key = "Report." + field.getName();
+//				saveTranslation(existing, key);
+//				saveTranslation(existing, key + ".help");
+//			}
+//		}
+//
+//		return BLANK;
+//	}
 }
