@@ -16,10 +16,14 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorEditRiskLevel extends ContractorActionSupport implements Preparable {
@@ -29,6 +33,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	protected NoteDAO noteDAO;
 	@Autowired
 	private AuditBuilder auditBuilder;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
@@ -93,9 +99,13 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 			if (oldSafety.compareTo(safetyRisk) < 0)
 				needsUpgrades = true;
-			
+
 			if (isRiskChanged(oldSafety, safetyRisk))
 				needsPqfReset = true;
+			if (safetyRisk.ordinal() < oldSafety.ordinal()) {
+				buildAndSendBillingRiskDowngradeEmail(oldSafety, safetyRisk);
+			}
+
 		}
 
 		if (productRisk != null && !contractor.getProductRisk().equals(productRisk)) {
@@ -107,7 +117,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 			if (oldProduct.compareTo(productRisk) < 0)
 				needsUpgrades = true;
-			
+
 			if (isRiskChanged(oldProduct, productRisk))
 				needsPqfReset = true;
 		} else if (contractor.getProductRisk() == null && productRisk != null) {
@@ -143,14 +153,13 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			noteDAO.save(note);
 		}
 
-		if (!safetyRisk.equals(oldSafety) || 
-				(productRisk != null && !productRisk.equals(oldProduct)) ||
-				(transportationRisk != null && !transportationRisk.equals(oldTransportation))
-			) {
-			// If contractor risk level being raised, stamp the last upgrade date
+		if (!safetyRisk.equals(oldSafety) || (productRisk != null && !productRisk.equals(oldProduct))
+				|| (transportationRisk != null && !transportationRisk.equals(oldTransportation))) {
+			// If contractor risk level being raised, stamp the last upgrade
+			// date
 			if (needsUpgrades)
 				contractor.setLastUpgradeDate(new Date());
-			
+
 			if (needsPqfReset) {
 				resetPqf();
 			}
@@ -162,16 +171,36 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 		return SUCCESS;
 	}
-	
+
+	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(159);
+		emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+		emailBuilder.setToAddresses("billing@picsauditing.com");
+		emailBuilder.addToken("contractor", contractor);
+		emailBuilder.addToken("currentSafetyRisk", currentRisk);
+		emailBuilder.addToken("newSafetRisk", newRisk);
+
+		EmailQueue emailQueue;
+		try {
+			emailQueue = emailBuilder.build();
+			emailQueue.setHighPriority();
+			emailQueue.setViewableById(Account.PicsID);
+			emailSender.send(emailQueue);
+		} catch (Exception e) {
+			PicsLogger.log("Cannot send email to  " + contractor.getName() + " (" + contractor.getId() + ")");
+		}
+	}
+
 	private boolean isRiskChanged(LowMedHigh oldSafetyRisk, LowMedHigh newSafetyRisk) {
-		if ((newSafetyRisk.equals(LowMedHigh.Med) || newSafetyRisk.equals(LowMedHigh.High)) 
+		if ((newSafetyRisk.equals(LowMedHigh.Med) || newSafetyRisk.equals(LowMedHigh.High))
 				&& (oldSafetyRisk.equals(LowMedHigh.None) || oldSafetyRisk.equals(LowMedHigh.Low)))
 			return true;
 		return false;
 	}
-	
+
 	private void resetPqf() {
-		for (ContractorAudit audit:contractor.getAudits()) {
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isPqf()) {
 				resetCaos(audit);
 				auditBuilder.recalculateCategories(audit);
@@ -181,7 +210,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	}
 
 	private void resetCaos(ContractorAudit audit) {
-		for (ContractorAuditOperator cao:audit.getOperators()) {
+		for (ContractorAuditOperator cao : audit.getOperators()) {
 			if (cao.isVisible() && cao.getStatus().after(AuditStatus.Pending)) {
 				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Resubmit, permissions);
 				if (caow != null) {
