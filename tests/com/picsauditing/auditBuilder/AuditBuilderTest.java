@@ -146,7 +146,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testBuildAudits_Cor_No_Longer_Valid() {
+	public void testBuildAudits_Cor_No_Longer_Valid_Question_Yes() {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
 		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
@@ -162,6 +162,40 @@ public class AuditBuilderTest extends PicsTest {
 		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
 		auditCatData.setCategory(question.getCategory());
 		auditCatData.setApplies(false);
+		pqfAudit.getCategories().add(auditCatData);
+		pqfAudit.setCreationDate(new Date());
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
+		addCategoryRules(null);
+
+		PicsTestUtil.forceSetPrivateField(auditBuilder,
+				"auditDataDAO", auditDataDao);
+		
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		when(auditDataDao.findAnswerByConQuestion(contractor.getId(), AuditQuestion.COR)).thenReturn(auditData);
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(0, corAudit.getOperatorsVisible().size());
+	}
+
+	@Test
+	public void testBuildAudits_Cor_No_Longer_Valid_Question_No() {
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
+				AuditType.COR, contractor);
+		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
+				AuditType.PQF, contractor);
+		contractor.getAudits().add(pqfAudit);
+		contractor.getAudits().add(corAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addCao(corAudit, operator);
+
+		AuditData auditData = EntityFactory.makeAuditData("No");
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		auditData.setQuestion(question);
+		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		auditCatData.setCategory(question.getCategory());
+		auditCatData.setApplies(true);
 		pqfAudit.getCategories().add(auditCatData);
 		pqfAudit.setCreationDate(new Date());
 

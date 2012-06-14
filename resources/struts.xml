@@ -908,6 +908,7 @@
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
 		<action name="OshaSaveAjax" class="com.picsauditing.actions.audits.OshaSave">
 			<result type="redirectAction">
 				<param name="actionName">AuditAjax</param>
@@ -1049,6 +1050,18 @@
 		<!-- Audits Manage -->
 		<action name="ManageAuditType" class="com.picsauditing.actions.auditType.ManageAuditType">
 			<result>struts/audits/manage_audit_type.jsp</result>
+			<result name="save" type="redirectAction">
+			    <param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="delete" type="redirectAction">
+				<param name="actionName">ManageAuditType</param>
+			</result>
+			<result name="move" type="redirectAction">
+			    <param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>
+			
 			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result name="workFlowSteps">struts/audits/workflow_steps.jsp</result>			
 		</action>
@@ -1069,12 +1082,20 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ManageCategory"
-			class="com.picsauditing.actions.auditType.ManageCategory">
-			<result>struts/audits/manage_category.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
+		<action name="ManageCategory" class="com.picsauditing.actions.auditType.ManageCategory">
+			<result name="success">struts/audits/manage_category.jsp</result>
+						<result name="save" type="redirectAction">
+			    <param name="actionName">ManageCategory</param>
+				<param name="id">${category.id}</param>
 			</result>
+			<result name="delete" type="redirectAction">
+				<param name="actionName">ManageAuditType</param>
+			</result>
+			<result name="move" type="redirectAction">
+			    <param name="actionName">ManageCategory</param>
+				<param name="id">${category.id}</param>
+			</result>
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 		</action>
 
 		<action name="ManageCategoryMoveAjax"
@@ -1083,12 +1104,20 @@
 			<result name="moved">struts/audits/manage_category_move.jsp</result>
 		</action>
 
-		<action name="ManageQuestion"
-			class="com.picsauditing.actions.auditType.ManageQuestion">
+		<action name="ManageQuestion" class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
+			<result name="save" type="redirectAction">
+			    <param name="actionName">ManageCategory</param>
+				<param name="id">${category.id}</param>
 			</result>
+			<result name="delete" type="redirectAction">
+				<param name="actionName">ManageAuditType</param>
+			</result>
+			<result name="move" type="redirectAction">
+			    <param name="actionName">ManageCategory</param>
+				<param name="id">${category.id}</param>
+			</result>
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 		</action>
 
 		<action name="ManageTransformOption"

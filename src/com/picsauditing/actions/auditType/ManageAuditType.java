@@ -66,30 +66,24 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			if (button.equalsIgnoreCase("save")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 				if (save()) {
-					addActionMessage("Successfully saved"); // default message
-					this.redirect(getRedirectURL());
-					return BLANK;
+					addActionMessage("Successfully saved");
+					return Redirect.SAVE;
 				}
 			}
 			if (button.equalsIgnoreCase("delete")) {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				if (delete()) {
-					addActionMessage("Successfully removed"); // default message
-
-					this.redirect(getDeletedRedirectURL());
-
-					return BLANK;
+					addActionMessage("Successfully removed");
+					return Redirect.DELETE;
 				}
 			}
 			if (button.equalsIgnoreCase("updateAllAudits")) {
 				auditTypeDAO.updateAllAudits(id);
-				this.redirect(getRedirectURL());
-				return BLANK;
+				return Redirect.SAVE;
 			}
 			if (button.equalsIgnoreCase("updateAllAuditsCategories")) {
 				auditTypeDAO.updateAllCategories(auditType.getId(), id);
-				this.redirect(getRedirectURL());
-				return BLANK;
+				return Redirect.SAVE;
 			}
 
 			// Move and Copy only available for questions
@@ -98,7 +92,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 				if (move()) {
 					addActionMessage("Successfully moved.");
-					return redirect(getCopyMoveURL());
+					return Redirect.MOVE;
 				}
 			}
 			if (button.equalsIgnoreCase("Copy")) {
@@ -106,7 +100,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 				if (copy()) {
 					addActionMessage("Successfully copied.");
-					return redirect(getCopyMoveURL());
+					return Redirect.MOVE;
 				}
 			}
 		}
@@ -313,18 +307,6 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		return copy;
 	}
 
-	protected String getRedirectURL() {
-		return "ManageAuditType.action?id=" + id;
-	}
-
-	protected String getCopyMoveURL() {
-		return "ManageAuditType.action?id=" + id;
-	}
-
-	protected String getDeletedRedirectURL() {
-		return "ManageAuditType.action";
-	}
-
 	public List<? extends AuditRule> getRelatedRules() {
 		if (relatedRules == null) {
 			relatedRules = ruleDAO.findByAuditType(auditType);
@@ -452,7 +434,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		if (steps == null) {
 			steps = wfDAO.getWorkFlowSteps(workFlowID);
 		}
-
+		
 		return steps;
 	}
 
@@ -464,4 +446,11 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			}
 		}
 	}
+
+	private static class Redirect {
+		static final String DELETE = "delete";
+		static final String SAVE = "save";
+		static final String MOVE = "move";
+	}
+
 }

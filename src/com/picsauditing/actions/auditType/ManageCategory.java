@@ -120,19 +120,6 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 		return false;
 	}
 
-	@Override
-	protected String getRedirectURL() {
-		if (category.getParent() == null)
-			return "ManageAuditType.action?id=" + category.getAuditType().getId();
-		else
-			return "ManageCategory.action?id=" + category.getParent().getId();
-	}
-
-	@Override
-	protected String getDeletedRedirectURL() {
-		return getRedirectURL();
-	}
-
 	public AuditCategory getCategoryParent() {
 		return categoryParent;
 	}

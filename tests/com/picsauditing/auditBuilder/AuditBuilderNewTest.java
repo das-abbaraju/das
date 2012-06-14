@@ -72,24 +72,6 @@ public class AuditBuilderNewTest {
 	}
 	
 	@Test
-	public void testIsValidCorAudit_NotValidAuditDataAnswerNotYes() throws Exception {
-		when(auditType.getId()).thenReturn(AuditType.COR);
-		when(conAudit.getAuditType()).thenReturn(auditType);
-		when(conAudit.isExpired()).thenReturn(false);
-		when(conAudit.getContractorAccount()).thenReturn(contractorAccount);
-		when(contractorAccount.getId()).thenReturn(MOCK_CONTRACTOR_ID);
-		when(auditDataDAO.findAnswerByConQuestion(MOCK_CONTRACTOR_ID, AuditQuestion.COR))
-			.thenReturn(auditData);
-		when(auditData.getAnswer()).thenReturn("No");
-		Whitebox.setInternalState(auditBuilder, "auditDataDAO", auditDataDAO);
-		
-		Boolean isValid = 
-				Whitebox.invokeMethod(auditBuilder, "isValidCorAudit", conAudit);
-		
-		assertFalse(isValid);
-	}
-	
-	@Test
 	public void testIsValidCorAudit_IsValidDueToNullAuditData() throws Exception {
 		when(auditType.getId()).thenReturn(AuditType.COR);
 		when(conAudit.getAuditType()).thenReturn(auditType);
