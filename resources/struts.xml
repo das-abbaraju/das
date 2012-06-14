@@ -1107,15 +1107,15 @@
 		<action name="ManageQuestion" class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question.jsp</result>
 			<result name="save" type="redirectAction">
-			    <param name="actionName">ManageCategory</param>
-				<param name="id">${category.id}</param>
+			    <param name="actionName">ManageQuestion</param>
+				<param name="id">${question.id}</param>
 			</result>
 			<result name="delete" type="redirectAction">
-				<param name="actionName">ManageAuditType</param>
+				<param name="actionName">ManageCategory</param>
 			</result>
 			<result name="move" type="redirectAction">
-			    <param name="actionName">ManageCategory</param>
-				<param name="id">${category.id}</param>
+			    <param name="actionName">ManageQuestion</param>
+				<param name="id">${question.id}</param>
 			</result>
 			<result name="top">struts/audits/audit_selectType.jsp</result>
 		</action>
