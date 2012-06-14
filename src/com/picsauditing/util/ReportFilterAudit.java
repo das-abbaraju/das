@@ -56,7 +56,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected boolean unScheduledAudits = false;
 	protected boolean conExpiredLic = false;
 	protected String validLicense = "Valid";
-	protected String[] auditFor = {String.valueOf(DateBean.getCurrentYear()-1)};
+	protected String[] auditFor;
 	protected float minEMR = 0;
 	protected float maxEMR = 100;
 	protected double incidenceRate = -1;
