@@ -28,7 +28,7 @@ public class PublisherRabbitMqTest {
 	public void testSendCriticalAlertMessage() throws Exception {
 		publisherRabbitMq.publish(message);
 		
-		verify(amqpTemplate).convertAndSend(message.getMessage());
+		verify(amqpTemplate, times(0)).convertAndSend(message.getMessage());
 	}
 
 }
