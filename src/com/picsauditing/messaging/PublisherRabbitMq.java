@@ -13,12 +13,12 @@ public class PublisherRabbitMq implements Publisher {
     
 	@Override
 	public void publish(EnterpriseMessage message) {
-		amqpTemplate.convertAndSend(message.getMessage());
+		//amqpTemplate.convertAndSend(message.getMessage());
 	}
 
 	public void publish(EnterpriseMessage message, String routingKey) {
-		amqpTemplate.setRoutingKey(routingKey);
-		amqpTemplate.convertAndSend(message);
+		//amqpTemplate.setRoutingKey(routingKey);
+		//amqpTemplate.convertAndSend(message);
 	}
 
 }
