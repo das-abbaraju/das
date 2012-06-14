@@ -5,89 +5,29 @@
 
 <head>
     <title><s:property value="report.summary"/></title>
-    <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css"> -->
-    <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css?v=${version}">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/users_manage.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
-	<s:include value="../jquery.jsp" />
-	<style>
-		/* Z-index of #mask must lower than #boxes .window */
-		#mask {
-		  position:absolute;
-		  z-index:9000;
-		  background-color:#000;
-		  display:none;
-		}
-		#boxes .window {
-		  position:fixed;
-		  width:100px;
-		  height:100px;
-		  display:none;
-		  z-index:9999;
-		  padding:1px;
-		}
-		/* Customize your modal window here, you can add background image too */
-		#boxes #dialog {
-		  width:100px;
-		  height:100px;
-		}
-	</style>
-	<script>
-		$(document).ready(function() {
-		    //select all the a tag with name equal to modal
-		    $('a[name=modal]').click(function(e) {
-		        //Cancel the link behavior
-		        e.preventDefault();
-		        //Get the A tag
+    <link rel="stylesheet" type="text/css" href="css/reports/manage_reports.css">
 
-		        console.log($(this))
-
-		        var popupWindow = $(this).next("#boxes").children(".ReportDialog")
-
-		        //Get the screen height and width
-		        var maskHeight = $(document).height();
-		        var maskWidth = $(window).width();
-
-		        //Set height and width to mask to fill up the whole screen
-		        $('#mask').css({'width':maskWidth,'height':maskHeight});
-
-		        //transition effect
-		        $('#mask').fadeIn(1000);
-		        $('#mask').fadeTo("slow",0.8);
-
-		        //Get the window height and width
-		        var winH = $(window).height();
-		        var winW = $(window).width();
-
-		        //Set the popup window to center
-		        popupWindow.css('top',  winH/2-popupWindow.height()/2);
-		        popupWindow.css('left', winW/2-popupWindow.width()/2);
-
-		        //transition effect
-		        popupWindow.fadeIn(2000);
-
-		    });
-
-		    //if close button is clicked
-		    $('.window .close').click(function (e) {
-		        //Cancel the link behavior
-		        e.preventDefault();
-		        $('#mask, .window').hide();
-		    });
-
-		    //if mask is clicked
-		    $('#mask').click(function () {
-		        $(this).hide();
-		        $('.window').hide();
-		    });
-		});
-
-	</script>
 </head>
 
 <body>
+    <h1>Manage Reports</h1>
+    <h2>Favorite, move, update, and search for new reports</h2>
+    
+    <div id="userActions">
+        <button name="Favorites" value="Favorites" class="btn info">Favorites</button>
+        <button name="Saved" value="Saved">Saved</button>
+    </div>
+    
+    
+<ul class="nav nav-pills">
+  <li class="active">
+    <a href="#">Home</a>
+  </li>
+  <li><a href="#">...</a></li>
+  <li><a href="#">...</a></li>
+</ul>    
+    
+    
 	<div id="user_edit">
 		<s:include value="../actionMessages.jsp" />
 		<fieldset class="form submit">

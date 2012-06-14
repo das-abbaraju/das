@@ -1,0 +1,70 @@
+ .ManageReports-page #main {
+    padding: 20px 0px 0px 20px;
+}
+
+.ManageReports-page h1 {
+    border: none;
+	color: #73BBE8;
+	font-size: 30px;
+	font-weight: normal;
+}
+
+.ManageReports-page h2 {
+	color: #808285;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 14px;
+}
+
+.ManageReports-page #user_edit {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.ManageReports-page .nav {
+	margin: 0px;
+}
+.ManageReports-page .nav-pills {
+    display:inline-block;
+}
+* html .ManageReports-page .nav-pills { display:inline; } /* IE6 */
+*+html .ManageReports-page .nav-pills { display:inline; } /* IE7 */
+
+.ManageReports-page h3 {
+    color: #999;
+	font-size: 14px;
+	font-style: italic;
+	text-align: center;
+}
+
+.ManageReports-page ul#reportList {
+	margin: 0 auto;
+	width: 700px;
+}
+
+.ManageReports-page .icon-star {
+    background: none;
+}
+
+.ManageReports-page ul#reportList li div {
+	background-color: #f1f1f2;
+	border: 1px solid #ccc;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    line-height: 30px;
+    min-height: 30px;
+}
+.ManageReports-page ul#reportList li .icon-star {
+	color: #A84D10;
+}
+
+#userActions {
+	margin: 0 auto;
+	width: 25%;
+}
+#userActions button {
+	height: 30px;
+	width: 25%;
+}
