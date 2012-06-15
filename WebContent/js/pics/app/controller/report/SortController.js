@@ -160,7 +160,7 @@ Ext.define('PICS.controller.report.SortController', {
         previousDirection = sortStore.findRecord('name', columnName).get('direction');
 
         if (selectedDirection !== previousDirection) {
-            var component = toolbar.child('toolbar button[text=' + columnName + ']');
+            var component = sorts.child('toolbar button[text=' + columnName + ']');
             this.setSortItemProperties(component);
         }
     }
