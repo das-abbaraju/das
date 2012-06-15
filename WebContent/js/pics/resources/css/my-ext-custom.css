@@ -174,3 +174,18 @@ Footer
 .x-boxselect-hideselections .x-boundlist-selected {
     display: none;
 }
+
+.x-tab-close-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 11px;
+  height: 11px;
+  font-size: 0;
+  line-height: 0;
+  text-indent: -999px;
+  background: no-repeat;
+  background-image: url('../images/tab/tab-default-close.gif');
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+  opacity: 0.6;
+}
