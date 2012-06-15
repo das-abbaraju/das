@@ -39,6 +39,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected Boolean showContactInfo = null;
 	protected Boolean showTradeInfo = null;
 	protected String reportAddresses = null;
+	protected boolean searchForNew = false;
 
 	// ?? may need to move to Filters
 	protected List<Integer> ids = new ArrayList<Integer>();
@@ -414,7 +415,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			String stateList = Strings.implodeForDB(states, ",");
 			sb.append("a.state IN (").append(stateList).append(") OR ").append("EXISTS (SELECT 'x' FROM pqfdata d ")
 					.append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")
-					.append("AND aq.uniqueCode IN (").append(stateList).append(") LIMIT 1) ");
+					.append("AND aq.uniqueCode IN (").append(stateList).append(") AND d.answer != 'No' LIMIT 1) ");
 			sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
 		}
 	}
@@ -506,7 +507,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	protected void filterOnFlagStatus() {
-		if (filterOn(getFilter().getFlagStatus())) {
+		if (!searchForNew && filterOn(getFilter().getFlagStatus())) {
 			String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
 			sql.addWhere("gc.flag IN (" + list + ")");
 			setFiltered(true);

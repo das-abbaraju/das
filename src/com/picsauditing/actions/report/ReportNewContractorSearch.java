@@ -76,6 +76,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	public ReportNewContractorSearch() {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
+		this.searchForNew = true;
 	}
 
 	@Before
