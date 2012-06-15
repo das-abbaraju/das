@@ -90,8 +90,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public String accept() throws Exception {
 		recallWizardSessionFilter();
 		if (!Strings.isEmpty(type)) {
-			if (con == null)
+			if (con == null) {
 				con = contractorAccountDAO.find(conID);
+			}
 
 			String noteMessage = type + " risk adjusted from ";
 
@@ -127,36 +128,40 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
 		recallWizardSessionFilter();
-
-		if (con == null) {
-			con = contractorAccountDAO.find(conID);
-		}
-
-		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
-
-		if (type.equals(SAFETY)) {
-			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
-
-			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
-			con.setSafetyRiskVerified(new Date());
-		} else {
-			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
-			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
-			// Get highest
-			if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal()) {
-				productRisk = businessRisk;
+		if (!Strings.isEmpty(type)) {
+			if (con == null) {
+				con = contractorAccountDAO.find(conID);
 			}
 
-			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
-			con.setProductRiskVerified(new Date());
+			String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
+
+			if (type.equals(SAFETY)) {
+				LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+
+				noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+				con.setSafetyRiskVerified(new Date());
+			} else {
+				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
+				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
+				// Get highest
+				if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal()) {
+					productRisk = businessRisk;
+				}
+
+				noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
+				con.setProductRiskVerified(new Date());
+			}
+
+			contractorAccountDAO.save(con);
+			Note note = new Note(con, getUser(), noteMessage
+					+ (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
+			note.setNoteCategory(NoteCategory.RiskRanking);
+			noteDAO.save(note);
+
+			auditorNotes = "";
+		} else {
+			addActionError("Missing Risk Assessment Type");
 		}
-
-		contractorAccountDAO.save(con);
-		Note note = new Note(con, getUser(), noteMessage + (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
-		note.setNoteCategory(NoteCategory.RiskRanking);
-		noteDAO.save(note);
-
-		auditorNotes = "";
 		return execute();
 	}
 
