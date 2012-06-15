@@ -1,3 +1,6 @@
+// TODO: COLLAPSE THIS FILE INTO DYNAMIC REPORT ACTION CONTROLLER
+// DO IT
+
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;

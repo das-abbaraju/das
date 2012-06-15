@@ -1,61 +1,63 @@
-/*General Styles*/
-.ManageReports-page .icon-star {
-    color: #CCC;
-    font-size: 13px;
-    margin-right: 10px;
-}
-
-.ManageReports-page .icon-star.favorite {
-    color: #A84D10;
-}
-
-/*Page Title*/
-.ManageReports-page #main {
+#main
+{
     padding: 20px 0px 0px 20px;
 }
 
-.ManageReports-page h1 {
-    border: none;
+#page_header
+{
+    margin: 0px 0px 20px 0px;
+}
+
+#page_header h1
+{
+    border: 0px;
 	color: #73BBE8;
 	font-size: 30px;
 	font-weight: normal;
 }
 
-.ManageReports-page h2 {
+#page_header h2
+{
 	color: #808285;
     font-size: 14px;
     font-weight: normal;
     line-height: 14px;
 }
 
-
-/*Page Content*/
-.ManageReports-page #user_edit {
-    margin-top: 20px;
-    margin-bottom: 20px;
+#report_menu_container
+{
+    margin: 0px 0px 20px;
     text-align: center;
 }
 
-.ManageReports-page .nav {
+#report_menu
+{
+    display:inline-block;
 	margin: 0px;
 }
 
-.ManageReports-page .nav-pills {
-    display:inline-block;
-}
-* html .ManageReports-page .nav-pills { display:inline; } /* IE6 */
-*+html .ManageReports-page .nav-pills { display:inline; } /* IE7 */
+.lt-ie7 .nav-pills { display:inline; } /* IE6 */
+.lt-ie8 .nav-pills { display:inline; } /* IE7 */
 
-.ManageReports-page .nav-pills a {
+#report_menu a
+{
     color: #226396;
 }
 
-.ManageReports-page .nav-pills .active a {
+#report_menu .active a
+{
     background-color: #226396;
     color: #FFF;
 }
 
-.ManageReports-page h3 {
+#reports
+{
+    margin: 0px auto;
+    width: 700px;
+}
+
+#reports h1
+{
     color: #999;
 	font-size: 14px;
 	font-style: italic;
@@ -63,12 +65,8 @@
 	text-align: center;
 }
 
-.ManageReports-page ul#reportList {
-	margin: 0 auto;
-	width: 700px;
-}
-
-.ManageReports-page ul#reportList li {
+#report_list li
+{
     background-color: #f1f1f2;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -80,25 +78,48 @@
     position: relative;
 }
 
-* html .ManageReports-page ul#reportList li { display:inline; } /* IE6 */
-*+html .ManageReports-page ul#reportList li { display:inline; } /* IE7 */
+.lt-ie7 #report_list li { display:inline; } /* IE6 */
+.lt-ie8 #report_list li { display:inline; } /* IE7 */
 
-.ManageReports-page ul#reportList li a {
+#report_list .report a.favorite
+{
     text-decoration: none;
 }
 
-.ManageReports-page a.report_name {
-	color: #000;
-	margin-right: 20px;
+#report_list .report .icon-star
+{
+    color: #CCC;
+    font-size: 13px;
+    margin-right: 10px;
+    text-decoration: none;
 }
 
-.ManageReports-page .report_created_by {
-	color: #999;
+#report_list .report .icon-star.favorite
+{
+    color: #A84D10;
+}
+
+#report_list li a.name
+{
+    color: #000000;
+    margin: 0px 20px 0px 0px;
+    text-decoration: none;
+}
+
+#report_list li a.name:hover
+{
+    text-decoration: underline;
+}
+
+#report_list .report span.created-by
+{
+	color: #999999;
 	font-size: 10px;
 	font-style: italic;
 }
 
-.ManageReports-page a.report_actions {
+#report_list .report a.delete
+{
     border-left: 1px solid #CCC;
 	color: #999;
 	padding: 0px 5px;
