@@ -355,8 +355,11 @@
 														<s:property value="payment.ccType"/>
 													</s:else>
 												</s:if>
-												<s:else>
+												<s:elseif test="payment.paymentMethod.check">
 													<s:text name="InvoiceDetail.Check" /> <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0"><s:text name="InvoiceDetail.CheckNumber" /><s:property value="payment.checkNumber"/></s:if>
+												</s:elseif>
+												<s:else>
+													<label>EFT</label>
 												</s:else>
 											</span>
 											<span class="big">

@@ -103,6 +103,21 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
 			return BLANK;
+		
+		//Email proforma invoice
+		if ("email".equals(button)) {
+			contractor.setPaymentMethod(PaymentMethod.EFT);
+			contractorAccountDao.save(contractor);
+			try {
+				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+				addActionMessage(getText("InvoiceDetail.message.SentEmail"));
+			} catch (Exception e) {
+				addActionError(getText("InvoiceDetail.message.EmailFail"));
+			}
+			return BLANK;
+		}
+		
+		
 
 		loadCC();
 		if (hasActionErrors())
@@ -643,9 +658,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		return false;
 	}
 	
-	public String proformaInvoice() throws Exception {
+	public void proformaInvoice() throws Exception {
+		findContractor();
 		EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
 			
-		return SUCCESS;
+		redirect("RegistrationMakePayment.action");
 	}
 }

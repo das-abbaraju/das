@@ -244,15 +244,16 @@
 						</p>
 					</li>
 				</ul>
-				<ul>
-					<!--<s:submit method="proformaInvoice"  value="Email Pro Forma Invoice" class="btn success" />-->
-					<!--<s:submit method="proformaInvoice" value="Email Pro Forma Invoice" class="btn success" />-->
-					<input name="method:proformaInvoice" value="Email Pro Forma Invoice" type="submit" />
-				</ul>
 			</section>
 		</s:form>
 		
-		<form action="" >
-		</form>
+	</s:if>
+	<s:if test="contractor.inEuroZone">
+	<ul>
+		<a class="email"
+			href="RegistrationMakePayment.action?invoice.id=<s:property value="invoice.id"/>&button=email">
+			<s:text name="button.EmailProformaInvoice" />
+		</a>
+	</ul>
 	</s:if>
 </div>
