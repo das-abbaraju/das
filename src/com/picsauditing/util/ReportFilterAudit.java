@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AmBest;
@@ -65,7 +64,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected double incidenceRateAvgMax = 100;
 	protected int amBestRating;
 	protected int amBestClass;
-	protected int verifiedAnnualUpdate = 1;
+	protected int verifiedAnnualUpdate;
 	protected OshaType shaType;
 	protected OshaType shaTypeFlagCriteria;
 	protected String shaLocation;

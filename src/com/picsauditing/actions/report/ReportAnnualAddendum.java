@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -14,15 +13,12 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 		sql.addGroupBy("c.id");
 
 		String auditFor = Strings.implodeForDB(getFilter().getAuditFor(), ",");
-		if (Strings.isEmpty(auditFor)) {
-			String[] defaultAuditFor = {String.valueOf(DateBean.getCurrentYear()-1)};
-			getFilter().setAuditFor(defaultAuditFor);
-			auditFor = Strings.implodeForDB(defaultAuditFor, ",");
+		if (!Strings.isEmpty(auditFor)) {
+			sql.addWhere("ca.auditFor IN (" + auditFor + ")");
 		}
-		sql.addWhere("ca.auditFor IN (" + auditFor + ")");
+		sql.setDistinct(false);
 
 		getFilter().setShowVerifiedAnnualUpdates(true);
-
 		getFilter().setShowTaxID(false);
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowAuditType(false);
