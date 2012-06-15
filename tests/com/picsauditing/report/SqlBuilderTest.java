@@ -38,7 +38,7 @@ import com.picsauditing.util.business.DynamicReportUtil;
 
 @RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor("com.picsauditing.util.business.DynamicReportUtil")
-@PrepareForTest({SqlBuilder.class, DynamicReportUtil.class})
+@PrepareForTest({SqlBuilder.class, DynamicReportUtil.class, QueryFunction.class})
 public class SqlBuilderTest {
 
 	private SqlBuilder builder;
@@ -51,6 +51,7 @@ public class SqlBuilderTest {
 	@Mock private Definition definition;
 	@Mock private Field field;
 	@Mock private Column column;
+	@Mock private QueryFunction queryFunction;
 
 	@Before
 	public void setUp() throws Exception {
@@ -220,6 +221,10 @@ public class SqlBuilderTest {
 	}
 
 	@Test
+	public void testAddFieldsAndGroupBy() throws Exception {
+	}
+
+	@Test
 	public void testIsFieldIncluded_True() throws Exception {
 		String fieldName = "fieldName";
 		List<Column> columns = new ArrayList<Column>();
@@ -273,25 +278,44 @@ public class SqlBuilderTest {
 		assertFalse(result);
 	}
 
-	@Ignore
 	@Test
 	public void testUsesGroupBy_FalseIfFieldIsNotAggregrate() throws Exception {
-		List<Column> columns = new ArrayList<Column>();
 		String fieldName = "fieldName";
-		Column column = new Column(fieldName);
+		when(column.getFieldName()).thenReturn(fieldName);
+		when(column.getFunction()).thenReturn(null);
+		List<Column> columns = new ArrayList<Column>();
 		columns.add(column);
+
 		when(definition.getColumns()).thenReturn(columns);
 		Whitebox.setInternalState(builder, "definition", definition);
+
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 		availableFields.put(fieldName.toUpperCase(), new Field(fieldName, fieldName, FilterType.AccountName));
-		when(DynamicReportUtil.getColumnFromFieldName(anyString(), anyListOf(Column.class))).thenReturn(column);
-		// TODO ask Galen for help
-//		PowerMockito.doReturn(Boolean.FALSE).when(builder, "isAggregate", anyString());
-//		when(builder.isAggregate(fieldName)).thenReturn(Boolean.FALSE);
 
 		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
 
 		assertFalse(result);
+	}
+
+	@Test
+	public void testUsesGroupBy_TrueIfFieldIsAggregrate() throws Exception {
+		String fieldName = "fieldName";
+		when(column.getFieldName()).thenReturn(fieldName);
+		when(queryFunction.isAggregate()).thenReturn(true);
+		when(column.getFunction()).thenReturn(queryFunction);
+
+		List<Column> columns = new ArrayList<Column>();
+		columns.add(column);
+
+		when(definition.getColumns()).thenReturn(columns);
+		Whitebox.setInternalState(builder, "definition", definition);
+
+		Map<String, Field> availableFields = new HashMap<String, Field>();
+		availableFields.put(fieldName.toUpperCase(), new Field(fieldName, fieldName, FilterType.AccountName));
+
+		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
+
+		assertTrue(result);
 	}
 
 	@Test
@@ -348,8 +372,9 @@ public class SqlBuilderTest {
 		String columnName = "columnName";
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 		availableFields.put(columnName.toUpperCase(), field);
-		Column column = new Column(columnName);
-		column.setFunction(QueryFunction.Average);
+
+		when(column.getFieldName()).thenReturn(columnName);
+		when(column.getFunction()).thenReturn(QueryFunction.Average);
 
 		String result = Whitebox.invokeMethod(builder, "columnToSql", column, availableFields);
 
