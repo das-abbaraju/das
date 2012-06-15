@@ -1,3 +1,14 @@
+// report filter expression - update
+$report_filter_expression_update_border_color: #226396;
+$report_filter_expression_update_gradient_color_top: #73bbe8;
+$report_filter_expression_update_gradient_color_bottom: #226396;
+$report_filter_expression_update_text_color: #ffffff;
+
+$report_filter_expression_update_over_background_color: #226396;
+
+// report filter expression - links
+$report_filter_expression_link_color: #cccccc;
+
 #report_filter_expression
 {
 	padding: 20px 20px 10px;
@@ -10,18 +21,18 @@
 
 #report_filter_expression .update
 {
-	@include background-image(linear-gradient(#73bbe8, #226396));
-	border: 1px solid #226396;
+	@include background-image(linear-gradient($report_filter_expression_update_gradient_color_top, $report_filter_expression_update_gradient_color_bottom));
+	border: 1px solid $report_filter_expression_update_border_color;
 }
 
 #report_filter_expression .update.x-btn-over
 {
-	background: #226396;
+	background:$report_filter_expression_update_over_background_color;
 }
 
 #report_filter_expression .update span
 {
-	color: #ffffff;
+	color: $report_filter_expression_update_text_color;
 }
 
 #report_filter_expression .hide,
@@ -41,7 +52,7 @@
 #report_filter_expression .hide span,
 #report_filter_expression .more-information span
 {
-	color: #cccccc;
+	color: $report_filter_expression_link_color;
 	font-size: 11px;
 	padding: 0px;
 }

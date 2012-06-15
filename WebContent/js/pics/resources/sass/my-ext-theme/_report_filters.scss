@@ -1,6 +1,25 @@
+// report filters
+$report_filters_border_color_bottom: #999999;
+
+// report filter
+$report_filter_border_color_bottom: #999999;
+
+$report_filter_number_color: #999999;
+
+$report_filter_name_color: #333333;
+
+// report filter - remove button
+$report_filter_remove_filter_border_color: #ac030c;
+$report_filter_remove_filter_gradient_color_top: #f32e3a;
+$report_filter_remove_filter_gradient_color_bottom: #b30710;
+
+$report_filter_remove_filter_over_background_color: #b30710;
+
+$report_filter_remove_filter_icon_minus_color: #ffffff;
+
 #report_filters
 {
-	border-bottom: 1px solid #999999;
+	border-bottom: 1px solid $report_filters_border_color_bottom;
 }
 
 #report_filters-body,
@@ -19,12 +38,12 @@
 #report_filters .filter
 {
 	background: #f1f1f1;
-	border-top: 1px solid #999999;
+	border-top: 1px solid $report_filter_border_color_bottom;
 }
 
 #report_filters .filter-number label
 {
-	color: #999999;
+	color: $report_filter_number_color;
 	font-size: 18px;
 	font-weight: bold;
 	margin: 0px !important;
@@ -33,21 +52,21 @@
 
 #report_filters .filter-name div
 {
-	color: #333333;
+	color: $report_filter_name_color;
 	font-size: 14px;
 	font-weight: bold;
 }
 
 #report_filters .remove-filter
 {
-	@include background-image(linear-gradient(#f32e3a, #b30710));
-	border: 1px solid #ac030c;
+	@include background-image(linear-gradient($report_filter_remove_filter_gradient_color_top, $report_filter_remove_filter_gradient_color_bottom));
+	border: 1px solid $report_filter_remove_filter_border_color;
 	padding: 0px;
 }
 
 #report_filters .remove-filter.x-btn-over
 {
-	background: #b30710;
+	background: $report_filter_remove_filter_over_background_color;
 }
 
 #report_filters .remove-filter span
@@ -57,5 +76,5 @@
 
 #report_filters .remove-filter .icon-minus
 {
-	color: #ffffff;
+	color: $report_filter_remove_filter_icon_minus_color;
 }

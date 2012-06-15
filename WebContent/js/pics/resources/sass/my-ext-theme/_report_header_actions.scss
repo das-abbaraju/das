@@ -1,3 +1,20 @@
+// report actions - edit
+$report_actions_edit_gradient_color_top: #f1f1f1;
+$report_actions_edit_gradient_color_bottom: #dcdcdc;
+
+$report_actions_edit_over_background_color: #dcdcdc;
+
+$report_actions_edit_icon_cog_text_color: #666666;
+
+// report actions - save
+$report_actions_save_border_color: #229322;
+$report_actions_save_gradient_color_top: #33c033;
+$report_actions_save_gradient_color_bottom: #229322;
+$report_actions_save_text_color: #ffffff;
+
+$report_actions_save_over_background_color: #229322;
+
+
 #report_actions
 {
 	text-align: right;
@@ -11,13 +28,13 @@
 
 #report_actions .edit
 {
-	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
+	@include background-image(linear-gradient($report_actions_edit_gradient_color_top, $report_actions_edit_gradient_color_bottom));
 	margin-right: 10px;
 }
 
 #report_actions .edit.x-btn-over
 {
-	background: #dcdcdc;
+	background: $report_actions_edit_over_background_color;
 }
 
 #report_actions .edit button span
@@ -29,19 +46,19 @@
 
 #report_header .edit .icon-cog
 {
-	color: #666666;
+	color: $report_actions_edit_icon_cog_text_color;
 }
 
 #report_actions .save
 {
-	@include background-image(linear-gradient(#33c033, #229322));
-	border-color: #229322;
+	@include background-image(linear-gradient($report_actions_save_gradient_color_top, $report_actions_save_gradient_color_bottom));
+	border-color: $report_actions_save_border_color;
 	margin-right: 20px;
 }
 
 #report_actions .save.x-btn-over
 {
-	background: #229322;
+	background: $report_actions_save_over_background_color;
 }
 
 #report_actions .save .x-btn-split-right
@@ -52,7 +69,7 @@
 
 #report_actions .save button span
 {
-	color: #ffffff;
+	color: $report_actions_save_text_color;
 	font-size: 15px;
 	font-weight: bold;
 	text-transform: uppercase;

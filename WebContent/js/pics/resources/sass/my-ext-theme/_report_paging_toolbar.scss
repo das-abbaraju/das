@@ -1,7 +1,22 @@
+// report grid paging toolbar
+$report_grid_paging_toolbar_background_color: #f1f1f1;
+$report_grid_paging_toolbar_border_color: #cccccc;
+$report_grid_paging_toolbar_text_color: #666666;
+
+// report grid paging toolbar - icon
+$report_grid_paging_toolbar_icon_text_color: #666666;
+
+$report_grid_paging_toolbar_icon_over_text_color: #73bbe8;
+
+$report_grid_paging_toolbar_icon_disabled_text_color: #cccccc;
+
+// report grid paging toolbar - separator
+$report_grid_paging_toolbar_separator_border_color_left: #cccccc;
+
 #data_grid .paging-toolbar
 {
-	background: #f1f1f1;
-	border: 1px solid #cccccc !important;
+	background: $report_grid_paging_toolbar_background_color;
+	border: 1px solid $report_grid_paging_toolbar_border_color !important;
 	padding: 0px 20px;
 }
 
@@ -34,17 +49,17 @@
 
 #data_grid .paging-toolbar .icon-large
 {
-	color: #666666;
+	color: $report_grid_paging_toolbar_icon_text_color;
 }
 
 #data_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large
 {
-	color: #73bbe8;
+	color: $report_grid_paging_toolbar_icon_over_text_color;
 }
 
 #data_grid .paging-toolbar .x-disabled .icon-large
 {
-	color: #cccccc;
+	color: $report_grid_paging_toolbar_icon_disabled_text_color;
 }
 
 #data_grid .paging-toolbar .refresh button,
@@ -66,12 +81,12 @@
 #data_grid .paging-toolbar .x-toolbar-separator
 {
 	border: 0px;
-	border-left: 1px solid #cccccc;
+	border-left: 1px solid $report_grid_paging_toolbar_separator_border_color_left;
 }
 
 #data_grid .paging-toolbar .x-toolbar-text
 {
-	color: #666666;
+	color: $report_grid_paging_toolbar_text_color;
 	font-size: 14px;
 }
 

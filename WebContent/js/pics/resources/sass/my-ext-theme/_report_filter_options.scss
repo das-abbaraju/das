@@ -1,6 +1,22 @@
+// report filter options
+$report_filter_options_background_color: #454545;
+
+$report_filter_options_body_border_color: #cccccc;
+
+// report filter options header
+$report_filter_options_header_background_color: #73bbe8;
+$report_filter_options_header_border_color: #808285;
+$report_filter_options_header_text_color: #ffffff;
+
+// report filter options placeholder
+$report_filter_options_placeholder_background_color: #acacac;
+$report_filter_options_placeholder_border_color: #666666;
+$report_filter_options_placeholder_text_color: #ffffff;
+
+
 #report_filter_options
 {
-	background: #454545;
+	background: $report_filter_options_background_color;
 }
 
 #report_filter_options .x-panel-body-default
@@ -10,14 +26,14 @@
 
 #report_filter_options-body
 {
-	border: 1px solid #cccccc;
+	border: 1px solid $report_filter_options_body_border_color;
 	border-top: 0px;
 }
 
 #report_filter_options-placeholder
 {
-	background: #acacac;
-	border: 1px solid #666666 !important;
+	background: $report_filter_options_placeholder_background_color;
+	border: 1px solid $report_filter_options_placeholder_border_color !important;
 	@include border-top-right-radius(5px);
 	@include border-bottom-right-radius(5px);
 	@include box-shadow(none);
@@ -33,15 +49,15 @@
 
 #report_filter_options-placeholder text
 {
-	fill: #ffffff;
+	fill: $report_filter_options_placeholder_text_color;
 	font-size: 13px;
 	letter-spacing: 1px;
 }
 
 #report_filter_options_header
 {
-	background: #73bbe8;
-	border: 1px solid #808285 !important;
+	background: $report_filter_options_header_background_color;
+	border: 1px solid $report_filter_options_header_border_color !important;
 	@include box-shadow(none);
 	height: 50px;
 	padding: 10px 0px 10px 20px;
@@ -49,7 +65,7 @@
 
 #report_filter_options_header span
 {
-	color: #ffffff;
+	color: $report_filter_options_header_text_color;
 	font-size: 18px;
 	font-weight: normal;
 }

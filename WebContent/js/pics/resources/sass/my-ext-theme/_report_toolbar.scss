@@ -1,13 +1,36 @@
+// report toolbar
+$report_toolbar_background_color: #73bbe8;
+$report_toolbar_border_color: #808285;
+
+// report toolbar - header
+$report_toolbar_header_text_color: #ffffff;
+
+// report toolbar - sort
+$report_toolbar_sort_border_color: #bcbcbc;
+$report_toolbar_sort_gradient_color_top: #f1f1f1;
+$report_toolbar_sort_gradient_color_bottom: #dcdcdc;
+
+$report_toolbar_sort_over_background_color: #dcdcdc;
+
+// report toolbar - add column
+$report_toolbar_add_column_border_color: #bcbcbc;
+$report_toolbar_add_column_gradient_color_top: #f1f1f1;
+$report_toolbar_add_column_gradient_color_bottom: #dcdcdc;
+$report_toolbar_add_column_icon_plus_text_color: #2caf2c;
+$report_toolbar_add_column_text_color: #333333;
+
+$report_toolbar_add_column_over_background_color: #dcdcdc;
+
 #report_toolbar
 {
-	background: #73bbe8;
-	border: 1px solid #808285 !important;
+	background: $report_toolbar_background_color;
+	border: 1px solid $report_toolbar_border_color !important;
 	padding: 10px 20px;
 }
 
 #report_toolbar .header
 {
-	color: #ffffff;
+	color: $report_toolbar_header_text_color;
 	font-size: 18px;
 	font-weight: normal;
 	top: 6px !important;
@@ -26,13 +49,13 @@
 
 #report_sorts .sort
 {
-	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
-	border: 1px solid #bcbcbc;
+	@include background-image(linear-gradient($report_toolbar_sort_gradient_color_top, $report_toolbar_sort_gradient_color_bottom));
+	border: 1px solid $report_toolbar_sort_border_color;
 }
 
 #report_sorts .sort.x-btn-over
 {
-	background: #dcdcdc;
+	background: $report_toolbar_sort_over_background_color;
 }
 
 #report_sorts .x-btn-split-right
@@ -49,14 +72,14 @@
 
 #report_toolbar .add-column
 {
-	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
-	border: 1px solid #bcbcbc;
+	@include background-image(linear-gradient($report_toolbar_add_column_gradient_color_top, $report_toolbar_add_column_gradient_color_bottom));
+	border: 1px solid $report_toolbar_add_column_border_color;
 	margin-left: 10px;
 }
 
 #report_toolbar .add-column.x-btn-over
 {
-	background: #dcdcdc;
+	background: $report_toolbar_add_column_over_background_color;
 }
 
 #report_toolbar .add-column em
@@ -66,13 +89,13 @@
 
 #report_toolbar .add-column button span
 {
-	color: #333333;
+	color: $report_toolbar_add_column_text_color;
 	font-size: 11px;
 	line-height: 20px !important;
 }
 
 #report_toolbar .add-column .icon-plus
 {
-	color: #2caf2c;
+	color: $report_toolbar_add_column_icon_plus_text_color;
 	margin-right: 5px;
 }
