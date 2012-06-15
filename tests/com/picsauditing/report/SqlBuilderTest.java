@@ -2,6 +2,7 @@ package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -9,15 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.validator.AssertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
@@ -28,8 +26,8 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
-import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.AccountTable;
@@ -45,6 +43,8 @@ public class SqlBuilderTest {
 //	@Deprecated
 //	private Definition definition;
 
+	private static final String DATABASE_COLUMN_NAME = "databaseColumnName";
+
 	@Mock private AccountTable table, joinTable, secondJoinTable;
 	@Mock private AccountModel model;
 	@Mock private SelectSQL sql;
@@ -59,8 +59,6 @@ public class SqlBuilderTest {
 		PowerMockito.mockStatic(DynamicReportUtil.class);
 
 		builder = new SqlBuilder();
-//		definition = new Definition();
-//		builder.setDefinition(definition);
 	}
 
 	@Test
@@ -222,6 +220,12 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testAddFieldsAndGroupBy() throws Exception {
+//		PowerMockito.doReturn(Boolean.FALSE).when(builderSpy, "usesGroupBy", any(HashMap.class));
+//		doReturn(Boolean.FALSE).when(builder);
+
+		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", new HashMap<String, Field>());
+
+		assertFalse(result);
 	}
 
 	@Test
@@ -319,10 +323,10 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testIsAggregate_FalseIfNull() throws Exception {
-		String columnName = null;
+	public void testIsAggregate_FalseIfColumnIsNull() throws Exception {
+		Column column = null;
 
-		boolean result = Whitebox.invokeMethod(builder, "isAggregate", columnName);
+		boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
 
 		assertFalse(result);
 	}
@@ -338,6 +342,18 @@ public class SqlBuilderTest {
 	}
 
 	@Test
+	public void testIsAggregate_TrueIfColumnFunctionIsAggregate() throws Exception {
+		String fieldName = "fieldName";
+		when(column.getFieldName()).thenReturn(fieldName);
+		when(queryFunction.isAggregate()).thenReturn(true);
+		when(column.getFunction()).thenReturn(queryFunction);
+
+		boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
+
+		assertTrue(result);
+	}
+
+	@Test
 	public void testColumnToSql_BlankIfNoField() throws Exception {
 		String columnName = "columnName";
 		Map<String, Field> availableFields = new HashMap<String, Field>();
@@ -349,36 +365,87 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testColumnToSql_UndecoratedInNoFunction() throws Exception {
-		String databaseColumnName = "databaseColumnName";
-		when(field.getDatabaseColumnName()).thenReturn(databaseColumnName);
-
-		String columnName = "columnName";
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-		availableFields.put(columnName.toUpperCase(), field);
-		Column column = new Column(columnName);
-
-		String result = Whitebox.invokeMethod(builder, "columnToSql", column, availableFields);
-
-		assertEquals(databaseColumnName, result);
+	public void testColumnToSql_UndecoratedIfNoFunction() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(null, DATABASE_COLUMN_NAME);
+		assertEquals(DATABASE_COLUMN_NAME, result);
 	}
 
 	@Test
-	// TODO instead of copying this test 11 times, ask galen about a runner
+	public void testColumnToSql_UndecoratedIfUnrecognizedQueryFunction() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.None, DATABASE_COLUMN_NAME);
+		assertEquals(DATABASE_COLUMN_NAME, result);
+	}
+
+	@Test
 	public void testColumnToSql_Average() throws Exception {
-		String databaseColumnName = "databaseColumnName";
-		when(field.getDatabaseColumnName()).thenReturn(databaseColumnName);
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Average, DATABASE_COLUMN_NAME);
+		assertEquals("AVG(" + DATABASE_COLUMN_NAME + ")", result);
+	}
 
-		String columnName = "columnName";
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-		availableFields.put(columnName.toUpperCase(), field);
+	@Test
+	public void testColumnToSql_Count() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Count, DATABASE_COLUMN_NAME);
+		assertEquals("COUNT(" + DATABASE_COLUMN_NAME + ")", result);
+	}
 
-		when(column.getFieldName()).thenReturn(columnName);
-		when(column.getFunction()).thenReturn(QueryFunction.Average);
+	@Test
+	public void testColumnToSql_CountDistinct() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.CountDistinct, DATABASE_COLUMN_NAME);
+		assertEquals("COUNT(DISTINCT " + DATABASE_COLUMN_NAME + ")", result);
+	}
 
-		String result = Whitebox.invokeMethod(builder, "columnToSql", column, availableFields);
+	@Test
+	public void testColumnToSql_Date() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Date, DATABASE_COLUMN_NAME);
+		assertEquals("DATE(" + DATABASE_COLUMN_NAME + ")", result);
+	}
 
-		assertEquals("AVG(" + databaseColumnName + ")", result);
+	@Test
+	public void testColumnToSql_LowerCase() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.LowerCase, DATABASE_COLUMN_NAME);
+		assertEquals("LOWER(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_UpperCase() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.UpperCase, DATABASE_COLUMN_NAME);
+		assertEquals("UPPER(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_Max() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Max, DATABASE_COLUMN_NAME);
+		assertEquals("MAX(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_Min() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Min, DATABASE_COLUMN_NAME);
+		assertEquals("MIN(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_Month() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Month, DATABASE_COLUMN_NAME);
+		assertEquals("MONTH(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_Round() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Round, DATABASE_COLUMN_NAME);
+		assertEquals("ROUND(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_Sum() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Sum, DATABASE_COLUMN_NAME);
+		assertEquals("SUM(" + DATABASE_COLUMN_NAME + ")", result);
+	}
+
+	@Test
+	public void testColumnToSql_Year() throws Exception {
+		String result = setUpAndRunColumnToSqlTest(QueryFunction.Year, DATABASE_COLUMN_NAME);
+		assertEquals("YEAR(" + DATABASE_COLUMN_NAME + ")", result);
 	}
 
 	@Test
@@ -408,7 +475,20 @@ public class SqlBuilderTest {
 		assertEquals("'1','2','3'", quotedValues);
 	}
 
-	@Ignore("Not ready to run yet.")
+	public String setUpAndRunColumnToSqlTest(QueryFunction queryFunction, String databaseColumnName) throws Exception {
+		when(field.getDatabaseColumnName()).thenReturn(databaseColumnName);
+
+		String columnName = "columnName";
+		Map<String, Field> availableFields = new HashMap<String, Field>();
+		availableFields.put(columnName.toUpperCase(), field);
+
+		when(column.getFieldName()).thenReturn(columnName);
+		when(column.getFunction()).thenReturn(queryFunction);
+
+		return Whitebox.invokeMethod(builder, "columnToSql", column, availableFields);
+	}
+
+	@Ignore("This is in the wrong class. It should be in AccountModelTest")
 	@Test
 	public void testAccounts() throws Exception {
 		SelectSQL sql = builder.initializeSql(new AccountModel());
@@ -418,7 +498,7 @@ public class SqlBuilderTest {
 		assertContains("ORDER BY a.name", sql.toString());
 	}
 
-	@Ignore
+	@Ignore("This is in the wrong class. It should be in AccountModelTest")
 	@Test
 	public void testAccountColumns() {
 //		definition.getColumns().add(new Column("accountID"));
@@ -434,7 +514,7 @@ public class SqlBuilderTest {
 		assertContains("a.status AS `accountStatus`", sql.toString());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This is in the wrong class. It should be in AccountContractorModelTest")
 	@Test
 	public void testContractors() {
 		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
@@ -444,7 +524,7 @@ public class SqlBuilderTest {
 		assertContains(expected, sql.toString());
 	}
 
-	@Ignore
+	@Ignore("This is in the wrong class. It should be in AccountContractorModelTest")
 	@Test
 	public void testContractorColumns() {
 //		definition.getColumns().add(new Column("contractorName"));
@@ -455,7 +535,7 @@ public class SqlBuilderTest {
 		assertEquals(3, sql.getFields().size());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This is in the wrong class. It should be in AccountModelTest")
 	@Test
 	public void testLeftJoinUser() throws Exception {
 //		definition.getColumns().add(new Column("accountID"));
@@ -468,7 +548,7 @@ public class SqlBuilderTest {
 		assertContains("LEFT JOIN users AS accountContact ON accountContact.id = a.contactID", sql.toString());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This test was broken a long time ago")
 	@Test
 	public void testFilters() {
 //		definition.getColumns().add(new Column("accountName"));
@@ -483,7 +563,7 @@ public class SqlBuilderTest {
 		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\'s%'))", sql.toString());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This test was broken a long time ago")
 	@Test
 	public void testFiltersWithComplexColumn() {
 		Column column = new Column("AccountCreationDateYear");
@@ -502,7 +582,7 @@ public class SqlBuilderTest {
 		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This test was broken a long time ago")
 	@Test
 	public void testGroupBy() {
 //		definition.getColumns().add(new Column("accountStatus"));
@@ -516,7 +596,7 @@ public class SqlBuilderTest {
 		assertContains("GROUP BY a.status", sql.toString());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This test was broken a long time ago")
 	@Test
 	public void testHaving() {
 		// {"filters":[{"column":"contractorName","operator":"BeginsWith","value":"Da"}]}
@@ -547,7 +627,7 @@ public class SqlBuilderTest {
 		assertContains("GROUP BY a.status", sql.toString());
 	}
 
-	@Ignore("Not ready to run yet.")
+	@Ignore("This test was broken a long time ago")
 	@Test
 	public void testGroupByContractorName() {
 		Column contractorNameCount = new Column("contractorNameCount");
@@ -560,7 +640,7 @@ public class SqlBuilderTest {
 		assertEquals("", sql.getOrderBy());
 	}
 
-	@Ignore
+	@Ignore("This test was broken a long time ago")
 	@Test
 	public void testSorts() {
 		AbstractModel accountModel = new AccountModel();

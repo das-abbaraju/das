@@ -46,17 +46,4 @@ public class ReportDynamicTest {
 		JSONArray bases = (JSONArray) action.getJson().get("bases");
 		assertTrue(bases.size() > 1);
 	}
-
-	@Test
-	public void testDownloadFromExcel() throws Exception {
-		assertEquals(ReportDynamic.SUCCESS, action.download());
-		
-		// TODO: Anything else to test?
-	}
-
-	public void testSaveTranslation()
-	{
-	
-	}
-
 }

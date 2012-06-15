@@ -1,8 +1,19 @@
 package com.picsauditing.report.fields;
 
 public enum QueryFunction {
-	Average(true), Count(true), CountDistinct(true), Date, LowerCase, Max(true), Min(true), Month, Round, Sum(
-			true), UpperCase, Year;
+	Average(true),
+	Count(true),
+	CountDistinct(true),
+	Date,
+	LowerCase,
+	Max(true),
+	Min(true),
+	Month,
+	Round,
+	Sum(true),
+	UpperCase,
+	Year,
+	None;
 
 	private boolean aggregate;
 
