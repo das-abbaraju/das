@@ -6,6 +6,7 @@
     <title><s:property value="report.name"/></title>
     
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
+    <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css">
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/font-awesome.css">
 </head>

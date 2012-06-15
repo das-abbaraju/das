@@ -3,6 +3,7 @@ Ext.define('PICS.view.report.FilterOptions', {
     alias: ['widget.filteroptions'],
 
     autoScroll: true,
+    collapsed: true,
     collapsible: true,
     dockedItems: [{
         xtype: 'toolbar',
