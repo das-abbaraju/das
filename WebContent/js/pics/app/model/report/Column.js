@@ -69,7 +69,7 @@ Ext.define('PICS.model.report.Column', {
             text = available_field.get('text'),
             type = available_field.get('type'),
             url = available_field.get('url'),
-            width = available_field.get('width')
+            width = available_field.get('width') || 150; //TODO: Find a better solution than hardcoding a default width
 
         //prevents header click sort
         data_set_column.sortable = false;
