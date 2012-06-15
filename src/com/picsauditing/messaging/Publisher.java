@@ -1,6 +1,5 @@
 package com.picsauditing.messaging;
 
-
 public interface Publisher {
-	void publish(EnterpriseMessage message);
+	void publish(Object message);
 }

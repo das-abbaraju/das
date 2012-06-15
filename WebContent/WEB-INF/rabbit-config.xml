@@ -17,8 +17,10 @@
 	  </bindings>
 	</fanout-exchange>	
 	
-	<template id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
+	<template message-converter="messageConverter" id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="flagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
 		<beans:property name="amqpTemplate" ref="flagChangeTemplate" />
 	</beans:bean>
+	
+	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter" />
 </beans:beans>
