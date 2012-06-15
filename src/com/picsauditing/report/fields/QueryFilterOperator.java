@@ -1,6 +1,7 @@
 package com.picsauditing.report.fields;
 
 public enum QueryFilterOperator {
+	
 	Equals("="),
 	NotEquals("!="),
 	GreaterThan(">"),

@@ -126,7 +126,7 @@ public class Filter implements JSONable {
 	}
 
 	public boolean isValid() {
-		if (value == null)
+		if (Strings.isEmpty(value))
 			return false;
 
 		return true;

@@ -28,9 +28,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
-import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -39,7 +37,6 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.business.ReportController;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.DynamicReportUtil;
@@ -95,6 +92,7 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
+			logger.error("An error occurred while trying to do a find", e);
 			writeJsonErrorMessage(e);
 		}
 
@@ -457,13 +455,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 					if (field.isTranslated()) {
 						String key = field.getI18nKey(value.toString());
-						try {
-							Integer.parseInt(key);
-							jsonRow.put(column, key);
-						} catch (Exception e) {
-							jsonRow.put(column, getText(key));
-						}
-
+						jsonRow.put(column, getText(key));
+							
 					} else if (value instanceof java.sql.Date) {
 						java.sql.Date valueAsDate = (java.sql.Date) value;
 						jsonRow.put(column, valueAsDate.getTime());

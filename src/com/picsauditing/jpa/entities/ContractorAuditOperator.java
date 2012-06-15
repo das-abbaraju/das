@@ -85,6 +85,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	public ContractorAuditOperatorWorkflow changeStatus(AuditStatus auditStatus, Permissions permissions) {
 		if (auditStatus.equals(status))
 			return null;
+		
 		ContractorAuditOperatorWorkflow caow = new ContractorAuditOperatorWorkflow();
 		caow.setCao(this);
 		caow.setPreviousStatus(status);

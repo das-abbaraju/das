@@ -135,7 +135,7 @@ public class Field implements JSONAware {
 	}
 
 	public boolean isTranslated() {
-		if (preTranslation == null && postTranslation == null)
+		if (Strings.isEmpty(preTranslation) && Strings.isEmpty(postTranslation))
 			return false;
 
 		return true;

@@ -28,6 +28,7 @@ public class Strings {
 	public static final String EMPTY_STRING = ""; 
 
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
+	
 	public static boolean isEmpty(String value) {
 		if (value == null)
 			return true;

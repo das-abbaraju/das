@@ -57,6 +57,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 // Cache is only on the operator account now, if this works.
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorAccount extends Account implements JSONable {
+	
 	private String taxId;
 	private String logoFile;
 	private String brochureFile;
