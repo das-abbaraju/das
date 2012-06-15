@@ -200,7 +200,7 @@ public class ReportContractorRiskAssessmentTest {
 		Mockito.when(actionContext.getSession()).thenReturn(createSessionObject());
 		Mockito.when(emailTemplateDAO.find(Mockito.anyInt())).thenReturn(emailTemplate);
 		Mockito.when(permissions.hasPermission(OpPerms.RiskRank, OpType.View)).thenReturn(true);
-		Mockito.when(report.getPage()).thenReturn(new ArrayList<BasicDynaBean>());
+		Mockito.when(report.getPage(false)).thenReturn(new ArrayList<BasicDynaBean>());
 
 		Mockito.when(SpringUtils.getBean("EmailTemplateDAO")).thenReturn(emailTemplateDAO);
 		Mockito.when(SpringUtils.getBean("UserDAO")).thenReturn(userDAO);
