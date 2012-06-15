@@ -21,9 +21,9 @@ Ext.application({
         TEXTSTORE: [
             ['Contains', 'contains'],
             ['NotContains', 'does not contain'],
-            ['BeginsWith', 'beginswith'],
+            ['BeginsWith', 'begins with'],
             ['NotBeginsWith', 'does not begin with'],
-            ['EndsWith', 'endswith'],
+            ['EndsWith', 'ends with'],
             ['NotEndsWith', 'does not end with'],
             ['Equals', 'equals'],
             ['NotEquals', 'does not equal'],
