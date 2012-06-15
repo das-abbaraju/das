@@ -674,4 +674,13 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		ServletActionContext.getResponse().sendRedirect(url);
 		return BLANK;
 	}
+
+	public String cancelAudit() {
+		conAudit.setLatitude(0);
+		conAudit.setLongitude(0);
+		conAudit.setScheduledDate(null);
+		auditDao.save(conAudit);
+
+		return "edit";
+	}
 }

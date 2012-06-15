@@ -35,15 +35,25 @@
             </s:text>
         </h2>
         
-        <div>
-            <a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="<s:text name="global.NewWindow" />">
-                <s:text name="ScheduleAudit.button.OpenAuditorSchedule">
-                    <s:param value="%{conAudit.auditor.name}" />
-                </s:text>
-            </a>
-        </div>
-        
         <s:form cssClass="schedule-audit-form schedule-audit-edit-form %{#reschedule_fee_class}">
+        	<br />
+	        <div>
+				<fieldset>
+		            <a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="<s:text name="global.NewWindow" />">
+		                <s:text name="ScheduleAudit.button.OpenAuditorSchedule">
+		                    <s:param value="%{conAudit.auditor.name}" />
+		                </s:text>
+		            </a>
+		        
+					<pics:permission perm="AuditEdit" type="Edit">
+						<s:if test="conAudit.scheduledDate != null">
+			                    <s:submit cssClass="picsbutton negative" method="cancelAudit" value="%{getText('button.cancelAudit')}" />
+				        </s:if>
+			        </pics:permission>
+	           	</fieldset>
+	        </div>
+	        <br />
+        
             <s:hidden name="conID" value="%{conAudit.contractorAccount.id}" />
             <s:hidden name="auditID" />
             
