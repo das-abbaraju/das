@@ -1,6 +1,6 @@
 <decorators defaultdir="/decorators">
     <decorator name="layout" page="layout.jsp">
-        <pattern>/ManageReports.action</pattern>
+        <pattern>/ManageReports*.action</pattern>
     </decorator>
 	<decorator name="extjs" page="ext.jsp">
 		<pattern>/ReportDynamic.action</pattern>

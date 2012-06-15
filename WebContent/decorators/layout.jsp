@@ -48,7 +48,7 @@
             </header>
             
             <div id="main" role="main">
-                
+                <decorator:body />
             </div>
         </div>
         

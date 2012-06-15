@@ -1,4 +1,16 @@
- .ManageReports-page #main {
+/*General Styles*/
+.ManageReports-page .icon-star {
+    color: #CCC;
+    font-size: 13px;
+    margin-right: 10px;
+}
+
+.ManageReports-page .icon-star.favorite {
+    color: #A84D10;
+}
+
+/*Page Title*/
+.ManageReports-page #main {
     padding: 20px 0px 0px 20px;
 }
 
@@ -16,6 +28,8 @@
     line-height: 14px;
 }
 
+
+/*Page Content*/
 .ManageReports-page #user_edit {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -25,16 +39,27 @@
 .ManageReports-page .nav {
 	margin: 0px;
 }
+
 .ManageReports-page .nav-pills {
     display:inline-block;
 }
 * html .ManageReports-page .nav-pills { display:inline; } /* IE6 */
 *+html .ManageReports-page .nav-pills { display:inline; } /* IE7 */
 
+.ManageReports-page .nav-pills a {
+    color: #226396;
+}
+
+.ManageReports-page .nav-pills .active a {
+    background-color: #226396;
+    color: #FFF;
+}
+
 .ManageReports-page h3 {
     color: #999;
 	font-size: 14px;
 	font-style: italic;
+	margin-bottom: 15px;
 	text-align: center;
 }
 
@@ -43,28 +68,40 @@
 	width: 700px;
 }
 
-.ManageReports-page .icon-star {
-    background: none;
-}
-
-.ManageReports-page ul#reportList li div {
-	background-color: #f1f1f2;
-	border: 1px solid #ccc;
+.ManageReports-page ul#reportList li {
+    background-color: #f1f1f2;
+    border: 1px solid #ccc;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     line-height: 30px;
+    margin-bottom: 2px;
     min-height: 30px;
-}
-.ManageReports-page ul#reportList li .icon-star {
-	color: #A84D10;
+    position: relative;
 }
 
-#userActions {
-	margin: 0 auto;
-	width: 25%;
+* html .ManageReports-page ul#reportList li { display:inline; } /* IE6 */
+*+html .ManageReports-page ul#reportList li { display:inline; } /* IE7 */
+
+.ManageReports-page ul#reportList li a {
+    text-decoration: none;
 }
-#userActions button {
-	height: 30px;
-	width: 25%;
+
+.ManageReports-page a.report_name {
+	color: #000;
+	margin-right: 20px;
+}
+
+.ManageReports-page .report_created_by {
+	color: #999;
+	font-size: 10px;
+	font-style: italic;
+}
+
+.ManageReports-page a.report_actions {
+    border-left: 1px solid #CCC;
+	color: #999;
+	padding: 0px 5px;
+    position: absolute;
+    right: 0px;
 }
