@@ -244,7 +244,15 @@
 						</p>
 					</li>
 				</ul>
+				<ul>
+					<!--<s:submit method="proformaInvoice"  value="Email Pro Forma Invoice" class="btn success" />-->
+					<!--<s:submit method="proformaInvoice" value="Email Pro Forma Invoice" class="btn success" />-->
+					<input name="method:proformaInvoice" value="Email Pro Forma Invoice" type="submit" />
+				</ul>
 			</section>
 		</s:form>
+		
+		<form action="" >
+		</form>
 	</s:if>
 </div>

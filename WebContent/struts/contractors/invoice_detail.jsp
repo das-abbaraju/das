@@ -407,7 +407,15 @@
 							<s:property value="invoice.notes"/>
 						</s:else>
                 	</td>
-				</tr>
+				</tr> 
+				<!-- proforma payment contractor -->
+				<s:if test="contractor.paymentMethod.EFT">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <s:text name="InvoiceDetail.PaymentInstruction" />
+                        </td>
+                    </tr>
+                </s:if>
 				<tr>
 					<td>
 						<table width="100%" class="allborder">
@@ -455,6 +463,7 @@
 					</td>
 				</tr>
 			</table>
+		      
 		</s:form>
 	</body>
 </html>

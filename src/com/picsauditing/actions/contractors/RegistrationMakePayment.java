@@ -642,4 +642,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		return false;
 	}
+	
+	public String proformaInvoice() throws Exception {
+		EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+			
+		return SUCCESS;
+	}
 }
