@@ -391,276 +391,145 @@
   color: #2caf2c;
   margin-right: 5px; }
 
-<<<<<<< HEAD
 /* line 17, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar {
-=======
-/* line 17, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar {
->>>>>>> PICS-4962 Updating report grid id + adding grid footer
   background: #f1f1f1;
   border: 1px solid #cccccc !important;
   padding: 0px 20px; }
 
-<<<<<<< HEAD
 /* line 24, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-btn-default-toolbar-large-over {
-  background: transparent;
-  border: 0px; }
-
-/* line 30, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-btn {
-  border: 0px; }
-
-/* line 35, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-btn-disabled span {
-  opacity: 1; }
-
-/* line 41, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar button,
-#data_grid .paging-toolbar button span {
-  width: 20px; }
-
-/* line 46, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar button .x-btn-inner {
-  padding-top: 7px !important; }
-
-/* line 51, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .icon-large {
-  color: #666666; }
-
-/* line 56, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large {
-  color: #73bbe8; }
-
-/* line 61, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-disabled .icon-large {
-  color: #cccccc; }
-
-/* line 67, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .refresh button,
-#data_grid .paging-toolbar .refresh button span {
-  width: 28px; }
-
-/* line 72, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .refresh .x-btn-inner {
-  padding-top: 7px !important; }
-
-/* line 77, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .refresh .icon-refresh {
-  font-size: 19px; }
-
-/* line 82, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-toolbar-separator {
-  border: 0px;
-  border-left: 1px solid #cccccc; }
-
-/* line 88, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-toolbar-text {
-  color: #666666;
-  font-size: 14px; }
-
-/* line 94, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-form-text {
-  height: 25px; }
-
-/* line 99, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .rows-per-page {
-  margin-left: 10px; }
-
-/* line 104, ../sass/my-ext-theme/_report_paging_toolbar.scss */
-#data_grid .paging-toolbar .x-form-trigger {
-  height: 25px; }
-
-/* line 23, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-header-ct {
-  border: 1px solid #cccccc !important; }
-
-/* line 28, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-column-header {
-=======
-/* line 24, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-btn-default-toolbar-large-over {
   background: transparent;
   border: 0px; }
 
-/* line 30, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 30, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-btn {
   border: 0px; }
 
-/* line 35, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 35, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-btn-disabled span {
   opacity: 1; }
 
-/* line 41, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 41, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar button,
 #report_grid .paging-toolbar button span {
   width: 20px; }
 
-/* line 46, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 46, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar button .x-btn-inner {
   padding-top: 7px !important; }
 
-/* line 51, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 51, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .icon-large {
   color: #666666; }
 
-/* line 56, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 56, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large {
   color: #73bbe8; }
 
-/* line 61, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 61, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-disabled .icon-large {
   color: #cccccc; }
 
-/* line 67, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 67, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .refresh button,
 #report_grid .paging-toolbar .refresh button span {
   width: 28px; }
 
-/* line 72, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 72, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .refresh .x-btn-inner {
   padding-top: 7px !important; }
 
-/* line 77, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 77, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .refresh .icon-refresh {
   font-size: 19px; }
 
-/* line 82, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 82, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-toolbar-separator {
   border: 0px;
   border-left: 1px solid #cccccc; }
 
-/* line 88, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 88, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-toolbar-text {
   color: #666666;
   font-size: 14px; }
 
-/* line 94, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 94, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-form-text {
   height: 25px; }
 
-/* line 99, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 99, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .rows-per-page {
   margin-left: 10px; }
 
-/* line 104, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_paging_toolbar.scss */
+/* line 104, ../sass/my-ext-theme/_report_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-form-trigger {
   height: 25px; }
 
-/* line 28, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 28, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-header-ct {
   border: 1px solid #cccccc !important;
   border-top: 0px !important; }
 
-/* line 34, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 34, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-column-header {
->>>>>>> PICS-4962 Updating report grid id + adding grid footer
   border-right: 1px solid #333333;
   color: #cccccc;
   font-weight: bold;
   text-shadow: none; }
 
-<<<<<<< HEAD
-/* line 36, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-column-header .x-column-header-trigger {
-  background: url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
-  display: block; }
-
 /* line 42, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-column-header .x-column-header-open .x-column-header-trigger {
-  background-position: -14px; }
-
-/* line 47, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid-body {
-=======
-/* line 42, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-column-header .x-column-header-trigger {
   background: url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
   display: block; }
 
-/* line 48, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 48, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-column-header .x-column-header-open .x-column-header-trigger {
   background-position: -14px; }
 
-/* line 53, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 53, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid-body {
->>>>>>> PICS-4962 Updating report grid id + adding grid footer
   border: 0px;
   border: 1px solid #cccccc !important;
   border-top: 0px !important; }
 
-<<<<<<< HEAD
-/* line 54, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid-body .x-grid-cell {
-  border-right: 1px solid #dcdcdc; }
-
-/* line 59, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-row .x-grid-cell-special {
-  background: white;
-  background-image: none !important; }
-
-/* line 65, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-row-over .x-grid-cell-special {
-  background: #f1f1f1; }
-
-/* line 71, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-row-alt .x-grid-cell,
-#data_grid .x-grid-row-alt .x-grid-rowwrap-div {
-=======
-/* line 60, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 60, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 
-/* line 65, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 65, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-row .x-grid-cell-special {
   background: white;
   background-image: none !important; }
 
-/* line 71, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 71, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-row-over .x-grid-cell-special {
   background: #f1f1f1; }
 
-/* line 77, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 77, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-row-alt .x-grid-cell,
 #report_grid .x-grid-row-alt .x-grid-rowwrap-div {
->>>>>>> PICS-4962 Updating report grid id + adding grid footer
   background: #f1f1f1;
   border-top: 0px;
   border-bottom: 0px; }
 
-<<<<<<< HEAD
-/* line 78, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-cell-inner {
-=======
-/* line 84, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 84, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-cell-inner {
->>>>>>> PICS-4962 Updating report grid id + adding grid footer
   color: #333333;
   font-size: 14px;
   line-height: 18px;
   padding: 4px 6px 4px; }
 
-<<<<<<< HEAD
-/* line 86, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-cell-inner a {
-  color: #226396;
-  text-decoration: none; }
-
 /* line 92, ../sass/my-ext-theme/_report_grid.scss */
-#data_grid .x-grid-cell-inner a:hover {
-=======
-/* line 92, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-cell-inner a {
   color: #226396;
   text-decoration: none; }
 
-/* line 98, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 98, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid .x-grid-cell-inner a:hover {
->>>>>>> PICS-4962 Updating report grid id + adding grid footer
   text-decoration: underline; }
 
-/* line 103, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_report_grid.scss */
+/* line 103, ../sass/my-ext-theme/_report_grid.scss */
 #report_grid_footer-body {
   background: #454545;
   border: 1px solid #333333 !important; }
@@ -2169,7 +2038,32 @@ tr.x-container:before {
 .x-html {
   /* Begin bidirectionality settings (do not change) */ }
   /* line 32, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html html, .x-html address, .x-html blockquote, .x-html body, .x-html dd, .x-html div, .x-html dl, .x-html dt, .x-html fieldset, .x-html form, .x-html frame, .x-html frameset, .x-html h1, .x-html h2, .x-html h3, .x-html h4, .x-html h5, .x-html h6, .x-html noframes, .x-html ol, .x-html p, .x-html ul, .x-html center, .x-html dir, .x-html hr, .x-html menu, .x-html pre {
+  .x-html html,
+  .x-html address,
+  .x-html blockquote,
+  .x-html body,
+  .x-html dd,
+  .x-html div,
+  .x-html dl,
+  .x-html dt,
+  .x-html fieldset,
+  .x-html form,
+  .x-html frame, .x-html frameset,
+  .x-html h1,
+  .x-html h2,
+  .x-html h3,
+  .x-html h4,
+  .x-html h5,
+  .x-html h6,
+  .x-html noframes,
+  .x-html ol,
+  .x-html p,
+  .x-html ul,
+  .x-html center,
+  .x-html dir,
+  .x-html hr,
+  .x-html menu,
+  .x-html pre {
     display: block; }
   /* line 33, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html li {
@@ -2200,7 +2094,8 @@ tr.x-container:before {
   .x-html colgroup {
     display: table-column-group; }
   /* line 43, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html td, .x-html th {
+  .x-html td,
+  .x-html th {
     display: table-cell; }
   /* line 44, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html caption {
@@ -2228,7 +2123,16 @@ tr.x-container:before {
     font-size: 1.17em;
     margin: .83em 0; }
   /* line 60, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html h4, .x-html p, .x-html blockquote, .x-html ul, .x-html fieldset, .x-html form, .x-html ol, .x-html dl, .x-html dir, .x-html menu {
+  .x-html h4,
+  .x-html p,
+  .x-html blockquote,
+  .x-html ul,
+  .x-html fieldset,
+  .x-html form,
+  .x-html ol,
+  .x-html dl,
+  .x-html dir,
+  .x-html menu {
     margin: 1.12em 0; }
   /* line 61, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html h5 {
@@ -2239,29 +2143,49 @@ tr.x-container:before {
     font-size: .75em;
     margin: 1.67em 0; }
   /* line 70, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html h1, .x-html h2, .x-html h3, .x-html h4, .x-html h5, .x-html h6, .x-html b, .x-html strong {
+  .x-html h1,
+  .x-html h2,
+  .x-html h3,
+  .x-html h4,
+  .x-html h5,
+  .x-html h6,
+  .x-html b,
+  .x-html strong {
     font-weight: bolder; }
   /* line 71, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html blockquote {
     margin-left: 40px;
     margin-right: 40px; }
   /* line 76, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html i, .x-html cite, .x-html em, .x-html var, .x-html address {
+  .x-html i,
+  .x-html cite,
+  .x-html em,
+  .x-html var,
+  .x-html address {
     font-style: italic; }
   /* line 81, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html pre, .x-html tt, .x-html code, .x-html kbd, .x-html samp {
+  .x-html pre,
+  .x-html tt,
+  .x-html code,
+  .x-html kbd,
+  .x-html samp {
     font-family: monospace; }
   /* line 82, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html pre {
     white-space: pre; }
   /* line 86, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html button, .x-html textarea, .x-html input, .x-html select {
+  .x-html button,
+  .x-html textarea,
+  .x-html input,
+  .x-html select {
     display: inline-block; }
   /* line 87, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html big {
     font-size: 1.17em; }
   /* line 90, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html small, .x-html sub, .x-html sup {
+  .x-html small,
+  .x-html sub,
+  .x-html sup {
     font-size: .83em; }
   /* line 91, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html sub {
@@ -2273,19 +2197,28 @@ tr.x-container:before {
   .x-html table {
     border-spacing: 2px; }
   /* line 96, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html thead, .x-html tbody, .x-html tfoot {
+  .x-html thead,
+  .x-html tbody,
+  .x-html tfoot {
     vertical-align: middle; }
   /* line 98, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html td, .x-html th {
+  .x-html td,
+  .x-html th {
     vertical-align: inherit; }
   /* line 101, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html s, .x-html strike, .x-html del {
+  .x-html s,
+  .x-html strike,
+  .x-html del {
     text-decoration: line-through; }
   /* line 102, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html hr {
     border: 1px inset; }
   /* line 107, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html ol, .x-html ul, .x-html dir, .x-html menu, .x-html dd {
+  .x-html ol,
+  .x-html ul,
+  .x-html dir,
+  .x-html menu,
+  .x-html dd {
     margin-left: 40px; }
   /* line 108, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html ul, .x-html menu, .x-html dir {
@@ -2294,11 +2227,15 @@ tr.x-container:before {
   .x-html ol {
     list-style-type: decimal; }
   /* line 113, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html ol ul, .x-html ul ol, .x-html ul ul, .x-html ol ol {
+  .x-html ol ul,
+  .x-html ul ol,
+  .x-html ul ul,
+  .x-html ol ol {
     margin-top: 0;
     margin-bottom: 0; }
   /* line 115, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x-html u, .x-html ins {
+  .x-html u,
+  .x-html ins {
     text-decoration: underline; }
   /* line 116, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
   .x-html br:before {
