@@ -13,94 +13,94 @@ $report_grid_paging_toolbar_icon_disabled_text_color: #cccccc;
 // report grid paging toolbar - separator
 $report_grid_paging_toolbar_separator_border_color_left: #cccccc;
 
-#data_grid .paging-toolbar
+#report_grid .paging-toolbar
 {
 	background: $report_grid_paging_toolbar_background_color;
 	border: 1px solid $report_grid_paging_toolbar_border_color !important;
 	padding: 0px 20px;
 }
 
-#data_grid .paging-toolbar .x-btn-default-toolbar-large-over
+#report_grid .paging-toolbar .x-btn-default-toolbar-large-over
 {
 	background: transparent;
 	border: 0px;
 }
 
-#data_grid .paging-toolbar .x-btn
+#report_grid .paging-toolbar .x-btn
 {
 	border: 0px;
 }
 
-#data_grid .paging-toolbar .x-btn-disabled span
+#report_grid .paging-toolbar .x-btn-disabled span
 {
 	opacity: 1;
 }
 
-#data_grid .paging-toolbar button,
-#data_grid .paging-toolbar button span
+#report_grid .paging-toolbar button,
+#report_grid .paging-toolbar button span
 {
 	width: 20px;
 }
 
-#data_grid .paging-toolbar button .x-btn-inner
+#report_grid .paging-toolbar button .x-btn-inner
 {
 	padding-top: 7px !important;
 }
 
-#data_grid .paging-toolbar .icon-large
+#report_grid .paging-toolbar .icon-large
 {
 	color: $report_grid_paging_toolbar_icon_text_color;
 }
 
-#data_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large
+#report_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large
 {
 	color: $report_grid_paging_toolbar_icon_over_text_color;
 }
 
-#data_grid .paging-toolbar .x-disabled .icon-large
+#report_grid .paging-toolbar .x-disabled .icon-large
 {
 	color: $report_grid_paging_toolbar_icon_disabled_text_color;
 }
 
-#data_grid .paging-toolbar .refresh button,
-#data_grid .paging-toolbar .refresh button span
+#report_grid .paging-toolbar .refresh button,
+#report_grid .paging-toolbar .refresh button span
 {
 	width: 28px;
 }
 
-#data_grid .paging-toolbar .refresh .x-btn-inner
+#report_grid .paging-toolbar .refresh .x-btn-inner
 {
 	padding-top: 7px !important;
 }
 
-#data_grid .paging-toolbar .refresh .icon-refresh
+#report_grid .paging-toolbar .refresh .icon-refresh
 {
 	font-size: 19px;
 }
 
-#data_grid .paging-toolbar .x-toolbar-separator
+#report_grid .paging-toolbar .x-toolbar-separator
 {
 	border: 0px;
 	border-left: 1px solid $report_grid_paging_toolbar_separator_border_color_left;
 }
 
-#data_grid .paging-toolbar .x-toolbar-text
+#report_grid .paging-toolbar .x-toolbar-text
 {
 	color: $report_grid_paging_toolbar_text_color;
 	font-size: 14px;
 }
 
-#data_grid .paging-toolbar .x-form-text
+#report_grid .paging-toolbar .x-form-text
 {
 	height: 25px;
 }
 
-#data_grid .paging-toolbar .rows-per-page
+#report_grid .paging-toolbar .rows-per-page
 {
 	margin-left: 10px;
 }
 
-#data_grid .paging-toolbar .x-form-trigger
+#report_grid .paging-toolbar .x-form-trigger
 {
 	height: 25px;
 }

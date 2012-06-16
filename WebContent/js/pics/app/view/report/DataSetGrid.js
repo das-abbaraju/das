@@ -136,7 +136,12 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 height: 28
             }];
         },
+    }, {
+        xtype: 'panel',
+        dock: 'bottom',
+        height: 10,
+        id: 'report_grid_footer'
     }],
-    id: 'data_grid',
+    id: 'report_grid',
     margin: '0 20 20 20'
 });
