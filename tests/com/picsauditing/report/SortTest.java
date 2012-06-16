@@ -16,17 +16,17 @@ public class SortTest {
 	public void testEmpty() {
 		sort.fromJSON(jsonObj);
 
-		String expected = "{\"column\":null}";
+		String expected = "{\"name\":null}";
 		assertEquals(expected, sort.toJSON(true).toJSONString());
 	}
 
 	@Test
 	public void testNameOnly() {
-		jsonObj.put("column", "AccountName");
+		jsonObj.put("name", "AccountName");
 		sort.fromJSON(jsonObj);
 		assertEquals("AccountName", sort.getFieldName());
 
-		String expected = "{\"column\":\"AccountName\"}";
+		String expected = "{\"name\":\"AccountName\"}";
 		assertEquals(expected, sort.toJSON(true).toJSONString());
 	}
 }

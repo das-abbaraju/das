@@ -18,24 +18,24 @@ public class FilterTest {
 	public void testEmpty() {
 		filter.fromJSON(jsonObj);
 
-		String expected = "{\"column\":null}";
+		String expected = "{\"name\":null}";
 		assertEquals(expected, filter.toJSON(true).toJSONString());
 	}
 
 	@Test
 	public void testBlankOperator() {
-		jsonObj.put("column", "accountID");
+		jsonObj.put("name", "accountID");
 		jsonObj.put("operator", "");
 		
 		filter.fromJSON(jsonObj);
 
-		String expected = "{\"column\":\"accountID\",\"operator\":\"Equals\"}";
+		String expected = "{\"name\":\"accountID\",\"operator\":\"Equals\"}";
 		assertEquals(expected, filter.toJSON(true).toJSONString());
 	}
 
 	@Test
 	public void testValue() {
-		jsonObj.put("column", "AccountName");
+		jsonObj.put("name", "AccountName");
 		jsonObj.put("operator", "BeginsWith");
 		jsonObj.put("value", "Trevor's");
 		filter.fromJSON(jsonObj);
@@ -43,7 +43,7 @@ public class FilterTest {
 		assertEquals(QueryFilterOperator.BeginsWith, filter.getOperator());
 		assertEquals("Trevor's", filter.getValue());
 
-		String expected = "{\"value\":\"Trevor's\",\"column\":\"AccountName\",\"operator\":\"BeginsWith\"}";
+		String expected = "{\"name\":\"AccountName\",\"value\":\"Trevor's\",\"operator\":\"BeginsWith\"}";
 		assertEquals(expected, filter.toJSON(true).toJSONString());
 	}
 }

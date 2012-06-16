@@ -60,11 +60,6 @@ public class Filter implements JSONable {
 		this.operator = QueryFilterOperator.valueOf(object.toString());
 	}
 
-	/*
-	 * DateTime(ExtFieldType.Date), AccountName(ExtFieldType.String),
-	 * AccountType, AccountLevel, Trades, Country, StateProvince
-	 */
-
 	@SuppressWarnings("unchecked")
 	public static JSONArray getAccountStatusList() {
 		AccountStatus[] list = AccountStatus.values();
@@ -118,7 +113,9 @@ public class Filter implements JSONable {
 	}
 
 	public String getValue() {
-		return Strings.escapeQuotes(value);
+		// I really think we should leave this as the RAW value and escape it later
+		// return Strings.escapeQuotes(value);
+		return value;
 	}
 
 	public void setValue(String value) {
