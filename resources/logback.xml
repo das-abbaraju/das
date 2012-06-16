@@ -20,9 +20,15 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
   </appender>
+    <appender name="CONSOLE"
+        class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
 
-  <root level="info">
-    <appender-ref ref="FILE" />
+  <root level="warn">
+    <appender-ref ref="CONSOLE" />
   </root>
   
   <!-- Perf4J appenders -->
@@ -62,9 +68,19 @@
         </rollingPolicy>
     </appender>
  
+ 
     <logger name="org.perf4j.TimingLogger" additivity="false" level="info">
         <appender-ref ref="CoalescingStatistics"/>
         <appender-ref ref="perf4jFileAppender"/>
+    </logger>
+    
+ <!-- Custom Loggers for Special Purposes -->
+  
+    <logger name="com.picsauditing.PICS" additivity="false" level="info">
+	    <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="com.tacitknowledge" additivity="false" level="info">
+	    <appender-ref ref="CONSOLE" />
     </logger>
     
 </configuration>
