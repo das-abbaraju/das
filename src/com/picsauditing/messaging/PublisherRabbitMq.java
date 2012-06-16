@@ -16,7 +16,7 @@ public class PublisherRabbitMq implements Publisher {
 		//amqpTemplate.convertAndSend(message);
 	}
 
-	public void publish(EnterpriseMessage message, String routingKey) {
+	public void publish(Object message, String routingKey) {
 		//amqpTemplate.setRoutingKey(routingKey);
 		//amqpTemplate.convertAndSend(message);
 	}
