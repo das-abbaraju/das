@@ -40,7 +40,7 @@ public class MenuWriterTest {
 
     @Test
     public void testExportMenuToExtJSBasic() throws Exception {
-        String json = "[{'text':'Test 1'},{'xtype':'tbseparator'},{'text':'Test 2'}]";
+        String json = "[{'text':'Test 1'},{'text':'Test 2'}]";
         json = convertQuotes(json);
 
         MenuComponent menu = new MenuComponent();
@@ -77,7 +77,7 @@ public class MenuWriterTest {
 
     @Test
     public void testExportMenuToExtJSFull() throws Exception {
-        String json = "[{'text':'Top','menu':{'items':[{'text':'Test','href':'http://www.google.com'}],'hideMode':'display'}},{'xtype':'tbseparator'},{'text':'Bottom','menu':{'items':[{'text':'Test 2'}],'hideMode':'display'}}]";
+        String json = "[{'text':'Top','menu':{'items':[{'text':'Test','href':'http://www.google.com'}],'hideMode':'display'}},{'text':'Bottom','menu':{'items':[{'text':'Test 2'}],'hideMode':'display'}}]";
         json = convertQuotes(json);
 
         MenuComponent menu = new MenuComponent();
