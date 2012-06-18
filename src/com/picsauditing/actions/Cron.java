@@ -22,13 +22,14 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
@@ -365,7 +366,7 @@ public class Cron extends PicsActionSupport {
 
 	private void getEmailExclusions() {
 		List<String> exclusionList = emailQueueDAO.findEmailAddressExclusions();
-		if (exclusionList != null && !exclusionList.isEmpty())
+		if (CollectionUtils.isEmpty(exclusionList))
 			emailExclusionList.addAll(exclusionList);
 	}
 
@@ -473,7 +474,7 @@ public class Cron extends PicsActionSupport {
 					List<ContractorAccount> duplicateContractors = contractorAccountDAO
 							.findWhere(whereDuplicateNameIndex(contractor.getNameIndex()));
 
-					if (!duplicateContractors.isEmpty()) {
+					if (CollectionUtils.isNotEmpty(duplicateContractors)) {
 						sendEmailToContractors = false;
 
 						EmailBuilder emailBuilder = new EmailBuilder();
@@ -657,7 +658,7 @@ public class Cron extends PicsActionSupport {
 					List<ContractorAccount> duplicateContractors = contractorAccountDAO
 							.findWhere(whereDuplicateNameIndex(crr.getName()));
 
-					if (!duplicateContractors.isEmpty()) {
+					if (CollectionUtils.isNotEmpty(duplicateContractors)) {
 						sendEmailToContractors = false;
 
 						EmailBuilder emailBuilder = new EmailBuilder();
@@ -781,6 +782,10 @@ public class Cron extends PicsActionSupport {
 
 	public void sendDelinquentContractorsEmail() throws Exception {
 		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
+		if (CollectionUtils.isEmpty(invoices)) {
+			return;
+		}
+		
 		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
 		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
 
@@ -788,9 +793,14 @@ public class Cron extends PicsActionSupport {
 			Set<String> emailAddresses = new HashSet<String>();
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
 
-			User billing = cAccount.getUsersByRole(OpPerms.ContractorBilling).get(0);
-			if (!Strings.isEmpty(billing.getEmail()))
-				emailAddresses.add(billing.getEmail());
+			List<User> billingUsers = cAccount.getUsersByRole(OpPerms.ContractorBilling);
+			if (!CollectionUtils.isNotEmpty(billingUsers)) {			
+				User billing = billingUsers.get(0);
+				if (!Strings.isEmpty(billing.getEmail())) {
+					emailAddresses.add(billing.getEmail());
+				}
+			}
+			
 			if (!Strings.isEmpty(cAccount.getCcEmail()))
 				emailAddresses.add(cAccount.getCcEmail());
 
@@ -798,11 +808,13 @@ public class Cron extends PicsActionSupport {
 				List<Integer> questionsWithEmailAddresses = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
 				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(),
 						questionsWithEmailAddresses);
+				
 				for (AuditData auditData : aList) {
 					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
 						emailAddresses.add(auditData.getAnswer());
 				}
 			}
+			
 			cMap.put(cAccount, emailAddresses);
 
 			if (invoice.getDueDate().before(new Date()))
@@ -813,17 +825,19 @@ public class Cron extends PicsActionSupport {
 
 		for (ContractorAccount cAccount : cMap.keySet()) {
 			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
-			EmailBuilder emailBuilder = new EmailBuilder();
+			if (!Strings.isEmpty(emailAddress)) {			
+				EmailBuilder emailBuilder = new EmailBuilder();
 
-			emailBuilder.setTemplate(templateMap.get(cAccount));
-			emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
-			emailBuilder.setCcAddresses(emailAddress);
-			EmailQueue email = emailBuilder.build();
-			email.setLowPriority();
-			email.setViewableById(Account.PicsID);
-			emailQueueDAO.save(email);
+				emailBuilder.setTemplate(templateMap.get(cAccount));
+				emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
+				emailBuilder.setCcAddresses(emailAddress);
+				EmailQueue email = emailBuilder.build();
+				email.setLowPriority();
+				email.setViewableById(Account.PicsID);
+				emailQueueDAO.save(email);
 
-			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
+				stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
+			}
 		}
 	}
 
@@ -920,13 +934,13 @@ public class Cron extends PicsActionSupport {
 
 	private void sendFlagChangesEmails() throws Exception {
 		List<BasicDynaBean> data = getFlagChangeData();
-		if (data.isEmpty())
+		if (CollectionUtils.isEmpty(data))
 			return;
 
 		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
 
 		Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
-		if (!CollectionUtils.isEmpty(amMap)) {
+		if (MapUtils.isNotEmpty(amMap)) {
 			for (String accountMgr : amMap.keySet()) {
 				if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
 					List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
@@ -973,6 +987,11 @@ public class Cron extends PicsActionSupport {
 	private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
 		// Sorting results into buckets by AM to add as tokens into the email
 		Map<String, List<BasicDynaBean>> amMap = new TreeMap<String, List<BasicDynaBean>>();
+		
+		if (CollectionUtils.isEmpty(data)) {
+			return amMap;
+		}
+				
 		for (BasicDynaBean bean : data) {
 			String accountMgr = (String) bean.get("accountManager");
 			if (accountMgr != null) {
@@ -982,6 +1001,7 @@ public class Cron extends PicsActionSupport {
 				amMap.get(accountMgr).add(bean);
 			}
 		}
+		
 		return amMap;
 	}
 
