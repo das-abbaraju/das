@@ -36,8 +36,9 @@ public class KeepAlive {
 			return String.format(SYSTEM_LOAD, systemLoadAverage);
 		} else if (!isDatabaseAccessible()) {
 			return DATABASE_UNACCESSIBLE;
-		} else if (!isSiteLoadedBeforeTimeout()) {
-			return PAGE_TIMED_OUT;
+			// Because of PICS-6112, I am temporarily commenting this code out
+//		} else if (!isSiteLoadedBeforeTimeout()) {
+//			return PAGE_TIMED_OUT;
 		}
 
 		return SYSTEM_OK;
