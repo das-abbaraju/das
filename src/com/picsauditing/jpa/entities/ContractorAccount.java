@@ -1586,4 +1586,12 @@ public class ContractorAccount extends Account implements JSONable {
 	void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
+	
+	@Transient
+	public boolean isInEuroZone() {
+		if (country != null) {
+			return country.getCurrency().isGBP() || country.getCurrency().isEUR();
+		}
+		return false;
+	}
 }
