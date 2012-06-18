@@ -525,10 +525,11 @@ public class ReportDynamic extends PicsActionSupport {
 			if (!filter.isHasTranslations())
 				continue;
 
-			if (Strings.isEmpty(filter.getValue()))
+			String filterValue = Strings.escapeQuotes(filter.getValue());
+			if (Strings.isEmpty(filterValue))
 				return;
 
-			String[] values = filter.getValue().split(",");
+			String[] values = filterValue.split(",");
 			String[] translationValueNameArray = new String[values.length];
 			for (int i = 0; i < values.length; i++) {
 				String translationKey = values[i];

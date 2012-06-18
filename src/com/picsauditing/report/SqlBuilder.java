@@ -4,7 +4,6 @@ import static com.picsauditing.util.business.DynamicReportUtil.getColumnFromFiel
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +63,7 @@ public class SqlBuilder {
 
 		Map<String, Field> availableFields = ReportController.buildAvailableFields(model.getPrimaryTable());
 
-		addFieldsAndGroupBy(availableFields);
+		addFieldsAndGroupBy(availableFields, definition.getColumns());
 		addRuntimeFilters(availableFields);
 		addOrderByClauses(model, availableFields);
 
@@ -115,11 +114,12 @@ public class SqlBuilder {
 		}
 	}
 
-	private void addFieldsAndGroupBy(Map<String, Field> availableFields) {
+	private void addFieldsAndGroupBy(Map<String, Field> availableFields, List<Column> columns) {
 		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy(availableFields);
 
-		for (Column column : definition.getColumns()) {
+		// Make sure column has a field(?)
+		for (Column column : columns) {
 			Field field = availableFields.get(column.getFieldName().toUpperCase());
 
 			if (field != null) {
@@ -139,16 +139,14 @@ public class SqlBuilder {
 			}
 		}
 
-		// Add an dependent fields that aren't already included
-		Iterator<String> iterator = dependentFields.iterator();
-		while (iterator.hasNext()) {
-			String fieldName = (String) iterator.next();
-			if (isFieldIncluded(fieldName)) {
-				iterator.remove();
-			}
-		}
+		addDependentFields(dependentFields, availableFields);
+	}
 
+	private void addDependentFields(Set<String> dependentFields, Map<String, Field> availableFields) {
 		for (String fieldName : dependentFields) {
+			if (isFieldIncluded(fieldName))
+				continue;
+
 			Column column = new Column(fieldName);
 			String columnSql = columnToSql(column, availableFields);
 			sql.addField(columnSql + " AS `" + fieldName + "`");
@@ -309,37 +307,37 @@ public class SqlBuilder {
 	}
 
 	private String toValueSql(Filter filter, Column column, Map<String, Field> availableFields) {
-		String value = filter.getValue();
+		String filterValue = Strings.escapeQuotes(filter.getValue());
 
 		// date filter
 		Field field = availableFields.get(column.getFieldName().toUpperCase());
 		ExtFieldType fieldType = field.getType();
 		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
-			QueryDateParameter parameter = new QueryDateParameter(value);
+			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 
-			value = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
+			filterValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
 		}
 
 		switch (filter.getOperator()) {
 		case NotBeginsWith:
 		case BeginsWith:
-			return "'" + value + "%'";
+			return "'" + filterValue + "%'";
 		case NotEndsWith:
 		case EndsWith:
-			return "'%" + value + "'";
+			return "'%" + filterValue + "'";
 		case NotContains:
 		case Contains:
-			return "'%" + value + "%'";
+			return "'%" + filterValue + "%'";
 		case NotIn:
 		case In:
-			value = addQuotesToValues(value);
-			return "(" + value + ")";
+			filterValue = addQuotesToValues(filterValue);
+			return "(" + filterValue + ")";
 		case NotEmpty:
 		case Empty:
 			// TODO
 		}
 
-		return "'" + value + "'";
+		return "'" + filterValue + "'";
 	}
 
 	private String addQuotesToValues(String unquotedValuesString) {

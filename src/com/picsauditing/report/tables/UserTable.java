@@ -18,10 +18,11 @@ public class UserTable extends AbstractTable {
 
 		addFields(com.picsauditing.jpa.entities.User.class);
 
-		Field userName;
-		userName = addField(prefix + "Name", alias + ".name", FilterType.AccountName);
-		userName.setUrl("UsersManage.action?user={" + prefix + "ID}\">{" + prefix + "Name}");
-		userName.setWidth(300);
+// 		Trevor and Mike don't think we should auto hyper link to users Manage for every User report column
+//		Field userName;
+//		userName = addField(prefix + "Name", alias + ".name", FilterType.AccountName);
+//		userName.setUrl("UsersManage.action?user={" + prefix + "ID}\">{" + prefix + "Name}");
+//		userName.setWidth(300);
 	}
 
 	public void addJoins() {

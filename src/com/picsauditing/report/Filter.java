@@ -113,8 +113,6 @@ public class Filter implements JSONable {
 	}
 
 	public String getValue() {
-		// I really think we should leave this as the RAW value and escape it later
-		// return Strings.escapeQuotes(value);
 		return value;
 	}
 

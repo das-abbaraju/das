@@ -19,7 +19,7 @@ public @interface ReportField {
 
 	AutocompleteType autocomplete() default AutocompleteType.None;
 	
-	int width() default 0;
+	int width() default 100;
 
 	boolean visible() default true;
 
