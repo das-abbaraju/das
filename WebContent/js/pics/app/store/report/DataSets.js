@@ -26,6 +26,7 @@ Ext.define('PICS.store.report.DataSets', {
         this.reloadStoreData({
             callback: function(records, operation, success) {
                 if (success) {
+                    this.resetReportPaging();
                     this.reloadReportDataSet();
                 } else {
                     Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
@@ -134,6 +135,14 @@ Ext.define('PICS.store.report.DataSets', {
 
         // reload store data
         this.load(callback);
+    },
+
+    resetReportPaging: function () {
+        paging_toolbar = Ext.ComponentQuery.query('reportdatasetgrid pagingtoolbar')[0];
+
+        if (paging_toolbar) {
+            paging_toolbar.moveFirst();
+        }
     },
 
     updateReportPaging: function (value) {
