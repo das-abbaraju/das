@@ -615,8 +615,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String redirect(String url) throws IOException {
-		this.url = url;
-		return REDIRECT;
+		ServletActionContext.getResponse().sendRedirect(url);
+		return BLANK;
+		//this.url = url;
+		//return REDIRECT;
 	}
 
 	public String getFormattedDollarAmount(String answer) {
