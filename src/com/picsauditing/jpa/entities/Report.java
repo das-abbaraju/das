@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.jboss.util.Strings;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
@@ -14,6 +15,7 @@ import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.JSONUtilities;
+import com.picsauditing.util.business.DynamicReportUtil;
 
 @SuppressWarnings("serial")
 @Entity
@@ -76,6 +78,10 @@ public class Report extends BaseTable {
 			if (defaultDefinition == null) {
 				defaultDefinition = new Definition(parameters);
 			}
+
+			String filterExpresion = defaultDefinition.getFilterExpression();
+			if (!Strings.isEmpty(filterExpresion))
+				obj.put(DynamicReportUtil.FILTER_EXPRESSION, filterExpresion);
 
 			if (defaultDefinition.getColumns().size() > 0)
 				obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));

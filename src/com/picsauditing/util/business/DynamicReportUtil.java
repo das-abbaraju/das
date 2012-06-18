@@ -14,6 +14,11 @@ import com.picsauditing.util.SpringUtils;
 
 public class DynamicReportUtil {
 
+	public static final String COLUMNS = "columns";
+	public static final String FILTERS = "filters";
+	public static final String SORTS = "sorts";
+	public static final String FILTER_EXPRESSION = "filterExpression";
+
 	private static final BasicDAO basicDao = SpringUtils.getBean("BasicDAO");
 
 	public static final List<Integer> baseReports =

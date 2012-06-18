@@ -1,5 +1,10 @@
 package com.picsauditing.report;
 
+import static com.picsauditing.util.business.DynamicReportUtil.COLUMNS;
+import static com.picsauditing.util.business.DynamicReportUtil.FILTERS;
+import static com.picsauditing.util.business.DynamicReportUtil.SORTS;
+import static com.picsauditing.util.business.DynamicReportUtil.FILTER_EXPRESSION;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,18 +20,13 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericUtil;
 
 public class Definition implements JSONable {
-	
-	private static final String SORTS = "sorts";
-	private static final String FILTERS = "filters";
-	private static final String COLUMNS = "columns";
-	private static final String FILTER_EXPRESSION = "filterExpression";
-	
+
 	private List<Column> columns = new ArrayList<Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
 
 	private String filterExpression;
-	
+
 	public Definition() {
 	}
 
@@ -34,7 +34,7 @@ public class Definition implements JSONable {
 		if (StringUtils.isEmpty(json)) {
 			return;
 		}
-		
+
 		JSONObject obj = (JSONObject) JSONValue.parse(json);
 		fromJSON(obj);
 	}
@@ -69,9 +69,9 @@ public class Definition implements JSONable {
 
 	/**
 	 * TODO: There should be a check that this is valid before this gets set.
-	 * 
+	 *
 	 * Should only contain the following characters: 0-9,(,),AND,OR,SPACE
-	 * 
+	 *
 	 * @param filterExpression
 	 */
 	public void setFilterExpression(String filterExpression) {
@@ -80,20 +80,20 @@ public class Definition implements JSONable {
 
 	public JSONObject toJSON(boolean full) {
 		return toJSON();
-	}	
-	
+	}
+
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON() {
 		JSONObject json = new JSONObject();
 		if (filterExpression != null)
 			json.put(FILTER_EXPRESSION, filterExpression);
-		
+
 		if (CollectionUtils.isNotEmpty(columns))
 			json.put(COLUMNS, JSONUtilities.convertFromList(columns));
-		
+
 		if (CollectionUtils.isNotEmpty(filters))
 			json.put(FILTERS, JSONUtilities.convertFromList(filters));
-		
+
 		if (CollectionUtils.isNotEmpty(sorts))
 			json.put(SORTS, JSONUtilities.convertFromList(sorts));
 
@@ -103,14 +103,14 @@ public class Definition implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
-		
+
 		this.filterExpression = (String) json.get(FILTER_EXPRESSION);
 
 		this.filters = parseJsonToList(json.get(FILTERS), Filter.class);
 		this.columns = parseJsonToList(json.get(COLUMNS), Column.class);
 		this.sorts = parseJsonToList(json.get(SORTS), Sort.class);
 	}
-	
+
 	private static <T extends JSONable> List<T> parseJsonToList(Object jsonObject, Class<T> c) {
 		List<T> parsedJsonObjects = new ArrayList<T>();
 		if (jsonObject == null)
@@ -118,8 +118,8 @@ public class Definition implements JSONable {
 
 		JSONArray jsonArray = (JSONArray) jsonObject;
 		for (Object object : jsonArray) {
-			T t = (T) GenericUtil.newInstance(c);			
-			if (object instanceof JSONObject) {				
+			T t = (T) GenericUtil.newInstance(c);
+			if (object instanceof JSONObject) {
 				t.fromJSON((JSONObject) object);
 				parsedJsonObjects.add(t);
 			}
@@ -127,14 +127,14 @@ public class Definition implements JSONable {
 
 		return parsedJsonObjects;
 	}
-	
+
 	// TODO: Rewrite this to either modify this object and return
 	//       nothing, or create a new Definition, merge the one passed
 	//       in to this one and return the new Definition.
 	/**
 	 * This merges the definition passed with this Definition instance
 	 * and returns the definition passed in.
-	 * 
+	 *
 	 * @param definition
 	 * @return
 	 */
@@ -142,11 +142,11 @@ public class Definition implements JSONable {
 		if (definition == null) {
 			return definition;
 		}
-				
+
 		columns.addAll(definition.getColumns());
 		sorts.addAll(definition.getSorts());
 		filters.addAll(definition.getFilters());
-		
+
 		if (!Strings.isEmpty(definition.getFilterExpression())) {
 			if (Strings.isEmpty(filterExpression)) {
 				filterExpression = definition.getFilterExpression();
