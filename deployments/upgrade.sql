@@ -66,3 +66,7 @@ and ca.expiresDate > NOW()
 and pd.questionID=2105 
 and STR_TO_DATE(pd.answer, '%m/%d/%Y') != '0000-00-00' 
 AND Date_Format(ca.expiresDate, '%Y-%m-%d')>DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY);
+
+-- PICS-6048
+insert into app_properties (property,value)
+values ('Toggle.BackgroundProcesses','true');

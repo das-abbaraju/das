@@ -112,6 +112,7 @@
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
+	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
