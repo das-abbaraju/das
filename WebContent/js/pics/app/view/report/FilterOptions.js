@@ -20,7 +20,8 @@ Ext.define('PICS.view.report.FilterOptions', {
                     action: 'toggle-advanced-filtering',
                     cls: 'toggle-advanced-filtering',
                     text: 'Advanced Filtering'
-                }]
+                }],
+                plain: true
             }),
             text: '<i class="icon-plus icon-large"></i>Add Filter',
             width: 90

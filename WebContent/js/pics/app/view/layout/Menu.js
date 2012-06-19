@@ -13,16 +13,21 @@ Ext.define('PICS.view.layout.Menu', {
                 if (menu_items[index].xtype == undefined) {
                     menu_items[index].height = 70;
                     menu_items[index].scale = 'large';
+
+                    if (menu_items[index].menu != undefined) {
+                    	menu_items[index].menu.plain = true;
+                    }
                 }
             });
 
             toolbar.add({
-                xtype: 'tbtext',
-                text: '<a href="/"><img src="js/pics/app/resources/images/logo.png" /></a>',
-                height: 30,
+                height: 70,
+                icon: 'js/pics/app/resources/images/logo.png',
                 id: 'logo',
-                margin: '18px 20px',
-                width: 30
+                padding: '0px 20px',
+                scale: 'large',
+                text: 'Dashboard',
+                url: 'Home.action'
             });
 
             menu_items.splice(8, 0, {

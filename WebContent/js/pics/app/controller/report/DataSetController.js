@@ -75,17 +75,16 @@ Ext.define('PICS.controller.report.DataSetController', {
                 enableScrolling: false,
                 floating: false,
                 items: [{
-                    cls: 'x-hmenu-sort-asc',
                     name: 'sortASC',
                     text: 'Sort Ascending',
                 }, {
-                    cls: 'x-hmenu-sort-desc',
                     name: 'sortDESC',
                     text: 'Sort Descending',
                 }, {
                     name: 'removeColumn',
                     text: 'Remove'
-                }]
+                }],
+                plain: true
             };
 
             menu.add(columnMenu);

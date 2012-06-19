@@ -85,7 +85,8 @@ Ext.define('PICS.view.report.Header', {
                     }, {
                         text: 'Export',
                         action: 'export'
-                    }]
+                    }],
+                    plain: true
                 }),
                 text: 'Save',
                 width: 100

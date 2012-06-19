@@ -103,7 +103,8 @@ Ext.define('PICS.controller.report.SortController', {
                     name: 'remove_sort',
                     action: 'remove-sort',
                     record: record
-                }]
+                }],
+                plain: true
             }),
             record: record,
             text: button_name

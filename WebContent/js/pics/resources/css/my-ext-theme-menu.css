@@ -20,12 +20,17 @@
   box-shadow: #cccccc 0px 2px 2px 0px; }
 
 /* line 24, ../sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-arrow {
+  background: none;
+  padding: 0px !important; }
+
+/* line 30, ../sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
-/* line 33, ../sass/my-ext-theme/_menu.scss */
+/* line 39, ../sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large-menu-active,
 #site_menu .x-btn-default-toolbar-large-over,
 #site_menu .x-btn-default-toolbar-large-pressed {
@@ -44,18 +49,18 @@
   border-top: 1px solid #999999;
   border-bottom: 0px; }
 
-/* line 42, ../sass/my-ext-theme/_menu.scss */
+/* line 48, ../sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
-/* line 50, ../sass/my-ext-theme/_menu.scss */
+/* line 56, ../sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
 #site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
 #site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner {
   color: #c66603; }
 
-/* line 55, ../sass/my-ext-theme/_menu.scss */
+/* line 61, ../sass/my-ext-theme/_menu.scss */
 #site_menu .x-form-text {
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
@@ -65,10 +70,64 @@
   height: 22px;
   padding: 12px 5px; }
 
-/* line 62, ../sass/my-ext-theme/_menu.scss */
+/* line 68, ../sass/my-ext-theme/_menu.scss */
 #site_menu .x-toolbar-separator-horizontal {
   border-left-color: #e7e7e7;
   border-right-color: #fcfcfc; }
+
+/* line 74, ../sass/my-ext-theme/_menu.scss */
+#site_menu #logo .x-btn-inner {
+  padding: 0px 0px 0px 50px; }
+
+/* line 36, ../sass/my-ext-theme-menu.scss */
+.x-menu-body {
+  border: 1px solid #a7a7a7 !important;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -ms-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -ms-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px; }
+
+/* line 43, ../sass/my-ext-theme-menu.scss */
+.x-menu-item-link {
+  -webkit-border-radius: 0px !important;
+  -moz-border-radius: 0px !important;
+  -ms-border-radius: 0px !important;
+  -o-border-radius: 0px !important;
+  border-radius: 0px !important; }
+
+/* line 48, ../sass/my-ext-theme-menu.scss */
+.x-menu-item:last-child.x-menu-item-active .x-menu-item-link {
+  -moz-border-radius-bottomleft: 3px !important;
+  -webkit-border-bottom-left-radius: 3px !important;
+  -ms-border-bottom-left-radius: 3px !important;
+  -o-border-bottom-left-radius: 3px !important;
+  border-bottom-left-radius: 3px !important;
+  -moz-border-radius-bottomright: 3px !important;
+  -webkit-border-bottom-right-radius: 3px !important;
+  -ms-border-bottom-right-radius: 3px !important;
+  -o-border-bottom-right-radius: 3px !important;
+  border-bottom-right-radius: 3px !important; }
+
+/* line 54, ../sass/my-ext-theme-menu.scss */
+.x-menu-item-active .x-menu-item-link {
+  background: #a84d10;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10)) !important;
+  background-image: -webkit-linear-gradient(#c66603, #a84d10) !important;
+  background-image: -moz-linear-gradient(#c66603, #a84d10) !important;
+  background-image: -o-linear-gradient(#c66603, #a84d10) !important;
+  background-image: -ms-linear-gradient(#c66603, #a84d10) !important;
+  background-image: linear-gradient(#c66603, #a84d10) !important;
+  border: 1px solid transparent !important; }
+
+/* line 61, ../sass/my-ext-theme-menu.scss */
+.x-menu-item-active .x-menu-item-link span {
+  color: #ffffff; }
 
 /**
  * @var {string} $prefix 
@@ -2734,7 +2793,7 @@ tr.x-container:before {
 
 /* line 639, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-large .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -3661,7 +3720,7 @@ tr.x-container:before {
 
 /* line 639, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-large .x-btn-inner {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
@@ -3923,8 +3982,8 @@ tr.x-container:before {
   -moz-user-select: -moz-none;
   -webkit-user-select: none;
   cursor: default;
-  background: #f0f0f0 !important;
-  padding: 2px; }
+  background: white !important;
+  padding: 0px; }
 
 /* line 11, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
 .x-menu-item .x-form-text {
@@ -3973,7 +4032,7 @@ tr.x-container:before {
 .x-menu-item-link {
   display: block;
   margin: 1px;
-  padding: 6px 2px 3px 32px;
+  padding: 4px 15px 4px 15px;
   text-decoration: none !important;
   line-height: 16px;
   cursor: default; }
@@ -3994,7 +4053,7 @@ tr.x-container:before {
 /* line 84, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
 .x-menu-item-text {
   font-size: 12px;
-  color: #222222; }
+  color: #333333; }
 
 /* line 90, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
 .x-menu-item-checked .x-menu-item-icon {
@@ -4015,7 +4074,7 @@ tr.x-container:before {
   height: 2px;
   border-top: solid 1px #e0e0e0;
   background-color: white;
-  margin: 2px 0px;
+  margin: 0px 0px;
   overflow: hidden; }
 
 /* line 115, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
@@ -4030,7 +4089,7 @@ tr.x-container:before {
 
 /* line 125, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
 .x-menu-item-indent {
-  margin-left: 31px;
+  margin-left: 29px;
   /* The 2px is the width of the seperator */ }
 
 /* line 129, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
@@ -4078,7 +4137,7 @@ tr.x-container:before {
 .x-ie6 .x-menu-item-link,
 .x-ie7 .x-menu-item-link,
 .x-quirks .x-ie8 .x-menu-item-link {
-  padding-bottom: 2px; }
+  padding-bottom: 0px; }
 
 /* line 180, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
 .x-nlg .x-menu-item-active .x-menu-item-link {
@@ -4181,7 +4240,7 @@ tr.x-container:before {
 .x-panel-body {
   overflow: hidden;
   position: relative;
-  font-size: 12px; }
+  font-size: 13px; }
 
 /* line 114, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-vertical .x-surface {

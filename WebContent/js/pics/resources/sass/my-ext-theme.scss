@@ -13,20 +13,17 @@ $include-default: false;
  * Author: Carey Hinoki
  */
 
-$font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-$font-size: 13px;
-
-$button-large-font-size: 13px;
-$panel-body-font-size: 13px;
-$toolbar-font-size: 13px;
-
+//$button-large-font-size: 13px;
+//$font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+//$font-size: 13px;
 $form-field-height: 25px !default;
-
 $grid-header-background-color: #454545;
 $grid-header-background-gradient: null !default;
 $grid-header-over-border-color: #454545;
 $grid-header-over-background-gradient: null !default;
 $grid-header-color: #ffffff !default;
+//$panel-body-font-size: 13px;
+//$toolbar-font-size: 13px;
 
 // End ExtJS4 Overwrites
  

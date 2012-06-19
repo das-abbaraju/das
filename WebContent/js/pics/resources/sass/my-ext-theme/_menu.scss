@@ -20,6 +20,12 @@ $site_menu_separator_border_color_right: #fcfcfc;
 	@include box-shadow($site_menu_box_shadow_color 0px 2px 2px 0px);
 }
 
+#site_menu .x-btn-arrow
+{
+	background: none;
+	padding: 0px !important;
+}
+
 #site_menu .x-btn-default-toolbar-large
 {
 	margin: 0px;
@@ -62,4 +68,9 @@ $site_menu_separator_border_color_right: #fcfcfc;
 {
 	border-left-color: $site_menu_separator_border_color_left;
 	border-right-color: $site_menu_separator_border_color_right;
+}
+
+#site_menu #logo .x-btn-inner
+{
+	padding: 0px 0px 0px 50px;
 }
