@@ -25,10 +25,13 @@ public class Sort implements JSONable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
+
 		if (!ascending)
 			json.put("direction", "DESC");
+
 		if (field != null)
 			json.put("field", field.toJSONObject());
+
 		return json;
 	}
 
@@ -36,14 +39,14 @@ public class Sort implements JSONable {
 		if (json == null)
 			return;
 
-		this.fieldName = (String) json.get("name");
+		fieldName = (String) json.get("name");
 
-		this.ascending = true;
+		ascending = true;
 		String direction = (String) json.get("direction");
 		if (direction != null && direction.equals("DESC"))
-			this.ascending = false;
+			ascending = false;
 
-		this.field = (Field) json.get("field");
+		field = (Field) json.get("field");
 	}
 
 	// We might want to consider moving this to QueryField

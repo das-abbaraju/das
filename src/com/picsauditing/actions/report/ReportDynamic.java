@@ -327,46 +327,33 @@ public class ReportDynamic extends PicsActionSupport {
 		addTranslationLabelsToFields(definition);
 		addTranslationLabelsToFilters(definition);
 		addTranslationLabelsToSorts(definition);
-//		if (definition.getColumns().size() > 0) {
-//			for (Column column : definition.getColumns()) {
-//				column.getField().setText(translateLabel(column.getField()));
-//			}
-//		}
-//		
-//		if (definition.getFilters().size() > 0) {
-//			for (Filter filter : definition.getFilters()) {
-//				filter.getField().setText(translateLabel(filter.getField()));
-//			}
-//		}
-//		
-//		if (definition.getSorts().size() > 0) {
-//			for (Sort sort : definition.getSorts()) {
-//				sort.getField().setText(translateLabel(sort.getField()));
-//			}
-//		}
 	}
 	
 	private void addTranslationLabelsToFields(Definition definition) {
-		if (CollectionUtils.isNotEmpty(definition.getColumns())) {
-			for (Column column : definition.getColumns()) {
-				column.getField().setText(translateLabel(column.getField()));
-			}
+		if (CollectionUtils.isEmpty(definition.getColumns()))
+			return;
+
+		for (Column column : definition.getColumns()) {
+			column.getField().setText(translateLabel(column.getField()));
 		}
 	}
 	
 	private void addTranslationLabelsToFilters(Definition definition) {
-		if (CollectionUtils.isNotEmpty(definition.getFilters())) {
-			for (Filter filter : definition.getFilters()) {
-				filter.getField().setText(translateLabel(filter.getField()));
-			}
+		if (CollectionUtils.isEmpty(definition.getFilters()))
+			return;
+
+		for (Filter filter : definition.getFilters()) {
+			filter.getField().setText(translateLabel(filter.getField()));
 		}
 	}
 	
 	private void addTranslationLabelsToSorts(Definition definition) {
-		if (CollectionUtils.isNotEmpty(definition.getSorts())) {
-			for (Sort sort : definition.getSorts()) {
-				sort.getField().setText(translateLabel(sort.getField()));
-			}
+		if (CollectionUtils.isEmpty(definition.getSorts()))
+			return;
+
+		for (Sort sort : definition.getSorts()) {
+//			sort.setFieldName(translateLabel(sort.getField()));
+			sort.getField().setText(translateLabel(sort.getField()));
 		}
 	}
 

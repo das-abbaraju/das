@@ -71,25 +71,28 @@ public class Report extends BaseTable {
 		obj.put("modelType", modelType.toString());
 		obj.put("name", name);
 
-		if (full) {
-			obj.put("description", description);
-
-			Definition defaultDefinition = this.definition;
-			if (defaultDefinition == null) {
-				defaultDefinition = new Definition(parameters);
-			}
-
-			String filterExpresion = defaultDefinition.getFilterExpression();
-			if (!Strings.isEmpty(filterExpresion))
-				obj.put(DynamicReportUtil.FILTER_EXPRESSION, filterExpresion);
-
-			if (defaultDefinition.getColumns().size() > 0)
-				obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
-			if (defaultDefinition.getFilters().size() > 0)
-				obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
-			if (defaultDefinition.getSorts().size() > 0)
-				obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getSorts()));
+		if (!full) {
+			return obj;
 		}
+
+		obj.put("description", description);
+
+		Definition defaultDefinition = this.definition;
+		if (defaultDefinition == null) {
+			defaultDefinition = new Definition(parameters);
+		}
+
+		String filterExpresion = defaultDefinition.getFilterExpression();
+		if (!Strings.isEmpty(filterExpresion))
+			obj.put(DynamicReportUtil.FILTER_EXPRESSION, filterExpresion);
+
+		if (defaultDefinition.getColumns().size() > 0)
+			obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
+		if (defaultDefinition.getFilters().size() > 0)
+			obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
+		if (defaultDefinition.getSorts().size() > 0)
+			obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getSorts()));
+
 		return obj;
 	}
 
