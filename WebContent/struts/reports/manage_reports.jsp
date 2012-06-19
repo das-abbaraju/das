@@ -17,7 +17,7 @@
             <a href="ManageReports.action?viewType=favorite">Favorites</a>
         </li>
         <li <s:if test="viewType.equals('saved')">class="active"</s:if>>
-            <a href="ManageReports.action?viewType=saved">Saved</a>
+            <a href="ManageReports.action?viewType=saved">My Reports</a>
         </li>
 	</ul>
 </div>
