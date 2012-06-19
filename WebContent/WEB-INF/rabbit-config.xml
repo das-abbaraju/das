@@ -6,7 +6,7 @@
 	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd" 
 	default-autowire="byName">
  
-	<connection-factory id="connectionFactory" host="localhost" port="5672" username="guest" password="guest"/>
+	<connection-factory id="connectionFactory" host="localhost" port="5672" username="pics" password="vEndLEn3"/>
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 	
 	<queue id="flag-changes" name="flag-changes" />
