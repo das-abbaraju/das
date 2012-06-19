@@ -104,18 +104,17 @@ public class PicsActionSupportTest {
 
 	@Test
 	public void testIsBetaEnvironment_UrlContainsBeta() throws Exception {
-		//picsActionSupport = PowerMockito.spy(new PicsActionSupport());
-		//PowerMockito.doReturn("beta.picsorganizer.com").when(picsActionSupport, "getRequestHost");
-		PowerMockito.doReturn(request.getRequestURL()).doReturn(new StringBuffer("beta.picsorganizer.com"));
-
+		when(request.getRequestURL()).thenReturn(new StringBuffer("beta.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		
 		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
 	}
 	
 	@Test
 	public void testIsBetaEnvironment_UrlContainsWithNoBeta() throws Exception {
-		picsActionSupport = PowerMockito.spy(new PicsActionSupport());
-		PowerMockito.doReturn("www.picsorganizer.com").when(picsActionSupport, "getRequestHost");
-		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("USE_BETA", "true") });
-		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		
+		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
 	}
 }
