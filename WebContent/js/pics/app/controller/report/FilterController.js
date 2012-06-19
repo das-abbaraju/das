@@ -11,11 +11,11 @@ Ext.define('PICS.controller.report.FilterController', {
         ref: 'filters',
         selector: 'filteroptions #report_filters'
     }, {
-        ref: 'filterExpression',
-        selector: 'filteroptions textfield[name=filterexpression]'
+        ref: 'advancedFilter',
+        selector: 'filteroptions advancedfilter'
     }, {
-        ref: 'filterExpressionForm',
-        selector: 'filteroptions #report_filter_expression'
+        ref: 'advancedExpression',
+        selector: 'filteroptions advancedfilter textfield[name=filterexpression]'
     }],
 
     stores: [
@@ -24,22 +24,24 @@ Ext.define('PICS.controller.report.FilterController', {
     ],
 
     init: function() {
-    	var that = this;
+        var that = this;
 
         this.control({
-        	'filteroptions #report_filters': {
-        		render: function () {
-        			if (this.getReportReportsStore().isLoading()) {
-			        	this.getReportReportsStore().addListener({
-				    		load: function (store, records, successful, eOpts) {
-				    			that.application.fireEvent('refreshfilters');
-				    		}
-				    	});
-			        } else {
-			        	this.application.fireEvent('refreshfilters');
-			        }
-        		}
-        	},
+            'filteroptions #report_filters': {
+                render: function () {
+                    if (this.getReportReportsStore().isLoading()) {
+                        this.getReportReportsStore().addListener({
+                            load: function (store, records, successful, eOpts) {
+                                that.application.fireEvent('refreshfilters');
+                                Ext.defer(that.loadAdvancedFilter, 1, this) //TODO: refactor to take out defer
+                            }
+                        });
+                    } else {
+                        this.application.fireEvent('refreshfilters');
+                        Ext.defer(that.loadAdvancedFilter, 1, this) //TODO: refactor to take out defer
+                    }
+                }
+            },
             'filteroptions button[action=add-filter]': {
                 click: function () {
                     that.application.fireEvent('showcolumnselector', {
@@ -49,22 +51,22 @@ Ext.define('PICS.controller.report.FilterController', {
             },
             'filteroptions button[action=search]': {
                 click: function () {
-                	that.application.fireEvent('refreshreport');
+                    that.application.fireEvent('refreshreport');
                 }
             },
             'filteroptions button[action=update]': {
                 click: function () {
-                    this.applyFilterExpression();
+                    this.applyAdvancedFilter();
                 }
             },
             'filteroptions button[action=remove-filter]': {
                 click: this.removeFilter
             },
             'filteroptions menuitem[action=toggle-advanced-filtering]': {
-                click: this.createFilterExpression
+                click: this.createAdvancedFilter
             },
             '#report_filter_expression button[action=hide]': {
-                click: this.removeFilterExpression
+                click: this.removeAdvancedFilter
             }
         });
 
@@ -74,9 +76,9 @@ Ext.define('PICS.controller.report.FilterController', {
         });
     },
 
-    applyFilterExpression: function () {
-        var report = this.getReportReportsStore().first();
-        var expression = this.getFilterExpression().value;
+    applyAdvancedFilter: function () {
+        var report = this.getReportReportsStore().first(),
+            expression = this.getAdvancedExpression().value;
 
         // TODO write a real grammar and parser for our filter expression DSL
 
@@ -132,11 +134,30 @@ Ext.define('PICS.controller.report.FilterController', {
         this.application.fireEvent('refreshreport');
     },
 
-    createFilterExpression: function () {
-        var options = this.getFilterOptions(),
-            expression = Ext.create('PICS.view.report.FilterExpression');
+    createAdvancedFilter: function () {
+        var filter_options = this.getFilterOptions(),
+            advanced_filter = this.getAdvancedFilter();
 
-        options.addDocked(expression);
+        if (!advanced_filter) {
+            advanced_filter = Ext.create('PICS.view.report.FilterExpression');
+        }
+
+        filter_options.addDocked(advanced_filter);
+    },
+
+    formatExpression: function (expression) {
+        var formatted = expression.replace(/[{}]/g, '');
+
+        formatted = formatted.replace(/\d+/g, function(val) { return parseInt(val) + 1; });
+
+        return formatted;
+    },
+
+    getFilterExpression: function () {
+        var report = this.getReportReportsStore(),
+            filter_expression = report.first().get('filterExpression');
+
+        return filter_expression;
     },
 
     generateFilterPanels: function () {
@@ -169,6 +190,17 @@ Ext.define('PICS.controller.report.FilterController', {
         return filter_container;
     },
 
+    loadAdvancedFilter: function () {
+        var expression = this.getFilterExpression(),
+            filter_options = this.getFilterOptions();
+
+        if (expression !== '') {
+            filter_expression = this.formatExpression(expression);
+            advanced_filter = Ext.create('PICS.view.report.FilterExpression', {expression: filter_expression});
+            filter_options.addDocked(advanced_filter);
+        }
+    },
+
     refreshFilters: function () {
         var filterContainer = null;
         var filterContainer = this.generateFilterPanels();
@@ -187,11 +219,16 @@ Ext.define('PICS.controller.report.FilterController', {
         this.application.fireEvent('refreshreport');
     },
 
-    removeFilterExpression: function (button, event, options) {
+    removeAdvancedFilter: function (button, event, options) {
         var options = this.getFilterOptions(),
-            expression = this.getFilterExpressionForm();
+            advanced_filter = this.getAdvancedFilter(),
+            report = this.getReportReportsStore();
 
-        options.removeDocked(expression);
+        options.removeDocked(advanced_filter);
+
+        report.first().set('filterExpression', '');
+
+        this.application.fireEvent('refreshreport');
     },
 
     setFilterPanelClass: function (type) {

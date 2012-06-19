@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.FilterExpression', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.filterexpression'],
+    alias: ['widget.advancedfilter'],
 
     border: 0,
     id: 'report_filter_expression',
@@ -45,5 +45,14 @@ Ext.define('PICS.view.report.FilterExpression', {
         }],
         layout: 'hbox',
         width: 220
-    }]            
-});    
+    }],
+
+    constructor: function (config) {
+        this.callParent(arguments);
+
+        if (config) {
+            var expression = config.expression.toLowerCase();
+            this.child('form textfield[name=filterexpression]').setValue(expression);
+        }
+    }
+});
