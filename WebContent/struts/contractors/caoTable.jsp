@@ -142,7 +142,7 @@
 									<s:select 
                                         cssClass="status" 
                                         list="getValidStatuses(#currentCao.id)" 
-                                        emptyOption="true" 
+                                        emptyOption="false" 
                                         name="caosSave[%{#rowStatus.index}].status" 
                                         value="#currentCao.status"
                                     />
