@@ -5,11 +5,17 @@ import java.lang.management.OperatingSystemMXBean;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.search.Database;
 
 public class KeepAlive {
+	private final static Logger logger = LoggerFactory.getLogger(KeepAlive.class);
+
 	private float loadFactor = 3f;
 	private double timeoutInSeconds = 3.0;
 
@@ -56,6 +62,7 @@ public class KeepAlive {
 				loadFactor = Float.parseFloat(loadFactors[0].toString());
 			}
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -71,6 +78,7 @@ public class KeepAlive {
 				timeoutInSeconds = Double.parseDouble(timeout[0].toString());
 			}
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
 	}
 
@@ -78,6 +86,7 @@ public class KeepAlive {
 		try {
 			return database.execute("SELECT 1");
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
 
 		return false;
@@ -100,17 +109,31 @@ public class KeepAlive {
 
 	public class URLConnector {
 		public boolean connect(String urlToConnect) {
+			boolean sslException = false;
+
 			try {
 				URL url = new URL(urlToConnect);
 				URLConnection urlConnection = url.openConnection();
 				urlConnection.setReadTimeout((int) (timeoutInSeconds * 1000));
 				urlConnection.setConnectTimeout((int) (timeoutInSeconds * 1000));
 				urlConnection.getContent();
+
+				return true;
+			} catch (SSLHandshakeException e) {
+				sslException = true;
 			} catch (Exception e) {
-				return false;
+				logger.error(e.getMessage());
 			}
 
-			return true;
+			if (sslException) {
+				// Try HTTP instead...
+				String nonSslUrl = urlToConnect.replace("https", "http");
+				nonSslUrl = nonSslUrl.replace("8443", "8080");
+				nonSslUrl = nonSslUrl.replace("81", "80");
+				return connect(nonSslUrl);
+			}
+
+			return false;
 		}
 	}
 }
