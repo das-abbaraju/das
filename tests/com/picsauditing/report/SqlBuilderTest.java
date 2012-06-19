@@ -40,8 +40,6 @@ import com.picsauditing.util.business.DynamicReportUtil;
 public class SqlBuilderTest {
 
 	private SqlBuilder builder;
-//	@Deprecated
-//	private Definition definition;
 
 	private static final String DATABASE_COLUMN_NAME = "databaseColumnName";
 	private static final String FIELD_NAME = "fieldName";

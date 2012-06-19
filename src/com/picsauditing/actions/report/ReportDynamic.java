@@ -370,35 +370,6 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 	}
 
-//	@Deprecated
-//	private void saveTranslation(Map<String, AppTranslation> existing, String key) {
-//		AppTranslation translation = existing.get(key);
-//
-//		if (translation == null) {
-//			translation = new AppTranslation();
-//			translation.setKey(key);
-//			translation.setLocale("en");
-//			translation.setQualityRating(TranslationQualityRating.Bad);
-//			translation.setValue("?" + key);
-//			translation.setAuditColumns(permissions);
-//			System.out.println("Adding " + key);
-//			existing.put(key, translation);
-//		} else {
-//			Calendar yesterday = Calendar.getInstance();
-//			yesterday.add(Calendar.DAY_OF_YEAR, -1);
-//			if (translation.getLastUsed().after(yesterday.getTime())) {
-//				System.out.println("Already updated " + key);
-//				return;
-//			}
-//			System.out.println("Updating " + key);
-//		}
-//
-//		translation.setLastUsed(new Date());
-//		translation.setApplicable(true);
-//		translation.setContentDriven(true);
-//		dao.save(translation);
-//	}
-
 	public String translateLabel(Field field) {
 		String translatedText = getText("Report." + field.getName());
 		if (translatedText == null) {
@@ -596,38 +567,4 @@ public class ReportDynamic extends PicsActionSupport {
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
 	}
-
-	// TODO: Remove this once we figure out what to do with this and why it is doing the same
-	// this as the i18n cache
-//	@Deprecated
-//	public String fillTranslations() {
-//		List<AppTranslation> existingList = dao
-//				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
-//
-//		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
-//
-//		for (AppTranslation translation : existingList) {
-//			existing.put(translation.getKey(), translation);
-//		}
-//
-//		for (FieldCategory category : FieldCategory.values()) {
-//			saveTranslation(existing, "Report.Category." + category);
-//		}
-//
-//		for (ModelType type : ModelType.values()) {
-//			logger.debug("-- filling fields for {}", type);
-//			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
-//			Report fakeReport = new Report();
-//			fakeReport.setModelType(type);
-//
-//			Map<String, Field> availableFields = ReportController.buildAvailableFields(fakeReport.getTable());
-//			for (Field field : availableFields.values()) {
-//				String key = "Report." + field.getName();
-//				saveTranslation(existing, key);
-//				saveTranslation(existing, key + ".help");
-//			}
-//		}
-//
-//		return BLANK;
-//	}
 }
