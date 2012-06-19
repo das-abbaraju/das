@@ -125,6 +125,9 @@
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
 	
+	<bean id="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium" scope="prototype" />
+	<bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype" />
+	
 	<!-- Beans for service layers -->
 	<bean id="FacilitiesEditModel" class="com.picsauditing.models.operators.FacilitiesEditModel"/>
 	<bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
