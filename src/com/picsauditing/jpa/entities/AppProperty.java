@@ -34,16 +34,22 @@ public class AppProperty implements java.io.Serializable {
 
 	public boolean valueEquals(Object comparisonValue) throws AppPropertyValueParseException {
 		// TODO: Define a string standard for dates.
-		if (comparisonValue instanceof String) {
-			value.equals(comparisonValue);
-		} else if (comparisonValue instanceof Integer) {
-			Integer intValue = Integer.parseInt(value);
-			return intValue.equals(comparisonValue);
-		} else if (comparisonValue instanceof Boolean) {
-			Boolean boolValue = Boolean.parseBoolean(value);
-			return boolValue.equals(comparisonValue);
-		} else {
-			throw new AppPropertyValueParseException();
+		try {
+			if (comparisonValue instanceof String) {
+				value.equals(comparisonValue);
+			} else if (comparisonValue instanceof Integer) {
+				Integer intValue = Integer.parseInt(value);
+				return intValue.equals(comparisonValue);
+			} else if (comparisonValue instanceof Boolean) {
+				Boolean boolValue = Boolean.parseBoolean(value);
+				return boolValue.equals(comparisonValue);
+			} else {
+				throw new AppPropertyValueParseException("comparisonValue class "
+						+ comparisonValue.getClass().getSimpleName() + " is not supported.");
+			}
+
+		} catch (Exception parseException) {
+			throw new AppPropertyValueParseException(parseException);
 		}
 
 		return false;
