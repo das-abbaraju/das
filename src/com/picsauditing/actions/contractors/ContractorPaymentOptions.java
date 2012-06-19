@@ -87,10 +87,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					new Object[] { getText("PicsTollFreePhone") }));
 		}
 
-		if ("copyBillingEmail".equals(button)) {
-			contractor.setCcEmail(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
-		}
-
 		contractorAccountDao.save(contractor);
 
 		if (!contractor.getPaymentMethod().isCreditCard())

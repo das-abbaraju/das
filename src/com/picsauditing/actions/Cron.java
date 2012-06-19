@@ -7,15 +7,12 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
@@ -55,7 +52,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -152,6 +148,7 @@ public class Cron extends PicsActionSupport {
 	private int possibleDuplciateEmailTemplate = 234;
 
 	private final Logger logger = LoggerFactory.getLogger(Cron.class);
+
 	@Anonymous
 	public String execute() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -617,7 +614,8 @@ public class Cron extends PicsActionSupport {
 		String reminderNote = sdf.format(new Date()) + " - Email has been sent to remind contractor to register.\n\n";
 		String lastChanceNote = sdf.format(new Date())
 				+ " - Email has been sent to contractor warning them that this is their last chance to register.\n\n";
-		String finalAndExpirationNote = sdf.format(new Date()) + " - Final email sent to Contractor and Client Site.\n\n";
+		String finalAndExpirationNote = sdf.format(new Date())
+				+ " - Final email sent to Contractor and Client Site.\n\n";
 
 		// First notification: 3 days
 		List<ContractorRegistrationRequest> crrList1stReminder = contractorRegistrationRequestDAO
@@ -680,7 +678,8 @@ public class Cron extends PicsActionSupport {
 				if (sendEmailToContractors) {
 					EmailBuilder emailBuilder = new EmailBuilder();
 
-					if ((templateID == regReq2ndReminderTemplate || templateID == regReq3rdReminderTemplate) && crr.getDeadline().before(new Date()))
+					if ((templateID == regReq2ndReminderTemplate || templateID == regReq3rdReminderTemplate)
+							&& crr.getDeadline().before(new Date()))
 						templateID++;
 					emailBuilder.setTemplate(templateID);
 
@@ -782,63 +781,58 @@ public class Cron extends PicsActionSupport {
 
 	public void sendDelinquentContractorsEmail() throws Exception {
 		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		if (CollectionUtils.isEmpty(invoices)) {
-			return;
+		for (EmailQueue email : parseInvoices(invoices)) {
+			emailQueueDAO.save(email);
+			if (email.getToAddresses().equals("billing@picsauditing.com"))
+				stampNote(email.getContractorAccount(),
+						"Failed to send Deactivation Email because of no valid email address.", NoteCategory.Billing);
+			else
+				stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
+						NoteCategory.Billing);
 		}
-		
-		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
-		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
+	}
+
+	private List<EmailQueue> parseInvoices(List<Invoice> invoices) {
+		Map<ContractorAccount, Integer> contractors = new TreeMap<ContractorAccount, Integer>();
 
 		for (Invoice invoice : invoices) {
-			Set<String> emailAddresses = new HashSet<String>();
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
-
-			List<User> billingUsers = cAccount.getUsersByRole(OpPerms.ContractorBilling);
-			if (!CollectionUtils.isNotEmpty(billingUsers)) {			
-				User billing = billingUsers.get(0);
-				if (!Strings.isEmpty(billing.getEmail())) {
-					emailAddresses.add(billing.getEmail());
-				}
-			}
-			
-			if (!Strings.isEmpty(cAccount.getCcEmail()))
-				emailAddresses.add(cAccount.getCcEmail());
-
-			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
-				List<Integer> questionsWithEmailAddresses = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
-				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(),
-						questionsWithEmailAddresses);
-				
-				for (AuditData auditData : aList) {
-					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
-						emailAddresses.add(auditData.getAnswer());
-				}
-			}
-			
-			cMap.put(cAccount, emailAddresses);
-
+			// TODO check with John H if we need one or both of these templates.
+			// If we need both, then use a CONSTANT
 			if (invoice.getDueDate().before(new Date()))
-				templateMap.put(cAccount, 48); // deactivation
+				contractors.put(cAccount, 48); // deactivation
 			else
-				templateMap.put(cAccount, 50); // open
+				contractors.put(cAccount, 50); // open
 		}
+		return populateEmail(contractors);
+	}
 
-		for (ContractorAccount cAccount : cMap.keySet()) {
-			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
-			if (!Strings.isEmpty(emailAddress)) {			
+	private  List<EmailQueue> populateEmail(Map<ContractorAccount, Integer> contractors){
+		List<EmailQueue> list = new ArrayList<EmailQueue>();
+		for (ContractorAccount cAccount : contractors.keySet()) {
+			try {
 				EmailBuilder emailBuilder = new EmailBuilder();
-
-				emailBuilder.setTemplate(templateMap.get(cAccount));
 				emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
-				emailBuilder.setCcAddresses(emailAddress);
+				emailBuilder.setTemplate(contractors.get(cAccount));
+
 				EmailQueue email = emailBuilder.build();
 				email.setLowPriority();
 				email.setViewableById(Account.PicsID);
-				emailQueueDAO.save(email);
-
-				stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
+				list.add(email);
+			} catch (Exception e) {
+				EmailQueue email = new EmailQueue();
+				email.setToAddresses("billing@picsauditing.com");
+				email.setContractorAccount(cAccount);
+				email.setSubject("Contractor Missing Email Address");
+				email.setBody(cAccount.getName() + " (" + cAccount.getId() + ") has no valid email address. "
+						+ "The system is unable to send automated emails to this account. "
+						+ "Attempted to send Overdue Invoice Email Reminder.");
+				email.setLowPriority();
+				email.setViewableById(Account.PicsID);
+				list.add(email);
 			}
 		}
+		return list;
 	}
 
 	public void addLateFeeToDelinquentInvoices() throws Exception {
@@ -970,17 +964,17 @@ public class Cron extends PicsActionSupport {
 		if (CollectionUtils.isEmpty(flagChanges)) {
 			return totalChanges;
 		}
-		
+
 		for (BasicDynaBean flagChangesByOperator : flagChanges) {
 			try {
 				Object operatorFlagChanges = flagChangesByOperator.get("changes");
 				if (operatorFlagChanges != null) {
 					totalChanges += NumberUtils.toInt(operatorFlagChanges.toString(), 0);
-				}				
+				}
 			} catch (Exception ignore) {
 			}
 		}
-		
+
 		return totalChanges;
 	}
 
@@ -1012,8 +1006,8 @@ public class Cron extends PicsActionSupport {
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (" + 
-				Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
+		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in ("
+				+ Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
 		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
