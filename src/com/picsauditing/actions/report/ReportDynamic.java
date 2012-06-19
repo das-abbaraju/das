@@ -465,8 +465,13 @@ public class ReportDynamic extends PicsActionSupport {
 		for (Object enumValue : field.getFieldClass().getEnumConstants()) {
 			JSONObject valueJson = new JSONObject();
 			valueJson.put("id", enumValue.toString());
+
 			String translationKey = field.getFieldClass().getSimpleName().toString() + "." + enumValue.toString();
-			valueJson.put("name", getText(translationKey));
+			String translatedString = getText(translationKey);
+			if (translatedString == null)
+				translatedString = enumValue.toString();
+
+			valueJson.put("name", translatedString);
 			jsonResult.add(valueJson);
 		}
 
