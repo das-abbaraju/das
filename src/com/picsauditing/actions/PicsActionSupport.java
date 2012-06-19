@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
@@ -156,9 +158,20 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-		String server = InetAddress.getLocalHost().getHostName();
+		if (!(isBeta||isAlphaEnvironment()||isConfigurationEnvironment()||isLocalhostEnvironment())){
+			Cookie[] cookiesA = getRequest().getCookies();
+			if (cookiesA != null) {
+				for (int i = 0; i < cookiesA.length; i++) {
+					if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")){
+						isBeta=true;
+					}
+				}
+			}
+		}
+		//String server = InetAddress.getLocalHost().getHostName();
+		//return isBeta || server.equals("organizer1") || server.equals("organizer2");
 
-		return isBeta || server.equals("organizer1") || server.equals("organizer2");
+		return isBeta;
 	}
 
 	public boolean isConfigurationEnvironment() {
@@ -696,5 +709,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getProtocol() {
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
+	}
+
+	private HttpServletRequest getRequest() {
+		return ServletActionContext.getRequest();
 	}
 }
