@@ -53,9 +53,11 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			if (Strings.isEmpty(criteria.getDefaultValue())) {
 				addActionError("Default hurdle is a required field.");
 			}
-			if (criteria.hasMissingChildRequiredLanguages())
+
+			if (criteria.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "
 						+ "Make sure your flag criteria has at least one language.");
+			}
 
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
@@ -68,8 +70,9 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			criteriaDAO.save(criteria);
 			addActionMessage("Criteria saved successfully.");
 
-			this.redirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());
+			return this.redirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());
 		}
+
 		return SUCCESS;
 	}
 
@@ -142,7 +145,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 				FlagCriteriaOptionCode.ExcessAggregate.toString(),
 				FlagCriteriaOptionCode.ExcessEachOccurrence.toString() };
 	}
-	
+
 	@Override
 	protected void fillSelectedLocales() {
 		if (criteria != null && !criteria.getLanguages().isEmpty()) {

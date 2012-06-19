@@ -78,7 +78,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			else if ("audit".equals(searchType) && permissions.isPicsEmployee())
 				record = contractorAuditDAO.find(searchID);
 			if (record != null)
-				redirect(record.getViewLink());
+				return redirect(record.getViewLink());
 			else
 				addActionError(getText("MainSearch.ErrorOccuredTryAgain"));
 
@@ -92,7 +92,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				int auditID = Integer.parseInt(terms.get(1));
 				ContractorAudit audit = contractorAuditDAO.find(auditID);
 				if (audit != null)
-					redirect(audit.getViewLink());
+					return redirect(audit.getViewLink());
 			} else {
 				// if corporate then build list of contractors in their system
 				ht = searchEngine.getConIds(permissions);
@@ -113,8 +113,13 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
 					fullList = getFullResults(queryList);
 				}
+
 				if (fullList == null)
 					return SUCCESS;
+
+				if (!Strings.isEmpty(url)) {
+					return REDIRECT;
+				}
 
 				int end = 0;
 				if (totalRows - (startIndex + 1) < PAGEBREAK)
@@ -185,6 +190,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			} else
 				redirect(viewAction);
 		}
+
 		return records;
 	}
 
@@ -220,9 +226,10 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				recordsList.add(searchRecord);
 			}
 		}
-		
+
 		for (Class<? extends AbstractIndexableTable> key : indexableMap.keySet()) {
-			List<? extends AbstractIndexableTable> list = accountDAO.findWhere(key, "t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
+			List<? extends AbstractIndexableTable> list = accountDAO.findWhere(key,
+					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
 			if (list != null) {
 				for (AbstractIndexableTable indexEntry : list) {
 					SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
@@ -230,7 +237,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				}
 			}
 		}
-		
+
 		return recordsList.getRecordsOnly(false);
 	}
 

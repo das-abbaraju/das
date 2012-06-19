@@ -94,7 +94,7 @@ public class UsersManage extends PicsActionSupport {
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	private final Logger logger = LoggerFactory.getLogger(UsersManage.class);
-	
+
 	public String execute() throws Exception {
 		startup();
 		if ("department".equalsIgnoreCase(button))
@@ -354,7 +354,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
-			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
+			return this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
 		return SUCCESS;

@@ -581,9 +581,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			certIdToOp = certificateDAO.findOpsMapByCert(certIds);
 		}
-			
 
-		
 		if (permissions.isOperatorCorporate()) {
 			int topID = permissions.getTopAccountID();
 			OperatorAccount opAcc = operatorDAO.find(topID);
@@ -616,7 +614,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 		return certificates;
 	}
-	
+
 	public List<OperatorAccount> getOperatorsUsingCertificate(int certId) {
 		List<OperatorAccount> operatorsUsingCert = new ArrayList<OperatorAccount>();
 
@@ -714,14 +712,16 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public String previousStep() throws Exception {
 		findContractor();
-		redirect(getPreviousRegistrationStep().getUrl());
-		return SUCCESS;
+		return redirect(getPreviousRegistrationStep().getUrl());
 	}
 
 	public String nextStep() throws Exception {
 		findContractor();
-		if (getNextRegistrationStep() != null)
-			redirect(getNextRegistrationStep().getUrl());
+
+		if (getNextRegistrationStep() != null) {
+			return redirect(getNextRegistrationStep().getUrl());
+		}
+
 		return SUCCESS;
 	}
 

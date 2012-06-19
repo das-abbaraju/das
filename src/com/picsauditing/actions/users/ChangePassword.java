@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PasswordValidator;
@@ -50,7 +51,8 @@ public class ChangePassword extends PicsActionSupport {
 	}
 
 	public void resetPasswordLink(int user, String url) throws IOException {
-		redirect("ChangePassword.action?source=profile&user=" + user + "&url=" + url);
+		ServletActionContext.getResponse().sendRedirect(
+				"ChangePassword.action?source=profile&user=" + user + "&url=" + url);
 	}
 
 	@Anonymous
@@ -114,8 +116,7 @@ public class ChangePassword extends PicsActionSupport {
 				 */
 				if (!Strings.isEmpty(url) && forcedReset) {
 					user = dao.save(user);
-					redirect(url);
-					return SUCCESS;
+					return redirect(url);
 				}
 			} else {
 				if (Strings.isEmpty(password1))

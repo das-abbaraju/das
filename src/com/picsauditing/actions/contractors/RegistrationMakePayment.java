@@ -103,8 +103,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
 			return BLANK;
-		
-		//Email proforma invoice
+
+		// Email proforma invoice
 		if ("email".equals(button)) {
 			contractor.setPaymentMethod(PaymentMethod.EFT);
 			contractorAccountDao.save(contractor);
@@ -116,8 +116,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			}
 			return BLANK;
 		}
-		
-		
 
 		loadCC();
 		if (hasActionErrors())
@@ -269,8 +267,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		redirect(getRegistrationStep().getUrl());
-		return BLANK;
+		return redirect(getRegistrationStep().getUrl());
 	}
 
 	private void addNote(String subject) {
@@ -411,8 +408,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 		loadCC();
 
-		this.redirect("RegistrationMakePayment.action");
-		return BLANK;
+		return this.redirect("RegistrationMakePayment.action");
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -594,6 +590,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.removeImportPQF(contractor);
 		generateOrUpdateInvoiceIfNecessary();
+
+		if (!Strings.isEmpty(url)) {
+			return REDIRECT;
+		}
+
 		return BLANK;
 	}
 
@@ -601,6 +602,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.addImportPQF(contractor, permissions);
 		generateOrUpdateInvoiceIfNecessary();
+
+		if (!Strings.isEmpty(url)) {
+			return REDIRECT;
+		}
+
 		return BLANK;
 	}
 
@@ -656,12 +662,5 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		return false;
-	}
-	
-	public void proformaInvoice() throws Exception {
-		findContractor();
-		EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
-			
-		redirect("RegistrationMakePayment.action");
 	}
 }

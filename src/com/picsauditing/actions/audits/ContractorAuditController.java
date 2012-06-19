@@ -43,8 +43,8 @@ import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
 /**
- * Used by Audit.action to show a list of categories for a given audit. Also allows users to change the status of an
- * audit.
+ * Used by Audit.action to show a list of categories for a given audit. Also
+ * allows users to change the status of an audit.
  */
 @SuppressWarnings("serial")
 public class ContractorAuditController extends AuditActionSupport {
@@ -139,8 +139,7 @@ public class ContractorAuditController extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				conAudit.setLastRecalculation(new Date());
 				auditDao.save(conAudit);
-				this.redirect("Audit.action?auditID=" + conAudit.getId());
-				return SUCCESS;
+				return this.redirect("Audit.action?auditID=" + conAudit.getId());
 			}
 
 			if ("SubmitRemind".equals(button)) {
@@ -220,7 +219,7 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (conAudit != null) {
 			getValidSteps();
-			
+
 			if (conAudit.getAuditType().getClassType().isPolicy() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
 						AuditStatus.Incomplete)) {
@@ -235,8 +234,8 @@ public class ContractorAuditController extends AuditActionSupport {
 					}
 				}
 			}
-			
-			String message = determineMessageForUser();			
+
+			String message = determineMessageForUser();
 			if (!Strings.isEmpty(message))
 				addAlertMessage(message);
 		}
@@ -247,22 +246,23 @@ public class ContractorAuditController extends AuditActionSupport {
 	private String determineMessageForUser() {
 		String message = "";
 		if (CollectionUtils.isEmpty(contractor.getTrades())) {
-			// using Integer.toString() because the autoboxed int primitive gets a comma in the translated message, which is incorrect
+			// using Integer.toString() because the autoboxed int primitive gets
+			// a comma in the translated message, which is incorrect
 			// because it is used in a URL.
-			String noTradesSelectedMessage = getTextParameterized("Audit.Error.ContractorMissingTrades", Integer.toString(contractor.getId()));
-			if (!atLeastOneCompleteVisibleCao()) {  
+			String noTradesSelectedMessage = getTextParameterized("Audit.Error.ContractorMissingTrades",
+					Integer.toString(contractor.getId()));
+			if (!atLeastOneCompleteVisibleCao()) {
 				message = noTradesSelectedMessage;
-			}
-			else {
-				addActionError(noTradesSelectedMessage);	
+			} else {
+				addActionError(noTradesSelectedMessage);
 			}
 		}
-		
+
 		if (conAudit.getOperators().size() == 0)
 			message = "This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users";
 		if (conAudit.hasOnlyInvisibleCaos())
 			message = "This audit has no visible CAOs and cannot be seen by external users.  Data is not deleted when facilities are disassociated, but it is no longer visible to external users.";
-		
+
 		return message;
 	}
 
@@ -305,8 +305,10 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	/*
-	 * Hides a category (and it's sub-categories). The cetagory might be one that was manually added, or it might be one
-	 * that is there by default. Either way, we'll mark it as "override" to show that it was manually manipulated.
+	 * Hides a category (and it's sub-categories). The cetagory might be one
+	 * that was manually added, or it might be one that is there by default.
+	 * Either way, we'll mark it as "override" to show that it was manually
+	 * manipulated.
 	 */
 	private AuditCatData hideCategory(AuditCategory auditCategory) {
 		AuditCatData auditCatData = getCategories().get(auditCategory);
@@ -476,7 +478,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setViewBlanks(boolean viewBlanks) {
 		this.viewBlanks = viewBlanks;
 	}
-	
+
 	public int getCaoID() {
 		return caoID;
 	}
@@ -534,11 +536,12 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	/**
-	 * This yes/no question only appears on the PQF audit itself. If they answer yes to this, generate an Import Fee
-	 * invoice. <br/>
+	 * This yes/no question only appears on the PQF audit itself. If they answer
+	 * yes to this, generate an Import Fee invoice. <br/>
 	 * <br/>
-	 * Check whether the contractor answered the Competitor Membership question. If there is no answer, show this
-	 * message. If they've answered yes but the Import PQF audit/fee doesn't exist, show this message.
+	 * Check whether the contractor answered the Competitor Membership question.
+	 * If there is no answer, show this message. If they've answered yes but the
+	 * Import PQF audit/fee doesn't exist, show this message.
 	 * 
 	 * @return true if they should see the upsell message
 	 */
@@ -550,8 +553,10 @@ public class ContractorAuditController extends AuditActionSupport {
 		if (con.getCompetitorMembership() != null) {
 			// They answered yes to this question
 			if (con.getCompetitorMembership()) {
-				// TODO: We might need to clean this logic up later. The import fee is a one time charge. If there is a
-				// contractor fee with the Import Fee class, then I'm assuming that they've been charged for this
+				// TODO: We might need to clean this logic up later. The import
+				// fee is a one time charge. If there is a
+				// contractor fee with the Import Fee class, then I'm assuming
+				// that they've been charged for this
 				// before.
 				if (con.getFees().get(FeeClass.ImportFee) != null
 						&& !con.getFees().get(FeeClass.ImportFee).getNewLevel().isFree())
@@ -579,8 +584,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 		return contractor.getCountry().getAmount(fee);
 	}
-	
-	
 
 	private void checkMode() {
 		if (mode == null)

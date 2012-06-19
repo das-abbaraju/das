@@ -149,10 +149,7 @@ public class Registration extends ContractorActionSupport {
 			dao.save(note);
 		}
 
-		redirect(getRegistrationStep().getUrl());
-
-		return BLANK;
-
+		return redirect(getRegistrationStep().getUrl());
 	}
 
 	private ContractorRegistrationRequest updateRegistrationRequest() {

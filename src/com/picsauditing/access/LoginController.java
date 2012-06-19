@@ -202,14 +202,12 @@ public class LoginController extends PicsActionSupport {
 
 		if (permissions.getGroups().size() > 0 || permissions.isContractor()) {
 			postLogin();
+			return REDIRECT;
 		} else {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
 
-			redirect("Login.action?button=logout");
-			return SUCCESS;
+			return super.redirect("Login.action?button=logout");
 		}
-
-		return SUCCESS;
 	}
 
 	private void switchToUser(int userID) throws Exception {

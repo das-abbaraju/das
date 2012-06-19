@@ -1,15 +1,18 @@
 package com.picsauditing.actions;
 
-
 @SuppressWarnings("serial")
 public class Trevor extends PicsActionSupport {
 	private int test = 0;
 
 	public String execute() throws Exception {
-		//ServletActionContext.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		//ServletActionContext.setResponse(null);
-
 		return SUCCESS;
+	}
+
+	public String redirect() throws Exception {
+		addActionMessage("Info");
+		addActionError("Error");
+
+		return redirect("Trevor.action?test=1");
 	}
 
 	public int getTest() {

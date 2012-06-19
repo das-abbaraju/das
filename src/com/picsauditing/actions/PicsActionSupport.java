@@ -243,16 +243,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected boolean forceLogin() {
-
 		loadPermissions();
 
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				// redirect("ProfileEdit.action?url=" +
-				// ServletActionContext.getRequest().getRequestURL());
-				// redirect("ChangePassword.action?source=profile&user=" +
-				// permissions.getUserId() + "&url="
-				// + ServletActionContext.getRequest().getRequestURL());
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), ServletActionContext.getRequest().getRequestURL()
 						.toString());
@@ -272,12 +266,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected boolean forceLogin(String alternateReturnURL) {
 		loadPermissions();
+
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
-				// redirect("ChangePassword.action?source=profile&user=" +
-				// permissions.getUserId() + "&url="
-				// + alternateReturnURL);
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), alternateReturnURL);
 
@@ -291,6 +282,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
+
 		return true;
 	}
 
@@ -615,10 +607,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String redirect(String url) throws IOException {
-		ServletActionContext.getResponse().sendRedirect(url);
+		this.url = url;
+
+		if (!Strings.isEmpty(this.url)) {
+			return REDIRECT;
+		}
+
 		return BLANK;
-		//this.url = url;
-		//return REDIRECT;
 	}
 
 	public String getFormattedDollarAmount(String answer) {
