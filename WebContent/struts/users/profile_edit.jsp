@@ -96,7 +96,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>"> 
+				<a href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>" id="profile_edit_changePassword"> 
 					<s:text	name="button.password" />
 				</a>
 			</li>
@@ -190,7 +190,7 @@
 						<fieldset class="form submit">
 							<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save" />						
 								
-							<a class="change-password btn" href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>">
+							<a class="change-password btn" href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>" id="profile_edit_changePassword2">
 								<s:text name="button.password" />
 							</a>
 						</fieldset>

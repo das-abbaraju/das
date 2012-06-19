@@ -222,7 +222,7 @@
 				
 				<s:if test="!user.group  && user.id>0">
 					<li>
-						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>">
+						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>"  id="users_manage_changePassword">
 							<s:text name="button.password" />
 						</a>
 					</li>
