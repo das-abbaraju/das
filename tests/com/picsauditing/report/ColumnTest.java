@@ -12,6 +12,7 @@ import com.picsauditing.report.Column;
 
 @SuppressWarnings("unchecked")
 public class ColumnTest {
+
 	private Column column = new Column();
 	private JSONObject jsonObj = new JSONObject();
 
@@ -33,7 +34,6 @@ public class ColumnTest {
 		assertEquals(expected, column.toJSON(true).toJSONString());
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testFunction() {
 		jsonObj.put("name", "AccountNameUpperCase");

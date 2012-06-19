@@ -104,11 +104,11 @@ public class Definition implements JSONable {
 		if (json == null)
 			return;
 
-		this.filterExpression = (String) json.get(FILTER_EXPRESSION);
+		filterExpression = (String) json.get(FILTER_EXPRESSION);
 
-		this.filters = parseJsonToList(json.get(FILTERS), Filter.class);
-		this.columns = parseJsonToList(json.get(COLUMNS), Column.class);
-		this.sorts = parseJsonToList(json.get(SORTS), Sort.class);
+		filters = parseJsonToList(json.get(FILTERS), Filter.class);
+		columns = parseJsonToList(json.get(COLUMNS), Column.class);
+		sorts = parseJsonToList(json.get(SORTS), Sort.class);
 	}
 
 	private static <T extends JSONable> List<T> parseJsonToList(Object jsonObject, Class<T> c) {
@@ -134,9 +134,6 @@ public class Definition implements JSONable {
 	/**
 	 * This merges the definition passed with this Definition instance
 	 * and returns the definition passed in.
-	 *
-	 * @param definition
-	 * @return
 	 */
 	public Definition merge(Definition definition) {
 		if (definition == null) {
