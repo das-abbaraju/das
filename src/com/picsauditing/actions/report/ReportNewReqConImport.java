@@ -154,9 +154,26 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
 		ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
-		crr.setName((String) getValue(row, 0));
-		crr.setContact((String) getValue(row, 1));
+
+		String importedName = (String) getValue(row, 0);
+		String importedContact = (String) getValue(row, 1);
 		Object phoneValue = getValue(row, 2);
+		String importedEmail = (String) getValue(row, 3);
+		Object taxIDValue = getValue(row, 4);
+		String importedAddress = (String) getValue(row, 5);
+		String importedCity = (String) getValue(row, 6);
+		State importedState = (State) getValue(row, 7);
+		Object zipValue = getValue(row, 8);
+		Country importedCountry = (Country) getValue(row, 9);
+		OperatorAccount importedRequestedBy = (OperatorAccount) getValue(row, 10);
+		Object tagValue = getValue(row, 11);
+		User importedRequestedByUser = (User) getValue(row, 12);
+		String importedRequestedByUserOther = (String) getValue(row, 13);
+		Date importedDeadline = (Date) getValue(row, 14);
+		String importedNotes = (String) getValue(row, 15);
+
+		crr.setName(importedName);
+		crr.setContact(importedContact);
 		if(phoneValue != null) {
 			if (phoneValue instanceof Double) {
 				BigDecimal phoneValueDec = new BigDecimal((Double)phoneValue);
@@ -167,29 +184,47 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			}
 		}
 		
-		crr.setEmail((String) getValue(row, 3));
-		crr.setTaxID((String) getValue(row, 4));
-		crr.setAddress((String) getValue(row, 5));
-		crr.setCity((String) getValue(row, 6));
-		crr.setState((State) getValue(row, 7));
-		
-		Object zipcode = getValue(row, 8);
-		if(zipcode != null) {
-			if (zipcode instanceof Double) {
-				BigDecimal zipcodeDec = new BigDecimal((Double)zipcode);
-				crr.setPhone(zipcodeDec.toString());
+		crr.setEmail(importedEmail);
+		if(taxIDValue != null) {
+			if (taxIDValue instanceof Double) {
+				BigDecimal taxIDValueDec = new BigDecimal((Double)taxIDValue);
+				crr.setTaxID(taxIDValueDec.toString());
 			}
 			else{
-				crr.setPhone(zipcode.toString());
+				crr.setTaxID(taxIDValue.toString());
 			}
 		}
 		
-		crr.setCountry((Country) getValue(row, 9));
-		crr.setRequestedBy((OperatorAccount) getValue(row, 10));
-		crr.setRequestedByUser((User) getValue(row, 11));
-		crr.setRequestedByUserOther((String) getValue(row, 12));
-		crr.setDeadline((Date) getValue(row, 13));
-		crr.setNotes((String) getValue(row, 14));
+		crr.setAddress(importedAddress);
+		crr.setCity(importedCity);
+		crr.setState(importedState);
+		if(zipValue != null) {
+			if (zipValue instanceof Double) {
+				BigDecimal zipValueDec = new BigDecimal((Double)zipValue);
+				crr.setZip(zipValueDec.toString());
+			}
+			else{
+				crr.setZip(zipValue.toString());
+			}
+		}
+		
+		crr.setCountry(importedCountry);
+		crr.setRequestedBy(importedRequestedBy);
+		if(tagValue != null) {
+			if (tagValue instanceof Double) {
+				BigDecimal tagValueDec = new BigDecimal((Double)tagValue);
+				crr.setOperatorTags(tagValueDec.toString());
+			}
+			else{
+				crr.setOperatorTags(tagValue.toString());
+			}
+		}
+		
+		crr.setRequestedByUser(importedRequestedByUser);
+		crr.setRequestedByUserOther(importedRequestedByUserOther);
+		crr.setDeadline(importedDeadline);
+		crr.setNotes(importedNotes);
+
 		crr.setAuditColumns(permissions);
 		crr.setStatus(ContractorRegistrationRequestStatus.Active);
 		return crr;
@@ -282,9 +317,9 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				value = countryDAO.find(value.toString());
 			if (cell == 10 && !Strings.isEmpty(value.toString()))
 				value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
-			if (cell == 11 && !Strings.isEmpty(value.toString()))
+			if (cell == 12 && !Strings.isEmpty(value.toString()))
 				value = userDAO.find((int) Double.parseDouble(value.toString()));
-			if (cell == 13 && !Strings.isEmpty(value.toString()))
+			if (cell == 14 && !Strings.isEmpty(value.toString()))
 				value = row.getCell(cell).getDateCellValue();
 
 			if (isDebugging()) 
