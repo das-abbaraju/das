@@ -54,5 +54,12 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
         type: 'hbox',
         align: 'middle'
     },
-    width: '100%'
+    width: '100%',
+
+    constructor: function () {
+        this.callParent(arguments);
+
+        //set filter name
+        this.child('panel displayfield[name=filter_name]').setValue(this.record.get('text'));
+    }
 });

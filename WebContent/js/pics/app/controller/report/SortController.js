@@ -10,7 +10,9 @@ Ext.define('PICS.controller.report.SortController', {
     }],
 
     stores: [
-        'report.Reports'
+        'report.Reports',
+        'report.AvailableFields'
+
     ],
 
     init: function () {
@@ -82,6 +84,12 @@ Ext.define('PICS.controller.report.SortController', {
         var buttons = [];
         var sort_container = Ext.create('Ext.toolbar.Toolbar');
 
+        var availableFields = this.getReportAvailableFieldsStore();
+
+        var sortName = record.get('name');
+
+        var button_name = availableFields.findRecord('name', sortName).get('text')
+
         var sort = {
             xtype: 'splitbutton',
             action: 'sort-report',
@@ -98,7 +106,7 @@ Ext.define('PICS.controller.report.SortController', {
                 }]
             }),
             record: record,
-            text: record.get('name')
+            text: button_name
         };
 
         if (record.get('direction') === 'DESC') {

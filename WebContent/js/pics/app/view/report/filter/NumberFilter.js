@@ -52,7 +52,6 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
         this.callParent(arguments);
 
         this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-        this.child('panel displayfield[name=filterName]').setValue(this.record.get('column'));
 
         if (this.record.get('operator') === '') {
             var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;
@@ -60,7 +59,6 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
         } else {
             this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
         }
-
 
         this.child('panel textfield[name=filterValue]').setValue(this.record.get('value'));
     }

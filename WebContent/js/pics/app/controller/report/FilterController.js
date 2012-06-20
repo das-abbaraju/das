@@ -19,6 +19,7 @@ Ext.define('PICS.controller.report.FilterController', {
     }],
 
     stores: [
+        'report.AvailableFields',
         'report.AvailableFieldsByCategory',
         'report.Reports'
     ],
@@ -176,6 +177,12 @@ Ext.define('PICS.controller.report.FilterController', {
             var type = record.getAvailableField().get('filterType') || record.get('filterType'),
                 panel_class = me.setFilterPanelClass(type),
                 filter_panel = null;
+
+            var availableFields = me.getReportAvailableFieldsStore();
+            var sortName = record.get('name');
+            var filter_name = availableFields.findRecord('name', sortName).get('text');
+
+            record.set('text', filter_name);
 
             if (panel_class !== null) {
                 filter_panel = Ext.create(panel_class, {

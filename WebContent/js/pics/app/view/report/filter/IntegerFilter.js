@@ -48,9 +48,6 @@ Ext.define('PICS.view.report.filter.IntegerFilter', {
         // set filter number
         this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
 
-        // set filter name
-        this.child('panel displayfield[name=filter_name]').setValue(this.record.get('name'));
-
         // set filter inputs
         if (this.record.get('operator') === '') {
             var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;
