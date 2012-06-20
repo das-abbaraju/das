@@ -546,6 +546,11 @@
     									<strong><s:date name="contractor.membershipDate" /></strong>&nbsp;&nbsp;
     									<a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />"><s:text name="ContractorDashboard.DownloadCertificate" /></a>
     								</p>
+    								<p>
+    									<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+											<s:text name="ContractorView.ClickToViewContractorBadge" />
+										</a>
+    								</p>
     								
     								<p>
     									<s:text name="global.CSR" />:
