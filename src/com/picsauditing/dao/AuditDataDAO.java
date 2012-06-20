@@ -168,27 +168,31 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	// TODO merge with findAnswerByConQuestions and findCurrentAnswers and return a Map<
-	public Map<Integer, AuditData> findTODOHERE(int conID, Collection<Integer> questionIds){
+	// TODO merge with findAnswerByConQuestions and findCurrentAnswers and
+	// return a Map<
+	public Map<Integer, AuditData> findTODOHERE(int conID, Collection<Integer> questionIds) {
 		return null;
 	}
-	
+
 	public AnswerMap findCurrentAnswers(int conId, Collection<Integer> questionIds) {
 		if (questionIds.size() == 0)
-			return new AnswerMap(Collections.<AuditData>emptyList());
+			return new AnswerMap(Collections.<AuditData> emptyList());
 
-		Query query = em.createNativeQuery("select d.* from pqfdata d join contractor_audit ca on d.auditID = ca.id " +
-				" left join contractor_audit ca2 on ca.conID = ca2.conID and ca.auditTypeID = ca2.auditTypeID and ca.creationDate < ca2.creationDate " +
-                " where ca2.id is null and ca.conID = " + conId + " and d.questionID in (" + Strings.implode(questionIds) + ")", AuditData.class);
+		Query query = em
+				.createNativeQuery(
+						"select d.* from pqfdata d join contractor_audit ca on d.auditID = ca.id "
+								+ " left join contractor_audit ca2 on ca.conID = ca2.conID and ca.auditTypeID = ca2.auditTypeID and ca.creationDate < ca2.creationDate "
+								+ " where ca2.id is null and ca.conID = " + conId + " and d.questionID in ("
+								+ Strings.implode(questionIds) + ")", AuditData.class);
 		return mapData(query.getResultList());
 	}
-	
+
 	public AnswerMap findAnswersByAuditAndQuestions(ContractorAudit audit, Collection<Integer> questionIds) {
 		if (questionIds.size() == 0)
-			return new AnswerMap(Collections.<AuditData>emptyList());
+			return new AnswerMap(Collections.<AuditData> emptyList());
 
-		Query query = em.createQuery("SELECT d FROM AuditData d" +
-				" WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
+		Query query = em.createQuery("SELECT d FROM AuditData d"
+				+ " WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
 		query.setParameter("auditID", audit.getId());
 		query.setParameter("questionList", questionIds);
 		return mapData(query.getResultList());
@@ -295,9 +299,10 @@ public class AuditDataDAO extends PicsDAO {
 		query.setMaxResults(10);
 		return query.getResultList();
 	}
-	
-	public List<AuditData> findByCertificateID (int conID, int certID) {
-		Query query = em.createQuery("FROM AuditData d WHERE d.audit.contractorAccount.id = ? AND d.answer = ? AND d.question.questionType = 'FileCertificate'");
+
+	public List<AuditData> findByCertificateID(int conID, int certID) {
+		Query query = em
+				.createQuery("FROM AuditData d WHERE d.audit.contractorAccount.id = ? AND d.answer = ? AND d.question.questionType = 'FileCertificate'");
 		query.setParameter(1, conID);
 		query.setParameter(2, String.valueOf(certID));
 		try {
@@ -305,5 +310,11 @@ public class AuditDataDAO extends PicsDAO {
 		} catch (NoResultException nre) {
 			return null;
 		}
+	}
+
+	public List<AuditData> findWhere(String where) {
+		Query query = em.createQuery("From AuditData d WHERE " + where);
+
+		return query.getResultList();
 	}
 }
