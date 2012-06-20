@@ -492,8 +492,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public InvoiceFee getVatFee() {
 		if (vatFee == null) {
 			vatFee = new InvoiceFee();
-
-			if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
+			//if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
+			if (contractor.getCountry().getCurrency().isGBP()) {
 				vatFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.VAT, contractor.getPayingFacilities());
 				BigDecimal total = BigDecimal.ZERO.setScale(2);
 				for (FeeClass feeClass : contractor.getFees().keySet()) {
