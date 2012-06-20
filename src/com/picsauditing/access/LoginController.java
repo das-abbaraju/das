@@ -108,7 +108,7 @@ public class LoginController extends PicsActionSupport {
 					}
 				}
 				postLogin();
-				return SUCCESS;
+				return REDIRECT;
 			}
 
 			ActionContext.getContext().getSession().clear();
