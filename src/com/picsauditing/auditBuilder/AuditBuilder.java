@@ -126,12 +126,6 @@ public class AuditBuilder {
 				if (canDelete(conAudit)) {
 					iter.remove();
 					conAuditDao.remove(conAudit);
-				} else if (!isValidCorAudit(conAudit)) {
-					// Make sure that the caos' visibility is set correctly
-					for (ContractorAuditOperator cao : conAudit.getOperators()) {
-						if (cao.isVisible())
-							cao.setVisible(false);
-					}
 				}
 			}
 		}
@@ -162,21 +156,34 @@ public class AuditBuilder {
 			}
 		}
 
+		Iterator<ContractorAudit> iterator = contractor.getAudits().iterator();
+		while (iterator.hasNext()) {
+			ContractorAudit conAudit = iterator.next();
+			// checking to see if we still need audit
+			if (!conAudit.isManuallyAdded() && !requiredAuditTypes.contains(conAudit.getAuditType())) {
+				if (!isValidAudit(conAudit)) {
+					// Make sure that the caos' visibility is set correctly
+					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+						if (cao.isVisible())
+							cao.setVisible(false);
+					}
+				}
+			}
+		}
+		
 		conAuditDao.save(contractor);
 	}
 	
-	private boolean isValidCorAudit(ContractorAudit conAudit) {
-		if (conAudit.getAuditType().getId() != AuditType.COR)
+	private boolean isValidAudit(ContractorAudit conAudit) {
+		if (conAudit.getAuditType().getId() != AuditType.COR
+				&& conAudit.getAuditType().getId() != AuditType.IEC_AUDIT)
 			return false;
-		
+
 		if (conAudit.isExpired())
 			return false;
-		
-		if (auditDataDAO == null)
-			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
-		
-		AuditData data = auditDataDAO.findAnswerByConQuestion(conAudit
-				.getContractorAccount().getId(), AuditQuestion.COR);
+
+		int auditQuestionID = (conAudit.getAuditType().getId() == AuditType.COR) ? AuditQuestion.COR
+				: AuditQuestion.IEC;
 
 		ContractorAudit pqfAudit = null;
 		for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
@@ -185,9 +192,19 @@ public class AuditBuilder {
 				break;
 			}
 		}
+		
+		if (pqfAudit == null)
+			return false;
+		
+		AuditData data = null;
+		for (AuditData auditData:pqfAudit.getData()) {
+			if (auditData.getQuestion().getId() == auditQuestionID) {
+				data = auditData;
+				break;
+			}
+		}
 
 		if (data != null
-				&& pqfAudit != null
 				&& (!Strings.isEqualNullSafe(data.getAnswer(), "Yes") || !data
 						.getQuestion().isVisibleInAudit(pqfAudit))) {
 			return false;
