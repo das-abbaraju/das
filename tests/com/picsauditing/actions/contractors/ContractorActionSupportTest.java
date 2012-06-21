@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -27,21 +26,25 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EventType;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class ContractorActionSupportTest extends PicsTest {
-	ContractorActionSupport testClass;
 	ContractorActionSupport contractorActionSupport;
 
 	ContractorAccount contractor;
@@ -56,27 +59,30 @@ public class ContractorActionSupportTest extends PicsTest {
 	@Mock
 	ContractorAudit audit;
 	@Mock
-	private Permissions permissions = new Permissions();
+	private Permissions permissions;
 	@Mock
-	CertificateDAO certDao = new CertificateDAO();
+	private AuditBuilder auditBuilder;
 	@Mock
-	private OperatorAccountDAO operatorDAO = new OperatorAccountDAO();
+	protected ContractorAccountDAO contractorAccountDAO;
 	@Mock
-	private ContractorAuditDAO auditDAO = new ContractorAuditDAO();
+	protected ContractorAuditDAO auditDAO;
 	@Mock
-	private AuditDataDAO auditDataDAO = new AuditDataDAO();
+	private CertificateDAO certDAO;
 	@Mock
-	private AuditBuilder auditBuilder = new AuditBuilder();
+	private OperatorAccountDAO operatorDAO;
+	@Mock
+	private AuditDataDAO auditDataDAO;
+	@Mock
+	private NoteDAO noteDAO;
+	@Mock
+	private AuditPercentCalculator auditPercentCalculator;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		testClass = new ContractorActionSupport();
-		autowireEMInjectedDAOs(testClass);
-
 		contractorActionSupport = new ContractorActionSupport();
-		autowireEMInjectedDAOs(contractorActionSupport);
+		autowireDAOsFromDeclaredMocks(contractorActionSupport, this);
 
 		contractor = EntityFactory.makeContractor();
 		operator = EntityFactory.makeOperator();
@@ -84,8 +90,10 @@ public class ContractorActionSupportTest extends PicsTest {
 		operators.add(EntityFactory.addContractorOperator(contractor, operator));
 		operators.add(EntityFactory.addContractorOperator(contractor, anotherOperator));
 
-		PicsTestUtil.forceSetPrivateField(testClass, "contractor", contractor);
-		PicsTestUtil.forceSetPrivateField(testClass, "permissions", permissions);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "contractor", contractor);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "permissions", permissions);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditPercentCalculator", auditPercentCalculator);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditBuilder", auditBuilder);
 
 		eventQuestions = new ArrayList<AuditData>();
 		for (int i = 0; i < 3; i++) {
@@ -98,25 +106,25 @@ public class ContractorActionSupportTest extends PicsTest {
 	public void testGetCertificates() {
 		initCertificates();
 
-		List<Certificate> certificates = testClass.getCertificates();
+		List<Certificate> certificates = contractorActionSupport.getCertificates();
 		assertEquals(1, certificates.size());
 	}
 
 	@Test
 	public void testGetOperatorsUsingCertificate() {
 		initCertificates();
-		List<OperatorAccount> operators = testClass.getOperatorsUsingCertificate(1);
+		List<OperatorAccount> operators = contractorActionSupport.getOperatorsUsingCertificate(1);
 		assertEquals(1, operators.size());
 	}
 
 	private void initCertificates() {
-		PicsTestUtil.forceSetPrivateField(testClass, "certificateDAO", certDao);
-		when(certDao.findByConId(contractor.getId(), permissions, true)).thenReturn(certList);
-		when(certDao.findOpsMapByCert(Matchers.anyListOf(Integer.class))).thenReturn(opIdsByCertIds);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "certificateDAO", certDAO);
+		when(certDAO.findByConId(contractor.getId(), permissions, true)).thenReturn(certList);
+		when(certDAO.findOpsMapByCert(Matchers.anyListOf(Integer.class))).thenReturn(opIdsByCertIds);
 
-		PicsTestUtil.forceSetPrivateField(testClass, "certificateDAO", certDao);
-		PicsTestUtil.forceSetPrivateField(testClass, "operatorDAO", operatorDAO);
-		PicsTestUtil.forceSetPrivateField(testClass, "operators", operators);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "certificateDAO", certDAO);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "operatorDAO", operatorDAO);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "operators", operators);
 
 		operator.setType("Operator");
 		when(permissions.isOperatorCorporate()).thenReturn(true);
@@ -136,16 +144,17 @@ public class ContractorActionSupportTest extends PicsTest {
 		opIdsByCertIds.put(cert2.getId(), new ArrayList<Integer>());
 	}
 
-	@Ignore
 	@Test
 	public void testReviewCategoriesNullPQF() {
 		when(auditDAO.findPQF(anyInt())).thenReturn(null);
 		contractorActionSupport.setContractor(contractor);
 		contractorActionSupport.reviewCategories(EventType.Locations);
 		verify(auditBuilder, never()).buildAudits(contractor);
+		verify(auditDataDAO, never()).findWhere(anyString());
+		verify(auditDAO, never()).save(any(ContractorAuditOperatorWorkflow.class));
+		verify(noteDAO, never()).save(any(Note.class));
 	}
 
-	@Ignore
 	@Test
 	public void testReviewCategoriesPendingPQF() {
 		when(auditDAO.findPQF(anyInt())).thenReturn(audit);
@@ -155,7 +164,6 @@ public class ContractorActionSupportTest extends PicsTest {
 		verify(auditBuilder, never()).buildAudits(contractor);
 	}
 
-	@Ignore
 	@Test
 	public void testReviewCategoriesNoEventQuestions() {
 		when(auditDAO.findPQF(anyInt())).thenReturn(audit);
@@ -166,7 +174,6 @@ public class ContractorActionSupportTest extends PicsTest {
 		verify(auditBuilder, never()).buildAudits(contractor);
 	}
 
-	@Ignore
 	@Test
 	public void testReviewCategoriesSuccess() {
 		when(auditDAO.findPQF(anyInt())).thenReturn(audit);
