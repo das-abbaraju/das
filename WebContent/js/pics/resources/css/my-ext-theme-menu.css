@@ -3,132 +3,6 @@
  * Override: ext4/default/all
  * Author: Carey Hinoki
  */
-/***
- * Start Custom
- * Author: Carey Hinoki
- */
-/* line 18, ../sass/my-ext-theme/_menu.scss */
-#site_menu {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
-  background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
-  background-image: -moz-linear-gradient(#ffffff, #eaeaea);
-  background-image: -o-linear-gradient(#ffffff, #eaeaea);
-  background-image: -ms-linear-gradient(#ffffff, #eaeaea);
-  background-image: linear-gradient(#ffffff, #eaeaea);
-  -webkit-box-shadow: #cccccc 0px 2px 2px 0px;
-  -moz-box-shadow: #cccccc 0px 2px 2px 0px;
-  box-shadow: #cccccc 0px 2px 2px 0px; }
-
-/* line 24, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-btn-arrow {
-  background: none;
-  padding: 0px !important; }
-
-/* line 30, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-btn-default-toolbar-large {
-  margin: 0px;
-  padding: 0px 10px;
-  top: 0px !important; }
-
-/* line 39, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-btn-default-toolbar-large-menu-active,
-#site_menu .x-btn-default-toolbar-large-over,
-#site_menu .x-btn-default-toolbar-large-pressed {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
-  background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: -ms-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: linear-gradient(#eaeaea, #f1f1f2);
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -o-border-radius: 0px;
-  border-radius: 0px;
-  border: 1px solid #aeaeae;
-  border-top: 1px solid #999999;
-  border-bottom: 0px; }
-
-/* line 48, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-btn-default-toolbar-large .x-btn-inner {
-  color: #002441;
-  font-weight: bold; }
-
-/* line 56, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
-#site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
-#site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner {
-  color: #c66603; }
-
-/* line 61, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-form-text {
-  -webkit-border-radius: 12px;
-  -moz-border-radius: 12px;
-  -ms-border-radius: 12px;
-  -o-border-radius: 12px;
-  border-radius: 12px;
-  height: 22px;
-  padding: 12px 5px; }
-
-/* line 68, ../sass/my-ext-theme/_menu.scss */
-#site_menu .x-toolbar-separator-horizontal {
-  border-left-color: #e7e7e7;
-  border-right-color: #fcfcfc; }
-
-/* line 74, ../sass/my-ext-theme/_menu.scss */
-#site_menu #logo .x-btn-inner {
-  padding: 0px 0px 0px 50px; }
-
-/* line 36, ../sass/my-ext-theme-menu.scss */
-.x-menu-body {
-  border: 1px solid #a7a7a7 !important;
-  -moz-border-radius-bottomleft: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  border-bottom-right-radius: 5px; }
-
-/* line 43, ../sass/my-ext-theme-menu.scss */
-.x-menu-item-link {
-  -webkit-border-radius: 0px !important;
-  -moz-border-radius: 0px !important;
-  -ms-border-radius: 0px !important;
-  -o-border-radius: 0px !important;
-  border-radius: 0px !important; }
-
-/* line 48, ../sass/my-ext-theme-menu.scss */
-.x-menu-item:last-child.x-menu-item-active .x-menu-item-link {
-  -moz-border-radius-bottomleft: 3px !important;
-  -webkit-border-bottom-left-radius: 3px !important;
-  -ms-border-bottom-left-radius: 3px !important;
-  -o-border-bottom-left-radius: 3px !important;
-  border-bottom-left-radius: 3px !important;
-  -moz-border-radius-bottomright: 3px !important;
-  -webkit-border-bottom-right-radius: 3px !important;
-  -ms-border-bottom-right-radius: 3px !important;
-  -o-border-bottom-right-radius: 3px !important;
-  border-bottom-right-radius: 3px !important; }
-
-/* line 54, ../sass/my-ext-theme-menu.scss */
-.x-menu-item-active .x-menu-item-link {
-  background: #a84d10;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10)) !important;
-  background-image: -webkit-linear-gradient(#c66603, #a84d10) !important;
-  background-image: -moz-linear-gradient(#c66603, #a84d10) !important;
-  background-image: -o-linear-gradient(#c66603, #a84d10) !important;
-  background-image: -ms-linear-gradient(#c66603, #a84d10) !important;
-  background-image: linear-gradient(#c66603, #a84d10) !important;
-  border: 1px solid transparent !important; }
-
-/* line 61, ../sass/my-ext-theme-menu.scss */
-.x-menu-item-active .x-menu-item-link span {
-  color: #ffffff; }
-
 /**
  * @var {string} $prefix 
  * The prefix to be applied to all CSS selectors. If this is changed, it must also be changed in your 
@@ -5284,3 +5158,146 @@ tr.x-container:before {
 .x-panel-body-plain {
   border: 0;
   padding: 0; }
+
+/***
+ * Start Custom
+ * Author: Carey Hinoki
+ */
+/* line 18, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
+  background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
+  background-image: -moz-linear-gradient(#ffffff, #eaeaea);
+  background-image: -o-linear-gradient(#ffffff, #eaeaea);
+  background-image: -ms-linear-gradient(#ffffff, #eaeaea);
+  background-image: linear-gradient(#ffffff, #eaeaea);
+  -webkit-box-shadow: #cccccc 0px 2px 2px 0px;
+  -moz-box-shadow: #cccccc 0px 2px 2px 0px;
+  box-shadow: #cccccc 0px 2px 2px 0px; }
+
+/* line 24, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-arrow {
+  background: none;
+  padding: 0px !important; }
+
+/* line 30, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-default-toolbar-large {
+  margin: 0px;
+  padding: 0px 10px;
+  top: 0px !important; }
+
+/* line 39, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-default-toolbar-large-menu-active,
+#site_menu .x-btn-default-toolbar-large-over,
+#site_menu .x-btn-default-toolbar-large-pressed {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
+  background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -ms-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: linear-gradient(#eaeaea, #f1f1f2);
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  border: 1px solid #aeaeae;
+  border-top: 1px solid #999999;
+  border-bottom: 0px; }
+
+/* line 48, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-default-toolbar-large .x-btn-inner {
+  color: #002441;
+  font-weight: bold; }
+
+/* line 56, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
+#site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
+#site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner {
+  color: #c66603; }
+
+/* line 61, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-form-text {
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
+  border-radius: 12px;
+  height: 22px;
+  padding: 12px 5px; }
+
+/* line 68, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu .x-toolbar-separator-horizontal {
+  border-left-color: #e7e7e7;
+  border-right-color: #fcfcfc; }
+
+/* line 74, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu #logo .x-btn-inner {
+  padding: 0px 0px 0px 50px; }
+
+/* line 14, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.x-menu-body {
+  border: 1px solid #a7a7a7;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px; }
+
+/* line 20, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.menu-title {
+  color: #999999;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 8px 15px 4px 15px;
+  text-transform: uppercase; }
+
+/* line 29, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.x-menu-item-text {
+  font-size: 13px; }
+
+/* line 34, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.x-menu-item-active .x-menu-item-link {
+  background: #a84d10;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10)) !important;
+  background-image: -webkit-linear-gradient(#c66603, #a84d10) !important;
+  background-image: -moz-linear-gradient(#c66603, #a84d10) !important;
+  background-image: -o-linear-gradient(#c66603, #a84d10) !important;
+  background-image: -ms-linear-gradient(#c66603, #a84d10) !important;
+  background-image: linear-gradient(#c66603, #a84d10) !important;
+  border: 1px solid transparent !important;
+  -webkit-border-radius: 0px !important;
+  -moz-border-radius: 0px !important;
+  -ms-border-radius: 0px !important;
+  -o-border-radius: 0px !important;
+  border-radius: 0px !important; }
+
+/* line 42, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.x-menu-item:first-child.x-menu-item-active .x-menu-item-link {
+  -moz-border-radius-topleft: 3px !important;
+  -webkit-border-top-left-radius: 3px !important;
+  -ms-border-top-left-radius: 3px !important;
+  -o-border-top-left-radius: 3px !important;
+  border-top-left-radius: 3px !important;
+  -moz-border-radius-topright: 3px !important;
+  -webkit-border-top-right-radius: 3px !important;
+  -ms-border-top-right-radius: 3px !important;
+  -o-border-top-right-radius: 3px !important;
+  border-top-right-radius: 3px !important; }
+
+/* line 48, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.x-menu-item:last-child.x-menu-item-active .x-menu-item-link {
+  -moz-border-radius-bottomleft: 3px !important;
+  -webkit-border-bottom-left-radius: 3px !important;
+  -ms-border-bottom-left-radius: 3px !important;
+  -o-border-bottom-left-radius: 3px !important;
+  border-bottom-left-radius: 3px !important;
+  -moz-border-radius-bottomright: 3px !important;
+  -webkit-border-bottom-right-radius: 3px !important;
+  -ms-border-bottom-right-radius: 3px !important;
+  -o-border-bottom-right-radius: 3px !important;
+  border-bottom-right-radius: 3px !important; }
+
+/* line 54, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
+.x-menu-item-active .x-menu-item-link span {
+  color: white; }

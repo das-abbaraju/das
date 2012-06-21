@@ -39,6 +39,16 @@ Ext.define('PICS.view.layout.Menu', {
 
             menu_items[menu_items.length - 1].padding = '0px 20px';
 
+            menu_items[1].menu.items.splice(1, 0, {
+                xtype: 'menuseparator'
+            });
+
+            menu_items[1].menu.items.splice(2, 0, {
+                xtype: 'tbtext',
+                cls: 'menu-title',
+                text: 'Favorites'
+            });
+
             toolbar.add(menu_items);
         }
     },

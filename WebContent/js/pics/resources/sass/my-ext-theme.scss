@@ -27,21 +27,6 @@ $grid-header-color: #ffffff !default;
 
 // End ExtJS4 Overwrites
  
-/***
- * Start Custom
- * Author: Carey Hinoki
- */
-
-//@import 'my-ext-theme/header';
-//@import 'my-ext-theme/menu';
-@import 'my-ext-theme/report_header';
-@import 'my-ext-theme/report_filter_options';
-@import 'my-ext-theme/report_toolbar';
-@import 'my-ext-theme/report_paging_toolbar';
-@import 'my-ext-theme/report_grid';
-
-// End Custom
-
 @import 'ext4/default/all';
 
 // You may remove any of the following modules that you
@@ -73,6 +58,21 @@ $grid-header-color: #ffffff !default;
 //@include extjs-tree;
 //@include extjs-drawcomponent;
 @include extjs-viewport;
+
+/***
+ * Start Custom
+ * Author: Carey Hinoki
+ */
+
+//@import 'my-ext-theme/header';
+//@import 'my-ext-theme/menu';
+@import 'my-ext-theme/report_header';
+@import 'my-ext-theme/report_filter_options';
+@import 'my-ext-theme/report_toolbar';
+@import 'my-ext-theme/report_paging_toolbar';
+@import 'my-ext-theme/report_grid';
+
+// End Custom
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
 // You MUST set this to true/string value if you are creating new UIs + supporting legacy browsers.

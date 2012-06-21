@@ -303,7 +303,7 @@ Ext.define('Ext.menu.Menu', {
             me.el.setWidth(newWidth);
         }
     },
-    
+
     getBubbleTarget: function(){
         return this.parentMenu || this.callParent();
     },
