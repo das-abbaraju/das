@@ -100,7 +100,7 @@ public class Registration extends ContractorActionSupport {
 
 					user = new User();
 					user.setName(crr.getContact());
-					user.setEmail(crr.getEmail());
+					user.setEmail(crr.getEmail().trim());
 					user.setPhone(crr.getPhone());
 				} else {
 					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
@@ -124,6 +124,8 @@ public class Registration extends ContractorActionSupport {
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
+		if (user.getEmail().length()>0)
+			user.setEmail(user.getEmail().trim());
 		userDAO.save(user);
 
 		// requires id for user to exist to seed the password properly

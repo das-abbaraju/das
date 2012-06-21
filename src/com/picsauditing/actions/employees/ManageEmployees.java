@@ -161,6 +161,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			else if (!ssn.matches("X{5}\\d{4}"))
 				addActionError("Invalid social security number entered.");
 		}
+		if (employee.getEmail().length()>0)
+			employee.setEmail(employee.getEmail().trim());
 
 		employee.setAuditColumns(permissions);
 		boolean existing = employee.getId() > 0;

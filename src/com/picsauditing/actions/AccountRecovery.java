@@ -36,7 +36,10 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 	
 	@Anonymous
-	public String findName() {		
+	public String findName() {
+		if (email.length()>0)
+			email = email.trim();
+
 		if (email == null || email.equals("")) {
 			addActionError(getText("AccountRecovery.error.NoEmail"));
 			return SUCCESS;

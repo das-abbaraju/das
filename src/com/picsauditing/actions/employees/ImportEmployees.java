@@ -288,7 +288,7 @@ public class ImportEmployees extends PicsActionSupport {
 						e.setTwicExpiration(cell.getDateCellValue());
 						break;
 					case 5:
-						e.setEmail(cell.toString());
+						e.setEmail(cell.toString().trim());
 						break;
 					case 6:
 						e.setPhone(cell.toString());

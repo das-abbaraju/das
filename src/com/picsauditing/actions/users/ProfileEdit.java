@@ -83,6 +83,9 @@ public class ProfileEdit extends PicsActionSupport {
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
 		String username = u.getUsername().trim();
+		if(u.getEmail().length()>0)
+			u.setEmail(u.getEmail().trim());
+
 		if (Strings.isEmpty(username)) {
 			addActionError(getText("User.username.error.Empty"));
 			return SUCCESS;

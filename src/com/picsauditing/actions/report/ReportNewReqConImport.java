@@ -184,7 +184,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			}
 		}
 		
-		crr.setEmail(importedEmail);
+		crr.setEmail(importedEmail.trim());
 		if(taxIDValue != null) {
 			if (taxIDValue instanceof Double) {
 				BigDecimal taxIDValueDec = new BigDecimal((Double)taxIDValue);
