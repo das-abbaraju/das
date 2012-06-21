@@ -76,7 +76,7 @@
 	
 			$('#' + id).html(data);
 		}
-	
+		
 		$(function() {
 			limit('description', '\n');
 
@@ -156,7 +156,7 @@
     											<s:text name="ContractorView.BidOnlyUpgrade" />
     											<br/>
     											<div style="margin-top: 7px;">
-    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm(<s:text name="ContractorView.BidOnlyUpgradeConfirm" />);"><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
+    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('<s:text name="ContractorView.BidOnlyUpgradeConfirm" />');" ><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
     											</div>
     										</div>
     									</s:if>
