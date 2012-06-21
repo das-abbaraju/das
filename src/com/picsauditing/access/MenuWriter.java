@@ -62,4 +62,28 @@ public class MenuWriter {
 
         return json;
     }
+
+    public static JSONObject convertToSimpleJSON(MenuComponent menu) {
+    	JSONObject node = convert(menu);
+    	if (menu.hasChildren()) {
+    		JSONArray children = new JSONArray();
+    		for (MenuComponent child : menu.getChildren()) {
+    			children.add(convertToSimpleJSON(child));
+    		}
+    		node.put("children", children);
+    	}
+    	return node;
+    }
+
+    private static JSONObject convert(MenuComponent node) {
+    	JSONObject jsonMenu = new JSONObject();
+
+    	jsonMenu.put("text", node.getName());
+    	if (node.hasHtmlID())
+    		jsonMenu.put("id", node.getHtmlId());
+    	if (node.hasUrl())
+    		jsonMenu.put("href", node.getUrl());
+
+    	return jsonMenu;
+    }
 }
