@@ -781,7 +781,7 @@ public class Cron extends PicsActionSupport {
 
 	public void sendDelinquentContractorsEmail() throws Exception {
 		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		if (invoices.size() > 0) {
+		if (CollectionUtils.isNotEmpty(invoices)) {
 			for (EmailQueue email : parseInvoices(invoices)) {
 				emailQueueDAO.save(email);
 				if (email.getToAddresses().equals("billing@picsauditing.com"))
