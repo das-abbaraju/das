@@ -781,14 +781,17 @@ public class Cron extends PicsActionSupport {
 
 	public void sendDelinquentContractorsEmail() throws Exception {
 		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		for (EmailQueue email : parseInvoices(invoices)) {
-			emailQueueDAO.save(email);
-			if (email.getToAddresses().equals("billing@picsauditing.com"))
-				stampNote(email.getContractorAccount(),
-						"Failed to send Deactivation Email because of no valid email address.", NoteCategory.Billing);
-			else
-				stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
-						NoteCategory.Billing);
+		if (invoices.size() > 0) {
+			for (EmailQueue email : parseInvoices(invoices)) {
+				emailQueueDAO.save(email);
+				if (email.getToAddresses().equals("billing@picsauditing.com"))
+					stampNote(email.getContractorAccount(),
+							"Failed to send Deactivation Email because of no valid email address.",
+							NoteCategory.Billing);
+				else
+					stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
+							NoteCategory.Billing);
+			}
 		}
 	}
 
@@ -807,7 +810,7 @@ public class Cron extends PicsActionSupport {
 		return populateEmail(contractors);
 	}
 
-	private  List<EmailQueue> populateEmail(Map<ContractorAccount, Integer> contractors){
+	private List<EmailQueue> populateEmail(Map<ContractorAccount, Integer> contractors) {
 		List<EmailQueue> list = new ArrayList<EmailQueue>();
 		for (ContractorAccount cAccount : contractors.keySet()) {
 			try {
@@ -981,11 +984,11 @@ public class Cron extends PicsActionSupport {
 	private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
 		// Sorting results into buckets by AM to add as tokens into the email
 		Map<String, List<BasicDynaBean>> amMap = new TreeMap<String, List<BasicDynaBean>>();
-		
+
 		if (CollectionUtils.isEmpty(data)) {
 			return amMap;
 		}
-				
+
 		for (BasicDynaBean bean : data) {
 			String accountMgr = (String) bean.get("accountManager");
 			if (accountMgr != null) {
@@ -995,7 +998,7 @@ public class Cron extends PicsActionSupport {
 				amMap.get(accountMgr).add(bean);
 			}
 		}
-		
+
 		return amMap;
 	}
 
