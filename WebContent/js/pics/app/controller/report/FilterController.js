@@ -182,6 +182,10 @@ Ext.define('PICS.controller.report.FilterController', {
             var sortName = record.get('name');
             var filter_name = availableFields.findRecord('name', sortName).get('text');
 
+            if (filter_name.length >= 29) {
+                filter_name = filter_name.substring(0, 29) + '...';
+            }
+
             record.set('text', filter_name);
 
             if (panel_class !== null) {
