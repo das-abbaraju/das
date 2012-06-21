@@ -1,43 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <head>
-	<s:if test="ajax">
-		<style type="text/css">
-			.subcontractors-flag-matrix
-			{
-				max-height: 400px;
-				overflow: auto;
-				width: 100%;
-			}
-		</style>
-	</s:if>
-	<s:else>
-		<title>
-			<s:text name="SubcontractorFlagMatrix.title" />
-		</title>
-		<s:include value="../reports/reportHeader.jsp" />
-	</s:else>
+	<title>
+		<s:text name="SubcontractorFlagMatrix.title" />
+	</title>
+	<s:include value="../reports/reportHeader.jsp" />
 </head>
 <body>
-	<s:if test="!ajax">
-		<h1>
-			<s:text name="SubcontractorFlagMatrix.title" />
-		</h1>
-		<s:include value="../reports/filters.jsp" />
-		<pics:permission perm="ContractorDetails">
-			<div class="right">
-				<a 
-					class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-					href="javascript: download('SubcontractorFlagMatrix');" 
-					title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-				><s:text name="global.Download" /></a>
-			</div>
-		</pics:permission>
-		
-		<div>
-			<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+	<h1>
+		<s:text name="SubcontractorFlagMatrix.title" />
+	</h1>
+	<s:include value="../reports/filters.jsp" />
+	<pics:permission perm="ContractorDetails">
+		<div class="right">
+			<a 
+				class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+				href="javascript: download('SubcontractorFlagMatrix');" 
+				title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
+			><s:text name="global.Download" /></a>
 		</div>
-	</s:if>
+	</pics:permission>
+	
+	<div>
+		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+	</div>
 	<div class="subcontractors-flag-matrix">
 		<s:if test="table.size > 0">
 			<table class="report">
@@ -57,9 +43,11 @@
 							<a href="ContractorView.action?id=<s:property value="#sub.id" />">
 								<s:property value="#sub.name" />
 							</a>
-							(<a href="SubcontractorFacilities.action?id=<s:property value="#sub.id" />">
-								Edit Clients
-							</a>)
+							<s:if test="permissions.generalContractor">
+								(<a href="SubcontractorFacilities.action?id=<s:property value="#sub.id" />">
+									Edit Clients
+								</a>)
+							</s:if>
 						</td>
 						<s:iterator value="distinctOperators" var="gcOp2">
 							<td class="center">
@@ -75,11 +63,6 @@
 					</tr>
 				</s:iterator>
 			</table>
-			<s:if test="!ajax">
-				<div>
-					<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-				</div>
-			</s:if>
 		</s:if>
 		<s:else>
 			<div class="alert">

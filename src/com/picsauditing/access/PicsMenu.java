@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -149,8 +148,10 @@ public class PicsMenu {
 		}
 
 		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
-			subMenu.addChild(getTitle("GeneralContractorsList"), "GeneralContractorsList.action",
+			subMenu.addChild(getTitle("GeneralContractorList"), "GeneralContractorsList.action",
 					"GeneralContractorsList");
+			subMenu.addChild(getTitle("SubcontractorFlagMatrix"), "SubcontractorFlagMatrix.action",
+					"SubcontractorFlagMatrix");
 		}
 
 		if (permissions.isGeneralContractor()) {
