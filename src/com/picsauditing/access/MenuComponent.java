@@ -6,8 +6,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.picsauditing.PICS.I18nCache;
+
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     private static final long serialVersionUID = 923449569385839331L;
+    
+    private static I18nCache i18nCache = I18nCache.getInstance();
 
     private int level = 0;
     
@@ -108,6 +112,10 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     public String getTarget() {
         return target;
     }
+    
+    public boolean hasTarget() {
+    	return (target != null)? target.length() > 0 : false;
+    }
 
     public void setTarget(String target) {
         this.target = target;
@@ -139,6 +147,11 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
         this.children.add(child);
         
         return child;
+    }
+    
+    public MenuComponent addChild(MenuComponent child) {
+    	children.add(child);
+    	return child;
     }
 
     public boolean isCurrent() {

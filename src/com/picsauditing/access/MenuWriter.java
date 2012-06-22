@@ -83,6 +83,8 @@ public class MenuWriter {
     		jsonMenu.put("id", node.getHtmlId());
     	if (node.hasUrl())
     		jsonMenu.put("href", node.getUrl());
+    	if (node.hasTarget())
+    		jsonMenu.put("target", node.getTarget());
 
     	return jsonMenu;
     }
