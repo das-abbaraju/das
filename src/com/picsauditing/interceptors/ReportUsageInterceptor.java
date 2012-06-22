@@ -19,7 +19,7 @@ public class ReportUsageInterceptor extends AbstractInterceptor {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Matcher matcher = Pattern.compile(".+?([^\\.]+)@.+").matcher("");
+	private static final Pattern pattern = Pattern.compile(".+?([^\\.]+)@.+");
 
 	private static final String[] nonReportActionSupportClasses = {
 	};
@@ -35,7 +35,7 @@ public class ReportUsageInterceptor extends AbstractInterceptor {
 			int userId = permissions.getUserId();
 
 			Action action = (Action) invocation.getAction();
-			matcher.reset(action.toString());
+			Matcher matcher = pattern.matcher(action.toString());
 
 			if (matcher.matches() && (action instanceof ReportActionSupport) || classList.contains(matcher.group(1))) {
 				int numParameters = invocation.getInvocationContext().getParameters().keySet().size();
