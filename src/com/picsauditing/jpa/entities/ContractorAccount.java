@@ -297,15 +297,6 @@ public class ContractorAccount extends Account implements JSONable {
 		this.billingZip = billingZip;
 	}
 
-	@Column(length = 50)
-	public String getCcEmail() {
-		return ccEmail;
-	}
-
-	public void setCcEmail(String ccEmail) {
-		this.ccEmail = ccEmail;
-	}
-
 	public void resetRisksBasedOnTypes() {
 		if (!isOnsiteServices() && !isOffsiteServices()) {
 			setSafetyRisk(LowMedHigh.None);
@@ -1588,5 +1579,13 @@ public class ContractorAccount extends Account implements JSONable {
 	@Testable
 	void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
+	}
+	
+	@Transient
+	public boolean isInEuroZone() {
+		if (country != null) {
+			return country.getCurrency().isGBP() || country.getCurrency().isEUR();
+		}
+		return false;
 	}
 }

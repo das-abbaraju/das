@@ -246,5 +246,14 @@
 				</ul>
 			</section>
 		</s:form>
+		
+	</s:if>
+	<s:if test="contractor.inEuroZone">
+	<ul>
+		<a class="email"
+			href="RegistrationMakePayment.action?invoice.id=<s:property value="invoice.id"/>&button=email">
+			<s:text name="button.EmailProformaInvoice" />
+		</a>
+	</ul>
 	</s:if>
 </div>

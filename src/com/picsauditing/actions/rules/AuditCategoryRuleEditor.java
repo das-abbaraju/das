@@ -46,30 +46,32 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 	}
 
 	@Override
-	protected void redirectTo() throws IOException {
+	protected String redirectTo() throws IOException {
 		if (getActionErrors().size() > 0)
 			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 
-		if (rule != null)
-			this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
-		else
-			this.redirect("CategoryRuleSearch.action");
+		if (rule != null) {
+			return this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
+		} else {
+			return this.redirect("CategoryRuleSearch.action");
+		}
 	}
 
 	@Override
-	protected void onDeleteRedirectTo() throws IOException {
+	protected String onDeleteRedirectTo() throws IOException {
 		String redirect = "";
 		List<AuditCategoryRule> lessGranular = getLessGranular();
-		if (lessGranular.size() > 1)
+		if (lessGranular.size() > 1) {
 			redirect = "CategoryRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
-		else {
+		} else {
 			redirect = "CategoryRuleSearch.action?";
 			if (rule.getAuditType() != null)
 				redirect += "filter.auditType=" + rule.getAuditType().getName().toString();
 			if (rule.getAuditCategory() != null)
 				redirect += "filter.category=" + ((AuditCategoryRule) rule).getAuditCategory().getName();
 		}
-		this.redirect(redirect);
+
+		return this.redirect(redirect);
 	}
 
 	@Override

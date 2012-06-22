@@ -23,11 +23,14 @@ import com.picsauditing.actions.report.ReportAccount;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class SubcontractorFlagMatrix extends ReportAccount {
+	private SelectSQL sql = new SelectSQL("accounts a");
+
 	private Map<ContractorAccount, Map<OperatorAccount, FlagColor>> table = new TreeMap<ContractorAccount, Map<OperatorAccount, FlagColor>>();
 	private Set<OperatorAccount> distinctOperators = new TreeSet<OperatorAccount>();
 
@@ -36,7 +39,8 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 			return LOGIN_AJAX;
 		}
 
-		if (!permissions.isGeneralContractor()) {
+		if (!permissions.isGeneralContractor()
+				&& (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() == 0)) {
 			throw new NoRightsException("General Contractor");
 		}
 
@@ -44,6 +48,7 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		getFilter().setShowWorkStatus(true);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowOpertorTagName(false);
+		getFilter().setShowGeneralContractors(true);
 
 		buildQuery();
 		run(sql);
@@ -93,20 +98,52 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 
 	@Override
 	protected void buildQuery() {
-		super.buildQuery();
+		String visibleOperators = permissions.getAccountIdString();
+		if (permissions.isGeneralContractor()) {
+			visibleOperators = Strings.implode(permissions.getLinkedClients());
+		} else if (getFilter().getGeneralContractor() != null) {
+			visibleOperators = Strings.implode(getFilter().getGeneralContractor());
+		} else if (permissions.getLinkedGeneralContractors().size() > 0) {
+			visibleOperators = Strings.implode(permissions.getLinkedGeneralContractors());
+		}
 
-		sql.addField("gc.genID");
-		sql.addField("gc.subID");
+		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
+		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
+		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (" + visibleOperators + ")");
+		sql.addJoin("JOIN operators gco ON gco.id = gc.genID");
+		sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status = 'Active'");
+		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = a.id AND fdo.forceEnd > NOW() AND fdo.opID IN ("
+				+ visibleOperators + ")");
 
-		sql.addWhere("gc.genID IN (" + Strings.implode(permissions.getLinkedClients()) + ")");
+		sql.addWhere("a.type = 'Contractor'");
+		sql.addWhere("a.status = 'Active'");
+		sql.addWhere("gc.subID IN (SELECT subID FROM generalcontractors WHERE genID = " + permissions.getAccountId()
+				+ ")");
+
+		sql.addField("a.id, a.name, a.status, a.type, a.phone, a.fax, a.creationDate");
+		sql.addField("c.riskLevel, c.safetyRisk, c.productRisk");
+		sql.addField("gc.workStatus, gc.genID, gc.subID, gc.forceEnd");
+		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN gc.flag ELSE '' END flag");
+		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN lower(gc.flag) ELSE '' END lflag");
+		sql.addField("o.name opName");
+		sql.addField("fdo.forceEnd as 'dataForceEnd'");
+
+		addFilterToSQL();
 	}
 
 	private void buildMap() {
 		for (BasicDynaBean bean : data) {
 			ContractorAccount contractor = dao.find(ContractorAccount.class,
 					Integer.parseInt(bean.get("subID").toString()));
-			OperatorAccount operator = dao.find(OperatorAccount.class, Integer.parseInt(bean.get("genID").toString()));
-			FlagColor flag = FlagColor.valueOf(bean.get("flag").toString());
+			OperatorAccount operator = new OperatorAccount();
+			operator.setId(Integer.parseInt(bean.get("genID").toString()));
+			operator.setName(bean.get("opName").toString());
+
+			FlagColor flag = null;
+
+			if (bean.get("flag") != null && !Strings.isEmpty(bean.get("flag").toString())) {
+				flag = FlagColor.valueOf(bean.get("flag").toString());
+			}
 
 			if (table.get(contractor) != null) {
 				table.get(contractor).put(operator, flag);

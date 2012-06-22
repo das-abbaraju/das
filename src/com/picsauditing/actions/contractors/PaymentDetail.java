@@ -193,8 +193,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 				addActionMessage("Successfully Deleted Payment");
 
-				redirect("BillingDetail.action?id=" + contractor.getId());
-				return BLANK;
+				return redirect("BillingDetail.action?id=" + contractor.getId());
 			}
 
 			if (button.equalsIgnoreCase("voidcc")) {
@@ -212,8 +211,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						addActionMessage(message);
 					}
 
-					redirect("BillingDetail.action?id=" + contractor.getId());
-					return BLANK;
+					return redirect("BillingDetail.action?id=" + contractor.getId());
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
@@ -272,8 +270,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToInvoice pa = iterInvoice.next();
 							if (pa.getInvoice().getId() == txnID) {
 								paymentDAO.removePaymentInvoice(pa, getUser());
-								redirect("PaymentDetail.action?payment.id=" + payment.getId());
-								return BLANK;
+								return redirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
 
@@ -282,8 +279,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToRefund pa = iterRefund.next();
 							if (pa.getRefund().getId() == txnID) {
 								paymentDAO.removePaymentRefund(pa, getUser());
-								redirect("PaymentDetail.action?payment.id=" + payment.getId());
-								return BLANK;
+								return redirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
 					}
@@ -338,8 +334,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				addActionMessage(message);
 			}
 
-			redirect("PaymentDetail.action?payment.id=" + payment.getId());
-			return BLANK;
+			return redirect("PaymentDetail.action?payment.id=" + payment.getId());
 		}
 
 		for (Invoice invoice : contractor.getInvoices()) {

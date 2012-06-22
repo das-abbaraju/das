@@ -104,6 +104,19 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
 			return BLANK;
 
+		// Email proforma invoice
+		if ("email".equals(button)) {
+			contractor.setPaymentMethod(PaymentMethod.EFT);
+			contractorAccountDao.save(contractor);
+			try {
+				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
+				addActionMessage(getText("InvoiceDetail.message.SentEmail"));
+			} catch (Exception e) {
+				addActionError(getText("InvoiceDetail.message.EmailFail"));
+			}
+			return BLANK;
+		}
+
 		loadCC();
 		if (hasActionErrors())
 			return SUCCESS;
@@ -254,8 +267,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		redirect(getRegistrationStep().getUrl());
-		return BLANK;
+		return redirect(getRegistrationStep().getUrl());
 	}
 
 	private void addNote(String subject) {
@@ -396,8 +408,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 		loadCC();
 
-		this.redirect("RegistrationMakePayment.action");
-		return BLANK;
+		return this.redirect("RegistrationMakePayment.action");
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -579,6 +590,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.removeImportPQF(contractor);
 		generateOrUpdateInvoiceIfNecessary();
+
+		if (!Strings.isEmpty(url)) {
+			return REDIRECT;
+		}
+
 		return BLANK;
 	}
 
@@ -586,6 +602,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.addImportPQF(contractor, permissions);
 		generateOrUpdateInvoiceIfNecessary();
+
+		if (!Strings.isEmpty(url)) {
+			return REDIRECT;
+		}
+
 		return BLANK;
 	}
 

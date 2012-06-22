@@ -49,4 +49,10 @@ public interface Indexable {
 	 *         implement Locale-specific logic
 	 */
 	public String getSearchText();
+
+	/**
+	 * @return Returns whether or not the object should be removed from the
+	 *         app_index
+	 */
+	public boolean isRemoved();
 }

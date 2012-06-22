@@ -97,7 +97,7 @@ public class UpdateContractors extends CustomerAdaptor {
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
-				customer.setEmail(primary.getEmail());
+				customer.setEmail(primary.getEmail().trim());
 
 				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
 						.getName(), 0, 41));

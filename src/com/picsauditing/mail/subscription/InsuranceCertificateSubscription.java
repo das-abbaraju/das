@@ -67,7 +67,7 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 			report.setLimit(100000);
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 
 			if (data.size() > 0) {
 				tokens.put("data", data);

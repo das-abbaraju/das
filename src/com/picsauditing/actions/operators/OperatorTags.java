@@ -82,7 +82,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	public String remove() throws Exception {
 		OperatorTag t = operatorTagDAO.find(tagID);
 		if (!t.getAuditCategoryRules().isEmpty() || !t.getAuditTypeRules().isEmpty()
-				|| !t.getOperatorFlagCriteria().isEmpty()){
+				|| !t.getOperatorFlagCriteria().isEmpty()) {
 			addActionError(getText("OperatorTags.TagInUseByConfig"));
 			return SUCCESS;
 		}
@@ -102,9 +102,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 		tags.remove(t);
 		operatorTagDAO.remove(t);
 
-		redirect("OperatorTags.action?id=" + id);
-
-		return BLANK;
+		return redirect("OperatorTags.action?id=" + id);
 	}
 
 	public List<? extends AuditRule> getRelatedCategoryRules() {

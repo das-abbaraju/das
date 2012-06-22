@@ -71,17 +71,19 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	@Override
 	public String nextStep() throws Exception {
 		if (ContractorRegistrationStep.containsAtLeastOneClientSiteForGCFree(contractor)) {
-			redirect(getNextRegistrationStep().getUrl());
+			return redirect(getNextRegistrationStep().getUrl());
 		} else {
 			List<OperatorAccount> missingGCFreeClientSites = getMissingGCFreeClientSites();
-			String missingOperatorNames = missingGCFreeClientSites.get(0).getName();
+			if (!missingGCFreeClientSites.isEmpty()) {
+				String missingOperatorNames = missingGCFreeClientSites.get(0).getName();
 
-			for (int index = 1; index < missingGCFreeClientSites.size(); index++) {
-				missingOperatorNames += ", " + missingGCFreeClientSites.get(index).getName();
+				for (int index = 1; index < missingGCFreeClientSites.size(); index++) {
+					missingOperatorNames += ", " + missingGCFreeClientSites.get(index).getName();
+				}
+
+				addActionError(getTextParameterized("RegistrationAddClientSite.MissingRequiredOperators",
+						missingOperatorNames));
 			}
-
-			addActionError(getTextParameterized("RegistrationAddClientSite.MissingRequiredOperators",
-					missingOperatorNames));
 		}
 
 		return SUCCESS;

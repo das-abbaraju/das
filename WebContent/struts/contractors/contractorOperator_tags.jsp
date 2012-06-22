@@ -21,7 +21,7 @@
 	<s:if test = "operatorTags.size() > 0 ">
 		<tr>
 			<td colspan="<s:property value="#tagRemovable ? 3 : 2" />"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- %{getText('Filters.header.Tag')} -"/><input
-			type="button" onclick="javascript: return addTag();" value="Add"></td>
+			type="button" onclick="javascript: return addTag();" value="<s:text name="global.Add" />"></td>
 		</tr>
 	</s:if>
 	<s:if test="runTagConCronAjax">

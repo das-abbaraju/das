@@ -315,6 +315,59 @@
 				</div>
 			</fieldset>
 		</s:if>
+		<s:if test="!osha.isEmpty('UK_HSE')" >
+			<fieldset class="form uk-hse-verification">
+				<h2 class="formLegend">UK HSE</h2>
+			
+			<s:if test="!osha.isVerified('UK_HSE')">
+				<s:set name="verifyText" value="'Verify'"/>
+				<s:set name="displayVerified" value="'none'"/>
+			</s:if>
+			<s:else>
+				<s:set name="verifyText" value="'Unverify'"/>
+				<s:set name="displayVerified" value="'block'"/>
+			</s:else>
+			
+			<input 
+					id="verify_<s:property value="osha.id"/>" 
+					name="verify" 
+					type="button" 
+					onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,'UK_HSE');" 
+					value="<s:property value="#attr.verifyText"/>"
+			/>
+								
+			<s:div id="status_%{osha.id}"></s:div>
+				
+				<div>
+					<ol>
+						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
+							<label>Verified:</label>
+							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
+								<s:date name="osha.getVerifiedDate('UK_HSE')" format="%{getText('date.short')}" /> by <s:property value="osha.getAuditor('UK_HSE').name"/>
+							</s:div>
+						</li>
+						<li>
+							<label>Comment:</label>
+							<s:select onchange="return setOSHAComment(%{osha.id});" id="comment_%{osha.id}" list="oshaProblems" name="osha.getComment('UK_HSE')" />
+						</li>
+						<li>
+							<label>File:</label>
+							<s:if test="osha.getFileUploadId('UK_HSE') > 0">
+							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8873)">View File</a>
+							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2092&mode=Edit" target="_BLANK">Change File</a>
+							</s:if>
+						</li>		
+						
+						<s:iterator value="osha.getQuestionsToVerify('UK_HSE')" id="auditData">
+							<li>
+								<label><s:property value="#auditData.question.name" escape="false"/></label>
+								<s:textfield name="oshaQuestion_%{#auditData.question.id}" value="%{#auditData.answer}" cssClass="oshanum" />
+							</li>	
+						</s:iterator>	
+					</ol>
+				</div>
+			</fieldset>
+		</s:if>
 	</s:else>
 </form>
 

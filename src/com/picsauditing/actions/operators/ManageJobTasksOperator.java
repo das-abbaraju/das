@@ -139,9 +139,10 @@ public class ManageJobTasksOperator extends ReportActionSupport {
 		if (jobTask.getOperator() == null && operator != null)
 			jobTask.setOperator(operator);
 
-		if (getActionErrors().size() > 0)
+		if (getActionErrors().size() > 0) {
 			return redirect("ManageJobTasksOperator.action?operator=" + operator.getId());
-		
+		}
+
 		jobTask.setLabel(label);
 		jobTask.setName(name);
 		jobTask.setTaskType(taskType);

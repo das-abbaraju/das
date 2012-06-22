@@ -39,6 +39,7 @@
 			<th>New Status</th>
 			<th>Email Template</th>
 			<th>Note Required</th>
+			<th>Action</th>
 			<th>Save</th>
 			<th>Delete</th>
 	</thead>
@@ -78,6 +79,9 @@
 					</s:if>
 				</td>
 				<td class="center"><s:checkbox name="noteRequired" /></td>
+				<td><a class="edit translate" href="ManageTranslations.action?button=Search&amp;key=WorkflowStep.<s:property value='id' />." target="_BLANK">
+                            Manage Translations
+                        </a></td>
 				<td><a href="javascript:;" class="save editStep"></a></td>
 				<td><a href="javascript:;" class="remove deleteStep"></a></td>
 			</tr>
@@ -158,6 +162,14 @@
 						<label>Note Required</label>
 						<s:checkbox name="noteRequired" />
 					</li>
+				<li>
+					<label>Button Name:</label>
+					<s:textfield name="label"  />
+				</li>
+				<li>
+					<label>Help Text:</label>
+					<s:textfield name="helpText"  />
+				</li>
 				</ol>
 			</fieldset>
 			<br clear="all" />

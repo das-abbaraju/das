@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
@@ -87,6 +89,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	protected String output = null;
 
+	protected String url = null;
+
 	/**
 	 * This is rarely used now because of limitations with i18n on Button names.
 	 * This could still be used for non-translated pages such as PICS facing
@@ -129,7 +133,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> safetyList;
 
 	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
-	
+
 	@Deprecated
 	public static final String getVersion() {
 		return PicsOrganizerVersion.getVersion();
@@ -154,9 +158,20 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-		String server = InetAddress.getLocalHost().getHostName();
+		if (!(isBeta||isAlphaEnvironment()||isConfigurationEnvironment()||isLocalhostEnvironment())){
+			Cookie[] cookiesA = getRequest().getCookies();
+			if (cookiesA != null) {
+				for (int i = 0; i < cookiesA.length; i++) {
+					if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")){
+						isBeta=true;
+					}
+				}
+			}
+		}
+		//String server = InetAddress.getLocalHost().getHostName();
+		//return isBeta || server.equals("organizer1") || server.equals("organizer2");
 
-		return isBeta || server.equals("organizer1") || server.equals("organizer2");
+		return isBeta;
 	}
 
 	public boolean isConfigurationEnvironment() {
@@ -242,16 +257,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected boolean forceLogin() {
-
 		loadPermissions();
 
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				// redirect("ProfileEdit.action?url=" +
-				// ServletActionContext.getRequest().getRequestURL());
-				// redirect("ChangePassword.action?source=profile&user=" +
-				// permissions.getUserId() + "&url="
-				// + ServletActionContext.getRequest().getRequestURL());
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), ServletActionContext.getRequest().getRequestURL()
 						.toString());
@@ -271,12 +280,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected boolean forceLogin(String alternateReturnURL) {
 		loadPermissions();
+
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
-				// redirect("ChangePassword.action?source=profile&user=" +
-				// permissions.getUserId() + "&url="
-				// + alternateReturnURL);
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), alternateReturnURL);
 
@@ -290,6 +296,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
+
 		return true;
 	}
 
@@ -537,6 +544,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return output;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
 	public JSONObject getJson() {
 		return json;
 	}
@@ -610,7 +621,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String redirect(String url) throws IOException {
-		ServletActionContext.getResponse().sendRedirect(url);
+		this.url = url;
+
+		if (!Strings.isEmpty(this.url)) {
+			return REDIRECT;
+		}
+
 		return BLANK;
 	}
 
@@ -625,7 +641,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			response = decimalFormat.format(input);
 		} catch (Exception e) {
-			 logger.error("unable to format as money: {}", answer);
+			logger.error("unable to format as money: {}", answer);
 		}
 		return response;
 	}
@@ -694,5 +710,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getProtocol() {
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
+	}
+
+	private HttpServletRequest getRequest() {
+		return ServletActionContext.getRequest();
 	}
 }

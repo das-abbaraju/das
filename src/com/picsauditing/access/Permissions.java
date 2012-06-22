@@ -46,6 +46,7 @@ public class Permissions implements Serializable {
 	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
 	private Map<String, String> toggles = new HashMap<String, String>();
 	private Set<Integer> linkedClients = new HashSet<Integer>();
+	private Set<Integer> linkedGeneralContractors = new HashSet<Integer>();
 
 	private String username;
 	private String name;
@@ -108,6 +109,7 @@ public class Permissions implements Serializable {
 		corporateParent.clear();
 		operatorChildren.clear();
 		linkedClients.clear();
+		linkedGeneralContractors.clear();
 	}
 
 	public void login(User user) throws Exception {
@@ -167,6 +169,18 @@ public class Permissions implements Serializable {
 
 				approvesRelationships = !operator.isAutoApproveRelationships();
 
+				if (generalContractor || gcFree) {
+					for (OperatorAccount linkedClient : ((OperatorAccount) user.getAccount()).getLinkedClientSites()) {
+						linkedClients.add(linkedClient.getId());
+					}
+				}
+
+				if (operator.getLinkedGeneralContractorOperatorAccounts().size() > 0) {
+					for (OperatorAccount generalContractor : operator.getLinkedGeneralContractorOperatorAccounts()) {
+						linkedGeneralContractors.add(generalContractor.getId());
+					}
+				}
+
 				if (isOperator()) {
 					if (operator.getParent() != null)
 						topAccountID = operator.getParent().getId();
@@ -184,14 +198,8 @@ public class Permissions implements Serializable {
 					if (generalContractor && "No".equals(operator.getDoContractorsPay())) {
 						gcFree = true;
 					}
-
-					if (generalContractor || gcFree) {
-						for (OperatorAccount linkedClient : ((OperatorAccount) user.getAccount())
-								.getLinkedClientSites()) {
-							linkedClients.add(linkedClient.getId());
-						}
-					}
 				}
+
 				if (isCorporate()) {
 					// Supporting Hub Accounts to See other Connected Corporate
 					// Accounts
@@ -588,6 +596,10 @@ public class Permissions implements Serializable {
 
 	public Set<Integer> getLinkedClients() {
 		return linkedClients;
+	}
+
+	public Set<Integer> getLinkedGeneralContractors() {
+		return linkedGeneralContractors;
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {

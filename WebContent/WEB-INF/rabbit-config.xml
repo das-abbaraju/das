@@ -1,0 +1,26 @@
+<beans:beans xmlns="http://www.springframework.org/schema/rabbit"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd" 
+	default-autowire="byName">
+ 
+	<connection-factory id="connectionFactory" host="localhost" port="5672" username="pics" password="vEndLEn3"/>
+	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
+	
+	<queue id="flag-changes" name="flag-changes" />
+	
+	<fanout-exchange name="flag-changes-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	  <bindings>
+	    <binding queue="flag-changes"/>
+	  </bindings>
+	</fanout-exchange>	
+	
+	<template message-converter="messageConverter" id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
+	<beans:bean id="flagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
+		<beans:property name="amqpTemplate" ref="flagChangeTemplate" />
+	</beans:bean>
+	
+	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter" />
+</beans:beans>

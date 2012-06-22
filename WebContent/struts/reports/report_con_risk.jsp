@@ -68,7 +68,6 @@
 				<td>Type</td>
 				<td>Calculated Risk</td>
 				<td>Contractor Risk</td>
-				<td>Last Assessment Date</td>
 				<td>Notes</td>
 				<td></td>
 				<td></td>
@@ -105,9 +104,6 @@
 								name="manuallySetRisk"
 							/>
 						</s:else>
-					</td>
-					<td>
-						<s:date name="get('lastVerifiedDate')" />
 					</td>
 					<td>
 						<s:textarea name="auditorNotes" cols="15" rows="4" />

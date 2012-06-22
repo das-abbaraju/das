@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
@@ -38,6 +39,7 @@ import com.picsauditing.jpa.entities.Workflow;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(OpenTasks.class)
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class OpenTasksTest {
 	
 	OpenTasks openTasks;

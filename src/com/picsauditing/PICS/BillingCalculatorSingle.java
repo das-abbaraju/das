@@ -403,9 +403,9 @@ public class BillingCalculatorSingle {
 
 		if ("Activation".equals(billingStatus) || "Reactivation".equals(billingStatus)
 				|| "Membership Canceled".equals(billingStatus)) {
-			addYearlyItems(items, contractor, DateBean.addMonths(new Date(), 12));
+			addYearlyItems(items, contractor, DateBean.addMonths(new Date(), 12), billingStatus);
 		} else if (billingStatus.startsWith("Renew")) {
-			addYearlyItems(items, contractor, getRenewalDate(contractor));
+			addYearlyItems(items, contractor, getRenewalDate(contractor), billingStatus);
 		} else if ("Upgrade".equals(billingStatus)) {
 			List<ContractorFee> upgrades = getUpgradedFees(contractor);
 
@@ -497,9 +497,9 @@ public class BillingCalculatorSingle {
 		return DateBean.addMonths(contractor.getPaymentExpires(), 12);
 	}
 
-	private void addYearlyItems(List<InvoiceItem> items, ContractorAccount contractor, Date paymentExpires) {
+	private void addYearlyItems(List<InvoiceItem> items, ContractorAccount contractor, Date paymentExpires, String billingStatus) {
 		for (FeeClass feeClass : contractor.getFees().keySet())
-			if (!contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+			if (!contractor.getFees().get(feeClass).getNewLevel().isFree() && (feeClass.isMembership() || !billingStatus.startsWith("Renew"))) {
 				InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), contractor
 						.getFees().get(feeClass).getNewAmount(), feeClass.isPaymentExpiresNeeded() ? paymentExpires
 						: null);

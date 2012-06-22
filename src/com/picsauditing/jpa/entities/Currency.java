@@ -45,7 +45,8 @@ public enum Currency {
 
 	@Transient
 	public boolean isTaxable() {
-		return isCAD() || isGBP() || isEUR();
+		//return isCAD() || isGBP() || isEUR();
+		return isCAD() || isGBP();
 	}
 
 	@Transient
@@ -54,7 +55,8 @@ public enum Currency {
 			InvoiceFee gst = new InvoiceFee(InvoiceFee.GST);
 			gst.setFeeClass(FeeClass.GST);
 			return gst;
-		} else if(isGBP() || isEUR()){
+		//} else if(isGBP() || isEUR()){
+		} else if(isGBP()){
 			InvoiceFee vat = new InvoiceFee(InvoiceFee.VAT);
 			vat.setFeeClass(FeeClass.VAT);
 			return vat;

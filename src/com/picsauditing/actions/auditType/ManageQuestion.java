@@ -273,16 +273,6 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 		auditQuestionDAO.save(cat);
 	}
 
-	@Override
-	protected String getRedirectURL() {
-		return "ManageCategory.action?id=" + question.getCategory().getId();
-	}
-
-	@Override
-	protected String getCopyMoveURL() {
-		return "ManageQuestion.action?id=" + question.getId();
-	}
-
 	public String[] getQuestionTypes() {
 		return AuditQuestion.TYPE_ARRAY;
 	}

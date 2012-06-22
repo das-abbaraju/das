@@ -4,10 +4,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
+import org.mockito.stubbing.Stubber;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -20,9 +21,12 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -38,7 +42,7 @@ import com.picsauditing.jpa.entities.QuestionComparator;
 import com.picsauditing.jpa.entities.Trade;
 
 public class AuditBuilderTest extends PicsTest {
-	AuditBuilder auditBuilder = new AuditBuilder();
+	AuditBuilder auditBuilder;
 
 	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
 	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
@@ -49,7 +53,9 @@ public class AuditBuilderTest extends PicsTest {
 	AuditCategoriesBuilder catBuilder;
 
 	@Mock
-	AuditPercentCalculator auditPercentCalculatior = new AuditPercentCalculator();
+	AuditPercentCalculator auditPercentCalculator = new AuditPercentCalculator();
+	@Mock
+	AuditDataDAO auditDataDao = new AuditDataDAO();
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
@@ -61,13 +67,14 @@ public class AuditBuilderTest extends PicsTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
+		auditBuilder = new AuditBuilder();
 		autowireEMInjectedDAOs(auditBuilder);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache",
 				typeRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache",
 				catRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder,
-				"auditPercentCalculator", auditPercentCalculatior);
+				"auditPercentCalculator", auditPercentCalculator);
 
 		typeRules.clear();
 		typeRuleCache.clear();
@@ -116,9 +123,8 @@ public class AuditBuilderTest extends PicsTest {
 		addCategoryRules(null);
 
 		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
-		.thenReturn(
-				EntityFactory
-						.makeAuditType(AuditType.ANNUALADDENDUM));
+				.thenReturn(
+						EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(3, contractor.getAudits().size());
@@ -137,6 +143,171 @@ public class AuditBuilderTest extends PicsTest {
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());
+	}
+
+	@Test
+	public void testBuildAudits_IsValidAudit_NullData() {
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
+				AuditType.COR, contractor);
+		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
+				AuditType.PQF, contractor);
+		contractor.getAudits().add(pqfAudit);
+		contractor.getAudits().add(corAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addCao(corAudit, operator);
+
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.setId(AuditQuestion.COR);
+		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		auditCatData.setCategory(question.getCategory());
+		auditCatData.setApplies(true);
+		pqfAudit.getCategories().add(auditCatData);
+		pqfAudit.setCreationDate(new Date());
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
+		addCategoryRules(null);
+
+		PicsTestUtil.forceSetPrivateField(auditBuilder,
+				"auditDataDAO", auditDataDao);
+		
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(1, corAudit.getOperatorsVisible().size());
+	}
+
+	@Test
+	public void testBuildAudits_IsValidAudit_Cor_Yes() {
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
+				AuditType.COR, contractor);
+		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
+				AuditType.PQF, contractor);
+		contractor.getAudits().add(pqfAudit);
+		contractor.getAudits().add(corAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addCao(corAudit, operator);
+
+		AuditData auditData = EntityFactory.makeAuditData("Yes");
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		
+		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		auditCatData.setCategory(question.getCategory());
+		auditCatData.setApplies(false);
+		
+		question.setId(AuditQuestion.COR);
+		auditData.setQuestion(question);
+		pqfAudit.getCategories().add(auditCatData);
+		pqfAudit.setCreationDate(new Date());
+		pqfAudit.getData().add(auditData);
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(0, corAudit.getOperatorsVisible().size());
+	}
+
+	@Test
+	public void testBuildAudits_IsValidAudit_Cor_No() {
+		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
+				AuditType.COR, contractor);
+		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
+				AuditType.PQF, contractor);
+		contractor.getAudits().add(pqfAudit);
+		contractor.getAudits().add(corAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addCao(corAudit, operator);
+
+		AuditData auditData = EntityFactory.makeAuditData("No");
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+
+		question.setId(AuditQuestion.COR);
+		auditData.setQuestion(question);
+		auditCatData.setCategory(question.getCategory());
+		auditCatData.setApplies(true);
+		pqfAudit.getCategories().add(auditCatData);
+		pqfAudit.setCreationDate(new Date());
+		pqfAudit.getData().add(auditData);
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(0, corAudit.getOperatorsVisible().size());
+	}
+
+	@Test
+	public void testBuildAudits_IsValidAudit_Iec_Yes() {
+		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
+				AuditType.IEC_AUDIT, contractor);
+		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
+				AuditType.PQF, contractor);
+		contractor.getAudits().add(pqfAudit);
+		contractor.getAudits().add(iecAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addCao(iecAudit, operator);
+
+		AuditData auditData = EntityFactory.makeAuditData("Yes");
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+
+		question.setId(AuditQuestion.IEC);
+		auditData.setQuestion(question);
+		auditCatData.setCategory(question.getCategory());
+		auditCatData.setApplies(false);
+		pqfAudit.getCategories().add(auditCatData);
+		pqfAudit.setCreationDate(new Date());
+		pqfAudit.getData().add(auditData);
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(0, iecAudit.getOperatorsVisible().size());
+	}
+
+	@Test
+	public void testBuildAudits_IsValidAudit_Iec__No() {
+		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
+				AuditType.IEC_AUDIT, contractor);
+		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
+				AuditType.PQF, contractor);
+		contractor.getAudits().add(pqfAudit);
+		contractor.getAudits().add(iecAudit);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addCao(iecAudit, operator);
+
+		AuditData auditData = EntityFactory.makeAuditData("No");
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+
+		question.setId(AuditQuestion.IEC);
+		auditData.setQuestion(question);
+		auditCatData.setCategory(question.getCategory());
+		auditCatData.setApplies(true);
+		pqfAudit.getCategories().add(auditCatData);
+		pqfAudit.setCreationDate(new Date());
+		pqfAudit.getData().add(auditData);
+
+		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(0, iecAudit.getOperatorsVisible().size());
 	}
 
 	private void addTypeRules(RuleParameters params) {

@@ -59,7 +59,7 @@ public class LoginController extends PicsActionSupport {
 	private String key;
 	private int switchToUser;
 	private int switchServerToUser;
-	
+
 	private final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@Anonymous
@@ -79,11 +79,10 @@ public class LoginController extends PicsActionSupport {
 			// then cookies are disabled.
 			// Note: Sessions are saved even if cookies are disabled on
 			// Mozilla 5 and others.
-			if (ServletActionContext.getRequest().getCookies() == null
-					&& ServletActionContext.getRequest().getParameter("msg") != null) {
+			if (ServletActionContext.getRequest().getCookies() == null) {
 				addActionMessage(getText("Login.CookiesAreDisabled"));
 
-				redirect("Login.action");
+				return SUCCESS;
 			}
 
 			int adminID = permissions.getAdminID();
@@ -109,7 +108,7 @@ public class LoginController extends PicsActionSupport {
 					}
 				}
 				postLogin();
-				return SUCCESS;
+				return REDIRECT;
 			}
 
 			ActionContext.getContext().getSession().clear();
@@ -203,14 +202,12 @@ public class LoginController extends PicsActionSupport {
 
 		if (permissions.getGroups().size() > 0 || permissions.isContractor()) {
 			postLogin();
+			return REDIRECT;
 		} else {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
 
-			redirect("Login.action?button=logout");
-			return SUCCESS;
+			return super.redirect("Login.action?button=logout");
 		}
-
-		return SUCCESS;
 	}
 
 	private void switchToUser(int userID) throws Exception {
@@ -458,7 +455,7 @@ public class LoginController extends PicsActionSupport {
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
 		String serverName = getRequest().getLocalName();
 		UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
-		loginLog.setBrowser(uap.getBrowserName()+" "+uap.getBrowserVersion());
+		loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
 		loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
 		if (isLiveEnvironment() || isBetaEnvironment()) {
 			// Need computer name instead of www

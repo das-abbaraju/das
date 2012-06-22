@@ -76,7 +76,7 @@
 	
 			$('#' + id).html(data);
 		}
-	
+		
 		$(function() {
 			limit('description', '\n');
 
@@ -156,7 +156,7 @@
     											<s:text name="ContractorView.BidOnlyUpgrade" />
     											<br/>
     											<div style="margin-top: 7px;">
-    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm(<s:text name="ContractorView.BidOnlyUpgradeConfirm" />);"><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
+    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('<s:text name="ContractorView.BidOnlyUpgradeConfirm" />');" ><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
     											</div>
     										</div>
     									</s:if>
@@ -205,12 +205,18 @@
     											</a>
     										</p>
     										
-    										<s:if test="co.forcedFlag || individualFlagOverrideCount > 0">
+    										<s:if test="co.forcedFlag || individualFlagOverrideCount > 0 || corporateFlagOverride != null">
     											<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
     												<s:if test="co.forcedFlag" >
     													<s:text name="ContractorView.ManualForceFlag">
     														<s:param><s:property value="co.forceFlag.smallIcon" escape="false" /></s:param>
     														<s:param value="%{co.forceEnd}" />
+    													</s:text>
+    												</s:if>
+    												<s:if test="corporateFlagOverride != null" >
+    													<s:text name="ContractorView.ManualForceFlag">
+    														<s:param><s:property value="corporateFlagOverride.forceFlag.smallIcon" escape="false" /></s:param>
+    														<s:param value="%{corporateFlagOverride.forceEnd}" />
     													</s:text>
     												</s:if>
     												<s:if test="individualFlagOverrideCount > 0" >
@@ -540,6 +546,11 @@
     									<strong><s:date name="contractor.membershipDate" /></strong>&nbsp;&nbsp;
     									<a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />"><s:text name="ContractorDashboard.DownloadCertificate" /></a>
     								</p>
+    								<p>
+    									<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+											<s:text name="ContractorView.ClickToViewContractorBadge" />
+										</a>
+    								</p>
     								
     								<p>
     									<s:text name="global.CSR" />:
@@ -558,12 +569,14 @@
     									</a>
     								</p>
     								
-    								<s:if test="(permissions.admin || permissions.operatorCorporate) && contractor.generalContractorOperatorAccounts.size > 0">
+    								<s:if test="contractor.generalContractorOperatorAccounts.size > 0">
     									<s:set name="gc_accounts" value="''" />
     									<s:iterator value="contractor.generalContractorOperatorAccounts" var="gc_op" status="gc_index">
-	    									<s:set name="gc_accounts" value="#gc_accounts + #gc_op.name" />
-	    									<s:if test="!#gc_index.last">
-		    									<s:set name="gc_accounts" value="#gc_accounts + ', '" />
+    										<s:if test="!permissions.operatorCorporate || permissions.visibleAccounts.contains(#gc_op.id)">
+		    									<s:set name="gc_accounts" value="#gc_accounts + #gc_op.name" />
+		    									<s:if test="!#gc_index.last">
+			    									<s:set name="gc_accounts" value="#gc_accounts + ', '" />
+		    									</s:if>
 	    									</s:if>
     									</s:iterator>
     									<s:if test="!isStringEmpty(#gc_accounts)">

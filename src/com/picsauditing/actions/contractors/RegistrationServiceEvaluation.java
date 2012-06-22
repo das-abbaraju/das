@@ -100,20 +100,22 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	public void setServicesHelpText() {
 		if (requireOnsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
 		if (requireOffsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
 		if (requireMaterialSupplier)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
 		if (requireTransportation)
-			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
+			servicesHelpText += getTextParameterized(
+					"RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Transportation.getI18nKey()),
+					StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
 	}
 
 	public boolean conTypesOK() {
@@ -178,9 +180,11 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		// boolean requiredQuestions = false;
 		// for (AuditQuestion aq : infoQuestions) {
-		// if ((contractor.isOffsiteServices() || contractor.isOnsiteServices() ||
+		// if ((contractor.isOffsiteServices() || contractor.isOnsiteServices()
+		// ||
 		// contractor.isTransportationServices())
-		// && (aq.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) ) {
+		// && (aq.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) )
+		// {
 		// if (Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) {
 		// requiredQuestions = false;
 		// break;
@@ -266,8 +270,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
 						productAssessment));
 
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels", Strings.implode(
-					increases, getText("ContractorRegistrationServices.message.AndYours")));
+			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
+					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
 		}
 
 		setListOnly();
@@ -285,8 +289,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractorAccountDao.save(contractor);
 		}
 
-		redirect(getRegistrationStep().getUrl());
-		return BLANK;
+		return redirect(getRegistrationStep().getUrl());
 	}
 
 	private void setListOnly() {
@@ -339,7 +342,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	private void loadQuestions() {
-		// get the categories for a contractor based on their Onsite/Offsite/Material Supplier status
+		// get the categories for a contractor based on their
+		// Onsite/Offsite/Material Supplier status
 		Set<Integer> categoryIds = new HashSet<Integer>();
 
 		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
@@ -468,7 +472,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				// 7661: If you fail to deliver your products on-time, can it
 				// result in a work stoppage or major
 				// business interruption for your customer?
-				// 9789: Are any of your products utilized within the critical processes
+				// 9789: Are any of your products utilized within the critical
+				// processes
 				// of the facility? i.e. valves, pipes, cranes, chemicals, etc.
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
@@ -493,13 +498,14 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	/**
-	 * This method finds a contractor's PQF. If it does not exists, it will create a new one and save it to the
-	 * database.
+	 * This method finds a contractor's PQF. If it does not exists, it will
+	 * create a new one and save it to the database.
 	 * 
 	 * It will also add all categories required for registration.
 	 * 
 	 * @param categoryIds
-	 *            The categories required by the contractor based on the types of trades selected.
+	 *            The categories required by the contractor based on the types
+	 *            of trades selected.
 	 */
 	private ContractorAudit getContractorPQF(Set<Integer> categoryIds) {
 		ContractorAudit pqf = null;
@@ -527,7 +533,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			}
 		}
 
-		// If there are categories left in the categoryIds set, then they need to be added now.
+		// If there are categories left in the categoryIds set, then they need
+		// to be added now.
 		for (Integer catID : categoriesToAdd) {
 			addAuditCategories(pqf, catID);
 		}

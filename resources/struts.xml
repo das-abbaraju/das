@@ -38,6 +38,7 @@
 				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
 			<interceptor name="jsonValidation" 
 				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
+			<interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
@@ -56,6 +57,7 @@
 				<interceptor-ref name="checkbox" />
 				<interceptor-ref name="multiselect" />
 				<interceptor-ref name="staticParams" />
+				<interceptor-ref name="ReportUsageInterceptor" />
 				<interceptor-ref name="params">
 					<param name="excludeParams">dojo\..*</param>
 					<param name="excludeParams">struts\..*</param>
@@ -87,6 +89,7 @@
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="login-redirect" type="redirectAction">
 				<param name="actionName">Login</param>
+				<param name="button">logout</param>
 			</result>
 			<result name="login-overlay" type="httpheader">
 				<param name="status">401</param>
@@ -98,6 +101,9 @@
 			<result name="jsonp" type="jsonp"></result>
 			<result name="plain-text" type="plain-text"></result>
 			<result name="action-messages" type="action-messages"></result>
+			<result name="redirect" type="redirect">
+				${url}
+			</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception"
@@ -990,6 +996,7 @@
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
 		<action name="OshaSaveAjax" class="com.picsauditing.actions.audits.OshaSave">
 			<result type="redirectAction">
 				<param name="actionName">AuditAjax</param>
@@ -1132,6 +1139,18 @@
 		<action name="ManageAuditType"
 			class="com.picsauditing.actions.auditType.ManageAuditType">
 			<result>struts/audits/manage_audit_type.jsp</result>
+			<result name="save" type="redirectAction">
+			    <param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>
+			<result name="delete" type="redirectAction">
+				<param name="actionName">ManageAuditType</param>
+			</result>
+			<result name="move" type="redirectAction">
+			    <param name="actionName">ManageAuditType</param>
+				<param name="id">${id}</param>
+			</result>
+			
 			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result name="workFlowSteps">struts/audits/workflow_steps.jsp</result>
 		</action>
@@ -1152,12 +1171,20 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ManageCategory"
-			class="com.picsauditing.actions.auditType.ManageCategory">
-			<result>struts/audits/manage_category.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
+		<action name="ManageCategory" class="com.picsauditing.actions.auditType.ManageCategory">
+			<result name="success">struts/audits/manage_category.jsp</result>
+						<result name="save" type="redirectAction">
+			    <param name="actionName">ManageCategory</param>
+				<param name="id">${category.id}</param>
 			</result>
+			<result name="delete" type="redirectAction">
+				<param name="actionName">ManageAuditType</param>
+			</result>
+			<result name="move" type="redirectAction">
+			    <param name="actionName">ManageCategory</param>
+				<param name="id">${category.id}</param>
+			</result>
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 		</action>
 
 		<action name="ManageCategoryMoveAjax"
@@ -1166,12 +1193,20 @@
 			<result name="moved">struts/audits/manage_category_move.jsp</result>
 		</action>
 
-		<action name="ManageQuestion"
-			class="com.picsauditing.actions.auditType.ManageQuestion">
+		<action name="ManageQuestion" class="com.picsauditing.actions.auditType.ManageQuestion">
 			<result>struts/audits/manage_question.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
+			<result name="save" type="redirectAction">
+			    <param name="actionName">ManageQuestion</param>
+				<param name="id">${question.id}</param>
 			</result>
+			<result name="delete" type="redirectAction">
+				<param name="actionName">ManageCategory</param>
+			</result>
+			<result name="move" type="redirectAction">
+			    <param name="actionName">ManageQuestion</param>
+				<param name="id">${question.id}</param>
+			</result>
+			<result name="top">struts/audits/audit_selectType.jsp</result>
 		</action>
 
 		<action name="ManageTransformOption"

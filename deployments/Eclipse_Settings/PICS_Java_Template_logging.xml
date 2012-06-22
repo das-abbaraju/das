@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="java" deleted="false" description="" enabled="true" name="debug">logger.debug("${cursor}");&#13;
+</template><template autoinsert="true" context="java" deleted="false" description="Logger error" enabled="true" name="error">logger.error("${cursor}");</template><template autoinsert="true" context="java" deleted="false" description="logger.info" enabled="true" name="info">logger.info("${cursor}");&#13;
+</template><template autoinsert="true" context="java" deleted="false" description="Declare a logger " enabled="true" name="logger">import org.slf4j.Logger;&#13;
+import org.slf4j.LoggerFactory;&#13;
+final static Logger logger = LoggerFactory.getLogger(${enclosing_type}.class); &#13;
+</template><template autoinsert="true" context="java" deleted="false" description="Logger trace call for entering the method" enabled="true" name="trace">logger.trace("Entered ${enclosing_type}.${enclosing_method}()");&#13;
+&#13;
+</template><template autoinsert="true" context="java" deleted="false" description="Logger warning" enabled="true" name="warn">logger.warn("${cursor}");&#13;
+</template></templates>

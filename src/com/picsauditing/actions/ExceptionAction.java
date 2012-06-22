@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
-import org.jboss.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.GridSender;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ExceptionAction extends PicsActionSupport {
@@ -36,6 +36,7 @@ public class ExceptionAction extends PicsActionSupport {
 	private String password = "e3r4t5";
 
 	private final Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
+
 	@Override
 	@Anonymous
 	public String execute() {
@@ -46,9 +47,13 @@ public class ExceptionAction extends PicsActionSupport {
 
 			if (isSessionLessThanOneSecondOld()) {
 				tryRedirectToHome();
+
+				if (!Strings.isEmpty(url)) {
+					return REDIRECT;
+				}
 			} else {
 				HttpServletRequest request = ServletActionContext.getRequest();
-				
+
 				StringBuilder email = new StringBuilder();
 				email.append("An error occurred on PICS\n\n");
 				email.append(createExceptionMessage());

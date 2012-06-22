@@ -643,7 +643,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setUser(conAudit.getAuditor());
 			emailBuilder.setFromAddress("\"Mina Mina\"<mmina@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
-			email.setCcAddresses(null);
+			email.setCcAddresses("sjones@picsauditing.com");
 			email.setViewableById(Account.PicsID);
 			emailSender.send(email);
 		}
@@ -673,5 +673,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public String redirect(String url) throws IOException {
 		ServletActionContext.getResponse().sendRedirect(url);
 		return BLANK;
+	}
+
+	public String cancelAudit() {
+		conAudit.setLatitude(0);
+		conAudit.setLongitude(0);
+		conAudit.setScheduledDate(null);
+		auditDao.save(conAudit);
+
+		return "edit";
 	}
 }

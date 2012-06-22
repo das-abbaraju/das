@@ -71,7 +71,7 @@ public class ReportActionSupport extends PicsActionSupport {
 		if (showPage > 0)
 			report.setCurrentPage(showPage);
 
-		data = report.getPage();
+		data = report.getPage(isDebugging());
 
 		logFilter();
 	}

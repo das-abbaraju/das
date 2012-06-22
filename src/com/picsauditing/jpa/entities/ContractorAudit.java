@@ -846,4 +846,9 @@ public class ContractorAudit extends AbstractIndexableTable {
 	public boolean isExpiringRenewableAudit() {
 		return getAuditType().isRenewable() && isExpiringSoon();
 	}
+
+	@Transient
+	public boolean isRemoved() {
+		return false;
+	}
 }

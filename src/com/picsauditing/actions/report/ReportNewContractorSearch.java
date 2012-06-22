@@ -76,6 +76,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	public ReportNewContractorSearch() {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
+		this.searchForNew = true;
 	}
 
 	@Before
@@ -154,10 +155,9 @@ public class ReportNewContractorSearch extends ReportAccount {
 				}
 
 				getFilter().setFlagStatus(null);
+				
 				// Get the data right now for all contractors
-				buildQuery();
-				// TODO keep getting results until we get a full page's worth
-				// report.setLimit(500);
+				// this will build up the contractor ids we need
 				run(sql);
 				calculateOverallFlags();
 

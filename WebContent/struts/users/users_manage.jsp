@@ -222,7 +222,7 @@
 				
 				<s:if test="!user.group  && user.id>0">
 					<li>
-						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>">
+						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>"  id="users_manage_changePassword">
 							<s:text name="button.password" />
 						</a>
 					</li>
@@ -241,19 +241,20 @@
 						</li>
 						
 						<s:if test="isBetaEnvironment()">
-							<li>
-								<a class="btn" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-									<s:text name="UsersManage.SwitchToThisUserStable" />
-								</a>
-							</li>
-						</s:if>
-						
-						<s:if test="!isLiveEnvironment()">
 							<pics:toggle name="SwitchUserServer">
-								<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
-									<s:text name="UsersManage.SwitchToThisUserStable" />
-								</a>
+								<li>
+									<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
+										<s:text name="UsersManage.SwitchToThisUserStable" />
+									</a>
+								</li>
 							</pics:toggle>
+							<pics:toggleElse>
+								<li>
+									<a class="btn" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+										<s:text name="UsersManage.SwitchToThisUserStable" />
+									</a>
+								</li>
+							</pics:toggleElse>
 						</s:if>
 					</pics:permission>
 				</s:if>

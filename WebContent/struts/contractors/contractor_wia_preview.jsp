@@ -1,6 +1,11 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:if test="contractor.trades.size() > 0">
+	<div>
+		<p>
+			<s:text name="TrirWIA.helpText" />
+		</p>
+	</div>
 	<table cellpadding="0" cellspacign="0" border="0" class="table trir-weighted-industry-average">
 		<thead>
 			<tr>

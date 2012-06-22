@@ -189,9 +189,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				auditCategoryRuleCache.clear();
 				flagClearCache();
 
-				this.redirect("ManageCategory.action?id=" + cat.getId());
-				return SUCCESS;
-
+				return this.redirect("ManageCategory.action?id=" + cat.getId());
 			}
 
 			if ("Add Audit".equals(button)) {

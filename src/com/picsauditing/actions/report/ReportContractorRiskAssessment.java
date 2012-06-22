@@ -64,11 +64,14 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 
-		String safetyRisk = getRiskSQL(SAFETY, "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
-		String productRisk = getRiskSQL(PRODUCT, "GROUP_CONCAT(CONCAT(CASE d.questionID "
+		String productQuestionsFormatting = "GROUP_CONCAT(CONCAT(CASE d.questionID "
 				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
-				+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
-				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
+				+ "d.answer) SEPARATOR '<br />') answer";
+		int[] productQuestionIDs = new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
+				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT };
+
+		String safetyRisk = getRiskSQL(SAFETY, "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
+		String productRisk = getRiskSQL(PRODUCT, productQuestionsFormatting, productQuestionIDs);
 
 		if (SAFETY.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
@@ -80,7 +83,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		sql.addField("r.riskType");
 		sql.addField("r.risk");
-		sql.addField("r.lastVerifiedDate");
 		sql.addField("r.answer");
 	}
 
@@ -88,48 +90,18 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public String accept() throws Exception {
 		recallWizardSessionFilter();
 		if (!Strings.isEmpty(type)) {
-			if (con == null)
+			if (con == null) {
 				con = contractorAccountDAO.find(conID);
+			}
 
 			String noteMessage = type + " risk adjusted from ";
 
 			if (SAFETY.equals(type)) {
-				LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
-				LowMedHigh currentSafetyRisk = con.getSafetyRisk();
-
-				noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
-
-				// How can this happen?
-				if (newSafetyRisk.ordinal() > currentSafetyRisk.ordinal()) {
-					con.setLastUpgradeDate(new Date());
-				} else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
-					buildAndSendBillingRiskDowngradeEmail(currentSafetyRisk, newSafetyRisk);
-				}
-
-				con.setSafetyRisk(newSafetyRisk);
-				con.setSafetyRiskVerified(new Date());
+				noteMessage = updateSafetyRisk(noteMessage);
 			} else if (PRODUCT.equals(type)) {
-				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
-				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
-				// Get highest
-				if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal())
-					productRisk = businessRisk;
-
-				noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
-
-				// How can this happen?
-				if (productRisk.ordinal() > con.getProductRisk().ordinal())
-					con.setLastUpgradeDate(new Date());
-
-				con.setProductRisk(productRisk);
-				con.setProductRiskVerified(new Date());
+				noteMessage = updateProductRisk(noteMessage);
 			} else if (TRANSPORTATION.equals(type)) {
-				LowMedHigh currentTransportationRisk = con.getTransportationRisk();
-
-				noteMessage += currentTransportationRisk.name() + " to " + manuallySetRisk.name();
-
-				con.setTransportationRisk(manuallySetRisk);
-				con.setTransportationRiskVerified(new Date());
+				noteMessage = updateTransportationRisk(noteMessage);
 			}
 
 			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
@@ -156,34 +128,40 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
 		recallWizardSessionFilter();
+		if (!Strings.isEmpty(type)) {
+			if (con == null) {
+				con = contractorAccountDAO.find(conID);
+			}
 
-		if (con == null)
-			con = contractorAccountDAO.find(conID);
+			String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
 
-		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
+			if (type.equals(SAFETY)) {
+				LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
 
-		if (type.equals(SAFETY)) {
-			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+				noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+				con.setSafetyRiskVerified(new Date());
+			} else {
+				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
+				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
+				// Get highest
+				if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal()) {
+					productRisk = businessRisk;
+				}
 
-			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
-			con.setSafetyRiskVerified(new Date());
+				noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
+				con.setProductRiskVerified(new Date());
+			}
+
+			contractorAccountDAO.save(con);
+			Note note = new Note(con, getUser(), noteMessage
+					+ (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
+			note.setNoteCategory(NoteCategory.RiskRanking);
+			noteDAO.save(note);
+
+			auditorNotes = "";
 		} else {
-			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
-			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
-			// Get highest
-			if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal())
-				productRisk = businessRisk;
-
-			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
-			con.setProductRiskVerified(new Date());
+			addActionError("Missing Risk Assessment Type");
 		}
-
-		contractorAccountDAO.save(con);
-		Note note = new Note(con, getUser(), noteMessage + (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
-		note.setNoteCategory(NoteCategory.RiskRanking);
-		noteDAO.save(note);
-
-		auditorNotes = "";
 		return execute();
 	}
 
@@ -237,13 +215,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	private String getRiskSQL(String type, String answer, int... questionIDs) {
-		String questionString = "";
-
-		if (questionIDs.length == 1) {
-			questionString = "= " + questionIDs[0];
-		} else if (questionIDs.length > 1) {
-			questionString = String.format("IN (%s)", Strings.implode(questionIDs));
-		}
+		String questionString = String.format("IN (%s)", Strings.implode(questionIDs));
 
 		SelectAccount sql2 = new SelectAccount();
 		sql2.setType(Type.Contractor);
@@ -265,7 +237,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		sql2.addField("'" + type + "' riskType");
 		sql2.addField("c." + type.toLowerCase() + "Risk risk");
-		sql2.addField("c." + type.toLowerCase() + "RiskVerified lastVerifiedDate");
 
 		if (!Strings.isEmpty(answer)) {
 			sql2.addField(answer);
@@ -275,8 +246,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		sql2.addWhere("c.accountLevel = 'Full'");
 		sql2.addWhere("a.status = 'Active'");
-		sql2.addWhere(String.format("c.%1$sRiskVerified IS NULL "
-				+ "OR (DATE_ADD(c.%1$sRiskVerified, INTERVAL 3 YEAR) < NOW() AND c.%1$sRisk < 3)", type.toLowerCase()));
+		sql2.addWhere(String.format("c.%1$sRiskVerified IS NULL", type.toLowerCase()));
 		sql2.addWhere(where);
 
 		return sql2.toString();
@@ -307,6 +277,55 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		}
 
 		return null;
+	}
+
+	private String updateSafetyRisk(String noteMessage) {
+		LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+		LowMedHigh currentSafetyRisk = con.getSafetyRisk();
+
+		noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
+
+		// How can this happen?
+		if (newSafetyRisk.ordinal() > currentSafetyRisk.ordinal()) {
+			con.setLastUpgradeDate(new Date());
+		} else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
+			buildAndSendBillingRiskDowngradeEmail(currentSafetyRisk, newSafetyRisk);
+		}
+
+		con.setSafetyRisk(newSafetyRisk);
+		con.setSafetyRiskVerified(new Date());
+		return noteMessage;
+	}
+
+	private String updateProductRisk(String noteMessage) {
+		LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
+		LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
+		// Get highest
+		if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal()) {
+			productRisk = businessRisk;
+		}
+
+		noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
+
+		// How can this happen?
+		if (productRisk.ordinal() > con.getProductRisk().ordinal())
+			con.setLastUpgradeDate(new Date());
+
+		con.setProductRisk(productRisk);
+		con.setProductRiskVerified(new Date());
+
+		return noteMessage;
+	}
+
+	private String updateTransportationRisk(String noteMessage) {
+		LowMedHigh currentTransportationRisk = con.getTransportationRisk();
+
+		noteMessage += currentTransportationRisk.name() + " to " + manuallySetRisk.name();
+
+		con.setTransportationRisk(manuallySetRisk);
+		con.setTransportationRiskVerified(new Date());
+
+		return noteMessage;
 	}
 
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {

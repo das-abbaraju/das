@@ -141,7 +141,7 @@ public class VerifyView extends ContractorActionSupport {
 
 		List<AuditData> answers = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 		for (AuditData answer : answers) {
-			if (answer.getAudit().isCategoryApplicable(answer.getQuestion().getCategory().getId())) {
+			if (answer.getAudit().isCategoryApplicable(answer.getQuestion().getCategory().getId()) && answer.getQuestion().isVisibleInAudit(answer.getAudit())) {
 				answerMap.put(answer.getQuestion().getId(), answer);
 			}
 		}
@@ -380,20 +380,30 @@ public class VerifyView extends ContractorActionSupport {
 
 	public boolean isHasVerifiableAudits() {
 		// check if PQFQuestions/OSHA/EMR data is empty
+		boolean hasVerifiable = false;
 		boolean hasUpload = false;
+		boolean hasSubmittedStatus = false;
 		for (ContractorAudit audit : getVerificationAudits()) {
 			if (audit.getAuditType().isPqf()) {
-				for (AuditData data : audit.getData()) {
-					if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF)
-						hasUpload = true;
+				if (audit.hasCaoStatus(AuditStatus.Submitted)
+						|| audit.hasCaoStatus(AuditStatus.Resubmitted)) {
+					hasSubmittedStatus = true;
+					break;
 				}
-
+				for (AuditData data : audit.getData()) {
+					if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF
+							&& data.getQuestion().isVisibleInAudit(audit))
+						hasUpload = true;
+					break;
+				}
 				break;
 			}
 		}
 
-		// If Contractors don't need to upload their safety manual but the PQF still needs to be verified, show the
-		// verify button.
-		return hasUpload ? !(pqfQuestions.isEmpty() && oshasUS.isEmpty() && emrs.isEmpty()) : !hasUpload;
+		hasVerifiable = hasSubmittedStatus
+				|| hasUpload
+				|| !(pqfQuestions.isEmpty() && oshasUS.isEmpty() && emrs
+						.isEmpty());
+		return hasVerifiable;
 	}
 }

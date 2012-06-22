@@ -235,8 +235,8 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	/**
-	 * Returns a list of policies that will expire 14 days from now or today or expired 7 days ago, where a new pending
-	 * policy of that type is ready.
+	 * Returns a list of policies that will expire 14 days from now or today or
+	 * expired 7 days ago, where a new pending policy of that type is ready.
 	 * 
 	 * @return
 	 */
@@ -346,8 +346,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	public List<ContractorAudit> findScheduledAuditsByAuditId(int auditId, Date startDate, Date endDate) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate "
-				+ " AND ca.contractorAccount.status = 'Active'"
-				+ " AND ca.auditType.id = :auditId ";
+				+ " AND ca.contractorAccount.status = 'Active'" + " AND ca.auditType.id = :auditId ";
 		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
 		hql += " ORDER BY ca.scheduledDate, ca.id";
 		Query query = em.createQuery(hql);
@@ -397,7 +396,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addOrderBy("a.country, a.state");
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -415,7 +414,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addWhere("id = " + auditID);
 			report.setSql(sql);
 
-			data = report.getPage();
+			data = report.getPage(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -423,7 +422,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		return data;
 	}
 
-	public List<BasicDynaBean> findCancelledScheduledAudits() {
+	public List<ContractorAudit> findCancelledScheduledAudits() {
 		String sql = "SELECT * " + "FROM contractor_audit ca " + "WHERE ca.scheduledDate > NOW() " + "AND (NOT EXISTS "
 				+ "(SELECT 'x' " + "FROM   contractor_audit_operator cao "
 				+ "WHERE  ca.id = cao.auditID AND cao.visible = 1) " + ")";
@@ -433,12 +432,17 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	public List<ContractorAudit> findUpcomingScheduledAudits(int auditTypeId) {
-		String hql = "SELECT ca FROM ContractorAudit ca "
-				+ "WHERE ca.auditType.id = :auditTypeID "
-				+ "AND ca.contractorAccount.status='Active' "
-				+ "AND ca.scheduledDate < DATEADD";
+		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.auditType.id = :auditTypeID "
+				+ "AND ca.contractorAccount.status='Active' " + "AND ca.scheduledDate < DATEADD";
 		Query query = em.createQuery(hql);
 		query.setParameter("auditTypeID", auditTypeId);
 		return query.getResultList();
+	}
+
+	public ContractorAudit findPQF(int id) {
+		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.contractorAccount.id = " + id
+				+ " AND ca.auditType.id = 1 " + " AND ca.expiresDate > NOW() ";
+
+		return (ContractorAudit) em.createQuery(hql).getSingleResult();
 	}
 }

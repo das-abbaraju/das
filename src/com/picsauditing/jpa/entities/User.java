@@ -134,7 +134,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		this.username = u.getUsername();
 		this.isGroup = u.getIsGroup();
-		this.email = u.getEmail();
+		this.email = u.getEmail().trim();
 		this.emailConfirmedDate = u.getEmailConfirmedDate();
 		this.name = u.getName();
 		this.isActive = u.getIsActive();
@@ -854,5 +854,10 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
+	}
+
+	@Transient
+	public boolean isRemoved() {
+		return (isActive == YesNo.No || username.startsWith("DELETE-"));
 	}
 }

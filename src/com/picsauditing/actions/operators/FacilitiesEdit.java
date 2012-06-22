@@ -129,7 +129,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			accountUserDAO.remove(accountUser);
 		}
 
-		return SUCCESS;
+		return REDIRECT;
 	}
 
 	public String addRole() {
@@ -166,7 +166,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		accountRep = null;
 		salesRep = null;
 
-		return SUCCESS;
+		return REDIRECT;
 	}
 
 	public String copyToChildAccounts() throws Exception {
@@ -205,7 +205,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	public String saveRole() {
 		operatorDao.save(operator);
 
-		return SUCCESS;
+		return REDIRECT;
 	}
 
 	public String save() {
@@ -336,7 +336,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
-		return "redirect";
+		return REDIRECT;
 	}
 
 	public String ajaxAutoApproveRelationshipModal() throws Exception {
@@ -370,8 +370,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		save();
 		clearMessages();
 
-		redirect("ReportAccountList.action");
-		return SUCCESS;
+		return redirect("ReportAccountList.action");
 	}
 
 	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {
@@ -662,6 +661,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		selectedClients = operator.getLinkedClientSites();
 
 		notSelectedClients.removeAll(selectedClients);
+		notSelectedClients.removeAll(childOperatorList);
 	}
 
 	// TODO: This should be converted to Struts2 Validation

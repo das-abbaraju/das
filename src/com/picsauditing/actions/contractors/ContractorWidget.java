@@ -5,10 +5,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.set.ListOrderedSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BrainTreeService;
@@ -62,20 +63,24 @@ public class ContractorWidget extends ContractorActionSupport {
 
 	private CreditCard creditCard;
 
+	@SuppressWarnings("unchecked")
 	public List<String> getOpenTasks() throws Exception {
-			findContractor();
-			User currentUser = userDAO.find(permissions.getUserId());
-			openTasks = tasks.getOpenTasks(contractor, currentUser);
-			HashSet<String> openTasksSet = new HashSet<String>();
-			for (int i=0; i<openTasks.size(); i++)
-				openTasksSet.add(openTasks.get(i));
-			openTasks = new ArrayList<String>(openTasksSet);
+		findContractor();
+		User currentUser = userDAO.find(permissions.getUserId());
+		openTasks = tasks.getOpenTasks(contractor, currentUser);
+
+		ListOrderedSet openTasksSet = new ListOrderedSet();
+		Iterator<String> ite = openTasks.iterator();
+		while (ite.hasNext())
+			openTasksSet.add(ite.next());
+
+		openTasks = new ArrayList<String>(openTasksSet);
 		return openTasks;
 	}
 
 	public boolean isReminderTask() {
-        // don't add the reminder if this view is being seen by operator
-		if(permissions.isOperatorCorporate()) {
+		// don't add the reminder if this view is being seen by operator
+		if (permissions.isOperatorCorporate()) {
 			return false;
 		}
 		if (Calendar.getInstance().get(Calendar.MONTH) == 0)

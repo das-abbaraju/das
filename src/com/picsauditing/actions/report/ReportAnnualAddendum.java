@@ -13,11 +13,12 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 		sql.addGroupBy("c.id");
 
 		String auditFor = Strings.implodeForDB(getFilter().getAuditFor(), ",");
-		if (!Strings.isEmpty(auditFor))
+		if (!Strings.isEmpty(auditFor)) {
 			sql.addWhere("ca.auditFor IN (" + auditFor + ")");
+		}
+		sql.setDistinct(false);
 
 		getFilter().setShowVerifiedAnnualUpdates(true);
-
 		getFilter().setShowTaxID(false);
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowAuditType(false);
@@ -25,7 +26,7 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 		getFilter().setShowLocation(false);
 		getFilter().setShowCreatedDate(false);
 		getFilter().setPendingPqfAnnualUpdate(false);
-
+		
 	}
 
 	public void setVerifiedAnnualUpdateFilter(String columnName) {

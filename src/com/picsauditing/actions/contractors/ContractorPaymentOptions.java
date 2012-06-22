@@ -78,17 +78,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 				addActionMessage(msg);
 
-				this.redirect("ContractorFacilities.action?id=" + contractor.getId());
-				return BLANK;
+				return this.redirect("ContractorFacilities.action?id=" + contractor.getId());
 			}
 		}
 		if (newRegistration) {
 			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated",
 					new Object[] { getText("PicsTollFreePhone") }));
-		}
-
-		if ("copyBillingEmail".equals(button)) {
-			contractor.setCcEmail(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
 		}
 
 		contractorAccountDao.save(contractor);
@@ -221,7 +216,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		findContractor();
 
 		if (!isHasPQFImportAudit()) {
-			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
+			return this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
 					+ "&url=ContractorPaymentOptions.action");
 		}
 
@@ -497,8 +492,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public InvoiceFee getVatFee() {
 		if (vatFee == null) {
 			vatFee = new InvoiceFee();
-
-			if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
+			//if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
+			if (contractor.getCountry().getCurrency().isGBP()) {
 				vatFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.VAT, contractor.getPayingFacilities());
 				BigDecimal total = BigDecimal.ZERO.setScale(2);
 				for (FeeClass feeClass : contractor.getFees().keySet()) {

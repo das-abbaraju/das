@@ -359,8 +359,8 @@ public class OperatorAccount extends Account {
 	}
 
 	@OneToMany(mappedBy = "operator")
-	@Cascade({org.hibernate.annotations.CascadeType.ALL,
-		org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
+	@Where(clause = "type IS NULL")
+	@Cascade({ org.hibernate.annotations.CascadeType.ALL, org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
@@ -376,6 +376,7 @@ public class OperatorAccount extends Account {
 	 *         BASF Port Arthur but not BASF Freeport Hub
 	 */
 	@OneToMany(mappedBy = "corporate")
+	@Where(clause = "type IS NULL")
 	public List<Facility> getOperatorFacilities() {
 		return operatorFacilities;
 	}

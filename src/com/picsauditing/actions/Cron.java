@@ -7,28 +7,26 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
@@ -54,7 +52,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -151,20 +148,21 @@ public class Cron extends PicsActionSupport {
 	private int possibleDuplciateEmailTemplate = 234;
 
 	private final Logger logger = LoggerFactory.getLogger(Cron.class);
+
 	@Anonymous
 	public String execute() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
 
 		report = new StringBuffer();
-		report.append("Running Cron Job on Server: " + request.getLocalName() + "\n");
-		report.append("Address: " + request.getLocalAddr() + "\n");
-		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n");
+		report.append("Running Cron Job on Server: " + request.getLocalName() + "\n\n");
+		report.append("Address: " + request.getLocalAddr() + "\n\n");
+		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n\n");
 		report.append("Starting Cron Job at: " + new Date().toString());
-		report.append("\n\n");
+		report.append("\n\n\n");
 
 		if (!flagsOnly) {
 
-			startTask("\nRunning auditBuilder.addAuditRenewals...");
+			startTask("Running auditBuilder.addAuditRenewals...");
 			List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
 			for (ContractorAccount contractor : contractors) {
 				try {
@@ -189,7 +187,7 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("\nRunning Huntsman EBIX Support...");
+				startTask("Running Huntsman EBIX Support...");
 				processEbixData();
 				endTask();
 			} catch (Throwable t) {
@@ -197,7 +195,7 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("\nResetting Renewable Audits and cao and stamping notes...");
+				startTask("Resetting Renewable Audits and cao and stamping notes...");
 				contractorAuditOperatorDAO.resetRenewableAudits();
 				endTask();
 			} catch (Throwable t) {
@@ -207,7 +205,7 @@ public class Cron extends PicsActionSupport {
 			try {
 				// TODO we shouldn't recacluate audits, but only categories.
 				// This shouldn't be needed at all anymore
-				startTask("\nRecalculating all the categories for Audits...");
+				startTask("Recalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
 					auditPercentCalculator.percentCalculateComplete(cAudit, true);
@@ -220,7 +218,7 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 			try {
-				startTask("\nStarting Indexer");
+				startTask("Starting Indexer...");
 				runIndexer();
 				endTask();
 			} catch (Throwable t) {
@@ -229,7 +227,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending emails to contractors pending...");
+			startTask("Sending emails to contractors pending...");
 
 			getEmailExclusions();
 
@@ -243,7 +241,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending emails to registration requests...");
+			startTask("Sending emails to registration requests...");
 
 			getEmailExclusions();
 
@@ -257,7 +255,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending email about upcoming implementation audits...");
+			startTask("Sending email about upcoming implementation audits...");
 
 			sendUpcomingImplementationAuditEmail();
 
@@ -267,7 +265,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nAdding Late Fee to Delinquent Contractor Invoices ...");
+			startTask("Adding Late Fee to Delinquent Contractor Invoices ...");
 			addLateFeeToDelinquentInvoices();
 			endTask();
 		} catch (Throwable t) {
@@ -275,7 +273,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nInactivating Accounts via Billing Status...");
+			startTask("Inactivating Accounts via Billing Status...");
 			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
@@ -300,7 +298,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending Email to Delinquent Contractors ...");
+			startTask("Sending Email to Delinquent Contractors ...");
 			sendDelinquentContractorsEmail();
 			endTask();
 		} catch (Throwable t) {
@@ -308,14 +306,14 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending No Action Email to Bid Only Accounts ...");
+			startTask("Sending No Action Email to Bid Only Accounts ...");
 			sendNoActionEmailToTrialAccounts();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
 		try {
-			startTask("\nStamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
+			startTask("Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
 			clearForceFlags();
 			endTask();
 		} catch (Throwable t) {
@@ -323,7 +321,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nExpiring Flag Changes");
+			startTask("Expiring Flag Changes...");
 			expireFlagChanges();
 			endTask();
 		} catch (Throwable t) {
@@ -331,7 +329,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nEmailing Flag Change Reports...");
+			startTask("Emailing Flag Change Reports...");
 			sendFlagChangesEmails();
 			endTask();
 		} catch (Throwable t) {
@@ -339,14 +337,14 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nChecking System Status");
+			startTask("Checking System Status...");
 			checkSystemStatus();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
 		try {
-			startTask("\nChecking Registration Requests Hold Dates");
+			startTask("Checking Registration Requests Hold Dates...");
 			checkRegistrationRequestsHoldDates();
 			endTask();
 		} catch (Throwable t) {
@@ -365,22 +363,24 @@ public class Cron extends PicsActionSupport {
 
 	private void getEmailExclusions() {
 		List<String> exclusionList = emailQueueDAO.findEmailAddressExclusions();
-		if (exclusionList != null && !exclusionList.isEmpty())
+		if (CollectionUtils.isEmpty(exclusionList))
 			emailExclusionList.addAll(exclusionList);
 	}
 
 	private void handleException(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
+		report.append("\n\n\n");
 		report.append(t.getMessage());
 		report.append(sw.toString());
 		report.append("\n\n\n");
 	}
 
 	protected void endTask() {
-		report.append("SUCCESS..(");
+		report.append("SUCCESS...(");
 		report.append(new Long(System.currentTimeMillis() - startTime).toString());
 		report.append(" millis )");
+		report.append("\n\n");
 	}
 
 	protected void startTask(String taskName) {
@@ -402,6 +402,7 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			emailSender.send(toAddress, "Cron job report", report.toString());
+			System.out.println(report.toString());
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			logger.error("**********************************");
 			logger.error("Error Sending email from cron job");
@@ -470,7 +471,7 @@ public class Cron extends PicsActionSupport {
 					List<ContractorAccount> duplicateContractors = contractorAccountDAO
 							.findWhere(whereDuplicateNameIndex(contractor.getNameIndex()));
 
-					if (!duplicateContractors.isEmpty()) {
+					if (CollectionUtils.isNotEmpty(duplicateContractors)) {
 						sendEmailToContractors = false;
 
 						EmailBuilder emailBuilder = new EmailBuilder();
@@ -613,7 +614,8 @@ public class Cron extends PicsActionSupport {
 		String reminderNote = sdf.format(new Date()) + " - Email has been sent to remind contractor to register.\n\n";
 		String lastChanceNote = sdf.format(new Date())
 				+ " - Email has been sent to contractor warning them that this is their last chance to register.\n\n";
-		String finalAndExpirationNote = sdf.format(new Date()) + " - Final email sent to Contractor and Client Site.\n\n";
+		String finalAndExpirationNote = sdf.format(new Date())
+				+ " - Final email sent to Contractor and Client Site.\n\n";
 
 		// First notification: 3 days
 		List<ContractorRegistrationRequest> crrList1stReminder = contractorRegistrationRequestDAO
@@ -654,7 +656,7 @@ public class Cron extends PicsActionSupport {
 					List<ContractorAccount> duplicateContractors = contractorAccountDAO
 							.findWhere(whereDuplicateNameIndex(crr.getName()));
 
-					if (!duplicateContractors.isEmpty()) {
+					if (CollectionUtils.isNotEmpty(duplicateContractors)) {
 						sendEmailToContractors = false;
 
 						EmailBuilder emailBuilder = new EmailBuilder();
@@ -676,7 +678,8 @@ public class Cron extends PicsActionSupport {
 				if (sendEmailToContractors) {
 					EmailBuilder emailBuilder = new EmailBuilder();
 
-					if ((templateID == regReq2ndReminderTemplate || templateID == regReq3rdReminderTemplate) && crr.getDeadline().before(new Date()))
+					if ((templateID == regReq2ndReminderTemplate || templateID == regReq3rdReminderTemplate)
+							&& crr.getDeadline().before(new Date()))
 						templateID++;
 					emailBuilder.setTemplate(templateID);
 
@@ -778,50 +781,61 @@ public class Cron extends PicsActionSupport {
 
 	public void sendDelinquentContractorsEmail() throws Exception {
 		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
-		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
+		if (CollectionUtils.isNotEmpty(invoices)) {
+			for (EmailQueue email : parseInvoices(invoices)) {
+				emailQueueDAO.save(email);
+				if (email.getToAddresses().equals("billing@picsauditing.com"))
+					stampNote(email.getContractorAccount(),
+							"Failed to send Deactivation Email because of no valid email address.",
+							NoteCategory.Billing);
+				else
+					stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
+							NoteCategory.Billing);
+			}
+		}
+	}
+
+	private List<EmailQueue> parseInvoices(List<Invoice> invoices) {
+		Map<ContractorAccount, Integer> contractors = new TreeMap<ContractorAccount, Integer>();
 
 		for (Invoice invoice : invoices) {
-			Set<String> emailAddresses = new HashSet<String>();
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
-
-			User billing = cAccount.getUsersByRole(OpPerms.ContractorBilling).get(0);
-			if (!Strings.isEmpty(billing.getEmail()))
-				emailAddresses.add(billing.getEmail());
-			if (!Strings.isEmpty(cAccount.getCcEmail()))
-				emailAddresses.add(cAccount.getCcEmail());
-
-			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
-				List<Integer> questionsWithEmailAddresses = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
-				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(),
-						questionsWithEmailAddresses);
-				for (AuditData auditData : aList) {
-					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
-						emailAddresses.add(auditData.getAnswer());
-				}
-			}
-			cMap.put(cAccount, emailAddresses);
-
+			// TODO check with John H if we need one or both of these templates.
+			// If we need both, then use a CONSTANT
 			if (invoice.getDueDate().before(new Date()))
-				templateMap.put(cAccount, 48); // deactivation
+				contractors.put(cAccount, 48); // deactivation
 			else
-				templateMap.put(cAccount, 50); // open
+				contractors.put(cAccount, 50); // open
 		}
+		return populateEmail(contractors);
+	}
 
-		for (ContractorAccount cAccount : cMap.keySet()) {
-			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
-			EmailBuilder emailBuilder = new EmailBuilder();
+	private List<EmailQueue> populateEmail(Map<ContractorAccount, Integer> contractors) {
+		List<EmailQueue> list = new ArrayList<EmailQueue>();
+		for (ContractorAccount cAccount : contractors.keySet()) {
+			try {
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
+				emailBuilder.setTemplate(contractors.get(cAccount));
 
-			emailBuilder.setTemplate(templateMap.get(cAccount));
-			emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
-			emailBuilder.setCcAddresses(emailAddress);
-			EmailQueue email = emailBuilder.build();
-			email.setLowPriority();
-			email.setViewableById(Account.PicsID);
-			emailQueueDAO.save(email);
-
-			stampNote(cAccount, "Deactivation Email Sent to " + emailAddress, NoteCategory.Billing);
+				EmailQueue email = emailBuilder.build();
+				email.setLowPriority();
+				email.setViewableById(Account.PicsID);
+				list.add(email);
+			} catch (Exception e) {
+				EmailQueue email = new EmailQueue();
+				email.setToAddresses("billing@picsauditing.com");
+				email.setContractorAccount(cAccount);
+				email.setSubject("Contractor Missing Email Address");
+				email.setBody(cAccount.getName() + " (" + cAccount.getId() + ") has no valid email address. "
+						+ "The system is unable to send automated emails to this account. "
+						+ "Attempted to send Overdue Invoice Email Reminder.");
+				email.setLowPriority();
+				email.setViewableById(Account.PicsID);
+				list.add(email);
+			}
 		}
+		return list;
 	}
 
 	public void addLateFeeToDelinquentInvoices() throws Exception {
@@ -917,13 +931,13 @@ public class Cron extends PicsActionSupport {
 
 	private void sendFlagChangesEmails() throws Exception {
 		List<BasicDynaBean> data = getFlagChangeData();
-		if (data.isEmpty())
+		if (CollectionUtils.isEmpty(data))
 			return;
 
 		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
 
 		Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
-		if (!CollectionUtils.isEmpty(amMap)) {
+		if (MapUtils.isNotEmpty(amMap)) {
 			for (String accountMgr : amMap.keySet()) {
 				if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
 					List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
@@ -953,23 +967,28 @@ public class Cron extends PicsActionSupport {
 		if (CollectionUtils.isEmpty(flagChanges)) {
 			return totalChanges;
 		}
-		
+
 		for (BasicDynaBean flagChangesByOperator : flagChanges) {
 			try {
 				Object operatorFlagChanges = flagChangesByOperator.get("changes");
 				if (operatorFlagChanges != null) {
 					totalChanges += NumberUtils.toInt(operatorFlagChanges.toString(), 0);
-				}				
+				}
 			} catch (Exception ignore) {
 			}
 		}
-		
+
 		return totalChanges;
 	}
 
 	private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
 		// Sorting results into buckets by AM to add as tokens into the email
 		Map<String, List<BasicDynaBean>> amMap = new TreeMap<String, List<BasicDynaBean>>();
+
+		if (CollectionUtils.isEmpty(data)) {
+			return amMap;
+		}
+
 		for (BasicDynaBean bean : data) {
 			String accountMgr = (String) bean.get("accountManager");
 			if (accountMgr != null) {
@@ -979,6 +998,7 @@ public class Cron extends PicsActionSupport {
 				amMap.get(accountMgr).add(bean);
 			}
 		}
+
 		return amMap;
 	}
 
@@ -989,8 +1009,8 @@ public class Cron extends PicsActionSupport {
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (" + 
-				Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
+		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in ("
+				+ Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
 		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");

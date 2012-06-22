@@ -19,8 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
@@ -400,5 +398,10 @@ public class Employee extends AbstractIndexableTable {
 	@Transient
 	public String getViewLink() {
 		return "ManageEmployees.action?employee=" + this.id;
+	}
+
+	@Transient
+	public boolean isRemoved() {
+		return (status == UserStatus.Inactive || status == UserStatus.Deleted);
 	}
 }

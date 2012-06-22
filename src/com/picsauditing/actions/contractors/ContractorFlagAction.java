@@ -127,10 +127,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		contractorOperatorDao.save(co);
 		try {
-			this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
 			permissions.tryPermission(OpPerms.EditForcedFlags);
+			return this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
 		} catch (Exception x) {
 		}
+
 		return completeAction("");
 	}
 
@@ -222,19 +223,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co2.setForceBegin(new Date());
 			co2.setForcedBy(getUser());
 			contractorOperatorDao.save(co2);
-			noteText = "Forced the flag from " + currentFlag + " to "
-					+ forceFlag + " for all the sites until "
+			noteText = "Forced the flag from " + currentFlag + " to " + forceFlag + " for all the sites until "
 					+ format.format(forceEnd);
-			
+
 		} else {
 			FlagColor currentFlag = co.getFlagColor();
 			co.setForceEnd(forceEnd);
 			co.setForceFlag(forceFlag);
 			co.setForceBegin(new Date());
 			co.setForcedBy(getUser());
-			noteText = "Forced the flag from " + currentFlag + " to "
-					+ forceFlag + " for " + co.getOperatorAccount().getName()
-					+ "  until " + format.format(forceEnd);
+			noteText = "Forced the flag from " + currentFlag + " to " + forceFlag + " for "
+					+ co.getOperatorAccount().getName() + "  until " + format.format(forceEnd);
 		}
 
 		return completeAction(noteText);
@@ -277,12 +276,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		flagOverride.setAuditColumns(new User(permissions.getUserId()));
 		flagDataOverrideDAO.save(flagOverride);
-		
+
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		String noteText = "Forced the flag from " + flagData.getFlag() + " to "
-				+ forceFlag + " for criteria "
-				+ flagData.getCriteria().getLabel() + " for "
-				+ co.getOperatorAccount().getName() + " until "
+		String noteText = "Forced the flag from " + flagData.getFlag() + " to " + forceFlag + " for criteria "
+				+ flagData.getCriteria().getLabel() + " for " + co.getOperatorAccount().getName() + " until "
 				+ format.format(forceEnd);
 		return completeAction(noteText);
 	}

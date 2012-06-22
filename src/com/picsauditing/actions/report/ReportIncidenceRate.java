@@ -90,23 +90,6 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet.addColumn(new ExcelColumn("trir", getText("ReportIncidenceRate.TrirIndustryAverage"), ExcelCellType.Double));
 	}
 	
-	// TODO: FIX ME Michael, please convert this report to use the OSHA Data stored in PQF Data instead
-	public String verify() throws Exception {
-		/*OshaAudit oshaAudit = oshaAuditDAO.find(oshaAuditID);
-		oshaAudit.setVerifiedDate(new Date());
-		oshaAuditDAO.save(oshaAudit);
-
-		ContractorAccount contractor = contractorAccountDAO.find(conID);
-		Note note = new Note(contractor, getUser(), "Incidence Rate for year " + oshaAudit.getConAudit().getAuditFor()
-				+ " has been verified - " + auditorNotes);
-		note.setNoteCategory(NoteCategory.Audits);
-		noteDAO.save(note);
-
-		auditorNotes = "";*/
-
-		return super.execute();
-	}
-
 	public String getAuditorNotes() {
 		return auditorNotes;
 	}

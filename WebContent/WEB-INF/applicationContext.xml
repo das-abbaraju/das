@@ -10,6 +10,8 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
+	<import resource="rabbit-config.xml"/>
+
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	<bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
 	
@@ -110,6 +112,7 @@
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
+	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
@@ -120,7 +123,11 @@
 	<bean id="OpenTasksSubscription" class="com.picsauditing.mail.subscription.OpenTasksSubscription" scope="prototype"/>
 	<bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" scope="prototype"/>
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
+	<bean id="CancelledScheduledAudits" class="com.picsauditing.mail.subscription.CancelledScheduledAuditsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
+	
+	<bean id="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium" scope="prototype" />
+	<bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype" />
 	
 	<!-- Beans for service layers -->
 	<bean id="FacilitiesEditModel" class="com.picsauditing.models.operators.FacilitiesEditModel"/>

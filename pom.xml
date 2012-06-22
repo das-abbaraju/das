@@ -96,6 +96,7 @@
 					<additionalClasspathElements>
 						<additionalClasspathElement>tests/</additionalClasspathElement>
 					</additionalClasspathElements>
+					<argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -139,6 +140,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<properties>
+		<spring.version>3.1.1.RELEASE</spring.version>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -146,16 +152,26 @@
 			<version>2.4</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
-			<version>2.5.5</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.springframework.amqp</groupId>
+		  <artifactId>spring-rabbit</artifactId>
+		  <version>1.1.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -274,6 +290,11 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.7</version>
+		</dependency>
+		<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.6</version>
@@ -308,18 +329,6 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>2.5</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -705,6 +714,11 @@
 			<groupId>org.perf4j</groupId>
 			<artifactId>perf4j</artifactId>
 			<version>0.9.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 </project>

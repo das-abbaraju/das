@@ -70,6 +70,8 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.messaging.FlagChange;
+import com.picsauditing.messaging.Publisher;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -99,6 +101,8 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private ExceptionService exceptionService;
+	@Autowired
+	private Publisher flagChangePublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
@@ -111,6 +115,7 @@ public class ContractorCron extends PicsActionSupport {
 	private List<Integer> queue;
 	private String redirectUrl;
 	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
+
 	@Anonymous
 	public String execute() throws Exception {
 		if (steps == null)
@@ -132,7 +137,8 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		} catch (Exception e) {
 			if (!Strings.isEmpty(redirectUrl)) {
-				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #" + conID);
+				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #"
+						+ conID);
 				return redirect(redirectUrl);
 			}
 			throw e;
@@ -222,10 +228,8 @@ public class ContractorCron extends PicsActionSupport {
 		sql.addField("fc1.id as year1_id");
 		sql.addField("fc2.id as year2_id");
 		sql.addField("fc3.id as year3_id");
-		sql
-				.addJoin("left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' ");
-		sql
-				.addJoin("left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' ");
+		sql.addJoin("left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' ");
+		sql.addJoin("left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' ");
 		sql.addWhere("fc1.oshaType is not null and fc1.multiYearScope = 'LastYearOnly'");
 
 		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
@@ -234,10 +238,8 @@ public class ContractorCron extends PicsActionSupport {
 		sql.addField("fc1.id as year1_id");
 		sql.addField("fc2.id as year2_id");
 		sql.addField("fc3.id as year3_id");
-		sql
-				.addJoin("left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' ");
-		sql
-				.addJoin("left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' ");
+		sql.addJoin("left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' ");
+		sql.addJoin("left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' ");
 		sql.addWhere("fc1.questionID is not null and fc1.multiYearScope = 'LastYearOnly'");
 
 		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
@@ -328,8 +330,8 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		/*
-		 * PICS-3313: This section is likely no longer needed, but this should prevent SQL errors when trying to save a
-		 * contractor.
+		 * PICS-3313: This section is likely no longer needed, but this should
+		 * prevent SQL errors when trying to save a contractor.
 		 */
 		String tradesSelf = Strings.implode(selfPerform, ";");
 		if (tradesSelf.length() > 4000) {
@@ -460,6 +462,9 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		} else if (!overallColor.equals(co.getFlagColor())) {
+			FlagChange flagChange = getFlagChange(co, overallColor);
+			flagChangePublisher.publish(flagChange);
+
 			Note note = new Note();
 			note.setAccount(co.getContractorAccount());
 			note.setNoteCategory(NoteCategory.Flags);
@@ -491,6 +496,17 @@ public class ContractorCron extends PicsActionSupport {
 			dao.remove(flagData);
 		}
 		co.setAuditColumns(new User(User.SYSTEM));
+	}
+
+	private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {
+		FlagChange flagChange = new FlagChange();
+		flagChange.setContractor(co.getContractorAccount());
+		flagChange.setOperator(co.getOperatorAccount());
+		flagChange.setFromColor(co.getFlagColor());
+		flagChange.setToColor(overallColor);
+		flagChange.setTimestamp(new Date());
+		flagChange.setDetails(co.getFlagDetail());
+		return flagChange;
 	}
 
 	private void runWaitingOn(ContractorOperator co) throws Exception {
@@ -553,8 +569,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
-										.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
+										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -610,8 +626,8 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	/**
-	 * Returns a map of Policies, where the key is the Audit Type ID and the value is a list of ContractorAudits for
-	 * that Audit Type ID.
+	 * Returns a map of Policies, where the key is the Audit Type ID and the
+	 * value is a list of ContractorAudits for that Audit Type ID.
 	 * 
 	 * @return
 	 */
@@ -805,7 +821,8 @@ public class ContractorCron extends PicsActionSupport {
 
 	/**
 	 * 
-	 * This is so audits like the HSE Competency Submittal can have an auditor automatically assigned
+	 * This is so audits like the HSE Competency Submittal can have an auditor
+	 * automatically assigned
 	 * 
 	 * @param contractor
 	 */
@@ -858,6 +875,9 @@ public class ContractorCron extends PicsActionSupport {
 							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
 						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
 					}
+					break;
+				case (AuditType.BPIISNCASEMGMT):
+					audit.setAuditor(userDAO.find(55603));
 					break;
 				case (AuditType.WELCOME):
 					audit.setAuditor(contractor.getAuditor());
