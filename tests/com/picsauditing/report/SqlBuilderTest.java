@@ -239,9 +239,9 @@ public class SqlBuilderTest {
 		when(definition.getColumns()).thenReturn(columns);
 		Whitebox.setInternalState(builder, "definition", definition);
 
-		boolean result = Whitebox.invokeMethod(builder, "isFieldIncluded", fieldName);
+		Boolean result = Whitebox.invokeMethod(builder, "isFieldIncluded", fieldName);
 
-		assertTrue(result);
+		assertTrue(result.booleanValue());
 	}
 
 	@Test
@@ -253,9 +253,9 @@ public class SqlBuilderTest {
 		when(definition.getColumns()).thenReturn(columns);
 		Whitebox.setInternalState(builder, "definition", definition);
 
-		boolean result = Whitebox.invokeMethod(builder, "isFieldIncluded", fieldName);
+		Boolean result = Whitebox.invokeMethod(builder, "isFieldIncluded", fieldName);
 
-		assertFalse(result);
+		assertFalse(result.booleanValue());
 	}
 
 	@Test
@@ -265,9 +265,9 @@ public class SqlBuilderTest {
 		Whitebox.setInternalState(builder, "definition", definition);
 		Map<String, Field> emptyAvailableFields = new HashMap<String, Field>();
 
-		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", emptyAvailableFields);
+		Boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", emptyAvailableFields);
 
-		assertFalse(result);
+		assertFalse(result.booleanValue());
 	}
 
 	@Test
@@ -280,9 +280,9 @@ public class SqlBuilderTest {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 		availableFields.put(fieldName.toUpperCase(), null);
 
-		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
+		Boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
 
-		assertFalse(result);
+		assertFalse(result.booleanValue());
 	}
 
 	@Test
@@ -299,9 +299,9 @@ public class SqlBuilderTest {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 		availableFields.put(fieldName.toUpperCase(), new Field(fieldName, fieldName, FilterType.AccountName));
 
-		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
+		Boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
 
-		assertFalse(result);
+		assertFalse(result.booleanValue());
 	}
 
 	@Ignore("Too low level")
@@ -321,18 +321,18 @@ public class SqlBuilderTest {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 		availableFields.put(fieldName.toUpperCase(), new Field(fieldName, fieldName, FilterType.AccountName));
 
-		boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
+		Boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
 
-		assertTrue(result);
+		assertTrue(result.booleanValue());
 	}
 
 	@Test
 	public void testIsAggregate_FalseIfColumnIsNull() throws Exception {
 		Column column = null;
 
-		boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
+		Boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
 
-		assertFalse(result);
+		assertFalse(result.booleanValue());
 	}
 
 	@Test
@@ -340,9 +340,9 @@ public class SqlBuilderTest {
 		Column column = new Column("columnName");
 		column.setFunction(null);
 
-		boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
+		Boolean result = Whitebox.invokeMethod(builder, "isAggregate", column);
 
-		assertFalse(result);
+		assertFalse(result.booleanValue());
 	}
 
 	@Test
