@@ -2,6 +2,9 @@
 $report_grid_header_border_color: #333333;
 $report_grid_header_text_color: #cccccc;
 
+// report header - trigger
+$report_grid_header_trigger_background_color: #454545;
+
 // report body
 $report_grid_body_border_color: #cccccc;
 
@@ -40,7 +43,7 @@ $report_grid_footer_border_color: #cccccc;
 
 #report_grid .x-column-header .x-column-header-trigger
 {
-	background: url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
+	background: $report_grid_header_trigger_background_color url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
 	display: block;
 }
 
