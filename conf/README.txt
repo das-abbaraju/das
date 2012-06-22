@@ -19,4 +19,8 @@
 			</Host>
 
 			
+// If you are going to use RabbitMQ and the default settings in resources/amqp_connection.properties, you can alternately set these
+// as a JNDI Resource in the Context as:
+					<Resource auth="Container" name="amqp/pics" type="org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
+					factory="com.picsauditing.jndi.RabbitMqInitialContextFactory" host="HOST" username="USERNAME" password="PASSWORD"/>
 			
