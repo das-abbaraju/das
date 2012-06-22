@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -35,6 +36,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.business.DynamicReportUtil;
 
 @RunWith(PowerMockRunner.class)
+@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*","org.apache.xerces.*" })
 @SuppressStaticInitializationFor("com.picsauditing.util.business.DynamicReportUtil")
 @PrepareForTest({SqlBuilder.class, DynamicReportUtil.class})
 public class SqlBuilderTest {
