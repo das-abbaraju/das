@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.jpa.entities.CohsStatistics;
+import com.picsauditing.jpa.entities.OshaStatistics;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -38,13 +42,13 @@ public class GraphTrirRates extends ChartMSAction {
 		chart.setYAxisName(getText("global.Contractors"));
 
 		SelectSQL part1 = setup();
-		part1.addField("FLOOR((os.recordableTotal*200000/os.manHours)*2)/2 AS label");
-		part1.addWhere("os.recordableTotal*200000/os.manHours > -1.0");
-		part1.addWhere("os.recordableTotal*200000/os.manHours <= 5.5");
+		part1.addField("FLOOR((d.answer)*2)/2 AS label");
+		part1.addWhere("d.answer > -1.0");
+		part1.addWhere("d.answer <= 5.5");
 
 		SelectSQL part2 = setup();
 		part2.addField("5.5 AS label");
-		part2.addWhere("os.recordableTotal*200000/os.manHours > 5.5");
+		part2.addWhere("d.answer > 5.5");
 
 		SelectSQL sql = new SelectSQL();
 		sql.setFullClause("(" + part1.toString() + ")\nUNION\n(" + part2.toString() + ")\nORDER BY series, label;");
@@ -129,17 +133,38 @@ public class GraphTrirRates extends ChartMSAction {
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addJoin("JOIN users contact ON contact.id = a.contactID");
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
+		sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
 		sql.addJoin("JOIN naics n ON n.code = a.naics");
-		sql.addField("CONCAT(os.SHAType, ' ', ca.auditFor) AS series");
+
+		sql.addField("CONCAT(CASE WHEN d.questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR
+				+ " THEN 'OSHA' WHEN d.questionID = 11115 THEN 'MSHA' ELSE 'COHS' END, ' ', ca.auditFor) AS series");
 		sql.addField("COUNT(*) AS value");
 		sql.addWhere("a.type='Contractor'");
 		sql.addWhere("ca.auditTypeID = 11");
-		sql.addWhere("verifiedDate IS NOT NULL");
+		sql.addWhere("d.dateVerified IS NOT NULL");
 		sql.addWhere("ca.auditFor IN (" + Strings.implode(years) + ")");
-		sql.addWhere("os.SHAType IN (" + Strings.implodeForDB(shaType, ",") + ")");
+		sql.addWhere("CASE WHEN d.questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR + " THEN 'OSHA' WHEN d.questionID = 11115 THEN 'MSHA' ELSE 'COHS' END IN (" + Strings.implodeForDB(shaType, ",") + ")");
 		sql.addGroupBy("series, label");
 
+		if (shaType != null && shaType.length > 0) {
+			String questionIDs = "";
+			
+			for (int i = 0; i < shaType.length; i++) {
+				int questionID = 0;
+
+				if (shaType[i] == OshaType.OSHA)
+					questionID = OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR;
+				else if (shaType[i] == OshaType.MSHA)
+					questionID = 11115;
+				else if (shaType[i] == OshaType.COHS)
+					questionID = CohsStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR;
+			
+				questionIDs += questionID + ",";
+			}
+
+			sql.addWhere("d.questionID IN (" + StringUtils.trimTrailingCharacter(questionIDs, ',') + ")");
+		}
+		
 		if (permissions.isOperatorCorporate()) {
 			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
 
