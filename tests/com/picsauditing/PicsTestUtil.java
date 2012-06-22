@@ -14,7 +14,7 @@ public class PicsTestUtil {
 	private EntityManager em;
 	
 	@SuppressWarnings("unchecked")
-	public <T> void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom) 
+	public static <T> void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom) 
 			throws InstantiationException, IllegalAccessException {
 		Class<T> classOfToObject = (Class<T>) objectToAutowire.getClass();
 		Class<T> classOfFromObject = (Class<T>) toTakeMockDaosFrom.getClass();
@@ -26,7 +26,7 @@ public class PicsTestUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> void autowireDaoInTargetWithMocksFromSource(Object objectToAutowire, Object toTakeMockDaosFrom,
+	private static <T> void autowireDaoInTargetWithMocksFromSource(Object objectToAutowire, Object toTakeMockDaosFrom,
 			Class<T> classOfToObject, Field field) throws IllegalAccessException {
 		Annotation[] annotations = field.getAnnotations();
 		for (int j = 0; j < annotations.length; j++) {
@@ -44,7 +44,7 @@ public class PicsTestUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> String fieldNameOfAutowiredFieldOfClass(Class<T> classOfField, Class<T> classOfToObject) {
+	private static <T> String fieldNameOfAutowiredFieldOfClass(Class<T> classOfField, Class<T> classOfToObject) {
 		String fieldName = null;
 		Field[] fields = classOfToObject.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {

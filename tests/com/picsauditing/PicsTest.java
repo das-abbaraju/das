@@ -50,7 +50,7 @@ public abstract class PicsTest {
 
 	protected void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom) 
 			throws InstantiationException,IllegalAccessException {
-		testUtil.autowireDAOsFromDeclaredMocks(objectToAutowire, toTakeMockDaosFrom);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(objectToAutowire, toTakeMockDaosFrom);
 	}
 
 	protected void mockI18nCacheForEnglishMonthNames() {

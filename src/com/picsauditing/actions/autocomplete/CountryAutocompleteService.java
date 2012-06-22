@@ -76,22 +76,22 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 		return Strings.implodeForDB(isoCodes, ","); 
 	}
 	
-//	private static boolean queryContainsIsoCodes(String query) {
-//		if (Strings.isEmpty(query)) {
-//			return false;
-//		}
-//		
-//		String[] parsedIsoCodes = query.split(",");
-//		if (ArrayUtils.isNotEmpty(parsedIsoCodes)) {
-//			for (String isoCode : parsedIsoCodes) {
-//				if (!Strings.isEmpty(isoCode) && isoCode.length() != 2) {
-//					return false;
-//				}
-//			}
-//		}
-//		
-//		return true;
-//	}
+	private static boolean queryContainsIsoCodes(String query) {
+		if (Strings.isEmpty(query)) {
+			return false;
+		}
+		
+		String[] parsedIsoCodes = query.split(",");
+		if (ArrayUtils.isNotEmpty(parsedIsoCodes)) {
+			for (String isoCode : parsedIsoCodes) {
+				if (!Strings.isEmpty(isoCode) && isoCode.length() != 2) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 
 	class CountryAutocomplete extends Country {
 		Autocompleteable a;
