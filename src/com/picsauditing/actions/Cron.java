@@ -125,6 +125,8 @@ public class Cron extends PicsActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private IndexerEngine indexer;
+	@Autowired
+	private EmailBuilder emailBuilder;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -148,6 +150,8 @@ public class Cron extends PicsActionSupport {
 	private int possibleDuplciateEmailTemplate = 234;
 
 	private final Logger logger = LoggerFactory.getLogger(Cron.class);
+
+
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -780,62 +784,61 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void sendDelinquentContractorsEmail() throws Exception {
-		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		if (CollectionUtils.isNotEmpty(invoices)) {
-			for (EmailQueue email : parseInvoices(invoices)) {
-				emailQueueDAO.save(email);
-				if (email.getToAddresses().equals("billing@picsauditing.com"))
-					stampNote(email.getContractorAccount(),
-							"Failed to send Deactivation Email because of no valid email address.",
-							NoteCategory.Billing);
-				else
-					stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
-							NoteCategory.Billing);
-			}
+		List<Invoice> pendingAndDelienquentInvoices = contractorAccountDAO.findPendingDelinquentAndDelinquentInvoices();
+		if (!pendingAndDelienquentInvoices.isEmpty()) {
+			Map<ContractorAccount, Integer> pendingAndDelinquentAccts = splitPendingAndDeliquentInvoices(pendingAndDelienquentInvoices);
+			sendEmailsTo(pendingAndDelinquentAccts);
 		}
 	}
 
-	private List<EmailQueue> parseInvoices(List<Invoice> invoices) {
+	private Map<ContractorAccount, Integer> splitPendingAndDeliquentInvoices(List<Invoice> invoices) {
 		Map<ContractorAccount, Integer> contractors = new TreeMap<ContractorAccount, Integer>();
 
 		for (Invoice invoice : invoices) {
 			ContractorAccount cAccount = (ContractorAccount) invoice.getAccount();
-			// TODO check with John H if we need one or both of these templates.
-			// If we need both, then use a CONSTANT
 			if (invoice.getDueDate().before(new Date()))
 				contractors.put(cAccount, 48); // deactivation
 			else
 				contractors.put(cAccount, 50); // open
 		}
-		return populateEmail(contractors);
+
+		return contractors;
 	}
 
-	private List<EmailQueue> populateEmail(Map<ContractorAccount, Integer> contractors) {
-		List<EmailQueue> list = new ArrayList<EmailQueue>();
-		for (ContractorAccount cAccount : contractors.keySet()) {
+	private void sendEmailsTo(Map<ContractorAccount, Integer> pendingAndDelinquentAccts) {
+		for (ContractorAccount cAccount : pendingAndDelinquentAccts.keySet()) {
 			try {
-				EmailBuilder emailBuilder = new EmailBuilder();
+				int templateID = pendingAndDelinquentAccts.get(cAccount);
+
+				emailBuilder.clearAll();
 				emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
-				emailBuilder.setTemplate(contractors.get(cAccount));
+				emailBuilder.setTemplate(templateID);
 
 				EmailQueue email = emailBuilder.build();
 				email.setLowPriority();
 				email.setViewableById(Account.PicsID);
-				list.add(email);
+				emailQueueDAO.save(email);
+				stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
+						NoteCategory.Billing);
 			} catch (Exception e) {
-				EmailQueue email = new EmailQueue();
-				email.setToAddresses("billing@picsauditing.com");
-				email.setContractorAccount(cAccount);
-				email.setSubject("Contractor Missing Email Address");
-				email.setBody(cAccount.getName() + " (" + cAccount.getId() + ") has no valid email address. "
-						+ "The system is unable to send automated emails to this account. "
-						+ "Attempted to send Overdue Invoice Email Reminder.");
-				email.setLowPriority();
-				email.setViewableById(Account.PicsID);
-				list.add(email);
+				sendInvalidEmailsToBilling(cAccount);
 			}
 		}
-		return list;
+	}
+
+	private void sendInvalidEmailsToBilling(ContractorAccount cAccount) {
+		EmailQueue email = new EmailQueue();
+		email.setToAddresses("billing@picsauditing.com");
+		email.setContractorAccount(cAccount);
+		email.setSubject("Contractor Missing Email Address");
+		email.setBody(cAccount.getName() + " (" + cAccount.getId() + ") has no valid email address. "
+				+ "The system is unable to send automated emails to this account. "
+				+ "Attempted to send Overdue Invoice Email Reminder.");
+		email.setLowPriority();
+		email.setViewableById(Account.PicsID);
+		emailQueueDAO.save(email);
+		stampNote(email.getContractorAccount(),
+				"Failed to send Deactivation Email because of no valid email address.", NoteCategory.Billing);
 	}
 
 	public void addLateFeeToDelinquentInvoices() throws Exception {

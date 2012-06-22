@@ -1,7 +1,9 @@
 package com.picsauditing.actions;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +12,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,22 +22,20 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ Cron.class })
@@ -54,11 +53,7 @@ public class CronTest extends PicsTest {
 	Map<Integer, List<Integer>> opIdsByCertIds = new HashMap<Integer, List<Integer>>();
 
 	@Mock
-	private Permissions permissions = new Permissions();
-	@Mock
 	CertificateDAO certDao = new CertificateDAO();
-	@Mock
-	private OperatorAccountDAO operatorDAO = new OperatorAccountDAO();
 
 	@Before
 	public void setUp() throws Exception {
@@ -123,35 +118,53 @@ public class CronTest extends PicsTest {
 		assertEquals(Integer.valueOf(5), Whitebox.invokeMethod(cron, "sumFlagChanges", fakes));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testPopulateEmail_SingleContractorAccountGetsSingleEmail() throws Exception {
+	public void testSendEmailsTo_SingleContractorAccountGetsSingleEmail() throws Exception {
 		ContractorAccount cAccount = new ContractorAccount();
 		Map<ContractorAccount, Integer> fakeContractors = new TreeMap<ContractorAccount, Integer>();
 		fakeContractors.put(cAccount, 48);
 
 		EmailQueue email = new EmailQueue();
-		email.setToAddresses("test@test.com");
+		email.setContractorAccount(new ContractorAccount(3));
 
-		EmailBuilder mockEmailBuilder1 = Mockito.mock(EmailBuilder.class);
-		when(mockEmailBuilder1.build()).thenReturn(email);
+		EmailBuilder emailBuilder = Mockito.mock(EmailBuilder.class);
+		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
+		when(emailBuilder.build()).thenReturn(email);
 
-		assertEquals(fakeContractors.size(), ((List<EmailQueue>)Whitebox.invokeMethod(cron, "populateEmail", fakeContractors)).size());
+		EmailQueueDAO emailQueueDAO = Mockito.mock(EmailQueueDAO.class);
+		Whitebox.setInternalState(cron, "emailQueueDAO", emailQueueDAO);
+
+		NoteDAO noteDAO = Mockito.mock(NoteDAO.class);
+		Whitebox.setInternalState(cron, "noteDAO", noteDAO);
+
+		Whitebox.invokeMethod(cron, "sendEmailsTo", fakeContractors);
+
+		verify(emailQueueDAO).save(any(EmailQueue.class));
+		verify(noteDAO).save(any(Note.class));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testPopulateEmail_WhenEmailExceptionIsThrownErrorEmailIsSent() throws Exception {
+	public void testSendInvalidEmailsToBilling_SingleContractorAccountGetsSingleEmail() throws Exception {
 		ContractorAccount cAccount = new ContractorAccount();
 		Map<ContractorAccount, Integer> fakeContractors = new TreeMap<ContractorAccount, Integer>();
 		fakeContractors.put(cAccount, 48);
 
 		EmailQueue email = new EmailQueue();
-		email.setToAddresses("test@test.com");
+		email.setContractorAccount(new ContractorAccount(3));
 
-		EmailBuilder mockEmailBuilder1 = Mockito.mock(EmailBuilder.class);
-		doThrow(EmailException.class).when(mockEmailBuilder1).build();
+		EmailBuilder emailBuilder = Mockito.mock(EmailBuilder.class);
+		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
+		when(emailBuilder.build()).thenReturn(email);
 
-		assertEquals("billing@picsauditing.com", ((List<EmailQueue>)Whitebox.invokeMethod(cron, "populateEmail", fakeContractors)).get(0).getToAddresses());
+		EmailQueueDAO emailQueueDAO = Mockito.mock(EmailQueueDAO.class);
+		Whitebox.setInternalState(cron, "emailQueueDAO", emailQueueDAO);
+
+		NoteDAO noteDAO = Mockito.mock(NoteDAO.class);
+		Whitebox.setInternalState(cron, "noteDAO", noteDAO);
+
+		Whitebox.invokeMethod(cron, "sendEmailsTo", fakeContractors);
+
+		verify(emailQueueDAO).save(any(EmailQueue.class));
+		verify(noteDAO).save(any(Note.class));
 	}
 }
