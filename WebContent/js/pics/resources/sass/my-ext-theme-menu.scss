@@ -1,6 +1,7 @@
 // Unless you want to include all components, you must set $include-default to false
 // IF you set this to true, you can also remove lines 10 to 38 of this file
 $include-default: false;
+$scope-reset-css: true;
 
 // Insert your custom variables here.
 // $base-color: #aa0000;
@@ -13,6 +14,7 @@ $include-default: false;
  * Author: Carey Hinoki
  */
 
+$border-layout-ct-background: #ffffff;
 $button-large-font-size: 13px;
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-size: 13px;

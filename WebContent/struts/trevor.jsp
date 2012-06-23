@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<link rel="stylesheet" type="text/css" href="css/pics.css">
-<link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
+<!-- <link rel="stylesheet" type="text/css" href="css/pics.css"> -->
+<link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css">
 
 <script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
 

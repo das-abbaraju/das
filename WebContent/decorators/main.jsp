@@ -77,9 +77,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/main_system_message.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/ext-all.css" />
 
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 
@@ -94,11 +92,6 @@
 		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
 		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
-		<script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
-
-		<% if (useDynamicReports) { %>
-		<script type="text/javascript" src="js/pics/main-menu.js"></script>
-		<% } %>
 
 		<script type="text/javascript">
 			$(function() {
@@ -171,49 +164,59 @@
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
         <jsp:include page="/struts/layout/environment.jsp" />
+        
+        <% if (useDynamicReports) { %>
+        
+        <nav id="site_navigation"></nav>
+        
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css" />
+        <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
+        <script type="text/javascript" src="v7/js/menu.js"></script>
+        
+        <% } %>
 
-		<div id="bodywrap">
-			<jsp:include page="/struts/misc/main_system_message.jsp" />
-			<table id="header">
-				<!-- !begin header -->
-				<tr>
-					<td id="logo">
-						<a href="<%= homePageUrl %>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
-					</td>
-					<% if (permissions.isActive() && !permissions.isContractor()) { %>
-						<td id="headersearch">
-							<form action="Search.action" method="get">
-								<input type="hidden" value="search" name="button" />
-								<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
-								<input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
-							</form>
-						</td>
-					<% } %>
-					<td id="sidebox">
-						<p>
-							<b class="head-phone"><%=i18nCache.getText("PicsPhone", locale)%></b>&emsp;&emsp;
-						<% if (permissions.isLoggedIn()) { %>
-							<span id="name">
-								<% if (permissions.hasPermission(OpPerms.EditProfile)) { %>
-									<%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(), permissions.getName()) %>
-								<% } else { %>
-									<%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
-								<% } %>
-							</span>
-						| <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
-						<% } else { %>
-							<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
-						<% } %>
-						</p>
-					</td>
-				</tr>
-			</table>
-		</div>
-
+        <% if (!useDynamicReports) { %>
+        <div id="bodywrap">
+            <jsp:include page="/struts/misc/main_system_message.jsp" />
+            <table id="header">
+                <!-- !begin header -->
+                <tr>
+                    <td id="logo">
+                        <a href="<%= homePageUrl %>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
+                    </td>
+                    <% if (permissions.isActive() && !permissions.isContractor()) { %>
+                        <td id="headersearch">
+                            <form action="Search.action" method="get">
+                                <input type="hidden" value="search" name="button" />
+                                <input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
+                                <input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
+                            </form>
+                        </td>
+                    <% } %>
+                    <td id="sidebox">
+                        <p>
+                            <b class="head-phone"><%=i18nCache.getText("PicsPhone", locale)%></b>&emsp;&emsp;
+                        <% if (permissions.isLoggedIn()) { %>
+                            <span id="name">
+                                <% if (permissions.hasPermission(OpPerms.EditProfile)) { %>
+                                    <%=i18nCache.getText("Header.WelcomeLink", locale, permissions.getAccountName(), permissions.getName()) %>
+                                <% } else { %>
+                                    <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
+                                <% } %>
+                            </span>
+                        | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
+                        <% } else { %>
+                            <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
+                        <% } %>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
 		<!-- !begin navigation -->
 		<div id="nav">
 			<div id="MainMenu">
-			<% if (!useDynamicReports) { %>
 				<div id="tab">
 					<div id="navbar">
 						<ul>
@@ -227,10 +230,10 @@
 						</ul>
 					</div>
 				</div>
-			<% } %>
 			</div>
 		</div>
 		<!-- !end navigation -->
+        <% } %>
 
 		<div id="main">
 			<div id="bodyholder">

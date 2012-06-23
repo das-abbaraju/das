@@ -65,6 +65,11 @@
 	text-align: center;
 }
 
+#report_list
+{
+    list-style: none;
+}
+
 #report_list li
 {
     background-color: #f1f1f2;

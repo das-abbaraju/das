@@ -22,11 +22,11 @@
 		<!-- Mobile viewport optimized: h5bp.com/viewport -->
 		<meta name="viewport" content="width=device-width">
 
-        <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/font-awesome.css?v=${version}" />
         
         <%-- custom --%>
+        <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css" />
         
         <%-- page specific --%>

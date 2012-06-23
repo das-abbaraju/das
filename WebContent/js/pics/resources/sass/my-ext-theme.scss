@@ -27,7 +27,33 @@ $grid-header-color: #ffffff !default;
 
 // End ExtJS4 Overwrites
  
-@import 'ext4/default/all';
+@import "compass/css3";
+@import "blueprint/typography";
+
+$include-default: true !default;
+$include-default-uis: true !default;
+
+@import 'ext4/default/functions';
+@import 'ext4/default/variables';
+@import 'ext4/default/mixins';
+
+//core
+@import 'ext4/default/core/core';
+
+//layout
+@import 'ext4/default/layout/layout';
+
+//utils
+@import 'ext4/default/util/tool';
+@import 'ext4/default/util/messagebox';
+@import 'ext4/default/util/splitter';
+@import 'ext4/default/util/resizable';
+@import 'ext4/default/util/dragdrop';
+@import 'ext4/default/util/scroller';
+@import 'ext4/default/util/focus';
+
+//widgets
+@import 'ext4/default/widgets';
 
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
