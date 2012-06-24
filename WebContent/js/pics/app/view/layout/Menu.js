@@ -16,58 +16,64 @@ Ext.define('PICS.view.layout.Menu', {
                     menu_items[index].scale = 'large';
 
                     if (menu_items[index].menu != undefined) {
-//                        console.log('setting menu[' + index + '].menu.plain to true');
+                        console.log('setting menu[' + index + '].menu.plain to true');
                         menu_items[index].menu.plain = true;
                     }
                 }
             });
 
-            // Add the logo
             toolbar.add({
                 height: height,
                 icon: 'js/pics/app/resources/images/logo.png',
                 id: 'logo',
                 padding: '0px 20px',
                 scale: 'large',
+                // TODO pass in translated "Dashboard"
                 text: 'Dashboard',
+                // TODO pass in actual home page
                 url: 'Home.action'
             });
 
-            // Insert a separator
+            // TODO check length of menu_items before adding favorites
+
             menu_items[0].menu.items.splice(1, 0, {
                 xtype: 'menuseparator'
             });
 
-            // Insert a favorites item
             menu_items[0].menu.items.splice(2, 0, {
                 xtype: 'tbtext',
                 cls: 'menu-title',
+                // TODO pass in translated "Favorites"
                 text: 'Favorites'
             });
 
-            menu_items.splice(5, 0, {
+            var user_menu = menu_items.pop();
+            user_menu.padding = '0px 20px';
+            // Just for fun
+            user_menu.text += ' \u2699'; 
+
+            menu_items.push({
                xtype: 'tbfill'
             });
 
-            // Search
-            menu_items.splice(6, 0, {
+            menu_items.push({
                 xtype: 'textfield',
                 name: 'searchTerm',
-                emptyText: 'enter search term'
+                emptyText: 'enter search term',
             });
 
-            // Insert a separator
-            menu_items.splice(7, 0, {
+//            menu_items[menu_items.length - 1].padding = '0px 20px';
+
+            toolbar.add(menu_items);
+
+            toolbar.add({
                 xtype: 'tbseparator',
                 border: 1,
                 height: height,
                 margin: '0px 0px 0px 20px'
             });
 
-            // Add padding to the last menu item
-            menu_items[menu_items.length - 1].padding = '0px 20px';
-
-            toolbar.add(menu_items);
+            toolbar.add(user_menu);
         }
     },
 

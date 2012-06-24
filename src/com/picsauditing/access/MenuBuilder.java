@@ -289,9 +289,6 @@ public class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), "ManageReports.action?viewType=saved", "ManageReports");
 
-//		if (!favoriteReports.isEmpty())
-//			reportsMenu.addChild(getText("global.Favorites"), "", "Favorites");
-
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
 			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId(), "Report" + report.getId());
