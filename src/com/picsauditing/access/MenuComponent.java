@@ -6,13 +6,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.picsauditing.PICS.I18nCache;
-
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     private static final long serialVersionUID = 923449569385839331L;
     
-    private static I18nCache i18nCache = I18nCache.getInstance();
-
     private int level = 0;
     
     private String name;
