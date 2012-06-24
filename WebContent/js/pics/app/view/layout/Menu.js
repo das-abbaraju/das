@@ -50,7 +50,7 @@ Ext.define('PICS.view.layout.Menu', {
             var user_menu = menu_items.pop();
             user_menu.padding = '0px 20px';
             // Just for fun
-            user_menu.text += ' \u2699'; 
+            user_menu.text += ' \u2699';
 
             menu_items.push({
                xtype: 'tbfill'
