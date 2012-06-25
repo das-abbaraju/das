@@ -3,8 +3,6 @@ package com.picsauditing.actions.report;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +27,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.business.ReportController;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
@@ -61,7 +59,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private String searchQuery = "";
 
 	@Autowired
-	ReportController reportController;
+	ReportDynamicModel reportController;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -147,7 +145,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			translateFilterValueNames(definition.getFilters());
 
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			if (definition.getColumns().size() > 0) {
 				long startTime = Calendar.getInstance().getTimeInMillis();
@@ -184,7 +182,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			reportController.validate(report);
 
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)
@@ -251,7 +249,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			reportController.validate(report);
-			Map<String, Field> availableFields = ReportController.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", translateAndJsonify(availableFields));

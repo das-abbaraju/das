@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.business.ReportController;
+import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.business.DynamicReportUtil;
@@ -46,7 +46,7 @@ public class ReportDynamicTest {
 	@Mock
 	private Permissions permissions;
 	@Mock
-	private ReportController reportController;
+	private ReportDynamicModel reportController;
 	@Mock
 	private HttpServletRequest request;
 	@Mock

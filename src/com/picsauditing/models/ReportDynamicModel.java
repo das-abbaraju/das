@@ -1,4 +1,4 @@
-package com.picsauditing.report.business;
+package com.picsauditing.models;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.business.DynamicReportUtil;
 
-public class ReportController {
+public class ReportDynamicModel {
 
 	@Autowired
 	private BasicDAO basicDao;

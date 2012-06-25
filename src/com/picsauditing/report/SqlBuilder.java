@@ -14,7 +14,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.business.ReportController;
+import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
@@ -61,7 +61,7 @@ public class SqlBuilder {
 
 		setFrom(model);
 
-		Map<String, Field> availableFields = ReportController.buildAvailableFields(model.getPrimaryTable());
+		Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(model.getPrimaryTable());
 
 		addFieldsAndGroupBy(availableFields, definition.getColumns());
 		addRuntimeFilters(availableFields);
