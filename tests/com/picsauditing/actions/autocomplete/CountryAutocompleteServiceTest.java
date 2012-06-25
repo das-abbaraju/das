@@ -33,10 +33,12 @@ public class CountryAutocompleteServiceTest {
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(service, this);
 	}
 
-	@Ignore("todo")
 	@Test
 	public void testGetItems_EmptyQuery() throws Exception {
+		Collection<Country> results = service.getItems(null);
 		
+		assertThat(results, notNullValue());
+		assertTrue(results.isEmpty());
 	}
 
 	@Test

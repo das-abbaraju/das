@@ -125,7 +125,6 @@ public class ContractorFlagETLTest {
 		assertTrue(criteriaQuestionSet.isEmpty());
 	}
 	
-	@Ignore
 	@Test
 	public void testGetFlaggableAuditQuestionIds_NoFlagCriteria() throws Exception {
 		Set<FlagCriteria> distinctFlagCriteria = new HashSet<FlagCriteria>();

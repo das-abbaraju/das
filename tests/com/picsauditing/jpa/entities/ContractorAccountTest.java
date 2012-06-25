@@ -56,7 +56,6 @@ public class ContractorAccountTest {
 //		assertEquals("Current", contractor.getBillingStatus());
 	}
 
-	@Ignore
 	@Test
 	public void testCreditCard_expiresToday() {
 		ContractorAccount contractor = EntityFactory.makeContractor();
