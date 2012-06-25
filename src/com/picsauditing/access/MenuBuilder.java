@@ -323,6 +323,7 @@ public class MenuBuilder {
 			menu.addChild(getText("FacilitiesEdit.title"), url, "facilities_edit");
 		}
 
+		// We're trying to get rid of this
 		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR))
 			menu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action", "create_auditor_invoices");
 
