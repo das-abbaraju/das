@@ -172,7 +172,7 @@ public class FacilityChanger {
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
 		// if (!permissions.hasPermission(OpPerms.RemoveContractors))
 		// return false;
-		Iterator<ContractorOperator> iterator = contractor.getNonCorporateOperators().iterator();
+		Iterator<ContractorOperator> iterator = contractor.getOperators().iterator();
 		while (iterator.hasNext()) {
 			ContractorOperator co = iterator.next();
 			if (!co.getOperatorAccount().isCorporate() && co.getOperatorAccount().equals(operator)) {
