@@ -620,7 +620,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
 	}
 
-	public String redirect(String url) throws IOException {
+	public String setUrlForRedirect(String url) throws IOException {
 		this.url = url;
 
 		if (!Strings.isEmpty(this.url)) {

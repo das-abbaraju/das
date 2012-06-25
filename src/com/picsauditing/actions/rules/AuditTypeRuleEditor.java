@@ -71,9 +71,9 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	protected String redirectTo() throws IOException {
 		if (rule != null) {
-			return this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
+			return this.setUrlForRedirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
 		} else {
-			return this.redirect("AuditTypeRuleSearch.action");
+			return this.setUrlForRedirect("AuditTypeRuleSearch.action");
 		}
 	}
 
@@ -90,7 +90,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 				redirect += "filter.auditType=" + rule.getAuditType().getName().toString();
 		}
 
-		return this.redirect(redirect);
+		return this.setUrlForRedirect(redirect);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class ManageAppProperty extends PicsActionSupport {
 				appPropertyDAO.save(appProp);
 			}
 			
-			return redirect("ManageAppProperty.action");
+			return setUrlForRedirect("ManageAppProperty.action");
 		}
 		
 		return SUCCESS;

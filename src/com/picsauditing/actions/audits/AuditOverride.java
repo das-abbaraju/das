@@ -95,9 +95,9 @@ public class AuditOverride extends ContractorDocuments {
 				auditBuilder.buildAudits(contractor);
 
 				if (auditType.isEmployeeSpecificAudit()) {
-					return this.redirect("EmployeeDashboard.action?id=" + id);
+					return this.setUrlForRedirect("EmployeeDashboard.action?id=" + id);
 				} else {
-					return this.redirect("Audit.action?auditID=" + conAudit.getId());
+					return this.setUrlForRedirect("Audit.action?auditID=" + conAudit.getId());
 				}
 			}
 		}

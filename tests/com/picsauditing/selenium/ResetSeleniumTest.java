@@ -63,7 +63,7 @@ public class ResetSeleniumTest {
 		classUnderTest = PowerMockito.spy(new ResetSelenium());
 		SeleniumDAO = mock(SeleniumDAO.class);
 		setInternalState(classUnderTest, "SD", SeleniumDAO);
-		doReturn("blank").when(classUnderTest).redirect(anyString());
+		doReturn("blank").when(classUnderTest).setUrlForRedirect(anyString());
 		doNothing().when(SeleniumDAO).delete((List<SeleniumDeletable>) any());
 		when(SeleniumDAO.availableTestingReferences()).thenReturn(testList);
 	}

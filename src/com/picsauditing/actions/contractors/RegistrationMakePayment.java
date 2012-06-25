@@ -409,7 +409,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 		loadCC();
 
-		return this.redirect("RegistrationMakePayment.action");
+		return this.setUrlForRedirect("RegistrationMakePayment.action");
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -648,7 +648,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			invoiceDAO.save(invoice);
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			redirect("RegistrationMakePayment.action");
+			setUrlForRedirect("RegistrationMakePayment.action");
 			return true;
 		}
 
@@ -658,7 +658,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			redirect("RegistrationMakePayment.action");
+			setUrlForRedirect("RegistrationMakePayment.action");
 			return true;
 		}
 

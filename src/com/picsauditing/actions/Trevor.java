@@ -12,7 +12,7 @@ public class Trevor extends PicsActionSupport {
 		addActionMessage("Info");
 		addActionError("Error");
 
-		return redirect("Trevor.action?test=1");
+		return setUrlForRedirect("Trevor.action?test=1");
 	}
 
 	public int getTest() {

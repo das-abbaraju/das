@@ -51,9 +51,9 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 
 		if (rule != null) {
-			return this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
+			return this.setUrlForRedirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
 		} else {
-			return this.redirect("CategoryRuleSearch.action");
+			return this.setUrlForRedirect("CategoryRuleSearch.action");
 		}
 	}
 
@@ -71,7 +71,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 				redirect += "filter.category=" + ((AuditCategoryRule) rule).getAuditCategory().getName();
 		}
 
-		return this.redirect(redirect);
+		return this.setUrlForRedirect(redirect);
 	}
 
 	@Override

@@ -66,10 +66,12 @@ public class ReportDynamic extends PicsActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
 	public String execute() {
+		String status = SUCCESS;
+
 		if (report == null) {
 			try {
 				// No matter what junk we get in the url, redirect
-				redirect("ManageReports.action?viewType=saved");
+				status = setUrlForRedirect("ManageReports.action?viewType=saved");
 
 				String reportId = ServletActionContext.getRequest().getParameter("report");
 
@@ -82,7 +84,7 @@ public class ReportDynamic extends PicsActionSupport {
 			}
 		}
 
-		return SUCCESS;
+		return status;
 	}
 
 	@Deprecated
@@ -124,7 +126,7 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", false);
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
-			logger.error("An error occurred while editing a report id = {} for user {}", 
+			logger.error("An error occurred while editing a report id = {} for user {}",
 					report.getId(), permissions.getUserId());
 			writeJsonErrorMessage(e);
 		}
@@ -328,7 +330,7 @@ public class ReportDynamic extends PicsActionSupport {
 		addTranslationLabelsToFilters(definition);
 		addTranslationLabelsToSorts(definition);
 	}
-	
+
 	private void addTranslationLabelsToFields(Definition definition) {
 		if (CollectionUtils.isEmpty(definition.getColumns()))
 			return;
@@ -337,7 +339,7 @@ public class ReportDynamic extends PicsActionSupport {
 			column.getField().setText(translateLabel(column.getField()));
 		}
 	}
-	
+
 	private void addTranslationLabelsToFilters(Definition definition) {
 		if (CollectionUtils.isEmpty(definition.getFilters()))
 			return;
@@ -346,7 +348,7 @@ public class ReportDynamic extends PicsActionSupport {
 			filter.getField().setText(translateLabel(filter.getField()));
 		}
 	}
-	
+
 	private void addTranslationLabelsToSorts(Definition definition) {
 		if (CollectionUtils.isEmpty(definition.getSorts()))
 			return;
@@ -384,8 +386,8 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	/**
-	 * The purpose of this method is to convert the queryResult into a JSONObject, 
-	 * 
+	 * The purpose of this method is to convert the queryResult into a JSONObject,
+	 *
 	 * @param queryResults
 	 * @param availableFields
 	 */
@@ -414,7 +416,7 @@ public class ReportDynamic extends PicsActionSupport {
 					if (field.isTranslated()) {
 						String key = field.getI18nKey(value.toString());
 						jsonRow.put(column, getText(key));
-							
+
 					} else if (value instanceof java.sql.Date) {
 						java.sql.Date valueAsDate = (java.sql.Date) value;
 						jsonRow.put(column, valueAsDate.getTime());
@@ -422,7 +424,7 @@ public class ReportDynamic extends PicsActionSupport {
 					} else if (value instanceof java.sql.Timestamp) {
 						Timestamp valueAsTimestamp = (Timestamp) value;
 						jsonRow.put(column, valueAsTimestamp.getTime());
-						
+
 					} else {
 						jsonRow.put(column, value.toString());
 					}

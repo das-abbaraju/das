@@ -733,14 +733,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public String previousStep() throws Exception {
 		findContractor();
-		redirect(getPreviousRegistrationStep().getUrl());
+		setUrlForRedirect(getPreviousRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 
 	public String nextStep() throws Exception {
 		findContractor();
 		if (getNextRegistrationStep() != null)
-			redirect(getNextRegistrationStep().getUrl());
+			setUrlForRedirect(getNextRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 
@@ -805,7 +805,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		ContractorRegistrationStep highestStepReached = ContractorRegistrationStep.getStep(contractor);
 		if (highestStepReached.ordinal() < this.currentStep.ordinal()
 				|| highestStepReached == ContractorRegistrationStep.Done) {
-			redirect(highestStepReached.getUrl());
+			setUrlForRedirect(highestStepReached.getUrl());
 			return true;
 		}
 		return false;

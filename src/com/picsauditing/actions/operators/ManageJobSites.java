@@ -371,9 +371,9 @@ public class ManageJobSites extends OperatorActionSupport {
 
 	private String getRedirect() throws Exception {
 		if (permissions.isOperator())
-			return redirect("ManageProjects.action");
+			return setUrlForRedirect("ManageProjects.action");
 		else
-			return redirect("ManageProjects.action?id=" + operator.getId());
+			return setUrlForRedirect("ManageProjects.action?id=" + operator.getId());
 	}
 
 	public ContractorAccount getContractor() {

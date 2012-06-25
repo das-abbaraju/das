@@ -193,7 +193,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 				addActionMessage("Successfully Deleted Payment");
 
-				return redirect("BillingDetail.action?id=" + contractor.getId());
+				return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
 			}
 
 			if (button.equalsIgnoreCase("voidcc")) {
@@ -211,7 +211,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						addActionMessage(message);
 					}
 
-					return redirect("BillingDetail.action?id=" + contractor.getId());
+					return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
@@ -270,7 +270,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToInvoice pa = iterInvoice.next();
 							if (pa.getInvoice().getId() == txnID) {
 								paymentDAO.removePaymentInvoice(pa, getUser());
-								return redirect("PaymentDetail.action?payment.id=" + payment.getId());
+								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
 
@@ -279,7 +279,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToRefund pa = iterRefund.next();
 							if (pa.getRefund().getId() == txnID) {
 								paymentDAO.removePaymentRefund(pa, getUser());
-								return redirect("PaymentDetail.action?payment.id=" + payment.getId());
+								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
 					}
@@ -334,7 +334,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				addActionMessage(message);
 			}
 
-			return redirect("PaymentDetail.action?payment.id=" + payment.getId());
+			return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 		}
 
 		for (Invoice invoice : contractor.getInvoices()) {

@@ -146,7 +146,7 @@ public class ManageImportData extends ReportActionSupport {
 				}
 			}
 			
-			return redirect("ManageImportData.action" + (permissions.isAssessment() ? "" : "?id=" + id));
+			return setUrlForRedirect("ManageImportData.action" + (permissions.isAssessment() ? "" : "?id=" + id));
 		}
 		
 		buildQuery();

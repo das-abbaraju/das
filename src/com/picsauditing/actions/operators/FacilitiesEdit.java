@@ -370,7 +370,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		save();
 		clearMessages();
 
-		return redirect("ReportAccountList.action");
+		return setUrlForRedirect("ReportAccountList.action");
 	}
 
 	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {

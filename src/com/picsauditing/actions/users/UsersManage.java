@@ -355,7 +355,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
-			return this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
+			return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
 		return SUCCESS;
@@ -374,7 +374,7 @@ public class UsersManage extends PicsActionSupport {
 
 		addActionMessage(getText("UsersManage.Unlocked"));
 
-		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	public String move() throws Exception {
@@ -383,7 +383,7 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getAccount().getUsers().size() == 1) {
 			addActionMessage(getText("UsersManage.CannotMoveUser"));
 
-			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 		}
 
 		// accounts are different so we are moving to a new account
@@ -416,7 +416,7 @@ public class UsersManage extends PicsActionSupport {
 		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
 				.getName()));
 
-		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
@@ -503,7 +503,7 @@ public class UsersManage extends PicsActionSupport {
 
 		// when an user is reactived, refresh the page to change the isactive
 		// status.
-		return this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
+		return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 
 	}
 

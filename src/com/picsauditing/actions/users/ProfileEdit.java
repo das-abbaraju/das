@@ -116,7 +116,7 @@ public class ProfileEdit extends PicsActionSupport {
 		 * This redirct is required if the user happened to change their locale,
 		 * as we would be stuck in a request for the previous locale.
 		 */
-		return this.redirect("ProfileEdit.action?success");
+		return this.setUrlForRedirect("ProfileEdit.action?success");
 	}
 
 	public String department() {
@@ -150,7 +150,7 @@ public class ProfileEdit extends PicsActionSupport {
 		// page.
 		if (!permissions.isLoggedIn()) {
 			addActionMessage(getText("ProfileEdit.error.SessionTimeout"));
-			return redirect("Login.action?button=logout");
+			return setUrlForRedirect("Login.action?button=logout");
 		}
 
 		// Only the current user should be allowed to edit their profile.

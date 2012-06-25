@@ -99,6 +99,6 @@ public class SubcontractorFacilities extends ContractorActionSupport {
 				facilityChanger.add();
 			}
 		}
-		return redirect("SubcontractorFacilities.action?id=" + contractor.getId());
+		return setUrlForRedirect("SubcontractorFacilities.action?id=" + contractor.getId());
 	}
 }

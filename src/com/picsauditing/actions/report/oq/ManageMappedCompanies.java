@@ -74,7 +74,7 @@ public class ManageMappedCompanies extends ReportActionSupport {
 				}
 			}
 			
-			return redirect("ManageMappedCompanies.action" + (permissions.isAssessment() ? "" : "?id=" + id));
+			return setUrlForRedirect("ManageMappedCompanies.action" + (permissions.isAssessment() ? "" : "?id=" + id));
 		}
 		
 		buildQuery();

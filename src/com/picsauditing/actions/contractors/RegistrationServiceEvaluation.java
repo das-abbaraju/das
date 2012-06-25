@@ -289,7 +289,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractorAccountDao.save(contractor);
 		}
 
-		return redirect(getRegistrationStep().getUrl());
+		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
 
 	private void setListOnly() {

@@ -70,7 +70,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			criteriaDAO.save(criteria);
 			addActionMessage("Criteria saved successfully.");
 
-			return this.redirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());
+			return this.setUrlForRedirect("ManageFlagCriteria!edit.action?criteria=" + criteria.getId());
 		}
 
 		return SUCCESS;

@@ -34,13 +34,13 @@ public class ResetSelenium extends PicsActionSupport {
 		else
 			performMultipleDeletion();
 
-		return redirect("ResetSelenium.action");
+		return setUrlForRedirect("ResetSelenium.action");
 	}
 
 	@Anonymous
 	public String deleteAll() throws Exception {
 		SD.delete(SD.availableTestingReferences());
-		return redirect("ResetSelenium.action");
+		return setUrlForRedirect("ResetSelenium.action");
 	}
 
 	private void performMultipleDeletion() throws Exception {

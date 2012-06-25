@@ -171,7 +171,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (!existing)
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
-		return redirect("ManageEmployees.action?"
+		return setUrlForRedirect("ManageEmployees.action?"
 				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account="
 						+ account.getId()) + "#employee=" + employee.getId());
 	}
@@ -189,7 +189,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		employee.setStatus(UserStatus.Active);
 		employeeDAO.save(employee);
 
-		return this.redirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
+		return this.setUrlForRedirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
 				+ employee.getId());
 	}
 

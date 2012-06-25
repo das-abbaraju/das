@@ -79,13 +79,13 @@ public class MenuWriterTest {
 
         assertEquals(json, MenuWriter.convertMenuToJSON(menu).toString());
     }
-    
+
     @Test
     public void testConvertToSimpleJSON () {
     	//String json = "{'id':'parent_id','text':'parent_name','menu':[{'text':'child_name','target':'child_target','menu':[{'text':'subChild_name'}],'href':'child_url'}]}";
     	String json = "{'id':'parent_id','text':'parent_name','menu':{'items':[{'text':'child_name','menu':{'items':[{'text':'subChild_name'}]},'target':'child_target','url':'child_url'}]}}";
     	json = convertQuotes(json);
-    	
+
     	MenuComponent parent = new MenuComponent();
     	parent.setHtmlId("parent_id");
     	parent.setName("parent_name");
@@ -93,7 +93,7 @@ public class MenuWriterTest {
     	child.setUrl("child_url");
     	child.setTarget("child_target");
     	MenuComponent subChild = child.addChild("subChild_name");
-    	
+
     	String convertedJSON = MenuWriter.convertMenuItemToJSON(parent).toJSONString();
 
     	assertEquals(json, convertedJSON);

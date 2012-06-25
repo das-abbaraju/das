@@ -102,7 +102,7 @@ public class LoginController extends PicsActionSupport {
 							// reset beta cookie
 							setBetaTestingCookie();
 							// redirect to original site.
-							redirect("http://www.picsorganizer.com");
+							setUrlForRedirect("http://www.picsorganizer.com");
 						}
 						ActionContext.getContext().getSession().remove("redirect");
 					}
@@ -206,7 +206,7 @@ public class LoginController extends PicsActionSupport {
 		} else {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
 
-			return super.redirect("Login.action?button=logout");
+			return super.setUrlForRedirect("Login.action?button=logout");
 		}
 	}
 
@@ -393,7 +393,7 @@ public class LoginController extends PicsActionSupport {
 				setBetaTestingCookie();
 
 			if (cookieFromURL.length() > 0) {
-				redirect(cookieFromURL);
+				setUrlForRedirect(cookieFromURL);
 				return;
 			}
 		}
@@ -417,7 +417,7 @@ public class LoginController extends PicsActionSupport {
 		if (url == null)
 			throw new Exception(getText("Login.NoPermissionsOrDefaultPage"));
 
-		redirect(url);
+		setUrlForRedirect(url);
 		return;
 	}
 
@@ -533,9 +533,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	@Override
-	public String redirect(String url) throws IOException {
+	public String setUrlForRedirect(String url) throws IOException {
 		if (!AjaxUtils.isAjax(getRequest())) {
-			return super.redirect(url);
+			return super.setUrlForRedirect(url);
 		}
 		return BLANK;
 	}

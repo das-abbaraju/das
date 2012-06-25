@@ -103,11 +103,11 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 		}
 
 		if (Strings.isEmpty(url))
-			this.redirect(String.format("Audit.action?auditID=%d", importAuditID));
+			this.setUrlForRedirect(String.format("Audit.action?auditID=%d", importAuditID));
 		else if (url.contains("ContractorPaymentOptions"))
-			this.redirect(url + "?newRegistration=true");
+			this.setUrlForRedirect(url + "?newRegistration=true");
 		else
-			this.redirect(url);
+			this.setUrlForRedirect(url);
 
 		return BLANK;
 	}

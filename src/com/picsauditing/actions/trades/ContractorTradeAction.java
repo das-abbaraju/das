@@ -307,14 +307,14 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			itr.remove();
 		}
 
-		return this.redirect("ContractorTrades.action?id=" + contractor.getId());
+		return this.setUrlForRedirect("ContractorTrades.action?id=" + contractor.getId());
 	}
 
 	public String continueWithTradesAjax() throws Exception {
 		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(contractor);
 
-		return this.redirect("ContractorTrades.action?id=" + contractor.getId());
+		return this.setUrlForRedirect("ContractorTrades.action?id=" + contractor.getId());
 	}
 
 	public boolean isOnsite() {

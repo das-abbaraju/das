@@ -36,7 +36,7 @@ public class ContractorBadge extends ContractorActionSupport {
 
 		dao.save(data);
 
-		return redirect("ContractorBadge.action?contractor=" + contractor.getId());
+		return setUrlForRedirect("ContractorBadge.action?contractor=" + contractor.getId());
 	}
 
 	public boolean isTaskCompleted() {

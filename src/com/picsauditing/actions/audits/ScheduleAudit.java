@@ -227,7 +227,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 		}
 
-		return redirect("ScheduleAudit!edit.action?auditID=" + conAudit.getId());
+		return setUrlForRedirect("ScheduleAudit!edit.action?auditID=" + conAudit.getId());
 	}
 
 	public String address() throws Exception {
@@ -670,7 +670,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		this.selectedTimeZone = selectedTimeZone;
 	}
 
-	public String redirect(String url) throws IOException {
+	public String setUrlForRedirect(String url) throws IOException {
 		ServletActionContext.getResponse().sendRedirect(url);
 		return BLANK;
 	}
