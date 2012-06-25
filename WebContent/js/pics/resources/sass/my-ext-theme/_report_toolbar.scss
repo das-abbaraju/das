@@ -6,20 +6,39 @@ $report_toolbar_border_color: #808285;
 $report_toolbar_header_text_color: #ffffff;
 
 // report toolbar - sort
-$report_toolbar_sort_border_color: #bcbcbc;
-$report_toolbar_sort_gradient_color_top: #f1f1f1;
+$report_toolbar_sort_background_color: #dcdcdc;
+$report_toolbar_sort_border_color: #dcdcdc;
+$report_toolbar_sort_gradient_color_top: #f1f1f2;
 $report_toolbar_sort_gradient_color_bottom: #dcdcdc;
+$report_toolbar_sort_text_color: #333333;
 
-$report_toolbar_sort_over_background_color: #dcdcdc;
+$report_toolbar_sort_over_background_color: #ececec;
+$report_toolbar_sort_over_gradient_color_top: #f7f7f8;
+$report_toolbar_sort_over_gradient_color_bottom: #ececec;
+
+$report_toolbar_sort_pressed_background_color: #cdcdcd;
+$report_toolbar_sort_pressed_gradient_color_top: #dcdcdc;
+$report_toolbar_sort_pressed_gradient_color_bottom: #cdcdcd;
+
+$report_toolbar_sort_active_background_color: #cdcdcd;
+$report_toolbar_sort_active_gradient_color_top: #dcdcdc;
+$report_toolbar_sort_active_gradient_color_bottom: #cdcdcd;
 
 // report toolbar - add column
-$report_toolbar_add_column_border_color: #bcbcbc;
-$report_toolbar_add_column_gradient_color_top: #f1f1f1;
+$report_toolbar_add_column_background_color: #dcdcdc;
+$report_toolbar_add_column_border_color: #dcdcdc;
+$report_toolbar_add_column_gradient_color_top: #f1f1f2;
 $report_toolbar_add_column_gradient_color_bottom: #dcdcdc;
 $report_toolbar_add_column_icon_plus_text_color: #2caf2c;
 $report_toolbar_add_column_text_color: #333333;
 
-$report_toolbar_add_column_over_background_color: #dcdcdc;
+$report_toolbar_add_column_over_background_color: #ececec;
+$report_toolbar_add_column_over_gradient_color_top: #f7f7f8;
+$report_toolbar_add_column_over_gradient_color_bottom: #ececec;
+
+$report_toolbar_add_column_pressed_background_color: #cdcdcd;
+$report_toolbar_add_column_pressed_gradient_color_top: #dcdcdc;
+$report_toolbar_add_column_pressed_gradient_color_bottom: #cdcdcd;
 
 #report_toolbar
 {
@@ -49,6 +68,7 @@ $report_toolbar_add_column_over_background_color: #dcdcdc;
 
 #report_sorts .sort
 {
+	background: $report_toolbar_sort_background_color;
 	@include background-image(linear-gradient($report_toolbar_sort_gradient_color_top, $report_toolbar_sort_gradient_color_bottom));
 	border: 1px solid $report_toolbar_sort_border_color;
 }
@@ -56,12 +76,32 @@ $report_toolbar_add_column_over_background_color: #dcdcdc;
 #report_sorts .sort.x-btn-over
 {
 	background: $report_toolbar_sort_over_background_color;
+	@include background-image(linear-gradient($report_toolbar_sort_over_gradient_color_top, $report_toolbar_sort_over_gradient_color_bottom));
+}
+
+#report_sorts .sort.x-btn-pressed
+{
+	background: $report_toolbar_sort_pressed_background_color;
+	@include background-image(linear-gradient($report_toolbar_sort_pressed_gradient_color_top, $report_toolbar_sort_pressed_gradient_color_bottom));
+}
+
+#report_sorts .sort.x-menu-active
+{
+	background: $report_toolbar_sort_active_background_color;
+	@include background-image(linear-gradient($report_toolbar_sort_active_gradient_color_top, $report_toolbar_sort_active_gradient_color_bottom));
 }
 
 #report_sorts .x-btn-split-right
 {
 	background-image: url('../images/button/s-arrow.gif');
 	padding-right: 14px !important;
+}
+
+#report_sorts .sort button span
+{
+	color: $report_toolbar_sort_text_color;
+	font-size: 11px;
+	line-height: 24px !important;
 }
 
 #report_sorts .x-btn-icon-text-left .x-btn-icon
@@ -72,6 +112,7 @@ $report_toolbar_add_column_over_background_color: #dcdcdc;
 
 #report_toolbar .add-column
 {
+	background: $report_toolbar_add_column_background_color;
 	@include background-image(linear-gradient($report_toolbar_add_column_gradient_color_top, $report_toolbar_add_column_gradient_color_bottom));
 	border: 1px solid $report_toolbar_add_column_border_color;
 	margin-left: 10px;
@@ -80,6 +121,13 @@ $report_toolbar_add_column_over_background_color: #dcdcdc;
 #report_toolbar .add-column.x-btn-over
 {
 	background: $report_toolbar_add_column_over_background_color;
+	@include background-image(linear-gradient($report_toolbar_add_column_over_gradient_color_top, $report_toolbar_add_column_over_gradient_color_bottom));
+}
+
+#report_toolbar .add-column.x-btn-pressed
+{
+	background: $report_toolbar_add_column_pressed_background_color;
+	@include background-image(linear-gradient($report_toolbar_add_column_pressed_gradient_color_top, $report_toolbar_add_column_pressed_gradient_color_bottom));
 }
 
 #report_toolbar .add-column em
@@ -91,7 +139,7 @@ $report_toolbar_add_column_over_background_color: #dcdcdc;
 {
 	color: $report_toolbar_add_column_text_color;
 	font-size: 11px;
-	line-height: 20px !important;
+	line-height: 24px !important;
 }
 
 #report_toolbar .add-column .icon-plus

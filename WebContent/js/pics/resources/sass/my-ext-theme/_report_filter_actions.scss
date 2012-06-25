@@ -3,21 +3,40 @@ $report_filter_actions_background_color: #f1f1f1;
 $report_filter_actions_border_color: #cccccc;
 
 // report filter actions - add filter
-$report_filter_actions_add_filter_border_color: #bcbcbc;
-$report_filter_actions_add_filter_gradient_color_top: #f1f1f1;
+$report_filter_actions_add_filter_background_color: #dcdcdc;
+$report_filter_actions_add_filter_border_color: #dcdcdc;
+$report_filter_actions_add_filter_gradient_color_top: #f1f1f2;
 $report_filter_actions_add_filter_gradient_color_bottom: #dcdcdc;
 $report_filter_actions_add_filter_icon_plus_text_color: #2caf2c;
 $report_filter_actions_add_filter_text_color: #333333;
 
-$report_filter_actions_add_filter_over_background_color: #dcdcdc;
+$report_filter_actions_add_filter_over_background_color: #ececec;
+$report_filter_actions_add_filter_over_gradient_color_top: #f7f7f8;
+$report_filter_actions_add_filter_over_gradient_color_bottom: #ececec;
+
+$report_filter_actions_add_filter_pressed_background_color: #cdcdcd;
+$report_filter_actions_add_filter_pressed_gradient_color_top: #dcdcdc;
+$report_filter_actions_add_filter_pressed_gradient_color_bottom: #cdcdcd;
+
+$report_filter_actions_add_filter_active_background_color: #cdcdcd;
+$report_filter_actions_add_filter_active_gradient_color_top: #dcdcdc;
+$report_filter_actions_add_filter_active_gradient_color_bottom: #cdcdcd;
 
 // report filter actions - search
+$report_filter_actions_search_background_color: #229322;
 $report_filter_actions_search_border_color: #229322;
 $report_filter_actions_search_gradient_color_top: #33c033;
 $report_filter_actions_search_gradient_color_bottom: #229322;
 $report_filter_actions_search_text_color: #ffffff;
+$report_filter_actions_search_text_shadow_color: #229322;
 
-$report_filter_actions_search_over_background_color: #229322;
+$report_filter_actions_search_over_background_color: #25b000;
+$report_filter_actions_search_over_gradient_color_top: #33d000;
+$report_filter_actions_search_over_gradient_color_bottom: #25b000;
+
+$report_filter_actions_search_pressed_background_color: #1c7600;
+$report_filter_actions_search_pressed_gradient_color_top: #299600;
+$report_filter_actions_search_pressed_gradient_color_bottom: #1c7600;
 
 #report_filter_actions
 {
@@ -28,6 +47,7 @@ $report_filter_actions_search_over_background_color: #229322;
 
 #report_filter_actions .add-filter
 {
+	background: $report_filter_actions_add_filter_background_color;
 	@include background-image(linear-gradient($report_filter_actions_add_filter_gradient_color_top, $report_filter_actions_add_filter_gradient_color_bottom));
 	border: 1px solid $report_filter_actions_add_filter_border_color;
 	margin-left: 10px;
@@ -36,6 +56,19 @@ $report_filter_actions_search_over_background_color: #229322;
 #report_filter_actions .add-filter.x-btn-over
 {
 	background: $report_filter_actions_add_filter_over_background_color;
+	@include background-image(linear-gradient($report_filter_actions_add_filter_over_gradient_color_top, $report_filter_actions_add_filter_over_gradient_color_bottom));
+}
+
+#report_filter_actions .add-filter.x-btn-pressed
+{
+	background: $report_filter_actions_add_filter_pressed_background_color;
+	@include background-image(linear-gradient($report_filter_actions_add_filter_pressed_gradient_color_top, $report_filter_actions_add_filter_pressed_gradient_color_bottom));
+}
+
+#report_filter_actions .add-filter.x-menu-active
+{
+	background: $report_filter_actions_add_filter_active_background_color;
+	@include background-image(linear-gradient($report_filter_actions_add_filter_active_gradient_color_top, $report_filter_actions_add_filter_active_gradient_color_bottom));
 }
 
 #report_filter_actions .add-filter em
@@ -47,7 +80,7 @@ $report_filter_actions_search_over_background_color: #229322;
 {
 	color: $report_filter_actions_add_filter_text_color;
 	font-size: 11px;
-	line-height: 20px !important;
+	line-height: 24px !important;
 }
 
 #report_filter_actions .add-filter .icon-plus
@@ -58,6 +91,7 @@ $report_filter_actions_search_over_background_color: #229322;
 
 #report_filter_actions .search
 {
+	background: $report_filter_actions_search_background_color;
 	@include background-image(linear-gradient($report_filter_actions_search_gradient_color_top, $report_filter_actions_search_gradient_color_bottom));
 	border-color: $report_filter_actions_search_border_color;
 	margin-right: 10px;
@@ -66,11 +100,19 @@ $report_filter_actions_search_over_background_color: #229322;
 #report_filter_actions .search.x-btn-over
 {
 	background: $report_filter_actions_search_over_background_color;
+	@include background-image(linear-gradient($report_filter_actions_search_over_gradient_color_top, $report_filter_actions_search_over_gradient_color_bottom));
+}
+
+#report_filter_actions .search.x-btn-pressed
+{
+	background: $report_filter_actions_search_pressed_background_color;
+	@include background-image(linear-gradient($report_filter_actions_search_pressed_gradient_color_top, $report_filter_actions_search_pressed_gradient_color_bottom));
 }
 
 #report_filter_actions .search button span
 {
 	color: $report_filter_actions_search_text_color;
 	font-size: 11px;
-	line-height: 20px !important;
+	line-height: 24px !important;
+	@include text-shadow(0px -1px 0px $report_filter_actions_search_text_shadow_color);
 }

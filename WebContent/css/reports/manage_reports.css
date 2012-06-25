@@ -11,14 +11,14 @@
 #page_header h1
 {
     border: 0px;
-	color: #73BBE8;
-	font-size: 30px;
-	font-weight: normal;
+    color: #73BBE8;
+    font-size: 30px;
+    font-weight: normal;
 }
 
 #page_header h2
 {
-	color: #808285;
+    color: #808285;
     font-size: 14px;
     font-weight: normal;
     line-height: 14px;
@@ -33,7 +33,7 @@
 #report_menu
 {
     display:inline-block;
-	margin: 0px;
+    margin: 0px;
 }
 
 .lt-ie7 .nav-pills { display:inline; } /* IE6 */
@@ -59,10 +59,10 @@
 #reports h1
 {
     color: #999;
-	font-size: 14px;
-	font-style: italic;
-	margin-bottom: 15px;
-	text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 #report_list
@@ -118,16 +118,16 @@
 
 #report_list .report span.created-by
 {
-	color: #999999;
-	font-size: 10px;
-	font-style: italic;
+    color: #999999;
+    font-size: 10px;
+    font-style: italic;
 }
 
 #report_list .report a.delete
 {
     border-left: 1px solid #CCC;
-	color: #999;
-	padding: 0px 5px;
+    color: #999;
+    padding: 0px 5px;
     position: absolute;
     right: 0px;
 }

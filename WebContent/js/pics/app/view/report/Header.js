@@ -92,7 +92,7 @@ Ext.define('PICS.view.report.Header', {
                 width: 100
             });
 
-            panel.add(edit, save);
+            panel.add(save, edit);
         //}
 
         this.add(panel);

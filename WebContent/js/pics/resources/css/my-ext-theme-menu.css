@@ -1,3 +1,15 @@
+/**
+ * My Ext Theme Menu + Core ExtJS CSS
+ *
+ * IMPORTANT: Important to understand sass / compass and css structure before modification.
+ * Menu file contains core css, general theme contains styling specific to the reporting tool.
+ * 
+ * Variables and mixins are included for sass to function properly.
+ * Please be aware of your configuration alterations.
+ *
+ * @author: Carey Hinoki
+ * @date: 2012-06-25
+ */
 /***
  * Start ExtJS4 variable overwrites
  * Override: ext4/default/all

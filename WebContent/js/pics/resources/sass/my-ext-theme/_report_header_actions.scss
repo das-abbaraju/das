@@ -1,19 +1,34 @@
 // report actions - edit
+$report_actions_edit_background_color: #dcdcdc;
+$report_actions_edit_border_color: #dcdcdc;
 $report_actions_edit_gradient_color_top: #f1f1f1;
 $report_actions_edit_gradient_color_bottom: #dcdcdc;
 
-$report_actions_edit_over_background_color: #dcdcdc;
+$report_actions_edit_over_background_color: #ececec;
+$report_actions_edit_over_gradient_color_top: #f7f7f8;
+$report_actions_edit_over_gradient_color_bottom: #ececec;
+
+$report_actions_edit_pressed_background_color: #cdcdcd;
+$report_actions_edit_pressed_gradient_color_top: #dcdcdc;
+$report_actions_edit_pressed_gradient_color_bottom: #cdcdcd;
 
 $report_actions_edit_icon_cog_text_color: #666666;
 
 // report actions - save
+$report_actions_save_background_color: #229322;
 $report_actions_save_border_color: #229322;
 $report_actions_save_gradient_color_top: #33c033;
 $report_actions_save_gradient_color_bottom: #229322;
 $report_actions_save_text_color: #ffffff;
+$report_actions_save_text_shadow_color: #229322;
 
-$report_actions_save_over_background_color: #229322;
+$report_actions_save_over_background_color: #25b000;
+$report_actions_save_over_gradient_color_top: #33d000;
+$report_actions_save_over_gradient_color_bottom: #25b000;
 
+$report_actions_save_pressed_background_color: #1c7600;
+$report_actions_save_pressed_gradient_color_top: #299600;
+$report_actions_save_pressed_gradient_color_bottom: #1c7600;
 
 #report_actions
 {
@@ -28,20 +43,28 @@ $report_actions_save_over_background_color: #229322;
 
 #report_actions .edit
 {
+	background: $report_actions_edit_background_color;
 	@include background-image(linear-gradient($report_actions_edit_gradient_color_top, $report_actions_edit_gradient_color_bottom));
-	margin-right: 10px;
+	border: 1px solid $report_actions_edit_border_color;
+	margin-right: 20px;
 }
 
 #report_actions .edit.x-btn-over
 {
 	background: $report_actions_edit_over_background_color;
+	@include background-image(linear-gradient($report_actions_edit_over_gradient_color_top, $report_actions_edit_over_gradient_color_bottom));
+}
+
+#report_actions .edit.x-btn-pressed
+{
+	background: $report_actions_edit_pressed_background_color;
+	@include background-image(linear-gradient($report_actions_edit_pressed_gradient_color_top, $report_actions_edit_pressed_gradient_color_bottom));
 }
 
 #report_actions .edit button span
 {
-	font-size: 16px;
-	line-height: 34px !important;
-	padding: 0px !important;
+	font-size: 17px;
+	line-height: 38px !important;
 }
 
 #report_header .edit .icon-cog
@@ -51,14 +74,22 @@ $report_actions_save_over_background_color: #229322;
 
 #report_actions .save
 {
+	background: $report_actions_save_background_color;
 	@include background-image(linear-gradient($report_actions_save_gradient_color_top, $report_actions_save_gradient_color_bottom));
-	border-color: $report_actions_save_border_color;
-	margin-right: 20px;
+	border: 1px solid $report_actions_save_border_color;
+	margin-right: 10px;
 }
 
 #report_actions .save.x-btn-over
 {
 	background: $report_actions_save_over_background_color;
+	@include background-image(linear-gradient($report_actions_save_over_gradient_color_top, $report_actions_save_over_gradient_color_bottom));
+}
+
+#report_actions .save.x-btn-pressed
+{
+	background: $report_actions_save_pressed_background_color;
+	@include background-image(linear-gradient($report_actions_save_pressed_gradient_color_top, $report_actions_save_pressed_gradient_color_bottom));
 }
 
 #report_actions .save .x-btn-split-right
@@ -72,5 +103,6 @@ $report_actions_save_over_background_color: #229322;
 	color: $report_actions_save_text_color;
 	font-size: 15px;
 	font-weight: bold;
+	@include text-shadow(0px -1px 0px $report_actions_save_text_shadow_color);
 	text-transform: uppercase;
 }
