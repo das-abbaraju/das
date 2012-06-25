@@ -37,8 +37,6 @@ public class MenuWriter {
             JSONObject subMenu = new JSONObject();
 
             subMenu.put("items", convertMenuToJSON(menuItem));
-            // TODO remove view information
-            subMenu.put("hideMode", "display");
 
             json.put("menu", subMenu);
         }
