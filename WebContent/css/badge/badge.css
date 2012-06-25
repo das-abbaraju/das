@@ -43,6 +43,7 @@
 #ContractorBadge-page .badges .clip_container
 {
 	margin-top: 30px;
+	position: relative;
     text-align: center;
 }
 
@@ -75,7 +76,13 @@
 
 #ContractorBadge-page #badgeSteps
 {
+    float: left;
     width: 60%;	
+}
+
+#ContractorBadge-page #badgeSteps h3
+{
+    margin-bottom: 20px;
 }
 
 #ContractorBadge-page #badgeSteps h2
