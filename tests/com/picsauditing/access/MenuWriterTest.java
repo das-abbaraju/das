@@ -109,8 +109,6 @@ public class MenuWriterTest {
     	MenuComponent subChild = child.addChild("subChild_name");
     	
     	String convertedJSON = MenuWriter.convertToSimpleJSON(parent).toJSONString();
-    	System.out.println(json);
-    	System.out.println(convertedJSON);
     	
     	assertEquals(json, convertedJSON);
     }
