@@ -512,6 +512,25 @@
     						</div>
     					</s:if>
     					
+    					<s:if test="permissions.contractor">
+                            <div class="panel_placeholder">
+                                <div class="panel referral-program">
+                                    <div class="panel_header">
+                                        <s:text name="ReferralProgram.title" />
+                                    </div>
+                                    <div class="panel_content">
+                                        <img src="images/tablet/ipad.png" />
+                                        
+                                        <div class="summary">
+                                            <p>
+                                                <s:text name="ReferralProgram.summary" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </s:if>
+    					
     					<%-- Contractor Info --%>
     					<div class="panel_placeholder">
     						<div class="panel">
