@@ -52,9 +52,9 @@ public class AuditBuilderTest extends PicsTest {
 	AuditCategoriesBuilder catBuilder;
 
 	@Mock
-	AuditPercentCalculator auditPercentCalculator = new AuditPercentCalculator();
+	AuditPercentCalculator auditPercentCalculator;
 	@Mock
-	AuditDataDAO auditDataDao = new AuditDataDAO();
+	AuditDataDAO auditDataDao;
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
@@ -64,7 +64,7 @@ public class AuditBuilderTest extends PicsTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
+//		MockitoAnnotations.initMocks(this);
 
 		auditBuilder = new AuditBuilder();
 		autowireEMInjectedDAOs(auditBuilder);
