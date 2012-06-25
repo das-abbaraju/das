@@ -83,22 +83,4 @@ public class MenuWriterTest {
     private static String convertQuotes(String json) {
         return json.replace("'", "\"").replace("/", "\\/");
     }
-    
-    @Test
-    public void testConvertToSimpleJSON () {
-    	String json = "{'id':'parent_id','text':'parent_name','children':[{'text':'child_name','target':'child_target','children':[{'text':'subChild_name'}],'href':'child_url'}]}";
-    	json = convertQuotes(json);
-    	
-    	MenuComponent parent = new MenuComponent();
-    	parent.setHtmlId("parent_id");
-    	parent.setName("parent_name");
-    	MenuComponent child = parent.addChild("child_name");
-    	child.setUrl("child_url");
-    	child.setTarget("child_target");
-    	MenuComponent subChild = child.addChild("subChild_name");
-    	
-    	String convertedJSON = MenuWriter.convertToSimpleJSON(parent).toJSONString();
-    	
-    	assertEquals(json, convertedJSON);
-    }
 }
