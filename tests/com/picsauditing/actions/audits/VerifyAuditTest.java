@@ -22,19 +22,21 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class VerifyAuditTest extends PicsTest {
-	private VerifyAudit verifyAudit = new VerifyAudit();
+	private VerifyAudit verifyAudit;
 	
 	private ContractorAccount contractor;
 	private ContractorAudit conAudit;
 
 	@Mock
-	private AuditDataDAO auditDataDao = new AuditDataDAO();
+	private AuditDataDAO auditDataDao;
 
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 
 		MockitoAnnotations.initMocks(this);
+		
+		verifyAudit = new VerifyAudit();
 		autowireEMInjectedDAOs(verifyAudit);
 
 		contractor = EntityFactory.makeContractor();

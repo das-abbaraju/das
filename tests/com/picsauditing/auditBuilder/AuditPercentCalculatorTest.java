@@ -1,26 +1,38 @@
 package com.picsauditing.auditBuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ScoreType;
+import com.picsauditing.util.AnswerMap;
 
-public class AuditPercentCalculatorTest extends PicsTest {
-	private AuditPercentCalculator calculator = new AuditPercentCalculator();
+
+public class AuditPercentCalculatorTest {
+	private AuditPercentCalculator calculator;
 	private ContractorAccount contractor;
 	private ContractorAudit audit;
 	private AuditType auditType;
@@ -35,11 +47,17 @@ public class AuditPercentCalculatorTest extends PicsTest {
 	private AuditCatData acd4;
 	private List<AuditCatData> auditCatDataList = new ArrayList<AuditCatData>();
 	private List<AuditCategory> auditCategoryList = new ArrayList<AuditCategory>();
+	
+	@Mock
+	private Logger logger;
+	@Mock
+	private AuditDataDAO auditDataDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		super.setUp();
-		autowireEMInjectedDAOs(calculator);
+		MockitoAnnotations.initMocks(this);
+		
+		calculator = new AuditPercentCalculator();
 
 		PicsTestUtil.forceSetPrivateField(calculator, "auditCategoryRuleCache",
 				catRuleCache);
@@ -54,14 +72,6 @@ public class AuditPercentCalculatorTest extends PicsTest {
 		contractor = EntityFactory.makeContractor();
 		auditType = EntityFactory.makeAuditType(AuditType.PQF);
 		audit = EntityFactory.makeContractorAudit(auditType, contractor);
-	}
-
-	@Test
-	public void test() throws Exception {
-		// The AuditPercentCalculator has the highest Complexity score (13+) but
-		// absolutely no unit tests
-		// http://cobertura.picsauditing.com/com.picsauditing.auditBuilder.AuditPercentCalculator.html
-		// TODO Get this under test ASAP
 	}
 
 	@Test
@@ -195,5 +205,86 @@ public class AuditPercentCalculatorTest extends PicsTest {
 		acd.getCategory().setScoreWeight(scoreWeight);
 
 		return acd;
+	}
+
+	@Test
+	public void testUpdatePercentageCompleted_CircularRequiredQuestions() {
+		AuditCatData catData = setupCircularTest(true);
+		
+		calculator.updatePercentageCompleted(catData);
+		verify(logger, times(2 * 3)).warn(Matchers.anyString(), Matchers.any()); // instances of call * # of questions in loop * 2 for answers
+	}
+
+	@Test
+	public void testUpdatePercentageCompleted_CircularVisibleQuestions() {
+		AuditCatData catData = setupCircularTest(false);
+		
+		calculator.updatePercentageCompleted(catData);
+		verify(logger, times(2 * 3)).warn(Matchers.anyString(), Matchers.any()); // instances of call * # of questions in loop
+	}
+	
+	private AuditCatData setupCircularTest(boolean doRequiredQuestions) {
+		PicsTestUtil.forceSetPrivateField(calculator, "logger", logger);
+		PicsTestUtil.forceSetPrivateField(calculator, "auditDataDAO",
+				auditDataDAO);
+
+		AuditCatData catData = EntityFactory.makeAuditCatData();
+		catData.setAudit(audit);
+		
+		AuditQuestion q1 = EntityFactory.makeAuditQuestion();
+		AuditQuestion q2 = EntityFactory.makeAuditQuestion();
+		AuditQuestion q3 = EntityFactory.makeAuditQuestion();
+		q1.setCategory(catData.getCategory());
+		q2.setCategory(catData.getCategory());
+		q3.setCategory(catData.getCategory());
+		
+		if (doRequiredQuestions) {
+			q1.setRequiredQuestion(q2);
+			q2.setRequiredQuestion(q3);
+			q3.setRequiredQuestion(q1);
+		} else {
+			q1.setVisibleQuestion(q2);
+			q2.setVisibleQuestion(q3);
+			q3.setVisibleQuestion(q1);
+		}
+
+		q1.setRequired(true);
+		q2.setRequired(true);
+		q3.setRequired(true);
+
+		q1.setRequiredAnswer("Yes");
+		q2.setRequiredAnswer("Yes");
+		q3.setRequiredAnswer("Yes");
+
+		catData.getCategory().getQuestions().add(q1);
+		catData.getCategory().getQuestions().add(q2);
+		catData.getCategory().getQuestions().add(q3);
+		
+		AuditData a1 = EntityFactory.makeAuditData("Yes");
+		AuditData a2 = EntityFactory.makeAuditData("Yes");
+		AuditData a3 = EntityFactory.makeAuditData("Yes");
+		a1.setQuestion(q1);
+		a2.setQuestion(q2);
+		a3.setQuestion(q3);
+		
+		a1.setDateVerified(new Date());
+		a2.setDateVerified(new Date());
+		a3.setDateVerified(new Date());
+		
+		List<AuditData> answerList = new ArrayList<AuditData>();
+		answerList .add(a1);
+		answerList .add(a2);
+		answerList .add(a3);
+		
+		audit.setData(answerList);
+
+		when(
+		auditDataDAO.findAnswersByAuditAndQuestions(
+				Matchers.any(ContractorAudit.class),
+				Matchers.anyCollectionOf(Integer.class))).thenReturn(
+		new AnswerMap(answerList));
+		
+		return catData;
+
 	}
 }

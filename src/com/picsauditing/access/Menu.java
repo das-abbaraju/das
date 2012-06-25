@@ -20,8 +20,7 @@ public class Menu extends PicsActionSupport {
 
 		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
 
-		// TODO make this return plain JSON, not ext-js specific stuff
-		jsonArray = MenuWriter.exportMenuToExtJS(menu);
+		jsonArray = MenuWriter.convertMenuToJSON(menu);
 
 		return JSON_ARRAY;
 	}

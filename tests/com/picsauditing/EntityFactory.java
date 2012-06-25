@@ -1,6 +1,7 @@
 package com.picsauditing;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import com.picsauditing.access.Permissions;
@@ -185,6 +186,9 @@ public class EntityFactory {
 		question.setName(makeTranslatableString("jUnit Question " + question.getId()));
 		question.setDependentRequired(new ArrayList<AuditQuestion> ());
 		question.setDependentVisible(new ArrayList<AuditQuestion> ());
+		long time = (new Date()).getTime();
+		question.setEffectiveDate(new Date(time - (24*60*60*1000L)));
+		question.setExpirationDate(new Date(time + (24*60*60*1000L)));
 		question.setCategory(makeAuditCategory());
 		return question;
 	}

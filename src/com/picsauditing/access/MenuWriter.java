@@ -1,91 +1,48 @@
 package com.picsauditing.access;
 
-import java.util.List;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class MenuWriter {
 
-    public static JSONArray exportMenuToExtJS(MenuComponent menu) {
-        List<MenuComponent> menuItems = menu.getChildren();
-
+    public static JSONArray convertMenuToJSON(MenuComponent menu) {
         JSONArray jsonArray = new JSONArray();
 
-        int menuSize = menuItems.size();
-
-        for (int i = 0; i < menuSize; i++) {
-            MenuComponent menuItem = menuItems.get(i);
-
-            jsonArray.add(convertMenuComponentToExtJS(menuItem));
+        for (MenuComponent menuItem : menu.getChildren()) {
+            jsonArray.add(convertMenuItemToJSON(menuItem));
         }
 
         return jsonArray;
     }
 
-    public static JSONObject convertMenuComponentToExtJS(MenuComponent menu) {
+    public static JSONObject convertMenuItemToJSON(MenuComponent menuItem) {
         JSONObject json = new JSONObject();
 
-        if (Strings.isEmpty(menu.getXtype())) {
-            if (!Strings.isEmpty(menu.getName())) {
-                json.put("text", menu.getName());
-            }
+        if (menuItem.hasName())
+            json.put("text", menuItem.getName());
 
-            if (!Strings.isEmpty(menu.getUrl())) {
-                if (menu.getLevel() > 1) {
-                    json.put("href", menu.getUrl());
-                } else {
-                    json.put("url", menu.getUrl());
-                }
-            }
+        if (menuItem.hasHtmlID())
+        	json.put("id", menuItem.getHtmlId());
 
-            if (menu.getChildren().size() > 0) {
-                JSONObject subMenu = new JSONObject();
+    	if (menuItem.hasTarget())
+    		json.put("target", menuItem.getTarget());
 
-                subMenu.put("items", exportMenuToExtJS(menu));
-                subMenu.put("hideMode", "display");
+        if (menuItem.hasUrl()) {
+        	String tag = (menuItem.getLevel() > 1) ? "href" : "url";
+            json.put(tag, menuItem.getUrl());
+        }
 
-                json.put("menu", subMenu);
-            }
-        } else {
-            json.put("xtype", menu.getXtype());
+        if (menuItem.hasChildren()) {
+            JSONObject subMenu = new JSONObject();
 
-            // TODO get rid of this kludge
-        	if ("searchTerm".equals(menu.getName())) {
-        		json.put("name", menu.getName());
-        		json.put("emptyText", "enter search term");
-        	}
+            subMenu.put("items", convertMenuToJSON(menuItem));
+            // TODO remove view information
+            subMenu.put("hideMode", "display");
+
+            json.put("menu", subMenu);
         }
 
         return json;
-    }
-
-    public static JSONObject convertToSimpleJSON(MenuComponent menu) {
-    	JSONObject node = convert(menu);
-    	if (menu.hasChildren()) {
-    		JSONArray children = new JSONArray();
-    		for (MenuComponent child : menu.getChildren()) {
-    			children.add(convertToSimpleJSON(child));
-    		}
-    		node.put("children", children);
-    	}
-    	return node;
-    }
-
-    private static JSONObject convert(MenuComponent node) {
-    	JSONObject jsonMenu = new JSONObject();
-
-    	jsonMenu.put("text", node.getName());
-    	if (node.hasHtmlID())
-    		jsonMenu.put("id", node.getHtmlId());
-    	if (node.hasUrl())
-    		jsonMenu.put("href", node.getUrl());
-    	if (node.hasTarget())
-    		jsonMenu.put("target", node.getTarget());
-
-    	return jsonMenu;
     }
 }

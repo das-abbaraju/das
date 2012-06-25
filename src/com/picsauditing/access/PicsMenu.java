@@ -285,11 +285,10 @@ public class PicsMenu {
 			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			addChildAction(subMenu, "OperatorTags");
-		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
+		if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.hasPermission(OpPerms.EditUsers)) {
 			addChildAction(subMenu, "UsersManage");
 		}
 		if (permissions.hasPermission(OpPerms.EditUsers)) {
-			addChildAction(subMenu, "UsersManage");
 			addChildAction(subMenu, "ReportUserPermissionMatrix");
 		}
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
