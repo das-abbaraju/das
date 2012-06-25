@@ -208,7 +208,7 @@ public class FacilityChanger {
 				billingService.calculateAnnualFees(contractor);
 
 				// adjusting requested by to earliest added operator
-				if (contractor.getRequestedBy().equals(operator)) {
+				if (contractor.getRequestedBy() == null || contractor.getRequestedBy().equals(operator)) {
 					contractor.setRequestedBy(findEarliestAddedOperator());
 				}
 
