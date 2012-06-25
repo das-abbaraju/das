@@ -267,7 +267,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		return redirect(getRegistrationStep().getUrl());
+		ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
+		return BLANK;
 	}
 
 	private void addNote(String subject) {
