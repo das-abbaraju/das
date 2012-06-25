@@ -681,6 +681,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		conAudit.setScheduledDate(null);
 		auditDao.save(conAudit);
 
+		String noteSummary = permissions.getName() + " canceled the " + conAudit.getAuditType().getName();
+		addNote(contractor, noteSummary, NoteCategory.Audits,
+				getViewableByAccount(conAudit.getAuditType().getAccount()));
+
 		return "edit";
 	}
 }
