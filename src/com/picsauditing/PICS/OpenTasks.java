@@ -100,10 +100,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutRelationshipBetweenContractorAndPics() {
-		if (!contractor.isAgreementInEffect()
-				&& (permissions.hasPermission(OpPerms.ContractorBilling)
-						|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
-							.hasPermission(OpPerms.ContractorSafety))) {
+		if (mustApproveUpdatedAgreement()) {
 			openTasks.add(getTextParameterized("ContractorWidget.message.UpdatedAgreement", contractor.getId()));
 		}
 		if (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin()) {
@@ -119,19 +116,28 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
+	private boolean mustApproveUpdatedAgreement() {
+		return !contractor.isAgreementInEffect()
+				&& (permissions.hasPermission(OpPerms.ContractorBilling)
+					|| permissions.hasPermission(OpPerms.ContractorAdmin) 
+					|| permissions.hasPermission(OpPerms.ContractorSafety));
+	}
+
 	private void gatherTasksAboutUploadingPqf() {
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.isVisibleTo(permissions)) {
-				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
-					if (audit.hasCaoStatusBefore(AuditStatus.Submitted))
-						openTasks
-								.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
-
-					hasImportPQF = true;
-					importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
+			if (auditIsVisibleUnexpiredForImportPqf(audit)) {
+				// there were no braces for this next if. I am adding them to preserve behavior, but make it explicit
+				if (audit.hasCaoStatusBefore(AuditStatus.Submitted)) {
+					openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
 				}
+				hasImportPQF = true;
+				importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
 			}
 		}
+	}
+
+	private boolean auditIsVisibleUnexpiredForImportPqf(ContractorAudit audit) {
+		return audit.isVisibleTo(permissions) && (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired());
 	}
 
 	private void gatherTasksAboutBillingAndPayments() {
