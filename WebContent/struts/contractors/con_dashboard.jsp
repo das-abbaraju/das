@@ -777,7 +777,7 @@
     										<s:iterator value="value">
     											<li>
     												<span class="other_operator">
-    													<s:if test="!operatorAccount.gCFree">
+    													<s:if test="!permissions.generalContractorFree">
     														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
     															<s:property value="flagColor.smallIcon" escape="false" />
     														</a>
