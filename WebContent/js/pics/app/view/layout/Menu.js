@@ -2,6 +2,12 @@ Ext.define('PICS.view.layout.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutmenu'],
 
+    border: 0,
+    enableOverflow: true,
+    height: 70,
+    id: 'site_menu',
+    padding: 0,
+
     autoLoad: {
         url: 'Menu.action',
 
@@ -9,126 +15,126 @@ Ext.define('PICS.view.layout.Menu', {
             var toolbar = loader.getTarget();
             var menu_items = Ext.decode(response.responseText);
 
-            menu_items = this.configureMenuItems(menu_items);
+            toolbar.configureToolbarMenuItems(menu_items);
 
-            console.log(menu_items);
-
-            // configure all submenus
-
-            // add logo + dashboard
-
-            // modifications to reports menu
-            // add favorites category
-
-            // add fill
-
-            // add search textfield
-
-            // add separator
-
-            // modifications to user menu
-            // add gear to text
-
-            toolbar.add({
-                height: 70,
-                icon: 'js/pics/app/resources/images/logo.png',
-                id: 'logo',
-                padding: '0px 20px',
-                scale: 'large',
-                // TODO pass in translated "Dashboard"
-                text: 'Dashboard',
-                // TODO pass in actual home page
-                url: 'Home.action'
-            });
-
-            if (menu_items[0].menu.items.length > 1) {
-                menu_items[0].menu.items.splice(1, 0, {
-                    xtype: 'menuseparator',
-                    width: 2
-                });
-
-                menu_items[0].menu.items.splice(2, 0, {
-                    xtype: 'tbtext',
-                    cls: 'menu-title',
-                    // TODO pass in translated "Favorites"
-                    text: 'Favorites'
-                });
-            }
-
+            // Save the user menu to add to the end later, only after configuring
             var user_menu = menu_items.pop();
-            user_menu.padding = '0px 20px';
 
-            menu_items.push({
-               xtype: 'tbfill'
-            });
+            toolbar.addLogoAndDashboard(menu_items[0]);
 
-            menu_items.push({
-                xtype: 'textfield',
-                name: 'searchTerm',
-                emptyText: 'enter search term',
-            });
+            toolbar.addFavoritesLabel(menu_items[1]);
 
-//            menu_items[menu_items.length - 1].padding = '0px 20px';
+            toolbar.addFill(menu_items);
+
+            toolbar.addSearchBox(menu_items);
+
+            toolbar.addSeparator(menu_items);
+
+            toolbar.addUserMenu(user_menu, menu_items);
 
             toolbar.add(menu_items);
-
-            toolbar.add({
-                xtype: 'tbseparator',
-                border: 1,
-                height: 70,
-                margin: '0px 0px 0px 20px'
-            });
-
-            toolbar.add(user_menu);
-        },
-
-        configureMenuItems: function (menu_items) {
-            var that = this;
-
-            // top level items
-            Ext.each(menu_items, function (menu_item, index) {
-                var menu = menu_item.menu;
-
-                if (menu != undefined) {
-                    menu = that.configureSubmenuItems(menu);
-                    menu.plain = true;
-                }
-
-                menu_item.height = 70;
-                menu_item.menu = menu;
-                menu_item.scale = 'large';
-
-                menu[index] = menu_item;
-            });
-
-            return menu_items;
-        },
-
-        configureSubmenuItems: function (menu) {
-            var menu_items = menu.items;
-
-            if (menu_items != undefined) {
-                // sub items
-                Ext.each(menu_items, function (menu_item, index) {
-                    var submenu = menu_item.menu;
-
-                    if (submenu != undefined) {
-                        submenu.plain = true;
-                    }
-
-                    menu_items[index].menu = submenu;
-                });
-
-                menu.items = menu_items;
-            }
-
-            return menu;
         }
     },
 
-    border: 0,
-    enableOverflow: true,
-    height: 70,
-    id: 'site_menu',
-    padding: 0
+    /** @param {Array<Object>} menu_items */
+    configureToolbarMenuItems: function (menu_items) {
+        var that = this;
+
+        Ext.each(menu_items, function (menu_item, index) {
+            // Check if this is a submenu
+            if (menu_item.menu !== undefined) {
+                that.configureSubmenu(menu_item.menu);
+            }
+
+            // Only apply this styling to top-level toolbar menu items
+            menu_item.height = 70;
+            menu_item.scale = 'large';
+        });
+    },
+
+    /** @param {Object} menu */
+    configureSubmenu: function (menu) {
+        var that = this;
+
+        // All menus get this styling
+        menu.plain = true;
+        menu.hideMode = 'display';
+
+        Ext.each(menu.items, function (menu_item, index) {
+            // Check if this is a submenu
+            if (menu_item.menu !== undefined) {
+                that.configureSubmenu(menu_item.menu);
+            }
+        });
+    },
+
+    /** @param {Object} dashboard_button */
+    addLogoAndDashboard: function (dashboard_button) {
+        if (dashboard_button === undefined) {
+            return;
+        }
+
+        dashboard_button.height = 70;
+        dashboard_button.icon = 'js/pics/app/resources/images/logo.png';
+        dashboard_button.padding = '0px 20px';
+        dashboard_button.scale = 'large';
+    },
+
+    /** @param {Object} report_menu */
+    addFavoritesLabel: function (report_menu) {
+        var items = report_menu && report_menu.menu && report_menu.menu.items;
+
+        if (items === undefined || items.length < 2) {
+            return;
+        }
+
+        items.splice(1, 0, {
+            xtype: 'menuseparator',
+            width: 2
+        });
+
+        items.splice(2, 0, {
+            xtype: 'tbtext',
+            cls: 'menu-title',
+            // TODO pass in translated "Favorites"
+            text: 'Favorites'
+        });
+    },
+
+    /** @param {Array<Object>} menu_items */
+    addFill: function (menu_items) {
+        menu_items.push({
+           xtype: 'tbfill'
+        });
+    },
+
+    /** @param {Array<Object>} menu_items */
+    addSearchBox: function (menu_items) {
+        menu_items.push({
+            xtype: 'textfield',
+            name: 'searchTerm',
+            // TODO pass in translated 'enter search term'
+            emptyText: 'enter search term',
+        });
+    },
+
+    /** @param {Array<Object>} menu_items */
+    addSeparator: function (menu_items) {
+        menu_items.push({
+            xtype: 'tbseparator',
+            border: 1,
+            height: 70,
+            margin: '0px 0px 0px 20px'
+        });
+    },
+
+    /**
+     * @param {Object} user_menu
+     * @param {Array<Object>} menu_items
+     */
+    addUserMenu: function (user_menu, menu_items) {
+        user_menu.padding = '0px 20px';
+        // TODO add gear to text
+        menu_items.push(user_menu);
+    }
 });
