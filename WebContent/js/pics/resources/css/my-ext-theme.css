@@ -3721,14 +3721,14 @@ textarea.x-form-invalid-field {
 
 /* line 45, ../sass/my-ext-theme/_report_header_actions.scss */
 #report_actions .edit {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: linear-gradient(#f1f1f1, #dcdcdc);
-  border: 1px solid #dcdcdc;
+  background: #bcbcbc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #bcbcbc));
+  background-image: -webkit-linear-gradient(#f1f1f1, #bcbcbc);
+  background-image: -moz-linear-gradient(#f1f1f1, #bcbcbc);
+  background-image: -o-linear-gradient(#f1f1f1, #bcbcbc);
+  background-image: -ms-linear-gradient(#f1f1f1, #bcbcbc);
+  background-image: linear-gradient(#f1f1f1, #bcbcbc);
+  border: 1px solid #bcbcbc;
   margin-right: 20px; }
 
 /* line 53, ../sass/my-ext-theme/_report_header_actions.scss */
@@ -3882,20 +3882,20 @@ textarea.x-form-invalid-field {
 
 /* line 42, ../sass/my-ext-theme/_report_filter_actions.scss */
 #report_filter_actions {
-  background: #f1f1f1;
+  background: #f1f1f2;
   border: 1px solid #cccccc !important;
   padding: 0px; }
 
 /* line 49, ../sass/my-ext-theme/_report_filter_actions.scss */
 #report_filter_actions .add-filter {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  border: 1px solid #dcdcdc;
+  background: #bcbcbc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #bcbcbc));
+  background-image: -webkit-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -moz-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -o-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -ms-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: linear-gradient(#f1f1f2, #bcbcbc);
+  border: 1px solid #bcbcbc;
   margin-left: 10px; }
 
 /* line 57, ../sass/my-ext-theme/_report_filter_actions.scss */
@@ -4144,14 +4144,14 @@ textarea.x-form-invalid-field {
 
 /* line 70, ../sass/my-ext-theme/_report_toolbar.scss */
 #report_sorts .sort {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  border: 1px solid #dcdcdc; }
+  background: #bcbcbc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #bcbcbc));
+  background-image: -webkit-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -moz-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -o-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -ms-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: linear-gradient(#f1f1f2, #bcbcbc);
+  border: 1px solid #bcbcbc; }
 
 /* line 77, ../sass/my-ext-theme/_report_toolbar.scss */
 #report_sorts .sort.x-btn-over {
@@ -4201,14 +4201,14 @@ textarea.x-form-invalid-field {
 
 /* line 114, ../sass/my-ext-theme/_report_toolbar.scss */
 #report_toolbar .add-column {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  border: 1px solid #dcdcdc;
+  background: #bcbcbc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #bcbcbc));
+  background-image: -webkit-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -moz-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -o-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: -ms-linear-gradient(#f1f1f2, #bcbcbc);
+  background-image: linear-gradient(#f1f1f2, #bcbcbc);
+  border: 1px solid #bcbcbc;
   margin-left: 10px; }
 
 /* line 122, ../sass/my-ext-theme/_report_toolbar.scss */
