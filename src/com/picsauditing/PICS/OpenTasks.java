@@ -224,7 +224,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 		if (conAudit.getAuditType().getClassType().isPolicy()) {
 			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
-					|| conAudit.isVisibleTo(permissions)) {
+					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 					openTasks.add(getTextParameterized("ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
 							auditName));
@@ -235,7 +235,7 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-					|| conAudit.isVisibleTo(permissions)) {
+					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				openTasks.add(getTextParameterized("ContractorWidget.message.ResubmitPolicy", conAudit.getId(),
 						auditName, showAuditFor, auditFor));
 			}
@@ -245,7 +245,8 @@ public class OpenTasks extends TranslationActionSupport {
 				&& (conAudit.getAuditType().getId() != AuditType.SHELL_COMPETENCY_REVIEW)) {
 			if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| conAudit.isVisibleTo(permissions) && !conAudit.getAuditType().isCorIecWaState()) {
+						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())
+						&& !conAudit.getAuditType().isCorIecWaState()) {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
@@ -267,7 +268,7 @@ public class OpenTasks extends TranslationActionSupport {
 				}
 			} else if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| conAudit.isVisibleTo(permissions)) {
+						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 					String text = "";
 					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
 						text = getTextParameterized("ContractorWidget.message.ScheduleYourImplementationAudit",
@@ -303,7 +304,7 @@ public class OpenTasks extends TranslationActionSupport {
 				}
 			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| conAudit.isVisibleTo(permissions)) {
+						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
 
@@ -331,7 +332,7 @@ public class OpenTasks extends TranslationActionSupport {
 		} else if (conAudit.getAuditType().isCanContractorEdit()
 				&& conAudit.getAuditType().getId() != AuditType.IMPORT_PQF) {
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-					|| conAudit.isVisibleTo(permissions)) {
+					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				if (conAudit.getAuditType().isPqf() && hasImportPQF) {
 					// Show a message for filling out the rest of the PQF if the
 					// Import PQF is COMPLETE
