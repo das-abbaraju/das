@@ -6,24 +6,31 @@ Ext.define('PICS.view.layout.Menu', {
         url: 'Menu.action',
 
         renderer: function (loader, response, active) {
-            var toolbar = loader.getTarget(),
-                menu_items = Ext.decode(response.responseText),
-                height = 70;
+            var toolbar = loader.getTarget();
+            var menu_items = Ext.decode(response.responseText);
 
-            Ext.each(menu_items, function (value, index) {
-                if (menu_items[index].xtype == undefined) {
-                    menu_items[index].height = height;
-                    menu_items[index].scale = 'large';
+            menu_items = this.configureMenuItems(menu_items);
 
-                    if (menu_items[index].menu != undefined) {
-                        console.log('setting menu[' + index + '].menu.plain to true');
-                        menu_items[index].menu.plain = true;
-                    }
-                }
-            });
+            console.log(menu_items);
+
+            // configure all submenus
+
+            // add logo + dashboard
+
+            // modifications to reports menu
+            // add favorites category
+
+            // add fill
+
+            // add search textfield
+
+            // add separator
+
+            // modifications to user menu
+            // add gear to text
 
             toolbar.add({
-                height: height,
+                height: 70,
                 icon: 'js/pics/app/resources/images/logo.png',
                 id: 'logo',
                 padding: '0px 20px',
@@ -34,23 +41,22 @@ Ext.define('PICS.view.layout.Menu', {
                 url: 'Home.action'
             });
 
-            // TODO check length of menu_items before adding favorites
+            if (menu_items[0].menu.items.length > 1) {
+                menu_items[0].menu.items.splice(1, 0, {
+                    xtype: 'menuseparator',
+                    width: 2
+                });
 
-            menu_items[0].menu.items.splice(1, 0, {
-                xtype: 'menuseparator'
-            });
-
-            menu_items[0].menu.items.splice(2, 0, {
-                xtype: 'tbtext',
-                cls: 'menu-title',
-                // TODO pass in translated "Favorites"
-                text: 'Favorites'
-            });
+                menu_items[0].menu.items.splice(2, 0, {
+                    xtype: 'tbtext',
+                    cls: 'menu-title',
+                    // TODO pass in translated "Favorites"
+                    text: 'Favorites'
+                });
+            }
 
             var user_menu = menu_items.pop();
             user_menu.padding = '0px 20px';
-            // Just for fun
-            user_menu.text += ' \u2699';
 
             menu_items.push({
                xtype: 'tbfill'
@@ -69,11 +75,54 @@ Ext.define('PICS.view.layout.Menu', {
             toolbar.add({
                 xtype: 'tbseparator',
                 border: 1,
-                height: height,
+                height: 70,
                 margin: '0px 0px 0px 20px'
             });
 
             toolbar.add(user_menu);
+        },
+
+        configureMenuItems: function (menu_items) {
+            var that = this;
+
+            // top level items
+            Ext.each(menu_items, function (menu_item, index) {
+                var menu = menu_item.menu;
+
+                if (menu != undefined) {
+                    menu = that.configureSubmenuItems(menu);
+                    menu.plain = true;
+                }
+
+                menu_item.height = 70;
+                menu_item.menu = menu;
+                menu_item.scale = 'large';
+
+                menu[index] = menu_item;
+            });
+
+            return menu_items;
+        },
+
+        configureSubmenuItems: function (menu) {
+            var menu_items = menu.items;
+
+            if (menu_items != undefined) {
+                // sub items
+                Ext.each(menu_items, function (menu_item, index) {
+                    var submenu = menu_item.menu;
+
+                    if (submenu != undefined) {
+                        submenu.plain = true;
+                    }
+
+                    menu_items[index].menu = submenu;
+                });
+
+                menu.items = menu_items;
+            }
+
+            return menu;
         }
     },
 
