@@ -53,6 +53,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
+		getFilter().setShowWaitingOn(false);
 	}
 
 	public AuditStatus[] getAuditStatusList() {

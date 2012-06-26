@@ -128,7 +128,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		contractorOperatorDao.save(co);
 		try {
 			permissions.tryPermission(OpPerms.EditForcedFlags);
-			return this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
+			return this.setUrlForRedirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
 		} catch (Exception x) {
 		}
 
@@ -144,7 +144,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		try {
 			String redirectUrl = URLEncoder.encode("ContractorFlag.action?id=" + id + "&opID=" + opID, "UTF-8");
-			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=0&steps=All&redirectUrl=" + redirectUrl);
+			return setUrlForRedirect("ContractorCronAjax.action?conID=" + id + "&opID=0&steps=All&redirectUrl=" + redirectUrl);
 		} catch (Exception x) {
 		}
 		return SUCCESS;
@@ -875,7 +875,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			contractorOperatorDao.save(co);
 
 			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
-			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=Flag&steps=WaitingOn"
+			return setUrlForRedirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=Flag&steps=WaitingOn"
 					+ "&redirectUrl=" + redirectUrl);
 		} catch (Exception x) {
 		}

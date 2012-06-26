@@ -422,7 +422,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		return data;
 	}
 
-	public List<BasicDynaBean> findCancelledScheduledAudits() {
+	public List<ContractorAudit> findCancelledScheduledAudits() {
 		String sql = "SELECT * " + "FROM contractor_audit ca " + "WHERE ca.scheduledDate > NOW() " + "AND (NOT EXISTS "
 				+ "(SELECT 'x' " + "FROM   contractor_audit_operator cao "
 				+ "WHERE  ca.id = cao.auditID AND cao.visible = 1) " + ")";

@@ -78,7 +78,7 @@ public class ManageUnmappedTests extends ReportActionSupport {
 				}
 			}
 			
-			return redirect("ManageUnmappedTests.action" + (permissions.isAssessment() ? "" : "?id=" + id));
+			return setUrlForRedirect("ManageUnmappedTests.action" + (permissions.isAssessment() ? "" : "?id=" + id));
 		}
 		
 		buildQuery();

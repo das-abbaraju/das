@@ -102,7 +102,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 		tags.remove(t);
 		operatorTagDAO.remove(t);
 
-		return redirect("OperatorTags.action?id=" + id);
+		return setUrlForRedirect("OperatorTags.action?id=" + id);
 	}
 
 	public List<? extends AuditRule> getRelatedCategoryRules() {

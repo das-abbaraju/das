@@ -1,65 +1,46 @@
 package com.picsauditing.access;
 
-import java.util.List;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.util.Strings;
-
 @SuppressWarnings("unchecked")
 public class MenuWriter {
-    public static JSONArray exportMenuToExtJS(MenuComponent menu) {
-        List<MenuComponent> menuItems = menu.getChildren();
-        
-        JSONArray json = new JSONArray();
-        
-        int menuSize = menuItems.size();
-        
-        for (int i = 0; i < menuSize; i++) {
-            MenuComponent menuItem = menuItems.get(i);
-            
-            json.add(exportMenuItemToExtJS(menuItem));
-            
-            if (i < menuSize - 1 && menuItem.getLevel() == 1) {
-                MenuComponent separator = new MenuComponent();
-                separator.setXtype("tbseparator");
-                
-                json.add(exportMenuItemToExtJS(separator));
-            }
+
+    public static JSONArray convertMenuToJSON(MenuComponent menu) {
+        JSONArray jsonArray = new JSONArray();
+
+        for (MenuComponent menuItem : menu.getChildren()) {
+            jsonArray.add(convertMenuItemToJSON(menuItem));
         }
-        
-        return json;
+
+        return jsonArray;
     }
 
-    public static JSONObject exportMenuItemToExtJS(MenuComponent menu) {
+    public static JSONObject convertMenuItemToJSON(MenuComponent menuItem) {
         JSONObject json = new JSONObject();
-        
-        if (Strings.isEmpty(menu.getXtype())) {
-            if (!Strings.isEmpty(menu.getName())) {
-                json.put("text", menu.getName());
-            }
-            
-            if (!Strings.isEmpty(menu.getUrl())) {
-                if (menu.getLevel() > 1) {
-                    json.put("href", menu.getUrl());
-                } else {
-                    json.put("url", menu.getUrl());
-                }
-            }
-            
-            if (menu.getChildren().size() > 0) {
-                JSONObject subMenu = new JSONObject();
-                
-                subMenu.put("items", exportMenuToExtJS(menu));
-                subMenu.put("hideMode", "display");
-                
-                json.put("menu", subMenu);
-            }
-        } else {
-            json.put("xtype", menu.getXtype());
+
+        if (menuItem.hasName())
+            json.put("text", menuItem.getName());
+
+        if (menuItem.hasHtmlID())
+        	json.put("id", menuItem.getHtmlId());
+
+    	if (menuItem.hasTarget())
+    		json.put("target", menuItem.getTarget());
+
+        if (menuItem.hasUrl()) {
+        	String tag = (menuItem.getLevel() > 1) ? "href" : "url";
+            json.put(tag, menuItem.getUrl());
         }
-        
+
+        if (menuItem.hasChildren()) {
+            JSONObject subMenu = new JSONObject();
+
+            subMenu.put("items", convertMenuToJSON(menuItem));
+
+            json.put("menu", subMenu);
+        }
+
         return json;
     }
 }

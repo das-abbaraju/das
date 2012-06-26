@@ -55,47 +55,58 @@
 
                 // fade element out
                 client_site.fadeOut(500, function () {
+
+                    // Remove the added site's list item from the available sites' node tree.
+                    client_site.remove();
+
                     that.trigger_client_help_removal();
 
                     that.add(client_site_id, function () {
                         that.add_to_selected_client_site_list(client_site);
                     });
                 });
+                
             },
 
             add_to_client_site_list: function (client_site, client_site_list) {
                 var that = this;
-                var client_site_name = client_site.find('a .name').text();
 
+                // Get the names of the client sites currently in the target list.
                 var client_sites = client_site_list.find('li');
                 var client_site_names = [];
-
-                // find elements and build sort list
                 client_sites.each(function (key, value) {
-                    var element = $(this).find('a .name');
-
-                    client_site_names[key] = element.text();
+                    client_site_names[key] = $(this).find('a .name').text();
                 });
                 
+                // Get the name of the client site to be added.
+                var client_site_name = client_site.find('a .name').text();
+                
+                // Is the client site already in the list?
                 var existingIndex = $.inArray(client_site_name, client_site_names);
                 
-                if (existingIndex < 0) {
-                    // push element into sort list
+                // If not...
+                if (existingIndex == -1) {
+                    
+                    // Add the site name to the array of existing site names.
                     client_site_names.push(client_site_name);
-    
-                    // sort list
+                    
+                    // Sort the array alphabetically.
                     client_site_names.sort();
-    
-                    // pull out index of sorted element
+
+                    // Identify the index of the newly added site name within the sorted array.
                     var index = $.inArray(client_site_name, client_site_names);
                     
-                        if (client_sites.eq(index).length > 0) {
-                            client_sites.eq(index).before(client_site);
-                        } else {
-                            client_site_list.append(client_site);
-                        }
+                    // Insert the client site within the array of client sites
+                    // (The object array is already sorted alphabetically.)
+                    if (client_sites.eq(index).length > 0) {
+                        // ...immediately before that index if that index is currently occupied
+                        client_sites.eq(index).before(client_site);
+                    } else {
+                        // ...or at that same index, if it is not. 
+                        client_site_list.append(client_site);
+                    }
     
-                    // re-enable client site add
+                    // Re-enable client site add.
                     client_site.find('a').removeClass('disable');
                 }
             },
@@ -171,12 +182,16 @@
 
                 var client_site = element.closest('li');
                 var client_site_id = element.attr('data-id');
-
+                
                 // disable client site remove - remove it from delegated event list
                 element.addClass('disable');
 
                 // fade element out
-                element.closest('li').fadeOut(500, function () {
+                client_site.fadeOut(500, function () {
+
+                    // Remove the removed site's list item from the selected sites' node tree.
+                    client_site.remove();
+
                     // show help message if all client sites have been removed
                     if (num_sites_selected < 1) {
                         sites_selected_container.fadeOut(250, function () {
@@ -193,6 +208,7 @@
                         that.add_to_available_client_site_list(client_site);
                     });
                 });
+                
             },
 
             remove: function (client_site_id, success_callback) {

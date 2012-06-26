@@ -1,0 +1,115 @@
+// report header
+$report_grid_header_border_color: #333333;
+$report_grid_header_text_color: #cccccc;
+
+// report header - trigger
+$report_grid_header_trigger_background_color: #454545;
+
+// report body
+$report_grid_body_border_color: #cccccc;
+
+// report rows
+$report_grid_row_background_color: #ffffff;
+
+$report_grid_alt_row_background_color: #f1f1f1;
+
+$report_grid_row_over_background_color: #f1f1f1;
+
+// report cell
+$report_grid_cell_border_right_color: #dcdcdc;
+
+$report_grid_cell_text_color: #333333;
+
+$report_grid_cell_link_color: #226396;
+
+// report footer
+$report_grid_footer_background_color: #454545;
+$report_grid_footer_border_color: #cccccc;
+
+
+#report_grid .x-grid-header-ct
+{
+	border: 1px solid $report_grid_header_text_color !important;
+	border-top: 0px !important;
+}
+
+#report_grid .x-column-header
+{
+	border-right: 1px solid $report_grid_header_border_color;
+	color: $report_grid_header_text_color;
+	font-weight: bold;
+	text-shadow: none;
+}
+
+#report_grid .x-column-header .x-column-header-trigger
+{
+	background: $report_grid_header_trigger_background_color url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
+	display: block;
+}
+
+#report_grid .x-column-header .x-column-header-open .x-column-header-trigger
+{
+	background-position: -14px;
+}
+
+#report_grid-body
+{
+	border: 0px;
+	border: 1px solid $report_grid_body_border_color !important;
+	border-top: 0px !important;
+}
+
+#report_grid-body .x-grid-cell
+{
+	border-right: 1px solid $report_grid_cell_border_right_color;
+}
+
+#report_grid .x-grid-row .x-grid-cell-special
+{
+	background: $report_grid_row_background_color;
+	background-image: none !important;
+}
+
+#report_grid .x-grid-row-over .x-grid-cell-special
+{
+	background: $report_grid_row_over_background_color;
+}
+
+#report_grid .x-grid-row-alt .x-grid-cell,
+#report_grid .x-grid-row-alt .x-grid-rowwrap-div
+{
+	background: $report_grid_alt_row_background_color;
+	border-top: 0px;
+	border-bottom: 0px;
+}
+
+#report_grid .x-grid-cell-inner
+{
+	color: $report_grid_cell_text_color;
+	font-size: 14px;
+	line-height: 18px;
+	padding: 4px 6px 4px;
+}
+
+#report_grid .x-grid-cell-inner a
+{
+	color: $report_grid_cell_link_color;
+	text-decoration: none;
+}
+
+#report_grid .x-grid-cell-inner a:hover
+{
+	text-decoration: underline;
+}
+
+#report_grid_footer
+{
+	border: 1px solid $report_grid_footer_border_color !important;
+	border-top: 0px !important;
+}
+
+#report_grid_footer-body
+{
+	background: $report_grid_footer_background_color;
+	border: 0px;
+}

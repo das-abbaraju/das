@@ -184,7 +184,7 @@ public class ManageResources extends PicsActionSupport {
 			addActionMessage(getText("ManageResources.message.Updated"));
 		}
 		
-		return redirect("ManageResources.action?id=" + id);
+		return setUrlForRedirect("ManageResources.action?id=" + id);
 	}
 
 	public String delete() throws Exception {
@@ -212,7 +212,7 @@ public class ManageResources extends PicsActionSupport {
 			FileUtils.deleteFile(new File(getFtpDir() + "/files/" + FileUtils.thousandize(resource.getId()) + fileName));
 		}
 
-		return redirect("Resources.action");
+		return setUrlForRedirect("Resources.action");
 	}
 
 	public String remove() throws Exception {
@@ -274,7 +274,7 @@ public class ManageResources extends PicsActionSupport {
 			FileUtils.deleteFile(new File(getFtpDir() + "/files/" + FileUtils.thousandize(selectedForm.getId()) + fileName));
 		}
 
-		return redirect("ManageResources.action?id=" + id);
+		return setUrlForRedirect("ManageResources.action?id=" + id);
 	}
 
 	public String makeDefault() throws Exception {
@@ -313,7 +313,7 @@ public class ManageResources extends PicsActionSupport {
 		operatorFormDAO.save(resource);
 		operatorFormDAO.save(selectedForm);
 		
-		return redirect("ManageResources.action?id=" + selectedForm.getId());
+		return setUrlForRedirect("ManageResources.action?id=" + selectedForm.getId());
 	}
 
 	private String saveFile(int id) throws Exception {

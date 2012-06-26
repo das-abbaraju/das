@@ -32,6 +32,8 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
@@ -92,6 +94,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private TimeZone timezone = null;
 	private Locale locale = Locale.ENGLISH;
 	private String department;
+	private boolean usingDynamicReports;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -100,7 +103,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
-
+	private List<Report> reports = new ArrayList<Report>();
+	
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
@@ -130,7 +134,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		this.username = u.getUsername();
 		this.isGroup = u.getIsGroup();
-		this.email = u.getEmail();
+		this.email = u.getEmail().trim();
 		this.emailConfirmedDate = u.getEmailConfirmedDate();
 		this.name = u.getName();
 		this.isActive = u.getIsActive();
@@ -157,8 +161,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.subscriptions = u.getSubscriptions();
 	}
 
-	@Column(length = 100, nullable = false, unique = true)
+	@Column(name = "username", length = 100, nullable = false, unique = true)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 6)
+	@ReportField(filterType = FilterType.AccountName)
 	public String getUsername() {
 		return username;
 	}
@@ -182,8 +187,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.isGroup = isGroup;
 	}
 
-	@Column(length = 100)
+	@Column(name = "email", length = 100)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
+	@ReportField(filterType = FilterType.String)
 	public String getEmail() {
 		return email;
 	}
@@ -201,8 +207,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
-	@Column(length = 255, nullable = false)
+	@Column(name = "name", length = 255, nullable = false)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
+	@ReportField(filterType = FilterType.AccountName)
 	public String getName() {
 		return name;
 	}
@@ -342,7 +349,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return (getLockUntil() != null) ? new Date().before(getLockUntil()) : false;
 	}
 
-	@Column(length = 50)
+	@Column(name = "phone", length = 50)
+	@ReportField(filterType = FilterType.String)
 	public String getPhone() {
 		return phone;
 	}
@@ -440,6 +448,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setWatchedContractors(List<ContractorWatch> watchedContractors) {
 		this.watchedContractors = watchedContractors;
+	}
+
+	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.REMOVE)
+	public List<Report> getReports() {
+		return reports;
+	}
+
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
 	}
 
 	@Transient
@@ -829,6 +846,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public boolean hasPermission(OpPerms opPerm) {
 		return this.hasPermission(opPerm, OpType.View);
+	}
+
+	public boolean isUsingDynamicReports() {
+		return usingDynamicReports;
+	}
+
+	public void setUsingDynamicReports(boolean usingDynamicReports) {
+		this.usingDynamicReports = usingDynamicReports;
 	}
 
 	@Transient

@@ -81,7 +81,7 @@ public class ReportActivityWatch extends ReportAccount {
 			return SUCCESS;
 		}
 		getContractorWatchlistHelper().removeContractorFromWatchList(contractorWatch);
-		return redirect("ReportActivityWatch.action"
+		return setUrlForRedirect("ReportActivityWatch.action"
 				+ (contractor != null && contractor.getId() != getContractorWatchlistHelper().getRemovedContractorId() ? "?contractor="
 						+ contractor.getId()
 						: ""));

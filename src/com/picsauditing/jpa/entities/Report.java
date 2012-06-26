@@ -4,15 +4,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.jboss.util.Strings;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.SimpleReportDefinition;
+import com.picsauditing.report.Definition;
+import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.JSONUtilities;
+import com.picsauditing.util.business.DynamicReportUtil;
 
 @SuppressWarnings("serial")
 @Entity
@@ -23,7 +26,9 @@ public class Report extends BaseTable {
 	private String name;
 	private String description;
 	private String parameters;
-	private Account sharedWith;
+
+	private Definition definition;
+	private int rowsPerPage = 50;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -60,32 +65,63 @@ public class Report extends BaseTable {
 		this.parameters = parameters;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "sharedWith")
-	public Account getSharedWith() {
-		return sharedWith;
-	}
-
-	public void setSharedWith(Account sharedWith) {
-		this.sharedWith = sharedWith;
-	}
-
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("modelType", modelType.toString());
 		obj.put("name", name);
 
-		if (full) {
-			obj.put("description", description);
-			SimpleReportDefinition definition = new SimpleReportDefinition(parameters);
-			if (definition.getColumns().size() > 0)
-				obj.put("columns", JSONUtilities.convertFromList(definition.getColumns()));
-			if (definition.getFilters().size() > 0)
-				obj.put("filters", JSONUtilities.convertFromList(definition.getFilters()));
-			if (definition.getOrderBy().size() > 0)
-				obj.put("sorts", JSONUtilities.convertFromList(definition.getOrderBy()));
+		if (!full) {
+			return obj;
 		}
+
+		obj.put("description", description);
+
+		Definition defaultDefinition = this.definition;
+		if (defaultDefinition == null) {
+			defaultDefinition = new Definition(parameters);
+		}
+
+		String filterExpresion = defaultDefinition.getFilterExpression();
+		if (!Strings.isEmpty(filterExpresion))
+			obj.put(DynamicReportUtil.FILTER_EXPRESSION, filterExpresion);
+
+		if (defaultDefinition.getColumns().size() > 0)
+			obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
+		if (defaultDefinition.getFilters().size() > 0)
+			obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
+		if (defaultDefinition.getSorts().size() > 0)
+			obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getSorts()));
+
 		return obj;
+	}
+
+	@Transient
+	public Definition getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(Definition definition) {
+		this.definition = definition;
+	}
+
+	@Transient
+	public int getRowsPerPage() {
+		return rowsPerPage;
+	}
+
+	public void setRowsPerPage(int rowsPerPage) {
+		this.rowsPerPage = rowsPerPage;
+	}
+
+	@Transient
+	public AbstractModel getModel() {
+		return ModelFactory.build(modelType);
+	}
+
+	@Transient
+	// TODO find a better name for this class, like BaseView or something
+	public com.picsauditing.report.tables.AbstractTable getTable() {
+		return getModel().getPrimaryTable();
 	}
 }

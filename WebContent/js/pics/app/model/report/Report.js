@@ -1,32 +1,38 @@
 Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
     requires: [
-        'PICS.model.report.SimpleColumn',
-        'PICS.model.report.SimpleFilter',
-        'PICS.model.report.SimpleSort'
+        'PICS.model.report.Column',
+        'PICS.model.report.Filter',
+        'PICS.model.report.Sort'
     ],
     
-    // TODO: COMMENT THIS PARAMETER IS IMPORTANT
-    // TIED TO STORE + REPORT CONTROLLER
-    // WAY TO MUCH BLIND DEPENDENCY
-    parameters: {},
-
-    fields: [
-        { name: 'id', type: 'int' },
-        { name: 'modelType', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'description', type: 'string' },
-        { name: 'filterExpression', type: 'string' },
-        { name: 'rowsPerPage', type: 'int', defaultValue: 100 }
-    ],
+    fields: [{
+        name: 'id',
+        type: 'int'
+    }, {
+        name: 'modelType',
+        type: 'string'
+    }, {
+        name: 'name',
+        type: 'string'
+    }, {
+        name: 'description',
+        type: 'string'
+    }, {
+        name: 'filterExpression',
+        type: 'string'
+    }, {
+        name: 'rowsPerPage',
+        type: 'int'
+    }],
     hasMany: [{
-        model: 'PICS.model.report.SimpleColumn', 
+        model: 'PICS.model.report.Column', 
         name: 'columns'
     }, {
-        model: 'PICS.model.report.SimpleFilter', 
+        model: 'PICS.model.report.Filter', 
         name: 'filters'
     }, {
-        model: 'PICS.model.report.SimpleSort', 
+        model: 'PICS.model.report.Sort', 
         name: 'sorts'
     }]
 });

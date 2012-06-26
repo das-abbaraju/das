@@ -133,13 +133,13 @@ public class ContractorCron extends PicsActionSupport {
 			// PicsLogger.stop();
 
 			if (!Strings.isEmpty(redirectUrl)) {
-				return redirect(redirectUrl);
+				return setUrlForRedirect(redirectUrl);
 			}
 		} catch (Exception e) {
 			if (!Strings.isEmpty(redirectUrl)) {
 				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #"
 						+ conID);
-				return redirect(redirectUrl);
+				return setUrlForRedirect(redirectUrl);
 			}
 			throw e;
 		}

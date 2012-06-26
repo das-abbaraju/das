@@ -8,7 +8,6 @@ import com.picsauditing.util.Strings;
  * SELECT a.id, a.name, a.active FROM accounts a
  * 
  * @author Trevor
- * 
  */
 public class SelectAccount extends SelectSQL {
 	private Type type = null;

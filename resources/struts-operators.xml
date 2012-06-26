@@ -86,7 +86,17 @@
 		</action>
 		
 		<action name="GeneralContractorsList" class="com.picsauditing.actions.operators.gc.GeneralContractorsList">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">GeneralContractorsList</param>
 			<result>/struts/gc/general_contractors_list.jsp</result>
+		</action>
+
+		<action name="GeneralContractorsListAjax" class="com.picsauditing.actions.operators.gc.GeneralContractorsList">
+			<result>/struts/gc/general_contractors_list_data.jsp</result>
+		</action>
+		
+		<action name="GeneralContractorsListCSV" class="com.picsauditing.actions.operators.gc.GeneralContractorsList" method="download">
+			<result>/struts/blank.jsp</result>
 		</action>
 	</package>
 </struts>

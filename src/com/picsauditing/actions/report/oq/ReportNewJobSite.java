@@ -137,7 +137,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 		}
 
-		return redirect("ReportNewProjects.action");
+		return setUrlForRedirect("ReportNewProjects.action");
 	}
 
 	public String remove() throws Exception {
@@ -160,7 +160,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 			jsDAO.remove(jc);
 		}
 
-		return redirect("ReportNewProjects.action");
+		return setUrlForRedirect("ReportNewProjects.action");
 	}
 
 	public String employees() throws Exception {

@@ -24,6 +24,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
 
 @SuppressWarnings("serial")
 @Entity
@@ -107,6 +109,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Transient
+	@ReportField(filterType = FilterType.String)
 	public TranslatableString getName() {
 		return this.name;
 	}
@@ -116,6 +119,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.String)
 	public AuditTypeClass getClassType() {
 		return classType;
 	}
@@ -154,6 +158,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Column(name = "isScheduled")
+	@ReportField(filterType = FilterType.String)
 	public boolean isScheduled() {
 		return isScheduled;
 	}
@@ -162,6 +167,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		this.isScheduled = isScheduled;
 	}
 
+	@ReportField(filterType = FilterType.String)
 	public boolean isHasAuditor() {
 		return hasAuditor;
 	}
@@ -380,6 +386,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	 * @return boolean indicating whether or not this Audit Type can be scored. Used for implementing audit score.
 	 */
 	@Transient
+	@ReportField(filterType = FilterType.String)
 	public boolean isScoreable() {
 		return scoreType != null;
 	}

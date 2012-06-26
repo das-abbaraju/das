@@ -135,7 +135,7 @@ public class ManageAssessmentResults extends ReportActionSupport {
 						return SUCCESS;
 					}
 					
-					return redirect("ManageAssessmentResults.action" + 
+					return setUrlForRedirect("ManageAssessmentResults.action" + 
 							(permissions.isAssessment() ? "" : "?id=" + id));
 				} else
 					addActionError("Missing Assessment Result ID");

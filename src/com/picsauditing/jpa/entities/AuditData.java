@@ -29,6 +29,8 @@ import org.json.simple.JSONValue;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -66,6 +68,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.question = question;
 	}
 
+	@ReportField(filterType = FilterType.String)
 	public String getAnswer() {
 		return answer;
 	}
@@ -84,6 +87,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.auditor = auditor;
 	}
 
+	@ReportField(filterType = FilterType.String)
 	public String getComment() {
 		return comment;
 	}
@@ -107,6 +111,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Temporal(TemporalType.DATE)
+	@ReportField(filterType = FilterType.Date)
 	public Date getDateVerified() {
 		return dateVerified;
 	}

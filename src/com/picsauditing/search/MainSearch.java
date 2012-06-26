@@ -78,7 +78,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			else if ("audit".equals(searchType) && permissions.isPicsEmployee())
 				record = contractorAuditDAO.find(searchID);
 			if (record != null)
-				return redirect(record.getViewLink());
+				return setUrlForRedirect(record.getViewLink());
 			else
 				addActionError(getText("MainSearch.ErrorOccuredTryAgain"));
 
@@ -92,7 +92,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				int auditID = Integer.parseInt(terms.get(1));
 				ContractorAudit audit = contractorAuditDAO.find(auditID);
 				if (audit != null)
-					return redirect(audit.getViewLink());
+					return setUrlForRedirect(audit.getViewLink());
 			} else {
 				// if corporate then build list of contractors in their system
 				ht = searchEngine.getConIds(permissions);
@@ -184,11 +184,11 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 					 * want to send them to the SearchForNew page.
 					 */
 					if (checkCon(viewThis.getId())) {
-						redirect(viewAction);
+						setUrlForRedirect(viewAction);
 					}
 				}
 			} else
-				redirect(viewAction);
+				setUrlForRedirect(viewAction);
 		}
 
 		return records;

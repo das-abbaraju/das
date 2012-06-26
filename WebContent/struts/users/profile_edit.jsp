@@ -182,8 +182,16 @@
 										value="u.timezone.iD" theme="form"
 										list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" /></li>
 
-								<li><label><s:text name="global.CreationDate" />:</label>
-									<s:date name="u.creationDate" /></li>
+								<li>
+									<label><s:text name="global.CreationDate" />:</label>
+									<s:date name="u.creationDate" />
+								</li>
+								<pics:toggle name="DynamicReports">
+									<li>
+										<label> <s:text name="User.useDynamicReport" /></label>
+										<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="u.usingDynamicReports" />
+									</li>
+								</pics:toggle>
 							</ol>
 						</fieldset>
 

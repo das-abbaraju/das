@@ -1,33 +1,36 @@
 Ext.define('PICS.view.report.filter.BooleanFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
-    alias: ['widget.booleanfilter'],    
+    alias: ['widget.booleanfilter'],
 
-    items: [{
-        xtype: 'panel',
-        name: 'title'
-    },{
-        xtype: 'checkbox',
-        boxLabel  : 'On',
-        name      : 'boolean',
-        inputValue: '1'
-    }],
-    listeners: {
-        beforeRender: function () {
-            var form = Ext.ComponentQuery.query("booleanfilter")[0],
-                checkbox = form.child("checkbox");
+    constructor: function (data) {
+        this.record = data.record;
 
-            checkbox.setValue(form.record.data.value);
-        }
-    },
-    applyFilter: function() {
-        var values = this.getValues();
-       
-        if (values.boolean === '1') {
-            this.record.set('value', values.boolean);
-        } else {
-            this.record.set('value', 0);
-        }
-        this.record.set('operator', 'Equals'); //TODO remove hack to get boolean working
-        this.superclass.applyFilter();
+        this.callParent(arguments);
+
+        var boolean_filter = {
+            xtype: 'checkbox',
+            boxLabel: 'True',
+            name: 'filter_value',
+            inputValue: null,
+            listeners: {
+                change: function (obj, newval, oldval, options) {
+                    var record = this.up('booleanfilter').record;
+                    if (newval === false) {
+                        record.set('value', 0);
+                    } else {
+                        record.set('value', 1);
+                    }
+                }
+            }
+        };
+
+        // add filter
+        this.child('panel [name=filter_input]').add(boolean_filter);
+
+        // set filter number
+        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
+
+        // set filter inputs
+        this.child('panel checkbox[name=filter_value]').setValue(this.record.get('not'));
     }
 });

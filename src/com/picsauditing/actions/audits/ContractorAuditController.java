@@ -139,7 +139,7 @@ public class ContractorAuditController extends AuditActionSupport {
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
 				conAudit.setLastRecalculation(new Date());
 				auditDao.save(conAudit);
-				return this.redirect("Audit.action?auditID=" + conAudit.getId());
+				return this.setUrlForRedirect("Audit.action?auditID=" + conAudit.getId());
 			}
 
 			if ("SubmitRemind".equals(button)) {
@@ -364,12 +364,12 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (auditID > 0) {
 			findConAudit();
-			return redirect("CreateImportPQFAudit.action?id=" + contractor.getId());
+			return setUrlForRedirect("CreateImportPQFAudit.action?id=" + contractor.getId());
 		} else {
 			addActionError("Missing Audit ID");
 		}
 
-		return redirect("Audit.action?auditID=" + importAuditID);
+		return setUrlForRedirect("Audit.action?auditID=" + importAuditID);
 	}
 
 	public String importPQFNo() throws Exception {
@@ -381,7 +381,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		checkMode();
-		return redirect("Audit.action?auditID=" + auditID);
+		return setUrlForRedirect("Audit.action?auditID=" + auditID);
 	}
 
 	public List<MenuComponent> getAuditMenu() {

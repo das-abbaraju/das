@@ -39,21 +39,19 @@ public class Report extends TranslationActionSupport {
 		}
 		Database db = new Database();
 		String sqlText = sql.toString(unionSql);
-		
-		long start = System.currentTimeMillis();
-		if (debug) {
-			System.out.println();
-			System.out.println(sql.toString(unionSql));
-			System.out.println("Start: " + start);
-		}
 
+		// If you would like to get debug data, please use the StopWatch
+//		long start = System.currentTimeMillis();
 		List<BasicDynaBean> pageData = db.select(sqlText, true);
+//		long finish = System.currentTimeMillis();
 
-		long finish = System.currentTimeMillis();
-		if (debug) {
-			System.out.println("Finish: " + finish);
-			System.out.println("TOTAL: " + (finish-start));
-		}
+//		if (debug) {
+//			System.out.println();
+//			System.out.println(sql.toString(unionSql));
+//			System.out.println("Start: " + start);
+//			System.out.println("Finish: " + finish);
+//			System.out.println("TOTAL: " + (finish-start));
+//		}
 
 		returnedRows = pageData.size();
 		allRows = db.getAllRows();

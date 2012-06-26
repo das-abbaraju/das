@@ -116,7 +116,7 @@ public class ChangePassword extends PicsActionSupport {
 				 */
 				if (!Strings.isEmpty(url) && forcedReset) {
 					user = dao.save(user);
-					return redirect(url);
+					return setUrlForRedirect(url);
 				}
 			} else {
 				if (Strings.isEmpty(password1))
@@ -138,7 +138,7 @@ public class ChangePassword extends PicsActionSupport {
 			addActionMessage(getText("global.Password.saved"));
 		}
 
-		this.redirect(url);
+		this.setUrlForRedirect(url);
 		return SUCCESS;
 	}
 

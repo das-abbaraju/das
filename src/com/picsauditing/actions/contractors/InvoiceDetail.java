@@ -309,7 +309,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				addActionMessage(message);
 			}
 
-			return this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit);
+			return this.setUrlForRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit);
 		}
 
 		updateTotals();

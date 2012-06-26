@@ -131,7 +131,7 @@ public class ManageAssessmentTests extends ReportActionSupport {
 				if (getActionErrors().size() == 0)
 					testDAO.remove(test);
 				
-				return redirect("ManageAssessmentTests.action" + 
+				return setUrlForRedirect("ManageAssessmentTests.action" + 
 						(permissions.isAssessment() ? "" : "?id=" + id));
 			}
 		}

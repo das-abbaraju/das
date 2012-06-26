@@ -1,17 +1,16 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import com.ibm.icu.util.Calendar;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -44,10 +43,12 @@ public class OshaOrganizerTest {
 	private void setupAudits_FourYearsOshaAndUk(ContractorAccount contractor) {
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		contractor.setAudits(audits);
-		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, "2010"));
-		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, "2009"));
-		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, "2008"));
-		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, "2007"));
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy");
+		for (int i = 0; i < 4; i++) {
+			now.add(Calendar.YEAR, -1);
+			audits.add(EntityFactory.makeAnnualUpdate(11, contractor, format.format(now.getTime())));
+		}
 
 		int trir = 2;
 		for (ContractorAudit audit : audits) {
@@ -81,8 +82,12 @@ public class OshaOrganizerTest {
 	private void setupAudits_TwoYearsOsha(ContractorAccount contractor) {
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		contractor.setAudits(audits);
-		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, "2010"));
-		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, "2008"));
+		Calendar date = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy");
+		date.add(Calendar.YEAR, -1);
+		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, format.format(date.getTime())));
+		date.add(Calendar.YEAR, -2);
+		audits.add(EntityFactory.makeAnnualUpdate(11, contractor, format.format(date.getTime())));
 
 		int trir = 2;
 		for (ContractorAudit audit : audits) {
@@ -118,39 +123,34 @@ public class OshaOrganizerTest {
 		assertTrue(oshaOrganizer.size() > 0);
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testTRIR_OneYearAgo() throws Exception {
 		setupAudits_FourYearsOshaAndUk(contractor);
-		assertTrue(2 == oshaOrganizer.getRate(OshaType.OSHA,
-				MultiYearScope.LastYearOnly, OshaRateType.TrirAbsolute));
+		double rate = oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.LastYearOnly, OshaRateType.TrirAbsolute);
+		assertThat(rate, is(2d));
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testTRIR_TwoYearsAgo() throws Exception {
 		setupAudits_FourYearsOshaAndUk(contractor);
-		assertTrue(3 == oshaOrganizer.getRate(OshaType.OSHA,
-				MultiYearScope.TwoYearsAgo, OshaRateType.TrirAbsolute));
+		double rate = oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.TwoYearsAgo, OshaRateType.TrirAbsolute);
+		assertThat(rate, is(3d)); 
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testTRIR_ThreeYearsAgo() throws Exception {
 		setupAudits_FourYearsOshaAndUk(contractor);
-		assertTrue(4 == oshaOrganizer.getRate(OshaType.OSHA,
-				MultiYearScope.ThreeYearsAgo, OshaRateType.TrirAbsolute));
+		double rate = oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearsAgo, OshaRateType.TrirAbsolute);
+		assertThat(rate, is(4d));
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testTRIR_ThreeYearAvg() throws Exception {
 		setupAudits_FourYearsOshaAndUk(contractor);
-		assertTrue(3 == oshaOrganizer.getRate(OshaType.OSHA,
-				MultiYearScope.ThreeYearAverage, OshaRateType.TrirAbsolute));
+		double rate = oshaOrganizer.getRate(OshaType.OSHA, MultiYearScope.ThreeYearAverage, OshaRateType.TrirAbsolute);
+		assertThat(rate, is(3d));
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testGetOshaAudit(){
 		setupAudits_FourYearsOshaAndUk(contractor);
@@ -164,57 +164,78 @@ public class OshaOrganizerTest {
 		assertNotNull(oshaOrganizer.getStatistic(OshaType.UK_HSE, MultiYearScope.ThreeYearsAgo));
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testMostRecentThreeYears_FromFourYearsOfData() throws Exception {
 		setupAudits_FourYearsOshaAndUk(contractor);
 		YearList years = oshaOrganizer.mostRecentThreeYears(OshaType.OSHA);
 		assertEquals(3, years.size());
 
-		assertEquals(2008,years.getYearForScope(MultiYearScope.ThreeYearsAgo).intValue());
-		assertEquals(2009,years.getYearForScope(MultiYearScope.TwoYearsAgo).intValue());
-		assertEquals(2010,years.getYearForScope(MultiYearScope.LastYearOnly).intValue());
+		assertEquals(lastYear(),years.getYearForScope(MultiYearScope.LastYearOnly).intValue());
+		assertEquals(twoYearsAgo(),years.getYearForScope(MultiYearScope.TwoYearsAgo).intValue());
+		assertEquals(threeYearsAgo(),years.getYearForScope(MultiYearScope.ThreeYearsAgo).intValue());
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testMostRecentThreeYears_FromTwoYearsOfData() throws Exception {
 		setupAudits_TwoYearsOsha(contractor);
 		YearList years = oshaOrganizer.mostRecentThreeYears(OshaType.OSHA);
 		assertEquals(2, years.size());
-		assertEquals(2008,years.getYearForScope(MultiYearScope.ThreeYearsAgo).intValue());
-		assertEquals(2010,years.getYearForScope(MultiYearScope.LastYearOnly).intValue());
+		assertEquals(lastYear(),years.getYearForScope(MultiYearScope.LastYearOnly).intValue());
+		assertEquals(threeYearsAgo(),years.getYearForScope(MultiYearScope.ThreeYearsAgo).intValue());
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testIsVerified_ThreeYearAverage_False() {
 		setupAudits_TwoYearsOsha(contractor);
-		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(2010).setVerified(true);
-		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(2008).setVerified(false);
+		
+		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(lastYear()).setVerified(true);
+		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(threeYearsAgo()).setVerified(false);
 		assertFalse(oshaOrganizer.isVerified(OshaType.OSHA, MultiYearScope.ThreeYearAverage));
+	}
+
+	private int lastYear() {
+		Calendar date = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy");
+		date.add(Calendar.YEAR, -1);
+		int lastYear = new Integer(format.format(date.getTime())).intValue();
+		return lastYear;
+	}
+	
+	private int twoYearsAgo() {
+		Calendar date = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy");
+		date.add(Calendar.YEAR, -2);
+		int lastYear = new Integer(format.format(date.getTime())).intValue();
+		return lastYear;
+	}
+
+	private int threeYearsAgo() {
+		Calendar date = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy");
+		date.add(Calendar.YEAR, -3);
+		int lastYear = new Integer(format.format(date.getTime())).intValue();
+		return lastYear;
 	}
 
 	@Test
 	public void testIsVerified_ThreeYearAverage_True() {
 		setupAudits_TwoYearsOsha(contractor);
-		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(2010).setVerified(true);
-		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(2008).setVerified(true);
+		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(lastYear()).setVerified(true);
+		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(threeYearsAgo()).setVerified(true);
 		assertTrue(oshaOrganizer.isVerified(OshaType.OSHA, MultiYearScope.ThreeYearAverage));
 	}
 
 	@Test
 	public void testIsVerified_SpecificYear_False() {
 		setupAudits_TwoYearsOsha(contractor);
-		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(2008).setVerified(false);
+		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(threeYearsAgo()).setVerified(false);
 		assertFalse(oshaOrganizer.isVerified(OshaType.OSHA, MultiYearScope.ThreeYearsAgo));
 	}
 
-	@Ignore("Not ready to run yet.")
 	@Test
 	public void testIsVerified_SpecificYear_True() {
 		setupAudits_TwoYearsOsha(contractor);
-		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(2010).setVerified(true);
+		oshaOrganizer.safetyStatisticsData.get(OshaType.OSHA).get(lastYear()).setVerified(true);
 		assertTrue(oshaOrganizer.isVerified(OshaType.OSHA, MultiYearScope.LastYearOnly));
 	}
 }

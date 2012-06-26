@@ -128,7 +128,7 @@ public class ManageTransformOption extends ManageQuestion {
 		question = auditQuestionDAO.save(question);
 
 		try {
-			redirect("ManageQuestion.action?id=" + question.getId());
+			setUrlForRedirect("ManageQuestion.action?id=" + question.getId());
 		} catch (Exception x) {
 		}
 
@@ -141,7 +141,7 @@ public class ManageTransformOption extends ManageQuestion {
 			question.getTransformOptions().remove(origOption);
 			question = auditQuestionDAO.save(question);
 			try {
-				redirect("ManageQuestion.action?id=" + question.getId());
+				setUrlForRedirect("ManageQuestion.action?id=" + question.getId());
 			} catch (Exception x) {
 			}
 			return true;

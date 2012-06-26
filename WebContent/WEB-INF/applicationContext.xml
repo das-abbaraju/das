@@ -10,6 +10,7 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
+	<context:property-placeholder location="classpath:amqp_connection.properties"/>
 	<import resource="rabbit-config.xml"/>
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
@@ -123,6 +124,7 @@
 	<bean id="OpenTasksSubscription" class="com.picsauditing.mail.subscription.OpenTasksSubscription" scope="prototype"/>
 	<bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" scope="prototype"/>
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
+	<bean id="CancelledScheduledAudits" class="com.picsauditing.mail.subscription.CancelledScheduledAuditsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
 	
 	<bean id="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium" scope="prototype" />
@@ -131,6 +133,21 @@
 	<!-- Beans for service layers -->
 	<bean id="FacilitiesEditModel" class="com.picsauditing.models.operators.FacilitiesEditModel"/>
 	<bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
+
+	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
+	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
+	<bean id="AuditQuestionAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />
+	<bean id="AuditTypeAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService" />
+	<bean id="ContractorAutocompleteService" class=" com.picsauditing.actions.autocomplete.ContractorAutocompleteService" />
+	<bean id="CountryAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountryAutocompleteService" />
+	<bean id="LocationAutocompleteService" class=" com.picsauditing.actions.autocomplete.LocationAutocompleteService" />
+	<bean id="StateAutocompleteService" class=" com.picsauditing.actions.autocomplete.StateAutocompleteService" />
+	<bean id="OperatorAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorAutocompleteService" />
+	<bean id="OperatorTagAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
+	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
+	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
+	<bean id="ReportDynamicModel" class="com.picsauditing.models.ReportDynamicModel" />
+	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

@@ -57,6 +57,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 // Cache is only on the operator account now, if this works.
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorAccount extends Account implements JSONable {
+	
 	private String taxId;
 	private String logoFile;
 	private String brochureFile;
@@ -211,7 +212,8 @@ public class ContractorAccount extends Account implements JSONable {
 		this.jobSites = jobSites;
 	}
 
-	@Column(length = 100)
+	@Column(name = "taxID", length = 100)
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Integer)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -1336,6 +1338,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
 	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}
@@ -1361,7 +1364,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.AccountLevel)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Enum)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
 	}

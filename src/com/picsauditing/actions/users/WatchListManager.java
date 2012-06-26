@@ -68,7 +68,7 @@ public class WatchListManager extends PicsActionSupport {
 			}
 		}
 
-		return redirect("WatchListManager.action");
+		return setUrlForRedirect("WatchListManager.action");
 	}
 
 	public User getUser() {

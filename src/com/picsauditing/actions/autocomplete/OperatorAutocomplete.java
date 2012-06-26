@@ -9,6 +9,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
+@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public final class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
 
@@ -19,9 +20,13 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 	protected Collection<OperatorAccount> getItems() {
 		// HSE specific -- We want operators to search for sibling operators
 		if (!permissions.isAdmin() && !permissions.isCorporate() && !permissions.isRequiresCompetencyReview()
-				&& !permissions.isGeneralContractor()) {
+				&& !permissions.isGeneralContractor() && permissions.getLinkedGeneralContractors().isEmpty()) {
 			// TODO Non admin/corporate queries not supported yet
 			return Collections.emptyList();
+		}
+
+		if (!permissions.getLinkedGeneralContractors().isEmpty()) {
+			return dao.findWhere(false, "a.id IN (" + Strings.implode(permissions.getLinkedGeneralContractors()) + ")");
 		}
 
 		String corpPerms = "";

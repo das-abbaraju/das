@@ -78,7 +78,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 				addActionMessage(msg);
 
-				return this.redirect("ContractorFacilities.action?id=" + contractor.getId());
+				return this.setUrlForRedirect("ContractorFacilities.action?id=" + contractor.getId());
 			}
 		}
 		if (newRegistration) {
@@ -216,7 +216,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		findContractor();
 
 		if (!isHasPQFImportAudit()) {
-			return this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
+			return this.setUrlForRedirect("CreateImportPQFAudit.action?id=" + contractor.getId()
 					+ "&url=ContractorPaymentOptions.action");
 		}
 

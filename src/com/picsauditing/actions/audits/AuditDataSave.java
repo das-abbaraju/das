@@ -682,8 +682,12 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("Date".equals(questionType)) {
 			SimpleDateFormat s = new SimpleDateFormat(getText("date.short"));
 			Date newDate;
+
 			try {
-				newDate = s.parse(answer);
+				if (answer.length()==10)
+					newDate = s.parse(answer);
+				else
+					newDate = DateBean.parseDate(answer);
 			} catch (ParseException e) {
 				try {
 					SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");

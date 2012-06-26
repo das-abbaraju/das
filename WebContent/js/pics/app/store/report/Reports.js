@@ -1,91 +1,99 @@
+/**
+ * Report Store
+ *
+ * load backend report into local report database via ajax
+ * sends backend report from local to server
+ */
 Ext.define('PICS.store.report.Reports', {
 	extend : 'Ext.data.Store',
 	model : 'PICS.model.report.Report',
-	
-	listeners: {
-        load: {
-            fn: function(store, records, successful, operation, options) {
-            	var report = store.first();
-            	
-            	if (report) {
-            		this.loadStoreColumn('report.ReportsColumn', report.columns());
-            		this.loadStoreFilter('report.ReportsFilter', report.filters());
-            		this.loadStoreSort('report.ReportsSort', report.sorts());            		
-            	}
-            }
-        }
-    },
-    
-    loadStoreColumn: function(store_name, child) {
-    	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
-    	
-    	var records = [];
-    	for(i = 0; i < child.data.length; i++) {
-    		var item = child.data.items[i],
-    		field = available_fields_store.findField(item.get('name'));
-    		
-    		item.setAvailableField(field);
-    		records.push(item);
-    	}
-    	
-    	var store = Ext.StoreManager.get(store_name);
-    	store.loadRecords(records);
-    },
-    
-    loadStoreFilter: function(store_name, child) {
-    	// TODO refactor these two methods
-    	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
-    	var records = [];
-    	
-    	for(i = 0; i < child.data.length; i++) {
-    		var item = child.data.items[i],
-    		field = available_fields_store.findField(item.get('column'));
-    		
-    		item.setAvailableField(field);
-    		records.push(item);
-    	}
-    	
-    	var store = Ext.StoreManager.get(store_name);
-    	store.loadRecords(records);
-    },
-    loadStoreSort: function(store_name, child) {
-        // TODO refactor these two methods
-        var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
-        var records = [];
-        
-        for(i = 0; i < child.data.length; i++) {
-            var item = child.data.items[i],
-            field = available_fields_store.findField(item.get('column'));
-            
-            item.setAvailableField(field);
-            records.push(item);
-        }
-        
-        var store = Ext.StoreManager.get(store_name);
-        store.loadRecords(records);
-    },    
+
+	autoLoad: true,
     proxy: {
-        // TODO: refactor proxy + figure out better writer
-        // url parameter is important and must be null????
-        // create proxy reader and writer on the fly???
-        // writer.base????
-        // better way of overriding request.params + url object? blind dependency
-    	url: '',
         reader: {
             root: 'report',
             type: 'json'
         },
-        writer: {
-        	xtype: 'writer.base',
-        	write: function(request) {
-        		// See http://docs.sencha.com/ext-js/4-0/source/Json3.html#Ext-data-writer-Json
-        		// writeRecords
-        		var report = request.records[0];
-                request.params['report.parameters'] = report.parameters;
-                request.url = 'ReportDynamic!save.action?report=' + report.getId();
-                return request;
-        	}
-        },
         type: 'ajax'
+    },
+
+    constructor: function () {
+        var url = Ext.Object.fromQueryString(document.location.search);
+
+        this.proxy.url = 'ReportDynamic!getReportParameters.action?report=' + url.report;
+
+        this.callParent(arguments);
+    },
+
+    /**
+     * Get Report JSON
+     *
+     * Builds a jsonified version of the report to be sent to the server
+     */
+    getReportJSON: function () {
+        var report_store = Ext.StoreManager.get('report.Reports');
+        var report = report_store && report_store.first();
+        var report_data;
+
+        if (!report) {
+            throw 'Data.getReportJSON missing report';
+        }
+
+        function convertStoreToDataObject(store) {
+            var data = [];
+
+            store.each(function (record) {
+                var item = {};
+
+                record.fields.each(function (field) {
+                    item[field.name] = record.get(field.name);
+                });
+
+                data.push(item);
+            });
+
+            return data;
+        }
+
+        report_data = report.data;
+        report_data.columns = convertStoreToDataObject(report.columns());
+        report_data.filters = convertStoreToDataObject(report.filters());
+        report_data.sorts = convertStoreToDataObject(report.sorts());
+
+        return Ext.encode(report_data);
+    },
+
+    getReportParameters: function () {
+        var report = this.first();
+
+        if (!report) {
+            throw 'Data.getReportJSON missing report';
+        }
+
+        var report_json = this.getReportJSON();
+        var parameters = {};
+
+        if (report && report.getId() > 0) {
+            parameters['report'] = report.getId();
+        } else {
+            parameters['report.base'] = report.get('base');
+        }
+
+        parameters['report.parameters'] = report_json;
+
+        parameters['report.name'] = report.get('name');
+
+        parameters['report.description'] = report.get('description');
+
+        parameters['report.rowsPerPage'] = report.get('rowsPerPage');
+
+        return parameters;
+    },
+
+    getReportQueryString: function () {
+        var parameters = this.getReportParameters();
+
+        return Ext.Object.toQueryString(parameters);
+
     }
 });

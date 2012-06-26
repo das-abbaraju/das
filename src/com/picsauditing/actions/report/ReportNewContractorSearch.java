@@ -287,7 +287,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 						getText("NewContractorSearch.message.SuccessfullyRemoved",
 								new Object[] { contractor.getName() }));
 
-		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
+		return setUrlForRedirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
 				+ "&filter.tradeInformation=true");
 	}
 

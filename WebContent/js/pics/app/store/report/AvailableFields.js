@@ -1,9 +1,22 @@
+/**
+ * Available Fields Store
+ *
+ * List of all fields associated to a given report
+ * Contains miscellaneous information regarding columns, filters, sorts for each field
+ * Dynamically loads Available Fields By Category Store
+ */
 Ext.define('PICS.store.report.AvailableFields', {
 	extend : 'Ext.data.Store',
 	model : 'PICS.model.report.AvailableField',
-	
-	autoLoad: false,
-	data: availableFields,
+
+	autoLoad: true,
+	listeners: {
+        load: function (store, records, successful, operation, options) {
+            var available_fields_by_category_store = Ext.StoreManager.get('report.AvailableFieldsByCategory');
+
+            available_fields_by_category_store.data = store.data;
+        }
+    },
 	proxy: {
 	    reader: {
             root: 'fields',
@@ -11,18 +24,12 @@ Ext.define('PICS.store.report.AvailableFields', {
         },
         type: 'ajax'
     },
-    findField: function (name) {
-    	var i, ln = this.data.length;
-    	for(var i = 0; i < ln; i++) {
-    		if (name == this.data.items[i].get("name")) {
-    			return this.data.items[i];
-    		}
-    	}
-    	console.log("Failed to find '" + name + "' from " + ln + " availableField(s)");
-    	return Ext.create('PICS.model.report.AvailableField', {
-    		name: name,
-    		text: name + " (deprecated)",
-    		width: 50
-    	});
+
+    constructor: function () {
+        var url = Ext.Object.fromQueryString(document.location.search);
+
+        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + url.report;
+
+        this.callParent(arguments);
     }
 });

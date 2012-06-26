@@ -2,62 +2,64 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
     alias: ['widget.numberfilter'],
 
+    border: false,
     items: [{
+        layout: {
+            type: 'hbox',
+            align: 'middle'
+        },
+        items: [{
+            xtype: 'displayfield',
+            fieldLabel: null,
+            labelSeparator: '',
+            labelPad: 5,
+            labelWidth: 'auto',
+            name: 'filterName',
+            value: null
+        }]
+    }, {
         xtype: 'panel',
-        name: 'title'
-    },{
-        xtype: 'combo',
-        editable: false,
-        name: 'not',
-        store: [
-            ['false', ' '],
-            ['true', 'not']
-        ],
-        width: 50
-    },{
-        xtype: 'combo',
-        name: 'operator',
-        id: 'operator',
-        store: [
-	        ['Equals', '='],
-	        ['GreaterThan', '>'],
-	        ['LessThan', '<'],
-	        ['GreaterThanOrEquals', '>='],
-	        ['LessThanOrEquals', '<='],	        
-	        ['Empty', 'blank']
-        ],
-        typeAhead: true,
-        width: 55
-    },{
-        xtype: 'numberfield',
-        allowDecimals: false,
-        hideTrigger: true,
-        keyNavEnabled: false,
-        id: 'numberfilter',
-        mouseWheelEnabled: false,
-        name: 'textfilter',
-        text: 'Value'        
+        items: [{
+            xtype: 'combo',
+            editable: false,
+            listeners: {
+                change: function (obj, newval, oldval, options) {
+                   this.up('numberfilter').record.set('operator', newval);
+                }
+            },
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: PICS.app.constants.NUMBERSTORE,
+            flex: 1.5,
+            value: null
+        }, {
+            xtype: 'textfield',
+            flex: 2,
+            name: 'filterValue',
+            listeners: {
+                blur: function () {
+                    this.up('numberfilter').record.set('value', this.value);
+                }
+            },
+            value: null
+        }],
+        layout: 'hbox'
     }],
-    listeners: {
-        beforeRender: function () {
-            var form = Ext.ComponentQuery.query('numberfilter')[0],
-                combo = form.child("#operator"),
-                textfield = form.child("#numberfilter");
-            
-            combo.setValue(form.record.data.operator);
-            textfield.setValue(form.record.data.value);
-        }
-    },
-    applyFilter: function() {
-        var values = this.getValues();
+    record: null,
+    constructor: function (data) {
+        this.record = data.record;
 
-        this.record.set('value', values.textfilter);
-        this.record.set('operator', values.operator);
-        if (values.not === 'true') {
-            this.record.set('not', true);    
+        this.callParent(arguments);
+
+        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
+
+        if (this.record.get('operator') === '') {
+            var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;
+            this.child('panel combo[name=operator]').setValue(firstValue);
         } else {
-            this.record.set('not', false);
-        }        
-        this.superclass.applyFilter();
+            this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
+        }
+
+        this.child('panel textfield[name=filterValue]').setValue(this.record.get('value'));
     }
 });

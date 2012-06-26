@@ -44,7 +44,7 @@ public class CreateAuditorInvoices extends PicsActionSupport {
 					conAudit.setPaidDate(paidDate);
 					auditDAO.save(conAudit);
 				}
-				return redirect("AuditorInvoices.action");
+				return setUrlForRedirect("AuditorInvoices.action");
 			} else {
 				addActionError("Audit count does not match. The list must have changed. "
 						+ "Please review the list again and resubmit.");

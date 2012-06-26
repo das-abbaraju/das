@@ -90,7 +90,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private boolean braintreeCommunicationError = false;
 
 	public RegistrationMakePayment() {
-		this.subHeading = getText(String.format("%s.title", getScope()));
 		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
@@ -98,6 +97,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		findContractor();
+		this.subHeading = getText(String.format("%s.title", getScope()));
+
 		if (redirectIfNotReadyForThisStep())
 			return BLANK;
 
@@ -267,7 +268,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		return redirect(getRegistrationStep().getUrl());
+		ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
+		return BLANK;
 	}
 
 	private void addNote(String subject) {
@@ -408,7 +410,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 		loadCC();
 
-		return this.redirect("RegistrationMakePayment.action");
+		return this.setUrlForRedirect("RegistrationMakePayment.action");
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -647,7 +649,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			invoiceDAO.save(invoice);
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			redirect("RegistrationMakePayment.action");
+			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
 			return true;
 		}
 
@@ -657,7 +659,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			redirect("RegistrationMakePayment.action");
+			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
 			return true;
 		}
 

@@ -65,7 +65,7 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 				String url = "ManageWebcams.action?";
 				if (!webcam.isActive())
 					url += "button=all&";
-				return redirect(url + "webcam.id=" + webcam.getId() + "&msg=Saved webcam");
+				return setUrlForRedirect(url + "webcam.id=" + webcam.getId() + "&msg=Saved webcam");
 			}
 
 			if ("Receive".equals(button)) {
@@ -88,7 +88,7 @@ public class ManageWebcams extends PicsActionSupport implements Preparable {
 				webcam = new Webcam();
 				
 				String url = String.format("ManageWebcams.action?button=out&msg=Received camera %23%1 into Inventory", webcam.getId());
-				return redirect(url);
+				return setUrlForRedirect(url);
 			}
 
 			if ("all".equals(button)) {

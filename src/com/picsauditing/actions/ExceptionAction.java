@@ -115,7 +115,7 @@ public class ExceptionAction extends PicsActionSupport {
 	private void tryRedirectToHome() {
 		// TODO Research this and see if it's still necessary
 		try {
-			redirect("http://www.picsorganizer.com/");
+			setUrlForRedirect("http://www.picsorganizer.com/");
 		} catch (IOException doNothing) {
 			doNothing.printStackTrace();
 		}

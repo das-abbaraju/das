@@ -301,7 +301,7 @@ public class RequestNewContractor extends AccountActionSupport {
 
 		crrDAO.save(newContractor);
 
-		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
+		return setUrlForRedirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
 
 	public EmailQueue previewEmail() throws IOException {

@@ -76,7 +76,7 @@
 	
 			$('#' + id).html(data);
 		}
-	
+		
 		$(function() {
 			limit('description', '\n');
 
@@ -156,7 +156,7 @@
     											<s:text name="ContractorView.BidOnlyUpgrade" />
     											<br/>
     											<div style="margin-top: 7px;">
-    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm(<s:text name="ContractorView.BidOnlyUpgradeConfirm" />);"><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
+    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('<s:text name="ContractorView.BidOnlyUpgradeConfirm" />');" ><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
     											</div>
     										</div>
     									</s:if>
@@ -512,6 +512,25 @@
     						</div>
     					</s:if>
     					
+    					<s:if test="permissions.contractor">
+                            <div class="panel_placeholder">
+                                <div class="panel referral-program">
+                                    <div class="panel_header">
+                                        <s:text name="ReferralProgram.title" />
+                                    </div>
+                                    <div class="panel_content">
+                                        <img src="images/tablet/ipad.png" />
+                                        
+                                        <div class="summary">
+                                            <p>
+                                                <s:text name="ReferralProgram.summary" />
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </s:if>
+    					
     					<%-- Contractor Info --%>
     					<div class="panel_placeholder">
     						<div class="panel">
@@ -543,14 +562,16 @@
     								
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
-    									<strong><s:date name="contractor.membershipDate" /></strong>&nbsp;&nbsp;
-    									<a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />"><s:text name="ContractorDashboard.DownloadCertificate" /></a>
+                                        <strong><s:date name="contractor.membershipDate" /></strong>
+                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
+                                        </a>
     								</p>
-    								<p>
-    									<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-											<s:text name="ContractorView.ClickToViewContractorBadge" />
-										</a>
-    								</p>
+                                    <p>
+                                        <a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />">
+                                            <s:text name="ContractorDashboard.DownloadCertificate" />
+                                        </a>
+                                    </p>
     								
     								<p>
     									<s:text name="global.CSR" />:
@@ -739,7 +760,16 @@
     						<div class="panel" id="all">
     							<div class="panel_header">
     								<s:text name="ContractorView.AllLocations" />
-    								<a href="ContractorFacilities.action?id=${id}"><s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" /></a>
+    								<s:if test="permissions.admin || permissions.contractor">
+	    								<a href="ContractorFacilities.action?id=${id}">
+	    									<s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" />
+	    								</a>
+    								</s:if>
+    								<s:elseif test="permissions.generalContractor">
+	    								<a href="SubcontractorFacilities.action?id=${id}">
+	    									<s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" />
+	    								</a>
+    								</s:elseif>
     							</div>
     							<div class="panel_content">
     								<s:iterator value="activeOperatorsMap">
@@ -747,7 +777,7 @@
     										<s:iterator value="value">
     											<li>
     												<span class="other_operator">
-    													<s:if test="!operatorAccount.gCFree">
+    													<s:if test="!permissions.generalContractorFree">
     														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
     															<s:property value="flagColor.smallIcon" escape="false" />
     														</a>

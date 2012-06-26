@@ -2,7 +2,7 @@ Ext.define('PICS.view.layout.Footer', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutfooter'],
 
-    border: false,
+    border: 0,
     height: 30,
     id: 'footer',
     items: [{

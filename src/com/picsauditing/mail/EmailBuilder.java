@@ -62,6 +62,20 @@ public class EmailBuilder {
 		tokens = new HashMap<String, Object>();
 	}
 
+	public void clearAll() {
+		tokens = new HashMap<String, Object>();
+
+		fromAddress = null;
+		password = null;
+		template = null;
+		picsTags = null;
+		toAddresses = null;
+		ccAddresses = null;
+		bccAddresses = null;
+		tokens = null;
+		conID = 0;
+	}
+
 	public EmailQueue build() throws IOException {
 		EmailQueue email = new EmailQueue();
 

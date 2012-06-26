@@ -32,7 +32,7 @@ public class ManageOptionGroup extends ManageOptionComponent {
 			group = (AuditOptionGroup) auditOptionValueDAO.save(group);
 
 			if (question != null) {
-				return redirect("ManageOptionValue.action?group=" + group.getId() + "&question=" + question.getId());
+				return setUrlForRedirect("ManageOptionValue.action?group=" + group.getId() + "&question=" + question.getId());
 			}
 		}
 

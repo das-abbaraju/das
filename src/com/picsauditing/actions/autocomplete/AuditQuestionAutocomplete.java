@@ -8,6 +8,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
+@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public final class AuditQuestionAutocomplete extends AutocompleteActionSupport<AuditQuestion> {
 

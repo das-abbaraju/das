@@ -82,9 +82,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 * 
+	 *
 	 * This is also used for plain-text type results.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -100,21 +100,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
@@ -201,7 +201,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * This method is used to set the clear_cache flag in the AppProperty table
 	 * to allow the contractor daemon to reset caches on all 3 servers.
-	 * 
+	 *
 	 */
 	protected void flagClearCache() {
 		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
@@ -228,8 +228,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
-		} else
+		} else {
 			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		}
 
 		if (permissions == null) {
 			permissions = new Permissions();
@@ -241,10 +242,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
-					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
-							autoLoginID);
-					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.", autoLoginID);
+					UserDAO userDAO = SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
+
 					permissions.login(user);
 					LocaleController.setLocaleOfNearestSupported(permissions);
 					ActionContext.getContext().getSession().put("permissions", permissions);
@@ -317,7 +318,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public User getUser(int userId) {
-		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+		UserDAO dao = SpringUtils.getBean("UserDAO");
 		try {
 			User user = dao.find(userId);
 			return user;
@@ -330,7 +331,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();
-			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
+			AccountDAO dao = SpringUtils.getBean("AccountDAO");
 			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
 		}
 		return account;
@@ -484,7 +485,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new TreeSet<User>();
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			UserDAO dao = SpringUtils.getBean("UserDAO");
 			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
 			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
 		}
@@ -494,7 +495,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			UserDAO dao = SpringUtils.getBean("UserDAO");
 			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));
 		}
 		return safetyList;
@@ -513,7 +514,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 * 
+	 *
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -584,7 +585,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 * 
+	 *
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -619,7 +620,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
 	}
 
-	public String redirect(String url) throws IOException {
+	public String setUrlForRedirect(String url) throws IOException {
 		this.url = url;
 
 		if (!Strings.isEmpty(this.url)) {

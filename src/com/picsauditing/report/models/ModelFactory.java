@@ -4,27 +4,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ModelFactory {
+
 	private static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
-	
-	static public com.picsauditing.report.models.ModelBase getBase(ModelType type) {
-       
-		// We might want to reconsider the naming convention between ModelType and classes that extend ModelBase
+
+	public static AbstractModel build(ModelType type) {
+
+		// We might want to reconsider the naming convention between ModelType and classes that extend BaseModel
 		// We could make them the same and use reflection
 
 		if (type.equals(ModelType.Accounts))
-			return new QueryAccount();
+			return new AccountModel();
 		if (type.equals(ModelType.Contractors))
-			return new QueryAccountContractor();
+			return new AccountContractorModel();
 		if (type.equals(ModelType.ContractorAudits))
-			return new QueryAccountContractorAudit();
+			return new AccountContractorAuditModel();
 		if (type.equals(ModelType.ContractorAuditOperators))
-			return new QueryAccountContractorAuditOperator();
+			return new AccountContractorAuditOperatorModel();
 		if (type.equals(ModelType.Country))
-			return new QueryCountry();
+			return new CountryModel();
 		if (type.equals(ModelType.Operators))
-			return new QueryAccountOperator();
+			return new AccountOperatorModel();
 
 		logger.warn("WARNING: ModelFactory failed to define Model for type = {}", type);
+
 		return null;
 	}
 }
