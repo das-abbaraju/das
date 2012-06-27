@@ -78,6 +78,7 @@
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/font-awesome.css?v=${version}" />
 
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 

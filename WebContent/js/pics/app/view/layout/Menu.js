@@ -20,9 +20,9 @@ Ext.define('PICS.view.layout.Menu', {
             // Save the user menu to add to the end later, only after configuring
             var user_menu = menu_items.pop();
 
-            toolbar.addLogoAndDashboard(menu_items[0]);
+            toolbar.styleDashboardMenu(menu_items[0]);
 
-            toolbar.addFavoritesLabel(menu_items[1]);
+            toolbar.styleReportsMenu(menu_items[1]);
 
             toolbar.addFill(menu_items);
 
@@ -32,11 +32,11 @@ Ext.define('PICS.view.layout.Menu', {
 
             toolbar.addUserMenu(user_menu, menu_items);
 
+            // Add all menus items to toolbar
             toolbar.add(menu_items);
         }
     },
 
-    /** @param {Array<Object>} menu_items */
     configureToolbarMenuItems: function (menu_items) {
         var that = this;
 
@@ -52,7 +52,6 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
-    /** @param {Object} menu */
     configureSubmenu: function (menu) {
         var that = this;
 
@@ -68,20 +67,18 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
-    /** @param {Object} dashboard_button */
-    addLogoAndDashboard: function (dashboard_button) {
-        if (dashboard_button === undefined) {
+    styleDashboardMenu: function (dashboard_menu) {
+        if (dashboard_menu === undefined) {
             return;
         }
 
-        dashboard_button.height = 70;
-        dashboard_button.icon = 'js/pics/app/resources/images/logo.png';
-        dashboard_button.padding = '0px 20px';
-        dashboard_button.scale = 'large';
+        dashboard_menu.height = 70;
+        dashboard_menu.icon = 'js/pics/app/resources/images/logo.png';
+        dashboard_menu.padding = '0px 20px';
+        dashboard_menu.scale = 'large';
     },
 
-    /** @param {Object} report_menu */
-    addFavoritesLabel: function (report_menu) {
+    styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
 
         if (items === undefined || items.length < 2) {
@@ -101,14 +98,12 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
-    /** @param {Array<Object>} menu_items */
     addFill: function (menu_items) {
         menu_items.push({
            xtype: 'tbfill'
         });
     },
 
-    /** @param {Array<Object>} menu_items */
     addSearchBox: function (menu_items) {
         menu_items.push({
             xtype: 'textfield',
@@ -118,7 +113,6 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
-    /** @param {Array<Object>} menu_items */
     addSeparator: function (menu_items) {
         menu_items.push({
             xtype: 'tbseparator',
@@ -128,13 +122,10 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
-    /**
-     * @param {Object} user_menu
-     * @param {Array<Object>} menu_items
-     */
     addUserMenu: function (user_menu, menu_items) {
         user_menu.padding = '0px 20px';
-        // TODO add gear to text
+        user_menu.text += ' <i class="icon-cog icon-large"></i>';
+
         menu_items.push(user_menu);
     }
 });
