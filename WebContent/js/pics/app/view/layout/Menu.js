@@ -34,6 +34,28 @@ Ext.define('PICS.view.layout.Menu', {
 
             // Add all menus items to toolbar
             toolbar.add(menu_items);
+
+            cmp = toolbar;
+
+            if (cmp.enableOverflow) {
+                var handler = cmp.layout.overflowHandler;
+
+                if (handler && handler.menu) {
+                    h = handler;
+
+                    handler.menu.addClass('x-menu-plain');
+                    handler.menu.addClass('candy-menu');
+
+                    if (handler.menu.items.length) {
+                        handler.menuItems[0].height = 10;
+                        handler.menuItems[0].padding = 0;
+
+                        /*handler.menuItems[0] = Ext.create('Ext.button.Button', {
+                            text: 'test'
+                        });*/
+                    }
+                }
+            }
         }
     },
 
