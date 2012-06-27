@@ -6,7 +6,6 @@ Ext.define('PICS.view.layout.Menu', {
     enableOverflow: true,
     height: 70,
     id: 'site_menu',
-    menuTriggerCls: '',
     padding: 0,
 
     autoLoad: {
