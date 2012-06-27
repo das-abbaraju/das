@@ -1,10 +1,13 @@
 package com.picsauditing.PICS;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.Naics;
@@ -117,6 +120,8 @@ public class Utilities {
 		return c.getTime();
 	}
 	
+	// TODO: Remove this from the Utilities class.  This is not a general
+	//       purpose utility.
 	public static float getIndustryAverage(boolean lwcr, Naics naics) {
 		float answer = 0f;
 		if (!lwcr) {
@@ -148,8 +153,37 @@ public class Utilities {
 		return answer;
 	}
 	
+	// TODO: Remove from the Utilities class. This is not a general purpose
+	//       Utility.
 	public static float getDartIndustryAverage(Naics naics) {
 		NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
 		return naicsDAO.getDartIndustryAverage(naics);
+	}
+	
+	public static <T> boolean collectionsAreEqual(Collection<T> collection1, Collection<T> collection2, Comparator<T> comparator) {
+		if (CollectionUtils.isEmpty(collection1) || CollectionUtils.isEmpty(collection2)) {
+			return false;
 		}
+		
+		if (collection1.size() != collection2.size()) {
+			return false;
+		}
+		
+		for (T object : collection1) {
+			boolean foundMatch = false;
+			for (T objectForComparison : collection2) {
+				if (comparator.compare(object, objectForComparison) == 0) {
+					foundMatch = true;
+					break;
+				}
+			}
+			
+			if (!foundMatch) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 }

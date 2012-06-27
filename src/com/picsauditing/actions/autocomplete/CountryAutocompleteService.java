@@ -1,13 +1,11 @@
 package com.picsauditing.actions.autocomplete;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.xalan.xsltc.runtime.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.CountryDAO;
@@ -21,7 +19,8 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 	@Autowired
 	protected CountryDAO countryDAO;
 	
-	private static final int ISO_CODE_LENGTH = 2;
+	// Expected ISO Country Code list is "AF,AD,AM" or just one ISO Country Code "US"
+	private static final Pattern ISO_CODE_REGULAR_EXPRESSION = Pattern.compile("([a-zA-Z]{2}\\,)*([a-zA-Z]{2})");
 
 	/**
 	 * If the query String is one or more ISO Country codes, then a search will be done using the list
@@ -40,40 +39,16 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 		}
 		
 		Collection<Country> result = new HashSet<Country>();		
-		String parsedIsoCodes = parseIsoCodeList(queryString);
-		if (!Strings.isEmpty(parsedIsoCodes)) {
-//			List<Country> countryList = countryDAO.findWhere("isoCode IN ("	+ parsedIsoCodes + ")");
-			result.addAll(countryDAO.findWhere("isoCode IN (" + parsedIsoCodes + ")"));
-
-//			countryList = countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(queryString) + "%");
-			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(queryString) + "%"));
+		
+		if (queryContainsIsoCodes(queryString)) { 
+			// no need to escape string because it will fail Regex check
+			result.addAll(countryDAO.findWhere("isoCode IN (" + queryString + ")"));
+			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + queryString + "%"));
 		} else {
-//			List<Country> countryList = countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(queryString) + "%");
 			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(queryString) + "%"));
 		}
 
 		return result;
-	}
-	
-	// TODO: this method is doing 2 things, so it needs to be refactored 
-	private static String parseIsoCodeList(String query) {
-		if (Strings.isEmpty(query)) {
-			return Strings.EMPTY_STRING;
-		}
-		
-		List<String> isoCodes = new ArrayList<String>();
-		String[] parsedIsoCodes = query.split(",");
-		if (ArrayUtils.isNotEmpty(parsedIsoCodes)) {
-			for (String isoCode : parsedIsoCodes) {				
-				if (Strings.isEmpty(isoCode) || isoCode.length() != ISO_CODE_LENGTH) {
-					return Strings.EMPTY_STRING; // exit early because there are invalid ISO Codes in this list
-				}
-				
-				isoCodes.add(isoCode);
-			}
-		}
-		
-		return Strings.implodeForDB(isoCodes, ","); 
 	}
 	
 	private static boolean queryContainsIsoCodes(String query) {
@@ -81,16 +56,8 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 			return false;
 		}
 		
-		String[] parsedIsoCodes = query.split(",");
-		if (ArrayUtils.isNotEmpty(parsedIsoCodes)) {
-			for (String isoCode : parsedIsoCodes) {
-				if (!Strings.isEmpty(isoCode) && isoCode.length() != 2) {
-					return false;
-				}
-			}
-		}
-		
-		return true;
+		Matcher matcher = ISO_CODE_REGULAR_EXPRESSION.matcher(query);
+		return matcher.matches(); 
 	}
 
 	class CountryAutocomplete extends Country {
