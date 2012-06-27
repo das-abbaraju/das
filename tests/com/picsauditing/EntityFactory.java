@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -57,6 +58,17 @@ public class EntityFactory {
 		return operator;
 	}
 
+	public static OperatorAccount makeSuncorOperator() {
+		OperatorAccount suncorOperator = EntityFactory.makeOperator();
+
+		OperatorAccount suncorCorporate = new OperatorAccount();
+		suncorCorporate.setId(OperatorAccount.SUNCOR);
+		
+		suncorOperator.setParent(suncorCorporate);
+		
+		return suncorOperator;
+	}
+
 	/**
 	 * Create an active, Medium Risk Level ContractorAccount named Contractor
 	 * Unit Test
@@ -74,6 +86,7 @@ public class EntityFactory {
 		contractor.setCountry(new Country("US"));
 		contractor.setOnsiteServices(true);
 		contractor.setZip("99999");
+		contractor.setAccountLevel(AccountLevel.Full);
 		return contractor;
 	}
 
@@ -273,4 +286,5 @@ public class EntityFactory {
 	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit) {
 		return makeContractorAuditOperator(audit, AuditStatus.Complete);
 	}
+
 }

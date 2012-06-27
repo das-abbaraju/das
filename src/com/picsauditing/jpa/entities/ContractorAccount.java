@@ -37,10 +37,10 @@ import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -57,7 +57,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 // Cache is only on the operator account now, if this works.
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorAccount extends Account implements JSONable {
-	
+
 	private String taxId;
 	private String logoFile;
 	private String brochureFile;
@@ -942,8 +942,8 @@ public class ContractorAccount extends Account implements JSONable {
 										FeeClass.InsureGUARD, this.getPayingFacilities());
 								setCurrentFee(newInsureGUARDFee, getCountry().getAmount(newInsureGUARDFee));
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(),
-										getCountry().getAmount(invoiceItem.getInvoiceFee()));
+								setCurrentFee(invoiceItem.getInvoiceFee(), getCountry().getAmount(
+										invoiceItem.getInvoiceFee()));
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -1580,12 +1580,27 @@ public class ContractorAccount extends Account implements JSONable {
 	void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
-	
+
 	@Transient
 	public boolean isInEuroZone() {
 		if (country != null) {
 			return country.getCurrency().isGBP() || country.getCurrency().isEUR();
 		}
 		return false;
+	}
+
+	@Transient
+	public boolean isOnlyAssociatedWith(int operatorID) {
+		if (getOperators().size() == 0) {
+			return false;
+		}
+
+		for (OperatorAccount operator : getOperatorAccounts()) {
+			if (operator.getTopAccount().getId() != operatorID) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -41,6 +41,10 @@ public enum FeeClass implements Translatable {
 				return true;
 			}
 
+			if (contractor.isOnlyAssociatedWith(OperatorAccount.SUNCOR) && contractor.getSoleProprietor()) {
+				return true;
+			}
+
 			return isAllExclusionsApplicable(contractor, newLevel, operators);
 		}
 
