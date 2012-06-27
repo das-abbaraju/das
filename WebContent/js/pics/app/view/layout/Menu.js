@@ -6,6 +6,7 @@ Ext.define('PICS.view.layout.Menu', {
     enableOverflow: true,
     height: 70,
     id: 'site_menu',
+    menuTriggerCls: '',
     padding: 0,
 
     autoLoad: {
@@ -35,27 +36,7 @@ Ext.define('PICS.view.layout.Menu', {
             // Add all menus items to toolbar
             toolbar.add(menu_items);
 
-            cmp = toolbar;
-
-            if (cmp.enableOverflow) {
-                var handler = cmp.layout.overflowHandler;
-
-                if (handler && handler.menu) {
-                    h = handler;
-
-                    handler.menu.addClass('x-menu-plain');
-                    handler.menu.addClass('candy-menu');
-
-                    if (handler.menu.items.length) {
-                        handler.menuItems[0].height = 10;
-                        handler.menuItems[0].padding = 0;
-
-                        /*handler.menuItems[0] = Ext.create('Ext.button.Button', {
-                            text: 'test'
-                        });*/
-                    }
-                }
-            }
+            toolbar.styleOverflowMenu();
         }
     },
 
@@ -89,6 +70,38 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
+    addFill: function (menu_items) {
+        menu_items.push({
+           xtype: 'tbfill',
+           minWidth: 50
+        });
+    },
+
+    addSearchBox: function (menu_items) {
+        menu_items.push({
+            xtype: 'textfield',
+            name: 'searchTerm',
+            // TODO pass in translated 'enter search term'
+            emptyText: 'enter search term',
+        });
+    },
+
+    addSeparator: function (menu_items) {
+        menu_items.push({
+            xtype: 'tbseparator',
+            border: 1,
+            height: 70,
+            margin: '0px 0px 0px 20px'
+        });
+    },
+
+    addUserMenu: function (user_menu, menu_items) {
+        user_menu.padding = '0px 20px';
+        user_menu.text += ' <i class="icon-cog icon-large"></i>';
+
+        menu_items.push(user_menu);
+    },
+
     styleDashboardMenu: function (dashboard_menu) {
         if (dashboard_menu === undefined) {
             return;
@@ -120,34 +133,55 @@ Ext.define('PICS.view.layout.Menu', {
         });
     },
 
-    addFill: function (menu_items) {
-        menu_items.push({
-           xtype: 'tbfill'
-        });
-    },
+    styleOverflowMenu: function () {
+        if (!this.enableOverflow) {
+            return;
+        }
 
-    addSearchBox: function (menu_items) {
-        menu_items.push({
-            xtype: 'textfield',
-            name: 'searchTerm',
-            // TODO pass in translated 'enter search term'
-            emptyText: 'enter search term',
-        });
-    },
+        function removeMenuItems(menu_trigger, items) {
+            var remove_items = [];
 
-    addSeparator: function (menu_items) {
-        menu_items.push({
-            xtype: 'tbseparator',
-            border: 1,
-            height: 70,
-            margin: '0px 0px 0px 20px'
-        });
-    },
+            Ext.each(items, function (item, index) {
+                if (item.xtype == 'menuseparator' || item.xtype == 'tbfill') {
+                    remove_items.push(item);
+                }
+            });
 
-    addUserMenu: function (user_menu, menu_items) {
-        user_menu.padding = '0px 20px';
-        user_menu.text += ' <i class="icon-cog icon-large"></i>';
+            Ext.each(remove_items, function (item, index) {
+                menu_trigger.remove(item);
+            });
+        }
 
-        menu_items.push(user_menu);
+        function styleMenuItems(items) {
+            Ext.each(items, function (item, index) {
+                item.height = 'auto';
+                item.padding = '0px';
+
+                if (item.xtype == 'textfield') {
+                    item.labelWidth = 0;
+                    item.margin = '5px';
+                }
+            });
+        }
+
+        var handler = this.layout && this.layout.overflowHandler;
+        var menu = handler && handler.menu;
+
+        if (menu !== undefined) {
+            var menu_trigger = handler && handler.menuTrigger;
+            var menu_trigger_menu = menu_trigger.menu;
+
+            menu_trigger_menu.on('beforeshow', function (cmp, eOpts) {
+                var items = cmp.items && cmp.items.items;
+
+                if (items) {
+                    removeMenuItems(cmp, items);
+                    styleMenuItems(items);
+                }
+            });
+
+            menu.addClass('x-menu-plain');
+            menu.addClass('x-menu-overflow');
+        }
     }
 });
