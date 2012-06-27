@@ -563,9 +563,11 @@
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
                                         <strong><s:date name="contractor.membershipDate" /></strong>
-                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
-                                        </a>
+                                        <pics:toggle name="Badge">
+	                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+	                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
+	                                        </a>
+                                        </pics:toggle>
     								</p>
                                     <p>
                                         <a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />">
