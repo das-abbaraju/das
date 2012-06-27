@@ -10,7 +10,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 /**
- * This is a rewrite of PicsMenu.java for the version 7.0
+ * This is a rewrite of PicsMenu.java for the version 7.0.
  */
 // TODO Verify that all active menus are being translated
 public class MenuBuilder {
@@ -24,16 +24,20 @@ public class MenuBuilder {
 		return buildMenubar(permissions, null);
 	}
 
+	@SuppressWarnings("unused")
 	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> favoriteReports) {
 		MenuComponent menubar = new MenuComponent();
+		if (menubar == null)
+			return null;
 
-		if (!permissions.isLoggedIn()) {
+		if (permissions == null || !permissions.isLoggedIn()) {
 			buildNotLoggedInMenubar(menubar);
 		} else if (permissions.isContractor()) {
 			buildContractorMenubar(menubar, permissions);
 		} else if (permissions.isAssessment()) {
 			buildAssessmentMenubar(menubar);
 		} else if (permissions.isOperatorCorporate()) {
+			// TODO make this actually do something
 			buildOperatorCorporateMenubar(menubar, permissions);
 		} else {
 			buildGeneralMenubar(menubar, permissions, favoriteReports);
@@ -46,6 +50,8 @@ public class MenuBuilder {
 
 	// For Operators, Corporate users, and PICS employees
 	private static void buildGeneralMenubar(MenuComponent menubar, Permissions permissions, List<ReportUser> favoriteReports) {
+		addDashboard(menubar);
+
 		addReportsMenu(menubar, favoriteReports);
 
 		//addContractorSubmenu(menu, permissions);
@@ -62,16 +68,10 @@ public class MenuBuilder {
 	}
 
 	private static void buildNotLoggedInMenubar(MenuComponent menubar) {
-		if (menubar == null)
-			return;
-
 		menubar.addChild(getText("global.Home"), "index.jsp", "index");
 	}
 
 	private static void buildContractorMenubar(MenuComponent menubar, Permissions permissions) {
-		if (menubar == null || permissions == null)
-			return;
-
 		// Don't show a menu for Contractors, they will use their sub menu for now
 		if (!permissions.getAccountStatus().isActiveDemo()) {
 			menubar.addChild(getText("Registration.CompanyDetails.heading"), "ContractorEdit.action", "contractor_edit");
@@ -124,9 +124,6 @@ public class MenuBuilder {
 	}
 
 	private static void buildAssessmentMenubar(MenuComponent menubar) {
-		if (menubar == null)
-			return;
-
 		MenuComponent assessmentMenu = menubar.addChild(getText("menu.Assessment"));
 		assessmentMenu.addChild("Imported Data", "ManageImportData.action", "manage_import_data");
 		assessmentMenu.addChild("Assessment Tests", "ManageAssessmentTests.action", "manage_assessment_tests");
@@ -144,16 +141,10 @@ public class MenuBuilder {
 	}
 
 	private static void buildOperatorCorporateMenubar(MenuComponent menubar, Permissions permissions) {
-		if (menubar == null || permissions == null)
-			return;
-
 		// TODO Flesh this out
 	}
 
 	private static void addConfigureMenu(MenuComponent menubar, Permissions permissions) {
-		if (menubar == null || permissions == null)
-			return;
-
 		MenuComponent configureMenu = menubar.addChild(getText("menu.Configure"));
 		// We're aliasing this menu because menu components could be added in a submenu, or the main menu
 		MenuComponent auditsMenu = configureMenu;
@@ -206,10 +197,11 @@ public class MenuBuilder {
 			configureMenu.addChild("Workflows", "ManageAuditWorkFlow.action", "manage_audit_work_flow");
 	}
 
-	private static void addDevelopmentMenu(MenuComponent menubar, Permissions permissions) {
-		if (menubar == null || permissions == null)
-			return;
+	private static void addDashboard(MenuComponent menubar) {
+		menubar.addChild("Dashboard", "Home.action", "logo");
+	}
 
+	private static void addDevelopmentMenu(MenuComponent menubar, Permissions permissions) {
 		if (!permissions.isDeveloperEnvironment())
 			return;
 
@@ -238,9 +230,6 @@ public class MenuBuilder {
 	}
 
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
-		if (menubar == null || permissions == null)
-			return;
-
 		MenuComponent manageMenu = menubar.addChild(getText("menu.Manage"));
 
 		if (permissions.has(OpPerms.EditUsers))
@@ -259,6 +248,11 @@ public class MenuBuilder {
 
 		if (permissions.has(OpPerms.FormsAndDocs))
 			manageMenu.addChild(getText("Resources.title"), "Resources.action", "resources");
+
+		if (permissions.has(OpPerms.EditAccountDetails)) {
+			String url = "FacilitiesEdit.action?operator=" + permissions.getAccountId();
+			manageMenu.addChild(getText("global.Facilities"), url, "facilities_edit");
+		}
 
 		if (permissions.isAdmin()) {
 			String custom = "";
@@ -282,12 +276,12 @@ public class MenuBuilder {
 	}
 
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
-		if (menubar == null || favoriteReports == null)
-			return;
-
-		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"), "", "menu_header_reports");
+		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
 		reportsMenu.addChild(getText("menu.ManageReports"), "ManageReports.action?viewType=saved", "manage_reports");
+
+		if (favoriteReports == null)
+			return;
 
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
@@ -296,9 +290,6 @@ public class MenuBuilder {
 	}
 
 	private static void addSupportMenu(MenuComponent menubar) {
-		if (menubar == null)
-			return;
-
 		MenuComponent supportMenu = menubar.addChild(getText("menu.Support"));
 		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&os_username=admin&os_password=ad9870mins";
 		supportMenu.addChild(getText("Header.HelpCenter"), helpUrl, "help_center");
@@ -318,11 +309,6 @@ public class MenuBuilder {
 
 	// TODO find out where these menus should go
 	private static void addOrphanedMenus(MenuComponent menu, Permissions permissions) {
-		if (permissions.has(OpPerms.EditAccountDetails)) {
-			String url = "FacilitiesEdit.action?operator=" + permissions.getAccountId();
-			menu.addChild(getText("FacilitiesEdit.title"), url, "facilities_edit");
-		}
-
 		// We're trying to get rid of this
 		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR))
 			menu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action", "create_auditor_invoices");

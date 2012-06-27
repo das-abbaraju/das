@@ -226,6 +226,7 @@
 		<action name="ContractorBadge"
 			class="com.picsauditing.actions.contractors.ContractorBadge">
 			<result>/struts/contractors/contractor_badge.jsp</result>
+			<result name="failed">/struts/errors/404.jsp</result>
 		</action>
 
 		<action name="AuditPdfConverter"

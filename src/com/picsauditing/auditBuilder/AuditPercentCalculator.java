@@ -290,7 +290,7 @@ public class AuditPercentCalculator {
 		} else if (catData.getAudit().getAuditType().isPqf()) {
 			boolean needsVerification = false;
 			for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
-				if (auditData.getQuestion().getCategory().equals(catData.getCategory())) {
+				if (auditData.getQuestion().equals(answer.getQuestion())) {
 					needsVerification = true;
 					break;
 				}

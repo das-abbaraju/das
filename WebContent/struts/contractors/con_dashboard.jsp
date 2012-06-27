@@ -563,9 +563,11 @@
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
                                         <strong><s:date name="contractor.membershipDate" /></strong>
-                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
-                                        </a>
+                                        <pics:toggle name="Badge">
+	                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+	                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
+	                                        </a>
+                                        </pics:toggle>
     								</p>
                                     <p>
                                         <a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />">
@@ -777,7 +779,7 @@
     										<s:iterator value="value">
     											<li>
     												<span class="other_operator">
-    													<s:if test="!operatorAccount.gCFree">
+    													<s:if test="!permissions.generalContractorFree">
     														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
     															<s:property value="flagColor.smallIcon" escape="false" />
     														</a>
