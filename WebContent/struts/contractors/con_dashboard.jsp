@@ -479,14 +479,8 @@
     								<div class="panel_header">
     									<s:text name="Widget.6.caption"/>
     								</div>
-    								<div class="panel_content" id="con_tasks">
+    								<div class="panel_content" id="con_tasks" data-conid="<s:property value="contractor.id" />">
     									<div class="inprogress"></div>
-    									
-    									<script type="text/javascript">
-    										$(function() {
-    											$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
-    										});
-    									</script>
     								</div>
     							</div>
     						</div>

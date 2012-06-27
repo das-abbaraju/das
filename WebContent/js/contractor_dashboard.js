@@ -3,7 +3,7 @@
         methods : {
             init : function() {
                 var contractor_dashboard = $('.ContractorView-page');
-                
+
                 if (contractor_dashboard.length > 0) {
                     contractor_dashboard.delegate(
                             '#start_watch_link', 'click', {
@@ -15,7 +15,7 @@
                                 action : 'Remove',
                                 method : 'stop'
                             }, this.controlWatch);
-    
+
                     contractor_dashboard.delegate(
                             '#contractor_operator_numbers a.add, #contractor_operator_numbers a.edit',
                             'click',
@@ -25,12 +25,12 @@
                             '#contractor_operator_numbers a.remove',
                             'click',
                             this.deleteContractorOperatorNumber);
-    
+
                     contractor_dashboard.delegate(
                             '.reloadPage', 'click', function() {
                                 location.reload();
                             });
-    
+
                     contractor_dashboard.delegate(
                             '#con_pending_gcs .positive', 'click',
                             {
@@ -41,6 +41,8 @@
                             {
                                 approved : false
                             }, this.updateGeneralContractor);
+
+                    this.requestOpenTasks();
                 }
             },
 
@@ -99,7 +101,7 @@
                             modal_class: 'modal contractor-operator-number-modal',
                             content : data
                         });
-                        
+
                         $('.contractor-operator-number-modal').delegate(
                             '.negative.closeButton',
                             'click',
@@ -108,7 +110,7 @@
                                 modal.hide();
                             }
                         );
-                        
+
                         $('.contractor-operator-number-modal').delegate(
                                 '.positive',
                                 'click',
@@ -120,6 +122,22 @@
                         modal.show();
                     }
                 });
+            },
+
+            requestOpenTasks: function () {
+                var tasks = $('#con_tasks');
+
+                if (tasks.length) {
+                    PICS.ajax({
+                        url : 'ContractorTasksAjax.action',
+                        data : {
+                            id : tasks.attr('data-conid')
+                        },
+                        success : function(data, textStatus, XMLHttpRequest) {
+                            tasks.html(data);
+                        }
+                    });
+                }
             },
 
             updateContractorOperatorNumbers : function(event) {
