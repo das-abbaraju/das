@@ -256,8 +256,8 @@ public class Strings {
 	}
 
 	public static String stripNonStandardCharacters(String input) {
-		input = input.replace('“', '"');
-		input = input.replace('”', '"');
+		input = input.replace('Ã¬', '"');
+		input = input.replace('Ã®', '"');
 		input = input.replace("`", "'");
 		return input;
 	}
