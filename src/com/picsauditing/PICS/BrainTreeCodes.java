@@ -59,13 +59,13 @@ public class BrainTreeCodes {
 		case 260:
 			return "Declined with further instructions available (see response text)";
 		case 261:
-			return "Declined – Stop all recurring payments";
+			return "Declined Ã± Stop all recurring payments";
 		case 262:
-			return "Declined – Stop this recurring program";
+			return "Declined Ã± Stop this recurring program";
 		case 263:
-			return "Declined – Updated cardholder data available";
+			return "Declined Ã± Updated cardholder data available";
 		case 264:
-			return "Declined – Retry in a few days";
+			return "Declined Ã± Retry in a few days";
 		case 300:
 			return "Transaction was rejected by gateway";
 		case 400:
