@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
@@ -22,7 +23,7 @@ import com.picsauditing.util.SpringUtils;
 public class Utilities {
 
 	public static boolean isEmptyArray(Object[] array) {
-		if (array == null || array.length == 0)
+		if (ArrayUtils.isEmpty(array))
 			return true;
 
 		for (Object object : array)
@@ -84,6 +85,7 @@ public class Utilities {
 			return "";
 	}
 
+	@Deprecated
 	public static float getAverageEMR(String year1, String year2, String year3, String year4) {
 		Float rateFloat = 0.0f;
 		int count = 0;
@@ -108,12 +110,17 @@ public class Utilities {
 		return (float) Math.round(1000 * avgRateFloat) / 1000;
 	}
 
+	@Deprecated
 	public static float convertToFloat(String year1) {
 		if (year1 == null)
 			return 0.0f;
 		return Float.valueOf(year1).floatValue();
 	}
 
+	/**
+	 * Deprecated in favor of the DateBean 
+	 */
+	@Deprecated
 	public static Date getYesterday() {
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.DATE, -1);

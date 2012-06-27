@@ -13,10 +13,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
@@ -60,10 +57,8 @@ public class CountryAutocompleteServiceTest {
 	
 	@Test
 	public void testGetItems_HasIsoCodesAndQueriesReturnValues() {
-		List<Country> fakeList1 = Arrays.asList(Mockito.mock(Country.class, createNewAnwer("AB")),
-				Mockito.mock(Country.class, createNewAnwer("AC")));
-		List<Country> fakeList2 = Arrays.asList(Mockito.mock(Country.class, createNewAnwer("BC")), 
-				Mockito.mock(Country.class, createNewAnwer("BD")));
+		List<Country> fakeList1 = Arrays.asList(new Country("AB"), new Country("AC"));
+		List<Country> fakeList2 = Arrays.asList(new Country("BC"), new Country("BD"));
 		
 		when(countryDAO.findWhere(anyString())).thenReturn(fakeList1);
 		when(countryDAO.findByTranslatableField(same(Country.class), anyString())).thenReturn(fakeList2);
@@ -75,7 +70,7 @@ public class CountryAutocompleteServiceTest {
 		Collection<Country> combinedCollection = new ArrayList<Country>(fakeList1);
 		combinedCollection.addAll(fakeList2);
 		
-		boolean equalCollection = Utilities.collectionsAreEqual(results, combinedCollection, new Comparator<Country>() {
+		boolean equalCollections = Utilities.collectionsAreEqual(results, combinedCollection, new Comparator<Country>() {
 
 			@Override
 			public int compare(Country o1, Country o2) {
@@ -84,7 +79,7 @@ public class CountryAutocompleteServiceTest {
 			
 		});
 		
-		assertTrue(equalCollection);
+		assertTrue(equalCollections);
 	}
 	
 	@Test
@@ -136,17 +131,6 @@ public class CountryAutocompleteServiceTest {
 
 		result = Whitebox.invokeMethod(service, "queryContainsIsoCodes", "AB,CD,EF");
 		assertTrue(result);
-	}
-	
-	private Answer<String> createNewAnwer(final String answer) {
-		return new Answer<String>() {
-
-			@Override
-			public String answer(InvocationOnMock invocation) throws Throwable {
-				return answer;
-			}
-			
-		};
 	}
 	
 }
