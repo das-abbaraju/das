@@ -184,7 +184,7 @@ public enum IndexValueType {
 		s = s.replaceAll("[èéêë]", "e");
 		s = s.replaceAll("[ùúûü]", "u");
 		s = s.replaceAll("[ìíîï]", "i");
-		s = s.replaceAll("[àéâä]", "a");
+		s = s.replaceAll("[àáâä]", "a");
 		s = s.replaceAll("[òóôö]", "o");
 
 		s = s.replaceAll("[ÈÉÊË]", "E");
