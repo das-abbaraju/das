@@ -34,9 +34,9 @@
 			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
 			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
 			<interceptor name="redirectMessage" class="com.picsauditing.interceptors.RedirectMessageInterceptor" />
-			<interceptor name="validation" 
+			<interceptor name="validation"
 				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
-			<interceptor name="jsonValidation" 
+			<interceptor name="jsonValidation"
 				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 			<interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor" />
 
@@ -179,7 +179,7 @@
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
 		</action>
-		
+
 		<action name="Contact" class="com.picsauditing.access.Contact">
 			<result>struts/contact_pics.jsp</result>
 		</action>
@@ -408,13 +408,20 @@
 			<result>struts/search.jsp</result>
 		</action>
 
+		<action name="SearchBox" class="com.picsauditing.search.SearchBox">
+			<result type="json"></result>
+			<result>struts/search.jsp</result>
+		</action>
+
 		<!-- Dynamic Reports -->
 		<action name="ReportDynamic" class="com.picsauditing.actions.report.ReportDynamic">
 			<result>struts/reports/report_dynamic.jsp</result>
 		</action>
+
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
 			<result>struts/reports/manage_reports.jsp</result>
 		</action>
+
 		<action name="Dashboard" class="com.picsauditing.actions.DashboardHome">
 			<result>struts/dashboard.jsp</result>
 		</action>
@@ -435,7 +442,7 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_list_data.jsp</result>
 		</action>
-		
+
 		<action name="BiddingContractorSearch"
 			class="com.picsauditing.actions.report.ReportBiddingContractors">
 			<result>struts/reports/report_biddingcontractors.jsp</result>
@@ -936,12 +943,12 @@
 			<result>struts/reports/report_import_pqf.jsp</result>
 		</action>
 
-		<action name="QaAnalyzeFlagDifferences" method="executeFlags" 
+		<action name="QaAnalyzeFlagDifferences" method="executeFlags"
 				class="com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences">
 			<result>struts/reports/report_qa_flag_differences.jsp</result>
 		</action>
 
-		<action name="QaAnalyzeAuditDifferences" method="executeAudits" 
+		<action name="QaAnalyzeAuditDifferences" method="executeAudits"
 				class="com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences">
 			<result>struts/reports/report_qa_audit_differences.jsp</result>
 		</action>
@@ -997,7 +1004,7 @@
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="OshaSaveAjax" class="com.picsauditing.actions.audits.OshaSave">
 			<result type="redirectAction">
 				<param name="actionName">AuditAjax</param>
@@ -1151,7 +1158,7 @@
 			    <param name="actionName">ManageAuditType</param>
 				<param name="id">${id}</param>
 			</result>
-			
+
 			<result name="top">struts/audits/audit_selectType.jsp</result>
 			<result name="workFlowSteps">struts/audits/workflow_steps.jsp</result>
 		</action>
@@ -1215,7 +1222,7 @@
 			<result>struts/audits/manage_transform_option.jsp</result>
 		</action>
 
-		<!-- TODO: find a way to consolidate these - is there an "insensitive" 
+		<!-- TODO: find a way to consolidate these - is there an "insensitive"
 			flag on wildcards? -->
 		<action name="ManageOptionGroup"
 			class="com.picsauditing.actions.auditType.ManageOptionGroup">
@@ -1494,7 +1501,7 @@
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
 
-		<!-- TODO: Added this to get around sitemesh decorating multipart forms. 
+		<!-- TODO: Added this to get around sitemesh decorating multipart forms.
 			Look into this later. -->
 		<action name="TradeTaxonomyAjax" class="com.picsauditing.actions.trades.TradeTaxonomy">
 			<result>struts/trades/trade_taxonomy.jsp</result>
@@ -1761,7 +1768,7 @@
 	<!-- Email Wizard/Templates/Mailer -->
 	<include file="struts-emails.xml" />
 
-	<!-- EmployeeGUARD / OQ-Operator Qualification / HSE Competencies / Assessment 
+	<!-- EmployeeGUARD / OQ-Operator Qualification / HSE Competencies / Assessment
 		Centers -->
 	<include file="struts-employees.xml" />
 
