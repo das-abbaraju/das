@@ -203,6 +203,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			// Note: should not insert credit card info in invalid cc case:
 			// (ccOnFile == False && expDate != null)
 		}
+		
+		if (cc != null) {
+			contractor.setCcExpiration(cc.getExpirationDate2());
+		}
 
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
