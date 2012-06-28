@@ -39,7 +39,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
 	protected LowMedHigh transportationRisk;
-
+	private EmailBuilder emailBuilder;
+	private EmailQueue emailQueue;
 	public ContractorEditRiskLevel() {
 		noteCategory = NoteCategory.RiskRanking;
 		subHeading = "Contractor Risk Levels";
@@ -102,9 +103,9 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 			if (isRiskChanged(oldSafety, safetyRisk))
 				needsPqfReset = true;
-			if (safetyRisk.ordinal() < oldSafety.ordinal()) {
-				buildAndSendBillingRiskDowngradeEmail(oldSafety, safetyRisk);
-			}
+
+			if (needsPqfReset)
+				checkSafetyStatus(oldSafety, safetyRisk);
 
 		}
 
@@ -172,8 +173,13 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		return SUCCESS;
 	}
 
+	private void checkSafetyStatus(LowMedHigh oldSafety, LowMedHigh newSafety) {
+		if (newSafety.ordinal() < oldSafety.ordinal())
+			buildAndSendBillingRiskDowngradeEmail(oldSafety, newSafety);
+	}
+
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
-		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.clear();
 		emailBuilder.setTemplate(159);
 		emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
 		emailBuilder.setToAddresses("billing@picsauditing.com");
@@ -181,7 +187,6 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		emailBuilder.addToken("currentSafetyRisk", currentRisk);
 		emailBuilder.addToken("newSafetRisk", newRisk);
 
-		EmailQueue emailQueue;
 		try {
 			emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
