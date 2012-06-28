@@ -1,3 +1,5 @@
-$(function() {
-	$('#username').focus();
-});
+(function ($) {
+
+    $('#username').focus();
+
+})(jQuery);
