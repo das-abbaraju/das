@@ -92,7 +92,7 @@
                                     <s:if test="invoice.currency.CAD">
                                         <s:text name="global.PICSCanadaMailingAddress"/>
                                     </s:if>
-                                    <s:elseif test="invoice.currency.GBP">
+                                    <s:elseif test="invoice.currency.GBP || invoice.currency.EUR">
                                         <s:text name="global.PICSUnitedKingdomMailingAddress"/>
                                     </s:elseif>
                                     <s:else>
