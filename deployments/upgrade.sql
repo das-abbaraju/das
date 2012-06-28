@@ -26,3 +26,6 @@ Update note n
 join app_translation a on a.msgKey='FlagCriteria.796.description' and a.locale='en' 
 set n.body=a.msgValue 
 where n.body='FlagCriteria.796.description';
+
+-- PICS-6158 0 TRIR, set to inherit
+update ref_trade set naicsTRIR=null where id=247;
