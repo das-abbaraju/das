@@ -6,8 +6,10 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Locale;
 
 import org.junit.Before;
@@ -19,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -173,7 +176,6 @@ public class AuditDataSaveTest extends PicsTest {
 
 	@Test
 	public void testExecute_SimpleAnswer() throws Exception {
-
 		assertEquals("success", auditDataSave.execute());
 	}
 
@@ -185,5 +187,28 @@ public class AuditDataSaveTest extends PicsTest {
 		when(i18nCache.getText("Audit.message.InvalidFormat", Locale.ENGLISH, (Object[])null)).thenReturn("Unit Test String");
 		assertEquals("success", auditDataSave.execute());
 		assertEquals(true, auditDataSave.getActionErrors().size() > 0);
+	}
+
+	@Test
+	public void testStructureNewDate() throws ParseException{
+		Date expected = DateBean.parseDate("2001-02-03");
+		Date actual;
+
+		actual = AuditDataSave.restructureNewDate("2/3/2001");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("2-3-01");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("2/3/01");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("02-03-2001");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("2001/02/03");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("2001/2/3");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("02/03/2001");
+		assertEquals(expected, actual);
+		actual = AuditDataSave.restructureNewDate("02/03/01");
+		assertEquals(expected, actual);
 	}
 }
