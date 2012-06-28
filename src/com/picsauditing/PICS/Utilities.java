@@ -167,6 +167,9 @@ public class Utilities {
 		return naicsDAO.getDartIndustryAverage(naics);
 	}
 	
+	/**
+	 * Only to be used with smaller collections.  There will be a performance bottle neck when used on larger collections.
+	 */
 	public static <T> boolean collectionsAreEqual(Collection<T> collection1, Collection<T> collection2, Comparator<T> comparator) {
 		if (CollectionUtils.isEmpty(collection1) || CollectionUtils.isEmpty(collection2)) {
 			return false;
