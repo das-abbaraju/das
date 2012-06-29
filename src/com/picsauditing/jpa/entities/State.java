@@ -158,4 +158,9 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 	public int compareTo(State o) {
 		return this.getI18nKey().compareTo(o.getI18nKey());
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof State && this.isoCode.equals(((State) obj).getIsoCode());
+	}
 }

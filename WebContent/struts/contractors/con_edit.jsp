@@ -15,7 +15,7 @@
 		
 		<script type="text/javascript">
 			function changeState(country) {
-				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "contractor.", needsSuffix: "false", stateString: '<s:property value="contractor.state.isoCode"/>'});
+				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "", needsSuffix: "true", stateString: '<s:property value="contractor.state.isoCode"/>'});
 			}
 			
 			function changeBillingState(country) {
@@ -140,11 +140,11 @@
 									<label><s:text name="Country" />:</label>
 									<s:select
 										list="countryList"
-										name="contractor.country.isoCode"
+										name="country.isoCode"
 										id="contractorCountry"
 										listKey="isoCode"
 										listValue="name"
-										value="contractor.country.isoCode"
+										value="country.isoCode"
 										onchange="countryChanged(this.value)" />
 								</li>
 								<li id="state_li"></li>
