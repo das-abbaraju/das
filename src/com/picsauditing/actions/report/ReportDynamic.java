@@ -5,7 +5,6 @@ import static com.picsauditing.report.access.ReportAccess.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -146,8 +145,6 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			DynamicReportUtil.validate(report);
 
-			// Definition definition = new Definition(report.getParameters());
-			// report.setDefinition(definition);
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
 
@@ -158,7 +155,7 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			if (report.getDefinition().getColumns().size() > 0) {
-				List<BasicDynaBean> queryResults = reportDynamicModel.runTimedQuery(sql, json);
+				List<BasicDynaBean> queryResults = reportDynamicModel.runQuery(sql, json);
 				convertToJson(queryResults, availableFields);
 				json.put("success", true);
 			}
@@ -178,18 +175,18 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String list() {
 		try {
-			if (Strings.isEmpty(fieldName)) {
+			// TODO Add i18n to this
+			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
-			}
 
 			DynamicReportUtil.validate(report);
 
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
-			if (field == null) {
+			// TODO Add i18n to this
+			if (field == null)
 				throw new Exception("Available field undefined");
-			}
 
 			if (field.getFilterType().isEnum()) {
 				json = renderEnumFieldAsJson(field);
@@ -216,25 +213,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	@Anonymous
-	@Deprecated
-	// TODO Remove this; it's not called from the front end
-	public String availableBases() {
-		JSONArray rows = new JSONArray();
-		for (ModelType type : ModelType.values()) {
-			rows.add(type.toString());
-		}
-
-		json.put("bases", rows);
-
-		return JSON;
-	}
-
 	public String getReportParameters() throws Exception {
 		DynamicReportUtil.validate(report);
 
-		// Definition definition = new Definition(report.getParameters());
-		// report.setDefinition(definition);
 		// TODO remove definition from SqlBuilder
 		sqlBuilder.setDefinition(report.getDefinition());
 

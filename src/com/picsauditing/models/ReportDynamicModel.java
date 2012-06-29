@@ -29,15 +29,11 @@ import com.picsauditing.search.SelectSQL;
 
 public class ReportDynamicModel {
 
-	private static final long MAX_QUERY_TIME = 1000;
-	
 	@Autowired
 	private BasicDAO basicDao;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
-	// was create() in ReportDynamic
 	public Report copy(Report sourceReport, User user) throws NoRightsException, ReportValidationException {
+		// TODO Add i18n to this
 		if (!canUserViewAndCopy(user.getId(), sourceReport))
 			throw new NoRightsException("Invalid User, does not have permission.");
 
@@ -54,6 +50,7 @@ public class ReportDynamicModel {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
+		// TODO Add i18n to this
 		if (!canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
 
@@ -73,66 +70,12 @@ public class ReportDynamicModel {
 		return newReport;
 	}
 
-//	private void connectReportToUser(Report report, User user) {
-//		connectReportToUser(report, user, false);
-//	}
-
-//	private void connectReportToUser(Report report, User user, boolean canEdit) {
-//		ReportUser userReport = new ReportUser();
-//		// TODO
-//		userReport.setAuditColumns(user);
-//		userReport.setReport(report);
-//		userReport.setUser(report.getCreatedBy());
-//		userReport.setCanEdit(canEdit);
-//		basicDao.save(userReport);
-//	}
-
-//	// This was ensureValidReport in ReportDynamic
-//	public void validate(Report report) throws Exception {
-//		if (report == null) {
-//			// TODO Add i18n to this
-//			throw new RuntimeException("Please provide a saved or ad hoc report to run");
-//		}
-//
-//		if (report.getModelType() == null) {
-//			// TODO Add i18n to this
-//			throw new RuntimeException("The report is missing its base");
-//		}
-//
-//		new JSONParser().parse(report.getParameters());
-//	}
-
-//	private void saveReport(Report report, Permissions permissions) throws Exception {
-//		validate(report);
-//
-//		// TODO this should be like report.updateDatabaseInternalFields(User)
-//		report.setAuditColumns(permissions);
-//		basicDao.save(report);
-//	}
-	
-	public List<BasicDynaBean> runTimedQuery(SelectSQL sql, JSONObject json) throws SQLException {
-		
-		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> results = runQuery(sql, json);
-		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
-		
-		if (queryTime > MAX_QUERY_TIME) 
-			reportLongRunningQuery(sql, queryTime);
-	
-		return results;
-	}
-
 	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
 		Database db = new Database();
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		json.put("total", db.getAllRows());
 
 		return rows;
-	}
-	
-	private void reportLongRunningQuery(SelectSQL sql, long queryTime) {
-		logger.info("Slow Query: {}", sql.toString());
-		logger.info("Time to query: {} ms", queryTime);
 	}
 
 	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable) {
