@@ -143,23 +143,4 @@ public class ReportDynamicTest {
 		assertFalse((Boolean)json.get("success"));
 		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
-
-
-	@Test
-	public void testAvailableBases() throws Exception {
-		// report.setId(EntityIdGenerator.next());
-		assertEquals(ReportDynamic.JSON, reportDynamic.availableBases());
-		assertEquals(1, reportDynamic.getJson().size());
-		JSONArray bases = (JSONArray) reportDynamic.getJson().get("bases");
-		assertTrue(bases.size() > 1);
-	}
-
-	@Test
-	public void testAvailableFields() throws Exception {
-		// report.setId(EntityIdGenerator.next());
-		assertEquals(ReportDynamic.JSON, reportDynamic.availableBases());
-		assertEquals(1, reportDynamic.getJson().size());
-		JSONArray bases = (JSONArray) reportDynamic.getJson().get("bases");
-		assertTrue(bases.size() > 1);
-	}
 }
