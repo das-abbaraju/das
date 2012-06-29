@@ -1,6 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -19,36 +20,45 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.User;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ContractorBadge.class })
+@PrepareForTest({ BetaPool.class })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ContractorBadgeTest {
 	private ContractorBadge contractorBadge;
-	//@Mock
-	//protected  BetaPool betaPool;
+	@Mock
+	protected  BetaPool betaPool;
 	@Mock
 	private Permissions permissions;
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		PowerMockito.mockStatic(BetaPool.class);
 
 		contractorBadge = new ContractorBadge();
 
 		Map<String, String> toggles = new HashMap<String, String>();
 		toggles.put("Badge", "1");
 		toggles.put("SwitchUserServer", "2");
+
 		when(permissions.getToggles()).thenReturn(toggles);
-		permissions.getGroups().add(User.GROUP_DEVELOPER);
+
 		Whitebox.setInternalState(contractorBadge, "permissions", permissions);
 	}
 
 	@Test
-	public void testDisplayContractorBadge() throws Exception{
-		//PowerMockito.stub(PowerMockito.method(BetaPool.class, "getBetaPoolByBetaLevel")).toReturn(BetaPool.Developer);
-		//PowerMockito.stub(PowerMockito.method(BetaPool.class, "isUserBetaTester")).toReturn(true);
-		//TODO: not sure why its not working.  Need help
-		//assertEquals("SUCCESS", Whitebox.invokeMethod(contractorBadge, "displayContractorBadge").toString());
+	public void testContractorBadgeToggle_Developer() throws Exception{
+		when(BetaPool.getBetaPoolByBetaLevel(anyInt())).thenReturn(BetaPool.Developer);
+		when(BetaPool.isUserBetaTester(permissions, BetaPool.Developer)).thenReturn(true);
+
+		assertEquals("success", Whitebox.invokeMethod(contractorBadge, "contractorBadgeToggle").toString());
+	}
+	
+	@Test
+	public void testContractorBadgeToggle_Stakeholder() throws Exception{
+		when(BetaPool.getBetaPoolByBetaLevel(anyInt())).thenReturn(BetaPool.Stakeholder);
+		when(BetaPool.isUserBetaTester(permissions, BetaPool.Stakeholder)).thenReturn(false);
+
+		assertEquals("failed", Whitebox.invokeMethod(contractorBadge, "contractorBadgeToggle").toString());
 	}
 }
