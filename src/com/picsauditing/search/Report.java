@@ -8,12 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.util.LinkBuilder;
 
 @SuppressWarnings("serial")
 public class Report extends TranslationActionSupport {
+	private final static Logger logger = LoggerFactory.getLogger(Report.class);
+	
 	private SelectSQL sql;
 	private List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
 
@@ -39,19 +45,13 @@ public class Report extends TranslationActionSupport {
 		}
 		Database db = new Database();
 		String sqlText = sql.toString(unionSql);
+		
+		Logger logger = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
+		StopWatch sw = new Slf4JStopWatch(logger);
 
-		// If you would like to get debug data, please use the StopWatch
-//		long start = System.currentTimeMillis();
 		List<BasicDynaBean> pageData = db.select(sqlText, true);
-//		long finish = System.currentTimeMillis();
-
-//		if (debug) {
-//			System.out.println();
-//			System.out.println(sql.toString(unionSql));
-//			System.out.println("Start: " + start);
-//			System.out.println("Finish: " + finish);
-//			System.out.println("TOTAL: " + (finish-start));
-//		}
+		
+		sw.stop("Report", "Profiling database queries");
 
 		returnedRows = pageData.size();
 		allRows = db.getAllRows();
