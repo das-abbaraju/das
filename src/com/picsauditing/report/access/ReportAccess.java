@@ -86,6 +86,10 @@ public class ReportAccess {
 	
 	//TODO: Make certain report cascading happens.
 	public static void deleteReport(Report report) throws NoResultException {
+		List<ReportUser> reportUsers = basicDao.findWhere(ReportUser.class, "t.reportID = " + report.getId());
+		for (ReportUser reportUser : reportUsers) {
+			basicDao.remove(reportUser);
+		}
 		basicDao.remove(report);
 	}
 	
