@@ -93,6 +93,7 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 	}
 
 	@Transient
+	@Deprecated
 	public String getName(Locale locale) {
 		if (locale.getLanguage().equals("fr"))
 			return french;
