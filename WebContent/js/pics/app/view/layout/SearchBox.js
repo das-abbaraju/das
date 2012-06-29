@@ -7,6 +7,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     // TODO use the translated 'search' value
     emptyText: 'search',
     hideTrigger: true,
+
     listConfig: {
         // TODO get the translated version
         loadingText: 'Searching...',
@@ -37,7 +38,6 @@ Ext.define('PICS.view.layout.SearchBox', {
 
     minChars: 1,
     name: 'searchTerm',
-
     queryMode: 'remote',
     queryParam: 'q',
     valueField: 'q',
