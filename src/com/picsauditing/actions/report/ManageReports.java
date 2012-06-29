@@ -100,18 +100,18 @@ public class ManageReports extends PicsActionSupport {
 	public String deleteReport() throws IOException  {
 		try {
 			Report report = ReportAccess.findReportById(reportId);
-			if (ReportAccess.canUserDelete(permissions.getUserId(), report))
+			if (ReportAccess.canUserDelete(permissions.getUserId(), report)) {
 				ReportAccess.deleteReport(report);
-			else 
-				addActionMessage("You do not have the necessary permissions to delete this report.");		
+				addActionMessage("Your report has been deleted.");
+			} else { 
+				addActionMessage("You do not have the necessary permissions to delete this report.");
+			}
 		} catch (NoResultException nre) {
 			addActionMessage("The report you're trying to delete no longer exists.");
 		} catch (Exception e) {
 			// An empty catch block is bad, but displaying an exception to the user is worse
 		}
 
-		
-		addActionMessage("Your report has been deleted.");
 		setUrlForRedirect("ManageReports.action");
 		return REDIRECT;
 	}
