@@ -1,7 +1,5 @@
 package com.picsauditing.actions.report;
 
-import static com.picsauditing.report.access.ReportAccess.*;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -23,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -37,8 +34,8 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.DynamicReportUtil;
+import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
@@ -62,7 +59,9 @@ public class ReportDynamic extends PicsActionSupport {
 	private String searchQuery = "";
 
 	@Autowired
-	ReportDynamicModel reportDynamicModel;
+	private ReportDynamicModel reportDynamicModel;
+	@Autowired
+	private ReportAdministration reportAccessor;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -78,7 +77,7 @@ public class ReportDynamic extends PicsActionSupport {
 				// Don't trust user input!
 				int reportId = Integer.parseInt(dirtyReportIdParameter);
 
-				if (!canUserViewAndCopy(permissions.getUserId(), reportId)) {
+				if (!reportAccessor.canUserViewAndCopy(permissions.getUserId(), reportId)) {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
@@ -208,7 +207,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String getUserStatus() {
 		int userId = permissions.getUserId();
 
-		json.put("is_editable", canUserEdit(userId, report));
+		json.put("is_editable", reportAccessor.canUserEdit(userId, report));
 
 		return JSON;
 	}

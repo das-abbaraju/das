@@ -17,9 +17,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -34,12 +32,13 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.access.DynamicReportUtil;
-import com.picsauditing.report.access.ReportAccess;
+import com.picsauditing.report.access.ReportAccessor;
+import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccess.class, DynamicReportUtil.class })
+@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, DynamicReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
 public class ReportDynamicTest {
 	private ReportDynamic reportDynamic;
@@ -54,6 +53,9 @@ public class ReportDynamicTest {
 	private HttpServletRequest request;
 	@Mock
 	private ActionContext actionContext;
+	@Mock
+	private ReportAdministration reportAccess;
+
 	// PowerMocked in setUp
 	private Logger logger;
 
@@ -63,7 +65,6 @@ public class ReportDynamicTest {
 
 		PowerMockito.mockStatic(SpringUtils.class);
 		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.mockStatic(ReportAccess.class);
 
 		logger = PowerMockito.mock(Logger.class);
 		PowerMockito.mockStatic(LoggerFactory.class);
@@ -82,6 +83,7 @@ public class ReportDynamicTest {
 		reportDynamic = new ReportDynamic();
 		reportDynamic.setReport(report);
 		when(permissions.getUserId()).thenReturn(941);
+		Whitebox.setInternalState(reportDynamic, "reportAccessor", reportAccess);
 		Whitebox.setInternalState(reportDynamic, "permissions", permissions);
 		Whitebox.setInternalState(reportDynamic, "reportDynamicModel", reportDynamicModel);
 	}
@@ -110,7 +112,7 @@ public class ReportDynamicTest {
 
 	@Test
 	public void testExecute_NullReportUserDoesNotHavePermissionToViewAndCopy() throws Exception {
-		when(ReportAccess.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
+		when(reportAccess.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
 		reportDynamic.setReport(null);
 
 		String strutsResult = reportDynamic.execute();
