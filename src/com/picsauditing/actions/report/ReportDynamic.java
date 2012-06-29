@@ -63,7 +63,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private String searchQuery = "";
 
 	@Autowired
-	ReportDynamicModel reportController;
+	ReportDynamicModel reportDynamicModel;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -74,13 +74,24 @@ public class ReportDynamic extends PicsActionSupport {
 			// No matter what junk we get in the url, redirect
 			try {
 				status = setUrlForRedirect("ManageReports.action?viewType=saved");
-			} catch (IOException io) { /* Can't happen. */}
-			String reportId = ServletActionContext.getRequest().getParameter("report");
-			if (!canUserViewAndCopy(permissions.getUserId(), Integer.parseInt(reportId))) {
-				String errorMessage = "You do not have permissions to view that report.";
-				ActionContext.getContext().getSession().put("errorMessage", errorMessage);
+
+				String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("report");
+				// Don't trust user input!
+				int reportId = Integer.parseInt(dirtyReportIdParameter);
+
+				if (!canUserViewAndCopy(permissions.getUserId(), reportId)) {
+					String errorMessage = "You do not have permissions to view that report.";
+					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
+				}
+			} catch (IOException ioe) {
+				// Can't happen
+				logger.error(ioe.getMessage());
+			} catch (NumberFormatException nfe) {
+				// Someone typed junk into the url
+				logger.error(nfe.getMessage());
 			}
 		}
+
 		return status;
 	}
 
@@ -100,7 +111,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String create() {
 		try {
-			Report newReport = reportController.copy(report, new User(permissions.getUserId()));
+			Report newReport = reportDynamicModel.copy(report, new User(permissions.getUserId()));
 			json.put("success", true);
 			json.put("reportID", newReport.getId());
 		} catch (NoRightsException nre) {
@@ -116,7 +127,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String edit() {
 		try {
-			reportController.edit(report, permissions);
+			reportDynamicModel.edit(report, permissions);
 			json.put("success", true);
 			json.put("reportID", report.getId());
 		} catch (NoRightsException nre) {
@@ -147,7 +158,7 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			if (report.getDefinition().getColumns().size() > 0) {
-				List<BasicDynaBean> queryResults = reportController.runTimedQuery(sql, json);
+				List<BasicDynaBean> queryResults = reportDynamicModel.runTimedQuery(sql, json);
 				convertToJson(queryResults, availableFields);
 				json.put("success", true);
 			}
@@ -167,16 +178,18 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String list() {
 		try {
-			if (Strings.isEmpty(fieldName))
+			if (Strings.isEmpty(fieldName)) {
 				throw new Exception("Please pass a fieldName when calling list");
+			}
 
 			DynamicReportUtil.validate(report);
 
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
-			if (field == null)
+			if (field == null) {
 				throw new Exception("Available field undefined");
+			}
 
 			if (field.getFilterType().isEnum()) {
 				json = renderEnumFieldAsJson(field);
@@ -211,6 +224,7 @@ public class ReportDynamic extends PicsActionSupport {
 		for (ModelType type : ModelType.values()) {
 			rows.add(type.toString());
 		}
+
 		json.put("bases", rows);
 
 		return JSON;
@@ -265,8 +279,9 @@ public class ReportDynamic extends PicsActionSupport {
 			obj.put("category", translateCategory(field.getCategory().toString()));
 
 			String help = getText("Report." + field.getName() + ".help");
-			if (help != null)
+			if (help != null) {
 				obj.put("help", help);
+			}
 
 			fieldsJsonArray.add(obj);
 		}
@@ -287,7 +302,7 @@ public class ReportDynamic extends PicsActionSupport {
 		translate(report);
 
 		if (report.getDefinition().getColumns().size() > 0) {
-			List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
+			List<BasicDynaBean> rawData = reportDynamicModel.runQuery(sql, json);
 
 			ExcelSheet excelSheet = new ExcelSheet();
 			excelSheet.setData(rawData);
@@ -301,8 +316,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			filename += fileType;
 
-			// TODO: Change this to use an output stream handler - Alex to pair
-			// with Mike on this
+			// TODO: Change this to use an output stream handler
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
@@ -377,7 +391,7 @@ public class ReportDynamic extends PicsActionSupport {
 	/**
 	 * The purpose of this method is to convert the queryResult into a
 	 * JSONObject,
-	 * 
+	 *
 	 * @param queryResults
 	 * @param availableFields
 	 */
@@ -442,6 +456,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private void logError(Exception e) {
 		json.put("success", false);
 		String message = e.getMessage();
+
 		if (message == null) {
 			message = e.toString();
 		}
@@ -468,6 +483,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		enumResults.put("result", jsonResult);
+
 		return enumResults;
 	}
 

@@ -14,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -48,7 +49,7 @@ public class ReportDynamicTest {
 	@Mock
 	private Permissions permissions;
 	@Mock
-	private ReportDynamicModel reportController;
+	private ReportDynamicModel reportDynamicModel;
 	@Mock
 	private HttpServletRequest request;
 	@Mock
@@ -82,20 +83,21 @@ public class ReportDynamicTest {
 		reportDynamic.setReport(report);
 		when(permissions.getUserId()).thenReturn(941);
 		Whitebox.setInternalState(reportDynamic, "permissions", permissions);
-		Whitebox.setInternalState(reportDynamic, "reportController", reportController);
+		Whitebox.setInternalState(reportDynamic, "reportDynamicModel", reportDynamicModel);
 	}
 
-//	@Test
-//	public void testExecute_NullReportServletActionContextThrowsException() throws Exception {
-//		PowerMockito.doThrow(new RuntimeException("test exception")).when(ServletActionContext.class);
-//		ServletActionContext.getRequest();
-//		reportDynamic.setReport(null);
-//
-//		String strutsResult = reportDynamic.execute();
-//
-//		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-//		verify(logger).error("test exception");
-//	}
+	@Ignore("Verifying logger is too hard for now")
+	@Test
+	public void testExecute_NullReportServletActionContextThrowsException() throws Exception {
+		PowerMockito.doThrow(new RuntimeException("test exception")).when(ServletActionContext.class);
+		ServletActionContext.getRequest();
+		reportDynamic.setReport(null);
+
+		String strutsResult = reportDynamic.execute();
+
+		assertEquals(ReportDynamic.REDIRECT, strutsResult);
+		verify(logger).error("test exception");
+	}
 
 	@Test
 	public void testExecute_NullReport() throws Exception {

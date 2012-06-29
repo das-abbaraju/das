@@ -63,7 +63,12 @@ public class ManageReports extends PicsActionSupport {
 		} else if (SAVED.equals(viewType)) {
 		}
 
-		userReports = dao.findWhere(ReportUser.class, filterQuery);
+		try {
+			userReports = dao.findWhere(ReportUser.class, filterQuery);
+		} catch (Exception e) {
+			userReports = null;
+			addActionMessage("There was a problem finding your reports.");
+		}
 
 		if (userReports == null) {
 			userReports = Collections.emptyList();
@@ -103,16 +108,17 @@ public class ManageReports extends PicsActionSupport {
 			if (ReportAccess.canUserDelete(permissions.getUserId(), report)) {
 				ReportAccess.deleteReport(report);
 				addActionMessage("Your report has been deleted.");
-			} else { 
-				addActionMessage("You do not have the necessary permissions to delete this report.");
+			} else {
+				addActionError("You do not have the necessary permissions to delete this report.");
 			}
 		} catch (NoResultException nre) {
-			addActionMessage("The report you're trying to delete no longer exists.");
+			addActionError("The report you're trying to delete no longer exists.");
 		} catch (Exception e) {
-			// An empty catch block is bad, but displaying an exception to the user is worse
+			logger.error(e.getMessage());
 		}
 
 		setUrlForRedirect("ManageReports.action");
+
 		return REDIRECT;
 	}
 

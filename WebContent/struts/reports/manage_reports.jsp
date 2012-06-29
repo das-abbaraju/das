@@ -53,7 +53,7 @@
                     </s:else>
                     
                     <s:if test="report.id != 11 && report.id != 12">
-                        <s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@canUserDelete(permissions.userId, report)}">
+                        <s:if test="%{@com.picsauditing.report.access.ReportAccess@canUserDelete(permissions.userId, report)}">
                             <a class="delete" href="ManageReports!deleteReport.action?reportId=<s:property value="report.id" />">Delete</a>
                         </s:if>
                         <s:else>
