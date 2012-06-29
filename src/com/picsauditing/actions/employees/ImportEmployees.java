@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -288,7 +289,7 @@ public class ImportEmployees extends PicsActionSupport {
 						e.setTwicExpiration(cell.getDateCellValue());
 						break;
 					case 5:
-						e.setEmail(cell.toString().trim());
+						e.setEmail(EmailAddressUtils.validate(cell.toString()));
 						break;
 					case 6:
 						e.setPhone(cell.toString());

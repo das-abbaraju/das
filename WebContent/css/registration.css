@@ -751,7 +751,7 @@ footer .footer-menu a
 .service-evaluation-form label,
 .make-payment-form label
 {
-	width: 350px;
+	width: 100px;
 }
 
 /* add client site specific */
@@ -1296,14 +1296,14 @@ footer .footer-menu a
 .make-payment-form img.card
 {
 	display: block;
-	left: 360px;
+	left: 110px;
 	margin: 5px 0px;
 	position: relative;
 }
 
 .make-payment-form .actions
 {
-	padding-left: 358px;
+	padding-left: 110px;
 }
 
 .make-payment-form .actions input.btn
@@ -1367,4 +1367,23 @@ footer .footer-menu a
 .client-site-modal
 {
 	margin: -250px 0 0 -250px !important;
+}
+
+#credit-card-payment-method {
+	float: left;
+}
+
+#or {
+	float: left;
+	line-height: 200px;
+	margin: 0px 50px 0px 50px;
+}
+
+#pro-forma-button {
+	float: left;
+	margin-top: 88px;	
+}
+
+#ccexp {
+	display: none;
 }

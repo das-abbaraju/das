@@ -23,6 +23,15 @@ public class UkStatistics extends SafetyStatistics{
 			if (answer.getQuestion().getId() == 9099) {
 				answerMap.put(OshaRateType.Hours, answer);
 			}
+			if (answer.getQuestion().getId() == 8867) {
+				answerMap.put(OshaRateType.Fatalities, answer);
+			}
+			if (answer.getQuestion().getId() == 9062) {
+				answerMap.put(OshaRateType.DOFR, answer);
+			}
+			if (answer.getQuestion().getId() == 11689) {
+				answerMap.put(OshaRateType.LTIFR, answer);
+			}
 			if (answer.getQuestion().getId() == 8873) {
 				answerMap.put(OshaRateType.FileUpload, answer);
 				fileUpload = answer;

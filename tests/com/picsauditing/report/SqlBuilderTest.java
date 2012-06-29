@@ -23,6 +23,7 @@ import org.powermock.core.classloader.annotations.SuppressStaticInitializationFo
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -33,7 +34,6 @@ import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.business.DynamicReportUtil;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*","org.apache.xerces.*" })

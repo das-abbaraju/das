@@ -46,6 +46,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -162,7 +163,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				addActionError("Invalid social security number entered.");
 		}
 		if (employee.getEmail().length()>0)
-			employee.setEmail(employee.getEmail().trim());
+			employee.setEmail(EmailAddressUtils.validate(employee.getEmail()));
 
 		employee.setAuditColumns(permissions);
 		boolean existing = employee.getId() > 0;

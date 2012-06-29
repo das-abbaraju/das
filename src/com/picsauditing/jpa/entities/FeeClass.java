@@ -15,30 +15,41 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.util.SpringUtils;
 
+/**
+ * The business logic in FeeClass needs to be pulled out into a service to make
+ * it properly testable.
+ * 
+ * @author TJB
+ * 
+ */
 public enum FeeClass implements Translatable {
 	// TODO combine some of these fees
-	Deprecated,
-	Free,
-	BidOnly,
-	ListOnly,
-	DocuGUARD,
-	InsureGUARD {
+	Deprecated, Free, BidOnly, ListOnly, DocuGUARD, InsureGUARD {
 		@Override
 		public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel, Set<OperatorAccount> operators) {
-			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
+			if (contractor == null || contractor.getOperatorAccounts().isEmpty()) {
 				return false;
+			}
+
+			if (contractor.getAccountLevel().isListOnly() || contractor.getAccountLevel().isBidOnly()) {
+				return true;
+			}
 
 			if (contractor.getLastUpgradeDate() != null
 					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
-					&& contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel))
+					&& contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel)) {
 				return true;
+			}
+
+			if (contractor.isOnlyAssociatedWith(OperatorAccount.SUNCOR) && contractor.getSoleProprietor()) {
+				return true;
+			}
 
 			return isAllExclusionsApplicable(contractor, newLevel, operators);
 		}
 
 	},
-	AuditGUARD,
-	EmployeeGUARD {
+	AuditGUARD, EmployeeGUARD {
 		@Override
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) SpringUtils.getBean("AuditTypeRuleCache");
@@ -94,17 +105,7 @@ public enum FeeClass implements Translatable {
 			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(0, BigDecimal.ROUND_DOWN);
 		}
 	},
-	Reactivation,
-	LateFee,
-	ReschedulingFee,
-	ScanningFee,
-	WebcamFee,
-	ExpediteFee,
-	ImportFee,
-	SuncorDiscount,
-	GST,
-	VAT,
-	Misc;
+	Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, VAT, Misc;
 
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date Jan2013InsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
@@ -140,14 +141,16 @@ public enum FeeClass implements Translatable {
 		return getI18nKey() + "." + property;
 	}
 
-	// TODO: This probably needs to be refactored into rules as it continues to grow
+	// TODO: This probably needs to be refactored into rules as it continues to
+	// grow
 	public boolean isAllExclusionsApplicable(ContractorAccount contractor, InvoiceFee newLevel,
 			Set<OperatorAccount> operators) {
+		boolean isUpgrade = contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel);
+		Map<Integer, Date> exclusions = getExclusions();
+
 		for (OperatorAccount operator : operators) {
-			Map<Integer, Date> exclusions = getExclusions();
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
 
-			boolean isUpgrade = contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel);
 			// do I have an operator outside the exclusions list?
 			if (!exclusions.containsKey(operator.getTopAccount().getId())) {
 				return false;
@@ -157,9 +160,6 @@ public enum FeeClass implements Translatable {
 			} else if (isUpgrade
 					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
 							exclusionExpirationDate))) {
-				return false;
-				// is the contractor a non-sole proprietor for Suncor?
-			} else if (operator.getTopAccount().getId() == OperatorAccount.SUNCOR && !contractor.getSoleProprietor()) {
 				return false;
 			}
 		}

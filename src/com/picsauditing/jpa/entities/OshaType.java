@@ -16,7 +16,7 @@ public enum OshaType implements Translatable {
 			OshaRateType.Hours }),
 	COHS(2086, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
-	UK_HSE(2092, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR }),
+	UK_HSE(2092, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
 	FRANCE_NRIS(1691, null);
 
 	public static final int CAT_ID_OSHA = 2033; // U.S.

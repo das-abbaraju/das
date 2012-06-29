@@ -230,6 +230,10 @@
 		font-style: italic;
 		margin: 20px 0px 0px;	
 	}
+
+    #AuditPrintAjax a:link:after, #AuditPrintAjax a:visited:after {
+      content: "";
+    }
 }
 
 

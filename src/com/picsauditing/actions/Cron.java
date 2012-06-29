@@ -406,7 +406,7 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			emailSender.send(toAddress, "Cron job report", report.toString());
-			System.out.println(report.toString());
+			logger.error(report.toString());
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			logger.error("**********************************");
 			logger.error("Error Sending email from cron job");

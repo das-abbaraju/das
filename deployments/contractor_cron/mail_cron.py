@@ -10,8 +10,8 @@ logging.config.fileConfig("logging-mail.conf")
 
 SERVER = "http://%s/"
 SERVERS = ['localhost:8080']
-APPLICATION_SERVER_LOAD_THRESHOLD = '3.0'
-CRON_SERVER_LOAD_THRESHOLD = 2.0
+APPLICATION_SERVER_LOAD_THRESHOLD = '4.0'
+CRON_SERVER_LOAD_THRESHOLD = 3.0
 MAX_WORKERS = 15
 con_running = set()
 running_lock = Lock()
@@ -177,23 +177,23 @@ class CronWorker(CronThread):
 			print "Worker Created!"
 			running_lock.acquire()
 			try:
-				con_running.add(id)
+				con_running.add(self.id)
 			finally:
 				running_lock.release() # release lock, no matter what
 			start = time.time()
 			starttime = datetime.now()
 			success = False
 			try:
-				self.logger.debug('thread #%d starting subscription %s' % (self.thread_id,id))
-				cronurl = self.url % (self.server_g.next(), id)
+				self.logger.debug('Starting email subscription worker %s' % self.id)
+				cronurl = self.url % (self.server_g.next(), self.id)
 				self.logger.debug('using url: %s' % cronurl)
 				result = urllib2.urlopen(cronurl).read()
-				self.logger.debug('Result from MailCron.action for subscription %s = %s' % (id,result))
+				self.logger.debug('Result from MailCron.action for subscription %s = %s' % (self.id,result))
 				success = True
 				if success:
-					self.logger.info('Subscription %s finished successfully.' % id)
+					self.logger.info('Subscription %s finished successfully.' % self.id)
 				else:
-					self.logger.warning('Error with Subscription %s' % id)
+					self.logger.warning('Error with Subscription %s' % self.id)
 			except Exception, e:
 				self.logger.error(e)
 			else:

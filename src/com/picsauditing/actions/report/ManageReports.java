@@ -3,6 +3,7 @@
 
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,8 +18,8 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.report.access.ReportAccess;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.business.DynamicReportUtil;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
@@ -62,7 +63,12 @@ public class ManageReports extends PicsActionSupport {
 		} else if (SAVED.equals(viewType)) {
 		}
 
-		userReports = dao.findWhere(ReportUser.class, filterQuery);
+		try {
+			userReports = dao.findWhere(ReportUser.class, filterQuery);
+		} catch (Exception e) {
+			userReports = null;
+			addActionMessage("There was a problem finding your reports.");
+		}
 
 		if (userReports == null) {
 			userReports = Collections.emptyList();
@@ -96,30 +102,24 @@ public class ManageReports extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String deleteReport()  {
-		String query = "t.id = " + reportId;
-
+	public String deleteReport() throws IOException  {
 		try {
-			Report report = dao.findOne(Report.class, query);
-
-			if (!DynamicReportUtil.canUserDelete(permissions.getUserId(), report)) {
-				addActionMessage("You do not have the necessary permissions to delete this report.");
-				// TODO this should not return success
-				return SUCCESS;
+			Report report = ReportAccess.findReportById(reportId);
+			if (ReportAccess.canUserDelete(permissions.getUserId(), report)) {
+				ReportAccess.deleteReport(report);
+				addActionMessage("Your report has been deleted.");
+			} else {
+				addActionError("You do not have the necessary permissions to delete this report.");
 			}
-
-			// Deleting the report from the report table cascades to the report_user table,
-			// so we don't have to manually delete the entry from the report_user table.
-			dao.remove(report);
 		} catch (NoResultException nre) {
-			addActionMessage("The report you're trying to delete no longer exists.");
+			addActionError("The report you're trying to delete no longer exists.");
 		} catch (Exception e) {
-			// An empty catch block is bad, but displaying an exception to the user is worse
+			logger.error(e.getMessage());
 		}
 
-		runQueryForCurrentView();
+		setUrlForRedirect("ManageReports.action");
 
-		return SUCCESS;
+		return REDIRECT;
 	}
 
 	public String changeReportName() {

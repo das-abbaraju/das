@@ -1,5 +1,8 @@
 package com.picsauditing.actions.report;
 
+import static com.picsauditing.report.access.ReportAccess.*;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -27,20 +30,21 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
+import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.business.DynamicReportUtil;
 import com.picsauditing.util.excel.ExcelSheet;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
@@ -59,7 +63,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private String searchQuery = "";
 
 	@Autowired
-	ReportDynamicModel reportController;
+	ReportDynamicModel reportDynamicModel;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -67,18 +71,24 @@ public class ReportDynamic extends PicsActionSupport {
 		String status = SUCCESS;
 
 		if (report == null) {
+			// No matter what junk we get in the url, redirect
 			try {
-				// No matter what junk we get in the url, redirect
 				status = setUrlForRedirect("ManageReports.action?viewType=saved");
 
-				String reportId = ServletActionContext.getRequest().getParameter("report");
+				String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("report");
+				// Don't trust user input!
+				int reportId = Integer.parseInt(dirtyReportIdParameter);
 
-				if (!DynamicReportUtil.canUserViewAndCopy(permissions.getUserId(), Integer.parseInt(reportId))) {
+				if (!canUserViewAndCopy(permissions.getUserId(), reportId)) {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
-			} catch (Exception e) {
-				logger.error(e.getMessage());
+			} catch (IOException ioe) {
+				// Can't happen
+				logger.error(ioe.getMessage());
+			} catch (NumberFormatException nfe) {
+				// Someone typed junk into the url
+				logger.error(nfe.getMessage());
 			}
 		}
 
@@ -88,7 +98,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Deprecated
 	public String find() {
 		try {
-			reportController.validate(report);
+			DynamicReportUtil.validate(report);
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
@@ -101,7 +111,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String create() {
 		try {
-			Report newReport = reportController.copy(report, permissions);
+			Report newReport = reportDynamicModel.copy(report, new User(permissions.getUserId()));
 			json.put("success", true);
 			json.put("reportID", newReport.getId());
 		} catch (NoRightsException nre) {
@@ -117,15 +127,15 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String edit() {
 		try {
-			reportController.edit(report, permissions);
+			reportDynamicModel.edit(report, permissions);
 			json.put("success", true);
 			json.put("reportID", report.getId());
 		} catch (NoRightsException nre) {
 			json.put("success", false);
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
-			logger.error("An error occurred while editing a report id = {} for user {}",
-					report.getId(), permissions.getUserId());
+			logger.error("An error occurred while editing a report id = {} for user {}", report.getId(),
+					permissions.getUserId());
 			writeJsonErrorMessage(e);
 		}
 
@@ -134,32 +144,23 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			reportController.validate(report);
+			DynamicReportUtil.validate(report);
 
-			Definition definition = new Definition(report.getParameters());
-			report.setDefinition(definition);
+			// Definition definition = new Definition(report.getParameters());
+			// report.setDefinition(definition);
 			// TODO remove definition from SqlBuilder
-			sqlBuilder.setDefinition(definition);
+			sqlBuilder.setDefinition(report.getDefinition());
 
 			sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
-			translateFilterValueNames(definition.getFilters());
+			translate(report);
 
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
-			if (definition.getColumns().size() > 0) {
-				long startTime = Calendar.getInstance().getTimeInMillis();
-
-				List<BasicDynaBean> queryResults = reportController.runQuery(sql, json);
+			if (report.getDefinition().getColumns().size() > 0) {
+				List<BasicDynaBean> queryResults = reportDynamicModel.runTimedQuery(sql, json);
 				convertToJson(queryResults, availableFields);
 				json.put("success", true);
-
-				long queryTime = Calendar.getInstance().getTimeInMillis() - startTime;
-				if (queryTime > 1000) {
-					showSQL = true;
-					logger.info("Slow Query: {}", sql.toString());
-					logger.info("Time to query: {} ms", queryTime);
-				}
 			}
 		} catch (SQLException e) {
 			logError(e);
@@ -177,16 +178,18 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String list() {
 		try {
-			if (Strings.isEmpty(fieldName))
+			if (Strings.isEmpty(fieldName)) {
 				throw new Exception("Please pass a fieldName when calling list");
+			}
 
-			reportController.validate(report);
+			DynamicReportUtil.validate(report);
 
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
-			if (field == null)
+			if (field == null) {
 				throw new Exception("Available field undefined");
+			}
 
 			if (field.getFilterType().isEnum()) {
 				json = renderEnumFieldAsJson(field);
@@ -208,7 +211,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String getUserStatus() {
 		int userId = permissions.getUserId();
 
-		json.put("is_editable", DynamicReportUtil.canUserEdit(userId, report));
+		json.put("is_editable", canUserEdit(userId, report));
 
 		return JSON;
 	}
@@ -221,22 +224,23 @@ public class ReportDynamic extends PicsActionSupport {
 		for (ModelType type : ModelType.values()) {
 			rows.add(type.toString());
 		}
+
 		json.put("bases", rows);
 
 		return JSON;
 	}
 
 	public String getReportParameters() throws Exception {
-		reportController.validate(report);
+		DynamicReportUtil.validate(report);
 
-		Definition definition = new Definition(report.getParameters());
-		report.setDefinition(definition);
+		// Definition definition = new Definition(report.getParameters());
+		// report.setDefinition(definition);
 		// TODO remove definition from SqlBuilder
-		sqlBuilder.setDefinition(definition);
+		sqlBuilder.setDefinition(report.getDefinition());
 
 		sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
-		translateFilterValueNames(definition.getFilters());
+		translate(report);
 
 		addTranslatedLabelsToReportParameters(report.getDefinition());
 
@@ -248,7 +252,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			reportController.validate(report);
+			DynamicReportUtil.validate(report);
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			json.put("modelType", report.getModelType().toString());
@@ -275,8 +279,9 @@ public class ReportDynamic extends PicsActionSupport {
 			obj.put("category", translateCategory(field.getCategory().toString()));
 
 			String help = getText("Report." + field.getName() + ".help");
-			if (help != null)
+			if (help != null) {
 				obj.put("help", help);
+			}
 
 			fieldsJsonArray.add(obj);
 		}
@@ -285,19 +290,19 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String download() throws Exception {
-		reportController.validate(report);
+		DynamicReportUtil.validate(report);
 
-		Definition definition = new Definition(report.getParameters());
-		report.setDefinition(definition);
+		// Definition definition = new Definition(report.getParameters());
+		// report.setDefinition(definition);
 		// TODO remove definition from SqlBuilder
-		sqlBuilder.setDefinition(definition);
+		sqlBuilder.setDefinition(report.getDefinition());
 
 		sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
 
-		translateFilterValueNames(definition.getFilters());
+		translate(report);
 
-		if (definition.getColumns().size() > 0) {
-			List<BasicDynaBean> rawData = reportController.runQuery(sql, json);
+		if (report.getDefinition().getColumns().size() > 0) {
+			List<BasicDynaBean> rawData = reportDynamicModel.runQuery(sql, json);
 
 			ExcelSheet excelSheet = new ExcelSheet();
 			excelSheet.setData(rawData);
@@ -311,7 +316,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			filename += fileType;
 
-			// TODO: Change this to use an output stream handler - Alex to pair with Mike on this
+			// TODO: Change this to use an output stream handler
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
@@ -352,7 +357,7 @@ public class ReportDynamic extends PicsActionSupport {
 			return;
 
 		for (Sort sort : definition.getSorts()) {
-//			sort.setFieldName(translateLabel(sort.getField()));
+			// sort.setFieldName(translateLabel(sort.getField()));
 			sort.getField().setText(translateLabel(sort.getField()));
 		}
 	}
@@ -384,7 +389,8 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	/**
-	 * The purpose of this method is to convert the queryResult into a JSONObject,
+	 * The purpose of this method is to convert the queryResult into a
+	 * JSONObject,
 	 *
 	 * @param queryResults
 	 * @param availableFields
@@ -450,6 +456,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private void logError(Exception e) {
 		json.put("success", false);
 		String message = e.getMessage();
+
 		if (message == null) {
 			message = e.toString();
 		}
@@ -476,15 +483,17 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		enumResults.put("result", jsonResult);
+
 		return enumResults;
 	}
 
-	// TODO: Find out how this is being used (purpose in the big picture, possibly used for reverse translations)
-	private void translateFilterValueNames(List<Filter> filters) {
-		if (CollectionUtils.isEmpty(filters))
+	// TODO: Find out how this is being used (purpose in the big picture,
+	// possibly used for reverse translations)
+	private void translate(Report report) {
+		if (CollectionUtils.isEmpty(report.getDefinition().getFilters()))
 			return;
 
-		for (Filter filter : filters) {
+		for (Filter filter : report.getDefinition().getFilters()) {
 			if (!filter.isHasTranslations())
 				continue;
 
@@ -509,11 +518,11 @@ public class ReportDynamic extends PicsActionSupport {
 		String keyPrefix = field.getPreTranslation();
 		String keySuffix = field.getPostTranslation();
 
-		if(!Strings.isEmpty(keyPrefix)) {
+		if (!Strings.isEmpty(keyPrefix)) {
 			initialTranslationKey = keyPrefix + "." + initialTranslationKey;
 		}
 
-		if(!Strings.isEmpty(keySuffix)) {
+		if (!Strings.isEmpty(keySuffix)) {
 			initialTranslationKey = initialTranslationKey + "." + keySuffix;
 		}
 

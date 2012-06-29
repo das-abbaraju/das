@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,22 +13,15 @@ import java.util.TreeMap;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -37,33 +29,35 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Cron.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class CronTest extends PicsTest {
-	Cron cron;
+public class CronTest {
+	private Cron cron;
 
-	ContractorActionSupport testClass;
-	ContractorAccount contractor;
-	OperatorAccount operator;
-	OperatorAccount anotherOperator;
-	List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
-
-	List<Certificate> certList = new ArrayList<Certificate>();
-	Map<Integer, List<Integer>> opIdsByCertIds = new HashMap<Integer, List<Integer>>();
-
+	private ContractorAccount contractor;
+	private OperatorAccount operator;
+	private OperatorAccount anotherOperator;
+	private List<ContractorOperator> operators;
+//	private List<Certificate> certList;
+//	private Map<Integer, List<Integer>> opIdsByCertIds;
+	
 	@Mock
-	CertificateDAO certDao = new CertificateDAO();
+	private EmailQueueDAO emailQueueDAO;
+	@Mock
+	private EmailBuilder emailBuilder;
+	@Mock
+	protected NoteDAO noteDAO;
 
 	@Before
 	public void setUp() throws Exception {
-		cron = new Cron();
-
 		MockitoAnnotations.initMocks(this);
+		
+		cron = new Cron();
+		
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(cron, this);
+		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
 
-		testClass = new ContractorActionSupport();
-		autowireEMInjectedDAOs(testClass);
-
+		operators = new ArrayList<ContractorOperator>();
+//		certList = new ArrayList<Certificate>();
+//		opIdsByCertIds = new HashMap<Integer, List<Integer>>();
 		contractor = EntityFactory.makeContractor();
 		operator = EntityFactory.makeOperator();
 		anotherOperator = EntityFactory.makeOperator();
@@ -127,15 +121,7 @@ public class CronTest extends PicsTest {
 		EmailQueue email = new EmailQueue();
 		email.setContractorAccount(new ContractorAccount(3));
 
-		EmailBuilder emailBuilder = Mockito.mock(EmailBuilder.class);
-		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
 		when(emailBuilder.build()).thenReturn(email);
-
-		EmailQueueDAO emailQueueDAO = Mockito.mock(EmailQueueDAO.class);
-		Whitebox.setInternalState(cron, "emailQueueDAO", emailQueueDAO);
-
-		NoteDAO noteDAO = Mockito.mock(NoteDAO.class);
-		Whitebox.setInternalState(cron, "noteDAO", noteDAO);
 
 		Whitebox.invokeMethod(cron, "sendEmailsTo", fakeContractors);
 
@@ -152,15 +138,7 @@ public class CronTest extends PicsTest {
 		EmailQueue email = new EmailQueue();
 		email.setContractorAccount(new ContractorAccount(3));
 
-		EmailBuilder emailBuilder = Mockito.mock(EmailBuilder.class);
-		Whitebox.setInternalState(cron, "emailBuilder", emailBuilder);
 		when(emailBuilder.build()).thenReturn(email);
-
-		EmailQueueDAO emailQueueDAO = Mockito.mock(EmailQueueDAO.class);
-		Whitebox.setInternalState(cron, "emailQueueDAO", emailQueueDAO);
-
-		NoteDAO noteDAO = Mockito.mock(NoteDAO.class);
-		Whitebox.setInternalState(cron, "noteDAO", noteDAO);
 
 		Whitebox.invokeMethod(cron, "sendEmailsTo", fakeContractors);
 

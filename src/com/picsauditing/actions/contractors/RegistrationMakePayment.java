@@ -115,7 +115,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			} catch (Exception e) {
 				addActionError(getText("InvoiceDetail.message.EmailFail"));
 			}
-			return BLANK;
+			
+			url = "Login.action";			
+			return REDIRECT;
 		}
 
 		loadCC();

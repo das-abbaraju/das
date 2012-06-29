@@ -92,5 +92,9 @@
 		<appender-ref ref="CoalescingStatistics"/>
 		<appender-ref ref="perf4jFileAppender"/>
 	</logger>
+	
+	<logger name="org.perf4j.DebugTimingLogger" additivity="false" level="${loglevel_timing:-debug}">
+		<appender-ref ref="perf4jFileAppender"/>
+	</logger>
 
 </configuration>

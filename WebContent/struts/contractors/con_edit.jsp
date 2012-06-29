@@ -319,9 +319,11 @@
 									<s:checkbox name="contractor.showInDirectory" theme="formhelp" />
 									<s:if test="contractor.showInDirectory">
 										<br />
-										<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-											<s:text name="ContractorView.ClickToViewContractorBadge" />
-										</a>
+										<pics:toggle name="Badge">
+											<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+												<s:text name="ContractorView.ClickToViewContractorBadge" />
+											</a>
+										</pics:toggle>
 									</s:if>
 								</li>
 								<li>

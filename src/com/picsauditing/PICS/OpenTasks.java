@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.actions.contractors.ContractorBadge;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -440,24 +438,5 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 		return false;
-	}
-
-	private boolean hasPQFMembershipSealAnswer(ContractorAccount contractor) {
-		boolean hasMembershipSealAnswer = false;
-		for (ContractorAudit pqf : contractor.getAudits()) {
-			if (pqf.isVisibleTo(permissions)) {
-				if (pqf.getAuditType().isPqf()) {
-					for (AuditData data : pqf.getData()) {
-						if (data.getQuestion().getId() == ContractorBadge.MEMBERSHIP_TAG_QUESTION) {
-							hasMembershipSealAnswer = true;
-						}
-					}
-
-					break;
-				}
-			}
-		}
-
-		return hasMembershipSealAnswer;
-	}
+	}	
 }

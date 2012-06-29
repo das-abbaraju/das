@@ -32,7 +32,7 @@ Ext.override(Ext.menu.Menu, {
             }
 
             // custom menu positioning
-            xy[1] += 5;
+            xy[1] += 3;
 
             me.showAt(xy);
         }

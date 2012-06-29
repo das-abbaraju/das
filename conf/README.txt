@@ -23,4 +23,17 @@
 // as a JNDI Resource in the Context as:
 					<Resource auth="Container" name="amqp/pics" type="org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
 					factory="com.picsauditing.jndi.RabbitMqInitialContextFactory" host="HOST" username="USERNAME" password="PASSWORD"/>
-			
+
+// To enable persistent tomcat database sessions, replace this line from context.xml
+	<Manager pathname="" />
+// With this
+	<Manager className="org.apache.catalina.session.PersistentManager"
+		saveOnRestart="false" minIdleSwap="-1" maxIdleSwap="10" maxIdleBackup="0">
+		<Store className="org.apache.catalina.session.JDBCStore"
+			driverName="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1?user=pics&amp;password=M0ckingj@y"
+			sessionTable="app_session" sessionIdCol="id" sessionDataCol="sessionData"
+			sessionValidCol="validSession" sessionMaxInactiveCol="maxInactiveInterval"
+			sessionLastAccessedCol="lastAccessedTime" sessionAppCol="appName" />
+	</Manager>
+// And copy .m2\repository\mysql\mysql-connector-java\x.x.x\mysql-connector-java-x.x.x.jar to the tomcat lib folder

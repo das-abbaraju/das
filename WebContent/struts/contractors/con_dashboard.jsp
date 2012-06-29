@@ -479,14 +479,8 @@
     								<div class="panel_header">
     									<s:text name="Widget.6.caption"/>
     								</div>
-    								<div class="panel_content" id="con_tasks">
+    								<div class="panel_content" id="con_tasks" data-conid="<s:property value="contractor.id" />">
     									<div class="inprogress"></div>
-    									
-    									<script type="text/javascript">
-    										$(function() {
-    											$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
-    										});
-    									</script>
     								</div>
     							</div>
     						</div>
@@ -563,9 +557,11 @@
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
                                         <strong><s:date name="contractor.membershipDate" /></strong>
-                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
-                                        </a>
+                                        <pics:toggle name="Badge">
+	                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+	                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
+	                                        </a>
+                                        </pics:toggle>
     								</p>
                                     <p>
                                         <a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />">

@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -85,7 +86,7 @@ public class ProfileEdit extends PicsActionSupport {
 		// validation
 		String username = u.getUsername().trim();
 		if(u.getEmail().length()>0)
-			u.setEmail(u.getEmail().trim());
+			u.setEmail(EmailAddressUtils.validate(u.getEmail()));
 
 		if (Strings.isEmpty(username)) {
 			addActionError(getText("User.username.error.Empty"));
