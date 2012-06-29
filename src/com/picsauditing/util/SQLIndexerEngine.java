@@ -3,11 +3,14 @@ package com.picsauditing.util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.actions.AbstractIndexerEngine;
@@ -20,22 +23,26 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 	private static final int BATCH_NUM = 75;
 	private final Database db = new Database();
 
-	private static final String[] STATS_QUERY_BUILDER = {
+	private static final List<String> STATS_QUERY_BUILDER = Collections.unmodifiableList(Arrays.asList(
 			"TRUNCATE TABLE app_index_stats;",
 			"REPLACE INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;",
 			"REPLACE INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;",
 			"REPLACE INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;",
-			"ANALYZE TABLE app_index, app_index_stats;" };
+			"ANALYZE TABLE app_index, app_index_stats;" 
+	));
 
 	private static final String QUERY_INDEX = "INSERT IGNORE INTO app_index VALUES(?,?,?,?)";
 	private static final String QUERY_STATS = "INSERT IGNORE INTO app_index_stats VALUES(?,?,?)";
 	private static final String QUERY_DELETE = "DELETE FROM app_index WHERE foreignKey = ? AND indexType = ?";
+	
+	private static final Logger logger = LoggerFactory.getLogger(SQLIndexerEngine.class);
 
 	@Override
 	public void runAll(Set<Class<? extends Indexable>> toIndex) {
 		for (Class<? extends Indexable> index : toIndex) {
 			run(index);
 		}
+		
 		updateStats();
 	}
 
@@ -73,13 +80,11 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 				savedIds.clear();
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			// Query didn't work, or db failed. Should we catch?
-			e.printStackTrace();
+			logger.error("Error during run for class {}", clazz.getName(), e);
 		} finally {
-			closeConnection(connection);
-			closeStatement(indexBatch);
-			closeStatement(statsBatch);
+			DatabaseUtil.closeConnection(connection);
+			DatabaseUtil.closeStatement(indexBatch);
+			DatabaseUtil.closeStatement(statsBatch);
 		}
 
 	}
@@ -92,6 +97,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 			Connection connection = null;
 			PreparedStatement indexBatch = null;
 			PreparedStatement statsBatch = null;
+			
 			try {
 				connection = DBBean.getDBConnection();
 				connection.setAutoCommit(false);
@@ -112,13 +118,11 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 
 				connection.commit();
 			} catch (SQLException e) {
-				// TODO: handle exception
-				// Query didn't work, or db failed. Should we catch?
-				e.printStackTrace();
+				logger.error("Error during query for Index Class {}", toIndex.getClass().getName(), e);
 			} finally {
-				closeConnection(connection);
-				closeStatement(indexBatch);
-				closeStatement(statsBatch);
+				DatabaseUtil.closeConnection(connection);
+				DatabaseUtil.closeStatement(indexBatch);
+				DatabaseUtil.closeStatement(statsBatch);
 			}
 		}
 
@@ -130,6 +134,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 		try {
 			connection = DBBean.getDBConnection();
 			connection.setAutoCommit(false);
+			
 			PreparedStatement deleteBatch = connection.prepareStatement(QUERY_DELETE);
 			for (Indexable record : listToDelete) {
 				deleteBatch.setInt(1, record.getId());
@@ -141,10 +146,9 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 			connection.commit();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error during delete", e);
 		} finally {
-			closeConnection(connection);
+			DatabaseUtil.closeConnection(connection);
 		}
 	}
 
@@ -159,7 +163,7 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 			try {
 				db.executeInsert(stats);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error("Error while executing an insert in the SQLIndexerEngine.", e);
 			}
 		}
 	}
@@ -189,24 +193,4 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 		}
 	}
 
-	private final void closeConnection(Connection connection) {
-		if (connection == null)
-			return;
-		try {
-			connection.close();
-		} catch (SQLException e) {
-			// Error while calling close
-			e.printStackTrace();
-		}
-	}
-
-	private final void closeStatement(Statement statement) {
-		if (statement == null)
-			return;
-		try {
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 }

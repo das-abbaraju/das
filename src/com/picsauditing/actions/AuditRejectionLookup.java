@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import com.google.common.base.Strings;
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.DatabaseUtil;
 
 @SuppressWarnings("serial")
 public class AuditRejectionLookup extends PicsActionSupport {
@@ -22,8 +23,15 @@ public class AuditRejectionLookup extends PicsActionSupport {
 		selectSQL.addField("msgValue");
 		selectSQL.addWhere(buildWhereClause());
 
-		Connection conn = DBBean.getDBConnection();
-		ResultSet results = conn.createStatement().executeQuery(selectSQL.toString());
+		Connection conn = null;
+		ResultSet results = null;
+		try {
+			conn = DBBean.getDBConnection();
+			results = conn.createStatement().executeQuery(selectSQL.toString());
+		} finally {
+			DatabaseUtil.closeResultSet(results);
+			DatabaseUtil.closeConnection(conn);
+		}
 
 		populateJsonArray(results);
 
@@ -37,6 +45,9 @@ public class AuditRejectionLookup extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	private void populateJsonArray(ResultSet results) throws Exception {
+		if (results == null)
+			return;
+		
 		while (results.next()) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("id", parseCode(results.getString(1)));
