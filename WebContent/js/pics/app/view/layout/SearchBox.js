@@ -2,6 +2,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     extend: 'Ext.form.field.ComboBox',
     alias: ['widget.searchbox'],
 
+    autoScroll: false,
     displayField: 'name',
     // TODO use the translated 'search' value
     emptyText: 'search',
@@ -9,10 +10,12 @@ Ext.define('PICS.view.layout.SearchBox', {
     listConfig: {
         // TODO get the translated version
         loadingText: 'Searching...',
+        maxHeight: 500,
 
         // Custom rendering template for each item
         getInnerTpl: function() {
-            return '{type} {name} - (ID {id}) at ({at})';
+            return '<div style="float: left; margin 20px;" class="menu-list-left">{type}:<br />(ID {id})</div>' +
+                   '<div style="" class="menu-list-right">{name}<br />at ({at})';
         }
     },
 
@@ -43,12 +46,13 @@ Ext.define('PICS.view.layout.SearchBox', {
         fields: [ 'type', 'id', 'name', 'at' ],
         proxy: {
             type: 'ajax',
-            url: 'SearchBox!json.action',
+            url: 'SearchBoxJson.action',
             reader: {
                 root: 'results',
                 type: 'json',
                 totalProperty: 'totalCount'
             }
         }
-    }
+    },
+    width: 300
 });

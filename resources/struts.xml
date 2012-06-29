@@ -413,6 +413,10 @@
 			<result>struts/search.jsp</result>
 		</action>
 
+		<action name="SearchBoxJson" class="com.picsauditing.search.SearchBox" method="json">
+			<result type="json"></result>
+		</action>
+
 		<!-- Dynamic Reports -->
 		<action name="ReportDynamic" class="com.picsauditing.actions.report.ReportDynamic">
 			<result>struts/reports/report_dynamic.jsp</result>
