@@ -8,21 +8,25 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DBBean;
 
 public class Database {
-
+	private final Logger logger = LoggerFactory.getLogger(Database.class);
+	
 	private int allRows = 0;
 
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> select(String sql, boolean countRows) throws SQLException {
 		Connection Conn = DBBean.getDBConnection();
-		Statement stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		Statement stmt = null;
 		RowSetDynaClass rsdc;
 		try {
+			stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = stmt.executeQuery(sql);
-			rsdc = new RowSetDynaClass(rs, false);
+			rsdc = new RowSetDynaClass(rs, false, true);
 			rs.close();
 
 			if (countRows) {
@@ -32,8 +36,11 @@ public class Database {
 				tempRS.close();
 			}
 			return rsdc.getRows();
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw e;
 		} finally {
-			stmt.close();
+			if (stmt != null) stmt.close();
 			Conn.close();
 		}
 	}
