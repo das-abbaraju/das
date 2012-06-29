@@ -2,13 +2,16 @@ package com.picsauditing.report;
 
 import static com.picsauditing.report.access.DynamicReportUtil.getColumnFromFieldName;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
@@ -21,6 +24,7 @@ import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -378,6 +382,14 @@ public class SqlBuilder {
 //			sort.setField(getFieldFromFieldName(sort.getFieldName()));
 			sort.setField(field);
 		}
+	}
+
+	public static List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
+		Database db = new Database();
+		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		json.put("total", db.getAllRows());
+
+		return rows;
 	}
 
 	// Setters

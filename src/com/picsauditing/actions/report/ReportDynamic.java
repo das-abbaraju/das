@@ -154,7 +154,7 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			if (report.getDefinition().getColumns().size() > 0) {
-				List<BasicDynaBean> queryResults = reportDynamicModel.runQuery(sql, json);
+				List<BasicDynaBean> queryResults = sqlBuilder.runQuery(sql, json);
 				convertToJson(queryResults, availableFields);
 				json.put("success", true);
 			}
@@ -282,7 +282,7 @@ public class ReportDynamic extends PicsActionSupport {
 		translate(report);
 
 		if (report.getDefinition().getColumns().size() > 0) {
-			List<BasicDynaBean> rawData = reportDynamicModel.runQuery(sql, json);
+			List<BasicDynaBean> rawData = sqlBuilder.runQuery(sql, json);
 
 			ExcelSheet excelSheet = new ExcelSheet();
 			excelSheet.setData(rawData);
