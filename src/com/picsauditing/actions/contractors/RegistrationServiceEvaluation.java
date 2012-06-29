@@ -178,34 +178,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		saveAnswers();
 		loadAnswers();
 
-		// boolean requiredQuestions = false;
-		// for (AuditQuestion aq : infoQuestions) {
-		// if ((contractor.isOffsiteServices() || contractor.isOnsiteServices()
-		// ||
-		// contractor.isTransportationServices())
-		// && (aq.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) )
-		// {
-		// if (Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) {
-		// requiredQuestions = false;
-		// break;
-		// } else {
-		// requiredQuestions = true;
-		// }
-		// } else if (contractor.isMaterialSupplier()
-		// && aq.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_EVAL) {
-		// if (Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) {
-		// requiredQuestions = false;
-		// break;
-		// } else {
-		// requiredQuestions = true;
-		// }
-		// }
-		// }
-		//
-		// if (!requiredQuestions) {
-		// addActionError(getText("ContractorRegistrationServices.error.AnswerAll"));
-		// return SUCCESS;
-		// } else {
 		Collection<AuditData> auditList = answerMap.values();
 		// Calculated assessments
 		LowMedHigh safety = LowMedHigh.Low;
