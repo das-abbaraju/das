@@ -24,13 +24,14 @@ public class Database {
 		Connection Conn = null;
 		Statement stmt = null;
 		ResultSet tempRS = null;
+		ResultSet rs = null;
 		RowSetDynaClass rsdc;
 
 		try {
 			Conn = DBBean.getDBConnection();
 			
 			stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			ResultSet rs = stmt.executeQuery(sql);
+			rs = stmt.executeQuery(sql);
 			rsdc = new RowSetDynaClass(rs, false, true);
 			if (countRows) {
 				tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
