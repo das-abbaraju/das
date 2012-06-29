@@ -1,6 +1,6 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.util.business.DynamicReportUtil.getColumnFromFieldName;
+import static com.picsauditing.report.access.DynamicReportUtil.getColumnFromFieldName;
 
 import java.util.ArrayList;
 import java.util.HashSet;

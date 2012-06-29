@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ page import="com.picsauditing.util.business.DynamicReportUtil" %>
+<%@ page import="com.picsauditing.report.access.DynamicReportUtil" %>
 
 <title>Manage Reports</title>
 
