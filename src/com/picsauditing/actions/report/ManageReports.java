@@ -13,12 +13,13 @@ import javax.persistence.NoResultException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.report.access.ReportAccess;
+import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -27,6 +28,8 @@ public class ManageReports extends PicsActionSupport {
 	private static final String SAVED = "saved";
 	private static final String FAVORITE = "favorite";
 
+	@Autowired private ReportAdministration reportAccessor;
+	
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 	private String viewType;
@@ -104,9 +107,9 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() throws IOException  {
 		try {
-			Report report = ReportAccess.findReportById(reportId);
-			if (ReportAccess.canUserDelete(permissions.getUserId(), report)) {
-				ReportAccess.deleteReport(report);
+			Report report = reportAccessor.findReportById(reportId);
+			if (reportAccessor.canUserDelete(permissions.getUserId(), report)) {
+				reportAccessor.deleteReport(report);
 				addActionMessage("Your report has been deleted.");
 			} else {
 				addActionError("You do not have the necessary permissions to delete this report.");
