@@ -1,17 +1,9 @@
 package com.picsauditing.models;
 
-import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.json.simple.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
@@ -23,8 +15,6 @@ import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 
 public class ReportDynamicModel {
 
@@ -54,10 +44,7 @@ public class ReportDynamicModel {
 		if (!reportAccessor.canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
 
-		DynamicReportUtil.validate(report);
-
-		report.setAuditColumns(permissions);
-		basicDao.save(report);
+		reportAccessor.saveReport(report, new User(permissions.getUserId()));
 	}
 
 	private Report copyReportWithoutPermissions(Report sourceReport) {
@@ -68,14 +55,6 @@ public class ReportDynamicModel {
 		newReport.setParameters(sourceReport.getParameters());
 
 		return newReport;
-	}
-
-	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
-		Database db = new Database();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
-
-		return rows;
 	}
 
 	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable) {
