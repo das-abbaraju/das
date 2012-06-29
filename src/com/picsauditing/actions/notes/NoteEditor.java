@@ -168,7 +168,7 @@ public class NoteEditor extends AccountActionSupport {
 	// ///////////////////////////
 
 	public List<Account> getFacilities() {
-		List<Account> facilities = accountDAO.findViewableOperators(permissions, false);
+		List<Account> facilities = accountDAO.findNoteRestrictionOperators(permissions);
 		return facilities;
 	}
 
