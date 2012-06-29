@@ -7,17 +7,19 @@ import java.util.List;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
+//import com.picsauditing.util.SpringUtils;
 
 public class ReportAccess {
 
-	private static final BasicDAO basicDao = SpringUtils.getBean("BasicDAO");
+	@Autowired
+	private static BasicDAO basicDao; /*= SpringUtils.getBean("BasicDAO");*/
 
 	private static final List<Integer> baseReports =
 			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
@@ -49,7 +51,7 @@ public class ReportAccess {
 		if (reportUser == null)
 			return false;
 
-		if (reportUser.isEditable())
+		if (reportUser.canEditReport())
 			return true;
 
 		return false;

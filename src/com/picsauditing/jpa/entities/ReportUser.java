@@ -47,7 +47,7 @@ public class ReportUser extends BaseTable {
 	}
 
 	@Column(name = "is_editable", nullable = false)
-	public boolean isEditable() {
+	public boolean canEditReport() {
 		return isEditable;
 	}
 
