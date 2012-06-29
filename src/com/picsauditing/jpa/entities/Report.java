@@ -11,11 +11,11 @@ import org.jboss.util.Strings;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
+import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.business.DynamicReportUtil;
 
 @SuppressWarnings("serial")
 @Entity
@@ -98,6 +98,8 @@ public class Report extends BaseTable {
 
 	@Transient
 	public Definition getDefinition() {
+		if (definition == null)
+			definition = new Definition(getParameters());
 		return definition;
 	}
 

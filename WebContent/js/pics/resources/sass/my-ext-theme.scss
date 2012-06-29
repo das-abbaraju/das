@@ -65,7 +65,6 @@ $include-default-uis: true !default;
 
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
-@include extjs-boundlist;
 @include extjs-btn-group;
 @include extjs-datepicker;
 @include extjs-grid;

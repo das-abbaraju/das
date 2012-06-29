@@ -170,7 +170,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Override
 	public String toString() {
-		return english;
+		return Strings.isEmpty(english) ? isoCode : english;
 	}
 
 	@Transient

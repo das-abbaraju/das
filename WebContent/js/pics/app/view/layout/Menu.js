@@ -77,12 +77,10 @@ Ext.define('PICS.view.layout.Menu', {
     },
 
     addSearchBox: function (menu_items) {
-        menu_items.push({
-            xtype: 'textfield',
-            name: 'searchTerm',
-            // TODO pass in translated 'enter search term'
-            emptyText: 'enter search term',
+        var search_box = Ext.create('PICS.view.layout.SearchBox', {
         });
+
+        menu_items.push(search_box);
     },
 
     addSeparator: function (menu_items) {
@@ -90,13 +88,13 @@ Ext.define('PICS.view.layout.Menu', {
             xtype: 'tbseparator',
             border: 1,
             height: 70,
-            margin: '0px 0px 0px 20px'
+            margin: '0px 0px 0px 15px'
         });
     },
 
     addUserMenu: function (user_menu, menu_items) {
-        user_menu.padding = '0px 20px';
-        user_menu.text += ' <i class="icon-cog icon-large"></i>';
+        user_menu.padding = '0px 15px';
+        user_menu.text += '<i class="icon-cog icon-large"></i>';
 
         menu_items.push(user_menu);
     },

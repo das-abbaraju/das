@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -100,7 +101,7 @@ public class Registration extends ContractorActionSupport {
 
 					user = new User();
 					user.setName(crr.getContact());
-					user.setEmail(crr.getEmail().trim());
+					user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
 					user.setPhone(crr.getPhone());
 				} else {
 					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
@@ -125,7 +126,7 @@ public class Registration extends ContractorActionSupport {
 		setupContractorData();
 		contractorAccountDao.save(contractor);
 		if (user.getEmail().length()>0)
-			user.setEmail(user.getEmail().trim());
+			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
 		userDAO.save(user);
 
 		// requires id for user to exist to seed the password properly

@@ -2,7 +2,9 @@ package com.picsauditing;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
@@ -25,6 +27,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -40,7 +43,9 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
 public class EntityFactory {
 
 	static private int counter = 1;
-
+	static private HashMap<String,Country> countries;
+	static private Map<String,State> states;
+	
 	static public TranslatableString makeTranslatableString(String value) {
 		TranslatableString string = new TranslatableString();
 		string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
@@ -83,11 +88,68 @@ public class EntityFactory {
 		contractor.setName("Contractor Unit Test");
 		contractor.setSafetyRisk(LowMedHigh.Med);
 		contractor.setProductRisk(LowMedHigh.Med);
-		contractor.setCountry(new Country("US"));
+		contractor.setCountry(mostCommonCountries().get("US"));
 		contractor.setOnsiteServices(true);
 		contractor.setZip("99999");
 		contractor.setAccountLevel(AccountLevel.Full);
 		return contractor;
+	}
+
+	public static Map<String,Country> mostCommonCountries(){
+		if (countries != null && countries.size() >0 ) {
+			return countries;
+		}
+		countries = new HashMap();
+		countries.put("US",makeCountry("US","United States"));
+		countries.put("FR",makeCountry("FR","France"));
+		countries.put("AE",makeCountry("AE","United Arab Emmerits"));
+		countries.put("GB",makeCountry("GB","United Kingdom"));
+		countries.put("CA",makeCountry("CA","Canada"));
+		countries.put("MX",makeCountry("MX","Mexico"));
+		return countries;
+	}
+
+	public static Map<String,State> someExampleStates(){
+		if (states != null && states.size() >0 ) {
+			return states;
+		}
+		states = new HashMap();
+		
+		Country unitedStates = mostCommonCountries().get("US");
+		states.put("CA",makeState("CA",unitedStates,"California"));
+		states.put("TX",makeState("TX",unitedStates,"Texas"));
+
+		Country canada = mostCommonCountries().get("CA");
+		states.put("AB",makeState("AB",canada,"Alberta"));
+		states.put("BC",makeState("BC",canada,"British Columbia"));
+		
+		Country unitedKingdom = mostCommonCountries().get("GB");
+		states.put("BU",makeState("BU",unitedKingdom,"Buckinghamshire"));
+		states.put("YK",makeState("YK",unitedKingdom,"Yorkshire"));
+		
+		return states;
+	}
+
+	public static State makeState(String isoCode, Country country, String englishName) {
+		State state = new State(isoCode);
+		state.setCountry(country);
+		state.setEnglish(englishName);
+		state.setName(makeEnglishString(isoCode, englishName));
+		return state;
+	}
+
+	public static Country makeCountry(String isoCode, String englishName) {
+		Country country = new Country(isoCode);
+		country.setEnglish(englishName);
+		country.setName(makeEnglishString(isoCode, englishName));
+		return country;
+	}
+
+	public static TranslatableString makeEnglishString(String keyCode, String englishText) {
+		TranslatableString translatableString = new TranslatableString();
+		translatableString.setKey(keyCode);
+		translatableString.putTranslation("en", englishText, true);
+		return translatableString;
 	}
 
 	static public ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {

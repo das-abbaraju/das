@@ -1,4 +1,4 @@
-package com.picsauditing.util.business;
+package com.picsauditing.report.access;
 
 
 import org.junit.Before;

@@ -687,7 +687,7 @@ public class AuditDataSave extends AuditActionSupport {
 				if (answer.length()==10)
 					newDate = s.parse(answer);
 				else
-					newDate = DateBean.parseDate(answer);
+					newDate = restructureNewDate(answer);
 			} catch (ParseException e) {
 				try {
 					SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -717,6 +717,10 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
+	}
+
+	public static Date restructureNewDate(String answer) {
+		return DateBean.parseDate(answer);
 	}
 
 	public static String trimWhitespaceLeadingZerosAndAllCommas(String answer) {
