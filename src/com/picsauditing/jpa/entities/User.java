@@ -38,6 +38,7 @@ import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -134,7 +135,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		this.username = u.getUsername();
 		this.isGroup = u.getIsGroup();
-		this.email = u.getEmail().trim();
+		this.email = EmailAddressUtils.validate(u.getEmail());
 		this.emailConfirmedDate = u.getEmailConfirmedDate();
 		this.name = u.getName();
 		this.isActive = u.getIsActive();

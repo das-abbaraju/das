@@ -343,7 +343,7 @@ public class Strings {
 
 		return input.replaceAll("<", "").replaceAll(">", "");
 	}
-
+	@Deprecated
 	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
 		Set<String> validEmail = new HashSet<String>();
 
@@ -364,7 +364,7 @@ public class Strings {
 			return input;
 		return input.substring(0, maxlength - 3) + "...";
 	}
-
+	@Deprecated
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
 		if (Strings.isEmpty(email) || email.trim().contains(" "))
