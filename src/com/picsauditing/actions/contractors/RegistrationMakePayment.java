@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
+import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -62,6 +63,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private ContractorValidator contractorValidator;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -138,7 +141,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return BLANK;
 
 		Invoice invoice = getInvoice();
-
+		
+		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
+		
 		auditBuilder.buildAudits(contractor);
 		this.resetActiveAudits();
 
