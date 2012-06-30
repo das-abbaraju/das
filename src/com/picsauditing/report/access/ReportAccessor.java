@@ -34,8 +34,8 @@ public class ReportAccessor implements ReportAdministration {
 		if (baseReports.contains(reportId))
 			return true;
 
-		List<ReportUser> reportUserList = basicDao.findWhere(ReportUser.class, "t.user.id = "
-				+ userId + " AND t.report.id = " + reportId);
+		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
+		List<ReportUser> reportUserList = basicDao.findWhere(ReportUser.class, query);
 
 		if (!CollectionUtils.isEmpty(reportUserList))
 			return true;
@@ -44,9 +44,8 @@ public class ReportAccessor implements ReportAdministration {
 	}
 
 	public boolean canUserEdit(int userId, Report report) {
-		if (basicDao == null) System.out.println("Is null, fucktard.");
-		ReportUser reportUser = basicDao.findOne(ReportUser.class, "t.user.id = "
-				+ userId + " AND t.report.id = " + report.getId());
+		String query = "t.user.id = " + userId + " AND t.report.id = " + report.getId();
+		ReportUser reportUser = basicDao.findOne(ReportUser.class, query);
 
 		if (reportUser == null)
 			return false;
@@ -66,34 +65,40 @@ public class ReportAccessor implements ReportAdministration {
 
 	public void connectReportToUser(Report report, User user) {
 		ReportUser entry = new ReportUser();
+
 		entry.setAuditColumns(user);
 		entry.setReport(report);
 		entry.setUser(report.getCreatedBy());
 		entry.setEditable(false);
+
 		basicDao.save(entry);
 	}
 
 	public void grantPermissionToEdit(Report report, User user) {
-		editReportEditPermissions(report, user, true);
+		setReportEditPermissions(report, user, true);
 	}
 
 	public void revokePermissionToEdit(Report report, User user) {
-		editReportEditPermissions(report, user, false);
+		setReportEditPermissions(report, user, false);
 	}
 
-	private void editReportEditPermissions(Report report, User user, boolean value) {
-		List<ReportUser> entries = basicDao.findWhere(ReportUser.class, "t.user.id = " + user.getId() + " AND t.report.id = " + report.getId());
+	private void setReportEditPermissions(Report report, User user, boolean value) {
+		String query = "t.user.id = " + user.getId() + " AND t.report.id = " + report.getId();
+		List<ReportUser> entries = basicDao.findWhere(ReportUser.class, query);
 
-		if (CollectionUtils.isEmpty(entries) || entries.size() > 1) return;
+		if (CollectionUtils.isEmpty(entries) || entries.size() > 1)
+			return;
 
 		ReportUser entry = entries.get(0);
 		entry.setEditable(value);
+
 		basicDao.save(entry);
 	}
 
 	public void saveReport(Report report, User user) throws ReportValidationException {
 		DynamicReportUtil.validate(report);
 		report.setAuditColumns(user);
+
 		basicDao.save(report);
 	}
 

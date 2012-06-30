@@ -9,15 +9,29 @@ Ext.define('PICS.view.layout.SearchBox', {
     hideTrigger: true,
 
     listConfig: {
+        id: 'site_menu_search_list',
         // TODO get the translated version
         loadingText: 'Searching...',
         maxHeight: 500,
 
-        // Custom rendering template for each item
-        getInnerTpl: function() {
-            return '<div style="float: left; margin 20px;" class="menu-list-left">{type}:<br />(ID {id})</div>' +
-                   '<div style="" class="menu-list-right">{name}<br />at ({at})';
-        }
+        tpl: Ext.create('Ext.XTemplate',
+            '<ul>',
+                '<tpl for=".">',
+                    '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
+                        '<div class="search-item">',
+                            '<div>',
+                                '<span class="type"><em>{type}</em></span>',
+                                '<span class="name">{name}</span>',
+                            '</div>',
+                            '<div>',
+                                '<span class="id">(ID {id})</span>',
+                                '<span class="company">at {at}</span>',
+                            '</div>',
+                        '</div>',
+                    '</li>',
+                '</tpl>',
+            '</ul>'
+        ),
     },
 
     listeners: {

@@ -8,7 +8,7 @@ import com.picsauditing.jpa.entities.User;
 
 public interface ReportAdministration {
 
-	public  boolean canUserViewAndCopy(int userId, Report report);
+	public boolean canUserViewAndCopy(int userId, Report report);
 
 	public boolean canUserViewAndCopy(int userId, int reportId);
 
