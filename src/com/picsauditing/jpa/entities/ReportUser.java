@@ -47,12 +47,12 @@ public class ReportUser extends BaseTable {
 	}
 
 	@Column(name = "is_editable", nullable = false)
-	public boolean canEditReport() {
+	public boolean isEditable() {
 		return isEditable;
 	}
 
-	public void setEditable(boolean canEdit) {
-		this.isEditable = canEdit;
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
 	}
 
 	@Column(name = "is_favorite", nullable = false)
@@ -60,7 +60,7 @@ public class ReportUser extends BaseTable {
 		return isFavorite;
 	}
 
-	public void setFavorite(boolean favorite) {
-		this.isFavorite = favorite;
+	public void setFavorite(boolean isFavorite) {
+		this.isFavorite = isFavorite;
 	}
 }

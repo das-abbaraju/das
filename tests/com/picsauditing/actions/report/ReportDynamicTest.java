@@ -45,16 +45,11 @@ public class ReportDynamicTest {
 	private Report report;
 	private Map<String, Object> session;
 
-	@Mock
-	private Permissions permissions;
-	@Mock
-	private ReportDynamicModel reportDynamicModel;
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private ActionContext actionContext;
-	@Mock
-	private ReportAdministration reportAccess;
+	@Mock private Permissions permissions;
+	@Mock private ReportDynamicModel reportDynamicModel;
+	@Mock private HttpServletRequest request;
+	@Mock private ActionContext actionContext;
+	@Mock private ReportAdministration reportAccess;
 
 	// PowerMocked in setUp
 	private Logger logger;
@@ -112,7 +107,7 @@ public class ReportDynamicTest {
 
 	@Test
 	public void testExecute_NullReportUserDoesNotHavePermissionToViewAndCopy() throws Exception {
-		when(reportAccess.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
+		when(reportDynamicModel.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
 		reportDynamic.setReport(null);
 
 		String strutsResult = reportDynamic.execute();
@@ -120,7 +115,6 @@ public class ReportDynamicTest {
 		assertEquals(ReportDynamic.REDIRECT, strutsResult);
 		assertThat((String)session.get("errorMessage"), is("You do not have permissions to view that report."));
 	}
-
 
 	@Test
 	public void testData_XXX() throws Exception {
