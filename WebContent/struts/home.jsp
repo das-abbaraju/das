@@ -44,6 +44,7 @@
     <s:iterator value="columns">
     	<div class="column" id="column<s:property value="key"/>" style="width: <s:property value="columnWidth"/>%">
     		<s:iterator value="value">
+    			<s:if test="widgetID !=19 || permissions.approvesRelationships" >
     			<s:if test="widgetID != 11 || !permissions.insuranceOnlyContractorUser">
     				<div class="panel_placeholder" id="panel<s:property value="widgetID"/>_holder">
         				<div class="panel" id="panel<s:property value="widgetID"/>">
@@ -70,6 +71,7 @@
             				</div>
         				</div>
     				</div>
+    			</s:if>
     			</s:if>
     		</s:iterator>
     	</div>
