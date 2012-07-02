@@ -177,34 +177,36 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		saveAnswers();
 		loadAnswers();
+		calculateRiskLevels();
+		setListOnly();
+		contractor.syncBalance();
+		billingService.calculateAnnualFees(contractor);
+		contractorAccountDao.save(contractor);
 
-		Collection<AuditData> auditList = answerMap.values();
-		// Calculated assessments
-		LowMedHigh safety = LowMedHigh.Low;
-		LowMedHigh product = LowMedHigh.Low;
-		// Self assessments
-		LowMedHigh conSafety = LowMedHigh.Low;
-		LowMedHigh conProduct = LowMedHigh.Low;
-		LowMedHigh conProductSafety = LowMedHigh.Low;
-
-		for (AuditData auditData : auditList) {
-			AuditQuestion q = auditData.getQuestion();
-			if (q.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) {
-				AuditData aData = answerMap.get(q.getId());
-				safety = getRiskLevel(aData, safety);
-
-				if (q.getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT)
-					conSafety = getRiskLevel(aData, conSafety);
-			} else if (q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_EVAL) {
-				AuditData aData = answerMap.get(q.getId());
-				product = getRiskLevel(aData, product);
-
-				if (q.getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT)
-					conProductSafety = getRiskLevel(aData, conProductSafety);
-				if (q.getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT)
-					conProduct = getRiskLevel(aData, conProduct);
-			}
+		// Free accounts should just be activated
+		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated()) {
+			contractor.setStatus(AccountStatus.Active);
+			contractor.setAuditColumns(permissions);
+			contractor.setMembershipDate(new Date());
+			if (contractor.getBalance() == null)
+				contractor.setBalance(BigDecimal.ZERO);
+			contractorAccountDao.save(contractor);
 		}
+
+		return setUrlForRedirect(getRegistrationStep().getUrl());
+	}
+
+	private void calculateRiskLevels() {
+		Collection<AuditData> auditList = answerMap.values();
+		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
+		Map<String, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
+		
+		// Calculated assessments
+		LowMedHigh safety = highestRisks.get(ServiceRiskCalculator.SAFETY);
+		LowMedHigh product = highestRisks.get(ServiceRiskCalculator.PRODUCT);
+		// Self assessments
+		LowMedHigh conSafety = highestRisks.get(ServiceRiskCalculator.SELF_SAFETY);
+		LowMedHigh conProduct = highestRisks.get(ServiceRiskCalculator.SELF_PRODUCT);
 
 		boolean isSafetyOK = true;
 		boolean isProductOK = true;
@@ -213,7 +215,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		if (!contractor.isMaterialSupplierOnly())
 			isSafetyOK = conSafety.ordinal() >= safety.ordinal();
 		if (contractor.isMaterialSupplier())
-			isProductOK = conProductSafety.ordinal() >= product.ordinal();
+			isProductOK = conProduct.ordinal() >= product.ordinal();
 
 		if (!contractor.isMaterialSupplierOnly())
 			contractor.setSafetyRisk(safety);
@@ -236,32 +238,12 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			if (safety.ordinal() > conSafety.ordinal() && !contractor.isMaterialSupplierOnly())
 				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safety));
 			if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.BusinessEvaluation",
-						productAssessment));
-			if (product.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
 				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
 						productAssessment));
 
 			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
 					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
 		}
-
-		setListOnly();
-		contractor.syncBalance();
-		billingService.calculateAnnualFees(contractor);
-		contractorAccountDao.save(contractor);
-
-		// Free accounts should just be activated
-		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated()) {
-			contractor.setStatus(AccountStatus.Active);
-			contractor.setAuditColumns(permissions);
-			contractor.setMembershipDate(new Date());
-			if (contractor.getBalance() == null)
-				contractor.setBalance(BigDecimal.ZERO);
-			contractorAccountDao.save(contractor);
-		}
-
-		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
 
 	private void setListOnly() {
@@ -399,74 +381,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		if (oRiskLevel.compareTo(qRiskLevel) < 0)
 			return qRiskLevel;
 		return oRiskLevel;
-	}
-
-	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
-		if (auditData != null && !Strings.isEmpty(auditData.getAnswer())
-				&& !auditData.getAnswer().equals(riskLevel.toString())) {
-			switch (auditData.getQuestion().getId()) {
-			case 2442:
-			case 2445:
-				// Question : Does your company perform mechanical services
-				// OR Services conducted at heights greater than six feet?
-				if (auditData.getAnswer().equals("Yes"))
-					return LowMedHigh.High;
-				break;
-			case 3793:
-				// Question : Does your company perform mechanical services that
-				// require the use of hand/power tools?
-				if (auditData.getAnswer().equals("Yes"))
-					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
-				break;
-			case 2443:
-				// Question : Does your company perform all services from only
-				// an office?
-				if (auditData.getAnswer().equals("No"))
-					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
-				break;
-			case AuditQuestion.RISK_LEVEL_ASSESSMENT:
-			case AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT:
-			case AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT:
-				// Question : What risk level do you believe your company should
-				// be rated?
-				if (auditData.getAnswer().equals("Medium"))
-					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
-				if (auditData.getAnswer().equals("High"))
-					return LowMedHigh.High;
-				break;
-			case 7660:
-			case 7661:
-			case 9879:
-				// Product Critical Assessment
-				// 7660: Can failures in your products result in a work stoppage
-				// or major business interruption for your
-				// customer?
-				// 7661: If you fail to deliver your products on-time, can it
-				// result in a work stoppage or major
-				// business interruption for your customer?
-				// 9789: Are any of your products utilized within the critical
-				// processes
-				// of the facility? i.e. valves, pipes, cranes, chemicals, etc.
-				if (auditData.getAnswer().equals("Yes"))
-					return LowMedHigh.High;
-				break;
-			case 7662:
-				// Product Safety Critical
-				// Can failures in your products result in bodily injury or
-				// illness to your customer or end-user?
-				if (auditData.getAnswer().equals("Yes"))
-					return LowMedHigh.High;
-				break;
-			case 7663:
-				// Are you required to carry Product Liability Insurance?
-				if (auditData.getAnswer().equals("Medium"))
-					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
-				if (auditData.getAnswer().equals("High"))
-					return LowMedHigh.High;
-				break;
-			}
-		}
-		return riskLevel;
 	}
 
 	/**

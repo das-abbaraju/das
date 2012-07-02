@@ -125,10 +125,10 @@ public class ServiceRiskCalculatorTest {
 		List<AuditData> mixedLowRisk = createSafetyAuditDataAnswersMixedLowRisk();
 		List<AuditData> mixedHighRisk = createSafetyAuditDataAnswersMixedHighRisk();
 
-		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getHighestRiskLevel(yesToEverything));
-		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getHighestRiskLevel(noToEverything));
-		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getHighestRiskLevel(mixedLowRisk));
-		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getHighestRiskLevel(mixedHighRisk));
+		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getHighestRiskLevel(yesToEverything).get(ServiceRiskCalculator.SAFETY));
+		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getHighestRiskLevel(noToEverything).get(ServiceRiskCalculator.SAFETY));
+		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getHighestRiskLevel(mixedLowRisk).get(ServiceRiskCalculator.SAFETY));
+		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getHighestRiskLevel(mixedHighRisk).get(ServiceRiskCalculator.SAFETY));
 	}
 
 	private List<AuditData> createSafetyAuditDataAllAnswersYes() {
