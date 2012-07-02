@@ -144,7 +144,9 @@
   -webkit-box-sizing: border-box; }
 
 /* line 13, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend, .x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
+.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3,
+.x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend,
+.x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
   margin: 0;
   padding: 0; }
 /* line 18, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
@@ -155,7 +157,8 @@
 .x-reset fieldset, .x-reset img {
   border: 0; }
 /* line 28, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset address, .x-reset caption, .x-reset cite, .x-reset code, .x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
+.x-reset address, .x-reset caption, .x-reset cite, .x-reset code,
+.x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
   font-style: normal;
   font-weight: normal; }
 /* line 33, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
@@ -168,7 +171,8 @@
 .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6 {
   font-size: 100%; }
 /* line 46, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset q:before, .x-reset q:after {
+.x-reset q:before,
+.x-reset q:after {
   content: ""; }
 /* line 50, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
 .x-reset abbr, .x-reset acronym {
@@ -559,7 +563,7 @@ tr.x-container:before {
  * W3C Suggested Default style sheet for HTML 4
  * http://www.w3.org/TR/CSS21/sample.html
  */
-/* line 30, ../themes/stylesheets/ext4/default/_all.scss */
+/* line 30, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/_all.scss */
 .x-reset {
   /*IE rounding error*/
   /**
@@ -1375,7 +1379,32 @@ tr.x-container:before {
   .x-reset .x-html {
     /* Begin bidirectionality settings (do not change) */ }
     /* line 32, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html html, .x-reset .x-html address, .x-reset .x-html blockquote, .x-reset .x-html body, .x-reset .x-html dd, .x-reset .x-html div, .x-reset .x-html dl, .x-reset .x-html dt, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html frame, .x-reset .x-html frameset, .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html noframes, .x-reset .x-html ol, .x-reset .x-html p, .x-reset .x-html ul, .x-reset .x-html center, .x-reset .x-html dir, .x-reset .x-html hr, .x-reset .x-html menu, .x-reset .x-html pre {
+    .x-reset .x-html html,
+    .x-reset .x-html address,
+    .x-reset .x-html blockquote,
+    .x-reset .x-html body,
+    .x-reset .x-html dd,
+    .x-reset .x-html div,
+    .x-reset .x-html dl,
+    .x-reset .x-html dt,
+    .x-reset .x-html fieldset,
+    .x-reset .x-html form,
+    .x-reset .x-html frame, .x-reset .x-html frameset,
+    .x-reset .x-html h1,
+    .x-reset .x-html h2,
+    .x-reset .x-html h3,
+    .x-reset .x-html h4,
+    .x-reset .x-html h5,
+    .x-reset .x-html h6,
+    .x-reset .x-html noframes,
+    .x-reset .x-html ol,
+    .x-reset .x-html p,
+    .x-reset .x-html ul,
+    .x-reset .x-html center,
+    .x-reset .x-html dir,
+    .x-reset .x-html hr,
+    .x-reset .x-html menu,
+    .x-reset .x-html pre {
       display: block; }
     /* line 33, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html li {
@@ -1406,7 +1435,8 @@ tr.x-container:before {
     .x-reset .x-html colgroup {
       display: table-column-group; }
     /* line 43, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td, .x-reset .x-html th {
+    .x-reset .x-html td,
+    .x-reset .x-html th {
       display: table-cell; }
     /* line 44, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html caption {
@@ -1434,7 +1464,16 @@ tr.x-container:before {
       font-size: 1.17em;
       margin: .83em 0; }
     /* line 60, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h4, .x-reset .x-html p, .x-reset .x-html blockquote, .x-reset .x-html ul, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html ol, .x-reset .x-html dl, .x-reset .x-html dir, .x-reset .x-html menu {
+    .x-reset .x-html h4,
+    .x-reset .x-html p,
+    .x-reset .x-html blockquote,
+    .x-reset .x-html ul,
+    .x-reset .x-html fieldset,
+    .x-reset .x-html form,
+    .x-reset .x-html ol,
+    .x-reset .x-html dl,
+    .x-reset .x-html dir,
+    .x-reset .x-html menu {
       margin: 1.12em 0; }
     /* line 61, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html h5 {
@@ -1445,29 +1484,49 @@ tr.x-container:before {
       font-size: .75em;
       margin: 1.67em 0; }
     /* line 70, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html b, .x-reset .x-html strong {
+    .x-reset .x-html h1,
+    .x-reset .x-html h2,
+    .x-reset .x-html h3,
+    .x-reset .x-html h4,
+    .x-reset .x-html h5,
+    .x-reset .x-html h6,
+    .x-reset .x-html b,
+    .x-reset .x-html strong {
       font-weight: bolder; }
     /* line 71, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html blockquote {
       margin-left: 40px;
       margin-right: 40px; }
     /* line 76, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html i, .x-reset .x-html cite, .x-reset .x-html em, .x-reset .x-html var, .x-reset .x-html address {
+    .x-reset .x-html i,
+    .x-reset .x-html cite,
+    .x-reset .x-html em,
+    .x-reset .x-html var,
+    .x-reset .x-html address {
       font-style: italic; }
     /* line 81, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html pre, .x-reset .x-html tt, .x-reset .x-html code, .x-reset .x-html kbd, .x-reset .x-html samp {
+    .x-reset .x-html pre,
+    .x-reset .x-html tt,
+    .x-reset .x-html code,
+    .x-reset .x-html kbd,
+    .x-reset .x-html samp {
       font-family: monospace; }
     /* line 82, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html pre {
       white-space: pre; }
     /* line 86, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html button, .x-reset .x-html textarea, .x-reset .x-html input, .x-reset .x-html select {
+    .x-reset .x-html button,
+    .x-reset .x-html textarea,
+    .x-reset .x-html input,
+    .x-reset .x-html select {
       display: inline-block; }
     /* line 87, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html big {
       font-size: 1.17em; }
     /* line 90, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html small, .x-reset .x-html sub, .x-reset .x-html sup {
+    .x-reset .x-html small,
+    .x-reset .x-html sub,
+    .x-reset .x-html sup {
       font-size: .83em; }
     /* line 91, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html sub {
@@ -1479,19 +1538,28 @@ tr.x-container:before {
     .x-reset .x-html table {
       border-spacing: 2px; }
     /* line 96, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html thead, .x-reset .x-html tbody, .x-reset .x-html tfoot {
+    .x-reset .x-html thead,
+    .x-reset .x-html tbody,
+    .x-reset .x-html tfoot {
       vertical-align: middle; }
     /* line 98, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td, .x-reset .x-html th {
+    .x-reset .x-html td,
+    .x-reset .x-html th {
       vertical-align: inherit; }
     /* line 101, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html s, .x-reset .x-html strike, .x-reset .x-html del {
+    .x-reset .x-html s,
+    .x-reset .x-html strike,
+    .x-reset .x-html del {
       text-decoration: line-through; }
     /* line 102, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html hr {
       border: 1px inset; }
     /* line 107, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol, .x-reset .x-html ul, .x-reset .x-html dir, .x-reset .x-html menu, .x-reset .x-html dd {
+    .x-reset .x-html ol,
+    .x-reset .x-html ul,
+    .x-reset .x-html dir,
+    .x-reset .x-html menu,
+    .x-reset .x-html dd {
       margin-left: 40px; }
     /* line 108, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html ul, .x-reset .x-html menu, .x-reset .x-html dir {
@@ -1500,11 +1568,15 @@ tr.x-container:before {
     .x-reset .x-html ol {
       list-style-type: decimal; }
     /* line 113, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol ul, .x-reset .x-html ul ol, .x-reset .x-html ul ul, .x-reset .x-html ol ol {
+    .x-reset .x-html ol ul,
+    .x-reset .x-html ul ol,
+    .x-reset .x-html ul ul,
+    .x-reset .x-html ol ol {
       margin-top: 0;
       margin-bottom: 0; }
     /* line 115, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html u, .x-reset .x-html ins {
+    .x-reset .x-html u,
+    .x-reset .x-html ins {
       text-decoration: underline; }
     /* line 116, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html br:before {
@@ -1937,7 +2009,8 @@ tr.x-container:before {
   line-height: 16px; }
 
 /* line 661, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon button, .x-btn-default-small-icon a {
+.x-btn-default-small-icon button,
+.x-btn-default-small-icon a {
   padding: 0; }
 /* line 665, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon .x-btn-inner {
@@ -1954,7 +2027,8 @@ tr.x-container:before {
   right: 0; }
 
 /* line 683, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-left button, .x-btn-default-small-icon-text-left a {
+.x-btn-default-small-icon-text-left button,
+.x-btn-default-small-icon-text-left a {
   height: 16px; }
 /* line 686, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-left .x-btn-inner {
@@ -1974,7 +2048,8 @@ tr.x-container:before {
     height: 16px; }
 
 /* line 709, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-right button, .x-btn-default-small-icon-text-right a {
+.x-btn-default-small-icon-text-right button,
+.x-btn-default-small-icon-text-right a {
   height: 16px; }
 /* line 712, /Users/mike/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-right .x-btn-inner {
@@ -5284,7 +5359,7 @@ textarea.x-form-invalid-field {
  * Start Custom
  * Author: Carey Hinoki
  */
-/* line 18, ../sass/my-ext-theme/_menu.scss */
+/* line 21, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
   background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
@@ -5295,18 +5370,18 @@ textarea.x-form-invalid-field {
   -moz-box-shadow: #cccccc 0px 2px 2px 0px;
   box-shadow: #cccccc 0px 2px 2px 0px; }
 
-/* line 24, ../sass/my-ext-theme/_menu.scss */
+/* line 27, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-arrow {
   background: none;
   padding: 0px !important; }
 
-/* line 30, ../sass/my-ext-theme/_menu.scss */
+/* line 33, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
-/* line 39, ../sass/my-ext-theme/_menu.scss */
+/* line 42, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large-menu-active,
 #site_menu .x-btn-default-toolbar-large-over,
 #site_menu .x-btn-default-toolbar-large-pressed {
@@ -5324,18 +5399,18 @@ textarea.x-form-invalid-field {
   border-top: 1px solid #999999;
   border-bottom: 0px; }
 
-/* line 48, ../sass/my-ext-theme/_menu.scss */
+/* line 51, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
-/* line 56, ../sass/my-ext-theme/_menu.scss */
+/* line 59, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
 #site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
 #site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner {
   color: #c66603; }
 
-/* line 61, ../sass/my-ext-theme/_menu.scss */
+/* line 64, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-form-text {
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
@@ -5345,24 +5420,50 @@ textarea.x-form-invalid-field {
   height: 22px;
   padding: 12px 5px; }
 
-/* line 68, ../sass/my-ext-theme/_menu.scss */
+/* line 71, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu .x-toolbar-separator-horizontal {
   border-left-color: #e7e7e7;
   border-right-color: #fcfcfc; }
 
-/* line 74, ../sass/my-ext-theme/_menu.scss */
+/* line 77, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu #logo .x-btn-inner {
   padding: 0px 0px 0px 50px; }
 
-/* line 79, ../sass/my-ext-theme/_menu.scss */
+/* line 82, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu_search_list li.even {
+  background: #eeeeee; }
+
+/* line 87, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+#site_menu_search_list .search-item {
+  line-height: 15px;
+  overflow: hidden;
+  padding: 5px; }
+  /* line 93, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+  #site_menu_search_list .search-item div {
+    clear: both; }
+  /* line 98, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+  #site_menu_search_list .search-item em {
+    font-weight: bold; }
+  /* line 104, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+  #site_menu_search_list .search-item .type,
+  #site_menu_search_list .search-item .id {
+    float: left;
+    width: 85px; }
+  /* line 111, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
+  #site_menu_search_list .search-item .name,
+  #site_menu_search_list .search-item .company {
+    float: left;
+    width: 201px; }
+
+/* line 118, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 #site_menu #user_menu .icon-cog {
   margin: 0px 0px 0px 10px; }
 
-/* line 84, ../sass/my-ext-theme/_menu.scss */
+/* line 123, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 
-/* line 14, ../sass/my-ext-theme/_menus.scss */
+/* line 14, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .x-menu-body {
   border: 1px solid #dcdcdc;
   -webkit-border-radius: 5px;
@@ -5371,7 +5472,7 @@ textarea.x-form-invalid-field {
   -o-border-radius: 5px;
   border-radius: 5px; }
 
-/* line 20, ../sass/my-ext-theme/_menus.scss */
+/* line 20, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .menu-title {
   color: #999999;
   font-size: 11px;
@@ -5379,11 +5480,11 @@ textarea.x-form-invalid-field {
   padding: 8px 15px 4px 15px !important;
   text-transform: uppercase; }
 
-/* line 29, ../sass/my-ext-theme/_menus.scss */
+/* line 29, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .x-menu-item-text {
   font-size: 13px; }
 
-/* line 34, ../sass/my-ext-theme/_menus.scss */
+/* line 34, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .x-menu-item-active .x-menu-item-link {
   background: #a84d10;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10)) !important;
@@ -5398,7 +5499,7 @@ textarea.x-form-invalid-field {
   -o-border-radius: 0px !important;
   border-radius: 0px !important; }
 
-/* line 42, ../sass/my-ext-theme/_menus.scss */
+/* line 42, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .x-menu-item:first-child.x-menu-item-active .x-menu-item-link {
   -moz-border-radius-topleft: 3px !important;
   -webkit-border-top-left-radius: 3px !important;
@@ -5407,7 +5508,7 @@ textarea.x-form-invalid-field {
   -webkit-border-top-right-radius: 3px !important;
   border-top-right-radius: 3px !important; }
 
-/* line 48, ../sass/my-ext-theme/_menus.scss */
+/* line 48, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .x-menu-item:last-child.x-menu-item-active .x-menu-item-link {
   -moz-border-radius-bottomleft: 3px !important;
   -webkit-border-bottom-left-radius: 3px !important;
@@ -5416,6 +5517,6 @@ textarea.x-form-invalid-field {
   -webkit-border-bottom-right-radius: 3px !important;
   border-bottom-right-radius: 3px !important; }
 
-/* line 54, ../sass/my-ext-theme/_menus.scss */
+/* line 54, /Users/mike/git/PICSORG/WebContent/js/pics/resources/sass/my-ext-theme/_menus.scss */
 .x-menu-item-active .x-menu-item-link span {
   color: white; }

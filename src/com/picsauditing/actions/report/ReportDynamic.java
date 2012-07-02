@@ -45,6 +45,10 @@ public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
+	@Autowired
+	private ReportDynamicModel reportDynamicModel;
+	@Autowired
+	private ReportAdministration reportAccessor;
 
 	private static final boolean FOR_DOWNLOAD = true;
 
@@ -57,11 +61,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String fieldName = "";
 	private String searchQuery = "";
-
-	@Autowired
-	private ReportDynamicModel reportDynamicModel;
-	@Autowired
-	private ReportAdministration reportAccessor;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -77,7 +76,7 @@ public class ReportDynamic extends PicsActionSupport {
 				// Don't trust user input!
 				int reportId = Integer.parseInt(dirtyReportIdParameter);
 
-				if (!reportAccessor.canUserViewAndCopy(permissions.getUserId(), reportId)) {
+				if (!reportDynamicModel.canUserViewAndCopy(permissions.getUserId(), reportId)) {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
@@ -207,7 +206,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String getUserStatus() {
 		int userId = permissions.getUserId();
 
-		json.put("is_editable", reportAccessor.canUserEdit(userId, report));
+		json.put("is_editable", reportDynamicModel.canUserEdit(userId, report));
 
 		return JSON;
 	}

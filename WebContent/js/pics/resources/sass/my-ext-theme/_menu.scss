@@ -10,77 +10,116 @@ $site_menu_over_gradient_color_top: #eaeaea;
 $site_menu_over_gradient_color_bottom: #f1f1f2;
 $site_menu_over_text_color: #c66603;
 
+// site menu - search
+$site_menu_search_item_even_background_color: #eeeeee;
+
 // site menu - separator
 $site_menu_separator_border_color_left: #e7e7e7;
 $site_menu_separator_border_color_right: #fcfcfc;
 
 #site_menu
 {
-	@include background-image(linear-gradient($site_menu_gradient_color_top, $site_menu_gradient_color_bottom));
-	@include box-shadow($site_menu_box_shadow_color 0px 2px 2px 0px);
+    @include background-image(linear-gradient($site_menu_gradient_color_top, $site_menu_gradient_color_bottom));
+    @include box-shadow($site_menu_box_shadow_color 0px 2px 2px 0px);
 }
 
 #site_menu .x-btn-arrow
 {
-	background: none;
-	padding: 0px !important;
+    background: none;
+    padding: 0px !important;
 }
 
 #site_menu .x-btn-default-toolbar-large
 {
-	margin: 0px;
-	padding: 0px 10px;
-	top: 0px !important;
+    margin: 0px;
+    padding: 0px 10px;
+    top: 0px !important;
 }
 
 #site_menu .x-btn-default-toolbar-large-menu-active,
 #site_menu .x-btn-default-toolbar-large-over,
 #site_menu .x-btn-default-toolbar-large-pressed
 {
-	@include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
-	@include border-radius(0px);
-	border: 1px solid $site_menu_over_border_color;
-	border-top: 1px solid $site_menu_over_border_color_top;
-	border-bottom: 0px;
+    @include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
+    @include border-radius(0px);
+    border: 1px solid $site_menu_over_border_color;
+    border-top: 1px solid $site_menu_over_border_color_top;
+    border-bottom: 0px;
 }
 
 #site_menu .x-btn-default-toolbar-large .x-btn-inner
 {
-	color: $site_menu_text_color;
-	font-weight: bold;
+    color: $site_menu_text_color;
+    font-weight: bold;
 }
 
 #site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
 #site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
 #site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner
 {
-	color: $site_menu_over_text_color;
+    color: $site_menu_over_text_color;
 }
 
 #site_menu .x-form-text
 {
-	@include border-radius(12px);
-	height: 22px;
-	padding: 12px 5px;
+    @include border-radius(12px);
+    height: 22px;
+    padding: 12px 5px;
 }
 
 #site_menu .x-toolbar-separator-horizontal
 {
-	border-left-color: $site_menu_separator_border_color_left;
-	border-right-color: $site_menu_separator_border_color_right;
+    border-left-color: $site_menu_separator_border_color_left;
+    border-right-color: $site_menu_separator_border_color_right;
 }
 
 #site_menu #logo .x-btn-inner
 {
-	padding: 0px 0px 0px 50px;
+    padding: 0px 0px 0px 50px;
+}
+
+#site_menu_search_list li.even
+{
+    background: $site_menu_search_item_even_background_color;
+}
+
+#site_menu_search_list .search-item
+{
+    line-height: 15px;
+    overflow: hidden;
+    padding: 5px;
+
+    div
+    {
+        clear: both;
+    }
+
+    em
+    {
+        font-weight: bold;
+    }
+
+    .type,
+    .id
+    {
+        float: left;
+        width: 85px;
+    }
+
+    .name,
+    .company
+    {
+        float: left;
+        width: 201px;
+    }
 }
 
 #site_menu #user_menu .icon-cog
 {
-	margin: 0px 0px 0px 10px;
+    margin: 0px 0px 0px 10px;
 }
 
 .x-menu-overflow .icon-cog
 {
-	margin: 0px 0px 0px 5px;
+    margin: 0px 0px 0px 5px;
 }

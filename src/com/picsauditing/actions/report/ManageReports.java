@@ -19,6 +19,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.util.Strings;
 
@@ -28,7 +29,8 @@ public class ManageReports extends PicsActionSupport {
 	private static final String SAVED = "saved";
 	private static final String FAVORITE = "favorite";
 
-	@Autowired private ReportAdministration reportAccessor;
+	@Autowired
+	private ReportAdministration reportAccessor;
 	
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
 
@@ -108,7 +110,7 @@ public class ManageReports extends PicsActionSupport {
 	public String deleteReport() throws IOException  {
 		try {
 			Report report = reportAccessor.findReportById(reportId);
-			if (reportAccessor.canUserDelete(permissions.getUserId(), report)) {
+			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
 				reportAccessor.deleteReport(report);
 				addActionMessage("Your report has been deleted.");
 			} else {

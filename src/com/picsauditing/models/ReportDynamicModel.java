@@ -1,60 +1,100 @@
 package com.picsauditing.models;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 
+/**
+ * This is the business layer. It should not have any DAOs in it.
+ */
 public class ReportDynamicModel {
 
-	@Autowired private BasicDAO basicDao;
-	@Autowired private ReportAdministration reportAccessor;
+	@Autowired
+	private ReportAdministration reportAccessor;
+
+	private static final List<Integer> baseReports =
+			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
+
+	public boolean canUserViewAndCopy(int userId, Report report) {
+		if (report == null)
+			return false;
+
+		return canUserViewAndCopy(userId, report.getId());
+	}
+
+	public boolean canUserViewAndCopy(int userId, int reportId) {
+		if (baseReports.contains(reportId))
+			return true;
+
+		List<ReportUser> reportUserList = reportAccessor.queryReportUser(userId, reportId);
+
+		if (!CollectionUtils.isEmpty(reportUserList))
+			return true;
+
+		return false;
+	}
+
+	public boolean canUserEdit(int userId, Report report) {
+		List<ReportUser> reportUserList = reportAccessor.queryReportUser(userId, report.getId());
+
+		if (CollectionUtils.isEmpty(reportUserList))
+			return false;
+
+		if (reportUserList.get(0).isEditable())
+			return true;
+
+		return false;
+	}
+
+	// The only reason this method is static is because ManageReports calls it
+	// and doesn't have a ReportDynamicModel.
+	public static boolean canUserDelete(int userId, Report report) {
+		if (report.getCreatedBy().getId() == userId)
+			return true;
+
+		return false;
+	}
 
 	public Report copy(Report sourceReport, User user) throws NoRightsException, ReportValidationException {
-
 		// TODO Add i18n to this
-		if (!reportAccessor.canUserViewAndCopy(user.getId(), sourceReport))
+		if (!canUserViewAndCopy(user.getId(), sourceReport))
 			throw new NoRightsException("Invalid User, does not have permission.");
 
 		Report newReport = copyReportWithoutPermissions(sourceReport);
 
-		// TODO we're passing new report data in the current report, change sourceReport to it's old state, FIX THIS
-		basicDao.refresh(sourceReport);
+		// TODO the front end is passing new report data in the current report,
+		// so we need to change sourceReport to it's old state.
+		// Is this is the desired behavior?
+		reportAccessor.refresh(sourceReport);
 
 		reportAccessor.saveReport(newReport, user);
 		reportAccessor.connectReportToUser(newReport, user);
-		reportAccessor.grantPermissionToEdit(newReport, user);
+		reportAccessor.grantEditPermission(newReport, user);
 
 		return newReport;
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
 		// TODO Add i18n to this
-		if (!reportAccessor.canUserEdit(permissions.getUserId(), report))
+		if (!canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
 
 		reportAccessor.saveReport(report, new User(permissions.getUserId()));
-	}
-
-	private Report copyReportWithoutPermissions(Report sourceReport) {
-		Report newReport = new Report();
-		newReport.setModelType(sourceReport.getModelType());
-		newReport.setName(sourceReport.getName());
-		newReport.setDescription(sourceReport.getDescription());
-		newReport.setParameters(sourceReport.getParameters());
-
-		return newReport;
 	}
 
 	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable) {
@@ -65,6 +105,17 @@ public class ReportDynamicModel {
 		return availableFields;
 	}
 
+	private Report copyReportWithoutPermissions(Report sourceReport) {
+		Report newReport = new Report();
+
+		newReport.setModelType(sourceReport.getModelType());
+		newReport.setName(sourceReport.getName());
+		newReport.setDescription(sourceReport.getDescription());
+		newReport.setParameters(sourceReport.getParameters());
+
+		return newReport;
+	}
+
 	/**
 	 * This method is recursively building the available fields. It works like this
 	 * because the set of tables that comprise available fields for a model is a tree,
@@ -72,6 +123,7 @@ public class ReportDynamicModel {
 	 */
 	private static void addAllAvailableFields(Map<String, Field> availableFields, AbstractTable table) {
 		availableFields.putAll(table.getAvailableFields());
+
 		for (AbstractTable joinTable : table.getJoins()) {
 			addAllAvailableFields(availableFields, joinTable);
 		}

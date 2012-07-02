@@ -23,8 +23,13 @@
 </div>
 
 <section id="reports">
-    <h1>These reports will show in your Reports menu dropdown.</h1>
-    
+    <s:if test="viewType.equals('favorite')">
+        <h1>These reports will show in your Reports menu dropdown.</h1>
+    </s:if>
+    <s:if test="viewType.equals('saved')">
+        <h1>Edit and manage all of your reports.</h1>
+    </s:if>
+
     <ul id="report_list">
         <s:iterator value="userReports">
             <li>
@@ -36,14 +41,14 @@
                         <s:else>
                             <s:set name="icon_class">icon-star icon-large</s:set>
                         </s:else>
-                        
+
                         <i class="${icon_class}"></i>
                     </a>
-                    
+
                     <a class="name" href="ReportDynamic.action?report=<s:property value="report" />">
                         <s:property value="report.name" />
                     </a>
-        
+
                     <!-- TODO remove this hack after the MVP demo -->
                     <s:if test="report.id != 11 && report.id != 12">
                         <span class="created-by">Created by <s:property value="report.createdBy.name" /></span>
@@ -51,9 +56,9 @@
                     <s:else>
                         <span class="created-by">Created by PICS</span>
                     </s:else>
-                    
+
                     <s:if test="report.id != 11 && report.id != 12">
-                        <s:if test="%{@com.picsauditing.report.access.ReportAccess@canUserDelete(permissions.userId, report)}">
+                        <s:if test="%{@com.picsauditing.models.ReportDynamicModel@canUserDelete(permissions.userId, report)}">
                             <a class="delete" href="ManageReports!deleteReport.action?reportId=<s:property value="report.id" />">Delete</a>
                         </s:if>
                         <s:else>
