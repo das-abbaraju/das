@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -77,12 +76,12 @@ public class ReportDynamic extends PicsActionSupport {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
-			} catch (IOException ioe) {
-				// Can't happen
-				logger.error(ioe.getMessage());
 			} catch (NumberFormatException nfe) {
 				// Someone typed junk into the url
-				logger.error(nfe.getMessage());
+				logger.error(nfe.toString());
+			} catch (Exception e) {
+				// Probably a null pointer
+				logger.error(e.toString());
 			}
 		}
 
