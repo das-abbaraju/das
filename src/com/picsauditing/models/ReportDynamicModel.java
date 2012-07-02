@@ -15,7 +15,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.access.ReportAdministration;
+import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 
@@ -25,7 +25,7 @@ import com.picsauditing.report.tables.AbstractTable;
 public class ReportDynamicModel {
 
 	@Autowired
-	private ReportAdministration reportAccessor;
+	private ReportAccessor reportAccessor;
 
 	private static final List<Integer> baseReports =
 			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));

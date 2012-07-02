@@ -17,7 +17,7 @@ import com.picsauditing.jpa.entities.User;
  * This is the persistence layer. It is the only class that should contain a DAO.
  * It should also contain no business logic.
  */
-public class ReportAccessor implements ReportAdministration {
+public class ReportAccessor {
 
 	@Autowired
 	private BasicDAO basicDao;

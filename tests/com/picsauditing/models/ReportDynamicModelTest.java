@@ -15,13 +15,13 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.access.ReportAdministration;
+import com.picsauditing.report.access.ReportAccessor;
 
 public class ReportDynamicModelTest {
 
 	private ReportDynamicModel model;
 
-	@Mock private ReportAdministration reportAccessor;
+	@Mock private ReportAccessor reportAccessor;
 	@Mock private Report report;
 	@Mock private User user;
 

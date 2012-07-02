@@ -11,10 +11,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -33,7 +32,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.access.ReportAccessor;
-import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
@@ -41,6 +39,7 @@ import com.picsauditing.util.SpringUtils;
 @PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, DynamicReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
 public class ReportDynamicTest {
+
 	private ReportDynamic reportDynamic;
 	private Report report;
 	private Map<String, Object> session;
@@ -49,10 +48,16 @@ public class ReportDynamicTest {
 	@Mock private ReportDynamicModel reportDynamicModel;
 	@Mock private HttpServletRequest request;
 	@Mock private ActionContext actionContext;
-	@Mock private ReportAdministration reportAccess;
 
-	// PowerMocked in setUp
-	private Logger logger;
+	// PowerMocked in setUpBeforeClass
+	private static Logger logger;
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		logger = PowerMockito.mock(Logger.class);
+		PowerMockito.mockStatic(LoggerFactory.class);
+		PowerMockito.when(LoggerFactory.getLogger(ReportDynamic.class)).thenReturn(logger);
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -60,10 +65,6 @@ public class ReportDynamicTest {
 
 		PowerMockito.mockStatic(SpringUtils.class);
 		PowerMockito.mockStatic(ActionContext.class);
-
-		logger = PowerMockito.mock(Logger.class);
-		PowerMockito.mockStatic(LoggerFactory.class);
-		PowerMockito.when(LoggerFactory.getLogger(ReportDynamic.class)).thenReturn(logger);
 
 		when(request.getParameter("report")).thenReturn("123");
 		PowerMockito.mockStatic(ServletActionContext.class);
@@ -78,12 +79,23 @@ public class ReportDynamicTest {
 		reportDynamic = new ReportDynamic();
 		reportDynamic.setReport(report);
 		when(permissions.getUserId()).thenReturn(941);
-		Whitebox.setInternalState(reportDynamic, "reportAccessor", reportAccess);
 		Whitebox.setInternalState(reportDynamic, "permissions", permissions);
 		Whitebox.setInternalState(reportDynamic, "reportDynamicModel", reportDynamicModel);
 	}
 
-	@Ignore("Verifying logger is too hard for now")
+	@Test
+	public void testExecute_RedirectIfUserTypedJunkInUrl() throws Exception {
+		// If the url is something like report=JUNK_HERE, the report will always be null
+		reportDynamic.setReport(null);
+		String invalidReportId = "NOT_A_VALID_REPORT_ID";
+		when(request.getParameter("report")).thenReturn(invalidReportId);
+
+		String strutsResult = reportDynamic.execute();
+
+		assertEquals(ReportDynamic.REDIRECT, strutsResult);
+		verify(logger).error("java.lang.NumberFormatException: For input string: \"" + invalidReportId + "\"");
+	}
+
 	@Test
 	public void testExecute_NullReportServletActionContextThrowsException() throws Exception {
 		PowerMockito.doThrow(new RuntimeException("test exception")).when(ServletActionContext.class);
@@ -93,7 +105,7 @@ public class ReportDynamicTest {
 		String strutsResult = reportDynamic.execute();
 
 		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-		verify(logger).error("test exception");
+		verify(logger).error("java.lang.RuntimeException: test exception");
 	}
 
 	@Test
@@ -117,7 +129,7 @@ public class ReportDynamicTest {
 	}
 
 	@Test
-	public void testData_XXX() throws Exception {
+	public void testData_JsonResult() throws Exception {
 		report.setModelType(ModelType.Contractors);
 
 		String strutsResult = reportDynamic.data();

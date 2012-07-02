@@ -20,7 +20,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.models.ReportDynamicModel;
-import com.picsauditing.report.access.ReportAdministration;
+import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -30,8 +30,8 @@ public class ManageReports extends PicsActionSupport {
 	private static final String FAVORITE = "favorite";
 
 	@Autowired
-	private ReportAdministration reportAccessor;
-	
+	private ReportAccessor reportAccessor;
+
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 	private String viewType;

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -34,7 +33,6 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.DynamicReportUtil;
-import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -47,8 +45,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 	@Autowired
 	private ReportDynamicModel reportDynamicModel;
-	@Autowired
-	private ReportAdministration reportAccessor;
 
 	private static final boolean FOR_DOWNLOAD = true;
 
@@ -80,12 +76,12 @@ public class ReportDynamic extends PicsActionSupport {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
-			} catch (IOException ioe) {
-				// Can't happen
-				logger.error(ioe.getMessage());
 			} catch (NumberFormatException nfe) {
 				// Someone typed junk into the url
-				logger.error(nfe.getMessage());
+				logger.error(nfe.toString());
+			} catch (Exception e) {
+				// Probably a null pointer
+				logger.error(e.toString());
 			}
 		}
 
