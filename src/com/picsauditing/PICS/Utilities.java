@@ -132,6 +132,7 @@ public class Utilities {
 	public static float getIndustryAverage(boolean lwcr, Naics naics) {
 		float answer = 0f;
 		if (!lwcr) {
+			answer = naics.getTrir();
 			SelectSQL select = new SelectSQL("ref_trade_alt rta");
 			select.addJoin("join ref_trade rt on rta.tradeID = rt.id");
 
@@ -154,6 +155,7 @@ public class Utilities {
 			}
 
 		} else {
+			answer = naics.getLwcr();
 			NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
 			answer = naicsDAO.getIndustryAverage(lwcr, naics);
 		}
