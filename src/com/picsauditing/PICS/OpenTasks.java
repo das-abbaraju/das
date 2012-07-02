@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LocaleController;
@@ -200,6 +201,15 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutOperatorQualification() {
+		int vopakCorporateOperatorQualification = 640;
+
+		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
+			if (contractorTag.getTag().getId() == vopakCorporateOperatorQualification) {
+				openTasks.add(getText("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak"));
+				break;
+			}
+		}
+
 		// OQ: Add unmapped employees
 		if (contractor.isRequiresOQ()) {
 			if (contractor.getAssessmentResultStages().size() > 0) {
