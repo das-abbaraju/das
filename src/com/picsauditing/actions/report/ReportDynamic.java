@@ -34,7 +34,6 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.DynamicReportUtil;
-import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -47,8 +46,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 	@Autowired
 	private ReportDynamicModel reportDynamicModel;
-	@Autowired
-	private ReportAdministration reportAccessor;
 
 	private static final boolean FOR_DOWNLOAD = true;
 

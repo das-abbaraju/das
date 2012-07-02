@@ -23,7 +23,7 @@ import javax.persistence.NoResultException;
 
 public class ReportAccessorTest {
 
-	private ReportAdministration reportAccessor;
+	private ReportAccessor reportAccessor;
 
 	@Mock private BasicDAO dao;
 	@Mock private Report report;

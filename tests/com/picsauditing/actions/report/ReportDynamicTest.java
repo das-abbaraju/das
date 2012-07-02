@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,7 +32,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.models.ReportDynamicModel;
 import com.picsauditing.report.access.DynamicReportUtil;
 import com.picsauditing.report.access.ReportAccessor;
-import com.picsauditing.report.access.ReportAdministration;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
@@ -49,7 +47,7 @@ public class ReportDynamicTest {
 	@Mock private ReportDynamicModel reportDynamicModel;
 	@Mock private HttpServletRequest request;
 	@Mock private ActionContext actionContext;
-	@Mock private ReportAdministration reportAccess;
+	@Mock private ReportAccessor reportAccess;
 
 	// PowerMocked in setUp
 	private Logger logger;

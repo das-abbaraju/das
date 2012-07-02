@@ -145,7 +145,7 @@
 	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
 	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
 	<bean id="ReportDynamicModel" class="com.picsauditing.models.ReportDynamicModel" />
-	<bean id="ReportAdministration" class="com.picsauditing.report.access.ReportAccessor" />	
+	<bean id="ReportAccessor" class="com.picsauditing.report.access.ReportAccessor" />	
 	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
 	<bean id="StateAutocompleteService" class=" com.picsauditing.actions.autocomplete.StateAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
