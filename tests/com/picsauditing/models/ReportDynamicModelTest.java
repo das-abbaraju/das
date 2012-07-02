@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.NoResultException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,35 +44,30 @@ public class ReportDynamicModelTest {
 
 	@Test
 	public void canUserViewAndCopy_emptyQuery () {
-		List<ReportUser> emptyList = new ArrayList<ReportUser>();
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(emptyList);
+
+		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenThrow(new NoResultException());
 
 		assertFalse(model.canUserViewAndCopy(23, report));
 	}
 
 	@Test
-	public void canUserViewAndCopy_successfulQuery () {
-		List<ReportUser> reportUserList = new ArrayList<ReportUser>();
-		reportUserList.add(new ReportUser());
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(reportUserList);
-
-		assertTrue(model.canUserViewAndCopy(23, report));
+	public void canUserViewAndCopy_baseReport () {
+		assertTrue(model.canUserViewAndCopy(23, 2));
 	}
 
 	@Test
-	public void canUserEdit_nullResponse () {
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(null);
+	public void canUserViewAndCopy_successfulQuery () {
 
-		assertFalse(model.canUserEdit(23, report));
+		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(new ReportUser());
+
+		assertTrue(model.canUserViewAndCopy(23, report));
 	}
 
 	@Test
 	public void canUserEdit_Negative () {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(false);
-		List<ReportUser> reportUserList = new ArrayList<ReportUser>();
-		reportUserList.add(mockReportUser);
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(reportUserList);
+		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertFalse(model.canUserEdit(23, report));
 	}
@@ -82,9 +76,7 @@ public class ReportDynamicModelTest {
 	public void canUserEdit_Positive () {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(true);
-		List<ReportUser> reportUserList = new ArrayList<ReportUser>();
-		reportUserList.add(mockReportUser);
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(reportUserList);
+		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertTrue(model.canUserEdit(23, report));
 	}
@@ -95,7 +87,7 @@ public class ReportDynamicModelTest {
 		when(mockCreator.getId()).thenReturn(5);
 		when(report.getCreatedBy()).thenReturn(mockCreator);
 
-		assertFalse(model.canUserDelete(23, report));
+		assertFalse(ReportDynamicModel.canUserDelete(23, report));
 	}
 
 	@Test
@@ -104,6 +96,26 @@ public class ReportDynamicModelTest {
 		when(mockCreator.getId()).thenReturn(23);
 		when(report.getCreatedBy()).thenReturn(mockCreator);
 
-		assertTrue(model.canUserDelete(23, report));
+		assertTrue(ReportDynamicModel.canUserDelete(23, report));
+	}
+
+	@Test
+	public void removeReportFrom_canDelete () {
+		when(report.getCreatedBy()).thenReturn(user);
+
+		model.removeReportFrom(user, report);
+
+		verify(reportAccessor, never()).removeReportAssociation(user, report);
+		verify(reportAccessor).deleteReport(report);
+	}
+
+	@Test
+	public void removeReportFrom_cantDelete () {
+		when(report.getCreatedBy()).thenReturn(new User(5));
+
+		model.removeReportFrom(user, report);
+
+		verify(reportAccessor).removeReportAssociation(user, report);
+		verify(reportAccessor, never()).deleteReport(report);
 	}
 }
