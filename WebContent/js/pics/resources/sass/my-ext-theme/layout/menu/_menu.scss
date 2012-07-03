@@ -29,16 +29,16 @@ $site_menu_separator_border_color_right: #fcfcfc;
     padding: 0px !important;
 }
 
-#site_menu .x-btn-default-toolbar-large
+#site_menu .x-btn
 {
     margin: 0px;
     padding: 0px 10px;
     top: 0px !important;
 }
 
-#site_menu .x-btn-default-toolbar-large-menu-active,
-#site_menu .x-btn-default-toolbar-large-over,
-#site_menu .x-btn-default-toolbar-large-pressed
+#site_menu .x-menu-active,
+#site_menu .x-over,
+#site_menu .x-pressed
 {
     @include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
     @include border-radius(0px);
@@ -47,15 +47,15 @@ $site_menu_separator_border_color_right: #fcfcfc;
     border-bottom: 0px;
 }
 
-#site_menu .x-btn-default-toolbar-large .x-btn-inner
+#site_menu .x-btn .x-btn-inner
 {
     color: $site_menu_text_color;
     font-weight: bold;
 }
 
-#site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
-#site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
-#site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner
+#site_menu .x-menu-active .x-btn-inner,
+#site_menu .x-over .x-btn-inner,
+#site_menu .x-pressed .x-btn-inner
 {
     color: $site_menu_over_text_color;
 }
@@ -99,18 +99,22 @@ $site_menu_separator_border_color_right: #fcfcfc;
         font-weight: bold;
     }
 
-    .type,
-    .id
-    {
-        float: left;
-        width: 85px;
-    }
-
     .name,
     .company
     {
         float: left;
         width: 201px;
+    }
+
+    .id
+    {
+        float: right;
+    }
+
+    .type
+    {
+        float: right;
+        font-style: italic;
     }
 }
 

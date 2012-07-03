@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -49,8 +50,8 @@ public class MainPageTest {
 	Database database;
 	@Mock
 	BasicDynaBean basicDynaBean;
-	@Mock
-	AppPropertyDAO appPropertyDAO;
+	@Spy
+	AppPropertyDAO appPropertyDAO = new AppPropertyDAO();
 	@Mock
 	I18nCache i18nCache;
 
@@ -149,7 +150,7 @@ public class MainPageTest {
 		Mockito.when(database.select(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(basicDynaBeans);
 		Mockito.when(basicDynaBean.get("msgKey")).thenReturn(SYSTEM_MESSAGE_KEY);
 		Mockito.when(basicDynaBean.get("msgValue")).thenReturn(SYSTEM_MESSAGE_VALUE);
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+		Mockito.doReturn(showMessages).when(appPropertyDAO).find(Mockito.anyString());
 		Mockito.when(i18nCache.getText(Mockito.anyString(), Mockito.eq(Locale.ENGLISH))).thenReturn(SYSTEM_MESSAGE_KEY);
 
 		List<SystemMessage> systemMessages = mainPage.getSystemMessages();
@@ -172,7 +173,7 @@ public class MainPageTest {
 		Mockito.when(database.select(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(basicDynaBeans);
 		Mockito.when(basicDynaBean.get("msgKey")).thenReturn(SYSTEM_MESSAGE_KEY);
 		Mockito.when(basicDynaBean.get("msgValue")).thenReturn(SYSTEM_MESSAGE_VALUE);
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+		Mockito.doReturn(showMessages).when(appPropertyDAO).find(Mockito.anyString());
 
 		Mockito.when(i18nCache.getText(Mockito.anyString(), Mockito.eq(Locale.ENGLISH))).thenReturn(SYSTEM_MESSAGE_KEY);
 
@@ -189,7 +190,7 @@ public class MainPageTest {
 		appProperty.setProperty(SYSTEM_MESSAGE_KEY);
 		appProperty.setValue(SYSTEM_MESSAGE_VALUE);
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
+		Mockito.doReturn(appProperty).when(appPropertyDAO).find(Mockito.anyString());
 
 		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.ENGLISH);
 
@@ -207,7 +208,7 @@ public class MainPageTest {
 		appProperty.setProperty(SYSTEM_MESSAGE_KEY);
 		appProperty.setValue(SYSTEM_MESSAGE_VALUE);
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
+		Mockito.doReturn(appProperty).when(appPropertyDAO).find(Mockito.anyString());
 
 		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.FRENCH);
 		PowerMockito.when(I18nCache.getInstance()).thenReturn(i18nCache);
@@ -227,7 +228,7 @@ public class MainPageTest {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("1");
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
+		Mockito.doReturn(appProperty).when(appPropertyDAO).find(Mockito.anyString());
 
 		Assert.assertTrue(mainPage.isLiveChatEnabled());
 	}
@@ -237,7 +238,7 @@ public class MainPageTest {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("0");
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
+		Mockito.doReturn(appProperty).when(appPropertyDAO).find(Mockito.anyString());
 
 		Assert.assertFalse(mainPage.isLiveChatEnabled());
 	}
@@ -247,14 +248,14 @@ public class MainPageTest {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("Hello World");
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
+		Mockito.doReturn(appProperty).when(appPropertyDAO).find(Mockito.anyString());
 
 		Assert.assertFalse(mainPage.isLiveChatEnabled());
 	}
 
 	@Test
 	public void testLiveChatNull() throws Exception {
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(null);
+		Mockito.doReturn(null).when(appPropertyDAO).find(Mockito.anyString());
 
 		Assert.assertFalse(mainPage.isLiveChatEnabled());
 	}
@@ -324,7 +325,7 @@ public class MainPageTest {
 		showMessages.setProperty("show messages");
 		showMessages.setValue("1");
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+		Mockito.doReturn(showMessages).when(appPropertyDAO).find(Mockito.anyString());
 
 		Assert.assertTrue(mainPage.isDisplaySystemMessage());
 	}
@@ -334,14 +335,14 @@ public class MainPageTest {
 		AppProperty showMessages = new AppProperty();
 		showMessages.setProperty("show messages");
 		showMessages.setValue("Hello World");
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+		Mockito.doReturn(showMessages).when(appPropertyDAO).find(Mockito.anyString());
 
 		Assert.assertFalse(mainPage.isDisplaySystemMessage());
 
 		showMessages.setValue("0");
 		Assert.assertFalse(mainPage.isDisplaySystemMessage());
 
-		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(null);
+		Mockito.doReturn(null).when(appPropertyDAO).find(Mockito.anyString());
 		Assert.assertFalse(mainPage.isDisplaySystemMessage());
 	}
 

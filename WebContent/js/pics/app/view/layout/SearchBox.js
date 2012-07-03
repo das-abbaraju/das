@@ -7,6 +7,11 @@ Ext.define('PICS.view.layout.SearchBox', {
     // TODO use the translated 'search' value
     emptyText: 'search',
     hideTrigger: true,
+    fieldLabel: '<i class="icon-search icon-large"></i>',
+    labelSeparator: '',
+    // TODO remove inline style
+    labelStyle: 'color: gray;',
+    labelWidth: '25px',
 
     listConfig: {
         id: 'site_menu_search_list',
@@ -20,12 +25,12 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '<li role="option" class="x-boundlist-item {[xindex % 2 === 0 ? "even" : "odd"]}">',
                         '<div class="search-item">',
                             '<div>',
-                                '<span class="type"><em>{type}</em></span>',
-                                '<span class="name">{name}</span>',
+                                '<span class="name"><em>{name}</em></span>',
+                                '<span class="id"><em>ID {id}</em></span>',
                             '</div>',
                             '<div>',
-                                '<span class="id">(ID {id})</span>',
-                                '<span class="company">at {at}</span>',
+                                '<span class="company">{at}</span>',
+                                '<span class="type">{type}</span>',
                             '</div>',
                         '</div>',
                     '</li>',

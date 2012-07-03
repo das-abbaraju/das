@@ -93,7 +93,7 @@ Ext.define('PICS.controller.report.SortController', {
         var sort = {
             xtype: 'splitbutton',
             action: 'sort-report',
-            cls: 'sort',
+            cls: 'sort default',
             height: 26,
             icon: '../js/pics/resources/themes/images/default/grid/sort_asc.gif',
             iconAlign: 'left',

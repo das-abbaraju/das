@@ -13,7 +13,7 @@ Ext.define('PICS.view.report.FilterOptions', {
         items: [{
             xtype: 'splitbutton',
             action: 'add-filter',
-            cls: 'add-filter',
+            cls: 'add-filter default',
             height: 26,
             menu: new Ext.menu.Menu({
                 items: [{
@@ -30,7 +30,7 @@ Ext.define('PICS.view.report.FilterOptions', {
         }, {
             xtype: 'button',
             action: 'search',
-            cls: 'search',
+            cls: 'search success',
             height: 26,
             text: 'Update Results'
         }]

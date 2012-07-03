@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
+import javax.persistence.NoResultException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -41,24 +42,24 @@ public class ReportDynamicModel {
 		if (baseReports.contains(reportId))
 			return true;
 
-		List<ReportUser> reportUserList = reportAccessor.queryReportUser(userId, reportId);
-
-		if (!CollectionUtils.isEmpty(reportUserList))
+		try {
+			ReportUser user = reportAccessor.queryReportUser(userId, reportId);
+			if (user == null)
+				return false;
 			return true;
 
-		return false;
+		} catch (NoResultException e) {
+			return false;
+		}
 	}
 
 	public boolean canUserEdit(int userId, Report report) {
-		List<ReportUser> reportUserList = reportAccessor.queryReportUser(userId, report.getId());
-
-		if (CollectionUtils.isEmpty(reportUserList))
+		try {
+			ReportUser user = reportAccessor.queryReportUser(userId, report.getId());
+			return user.isEditable();
+		} catch (NoResultException e) {
 			return false;
-
-		if (reportUserList.get(0).isEditable())
-			return true;
-
-		return false;
+		}
 	}
 
 	// The only reason this method is static is because ManageReports calls it
@@ -126,6 +127,14 @@ public class ReportDynamicModel {
 
 		for (AbstractTable joinTable : table.getJoins()) {
 			addAllAvailableFields(availableFields, joinTable);
+		}
+	}
+
+	public void removeReportFrom(User user, Report report) {
+		if (canUserDelete(user.getId(), report)) {
+			reportAccessor.deleteReport(report);
+		} else {
+			reportAccessor.removeReportAssociation(user, report);
 		}
 	}
 }

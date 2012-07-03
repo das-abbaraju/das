@@ -61,7 +61,7 @@ Ext.define('PICS.view.report.Header', {
         //if (configuration.isEditable()) {
             var edit = Ext.create('Ext.button.Button', {
                 action: 'edit',
-                cls: 'edit',
+                cls: 'edit default',
                 height: 40,
                 text: '<i class="icon-cog icon-large"></i>',
                 width: 40
@@ -69,7 +69,7 @@ Ext.define('PICS.view.report.Header', {
 
             var save = Ext.create('Ext.button.Split', {
                 action: 'save',
-                cls: 'save',
+                cls: 'save success',
                 height: 40,
                 menu: new Ext.menu.Menu({
                     items: [{

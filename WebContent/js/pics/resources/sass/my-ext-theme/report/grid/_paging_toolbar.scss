@@ -20,7 +20,7 @@ $report_grid_paging_toolbar_separator_border_color_left: #cccccc;
 	padding: 0px 20px;
 }
 
-#report_grid .paging-toolbar .x-btn-default-toolbar-large-over
+#report_grid .paging-toolbar .x-over
 {
 	background: transparent;
 	border: 0px;
@@ -31,7 +31,7 @@ $report_grid_paging_toolbar_separator_border_color_left: #cccccc;
 	border: 0px;
 }
 
-#report_grid .paging-toolbar .x-btn-disabled span
+#report_grid .paging-toolbar .x-disabled span
 {
 	opacity: 1;
 }
@@ -52,7 +52,7 @@ $report_grid_paging_toolbar_separator_border_color_left: #cccccc;
 	color: $report_grid_paging_toolbar_icon_text_color;
 }
 
-#report_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large
+#report_grid .paging-toolbar .x-over .icon-large
 {
 	color: $report_grid_paging_toolbar_icon_over_text_color;
 }

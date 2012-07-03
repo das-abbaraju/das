@@ -52,8 +52,7 @@ public class MainPage {
 	}
 
 	public boolean isLiveChatEnabled() {
-		AppProperty liveChatState = getAppPropertyDAO().find("PICS.liveChat");
-		return liveChatState != null && "1".equals(liveChatState.getValue());
+		return "1".equals(getAppPropertyDAO().getProperty("PICS.liveChat"));
 	}
 
 	public boolean isDebugMode() {
@@ -69,8 +68,7 @@ public class MainPage {
 	}
 
 	public boolean isDisplaySystemMessage() {
-		AppProperty displaySystemMessage = getAppPropertyDAO().find("PICS.showInternationalSystemMessages");
-		return displaySystemMessage != null && "1".equals(displaySystemMessage.getValue());
+		return "1".equals(getAppPropertyDAO().getProperty("PICS.showInternationalSystemMessages"));
 	}
 
 	public Permissions getPermissions() {

@@ -88,6 +88,6 @@ $report_filter_options_placeholder_text_color: #ffffff;
 	background: url(../../app/resources/images/collapse-off.gif) no-repeat;
 }
 
-@import 'report_filter_actions';
-@import 'report_filter_expression';
-@import 'report_filters';
+@import 'actions';
+@import 'expression';
+@import 'filters';

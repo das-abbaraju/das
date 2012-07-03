@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 public class ReportAccessorTest {
 
@@ -47,7 +48,7 @@ public class ReportAccessorTest {
 		verify(dao).save(any(ReportUser.class));
 	}
 
-	@Test
+	@Test(expected = NoResultException.class)
 	public void grantPermissionToEdit_listTooSmall () {
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(null);
 
@@ -56,7 +57,7 @@ public class ReportAccessorTest {
 		verify(dao, never()).save(any(ReportUser.class));
 	}
 
-	@Test
+	@Test(expected = NonUniqueResultException.class)
 	public void grantPermissionToEdit_listTooBig () {
 		List<ReportUser> testList = new ArrayList<ReportUser>();
 		testList.add(new ReportUser());
@@ -125,5 +126,17 @@ public class ReportAccessorTest {
 		reportAccessor.findReportById(5);
 
 		verify(dao).findOne(Report.class, "t.id = 5");
+	}
+
+	@Test
+	public void removeReportAssociation () {
+		List<ReportUser> testList = new ArrayList<ReportUser>();
+		ReportUser repUser = mock(ReportUser.class);
+		testList.add(repUser);
+		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
+
+		reportAccessor.removeReportAssociation(user, report);
+
+		verify(dao).remove(repUser);
 	}
 }

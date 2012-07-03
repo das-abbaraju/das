@@ -84,11 +84,11 @@ $include-default-uis: true !default;
  * Author: Carey Hinoki
  */
 
-@import 'my-ext-theme/report_header';
-@import 'my-ext-theme/report_filter_options';
-@import 'my-ext-theme/report_toolbar';
-@import 'my-ext-theme/report_paging_toolbar';
-@import 'my-ext-theme/report_grid';
+@import 'my-ext-theme/button';
+@import 'my-ext-theme/report/header';
+@import 'my-ext-theme/report/filter';
+@import 'my-ext-theme/report/grid';
+@import 'my-ext-theme/report/setting';
 
 // End Custom
 

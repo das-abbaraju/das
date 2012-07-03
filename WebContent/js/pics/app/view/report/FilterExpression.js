@@ -18,7 +18,7 @@ Ext.define('PICS.view.report.FilterExpression', {
         }, {
             xtype: 'button',
             action: 'update',
-            cls: 'update',
+            cls: 'update primary',
             height: 26,
             text: 'Apply',
             tooltip: 'Apply Filter Expression',
