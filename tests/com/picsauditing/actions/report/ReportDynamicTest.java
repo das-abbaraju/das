@@ -30,13 +30,13 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.models.ReportDynamicModel;
-import com.picsauditing.report.access.DynamicReportUtil;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, DynamicReportUtil.class })
+@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, ReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
 public class ReportDynamicTest {
 
@@ -139,9 +139,9 @@ public class ReportDynamicTest {
 
 	@Test
 	public void testData_ReportFailsValidation() throws Exception {
-		PowerMockito.mockStatic(DynamicReportUtil.class);
-		PowerMockito.doThrow(new RuntimeException()).when(DynamicReportUtil.class);
-		DynamicReportUtil.validate((Report) any());
+		PowerMockito.mockStatic(ReportUtil.class);
+		PowerMockito.doThrow(new RuntimeException()).when(ReportUtil.class);
+		ReportUtil.validate((Report) any());
 		report.setModelType(ModelType.Contractors);
 
 		String strutsResult = reportDynamic.data();

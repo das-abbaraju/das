@@ -23,7 +23,7 @@ import org.powermock.core.classloader.annotations.SuppressStaticInitializationFo
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.report.access.DynamicReportUtil;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -38,7 +38,7 @@ import com.picsauditing.search.SelectSQL;
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*","org.apache.xerces.*" })
 @SuppressStaticInitializationFor("com.picsauditing.util.business.DynamicReportUtil")
-@PrepareForTest({SqlBuilder.class, DynamicReportUtil.class})
+@PrepareForTest({SqlBuilder.class, ReportUtil.class})
 public class SqlBuilderTest {
 
 	private SqlBuilder builder;
@@ -56,7 +56,7 @@ public class SqlBuilderTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(DynamicReportUtil.class);
+		PowerMockito.mockStatic(ReportUtil.class);
 
 		builder = new SqlBuilder();
 	}

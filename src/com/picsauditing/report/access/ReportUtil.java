@@ -9,7 +9,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.Column;
 
-public class DynamicReportUtil {
+public class ReportUtil {
 
 	public static final String COLUMNS = "columns";
 	public static final String FILTERS = "filters";
