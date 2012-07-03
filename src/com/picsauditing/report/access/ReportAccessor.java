@@ -3,6 +3,7 @@ package com.picsauditing.report.access;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,16 @@ public class ReportAccessor {
 		basicDao.refresh(report);
 	}
 
-	public List<ReportUser> queryReportUser(int userId, int reportId) throws NoResultException {
+	public ReportUser queryReportUser(int userId, int reportId) throws NoResultException {
 		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
-		return basicDao.findWhere(ReportUser.class, query);
+		List<ReportUser> result = basicDao.findWhere(ReportUser.class, query);
+
+		if (CollectionUtils.isEmpty(result))
+			throw new NoResultException();
+		else if (result.size() > 1)
+			throw new NonUniqueResultException();
+
+		return result.get(0);
 	}
 
 	public void connectReportToUser(Report report, User user) {
@@ -56,19 +64,8 @@ public class ReportAccessor {
 	}
 
 	private void setUserEditPermissions(Report report, User user, boolean value) {
-		List<ReportUser> reportUserList = queryReportUser(user.getId(), report.getId());
-
-		if (CollectionUtils.isEmpty(reportUserList)) {
-			// TODO log this
-			return;
-		} else if (reportUserList.size() > 1) {
-			// TODO log this
-			return;
-		}
-
-		ReportUser entry = reportUserList.get(0);
+		ReportUser entry = queryReportUser(user.getId(), report.getId());
 		entry.setEditable(value);
-
 		basicDao.save(entry);
 	}
 
@@ -79,12 +76,19 @@ public class ReportAccessor {
 		basicDao.save(report);
 	}
 
-	public void deleteReport(Report report) throws NoResultException {
+	public void deleteReport(Report report) {
 		List<ReportUser> reportUsers = basicDao.findWhere(ReportUser.class, "t.report.id = " + report.getId());
 		for (ReportUser reportUser : reportUsers) {
 			basicDao.remove(reportUser);
 		}
 
 		basicDao.remove(report);
+	}
+
+	public void removeReportAssociation(User user, Report report) {
+		try {
+			ReportUser entry = queryReportUser(user.getId(), report.getId());
+			basicDao.remove(entry);
+		} catch (NoResultException e) {}
 	}
 }

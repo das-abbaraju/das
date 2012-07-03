@@ -99,18 +99,22 @@ $site_menu_separator_border_color_right: #fcfcfc;
         font-weight: bold;
     }
 
-    .type,
-    .id
-    {
-        float: left;
-        width: 85px;
-    }
-
     .name,
     .company
     {
         float: left;
         width: 201px;
+    }
+
+    .id
+    {
+        float: right;
+    }
+
+    .type
+    {
+        float: right;
+        font-style: italic;
     }
 }
 
