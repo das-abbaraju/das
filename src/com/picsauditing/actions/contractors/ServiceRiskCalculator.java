@@ -30,11 +30,11 @@ public class ServiceRiskCalculator {
 	public static final int SAFETY_SELF_EVALUATION = 12347;
 	public static final int PRODUCT_SELF_EVALUATION = 7679;
 
-	private final int[] SAFETY_QUESTIONS = new int[] { SAFETY_CONDUCTED_FROM_OFFICE, SAFETY_HAND_POWER_PNEUMATIC_TOOLS,
+	public static final int[] SAFETY_QUESTIONS = new int[] { SAFETY_CONDUCTED_FROM_OFFICE, SAFETY_HAND_POWER_PNEUMATIC_TOOLS,
 			SAFETY_PERSONAL_PROTECTIVE_EQUIPMENT, SAFETY_PERMIT_TO_WORK, SAFETY_MOBILE_EQUIPMENT,
 			SAFETY_PERFORMS_HIGH_RISK };
 
-	private final int[] PRODUCT_QUESTIONS = new int[] { PRODUCT_FAILURE_WORK_STOPPAGE, PRODUCT_DELIVERY_WORK_STOPPAGE };
+	public static int[] PRODUCT_QUESTIONS = new int[] { PRODUCT_FAILURE_WORK_STOPPAGE, PRODUCT_DELIVERY_WORK_STOPPAGE };
 
 	public LowMedHigh getRiskLevel(AuditData auditData) {
 		switch (auditData.getQuestion().getId()) {
@@ -50,6 +50,9 @@ public class ServiceRiskCalculator {
 			case PRODUCT_FAILURE_WORK_STOPPAGE:
 			case PRODUCT_DELIVERY_WORK_STOPPAGE:
 				return determineRiskLevel(auditData.getAnswer(), LowMedHigh.High, LowMedHigh.Low);
+			case SAFETY_SELF_EVALUATION:
+			case PRODUCT_SELF_EVALUATION:
+				return determineSelfEvaluation(auditData);
 			default:
 				return LowMedHigh.None;
 		}
@@ -61,6 +64,8 @@ public class ServiceRiskCalculator {
 		LowMedHigh safetyRisk = LowMedHigh.None;
 		LowMedHigh productRisk = LowMedHigh.None;
 		LowMedHigh transportationRisk = LowMedHigh.None;
+		LowMedHigh safetySelfEvalulation = LowMedHigh.None;
+		LowMedHigh productSelfEvaluation = LowMedHigh.None;
 
 		for (AuditData auditData : auditDatas) {
 			int auditQuestionID = auditData.getQuestion().getId();
@@ -73,19 +78,21 @@ public class ServiceRiskCalculator {
 			if (isProductQuestion(auditQuestionID) && productRisk.ordinal() < risk.ordinal()) {
 				productRisk = risk;
 			}
-
-			if (auditQuestionID == SAFETY_SELF_EVALUATION) {
-				highestRisks.put(SELF_SAFETY, determineSelfEvaluation(auditData));
+			
+			if (ServiceRiskCalculator.SAFETY_SELF_EVALUATION == auditQuestionID) {
+				safetySelfEvalulation = risk;
 			}
-
-			if (auditQuestionID == PRODUCT_SELF_EVALUATION) {
-				highestRisks.put(SELF_PRODUCT, determineSelfEvaluation(auditData));
+			
+			if (ServiceRiskCalculator.PRODUCT_SELF_EVALUATION == auditQuestionID) {
+				productSelfEvaluation = risk;
 			}
 		}
 
 		highestRisks.put(SAFETY, safetyRisk);
 		highestRisks.put(PRODUCT, productRisk);
 		highestRisks.put(TRANSPORTATION, transportationRisk);
+		highestRisks.put(SELF_SAFETY, safetySelfEvalulation);
+		highestRisks.put(SELF_PRODUCT, productSelfEvaluation);
 
 		return highestRisks;
 	}

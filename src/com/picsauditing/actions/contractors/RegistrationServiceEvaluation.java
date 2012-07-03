@@ -98,24 +98,31 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	public void setServicesHelpText() {
-		if (requireOnsite)
+		if (requireOnsite) {
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
-		if (requireOffsite)
+		}
+		
+		if (requireOffsite) {
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
-		if (requireMaterialSupplier)
+		}
+		
+		if (requireMaterialSupplier) {
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
-		if (requireTransportation)
+		}
+		
+		if (requireTransportation) {
 			servicesHelpText += getTextParameterized(
 					"RegistrationServiceEvaluation.OnlyServiceAllowed",
 					getText(ContractorType.Transportation.getI18nKey()),
 					StringUtils.join(
 							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
+		}
 	}
 
 	public boolean conTypesOK() {
@@ -178,7 +185,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		saveAnswers();
 		loadAnswers();
 		calculateRiskLevels();
-		setListOnly();
+		setAccountLevelByListOnlyEligibility();
 		contractor.syncBalance();
 		billingService.calculateAnnualFees(contractor);
 		contractorAccountDao.save(contractor);
@@ -194,70 +201,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
-	}
-
-	private void calculateRiskLevels() {
-		Collection<AuditData> auditList = answerMap.values();
-		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-		Map<String, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
-		
-		// Calculated assessments
-		LowMedHigh safety = highestRisks.get(ServiceRiskCalculator.SAFETY);
-		LowMedHigh product = highestRisks.get(ServiceRiskCalculator.PRODUCT);
-		// Self assessments
-		LowMedHigh conSafety = highestRisks.get(ServiceRiskCalculator.SELF_SAFETY);
-		LowMedHigh conProduct = highestRisks.get(ServiceRiskCalculator.SELF_PRODUCT);
-
-		boolean isSafetyOK = true;
-		boolean isProductOK = true;
-		// Contractor's assessments are the same (or higher?) than what
-		// we've calculated
-		if (!contractor.isMaterialSupplierOnly())
-			isSafetyOK = conSafety.ordinal() >= safety.ordinal();
-		if (contractor.isMaterialSupplier())
-			isProductOK = conProduct.ordinal() >= product.ordinal();
-
-		if (!contractor.isMaterialSupplierOnly())
-			contractor.setSafetyRisk(safety);
-		if (contractor.isMaterialSupplier())
-			contractor.setProductRisk(product);
-
-		contractor.setAuditColumns(permissions);
-		contractorAccountDao.save(contractor);
-
-		if (!isSafetyOK || !isProductOK) {
-			String safetyAssessment = safety.toString();
-			if (safetyAssessment.equals("Med"))
-				safetyAssessment = getText("LowMedHigh.Med");
-
-			String productAssessment = product.toString();
-			if (productAssessment.equals("Med"))
-				productAssessment = getText("LowMedHigh.Med");
-
-			List<String> increases = new ArrayList<String>();
-			if (safety.ordinal() > conSafety.ordinal() && !contractor.isMaterialSupplierOnly())
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safety));
-			if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
-						productAssessment));
-
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
-					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
-		}
-	}
-
-	private void setListOnly() {
-		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
-				&& contractor.getAccountLevel().isFull()) {
-			boolean canBeListed = true;
-			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
-				if (!conOp.getOperatorAccount().isAcceptsList())
-					canBeListed = false;
-			}
-			if (canBeListed)
-				contractor.setAccountLevel(AccountLevel.ListOnly);
-		} else if (contractor.getAccountLevel().isListOnly())
-			contractor.setAccountLevel(AccountLevel.Full);
 	}
 
 	public boolean validateAnswers() {
@@ -302,6 +245,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
 		categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+		categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
 
 		conAudit = getContractorPQF(categoryIds);
 
@@ -355,6 +299,78 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				auditDataDAO.save(data);
 			}
 		}
+	}
+	
+	private void calculateRiskLevels() {
+		Collection<AuditData> auditList = answerMap.values();
+		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
+		Map<String, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
+		
+		// Calculated assessments
+		LowMedHigh safety = highestRisks.get(ServiceRiskCalculator.SAFETY);
+		LowMedHigh product = highestRisks.get(ServiceRiskCalculator.PRODUCT);
+		// Self assessments
+		LowMedHigh conSafety = highestRisks.get(ServiceRiskCalculator.SELF_SAFETY);
+		LowMedHigh conProduct = highestRisks.get(ServiceRiskCalculator.SELF_PRODUCT);
+
+		boolean safetyRiskEqualOrBelowSelfRating = true;
+		boolean productRiskEqualOrBelowSelfRating = true;
+		// Contractor's assessments are the same (or higher?) than what
+		// we've calculated
+		if (!contractor.isMaterialSupplierOnly()) {
+			safetyRiskEqualOrBelowSelfRating = conSafety.ordinal() >= safety.ordinal();
+			contractor.setSafetyRisk(safety);
+		}
+		
+		if (contractor.isMaterialSupplier()) {
+			productRiskEqualOrBelowSelfRating = conProduct.ordinal() >= product.ordinal();
+			contractor.setProductRisk(product);
+		}
+
+		contractor.setAuditColumns(permissions);
+		contractorAccountDao.save(contractor);
+
+		if (!safetyRiskEqualOrBelowSelfRating || !productRiskEqualOrBelowSelfRating) {
+			String safetyAssessment = safety.toString();
+			if (safetyAssessment.equals("Med")) {
+				safetyAssessment = getText("LowMedHigh.Med");
+			}
+
+			String productAssessment = product.toString();
+			if (productAssessment.equals("Med")) {
+				productAssessment = getText("LowMedHigh.Med");
+			}
+
+			List<String> increases = new ArrayList<String>();
+			if (!safetyRiskEqualOrBelowSelfRating && !contractor.isMaterialSupplierOnly()) {
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safety));
+			}
+			
+			if (!productRiskEqualOrBelowSelfRating && contractor.isMaterialSupplier()) {
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
+						productAssessment));
+			}
+
+			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
+					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
+		}
+	}
+
+	private void setAccountLevelByListOnlyEligibility() {
+		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
+				&& contractor.getAccountLevel().isFull()) {
+			boolean canBeListed = true;
+			
+			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+				if (!conOp.getOperatorAccount().isAcceptsList())
+					canBeListed = false;
+			}
+			
+			if (canBeListed) {
+				contractor.setAccountLevel(AccountLevel.ListOnly);
+			}
+		} else if (contractor.getAccountLevel().isListOnly())
+			contractor.setAccountLevel(AccountLevel.Full);
 	}
 
 	public Map<Integer, AuditData> getAnswerMap() {

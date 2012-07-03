@@ -4,18 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.contractors.ServiceRiskCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -28,7 +30,6 @@ import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectAccount.Type;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ReportContractorRiskAssessment extends ReportAccount {
@@ -64,14 +65,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 
-		String productQuestionsFormatting = "GROUP_CONCAT(CONCAT(CASE d.questionID "
-				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
-				+ "d.answer) SEPARATOR '<br />') answer";
-		int[] productQuestionIDs = new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
-				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT };
-
-		String safetyRisk = getRiskSQL(SAFETY, "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
-		String productRisk = getRiskSQL(PRODUCT, productQuestionsFormatting, productQuestionIDs);
+		String safetyRisk = getRiskSQL(SAFETY, "d.answer", ServiceRiskCalculator.SAFETY_SELF_EVALUATION);
+		String productRisk = getRiskSQL(PRODUCT, "d.answer", ServiceRiskCalculator.PRODUCT_SELF_EVALUATION);
 
 		if (SAFETY.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
@@ -122,7 +117,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			addActionError("Missing Risk Assessment Type");
 		}
 
-		return execute();
+		return setUrlForRedirect("ReportContractorRiskLevel.action");
 	}
 
 	@RequiredPermission(value = OpPerms.RiskRank)
@@ -136,18 +131,13 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
 
 			if (type.equals(SAFETY)) {
-				LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+				LowMedHigh safetyRisk = getContractorAnswer(ServiceRiskCalculator.SAFETY_SELF_EVALUATION);
 
 				noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
 				con.setSafetyRiskVerified(new Date());
 			} else {
-				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
-				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
-				// Get highest
-				if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal()) {
-					productRisk = businessRisk;
-				}
-
+				LowMedHigh productRisk = getContractorAnswer(ServiceRiskCalculator.PRODUCT_SELF_EVALUATION);
+				
 				noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
 				con.setProductRiskVerified(new Date());
 			}
@@ -162,7 +152,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		} else {
 			addActionError("Missing Risk Assessment Type");
 		}
-		return execute();
+		
+		return setUrlForRedirect("ReportContractorRiskLevel.action");
 	}
 
 	public int getConID() {
@@ -228,7 +219,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		if (PRODUCT.equals(type)) {
 			sql2.addWhere("a.materialSupplier = 1");
-			sql2.addGroupBy("a.id");
 		} else if (TRANSPORTATION.equals(type)) {
 			sql2.addWhere("a.transportationServices = 1");
 		} else {
@@ -265,12 +255,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 						d.setComment(auditorNotes);
 						d.setAuditColumns(permissions);
 						auditDataDAO.save(d);
-
-						String answer = d.getAnswer();
-						if (answer.equals("Medium"))
-							answer = "Med";
-
-						return LowMedHigh.valueOf(answer);
+						
+						ServiceRiskCalculator riskCalculator = new ServiceRiskCalculator();
+						return riskCalculator.getRiskLevel(d);
 					}
 				}
 			}
@@ -280,7 +267,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	private String updateSafetyRisk(String noteMessage) {
-		LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+		LowMedHigh newSafetyRisk = getContractorAnswer(ServiceRiskCalculator.SAFETY_SELF_EVALUATION);
 		LowMedHigh currentSafetyRisk = con.getSafetyRisk();
 
 		noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
@@ -298,13 +285,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	private String updateProductRisk(String noteMessage) {
-		LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
-		LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
-		// Get highest
-		if (businessRisk != null && productRisk.ordinal() < businessRisk.ordinal()) {
-			productRisk = businessRisk;
-		}
-
+		LowMedHigh productRisk = getContractorAnswer(ServiceRiskCalculator.PRODUCT_SELF_EVALUATION);
 		noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
 
 		// How can this happen?
@@ -344,7 +325,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			emailQueue.setViewableById(Account.PicsID);
 			emailSender.send(emailQueue);
 		} catch (Exception e) {
-			PicsLogger.log("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
+			Logger logger = LoggerFactory.getLogger(this.getClass());
+			logger.error("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
 		}
 	}
 }
