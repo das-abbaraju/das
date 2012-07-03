@@ -213,3 +213,8 @@ table.report tr.hurdle td {
 	font-weight: normal;	
 	vertical-align: top;
 }
+
+/*Contact Info*/
+.telecommunications p.tabbed {
+    padding-left: 10px;
+} 
