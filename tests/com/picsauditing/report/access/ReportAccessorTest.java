@@ -123,19 +123,19 @@ public class ReportAccessorTest {
 
 	@Test
 	public void findReportByID () {
-		reportAccessor.findReportById(5);
+		reportAccessor.findOneReport(5);
 
 		verify(dao).findOne(Report.class, "t.id = 5");
 	}
 
 	@Test
-	public void removeReportAssociation () {
+	public void removeReportAssociation() throws Exception {
 		List<ReportUser> testList = new ArrayList<ReportUser>();
 		ReportUser repUser = mock(ReportUser.class);
 		testList.add(repUser);
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
 
-		reportAccessor.removeReportAssociation(user, report);
+		reportAccessor.removeUserReport(user, report);
 
 		verify(dao).remove(repUser);
 	}

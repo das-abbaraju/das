@@ -43,7 +43,7 @@ public class ReportDynamicModel {
 			return true;
 
 		try {
-			ReportUser user = reportAccessor.queryReportUser(userId, reportId);
+			ReportUser user = reportAccessor.findOneUserReport(userId, reportId);
 			if (user == null)
 				return false;
 			return true;
@@ -55,7 +55,7 @@ public class ReportDynamicModel {
 
 	public boolean canUserEdit(int userId, Report report) {
 		try {
-			ReportUser user = reportAccessor.queryReportUser(userId, report.getId());
+			ReportUser user = reportAccessor.findOneUserReport(userId, report.getId());
 			return user.isEditable();
 		} catch (NoResultException e) {
 			return false;
@@ -130,11 +130,15 @@ public class ReportDynamicModel {
 		}
 	}
 
+	@Deprecated
 	public void removeReportFrom(User user, Report report) {
 		if (canUserDelete(user.getId(), report)) {
 			reportAccessor.deleteReport(report);
 		} else {
-			reportAccessor.removeReportAssociation(user, report);
+			try {
+				reportAccessor.removeUserReport(user, report);
+			} catch (Exception e) {
+			}
 		}
 	}
 }

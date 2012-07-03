@@ -36,53 +36,53 @@ public class ReportDynamicModelTest {
 	}
 
 	@Test
-	public void canUserViewAndCopy_nullQuery () {
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(null);
+	public void canUserViewAndCopy_nullQuery() {
+		when(reportAccessor.findOneUserReport(anyInt(), anyInt())).thenReturn(null);
 
 		assertFalse(model.canUserViewAndCopy(23, report));
 	}
 
 	@Test
-	public void canUserViewAndCopy_emptyQuery () {
+	public void canUserViewAndCopy_emptyQuery() {
 
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenThrow(new NoResultException());
+		when(reportAccessor.findOneUserReport(anyInt(), anyInt())).thenThrow(new NoResultException());
 
 		assertFalse(model.canUserViewAndCopy(23, report));
 	}
 
 	@Test
-	public void canUserViewAndCopy_baseReport () {
+	public void canUserViewAndCopy_baseReport() {
 		assertTrue(model.canUserViewAndCopy(23, 2));
 	}
 
 	@Test
 	public void canUserViewAndCopy_successfulQuery () {
 
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(new ReportUser());
+		when(reportAccessor.findOneUserReport(anyInt(), anyInt())).thenReturn(new ReportUser());
 
 		assertTrue(model.canUserViewAndCopy(23, report));
 	}
 
 	@Test
-	public void canUserEdit_Negative () {
+	public void canUserEdit_Negative() {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(false);
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(mockReportUser);
+		when(reportAccessor.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertFalse(model.canUserEdit(23, report));
 	}
 
 	@Test
-	public void canUserEdit_Positive () {
+	public void canUserEdit_Positive() {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(true);
-		when(reportAccessor.queryReportUser(anyInt(), anyInt())).thenReturn(mockReportUser);
+		when(reportAccessor.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertTrue(model.canUserEdit(23, report));
 	}
 
 	@Test
-	public void canUserDelete_Negative () {
+	public void canUserDelete_Negative() {
 		User mockCreator = mock(User.class);
 		when(mockCreator.getId()).thenReturn(5);
 		when(report.getCreatedBy()).thenReturn(mockCreator);
@@ -91,7 +91,7 @@ public class ReportDynamicModelTest {
 	}
 
 	@Test
-	public void canUserDelete_Positive () {
+	public void canUserDelete_Positive() {
 		User mockCreator = mock(User.class);
 		when(mockCreator.getId()).thenReturn(23);
 		when(report.getCreatedBy()).thenReturn(mockCreator);
@@ -100,22 +100,22 @@ public class ReportDynamicModelTest {
 	}
 
 	@Test
-	public void removeReportFrom_canDelete () {
+	public void removeReportFrom_canDelete() throws Exception {
 		when(report.getCreatedBy()).thenReturn(user);
 
 		model.removeReportFrom(user, report);
 
-		verify(reportAccessor, never()).removeReportAssociation(user, report);
+		verify(reportAccessor, never()).removeUserReport(user, report);
 		verify(reportAccessor).deleteReport(report);
 	}
 
 	@Test
-	public void removeReportFrom_cantDelete () {
+	public void removeReportFrom_cantDelete() throws Exception {
 		when(report.getCreatedBy()).thenReturn(new User(5));
 
 		model.removeReportFrom(user, report);
 
-		verify(reportAccessor).removeReportAssociation(user, report);
+		verify(reportAccessor).removeUserReport(user, report);
 		verify(reportAccessor, never()).deleteReport(report);
 	}
 }

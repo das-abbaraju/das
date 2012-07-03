@@ -13,22 +13,17 @@
 
 <div id="report_menu_container">
     <ul id="report_menu" class="nav nav-pills">
-        <li <s:if test="viewType.equals('favorite')">class="active"</s:if>>
-            <a href="ManageReports.action?viewType=favorite">Favorites</a>
+        <li <s:if test="viewingFavoriteReports()">class="active"</s:if>>
+            <a href="ManageFavoriteReports.action">Favorites</a>
         </li>
-        <li <s:if test="viewType.equals('saved')">class="active"</s:if>>
-            <a href="ManageReports.action?viewType=saved">My Reports</a>
+        <li <s:if test="viewingAllReports()">class="active"</s:if>>
+            <a href="ManageMyReports.action">My Reports</a>
         </li>
 	</ul>
 </div>
 
 <section id="reports">
-    <s:if test="viewType.equals('favorite')">
-        <h1>These reports will show in your Reports menu dropdown.</h1>
-    </s:if>
-    <s:if test="viewType.equals('saved')">
-        <h1>Edit and manage all of your reports.</h1>
-    </s:if>
+    <h1> ${PageDescription} </h1>
 
     <ul id="report_list">
         <s:iterator value="userReports">
@@ -62,7 +57,7 @@
                             <a class="delete" href="ManageReports!deleteReport.action?reportId=<s:property value="report.id" />">Delete</a>
                         </s:if>
                         <s:else>
-                            <a class="delete" href="ManageReports!removeReportUserAssociation.action?reportId=<s:property value="report.id" />">Remove</a>
+                            <a class="delete" href="ManageReports!removeUserReport.action?reportId=<s:property value="report.id" />">Remove</a>
                         </s:else>
                     </s:if>
                 </section>

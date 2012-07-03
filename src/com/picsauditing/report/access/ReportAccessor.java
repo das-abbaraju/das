@@ -6,8 +6,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
@@ -23,24 +26,37 @@ public class ReportAccessor {
 	@Autowired
 	private BasicDAO basicDao;
 
-	public Report findReportById(int id) throws NoResultException {
+	private static final Logger logger = LoggerFactory.getLogger(ReportAccessor.class);
+
+	public Report findOneReport(int id) throws NoResultException {
 		return basicDao.findOne(Report.class, "t.id = " + id);
 	}
 
-	public void refresh(Report report) {
-		basicDao.refresh(report);
-	}
-
-	public ReportUser queryReportUser(int userId, int reportId) throws NoResultException {
+	public ReportUser findOneUserReport(int userId, int reportId) throws NoResultException {
 		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
 		List<ReportUser> result = basicDao.findWhere(ReportUser.class, query);
 
 		if (CollectionUtils.isEmpty(result))
 			throw new NoResultException();
-		else if (result.size() > 1)
+
+		if (result.size() > 1)
 			throw new NonUniqueResultException();
 
 		return result.get(0);
+	}
+
+	public List<ReportUser> findAllUserReports(int userId) {
+		String query = "t.user.id = " + userId;
+		return basicDao.findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findFavoriteUserReports(int userId) {
+		String query = "t.user.id = " + userId + " AND is_favorite = 1";
+		return basicDao.findWhere(ReportUser.class, query);
+	}
+
+	public void refresh(Report report) {
+		basicDao.refresh(report);
 	}
 
 	public void connectReportToUser(Report report, User user) {
@@ -64,8 +80,9 @@ public class ReportAccessor {
 	}
 
 	private void setUserEditPermissions(Report report, User user, boolean value) {
-		ReportUser entry = queryReportUser(user.getId(), report.getId());
+		ReportUser entry = findOneUserReport(user.getId(), report.getId());
 		entry.setEditable(value);
+
 		basicDao.save(entry);
 	}
 
@@ -85,10 +102,37 @@ public class ReportAccessor {
 		basicDao.remove(report);
 	}
 
-	public void removeReportAssociation(User user, Report report) {
+	public void removeUserReport(User user, Report report) throws Exception {
+		removeUserReport(user.getId(), report.getId());
+	}
+
+	public void removeUserReport(int userId, int reportId) throws Exception {
+		ReportUser entry = findOneUserReport(userId, reportId);
+		basicDao.remove(entry);
+	}
+
+	public void toggleReportUserFavorite(int userId, int reportId) throws Exception {
+		ReportUser reportUser = findOneUserReport(userId, reportId);
+		reportUser.toggleFavorite();
+		basicDao.save(reportUser);
+	}
+
+	public void giveUserDefaultReports(Permissions permissions) {
+		// If a user logs in for the first time, they get the default set
+		// If the user deletes their last report, they get the default set
+		// TODO replace this hack with a customize recommendation default report set
 		try {
-			ReportUser entry = queryReportUser(user.getId(), report.getId());
-			basicDao.remove(entry);
-		} catch (NoResultException e) {}
+			Report report11 = basicDao.findOne(Report.class, "id = 11");
+			ReportUser reportUser11 = new ReportUser(permissions.getUserId(), report11);
+			reportUser11.setAuditColumns(permissions);
+			basicDao.save(reportUser11);
+
+			Report report12 = basicDao.findOne(Report.class, "id = 12");
+			ReportUser reportUser12 = new ReportUser(permissions.getUserId(), report12);
+			reportUser12.setAuditColumns(permissions);
+			basicDao.save(reportUser12);
+		} catch (Exception e) {
+			logger.error(e.toString());
+		}
 	}
 }
