@@ -31,7 +31,7 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
             }, {
                 xtype: 'button',
                 action: 'remove-filter',
-                cls: 'remove-filter',
+                cls: 'remove-filter danger',
                 height: 15,
                 text: '<i class="icon-minus icon-large"></i>',
                 tooltip: 'Remove',

@@ -3323,31 +3323,20 @@ browsers will do whacky things with it.
  * Start Custom
  * Author: Carey Hinoki
  */
-/* line 7, ../sass/my-ext-theme/report/header/_header_summary.scss */
-#report_summary .name {
-  color: #73bbe8;
-  font-size: 30px;
-  font-weight: normal;
-  margin: 18px 20px 0px; }
-
-/* line 15, ../sass/my-ext-theme/report/header/_header_summary.scss */
-#report_summary .description {
-  color: #828285;
-  font-size: 14px;
-  font-weight: normal;
-  margin: 0px 20px 20px; }
-
-/* line 34, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions {
-  text-align: right; }
-
-/* line 40, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .edit,
-#report_actions .save {
-  margin-top: 25px; }
-
-/* line 45, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .edit {
+/**
+ * Button style guide
+ * 
+ * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
+ *
+ * Ext.create('Ext.button.Button', {
+ *     cls: 'default' // theme
+ * });
+ *
+ * @author: Carey Hinoki
+ * @date: 2012-07-02
+ */
+/* line 145, ../sass/my-ext-theme/_button.scss */
+.x-btn.default {
   background: #dcdcdc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
@@ -3355,11 +3344,10 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
   background-image: -ms-linear-gradient(#f1f1f1, #dcdcdc);
   background-image: linear-gradient(#f1f1f1, #dcdcdc);
-  border: 1px solid #bcbcbc;
-  margin-right: 20px; }
+  border: 1px solid #bcbcbc; }
 
-/* line 53, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .edit.x-btn-over {
+/* line 152, ../sass/my-ext-theme/_button.scss */
+.x-btn.default.x-over {
   background: #ececec;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
   background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
@@ -3368,8 +3356,8 @@ browsers will do whacky things with it.
   background-image: -ms-linear-gradient(#f7f7f8, #ececec);
   background-image: linear-gradient(#f7f7f8, #ececec); }
 
-/* line 59, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .edit.x-btn-pressed {
+/* line 158, ../sass/my-ext-theme/_button.scss */
+.x-btn.default.x-pressed {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
   background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
@@ -3378,17 +3366,161 @@ browsers will do whacky things with it.
   background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 65, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .edit button span {
-  font-size: 17px;
-  line-height: 38px !important; }
+/* line 164, ../sass/my-ext-theme/_button.scss */
+.x-btn.default.x-menu-active {
+  background: #cdcdcd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
+  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 71, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_header .edit .icon-cog {
-  color: #666666; }
+/* line 170, ../sass/my-ext-theme/_button.scss */
+.x-btn.default button span {
+  color: #333333;
+  text-shadow: 0px -1px 0px none; }
 
-/* line 76, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .save {
+/* line 178, ../sass/my-ext-theme/_button.scss */
+.x-btn.primary {
+  background: #226396;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
+  background-image: -webkit-linear-gradient(#73bbe8, #226396);
+  background-image: -moz-linear-gradient(#73bbe8, #226396);
+  background-image: -o-linear-gradient(#73bbe8, #226396);
+  background-image: -ms-linear-gradient(#73bbe8, #226396);
+  background-image: linear-gradient(#73bbe8, #226396);
+  border: 1px solid #226396; }
+
+/* line 185, ../sass/my-ext-theme/_button.scss */
+.x-btn.primary.x-over {
+  background: #396cc9;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
+  background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
+  background-image: -moz-linear-gradient(#60c9f3, #396cc9);
+  background-image: -o-linear-gradient(#60c9f3, #396cc9);
+  background-image: -ms-linear-gradient(#60c9f3, #396cc9);
+  background-image: linear-gradient(#60c9f3, #396cc9); }
+
+/* line 191, ../sass/my-ext-theme/_button.scss */
+.x-btn.primary.x-pressed {
+  background: #09366f;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
+  background-image: -webkit-linear-gradient(#336f9c, #09366f);
+  background-image: -moz-linear-gradient(#336f9c, #09366f);
+  background-image: -o-linear-gradient(#336f9c, #09366f);
+  background-image: -ms-linear-gradient(#336f9c, #09366f);
+  background-image: linear-gradient(#336f9c, #09366f); }
+
+/* line 197, ../sass/my-ext-theme/_button.scss */
+.x-btn.primary.x-menu-active {
+  background: #09366f;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
+  background-image: -webkit-linear-gradient(#336f9c, #09366f);
+  background-image: -moz-linear-gradient(#336f9c, #09366f);
+  background-image: -o-linear-gradient(#336f9c, #09366f);
+  background-image: -ms-linear-gradient(#336f9c, #09366f);
+  background-image: linear-gradient(#336f9c, #09366f); }
+
+/* line 203, ../sass/my-ext-theme/_button.scss */
+.x-btn.primary button span {
+  color: white;
+  text-shadow: 0px -1px 0px #226396; }
+
+/* line 211, ../sass/my-ext-theme/_button.scss */
+.x-btn.warning {
+  background: #e67e1c;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
+  background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
+  background-image: -moz-linear-gradient(#fcc033, #e67e1c);
+  background-image: -o-linear-gradient(#fcc033, #e67e1c);
+  background-image: -ms-linear-gradient(#fcc033, #e67e1c);
+  background-image: linear-gradient(#fcc033, #e67e1c);
+  border: 1px solid #e67e1c; }
+
+/* line 218, ../sass/my-ext-theme/_button.scss */
+.x-btn.warning.x-over {
+  background: #f1a300;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
+  background-image: -webkit-linear-gradient(#fcd100, #f1a300);
+  background-image: -moz-linear-gradient(#fcd100, #f1a300);
+  background-image: -o-linear-gradient(#fcd100, #f1a300);
+  background-image: -ms-linear-gradient(#fcd100, #f1a300);
+  background-image: linear-gradient(#fcd100, #f1a300); }
+
+/* line 224, ../sass/my-ext-theme/_button.scss */
+.x-btn.warning.x-pressed {
+  background: #d66000;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
+  background-image: -webkit-linear-gradient(#ea9000, #d66000);
+  background-image: -moz-linear-gradient(#ea9000, #d66000);
+  background-image: -o-linear-gradient(#ea9000, #d66000);
+  background-image: -ms-linear-gradient(#ea9000, #d66000);
+  background-image: linear-gradient(#ea9000, #d66000); }
+
+/* line 230, ../sass/my-ext-theme/_button.scss */
+.x-btn.warning.x-menu-active {
+  background: #d66000;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
+  background-image: -webkit-linear-gradient(#ea9000, #d66000);
+  background-image: -moz-linear-gradient(#ea9000, #d66000);
+  background-image: -o-linear-gradient(#ea9000, #d66000);
+  background-image: -ms-linear-gradient(#ea9000, #d66000);
+  background-image: linear-gradient(#ea9000, #d66000); }
+
+/* line 236, ../sass/my-ext-theme/_button.scss */
+.x-btn.warning button span {
+  color: white;
+  text-shadow: 0px -1px 0px #e67e1c; }
+
+/* line 244, ../sass/my-ext-theme/_button.scss */
+.x-btn.info {
+  background: #6ca6f6;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
+  background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
+  background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
+  background-image: -o-linear-gradient(#70cfff, #6ca6f6);
+  background-image: -ms-linear-gradient(#70cfff, #6ca6f6);
+  background-image: linear-gradient(#70cfff, #6ca6f6);
+  border: 1px solid #6ca6f6; }
+
+/* line 251, ../sass/my-ext-theme/_button.scss */
+.x-btn.info.x-over {
+  background: #73d0f6;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
+  background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
+  background-image: -moz-linear-gradient(#73ddff, #73d0f6);
+  background-image: -o-linear-gradient(#73ddff, #73d0f6);
+  background-image: -ms-linear-gradient(#73ddff, #73d0f6);
+  background-image: linear-gradient(#73ddff, #73d0f6); }
+
+/* line 257, ../sass/my-ext-theme/_button.scss */
+.x-btn.info.x-pressed {
+  background: #5599fc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
+  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
+  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
+  background-image: -o-linear-gradient(#55a9ff, #5599fc);
+  background-image: -ms-linear-gradient(#55a9ff, #5599fc);
+  background-image: linear-gradient(#55a9ff, #5599fc); }
+
+/* line 263, ../sass/my-ext-theme/_button.scss */
+.x-btn.info.x-menu-active {
+  background: #5599fc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
+  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
+  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
+  background-image: -o-linear-gradient(#55a9ff, #5599fc);
+  background-image: -ms-linear-gradient(#55a9ff, #5599fc);
+  background-image: linear-gradient(#55a9ff, #5599fc); }
+
+/* line 269, ../sass/my-ext-theme/_button.scss */
+.x-btn.info button span {
+  color: white;
+  text-shadow: 0px -1px 0px #6ca6f6; }
+
+/* line 277, ../sass/my-ext-theme/_button.scss */
+.x-btn.success {
   background: #229322;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
   background-image: -webkit-linear-gradient(#33c033, #229322);
@@ -3396,11 +3528,10 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#33c033, #229322);
   background-image: -ms-linear-gradient(#33c033, #229322);
   background-image: linear-gradient(#33c033, #229322);
-  border: 1px solid #229322;
-  margin-right: 10px; }
+  border: 1px solid #229322; }
 
-/* line 84, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .save.x-btn-over {
+/* line 284, ../sass/my-ext-theme/_button.scss */
+.x-btn.success.x-over {
   background: #25b000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
   background-image: -webkit-linear-gradient(#33d000, #25b000);
@@ -3409,8 +3540,8 @@ browsers will do whacky things with it.
   background-image: -ms-linear-gradient(#33d000, #25b000);
   background-image: linear-gradient(#33d000, #25b000); }
 
-/* line 90, ../sass/my-ext-theme/report/header/_header_actions.scss */
-#report_actions .save.x-btn-pressed {
+/* line 290, ../sass/my-ext-theme/_button.scss */
+.x-btn.success.x-pressed {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
   background-image: -webkit-linear-gradient(#299600, #1c7600);
@@ -3419,33 +3550,132 @@ browsers will do whacky things with it.
   background-image: -ms-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 96, ../sass/my-ext-theme/report/header/_header_actions.scss */
+/* line 296, ../sass/my-ext-theme/_button.scss */
+.x-btn.success.x-menu-active {
+  background: #1c7600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
+  background-image: -webkit-linear-gradient(#299600, #1c7600);
+  background-image: -moz-linear-gradient(#299600, #1c7600);
+  background-image: -o-linear-gradient(#299600, #1c7600);
+  background-image: -ms-linear-gradient(#299600, #1c7600);
+  background-image: linear-gradient(#299600, #1c7600); }
+
+/* line 302, ../sass/my-ext-theme/_button.scss */
+.x-btn.success button span {
+  color: white;
+  text-shadow: 0px -1px 0px #229322; }
+
+/* line 310, ../sass/my-ext-theme/_button.scss */
+.x-btn.danger {
+  background: #ac030c;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
+  background-image: -webkit-linear-gradient(#f6303c, #ac030c);
+  background-image: -moz-linear-gradient(#f6303c, #ac030c);
+  background-image: -o-linear-gradient(#f6303c, #ac030c);
+  background-image: -ms-linear-gradient(#f6303c, #ac030c);
+  background-image: linear-gradient(#f6303c, #ac030c);
+  border: 1px solid #ac030c; }
+
+/* line 317, ../sass/my-ext-theme/_button.scss */
+.x-btn.danger.x-over {
+  background: #d00900;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
+  background-image: -webkit-linear-gradient(#f92626, #d00900);
+  background-image: -moz-linear-gradient(#f92626, #d00900);
+  background-image: -o-linear-gradient(#f92626, #d00900);
+  background-image: -ms-linear-gradient(#f92626, #d00900);
+  background-image: linear-gradient(#f92626, #d00900); }
+
+/* line 323, ../sass/my-ext-theme/_button.scss */
+.x-btn.danger.x-pressed {
+  background: #8c0600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
+  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
+  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
+  background-image: -o-linear-gradient(#c60c0c, #8c0600);
+  background-image: -ms-linear-gradient(#c60c0c, #8c0600);
+  background-image: linear-gradient(#c60c0c, #8c0600); }
+
+/* line 329, ../sass/my-ext-theme/_button.scss */
+.x-btn.danger.x-menu-active {
+  background: #8c0600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
+  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
+  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
+  background-image: -o-linear-gradient(#c60c0c, #8c0600);
+  background-image: -ms-linear-gradient(#c60c0c, #8c0600);
+  background-image: linear-gradient(#c60c0c, #8c0600); }
+
+/* line 335, ../sass/my-ext-theme/_button.scss */
+.x-btn.danger button span {
+  color: white;
+  text-shadow: 0px -1px 0px #ac030c; }
+
+/* line 7, ../sass/my-ext-theme/report/header/_summary.scss */
+#report_summary .name {
+  color: #73bbe8;
+  font-size: 30px;
+  font-weight: normal;
+  margin: 18px 20px 0px; }
+
+/* line 15, ../sass/my-ext-theme/report/header/_summary.scss */
+#report_summary .description {
+  color: #828285;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0px 20px 20px; }
+
+/* line 6, ../sass/my-ext-theme/report/header/_actions.scss */
+#report_actions {
+  text-align: right; }
+
+/* line 12, ../sass/my-ext-theme/report/header/_actions.scss */
+#report_actions .edit,
+#report_actions .save {
+  margin-top: 25px; }
+
+/* line 17, ../sass/my-ext-theme/report/header/_actions.scss */
+#report_actions .edit {
+  margin-right: 20px; }
+
+/* line 22, ../sass/my-ext-theme/report/header/_actions.scss */
+#report_actions .edit button span {
+  font-size: 17px;
+  line-height: 38px !important; }
+
+/* line 28, ../sass/my-ext-theme/report/header/_actions.scss */
+#report_header .edit .icon-cog {
+  color: #666666; }
+
+/* line 33, ../sass/my-ext-theme/report/header/_actions.scss */
+#report_actions .save {
+  margin-right: 10px; }
+
+/* line 38, ../sass/my-ext-theme/report/header/_actions.scss */
 #report_actions .save .x-btn-split-right {
   background-image: url(../../app/resources/images/splitbutton/arrow-green-off.png);
   padding-right: 39px !important; }
 
-/* line 102, ../sass/my-ext-theme/report/header/_header_actions.scss */
+/* line 44, ../sass/my-ext-theme/report/header/_actions.scss */
 #report_actions .save button span {
-  color: white;
   font-size: 15px;
   font-weight: bold;
-  text-shadow: 0px -1px 0px #229322;
   text-transform: uppercase; }
 
-/* line 18, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 18, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options {
   background: #454545; }
 
-/* line 23, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 23, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options .x-panel-body-default {
   background: transparent; }
 
-/* line 28, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 28, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options-body {
   border: 1px solid #cccccc;
   border-top: 0px; }
 
-/* line 34, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 34, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options-placeholder {
   background: #acacac;
   border: 1px solid #666666 !important;
@@ -3466,17 +3696,17 @@ browsers will do whacky things with it.
   padding: 5px;
   top: 100px !important; }
 
-/* line 46, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 46, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options-placeholder .x-tool img {
   background: url(../../app/resources/images/collapse-arrow-off.gif) no-repeat center; }
 
-/* line 51, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 51, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options-placeholder text {
   fill: white;
   font-size: 13px;
   letter-spacing: 1px; }
 
-/* line 58, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 58, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options_header {
   background: #73bbe8;
   border: 1px solid #808285 !important;
@@ -3486,213 +3716,108 @@ browsers will do whacky things with it.
   height: 50px;
   padding: 10px 0px 10px 20px; }
 
-/* line 67, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 67, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options_header span {
   color: white;
   font-size: 18px;
   font-weight: normal; }
 
-/* line 74, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 74, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options_header .x-tool {
   left: 273px !important;
   top: 0px !important; }
 
-/* line 81, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 81, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options_header .x-tool,
 #report_filter_options_header .x-tool-collapse-left {
   height: 28px !important;
   width: 26px !important; }
 
-/* line 87, ../sass/my-ext-theme/report/filter/_filter_options.scss */
+/* line 87, ../sass/my-ext-theme/report/filter/_options.scss */
 #report_filter_options_header .x-tool-collapse-left {
   background: url(../../app/resources/images/collapse-off.gif) no-repeat; }
 
-/* line 42, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 10, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions {
   background: #f1f1f2;
   border: 1px solid #cccccc !important;
   padding: 0px; }
 
-/* line 49, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 17, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions .add-filter {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  border: 1px solid #bcbcbc;
   margin-left: 10px; }
 
-/* line 57, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
-#report_filter_actions .add-filter.x-btn-over {
-  background: #ececec;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
-  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
-  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
-  background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: -ms-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec); }
-
-/* line 63, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
-#report_filter_actions .add-filter.x-btn-pressed {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
-
-/* line 69, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
-#report_filter_actions .add-filter.x-menu-active {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
-
-/* line 75, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 22, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions .add-filter em {
   background-image: url("../images/button/s-arrow.gif"); }
 
-/* line 80, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 27, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions .add-filter button span {
-  color: #333333;
   font-size: 11px;
   line-height: 24px !important; }
 
-/* line 87, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 33, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions .add-filter .icon-plus {
   color: #2caf2c;
   margin-right: 5px; }
 
-/* line 93, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 39, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions .search {
-  background: #229322;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
-  background-image: -webkit-linear-gradient(#33c033, #229322);
-  background-image: -moz-linear-gradient(#33c033, #229322);
-  background-image: -o-linear-gradient(#33c033, #229322);
-  background-image: -ms-linear-gradient(#33c033, #229322);
-  background-image: linear-gradient(#33c033, #229322);
-  border-color: #229322;
   margin-right: 10px; }
 
-/* line 101, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
-#report_filter_actions .search.x-btn-over {
-  background: #25b000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
-  background-image: -webkit-linear-gradient(#33d000, #25b000);
-  background-image: -moz-linear-gradient(#33d000, #25b000);
-  background-image: -o-linear-gradient(#33d000, #25b000);
-  background-image: -ms-linear-gradient(#33d000, #25b000);
-  background-image: linear-gradient(#33d000, #25b000); }
-
-/* line 107, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
-#report_filter_actions .search.x-btn-pressed {
-  background: #1c7600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
-  background-image: -webkit-linear-gradient(#299600, #1c7600);
-  background-image: -moz-linear-gradient(#299600, #1c7600);
-  background-image: -o-linear-gradient(#299600, #1c7600);
-  background-image: -ms-linear-gradient(#299600, #1c7600);
-  background-image: linear-gradient(#299600, #1c7600); }
-
-/* line 113, ../sass/my-ext-theme/report/filter/_filter_actions.scss */
+/* line 44, ../sass/my-ext-theme/report/filter/_actions.scss */
 #report_filter_actions .search button span {
-  color: white;
   font-size: 11px;
-  line-height: 24px !important;
-  text-shadow: 0px -1px 0px #229322; }
+  line-height: 24px !important; }
 
-/* line 21, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
+/* line 6, ../sass/my-ext-theme/report/filter/_expression.scss */
 #report_filter_expression {
   padding: 20px 20px 10px; }
 
-/* line 26, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
+/* line 11, ../sass/my-ext-theme/report/filter/_expression.scss */
 #report_filter_expression .actions {
   margin-top: 5px; }
 
-/* line 31, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
-#report_filter_expression .update {
-  background: #226396;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
-  background-image: -webkit-linear-gradient(#73bbe8, #226396);
-  background-image: -moz-linear-gradient(#73bbe8, #226396);
-  background-image: -o-linear-gradient(#73bbe8, #226396);
-  background-image: -ms-linear-gradient(#73bbe8, #226396);
-  background-image: linear-gradient(#73bbe8, #226396);
-  border: 1px solid #226396; }
-
-/* line 38, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
-#report_filter_expression .update.x-btn-over {
-  background: #396cc9;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
-  background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
-  background-image: -moz-linear-gradient(#60c9f3, #396cc9);
-  background-image: -o-linear-gradient(#60c9f3, #396cc9);
-  background-image: -ms-linear-gradient(#60c9f3, #396cc9);
-  background-image: linear-gradient(#60c9f3, #396cc9); }
-
-/* line 44, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
-#report_filter_expression .update.x-btn-pressed {
-  background: #09366f;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
-  background-image: -webkit-linear-gradient(#336f9c, #09366f);
-  background-image: -moz-linear-gradient(#336f9c, #09366f);
-  background-image: -o-linear-gradient(#336f9c, #09366f);
-  background-image: -ms-linear-gradient(#336f9c, #09366f);
-  background-image: linear-gradient(#336f9c, #09366f); }
-
-/* line 50, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
-#report_filter_expression .update span {
-  color: white;
-  text-shadow: 0px -1px 0px #226396; }
-
-/* line 57, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
+/* line 17, ../sass/my-ext-theme/report/filter/_expression.scss */
 #report_filter_expression .hide,
 #report_filter_expression .more-information {
   background: transparent;
   border: 0px;
   padding: 0px; }
 
-/* line 65, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
-#report_filter_expression .hide.x-btn-default-small-over span,
-#report_filter_expression .more-information.x-btn-default-small-over span {
+/* line 25, ../sass/my-ext-theme/report/filter/_expression.scss */
+#report_filter_expression .hide.x-over span,
+#report_filter_expression .more-information.x-over span {
   text-decoration: underline; }
 
-/* line 71, ../sass/my-ext-theme/report/filter/_filter_expression.scss */
+/* line 31, ../sass/my-ext-theme/report/filter/_expression.scss */
 #report_filter_expression .hide span,
 #report_filter_expression .more-information span {
   color: #cccccc;
   font-size: 11px;
   padding: 0px; }
 
-/* line 29, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 16, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters {
   border-bottom: 1px solid #cccccc; }
 
-/* line 37, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 24, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters-body,
 #report_filters .filter-container-body,
 #report_filters .filter-body,
 #report_filters .x-box-inner {
   width: 100% !important; }
 
-/* line 42, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 29, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .x-box-inner div:first-child {
   width: auto !important; }
 
-/* line 47, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 34, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter {
   background: #f1f1f1;
   border-top: 1px solid #999999; }
 
-/* line 53, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 40, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-number label {
   color: #999999;
   font-size: 18px;
@@ -3700,175 +3825,75 @@ browsers will do whacky things with it.
   margin: 0px !important;
   text-align: center; }
 
-/* line 62, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 49, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name div {
   color: #333333;
   font-size: 14px;
   font-weight: bold; }
 
-/* line 69, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 56, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter {
-  background: #ac030c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
-  background-image: -webkit-linear-gradient(#f6303c, #ac030c);
-  background-image: -moz-linear-gradient(#f6303c, #ac030c);
-  background-image: -o-linear-gradient(#f6303c, #ac030c);
-  background-image: -ms-linear-gradient(#f6303c, #ac030c);
-  background-image: linear-gradient(#f6303c, #ac030c);
-  border: 1px solid #ac030c;
   padding: 0px; }
 
-/* line 77, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter.x-btn-over {
-  background: #d00900;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
-  background-image: -webkit-linear-gradient(#f92626, #d00900);
-  background-image: -moz-linear-gradient(#f92626, #d00900);
-  background-image: -o-linear-gradient(#f92626, #d00900);
-  background-image: -ms-linear-gradient(#f92626, #d00900);
-  background-image: linear-gradient(#f92626, #d00900); }
-
-/* line 83, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter.x-btn-pressed {
-  background: #8c0600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
-  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
-  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
-  background-image: -o-linear-gradient(#c60c0c, #8c0600);
-  background-image: -ms-linear-gradient(#c60c0c, #8c0600);
-  background-image: linear-gradient(#c60c0c, #8c0600); }
-
-/* line 89, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 61, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter span {
-  padding: 0px;
-  text-shadow: 0px -1px 0px #ac030c; }
+  padding: 0px; }
 
-/* line 95, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 66, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter .icon-minus {
   color: white; }
 
-/* line 44, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 13, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar {
   background: #73bbe8;
   border: 1px solid #808285 !important;
   padding: 10px 20px; }
 
-/* line 51, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 20, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar .header {
   color: white;
   font-size: 18px;
   font-weight: normal;
   top: 6px !important; }
 
-/* line 59, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 28, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_sorts {
   padding: 0px; }
 
-/* line 65, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 34, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_sorts,
 #report_sorts .x-toolbar-default {
   background: none; }
 
-/* line 70, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .sort {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  border: 1px solid #bcbcbc; }
-
-/* line 77, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .sort.x-btn-over {
-  background: #ececec;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
-  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
-  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
-  background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: -ms-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec); }
-
-/* line 83, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .sort.x-btn-pressed {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
-
-/* line 89, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .sort.x-menu-active {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
-
-/* line 95, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 39, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_sorts .x-btn-split-right {
   background-image: url("../images/button/s-arrow.gif");
   padding-right: 14px !important; }
 
-/* line 101, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 45, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_sorts .sort button span {
-  color: #333333;
   font-size: 11px;
   line-height: 24px !important; }
 
-/* line 108, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 51, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_sorts .x-btn-icon-text-left .x-btn-icon {
   background-position: center;
   margin-left: 3px; }
 
-/* line 114, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 57, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar .add-column {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -ms-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  border: 1px solid #bcbcbc;
   margin-left: 10px; }
 
-/* line 122, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .add-column.x-btn-over {
-  background: #ececec;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
-  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
-  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
-  background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: -ms-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec); }
-
-/* line 128, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .add-column.x-btn-pressed {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -ms-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
-
-/* line 134, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 62, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar .add-column em {
   background-image: url("../images/button/s-arrow.gif"); }
 
-/* line 139, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 67, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar .add-column button span {
-  color: #333333;
   font-size: 11px;
   line-height: 24px !important; }
 
-/* line 146, ../sass/my-ext-theme/report/grid/_toolbar.scss */
+/* line 73, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar .add-column .icon-plus {
   color: #2caf2c;
   margin-right: 5px; }
@@ -3880,7 +3905,7 @@ browsers will do whacky things with it.
   padding: 0px 20px; }
 
 /* line 24, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-btn-default-toolbar-large-over {
+#report_grid .paging-toolbar .x-over {
   background: transparent;
   border: 0px; }
 
@@ -3889,7 +3914,7 @@ browsers will do whacky things with it.
   border: 0px; }
 
 /* line 35, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-btn-disabled span {
+#report_grid .paging-toolbar .x-disabled span {
   opacity: 1; }
 
 /* line 41, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
@@ -3906,7 +3931,7 @@ browsers will do whacky things with it.
   color: #666666; }
 
 /* line 56, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-btn-default-toolbar-large-over .icon-large {
+#report_grid .paging-toolbar .x-over .icon-large {
   color: #73bbe8; }
 
 /* line 61, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
@@ -4020,3 +4045,124 @@ browsers will do whacky things with it.
 #report_grid_footer-body {
   background: #454545;
   border: 0px; }
+
+/* line 2, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings {
+  background: #eaeaea;
+  border: 1px solid #333333;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px; }
+
+/* line 9, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_header {
+  background: #454545;
+  border-bottom: 1px solid #333333 !important;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  height: 45px;
+  padding: 13px; }
+
+/* line 19, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_header span {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold; }
+
+/* line 26, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings-body {
+  border: 0px;
+  background: #eaeaea; }
+
+/* line 32, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings-body .x-panel-body-default {
+  background: #eaeaea;
+  border: 0px !important; }
+
+/* line 38, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings-body .x-form-field {
+  margin-bottom: 10px; }
+
+/***
+ * Tab Content
+ */
+/* line 49, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_edit,
+#report_copy,
+#report_share {
+  padding: 8px 10px 10px; }
+
+/* line 56, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_edit-body,
+#report_copy-body,
+#report_share-body {
+  height: auto !important; }
+
+/* line 63, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_edit .x-toolbar,
+#report_copy .x-toolbar,
+#report_share .x-toolbar {
+  top: auto !important; }
+
+/* line 71, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings .cancel button span,
+#report_settings .edit button span,
+#report_settings .copy button span,
+#report_settings .share button span {
+  padding: 0px 7px; }
+
+/***
+ * Tabs
+ */
+/* line 80, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar {
+  background: #454545; }
+
+/* line 85, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-tab {
+  border: 0px;
+  border-right: 1px solid #333333;
+  border-top: 1px solid #333333;
+  padding: 5px; }
+
+/* line 93, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-tab button {
+  background: #454545;
+  border: 0px;
+  cursor: pointer;
+  padding: 0px; }
+
+/* line 101, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-tab span {
+  color: #cccccc; }
+
+/* line 106, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-over span {
+  color: #ffffff; }
+
+/* line 111, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-active {
+  background: #eaeaea;
+  border-top: 0px; }
+
+/* line 117, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-active button {
+  background: #eaeaea;
+  cursor: auto; }
+
+/* line 123, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-active span {
+  color: #666666; }
+
+/* line 128, ../sass/my-ext-theme/report/setting/_setting.scss */
+#report_settings_tabbar .x-tab button i.icon-large {
+  display: block;
+  font-size: 17px; }

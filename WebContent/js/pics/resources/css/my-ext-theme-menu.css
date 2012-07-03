@@ -5495,15 +5495,15 @@ textarea.x-form-invalid-field {
   padding: 0px !important; }
 
 /* line 33, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu .x-btn-default-toolbar-large {
+#site_menu .x-btn {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
 /* line 42, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu .x-btn-default-toolbar-large-menu-active,
-#site_menu .x-btn-default-toolbar-large-over,
-#site_menu .x-btn-default-toolbar-large-pressed {
+#site_menu .x-menu-active,
+#site_menu .x-over,
+#site_menu .x-pressed {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
   background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
   background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
@@ -5520,14 +5520,14 @@ textarea.x-form-invalid-field {
   border-bottom: 0px; }
 
 /* line 51, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu .x-btn-default-toolbar-large .x-btn-inner {
+#site_menu .x-btn .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
 /* line 59, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu .x-btn-default-toolbar-large-menu-active .x-btn-inner,
-#site_menu .x-btn-default-toolbar-large-over .x-btn-inner,
-#site_menu .x-btn-default-toolbar-large-pressed .x-btn-inner {
+#site_menu .x-menu-active .x-btn-inner,
+#site_menu .x-over .x-btn-inner,
+#site_menu .x-pressed .x-btn-inner {
   color: #c66603; }
 
 /* line 64, ../sass/my-ext-theme/layout/menu/_menu.scss */

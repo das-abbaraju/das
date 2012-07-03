@@ -9,21 +9,8 @@ $report_filter_number_color: #999999;
 $report_filter_name_color: #333333;
 
 // report filter - remove button
-$report_filter_remove_filter_background_color: #ac030c;
-$report_filter_remove_filter_border_color: #ac030c;
-$report_filter_remove_filter_gradient_color_top: #f6303c;
-$report_filter_remove_filter_gradient_color_bottom: #ac030c;
-$report_filter_remove_filter_text_shadow_color: #ac030c;
-
-$report_filter_remove_filter_over_background_color: #d00900;
-$report_filter_remove_filter_over_gradient_color_top: #f92626;
-$report_filter_remove_filter_over_gradient_color_bottom: #d00900;
-
-$report_filter_remove_filter_pressed_background_color: #8c0600;
-$report_filter_remove_filter_pressed_gradient_color_top: #c60c0c;
-$report_filter_remove_filter_pressed_gradient_color_bottom: #8c0600;
-
 $report_filter_remove_filter_icon_minus_color: #ffffff;
+
 
 #report_filters
 {
@@ -67,28 +54,12 @@ $report_filter_remove_filter_icon_minus_color: #ffffff;
 
 #report_filters .remove-filter
 {
-	background: $report_filter_remove_filter_background_color;
-	@include background-image(linear-gradient($report_filter_remove_filter_gradient_color_top, $report_filter_remove_filter_gradient_color_bottom));
-	border: 1px solid $report_filter_remove_filter_border_color;
 	padding: 0px;
-}
-
-#report_filters .remove-filter.x-btn-over
-{
-	background: $report_filter_remove_filter_over_background_color;
-	@include background-image(linear-gradient($report_filter_remove_filter_over_gradient_color_top, $report_filter_remove_filter_over_gradient_color_bottom));
-}
-
-#report_filters .remove-filter.x-btn-pressed
-{
-	background: $report_filter_remove_filter_pressed_background_color;
-	@include background-image(linear-gradient($report_filter_remove_filter_pressed_gradient_color_top, $report_filter_remove_filter_pressed_gradient_color_bottom));
 }
 
 #report_filters .remove-filter span
 {
 	padding: 0px;
-	@include text-shadow(0px -1px 0px $report_filter_remove_filter_text_shadow_color);
 }
 
 #report_filters .remove-filter .icon-minus

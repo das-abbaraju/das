@@ -131,7 +131,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
     },
 
     showReportSettingsWindow: function (name, action) {
-        var window = Ext.create('PICS.view.report.ReportSettings', {
+        var window = Ext.create('PICS.view.report.Settings', {
             title: name + " Report"/*,
             buttons: [{
                 action: action,
