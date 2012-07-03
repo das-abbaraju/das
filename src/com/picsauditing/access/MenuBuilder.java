@@ -278,7 +278,7 @@ public class MenuBuilder {
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
-		reportsMenu.addChild(getText("menu.ManageReports"), "ManageReports.action?viewType=saved", "manage_reports");
+		reportsMenu.addChild(getText("menu.ManageReports"), "ManageMyReports.action", "manage_reports");
 
 		if (favoriteReports == null)
 			return;

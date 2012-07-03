@@ -63,4 +63,8 @@ public class ReportUser extends BaseTable {
 	public void setFavorite(boolean isFavorite) {
 		this.isFavorite = isFavorite;
 	}
+
+	public void toggleFavorite() {
+		isFavorite = !isFavorite;
+	}
 }

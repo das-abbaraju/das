@@ -1,21 +1,17 @@
-// TODO: COLLAPSE THIS FILE INTO DYNAMIC REPORT ACTION CONTROLLER
-// DO IT
-
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
@@ -40,160 +36,131 @@ public class ManageReports extends PicsActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
 	public String execute() throws Exception {
-		loadPermissions();
 		runQueryForCurrentView();
+		return SUCCESS;
+	}
 
-		try {
-			Map<String, Object> session = ActionContext.getContext().getSession();
-			String errorMessage = (String) session.get("errorMessage");
-			if (!Strings.isEmpty(errorMessage)) {
-				addActionError(errorMessage);
-				session.put("errorMessage", "");
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+	public String viewAllReports() throws Exception {
+		viewType = SAVED;
+		runQueryForCurrentView();
+		return SUCCESS;
+	}
+
+	public String viewFavoriteReports() throws Exception {
+		viewType = FAVORITE;
+		runQueryForCurrentView();
+		return SUCCESS;
+	}
+
+	public String getPageDescription() {
+		String pageDescription = "";
+
+		if (SAVED.equals(viewType)) {
+			// TODO add i18n to this
+			pageDescription = "Edit and manage all of your reports.";
+		} else if (FAVORITE.equals(viewType)) {
+			// TODO add i18n to this
+			pageDescription = "These reports will show in your Reports menu dropdown.";
 		}
 
-		return SUCCESS;
+		return pageDescription;
+	}
+
+	public boolean viewingAllReports() {
+		return SAVED.equals(viewType);
+	}
+
+	public boolean viewingFavoriteReports() {
+		return FAVORITE.equals(viewType);
 	}
 
 	private void runQueryForCurrentView() {
 		if (Strings.isEmpty(viewType))
 			viewType = SAVED;
 
-		String filterQuery = "userID = " + permissions.getUserId();
-
-		if (FAVORITE.equals(viewType)) {
-			filterQuery += " AND is_favorite = 1";
-		} else if (SAVED.equals(viewType)) {
-		}
-
 		try {
-			userReports = dao.findWhere(ReportUser.class, filterQuery);
+			if (FAVORITE.equals(viewType)) {
+				userReports = reportAccessor.findFavoriteUserReports(permissions.getUserId());
+
+				if (CollectionUtils.isEmpty(userReports)) {
+					// TODO add i18n to this
+					addActionMessage("You have not favorited any reports.");
+				}
+			} else if (SAVED.equals(viewType)) {
+				userReports = reportAccessor.findAllUserReports(permissions.getUserId());
+
+				if (CollectionUtils.isEmpty(userReports)) {
+					reportAccessor.giveUserDefaultReports(permissions);
+					userReports = reportAccessor.findAllUserReports(permissions.getUserId());
+				}
+			}
 		} catch (Exception e) {
-			userReports = null;
-			addActionMessage("There was a problem finding your reports.");
-		}
-
-		if (userReports == null) {
 			userReports = Collections.emptyList();
-			return;
-		}
-
-		if (userHasNoFavoriteReports()) {
-			addActionMessage("You have not favorited any reports.");
-		}
-
-		if (userHasNoSavedReports()) {
-			giveUserDefaultReports();
+			// TODO add i18n to this
+			addActionMessage("There was a problem finding your reports.");
 		}
 	}
 
-	public String removeReportUserAssociation() throws Exception {
-		String query = "t.report.id = " + reportId + " AND t.user.id = " + permissions.getUserId();
-
+	public String removeUserReport() throws Exception {
 		try {
-			ReportUser reportUser = dao.findOne(ReportUser.class, query);
-
-			dao.remove(reportUser);
+			reportAccessor.removeUserReport(permissions.getUserId(), reportId);
+			// TODO add i18n to this
+			addActionMessage("Your report has been removed.");
 		} catch (NoResultException nre) {
+			// TODO add i18n to this
 			addActionMessage("The report you're trying to remove no longer exists.");
+			logger.warn(nre.toString());
 		} catch (Exception e) {
-			// An empty catch block is bad, but displaying an exception to the user is worse
+			logger.error(e.toString());
 		}
 
-		runQueryForCurrentView();
-
-		return SUCCESS;
+		return redirectToMyReports();
 	}
 
 	public String deleteReport() throws IOException  {
 		try {
-			Report report = reportAccessor.findReportById(reportId);
+			Report report = reportAccessor.findOneReport(reportId);
 			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
 				reportAccessor.deleteReport(report);
+				// TODO add i18n to this
 				addActionMessage("Your report has been deleted.");
 			} else {
+				// TODO add i18n to this
 				addActionError("You do not have the necessary permissions to delete this report.");
 			}
 		} catch (NoResultException nre) {
+			// TODO add i18n to this
 			addActionError("The report you're trying to delete no longer exists.");
+			logger.warn(nre.toString());
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.toString());
 		}
 
-		setUrlForRedirect("ManageReports.action");
-
-		return REDIRECT;
-	}
-
-	public String changeReportName() {
-		try {
-//			Report report = dao.find(Report.class, reportId);
-//			report.setName(report.getName());
-//			report.setDescription(report.getDescription());
-//			dao.save(report);
-		} catch (Exception e) {
-			// An empty catch block is bad, but displaying an exception to the user is worse
-		}
-
-		runQueryForCurrentView();
-
-		return SUCCESS;
+		return redirectToMyReports();
 	}
 
 	public String toggleFavorite() {
-		String query = "t.user.id = " + permissions.getUserId() + " AND t.report.id = " + reportId;
-
 		try {
-			ReportUser reportUser = dao.findOne(ReportUser.class, query);
-			reportUser.setFavorite(!reportUser.isFavorite());
-
-			dao.save(reportUser);
+			reportAccessor.toggleReportUserFavorite(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
+			// TODO add i18n to this
 			addActionMessage("The report you're trying to favorite could not be found.");
-		}
-
-		runQueryForCurrentView();
-
-		return SUCCESS;
-	}
-
-	private void giveUserDefaultReports() {
-		// If a user logs in for the first time, they get the default set
-		// If the user deletes their last report, they get the default set
-		// TODO replace this hack with a customize recommendation default report set
-		try {
-			Report report11 = dao.findOne(Report.class, "id = 11");
-			ReportUser reportUser11 = new ReportUser(permissions.getUserId(), report11);
-			reportUser11.setAuditColumns(permissions);
-			dao.save(reportUser11);
-
-			Report report12 = dao.findOne(Report.class, "id = 12");
-			ReportUser reportUser12 = new ReportUser(permissions.getUserId(), report12);
-			reportUser12.setAuditColumns(permissions);
-			dao.save(reportUser12);
+			logger.warn(nre.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.toString());
 		}
 
-		runQueryForCurrentView();
+		return redirectToMyReports();
 	}
 
-	private boolean userHasNoSavedReports() {
-		return SAVED.equals(viewType) && userReports.isEmpty();
-	}
+	private String redirectToMyReports() {
+		try {
+			setUrlForRedirect("ManageMyReports.action");
+		} catch (IOException ioe) {
+			logger.error(ioe.toString());
+		}
 
-	private boolean userHasNoFavoriteReports() {
-		return FAVORITE.equals(viewType) && userReports.isEmpty();
-	}
-
-	public String copyReport() {
-		// TODO just call ReportController.copy() or similar
-
-		runQueryForCurrentView();
-
-		return SUCCESS;
+		return REDIRECT;
 	}
 
 	public void setUserReports(List<ReportUser> userReports) {

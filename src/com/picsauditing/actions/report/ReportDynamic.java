@@ -38,6 +38,10 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
+/**
+ * This is a controller. Do not use any DAOs from its parent.
+ * This should delegate business concerns and persistence methods.
+ */
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
 
@@ -66,7 +70,7 @@ public class ReportDynamic extends PicsActionSupport {
 		if (report == null) {
 			// No matter what junk we get in the url, redirect
 			try {
-				status = setUrlForRedirect("ManageReports.action?viewType=saved");
+				status = setUrlForRedirect("ManageMyReports.action");
 
 				String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("report");
 				// Don't trust user input!

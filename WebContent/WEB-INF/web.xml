@@ -196,7 +196,7 @@
     
     <servlet>
      <servlet-name>perf4j</servlet-name>
-     <servlet-class>org.perf4j.logback.servlet.GraphingServlet </servlet-class>
+     <servlet-class>com.picsauditing.servlet.PicsGraphingServlet </servlet-class>
      <init-param>
         <param-name>graphNames</param-name>
         <param-value>graphExecutionTimes,graphExecutionTPS</param-value>
