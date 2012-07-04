@@ -1,6 +1,6 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.access.DynamicReportUtil.getColumnFromFieldName;
+import static com.picsauditing.report.access.ReportUtil.getColumnFromFieldName;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

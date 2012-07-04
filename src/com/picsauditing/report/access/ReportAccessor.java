@@ -87,7 +87,7 @@ public class ReportAccessor {
 	}
 
 	public void saveReport(Report report, User user) throws ReportValidationException {
-		DynamicReportUtil.validate(report);
+		ReportUtil.validate(report);
 		report.setAuditColumns(user);
 
 		basicDao.save(report);

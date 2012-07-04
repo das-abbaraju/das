@@ -32,7 +32,7 @@ import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.access.DynamicReportUtil;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -95,7 +95,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Deprecated
 	public String find() {
 		try {
-			DynamicReportUtil.validate(report);
+			ReportUtil.validate(report);
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
@@ -141,7 +141,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			DynamicReportUtil.validate(report);
+			ReportUtil.validate(report);
 
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
@@ -177,7 +177,7 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
-			DynamicReportUtil.validate(report);
+			ReportUtil.validate(report);
 
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
@@ -212,7 +212,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getReportParameters() throws Exception {
-		DynamicReportUtil.validate(report);
+		ReportUtil.validate(report);
 
 		// TODO remove definition from SqlBuilder
 		sqlBuilder.setDefinition(report.getDefinition());
@@ -231,7 +231,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			DynamicReportUtil.validate(report);
+			ReportUtil.validate(report);
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			json.put("modelType", report.getModelType().toString());
@@ -269,7 +269,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String download() throws Exception {
-		DynamicReportUtil.validate(report);
+		ReportUtil.validate(report);
 
 		// Definition definition = new Definition(report.getParameters());
 		// report.setDefinition(definition);

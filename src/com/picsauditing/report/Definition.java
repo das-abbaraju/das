@@ -1,9 +1,9 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.access.DynamicReportUtil.COLUMNS;
-import static com.picsauditing.report.access.DynamicReportUtil.FILTERS;
-import static com.picsauditing.report.access.DynamicReportUtil.FILTER_EXPRESSION;
-import static com.picsauditing.report.access.DynamicReportUtil.SORTS;
+import static com.picsauditing.report.access.ReportUtil.COLUMNS;
+import static com.picsauditing.report.access.ReportUtil.FILTERS;
+import static com.picsauditing.report.access.ReportUtil.FILTER_EXPRESSION;
+import static com.picsauditing.report.access.ReportUtil.SORTS;
 
 import java.util.ArrayList;
 import java.util.List;
