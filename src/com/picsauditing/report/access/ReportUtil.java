@@ -9,12 +9,15 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.Column;
 
-public class ReportUtil {
+public final class ReportUtil {
 
 	public static final String COLUMNS = "columns";
 	public static final String FILTERS = "filters";
 	public static final String SORTS = "sorts";
 	public static final String FILTER_EXPRESSION = "filterExpression";
+
+	private ReportUtil() {
+	}
 
 	public static Column getColumnFromFieldName(String fieldName, List<Column> columns) {
 		if (fieldName == null)
