@@ -411,11 +411,12 @@
 						</s:else>
                 	</td>
 				</tr> 
+				
 				<!-- proforma payment contractor -->
 				<s:if test="contractor.paymentMethod.EFT">
                     <tr>
                         <td style="padding: 15px;">
-                            <s:text name="InvoiceDetail.PaymentInstruction" />
+							 <% out.println( com.picsauditing.PICS.I18nCache.getInstance().getText("InvoiceDetail.PaymentInstruction", request.getLocale()) ); %>
                         </td>
                     </tr>
                 </s:if>
