@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.picsauditing.actions.contractors.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -32,7 +33,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=Low, No=Medium
 	@Test
 	public void testSafety_Offices() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.SAFETY_CONDUCTED_FROM_OFFICE);
+		auditData.getQuestion().setId(SafetyAssessment.CONDUCTED_FROM_OFFICE.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.Low, serviceRiskCalculator.getRiskLevel(auditData));
@@ -46,7 +47,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=Medium, No=Low
 	@Test
 	public void testSafety_HandTools() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.SAFETY_HAND_POWER_PNEUMATIC_TOOLS);
+		auditData.getQuestion().setId(SafetyAssessment.HAND_POWER_PNEUMATIC_TOOLS.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(auditData));
@@ -61,7 +62,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=Medium, No=Low
 	@Test
 	public void testSafety_PPE() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.SAFETY_PERSONAL_PROTECTIVE_EQUIPMENT);
+		auditData.getQuestion().setId(SafetyAssessment.PERSONAL_PROTECTIVE_EQUIPMENT.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(auditData));
@@ -76,7 +77,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=High, No=Medium
 	@Test
 	public void testSafety_PermitToWork() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.SAFETY_PERMIT_TO_WORK);
+		auditData.getQuestion().setId(SafetyAssessment.PERMIT_TO_WORK.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
@@ -91,7 +92,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=High, No=Medium
 	@Test
 	public void testSafety_MobileEquipment() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.SAFETY_MOBILE_EQUIPMENT);
+		auditData.getQuestion().setId(SafetyAssessment.MOBILE_EQUIPMENT.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
@@ -109,7 +110,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=High, Medium=No
 	@Test
 	public void testSafety_PerformsHighRisk() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.SAFETY_PERFORMS_HIGH_RISK);
+		auditData.getQuestion().setId(SafetyAssessment.PERFORMS_HIGH_RISK.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
@@ -123,7 +124,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=High, No=Low
 	@Test
 	public void testProduct_FailureWorkStoppage() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.PRODUCT_FAILURE_WORK_STOPPAGE);
+		auditData.getQuestion().setId(ProductAssessment.FAILURE_WORK_STOPPAGE.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
@@ -137,7 +138,7 @@ public class ServiceRiskCalculatorTest {
 	// Yes=High, No=Low
 	@Test
 	public void testProduct_DeliveryWorkStoppage() {
-		auditData.getQuestion().setId(ServiceRiskCalculator.PRODUCT_DELIVERY_WORK_STOPPAGE);
+		auditData.getQuestion().setId(ProductAssessment.DELIVERY_WORK_STOPPAGE.getQuestionID());
 
 		auditData.setAnswer(YES);
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(auditData));
@@ -154,55 +155,57 @@ public class ServiceRiskCalculatorTest {
 		List<AuditData> mixedHighRisk = createSafetyAuditDataAnswersMixed(true);
 
 		Assert.assertEquals(LowMedHigh.High,
-				serviceRiskCalculator.getHighestRiskLevel(yesToEverything).get(ServiceRiskCalculator.SAFETY));
+				serviceRiskCalculator.getHighestRiskLevel(yesToEverything).get(RiskCategory.SAFETY));
 		Assert.assertEquals(LowMedHigh.Med,
-				serviceRiskCalculator.getHighestRiskLevel(noToEverything).get(ServiceRiskCalculator.SAFETY));
+				serviceRiskCalculator.getHighestRiskLevel(noToEverything).get(RiskCategory.SAFETY));
 		Assert.assertEquals(LowMedHigh.Med,
-				serviceRiskCalculator.getHighestRiskLevel(mixedLowRisk).get(ServiceRiskCalculator.SAFETY));
+				serviceRiskCalculator.getHighestRiskLevel(mixedLowRisk).get(RiskCategory.SAFETY));
 		Assert.assertEquals(LowMedHigh.High,
-				serviceRiskCalculator.getHighestRiskLevel(mixedHighRisk).get(ServiceRiskCalculator.SAFETY));
+				serviceRiskCalculator.getHighestRiskLevel(mixedHighRisk).get(RiskCategory.SAFETY));
 	}
 
 	@Test
 	public void testProductHighestRiskLevel() {
 		List<AuditData> yesToEverything = createProductAuditDataAllAnswers(YES);
 		List<AuditData> noToEverything = createProductAuditDataAllAnswers(NO);
-		List<AuditData> mixed1 = createProductAuditDataAnswersMixedEvenYes();
-		List<AuditData> mixed2 = createProductAuditDataAnswersMixedOddYes();
+		List<AuditData> mixed1 = createProductAuditDataAnswersMixedEvensYes(true);
+		List<AuditData> mixed2 = createProductAuditDataAnswersMixedEvensYes(false);
 
 		Assert.assertEquals(LowMedHigh.High,
-				serviceRiskCalculator.getHighestRiskLevel(yesToEverything).get(ServiceRiskCalculator.PRODUCT));
+				serviceRiskCalculator.getHighestRiskLevel(yesToEverything).get(RiskCategory.PRODUCT));
 		Assert.assertEquals(LowMedHigh.Low,
-				serviceRiskCalculator.getHighestRiskLevel(noToEverything).get(ServiceRiskCalculator.PRODUCT));
-		Assert.assertEquals(LowMedHigh.High,
-				serviceRiskCalculator.getHighestRiskLevel(mixed1).get(ServiceRiskCalculator.PRODUCT));
-		Assert.assertEquals(LowMedHigh.High,
-				serviceRiskCalculator.getHighestRiskLevel(mixed2).get(ServiceRiskCalculator.PRODUCT));
+				serviceRiskCalculator.getHighestRiskLevel(noToEverything).get(RiskCategory.PRODUCT));
+		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getHighestRiskLevel(mixed1)
+				.get(RiskCategory.PRODUCT));
+		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getHighestRiskLevel(mixed2)
+				.get(RiskCategory.PRODUCT));
 	}
-	
+
 	@Test
 	public void testSelfEvaluations() {
-		AuditData safetyLow = createAuditData(ServiceRiskCalculator.SAFETY_SELF_EVALUATION);
+		int safety = SafetyAssessment.LEVEL_OF_HAZARD_EXPOSURE.getQuestionID();
+		AuditData safetyLow = createAuditData(safety);
 		safetyLow.setAnswer("Low");
 		Assert.assertEquals(LowMedHigh.Low, serviceRiskCalculator.getRiskLevel(safetyLow));
-		
-		AuditData safetyMedium = createAuditData(ServiceRiskCalculator.SAFETY_SELF_EVALUATION);
+
+		AuditData safetyMedium = createAuditData(safety);
 		safetyMedium.setAnswer("Medium");
 		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(safetyMedium));
-		
-		AuditData safetyHigh = createAuditData(ServiceRiskCalculator.SAFETY_SELF_EVALUATION);
+
+		AuditData safetyHigh = createAuditData(safety);
 		safetyHigh.setAnswer("High");
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(safetyHigh));
-		
-		AuditData productLow = createAuditData(ServiceRiskCalculator.PRODUCT_SELF_EVALUATION);
+
+		int product = ProductAssessment.RISK_ON_HEALTH_SAFETY.getQuestionID();
+		AuditData productLow = createAuditData(product);
 		productLow.setAnswer("Low");
 		Assert.assertEquals(LowMedHigh.Low, serviceRiskCalculator.getRiskLevel(productLow));
-		
-		AuditData productMedium = createAuditData(ServiceRiskCalculator.PRODUCT_SELF_EVALUATION);
+
+		AuditData productMedium = createAuditData(product);
 		productMedium.setAnswer("Medium");
 		Assert.assertEquals(LowMedHigh.Med, serviceRiskCalculator.getRiskLevel(productMedium));
-		
-		AuditData productHigh = createAuditData(ServiceRiskCalculator.PRODUCT_SELF_EVALUATION);
+
+		AuditData productHigh = createAuditData(product);
 		productHigh.setAnswer("High");
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(productHigh));
 	}
@@ -210,11 +213,13 @@ public class ServiceRiskCalculatorTest {
 	private List<AuditData> createSafetyAuditDataAllAnswers(String answer) {
 		List<AuditData> auditDatas = new ArrayList<AuditData>();
 
-		for (Integer questionID : ServiceRiskCalculator.SAFETY_QUESTIONS) {
-			AuditData auditData = createAuditData(questionID);
-			auditData.setAnswer(answer);
+		for (SafetyAssessment safetyAssessment : SafetyAssessment.values()) {
+			if (!safetyAssessment.isSelfEvaluation()) {
+				AuditData auditData = createAuditData(safetyAssessment.getQuestionID());
+				auditData.setAnswer(answer);
 
-			auditDatas.add(auditData);
+				auditDatas.add(auditData);
+			}
 		}
 
 		return auditDatas;
@@ -223,17 +228,19 @@ public class ServiceRiskCalculatorTest {
 	private List<AuditData> createSafetyAuditDataAnswersMixed(boolean highRisk) {
 		List<AuditData> auditDatas = new ArrayList<AuditData>();
 
-		for (Integer questionID : ServiceRiskCalculator.SAFETY_QUESTIONS) {
-			AuditData auditData = createAuditData(questionID);
-			// Lower risk questions
-			auditData.setAnswer(highRisk ? NO : YES);
+		for (SafetyAssessment safetyAssessment : SafetyAssessment.values()) {
+			if (!safetyAssessment.isSelfEvaluation()) {
+				AuditData auditData = createAuditData(safetyAssessment.getQuestionID());
+				// Lower risk questions
+				auditData.setAnswer(highRisk ? NO : YES);
 
-			// Higher risk questions
-			if (questionID >= ServiceRiskCalculator.SAFETY_PERMIT_TO_WORK) {
-				auditData.setAnswer(highRisk ? YES : NO);
+				// Higher risk questions
+				if (safetyAssessment.ordinal() >= SafetyAssessment.PERMIT_TO_WORK.ordinal()) {
+					auditData.setAnswer(highRisk ? YES : NO);
+				}
+
+				auditDatas.add(auditData);
 			}
-
-			auditDatas.add(auditData);
 		}
 
 		return auditDatas;
@@ -242,41 +249,32 @@ public class ServiceRiskCalculatorTest {
 	private List<AuditData> createProductAuditDataAllAnswers(String answer) {
 		List<AuditData> auditDatas = new ArrayList<AuditData>();
 
-		for (Integer questionID : ServiceRiskCalculator.PRODUCT_QUESTIONS) {
-			AuditData auditData = createAuditData(questionID);
+		for (ProductAssessment productAssessment : ProductAssessment.values()) {
+			if (!productAssessment.isSelfEvaluation()) {
+			AuditData auditData = createAuditData(productAssessment.getQuestionID());
 			auditData.setAnswer(answer);
 
 			auditDatas.add(auditData);
+			}
 		}
 
 		return auditDatas;
 	}
 
-	private List<AuditData> createProductAuditDataAnswersMixedEvenYes() {
+	private List<AuditData> createProductAuditDataAnswersMixedEvensYes(boolean even) {
 		List<AuditData> auditDatas = new ArrayList<AuditData>();
 
-		for (Integer questionID : ServiceRiskCalculator.PRODUCT_QUESTIONS) {
-			AuditData auditData = createAuditData(questionID);
-			auditData.setAnswer(questionID % 2 == 0 ? YES : NO);
+		for (ProductAssessment productAssessment : ProductAssessment.values()) {
+			if (!productAssessment.isSelfEvaluation()) {
+			AuditData auditData = createAuditData(productAssessment.getQuestionID());
+			auditData.setAnswer(productAssessment.getQuestionID() % 2 == (even ? 0 : 1) ? YES : NO);
 
 			auditDatas.add(auditData);
+			}
 		}
 
 		return auditDatas;
 
-	}
-
-	private List<AuditData> createProductAuditDataAnswersMixedOddYes() {
-		List<AuditData> auditDatas = new ArrayList<AuditData>();
-
-		for (Integer questionID : ServiceRiskCalculator.PRODUCT_QUESTIONS) {
-			AuditData auditData = createAuditData(questionID);
-			auditData.setAnswer(questionID % 2 == 1 ? YES : NO);
-
-			auditDatas.add(auditData);
-		}
-
-		return auditDatas;
 	}
 
 	private AuditData createAuditData(int questionID) {

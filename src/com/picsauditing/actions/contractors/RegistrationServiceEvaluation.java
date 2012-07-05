@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.actions.contractors.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -304,14 +305,14 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private void calculateRiskLevels() {
 		Collection<AuditData> auditList = answerMap.values();
 		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-		Map<String, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
+		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
 		
 		// Calculated assessments
-		LowMedHigh safety = highestRisks.get(ServiceRiskCalculator.SAFETY);
-		LowMedHigh product = highestRisks.get(ServiceRiskCalculator.PRODUCT);
+		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
+		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
 		// Self assessments
-		LowMedHigh conSafety = highestRisks.get(ServiceRiskCalculator.SELF_SAFETY);
-		LowMedHigh conProduct = highestRisks.get(ServiceRiskCalculator.SELF_PRODUCT);
+		LowMedHigh conSafety = highestRisks.get(RiskCategory.SELF_SAFETY);
+		LowMedHigh conProduct = highestRisks.get(RiskCategory.SELF_PRODUCT);
 
 		boolean safetyRiskEqualOrBelowSelfRating = true;
 		boolean productRiskEqualOrBelowSelfRating = true;
@@ -331,19 +332,12 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 
 		if (!safetyRiskEqualOrBelowSelfRating || !productRiskEqualOrBelowSelfRating) {
-			String safetyAssessment = safety.toString();
-			if (safetyAssessment.equals("Med")) {
-				safetyAssessment = getText("LowMedHigh.Med");
-			}
-
-			String productAssessment = product.toString();
-			if (productAssessment.equals("Med")) {
-				productAssessment = getText("LowMedHigh.Med");
-			}
+			String safetyAssessment = getText(safety.getI18nKey());
+			String productAssessment = getText(product.getI18nKey());
 
 			List<String> increases = new ArrayList<String>();
 			if (!safetyRiskEqualOrBelowSelfRating && !contractor.isMaterialSupplierOnly()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safety));
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safetyAssessment));
 			}
 			
 			if (!productRiskEqualOrBelowSelfRating && contractor.isMaterialSupplier()) {
