@@ -1,7 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -128,6 +129,25 @@ public class AuditDataSaveTest extends PicsTest {
 				.thenReturn(new ArrayList<AuditCategoryRule>());
 		doNothing().when(auditPercentCalculatior).updatePercentageCompleted(
 				catData);
+	}
+	
+	@Test
+	public void testExecute_Verify() throws Exception {
+		AuditData oldData = EntityFactory.makeAuditData("No");
+		oldData.setId(auditData.getId());
+		
+	    AuditType annual = EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM);
+	    audit.setAuditType(annual);
+		oldData.setAudit(auditData.getAudit());
+		oldData.setQuestion(auditData.getQuestion());
+		
+		when(auditDataDao.find(anyInt())) .thenReturn(oldData);
+		PicsTestUtil.forceSetPrivateField(auditDataSave, "button",
+				"verify");
+		assertEquals("success", auditDataSave.execute());
+		assertEquals("Yes", oldData.getAnswer());
+		assertNotNull(oldData.getDateVerified());
+		assertEquals(user.getId(), oldData.getAuditor().getId());
 	}
 
 	@Test
