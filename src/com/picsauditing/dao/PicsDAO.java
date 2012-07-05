@@ -147,10 +147,6 @@ abstract public class PicsDAO {
 			name = ",'." + name + "'";
 			identifier = "id";
 		} else {
-			if (cls.getSimpleName().equals("State")) {
-				name = ",'.',t.countryCode";
-			}
-			
 			identifier = "isoCode";
 		}
 

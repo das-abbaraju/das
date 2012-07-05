@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -327,8 +328,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public void processSearchResults(List<BasicDynaBean> data) {
 		for (BasicDynaBean d : data) {
 			OperatorAccount o = new OperatorAccount();
-			Country operatorCountry = new Country(d.get("country").toString());
-			State operatorState = new State(d.get("state").toString(), operatorCountry);
 
 			o.setId(Integer.parseInt(d.get("opID").toString()));
 			o.setName(d.get("name").toString());
@@ -337,9 +336,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (d.get("city") != null)
 				o.setCity(d.get("city").toString());
 			if (d.get("state") != null)
-				o.setState(operatorState);
+				o.setState(new State(d.get("state").toString()));
 			if (d.get("country") != null)
-				o.setCountry(operatorCountry);
+				o.setCountry(new Country(d.get("country").toString()));
 			o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
 
 			o.setOnsiteServices(1 == (Integer) d.get("onsiteServices"));

@@ -1,9 +1,12 @@
 package com.picsauditing.PICS;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
@@ -24,6 +31,7 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
@@ -141,9 +149,7 @@ public class ContractorValidatorTest extends PicsTest {
 
 	private void setCountryAndState(ContractorAccount contractor,
 			String countryIsoCode, String stateIsoCode) {
-		Country country = new Country(countryIsoCode);
-		State state = new State(stateIsoCode, country);
-		contractor.setCountry(country);
-		contractor.setState(state);
+		contractor.setCountry(new Country(countryIsoCode));
+		contractor.setState(new State(stateIsoCode));
 	}
 }

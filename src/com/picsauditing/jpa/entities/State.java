@@ -1,14 +1,11 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.io.Serializable;
 import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,18 +16,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.annotations.ReportField;
-import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.search.IndexValueType;
-import com.picsauditing.search.IndexableField;
-
 @Entity
 @Table(name = "ref_state")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class State extends BaseTranslatable implements Comparable<State>, Serializable, Autocompleteable, IsoCode {
 	private static final long serialVersionUID = -7010252482295453919L;
 
-	protected int id;
 	protected String isoCode;
 	protected TranslatableString name;
 	protected String english;
@@ -42,24 +33,11 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 	public State() {
 	}
 
-	public State(String isoCode, Country country) {
+	public State(String isoCode) {
 		this.isoCode = isoCode;
-		this.country = country;
 	}
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(nullable = false)
-	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 10)
-	@ReportField(filterType = FilterType.Integer)
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	@Column(nullable = false, length = 2)
 	public String getIsoCode() {
 		return isoCode;
@@ -169,7 +147,7 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 
 	@Transient
 	public String getI18nKey() {
-		return getClass().getSimpleName() + "." + isoCode + "." + country.getIsoCode();
+		return getClass().getSimpleName() + "." + isoCode;
 	}
 
 	@Transient
