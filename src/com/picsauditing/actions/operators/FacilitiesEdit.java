@@ -376,7 +376,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {
 		// find all operators
 		List<OperatorAccount> tmpOperatorList;
-		tmpOperatorList = operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
+		tmpOperatorList = operatorDao.findWhere(true, "status IN ('Active','Demo','Pending')");
 
 		// remove operators that are children of the current operator
 		tmpOperatorList.removeAll(operator.getChildOperators());
