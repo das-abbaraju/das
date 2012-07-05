@@ -129,7 +129,7 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 
 	@Override
 	public String toString() {
-		return country.getIsoCode() + "_" + isoCode;
+		return isoCode;
 	}
 
 	@Transient
