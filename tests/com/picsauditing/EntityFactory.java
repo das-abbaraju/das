@@ -82,7 +82,6 @@ public class EntityFactory {
 	 */
 	static public ContractorAccount makeContractor() {
 		ContractorAccount contractor = new ContractorAccount();
-		// contractor.setActive('Y');
 		contractor.setId(counter++);
 		contractor.setStatus(AccountStatus.Active);
 		contractor.setName("Contractor Unit Test");
@@ -131,8 +130,7 @@ public class EntityFactory {
 	}
 
 	public static State makeState(String isoCode, Country country, String englishName) {
-		State state = new State(isoCode);
-		state.setCountry(country);
+		State state = new State(isoCode,country);
 		state.setEnglish(englishName);
 		state.setName(makeEnglishString(isoCode, englishName));
 		return state;
