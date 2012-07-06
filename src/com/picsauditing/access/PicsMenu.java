@@ -144,8 +144,11 @@ public class PicsMenu {
 
 		subMenu = menu.addChild(getText("global.Contractors"));
 		if (permissions.hasPermission(OpPerms.AllContractors) || permissions.isOperatorCorporate()) {
-			subMenu.addChild(getTitle("ContractorList"), "ContractorList.action"
-					+ (permissions.isOperatorCorporate() ? "?filter.workStatus=Y" : ""), "ContractorList");
+			subMenu.addChild(
+					getTitle("ContractorList"),
+					"ContractorList.action"
+							+ (permissions.isOperatorCorporate() && permissions.has(OpPerms.ViewUnApproved) ? "?filter.workStatus=Y"
+									: ""), "ContractorList");
 		}
 
 		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
