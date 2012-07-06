@@ -11,7 +11,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -21,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -94,7 +94,8 @@ public class EventSubscriptionBuilder {
 		Collections.sort(operatorsString);
 
 		emailBuilder.addToken("operators", Strings.implode(operatorsString, ", "));
-		emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
+
+		emailBuilder.setFromAddress(getBillingEmail(contractor.getCurrency()));
 
 		EmailQueue email = emailBuilder.build();
 		email.setHighPriority();
@@ -103,6 +104,13 @@ public class EventSubscriptionBuilder {
 		emailSender.send(email);
 
 		return email;
+	}
+
+	private static String getBillingEmail(Currency currency){
+		if(currency.isEUR()||currency.isGBP())
+			return "\"PICS Billing\"<eubilling@picsauditing.com>";
+		else
+			return "\"PICS Billing\"<billing@picsauditing.com>";
 	}
 
 	public static void theSystemIsDown(ContractorCronStatistics stats) {
@@ -193,6 +201,7 @@ public class EventSubscriptionBuilder {
 		} catch (Exception e){
 			logger.error("Error while sending invalid email address email to auditors.", e);
 		}
+
 	}
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
