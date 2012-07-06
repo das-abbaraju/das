@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.access.ReportAccessor;
+import com.picsauditing.report.models.ModelType;
 
 public class ReportDynamicModelTest {
 
@@ -118,4 +120,37 @@ public class ReportDynamicModelTest {
 		verify(reportAccessor).removeUserReport(user, report);
 		verify(reportAccessor, never()).deleteReport(report);
 	}
+
+	@Test(expected = ReportValidationException.class)
+		public void testValidate_NullReport() throws ReportValidationException {
+			Report report = null;
+
+			ReportDynamicModel.validate(report);
+		}
+
+	@Test(expected = ReportValidationException.class)
+		public void testValidate_NullModelType() throws ReportValidationException {
+			Report report = new Report();
+			report.setModelType(null);
+
+			ReportDynamicModel.validate(report);
+		}
+
+	@Test(expected = ReportValidationException.class)
+		public void testValidate_InvalidReportParameters() throws ReportValidationException {
+			Report report = new Report();
+			report.setModelType(ModelType.Accounts);
+			report.setParameters("NOT_A_REPORT");
+
+			ReportDynamicModel.validate(report);
+		}
+
+	@Test
+		public void testValidate_ValidReportParameters() throws ReportValidationException {
+			Report report = new Report();
+			report.setModelType(ModelType.Accounts);
+			report.setParameters("{}");
+
+			ReportDynamicModel.validate(report);
+		}
 }

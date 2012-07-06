@@ -7,10 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.models.ModelType;
 
 public class ReportUtilTest {
 
@@ -45,38 +42,5 @@ public class ReportUtilTest {
 
 		assertNotNull(column);
 		assertEquals(fieldName, column.getFieldName());
-	}
-
-	@Test(expected = ReportValidationException.class)
-	public void testValidate_NullReport() throws ReportValidationException {
-		Report report = null;
-
-		ReportUtil.validate(report);
-	}
-
-	@Test(expected = ReportValidationException.class)
-	public void testValidate_NullModelType() throws ReportValidationException {
-		Report report = new Report();
-		report.setModelType(null);
-
-		ReportUtil.validate(report);
-	}
-
-	@Test(expected = ReportValidationException.class)
-	public void testValidate_InvalidReportParameters() throws ReportValidationException {
-		Report report = new Report();
-		report.setModelType(ModelType.Accounts);
-		report.setParameters("NOT_A_REPORT");
-
-		ReportUtil.validate(report);
-	}
-
-	@Test
-	public void testValidate_ValidReportParameters() throws ReportValidationException {
-		Report report = new Report();
-		report.setModelType(ModelType.Accounts);
-		report.setParameters("{}");
-
-		ReportUtil.validate(report);
 	}
 }

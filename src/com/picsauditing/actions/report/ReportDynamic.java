@@ -89,7 +89,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Deprecated
 	public String find() {
 		try {
-			ReportUtil.validate(report);
+			ReportDynamicModel.validate(report);
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
@@ -135,7 +135,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			ReportUtil.validate(report);
+			ReportDynamicModel.validate(report);
 
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
@@ -154,17 +154,12 @@ public class ReportDynamic extends PicsActionSupport {
 
 				json.put("success", true);
 			}
-		} catch (SQLException e) {
-			logError(e);
+		} catch (ReportValidationException rve) {
+			logError(rve);
+		} catch (SQLException se) {
+			logError(se);
 		} catch (Exception e) {
 			logError(e);
-		} finally {
-			// I didn't change this because I don't even know if we still want this at all
-//			if (ReportUtil.shouldPutSqlInJson(permissions)) {
-			if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0)) {
-				json.put("sql", sql.toString().replace("`", "").replace("\n", " "));
-				json.put("base", report.getModelType().toString());
-			}
 		}
 
 		return JSON;
@@ -176,7 +171,7 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
-			ReportUtil.validate(report);
+			ReportDynamicModel.validate(report);
 
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
@@ -212,7 +207,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String report() {
 		try {
-			ReportUtil.validate(report);
+			ReportDynamicModel.validate(report);
 		} catch (Exception e) {
 			writeJsonErrorMessage(e);
 			return JSON;
@@ -235,7 +230,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			ReportUtil.validate(report);
+			ReportDynamicModel.validate(report);
 		} catch (Exception e) {
 			writeJsonErrorMessage(e);
 			return JSON;
@@ -252,7 +247,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String download() {
 		try {
-			ReportUtil.validate(report);
+			ReportDynamicModel.validate(report);
 		} catch (ReportValidationException rve) {
 			writeJsonErrorMessage(rve);
 			return JSON;

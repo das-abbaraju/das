@@ -11,12 +11,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
@@ -53,25 +50,6 @@ public final class ReportUtil {
 		return null;
 	}
 
-	public static void validate(Report report) throws ReportValidationException {
-		// TODO Add i18n to this
-		if (report == null)
-			throw new ReportValidationException("Please provide a saved or ad hoc report to run");
-
-		// TODO Add i18n to this
-		if (report.getModelType() == null)
-			throw new ReportValidationException("The report is missing its base", report);
-
-		try {
-			new JSONParser().parse(report.getParameters());
-		} catch (ParseException e) {
-			throw new ReportValidationException(e, report);
-		}
-	}
-
-	/**
-	 * The purpose of this method is to convert the queryResult into a JSONObject.
-	 */
 	@SuppressWarnings("unchecked")
 	public static JSONArray convertQueryResultsToJson(List<BasicDynaBean> queryResults,
 			Map<String, Field> availableFields, Permissions permissions, Locale locale) {
