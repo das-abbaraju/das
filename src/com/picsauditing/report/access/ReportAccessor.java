@@ -19,7 +19,7 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.models.ReportDynamicModel;
+import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 

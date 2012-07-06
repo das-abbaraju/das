@@ -30,7 +30,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.models.ReportDynamicModel;
+import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.report.models.ModelType;

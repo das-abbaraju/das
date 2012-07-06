@@ -17,7 +17,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.models.ReportDynamicModel;
+import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;

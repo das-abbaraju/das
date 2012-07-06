@@ -23,7 +23,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.models.ReportDynamicModel;
+import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.report.access.ReportUtil;
@@ -48,7 +48,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private Report report;
 	private int pageNumber = 1;
-	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder sqlBuilder = new SqlBuilder();
 	private String fileType = ".xls";
@@ -321,7 +320,6 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		json.put("message", message);
-		showSQL = true;
 	}
 
 	public Report getReport() {
@@ -334,10 +332,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setPage(int page) {
 		this.pageNumber = page;
-	}
-
-	public void setShowSQL(boolean showSQL) {
-		this.showSQL = showSQL;
 	}
 
 	public String getFileType() {

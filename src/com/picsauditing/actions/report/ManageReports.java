@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.models.ReportDynamicModel;
+import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.util.Strings;
 

@@ -1,4 +1,4 @@
-package com.picsauditing.models;
+package com.picsauditing.model;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -129,18 +129,6 @@ public class ReportDynamicModel {
 
 		for (AbstractTable joinTable : table.getJoins()) {
 			addAllAvailableFields(availableFields, joinTable);
-		}
-	}
-
-	@Deprecated
-	public void removeReportFrom(User user, Report report) {
-		if (canUserDelete(user.getId(), report)) {
-			reportAccessor.deleteReport(report);
-		} else {
-			try {
-				reportAccessor.removeUserReport(user, report);
-			} catch (Exception e) {
-			}
 		}
 	}
 
