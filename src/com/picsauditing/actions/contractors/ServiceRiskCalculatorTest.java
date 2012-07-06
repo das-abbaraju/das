@@ -210,6 +210,26 @@ public class ServiceRiskCalculatorTest {
 		Assert.assertEquals(LowMedHigh.High, serviceRiskCalculator.getRiskLevel(productHigh));
 	}
 
+	@Test
+	public void testNonAssessmentQuestion() {
+		AuditData nonAssessmentQuestion = createAuditData(1);
+		nonAssessmentQuestion.setAnswer("High");
+		Assert.assertEquals(LowMedHigh.None, serviceRiskCalculator.getRiskLevel(nonAssessmentQuestion));
+	}
+
+	@Test
+	public void testNullAnswer() {
+		AuditData noAnswer = createAuditData(12345);
+		Assert.assertEquals(LowMedHigh.None, serviceRiskCalculator.getRiskLevel(noAnswer));
+	}
+
+	@Test
+	public void testBadAnswer() {
+		AuditData badAnswer = createAuditData(12345);
+		badAnswer.setAnswer("Hello");
+		Assert.assertEquals(LowMedHigh.None, serviceRiskCalculator.getRiskLevel(badAnswer));
+	}
+
 	private List<AuditData> createSafetyAuditDataAllAnswers(String answer) {
 		List<AuditData> auditDatas = new ArrayList<AuditData>();
 
@@ -251,10 +271,10 @@ public class ServiceRiskCalculatorTest {
 
 		for (ProductAssessment productAssessment : ProductAssessment.values()) {
 			if (!productAssessment.isSelfEvaluation()) {
-			AuditData auditData = createAuditData(productAssessment.getQuestionID());
-			auditData.setAnswer(answer);
+				AuditData auditData = createAuditData(productAssessment.getQuestionID());
+				auditData.setAnswer(answer);
 
-			auditDatas.add(auditData);
+				auditDatas.add(auditData);
 			}
 		}
 
@@ -266,10 +286,10 @@ public class ServiceRiskCalculatorTest {
 
 		for (ProductAssessment productAssessment : ProductAssessment.values()) {
 			if (!productAssessment.isSelfEvaluation()) {
-			AuditData auditData = createAuditData(productAssessment.getQuestionID());
-			auditData.setAnswer(productAssessment.getQuestionID() % 2 == (even ? 0 : 1) ? YES : NO);
+				AuditData auditData = createAuditData(productAssessment.getQuestionID());
+				auditData.setAnswer(productAssessment.getQuestionID() % 2 == (even ? 0 : 1) ? YES : NO);
 
-			auditDatas.add(auditData);
+				auditDatas.add(auditData);
 			}
 		}
 

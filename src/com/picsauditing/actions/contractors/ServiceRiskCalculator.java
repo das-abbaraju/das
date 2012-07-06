@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.YesNo;
@@ -68,8 +71,7 @@ public class ServiceRiskCalculator {
 	}
 
 	private boolean isSafetyQuestion(int auditQuestionID) {
-		SafetyAssessment safetyAssessment = SafetyAssessment.getSafetyAssessment(auditQuestionID);
-		if (safetyAssessment != null) {
+		if (SafetyAssessment.getSafetyAssessment(auditQuestionID) != null) {
 			return true;
 		}
 
@@ -77,8 +79,7 @@ public class ServiceRiskCalculator {
 	}
 
 	private boolean isProductQuestion(int auditQuestionID) {
-		ProductAssessment productAssessment = ProductAssessment.getProductAssessment(auditQuestionID);
-		if (productAssessment != null) {
+		if (ProductAssessment.getProductAssessment(auditQuestionID) != null) {
 			return true;
 		}
 
@@ -87,10 +88,15 @@ public class ServiceRiskCalculator {
 
 	private LowMedHigh determineRiskLevel(String answer, LowMedHigh yes, LowMedHigh no) {
 		if (!Strings.isEmpty(answer)) {
-			if (YesNo.Yes == YesNo.valueOf(answer)) {
-				return yes;
-			} else {
-				return no;
+			try {
+				if (YesNo.Yes == YesNo.valueOf(answer)) {
+					return yes;
+				} else {
+					return no;
+				}
+			} catch (Exception e) {
+				Logger logger = LoggerFactory.getLogger(ServiceRiskCalculator.class);
+				logger.error("Error parsing self-assessment risk level for answer " + answer, e);
 			}
 		}
 
