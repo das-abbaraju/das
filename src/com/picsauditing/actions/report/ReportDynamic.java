@@ -159,6 +159,8 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			logError(e);
 		} finally {
+			// I didn't change this because I don't even know if we still want this at all
+//			if (ReportUtil.shouldPutSqlInJson(permissions)) {
 			if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0)) {
 				json.put("sql", sql.toString().replace("`", "").replace("\n", " "));
 				json.put("base", report.getModelType().toString());
@@ -200,8 +202,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	// rename to userStatus
-	public String getUserStatus() {
+	public String configuration() {
 		int userId = permissions.getUserId();
 
 		json.put("is_editable", reportDynamicModel.canUserEdit(userId, report));
@@ -209,8 +210,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	// rename to report()
-	public String getReportParameters() {
+	public String report() {
 		try {
 			ReportUtil.validate(report);
 		} catch (Exception e) {
