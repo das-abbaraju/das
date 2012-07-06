@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.SettingsEdit', {
+Ext.define('PICS.view.report.settings.Edit', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingsedit'],
 
@@ -10,11 +10,14 @@ Ext.define('PICS.view.report.SettingsEdit', {
         },
         dock: 'bottom',
         items: [{
+            action: 'cancel',
             cls: 'cancel default',
             height: 28,
             text: 'Cancel'
         }, {
+            action: 'edit',
             cls: 'edit primary',
+            formBind: true,
             height: 28,
             text: 'Apply'
         }],
@@ -26,15 +29,18 @@ Ext.define('PICS.view.report.SettingsEdit', {
     id: 'report_edit',
     items: [{
         xtype: 'textfield',
+        allowBlank: false,
         fieldLabel: 'Report Name',
         labelAlign: 'right',
         name: 'report_name'
     }, {
         xtype: 'textarea',
+        allowBlank: false,
         fieldLabel: 'Description',
         labelAlign: 'right',
         name: 'report_description'
     }],
     layout: 'form',
+    modal_title: 'Edit Report',
     title: '<i class="icon-cog icon-large"></i>Settings'
 });

@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.SettingsPrint', {
+Ext.define('PICS.view.report.settings.Print', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportsettingsprint'],
 
@@ -8,5 +8,6 @@ Ext.define('PICS.view.report.SettingsPrint', {
         text: '<i class="icon-print icon-large"></i>Print'
     }],
     title: '<i class="icon-print icon-large"></i>Print',
+    modal_title: 'Print Report',
     vertical: true
 });

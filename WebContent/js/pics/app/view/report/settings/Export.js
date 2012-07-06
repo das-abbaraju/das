@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.SettingsExport', {
+Ext.define('PICS.view.report.settings.Export', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportsettingsexport'],
 
@@ -11,6 +11,7 @@ Ext.define('PICS.view.report.SettingsExport', {
     }, {
         text: '<i class="icon-home icon-large"></i>To Dashboard'
     }],
+    modal_title: 'Export Report',
     title: '<i class="icon-eject icon-large"></i>Export',
     vertical: true
 });
