@@ -74,6 +74,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.IndexerEngine;
@@ -586,7 +587,7 @@ public class Cron extends PicsActionSupport {
 				+ "','CORP',''),'INC',''),'LTD','') LIKE CONCAT('%',REPLACE(REPLACE(REPLACE(a.nameIndex,'CORP',''),'INC',''),'LTD',''),'%'))";
 	}
 
-	private void sendUpcomingImplementationAuditEmail() {
+	private void sendUpcomingImplementationAuditEmail() throws NoUsersDefinedException, IOException {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 7);
 

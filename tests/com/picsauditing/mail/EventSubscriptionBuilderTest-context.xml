@@ -18,9 +18,10 @@
 		<property name="dataSource" ref="DataSource"/>
 	</bean>
 
+	<mockito:mock id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
 	<mockito:mock id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
 	<mockito:mock id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
 	<mockito:mock id="EmailSenderSpring" class="com.picsauditing.mail.EmailSenderSpring"/>
 	<mockito:mock id="DataSource" class="javax.sql.DataSource"/>
-	
+
 </beans>
