@@ -48,7 +48,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private Report report;
 	private int pageNumber = 1;
-	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder sqlBuilder = new SqlBuilder();
 	private String fileType = ".xls";
 
@@ -139,7 +138,7 @@ public class ReportDynamic extends PicsActionSupport {
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
 
-			sql = sqlBuilder.buildSql(report, permissions, pageNumber);
+			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
 			ReportUtil.localize(report, getLocale());
 
@@ -215,7 +214,8 @@ public class ReportDynamic extends PicsActionSupport {
 		// TODO remove definition from SqlBuilder
 		sqlBuilder.setDefinition(report.getDefinition());
 
-		sql = sqlBuilder.buildSql(report, permissions, pageNumber);
+		// TODO find out what else this method is doing besides building sql
+		sqlBuilder.buildSql(report, permissions, pageNumber);
 
 		ReportUtil.localize(report, getLocale());
 
@@ -264,12 +264,12 @@ public class ReportDynamic extends PicsActionSupport {
 		// TODO remove definition from SqlBuilder
 		sqlBuilder.setDefinition(report.getDefinition());
 
-		sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
+		SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
 
 		ReportUtil.localize(report, getLocale());
 
 		try {
-			exportToExcel(report);
+			exportToExcel(report, ReportAccessor.runQuery(sql, json));
 		} catch (SQLException se) {
 			logger.warn(se.toString());
 		} catch (IOException ioe) {
@@ -281,9 +281,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void exportToExcel(Report report) throws Exception {
-		List<BasicDynaBean> rawData = ReportAccessor.runQuery(sql, json);
-
+	private void exportToExcel(Report report, List<BasicDynaBean> rawData) throws Exception {
 		ExcelSheet excelSheet = new ExcelSheet();
 		excelSheet.setData(rawData);
 
