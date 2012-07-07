@@ -368,7 +368,7 @@ public class Cron extends PicsActionSupport {
 
 	private void getEmailExclusions() {
 		List<String> exclusionList = emailQueueDAO.findEmailAddressExclusions();
-		if (CollectionUtils.isEmpty(exclusionList))
+		if (CollectionUtils.isNotEmpty(exclusionList))
 			emailExclusionList.addAll(exclusionList);
 	}
 
