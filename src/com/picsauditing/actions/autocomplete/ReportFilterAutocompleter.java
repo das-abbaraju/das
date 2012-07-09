@@ -34,7 +34,7 @@ public final class ReportFilterAutocompleter {
 		switch (autocompleteFilter) {
 		case Country:
 			return countryAutocompleteService.tokenJson(searchQuery);
-		case State:
+		case Subdivision:
 			return stateAutocompleteService.tokenJson(searchQuery);
 		case Trade:
 			return tradeAutocompleteService.tokenJson(searchQuery);
