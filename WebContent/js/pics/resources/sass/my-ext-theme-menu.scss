@@ -59,6 +59,21 @@ $toolbar-font-size: 13px;
 
 @import 'my-ext-theme/layout/menu';
 
+.x-nlg
+{
+	#site_menu,
+	.x-menu-item-active .x-menu-item-link,
+	.x-btn-default-small,
+	{
+		@include background-image(none !important);
+	}
+	
+	.x-menu-item-active .x-menu-item-link
+	{
+		background: #a84d10;
+	}
+}
+
 // End Custom
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
