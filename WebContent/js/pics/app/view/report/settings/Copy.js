@@ -41,6 +41,7 @@ Ext.define('PICS.view.report.settings.Copy', {
         name: 'report_description'
     }],
     layout: 'form',
+    // custom config
     modal_title: 'Duplicate Report',
     title: '<i class="icon-copy icon-large"></i>Duplicate'
 });

@@ -11,6 +11,7 @@ Ext.define('PICS.view.report.settings.Export', {
     }, {
         text: '<i class="icon-home icon-large"></i>To Dashboard'
     }],
+    // custom config
     modal_title: 'Export Report',
     title: '<i class="icon-eject icon-large"></i>Export',
     vertical: true

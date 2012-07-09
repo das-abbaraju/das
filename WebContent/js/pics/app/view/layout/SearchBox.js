@@ -4,18 +4,15 @@ Ext.define('PICS.view.layout.SearchBox', {
 
     autoScroll: false,
     displayField: 'name',
-    // TODO use the translated 'search' value
     emptyText: 'search',
-    hideTrigger: true,
     fieldLabel: '<i class="icon-search icon-large"></i>',
+    hideTrigger: true,
+    id: 'site_menu_search',
     labelSeparator: '',
-    // TODO remove inline style
-    labelStyle: 'color: gray;',
-    labelWidth: '25px',
+    labelWidth: 25,
 
     listConfig: {
         id: 'site_menu_search_list',
-        // TODO get the translated version
         loadingText: 'Searching...',
         maxHeight: 500,
 
@@ -40,12 +37,6 @@ Ext.define('PICS.view.layout.SearchBox', {
     },
 
     listeners: {
-//        beforequery: function (queryEvent, options) {
-//            // Prevent empty queries
-//            if (!queryEvent.query) {
-//                return false;
-//            }
-//        },
         select: function(combo, selection) {
             var post = selection[0];
             if (post) {

@@ -16,6 +16,7 @@ Ext.define('PICS.controller.report.DataSetController', {
 
     init: function () {
         var me = this;
+
         this.control({
             'reportdatasetgrid': {
                 beforerender: this.configureColumnMenu
@@ -43,7 +44,9 @@ Ext.define('PICS.controller.report.DataSetController', {
             },
             'reporttoolbar button[action=add-column]': {
                 click: function () {
-                    PICS.app.fireEvent('showcolumnselector', {columnSelectorType: 'column'});
+                    PICS.app.fireEvent('showcolumnselector', {
+                        columnSelectorType: 'column'
+                    });
                 }
             },
             'reportdatasetgrid pagingtoolbar button[itemId=refresh]': {
@@ -76,10 +79,10 @@ Ext.define('PICS.controller.report.DataSetController', {
                 floating: false,
                 items: [{
                     name: 'sortASC',
-                    text: 'Sort Ascending',
+                    text: 'Sort Ascending'
                 }, {
                     name: 'sortDESC',
-                    text: 'Sort Descending',
+                    text: 'Sort Descending'
                 }, {
                     name: 'removeColumn',
                     text: 'Remove'
@@ -96,6 +99,7 @@ Ext.define('PICS.controller.report.DataSetController', {
             colIndex = column_store.find('name', activeMenuItem);
 
         column_store.removeAt(colIndex);
+
         this.application.fireEvent('refreshreport');
     }
 });

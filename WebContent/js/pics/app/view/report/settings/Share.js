@@ -36,6 +36,7 @@ Ext.define('PICS.view.report.settings.Share', {
         name: 'report_description'
     }],
     layout: 'form',
+    // custom config
     modal_title: 'Share Report',
     title: '<i class="icon-share icon-large"></i>Share'
 });

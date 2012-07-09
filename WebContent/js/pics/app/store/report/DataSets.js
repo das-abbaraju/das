@@ -138,7 +138,7 @@ Ext.define('PICS.store.report.DataSets', {
     },
 
     resetReportPaging: function () {
-        paging_toolbar = Ext.ComponentQuery.query('reportdatasetgrid pagingtoolbar')[0];
+        var paging_toolbar = Ext.ComponentQuery.query('reportdatasetgrid pagingtoolbar')[0];
 
         if (paging_toolbar) {
             paging_toolbar.moveFirst();

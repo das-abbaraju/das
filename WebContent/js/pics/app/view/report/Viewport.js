@@ -2,7 +2,6 @@ Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
     requires: [
-        'PICS.view.layout.Footer',
         'PICS.view.layout.Header',
         'PICS.view.report.DataSetGrid',
         'PICS.view.report.FilterOptions',
@@ -15,7 +14,7 @@ Ext.define('PICS.view.report.Viewport', {
     }, {
         region: 'center',
 
-        border: 0,
+        border: false,
         id: 'content',
         items: [{
         	xtype: 'reportheader',

@@ -1,6 +1,7 @@
 Ext.define('PICS.view.report.settings.Tabs', {
     extend: 'Ext.tab.Panel',
     alias: ['widget.reportsettingstabs'],
+
     requires: [
         'PICS.view.report.settings.Copy',
         'PICS.view.report.settings.Edit',
@@ -9,11 +10,12 @@ Ext.define('PICS.view.report.settings.Tabs', {
         'PICS.view.report.settings.Share'
     ],
 
-    border: 0,
+    border: false,
     tabBar: {
-        border: 0,
+        border: false,
         height: 60,
         id: 'report_settings_tabbar',
+        // controls default proportions for tab buttons
         defaults: {
             height: 60,
             width: 70

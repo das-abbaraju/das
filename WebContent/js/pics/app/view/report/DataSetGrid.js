@@ -1,13 +1,15 @@
 Ext.define('PICS.view.report.DataSetGrid', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportdatasetgrid'],
+
     requires: [
         'PICS.view.report.LinkColumn',
         'PICS.view.report.Toolbar'
     ],
+
     store: 'report.DataSets',
 
-    border: 0,
+    border: false,
     columns: [{
         xtype: 'rownumberer'
     }],
@@ -21,6 +23,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
         displayInfo: true,
         dock: 'top',
         height: 50,
+        id: 'paging_toolbar',
         items: [{
             xtype: 'combo',
             cls: 'rows-per-page',
@@ -34,7 +37,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 ['100', '100'],
                 ['150', '150'],
                 ['200', '200'],
-                ['250', '250'],
+                ['250', '250']
             ],
             width: 50,
             value: 50

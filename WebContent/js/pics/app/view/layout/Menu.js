@@ -77,8 +77,7 @@ Ext.define('PICS.view.layout.Menu', {
     },
 
     addSearchBox: function (menu_items) {
-        var search_box = Ext.create('PICS.view.layout.SearchBox', {
-        });
+        var search_box = Ext.create('PICS.view.layout.SearchBox');
 
         menu_items.push(search_box);
     },

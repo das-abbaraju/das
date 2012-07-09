@@ -8,6 +8,7 @@ Ext.define('PICS.view.report.settings.Print', {
         text: '<i class="icon-print icon-large"></i>Print'
     }],
     title: '<i class="icon-print icon-large"></i>Print',
+    // custom config
     modal_title: 'Print Report',
     vertical: true
 });

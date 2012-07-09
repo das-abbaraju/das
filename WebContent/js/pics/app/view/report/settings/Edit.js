@@ -41,6 +41,7 @@ Ext.define('PICS.view.report.settings.Edit', {
         name: 'report_description'
     }],
     layout: 'form',
+    // custom config
     modal_title: 'Edit Report',
     title: '<i class="icon-cog icon-large"></i>Settings'
 });
