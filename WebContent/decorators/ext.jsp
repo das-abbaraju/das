@@ -12,6 +12,13 @@
 		
 		<script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
 		<%-- <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script> --%>
+        
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css">
+        <link rel="stylesheet" type="text/css" href="v7/css/font-awesome.css">
+        
+        <%-- TODO: this should be refactored out of the custom css and done properly --%>
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
 		
 		<decorator:head />
 	</head>
