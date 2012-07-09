@@ -12,18 +12,18 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.OpenTasks;
 import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.braintree.BrainTreeService;
+import com.picsauditing.util.braintree.CreditCard;
 
 /**
  * Widgets for a single contractor
- * 
+ *
  * @author Trevor
  */
 @SuppressWarnings("serial")
@@ -136,7 +136,7 @@ public class ContractorWidget extends ContractorActionSupport {
 		return new Date();
 	}
 
-	public BrainTreeService.CreditCard getCreditCard() {
+	public CreditCard getCreditCard() {
 		if (creditCard == null) {
 			try {
 				creditCard = paymentService.getCreditCard(id);

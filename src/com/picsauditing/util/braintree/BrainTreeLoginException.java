@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.util.braintree;
 
 /**
  * Indicates that the BrainTree username or password has been left out before

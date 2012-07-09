@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.util.braintree;
 
 /**
  * Various Codes and their meanings from BrainTree See

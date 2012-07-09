@@ -1,4 +1,6 @@
-package com.picsauditing.util;
+package com.picsauditing.util.braintree;
+
+import com.picsauditing.util.Strings;
 
 
 public class BrainTree {

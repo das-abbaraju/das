@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceDAO;
@@ -42,6 +40,8 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.braintree.BrainTreeService;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -386,7 +386,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public List<InvoiceFee> getFeeList() {
 		if (feeList == null)
-			feeList = (List<InvoiceFee>) invoiceFeeDAO.findWhere(InvoiceFee.class, "t.visible = true", 100);
+			feeList = invoiceFeeDAO.findWhere(InvoiceFee.class, "t.visible = true", 100);
 
 		return feeList;
 	}
