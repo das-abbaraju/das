@@ -130,10 +130,10 @@ public class EmailQueueDAO extends PicsDAO {
 		return (Long) query.getSingleResult();
 	}
 
-	public List<String> findPendingActivationEmails(String timeframe) {
+	public List<String> findPendingActivationEmails(String timeframe, int[] pendingEmailTemplates) {
 		String sql = "SELECT DISTINCT toAddresses "
 				+ "FROM email_queue eq "
-				+ "WHERE eq.templateID IN (185,186,187,188,195,196,197,198,201,202) "
+				+ "WHERE eq.templateID IN (" + Strings.implode(pendingEmailTemplates) + ") "
 				+ "AND eq.creationDate > DATE_SUB(CURDATE(), INTERVAL " + timeframe + ")";
 		Query query = em.createNativeQuery(sql);
 		return query.getResultList();
