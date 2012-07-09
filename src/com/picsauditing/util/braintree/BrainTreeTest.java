@@ -1,4 +1,4 @@
-package com.picsauditing.util;
+package com.picsauditing.util.braintree;
 
 import java.math.BigDecimal;
 
@@ -7,9 +7,9 @@ import junit.framework.TestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.util.braintree.BrainTree;
 
 public class BrainTreeTest extends TestCase {
 	@Autowired

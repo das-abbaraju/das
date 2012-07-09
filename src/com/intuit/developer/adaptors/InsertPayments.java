@@ -13,7 +13,6 @@ import javax.xml.bind.Unmarshaller;
 import org.jboss.util.Strings;
 
 import com.intuit.developer.QBSession;
-import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
@@ -26,6 +25,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentAdd;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 public class InsertPayments extends PaymentAdaptor {
@@ -95,7 +95,7 @@ public class InsertPayments extends PaymentAdaptor {
 			boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
 			String cardType = null;
 			if (!isCheck) {
-				cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
+				cardType = new CreditCard(paymentJPA.getCcNumber()).getCardType();
 				if (cardType == null || cardType.equals("") || cardType.equals("Unknown")) {
 					isCheck = true;
 				}

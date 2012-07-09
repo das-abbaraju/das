@@ -2,16 +2,16 @@ package com.picsauditing.util;
 
 import java.util.List;
 
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
  * For collecting contractors with credit cards with no expiration date and
  * synchronizing them with their corresponding expiration date on BrainTree.
- * 
+ *
  * @author Thomas Baker
  * @version 4.3, 05/03/2010
  */
@@ -51,7 +51,7 @@ public class ExpirationDateSynchronizer extends PicsActionSupport {
 				CreditCard cc = contractor.getCreditCard();
 				// get expiration
 				if (cc != null) {
-					contractor.setCcExpiration(cc.getExpirationDate2());
+					contractor.setCcExpiration(cc.getExpirationDate());
 
 					// save expiration to contractor account
 					contractorAccountDAO.save(contractor);
@@ -62,7 +62,7 @@ public class ExpirationDateSynchronizer extends PicsActionSupport {
 							+ ") failed to update expiration date");
 				}
 			}
-			
+
 			PicsLogger.stop();
 		}
 

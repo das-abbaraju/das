@@ -3,7 +3,6 @@ package com.picsauditing.PICS;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -18,14 +17,24 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.util.StreamContentProvider;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.braintree.BrainTreeCardDeclinedException;
+import com.picsauditing.util.braintree.BrainTreeCodes;
+import com.picsauditing.util.braintree.BrainTreeLoginException;
+import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
 
 public class BrainTreeService {
+
 	@Autowired
 	AppPropertyDAO appPropertyDAO;
+
+	@Autowired
+	StreamContentProvider contentProvider;
 
 	private static String urlBase = "https://secure.braintreepaymentgateway.com/api/";
 
@@ -54,9 +63,7 @@ public class BrainTreeService {
 		appendUsernamePassword(request);
 		request.append("&customer_vault_id=").append(contractorId);
 
-		URL url = new URL(request.toString());
-		InputStream inputStream = url.openStream();
-		inputStream.close();
+		contentProvider.openResponseFrom(request.toString()).close();
 	}
 
 	public String getTransactionCondition(String transactionID) throws Exception {
@@ -102,7 +109,7 @@ public class BrainTreeService {
 		// Admin will handle manually
 
 		if (map == null || map.isEmpty())
-			throw new NoBrainTreeServiceResponseException((map == null) ? " Response is null " : " No response ");
+			throw new NoBrainTreeServiceResponseException();
 		String response = map.get("response");
 		if (response.equals("1")) {
 			payment.setTransactionID(map.get("transactionid"));
@@ -152,7 +159,7 @@ public class BrainTreeService {
 	 * is still reserved on the card and will take a few days to expire. You will have to call the issuing bank to
 	 * request that the authorization be removed if the customer does not want to wait for it to expire on its own.
 	 * Voids can only occur if the transaction has not been settled; settled transactions should be refunded.
-	 * 
+	 *
 	 * @param transactionid
 	 * @throws BrainTreeLoginException
 	 *             , BrainTreeServiceErrorResponseException, IOException
@@ -174,27 +181,17 @@ public class BrainTreeService {
 	}
 
 	private Document getDocument(String address) throws SAXException, IOException, ParserConfigurationException {
-		URL url = new URL(address);
-		InputStream inputStream = url.openStream();
-
+		InputStream response = contentProvider.openResponseFrom(address);
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document document = db.parse(inputStream);
-		inputStream.close();
+		Document document = db.parse(response);
+		response.close();
 		return document;
 	}
 
 	private Map<String, String> getUrl(String address) throws IOException {
-		URL url = new URL(address);
-		InputStream inputStream = url.openStream();
-
-		StringBuffer buffer = new StringBuffer();
-		int nextByte;
-		while ((nextByte = inputStream.read()) > -1) {
-			buffer.append((char) nextByte);
-		}
-		inputStream.close();
-		return Strings.mapParams(buffer.toString());
+		String response = contentProvider.getResponseFrom(address);
+		return Strings.mapParams(response);
 	}
 
 	private String getValueFromDocument(Document document, String tagName) {

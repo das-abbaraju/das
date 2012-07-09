@@ -36,11 +36,9 @@ import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
-import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -49,6 +47,8 @@ import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Testable;
+import com.picsauditing.util.braintree.BrainTreeService;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
@@ -158,7 +158,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * Only includes the Active/Pending/Demo operator accounts, not corporate
 	 * accounts or Deleted/Deactivated Operators
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -445,7 +445,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Set to true if we have a credit card on file
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing)
@@ -502,7 +502,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * The Payment methods are Credit Card and Check
-	 * 
+	 *
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
@@ -518,7 +518,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the contractor was invoiced for their most recent
 	 * activation/reactivation fee
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -546,7 +546,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another
 	 * "period's" membership fee. This should NEVER be null.
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -563,7 +563,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * Used to determine if we need to calculate the flagColor, audits and
 	 * billing
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNeedsRecalculation() {
@@ -587,7 +587,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Sets the date and time when the calculator ran
-	 * 
+	 *
 	 * @return
 	 */
 	public Date getLastRecalculation() {
@@ -693,7 +693,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * All contractors should update their trades every 6 months
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -743,7 +743,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Uses the OshaVisitor to gather all the data
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -814,7 +814,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The last day someone added a facility to this contractor. This is used to
 	 * prorate upgrade amounts
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -1094,7 +1094,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel();
 	 * con.getFees().getDocuGUARD().getNewLevel();
-	 * 
+	 *
 	 * @return
 	 */
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
@@ -1157,7 +1157,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return a list of invoices sorted by creationDate DESC
 	 */
 	@Transient
@@ -1191,7 +1191,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * <b>Past Due</b> Inovice is open and not paid by due date
-	 * 
+	 *
 	 * @return A String of the current Billing Status
 	 */
 	@Transient

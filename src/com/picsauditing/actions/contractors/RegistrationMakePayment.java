@@ -9,9 +9,6 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
-import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
@@ -39,8 +36,11 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.braintree.BrainTree;
+import com.picsauditing.util.braintree.BrainTreeService;
+import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -118,8 +118,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			} catch (Exception e) {
 				addActionError(getText("InvoiceDetail.message.EmailFail"));
 			}
-			
-			url = "Login.action";			
+
+			url = "Login.action";
 			return REDIRECT;
 		}
 
@@ -141,9 +141,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return BLANK;
 
 		Invoice invoice = getInvoice();
-		
+
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-		
+
 		auditBuilder.buildAudits(contractor);
 		this.resetActiveAudits();
 
@@ -386,7 +386,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractor.setCcExpiration(null);
 		} else if ((!contractor.isCcOnFile() && contractor.getCcExpiration() == null)
 				|| (response_code != null && (Strings.isEmpty(responsetext) || response.equals("1")))) {
-			contractor.setCcExpiration(cc.getExpirationDate2());
+			contractor.setCcExpiration(cc.getExpirationDate());
 			contractor.setCcOnFile(true);
 			// Need to set CcOnFile to true only in no-credit card case
 			// (ccOnFile == False && expDate == null)
@@ -550,7 +550,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	/**
 	 * ****** End BrainTree Setters ******
-	 * 
+	 *
 	 * @throws Exception
 	 */
 
