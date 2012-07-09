@@ -51,7 +51,7 @@ public class ReportContractorApproval extends ReportAccount {
 					+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId() + ""
 					+ " AND " + where + ")");
 		}
-		if (permissions.isOperator()) {
+		if (permissions.isOperatorCorporate()) {
 			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID=" + permissions.getAccountId());
 			sql.addField("gc.creationDate as dateAdded");
 			sql.addField("gc.workStatus");
