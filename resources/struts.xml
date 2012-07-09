@@ -426,7 +426,11 @@
 			<result>struts/reports/manage_reports.jsp</result>
 		</action>
 
-		<action name="ManageMyReports" class="com.picsauditing.actions.report.ManageReports" method="viewAllReports">
+		<action name="ManageMyReports" class="com.picsauditing.actions.report.ManageReports" method="viewMyReports">
+			<result>struts/reports/manage_reports.jsp</result>
+		</action>
+
+		<action name="ManageAllReports" class="com.picsauditing.actions.report.ManageReports" method="viewAllReports">
 			<result>struts/reports/manage_reports.jsp</result>
 		</action>
 

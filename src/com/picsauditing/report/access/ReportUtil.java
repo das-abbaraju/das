@@ -22,6 +22,10 @@ import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.Strings;
 
+/**
+ * This is a utility class for Dynamic Reports. It should handle all heavy lifting
+ * not directly related to routing, persistence, or business logic.
+ */
 public final class ReportUtil {
 
 	public static final String COLUMNS = "columns";
