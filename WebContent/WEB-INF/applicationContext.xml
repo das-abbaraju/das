@@ -111,7 +111,7 @@
 	<bean id="EmailSenderSpring" class="com.picsauditing.mail.EmailSenderSpring" />
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
-	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" />
+	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
