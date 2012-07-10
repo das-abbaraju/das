@@ -699,6 +699,16 @@
 			<version>3.12.1.GA</version>
 		</dependency>
 		<dependency>
+			<groupId>com.tacitknowledge</groupId>
+			<artifactId>discovery</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.tacitknowledge</groupId>
+			<artifactId>autopatch</artifactId>
+			<version>1.4.1-PICS</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.4</version>
