@@ -2,6 +2,12 @@
 <%@ page import="com.picsauditing.util.KeepAlive" %>
 <%@ page session="false" %>
 <%
-	KeepAlive keepAlive = new KeepAlive(request);
-	out.print(keepAlive.getKeepAliveStatus());
+	boolean manualShutdown = false;
+
+	if (manualShutdown) {
+		out.print("SYSTEM NOT OK")
+	} else {
+		KeepAlive keepAlive = new KeepAlive(request);
+		out.print(keepAlive.getKeepAliveStatus());
+	}
 %>
