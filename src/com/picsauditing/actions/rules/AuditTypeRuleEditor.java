@@ -69,28 +69,25 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	}
 
 	@Override
-	protected String redirectTo() throws IOException {
-		if (rule != null) {
-			return this.setUrlForRedirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
-		} else {
-			return this.setUrlForRedirect("AuditTypeRuleSearch.action");
-		}
+	protected void redirectTo() throws IOException {
+		if (rule != null)
+			this.redirect(urlPrefix + "RuleEditor.action?id=" + rule.getId());
+		else
+			this.redirect("AuditTypeRuleSearch.action");
 	}
 
 	@Override
-	protected String onDeleteRedirectTo() throws IOException {
+	protected void onDeleteRedirectTo() throws IOException {
 		String redirect = "";
 		List<AuditTypeRule> lessGranular = getLessGranular();
-
-		if (lessGranular.size() > 1) {
+		if (lessGranular.size() > 1)
 			redirect = "AuditTypeRuleEditor.action?id=" + lessGranular.get(lessGranular.size() - 1).getId();
-		} else {
+		else {
 			redirect = "AuditTypeRuleSearch.action?";
 			if (rule.getAuditType() != null)
 				redirect += "filter.auditType=" + rule.getAuditType().getName().toString();
 		}
-
-		return this.setUrlForRedirect(redirect);
+		this.redirect(redirect);
 	}
 
 	@Override

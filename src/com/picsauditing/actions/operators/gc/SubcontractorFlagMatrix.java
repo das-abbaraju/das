@@ -111,7 +111,6 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (" + visibleOperators + ")");
 		sql.addJoin("JOIN operators gco ON gco.id = gc.genID");
-		sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status = 'Active'");
 		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = a.id AND fdo.forceEnd > NOW() AND fdo.opID IN ("
 				+ visibleOperators + ")");
 
@@ -124,8 +123,8 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		sql.addField("c.riskLevel, c.safetyRisk, c.productRisk");
 		sql.addField("gc.workStatus, gc.genID, gc.subID, gc.forceEnd");
 		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN gc.flag ELSE '' END flag");
+		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN gc.flag ELSE '' END flag");
 		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN lower(gc.flag) ELSE '' END lflag");
-		sql.addField("o.name opName");
 		sql.addField("fdo.forceEnd as 'dataForceEnd'");
 
 		addFilterToSQL();
@@ -135,15 +134,8 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		for (BasicDynaBean bean : data) {
 			ContractorAccount contractor = dao.find(ContractorAccount.class,
 					Integer.parseInt(bean.get("subID").toString()));
-			OperatorAccount operator = new OperatorAccount();
-			operator.setId(Integer.parseInt(bean.get("genID").toString()));
-			operator.setName(bean.get("opName").toString());
-
-			FlagColor flag = null;
-
-			if (bean.get("flag") != null && !Strings.isEmpty(bean.get("flag").toString())) {
-				flag = FlagColor.valueOf(bean.get("flag").toString());
-			}
+			OperatorAccount operator = dao.find(OperatorAccount.class, Integer.parseInt(bean.get("genID").toString()));
+			FlagColor flag = FlagColor.valueOf(bean.get("flag").toString());
 
 			if (table.get(contractor) != null) {
 				table.get(contractor).put(operator, flag);

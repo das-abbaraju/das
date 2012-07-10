@@ -7,9 +7,28 @@
 <body>
 	<h1><s:text name="GeneralContractorList.title" /></h1>
 	
-	<s:include value="../reports/filters.jsp" />
-	
 	<div id="report_data">
-		<s:include value="general_contractors_list_data.jsp" />
+		<table class="report">
+			<thead>
+				<tr>
+					<th></th>
+					<th><s:text name="FacilitiesEdit.GeneralContractor" /></th>
+				</tr>
+			</thead>
+			<tbody>
+				<s:iterator value="data" status="stat">
+					<tr>
+						<td>
+							<s:property value="#stat.count" />
+						</td>
+						<td>
+							<a href="SubcontractorFlagMatrix.action?filter.generalContractor=<s:property value="get('id')" />">
+								<s:property value="get('name')" />
+							</a>
+						</td>
+					</tr>
+				</s:iterator>
+			</tbody>
+		</table>
 	</div>
 </body>

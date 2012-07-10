@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,19 +20,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -42,17 +34,12 @@ import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.EventType;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -71,14 +58,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private CertificateDAO certificateDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
-	@Autowired
-	private AuditBuilder auditBuilder;
-	@Autowired
-	private AuditDataDAO auditDataDAO;
-	@Autowired
-	private NoteDAO noteDAO;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 
 	private List<ContractorOperator> operators;
 	protected boolean limitedView = false;
@@ -99,7 +78,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
 	protected AuditDecisionTableDAO auditRuleDAO;
-	private Map<Integer, List<Integer>> certIdToOp;
 
 	public String execute() throws Exception {
 		findContractor();
@@ -594,25 +572,24 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 	@SuppressWarnings("deprecation")
 	public List<Certificate> getCertificates() {
-		if (certificates == null) {
+		if (certificates == null)
 			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
-			List<Integer> certIds = new ArrayList<Integer>();
-			for (Certificate cert : certificates)
-				certIds.add(cert.getId());
-
-			certIdToOp = certificateDAO.findOpsMapByCert(certIds);
-		}
 
 		if (permissions.isOperatorCorporate()) {
 			int topID = permissions.getTopAccountID();
 			OperatorAccount opAcc = operatorDAO.find(topID);
 
 			List<Integer> allowedList = new ArrayList<Integer>();
+			List<Integer> certIds = new ArrayList<Integer>();
 			allowedList = opAcc.getOperatorHeirarchy();
 
 			for (OperatorAccount tmpOp : opAcc.getOperatorChildren())
 				allowedList.add(tmpOp.getId());
 
+			for (Certificate cert : certificates)
+				certIds.add(cert.getId());
+
+			Map<Integer, List<Integer>> certIdToOp = certificateDAO.findOpsMapByCert(certIds);
 			Iterator<Certificate> itr = certificates.iterator();
 
 			while (itr.hasNext()) {
@@ -634,24 +611,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 		}
 		return certificates;
-	}
-
-	public List<OperatorAccount> getOperatorsUsingCertificate(int certId) {
-		List<OperatorAccount> operatorsUsingCert = new ArrayList<OperatorAccount>();
-
-		getCertificates();
-
-		List<Integer> opIds = certIdToOp.get(certId);
-		if (opIds != null) {
-			for (int opId : opIds) {
-				for (ContractorOperator conOp : operators) {
-					if (conOp.getOperatorAccount().getId() == opId)
-						operatorsUsingCert.add(conOp.getOperatorAccount());
-				}
-			}
-		}
-
-		return operatorsUsingCert;
 	}
 
 	/**
@@ -733,14 +692,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public String previousStep() throws Exception {
 		findContractor();
-		setUrlForRedirect(getPreviousRegistrationStep().getUrl());
+		redirect(getPreviousRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 
 	public String nextStep() throws Exception {
 		findContractor();
 		if (getNextRegistrationStep() != null)
-			setUrlForRedirect(getNextRegistrationStep().getUrl());
+			redirect(getNextRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 
@@ -805,7 +764,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		ContractorRegistrationStep highestStepReached = ContractorRegistrationStep.getStep(contractor);
 		if (highestStepReached.ordinal() < this.currentStep.ordinal()
 				|| highestStepReached == ContractorRegistrationStep.Done) {
-			setUrlForRedirect(highestStepReached.getUrl());
+			redirect(highestStepReached.getUrl());
 			return true;
 		}
 		return false;
@@ -903,76 +862,4 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return false;
 	}
 
-	public void reviewCategories(EventType eventType) {
-		ContractorAudit pqf = auditDao.findPQF(contractor.getId());
-
-		if (pqf != null && pqf.hasCaoStatusAfter(AuditStatus.Incomplete)) {
-			List<AuditData> eventQuestions = findEventQuestions(eventType, pqf);
-
-			if (eventQuestions != null && eventQuestions.size() > 0) {
-				boolean changeCAOStatus = clearAnswers(eventQuestions, pqf);
-
-				if (changeCAOStatus) {
-					changeCAOStatuses(eventType, pqf);
-					addAccountNote(eventType);
-				}
-
-				recalculatePQF(pqf);
-
-				auditBuilder.buildAudits(contractor);
-			}
-		}
-	}
-
-	private void recalculatePQF(ContractorAudit pqf) {
-		auditPercentCalculator.percentCalculateComplete(pqf, true);
-		pqf.setLastRecalculation(new Date());
-		auditDao.save(pqf);
-	}
-
-	private void addAccountNote(EventType eventType) {
-		Note note = new Note();
-		note.setAccount(contractor);
-		note.setAuditColumns(permissions);
-		note.setSummary("set PQF status to resubmit to revisit " + eventType.toString() + " section");
-		note.setNoteCategory(NoteCategory.Audits);
-		note.setViewableById(Account.PicsID);
-		noteDAO.save(note);
-	}
-
-	private void changeCAOStatuses(EventType eventType, ContractorAudit pqf) {
-		for (ContractorAuditOperator cao : pqf.getViewableOperators(permissions)) {
-			if (cao.isVisible() && cao.getStatus().after(AuditStatus.Incomplete)) {
-				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Resubmit, permissions);
-				if (caow != null) {
-					caow.setNotes("Set status to resubmit to revisit " + eventType.toString() + " section");
-					caow.setCreatedBy(new User(User.SYSTEM));
-					auditDao.save(caow);
-				}
-			}
-		}
-	}
-
-	private List<AuditData> findEventQuestions(EventType eventType, ContractorAudit pqf) {
-		String where = "d.audit.contractorAccount.id = " + contractor.getId() + " AND d.question.uniqueCode = '"
-				+ eventType.getUniqueCode() + "' AND d.audit.id = " + pqf.getId();
-		return auditDataDAO.findWhere(where);
-	}
-
-	private boolean clearAnswers(List<AuditData> questions, ContractorAudit pqf) {
-		boolean changeStatus = false;
-		for (AuditData pqfData : questions) {
-			if (questionNeedsClearing(pqf, pqfData)) {
-				pqfData.setAnswer(null);
-				pqfData.setDateVerified(null);
-				changeStatus = true;
-			}
-		}
-		return changeStatus;
-	}
-
-	private boolean questionNeedsClearing(ContractorAudit pqf, AuditData pqfData) {
-		return pqfData.isAnswered() && pqfData.getQuestion().isVisibleInAudit(pqf)
-				&& pqfData.getQuestion().getExpirationDate().after(new Date());
-	}
 }

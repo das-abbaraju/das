@@ -103,7 +103,7 @@ public class ManageJobRoles extends AccountActionSupport {
 
 		jobRoleDAO.save(role);
 
-		return setUrlForRedirect("ManageJobRoles.action?" + getUrlOptions());
+		return redirect("ManageJobRoles.action?" + getUrlOptions());
 	}
 
 	public String delete() throws Exception {
@@ -118,7 +118,7 @@ public class ManageJobRoles extends AccountActionSupport {
 			jobRoleDAO.remove(role);
 		}
 
-		return setUrlForRedirect("ManageJobRoles.action?" + getUrlOptions());
+		return redirect("ManageJobRoles.action?" + getUrlOptions());
 	}
 
 	private String getUrlOptions() {

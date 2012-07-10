@@ -3,21 +3,16 @@ package com.picsauditing.selenium;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.Account;
 
 @SuppressWarnings("serial")
 public class ResetSelenium extends PicsActionSupport {
 
-	private List<SeleniumDeletable> accountsInDB;
-	private String userSpecifiedAccount = null;
-
+	private List<Account> accountsInDB;
 	private List<Integer> accountsSelectedForDeletion;
-	private List<Integer> usersSelectedForDeletion;
-	private List<Integer> employeesSelectedForDeletion;
-	@Autowired private SeleniumDAO SD;
+	private String userSpecifiedAccount = null;
 
 	@Anonymous
 	public String execute() {
@@ -31,54 +26,48 @@ public class ResetSelenium extends PicsActionSupport {
 
 		if (null != userSpecifiedAccount)
 			deleteSingleAccount(userSpecifiedAccount);
-		else
+		else if (null != accountsSelectedForDeletion)
 			performMultipleDeletion();
 
-		return setUrlForRedirect("ResetSelenium.action");
+		return redirect("ResetSelenium.action");
 	}
 
 	@Anonymous
 	public String deleteAll() throws Exception {
-		SD.delete(SD.availableTestingReferences());
-		return setUrlForRedirect("ResetSelenium.action");
+		establishAccountsAvailableForDeletion();
+		List<Integer> allAccountIDs = new ArrayList<Integer>();
+		for (Account account : accountsInDB)
+			allAccountIDs.add(account.getId());
+		accountsSelectedForDeletion = allAccountIDs;
+		return delete();
 	}
 
 	private void performMultipleDeletion() throws Exception {
-		List<SeleniumDeletable> deletables = new ArrayList<SeleniumDeletable>();
-		for (SeleniumDeletable deletable : accountsInDB)
-			if ((deletable.IDisIn(accountsSelectedForDeletion) && deletable.isAnAccount())
-					|| (deletable.IDisIn(employeesSelectedForDeletion) && deletable.isAnEmployee())
-					|| (deletable.IDisIn(usersSelectedForDeletion) && deletable.isUser()))
-				deletables.add(deletable);
+		List<Account> deletables = new ArrayList<Account>();
+		for (Account account : accountsInDB)
+			if (accountsSelectedForDeletion.contains(account.getId()))
+				deletables.add(account);
 
-		if (!deletables.isEmpty()) SD.delete(deletables);
+		SeleniumDAO.delete(deletables);
 	}
 
 	private void deleteSingleAccount(String name) throws Exception {
-		for (SeleniumDeletable account : accountsInDB)
+		for (Account account : accountsInDB)
 			if (account.getName().equalsIgnoreCase(name)) {
-				List<SeleniumDeletable> deleteMe = new ArrayList<SeleniumDeletable>();
+				List<Account> deleteMe = new ArrayList<Account>();
 				deleteMe.add(account);
-				SD.delete(deleteMe);
+				SeleniumDAO.delete(deleteMe);
 				return;
 			}
 	}
 
 	private void establishAccountsAvailableForDeletion() {
 		if (null == accountsInDB || accountsInDB.isEmpty())
-			accountsInDB = SD.availableTestingReferences();
+			accountsInDB = SeleniumDAO.AvailableTestingAccounts();
 	}
 
-	public List<SeleniumDeletable> getDBAccounts() {
+	public List<Account> getDBAccounts() {
 		return accountsInDB;
-	}
-
-	public void setDBUsers(List<Integer> users) {
-		usersSelectedForDeletion = users;
-	}
-
-	public void setDBEmployees(List<Integer> emp) {
-		employeesSelectedForDeletion = emp;
 	}
 
 	public void setDBAccounts(List<Integer> accounts) {
@@ -87,9 +76,5 @@ public class ResetSelenium extends PicsActionSupport {
 
 	public void setDeleteAccount(String account) {
 		userSpecifiedAccount = account;
-	}
-	
-	private void setSeleniumDAO(SeleniumDAO SD) {
-		this.SD = SD;
 	}
 }

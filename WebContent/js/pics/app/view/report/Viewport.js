@@ -1,33 +1,46 @@
 Ext.define('PICS.view.report.Viewport', {
-    extend: 'Ext.container.Viewport',
-
+    extend : 'Ext.container.Viewport',
     requires: [
-        'PICS.view.layout.Footer',
-        'PICS.view.layout.Header',
-        'PICS.view.report.DataSetGrid',
-        'PICS.view.report.FilterOptions',
-        'PICS.view.report.Header'
+       'PICS.view.layout.Footer',               
+       'PICS.view.layout.Menu',
+       'PICS.view.report.ColumnSelector',
+       'PICS.view.report.ColumnSelectorGrid',
+       'PICS.view.report.DataGrid',
+       'PICS.view.report.ReportOptions',
+       'PICS.view.report.ReportOptionsColumns',
+       'PICS.view.report.ReportOptionsFilters',
+       'PICS.view.report.ReportOptionsSorts'
     ],
-
+    
     items: [{
-    	xtype: 'layoutheader',
-        region: 'north'
-    }, {
         region: 'center',
-
-        border: 0,
-        id: 'content',
+        
+        dockedItems: [{
+            xtype: 'layoutmenu',
+            dock: 'top',
+            height: 30
+        }],
         items: [{
-        	xtype: 'reportheader',
-            region: 'north'
+            xtype: 'reportoptions',
+            region: 'west',
+            width: 300
         }, {
-        	xtype: 'filteroptions',
-            region: 'west'
-        }, {
-        	xtype: 'reportdatasetgrid',
-            region: 'center'
+            xtype: 'tabpanel',
+            region: 'center',
+            id: 'main',
+            items: [{
+                xtype: 'reportdatagrid'
+            }, {
+                title: 'Chart'
+            }],
+            title: 'Report'
         }],
         layout: 'border'
+    }, {
+        xtype: 'layoutfooter',
+        
+        region: 'south'
     }],
-    layout: 'border'
+    layout : 'border',
+    title: 'Main'
 });

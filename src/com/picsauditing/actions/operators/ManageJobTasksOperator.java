@@ -99,7 +99,7 @@ public class ManageJobTasksOperator extends ReportActionSupport {
 	public String remove() throws Exception {
 		jobTaskDAO.remove(jobTask);
 
-		return setUrlForRedirect("ManageJobTasksOperator.action?operator=" + operator.getId());
+		return redirect("ManageJobTasksOperator.action?operator=" + operator.getId());
 	}
 
 	protected void buildQuery() {
@@ -139,10 +139,9 @@ public class ManageJobTasksOperator extends ReportActionSupport {
 		if (jobTask.getOperator() == null && operator != null)
 			jobTask.setOperator(operator);
 
-		if (getActionErrors().size() > 0) {
-			return setUrlForRedirect("ManageJobTasksOperator.action?operator=" + operator.getId());
-		}
-
+		if (getActionErrors().size() > 0)
+			return redirect("ManageJobTasksOperator.action?operator=" + operator.getId());
+		
 		jobTask.setLabel(label);
 		jobTask.setName(name);
 		jobTask.setTaskType(taskType);
@@ -151,7 +150,7 @@ public class ManageJobTasksOperator extends ReportActionSupport {
 		jobTask.setAuditColumns(permissions);
 		jobTaskDAO.save(jobTask);
 
-		return setUrlForRedirect("ManageJobTasksOperator.action?operator=" + operator.getId());
+		return redirect("ManageJobTasksOperator.action?operator=" + operator.getId());
 	}
 
 	public ReportFilterJobTask getFilter() {

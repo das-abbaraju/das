@@ -92,7 +92,7 @@
                                     <s:if test="invoice.currency.CAD">
                                         <s:text name="global.PICSCanadaMailingAddress"/>
                                     </s:if>
-                                    <s:elseif test="invoice.currency.GBP || invoice.currency.EUR">
+                                    <s:elseif test="invoice.currency.GBP">
                                         <s:text name="global.PICSUnitedKingdomMailingAddress"/>
                                     </s:elseif>
                                     <s:else>
@@ -355,11 +355,8 @@
 														<s:property value="payment.ccType"/>
 													</s:else>
 												</s:if>
-												<s:elseif test="payment.paymentMethod.check">
-													<s:text name="InvoiceDetail.Check" /> <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0"><s:text name="InvoiceDetail.CheckNumber" /><s:property value="payment.checkNumber"/></s:if>
-												</s:elseif>
 												<s:else>
-													<label>EFT</label>
+													<s:text name="InvoiceDetail.Check" /> <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0"><s:text name="InvoiceDetail.CheckNumber" /><s:property value="payment.checkNumber"/></s:if>
 												</s:else>
 											</span>
 											<span class="big">
@@ -410,15 +407,7 @@
 							<s:property value="invoice.notes"/>
 						</s:else>
                 	</td>
-				</tr> 
-				<!-- proforma payment contractor -->
-				<s:if test="contractor.paymentMethod.EFT">
-                    <tr>
-                        <td style="padding: 15px;">
-                            <s:text name="InvoiceDetail.PaymentInstruction" />
-                        </td>
-                    </tr>
-                </s:if>
+				</tr>
 				<tr>
 					<td>
 						<table width="100%" class="allborder">
@@ -466,7 +455,6 @@
 					</td>
 				</tr>
 			</table>
-		      
 		</s:form>
 	</body>
 </html>

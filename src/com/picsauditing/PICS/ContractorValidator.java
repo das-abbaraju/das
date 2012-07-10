@@ -1,39 +1,25 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class ContractorValidator {
 	public final int MIN_PASSWORD_LENGTH = 5;
 	@Autowired
-	protected ContractorAccountDAO contractorAccountDao;
+	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	protected UserDAO userDAO;
-	@Autowired
-	protected ContractorAuditDAO contractorAuditDao;
-	@Autowired
-	protected AuditDataDAO auditDataDao;
-	@Autowired
-	protected AuditQuestionDAO auditQuestionDao;
 
 	private I18nCache i18nCache = I18nCache.getInstance();
 
@@ -171,7 +157,7 @@ public class ContractorValidator {
 				return errorMessages;
 			}
 
-			ContractorAccount con = contractorAccountDao.findTaxID(taxId.substring(0, 9), country);
+			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
 			if (con != null && !con.equals(contractorAccount)) {
 				if (con.getCountry().isUS())
 					errorMessages.add(getTextParameterized(
@@ -184,54 +170,10 @@ public class ContractorValidator {
 	}
 
 	public boolean verifyName(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDao.findConID(contractorAccount.getName());
+		ContractorAccount cAccount = contractorAccountDAO.findConID(contractorAccount.getName());
 		if (cAccount == null || cAccount.equals(contractorAccount))
 			return true;
 
 		return false;
-	}
-
-	public void setOfficeLocationInPqfBasedOffOfAddress(
-			ContractorAccount contractor) {
-		
-		String countryStateCode = contractor.getCountry().getIsoCode() + "."
-				+ contractor.getState();
-		List<String> uniqueCodes = new ArrayList<String>();
-		uniqueCodes.add(countryStateCode);
-
-		List<AuditQuestion> officeLocationResultSet = auditQuestionDao
-				.findQuestionsByUniqueCodes(uniqueCodes);
-		if (officeLocationResultSet.isEmpty())
-			return;
-
-		AuditQuestion officeLocationQuestion = officeLocationResultSet.get(0);
-		
-		changeAnswerInAuditData(officeLocationQuestion, contractor);
-	}
-
-	private void changeAnswerInAuditData(AuditQuestion officeLocationQuestion, ContractorAccount contractor) {
-		ContractorAudit contractorsPqf = null;
-		
-		for (ContractorAudit contractorAudit : contractorAuditDao
-				.findByContractor(contractor.getId())) {
-			if (contractorAudit.getAuditType().isPqf()) {
-				contractorsPqf = contractorAudit;
-				break;
-			}
-		}
-
-		if (contractorsPqf != null) {
-			AuditData locationData = auditDataDao.findAnswerByAuditQuestion(
-					contractorsPqf.getId(), officeLocationQuestion.getId());
-			if (locationData == null) {
-				locationData = new AuditData();
-				locationData.setAuditColumns(contractor.getPrimaryContact());
-				locationData.setId(0);
-				locationData.setAudit(contractorsPqf);
-				locationData.setQuestion(officeLocationQuestion);
-			}
-			locationData.setAnswer("YesWithOffice");
-			auditDataDao.save(locationData);
-		}
 	}
 }

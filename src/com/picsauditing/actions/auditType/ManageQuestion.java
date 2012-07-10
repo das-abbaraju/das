@@ -2,7 +2,6 @@ package com.picsauditing.actions.auditType;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -105,52 +104,6 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				return false;
 			}
 
-			if (requiredQuestionID == null || requiredQuestionID == 0)
-				question.setRequiredQuestion(null);
-			else {
-				HashSet<Integer> circularRefIds = new HashSet<Integer>();
-				circularRefIds.add(question.getId());
-				if (circularRefIds.contains(requiredQuestionID)) {
-					addActionError("This would create a circular reference of required questions.");
-					return false;
-				}
-				circularRefIds.add(requiredQuestionID);
-				
-				AuditQuestion requiredQuestion = auditQuestionDAO.find(requiredQuestionID);
-				while (requiredQuestion.getRequiredQuestion() != null) {
-					if (circularRefIds.contains(requiredQuestion.getRequiredQuestion().getId())) {
-						addActionError("This would create a circular reference of required questions.");
-						return false;
-					}
-					requiredQuestion = requiredQuestion.getRequiredQuestion();
-				}
-				
-				question.setRequiredQuestion(auditQuestionDAO.find(requiredQuestionID));
-			}
-
-			if (visibleQuestionID == null || visibleQuestionID == 0)
-				question.setVisibleQuestion(null);
-			else {
-				HashSet<Integer> circularRefIds = new HashSet<Integer>();
-				circularRefIds.add(question.getId());
-				if (circularRefIds.contains(visibleQuestionID)) {
-					addActionError("This would create a circular reference of visible questions.");
-					return false;
-				}
-				circularRefIds.add(visibleQuestionID);
-				
-				AuditQuestion requiredQuestion = auditQuestionDAO.find(visibleQuestionID);
-				while (requiredQuestion.getVisibleQuestion() != null) {
-					if (circularRefIds.contains(requiredQuestion.getVisibleQuestion().getId())) {
-						addActionError("This would create a circular reference of visible questions.");
-						return false;
-					}
-					requiredQuestion = requiredQuestion.getVisibleQuestion();
-				}
-				
-				question.setVisibleQuestion(auditQuestionDAO.find(visibleQuestionID));
-			}
-
 			if (question.getNumber() == 0) {
 				int maxID = 0;
 				for (AuditQuestion sibling : category.getQuestions()) {
@@ -168,6 +121,20 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			}
 			if (question.getExpirationDate() == null)
 				question.setExpirationDate(DateBean.getEndOfTime());
+
+			if (requiredQuestionID == null || requiredQuestionID == 0)
+				question.setRequiredQuestion(null);
+			else if (question.getRequiredQuestion() == null
+					|| requiredQuestionID != question.getRequiredQuestion().getId()) {
+				question.setRequiredQuestion(auditQuestionDAO.find(requiredQuestionID));
+			}
+
+			if (visibleQuestionID == null || visibleQuestionID == 0)
+				question.setVisibleQuestion(null);
+			else if (question.getVisibleQuestion() == null
+					|| visibleQuestionID != question.getVisibleQuestion().getId()) {
+				question.setVisibleQuestion(auditQuestionDAO.find(visibleQuestionID));
+			}
 
 			if (question.getCategory() == null)
 				question.setCategory(category);

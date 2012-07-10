@@ -90,7 +90,7 @@
     			success: function(result) {
     				stopThinking( {div: 'thinkingDiv' } );
     				reloadOperators( conId );
-//  		  			$('#facilitySearch .clearable').val('');
+    				$('#facilitySearch .clearable').val('');
     				runSearch();
     				refreshNoteCategory(conId, 'OperatorChanges');
     			}

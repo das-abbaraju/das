@@ -1,10 +1,8 @@
 package com.picsauditing.actions.operators;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.Locale;
 

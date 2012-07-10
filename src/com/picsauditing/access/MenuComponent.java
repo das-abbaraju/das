@@ -7,11 +7,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
-
     private static final long serialVersionUID = 923449569385839331L;
 
     private int level = 0;
-
+    
     private String name;
     private String url;
     private String htmlId;
@@ -19,6 +18,7 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     private String target;
     private int id = 1;
     private String sortField;
+    private String xtype;
 
     protected int auditId = 0;
 
@@ -62,24 +62,14 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
         return name.toLowerCase().replaceAll(" ", "_");
     }
 
-    public boolean hasName() {
-    	if (name == null)
-    		return false;
-
-    	return name.length() > 0;
-    }
-
     public boolean hasUrl() {
         if (url == null)
             return false;
-
         return url.length() > 0;
     }
-
+    
     public boolean hasHtmlID () {
-    	if (htmlId == null)
-    		return false;
-
+    	if (htmlId == null) return false;
     	return htmlId.length() > 0;
     }
 
@@ -119,10 +109,6 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
         return target;
     }
 
-    public boolean hasTarget() {
-    	return (target != null)? target.length() > 0 : false;
-    }
-
     public void setTarget(String target) {
         this.target = target;
     }
@@ -138,26 +124,21 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     public MenuComponent addChild(String name) {
     	return addChild(name, null, null);
     }
-
+    
     public MenuComponent addChild(String name, String url) {
     	return addChild(name, url, null);
     }
 
     public MenuComponent addChild(String name, String url, String htmlID) {
         MenuComponent child = new MenuComponent(name, url);
-
+        
         child.setId(this.children.size() + (100 * this.id));
         child.setLevel(this.level + 1);
         child.setHtmlId(htmlID);
-
+        
         this.children.add(child);
-
+        
         return child;
-    }
-
-    public MenuComponent addChild(MenuComponent child) {
-    	children.add(child);
-    	return child;
     }
 
     public boolean isCurrent() {
@@ -212,10 +193,18 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
         dataFields.put(key, value);
     }
 
+    public String getXtype() {
+        return xtype;
+    }
+
+    public void setXtype(String xtype) {
+        this.xtype = xtype;
+    }
+    
     public int getLevel() {
         return level;
     }
-
+    
     public void setLevel(int level) {
         this.level = level;
     }
@@ -227,4 +216,5 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     public void sortChildren() {
         Collections.sort(children);
     }
+
 }

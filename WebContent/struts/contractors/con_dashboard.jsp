@@ -76,7 +76,7 @@
 	
 			$('#' + id).html(data);
 		}
-		
+	
 		$(function() {
 			limit('description', '\n');
 
@@ -156,7 +156,7 @@
     											<s:text name="ContractorView.BidOnlyUpgrade" />
     											<br/>
     											<div style="margin-top: 7px;">
-    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('<s:text name="ContractorView.BidOnlyUpgradeConfirm" />');" ><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
+    												<a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm(<s:text name="ContractorView.BidOnlyUpgradeConfirm" />);"><s:text name="ContractorView.button.BidOnlyUpgrade" /></a>
     											</div>
     										</div>
     									</s:if>
@@ -205,18 +205,12 @@
     											</a>
     										</p>
     										
-    										<s:if test="co.forcedFlag || individualFlagOverrideCount > 0 || corporateFlagOverride != null">
+    										<s:if test="co.forcedFlag || individualFlagOverrideCount > 0">
     											<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
     												<s:if test="co.forcedFlag" >
     													<s:text name="ContractorView.ManualForceFlag">
     														<s:param><s:property value="co.forceFlag.smallIcon" escape="false" /></s:param>
     														<s:param value="%{co.forceEnd}" />
-    													</s:text>
-    												</s:if>
-    												<s:if test="corporateFlagOverride != null" >
-    													<s:text name="ContractorView.ManualForceFlag">
-    														<s:param><s:property value="corporateFlagOverride.forceFlag.smallIcon" escape="false" /></s:param>
-    														<s:param value="%{corporateFlagOverride.forceEnd}" />
     													</s:text>
     												</s:if>
     												<s:if test="individualFlagOverrideCount > 0" >
@@ -479,8 +473,14 @@
     								<div class="panel_header">
     									<s:text name="Widget.6.caption"/>
     								</div>
-    								<div class="panel_content" id="con_tasks" data-conid="<s:property value="contractor.id" />">
+    								<div class="panel_content" id="con_tasks">
     									<div class="inprogress"></div>
+    									
+    									<script type="text/javascript">
+    										$(function() {
+    											$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
+    										});
+    									</script>
     								</div>
     							</div>
     						</div>
@@ -505,25 +505,6 @@
     							</div>
     						</div>
     					</s:if>
-    					
-    					<s:if test="permissions.contractor">
-                            <div class="panel_placeholder">
-                                <div class="panel referral-program">
-                                    <div class="panel_header">
-                                        <s:text name="ReferralProgram.title" />
-                                    </div>
-                                    <div class="panel_content">
-                                        <img src="images/tablet/ipad.png" />
-                                        
-                                        <div class="summary">
-                                            <p>
-                                                <s:text name="ReferralProgram.summary" />
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </s:if>
     					
     					<%-- Contractor Info --%>
     					<div class="panel_placeholder">
@@ -556,18 +537,9 @@
     								
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
-                                        <strong><s:date name="contractor.membershipDate" /></strong>
-                                        <pics:toggle name="Badge">
-	                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-	                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
-	                                        </a>
-                                        </pics:toggle>
+    									<strong><s:date name="contractor.membershipDate" /></strong>&nbsp;&nbsp;
+    									<a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />"><s:text name="ContractorDashboard.DownloadCertificate" /></a>
     								</p>
-                                    <p>
-                                        <a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />">
-                                            <s:text name="ContractorDashboard.DownloadCertificate" />
-                                        </a>
-                                    </p>
     								
     								<p>
     									<s:text name="global.CSR" />:
@@ -643,7 +615,7 @@
     								<p>
     									<s:text name="global.Address" />:
     									[<a
-										href="http://www.mapquest.com/maps/map.adp?country=<s:property value="contractor.country.isoCode" />&city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
+    										href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
     										target="_blank">
     											<s:text name="ContractorView.ShowMap" />
     									</a>]
@@ -756,16 +728,7 @@
     						<div class="panel" id="all">
     							<div class="panel_header">
     								<s:text name="ContractorView.AllLocations" />
-    								<s:if test="permissions.admin || permissions.contractor">
-	    								<a href="ContractorFacilities.action?id=${id}">
-	    									<s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" />
-	    								</a>
-    								</s:if>
-    								<s:elseif test="permissions.generalContractor">
-	    								<a href="SubcontractorFacilities.action?id=${id}">
-	    									<s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" />
-	    								</a>
-    								</s:elseif>
+    								<a href="ContractorFacilities.action?id=${id}"><s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" /></a>
     							</div>
     							<div class="panel_content">
     								<s:iterator value="activeOperatorsMap">
@@ -773,7 +736,7 @@
     										<s:iterator value="value">
     											<li>
     												<span class="other_operator">
-    													<s:if test="!permissions.generalContractorFree">
+    													<s:if test="!operatorAccount.gCFree">
     														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
     															<s:property value="flagColor.smallIcon" escape="false" />
     														</a>

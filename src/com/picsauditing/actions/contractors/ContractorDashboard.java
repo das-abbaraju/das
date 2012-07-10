@@ -112,7 +112,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private Date earliestIndividualFlagOverride = null;
 	private int individualFlagOverrideCount = 0;
-	private ContractorOperator corporateFlagOverride = null;
 
 	@Override
 	public String execute() throws Exception {
@@ -211,7 +210,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		if ("Synchronize Contractor".equals(button)) {
 			String redirectUrl = "ContractorView.action?id=" + id;
-			return setUrlForRedirect("ContractorCronAjax.action?conID=" + id + "&steps=All&redirectUrl=" + redirectUrl);
+			return redirect("ContractorCronAjax.action?conID=" + id + "&steps=All&redirectUrl=" + redirectUrl);
 		}
 
 		if (permissions.isOperatorCorporate()) {
@@ -232,8 +231,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			co = contractor.getNonCorporateOperators().get(0);
 			opID = co.getOperatorAccount().getId();
 		}
-		
-		findCorporateOverride();
 
 		calculateEarliestIndividualFlagSummaries();
 
@@ -255,27 +252,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(), getActiveOperators(), contractor, naicsDao);
 
 		return SUCCESS;
-	}
-
-	private void findCorporateOverride() {
-		corporateFlagOverride = null;
-		if (co == null) {
-			return;
-		}
-		
-		if (co.isForcedFlag()) {
-			return;
-		}
-		
-		List<ContractorOperator> contractorOperators = contractorOperatorDAO.findByContractor(contractor.getId(), permissions);
-		for (ContractorOperator contractorOperator : contractorOperators) {
-			if (contractorOperator.equals(co))
-				continue;
-			if (contractorOperator.isForcedFlag()) {
-				corporateFlagOverride = contractorOperator;
-				break;
-			}
-		}
 	}
 
 	private void calculateEarliestIndividualFlagSummaries() {
@@ -579,14 +555,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public void setIndividualFlagOverrideCount(int individualFlagOverrideCount) {
 		this.individualFlagOverrideCount = individualFlagOverrideCount;
-	}
-
-	public ContractorOperator getCorporateFlagOverride() {
-		return corporateFlagOverride;
-	}
-
-	public void setCorporateFlagOverride(ContractorOperator corporateFlagOverride) {
-		this.corporateFlagOverride = corporateFlagOverride;
 	}
 
 	private ContractorWatch getExistingContractorWatch() {

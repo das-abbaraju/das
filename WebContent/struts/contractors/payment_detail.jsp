@@ -178,7 +178,7 @@
 										<s:radio
 											name="method"
 											onclick="changePaymentMethod(this.value)"
-											list="#{'CreditCard':'Credit Card','Check':'Check', 'EFT':'EFT'}"
+											list="#{'CreditCard':'Credit Card','Check':'Check'}"
 											theme="pics"
 											cssClass="inline"
 										/>

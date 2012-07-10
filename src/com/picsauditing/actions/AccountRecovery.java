@@ -13,7 +13,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -37,16 +36,13 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 	
 	@Anonymous
-	public String findName() {
-		if (email.length()>0)
-			email = email.trim();
-
+	public String findName() {		
 		if (email == null || email.equals("")) {
 			addActionError(getText("AccountRecovery.error.NoEmail"));
 			return SUCCESS;
 		}
 		
-		if (!EmailAddressUtils.isValidEmail(email)) {
+		if (!Strings.isValidEmail(email)) {
 			addActionError(getText("AccountRecovery.error.InvalidEmail"));
 			return SUCCESS;
 		}

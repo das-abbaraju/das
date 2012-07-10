@@ -17,7 +17,6 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 	private User user;
 	private UserAssignmentType assignmentType;
 	private State state;
-	private CountrySubdivision countrySubdivision;
 	private Country country;
 	private String postalStart;
 	private String postalEnd;
@@ -52,16 +51,6 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 
 	public void setState(State state) {
 		this.state = state;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "countrySubdivision")
-	public CountrySubdivision getCountrySubdivision() {
-		return countrySubdivision;
-	}
-
-	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
-		this.countrySubdivision = countrySubdivision;
 	}
 
 	@ManyToOne

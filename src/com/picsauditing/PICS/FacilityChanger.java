@@ -172,7 +172,7 @@ public class FacilityChanger {
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);
 		// if (!permissions.hasPermission(OpPerms.RemoveContractors))
 		// return false;
-		Iterator<ContractorOperator> iterator = contractor.getOperators().iterator();
+		Iterator<ContractorOperator> iterator = contractor.getNonCorporateOperators().iterator();
 		while (iterator.hasNext()) {
 			ContractorOperator co = iterator.next();
 			if (!co.getOperatorAccount().isCorporate() && co.getOperatorAccount().equals(operator)) {
@@ -208,7 +208,7 @@ public class FacilityChanger {
 				billingService.calculateAnnualFees(contractor);
 
 				// adjusting requested by to earliest added operator
-				if (contractor.getRequestedBy() == null || contractor.getRequestedBy().equals(operator)) {
+				if (contractor.getRequestedBy().equals(operator)) {
 					contractor.setRequestedBy(findEarliestAddedOperator());
 				}
 

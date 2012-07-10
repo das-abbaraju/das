@@ -11,7 +11,6 @@ import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Strings;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	@Autowired
@@ -19,6 +18,7 @@ public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	// extraArgs: restrictTrades
 	private boolean extraArgs;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Collection<Trade> getItems() {
 		if (itemKeys == null) {

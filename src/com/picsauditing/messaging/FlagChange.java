@@ -2,16 +2,14 @@ package com.picsauditing.messaging;
 
 import java.util.Date;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
+import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-@JsonAutoDetect(JsonMethod.FIELD)
-public class FlagChange {
+public class FlagChange implements JSONable, EnterpriseMessage {
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private FlagColor fromColor;
@@ -35,7 +33,6 @@ public class FlagChange {
 		this.operator = operator;
 	}
 
-	@JsonProperty
 	public FlagColor getFromColor() {
 		return fromColor;
 	}
@@ -44,7 +41,6 @@ public class FlagChange {
 		this.fromColor = fromColor;
 	}
 
-	@JsonProperty
 	public FlagColor getToColor() {
 		return toColor;
 	}
@@ -53,7 +49,6 @@ public class FlagChange {
 		this.toColor = toColor;
 	}
 
-	@JsonProperty
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -62,13 +57,39 @@ public class FlagChange {
 		this.timestamp = timestamp;
 	}
 
-	@JsonProperty
-	public String getDetails() {
-		return details;
-	}
-
 	public void setDetails(String details) {
 		this.details = details;
 	}
 
+	public String getDetails() {
+		return details;
+	}
+
+	@Override
+	public void fromJSON(JSONObject o) {
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = new JSONObject();
+		json.put("contractor", contractor.toJSON(full));
+		json.put("operator", operator.toJSON(full));
+		json.put("fromColor", fromColor.toString());
+		json.put("toColor", toColor.toString());
+		json.put("timestamp", timestamp.toString());
+		json.put("details", details);
+
+		return json;
+	}
+
+	public JSONObject toJSON() {
+		return toJSON(false);
+	}
+
+	@Override
+	public String getMessage() {
+		return toJSON().toJSONString();
+	}
 }

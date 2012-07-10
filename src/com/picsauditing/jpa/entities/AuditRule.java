@@ -398,7 +398,7 @@ public class AuditRule extends BaseDecisionTreeRule {
 				|| questionComparator == QuestionComparator.GreaterThan
 				|| questionComparator == QuestionComparator.GreaterThanEqual) {
 			if ("Decimal Number".equals(question.getQuestionType()) || "Money".equals(question.getQuestionType())
-					|| "Number".equals(question.getQuestionType()) || "Calculation".equals(question.getQuestionType())) {
+					|| "Number".equals(question.getQuestionType())) {
 				try {
 					BigDecimal parsedAnswer = new BigDecimal(answer.replace(",", ""));
 					BigDecimal parsedQuestionAnswer = new BigDecimal(questionAnswer.replace(",", ""));

@@ -8,29 +8,28 @@ import java.util.Set;
 import javax.persistence.Column;
 
 import com.picsauditing.report.annotations.ReportField;
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.util.Strings;
 
 public class JpaFieldExtractor {
-	static public Set<Field> addFields(Class<?> clazz, String prefix, String alias) {
-		Set<Field> fields = new HashSet<Field>();
+	static public Set<QueryField> addFields(@SuppressWarnings("rawtypes") Class clazz, String prefix, String alias) {
+		Set<QueryField> fields = new HashSet<QueryField>();
 		for (Method method : clazz.getMethods()) {
 			if (clazz.equals(method.getDeclaringClass())) {
 				ReportField fieldAnnotation = getReportFieldAnnotation(method);
 				if (fieldAnnotation != null) {
-					Field field = new Field(fieldAnnotation);
+					QueryField queryField = new QueryField(fieldAnnotation);
 					String fieldName = stripGetFromMethodName(method.getName());
-					field.setFieldClass(method.getReturnType());
-					field.setName(prefix + fieldName);
-					fields.add(field);
+					queryField.setName(prefix + fieldName);
+					fields.add(queryField);
 					if (!Strings.isEmpty(fieldAnnotation.sql())) {
-						field.setDatabaseColumnName(fieldAnnotation.sql().replace("{ALIAS}", alias));
+						queryField.setSql(fieldAnnotation.sql().replace("{ALIAS}", alias));
 					} else {
 						Column columnAnnotation = getColumnAnnotation(method);
-						if (columnAnnotation == null || Strings.isEmpty(columnAnnotation.name())) {
-							field.setDatabaseColumnName(alias + "." + fieldName.toLowerCase());
+						if (columnAnnotation == null) {
+							queryField.setSql(alias + "." + fieldName.toLowerCase());
 						} else {
-							field.setDatabaseColumnName(alias + "." + columnAnnotation.name());
+							queryField.setSql(alias + "." + columnAnnotation.name());
 						}
 					}
 				}

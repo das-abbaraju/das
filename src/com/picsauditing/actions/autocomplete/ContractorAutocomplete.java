@@ -5,11 +5,11 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.util.Strings;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public class ContractorAutocomplete extends AutocompleteActionSupport<ContractorAccount> {
 

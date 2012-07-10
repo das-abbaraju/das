@@ -1,15 +1,13 @@
 package com.picsauditing.actions.audits;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Locale;
 
 import org.junit.Before;
@@ -21,7 +19,6 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -32,7 +29,6 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -130,25 +126,6 @@ public class AuditDataSaveTest extends PicsTest {
 		doNothing().when(auditPercentCalculatior).updatePercentageCompleted(
 				catData);
 	}
-	
-	@Test
-	public void testExecute_Verify() throws Exception {
-		AuditData oldData = EntityFactory.makeAuditData("No");
-		oldData.setId(auditData.getId());
-		
-	    AuditType annual = EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM);
-	    audit.setAuditType(annual);
-		oldData.setAudit(auditData.getAudit());
-		oldData.setQuestion(auditData.getQuestion());
-		
-		when(auditDataDao.find(anyInt())) .thenReturn(oldData);
-		PicsTestUtil.forceSetPrivateField(auditDataSave, "button",
-				"verify");
-		assertEquals("success", auditDataSave.execute());
-		assertEquals("Yes", oldData.getAnswer());
-		assertNotNull(oldData.getDateVerified());
-		assertEquals(user.getId(), oldData.getAuditor().getId());
-	}
 
 	@Test
 	public void testTrimWhitespaceLeadingZerosAndAllCommas() throws Exception {
@@ -196,6 +173,7 @@ public class AuditDataSaveTest extends PicsTest {
 
 	@Test
 	public void testExecute_SimpleAnswer() throws Exception {
+
 		assertEquals("success", auditDataSave.execute());
 	}
 
@@ -207,28 +185,5 @@ public class AuditDataSaveTest extends PicsTest {
 		when(i18nCache.getText("Audit.message.InvalidFormat", Locale.ENGLISH, (Object[])null)).thenReturn("Unit Test String");
 		assertEquals("success", auditDataSave.execute());
 		assertEquals(true, auditDataSave.getActionErrors().size() > 0);
-	}
-
-	@Test
-	public void testStructureNewDate() throws ParseException{
-		Date expected = DateBean.parseDate("2001-02-03");
-		Date actual;
-
-		actual = AuditDataSave.restructureNewDate("2/3/2001");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("2-3-01");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("2/3/01");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("02-03-2001");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("2001/02/03");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("2001/2/3");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("02/03/2001");
-		assertEquals(expected, actual);
-		actual = AuditDataSave.restructureNewDate("02/03/01");
-		assertEquals(expected, actual);
 	}
 }

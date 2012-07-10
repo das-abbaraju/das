@@ -95,16 +95,11 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
-	public <T extends BaseTable> T findOne(Class<T> c, String where) {
-		Query q = em.createQuery("FROM " + c.getName() + " t WHERE " + where);
-		return (T) q.getSingleResult();
-	}
-
 	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where) {
 		return findWhere(clazz, where, 0);
 	}
 
-	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit) {
+	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit) {		
 		return findWhere(clazz, where, limit, " t.id");
 	}
 
@@ -123,7 +118,7 @@ abstract public class PicsDAO {
 		} catch (Exception e) {
 			result = 0;
 		}
-
+		
 		return result;
 	}
 

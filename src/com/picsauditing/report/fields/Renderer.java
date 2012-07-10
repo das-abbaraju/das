@@ -2,7 +2,6 @@ package com.picsauditing.report.fields;
 
 
 public class Renderer extends JavaScript {
-
 	private String action = "";
 	private String[] parameters;
 	

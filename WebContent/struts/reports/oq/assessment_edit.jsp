@@ -95,6 +95,7 @@
 						listValue="name"
 						headerKey=""
 						headerValue="- %{getTextNullSafe('Country')} -"
+						theme="form"
 					/>
 				</li>
 				<li id="state_li"></li>

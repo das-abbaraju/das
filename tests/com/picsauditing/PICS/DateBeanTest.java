@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DateBeanTest  {
@@ -51,7 +50,6 @@ public class DateBeanTest  {
 		assertEquals("0001-01-01", DateBean.toDBFormat(cal.getTime()));
 	}
 	
-	@Ignore
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testTimeZone() throws Exception {

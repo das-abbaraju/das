@@ -3,9 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Transient;
-
-public enum NoteStatus implements Translatable {
+public enum NoteStatus {
 	Hidden, Open, Closed;
 
 	static public Map<Integer, NoteStatus> getMap() {
@@ -14,17 +12,5 @@ public enum NoteStatus implements Translatable {
 			map.put(value.ordinal(), value);
 		}
 		return map;
-	}
-
-	@Transient
-	@Override
-	public String getI18nKey() {
-		return this.getClass().getSimpleName() + "." + this.name();
-	}
-
-	@Transient
-	@Override
-	public String getI18nKey(String property) {
-		return getI18nKey() + "." + property;
 	}
 }

@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
-import com.picsauditing.report.annotations.ReportField;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 
@@ -55,7 +53,6 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 10)
-	@ReportField(filterType = FilterType.Integer)
 	public int getId() {
 		return id;
 	}
@@ -115,7 +112,6 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
 	public Date getCreationDate() {
 		return creationDate;
 	}

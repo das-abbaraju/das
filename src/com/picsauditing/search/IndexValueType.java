@@ -181,17 +181,17 @@ public enum IndexValueType {
 	}
 
 	static String normalize(String s) {
-		s = s.replaceAll("[√®√©√™√´]", "e");
-		s = s.replaceAll("[√π√∫√ª√º]", "u");
-		s = s.replaceAll("[√¨√≠√Æ√Ø]", "i");
-		s = s.replaceAll("[√†√°√¢√§]", "a");
-		s = s.replaceAll("[√≤√≥√¥√∂]", "o");
+		s = s.replaceAll("[ËÈÍÎ]", "e");
+		s = s.replaceAll("[˚˘]", "u");
+		s = s.replaceAll("[ÔÓ]", "i");
+		s = s.replaceAll("[‡‚]", "a");
+		s = s.replaceAll("Ù", "o");
 
-		s = s.replaceAll("[√à√â√ä√ã]", "E");
-		s = s.replaceAll("[√ô√ö√õ√ú]", "U");
-		s = s.replaceAll("[√å√ç√é√è]", "I");
-		s = s.replaceAll("[√Ä√Å√Ç√Ñ]", "A");
-		s = s.replaceAll("[√í√ì√î√ñ]", "O");
+		s = s.replaceAll("[»… À]", "E");
+		s = s.replaceAll("[€Ÿ]", "U");
+		s = s.replaceAll("[œŒ]", "I");
+		s = s.replaceAll("[¿¬]", "A");
+		s = s.replaceAll("‘", "O");
 		return s;
 	}
 

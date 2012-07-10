@@ -27,7 +27,7 @@ public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_UK_HSE = 2092; // U.K.
 	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
 	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] { CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL,
-			CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE };
+			CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
 
 	public static boolean isSafetyStatisticsCategory(int categoryId) {
 		for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {

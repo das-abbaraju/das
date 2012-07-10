@@ -22,7 +22,6 @@ import com.picsauditing.quickbooks.qbxml.ObjectFactory;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 
 public class UpdateContractors extends CustomerAdaptor {
@@ -98,7 +97,7 @@ public class UpdateContractors extends CustomerAdaptor {
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
-				customer.setEmail(EmailAddressUtils.validate(primary.getEmail()));
+				customer.setEmail(primary.getEmail());
 
 				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
 						.getName(), 0, 41));

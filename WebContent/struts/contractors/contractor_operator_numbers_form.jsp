@@ -3,10 +3,13 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 <s:include value="../actionMessages.jsp" />
 <div>
-	<s:form id="contractor_operator_numbers_form">
+	<s:form id="contractor_operator_numbers_form" data-url="ManageContractorOperatorNumber!save.action">
 		<s:hidden name="contractor" />
 		<s:hidden name="number" />
 		<fieldset class="form">
+			<h2 class="formLegend">
+				<s:text name="ContractorOperatorNumber" />
+			</h2>
 			<ol>
 				<s:if test="permissions.picsEmployee || permissions.corporate">
 					<li>
@@ -46,11 +49,11 @@
 			</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<input
-				type="button"
-				class="picsbutton positive"
-				value="<s:text name="button.Save" />"
-				data-url="ManageContractorOperatorNumber!save.action"
+			<s:submit
+				method="save"
+				action="ManageContractorOperatorNumber"
+				value="%{getText('button.Save')}"
+				cssClass="picsbutton positive"
 			/>
 			<input type="button" class="picsbutton negative closeButton" value="<s:text name="button.Close" />" />
 		</fieldset>

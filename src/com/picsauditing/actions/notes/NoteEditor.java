@@ -168,7 +168,7 @@ public class NoteEditor extends AccountActionSupport {
 	// ///////////////////////////
 
 	public List<Account> getFacilities() {
-		List<Account> facilities = accountDAO.findNoteRestrictionOperators(permissions);
+		List<Account> facilities = accountDAO.findViewableOperators(permissions, false);
 		return facilities;
 	}
 
@@ -187,9 +187,9 @@ public class NoteEditor extends AccountActionSupport {
 	public Map<Integer, String> getViewableByList() {
 		Map<Integer, String> list = new HashMap<Integer, String>();
 		if (permissions.seesAllContractors())
-			list.put(Account.EVERYONE, getText("NoteViewable.Everyone"));
-		list.put(Account.PRIVATE, getText("NoteViewable.Private"));
-		list.put(3, getText("NoteViewable.Restricted"));
+			list.put(Account.EVERYONE, "Everyone");
+		list.put(Account.PRIVATE, "Only Me");
+		list.put(3, "Restricted to:");
 		return list;
 	}
 
@@ -270,6 +270,6 @@ public class NoteEditor extends AccountActionSupport {
 	}
 
 	public String getAccountType() {
-		return getText("AccountType." + accountDAO.find(id).getType());
+		return accountDAO.find(id).getType();
 	}
 }

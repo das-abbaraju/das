@@ -331,7 +331,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<Invoice> findPendingDelinquentAndDelinquentInvoices() {
+	public List<Invoice> findDelinquentContractors() {
 		List<String> dates = new ArrayList<String>();
 		Calendar calendar1 = Calendar.getInstance();
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");

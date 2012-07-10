@@ -8,6 +8,7 @@ import com.picsauditing.util.Strings;
  * SELECT a.id, a.name, a.active FROM accounts a
  * 
  * @author Trevor
+ * 
  */
 public class SelectAccount extends SelectSQL {
 	private Type type = null;
@@ -164,11 +165,7 @@ public class SelectAccount extends SelectSQL {
 
 			this.addField("gc.workStatus");
 
-			String flag = "%s AS %s";
-
-			if (permissions.isGeneralContractor()) {
-				flag = "CASE gco.doContractorsPay WHEN 'No' THEN '' ELSE %s END %s";
-			}
+			String flag = "CASE gco.doContractorsPay WHEN 'Yes' THEN %s ELSE '' END %s";
 
 			this.addField(String.format(flag, "gc.flag", "flag"));
 			this.addField(String.format(flag, "lower(gc.flag)", "lflag"));

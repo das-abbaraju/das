@@ -5,63 +5,12 @@ import java.lang.reflect.Field;
 
 import javax.persistence.EntityManager;
 
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.PicsDAO;
 
 public class PicsTestUtil {
 	private EntityManager em;
-	
-	@SuppressWarnings("unchecked")
-	public static <T> void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom) 
-			throws InstantiationException, IllegalAccessException {
-		Class<T> classOfToObject = (Class<T>) objectToAutowire.getClass();
-		Class<T> classOfFromObject = (Class<T>) toTakeMockDaosFrom.getClass();
-		Field[] fields = classOfFromObject.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
-			autowireDaoInTargetWithMocksFromSource(objectToAutowire, toTakeMockDaosFrom, classOfToObject, field);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> void autowireDaoInTargetWithMocksFromSource(Object objectToAutowire, Object toTakeMockDaosFrom,
-			Class<T> classOfToObject, Field field) throws IllegalAccessException {
-		Annotation[] annotations = field.getAnnotations();
-		for (int j = 0; j < annotations.length; j++) {
-			Annotation annotation = annotations[j];
-			if (annotation instanceof Mock) {
-				Class<T> classOfField = (Class<T>) field.getType();
-				if (PicsDAO.class.isAssignableFrom(classOfField)) {
-					String fieldNameToSet = fieldNameOfAutowiredFieldOfClass(classOfField, classOfToObject);
-					field.setAccessible(true);
-					Object fieldValue = field.get(toTakeMockDaosFrom);
-					forceSetPrivateField(classOfToObject, objectToAutowire, fieldNameToSet, fieldValue);
-				}
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static <T> String fieldNameOfAutowiredFieldOfClass(Class<T> classOfField, Class<T> classOfToObject) {
-		String fieldName = null;
-		Field[] fields = classOfToObject.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
-			Annotation[] annotations = field.getAnnotations();
-			for (int j = 0; j < annotations.length; j++) {
-				Annotation annotation = annotations[j];
-				if (annotation instanceof Autowired) {
-					Class<T> classOfTargetField = (Class<T>) field.getType();
-					if (classOfTargetField.isAssignableFrom(classOfField)) {
-						fieldName = field.getName();
-					}
-				}
-			}
-		}
-		return fieldName;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public <T> void autowireEMInjectedDAOs(Object objectToAutowire, EntityManager em) throws InstantiationException,
@@ -119,13 +68,15 @@ public class PicsTestUtil {
 			field.set(objectToForceSet, fieldValue);
 		} catch (NoSuchFieldException x) {
 			Class<T> superClass = (Class<T>) classOfObject.getSuperclass();
-			if (null != superClass) {
+			if (null == superClass) {
+				x.printStackTrace();
+			} else {
 				forceSetPrivateField(superClass, objectToForceSet, fieldname, fieldValue);
 			}
 		} catch (IllegalArgumentException x) {
-			// ignore
+			x.printStackTrace();
 		} catch (IllegalAccessException x) {
-			// ignore
+			x.printStackTrace();
 		}
 	}
 }

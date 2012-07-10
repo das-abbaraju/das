@@ -2,11 +2,9 @@ package com.picsauditing.actions.report;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,23 +23,14 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailAttachment;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.FileUtils;
@@ -59,10 +48,6 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	private AccountDAO accountDAO;
 	@Autowired
 	private UserDAO userDAO;
-	@Autowired
-	protected EmailAttachmentDAO attachmentDAO;
-	@Autowired
-	protected EmailSenderSpring emailSenderSpring;
 
 	private File file;
 	private String fileContentType = null;
@@ -70,8 +55,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	private String fileName = null;
 
 	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
-	private static final int INITIAL_EMAIL = 83;
-
+	
 	public String save() throws Exception {
 		String extension = null;
 		if (file != null && file.length() > 0) {
@@ -135,15 +119,15 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				Sheet sheet = wb.getSheetAt(i);
-				for (Row row : sheet) {
+				for(Row row : sheet) {
 					// skip the header
 					if (row.getCell(0).getRichStringCellValue().getString().contains("Account"))
 						continue;
-
+					
 					// skip empty row: Assuming that no company name = empty row
-					if (getValue(row, 0) == null)
+					if (getValue(row,0) == null)
 						continue;
-
+					
 					ContractorRegistrationRequest crr = createdRegistrationRequest(row);
 
 					checkRequestForErrors(row.getRowNum(), crr);
@@ -156,177 +140,56 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		}
 
 		if (getActionErrors().size() == 0) {
-			String notes = "Sent initial contact email.";
 			for (ContractorRegistrationRequest crr : requests) {
 				int matches = findGap(crr);
 				crr.setMatchCount(matches);
-				crr.contactByEmail();
 				crrDAO.save(crr);
-
-				if (crr.getRequestedBy().getId() != 23325){
-					prependToRequestNotes(notes, crr);
-					sendEmail(crr);
-				}
 			}
 
 			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));
 		}
 	}
 
-	private void prependToRequestNotes(String note, ContractorRegistrationRequest newContractor) {
-		if (newContractor != null && note != null)
-			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note
-					+ (newContractor.getNotes() != null ? "\n\n" + newContractor.getNotes() : ""));
-	}
-
-	public OperatorForm getForm(ContractorRegistrationRequest newContractor) {
-		if (newContractor != null && newContractor.getRequestedBy() != null) {
-			List<OperatorAccount> hierarchy = new ArrayList<OperatorAccount>();
-			hierarchy.add(newContractor.getRequestedBy());
-
-			List<Facility> corpFac = new ArrayList<Facility>(newContractor.getRequestedBy().getCorporateFacilities());
-			Collections.reverse(corpFac);
-
-			for (Facility f : corpFac) {
-				if (!f.getCorporate().equals(newContractor.getRequestedBy().getTopAccount())
-						&& !Account.PICS_CORPORATE.contains(f.getCorporate().getId()))
-					hierarchy.add(f.getCorporate());
-			}
-
-			if (!newContractor.getRequestedBy().getTopAccount().equals(newContractor.getRequestedBy())
-					&& !Account.PICS_CORPORATE.contains(newContractor.getRequestedBy().getTopAccount().getId()))
-				hierarchy.add(newContractor.getRequestedBy().getTopAccount());
-
-			for (OperatorAccount o : hierarchy) {
-				for (OperatorForm form : o.getOperatorForms()) {
-					if (form.getFormName().contains("*"))
-						return form;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	private void sendEmail(ContractorRegistrationRequest newContractor) {
-		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
-			EmailBuilder emailBuilder = prepareEmailBuilder(newContractor);
-			try {
-				EmailQueue q = emailBuilder.build();
-				emailSenderSpring.send(q);
-				OperatorForm form = getForm(newContractor);
-				if (form != null)
-					addAttachments(q, form);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private EmailBuilder prepareEmailBuilder(ContractorRegistrationRequest newContractor) {
-		EmailBuilder email = new EmailBuilder();
-		email.setToAddresses(newContractor.getEmail());
-
-		email.setFromAddress("info@picsauditing.com");
-		email.setTemplate(INITIAL_EMAIL);
-		email.addToken("newContractor", newContractor);
-		return email;
-	}
-
-	private void addAttachments(EmailQueue emailQueue, OperatorForm form) {
-		String filename = FileUtils.thousandize(form.getId()) + form.getFile();
-
-		try {
-			EmailAttachment attachment = new EmailAttachment();
-
-			File file = new File(getFtpDir() + "/files/" + filename);
-
-			byte[] bytes = new byte[(int) file.length()];
-			FileInputStream fis = new FileInputStream(file);
-			fis.read(bytes);
-
-			attachment.setFileName(getFtpDir() + "/files/" + filename);
-			attachment.setContent(bytes);
-			attachment.setFileSize((int) file.length());
-			attachment.setEmailQueue(emailQueue);
-			attachmentDAO.save(attachment);
-		} catch (Exception e) {
-			LOG.error("Unable to open file: /files/{}", filename);
-		}
-	}
+	
 
 	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
 		ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
-
-		String importedName = (String) getValue(row, 0);
-		String importedContact = (String) getValue(row, 1);
+		crr.setName((String) getValue(row, 0));
+		crr.setContact((String) getValue(row, 1));
 		Object phoneValue = getValue(row, 2);
-		String importedEmail = (String) getValue(row, 3);
-		Object taxIDValue = getValue(row, 4);
-		String importedAddress = (String) getValue(row, 5);
-		String importedCity = (String) getValue(row, 6);
-		State importedState = (State) getValue(row, 7);
-		Object zipValue = getValue(row, 8);
-		Country importedCountry = (Country) getValue(row, 9);
-		OperatorAccount importedRequestedBy = (OperatorAccount) getValue(row, 10);
-		Object tagValue = getValue(row, 11);
-		User importedRequestedByUser = (User) getValue(row, 12);
-		String importedRequestedByUserOther = (String) getValue(row, 13);
-		Date importedDeadline = (Date) getValue(row, 14);
-		String importedNotes = (String) getValue(row, 15);
-
-		crr.setName(importedName);
-		crr.setContact(importedContact);
-		if (phoneValue != null) {
+		if(phoneValue != null) {
 			if (phoneValue instanceof Double) {
-				BigDecimal phoneValueDec = new BigDecimal((Double) phoneValue);
+				BigDecimal phoneValueDec = new BigDecimal((Double)phoneValue);
 				crr.setPhone(phoneValueDec.toString());
-			} else {
+			}
+			else{
 				crr.setPhone(phoneValue.toString());
 			}
 		}
-
-		crr.setEmail(importedEmail.trim());
-		if (taxIDValue != null) {
-			if (taxIDValue instanceof Double) {
-				BigDecimal taxIDValueDec = new BigDecimal((Double) taxIDValue);
-				crr.setTaxID(taxIDValueDec.toString());
-			} else {
-				crr.setTaxID(taxIDValue.toString());
+		
+		crr.setEmail((String) getValue(row, 3));
+		crr.setTaxID((String) getValue(row, 4));
+		crr.setAddress((String) getValue(row, 5));
+		crr.setCity((String) getValue(row, 6));
+		crr.setState((State) getValue(row, 7));
+		
+		Object zipcode = getValue(row, 8);
+		if(zipcode != null) {
+			if (zipcode instanceof Double) {
+				BigDecimal zipcodeDec = new BigDecimal((Double)zipcode);
+				crr.setPhone(zipcodeDec.toString());
+			}
+			else{
+				crr.setPhone(zipcode.toString());
 			}
 		}
-
-		crr.setAddress(importedAddress);
-		crr.setCity(importedCity);
-		crr.setState(importedState);
-		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(importedState.getIsoCode(), importedCountry.getIsoCode());
-		crr.setCountrySubdivision(countrySubdivision);
-		if (zipValue != null) {
-			if (zipValue instanceof Double) {
-				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);
-				crr.setZip(zipValueDec.toString());
-			} else {
-				crr.setZip(zipValue.toString());
-			}
-		}
-
-		crr.setCountry(importedCountry);
-		crr.setRequestedBy(importedRequestedBy);
-		if (tagValue != null) {
-			if (tagValue instanceof Double) {
-				BigDecimal tagValueDec = new BigDecimal((Double) tagValue);
-				crr.setOperatorTags(tagValueDec.toString());
-			} else {
-				crr.setOperatorTags(tagValue.toString());
-			}
-		}
-
-		crr.setRequestedByUser(importedRequestedByUser);
-		crr.setRequestedByUserOther(importedRequestedByUserOther);
-		crr.setDeadline(importedDeadline);
-		crr.setNotes(importedNotes);
-
+		
+		crr.setCountry((Country) getValue(row, 9));
+		crr.setRequestedBy((OperatorAccount) getValue(row, 10));
+		crr.setRequestedByUser((User) getValue(row, 11));
+		crr.setRequestedByUserOther((String) getValue(row, 12));
+		crr.setDeadline((Date) getValue(row, 13));
+		crr.setNotes((String) getValue(row, 14));
 		crr.setAuditColumns(permissions);
 		crr.setStatus(ContractorRegistrationRequestStatus.Active);
 		return crr;
@@ -419,12 +282,12 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				value = countryDAO.find(value.toString());
 			if (cell == 10 && !Strings.isEmpty(value.toString()))
 				value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
-			if (cell == 12 && !Strings.isEmpty(value.toString()))
+			if (cell == 11 && !Strings.isEmpty(value.toString()))
 				value = userDAO.find((int) Double.parseDouble(value.toString()));
-			if (cell == 14 && !Strings.isEmpty(value.toString()))
+			if (cell == 13 && !Strings.isEmpty(value.toString()))
 				value = row.getCell(cell).getDateCellValue();
 
-			if (isDebugging())
+			if (isDebugging()) 
 				logger.debug("{}:{}", cell, value);
 
 			if (value != null && value.toString() == "")

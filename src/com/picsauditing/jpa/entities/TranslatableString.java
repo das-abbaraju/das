@@ -114,13 +114,9 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 	 */
 	@Override
 	public String toString() {
-		return toString(null);
-	}
-
-	public String toString(Locale defaultLocale) {
-		String localeCodeForBestTranslation = getLocale(defaultLocale);
-		if (translations.containsKey(localeCodeForBestTranslation))
-			return translations.get(localeCodeForBestTranslation).getValue();
+		String fallback = getLocale();
+		if (translations.containsKey(fallback))
+			return translations.get(fallback).getValue();
 		else
 			return key;
 	}
@@ -156,41 +152,14 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		return this.toString().compareTo(o.toString());
 	}
 
-	/**
-	 * Determines the most appropriate locale code for the current locale (as
-	 * defiend by the ActionContext) with respect to the current set of
-	 * translations available for this TranslatableString. For example, if the
-	 * current locale is fr_CA, but there is not a Canada-specific translation
-	 * available, but there is a general French (fr) translataion available,
-	 * then this returns "fr". If there is not a French translataion available,
-	 * either, then it checks for English (en). And, if there is not a English
-	 * translataion available, then it randomly returns the code for one of
-	 * whatever translatsiona re available.
-	 * 
-	 * TODO Rename this pair of methods. For one thing, methods that are not
-	 * get-accessors should not begin with "get". For another, they're not
-	 * returning a Locale object, nor even a locale key. They're returning the
-	 * index ID for a translation. So, a better name might be
-	 * determineBestTranslationForLocale()
-	 * 
-	 * 
-	 */
 	public String getLocale() {
-		return getLocale(null);
-	}
-
-	public String getLocale(Locale defaultLocale) {
 		Locale locale;
 		try {
 			locale = ActionContext.getContext().getLocale();
 		} catch (Exception e) {
-			if (defaultLocale != null) {
-				locale = defaultLocale;
-			} else {
-				Logger logger = LoggerFactory.getLogger(TranslatableString.class);
-				logger.warn("Warning: Failed to get Locale from ActionContext.  Defaulting to Locale.ENGLISH");
-				locale = Locale.ENGLISH;
-			}
+			Logger logger = LoggerFactory.getLogger(TranslatableString.class);
+			logger.warn("Warning: Failed to get Locale from ActionContext");
+			return null;
 		}
 
 		if (translations.containsKey(locale.toString())) {
@@ -253,5 +222,4 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 			insert = false;
 		}
 	}
-
 }

@@ -46,7 +46,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserStatus;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -162,8 +161,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			else if (!ssn.matches("X{5}\\d{4}"))
 				addActionError("Invalid social security number entered.");
 		}
-		if (employee.getEmail().length()>0)
-			employee.setEmail(EmailAddressUtils.validate(employee.getEmail()));
 
 		employee.setAuditColumns(permissions);
 		boolean existing = employee.getId() > 0;
@@ -172,7 +169,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (!existing)
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
-		return setUrlForRedirect("ManageEmployees.action?"
+		return redirect("ManageEmployees.action?"
 				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account="
 						+ account.getId()) + "#employee=" + employee.getId());
 	}
@@ -190,7 +187,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		employee.setStatus(UserStatus.Active);
 		employeeDAO.save(employee);
 
-		return this.setUrlForRedirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
+		return this.redirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
 				+ employee.getId());
 	}
 

@@ -17,8 +17,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
@@ -82,14 +80,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 *
+	 * 
 	 * This is also used for plain-text type results.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
-
-	protected String url = null;
 
 	/**
 	 * This is rarely used now because of limitations with i18n on Button names.
@@ -100,21 +96,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
@@ -133,7 +129,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> safetyList;
 
 	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
-
+	
 	@Deprecated
 	public static final String getVersion() {
 		return PicsOrganizerVersion.getVersion();
@@ -158,20 +154,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-		if (!(isBeta||isAlphaEnvironment()||isConfigurationEnvironment()||isLocalhostEnvironment())){
-			Cookie[] cookiesA = getRequest().getCookies();
-			if (cookiesA != null) {
-				for (int i = 0; i < cookiesA.length; i++) {
-					if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")){
-						isBeta=true;
-					}
-				}
-			}
-		}
-		//String server = InetAddress.getLocalHost().getHostName();
-		//return isBeta || server.equals("organizer1") || server.equals("organizer2");
+		String server = InetAddress.getLocalHost().getHostName();
 
-		return isBeta;
+		return isBeta || server.equals("organizer1") || server.equals("organizer2");
 	}
 
 	public boolean isConfigurationEnvironment() {
@@ -201,7 +186,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * This method is used to set the clear_cache flag in the AppProperty table
 	 * to allow the contractor daemon to reset caches on all 3 servers.
-	 *
+	 * 
 	 */
 	protected void flagClearCache() {
 		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
@@ -228,9 +213,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
-		} else {
+		} else
 			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
-		}
 
 		if (permissions == null) {
 			permissions = new Permissions();
@@ -243,9 +227,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
 					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.", autoLoginID);
-					UserDAO userDAO = SpringUtils.getBean("UserDAO");
+					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
-
 					permissions.login(user);
 					LocaleController.setLocaleOfNearestSupported(permissions);
 					ActionContext.getContext().getSession().put("permissions", permissions);
@@ -257,10 +240,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected boolean forceLogin() {
+
 		loadPermissions();
 
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
+				// redirect("ProfileEdit.action?url=" +
+				// ServletActionContext.getRequest().getRequestURL());
+				// redirect("ChangePassword.action?source=profile&user=" +
+				// permissions.getUserId() + "&url="
+				// + ServletActionContext.getRequest().getRequestURL());
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), ServletActionContext.getRequest().getRequestURL()
 						.toString());
@@ -280,9 +269,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected boolean forceLogin(String alternateReturnURL) {
 		loadPermissions();
-
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
+				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
+				// redirect("ChangePassword.action?source=profile&user=" +
+				// permissions.getUserId() + "&url="
+				// + alternateReturnURL);
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), alternateReturnURL);
 
@@ -296,7 +288,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
-
 		return true;
 	}
 
@@ -318,7 +309,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public User getUser(int userId) {
-		UserDAO dao = SpringUtils.getBean("UserDAO");
+		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
 		try {
 			User user = dao.find(userId);
 			return user;
@@ -331,7 +322,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();
-			AccountDAO dao = SpringUtils.getBean("AccountDAO");
+			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
 			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
 		}
 		return account;
@@ -485,7 +476,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new TreeSet<User>();
-			UserDAO dao = SpringUtils.getBean("UserDAO");
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
 			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
 			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
 		}
@@ -495,7 +486,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
-			UserDAO dao = SpringUtils.getBean("UserDAO");
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
 			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));
 		}
 		return safetyList;
@@ -514,7 +505,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 *
+	 * 
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -542,10 +533,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return "";
 		}
 		return output;
-	}
-
-	public String getUrl() {
-		return url;
 	}
 
 	public JSONObject getJson() {
@@ -585,7 +572,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 *
+	 * 
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -620,13 +607,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
 	}
 
-	public String setUrlForRedirect(String url) throws IOException {
-		this.url = url;
-
-		if (!Strings.isEmpty(this.url)) {
-			return REDIRECT;
-		}
-
+	public String redirect(String url) throws IOException {
+		ServletActionContext.getResponse().sendRedirect(url);
 		return BLANK;
 	}
 
@@ -641,7 +623,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			response = decimalFormat.format(input);
 		} catch (Exception e) {
-			logger.error("unable to format as money: {}", answer);
+			 logger.error("unable to format as money: {}", answer);
 		}
 		return response;
 	}
@@ -710,9 +692,5 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getProtocol() {
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
-	}
-
-	private HttpServletRequest getRequest() {
-		return ServletActionContext.getRequest();
 	}
 }

@@ -107,7 +107,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 			addActionError(e.getMessage());
 		}
 
-		return setUrlForRedirect("ReportCompetencyByAccount.action");
+		return redirect("ReportCompetencyByAccount.action");
 	}
 
 	@Override

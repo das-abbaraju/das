@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.CohsStatistics;
 import com.picsauditing.jpa.entities.OshaStatistics;
 import com.picsauditing.jpa.entities.OshaType;

@@ -70,8 +70,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (trade.getId() == 0 && trade.getTrade() != null) {
 
 			/*
-			 * Look for the existing trade in the current contractor's trades
-			 * This will help prevent them from adding duplicates.
+			 * Look for the existing trade in the current contractor's trades This will help prevent them from adding
+			 * duplicates.
 			 */
 			for (ContractorTrade t : contractor.getTrades()) {
 				if (trade.getTrade().equals(t.getTrade())) {
@@ -142,8 +142,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			noteDAO.save(note);
 		}
 
-		// If the risk level for either product or safety increases due to this
-		// new trade, reset the verified date on
+		// If the risk level for either product or safety increases due to this new trade, reset the verified date on
 		// the contractor's answers
 		if (contractor.getSafetyRisk() != null && trade.getTrade().getSafetyRiskI() != null) {
 			if (contractor.getSafetyRisk().ordinal() < trade.getTrade().getSafetyRiskI().ordinal()) {
@@ -219,8 +218,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	public List<Trade> getTradeClassification() {
 		List<Trade> list = tradeDAO.findListByTrade(trade.getTrade().getId(), -1);
 		/*
-		 * TODO: This is the only instance I have found to exclude TOP. Find out
-		 * if the other usages need changing.
+		 * TODO: This is the only instance I have found to exclude TOP. Find out if the other usages need changing.
 		 */
 		list.remove(Trade.TOP);
 
@@ -307,14 +305,17 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			itr.remove();
 		}
 
-		return this.setUrlForRedirect("ContractorTrades.action?id=" + contractor.getId());
+		this.redirect("ContractorTrades.action?id=" + contractor.getId());
+
+		return SUCCESS;
 	}
 
 	public String continueWithTradesAjax() throws Exception {
 		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(contractor);
 
-		return this.setUrlForRedirect("ContractorTrades.action?id=" + contractor.getId());
+		this.redirect("ContractorTrades.action?id=" + contractor.getId());
+		return SUCCESS;
 	}
 
 	public boolean isOnsite() {

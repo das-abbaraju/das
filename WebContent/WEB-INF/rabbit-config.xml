@@ -5,16 +5,8 @@
 	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd" 
 	default-autowire="byName">
-
-	<!--  the connection settings for this are in /resources/amqp_connection.properties -->
-	<connection-factory id="ifJndiFailsConnectionFactory" host="${rabbit.host}" port="${rabbit.port}" username="${rabbit.username}" password="${rabbit.password}"/>  
-	
-	<beans:bean id="connectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
-    	<beans:property name="jndiName" value="java:comp/env/amqp/pics" />   
-    	<beans:property name="resourceRef" value="false" />
-    	<beans:property name="defaultObject" ref="ifJndiFailsConnectionFactory"/>
- 	</beans:bean>
-	
+ 
+	<connection-factory id="connectionFactory" host="localhost" port="5672" username="guest" password="guest"/>
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 	
 	<queue id="flag-changes" name="flag-changes" />
@@ -25,10 +17,8 @@
 	  </bindings>
 	</fanout-exchange>	
 	
-	<template message-converter="messageConverter" id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
+	<template id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="flagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
 		<beans:property name="amqpTemplate" ref="flagChangeTemplate" />
 	</beans:bean>
-	
-	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter" />
 </beans:beans>

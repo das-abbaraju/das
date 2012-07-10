@@ -96,7 +96,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>" id="profile_edit_changePassword"> 
+				<a href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>"> 
 					<s:text	name="button.password" />
 				</a>
 			</li>
@@ -182,23 +182,15 @@
 										value="u.timezone.iD" theme="form"
 										list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" /></li>
 
-								<li>
-									<label><s:text name="global.CreationDate" />:</label>
-									<s:date name="u.creationDate" />
-								</li>
-								<pics:toggle name="DynamicReports">
-									<li>
-										<label> <s:text name="User.useDynamicReport" /></label>
-										<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="u.usingDynamicReports" />
-									</li>
-								</pics:toggle>
+								<li><label><s:text name="global.CreationDate" />:</label>
+									<s:date name="u.creationDate" /></li>
 							</ol>
 						</fieldset>
 
 						<fieldset class="form submit">
 							<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save" />						
 								
-							<a class="change-password btn" href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>" id="profile_edit_changePassword2">
+							<a class="change-password btn" href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>">
 								<s:text name="button.password" />
 							</a>
 						</fieldset>

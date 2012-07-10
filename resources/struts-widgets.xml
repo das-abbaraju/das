@@ -3,33 +3,27 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<package name="com.picsauditing.widgets" extends="com.picsauditing">
-		<action name="RegisteredContractorsAjax"
-			class="com.picsauditing.actions.contractors.ContractorsWidget">
+		<action name="RegisteredContractorsAjax" class="com.picsauditing.actions.contractors.ContractorsWidget">
 			<result>struts/widgets/new_contractors.jsp</result>
 		</action>
 
-		<action name="UpcomingAuditsAjax"
-			class="com.picsauditing.actions.audits.ContractorAuditsWidget">
+		<action name="UpcomingAuditsAjax" class="com.picsauditing.actions.audits.ContractorAuditsWidget">
 			<result>struts/widgets/audits_upcoming.jsp</result>
 		</action>
 
-		<action name="ClosedAuditsAjax"
-			class="com.picsauditing.actions.audits.ContractorAuditsWidget">
+		<action name="ClosedAuditsAjax" class="com.picsauditing.actions.audits.ContractorAuditsWidget">
 			<result>struts/widgets/audits_closed.jsp</result>
 		</action>
 
-		<action name="ContractorTasksAjax"
-			class="com.picsauditing.actions.contractors.ContractorWidget">
+		<action name="ContractorTasksAjax" class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_tasks.jsp</result>
 		</action>
 
-		<action name="ContractorStatsAjax"
-			class="com.picsauditing.actions.contractors.ContractorWidget">
+		<action name="ContractorStatsAjax" class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_stats.jsp</result>
 		</action>
 
-		<action name="ContractorFacilitiesAjax"
-			class="com.picsauditing.actions.contractors.ContractorWidget">
+		<action name="ContractorFacilitiesAjax" class="com.picsauditing.actions.contractors.ContractorWidget">
 			<result>/struts/widgets/con_facilities.jsp</result>
 		</action>
 
@@ -37,23 +31,19 @@
 			<result>/struts/widgets/corporate_statistics.jsp</result>
 		</action>
 
-		<action name="ContractorsLoggedAjax"
-			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
+		<action name="ContractorsLoggedAjax" class="com.picsauditing.actions.contractors.UsersLoggedWidget">
 			<result>/struts/widgets/contractors_logged.jsp</result>
 		</action>
 
-		<action name="OperatorsLoggedAjax"
-			class="com.picsauditing.actions.contractors.UsersLoggedWidget">
+		<action name="OperatorsLoggedAjax" class="com.picsauditing.actions.contractors.UsersLoggedWidget">
 			<result>/struts/widgets/operators_logged.jsp</result>
 		</action>
 
-		<action name="DelinquentAccountsAjax"
-			class="com.picsauditing.actions.contractors.DelinquentAccountsWidget">
+		<action name="DelinquentAccountsAjax" class="com.picsauditing.actions.contractors.DelinquentAccountsWidget">
 			<result>/struts/widgets/delinquent_account.jsp</result>
 		</action>
-
-		<action name="ContractorCronStatisticsAjax"
-			class="com.picsauditing.actions.contractors.ContractorCronStatistics">
+		
+		<action name="ContractorCronStatisticsAjax" class="com.picsauditing.actions.contractors.ContractorCronStatistics">
 			<result>/struts/widgets/contractor_statistics.jsp</result>
 		</action>
 
@@ -61,63 +51,51 @@
 			<result>/struts/widgets/open_notes.jsp</result>
 		</action>
 
-		<action name="OperatorsFlagSummaryAjax"
-			class="com.picsauditing.actions.operators.OperatorFlagsWidget">
+		<action name="OperatorsFlagSummaryAjax" class="com.picsauditing.actions.operators.OperatorFlagsWidget">
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
-
-		<action name="ContractorPendingApprovalAjax"
-			class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
+		
+		<action name="ContractorPendingApprovalAjax" class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
 			<result>struts/widgets/con_pendingapproval.jsp</result>
 		</action>
 
-		<action name="BiddingContractorsApprovalAjax"
-			class="com.picsauditing.actions.contractors.BiddingConApprovalWidget">
+		<action name="BiddingContractorsApprovalAjax" class="com.picsauditing.actions.contractors.BiddingConApprovalWidget">
 			<result>struts/widgets/con_biddingapproval.jsp</result>
 		</action>
 
-		<action name="OperatorPicsContactsAjax"
-			class="com.picsauditing.actions.operators.OperatorPicsContactsWidget">
+		<action name="OperatorPicsContactsAjax" class="com.picsauditing.actions.operators.OperatorPicsContactsWidget">
 			<result>struts/widgets/op_pics_contacts.jsp</result>
 		</action>
 
-		<action name="RequestedContractorsAjax"
-			class="com.picsauditing.actions.contractors.RequestedConWidget">
+		<action name="RequestedContractorsAjax" class="com.picsauditing.actions.contractors.RequestedConWidget">
 			<result>struts/widgets/requested_contractors.jsp</result>
 		</action>
 
-		<action name="WynnewoodRatesAjax"
-			class="com.picsauditing.actions.operators.WynnewoodRatesWidget">
+		<action name="WynnewoodRatesAjax" class="com.picsauditing.actions.operators.WynnewoodRatesWidget">
 			<result>struts/widgets/wynnewood_rates.jsp</result>
 		</action>
 
-		<action name="ContractorWatchAjax"
-			class="com.picsauditing.actions.report.ReportActivityWatch">
+		<action name="ContractorWatchAjax" class="com.picsauditing.actions.report.ReportActivityWatch">
 			<result>struts/widgets/contractor_watch.jsp</result>
 		</action>
 
-		<action name="PQFVerificationWidgetAjax"
-			class="com.picsauditing.actions.contractors.PQFVerificationWidget">
+		<action name="PQFVerificationWidgetAjax" class="com.picsauditing.actions.contractors.PQFVerificationWidget">
 			<result>struts/widgets/pqf_verification_widget.jsp</result>
 		</action>
 
-		<action name="SubmittedAuditsAjax"
-			class="com.picsauditing.actions.audits.SubmittedAuditsWidget">
+		<action name="SubmittedAuditsAjax" class="com.picsauditing.actions.audits.SubmittedAuditsWidget">
 			<result>struts/widgets/outstanding_submitted_audits.jsp</result>
 		</action>
 
-		<action name="WelcomeCallAjax"
-			class="com.picsauditing.actions.audits.WelcomeCallWidget">
+		<action name="WelcomeCallAjax" class="com.picsauditing.actions.audits.WelcomeCallWidget">
 			<result>struts/widgets/welcome_call_pending.jsp</result>
 		</action>
 
-		<action name="RejectedPoliciesAjax"
-			class="com.picsauditing.actions.audits.RejectedPoliciesWidget">
+		<action name="RejectedPoliciesAjax" class="com.picsauditing.actions.audits.RejectedPoliciesWidget">
 			<result>struts/widgets/outstanding_rejected_policies.jsp</result>
 		</action>
 
-		<action name="WaitingOnAjax"
-			class="com.picsauditing.actions.contractors.WaitingOnWidget">
+		<action name="WaitingOnAjax" class="com.picsauditing.actions.contractors.WaitingOnWidget">
 			<result>struts/widgets/waiting_on.jsp</result>
 		</action>
 
@@ -125,47 +103,8 @@
 			<result>struts/widgets/flag_changes.jsp</result>
 		</action>
 
-		<action name="SubmittedImportPQFAuditsAjax"
-			class="com.picsauditing.actions.audits.SubmittedImportPQFAudits">
+		<action name="SubmittedImportPQFAuditsAjax" class="com.picsauditing.actions.audits.SubmittedImportPQFAudits">
 			<result>struts/widgets/submitted_import_pqf_audits.jsp</result>
-		</action>
-
-		<!-- Charts and Graphs -->
-		<action name="ChartXMLFlagCount" class="com.picsauditing.actions.chart.ChartFlagCount"></action>
-
-		<action name="ChartXMLOpFlagHistory"
-			class="com.picsauditing.actions.chart.ChartOpFlagHistory"></action>
-
-		<action name="ChartXMLTradeCount" class="com.picsauditing.actions.chart.ChartTradeCount"></action>
-
-		<action name="ChartXMLAuditsClosed" class="com.picsauditing.actions.chart.ChartAuditsClosed"></action>
-
-		<action name="CorporateFlagByFacilityAjax"
-			class="com.picsauditing.actions.chart.ChartFlagCountCorp">
-		</action>
-
-		<action name="CorporateWaitingOnByFacilityAjax"
-			class="com.picsauditing.actions.chart.ChartWaitingOnCountCorp">
-		</action>
-
-		<action name="ChartXMLWaitingOnCount"
-			class="com.picsauditing.actions.chart.ChartWaitingOnCount">
-		</action>
-
-		<action name="ChartXMLCorporateFlags"
-			class="com.picsauditing.actions.chart.ChartCorporateFlags">
-		</action>
-
-		<action name="OperatorFlagHistoryAjax"
-			class="com.picsauditing.actions.chart.OperatorFlagHistory">
-		</action>
-
-		<action name="OperatorFlagYearHistoryAjax"
-			class="com.picsauditing.actions.chart.OperatorFlagYearHistory">
-		</action>
-
-		<action name="ChartXMLFlagCategoryCount"
-			class="com.picsauditing.actions.chart.ChartFlagCategoryCount">
 		</action>
 	</package>
 </struts>

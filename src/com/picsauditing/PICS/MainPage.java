@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -21,10 +19,9 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
 
 public class MainPage {
-	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
-
 	private AppPropertyDAO appPropertyDAO;
 
 	private Database database = new Database();
@@ -55,7 +52,8 @@ public class MainPage {
 	}
 
 	public boolean isLiveChatEnabled() {
-		return "1".equals(getAppPropertyDAO().getProperty("PICS.liveChat"));
+		AppProperty liveChatState = getAppPropertyDAO().find("PICS.liveChat");
+		return liveChatState != null && "1".equals(liveChatState.getValue());
 	}
 
 	public boolean isDebugMode() {
@@ -71,22 +69,15 @@ public class MainPage {
 	}
 
 	public boolean isDisplaySystemMessage() {
-		return "1".equals(getAppPropertyDAO().getProperty("PICS.showInternationalSystemMessages"));
+		AppProperty displaySystemMessage = getAppPropertyDAO().find("PICS.showInternationalSystemMessages");
+		return displaySystemMessage != null && "1".equals(displaySystemMessage.getValue());
 	}
 
 	public Permissions getPermissions() {
-		Permissions permissions = null;
+		Permissions permissions = new Permissions();
 
 		if (session != null && session.getAttribute("permissions") != null) {
-			try {
-				permissions = (Permissions) session.getAttribute("permissions");
-			} catch (Exception e) {
-				logger.error("Permissions object was loaded in session but was not valid", e);
-			}
-		}
-
-		if (permissions == null) {
-			permissions = new Permissions();
+			permissions = (Permissions) session.getAttribute("permissions");
 		}
 
 		return permissions;
@@ -102,7 +93,7 @@ public class MainPage {
 
 					processResults(systemMessages, results);
 				} catch (Exception e) {
-					logger.error("Unable to find system messages in app_translations");
+					PicsLogger.log("Unable to find system messages in app_translations");
 				}
 			}
 

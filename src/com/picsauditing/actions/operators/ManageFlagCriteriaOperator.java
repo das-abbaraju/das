@@ -414,6 +414,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 	public String bumpContractors() throws Exception {
 		operatorDao.incrementContractors(operator.getId());
-		return setUrlForRedirect("ManageFlagCriteriaOperator.action?id=" + operator.getId());
+		return redirect("ManageFlagCriteriaOperator.action?id=" + operator.getId());
 	}
 }

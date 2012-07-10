@@ -63,14 +63,14 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 						next = true;
 				}
 				
-				return setUrlForRedirect("Audit.action?auditID=" + row.get("auditID") + "&policy=true");
+				return redirect("Audit.action?auditID=" + row.get("auditID") + "&policy=true");
 			}
 		}
 		if ("getFirst".equals(button)) {
 			if (data != null && data.size() > 0) {
 				BasicDynaBean firstRow = data.get(0);
 				// TODO forward to the AuditCat page for that audit
-				return setUrlForRedirect("Audit.action?auditID=" + firstRow.get("auditID"));
+				return redirect("Audit.action?auditID=" + firstRow.get("auditID"));
 			}
 		}
 		return super.returnResult();

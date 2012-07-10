@@ -23,7 +23,7 @@ import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
-//import com.picsauditing.util.ReportFilter;
+import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -36,7 +36,7 @@ public class ManageTranslations extends ReportActionSupport {
 	private Locale localeTo = null;
 	private List<Translation> list;
 	private AppTranslation translation;
-//	private ReportFilter filter;
+	private ReportFilter filter;
 	private boolean showDoneButton;
 	private boolean updateOtherLocales = true;
 
@@ -87,7 +87,7 @@ public class ManageTranslations extends ReportActionSupport {
 							translation.setKey("");
 							throw new Exception("Invalid Translation Key");
 						}
-
+						
 						translation.setAuditColumns(permissions);
 
 						if (Strings.isEmpty(translation.getSourceLanguage())
@@ -148,7 +148,7 @@ public class ManageTranslations extends ReportActionSupport {
 
 	private void updateOtherLanguagesToQuestionable() {
 		if (updateOtherLocales) {
-			List<AppTranslation> nowQuestionable = dao.findWhere(AppTranslation.class,
+			List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(AppTranslation.class,
 					String.format("t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage "
 							+ "AND t.qualityRating > 1", translation.getKey(), translation.getLocale()));
 			for (AppTranslation questionable : nowQuestionable) {
@@ -168,11 +168,11 @@ public class ManageTranslations extends ReportActionSupport {
 
 		return SUCCESS;
 	}
-
+	
 	public String preview() {
 		I18nCache cache = I18nCache.getInstance();
 		output = cache.getText(key, (localeTo != null ? localeTo : localeFrom));
-
+		
 		return BLANK;
 	}
 
@@ -440,13 +440,13 @@ public class ManageTranslations extends ReportActionSupport {
 		this.search = search;
 	}
 
-//	public ReportFilter getFilter() {
-//		return filter;
-//	}
-//
-//	public void setFilter(ReportFilter filter) {
-//		this.filter = filter;
-//	}
+	public ReportFilter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(ReportFilter filter) {
+		this.filter = filter;
+	}
 
 	public String getSearchType() {
 		return searchType;

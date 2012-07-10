@@ -2,72 +2,61 @@
     PICS.define('badge.Badge', {
         methods: {
             init: function () {
-                var me = this;
-
                 if ($('#ContractorBadge-page').length) {
+                    this.initializeCopyToClipboard();
 
-                    ZeroClipboard.setMoviePath( "js/zeroclipboard/ZeroClipboard.swf" );
-
-                    //default icon
-                    me.copyToClipboard('100');
-
-                    $('.badges').delegate('#badgeSize', 'change', function (event) {
-                        me.changeBadgeSize.apply(me, [event]);
-                    });
-
-                    $('#ContractorBadge-page').delegate('a.toggleCode', 'click', function () {
-                        var code_toggle = $(this),
-                            textarea = code_toggle.closest('.badgeIcon').find('textarea');
-
+                    $('#ContractorBadge-page a.toggleCode').click(function (event) {
+                        var textarea = $(this).closest('.badgeIcon ').find('textarea');
                         textarea.toggle();
                     });
+
+                    $("#badgeSize").change(function (event) {
+                        var badges = $(".badgeIcon");
+
+                        badges.hide();
+
+                        switch (event.currentTarget.value) {
+                            case "small": $("#badge_80").show(); break;
+                            case "medium": $("#badge_100").show();break;
+                            case "large": $("#badge_150").show();break;
+                            default: break;
+                        }
+                    });
                 }
             },
 
-            changeBadgeSize: function (event) {
-                var size  = $("#badgeSize"),
-                    icons = $(".badgeIcon"),
-                    that = this;
+            initializeCopyToClipboard: function () {
+                ZeroClipboard.setMoviePath( "js/zeroclipboard/ZeroClipboard.swf" );
 
-                //hide all badges
-                icons.hide();
+                var clip_80 = new ZeroClipboard.Client();
+                var clip_100 = new ZeroClipboard.Client();
+                var clip_150 = new ZeroClipboard.Client();
 
-                //show selected badge
-                switch (size.val()) {
-                    case "small":
-                        $("#badge_80").show();
-                        that.copyToClipboard('80');
-                        break;
-                    case "medium":
-                        $("#badge_100").show();
-                        that.copyToClipboard('100');
-                        break;
-                    case "large":
-                        $("#badge_150").show();
-                        that.copyToClipboard('150');
-                        break;
-                    default: break;
-                }
-            },
+                clip_80.setHandCursor(true);
+                clip_100.setHandCursor(true);
+                clip_150.setHandCursor(true);
 
-            copyToClipboard: function (badge_size) {
-                if (!$('#badge_' + badge_size + ' embed').length) {
-                    this.createZeroClipboardClient(badge_size);
-                }
-            },
+                clip_80.addEventListener('mouseDown', function(client) {
+                    var textarea = $('#clip_button_80').closest('.code').find('textarea');
 
-            createZeroClipboardClient: function (size) {
-                var client = new ZeroClipboard.Client();
-
-                client.setHandCursor(true);
-
-                client.addEventListener('mouseDown', function(client) {
-                    var textarea = $('#badge_' + size).find('textarea');
-
-                    client.setText(textarea.text());
+                    clip_80.setText(textarea.text());
                 });
 
-                client.glue('clip_button_' + size, 'clip_container_' + size);
+                clip_100.addEventListener('mouseDown', function(client) {
+                    var textarea = $('#clip_button_100').closest('.code').find('textarea');
+
+                    clip_100.setText(textarea.text());
+                });
+
+                clip_150.addEventListener('mouseDown', function(client) {
+                    var textarea = $('#clip_button_150').closest('.code').find('textarea');
+
+                    clip_150.setText(textarea.text());
+                });
+
+                clip_80.glue('clip_button_80', 'clip_container_80');
+                clip_100.glue('clip_button_100', 'clip_container_100');
+                clip_150.glue('clip_button_150', 'clip_container_150');
             }
         }
     });

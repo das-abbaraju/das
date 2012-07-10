@@ -12,7 +12,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageOptionGroup extends ManageOptionComponent {
 	private boolean editOnly = false;
-
+	
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits, type = OpType.Edit)
 	public String save() throws Exception {
@@ -31,9 +31,8 @@ public class ManageOptionGroup extends ManageOptionComponent {
 			group.setAuditColumns(permissions);
 			group = (AuditOptionGroup) auditOptionValueDAO.save(group);
 
-			if (question != null) {
-				return setUrlForRedirect("ManageOptionValue.action?group=" + group.getId() + "&question=" + question.getId());
-			}
+			if (question != null)
+				redirect("ManageOptionValue.action?group=" + group.getId() + "&question=" + question.getId());
 		}
 
 		return SUCCESS;
@@ -77,7 +76,7 @@ public class ManageOptionGroup extends ManageOptionComponent {
 	public void setEditOnly(boolean editOnly) {
 		this.editOnly = editOnly;
 	}
-
+	
 	@Override
 	protected void fillSelectedLocales() {
 		if (group != null && !group.getLanguages().isEmpty()) {

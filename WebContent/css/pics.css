@@ -65,12 +65,12 @@ p {
 	white-space: nowrap;
 }
 
-/*#logo {
+#logo {
 	border: 0px;
 	margin: 0;
 	width: 120px;
 	padding-top: 1px;
-}*/
+}
 
 .head-phone {
 	color: #80b3da;
@@ -1577,24 +1577,4 @@ div.blockDialog {
 {
 	float: right;
 	margin-right: 50px;	
-}
-
-/* referral program */
-
-.referral-program img
-{
-	float: left;
-	margin-right: 20px;
-}
-
-.referral-program .summary
-{
-	float: left;
-	width: 70%;
-}
-
-.referral-program p
-{
-	font-size: 15px;
-	padding: 12px 0px;	
 }

@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "certificate")
-public class Certificate extends BaseTable implements Comparable<Certificate> {
+public class Certificate extends BaseTable {
 	private ContractorAccount contractor;
 	private String fileType;
 	private String description;
@@ -73,15 +73,5 @@ public class Certificate extends BaseTable implements Comparable<Certificate> {
 		if (expirationDate == null)
 			return false;
 		return expirationDate.before(date);
-	}
-
-	@Override
-	@Transient
-	public int compareTo(Certificate o) {
-		if (description.equals(o.description)) {
-			return fileType.compareTo(o.fileType);
-		}
-
-		return description.compareTo(o.description);
 	}
 }

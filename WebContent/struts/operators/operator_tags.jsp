@@ -199,7 +199,7 @@
 			<s:if test=" permissions.hasPermission('ContractorTags','Edit') || permissions.marketing">
 				<ul class="actions">
 					<li>
-						<s:submit method="save" value="%{getText('global.SaveChanges')}" cssClass="btn success" />
+						<s:submit method="save" value="Save Changes" cssClass="btn success" />
 					</li>
 				</ul>
 			</s:if>

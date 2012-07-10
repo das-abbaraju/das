@@ -25,6 +25,7 @@
         border-left: solid 1px $menu-separator-border-color;
         background-color: $menu-separator-background-color;
         width: 2px;
+        height: 100%!important;
         overflow: hidden;
     }
 
@@ -136,6 +137,10 @@
             cursor: pointer;
             @include border-radius(3px);
         }
+        
+        .#{$prefix}menu-item-text {
+	        color: $menu-text-over-color;
+	    }
     }
 
     .#{$prefix}menu-item-disabled {
@@ -155,7 +160,7 @@
                 }
             }
             
-            .#{$prefix}strict .#{$prefix}ie7m & {
+            .#{$prefix}strict & {
                 .#{$prefix}menu-icon-separator {
                     width: 1px;
                 }

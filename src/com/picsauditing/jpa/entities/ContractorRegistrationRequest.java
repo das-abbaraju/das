@@ -26,7 +26,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String address;
 	private String city;
 	private State state;
-	private CountrySubdivision countrySubdivision;
 	private String zip;
 	private Country country;
 	private String reasonForRegistration;
@@ -139,16 +138,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	public void setState(State state) {
 		this.state = state;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "countrySubdivision")
-	public CountrySubdivision getCountrySubdivision() {
-		return countrySubdivision;
-	}
-
-	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
-		this.countrySubdivision = countrySubdivision;
 	}
 
 	public String getZip() {

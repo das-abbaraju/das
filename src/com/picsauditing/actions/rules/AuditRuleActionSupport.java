@@ -112,8 +112,8 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	/**
-	 * If user has a permission to edit the rule, created the rule, or is
-	 * associated with the operator then they can edit the rule
+	 * If user has a permission to edit the rule, created the rule, or is associated with the operator then they can
+	 * edit the rule
 	 * 
 	 * @return
 	 */
@@ -197,9 +197,9 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 			rule.setQuestion(null);
 	}
 
-	protected abstract String redirectTo() throws IOException;
+	protected abstract void redirectTo() throws IOException;
 
-	protected abstract String onDeleteRedirectTo() throws IOException;
+	protected abstract void onDeleteRedirectTo() throws IOException;
 
 	public abstract boolean isAuditTypeRule();
 
@@ -295,11 +295,11 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	public Map<String, String> getAccountTypeList() {
 		Map<String, String> map = new TreeMap<String, String>();
 		map.put("", "Any");
-
+		
 		for (ContractorType type : ContractorType.values()) {
 			map.put(type.name(), type.getType());
 		}
-
+		
 		return map;
 	}
 }

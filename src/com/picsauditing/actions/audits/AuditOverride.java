@@ -22,7 +22,7 @@ import com.picsauditing.util.Strings;
 public class AuditOverride extends ContractorDocuments {
 	@Autowired
 	private AuditBuilder auditBuilder;
-
+	
 	protected List<Integer> selectedEmployeeIds;
 	List<Employee> employeesLeftList;
 	List<Employee> employeesRightList;
@@ -37,18 +37,19 @@ public class AuditOverride extends ContractorDocuments {
 		if (!isManuallyAddAudit()) {
 			throw new NoRightsException("Cannot Manually Add Audits");
 		}
-
-		employeesLeftList = new ArrayList<Employee>();
-		for (Employee e : contractor.getEmployees()) {
-			if (e.isActive())
-				employeesLeftList.add(e);
-		}
+		
+			employeesLeftList = new ArrayList<Employee>();
+			for (Employee e : contractor.getEmployees()) {
+				if (e.isActive())
+					employeesLeftList.add(e);
+			}
 
 		if (button != null) {
 			ContractorAudit conAudit = null;
 			AuditType auditType = null;
 			List<Employee> employees = new ArrayList<Employee>();
-
+			
+			
 			if (selectedAudit != null)
 				auditType = auditTypeDAO.find(selectedAudit);
 
@@ -65,26 +66,26 @@ public class AuditOverride extends ContractorDocuments {
 					return SUCCESS;
 				}
 			}
-
+			
 			if (auditType.isEmployeeSpecificAudit()) {
 				if (selectedEmployeeIds == null || selectedEmployeeIds.size() == 0) {
 					addActionError("You must select an employee.");
 					return SUCCESS;
 				}
-				for (int employeeId : selectedEmployeeIds) {
+				for (int employeeId:selectedEmployeeIds) {
 					Employee employee = dao.find(Employee.class, employeeId);
-					if (employee != null)
+					if (employee != null) 
 						employees.add(employee);
 				}
-
+				
 				if (employees.size() == 0) {
 					addActionError("You must select an employee.");
 					return SUCCESS;
 				}
 			}
-
+			
 			if (auditType.isEmployeeSpecificAudit()) {
-				for (Employee employee : employees) {
+				for (Employee employee:employees) {
 					conAudit = createAudit(auditType, employee);
 				}
 			} else {
@@ -95,9 +96,9 @@ public class AuditOverride extends ContractorDocuments {
 				auditBuilder.buildAudits(contractor);
 
 				if (auditType.isEmployeeSpecificAudit()) {
-					return this.setUrlForRedirect("EmployeeDashboard.action?id=" + id);
+					this.redirect("EmployeeDashboard.action?id=" + id);
 				} else {
-					return this.setUrlForRedirect("Audit.action?auditID=" + conAudit.getId());
+					this.redirect("Audit.action?auditID=" + conAudit.getId());
 				}
 			}
 		}
@@ -126,7 +127,7 @@ public class AuditOverride extends ContractorDocuments {
 
 		conAudit.getOperators().add(cao);
 		conAudit.setLastRecalculation(null);
-
+		
 		if (employee != null) {
 			conAudit.setEmployee(employee);
 		}
@@ -137,13 +138,13 @@ public class AuditOverride extends ContractorDocuments {
 		conAudit.setManuallyAdded(true);
 		conAudit.setAuditColumns(permissions);
 		conAudit.setContractorAccount(contractor);
-
+		
 		contractor.getAudits().add(conAudit);
 
 		auditDao.save(conAudit);
-
-		addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getName().toString() + " manually",
-				NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+		
+		addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getName().toString()
+				+ " manually", NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 		return conAudit;
 	}

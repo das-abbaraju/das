@@ -1,6 +1,5 @@
 Ext.define('PICS.controller.report.ColumnSelectorController', {
     extend: 'Ext.app.Controller',
-    
     refs: [{
         ref: 'columnSelector',
         selector: 'reportcolumnselector'
@@ -8,51 +7,32 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
         ref: 'columnSelectorGrid',
         selector: 'reportcolumnselectorgrid'
     }, {
-        ref: 'dataSetGrid',
-        selector: 'reportdatasetgrid'
-    }, {
         ref: 'hideColumnCheckbox',
         selector: 'reportcolumnselector toolbar[dock=top] checkbox'
     }, {
         ref: 'searchField',
         selector: 'reportcolumnselector toolbar[dock=top] textfield'
     }],
-
     stores: [
         'report.AvailableFieldsByCategory',
-        'report.Reports'
+        'report.ReportsColumn',
+        'report.ReportsFilter',
+        'report.ReportsSort'        
     ],
-
+    
     init: function () {
         var me = this;
-
+        
         this.control({
-            'reportcolumnselector button[action=close]':  {
-                click: function () {
-                    this.getColumnSelector().close();
-                }
-            },
             'reportcolumnselector button[action=add]':  {
-                click: function () {
-                    var window = this.getColumnSelector();
-                    
-                    if (window.columnSelectorType === 'column') {
-                        me.addColumnToReport();
-                    } else if (window.columnSelectorType === 'filter') {
-                        me.addFilterToReport();
-                    } else {
-                        throw 'columnSelector.type is ' + window.columnSelectorType + ' - must be (filter|column)';
-                    }
-
-                    window.destroy();
-                }
+                click: this.addColumnToReportOptionsColumns
             },
             'reportcolumnselector toolbar[dock=top] checkbox': {
                 change: function (component, newValue, oldValue, eOpts) {
                     var store = this.getReportAvailableFieldsByCategoryStore();
-
+                    
                     store.clearFilter();
-
+                    
                     me.toggleSelectedColumns();
                     me.search();
                 }
@@ -60,9 +40,9 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             'reportcolumnselector toolbar[dock=top] textfield': {
                 keyup: function (component, e, eOpts) {
                     var store = this.getReportAvailableFieldsByCategoryStore();
-
+                    
                     store.clearFilter();
-
+                    
                     me.toggleSelectedColumns();
                     me.search();
                 }
@@ -73,101 +53,89 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                 }
             }
         });
-
-        this.application.on({
-            showcolumnselector: this.showColumnSelector,
-            scope: this
-        });
     },
-
-    addColumnToReport: function(component, e, eOpts) {
-        var grid = this.getColumnSelectorGrid(),
-            selected = grid.getSelectionModel().getSelection();
-
+    
+    addColumnToReportOptionsColumns: function(component, e, eOpts) {
+        var window = this.getColumnSelector();
+        var grid = this.getColumnSelectorGrid();
+        
+        var selected = grid.getSelectionModel().getSelection();
+        
         if (selected.length > 0) {
-            var column_store = this.getReportReportsStore().first().columns();
-
-            Ext.Array.forEach(selected, function (field) {
-                column_store.add(field.createColumn());
-            });
-
-            this.application.fireEvent('refreshreport');
+            var store;
+            if (window._column_type === "filter") {
+                store = this.getReportReportsFilterStore();
+                colStore = this.getReportReportsColumnStore();
+                Ext.Array.forEach(selected, function (field) {
+                    store.add(field.createSimpleFilter());
+                    if (colStore.findRecord("name", field.get('name')) === null) {
+                        colStore.add(field.createSimpleColumn());
+                    }
+                });
+            } else if (window._column_type === "column") {
+                store = this.getReportReportsColumnStore();
+                Ext.Array.forEach(selected, function (field) {
+                    store.add(field.createSimpleColumn());
+                });
+            } else if (window._column_type === "sort") {
+                store = this.getReportReportsSortStore();
+                colStore = this.getReportReportsColumnStore();
+                Ext.Array.forEach(selected, function (field) {
+                    store.add(field.createSimpleSort());
+                    if (colStore.findRecord("name", field.get('name')) === null) {
+                        colStore.add(field.createSimpleColumn());
+                    }
+                });
+            } else {
+                throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
+            }
         }
+        
+        this.application.fireEvent('refreshreport');
+        
+        window.destroy();
     },
-
-    addFilterToReport: function(component, e, eOpts) {
-        var grid = this.getColumnSelectorGrid(),
-            selected = grid.getSelectionModel().getSelection();
-
-        if (selected.length > 0) {
-            var filter_store = this.getReportReportsStore().first().filters();
-
-            Ext.Array.forEach(selected, function (field) {
-                filter_store.add(field.createFilter());
-            });
-
-            this.application.fireEvent('refreshfilters');
-        }
-    },
-   
+    
     search: function () {
-        var available_field_store = this.getReportAvailableFieldsByCategoryStore(),
-            search_field = this.getSearchField();
-
-        available_field_store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
-            anyMatch: true,
+        var store = this.getReportAvailableFieldsByCategoryStore();
+        var search = this.getSearchField();
+        
+        store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
             property: [
                 'category',
                 'text'
             ],
-            root: 'data',
-            value: search_field.getValue()
+            value: search.getValue(),
+            anyMatch: true,
+            root: 'data'
         }));
     },
     
-    showColumnSelector: function(component, e, options) {
-        var me = this,
-            window = this.getColumnSelector();
-
-        if (!window) {
-            var store = this.getReportAvailableFieldsByCategoryStore();
-            
-            store.clearFilter();
-
-            window = Ext.create('PICS.view.report.ColumnSelector', {
-                columnSelectorType: component.columnSelectorType
-            });
-            
-            window.show();
-        }
-    },
-
     toggleSelectedColumns: function () {
-        var available_field_store = this.getReportAvailableFieldsByCategoryStore(),
-            hide_column_checkbox = this.getHideColumnCheckbox();
-
+        var field_store = this.getReportAvailableFieldsByCategoryStore();
+        var hide_column_checkbox = this.getHideColumnCheckbox();
+        
         if (hide_column_checkbox.checked) {
-            var report = this.getReportReportsStore().first(),
-                selected_columns = [],
-                store = '',
-                window = this.getColumnSelector();
-                
-            if (window.columnSelectorType === 'column') {
-                store = report.columns();
-            } else if (window.columnSelectorType === 'filter') {
-                store = report.filters();
+            var window = this.getColumnSelector();
+            
+            if (window._column_type === 'filter') {
+                store = this.getReportReportsFilterStore();
+            } else if (window._column_type === 'column') {
+                store = this.getReportReportsColumnStore();
+            } else if (window._column_type === 'sort') {
+                store = this.getReportReportsSortStore();                
             } else {
-                throw 'columnSelector.type is ' + window.columnSelectorType + ' - must be (filter|column)';
+                throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
-
-            // build a list of selected column, filter, or sorts
+            
+            var columns = [];
+            
             store.each(function (record) {
-                selected_columns.push(record.get('name'));
+                columns.push(record.get('name'));
             });
-
-            // filter the available field store by the built list
-            available_field_store.filter(function (item) {
-                return selected_columns.indexOf(item.get('name')) == -1;
+            
+            field_store.filter(function (item) {
+                return columns.indexOf(item.get('name')) == -1;
             });
         }
     }

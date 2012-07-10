@@ -44,7 +44,7 @@ public class AccountDAO extends PicsDAO {
 		return (Account) query.getSingleResult();
 	}
 	
-	public List<Account> findNoteRestrictionOperators(Permissions permissions) {
+	public List<Account> findViewableOperators(Permissions permissions, boolean includeOperators) {
 		String where = "AND a.status IN ('Active'";
 		
 		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
@@ -59,8 +59,10 @@ public class AccountDAO extends PicsDAO {
 		
 		Query query;
 		
-		query = em.createQuery("FROM Account a WHERE (type IN ('Admin','Corporate') OR (type='Operator' AND (parent.id is NULL OR parent.id IN ("
-						+ Strings.implode(Account.PICS_CORPORATE, ",") + ")))) AND a.id!=10403 " + where + " ORDER BY a.name");
+		if (includeOperators)
+			query = em.createQuery("FROM Account a WHERE type IN ('Admin','Corporate','Operator') " + where + " ORDER BY a.type, a.name");
+		else
+			query = em.createQuery("FROM Account a WHERE type IN ('Admin','Corporate') " + where + " ORDER BY a.type, a.name");
 		
 		return query.getResultList();
 	}

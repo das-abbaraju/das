@@ -558,7 +558,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public Float getNaicsTRIRI() {
-		if (naicsTRIR != null && naicsTRIR != 0.0)
+		if (naicsTRIR != null)
 			return naicsTRIR;
 		else if (parent != null)
 			return parent.getNaicsTRIRI();

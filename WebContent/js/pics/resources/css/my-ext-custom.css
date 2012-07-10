@@ -1,195 +1,32 @@
-/* loading */
+/* body */
 
-#loadingPage {
-	height: 140px;
-    left: 50%;
-    margin: -70px 0 0 -90px;
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    width: 180px;
-}
-#loadingPage #logo {
-    background: url(../../app/resources/images/loading.gif) 0px 0px no-repeat;
-    position: absolute;
-    display: block;
-    top: 25px;
-    left: 22px;
-    width: 120px;
-    height: 120px;
+.x-body
+{
+	background: #FFF;
 }
 
-#report_filters div.x-form-display-field {
-    white-space: nowrap;
+/* grid action column */
+
+.x-action-col-cell .x-grid-cell-inner
+{
+	text-align: right !important;
 }
 
-/* 
-general
-.ext-icon {
-    cursor: pointer;
-    cursor: hand;
-    height: 16px;
-    margin: 4px;
-    white-space: nowrap;
-    width: 16px;
-    zoom: 1;
-}
-.ext-icon.grid {
-    height: 10px;
-    width: 10px;
-}
-.x-action-col-cell .x-grid-cell-inner {
-    text-align: right !important;
-}
-.tooltipIcon {
-    background: none;
+/* custom icons */
+
+.ext-icon
+{
+	cursor: pointer;
+	cursor: hand;
+	height: 16px;
+	margin: 4px;
+	white-space: nowrap;
+	width: 16px;
+	zoom: 1;
 }
 
-header
-#layoutNorth-body {
-	border: 0px;
-}
-#layoutCenter-body {
-    border-top: 0px;
-}
-#layoutHeader {
-    background: none;
-    border: 0px;
-}
-#layoutHeader .x-toolbar-text {
-    background: none;
-    color: #464646;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 12px;    
-}
-#layoutHeader .x-toolbar-text a,
-#layoutHeader .x-toolbar-text a:link,
-#layoutHeader .x-toolbar-text a:visited {
-    color: #343434;
-    text-decoration: underline;
-}
-#layoutHeader .toolbarBold {
-    font-weight: bold;
-}
-#reportHeader {
-    background: none;
-    border: 0px;
-}
-#reportHeader h1 {
-	color: #000;
-    font-size: 25px;
-}
-
-#reportHeader .reportEdit {
-	background: url(../images/button/gear.png) 0px 0px no-repeat;
-	border: 0px;
-    height: 56px;
-    width: 59px;
-}
-
-body
-.x-body,
-.x-border-layout-ct {
-    background: #FFF;
-}
-
-filters
-#filteroptions .x-panel-header-text {
-    font-size: 18px;
-}
-#filteroptions-body {
-	border-bottom: 0px;
-}
-#filteroptions .x-form-item-label-left {
-	font-size: 14px;
-	font-weight: bold;
-}
-#filteroptions .baseFilter .x-btn-default-small {
-	border: none;
-	background: none;
-}
-#filteroptions .x-docked-bottom {
-	border-top-width: 1px !important;
-}
-#filteroptions .x-panel-body-docked-bottom {
-	border-bottom: 0px;
-}
-
-Data Grid
-#dataGrid .x-toolbar-docked-bottom {
-    border-bottom: 0px;	
-}
-
-Footer
-#footer {
-    background: none;
-
-} */
-
-
-/* Box Select Styilng*/
-.x-boxselect.x-form-text {
-    height: auto;
-    cursor: text;
-    padding: 0;
-    overflow-y: auto;
-}
-.x-boxselect ul.x-boxselect-list {
-    padding: 1px 3px;
-}
-.x-boxselect input {
-    border: none;
-    background: none;
-    line-height: 18px;
-    height: 20px;
-    width: 100%;
-}
-.x-boxselect-input, .x-boxselect-item {
-    display: inline-block;
-    position: relative;
-    *display:inline; /* IE7 */
-    zoom:1; /* IE */
-}
-.x-boxselect-stacked .x-boxselect-item {
-    display: block;
-}
-.x-boxselect-item {
-    -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; o-border-radius: 6px; khtml-border-radius: 6px; border: 1px solid #CAD8F3;
-    padding: 0px 1px 0px 5px !important;
-    margin: 1px 1px 1px 0;
-    background-color: #DEE7F8;
-    cursor: default;
-}
-.x-field:not(.x-item-disabled) .x-boxselect-item:hover {
-    background: #BBCEF1;
-    border: 1px solid #6D95E0;
-}
-.x-field:not(.x-item-disabled) .x-boxselect-item.selected {
-    border: 1px solid #316AD3 !important;
-    background: #658FDC !important;
-}
-.x-boxselect-item-text {
-    line-height: 16px;
-    padding-right: 20px !important;
-}
-.x-boxselect-item-close {
-    cursor: pointer;
-}
-.x-boxselect-hideselections .x-boundlist-selected {
-    display: none;
-}
-
-.x-tab-close-btn {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 11px;
-  height: 11px;
-  font-size: 0;
-  line-height: 0;
-  text-indent: -999px;
-  background: no-repeat;
-  background-image: url('../images/tab/tab-default-close.gif');
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
-  opacity: 0.6;
+.ext-icon.grid
+{
+	height: 10px;
+	width: 10px;
 }

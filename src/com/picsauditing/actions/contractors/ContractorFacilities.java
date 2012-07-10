@@ -27,7 +27,6 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.EventType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -287,8 +286,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 					contractor.setRenew(true);
 					facilityChanger.add();
 
-					reviewCategories(EventType.Locations);
-
 					if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 						contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 
@@ -346,9 +343,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 			o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
 			o.setTransportationServices(1 == (Integer) d.get("transportationServices"));
 
-			if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
-					&& o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier()
-					|| contractor.isTransportationServices() && o.isTransportationServices())
+			if (contractor.isOnsiteServices() && o.isOnsiteServices() || 
+					contractor.isOffsiteServices() && o.isOffsiteServices() || 
+					contractor.isMaterialSupplier() && o.isMaterialSupplier() ||
+					contractor.isTransportationServices() && o.isTransportationServices()
+				)
 				searchResults.add(o);
 		}
 	}

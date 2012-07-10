@@ -8,100 +8,73 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DBBean;
-import com.picsauditing.util.DatabaseUtil;
 
 public class Database {
-	private final Logger logger = LoggerFactory.getLogger(Database.class);
-	
+
 	private int allRows = 0;
 
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> select(String sql, boolean countRows) throws SQLException {
-		Connection Conn = null;
-		Statement stmt = null;
-		ResultSet tempRS = null;
-		ResultSet rs = null;
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		RowSetDynaClass rsdc;
-
 		try {
-			Conn = DBBean.getDBConnection();
-			
-			stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			rs = stmt.executeQuery(sql);
-			rsdc = new RowSetDynaClass(rs, false, true);
+			ResultSet rs = stmt.executeQuery(sql);
+			rsdc = new RowSetDynaClass(rs, false);
+			rs.close();
+
 			if (countRows) {
-				tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
+				ResultSet tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
 				tempRS.next();
 				allRows = tempRS.getInt(1);
+				tempRS.close();
 			}
-
 			return rsdc.getRows();
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-			throw e;
 		} finally {
-			DatabaseUtil.closeResultSet(rs);
-			DatabaseUtil.closeResultSet(tempRS);
-			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
+			stmt.close();
+			Conn.close();
 		}
 	}
 
 	public long executeInsert(String sql) throws SQLException {
-		Connection Conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement();
 		try {
-			Conn = DBBean.getDBConnection();
-			stmt = Conn.createStatement();
-			
 			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-			rs = stmt.getGeneratedKeys();
+			ResultSet rs = stmt.getGeneratedKeys();
 
 			long id = -1;
 			while (rs.next()) {
 				id = rs.getLong(1);
 			}
-			
 			return id;
 		} finally {
-			DatabaseUtil.closeResultSet(rs);
-			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
+			stmt.close();
+			Conn.close();
 		}
 	}
 
 	public int executeUpdate(String sql) throws SQLException {
-		Connection Conn = null;
-		Statement stmt = null;
-		
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement();
 		try {
-			Conn = DBBean.getDBConnection();
-			stmt = Conn.createStatement();
-			
 			return stmt.executeUpdate(sql);
 		} finally {
-			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
+			stmt.close();
+			Conn.close();
 		}
 	}
 
 	public boolean execute(String sql) throws SQLException {
-		Connection Conn = null;
-		Statement stmt = null;
+		Connection Conn = DBBean.getDBConnection();
+		Statement stmt = Conn.createStatement();
 		try {
-			Conn = DBBean.getDBConnection();
-			stmt = Conn.createStatement();
-			
 			return stmt.execute(sql);
 		} finally {
-			DatabaseUtil.closeStatement(stmt);
-			DatabaseUtil.closeConnection(Conn);
+			stmt.close();
+			Conn.close();
 		}
 	}
 
@@ -129,15 +102,13 @@ public class Database {
 	}
 
 	public static String getDatabaseName() throws SQLException {
-		Connection connection = null;
+		Connection connection = DBBean.getDBConnection();
 		String databaseName = "";
 
 		try {
-			connection = DBBean.getDBConnection();
-			
 			databaseName = connection.getCatalog();
 		} finally {
-			DatabaseUtil.closeConnection(connection);
+			connection.close();
 		}
 
 		return databaseName;

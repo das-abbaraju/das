@@ -132,7 +132,7 @@ public class ReferNewClientSite extends PicsActionSupport {
 
 		basicDAO.save(newClientSite);
 
-		return setUrlForRedirect("ReferNewClientSite.action?newClientSite=" + newClientSite.getId());
+		return redirect("ReferNewClientSite.action?newClientSite=" + newClientSite.getId());
 	}
 
 	private void prependToReferralNotes(String note) {

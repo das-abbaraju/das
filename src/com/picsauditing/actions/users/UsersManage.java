@@ -75,7 +75,6 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-	private boolean usingDynamicReports=false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 
@@ -95,7 +94,7 @@ public class UsersManage extends PicsActionSupport {
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	private final Logger logger = LoggerFactory.getLogger(UsersManage.class);
-
+	
 	public String execute() throws Exception {
 		startup();
 		if ("department".equalsIgnoreCase(button))
@@ -320,7 +319,7 @@ public class UsersManage extends PicsActionSupport {
 			ug.setAuditColumns(permissions);
 			userGroupDAO.save(ug);
 		}
-		
+
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(sendActivationEmail(user, permissions));
@@ -334,7 +333,7 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setPrimaryContact(user);
 			// auto indexing, no longer need to call it.
 			// user.setNeedsIndexing(true);
-			user.setUsingDynamicReports(isUsingDynamicReports());
+
 			user = userDAO.save(user);
 
 			if (!user.isGroup())
@@ -355,7 +354,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
-			return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
+			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
 		return SUCCESS;
@@ -374,7 +373,7 @@ public class UsersManage extends PicsActionSupport {
 
 		addActionMessage(getText("UsersManage.Unlocked"));
 
-		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	public String move() throws Exception {
@@ -383,7 +382,7 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getAccount().getUsers().size() == 1) {
 			addActionMessage(getText("UsersManage.CannotMoveUser"));
 
-			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 		}
 
 		// accounts are different so we are moving to a new account
@@ -416,7 +415,7 @@ public class UsersManage extends PicsActionSupport {
 		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
 				.getName()));
 
-		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
@@ -503,7 +502,7 @@ public class UsersManage extends PicsActionSupport {
 
 		// when an user is reactived, refresh the page to change the isactive
 		// status.
-		return this.setUrlForRedirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
+		return this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 
 	}
 
@@ -1066,15 +1065,7 @@ public class UsersManage extends PicsActionSupport {
 	public void setNewUser(boolean newUser) {
 		this.newUser = newUser;
 	}
-	
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
-	}
 
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
-	}
-	
 	public void removeUserAccess(OpPerms perm) {
 		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
 		while (permissions.hasNext()) {
@@ -1162,5 +1153,4 @@ public class UsersManage extends PicsActionSupport {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
-	
 }

@@ -1,176 +1,156 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.access.ReportUtil.getColumnFromFieldName;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.fields.ExtFieldType;
-import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
+import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.search.Database;
+import com.picsauditing.report.fields.SimpleReportColumn;
+import com.picsauditing.report.fields.SimpleReportFilter;
+import com.picsauditing.report.fields.SimpleReportSort;
+import com.picsauditing.report.models.ModelBase;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.tables.BaseTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.excel.ExcelColumn;
-import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
-
-	// TODO remove definition, get from Report passed in instead
-	private Definition definition = new Definition();
+	private ModelBase base;
+	private List<SimpleReportColumn> includedColumns = new ArrayList<SimpleReportColumn>();
+	private Map<String, QueryField> availableFields = new TreeMap<String, QueryField>();
+	private SimpleReportDefinition definition = new SimpleReportDefinition();
 	private SelectSQL sql;
 
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) {
-		return buildSql(report, permissions, pageNumber, false);
-	}
-
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) {
-		AbstractModel model = report.getModel();
-		sql = initializeSql(model);
-
-		sql.addWhere(model.getWhereClause(permissions));
-
-		if (!forDownload) {
-			int rowsPerPage = report.getRowsPerPage();
-
-			if (pageNumber > 1) {
-				sql.setStartRow((pageNumber - 1) * rowsPerPage);
-			}
-
-			sql.setLimit(rowsPerPage);
-			sql.setSQL_CALC_FOUND_ROWS(true);
-		}
-
-		return sql;
-	}
-
-	// TODO change this to pass in a report
-	public SelectSQL initializeSql(AbstractModel model) {
+	public SelectSQL getSql() {
 		sql = new SelectSQL();
+		includedColumns.clear();
+		availableFields.clear();
 
-		setFrom(model);
+		if (base == null)
+			return sql;
+		
+		setFrom();
+		addAvailableFields(base.getFrom());
 
-		Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(model.getPrimaryTable());
+		addFieldsAndGroupBy();
+		addRuntimeFilters();
+		addOrderBy();
 
-		addFieldsAndGroupBy(availableFields, definition.getColumns());
-		addRuntimeFilters(availableFields);
-		addOrderByClauses(model, availableFields);
-
-		addJoins(model.getPrimaryTable());
+		addJoins(base.getFrom());
 
 		return sql;
 	}
 
-	@Anonymous
-	public ExcelSheet extractColumnsToExcel(ExcelSheet excelSheet) {
-		for (String field : sql.getFields()) {
-			String alias = SelectSQL.getAlias(field);
-			excelSheet.addColumn(new ExcelColumn(alias, alias));
-		}
-
-		return excelSheet;
-	}
-
-	private void setFrom(AbstractModel model) {
-		String from = model.getPrimaryTable().getTableName();
-		String alias = model.getPrimaryTable().getAlias();
-		if (!Strings.isEmpty(alias))
-			from += " AS " + alias;
-
+	private void setFrom() {
+		String from = base.getFrom().getTable();
+		if (!Strings.isEmpty(base.getFrom().getAlias()))
+			from += " AS " + base.getFrom().getAlias();
 		sql.setFromTable(from);
 	}
 
-	private void addJoins(AbstractTable table) {
-		if (table == null || table.getJoins() == null)
-			return;
+	private void addAvailableFields(BaseTable table) {
+		// We may be able to use the ModelBase.getAvailableFields...
+		availableFields.putAll(table.getFields());
+		for (BaseTable join : table.getJoins()) {
+			addAvailableFields(join);
+		}
+	}
 
-		for (AbstractTable joinTable : table.getJoins()) {
-
-			if (joinTable.isJoinNeeded(definition)) {
-				String joinExpression = "";
-
-				if (!joinTable.isInnerJoin())
-					joinExpression += "LEFT ";
-
-				joinExpression += "JOIN " + joinTable.getTableName();
-				if (!Strings.isEmpty(joinTable.getAlias()))
-					joinExpression += " AS " + joinTable.getAlias();
-
-				joinExpression += " ON " + joinTable.getWhereClause();
-				sql.addJoin(joinExpression);
-				addJoins(joinTable);
+	private void addJoins(BaseTable table) {
+		for (BaseTable join : table.getJoins()) {
+			if (isJoinNeeded(join)) {
+				String joinSyntax = "";
+				if (!join.isInnerJoin())
+					joinSyntax += "LEFT ";
+				joinSyntax += "JOIN " + join.getTable();
+				if (!Strings.isEmpty(join.getAlias()))
+					joinSyntax += " AS " + join.getAlias();
+				joinSyntax += " ON " + join.getWhere();
+				sql.addJoin(joinSyntax);
+				addJoins(join);
 			}
 		}
 	}
 
-	private void addFieldsAndGroupBy(Map<String, Field> availableFields, List<Column> columns) {
+	private boolean isJoinNeeded(BaseTable table) {
+		if (table.isInnerJoin())
+			return true;
+
+		for (BaseTable join : table.getJoins()) {
+			if (isJoinNeeded(join))
+				return true;
+		}
+
+		for (QueryField field : table.getFields().values()) {
+			for (SimpleReportColumn column : includedColumns) {
+				if (column.getAvailableFieldName().equals(field.getName()))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void addFieldsAndGroupBy() {
 		Set<String> dependentFields = new HashSet<String>();
-		boolean usesGroupBy = usesGroupBy(availableFields);
-
-		// Make sure column has a field(?)
-		for (Column column : columns) {
-			Field field = availableFields.get(column.getFieldName().toUpperCase());
-
+		boolean usesGroupBy = usesGroupBy();
+		for (SimpleReportColumn column : definition.getColumns()) {
+			QueryField field = getQueryFieldFromSimpleColumn(column);
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
-					// For example: Don't add in accountID automatically if
-					// contractorName uses an aggregation like COUNT
+					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
 					dependentFields.addAll(field.getDependentFields());
 				}
-
-				String columnSql = columnToSql(column, availableFields);
-				if (usesGroupBy && !isAggregate(column)) {
-					sql.addGroupBy(columnSql);
+				String columnSQL = columnToSQL(column);
+				if (usesGroupBy && !isAggregate(column.getName())) {
+					sql.addGroupBy(columnSQL);
 				}
-
-				sql.addField(columnSql + " AS `" + column.getFieldName() + "`");
-				column.setField(field);
+				sql.addField(columnSQL + " AS `" + column.getName() + "`");
+				includedColumns.add(column);
 			}
 		}
 
-		addDependentFields(dependentFields, availableFields);
-	}
+		// Add an dependent fields that aren't already included
+		Iterator<String> iterator = dependentFields.iterator();
+		while (iterator.hasNext()) {
+			String fieldName = (String) iterator.next();
+			if (isFieldIncluded(fieldName)) {
+				iterator.remove();
+			}
+		}
 
-	private void addDependentFields(Set<String> dependentFields, Map<String, Field> availableFields) {
 		for (String fieldName : dependentFields) {
-			if (isFieldIncluded(fieldName))
-				continue;
-
-			Column column = new Column(fieldName);
-			String columnSql = columnToSql(column, availableFields);
-			sql.addField(columnSql + " AS `" + fieldName + "`");
+			SimpleReportColumn column = new SimpleReportColumn(fieldName);
+			String columnSQL = columnToSQL(column);
+			sql.addField(columnSQL + " AS `" + fieldName + "`");
+			includedColumns.add(column);
 		}
 	}
 
 	private boolean isFieldIncluded(String fieldName) {
-		for (Column column : definition.getColumns()) {
-			if (column.getFieldName().equals(fieldName))
+		for (SimpleReportColumn column : includedColumns) {
+			if (column.getName().equals(fieldName))
 				return true;
 		}
 		return false;
 	}
 
-	private boolean usesGroupBy(Map<String, Field> availableFields) {
-		for (Column column : definition.getColumns()) {
-			Field field = availableFields.get(column.getFieldName().toUpperCase());
-			if (field != null) {
-				if (isAggregate(column)) {
+	private boolean usesGroupBy() {
+		for (SimpleReportColumn column : definition.getColumns()) {
+			if (getQueryFieldFromSimpleColumn(column) != null) {
+				if (isAggregate(column.getName())) {
 					return true;
 				}
 			}
@@ -178,75 +158,72 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private boolean isAggregate(Column column) {
+	private QueryField getQueryFieldFromSimpleColumn(SimpleReportColumn column) {
+		return availableFields.get(column.getAvailableFieldName().toUpperCase());
+	}
+
+	private boolean isAggregate(String columnName) {
+		if (columnName == null)
+			return false;
+		SimpleReportColumn column = convertColumn(columnName);
 		if (column == null)
 			return false;
-
 		if (column.getFunction() == null)
 			return false;
 
 		return column.getFunction().isAggregate();
 	}
 
-	private String columnToSql(Column column, Map<String, Field> availableFields) {
-		Field field = availableFields.get(column.getFieldName().toUpperCase());
-		if (field == null)
-			return "";
-
-		String fieldSql = field.getDatabaseColumnName();
+	private String columnToSQL(SimpleReportColumn column) {
+		QueryField field = getQueryFieldFromSimpleColumn(column);
+		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
-			return fieldSql;
-
+			return fieldSQL;
 		switch (column.getFunction()) {
 		case Average:
-			return "AVG(" + fieldSql + ")";
+			return "AVG(" + fieldSQL + ")";
 		case Count:
-			return "COUNT(" + fieldSql + ")";
+			return "COUNT(" + fieldSQL + ")";
 		case CountDistinct:
-			return "COUNT(DISTINCT " + fieldSql + ")";
+			return "COUNT(DISTINCT " + fieldSQL + ")";
 		case Date:
-			return "DATE(" + fieldSql + ")";
+			return "DATE(" + fieldSQL + ")";
 		case LowerCase:
-			return "LOWER(" + fieldSql + ")";
+			return "LOWER(" + fieldSQL + ")";
 		case Max:
-			return "MAX(" + fieldSql + ")";
+			return "MAX(" + fieldSQL + ")";
 		case Min:
-			return "MIN(" + fieldSql + ")";
+			return "MIN(" + fieldSQL + ")";
 		case Month:
-			return "MONTH(" + fieldSql + ")";
+			return "MONTH(" + fieldSQL + ")";
 		case Round:
-			return "ROUND(" + fieldSql + ")";
+			return "ROUND(" + fieldSQL + ")";
 		case Sum:
-			return "SUM(" + fieldSql + ")";
+			return "SUM(" + fieldSQL + ")";
 		case UpperCase:
-			return "UPPER(" + fieldSql + ")";
+			return "UPPER(" + fieldSQL + ")";
 		case Year:
-			return "YEAR(" + fieldSql + ")";
+			return "YEAR(" + fieldSQL + ")";
 		}
-
-		return fieldSql;
+		return fieldSQL;
 	}
 
-	private void addRuntimeFilters(Map<String, Field> availableFields) {
-		if (definition.getFilters().isEmpty())
+	private void addRuntimeFilters() {
+		if (definition.getFilters().size() == 0) {
 			return;
-
-		Set<Filter> whereFilters = new HashSet<Filter>();
-		Set<Filter> havingFilters = new HashSet<Filter>();
-
-		for (Filter filter : definition.getFilters()) {
-			// TODO we might want to verify the filter is properly defined
-			// before including it
+		}
+		
+		Set<SimpleReportFilter> whereFilters = new HashSet<SimpleReportFilter>();
+		Set<SimpleReportFilter> havingFilters = new HashSet<SimpleReportFilter>();
+		
+		for (SimpleReportFilter filter : definition.getFilters()) {
+			// TODO we might want to verify the filter is properly defined before including it
 			// if (filter.isFullyDefined()) { }
-			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
-			if (isAggregate(column)) {
+			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
 				havingFilters.add(filter);
 			} else {
 				whereFilters.add(filter);
 			}
-
-			Field field = availableFields.get(filter.getFieldName().toUpperCase());
-			filter.setField(field);
 		}
 
 		String where = definition.getFilterExpression();
@@ -259,141 +236,180 @@ public class SqlBuilder {
 		}
 
 		int whereIndex = 0;
-		for (Filter filter : whereFilters) {
-			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
-			if (!isAggregate(column)) {
-				String filterExp = toFilterSql(filter, availableFields);
+		for (SimpleReportFilter filter : whereFilters) {
+			if (!isAggregate(filter.getColumn()) && !isAggregate(filter.getColumn2())) {
+				String filterExp = toFilterSql(filter);
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
 				whereIndex++;
 			}
 		}
 		sql.addWhere(where);
 
-		for (Filter filter : havingFilters) {
-			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
-			if (isAggregate(column)) {
-				String filterExp = toFilterSql(filter, availableFields);
+		for (SimpleReportFilter filter : havingFilters) {
+			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
+				String filterExp = toFilterSql(filter);
 				sql.addHaving(filterExp);
 			}
 		}
 	}
 
-	private String toFilterSql(Filter filter, Map<String, Field> availableFields) {
+	private SimpleReportColumn convertColumn(String columnName) {
+		if (columnName == null)
+			return null;
+		for (SimpleReportColumn column : definition.getColumns()) {
+			if (column.getName().equals(columnName))
+				return column;
+		}
+		return null;
+	}
+
+	private String toFilterSql(SimpleReportFilter filter) {
 		if (!filter.isValid())
 			return "true";
 
-		Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
+		SimpleReportColumn column = convertColumn(filter.getColumn());
 
 		if (column == null) {
-			column = new Column(filter.getFieldName());
+			column = new SimpleReportColumn(filter.getColumn());
 		}
 
-		String columnSql = toColumnSql(column, availableFields);
-
-		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
-			return columnSql + " IS NULL OR " + columnSql + " = ''";
-		} else if (filter.getOperator().equals(QueryFilterOperator.NotEmpty)) {
-			return columnSql + " IS NOT NULL OR " + columnSql + " != ''";
-		}
-
+		String columnSQL = toColumnSql(column);
+		String valueSql = toValueSql(filter, column);
+		
 		String operand = filter.getOperator().getOperand();
-		String valueSql = toValueSql(filter, column, availableFields);
+		
+		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
+			if (filter.isNot()) {
+				return columnSQL + " NOT IS NULL OR " + columnSQL + " != ''";
+			} else {
+				return columnSQL + " IS NULL OR " + columnSQL + " = ''";
+			}
+		}
+		
+		if (!filter.isNot())
+			return columnSQL + " " + operand + " " + valueSql;
 
-		return columnSql + " " + operand + " " + valueSql;
+		switch (filter.getOperator()) {
+		case Equals:
+			return columnSQL + " !" + operand + " " + valueSql;
+		case GreaterThan:
+		case GreaterThanOrEquals:
+		case LessThan:
+		case LessThanOrEquals:
+			return "NOT " + columnSQL + " " + operand + " " + valueSql;
+		default:
+			return columnSQL + " NOT " + operand + " " + valueSql;
+		}
 	}
 
-	private String toColumnSql(Column column, Map<String, Field> availableFields) {
-		String columnSQL = columnToSql(column, availableFields);
+	private String toColumnSql(SimpleReportColumn column) {
+		String columnSQL = columnToSQL(column);
 
-		if (column.getFieldName().equals("accountName"))
+		if (column.getName().equals("accountName"))
 			columnSQL = "a.nameIndex";
-
 		return columnSQL;
 	}
 
-	private String toValueSql(Filter filter, Column column, Map<String, Field> availableFields) {
-		String filterValue = Strings.escapeQuotes(filter.getValue());
+	private String toValueSql(SimpleReportFilter filter, SimpleReportColumn column) {
+		if (!Strings.isEmpty(filter.getColumn2())) {
+			return columnToSQL(convertColumn(filter.getColumn2()));
+		}
 
 		// date filter
-		Field field = availableFields.get(column.getFieldName().toUpperCase());
-		ExtFieldType fieldType = field.getType();
-		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
-			QueryDateParameter parameter = new QueryDateParameter(filterValue);
-
-			filterValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
+		if (getQueryFieldFromSimpleColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
+			QueryDateParameter parameter = new QueryDateParameter(filter.getValue());
+			
+			return "'" + DateBean.toDBFormat(parameter.getTime()) + "'";
 		}
 
+		String value = filter.getValue();
 		switch (filter.getOperator()) {
-		case NotBeginsWith:
-		case BeginsWith:
-			return "'" + filterValue + "%'";
-		case NotEndsWith:
-		case EndsWith:
-			return "'%" + filterValue + "'";
-		case NotContains:
-		case Contains:
-			return "'%" + filterValue + "%'";
-		case NotIn:
-		case In:
-			filterValue = addQuotesToValues(filterValue);
-			return "(" + filterValue + ")";
-		case NotEmpty:
-		case Empty:
-			// TODO
+    		case BeginsWith:
+    			return "'" + value + "%'";
+    		case EndsWith:
+    			return "'%" + value + "'";
+    		case Contains:
+    			return "'%" + value + "%'";
+    		case In:
+    		case InReport:
+    			// this only supports numbers, no strings or dates
+    			return "(" + value + ")";
+    		case Empty:
+    			// TODO
 		}
-
-		return "'" + filterValue + "'";
+		
+		return "'" + value + "'";
 	}
 
-	private String addQuotesToValues(String unquotedValuesString) {
-		String[] unquotedValues = unquotedValuesString.split(",");
-		List<String> quotedList = new ArrayList<String>();
-
-		for (String unquotedValue : unquotedValues){
-			quotedList.add("'" + unquotedValue.trim() + "'");
-		}
-
-		return StringUtils.join(quotedList.toArray(),",");
-	}
-
-	private void addOrderByClauses(AbstractModel model, Map<String, Field> availableFields) {
-		if (definition.getSorts().isEmpty()) {
-			if (usesGroupBy(availableFields))
+	private void addOrderBy() {
+		if (definition.getOrderBy().size() == 0) {
+			if (usesGroupBy()) {
 				return;
-
-			sql.addOrderBy(model.getDefaultSort());
+			}
+			sql.addOrderBy(base.getDefaultSort());
 			return;
 		}
 
-		for (Sort sort : definition.getSorts()) {
-			String fieldName = sort.getFieldName();
+		for (SimpleReportSort sort : definition.getOrderBy()) {
 
-			Column column = getColumnFromFieldName(fieldName, definition.getColumns());
+			String orderBy = sort.getColumn();
+			SimpleReportColumn column = getColumn(sort.getColumn());
 			if (column == null) {
-				Field field = availableFields.get(fieldName.toUpperCase());
-				if (field != null && field.getDatabaseColumnName() != null)
-					fieldName = field.getDatabaseColumnName();
+				QueryField field = availableFields.get(sort.getColumn().toUpperCase());
+				if (field != null && field.getSql() != null)
+					orderBy = field.getSql();
 			}
 
 			if (!sort.isAscending())
-				fieldName += " DESC";
-
-			sql.addOrderBy(fieldName);
-			Field field = availableFields.get(sort.getFieldName().toUpperCase());
-//			sort.setField(getFieldFromFieldName(sort.getFieldName()));
-			sort.setField(field);
+				orderBy += " DESC";
+			sql.addOrderBy(orderBy);
 		}
+	}
+
+	public void addPermissions(Permissions permissions) {
+		String where = this.base.getWhereClause(permissions);
+		sql.addWhere(where);
+	}
+
+	public void addPaging(int page) {
+		if (page > 1)
+			sql.setStartRow((page - 1) * definition.getRowsPerPage());
+		sql.setLimit(definition.getRowsPerPage());
+		sql.setSQL_CALC_FOUND_ROWS(true);
+	}
+
+	private SimpleReportColumn getColumn(String name) {
+		for (SimpleReportColumn column : includedColumns) {
+			if (column.getName().equals(name))
+				return column;
+		}
+		return null;
 	}
 
 	// Setters
 
-	@Deprecated
-	public Definition getDefinition() {
+	public ModelBase setReport(Report report) {
+		this.base = ModelFactory.getBase(report.getModelType());
+		return this.base;
+	}
+
+	public void setBase(ModelBase base) {
+		this.base = base;
+	}
+
+	public SimpleReportDefinition getDefinition() {
 		return definition;
 	}
 
-	@Deprecated
-	public void setDefinition(Definition definition) {
+	public void setDefinition(SimpleReportDefinition definition) {
 		this.definition = definition;
+	}
+
+	public Map<String, QueryField> getAvailableFields() {
+		return availableFields;
+	}
+
+	public List<SimpleReportColumn> getIncludedColumns() {
+		return includedColumns;
 	}
 }

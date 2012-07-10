@@ -7,98 +7,90 @@ import org.junit.Test;
 public class MenuWriterTest {
 
     @Test
-    public void testConvertMenuItemToJSONBasic() throws Exception {
+    public void testExportMenuItemToExtJSBasic() throws Exception {
         String json = "{'text':'Test'}";
         json = convertQuotes(json);
-
+        
         MenuComponent menu = new MenuComponent("Test");
-
-        assertEquals(json, MenuWriter.convertMenuItemToJSON(menu).toString());
+        
+        assertEquals(json, MenuWriter.exportMenuItemToExtJS(menu).toString());
     }
-
+    
     @Test
-    public void testConvertMenuItemToJSONAdvanced() throws Exception {
+    public void testExportMenuItemToExtJSAdvanced() throws Exception {
         String json = "{'text':'Test','url':'http://www.google.com'}";
         json = convertQuotes(json);
-
+        
         MenuComponent menu = new MenuComponent("Test");
         menu.setUrl("http://www.google.com");
-
-        assertEquals(json, MenuWriter.convertMenuItemToJSON(menu).toString());
+        
+        assertEquals(json, MenuWriter.exportMenuItemToExtJS(menu).toString());
+    }
+    
+    @Test
+    public void testExportMenuItemToExtJSXType() throws Exception {
+        String json = "{'xtype':'tbseparator'}";
+        json = convertQuotes(json);
+        
+        MenuComponent menu = new MenuComponent();
+        menu.setXtype("tbseparator");
+        
+        assertEquals(json, MenuWriter.exportMenuItemToExtJS(menu).toString());
     }
 
     @Test
-    public void testConvertMenuToJSONBasic() throws Exception {
-        String json = "[{'text':'Test 1'},{'text':'Test 2'}]";
+    public void testExportMenuToExtJSBasic() throws Exception {
+        String json = "[{'text':'Test 1'},{'xtype':'tbseparator'},{'text':'Test 2'}]";
         json = convertQuotes(json);
-
+        
         MenuComponent menu = new MenuComponent();
         menu.addChild("Test 1");
         menu.addChild("Test 2");
-
-        assertEquals(json, MenuWriter.convertMenuToJSON(menu).toString());
+        
+        assertEquals(json, MenuWriter.exportMenuToExtJS(menu).toString());
     }
 
     @Test
-    public void testConvertMenuToJSONSubmenu() throws Exception {
-        String json = "[{'text':'Top','menu':{'items':[{'text':'Test'}]}}]";
+    public void testExportMenuToExtJSSubmenu() throws Exception {
+        String json = "[{'text':'Top','menu':{'items':[{'text':'Test'}],'hideMode':'display'}}]";
         json = convertQuotes(json);
-
+        
         MenuComponent menu = new MenuComponent();
         MenuComponent menuItem = menu.addChild("Top");
         menuItem.addChild("Test");
-
-        assertEquals(json, MenuWriter.convertMenuToJSON(menu).toString());
+        
+        assertEquals(json, MenuWriter.exportMenuToExtJS(menu).toString());
     }
-
+    
     @Test
-    public void testConvertMenuToJSONAdvanced() throws Exception {
-        String json = "[{'text':'Top','menu':{'items':[{'text':'Test','href':'http://www.google.com'}]}}]";
+    public void testExportMenuToExtJSAdvanced() throws Exception {
+        String json = "[{'text':'Top','menu':{'items':[{'text':'Test','href':'http://www.google.com'}],'hideMode':'display'}}]";
         json = convertQuotes(json);
-
+        
         MenuComponent menu = new MenuComponent();
         MenuComponent menuItem = menu.addChild("Top");
         MenuComponent menuSubItem = menuItem.addChild("Test");
         menuSubItem.setUrl("http://www.google.com");
-
-        assertEquals(json, MenuWriter.convertMenuToJSON(menu).toString());
+        
+        assertEquals(json, MenuWriter.exportMenuToExtJS(menu).toString());
     }
-
+    
     @Test
-    public void testConvertMenuToJSONFull() throws Exception {
-        String json = "[{'text':'Top','menu':{'items':[{'text':'Test','href':'http://www.google.com'}]}},{'text':'Bottom','menu':{'items':[{'text':'Test 2'}]}}]";
+    public void testExportMenuToExtJSFull() throws Exception {
+        String json = "[{'text':'Top','menu':{'items':[{'text':'Test','href':'http://www.google.com'}],'hideMode':'display'}},{'xtype':'tbseparator'},{'text':'Bottom','menu':{'items':[{'text':'Test 2'}],'hideMode':'display'}}]";
         json = convertQuotes(json);
-
+        
         MenuComponent menu = new MenuComponent();
         MenuComponent menuItem = menu.addChild("Top");
         MenuComponent menuSubItem = menuItem.addChild("Test");
         menuSubItem.setUrl("http://www.google.com");
-
+        
         MenuComponent menuItem2 = menu.addChild("Bottom");
         menuItem2.addChild("Test 2");
-
-        assertEquals(json, MenuWriter.convertMenuToJSON(menu).toString());
+        
+        assertEquals(json, MenuWriter.exportMenuToExtJS(menu).toString());
     }
-
-    @Test
-    public void testConvertToSimpleJSON () {
-    	//String json = "{'id':'parent_id','text':'parent_name','menu':[{'text':'child_name','target':'child_target','menu':[{'text':'subChild_name'}],'href':'child_url'}]}";
-    	String json = "{'id':'parent_id','text':'parent_name','menu':{'items':[{'text':'child_name','menu':{'items':[{'text':'subChild_name'}]},'target':'child_target','url':'child_url'}]}}";
-    	json = convertQuotes(json);
-
-    	MenuComponent parent = new MenuComponent();
-    	parent.setHtmlId("parent_id");
-    	parent.setName("parent_name");
-    	MenuComponent child = parent.addChild("child_name");
-    	child.setUrl("child_url");
-    	child.setTarget("child_target");
-    	MenuComponent subChild = child.addChild("subChild_name");
-
-    	String convertedJSON = MenuWriter.convertMenuItemToJSON(parent).toJSONString();
-
-    	assertEquals(json, convertedJSON);
-    }
-
+    
     private static String convertQuotes(String json) {
         return json.replace("'", "\"").replace("/", "\\/");
     }

@@ -7,7 +7,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
 public class QueryDateParameter {
-
 	private Date date = new Date();
 
 	public QueryDateParameter(String value) {
@@ -41,19 +40,14 @@ public class QueryDateParameter {
 			int period = convertPeriod(periodChar);
 			cal.add(period, amount);
 
-			date = cal.getTime();
 		} catch (NumberFormatException nfe) {
 			Date parsedDate = DateBean.parseDate(value);
 			if (parsedDate != null) {
 				cal.setTime(parsedDate);
-				date = cal.getTime();
-			}
-			else
-			{
-				date = null;
 			}
 		}
 
+		date = cal.getTime();
 	}
 
 	private int convertPeriod(char period) {

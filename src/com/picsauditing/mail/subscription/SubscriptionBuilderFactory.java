@@ -23,16 +23,13 @@ public class SubscriptionBuilderFactory {
 	OQChangesSubscription oqChanges;
 	@Autowired
 	TrialContractorAccountsSubscription trialContractorAccounts;
-	@Autowired
-	CancelledScheduledAuditsSubscription cancelledScheduleAudits;
 
 	// Subscription => Builder
 
 	/**
-	 * Subscription Classes Missing From Here: ContractorDeactivation,
-	 * ContractorAdded, ContractorFinished, ContractorInvoices,
-	 * InsuranceExpiration, AuditOpenRequirements, FinishPICSProcess,
-	 * PICSSystemNotifications, Webinar, RegistrationRequests
+	 * Subscription Classes Missing From Here: ContractorDeactivation, ContractorAdded, ContractorFinished,
+	 * ContractorInvoices, InsuranceExpiration, AuditOpenRequirements, FinishPICSProcess, PICSSystemNotifications,
+	 * Webinar, RegistrationRequests
 	 * 
 	 * @throws MissingSubscriptionException
 	 */
@@ -59,8 +56,6 @@ public class SubscriptionBuilderFactory {
 			return oqChanges;
 		case OpenTasks:
 			return openTasks;
-		case CancelledScheduledAudits:
-			return cancelledScheduleAudits;
 		default:
 			throw new MissingSubscriptionException();
 		}

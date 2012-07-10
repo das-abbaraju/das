@@ -8,8 +8,6 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.Permissions;
@@ -23,13 +21,10 @@ import com.picsauditing.actions.TranslationActionSupport;
  */
 @SuppressWarnings("serial")
 public class ToggleFeature extends TagSupport {
-	
 	private String toggleName = null;
 	private int userID = 0;
 	private String toggleTitle = null;
 
-	private static final Logger logger = LoggerFactory.getLogger(ToggleFeature.class);
-	
 	@Override
 	public int doStartTag() throws JspException {
 		try {
@@ -39,7 +34,7 @@ public class ToggleFeature extends TagSupport {
 			}				
 			
 		} catch (Exception e) {
-			logger.error("Exception throw during processing of toggle feature: ", e);
+			System.out.println("e " + e);
 			throw new JspTagException("Toggle feature: " + e.getMessage());
 		}
 		//return SKIP_BODY;

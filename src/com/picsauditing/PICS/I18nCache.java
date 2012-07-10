@@ -36,7 +36,7 @@ public class I18nCache implements Serializable {
 
 	private transient static I18nCache INSTANCE;
 	private transient static Date LAST_CLEARED;
-
+	
 	private transient Table<String, String, String> cache;
 	private transient Map<String, Date> cacheUsage;
 
@@ -45,15 +45,10 @@ public class I18nCache implements Serializable {
 	}
 
 	public static I18nCache getInstance() {
-		I18nCache cache = INSTANCE;
-		if (cache == null) {
-			synchronized (I18nCache.class) {
-				cache = INSTANCE;
-				if (cache == null) {
-					INSTANCE = new I18nCache();
-				}
-			}
+		if (INSTANCE == null) {
+			INSTANCE = new I18nCache();
 		}
+
 		return INSTANCE;
 	}
 
@@ -129,7 +124,7 @@ public class I18nCache implements Serializable {
 
 	/**
 	 * Fix characters that cause problems with MessageFormat, such as "'"
-	 *
+	 * 
 	 * @param text
 	 *            the text to be formatted
 	 * @return text formatted to be used in MessageFormat.format
@@ -155,7 +150,7 @@ public class I18nCache implements Serializable {
 				}
 				long endTime = System.currentTimeMillis();
 				logger.info("Built i18n Cache in {} ms", (endTime - startTime));
-
+				
 				LAST_CLEARED = new Date();
 			} catch (SQLException e) {
 				logger.error(e.getMessage());
@@ -276,11 +271,11 @@ public class I18nCache implements Serializable {
 			db.executeUpdate(sql);
 		}
 	}
-
+	
 	public static Date getLastCleared() {
 		return LAST_CLEARED;
 	}
-
+	
 	private String buildInsertStatement(AppTranslation translationToinsert) {
 		String sourceLanguage = translationToinsert.getSourceLanguage();
 		if (Strings.isEmpty(sourceLanguage)) {
@@ -297,7 +292,7 @@ public class I18nCache implements Serializable {
 				Strings.escapeQuotes(translationToinsert.getValue()), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
 				translationToinsert.isContentDriven() ? 1 : 0, translationToinsert.isApplicable() ? 1 : 0);
 	}
-
+	
 	private String buildUpdateStatement(AppTranslation translationToUpdate) {
 		String setClause = "SET msgValue = '%s', updateDate = NOW()";
 

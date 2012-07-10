@@ -9,14 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.actions.contractors.ContractorBadge;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LocaleController;
@@ -50,18 +51,19 @@ public class OpenTasks extends TranslationActionSupport {
 	public List<String> getOpenTasks(ContractorAccount contractor, User user) {
 		initializeForGatheringTasks(contractor, user);
 		gatherTasksAboutDeclaringTrades();
-		if (!permissions.isOperatorCorporate()) {
+		if(!permissions.isOperatorCorporate()) {
 			gatherTasksAboutRelationshipBetweenContractorAndPics();
 		}
 		gatherTasksAboutUploadingPqf(); // sets hasImportPQF, importPQFComplete
-		if (!permissions.isOperatorCorporate()) {
+		if(!permissions.isOperatorCorporate()) {
 			gatherTasksAboutBillingAndPayments();
 		}
 		gatherTasksAboutAudits(); // uses hasImportPQF, importPQFComplete
-
-		if (!permissions.isOperatorCorporate()) {
+		
+		if(!permissions.isOperatorCorporate()) {
 			gatherTasksAboutWebCamShipments();
 			gatherTasksAboutOperatorQualification();
+			gatherTasksAboutMembershipSeal(contractor);
 		}
 
 		return openTasks;
@@ -99,7 +101,10 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutRelationshipBetweenContractorAndPics() {
-		if (mustApproveUpdatedAgreement()) {
+		if (!contractor.isAgreementInEffect()
+				&& (permissions.hasPermission(OpPerms.ContractorBilling)
+						|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
+							.hasPermission(OpPerms.ContractorSafety))) {
 			openTasks.add(getTextParameterized("ContractorWidget.message.UpdatedAgreement", contractor.getId()));
 		}
 		if (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin()) {
@@ -115,28 +120,18 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
-	private boolean mustApproveUpdatedAgreement() {
-		return !contractor.isAgreementInEffect()
-				&& (permissions.hasPermission(OpPerms.ContractorBilling)
-					|| permissions.hasPermission(OpPerms.ContractorAdmin) 
-					|| permissions.hasPermission(OpPerms.ContractorSafety));
-	}
-
 	private void gatherTasksAboutUploadingPqf() {
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (auditIsVisibleUnexpiredForImportPqf(audit)) {
-				// there were no braces for this next if. I am adding them to preserve behavior, but make it explicit
-				if (audit.hasCaoStatusBefore(AuditStatus.Submitted)) {
-					openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
+			if(audit.isVisibleTo(permissions)) {
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
+					if (audit.hasCaoStatusBefore(AuditStatus.Submitted))
+						openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
+
+					hasImportPQF = true;
+					importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
 				}
-				hasImportPQF = true;
-				importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
 			}
 		}
-	}
-
-	private boolean auditIsVisibleUnexpiredForImportPqf(ContractorAudit audit) {
-		return audit.isVisibleTo(permissions) && (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired());
 	}
 
 	private void gatherTasksAboutBillingAndPayments() {
@@ -168,7 +163,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void gatherTasksAboutAudits() {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
-			if (conAudit.isVisibleTo(permissions)) {
+			if(conAudit.isVisibleTo(permissions)) {
 				if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 					if (isOpenTaskNeeded(conAudit, user, permissions)) {
 						addAuditOpenTasks(conAudit);
@@ -201,15 +196,6 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutOperatorQualification() {
-		int vopakCorporateOperatorQualification = 640;
-
-		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if (contractorTag.getTag().getId() == vopakCorporateOperatorQualification) {
-				openTasks.add(getText("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak"));
-				break;
-			}
-		}
-
 		// OQ: Add unmapped employees
 		if (contractor.isRequiresOQ()) {
 			if (contractor.getAssessmentResultStages().size() > 0) {
@@ -230,6 +216,13 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
+	private void gatherTasksAboutMembershipSeal(ContractorAccount contractor) {
+		if (!hasPQFMembershipSealAnswer(contractor)) {
+			openTasks.add(getTextParameterized("ContractorWidget.PicsMembershipSeal",
+					String.valueOf(contractor.getId())));
+		}
+	}
+
 	private void addAuditOpenTasks(ContractorAudit conAudit) {
 		openReq = false;
 		String auditName = getText(conAudit.getAuditType().getI18nKey("name"));
@@ -237,8 +230,7 @@ public class OpenTasks extends TranslationActionSupport {
 		String auditFor = conAudit.getAuditFor();
 
 		if (conAudit.getAuditType().getClassType().isPolicy()) {
-			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
-					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
+			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin() || conAudit.isVisibleTo(permissions)) {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 					openTasks.add(getTextParameterized("ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
 							auditName));
@@ -248,8 +240,7 @@ public class OpenTasks extends TranslationActionSupport {
 				}
 			}
 		} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
-			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
+			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin() || conAudit.isVisibleTo(permissions)) {
 				openTasks.add(getTextParameterized("ContractorWidget.message.ResubmitPolicy", conAudit.getId(),
 						auditName, showAuditFor, auditFor));
 			}
@@ -258,17 +249,16 @@ public class OpenTasks extends TranslationActionSupport {
 						.getId() == AuditType.WA_STATE_VERIFICATION && conAudit.hasCaoStatusAfter(AuditStatus.Pending)))
 				&& (conAudit.getAuditType().getId() != AuditType.SHELL_COMPETENCY_REVIEW)) {
 			if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin() || conAudit.isVisibleTo(permissions)
 						&& !conAudit.getAuditType().isCorIecWaState()) {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
-					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard",
-								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+					if (conAudit.getAuditType().getClassType().isEmployee()){
+						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(),
+							conAuditID, auditName, showAuditFor, auditFor);
 					} else {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
-								showAuditFor, auditFor);
+						text = getTextParameterized("ContractorWidget.message.OpenRequirements",
+								conAuditID, auditName, showAuditFor, auditFor);
 					}
 
 					if (!openReq) {
@@ -281,8 +271,7 @@ public class OpenTasks extends TranslationActionSupport {
 					openTasks.add(text);
 				}
 			} else if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin() || conAudit.isVisibleTo(permissions)) {
 					String text = "";
 					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
 						text = getTextParameterized("ContractorWidget.message.ScheduleYourImplementationAudit",
@@ -317,17 +306,16 @@ public class OpenTasks extends TranslationActionSupport {
 					openTasks.add(text);
 				}
 			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin() || conAudit.isVisibleTo(permissions)) {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
 
-					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard",
-								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+					if (conAudit.getAuditType().getClassType().isEmployee()){
+						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(), conAuditID,
+								auditName, showAuditFor, auditFor);
 					} else {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
-								showAuditFor, auditFor);
+						text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
+								auditName, showAuditFor, auditFor);
 					}
 					if (conAudit.getAuditType().getId() == AuditType.COR) {
 						text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
@@ -345,8 +333,7 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		} else if (conAudit.getAuditType().isCanContractorEdit()
 				&& conAudit.getAuditType().getId() != AuditType.IMPORT_PQF) {
-			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
+			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin() || conAudit.isVisibleTo(permissions)) {
 				if (conAudit.getAuditType().isPqf() && hasImportPQF) {
 					// Show a message for filling out the rest of the PQF if the
 					// Import PQF is COMPLETE
@@ -369,10 +356,10 @@ public class OpenTasks extends TranslationActionSupport {
 		} else if ((conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY || conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY_REVIEW)
 				&& conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
 			Integer conAuditID = conAudit.getId();
-			String text = "";
-			if (conAudit.getAuditType().getClassType().isEmployee()) {
-				text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard",
-						contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+			String text="";
+			if (conAudit.getAuditType().getClassType().isEmployee()){
+				text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(), conAuditID, auditName,
+						showAuditFor, auditFor);
 			} else {
 				text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
 						showAuditFor, auditFor);
@@ -390,8 +377,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible()) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| cao.isVisibleTo(permissions)) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin() || cao.isVisibleTo(permissions)) {
 					if (conAudit.getAuditType().isCanContractorEdit()) {
 						// Maybe use conAudit.isAboutToRenew() instead of
 						// conAudit.getAuditType().isRenewable() &&
@@ -420,8 +406,7 @@ public class OpenTasks extends TranslationActionSupport {
 					}
 
 				}
-				if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
-						|| cao.isVisibleTo(permissions)) {
+				if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin() || cao.isVisibleTo(permissions)) {
 					if (cao.getStatus().before(AuditStatus.Submitted)) {
 						needed++;
 					}
@@ -448,5 +433,24 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 		return false;
-	}	
+	}
+
+	private boolean hasPQFMembershipSealAnswer(ContractorAccount contractor) {
+		boolean hasMembershipSealAnswer = false;
+		for (ContractorAudit pqf : contractor.getAudits()) {
+			if(pqf.isVisibleTo(permissions)) {
+				if (pqf.getAuditType().isPqf()) {
+					for (AuditData data : pqf.getData()) {
+						if (data.getQuestion().getId() == ContractorBadge.MEMBERSHIP_TAG_QUESTION) {
+							hasMembershipSealAnswer = true;
+						}
+					}
+
+					break;
+				}
+			}
+		}
+
+		return hasMembershipSealAnswer;
+	}
 }

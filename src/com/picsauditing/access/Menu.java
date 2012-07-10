@@ -4,23 +4,31 @@ import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Report;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
-
-	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
+	private MenuBuilder builder = new MenuBuilder();
 
 	public String execute() throws Exception {
 		loadPermissions();
 
-		String userFavoritesQuery =  "userID = " + permissions.getUserId() + " AND is_favorite = 1";
-		List<ReportUser> favoriteReports = dao.findWhere(ReportUser.class, userFavoritesQuery);
+		if (!permissions.isLoggedIn()) {
+			builder.buildNotLoggedIn();
+		} else if (permissions.isContractor()) {
+			builder.buildContractorMenu(permissions);
+		} else if (permissions.isAssessment()) {
+			builder.buildAssessmentCenter();
+		} else {
+			@SuppressWarnings("unchecked")
+			List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
+			builder.buildNew(permissions, reports, contractor);
+		}
 
-		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
+		builder.cleanupMenus();
 
-		jsonArray = MenuWriter.convertMenuToJSON(menu);
+		jsonArray = MenuWriter.exportMenuToExtJS(builder.getMenu());
 
 		return JSON_ARRAY;
 	}
@@ -32,4 +40,5 @@ public class Menu extends PicsActionSupport {
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
+
 }

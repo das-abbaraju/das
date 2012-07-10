@@ -193,15 +193,6 @@ public enum Subscription implements Translatable {
 			setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
 			setRequiredForAdmin(true);
 		}
-	},
-	PQFSubmitted {
-		public void initialize() {
-			setTemplateID(220);
-			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
-					SubscriptionTimePeriod.Daily });
-			setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
-			setRequiredForAdmin(true);
-		}
 	};
 
 	private int templateID;

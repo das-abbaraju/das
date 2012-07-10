@@ -1,4 +1,3 @@
-
 package com.picsauditing.filters;
 
 import java.io.IOException;
@@ -21,11 +20,10 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.search.Database;
 
 public final class PageLoggerFilter implements Filter {
-	
 	private FilterConfig filterConfig = null;
-	
-	private final Logger logger = LoggerFactory.getLogger(PageLoggerFilter.class);
 
+	private final Logger logger = LoggerFactory.getLogger(PageLoggerFilter.class);
+	
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 	}
@@ -41,22 +39,22 @@ public final class PageLoggerFilter implements Filter {
 		if (filterConfig == null)
 			return;
 
+		// Do stuff..
+
 		if (request instanceof HttpServletRequest && environment != null && environment.equals("enabled")) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpSession session = httpRequest.getSession();
 			Permissions permissions = (Permissions) session.getAttribute("permissions");
 
 			String uri = httpRequest.getRequestURI().replaceFirst("/(app|picsWeb2)", "");
-			
+
+			Database db = new Database();
 			try {
-				Database db = new Database();
-				
 				long id = db.executeInsert("INSERT INTO app_page_logger (startTime, userID, pageName, url) "
 						+ "VALUES ('" + new Timestamp(System.currentTimeMillis()) + "', '"
 						+ ((permissions != null) ? permissions.getUserId() : "null") + "', '" + uri + "', '"
 						+ httpRequest.getRequestURL()
 						+ ((httpRequest.getQueryString() != null) ? "?" + httpRequest.getQueryString() : "") + "')");
-				
 				request.setAttribute("pics_page_logger_id", id);
 			} catch (SQLException e) {
 				logger.error("Failed to insert logging into DB {}", e.getMessage());

@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -16,10 +18,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.BrainTree;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -78,12 +78,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 				addActionMessage(msg);
 
-				return this.setUrlForRedirect("ContractorFacilities.action?id=" + contractor.getId());
+				this.redirect("ContractorFacilities.action?id=" + contractor.getId());
+				return BLANK;
 			}
 		}
 		if (newRegistration) {
 			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated",
 					new Object[] { getText("PicsTollFreePhone") }));
+		}
+
+		if ("copyBillingEmail".equals(button)) {
+			contractor.setCcEmail(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
 		}
 
 		contractorAccountDao.save(contractor);
@@ -194,7 +199,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcExpiration(null);
 		} else if ((!contractor.isCcOnFile() && contractor.getCcExpiration() == null)
 				|| (response_code != null && (Strings.isEmpty(responsetext) || response.equals("1")))) {
-			contractor.setCcExpiration(cc.getExpirationDate());
+			contractor.setCcExpiration(cc.getExpirationDate2());
 			contractor.setCcOnFile(true);
 			// Need to set CcOnFile to true only in no-credit card case
 			// (ccOnFile == False && expDate == null)
@@ -202,10 +207,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			// properly, but PICS never received the response message.
 			// Note: should not insert credit card info in invalid cc case:
 			// (ccOnFile == False && expDate != null)
-		}
-
-		if (cc != null) {
-			contractor.setCcExpiration(cc.getExpirationDate());
 		}
 
 		time = DateBean.getBrainTreeDate();
@@ -220,7 +221,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		findContractor();
 
 		if (!isHasPQFImportAudit()) {
-			return this.setUrlForRedirect("CreateImportPQFAudit.action?id=" + contractor.getId()
+			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
 					+ "&url=ContractorPaymentOptions.action");
 		}
 
@@ -496,8 +497,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public InvoiceFee getVatFee() {
 		if (vatFee == null) {
 			vatFee = new InvoiceFee();
-			//if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
-			if (contractor.getCountry().getCurrency().isGBP()) {
+
+			if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
 				vatFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.VAT, contractor.getPayingFacilities());
 				BigDecimal total = BigDecimal.ZERO.setScale(2);
 				for (FeeClass feeClass : contractor.getFees().keySet()) {

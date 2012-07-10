@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AuditDataDAO;
@@ -48,7 +46,6 @@ public class AuditPercentCalculator {
 	protected AuditQuestionDAO auditQuestionDAO;
 	
 	protected float subScorePossible;
-	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator.class);
 
 	/**
 	 * Calculate the percent complete for all questions in this category
@@ -68,8 +65,6 @@ public class AuditPercentCalculator {
 		int verifiedCount = 0;
 		float scoreWeight = 0;
 		float score = 0;
-		HashSet<Integer> circularRequiredQuestionIds = new HashSet<Integer>();
-		HashSet<Integer> circularVisualQuestionIds = new HashSet<Integer>();
 
 		Date validDate = catData.getAudit().getValidDate();
 
@@ -82,30 +77,18 @@ public class AuditPercentCalculator {
 
 			if (question.getRequiredQuestion() != null) {
 				AuditQuestion q = question.getRequiredQuestion();
-				circularRequiredQuestionIds.clear();
 				while (q != null) {
 					questionIDs.add(q.getId());
-					if (circularRequiredQuestionIds.contains(q.getId())) {
-						logger.warn("Circular required questions detected with question id {}", q.getId());
-						break;
-					}
-					circularRequiredQuestionIds.add(q.getId());
 					q = q.getRequiredQuestion();
+					
 				}
 			}
-			
 			if (question.getVisibleQuestion() != null) {
 				AuditQuestion q = question.getVisibleQuestion();
-				circularVisualQuestionIds.clear();
 				while (q != null) {
 					questionIDs.add(q.getId());
-
-					if (circularVisualQuestionIds.contains(q.getId())) {
-						logger.warn("Circular visible questions detected with question id {}", q.getId());
-						break;
-					}
-					circularVisualQuestionIds.add(q.getId());
 					q = q.getVisibleQuestion();
+					
 				}
 			}
 
@@ -171,7 +154,6 @@ public class AuditPercentCalculator {
 				 
 				AuditData answer = answers.get(questionBeingReviewed.getId());
 				
-				circularRequiredQuestionIds.clear();
 				while (questionBeingReviewed != null) {
 					if (questionBeingReviewed.getRequiredQuestion() != null && questionBeingReviewed.getRequiredAnswer() != null) {
 						if (questionBeingReviewed.getRequiredAnswer().equals("NULL")) {
@@ -205,18 +187,12 @@ public class AuditPercentCalculator {
 						
 						// is visible question visible
 						AuditQuestion questionVisibilityParent = questionBeingReviewed.getVisibleQuestion();
-						circularVisualQuestionIds.clear();
 						while (questionVisibilityParent != null && isRequired) {
 							if (questionVisibilityParent.getVisibleQuestion() != null && questionVisibilityParent.getVisibleAnswer() != null) {
 								if (!questionVisibilityParent.isVisible(answers.get(questionVisibilityParent.getVisibleQuestion().getId())))
 									isRequired = false;
 							}
 							
-							if (circularVisualQuestionIds.contains(questionVisibilityParent.getId())) {
-								logger.warn("Circular visible questions detected with question id {}", questionVisibilityParent.getId());
-								break;
-							}
-							circularVisualQuestionIds.add(questionVisibilityParent.getId());
 							questionVisibilityParent = questionVisibilityParent.getVisibleQuestion();
 						}
 					}
@@ -224,13 +200,9 @@ public class AuditPercentCalculator {
 					if (!isRequired) 
 						break;
 					
-					if (circularRequiredQuestionIds.contains(questionBeingReviewed.getId())) {
-						logger.warn("Circular required questions detected with question id {}", questionBeingReviewed.getId());
-						break;
-					}
-					circularRequiredQuestionIds.add(questionBeingReviewed.getId());
 					questionBeingReviewed = questionBeingReviewed.getRequiredQuestion();
 				}
+
 
 				if (isRequired) {
 					requiredCount++;
@@ -290,7 +262,7 @@ public class AuditPercentCalculator {
 		} else if (catData.getAudit().getAuditType().isPqf()) {
 			boolean needsVerification = false;
 			for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
-				if (auditData.getQuestion().equals(answer.getQuestion())) {
+				if (auditData.getQuestion().getCategory().equals(catData.getCategory())) {
 					needsVerification = true;
 					break;
 				}

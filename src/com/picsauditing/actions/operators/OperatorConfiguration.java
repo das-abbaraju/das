@@ -189,7 +189,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				auditCategoryRuleCache.clear();
 				flagClearCache();
 
-				return this.setUrlForRedirect("ManageCategory.action?id=" + cat.getId());
+				this.redirect("ManageCategory.action?id=" + cat.getId());
+				return SUCCESS;
+
 			}
 
 			if ("Add Audit".equals(button)) {
@@ -227,7 +229,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				flagClearCache();
 			}
 
-			return setUrlForRedirect("OperatorConfiguration.action?id=" + operator.getId());
+			return redirect("OperatorConfiguration.action?id=" + operator.getId());
 		}
 
 		return SUCCESS;

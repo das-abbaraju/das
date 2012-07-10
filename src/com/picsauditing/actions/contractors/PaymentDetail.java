@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.NoteDAO;
@@ -34,8 +36,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -193,7 +193,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 				addActionMessage("Successfully Deleted Payment");
 
-				return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
+				redirect("BillingDetail.action?id=" + contractor.getId());
+				return BLANK;
 			}
 
 			if (button.equalsIgnoreCase("voidcc")) {
@@ -211,7 +212,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						addActionMessage(message);
 					}
 
-					return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
+					redirect("BillingDetail.action?id=" + contractor.getId());
+					return BLANK;
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
@@ -270,7 +272,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToInvoice pa = iterInvoice.next();
 							if (pa.getInvoice().getId() == txnID) {
 								paymentDAO.removePaymentInvoice(pa, getUser());
-								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
+								redirect("PaymentDetail.action?payment.id=" + payment.getId());
+								return BLANK;
 							}
 						}
 
@@ -279,7 +282,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToRefund pa = iterRefund.next();
 							if (pa.getRefund().getId() == txnID) {
 								paymentDAO.removePaymentRefund(pa, getUser());
-								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
+								redirect("PaymentDetail.action?payment.id=" + payment.getId());
+								return BLANK;
 							}
 						}
 					}
@@ -334,7 +338,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				addActionMessage(message);
 			}
 
-			return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
+			redirect("PaymentDetail.action?payment.id=" + payment.getId());
+			return BLANK;
 		}
 
 		for (Invoice invoice : contractor.getInvoices()) {

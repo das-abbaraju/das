@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.jpa.entities.Dashboard;
 import com.picsauditing.jpa.entities.DashboardWidget;
 import com.picsauditing.jpa.entities.WidgetType;
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.util.Strings;
 
 /*
@@ -53,8 +53,8 @@ public class DashboardBuilder {
 			json.put("id", widget.getReport().getId());
 			json.put("name", widget.getReport().getName());
 			
-//			SqlBuilder builder = new SqlBuilder();
-//			builder.initializeSql(widget.getReport().getBaseModel());
+			SqlBuilder builder = new SqlBuilder();
+			builder.setReport(widget.getReport());
 			
 			JSONArray fields = new JSONArray();
 

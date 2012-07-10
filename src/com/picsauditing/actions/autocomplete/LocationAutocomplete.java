@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Autocompleteable;
@@ -14,7 +15,6 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public class LocationAutocomplete extends AutocompleteActionSupport<Autocompleteable> {
 

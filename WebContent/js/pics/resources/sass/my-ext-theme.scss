@@ -1,96 +1,48 @@
-/**
- * My Ext Theme
- *
- * IMPORTANT: Important to understand sass / compass and css structure before modification.
- * Menu file contains core css, general theme contains styling specific to the reporting tool.
- *
- * Variables and mixins are included for sass to function properly.
- * Please be aware of your configuration alterations.
- *
- * @author: Carey Hinoki
- * @date: 2012-06-25
- */
-
 // Unless you want to include all components, you must set $include-default to false
 // IF you set this to true, you can also remove lines 10 to 38 of this file
 $include-default: false;
 
 // Insert your custom variables here.
-// $base-color: #aa0000;
+$base-color: #4586BF;
+$button-toolbar-color: #FFF;
+$menu-item-active-background-color: #7EB0F1;
+$menu-item-active-border-color: #648bbc;
+$menu-item-indent: 17px;
+$menu-link-padding: 4px 2px 2px 22px;
+$menu-text-over-color: #FFF;
+$toolbar-separator-color: #285276;
 
-@import 'compass';
-
-/***
- * Start ExtJS4 variable overwrites
- * Override: ext4/default/all
- * Author: Carey Hinoki
- */
-
-$form-field-height: 25px !default;
-$grid-header-background-color: #454545;
-$grid-header-background-gradient: null !default;
-$grid-header-over-border-color: #454545;
-$grid-header-over-background-gradient: null !default;
-$grid-header-color: #ffffff !default;
-
-// End ExtJS4 Overwrites
-
-@import "compass/css3";
-@import "blueprint/typography";
-
-$include-default: true !default;
-$include-default-uis: true !default;
-
-@import 'ext4/default/functions';
-@import 'ext4/default/variables';
-@import 'ext4/default/mixins';
-
-//core
-@import 'ext4/default/core/core';
-
-//layout
-@import 'ext4/default/layout/layout';
-
-//utils
-@import 'ext4/default/util/tool';
-@import 'ext4/default/util/messagebox';
-@import 'ext4/default/util/splitter';
-@import 'ext4/default/util/resizable';
-@import 'ext4/default/util/dragdrop';
-@import 'ext4/default/util/scroller';
-@import 'ext4/default/util/focus';
-
-//widgets
-@import 'ext4/default/widgets';
+@import 'ext4/default/all';
 
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
+@include extjs-boundlist;
+@include extjs-button;
 @include extjs-btn-group;
 @include extjs-datepicker;
+@include extjs-colorpicker;
+@include extjs-menu;
 @include extjs-grid;
+@include extjs-form;
+@include extjs-form-field;
 @include extjs-form-fieldset;
 @include extjs-form-file;
 @include extjs-form-checkboxfield;
 @include extjs-form-checkboxgroup;
 @include extjs-form-triggerfield;
 @include extjs-form-htmleditor;
+@include extjs-panel;
 @include extjs-qtip;
+@include extjs-slider;
+@include extjs-progress;
+@include extjs-toolbar;
 @include extjs-window;
 @include extjs-messagebox;
+@include extjs-tabbar;
+@include extjs-tab;
+@include extjs-tree;
+@include extjs-drawcomponent;
 @include extjs-viewport;
-
-/***
- * Start Custom
- * Author: Carey Hinoki
- */
-
-@import 'my-ext-theme/button';
-@import 'my-ext-theme/report/header';
-@import 'my-ext-theme/report/filter';
-@import 'my-ext-theme/report/grid';
-@import 'my-ext-theme/report/setting';
-
-// End Custom
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.
 // You MUST set this to true/string value if you are creating new UIs + supporting legacy browsers.

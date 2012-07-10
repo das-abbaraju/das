@@ -30,9 +30,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.annotations.ReportField;
-import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
@@ -72,7 +69,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private String address2;
 	private String city;
 	private String state;
-	private CountrySubdivision countrySubdivision;
 	private String zip;
 	private String country;
 	private float latitude;
@@ -146,7 +142,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -192,7 +187,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -202,7 +196,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
 	public Date getScheduledDate() {
 		return scheduledDate;
 	}
@@ -240,7 +233,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 		return true;
 	}
 
-	@ReportField(filterType = FilterType.String)
 	public String getAuditLocation() {
 		return auditLocation;
 	}
@@ -262,7 +254,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(filterType = FilterType.Integer)
 	public int getScore() {
 		return score;
 	}
@@ -416,7 +407,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.CSR, filterType = FilterType.Date)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
 	}
@@ -426,7 +416,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.CSR, filterType = FilterType.Date)
 	public Date getAuditorConfirm() {
 		return auditorConfirm;
 	}
@@ -448,7 +437,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(filterType = FilterType.String)
 	public String getAuditFor() {
 		return auditFor;
 	}
@@ -517,14 +505,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setState(String state) {
 		this.state = state;
-	}
-
-	public CountrySubdivision getCountrySubdivision() {
-		return countrySubdivision;
-	}
-
-	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
-		this.countrySubdivision = countrySubdivision;
 	}
 
 	public String getZip() {

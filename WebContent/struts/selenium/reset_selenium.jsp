@@ -11,17 +11,9 @@
 	<s:form action="ResetSelenium!delete" method="post" theme="pics">
 		<s:iterator var="act" value="dBAccounts">
 			<ul>
-				<s:if test="%{Type == 'USER'}">
-					<input type="checkbox" name="DBUsers" value="${act.getID()}" />
-				</s:if>
-				<s:elseif test="%{Type == 'EMPLOYEE'}">
-					<input type="checkbox" name="DBEmployees" value="${act.getID()}" />
-				</s:elseif>
-				<s:else>
-					<input type="checkbox" name="DBAccounts" value="${act.getID()}" />
-				</s:else>
-				<strong><s:property value="Name" /></strong>
-				<s:property value="Type" />
+				<input type="checkbox" name="DBAccounts" value="${id}" />
+				<strong></b><s:property value="Name"/></strong>
+				<s:property value="Type"/>
 			</ul>
 		</s:iterator>
 		<br /> 

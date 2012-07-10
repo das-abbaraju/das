@@ -24,7 +24,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,7 +47,6 @@ public class ProfileEdit extends PicsActionSupport {
 	protected String url;
 
 	private boolean goEmailSub = false;
-	private boolean usingDynamicReports=false;
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -85,9 +83,6 @@ public class ProfileEdit extends PicsActionSupport {
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
 		String username = u.getUsername().trim();
-		if(u.getEmail().length()>0)
-			u.setEmail(EmailAddressUtils.validate(u.getEmail()));
-
 		if (Strings.isEmpty(username)) {
 			addActionError(getText("User.username.error.Empty"));
 			return SUCCESS;
@@ -106,8 +101,6 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
-		u.setUsingDynamicReports(isUsingDynamicReports());
-
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
 
@@ -117,7 +110,9 @@ public class ProfileEdit extends PicsActionSupport {
 		 * This redirct is required if the user happened to change their locale,
 		 * as we would be stuck in a request for the previous locale.
 		 */
-		return this.setUrlForRedirect("ProfileEdit.action?success");
+		this.redirect("ProfileEdit.action?success");
+
+		return SUCCESS;
 	}
 
 	public String department() {
@@ -151,7 +146,9 @@ public class ProfileEdit extends PicsActionSupport {
 		// page.
 		if (!permissions.isLoggedIn()) {
 			addActionMessage(getText("ProfileEdit.error.SessionTimeout"));
-			return setUrlForRedirect("Login.action?button=logout");
+			redirect("Login.action?button=logout");
+
+			return LOGIN;
 		}
 
 		// Only the current user should be allowed to edit their profile.
@@ -243,14 +240,6 @@ public class ProfileEdit extends PicsActionSupport {
 
 	public boolean isGoEmailSub() {
 		return goEmailSub;
-	}
-
-	public boolean isUsingDynamicReports() {
-		return usingDynamicReports;
-	}
-
-	public void setUsingDynamicReports(boolean usingDynamicReports) {
-		this.usingDynamicReports = usingDynamicReports;
 	}
 
 	/**

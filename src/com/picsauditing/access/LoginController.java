@@ -44,7 +44,7 @@ import com.picsauditing.util.log.PicsLogger;
 public class LoginController extends PicsActionSupport {
 
 	private static final int ONE_SECOND = 1;
-	private static final int SECONDS_PER_HOUR = 3600;
+	private static final int ONE_HOUR = 3600;
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
@@ -59,7 +59,7 @@ public class LoginController extends PicsActionSupport {
 	private String key;
 	private int switchToUser;
 	private int switchServerToUser;
-
+	
 	private final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@Anonymous
@@ -79,10 +79,11 @@ public class LoginController extends PicsActionSupport {
 			// then cookies are disabled.
 			// Note: Sessions are saved even if cookies are disabled on
 			// Mozilla 5 and others.
-			if (ServletActionContext.getRequest().getCookies() == null) {
+			if (ServletActionContext.getRequest().getCookies() == null
+					&& ServletActionContext.getRequest().getParameter("msg") != null) {
 				addActionMessage(getText("Login.CookiesAreDisabled"));
 
-				return SUCCESS;
+				redirect("Login.action");
 			}
 
 			int adminID = permissions.getAdminID();
@@ -102,13 +103,13 @@ public class LoginController extends PicsActionSupport {
 							// reset beta cookie
 							setBetaTestingCookie();
 							// redirect to original site.
-							setUrlForRedirect("http://www.picsorganizer.com");
+							redirect("http://www.picsorganizer.com");
 						}
 						ActionContext.getContext().getSession().remove("redirect");
 					}
 				}
 				postLogin();
-				return REDIRECT;
+				return SUCCESS;
 			}
 
 			ActionContext.getContext().getSession().clear();
@@ -181,7 +182,7 @@ public class LoginController extends PicsActionSupport {
 			userDAO.save(user);
 
 			Cookie cookie = new Cookie("username", username);
-			cookie.setMaxAge(SECONDS_PER_HOUR * 24);
+			cookie.setMaxAge(ONE_HOUR * 24);
 			getResponse().addCookie(cookie);
 			// check to see if there is switchtouseid exist, which comes from
 			// redirect from another server. if it does, then after log in,
@@ -202,12 +203,14 @@ public class LoginController extends PicsActionSupport {
 
 		if (permissions.getGroups().size() > 0 || permissions.isContractor()) {
 			postLogin();
-			return REDIRECT;
 		} else {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
 
-			return super.setUrlForRedirect("Login.action?button=logout");
+			redirect("Login.action?button=logout");
+			return SUCCESS;
 		}
+
+		return SUCCESS;
 	}
 
 	private void switchToUser(int userID) throws Exception {
@@ -234,7 +237,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Method to log in via an ajax overlay
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -253,7 +256,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Result for when the user is not logged in during an ajax request.
-	 *
+	 * 
 	 * @return
 	 */
 	@Anonymous
@@ -265,7 +268,7 @@ public class LoginController extends PicsActionSupport {
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -359,6 +362,8 @@ public class LoginController extends PicsActionSupport {
 	 * After we're logged in, now what should we do?
 	 */
 	private void postLogin() throws Exception {
+		MenuComponent menu = PicsMenu.getMenu(permissions);
+
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
 
@@ -374,11 +379,9 @@ public class LoginController extends PicsActionSupport {
 					cookie.setMaxAge(ONE_SECOND);
 					getResponse().addCookie(cookie);
 				}
-
 				if ("username".equals(cookiesA[i].getName()))
 					cookieUsername = cookiesA[i].getValue();
 			}
-
 			if (!Strings.isEmpty(cookieUsername) && !cookieUsername.equals(permissions.getUsername())) {
 				// If they are switching users, just send them back to the Home
 				// Page
@@ -388,36 +391,27 @@ public class LoginController extends PicsActionSupport {
 				cookie.setMaxAge(ONE_SECOND);
 				getResponse().addCookie(cookie);
 			}
-
 			if (switchToUser == 0 && switchServerToUser == 0)
 				setBetaTestingCookie();
 
 			if (cookieFromURL.length() > 0) {
-				setUrlForRedirect(cookieFromURL);
+				redirect(cookieFromURL);
 				return;
 			}
 		}
-
 		String url = null;
 		if (permissions.isContractor()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
 
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
 			url = step.getUrl();
-		} else {
-			if (user.isUsingDynamicReports()) {
-				MenuComponent menu = MenuBuilder.buildMenubar(permissions);
-				url = MenuBuilder.getHomePage(menu, permissions);
-			} else {
-				MenuComponent menu = PicsMenu.getMenu(permissions);
-				url = PicsMenu.getHomePage(menu, permissions);
-			}
-		}
 
+		} else
+			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception(getText("Login.NoPermissionsOrDefaultPage"));
 
-		setUrlForRedirect(url);
+		redirect(url);
 		return;
 	}
 
@@ -455,7 +449,7 @@ public class LoginController extends PicsActionSupport {
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
 		String serverName = getRequest().getLocalName();
 		UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
-		loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
+		loginLog.setBrowser(uap.getBrowserName()+" "+uap.getBrowserVersion());
 		loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
 		if (isLiveEnvironment() || isBetaEnvironment()) {
 			// Need computer name instead of www
@@ -533,9 +527,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	@Override
-	public String setUrlForRedirect(String url) throws IOException {
+	public String redirect(String url) throws IOException {
 		if (!AjaxUtils.isAjax(getRequest())) {
-			return super.setUrlForRedirect(url);
+			return super.redirect(url);
 		}
 		return BLANK;
 	}

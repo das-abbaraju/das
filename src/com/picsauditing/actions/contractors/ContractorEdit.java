@@ -37,8 +37,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -47,7 +45,6 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
@@ -80,16 +77,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected UserSwitchDAO userSwitchDAO;
 	@Autowired
 	protected BillingCalculatorSingle billingService;
-	@Autowired
-	protected NoteDAO noteDao;
-
 
 	private File logo = null;
 	private String logoFileName = null;
 	private File brochure = null;
 	private String brochureFileName = null;
-	private State state;
-	private Country country;
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected int contactID;
@@ -125,7 +117,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					.get("contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
-			
+
 			defaultConTypeHelpText();
 		}
 	}
@@ -163,7 +155,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public String save() throws Exception {
 		String ftpDir = getFtpDir();
-
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
 			if (logo != null) {
@@ -211,19 +202,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					return SUCCESS;
 				}
 			}
-			
-			if (!contractor.getCountry().equals(country) ||
-					!contractor.getState().equals(state)) {
-				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-				
-				stampContractorNoteAboutOfficeLocationChange();
-			}
-			contractor.setCountry(country);
-			contractor.setState(state);
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(state.getIsoCode(), country.getIsoCode());
-			contractor.setCountrySubdivision(countrySubdivision);
-			
+
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
 
 			if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
@@ -245,7 +224,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
-				
+				// TODO I don't know if this is the right answer here, but we
+				// don't want to save anything if
+				// there are errors.
+				contractor = contractorAccountDao.find(contractor.getId());
 				return SUCCESS;
 			}
 			contractor.setQbSync(true);
@@ -256,27 +238,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setPrimaryContact(userDAO.find(contactID));
 			}
 			// contractor.setNeedsIndexing(true);
-			
-
-
 			contractorAccountDao.save(contractor);
-			
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
 		}
 
 		return SUCCESS;
-	}
-
-	private void stampContractorNoteAboutOfficeLocationChange() {
-		User system = new User();
-		system.setId(User.SYSTEM);
-		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
-		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet", getText(state.getI18nKey())));
-		pqfOfficeLocationChange.setId(0);
-		pqfOfficeLocationChange.setCanContractorView(true);
-		noteDao.save(pqfOfficeLocationChange);
 	}
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)
@@ -458,22 +425,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setOperatorIds(List<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
-	}
-	
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
 	}
 
 	public List<Invoice> getUnpaidInvoices() {

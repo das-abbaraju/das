@@ -47,12 +47,7 @@ public abstract class PicsTest {
 			throws InstantiationException,IllegalAccessException {
 		testUtil.autowireEMInjectedDAOs(objectToAutowire, em);
 	}
-
-	protected void autowireDAOsFromDeclaredMocks(Object objectToAutowire, Object toTakeMockDaosFrom) 
-			throws InstantiationException,IllegalAccessException {
-		PicsTestUtil.autowireDAOsFromDeclaredMocks(objectToAutowire, toTakeMockDaosFrom);
-	}
-
+	
 	protected void mockI18nCacheForEnglishMonthNames() {
 		when(i18nCache.hasKey("Month.Jan", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
 		when(i18nCache.getText("Month.Jan", Locale.ENGLISH, (Object[])null)).thenReturn("January");

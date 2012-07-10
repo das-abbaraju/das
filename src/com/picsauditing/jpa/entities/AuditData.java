@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -29,8 +30,6 @@ import org.json.simple.JSONValue;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.report.annotations.ReportField;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -68,7 +67,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.question = question;
 	}
 
-	@ReportField(filterType = FilterType.String)
 	public String getAnswer() {
 		return answer;
 	}
@@ -87,7 +85,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.auditor = auditor;
 	}
 
-	@ReportField(filterType = FilterType.String)
 	public String getComment() {
 		return comment;
 	}
@@ -111,7 +108,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(filterType = FilterType.Date)
 	public Date getDateVerified() {
 		return dateVerified;
 	}
@@ -200,24 +196,20 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	/*
-	 * @Transient public boolean isRequired() { String isRequired =
-	 * question.getIsRequired(); if (isRequired.equals("Yes")) return true;
+	 * @Transient public boolean isRequired() { String isRequired = question.getIsRequired(); if
+	 * (isRequired.equals("Yes")) return true;
 	 * 
-	 * if (isRequired.equals("Depends")) { if (question.getr == null) return
-	 * false; String dependsOnAnswer = question.getDependsOnAnswer(); if
-	 * (dependsOnAnswer == null) return false;
+	 * if (isRequired.equals("Depends")) { if (question.getr == null) return false; String dependsOnAnswer =
+	 * question.getDependsOnAnswer(); if (dependsOnAnswer == null) return false;
 	 * 
-	 * // TODO BEFORE RELEASE! figure out some way to get the answer of a //
-	 * dependent question // dependsOnQuestion.getAnswer(); AuditData
-	 * contractorAnswer = null;
+	 * // TODO BEFORE RELEASE! figure out some way to get the answer of a // dependent question //
+	 * dependsOnQuestion.getAnswer(); AuditData contractorAnswer = null;
 	 * 
-	 * if (contractorAnswer == null) // The contractor hasn't answered this
-	 * question yet return false; // Such as "Yes" and "Yes with Office"
-	 * answers. if (dependsOnAnswer.equals("Yes*")) return
+	 * if (contractorAnswer == null) // The contractor hasn't answered this question yet return false; // Such as "Yes"
+	 * and "Yes with Office" answers. if (dependsOnAnswer.equals("Yes*")) return
 	 * contractorAnswer.getAnswer().startsWith("Yes");
 	 * 
-	 * if (dependsOnAnswer.equals(contractorAnswer.getAnswer())) return true; }
-	 * return false; }
+	 * if (dependsOnAnswer.equals(contractorAnswer.getAnswer())) return true; } return false; }
 	 */
 
 	/**
@@ -273,16 +265,16 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	public boolean isScoreApplies() {
 		return getScorePercentage() >= 0;
 	}
-
+	
 	@Transient
 	public List<String> getTaggitList() {
 		List<String> listOfOptionValueIl8nKeys = new ArrayList<String>();
-
+		
 		JSONArray itemsSelected = (JSONArray) JSONValue.parse(this.getAnswer());
 		List<AuditOptionValue> optionValues = this.getQuestion().getOption().getValues();
-		for (Object answer : itemsSelected.toArray()) {
+		for (Object answer: itemsSelected.toArray()) {
 			String uniqueCode = ((JSONObject) answer).get("id").toString();
-			for (AuditOptionValue optionValue : optionValues) {
+			for (AuditOptionValue optionValue: optionValues) {
 				if (uniqueCode.equals(optionValue.getUniqueCode())) {
 					listOfOptionValueIl8nKeys.add(optionValue.getI18nKey());
 					break;
@@ -317,7 +309,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			}
 		};
 	}
-
+	
 	@Transient
 	public String getAnswerInDate(String format) throws ParseException {
 		SimpleDateFormat displayFormat = new SimpleDateFormat(format);
@@ -325,26 +317,27 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		String dateStr = displayFormat.format(date);
 		return dateStr;
 	}
-
+	
 	@Transient
 	public String getNumberFormatAnswer(Locale locale) {
-		NumberFormat displayFormat;
+		NumberFormat displayFormat; 
 		NumberFormat dbFormat;
 		ParsePosition pp = new ParsePosition(0);
-		if ("Number".equals(question.getQuestionType())) {
+		if("Number".equals(question.getQuestionType())) {
 			displayFormat = NumberFormat.getIntegerInstance(locale);
 			dbFormat = NumberFormat.getIntegerInstance(Locale.US);
-		} else {
+		}
+		else {
 			displayFormat = NumberFormat.getNumberInstance(locale);
 			dbFormat = NumberFormat.getNumberInstance(Locale.US);
 		}
 		Number truthValue = dbFormat.parse(answer, pp);
 		// check for invalid number
-		if (answer.length() != pp.getIndex() || truthValue == null) {
+		if(answer.length() != pp.getIndex() || truthValue == null) {
 			return answer;
 		}
 		String displayValue = displayFormat.format(truthValue);
 		return displayValue;
 	}
-
+	
 }

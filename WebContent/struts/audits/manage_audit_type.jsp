@@ -192,16 +192,12 @@
                         
                         <pics:fieldhelp title="Scoreable">
                             <p>
-                                This field is for scoreable audits.
+                                This field is for scorable audits.
                             </p>
                             <ol>
                                 <li>
-                                    ACTUAL - score is a calculation of the questions only.
+                                    RAW - score is a calcualtion of the questions only.
                                     [Calculation = SUM(question.scoreWeight * (question.option.scoreValue / question.option.maxValue) )]
-                                </li>
-                                <li>
-                                    PERCENT - score is a calculation of the questions only expressed as a percentage.
-                                    [Calculation = MAX(SUM(question.scoreWeight * (question.option.scoreValue / question.option.maxValue) ), 100)]
                                 </li>
                                 <li>
                                     WEIGHTED - score is a calculation of the questions weighted by category.

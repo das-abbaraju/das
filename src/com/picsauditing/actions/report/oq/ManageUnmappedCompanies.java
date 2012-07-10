@@ -72,7 +72,7 @@ public class ManageUnmappedCompanies extends ReportActionSupport {
 				}
 			}
 			
-			return setUrlForRedirect("ManageUnmappedCompanies.action" + (permissions.isAssessment() ? "" : "?id=" + id));
+			return redirect("ManageUnmappedCompanies.action" + (permissions.isAssessment() ? "" : "?id=" + id));
 		}
 		
 		buildQuery();

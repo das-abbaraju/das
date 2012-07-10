@@ -27,7 +27,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -40,7 +39,6 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -97,15 +95,12 @@ public class Registration extends ContractorActionSupport {
 					contractor.setZip(crr.getZip());
 					contractor.setCountry(crr.getCountry());
 					contractor.setState(crr.getState());
-					CountrySubdivision countrySubdivision = new CountrySubdivision();
-					countrySubdivision.setIsoCode(crr.getState().getIsoCode(), crr.getCountry().getIsoCode());
-					contractor.setCountrySubdivision(countrySubdivision);
 					contractor.setRequestedBy(crr.getRequestedBy());
 					contractor.setTaxId(crr.getTaxID());
 
 					user = new User();
 					user.setName(crr.getContact());
-					user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
+					user.setEmail(crr.getEmail());
 					user.setPhone(crr.getPhone());
 				} else {
 					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
@@ -129,8 +124,6 @@ public class Registration extends ContractorActionSupport {
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
-		if (user.getEmail().length()>0)
-			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
 		userDAO.save(user);
 
 		// requires id for user to exist to seed the password properly
@@ -156,7 +149,10 @@ public class Registration extends ContractorActionSupport {
 			dao.save(note);
 		}
 
-		return setUrlForRedirect(getRegistrationStep().getUrl());
+		redirect(getRegistrationStep().getUrl());
+
+		return BLANK;
+
 	}
 
 	private ContractorRegistrationRequest updateRegistrationRequest() {
@@ -236,12 +232,8 @@ public class Registration extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Demo);
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
-		if (contractor.getCountry().isHasStates() && state != null){
+		if (contractor.getCountry().isHasStates() && state != null)
 			contractor.setState(state);
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(state.getIsoCode(), contractor.getCountry().getIsoCode());
-			contractor.setCountrySubdivision(countrySubdivision);
-		}
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());

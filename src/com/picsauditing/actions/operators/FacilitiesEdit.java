@@ -32,7 +32,6 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -223,12 +222,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		if (country != null && !country.equals(operator.getCountry()))
 			operator.setCountry(country);
-		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
+		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState()))
 			operator.setState(state);
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(state.getIsoCode(), country.getIsoCode());
-			operator.setCountrySubdivision(countrySubdivision);
-		}
 
 		if (hasActionErrors()) {
 			return SUCCESS;
@@ -375,13 +370,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		save();
 		clearMessages();
 
-		return setUrlForRedirect("ReportAccountList.action");
+		return redirect("ReportAccountList.action");
 	}
 
 	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {
 		// find all operators
 		List<OperatorAccount> tmpOperatorList;
-		tmpOperatorList = operatorDao.findWhere(true, "status IN ('Active','Demo','Pending')");
+		tmpOperatorList = operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
 
 		// remove operators that are children of the current operator
 		tmpOperatorList.removeAll(operator.getChildOperators());

@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.actions.contractors.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -99,31 +98,22 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	public void setServicesHelpText() {
-		if (requireOnsite) {
+		if (requireOnsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
-		}
-		
-		if (requireOffsite) {
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
+		if (requireOffsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
-		}
-		
-		if (requireMaterialSupplier) {
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
+		if (requireMaterialSupplier)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
-		}
-		
-		if (requireTransportation) {
-			servicesHelpText += getTextParameterized(
-					"RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Transportation.getI18nKey()),
-					StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
-		}
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
+		if (requireTransportation)
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
 	}
 
 	public boolean conTypesOK() {
@@ -185,8 +175,102 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		saveAnswers();
 		loadAnswers();
-		calculateRiskLevels();
-		setAccountLevelByListOnlyEligibility();
+
+		// boolean requiredQuestions = false;
+		// for (AuditQuestion aq : infoQuestions) {
+		// if ((contractor.isOffsiteServices() || contractor.isOnsiteServices() ||
+		// contractor.isTransportationServices())
+		// && (aq.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) ) {
+		// if (Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) {
+		// requiredQuestions = false;
+		// break;
+		// } else {
+		// requiredQuestions = true;
+		// }
+		// } else if (contractor.isMaterialSupplier()
+		// && aq.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_EVAL) {
+		// if (Strings.isEmpty(answerMap.get(aq.getId()).getAnswer())) {
+		// requiredQuestions = false;
+		// break;
+		// } else {
+		// requiredQuestions = true;
+		// }
+		// }
+		// }
+		//
+		// if (!requiredQuestions) {
+		// addActionError(getText("ContractorRegistrationServices.error.AnswerAll"));
+		// return SUCCESS;
+		// } else {
+		Collection<AuditData> auditList = answerMap.values();
+		// Calculated assessments
+		LowMedHigh safety = LowMedHigh.Low;
+		LowMedHigh product = LowMedHigh.Low;
+		// Self assessments
+		LowMedHigh conSafety = LowMedHigh.Low;
+		LowMedHigh conProduct = LowMedHigh.Low;
+		LowMedHigh conProductSafety = LowMedHigh.Low;
+
+		for (AuditData auditData : auditList) {
+			AuditQuestion q = auditData.getQuestion();
+			if (q.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) {
+				AuditData aData = answerMap.get(q.getId());
+				safety = getRiskLevel(aData, safety);
+
+				if (q.getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT)
+					conSafety = getRiskLevel(aData, conSafety);
+			} else if (q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_EVAL) {
+				AuditData aData = answerMap.get(q.getId());
+				product = getRiskLevel(aData, product);
+
+				if (q.getId() == AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT)
+					conProductSafety = getRiskLevel(aData, conProductSafety);
+				if (q.getId() == AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT)
+					conProduct = getRiskLevel(aData, conProduct);
+			}
+		}
+
+		boolean isSafetyOK = true;
+		boolean isProductOK = true;
+		// Contractor's assessments are the same (or higher?) than what
+		// we've calculated
+		if (!contractor.isMaterialSupplierOnly())
+			isSafetyOK = conSafety.ordinal() >= safety.ordinal();
+		if (contractor.isMaterialSupplier())
+			isProductOK = conProductSafety.ordinal() >= product.ordinal();
+
+		if (!contractor.isMaterialSupplierOnly())
+			contractor.setSafetyRisk(safety);
+		if (contractor.isMaterialSupplier())
+			contractor.setProductRisk(product);
+
+		contractor.setAuditColumns(permissions);
+		contractorAccountDao.save(contractor);
+
+		if (!isSafetyOK || !isProductOK) {
+			String safetyAssessment = safety.toString();
+			if (safetyAssessment.equals("Med"))
+				safetyAssessment = getText("LowMedHigh.Med");
+
+			String productAssessment = product.toString();
+			if (productAssessment.equals("Med"))
+				productAssessment = getText("LowMedHigh.Med");
+
+			List<String> increases = new ArrayList<String>();
+			if (safety.ordinal() > conSafety.ordinal() && !contractor.isMaterialSupplierOnly())
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safety));
+			if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.BusinessEvaluation",
+						productAssessment));
+			if (product.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
+						productAssessment));
+
+			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels", Strings.implode(
+					increases, getText("ContractorRegistrationServices.message.AndYours")));
+		}
+
+		setListOnly();
 		contractor.syncBalance();
 		billingService.calculateAnnualFees(contractor);
 		contractorAccountDao.save(contractor);
@@ -201,7 +285,22 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractorAccountDao.save(contractor);
 		}
 
-		return setUrlForRedirect(getRegistrationStep().getUrl());
+		redirect(getRegistrationStep().getUrl());
+		return BLANK;
+	}
+
+	private void setListOnly() {
+		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
+				&& contractor.getAccountLevel().isFull()) {
+			boolean canBeListed = true;
+			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+				if (!conOp.getOperatorAccount().isAcceptsList())
+					canBeListed = false;
+			}
+			if (canBeListed)
+				contractor.setAccountLevel(AccountLevel.ListOnly);
+		} else if (contractor.getAccountLevel().isListOnly())
+			contractor.setAccountLevel(AccountLevel.Full);
 	}
 
 	public boolean validateAnswers() {
@@ -240,13 +339,11 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	private void loadQuestions() {
-		// get the categories for a contractor based on their
-		// Onsite/Offsite/Material Supplier status
+		// get the categories for a contractor based on their Onsite/Offsite/Material Supplier status
 		Set<Integer> categoryIds = new HashSet<Integer>();
 
 		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
 		categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
-		categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
 
 		conAudit = getContractorPQF(categoryIds);
 
@@ -301,71 +398,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			}
 		}
 	}
-	
-	private void calculateRiskLevels() {
-		Collection<AuditData> auditList = answerMap.values();
-		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
-		
-		// Calculated assessments
-		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
-		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
-		// Self assessments
-		LowMedHigh conSafety = highestRisks.get(RiskCategory.SELF_SAFETY);
-		LowMedHigh conProduct = highestRisks.get(RiskCategory.SELF_PRODUCT);
-
-		boolean safetyRiskEqualOrBelowSelfRating = true;
-		boolean productRiskEqualOrBelowSelfRating = true;
-		// Contractor's assessments are the same (or higher?) than what
-		// we've calculated
-		if (!contractor.isMaterialSupplierOnly()) {
-			safetyRiskEqualOrBelowSelfRating = conSafety.ordinal() >= safety.ordinal();
-			contractor.setSafetyRisk(safety);
-		}
-		
-		if (contractor.isMaterialSupplier()) {
-			productRiskEqualOrBelowSelfRating = conProduct.ordinal() >= product.ordinal();
-			contractor.setProductRisk(product);
-		}
-
-		contractor.setAuditColumns(permissions);
-		contractorAccountDao.save(contractor);
-
-		if (!safetyRiskEqualOrBelowSelfRating || !productRiskEqualOrBelowSelfRating) {
-			String safetyAssessment = getText(safety.getI18nKey());
-			String productAssessment = getText(product.getI18nKey());
-
-			List<String> increases = new ArrayList<String>();
-			if (!safetyRiskEqualOrBelowSelfRating && !contractor.isMaterialSupplierOnly()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safetyAssessment));
-			}
-			
-			if (!productRiskEqualOrBelowSelfRating && contractor.isMaterialSupplier()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
-						productAssessment));
-			}
-
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
-					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
-		}
-	}
-
-	private void setAccountLevelByListOnlyEligibility() {
-		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
-				&& contractor.getAccountLevel().isFull()) {
-			boolean canBeListed = true;
-			
-			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
-				if (!conOp.getOperatorAccount().isAcceptsList())
-					canBeListed = false;
-			}
-			
-			if (canBeListed) {
-				contractor.setAccountLevel(AccountLevel.ListOnly);
-			}
-		} else if (contractor.getAccountLevel().isListOnly())
-			contractor.setAccountLevel(AccountLevel.Full);
-	}
 
 	public Map<Integer, AuditData> getAnswerMap() {
 		return answerMap;
@@ -393,15 +425,81 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		return oRiskLevel;
 	}
 
+	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
+		if (auditData != null && !Strings.isEmpty(auditData.getAnswer())
+				&& !auditData.getAnswer().equals(riskLevel.toString())) {
+			switch (auditData.getQuestion().getId()) {
+			case 2442:
+			case 2445:
+				// Question : Does your company perform mechanical services
+				// OR Services conducted at heights greater than six feet?
+				if (auditData.getAnswer().equals("Yes"))
+					return LowMedHigh.High;
+				break;
+			case 3793:
+				// Question : Does your company perform mechanical services that
+				// require the use of hand/power tools?
+				if (auditData.getAnswer().equals("Yes"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				break;
+			case 2443:
+				// Question : Does your company perform all services from only
+				// an office?
+				if (auditData.getAnswer().equals("No"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				break;
+			case AuditQuestion.RISK_LEVEL_ASSESSMENT:
+			case AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT:
+			case AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT:
+				// Question : What risk level do you believe your company should
+				// be rated?
+				if (auditData.getAnswer().equals("Medium"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				if (auditData.getAnswer().equals("High"))
+					return LowMedHigh.High;
+				break;
+			case 7660:
+			case 7661:
+			case 9879:
+				// Product Critical Assessment
+				// 7660: Can failures in your products result in a work stoppage
+				// or major business interruption for your
+				// customer?
+				// 7661: If you fail to deliver your products on-time, can it
+				// result in a work stoppage or major
+				// business interruption for your customer?
+				// 9789: Are any of your products utilized within the critical processes
+				// of the facility? i.e. valves, pipes, cranes, chemicals, etc.
+				if (auditData.getAnswer().equals("Yes"))
+					return LowMedHigh.High;
+				break;
+			case 7662:
+				// Product Safety Critical
+				// Can failures in your products result in bodily injury or
+				// illness to your customer or end-user?
+				if (auditData.getAnswer().equals("Yes"))
+					return LowMedHigh.High;
+				break;
+			case 7663:
+				// Are you required to carry Product Liability Insurance?
+				if (auditData.getAnswer().equals("Medium"))
+					return getMaxRiskLevel(riskLevel, LowMedHigh.Med);
+				if (auditData.getAnswer().equals("High"))
+					return LowMedHigh.High;
+				break;
+			}
+		}
+		return riskLevel;
+	}
+
 	/**
-	 * This method finds a contractor's PQF. If it does not exists, it will
-	 * create a new one and save it to the database.
+	 * This method finds a contractor's PQF. If it does not exists, it will create a new one and save it to the
+	 * database.
 	 * 
 	 * It will also add all categories required for registration.
 	 * 
 	 * @param categoryIds
-	 *            The categories required by the contractor based on the types
-	 *            of trades selected.
+	 *            The categories required by the contractor based on the types of trades selected.
 	 */
 	private ContractorAudit getContractorPQF(Set<Integer> categoryIds) {
 		ContractorAudit pqf = null;
@@ -429,8 +527,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			}
 		}
 
-		// If there are categories left in the categoryIds set, then they need
-		// to be added now.
+		// If there are categories left in the categoryIds set, then they need to be added now.
 		for (Integer catID : categoriesToAdd) {
 			addAuditCategories(pqf, catID);
 		}

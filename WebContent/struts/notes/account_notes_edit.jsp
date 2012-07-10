@@ -48,7 +48,7 @@
 						<label>
 							<s:text name="global.Category" />:
 						</label>
-						<s:radio list="filter.categoryList" listValue="getText(getI18nKey())" name="note.noteCategory" theme="pics" cssClass="inline" />
+						<s:radio list="filter.categoryList" name="note.noteCategory" theme="pics" cssClass="inline" />
 					</li>
 					
 					<s:if test="permissions.requiresOQ || permissions.requiresCompetencyReview">
@@ -65,13 +65,13 @@
 						<label>
 							<s:text name="UserOpenNotesAjax.Priority" />:
 						</label>
-						<s:radio list="filter.priorityList" listValue="getText(getI18nKey())" name="note.priority" theme="pics" cssClass="inline" />
+						<s:radio list="filter.priorityList" name="note.priority" theme="pics" cssClass="inline" />
 					</li>
 					<li>
 						<label>
 							<s:text name="global.Status" />:
 						</label>
-						<s:radio list="filter.statusList" listValue="getText(getI18nKey())" name="note.status" theme="pics" cssClass="inline" />
+						<s:radio list="filter.statusList" name="note.status" theme="pics" cssClass="inline" />
 					</li>
 					<li>
 						<label>
@@ -87,7 +87,7 @@
 						</label>
 						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" value="3" />
 						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther" 
-							value="1100" />
+							headerKey="0" headerValue="%{getText('global.PICS')}" />
 					</li>
 					<li id="liAdditionalText">
 						<label>

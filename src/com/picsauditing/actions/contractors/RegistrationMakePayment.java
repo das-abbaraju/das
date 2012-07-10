@@ -9,10 +9,12 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeServiceErrorResponseException;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -36,11 +38,8 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.BrainTree;
-import com.picsauditing.util.braintree.BrainTreeService;
-import com.picsauditing.util.braintree.BrainTreeServiceErrorResponseException;
-import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -63,8 +62,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private EmailSenderSpring emailSender;
-	@Autowired
-	private ContractorValidator contractorValidator;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -93,6 +90,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private boolean braintreeCommunicationError = false;
 
 	public RegistrationMakePayment() {
+		this.subHeading = getText(String.format("%s.title", getScope()));
 		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
@@ -100,28 +98,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		findContractor();
-		this.subHeading = getText(String.format("%s.title", getScope()));
-
 		if (redirectIfNotReadyForThisStep())
 			return BLANK;
 
 		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
 			return BLANK;
-
-		// Email proforma invoice
-		if ("email".equals(button)) {
-			contractor.setPaymentMethod(PaymentMethod.EFT);
-			contractorAccountDao.save(contractor);
-			try {
-				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
-				addActionMessage(getText("InvoiceDetail.message.SentEmail"));
-			} catch (Exception e) {
-				addActionError(getText("InvoiceDetail.message.EmailFail"));
-			}
-
-			url = "Login.action";
-			return REDIRECT;
-		}
 
 		loadCC();
 		if (hasActionErrors())
@@ -141,8 +122,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return BLANK;
 
 		Invoice invoice = getInvoice();
-
-		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 
 		auditBuilder.buildAudits(contractor);
 		this.resetActiveAudits();
@@ -275,7 +254,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
+		redirect(getRegistrationStep().getUrl());
 		return BLANK;
 	}
 
@@ -386,7 +365,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractor.setCcExpiration(null);
 		} else if ((!contractor.isCcOnFile() && contractor.getCcExpiration() == null)
 				|| (response_code != null && (Strings.isEmpty(responsetext) || response.equals("1")))) {
-			contractor.setCcExpiration(cc.getExpirationDate());
+			contractor.setCcExpiration(cc.getExpirationDate2());
 			contractor.setCcOnFile(true);
 			// Need to set CcOnFile to true only in no-credit card case
 			// (ccOnFile == False && expDate == null)
@@ -417,7 +396,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		contractorAccountDao.save(contractor);
 		loadCC();
 
-		return this.setUrlForRedirect("RegistrationMakePayment.action");
+		this.redirect("RegistrationMakePayment.action");
+		return BLANK;
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -550,7 +530,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	/**
 	 * ****** End BrainTree Setters ******
-	 *
+	 * 
 	 * @throws Exception
 	 */
 
@@ -599,11 +579,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.removeImportPQF(contractor);
 		generateOrUpdateInvoiceIfNecessary();
-
-		if (!Strings.isEmpty(url)) {
-			return REDIRECT;
-		}
-
 		return BLANK;
 	}
 
@@ -611,11 +586,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.addImportPQF(contractor, permissions);
 		generateOrUpdateInvoiceIfNecessary();
-
-		if (!Strings.isEmpty(url)) {
-			return REDIRECT;
-		}
-
 		return BLANK;
 	}
 
@@ -656,7 +626,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			invoiceDAO.save(invoice);
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
+			redirect("RegistrationMakePayment.action");
 			return true;
 		}
 
@@ -666,7 +636,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
-			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
+			redirect("RegistrationMakePayment.action");
 			return true;
 		}
 

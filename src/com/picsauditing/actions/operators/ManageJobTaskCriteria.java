@@ -100,7 +100,7 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 	private String getRedirect(String actionMessage) throws Exception {
 		addActionMessage(actionMessage);
 		ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
-		return setUrlForRedirect("ManageJobTaskCriteria.action?operator=" + operator.getId() + "&jobTask=" + jobTask.getId());
+		return redirect("ManageJobTaskCriteria.action?operator=" + operator.getId() + "&jobTask=" + jobTask.getId());
 	}
 
 	public boolean isCanEdit() {

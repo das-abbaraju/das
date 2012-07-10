@@ -1,13 +1,10 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.math.NumberUtils;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.BetaPool;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -26,17 +23,7 @@ public class ContractorBadge extends ContractorActionSupport {
 		account = contractor;
 		setSubHeading("PICS Membership Tag");
 
-		return contractorBadgeToggle();
-	}
-
-	private String contractorBadgeToggle() {
-		Map<String, String> toggles = permissions.getToggles();
-		BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(NumberUtils.toInt(toggles.get("Toggle.Badge"), 0));
-
-		if (BetaPool.isUserBetaTester(permissions, betaPool))
-			return SUCCESS;
-		else
-			return "failed";
+		return SUCCESS;
 	}
 
 	public String save() throws Exception {
@@ -49,7 +36,7 @@ public class ContractorBadge extends ContractorActionSupport {
 
 		dao.save(data);
 
-		return setUrlForRedirect("ContractorBadge.action?contractor=" + contractor.getId());
+		return redirect("ContractorBadge.action?contractor=" + contractor.getId());
 	}
 
 	public boolean isTaskCompleted() {

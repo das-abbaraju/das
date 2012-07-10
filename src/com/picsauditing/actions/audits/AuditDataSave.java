@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
@@ -147,6 +149,17 @@ public class AuditDataSave extends AuditActionSupport {
 						answerChanged = true;
 				}
 
+				if (verifyButton) {
+					// verify mode
+					if (newCopy.isVerified()) {
+						newCopy.setDateVerified(null);
+						newCopy.setAuditor(null);
+					} else {
+						newCopy.setDateVerified(new Date());
+						newCopy.setAuditor(getUser());
+					}
+				} 
+
 				// update mode
 				if (commentChanged) {
 					newCopy.setComment(auditData.getComment());
@@ -186,17 +199,6 @@ public class AuditDataSave extends AuditActionSupport {
 					newCopy.setAnswer(auditData.getAnswer());
 
 				}
-
-				if (verifyButton) {
-					// verify mode
-					if (newCopy.isVerified()) {
-						newCopy.setDateVerified(null);
-						newCopy.setAuditor(null);
-					} else {
-						newCopy.setDateVerified(new Date());
-						newCopy.setAuditor(getUser());
-					}
-				} 
 
 				auditData = newCopy;
 			}
@@ -646,48 +648,35 @@ public class AuditDataSave extends AuditActionSupport {
 		if (Strings.isEmpty(answer))
 			return true;
 
+		// get the truth value based on user locale and then convert and store it as US representation
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
-			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
-
-			boolean hasBadChar = false;
-			for (int i = 0; i < answer.length(); i++) {
-				char c = answer.charAt(i);
-				if (!Character.isDigit(c) && (c != '.') && (c != '-'))
-					hasBadChar = true;
+			NumberFormat userFormat; 
+			NumberFormat usFormat;
+			ParsePosition pp = new ParsePosition(0);
+			if("Number".equals(questionType)) {
+				userFormat = NumberFormat.getIntegerInstance(permissions.getLocale());
+				usFormat = NumberFormat.getIntegerInstance(Locale.US);
 			}
-
-			if (hasBadChar) {
-				addActionError(getText("AuditData.error.MustBeNumber"));
-				return false;
+			else {
+				userFormat = NumberFormat.getNumberInstance(permissions.getLocale());
+				usFormat = NumberFormat.getNumberInstance(Locale.US);
 			}
-
-			NumberFormat format;
-			if ("Decimal Number".equals(questionType)) {
-				format = new DecimalFormat("#,##0.000");
-			} else if ("Number".equals(questionType)) {
-				format = new DecimalFormat("###0");
-			} else {
-				format = new DecimalFormat("#,##0");
-			}
-
-			try {
-				BigDecimal value = new BigDecimal(answer);
-				auditData.setAnswer(format.format(value));
-			} catch (Exception ignore) {
+			Number truthValue = userFormat.parse(answer, pp);
+			// check for invalid number
+			if(answer.length() != pp.getIndex() || truthValue == null) {
 				addActionError(getText("Audit.message.InvalidFormat"));
 				return false;
 			}
+			String storedAnswer = usFormat.format(truthValue);
+			auditData.setAnswer(storedAnswer);
+			
 		}
 
 		if ("Date".equals(questionType)) {
 			SimpleDateFormat s = new SimpleDateFormat(getText("date.short"));
 			Date newDate;
-
 			try {
-				if (answer.length()==10)
-					newDate = s.parse(answer);
-				else
-					newDate = restructureNewDate(answer);
+				newDate = s.parse(answer);
 			} catch (ParseException e) {
 				try {
 					SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -717,10 +706,6 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
-	}
-
-	public static Date restructureNewDate(String answer) {
-		return DateBean.parseDate(answer);
 	}
 
 	public static String trimWhitespaceLeadingZerosAndAllCommas(String answer) {

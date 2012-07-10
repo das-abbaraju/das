@@ -71,7 +71,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	@Override
 	public String nextStep() throws Exception {
 		if (ContractorRegistrationStep.containsAtLeastOneClientSiteForGCFree(contractor)) {
-			return setUrlForRedirect(getNextRegistrationStep().getUrl());
+			redirect(getNextRegistrationStep().getUrl());
 		} else {
 			List<OperatorAccount> missingGCFreeClientSites = getMissingGCFreeClientSites();
 			if (!missingGCFreeClientSites.isEmpty()) {

@@ -163,7 +163,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		if (where.length() > 0)
 			where = "WHERE " + where;
 
-		Query query = em.createQuery("select a from OperatorAccount a " + where + " order by a.name");
+		Query query = em.createQuery("select a from OperatorAccount a " + where + " order by a.type, a.name");
 
 		if (maxResults > 0)
 			query.setMaxResults(maxResults);

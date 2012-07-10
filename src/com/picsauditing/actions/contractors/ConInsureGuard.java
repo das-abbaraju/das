@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -31,8 +30,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	String[] certTypes = { "Current", "Expired", "Uploaded" };
 
-	// private Map<String, Map<Certificate, String>> certificatesMap;
-	private Table<String, Certificate, String> certificatesMap;
+	private Map<String, Map<Certificate, String>> certificatesMap;
 
 	private Map<ContractorAudit, List<ContractorAuditOperator>> currentPoliciesMap;
 	private Map<ContractorAudit, List<ContractorAuditOperator>> expiredPoliciesMap;
@@ -45,8 +43,8 @@ public class ConInsureGuard extends ContractorActionSupport {
 	public String execute() throws Exception {
 		findContractor();
 
-		// Initializing Maps
-		certificatesMap = TreeBasedTable.create();
+		//Initializing Maps
+		certificatesMap = new HashMap<String, Map<Certificate, String>>();
 
 		currentPoliciesMap = new TreeMap<ContractorAudit, List<ContractorAuditOperator>>(
 				new Comparator<ContractorAudit>() {
@@ -54,7 +52,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 						return (o1.getAuditType().getName().compareTo(o2.getAuditType().getName()));
 					}
 				});
-
+		
 		expiredPoliciesMap = new TreeMap<ContractorAudit, List<ContractorAuditOperator>>(
 				new Comparator<ContractorAudit>() {
 					public int compare(ContractorAudit o1, ContractorAudit o2) {
@@ -62,7 +60,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 					}
 				});
 
-		// Populating policy Maps
+		//Populating policy Maps
 		for (ContractorAudit audit : contractorAuditDAO.findByContractor(contractor.getId())) {
 			if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) && auditApplies(audit)) {
 				if (audit.isExpired())
@@ -85,19 +83,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 			}
 		}
 
+		//populating certificate map
+		for (String certType : certTypes) {
+			certificatesMap.put(certType, new HashMap<Certificate, String>());
+		}
+
 		for (Certificate certificate : getCertificates()) {
 			List<AuditData> auditData = auditDataDAO.findByCertificateID(contractor.getId(), certificate.getId());
 
 			if (auditData.size() == 0) {
-				certificatesMap.put("Uploaded", certificate, "");
+				certificatesMap.get("Uploaded").put(certificate, "");
 			} else {
-				if (certificate.isExpired()) {
-					certificatesMap.put("Expired", certificate, auditData.get(0).getQuestion().getCategory().getName()
-							.toString());
-				} else {
-					certificatesMap.put("Current", certificate, auditData.get(0).getQuestion().getCategory().getName()
-							.toString());
-				}
+				if (certificate.isExpired())
+					certificatesMap.get("Expired").put(certificate, auditData.get(0).getQuestion().getCategory().getName().toString());
+				else
+					certificatesMap.get("Current").put(certificate, auditData.get(0).getQuestion().getCategory().getName().toString());
 			}
 		}
 		return SUCCESS;
@@ -117,14 +117,14 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		return certificates;
 	}
-
+	
 	private boolean auditApplies(ContractorAudit audit) {
 		if (permissions.isAdmin())
 			return true;
 
 		if (permissions.isContractor() && audit.getContractorAccount().getId() == permissions.getAccountId())
 			return true;
-
+		
 		if (permissions.isOperatorCorporate()) {
 			for (ContractorAuditOperator cao : audit.getOperatorsVisible()) {
 				if (cao.isVisibleTo(permissions)) {
@@ -132,7 +132,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 				}
 			}
 		}
-
+		
 		return false;
 	}
 
@@ -141,11 +141,11 @@ public class ConInsureGuard extends ContractorActionSupport {
 		return DateBean.format(d, "yy");
 	}
 
-	public Table<String, Certificate, String> getCertificatesMap() {
+	public Map<String, Map<Certificate, String>> getCertificatesMap() {
 		return certificatesMap;
 	}
 
-	public void setCertificatesMap(Table<String, Certificate, String> certificatesMap) {
+	public void setCertificatesMap(Map<String, Map<Certificate, String>> certificatesMap) {
 		this.certificatesMap = certificatesMap;
 	}
 

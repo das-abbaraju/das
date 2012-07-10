@@ -222,7 +222,7 @@
 				
 				<s:if test="!user.group  && user.id>0">
 					<li>
-						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>"  id="users_manage_changePassword">
+						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>">
 							<s:text name="button.password" />
 						</a>
 					</li>
@@ -323,7 +323,8 @@
 							</li>
 
 							<s:if test="user.id == 0">
-								<li><label> <s:text name="UsersManage.SendActivationEmail" />
+								<li><label> <s:text
+											name="UsersManage.SendActivationEmail" />
 								</label> <s:checkbox id="sendActivationEmail" name="sendActivationEmail" />
 								</li>
 							</s:if>
@@ -393,15 +394,7 @@
 										<s:text name="UsersManage.never" />
 									</s:else></li>
 							</s:if>
-							
-							<s:if test="user.id > 0">
-								<li>
-									<label> <s:text name="User.useDynamicReport" /></label> 			
-									<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="user.usingDynamicReports" />		 
-																
-								</li>
-							</s:if>
-							
+
 							<!-- CSR Shadowing -->
 							<s:if test="csr && permissions.admin">
 								<li><label> <s:text name="UsersManage.ShadowCSR" />

@@ -15,7 +15,7 @@
 		
 		<script type="text/javascript">
 			function changeState(country) {
-				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "", needsSuffix: "true", stateString: '<s:property value="contractor.state.isoCode"/>'});
+				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "contractor.", needsSuffix: "false", stateString: '<s:property value="contractor.state.isoCode"/>'});
 			}
 			
 			function changeBillingState(country) {
@@ -140,11 +140,11 @@
 									<label><s:text name="Country" />:</label>
 									<s:select
 										list="countryList"
-										name="country.isoCode"
+										name="contractor.country.isoCode"
 										id="contractorCountry"
 										listKey="isoCode"
 										listValue="name"
-										value="country.isoCode"
+										value="contractor.country.isoCode"
 										onchange="countryChanged(this.value)" />
 								</li>
 								<li id="state_li"></li>
@@ -319,11 +319,9 @@
 									<s:checkbox name="contractor.showInDirectory" theme="formhelp" />
 									<s:if test="contractor.showInDirectory">
 										<br />
-										<pics:toggle name="Badge">
-											<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
-												<s:text name="ContractorView.ClickToViewContractorBadge" />
-											</a>
-										</pics:toggle>
+										<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+											<s:text name="ContractorView.ClickToViewContractorBadge" />
+										</a>
 									</s:if>
 								</li>
 								<li>

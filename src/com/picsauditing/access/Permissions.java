@@ -167,8 +167,7 @@ public class Permissions implements Serializable {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				visibleAuditTypes = operator.getVisibleAuditTypes();
 
-				approvesRelationships = !operator.isAutoApproveRelationships()
-						|| user.hasPermission(OpPerms.ViewUnApproved);
+				approvesRelationships = !operator.isAutoApproveRelationships();
 
 				if (generalContractor || gcFree) {
 					for (OperatorAccount linkedClient : ((OperatorAccount) user.getAccount()).getLinkedClientSites()) {
@@ -343,9 +342,8 @@ public class Permissions implements Serializable {
 	 */
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
 		for (UserAccess perm : permissions) {
-			if (opPerm.isForContractor() && isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin)
+			if (opPerm.isForContractor() && this.isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin)
 				return true;
-
 			if (opPerm == perm.getOpPerm()) {
 				if (oType == OpType.Edit)
 					return perm.isEditFlag();
@@ -353,69 +351,54 @@ public class Permissions implements Serializable {
 					return perm.isDeleteFlag();
 				else if (oType == OpType.Grant)
 					return perm.isGrantFlag();
-
 				// Default to OpType.View
 				return perm.isViewFlag();
 			}
 		}
-
 		return false;
 	}
 
-	public boolean has(OpPerms opPerm) {
-		return hasPermission(opPerm, OpType.View);
-	}
-
-	public boolean has(OpPerms opPerm, OpType oType) {
-		return hasPermission(opPerm, oType);
-	}
-
 	public boolean hasPermission(OpPerms opPerm) {
-		return hasPermission(opPerm, OpType.View);
+		return this.hasPermission(opPerm, OpType.View);
 	}
 
 	public void tryPermission(OpPerms opPerm, OpType oType) throws NoRightsException {
-		if (hasPermission(opPerm, oType))
+		if (this.hasPermission(opPerm, oType))
 			return;
-
 		throw new NoRightsException(opPerm, oType);
 	}
 
 	public void tryPermission(OpPerms opPerm) throws NoRightsException {
-		tryPermission(opPerm, OpType.View);
+		this.tryPermission(opPerm, OpType.View);
 	}
 
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, String returnURL) throws IOException {
-		if (loggedIn)
+		if (this.loggedIn)
 			return true;
-
 		if (returnURL != null && returnURL.length() > 0) {
 			Cookie fromCookie = new Cookie("from", returnURL);
 			fromCookie.setMaxAge(3600);
 			response.addCookie(fromCookie);
 		}
-
 		Cookie c = new Cookie("PICSCookiesEnabled", "true");
 		c.setMaxAge(60);
 		ServletActionContext.getResponse().addCookie(c);
-
 		return false;
 	}
 
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
-		return loginRequired(response, "");
+		return this.loginRequired(response, "");
 	}
 
 	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request)
 			throws IOException {
 		if (AjaxUtils.isAjax(request)) {
-			return loginRequired(response);
+			return this.loginRequired(response);
 		} else {
 			String url = request.getRequestURI();
 			if (request.getQueryString() != null)
 				url += "?" + request.getQueryString();
-
-			return loginRequired(response, url);
+			return this.loginRequired(response, url);
 		}
 	}
 
@@ -424,19 +407,19 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isContractor() {
-		return "Contractor".equals(accountType);
+		return "Contractor".equals(this.accountType);
 	}
 
 	public boolean isCorporate() {
-		return "Corporate".equals(accountType);
+		return "Corporate".equals(this.accountType);
 	}
 
 	public boolean isOperator() {
-		return "Operator".equals(accountType);
+		return "Operator".equals(this.accountType);
 	}
 
 	public boolean isAssessment() {
-		return "Assessment".equals(accountType);
+		return "Assessment".equals(this.accountType);
 	}
 
 	/**
@@ -452,16 +435,16 @@ public class Permissions implements Serializable {
 	 * @return
 	 */
 	public boolean isAdmin() {
-		// return hasGroup(10);
+		// return this.hasGroup(10);
 		return seesAllContractors();
 	}
 
 	public boolean seesAllContractors() {
-		return hasPermission(OpPerms.AllContractors);
+		return this.hasPermission(OpPerms.AllContractors);
 	}
 
 	public boolean isDeveloperEnvironment() {
-		return hasPermission(OpPerms.DevelopmentEnvironment);
+		return this.hasPermission(OpPerms.DevelopmentEnvironment);
 	}
 
 	/**
@@ -480,7 +463,7 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isPicsEmployee() {
-		return (Account.PicsID == accountID);
+		return (Account.PicsID == this.accountID);
 	}
 
 	/**
@@ -491,11 +474,9 @@ public class Permissions implements Serializable {
 	public boolean isOnlyAuditor() {
 		if (!isPicsEmployee())
 			return false;
-
 		if (isAdmin())
 			return false;
-
-		return hasGroup(11);
+		return this.hasGroup(11);
 	}
 
 	public boolean isInsuranceOnlyContractorUser() {
@@ -587,17 +568,13 @@ public class Permissions implements Serializable {
 	public boolean canSeeAudit(AuditType auditType) {
 		if (isContractor())
 			return auditType.isCanContractorView();
-
 		if (isPicsEmployee())
 			return true;
-
 		if (isOperatorCorporate()) {
 			if (!auditType.isCanOperatorView())
 				return false;
-
 			return getVisibleAuditTypes().contains(auditType.getId());
 		}
-
 		return false;
 	}
 
@@ -618,21 +595,21 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
-		if (hasPermission(OpPerms.AuditRuleAdmin))
+		if (this.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
 
 		if (operator != null) {
-			if (isPicsEmployee() && (operator.isDemo() || operator.getStatus().isPending()))
+			if (this.isPicsEmployee() && (operator.isDemo() || operator.getStatus().isPending()))
 				return true;
 
 			for (AccountUser accUser : operator.getAccountUsers()) {
-				if (accUser.getUser().getId() == getUserId())
+				if (accUser.getUser().getId() == this.getUserId())
 					return true;
 			}
 
 			for (OperatorAccount child : operator.getOperatorChildren()) {
 				for (AccountUser childAccUser : child.getAccountUsers()) {
-					if (childAccUser.getUser().getId() == getUserId())
+					if (childAccUser.getUser().getId() == this.getUserId())
 						return true;
 				}
 			}
@@ -651,6 +628,6 @@ public class Permissions implements Serializable {
 		ua.setEditFlag(true);
 		ua.setDeleteFlag(true);
 
-		permissions.add(ua);
+		this.permissions.add(ua);
 	}
 }

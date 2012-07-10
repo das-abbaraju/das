@@ -164,10 +164,4 @@
 		</attribute>
 		<body-content>JSP</body-content>
 	</tag>
-	
-<!-- 	<function> -->
-<!-- 		<description>Permissions for whether a user can delete a report.</description> -->
-<!-- 		<function-class>com.picsauditing.util.business.DynamicReportUtil</function-class> -->
-<!-- 		<function-signature>boolean userCanDelete(int, com.picsauditing.jpa.entities.Report)</function-signature> -->
-<!-- 	</function> -->
 </taglib>

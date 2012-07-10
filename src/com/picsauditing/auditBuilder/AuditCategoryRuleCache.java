@@ -36,8 +36,6 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 	public void initialize(List<AuditCategoryRule> rules) {
 		data = new AuditTypes();
 		for (AuditCategoryRule rule : rules) {
-			if (rule.getId() > 30470)
-				logger.info("rule# {}: {}", rule.getId(), rule);
 			data.add(rule);
 		}
 	}

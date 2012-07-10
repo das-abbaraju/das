@@ -76,7 +76,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 	public ReportNewContractorSearch() {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
-		this.searchForNew = true;
 	}
 
 	@Before
@@ -287,7 +286,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 						getText("NewContractorSearch.message.SuccessfullyRemoved",
 								new Object[] { contractor.getName() }));
 
-		return setUrlForRedirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
+		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
 				+ "&filter.tradeInformation=true");
 	}
 

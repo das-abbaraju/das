@@ -2,7 +2,7 @@ package com.picsauditing.util;
 
 public class PicsOrganizerVersion {
 	final static public int major = 6;
-	final static public int minor = 17;
+	final static public int minor = 15;
 	final static public int patch = 0;
 
 	@SuppressWarnings("unused")

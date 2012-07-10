@@ -23,7 +23,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.JobContractor;
@@ -101,7 +100,7 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setCity(siteCity);
 			jobSite.setCountry(siteCountry);
 			jobSite.setState(siteState);
-			jobSite.setCountrySubdivision(getCountrySubdivision());
+
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Added new", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -124,7 +123,7 @@ public class ManageJobSites extends OperatorActionSupport {
 				jobSite.setCountry(siteCountry);
 
 			jobSite.setState(siteState);
-			jobSite.setCountrySubdivision(getCountrySubdivision());
+
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Updated", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -132,12 +131,6 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 
 		return getRedirect();
-	}
-
-	private CountrySubdivision getCountrySubdivision() {
-		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(siteState.getIsoCode(), siteCountry.getIsoCode());
-		return countrySubdivision;
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
@@ -378,9 +371,9 @@ public class ManageJobSites extends OperatorActionSupport {
 
 	private String getRedirect() throws Exception {
 		if (permissions.isOperator())
-			return setUrlForRedirect("ManageProjects.action");
+			return redirect("ManageProjects.action");
 		else
-			return setUrlForRedirect("ManageProjects.action?id=" + operator.getId());
+			return redirect("ManageProjects.action?id=" + operator.getId());
 	}
 
 	public ContractorAccount getContractor() {
