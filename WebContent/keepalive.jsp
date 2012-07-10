@@ -5,7 +5,7 @@
 	boolean manualShutdown = false;
 
 	if (manualShutdown) {
-		out.print("SYSTEM NOT OK")
+		out.print("SYSTEM NOT OK");
 	} else {
 		KeepAlive keepAlive = new KeepAlive(request);
 		out.print(keepAlive.getKeepAliveStatus());
