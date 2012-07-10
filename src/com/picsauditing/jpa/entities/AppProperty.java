@@ -9,6 +9,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "app_properties")
 public class AppProperty implements java.io.Serializable {
+	public static final String LIVECHAT = "PICS.liveChat";
+	public static final String SYSTEM_MESSAGE = "PICS.showSystemMessage";
 
 	private String property;
 	private String value;
