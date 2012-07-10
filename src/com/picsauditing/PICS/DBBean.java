@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +18,7 @@ public class DBBean implements InitializingBean {
 	
 	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
 	private static DataSource dataSource;
+	final static Logger logger = LoggerFactory.getLogger(PICSDBLocator.class); 
 	
 	// volatile to use as part of the double-locking pattern
 	@Testable
@@ -84,6 +87,7 @@ public class DBBean implements InitializingBean {
 	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
+		logger.info("Setting Datasource via injection");
 		DBBean.dataSource = dataSource;
 	}
 

@@ -2,16 +2,20 @@ package com.picsauditing.PICS;
 
 import java.net.URL;
 
+import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
-import javax.mail.Session;
 import javax.print.attribute.standard.Destination;
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PICSDBLocator {
 
 	private InitialContext ic;
+	final static Logger logger = LoggerFactory.getLogger(PICSDBLocator.class); 
 
 	public PICSDBLocator() {
 		try {
@@ -22,6 +26,7 @@ public class PICSDBLocator {
 	}
 
 	private Object lookup(String jndiName) throws NamingException {
+		logger.info("Looking up JNDI name of: {}",jndiName);
 		return ic.lookup(jndiName);
 	}
 
