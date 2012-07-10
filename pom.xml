@@ -140,11 +140,11 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<properties>
 		<spring.version>3.1.1.RELEASE</spring.version>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -169,9 +169,9 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.springframework.amqp</groupId>
-		  <artifactId>spring-rabbit</artifactId>
-		  <version>1.1.0.RELEASE</version>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit</artifactId>
+			<version>1.1.0.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -680,11 +680,16 @@
 			<artifactId>javassist</artifactId>
 			<version>3.12.1.GA</version>
 		</dependency>
- 		<dependency>
- 			<groupId>com.tacitknowledge</groupId>
- 			<artifactId>autopatch</artifactId>
-  			<version>1.4.1-PICS</version>
- 		</dependency>
+		<dependency>
+			<groupId>com.tacitknowledge</groupId>
+			<artifactId>discovery</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.tacitknowledge</groupId>
+			<artifactId>autopatch</artifactId>
+			<version>1.4.1-PICS</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
