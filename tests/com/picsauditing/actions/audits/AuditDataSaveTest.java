@@ -1,7 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -28,6 +29,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
@@ -51,6 +53,8 @@ public class AuditDataSaveTest extends PicsTest {
 	private AuditCategoryDataDAO catDataDao;
 	@Mock
 	private AuditDecisionTableDAO auditRuleDAO;
+	@Mock
+	private AuditQuestionDAO questionDao;
 
 	@Mock
 	AuditCategoryRuleCache categoryRuleCache = new AuditCategoryRuleCache();
@@ -131,6 +135,70 @@ public class AuditDataSaveTest extends PicsTest {
 				catData);
 	}
 	
+	@Test 
+	public void testNoIncidents() throws Exception {
+		AuditType annualType = EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM);
+		audit.setAuditType(annualType);
+
+		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
+		AuditData[] safetyData = null;
+		
+		PicsTestUtil.forceSetPrivateField(auditDataSave, "questionDao", questionDao);
+		
+
+		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.COHS_INCIDENT_QUESTION_ID);
+		safetyData = new AuditData[AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length];
+		setupSafetyDataAnswers(safetyData, AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS);
+		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+		
+		assertEquals("success", auditDataSave.execute());
+		for (int i=0; i< AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length ; i++) {
+			assertEquals("0", safetyData[i].getAnswer());
+		}
+
+		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.COHS_INCIDENT_QUESTION_ID);
+		safetyData = new AuditData[AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length];
+		setupSafetyDataAnswers(safetyData, AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS);
+		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+		
+		assertEquals("success", auditDataSave.execute());
+		for (int i=0; i< AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length ; i++) {
+			assertEquals("0", safetyData[i].getAnswer());
+		}
+		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.OSHA_INCIDENT_QUESTION_ID);
+		safetyData = new AuditData[AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length];
+		setupSafetyDataAnswers(safetyData, AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS);
+		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+		
+		assertEquals("success", auditDataSave.execute());
+		for (int i=0; i< AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length ; i++) {
+			assertEquals("0", safetyData[i].getAnswer());
+		}
+}
+
+	private void setUpIncidentQuestion(AuditQuestion coshIncidentsQuestion, int questionID) {
+		coshIncidentsQuestion.setId(questionID);
+		auditData.setAnswer("No");
+		auditData.setQuestion(coshIncidentsQuestion);
+		auditData.getQuestion().setAuditCategoryRules(
+				new ArrayList<AuditCategoryRule>());
+		auditData.getQuestion().setAuditTypeRules(
+				new ArrayList<AuditTypeRule>());
+		auditData.getQuestion().setCategory(
+				EntityFactory.addCategories(audit.getAuditType(), 104,
+						"Test Category 104"));
+	}
+	
+	private void setupSafetyDataAnswers(AuditData[] safetyData, int[] questionIds) {
+		for (int i=0; i< questionIds.length ; i++) {
+			AuditData auditAnswer = EntityFactory.makeAuditData("6");
+			auditAnswer.setId(questionIds[i]);
+			safetyData[i] = auditAnswer;
+			when(auditDataDao.findAnswerToQuestion(audit.getId(),
+					safetyData[i].getId())).thenReturn(safetyData[i]);
+		}
+	}
+
 	@Test
 	public void testExecute_Verify() throws Exception {
 		AuditData oldData = EntityFactory.makeAuditData("No");
@@ -231,4 +299,5 @@ public class AuditDataSaveTest extends PicsTest {
 		actual = AuditDataSave.restructureNewDate("02/03/01");
 		assertEquals(expected, actual);
 	}
+	
 }
