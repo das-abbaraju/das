@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
@@ -146,8 +145,6 @@ public class OshaDisplay {
 	}
 	
 	private String getIndustryAverage(OshaRateType rateType) {
-		String value = null;
-		
 		if (rateType == OshaRateType.LwcrAbsolute) {
 			return String.valueOf(Utilities.getIndustryAverage(true, contractor.getNaics()));
 		}

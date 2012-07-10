@@ -147,17 +147,6 @@ public class AuditDataSave extends AuditActionSupport {
 						answerChanged = true;
 				}
 
-				if (verifyButton) {
-					// verify mode
-					if (newCopy.isVerified()) {
-						newCopy.setDateVerified(null);
-						newCopy.setAuditor(null);
-					} else {
-						newCopy.setDateVerified(new Date());
-						newCopy.setAuditor(getUser());
-					}
-				} 
-
 				// update mode
 				if (commentChanged) {
 					newCopy.setComment(auditData.getComment());
@@ -197,6 +186,17 @@ public class AuditDataSave extends AuditActionSupport {
 					newCopy.setAnswer(auditData.getAnswer());
 
 				}
+
+				if (verifyButton) {
+					// verify mode
+					if (newCopy.isVerified()) {
+						newCopy.setDateVerified(null);
+						newCopy.setAuditor(null);
+					} else {
+						newCopy.setDateVerified(new Date());
+						newCopy.setAuditor(getUser());
+					}
+				} 
 
 				auditData = newCopy;
 			}

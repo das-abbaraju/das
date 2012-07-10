@@ -149,6 +149,11 @@ public class Utilities {
 					BasicDynaBean row = results.get(0);
 					answer = Database.toFloat(row, "naicsTRIR");
 				}
+				if (answer == 0f)
+				{
+					NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
+					answer = naicsDAO.getIndustryAverage(lwcr, naics);
+				}
 			} catch (Exception e) {
 				NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
 				answer = naicsDAO.getIndustryAverage(lwcr, naics);

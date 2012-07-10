@@ -1,11 +1,11 @@
-#report_settings
+#report_settings_modal
 {
 	background: #eaeaea;
 	border: 1px solid #333333;
 	@include border-radius(0px);
 }
 
-#report_settings_header
+#report_settings_modal_header
 {
 	background: #454545;
 	border-bottom: 1px solid #333333 !important;
@@ -15,26 +15,26 @@
 	padding: 13px;
 }
 
-#report_settings_header span
+#report_settings_modal_header span
 {
 	color: #ffffff;
 	font-size: 18px;
 	font-weight: bold;
 }
 
-#report_settings-body
+#report_settings_modal-body
 {
 	border: 0px;
 	background: #eaeaea;
 }
 
-#report_settings-body .x-panel-body-default
+#report_settings_modal-body .x-panel-body-default
 {
 	background: #eaeaea;
 	border: 0px !important;
 }
 
-#report_settings-body .x-form-field
+#report_settings_modal-body .x-form-field
 {
 	margin-bottom: 10px;
 }
@@ -64,10 +64,10 @@
 	top: auto !important;
 }
 
-#report_settings .cancel button span,
-#report_settings .edit button span,
-#report_settings .copy button span,
-#report_settings .share button span
+#report_settings_modal .cancel button span,
+#report_settings_modal .edit button span,
+#report_settings_modal .copy button span,
+#report_settings_modal .share button span
 {
 	padding: 0px 7px;
 }

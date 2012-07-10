@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
@@ -298,6 +299,9 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
 		crr.setState(importedState);
+		CountrySubdivision countrySubdivision = new CountrySubdivision();
+		countrySubdivision.setIsoCode(importedState.getIsoCode(), importedCountry.getIsoCode());
+		crr.setCountrySubdivision(countrySubdivision);
 		if (zipValue != null) {
 			if (zipValue instanceof Double) {
 				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);

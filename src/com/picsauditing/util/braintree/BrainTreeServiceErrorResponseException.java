@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.util.braintree;
 
 /**
  * General BrainTree error handler. Subclass into specific error cases. See

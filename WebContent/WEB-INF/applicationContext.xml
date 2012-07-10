@@ -102,7 +102,8 @@
 	
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle"/>
-	<bean id="BrainTreeService" class="com.picsauditing.PICS.BrainTreeService"/>
+	<bean id="BrainTreeService" class="com.picsauditing.util.braintree.BrainTreeService"/>
+	<bean id="BrainTreeRequest" class="com.picsauditing.util.braintree.BrainTreeResponse.BrainTreeRequest" />
 	<bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
@@ -111,6 +112,7 @@
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" />
+	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
 	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker"/>
@@ -144,7 +146,7 @@
 	<bean id="OperatorTagAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
 	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
 	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
-	<bean id="ReportDynamicModel" class="com.picsauditing.models.ReportDynamicModel" />
+	<bean id="ReportDynamicModel" class="com.picsauditing.model.ReportDynamicModel" />
 	<bean id="ReportAccessor" class="com.picsauditing.report.access.ReportAccessor" />	
 	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
 	<bean id="StateAutocompleteService" class=" com.picsauditing.actions.autocomplete.StateAutocompleteService" />

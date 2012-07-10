@@ -7,9 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -18,8 +16,10 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.braintree.BrainTree;
+import com.picsauditing.util.braintree.BrainTreeService;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -194,7 +194,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcExpiration(null);
 		} else if ((!contractor.isCcOnFile() && contractor.getCcExpiration() == null)
 				|| (response_code != null && (Strings.isEmpty(responsetext) || response.equals("1")))) {
-			contractor.setCcExpiration(cc.getExpirationDate2());
+			contractor.setCcExpiration(cc.getExpirationDate());
 			contractor.setCcOnFile(true);
 			// Need to set CcOnFile to true only in no-credit card case
 			// (ccOnFile == False && expDate == null)
@@ -203,9 +203,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			// Note: should not insert credit card info in invalid cc case:
 			// (ccOnFile == False && expDate != null)
 		}
-		
+
 		if (cc != null) {
-			contractor.setCcExpiration(cc.getExpirationDate2());
+			contractor.setCcExpiration(cc.getExpirationDate());
 		}
 
 		time = DateBean.getBrainTreeDate();

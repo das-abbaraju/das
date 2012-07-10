@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -19,9 +21,10 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 public class MainPage {
+	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
+
 	private AppPropertyDAO appPropertyDAO;
 
 	private Database database = new Database();
@@ -72,10 +75,18 @@ public class MainPage {
 	}
 
 	public Permissions getPermissions() {
-		Permissions permissions = new Permissions();
+		Permissions permissions = null;
 
 		if (session != null && session.getAttribute("permissions") != null) {
-			permissions = (Permissions) session.getAttribute("permissions");
+			try {
+				permissions = (Permissions) session.getAttribute("permissions");
+			} catch (Exception e) {
+				logger.error("Permissions object was loaded in session but was not valid", e);
+			}
+		}
+
+		if (permissions == null) {
+			permissions = new Permissions();
 		}
 
 		return permissions;
@@ -91,7 +102,7 @@ public class MainPage {
 
 					processResults(systemMessages, results);
 				} catch (Exception e) {
-					PicsLogger.log("Unable to find system messages in app_translations");
+					logger.error("Unable to find system messages in app_translations");
 				}
 			}
 

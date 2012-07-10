@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.SettingsCopy', {
+Ext.define('PICS.view.report.settings.Share', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingscopy'],
+    alias: ['widget.reportsettingsshare'],
 
     border: 0,
     dockedItems: [{
@@ -14,16 +14,16 @@ Ext.define('PICS.view.report.SettingsCopy', {
             height: 28,
             text: 'Cancel'
         }, {
-            cls: 'copy primary',
+            cls: 'share primary',
             height: 28,
-            text: 'Duplicate'
+            text: 'Share'
         }],
         layout: {
             pack: 'end'
         },
         ui: 'footer'
     }],
-    id: 'report_copy',
+    id: 'report_share',
     items: [{
         xtype: 'textfield',
         fieldLabel: 'Report Name',
@@ -36,5 +36,6 @@ Ext.define('PICS.view.report.SettingsCopy', {
         name: 'report_description'
     }],
     layout: 'form',
-    title: '<i class="icon-copy icon-large"></i>Duplicate'
+    modal_title: 'Share Report',
+    title: '<i class="icon-share icon-large"></i>Share'
 });

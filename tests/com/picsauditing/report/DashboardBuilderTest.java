@@ -45,7 +45,6 @@ public class DashboardBuilderTest {
 		assertEquals(1, result.size());
 		String resultStr = result.toString();
 		String expected = "[{\"panels\":[{\"id\":1,\"name\":\"Account Status\",\"type\":\"Report\"}]}]";
-		System.out.println(expected);
 		assertEquals(expected, resultStr);
 	}
 }

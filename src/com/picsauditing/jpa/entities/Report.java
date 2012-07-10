@@ -11,7 +11,7 @@ import org.jboss.util.Strings;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
-import com.picsauditing.report.access.DynamicReportUtil;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
@@ -84,7 +84,7 @@ public class Report extends BaseTable {
 
 		String filterExpresion = defaultDefinition.getFilterExpression();
 		if (!Strings.isEmpty(filterExpresion))
-			obj.put(DynamicReportUtil.FILTER_EXPRESSION, filterExpresion);
+			obj.put(ReportUtil.FILTER_EXPRESSION, filterExpresion);
 
 		if (defaultDefinition.getColumns().size() > 0)
 			obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));

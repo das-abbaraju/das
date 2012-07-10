@@ -72,6 +72,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private String address2;
 	private String city;
 	private String state;
+	private CountrySubdivision countrySubdivision;
 	private String zip;
 	private String country;
 	private float latitude;
@@ -516,6 +517,14 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
+	}
+
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
 	public String getZip() {

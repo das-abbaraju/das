@@ -22,13 +22,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditData;
@@ -86,7 +86,7 @@ public class ReportContractorRiskAssessmentTest {
 	@Test
 	public void testAcceptWithNullType() throws Exception {
 		reportContractorRiskAssessment.setType(null);
-		Assert.assertEquals(Action.SUCCESS, reportContractorRiskAssessment.accept());
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.accept());
 
 		Mockito.verify(entityManager, Mockito.never()).merge(Mockito.any());
 		Mockito.verify(entityManager, Mockito.never()).persist(Mockito.any());
@@ -99,7 +99,7 @@ public class ReportContractorRiskAssessmentTest {
 		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
 
 		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.SAFETY);
-		Assert.assertEquals(Action.SUCCESS, reportContractorRiskAssessmentSpy.accept());
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.accept());
 		Assert.assertEquals(LowMedHigh.Low, contractorAccount.getSafetyRisk());
 		Assert.assertNotNull(contractorAccount.getSafetyRiskVerified());
 
@@ -115,7 +115,7 @@ public class ReportContractorRiskAssessmentTest {
 		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
 
 		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.PRODUCT);
-		Assert.assertEquals(Action.SUCCESS, reportContractorRiskAssessmentSpy.accept());
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.accept());
 		// Even though the first product risk question was low, the highest
 		// risks from the two product risk questions was medium
 		Assert.assertEquals(LowMedHigh.Med, contractorAccount.getProductRisk());
@@ -131,7 +131,7 @@ public class ReportContractorRiskAssessmentTest {
 	@Test
 	public void testRejectWithNullType() throws Exception {
 		reportContractorRiskAssessment.setType(null);
-		Assert.assertEquals(Action.SUCCESS, reportContractorRiskAssessment.reject());
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.reject());
 
 		Mockito.verify(entityManager, Mockito.never()).merge(Mockito.any());
 		Mockito.verify(entityManager, Mockito.never()).persist(Mockito.any());
@@ -144,7 +144,7 @@ public class ReportContractorRiskAssessmentTest {
 		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
 
 		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.SAFETY);
-		Assert.assertEquals(Action.SUCCESS, reportContractorRiskAssessmentSpy.reject());
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.reject());
 		Assert.assertEquals(LowMedHigh.Med, contractorAccount.getSafetyRisk());
 		Assert.assertNotNull(contractorAccount.getSafetyRiskVerified());
 
@@ -160,7 +160,7 @@ public class ReportContractorRiskAssessmentTest {
 		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
 
 		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.PRODUCT);
-		Assert.assertEquals(Action.SUCCESS, reportContractorRiskAssessmentSpy.reject());
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.reject());
 
 		Assert.assertEquals(LowMedHigh.High, contractorAccount.getProductRisk());
 		Assert.assertNotNull(contractorAccount.getProductRiskVerified());

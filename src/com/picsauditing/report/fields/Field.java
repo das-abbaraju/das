@@ -2,15 +2,21 @@ package com.picsauditing.report.fields;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
@@ -20,7 +26,7 @@ import com.picsauditing.util.Strings;
  * http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
  */
 public class Field implements JSONAware {
-	
+
 	private Class<?> fieldClass;
 	private String name;
 	private String text;
@@ -43,21 +49,19 @@ public class Field implements JSONAware {
 
 	/**
 	 * Currently autocomplete is only supported via entity annotations
-	 *  
-	 * @param annotation
 	 */
 	public Field(ReportField annotation) {
-		this.filterType = annotation.filterType();
-		this.autocompleteType = annotation.autocomplete();
-		this.width = annotation.width();
-		this.url = annotation.url();
-		this.preTranslation = annotation.i18nKeyPrefix();
-		this.postTranslation = annotation.i18nKeySuffix();
-		this.visible = annotation.visible();
-		this.filterable = annotation.filterable();
-		this.sortable = annotation.sortable();
-		this.category = annotation.category();
-		this.requiredPermissions = new HashSet<OpPerms>(Arrays.asList(annotation.requiredPermissions()));
+		filterType = annotation.filterType();
+		autocompleteType = annotation.autocomplete();
+		width = annotation.width();
+		url = annotation.url();
+		preTranslation = annotation.i18nKeyPrefix();
+		postTranslation = annotation.i18nKeySuffix();
+		visible = annotation.visible();
+		filterable = annotation.filterable();
+		sortable = annotation.sortable();
+		category = annotation.category();
+		requiredPermissions = new HashSet<OpPerms>(Arrays.asList(annotation.requiredPermissions()));
 	}
 
 	public Field(String name, String databaseColumnName, FilterType filterType) {
@@ -105,11 +109,14 @@ public class Field implements JSONAware {
 		if (renderer != null && renderer.toJSONString().length() > 0)
 			json.put("renderer", renderer);
 
-		json.put("filterType", filterType.toString());
+		if (filterType != null) {
+			json.put("filterType", filterType.toString());
 
-		if (!filterType.equals(ExtFieldType.Auto)) {
-			json.put("type", type.toString().toLowerCase());
+			if (!filterType.equals(ExtFieldType.Auto)) {
+				json.put("type", type.toString().toLowerCase());
+			}
 		}
+
 		return json;
 	}
 
@@ -117,7 +124,32 @@ public class Field implements JSONAware {
 		return toJSONObject().toJSONString();
 	}
 
-	public Field translate(String prefix, String suffix) {
+	@SuppressWarnings("unchecked")
+	public JSONObject renderEnumFieldAsJson(Locale locale) {
+		JSONArray jsonArray = new JSONArray();
+		JSONObject json = new JSONObject();
+
+		for (Object enumValue : fieldClass.getEnumConstants()) {
+			JSONObject enumAsJson = new JSONObject();
+			enumAsJson.put("id", enumValue.toString());
+
+			String translationKey = fieldClass.getSimpleName().toString() + "." + enumValue.toString();
+			String translatedString = ReportUtil.getText(translationKey, locale);
+
+			if (translatedString == null) {
+				translatedString = enumValue.toString();
+			}
+
+			enumAsJson.put("name", translatedString);
+			jsonArray.add(enumAsJson);
+		}
+
+		json.put("result", jsonArray);
+
+		return json;
+	}
+
+	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;
 		return this;
@@ -125,6 +157,7 @@ public class Field implements JSONAware {
 
 	public String getI18nKey(String value) {
 		String key = value;
+
 		if (!Strings.isEmpty(preTranslation))
 			key = preTranslation + "." + key;
 
@@ -134,11 +167,38 @@ public class Field implements JSONAware {
 		return key;
 	}
 
+	public Set<String> getDependentFields() {
+		Set<String> dependent = new HashSet<String>();
+		if (!Strings.isEmpty(url)) {
+			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}");
+			Matcher urlFieldMatcher = fieldVariablePattern.matcher(url);
+
+			while (urlFieldMatcher.find()) {
+				dependent.add(urlFieldMatcher.group(1));
+			}
+		}
+
+		return dependent;
+	}
+
 	public boolean isTranslated() {
 		if (Strings.isEmpty(preTranslation) && Strings.isEmpty(postTranslation))
 			return false;
 
 		return true;
+	}
+
+	public boolean canUserSeeQueryField(Permissions permissions) {
+		if (CollectionUtils.isEmpty(requiredPermissions))
+			return true;
+
+		// TODO shouldn't be the opposite: if the user doesn't have a single permssion, it should return false?
+		for (OpPerms requiredPermission : requiredPermissions) {
+			if (permissions.hasPermission(requiredPermission))
+				return true;
+		}
+
+		return false;
 	}
 
 	public String getName() {
@@ -148,7 +208,7 @@ public class Field implements JSONAware {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getText() {
 		return text;
 	}
@@ -209,18 +269,6 @@ public class Field implements JSONAware {
 		this.renderer = renderer;
 	}
 
-	public Set<String> getDependentFields() {
-		Set<String> dependent = new HashSet<String>();
-		if (!Strings.isEmpty(url)) {
-			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}");
-			Matcher urlFieldMatcher = fieldVariablePattern.matcher(url);
-			while(urlFieldMatcher.find()) {
-				dependent.add(urlFieldMatcher.group(1));
-			}
-		}
-		return dependent;
-	}
-
 	public void setUrl(String url) {
 		this.url = url;
 	}
@@ -247,7 +295,7 @@ public class Field implements JSONAware {
 	}
 
 	public Field requirePermission(OpPerms opPerm) {
-		this.requiredPermissions.add(opPerm);
+		requiredPermissions.add(opPerm);
 		return this;
 	}
 

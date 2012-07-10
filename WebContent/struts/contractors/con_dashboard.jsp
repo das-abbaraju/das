@@ -643,7 +643,7 @@
     								<p>
     									<s:text name="global.Address" />:
     									[<a
-    										href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
+										href="http://www.mapquest.com/maps/map.adp?country=<s:property value="contractor.country.isoCode" />&city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
     										target="_blank">
     											<s:text name="ContractorView.ShowMap" />
     									</a>]

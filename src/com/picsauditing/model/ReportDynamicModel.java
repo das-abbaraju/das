@@ -1,4 +1,4 @@
-package com.picsauditing.models;
+package com.picsauditing.model;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.persistence.NoResultException;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -130,15 +132,19 @@ public class ReportDynamicModel {
 		}
 	}
 
-	@Deprecated
-	public void removeReportFrom(User user, Report report) {
-		if (canUserDelete(user.getId(), report)) {
-			reportAccessor.deleteReport(report);
-		} else {
-			try {
-				reportAccessor.removeUserReport(user, report);
-			} catch (Exception e) {
-			}
+	public static void validate(Report report) throws ReportValidationException {
+		// TODO Add i18n to this
+		if (report == null)
+			throw new ReportValidationException("Please provide a saved or ad hoc report to run");
+
+		// TODO Add i18n to this
+		if (report.getModelType() == null)
+			throw new ReportValidationException("The report is missing its base", report);
+
+		try {
+			new JSONParser().parse(report.getParameters());
+		} catch (ParseException e) {
+			throw new ReportValidationException(e, report);
 		}
 	}
 }

@@ -28,15 +28,16 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.models.ReportDynamicModel;
-import com.picsauditing.report.access.DynamicReportUtil;
+import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.access.ReportAccessor;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, DynamicReportUtil.class })
+@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, ReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
 public class ReportDynamicTest {
 
@@ -139,15 +140,18 @@ public class ReportDynamicTest {
 
 	@Test
 	public void testData_ReportFailsValidation() throws Exception {
-		PowerMockito.mockStatic(DynamicReportUtil.class);
-		PowerMockito.doThrow(new RuntimeException()).when(DynamicReportUtil.class);
-		DynamicReportUtil.validate((Report) any());
-		report.setModelType(ModelType.Contractors);
+		Report report = new Report();
+		report.setModelType(null);
+		try {
+			ReportDynamicModel.validate(report);
+			// Should always throw before this line
+			fail();
+		} catch (ReportValidationException rve) {
+		}
 
 		String strutsResult = reportDynamic.data();
-
-		// the only way to tell there was an exception is to inspect the json object
 		JSONObject json = reportDynamic.getJson();
+
 		assertFalse((Boolean)json.get("success"));
 		assertEquals(ReportDynamic.JSON, strutsResult);
 	}

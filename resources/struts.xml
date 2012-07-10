@@ -426,7 +426,11 @@
 			<result>struts/reports/manage_reports.jsp</result>
 		</action>
 
-		<action name="ManageMyReports" class="com.picsauditing.actions.report.ManageReports" method="viewAllReports">
+		<action name="ManageMyReports" class="com.picsauditing.actions.report.ManageReports" method="viewMyReports">
+			<result>struts/reports/manage_reports.jsp</result>
+		</action>
+
+		<action name="ManageAllReports" class="com.picsauditing.actions.report.ManageReports" method="viewAllReports">
 			<result>struts/reports/manage_reports.jsp</result>
 		</action>
 
@@ -1426,49 +1430,7 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<!-- Charts and Graphs -->
-		<action name="ChartXMLFlagCount" class="com.picsauditing.actions.chart.ChartFlagCount">
-		</action>
-
-		<action name="ChartXMLOpFlagHistory"
-			class="com.picsauditing.actions.chart.ChartOpFlagHistory">
-		</action>
-
-		<action name="ChartXMLTradeCount" class="com.picsauditing.actions.chart.ChartTradeCount">
-		</action>
-
-		<action name="ChartXMLAuditsClosed" class="com.picsauditing.actions.chart.ChartAuditsClosed">
-		</action>
-
-		<action name="CorporateFlagByFacilityAjax"
-			class="com.picsauditing.actions.chart.ChartFlagCountCorp">
-		</action>
-
-		<action name="CorporateWaitingOnByFacilityAjax"
-			class="com.picsauditing.actions.chart.ChartWaitingOnCountCorp">
-		</action>
-
-		<action name="ChartXMLWaitingOnCount"
-			class="com.picsauditing.actions.chart.ChartWaitingOnCount">
-		</action>
-
-		<action name="ChartXMLCorporateFlags"
-			class="com.picsauditing.actions.chart.ChartCorporateFlags">
-		</action>
-
-		<action name="OperatorFlagHistoryAjax"
-			class="com.picsauditing.actions.chart.OperatorFlagHistory">
-		</action>
-
-		<action name="OperatorFlagYearHistoryAjax"
-			class="com.picsauditing.actions.chart.OperatorFlagYearHistory">
-		</action>
-
-		<action name="ChartXMLFlagCategoryCount"
-			class="com.picsauditing.actions.chart.ChartFlagCategoryCount">
-		</action>
 		<!-- Office Audit Scheduling -->
-
 		<action name="AuditScheduleBuilderCron"
 			class="com.picsauditing.actions.users.AuditScheduleBuilderCron">
 			<result>struts/blank.jsp</result>
@@ -1762,7 +1724,7 @@
 	<!-- Registration -->
 	<include file="struts-registration.xml" />
 
-	<!-- Widgets -->
+	<!-- Widgets / Charts / Graphs -->
 	<include file="struts-widgets.xml" />
 
 	<!-- Registration Requests -->

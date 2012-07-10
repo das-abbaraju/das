@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.util.braintree;
 
 /**
  * Subclassing Card declined BrainTree exceptions.

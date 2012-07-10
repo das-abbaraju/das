@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -17,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -33,6 +37,8 @@ public class EventSubscriptionBuilder {
 			.getBean("EmailSubscriptionDAO");
 	private static NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 	private static EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+
+	private static final Logger logger = LoggerFactory.getLogger(EventSubscriptionBuilder.class);
 
 	public static void contractorFinishedEvent(EmailSubscriptionDAO subscriptionDAO, ContractorOperator co)
 			throws Exception {
@@ -69,7 +75,8 @@ public class EventSubscriptionBuilder {
 			throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(45);
-		// Adding this to cc Billing until they're confident the billing system is ok
+		// Adding this to cc Billing until they're confident the billing system
+		// is ok
 		emailBuilder.setBccAddresses("billing@picsauditing.com");
 		emailBuilder.setContractor(contractor, OpPerms.ContractorBilling);
 		emailBuilder.addToken("invoice", invoice);
@@ -87,7 +94,8 @@ public class EventSubscriptionBuilder {
 		Collections.sort(operatorsString);
 
 		emailBuilder.addToken("operators", Strings.implode(operatorsString, ", "));
-		emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
+
+		emailBuilder.setFromAddress(getBillingEmail(contractor.getCurrency()));
 
 		EmailQueue email = emailBuilder.build();
 		email.setHighPriority();
@@ -96,6 +104,13 @@ public class EventSubscriptionBuilder {
 		emailSender.send(email);
 
 		return email;
+	}
+
+	private static String getBillingEmail(Currency currency){
+		if(currency.isEUR()||currency.isGBP())
+			return "\"PICS Billing\"<eubilling@picsauditing.com>";
+		else
+			return "\"PICS Billing\"<billing@picsauditing.com>";
 	}
 
 	public static void theSystemIsDown(ContractorCronStatistics stats) {
@@ -140,13 +155,53 @@ public class EventSubscriptionBuilder {
 			subscriptionDAO.save(contractorInsuranceSubscription);
 		}
 	}
-	
+
 	public static void pqfSubmittedForCao(ContractorAuditOperator cao) {
-		
+
 	}
 	
-	public static void notifyUpcomingImplementationAudit(ContractorAudit audit) {
-		
+	public static void notifyUpcomingImplementationAudit(ContractorAudit audit) throws NoUsersDefinedException,
+			IOException {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.clear();
+		emailBuilder.setTemplate(247);
+		emailBuilder.setConID(audit.getContractorAccount().getId());
+		emailBuilder.addToken("contractor", audit.getContractorAccount());
+		emailBuilder.setToAddresses(audit.getContractorAccount().getActiveUser().getEmail());
+		emailBuilder.setUser(audit.getContractorAccount().getActiveUser());
+		emailBuilder.setFromAddress("audits@picsauditing.com");
+		try {
+			EmailQueue email = new EmailQueue();
+			email = emailBuilder.build();
+			email.setLowPriority();
+			email.setViewableById(Account.EVERYONE);
+			emailSender.send(email);
+
+			stampNote(audit.getContractorAccount(),
+					"Sent 1 week prior audit notice Email to " + emailBuilder.getSentTo(), NoteCategory.Audits);
+		} catch (Exception e) {
+			sendInvalidContractorAccountEmail(audit);
+		}
+	}
+
+	private static void sendInvalidContractorAccountEmail(ContractorAudit audit) {
+		try{
+			EmailQueue email = new EmailQueue();
+			email.setToAddresses("audits@picsauditing.com");
+			email.setContractorAccount(audit.getContractorAccount());
+			email.setSubject("Contractor Missing Email Address");
+			email.setBody(audit.getContractorAccount().getName() + " (" + audit.getContractorAccount().getId()
+					+ ") has no valid email address. " + "The system is unable to send automated emails to this account. "
+					+ "Attempted to send 1 week prior audit implementation email.");
+			email.setLowPriority();
+			email.setViewableById(Account.PicsID);
+			emailSender.send(email);
+			stampNote(email.getContractorAccount(), "Failed to send Audit Notification because of no valid email address.",
+					NoteCategory.Audits);
+		} catch (Exception e){
+			logger.error("Error while sending invalid email address email to auditors.", e);
+		}
+
 	}
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
@@ -176,8 +231,8 @@ public class EventSubscriptionBuilder {
 		email.setViewableById(Account.EVERYONE);
 		emailSender.send(email);
 
-		stampNote(insuranceSubscription.getUser().getAccount(), "Sent Policy Expiration Email to "
-				+ emailBuilder.getSentTo(), NoteCategory.Insurance);
+		stampNote(insuranceSubscription.getUser().getAccount(),
+				"Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
 	}
 
 	private static void sendSystemStatusEmail(EmailSubscription subscription, ContractorCronStatistics stats) {

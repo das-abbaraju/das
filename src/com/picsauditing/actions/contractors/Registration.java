@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
@@ -96,6 +97,9 @@ public class Registration extends ContractorActionSupport {
 					contractor.setZip(crr.getZip());
 					contractor.setCountry(crr.getCountry());
 					contractor.setState(crr.getState());
+					CountrySubdivision countrySubdivision = new CountrySubdivision();
+					countrySubdivision.setIsoCode(crr.getState().getIsoCode(), crr.getCountry().getIsoCode());
+					contractor.setCountrySubdivision(countrySubdivision);
 					contractor.setRequestedBy(crr.getRequestedBy());
 					contractor.setTaxId(crr.getTaxID());
 
@@ -232,8 +236,12 @@ public class Registration extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Demo);
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
-		if (contractor.getCountry().isHasStates() && state != null)
+		if (contractor.getCountry().isHasStates() && state != null){
 			contractor.setState(state);
+			CountrySubdivision countrySubdivision = new CountrySubdivision();
+			countrySubdivision.setIsoCode(state.getIsoCode(), contractor.getCountry().getIsoCode());
+			contractor.setCountrySubdivision(countrySubdivision);
+		}
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());

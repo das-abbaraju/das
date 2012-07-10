@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<%@ page import="com.picsauditing.report.access.DynamicReportUtil" %>
+<%@ page import="com.picsauditing.report.access.ReportUtil" %>
 
 <title>Manage Reports</title>
 
@@ -16,14 +16,31 @@
         <li <s:if test="viewingFavoriteReports()">class="active"</s:if>>
             <a href="ManageFavoriteReports.action">Favorites</a>
         </li>
-        <li <s:if test="viewingAllReports()">class="active"</s:if>>
+        <li <s:if test="viewingMyReports()">class="active"</s:if>>
             <a href="ManageMyReports.action">My Reports</a>
+        </li>
+        <li <s:if test="viewingAllReports()">class="active"</s:if>>
+            <a href="ManageAllReports.action">Search</a>
         </li>
 	</ul>
 </div>
 
 <section id="reports">
     <h1> ${PageDescription} </h1>
+
+    <s:if test="viewingAllReports()">
+        <div id="report_search">
+            <h3>Search</h3>
+            <ul>
+                <li>
+                    <input type="text" />
+                </li>
+                <li>
+                    <input class="btn" type="button" value="Search" />
+                </li>
+            </ul>
+        </div>
+    </s:if>
 
     <ul id="report_list">
         <s:iterator value="userReports">
@@ -44,13 +61,7 @@
                         <s:property value="report.name" />
                     </a>
 
-                    <!-- TODO remove this hack after the MVP demo -->
-                    <s:if test="report.id != 11 && report.id != 12">
-                        <span class="created-by">Created by <s:property value="report.createdBy.name" /></span>
-                    </s:if>
-                    <s:else>
-                        <span class="created-by">Created by PICS</span>
-                    </s:else>
+                    <span class="created-by">Created by <s:property value="report.createdBy.name" /></span>
 
                     <s:if test="report.id != 11 && report.id != 12">
                         <s:if test="%{@com.picsauditing.models.ReportDynamicModel@canUserDelete(permissions.userId, report)}">

@@ -65,6 +65,43 @@
     text-align: center;
 }
 
+#report_search
+{
+    background: #333333;
+    width: 400px;
+    margin: 0px auto;
+}
+
+#report_search h3
+{
+    color: #eeeeee;
+    text-align: center;
+}
+
+#report_search ul
+{
+    list-style: none;
+    padding: 0px 0px 10px 0px;
+}
+
+#report_search ul li
+{
+    display: inline;
+}
+
+#report_search input[type="text"]
+{
+    height: 10px;
+}
+
+#report_search ul li .btn
+{
+    color: #eeeeee;
+    background: #2244bb;
+    width: 80px;
+    height: 24px;
+}
+
 #report_list
 {
     list-style: none;

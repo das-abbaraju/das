@@ -72,13 +72,11 @@
 						</td>
 					</s:if>
 					
-					<s:if test="operatorAccount.approvesRelationships.isTrue()">
-						<pics:permission perm="ViewUnApproved">
-							<td>
-								<s:text name="AuditStatus.Approved" />
-							</td>
-						</pics:permission>
-					</s:if>
+					<pics:permission perm="ViewUnApproved">
+						<td>
+							<s:text name="AuditStatus.Approved" />
+						</td>
+					</pics:permission>
 				</s:if>
 				
 				<pics:permission perm="PicsScore">
@@ -223,13 +221,11 @@
 							</td>
 						</s:if>
 						
-						<s:if test="operatorAccount.approvesRelationships.isTrue()">
-							<pics:permission perm="ViewUnApproved">
-								<td class="center">
-									<s:property value="get('workStatus')" />
-								</td>
-							</pics:permission>
-						</s:if>
+						<pics:permission perm="ViewUnApproved">
+							<td class="center">
+								<s:property value="get('workStatus')" />
+							</td>
+						</pics:permission>
 					</s:if>
 					
 					<pics:permission perm="PicsScore">

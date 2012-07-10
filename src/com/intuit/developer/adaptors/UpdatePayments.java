@@ -11,7 +11,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
-import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
@@ -24,6 +23,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentMod;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentModRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentModRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 
 public class UpdatePayments extends PaymentAdaptor {
@@ -48,10 +48,10 @@ public class UpdatePayments extends PaymentAdaptor {
 		request.setOnError("continueOnError");
 
 		for (ReceivePaymentRet receivePaymentRet : currentSession.getToUpdatePayment().values()) {
-			
+
 			Payment paymentJPA = getPaymentDao().findByListID(receivePaymentRet.getTxnID());
 			PicsLogger.log("Found Payment " + paymentJPA.getId() + " where txnID=" + receivePaymentRet.getTxnID());
-			
+
 			ReceivePaymentModRqType modRequest = factory.createReceivePaymentModRqType();
 			modRequest.setRequestID("update_payment_" + paymentJPA.getId());
 
@@ -79,12 +79,12 @@ public class UpdatePayments extends PaymentAdaptor {
 			boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
 			String cardType = null;
 			if (!isCheck) {
-				cardType = new BrainTreeService.CreditCard(paymentJPA.getCcNumber()).getCardType();
+				cardType = new CreditCard(paymentJPA.getCcNumber()).getCardType();
 				if (cardType == null || cardType.equals("") || cardType.equals("Unknown")) {
 					isCheck = true;
 				}
 			}
-			
+
 			payment.setMemo("PICS Payment# " + paymentJPA.getId());
 			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
@@ -92,7 +92,7 @@ public class UpdatePayments extends PaymentAdaptor {
 
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
-				
+
 				if (cardType.equals("Visa") || cardType.equals("Mastercard") || cardType.equals("Discover")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
 				} else if (cardType.equals("American Express")) {
@@ -113,7 +113,7 @@ public class UpdatePayments extends PaymentAdaptor {
 				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
 						.toString());
 			}
-			
+
 		}
 		PicsLogger.log("Finished creating XML");
 
@@ -123,7 +123,7 @@ public class UpdatePayments extends PaymentAdaptor {
 
 		m.marshal(xml, writer);
 		PicsLogger.stop();
-		
+
 		return writer.toString();
 	}
 
@@ -173,7 +173,7 @@ public class UpdatePayments extends PaymentAdaptor {
 				errorMessage.append(thisQueryResponse.getStatusCode());
 				errorMessage.append("\t");
 				errorMessage.append(e.getMessage());
-				
+
 				errorMessage.append(result.toString());
 
 				currentSession.getErrors().add(errorMessage.toString());

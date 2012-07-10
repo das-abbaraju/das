@@ -1,21 +1,26 @@
 package com.picsauditing.report.access;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 
 /**
  * This is the persistence layer. It is the only class that should contain a DAO.
@@ -55,6 +60,11 @@ public class ReportAccessor {
 		return basicDao.findWhere(ReportUser.class, query);
 	}
 
+	public List<ReportUser> findEditableUserReports(int userId) {
+		String query = "t.user.id = " + userId + " AND is_editable = 1";
+		return basicDao.findWhere(ReportUser.class, query);
+	}
+
 	public void refresh(Report report) {
 		basicDao.refresh(report);
 	}
@@ -87,7 +97,7 @@ public class ReportAccessor {
 	}
 
 	public void saveReport(Report report, User user) throws ReportValidationException {
-		DynamicReportUtil.validate(report);
+		ReportDynamicModel.validate(report);
 		report.setAuditColumns(user);
 
 		basicDao.save(report);
@@ -117,22 +127,12 @@ public class ReportAccessor {
 		basicDao.save(reportUser);
 	}
 
-	public void giveUserDefaultReports(Permissions permissions) {
-		// If a user logs in for the first time, they get the default set
-		// If the user deletes their last report, they get the default set
-		// TODO replace this hack with a customize recommendation default report set
-		try {
-			Report report11 = basicDao.findOne(Report.class, "id = 11");
-			ReportUser reportUser11 = new ReportUser(permissions.getUserId(), report11);
-			reportUser11.setAuditColumns(permissions);
-			basicDao.save(reportUser11);
+	@SuppressWarnings("unchecked")
+	public static List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
+		Database db = new Database();
+		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		json.put("total", db.getAllRows());
 
-			Report report12 = basicDao.findOne(Report.class, "id = 12");
-			ReportUser reportUser12 = new ReportUser(permissions.getUserId(), report12);
-			reportUser12.setAuditColumns(permissions);
-			basicDao.save(reportUser12);
-		} catch (Exception e) {
-			logger.error(e.toString());
-		}
+		return rows;
 	}
 }

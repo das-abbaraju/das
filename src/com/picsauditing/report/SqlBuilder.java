@@ -1,6 +1,6 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.access.DynamicReportUtil.getColumnFromFieldName;
+import static com.picsauditing.report.access.ReportUtil.getColumnFromFieldName;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.models.ReportDynamicModel;
+import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
@@ -36,11 +36,11 @@ public class SqlBuilder {
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) throws Exception {
+	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) {
 		return buildSql(report, permissions, pageNumber, false);
 	}
 
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) throws Exception {
+	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) {
 		AbstractModel model = report.getModel();
 		sql = initializeSql(model);
 
@@ -49,8 +49,9 @@ public class SqlBuilder {
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
 
-			if (pageNumber > 1)
+			if (pageNumber > 1) {
 				sql.setStartRow((pageNumber - 1) * rowsPerPage);
+			}
 
 			sql.setLimit(rowsPerPage);
 			sql.setSQL_CALC_FOUND_ROWS(true);
@@ -382,14 +383,6 @@ public class SqlBuilder {
 //			sort.setField(getFieldFromFieldName(sort.getFieldName()));
 			sort.setField(field);
 		}
-	}
-
-	public static List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
-		Database db = new Database();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
-
-		return rows;
 	}
 
 	// Setters

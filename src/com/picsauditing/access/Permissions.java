@@ -27,7 +27,7 @@ import com.picsauditing.strutsutil.AjaxUtils;
 /**
  * This is the main class that is stored for each user containing information if
  * they are logged in, which groups they're in, and what permission(s) they have
- *
+ * 
  * Warning: this class is stored in the session Make sure you keep the footprint
  * very small
  */
@@ -167,7 +167,8 @@ public class Permissions implements Serializable {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				visibleAuditTypes = operator.getVisibleAuditTypes();
 
-				approvesRelationships = !operator.isAutoApproveRelationships();
+				approvesRelationships = !operator.isAutoApproveRelationships()
+						|| user.hasPermission(OpPerms.ViewUnApproved);
 
 				if (generalContractor || gcFree) {
 					for (OperatorAccount linkedClient : ((OperatorAccount) user.getAccount()).getLinkedClientSites()) {
@@ -320,7 +321,7 @@ public class Permissions implements Serializable {
 	/**
 	 * This gets the shadowed user from the User object, if it's set. Otherwise
 	 * this returns the user's own id
-	 *
+	 * 
 	 * @return user ID or shadowed user ID
 	 */
 	public int getShadowedUserID() {
@@ -333,7 +334,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
-	 *
+	 * 
 	 * @param opPerm
 	 *            OSHA, ContractorDetails, UserAdmin, etc
 	 * @param oType
@@ -440,7 +441,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * True if operator or corporate
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isOperatorCorporate() {
@@ -484,7 +485,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Is the logged in user an non-PICS employee auditor?
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isOnlyAuditor() {
@@ -556,7 +557,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * user.getAccount().getCountry().getIsoCode()
-	 *
+	 * 
 	 * @return
 	 */
 	public String getCountry() {
@@ -601,7 +602,7 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
 	 */
 	public Set<Integer> getVisibleAuditTypes() {

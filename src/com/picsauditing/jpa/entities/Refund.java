@@ -13,7 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.util.braintree.CreditCard;
 
 @Entity
 @DiscriminatorValue(value = "R")
@@ -59,7 +59,7 @@ public class Refund extends Transaction {
 	public void setPayments(List<PaymentAppliedToRefund> payments) {
 		this.payments = payments;
 	}
-	
+
 	@Column(name = "ccNumber")
 	public String getCcNumber() {
 		return ccNumber;
@@ -71,9 +71,7 @@ public class Refund extends Transaction {
 
 	@Transient
 	public String getCcType() {
-		BrainTreeService.CreditCard cc = new BrainTreeService.CreditCard();
-		cc.setCardNumber(ccNumber);
-		return cc.getCardType();
+		return new CreditCard(ccNumber).getCardType();
 	}
 
 	@Transient
