@@ -9,12 +9,10 @@
 	
 	<s:include value="../jquery.jsp"/>
 	
-	<script type="text/javascript" src="js/login.js?v=${version}"></script>
 </head>
 <body>
-
 	<s:include value="_supportedLocales.jsp" />
-	
 	<s:include value="login_form.jsp"/>
 
+    <script type="text/javascript" src="js/login.js?v=${version}"></script>
 </body>

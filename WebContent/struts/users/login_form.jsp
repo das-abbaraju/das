@@ -16,11 +16,11 @@
 		<ol>
 			<li>
 				<label><s:text name="User.username" />:</label>
-				<s:textfield id="username" name="username" cssClass="login" tabindex="1"/>
+				<s:textfield id="username" name="username" cssClass="login" tabindex="1" />
 			</li>
 			<li>
 				<label><s:text name="global.Password" />:</label>
-				<s:password name="password" cssClass="login" tabindex="2"/>
+				<s:password name="password" cssClass="login" tabindex="2" />
 			</li>
 		</ol>
 		</fieldset>
@@ -29,8 +29,8 @@
 		</fieldset>
 	</s:form>
 
-	<div class="info other">
-		<p><s:text name="Login.Forgot" /> <a href="AccountRecovery.action"><s:text name="Login.ClickToRecover" /></a></p>
-		<p><s:text name="Login.ContractorAsk" /> <a href="Registration.action"><s:text name="Login.ClickToRegister" /></a></p>
+	<div id="forgot-contractorAsk" class="other">
+		<p><s:text name="Login.Forgot" /> <a href="AccountRecovery.action"><s:text name="Login.ClickToRecover" /></a>.</p>
+		<p><s:text name="Login.ContractorAsk" /> <a href="Registration.action"><s:text name="Login.ClickToRegister" /></a>.</p>
 	</div>
 </div>

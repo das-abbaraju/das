@@ -135,6 +135,9 @@ public class AccountRecovery extends PicsActionSupport {
 			userDAO.save(user);
 
 			addActionMessage(sendRecoveryEmail(user));
+
+			return redirect("Login.action");
+
 		} catch (Exception e) {
 			addActionError(getText("AccountRecovery.error.UserNameNotFound"));
 		}

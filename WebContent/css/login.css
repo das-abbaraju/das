@@ -1,0 +1,26 @@
+/**
+ * Overrides default style for div.info (set in pics.css).
+ * 
+ * Only AlertMessages are yellow, but only ActionErrors and ActionMessages propagate across redirects.
+ * As a workaround to this, AccountRecovery.resetPassword sets "Email sent" using addActionMessage, and this
+ * style sheet substitutes the style of that ActionMessage with the style of AlertMessages.
+ */
+div.info {
+	background: url("../images/icon-warning.gif") no-repeat scroll 10px 10px #FBF2C9 !important;
+	border-bottom: 2px solid #D0AE10 !important;
+	border-top: 2px solid #D0AE10 !important;
+}
+
+/**
+ * A separate declaration is used for forgot-ContractorAsk
+ * (which is currently just a duplicate of the style for ActionMessages)
+ */
+#forgot-contractorAsk {
+	background: url("../images/icon-info.gif") no-repeat scroll 10px 10px #DBE7F8;
+	border-bottom: 2px solid #B7D2F2;
+	border-top: 2px solid #B7D2F2;
+	clear: left;
+	margin: 10px 0;
+	padding: 1em 1em 1em 4em;
+	width: 86%;
+}
