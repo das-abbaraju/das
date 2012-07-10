@@ -164,7 +164,11 @@ public class SelectAccount extends SelectSQL {
 
 			this.addField("gc.workStatus");
 
-			String flag = "CASE gco.doContractorsPay WHEN 'Yes' THEN %s ELSE '' END %s";
+			String flag = "%s AS %s";
+
+			if (permissions.isGeneralContractor()) {
+				flag = "CASE gco.doContractorsPay WHEN 'No' THEN '' ELSE %s END %s";
+			}
 
 			this.addField(String.format(flag, "gc.flag", "flag"));
 			this.addField(String.format(flag, "lower(gc.flag)", "lflag"));
