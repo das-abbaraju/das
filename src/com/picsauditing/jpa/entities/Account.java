@@ -68,6 +68,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String city;
 	protected Country country;
 	protected State state;
+	protected CountrySubdivision countrySubdivision;
 	protected String zip;
 	protected String phone;
 	protected String fax;
@@ -209,13 +210,25 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "state")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(i18nKeyPrefix = "State", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.State)
+	@ReportField(i18nKeyPrefix = "State", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Subdivision)
 	public State getState() {
 		return this.state;
 	}
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "countrySubdivision")
+	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
+	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Subdivision)
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
+	}
+
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
 	@Column(name = "zip", length = 15)

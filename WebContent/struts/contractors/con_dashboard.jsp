@@ -687,29 +687,47 @@
     										</p>
     									</s:if>
     									
-    									<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">
-    										<p class="contact">
-    											<s:if test="contractor.primaryContact.id == id">
-    												<s:text name="global.ContactPrimary" />
-    											</s:if>
-    											<s:else>
-    												<s:text name="global.Contact" />
-    											</s:else>:
-    											<span class="value"><s:property value="name" /></span>
-    										</p>
-    										<p class="tel">
-    											&nbsp;&nbsp;
-    											<s:text name="User.email" />:
-    											<a href="mailto:<s:property value="email" />" class="email"><s:property value="email" /></a>
-    											
-    											<s:if test="phone.length() > 0">
-    												/ <s:text name="User.phone" />: <s:property value="phone" />
-    											</s:if>
-    											
-    											<s:if test="fax.length() > 0">
-    												/ <s:text name="User.fax" />: <s:property value="fax" />
-    											</s:if>
-    										</p>
+                                        <s:if test="contractor.primaryContact">
+                                            <p class="contact">
+                                                <s:text name="global.ContactPrimary" />
+                                                <span class="value">${contractor.primaryContact.name}</span>
+                                            </p>
+                                            <p class="tabbed tel">
+                                                <s:text name="User.email" />:
+                                                <a href="mailto:${contractor.primaryContact.email}" class="email">${contractor.primaryContact.email}</a>
+
+                                                <s:if test="contractor.primaryContact.phone.length() > 0">
+                                                    / <s:text name="User.phone" />: ${contractor.primaryContact.phone}
+                                                </s:if>
+
+                                                <s:if test="contractor.primaryContact.fax.length() > 0">
+                                                    / <s:text name="User.fax" />: ${contractor.primaryContact.fax}
+                                                </s:if>
+                                            </p>
+                                        </s:if>
+
+                                        <s:set name="contactNumber" value="1" />
+                                        <s:iterator step="1" value="contractor.getUsersByRole('ContractorAdmin')">
+                                            <s:if test="contractor.primaryContact.id != id">
+                                                <p class="contact">
+                                                    <s:text name="global.Contact" />
+                                                    ${contactNumber}
+                                                    <s:set name="contactNumber" value="#contactNumber+1" />
+                                                    <span class="value">${name}:</span>
+                                                </p>
+                                                <p class="tabbed tel">
+                                                    <s:text name="User.email" />:
+                                                    <a href="mailto:<s:property value="email" />" class="email"><s:property value="email" /></a>
+
+                                                    <s:if test="phone.length() > 0">
+                                                        / <s:text name="User.phone" />: <s:property value="phone" />
+                                                    </s:if>
+
+                                                    <s:if test="fax.length() > 0">
+                                                        / <s:text name="User.fax" />: <s:property value="fax" />
+                                                    </s:if>
+                                                </p>
+                                            </s:if>
     									</s:iterator>
     								</div>
     								

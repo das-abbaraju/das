@@ -5,6 +5,7 @@ public class Trevor extends PicsActionSupport {
 	private int test = 0;
 
 	public String execute() throws Exception {
+		// Hello world
 		return SUCCESS;
 	}
 

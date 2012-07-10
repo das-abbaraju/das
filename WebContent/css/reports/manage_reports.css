@@ -1,14 +1,4 @@
-#main
-{
-    padding: 20px 0px 0px 20px;
-}
-
-#page_header
-{
-    margin: 0px 0px 20px 0px;
-}
-
-#page_header h1
+h1.title
 {
     border: 0px;
     color: #73BBE8;
@@ -16,7 +6,7 @@
     font-weight: normal;
 }
 
-#page_header h2
+p.subtitle
 {
     color: #808285;
     font-size: 14px;
@@ -63,6 +53,43 @@
     font-style: italic;
     margin-bottom: 15px;
     text-align: center;
+}
+
+#report_search
+{
+    background: #333333;
+    width: 400px;
+    margin: 0px auto;
+}
+
+#report_search h3
+{
+    color: #eeeeee;
+    text-align: center;
+}
+
+#report_search ul
+{
+    list-style: none;
+    padding: 0px 0px 10px 0px;
+}
+
+#report_search ul li
+{
+    display: inline;
+}
+
+#report_search input[type="text"]
+{
+    height: 10px;
+}
+
+#report_search ul li .btn
+{
+    color: #eeeeee;
+    background: #2244bb;
+    width: 80px;
+    height: 24px;
 }
 
 #report_list

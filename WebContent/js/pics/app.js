@@ -163,7 +163,7 @@ Ext.application({
                            return result.is_editable;
                        }
                    };
-               })();
+               }());
 
                // success callback
                if (options && options.success && typeof options.success == 'function') {
@@ -174,13 +174,11 @@ Ext.application({
     },
 
     createViewport: function () {
-    	var that = this;
-
     	Ext.create('PICS.view.report.Viewport', {
     		listeners: {
     			render: function (component, eOpts) {
     				// remove loading background
-    				Ext.get('loadingPage').dom.hidden = true;
+    				Ext.get('loadingPage').remove();
      		   }
      	   }
         });

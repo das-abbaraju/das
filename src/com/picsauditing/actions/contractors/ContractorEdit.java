@@ -38,6 +38,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -219,6 +220,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 			contractor.setCountry(country);
 			contractor.setState(state);
+			CountrySubdivision countrySubdivision = new CountrySubdivision();
+			countrySubdivision.setIsoCode(state.getIsoCode(), country.getIsoCode());
+			contractor.setCountrySubdivision(countrySubdivision);
 			
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
 

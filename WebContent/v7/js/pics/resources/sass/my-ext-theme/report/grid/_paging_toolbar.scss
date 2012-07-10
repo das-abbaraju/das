@@ -1,0 +1,106 @@
+// report grid paging toolbar
+$report_grid_paging_toolbar_background_color: #f1f1f1;
+$report_grid_paging_toolbar_border_color: #cccccc;
+$report_grid_paging_toolbar_text_color: #666666;
+
+// report grid paging toolbar - icon
+$report_grid_paging_toolbar_icon_text_color: #666666;
+
+$report_grid_paging_toolbar_icon_over_text_color: #73bbe8;
+
+$report_grid_paging_toolbar_icon_disabled_text_color: #cccccc;
+
+// report grid paging toolbar - separator
+$report_grid_paging_toolbar_separator_border_color_left: #cccccc;
+
+#report_grid .paging-toolbar
+{
+	background: $report_grid_paging_toolbar_background_color;
+	border: 1px solid $report_grid_paging_toolbar_border_color !important;
+	padding: 0px 20px;
+}
+
+#report_grid .paging-toolbar .x-over
+{
+	background: transparent;
+	border: 0px;
+}
+
+#report_grid .paging-toolbar .x-btn
+{
+	border: 0px;
+}
+
+#report_grid .paging-toolbar .x-disabled span
+{
+	opacity: 1;
+}
+
+#report_grid .paging-toolbar button,
+#report_grid .paging-toolbar button span
+{
+	width: 20px;
+}
+
+#report_grid .paging-toolbar button .x-btn-inner
+{
+	padding-top: 7px !important;
+}
+
+#report_grid .paging-toolbar .icon-large
+{
+	color: $report_grid_paging_toolbar_icon_text_color;
+}
+
+#report_grid .paging-toolbar .x-over .icon-large
+{
+	color: $report_grid_paging_toolbar_icon_over_text_color;
+}
+
+#report_grid .paging-toolbar .x-disabled .icon-large
+{
+	color: $report_grid_paging_toolbar_icon_disabled_text_color;
+}
+
+#report_grid .paging-toolbar .refresh button,
+#report_grid .paging-toolbar .refresh button span
+{
+	width: 28px;
+}
+
+#report_grid .paging-toolbar .refresh .x-btn-inner
+{
+	padding-top: 7px !important;
+}
+
+#report_grid .paging-toolbar .refresh .icon-refresh
+{
+	font-size: 19px;
+}
+
+#report_grid .paging-toolbar .x-toolbar-separator
+{
+	border: 0px;
+	border-left: 1px solid $report_grid_paging_toolbar_separator_border_color_left;
+}
+
+#report_grid .paging-toolbar .x-toolbar-text
+{
+	color: $report_grid_paging_toolbar_text_color;
+	font-size: 14px;
+}
+
+#report_grid .paging-toolbar .x-form-text
+{
+	height: 25px;
+}
+
+#report_grid .paging-toolbar .rows-per-page
+{
+	margin-left: 10px;
+}
+
+#report_grid .paging-toolbar .x-form-trigger
+{
+	height: 25px;
+}

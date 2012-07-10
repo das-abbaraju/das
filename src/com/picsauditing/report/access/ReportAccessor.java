@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
@@ -58,6 +57,11 @@ public class ReportAccessor {
 
 	public List<ReportUser> findFavoriteUserReports(int userId) {
 		String query = "t.user.id = " + userId + " AND is_favorite = 1";
+		return basicDao.findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findEditableUserReports(int userId) {
+		String query = "t.user.id = " + userId + " AND is_editable = 1";
 		return basicDao.findWhere(ReportUser.class, query);
 	}
 
@@ -121,25 +125,6 @@ public class ReportAccessor {
 		ReportUser reportUser = findOneUserReport(userId, reportId);
 		reportUser.toggleFavorite();
 		basicDao.save(reportUser);
-	}
-
-	public void giveUserDefaultReports(Permissions permissions) {
-		// If a user logs in for the first time, they get the default set
-		// If the user deletes their last report, they get the default set
-		// TODO replace this hack with a customize recommendation default report set
-		try {
-			Report report11 = basicDao.findOne(Report.class, "id = 11");
-			ReportUser reportUser11 = new ReportUser(permissions.getUserId(), report11);
-			reportUser11.setAuditColumns(permissions);
-			basicDao.save(reportUser11);
-
-			Report report12 = basicDao.findOne(Report.class, "id = 12");
-			ReportUser reportUser12 = new ReportUser(permissions.getUserId(), report12);
-			reportUser12.setAuditColumns(permissions);
-			basicDao.save(reportUser12);
-		} catch (Exception e) {
-			logger.error(e.toString());
-		}
 	}
 
 	@SuppressWarnings("unchecked")
