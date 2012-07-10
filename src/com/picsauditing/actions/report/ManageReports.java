@@ -17,11 +17,13 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.access.ReportAccessor;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
+	// TODO make this an enum or something
 	private static final String FAVORITE = "favorite";
 	private static final String MY_REPORTS = "saved";
 	private static final String ALL_REPORTS = "all";
@@ -75,26 +77,36 @@ public class ManageReports extends PicsActionSupport {
 			viewType = MY_REPORTS;
 
 		try {
+			int userId = permissions.getUserId();
+
 			if (FAVORITE.equals(viewType)) {
-				userReports = reportAccessor.findFavoriteUserReports(permissions.getUserId());
+				userReports = reportAccessor.findFavoriteUserReports(userId);
 
 				if (CollectionUtils.isEmpty(userReports)) {
 					// TODO add i18n to this
 					addActionMessage("You have not favorited any reports.");
 				}
 			} else if (MY_REPORTS.equals(viewType)) {
-				userReports = reportAccessor.findAllEditableReports(permissions.getUserId());
-				if (CollectionUtils.isEmpty(userReports)) {
-					// TODO add i18n to this
-					addActionMessage("You cannot edit any reports.");
-				}
+				userReports = reportAccessor.findAllUserReports(userId);
 			} else if (ALL_REPORTS.equals(viewType)) {
-				userReports = reportAccessor.findAllUserReports(permissions.getUserId());
+				userReports = reportAccessor.findAllUserReports(userId);
+
+				// TODO find solution for global reports
+//				List<ReportUser> globalUserReports = reportAccessor.findGlobalUserReports(userId);
+//				for (ReportUser userReport : globalUserReports) {
+//					if (!ReportUtil.containsReportWithId(userReports, userReport.getId())) {
+//						userReports.add(userReport);
+//					}
+//				}
 			}
 		} catch (Exception e) {
-			userReports = Collections.emptyList();
 			// TODO add i18n to this
-			addActionMessage("There was a problem finding your reports.");
+			addActionError("There was a problem finding your reports.");
+			logger.error("Problem with runQueryForCurrentView() in ManageReports", e);
+
+			if (userReports == null) {
+				userReports = Collections.emptyList();
+			}
 		}
 	}
 

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
@@ -61,7 +60,7 @@ public class ReportAccessor {
 		return basicDao.findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findAllEditableReports(int userId) {
+	public List<ReportUser> findEditableUserReports(int userId) {
 		String query = "t.user.id = " + userId + " AND is_editable = 1";
 		return basicDao.findWhere(ReportUser.class, query);
 	}

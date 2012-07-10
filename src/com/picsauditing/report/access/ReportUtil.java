@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -207,5 +208,14 @@ public final class ReportUtil {
 
 	public static boolean hasNoColumns(Report report) {
 		return (report.getDefinition().getColumns().size() < 1);
+	}
+
+	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {
+		for (ReportUser userReport : userReports) {
+			if (userReport.getId() == reportId)
+				return true;
+		}
+
+		return false;
 	}
 }
