@@ -23,15 +23,16 @@
 		<meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/font-awesome.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap-responsive.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="v7/css/bootstrap-custom.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/font-awesome.css?v=${version}" />
         
         <%-- custom --%>
         <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css" />
         
-        <%-- page specific --%>
-        <link rel="stylesheet" type="text/css" href="css/reports/manage_reports.css">
-
+        <link rel="stylesheet" type="text/css" href="v7/css/pics.css">
+        
         <decorator:head />
         
 		<!-- All JavaScript at the bottom, except this Modernizr build.
@@ -40,16 +41,14 @@
 		<script src="v7/js/libs/modernizr-2.5.3.min.js"></script>
     </head>
     <body id="${actionName}_${methodName}_page" class="${actionName}-page page">
-        <jsp:include page="/struts/layout/environment.jsp" />
-        
-        <div id="container">
-            <header>
-                <nav id="site_navigation"></nav>
-            </header>
+        <header class="navbar-fixed-top">
+            <jsp:include page="/struts/layout/environment.jsp" />
             
-            <div id="main" role="main">
-                <decorator:body />
-            </div>
+            <nav id="site_navigation"></nav>
+        </header>
+            
+        <div id="main" role="main" class="container-fluid">
+            <decorator:body />
         </div>
         
 		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->

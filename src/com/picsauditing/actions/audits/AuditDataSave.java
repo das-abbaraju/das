@@ -51,11 +51,11 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private static final long serialVersionUID = 1103112846482868309L;
 
-	private static final int OSHA_INCIDENT_QUESTION_ID = 8838;
-	private static final int COHS_INCIDENT_QUESTION_ID = 8840;
+	protected static final int OSHA_INCIDENT_QUESTION_ID = 8838;
+	protected static final int COHS_INCIDENT_QUESTION_ID = 8840;
 
-	private static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
-	private static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8841, 8842, 8843, 8844, 11119, 8845,
+	protected static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
+	protected static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8841, 8842, 8843, 8844, 11119, 8845,
 			8846, 8847, 11117, 11118 };
 
 	private AuditData auditData = null;
@@ -396,9 +396,12 @@ public class AuditDataSave extends AuditActionSupport {
 		if (newCopy == null) {
 			return;
 		}
+		
+		boolean recalcAudit = false;
 
 		if (newCopy.getQuestion().getId() == OSHA_INCIDENT_QUESTION_ID) {
 			if (newCopy.getAnswer().equals(NO)) {
+				recalcAudit = true;
 				for (int incidentQuestionId : OSHA_INCIDENT_RELATED_QUESTION_IDS) {
 					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(),
 							incidentQuestionId);
@@ -418,6 +421,7 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 		} else if (newCopy.getQuestion().getId() == COHS_INCIDENT_QUESTION_ID) {
 			if (newCopy.getAnswer().equals(NO)) {
+				recalcAudit = true;
 				for (int incidentQuestionId : COHS_INCIDENT_RELATED_QUESTION_IDS) {
 					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(),
 							incidentQuestionId);
@@ -437,6 +441,10 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 		}
 
+		if (recalcAudit) {
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+		}
+			
 	}
 
 	private void checkUniqueCode(ContractorAudit tempAudit) {

@@ -10,8 +10,15 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		
-		<script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
+		<script type="text/javascript" src="v7/js/pics/extjs/bootstrap.js"></script>
 		<%-- <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script> --%>
+        
+        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme.css">
+        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme-menu.css">
+        <link rel="stylesheet" type="text/css" href="v7/css/libs/font-awesome.css">
+        
+        <%-- TODO: this should be refactored out of the custom css and done properly --%>
+        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-custom.css">
 		
 		<decorator:head />
 	</head>

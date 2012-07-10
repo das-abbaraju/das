@@ -1,14 +1,4 @@
-#main
-{
-    padding: 20px 0px 0px 20px;
-}
-
-#page_header
-{
-    margin: 0px 0px 20px 0px;
-}
-
-#page_header h1
+h1.title
 {
     border: 0px;
     color: #73BBE8;
@@ -16,7 +6,7 @@
     font-weight: normal;
 }
 
-#page_header h2
+p.subtitle
 {
     color: #808285;
     font-size: 14px;
