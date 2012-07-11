@@ -8,9 +8,9 @@
 <s:url action="ManageReports!viewAllReports" var="manage_all_reports_url" />
 
 <%-- Menu --%>
-<s:set name="menu_favorite_reports_class"></s:set>
-<s:set name="menu_my_reports_class"></s:set>
-<s:set name="menu_all_reports_class"></s:set>
+<s:set name="menu_favorite_reports_class" value="''" />
+<s:set name="menu_my_reports_class" value="''" />
+<s:set name="menu_all_reports_class" value="''" />
 
 <s:if test="viewingFavoriteReports()">
     <s:set name="menu_favorite_reports_class">active</s:set>
@@ -57,22 +57,25 @@
 
 <div id="manage_report_list_container">
     <ul id="manage_report_list">
-        <s:iterator value="userReports" var="report">
+        <s:iterator value="userReports" var="user_report">
+            <s:set name="report" value="#user_report.report" />
+            <s:set name="report_id" value="#report.id" />
+
             <%-- Url --%>
             <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
-                <s:param name="reportId">${report.id}</s:param>
+                <s:param name="reportId">${report_id}</s:param>
             </s:url>
 
             <s:url action="ReportDynamic" var="report_url">
-                <s:param name="report">${report.id}</s:param>
+                <s:param name="report">${report_id}</s:param>
             </s:url>
 
             <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
-                <s:param name="report">${report.id}</s:param>
+                <s:param name="report">${report_id}</s:param>
             </s:url>
 
             <s:url action="ManageReports" method="removeUserReport" var="remove_report_url">
-                <s:param name="report">${report.id}</s:param>
+                <s:param name="report">${report_id}</s:param>
             </s:url>
 
             <%-- Icon --%>
@@ -92,19 +95,17 @@
                         ${report.name}
                     </a>
 
-                    <s:if test="report.createdBy.id != permissions.userId">
+                    <s:if test="user_report.report.createdBy.id != permissions.userId">
                         <span class="created-by">Created by ${report.createdBy.name}</span>
                     </s:if>
                 </div>
 
-                <s:if test="report.id != 11 && report.id != 12">
-                    <s:if test="%{@com.picsauditing.models.ReportDynamicModel@canUserDelete(permissions.userId, report)}">
-                        <a href="${delete_report_url}" class="delete">Delete</a>
-                    </s:if>
-                    <s:else>
-                        <a href="${remove_report_url}" class="delete">Remove</a>
-                    </s:else>
+                <s:if test="%{@com.picsauditing.model.ReportDynamicModel@canUserDelete(permissions.userId, report)}">
+                    <a href="${delete_report_url}" class="delete">Delete</a>
                 </s:if>
+                <s:else>
+                    <a href="${remove_report_url}" class="delete">Remove</a>
+                </s:else>
             </li>
         </s:iterator>
     </ul>
