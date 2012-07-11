@@ -41,7 +41,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             var post = selection[0];
             if (post) {
                 // TODO change this to be more betterer
-                window.location = Ext.String.format('http://localhost:8080/SearchBox.action?button=search&searchTerm={0}', post.get('name'));
+                window.location = Ext.String.format('http://alpha.picsorganizer.com/SearchBox.action?button=search&searchTerm={0}', post.get('name'));
             }
         }
     },

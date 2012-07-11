@@ -50,7 +50,7 @@
 <s:if test="viewingAllReports()">
     <div id="report_search">
         <i class="icon-search icon-large"></i>
-        <input type="text" />
+        <input type="text" value="Search Reports"/>
     </div>
     <hr />
 </s:if>
