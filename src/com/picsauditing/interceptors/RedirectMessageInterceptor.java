@@ -10,7 +10,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Originally found at http://glindholm.wordpress.com/2008/07/02/preserving-messages-across-a-redirect-in-struts-2/
  */
 package com.picsauditing.interceptors;
@@ -26,21 +26,22 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.ValidationAware;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
+import com.picsauditing.strutsutil.AdvancedValidationAware;
 
 /**
  * An Interceptor to preserve an actions ValidationAware messages across a
  * redirect result.
- * 
+ *
  * It makes the assumption that you always want to preserve messages across a
  * redirect and restore them to the next action if they exist.
- * 
+ *
  * The way this works is it looks at the result type after a action has executed
  * and if the result was a redirect (ServletRedirectResult) or a redirectAction
  * (ServletActionRedirectResult) and there were any errors, messages, or
  * fieldErrors they are stored in the session. Before the next action executes
  * it will check if there are any messages stored in the session and add them to
  * the next action.
- * 
+ *
  */
 public class RedirectMessageInterceptor extends MethodFilterInterceptor {
 	private static final long serialVersionUID = -1847557437429753540L;
@@ -48,20 +49,21 @@ public class RedirectMessageInterceptor extends MethodFilterInterceptor {
 	public static final String FIELD_ERRORS_KEY = "RedirectMessageInterceptor_FieldErrors";
 	public static final String ACTION_ERRORS_KEY = "RedirectMessageInterceptor_ActionErrors";
 	public static final String ACTION_MESSAGES_KEY = "RedirectMessageInterceptor_ActionMessages";
+	public static final String ALERT_MESSAGES_KEY = "RedirectMessageInterceptor_AlertMessages";
 
 	public RedirectMessageInterceptor() {
 	}
 
 	public String doIntercept(ActionInvocation invocation) throws Exception {
 		Object action = invocation.getAction();
-		if (action instanceof ValidationAware) {
-			before(invocation, (ValidationAware) action);
+		if (action instanceof AdvancedValidationAware) {
+			before(invocation, (AdvancedValidationAware) action);
 		}
 
 		String result = invocation.invoke();
 
-		if (action instanceof ValidationAware) {
-			after(invocation, (ValidationAware) action);
+		if (action instanceof AdvancedValidationAware) {
+			after(invocation, (AdvancedValidationAware) action);
 		}
 		return result;
 	}
@@ -71,7 +73,7 @@ public class RedirectMessageInterceptor extends MethodFilterInterceptor {
 	 * action.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected void before(ActionInvocation invocation, ValidationAware validationAware) throws Exception {
+	protected void before(ActionInvocation invocation, AdvancedValidationAware validationAware) throws Exception {
 		Map<String, ?> session = invocation.getInvocationContext().getSession();
 
 		Collection<String> actionErrors = (Collection) session.remove(ACTION_ERRORS_KEY);
@@ -96,12 +98,19 @@ public class RedirectMessageInterceptor extends MethodFilterInterceptor {
 				}
 			}
 		}
+
+		Collection<String> alertMessages = (Collection) session.remove(ALERT_MESSAGES_KEY);
+		if (alertMessages != null && alertMessages.size() > 0) {
+			for (String message : alertMessages) {
+				validationAware.addAlertMessage(message);
+			}
+		}
 	}
 
 	/**
 	 * If the result is a redirect then store error and messages in the session.
 	 */
-	protected void after(ActionInvocation invocation, ValidationAware validationAware) throws Exception {
+	protected void after(ActionInvocation invocation, AdvancedValidationAware validationAware) throws Exception {
 		Result result = invocation.getResult();
 
 		if (result != null
@@ -121,6 +130,11 @@ public class RedirectMessageInterceptor extends MethodFilterInterceptor {
 			Map<String, List<String>> fieldErrors = validationAware.getFieldErrors();
 			if (fieldErrors != null && fieldErrors.size() > 0) {
 				session.put(FIELD_ERRORS_KEY, fieldErrors);
+			}
+
+			Collection<String> alertMessages = validationAware.getAlertMessages();
+			if (alertMessages != null && alertMessages.size() > 0) {
+				session.put(ALERT_MESSAGES_KEY, alertMessages);
 			}
 		}
 	}
