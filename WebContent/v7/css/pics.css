@@ -19,18 +19,15 @@ p.subtitle {
   font-weight: normal;
   line-height: 14px; }
 
-/* line 2, ../sass/pics/layout/_layout.scss */
-body {
-  padding-top: 124px; }
-
-@media (max-width: 979px) {
-  /* line 7, ../sass/pics/layout/_layout.scss */
+@media (max-width: 767px) {
+  /* line 2, ../sass/pics/layout/_layout.scss */
   body {
-    padding-top: 0; }
+    padding: 0px; }
 
-  /* line 11, ../sass/pics/layout/_layout.scss */
-  .navbar-fixed-top {
-    margin-bottom: 20px; } }
+  /* line 6, ../sass/pics/layout/_layout.scss */
+  .container-fluid {
+    padding-right: 20px;
+    padding-left: 20px; } }
 /*
  * Templates
  *

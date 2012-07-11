@@ -23,7 +23,7 @@
 		<meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap-responsive.css?v=${version}" />
+        <%-- <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap-responsive.css?v=${version}" /> --%>
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/bootstrap-custom.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/font-awesome.css?v=${version}" />
         
@@ -41,11 +41,7 @@
 		<script src="v7/js/libs/modernizr-2.5.3.min.js"></script>
     </head>
     <body id="${actionName}_${methodName}_page" class="${actionName}-page page">
-        <header class="navbar-fixed-top">
-            <jsp:include page="/struts/layout/environment.jsp" />
-            
-            <nav id="site_navigation"></nav>
-        </header>
+        <jsp:include page="/struts/layout/header.jsp" />
             
         <div id="main" role="main" class="container-fluid">
             <decorator:body />
