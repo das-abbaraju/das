@@ -13,9 +13,6 @@ Ext.define('PICS.view.report.filter.AutocompleteFilter', {
 
         this.record.set('operator', 'In');
 
-        // set filter number
-        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
-
         this.createFilterCombo();
     },
 

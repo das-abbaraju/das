@@ -59,7 +59,10 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
     constructor: function () {
         this.callParent(arguments);
 
-        //set filter name
-        this.child('panel displayfield[name=filter_name]').setValue(this.record.get('text'));
+        // set filter name
+        this.query('displayfield[name=filter_name]')[0].setValue(this.record.get('text'));
+
+        // set filter number
+        this.query('displayfield[name=filter_number]')[0].setFieldLabel(this.panelNumber.toString());
     }
 });

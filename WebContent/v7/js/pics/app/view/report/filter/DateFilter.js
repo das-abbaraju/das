@@ -46,9 +46,6 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         // add filter
         this.child('panel [name=filter_input]').add(date_filter);
 
-        // set filter number
-        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
-
         // set filter inputs
         if (this.record.get('operator') === '') {
             var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;

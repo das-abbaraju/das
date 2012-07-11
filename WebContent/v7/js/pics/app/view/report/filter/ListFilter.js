@@ -13,9 +13,6 @@ Ext.define('PICS.view.report.filter.ListFilter', {
 
         this.callParent(arguments);
 
-        // set filter number
-        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
-
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({

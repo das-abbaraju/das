@@ -51,8 +51,6 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
 
         this.callParent(arguments);
 
-        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-
         if (this.record.get('operator') === '') {
             var firstValue = this.child('panel combo[name=operator]').store.getAt(0).data.field1;
             this.child('panel combo[name=operator]').setValue(firstValue);

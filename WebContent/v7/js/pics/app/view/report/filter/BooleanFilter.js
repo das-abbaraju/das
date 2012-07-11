@@ -27,9 +27,6 @@ Ext.define('PICS.view.report.filter.BooleanFilter', {
         // add filter
         this.child('panel [name=filter_input]').add(boolean_filter);
 
-        // set filter number
-        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
-
         // set filter inputs
         this.child('panel checkbox[name=filter_value]').setValue(this.record.get('not'));
     }
