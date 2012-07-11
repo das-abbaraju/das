@@ -238,6 +238,7 @@ public class FileUtils {
 			}
 		} catch (FileNotFoundException e) {
 			noteText.append("ERROR: failed to find file");
+			logger.error("Failed to find file "+fileLocation);
 		}
 		return noteText.toString();
 	}
@@ -285,6 +286,7 @@ public class FileUtils {
 			BigInteger bigInt = new BigInteger(1, md5sum);
 			return bigInt.toString(16);
 		} catch (Exception e) {
+			logger.error("failed to get MD5 for file: "+file.getName());
 			return null;
 		}
 	}
@@ -303,6 +305,7 @@ public class FileUtils {
 			BigInteger bigInt = new BigInteger(1, sha);
 			return bigInt.toString(16);
 		} catch (Exception e) {
+			logger.error("failed to get fileSHA for file: "+file.getName());
 			return null;
 		}
 	}
@@ -413,6 +416,7 @@ public class FileUtils {
 		try {
 			script = adaptor.merge(template, tokens);
 		} catch (Exception e) {
+			logger.error("adptor failed merge template "+template+" "+tokens.toString());
 			// do nothng
 		}
 		return script;
