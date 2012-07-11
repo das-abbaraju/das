@@ -34,7 +34,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class AuditBuilder {
@@ -337,7 +336,7 @@ public class AuditBuilder {
 	}
 
 	private void adjustCaoStatus(ContractorAudit conAudit) {
-		if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT) {
+		if (isAuditThatCanAdjustStatus(conAudit)) {
 			if (!caosToMoveToComplete.isEmpty()) {
 				adjustCaosToStatus(conAudit, caosToMoveToComplete, AuditStatus.Complete);
 			}
@@ -348,6 +347,12 @@ public class AuditBuilder {
 				adjustCaosToStatus(conAudit, caosToMoveToSubmit, AuditStatus.Submitted);
 			}
 		}
+	}
+
+	private boolean isAuditThatCanAdjustStatus(ContractorAudit conAudit) {
+		return conAudit.getAuditType().isPqf()
+				|| conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
+				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM;
 	}
 
 	private void adjustCaosToStatus(ContractorAudit conAudit, HashSet<ContractorAuditOperator> caosToChange, AuditStatus status) {

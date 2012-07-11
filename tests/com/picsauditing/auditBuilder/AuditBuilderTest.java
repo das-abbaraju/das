@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
@@ -33,6 +32,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -85,7 +86,41 @@ public class AuditBuilderTest extends PicsTest {
 		contractor.getOperatorAccounts().add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
 	}
+	
+	@Test
+	public void testAdjustCaoStatus() {
+		ContractorAudit annualAudit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, "2011");
+		EntityFactory.addCategories(annualAudit.getAuditType(), 101, "Annual Category 1");
+		
+	    OperatorAccount nueOperator = EntityFactory.makeOperator();
+	    OperatorAccount oldOperator = EntityFactory.makeOperator();
+	    OperatorAccount childOperator = EntityFactory.makeOperator();
+	    
+	    EntityFactory.addCao(annualAudit, oldOperator);
+	    ContractorAuditOperator cao =annualAudit.getOperators().get(0);
+	    cao.setStatus(AuditStatus.Complete);
+	    ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+	    caop.setCao(cao);
+	    caop.setOperator(childOperator);
+	    cao.getCaoPermissions().add(caop);
+	    
+	    contractor.getAudits().add(annualAudit);
+	    
+		addTypeRules((new RuleParameters())
+				.setAuditTypeId(AuditType.ANNUALADDENDUM));
+		for (AuditCategory category : annualAudit.getAuditType().getCategories()) {
+			addCategoryRules((new RuleParameters()).setAuditType(annualAudit.getAuditType())
+					.setAuditCategory(category).setOperatorAccount(nueOperator));
+		}
 
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(
+						EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(3, contractor.getAudits().size());
+	}
+		
 	@Test
 	public void testAuditTypeBuilderCategoryBuildere() {
 		// set up audit type
@@ -477,6 +512,5 @@ public class AuditBuilderTest extends PicsTest {
 			this.manuallyAdded = manuallyAdded;
 			return this;
 		}
-
 	}
 }

@@ -191,6 +191,7 @@ public class EntityFactory {
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
 		conAudit.setAuditFor(auditFor);
+		conAudit.setCreationDate(new Date());
 		return conAudit;
 	}
 
