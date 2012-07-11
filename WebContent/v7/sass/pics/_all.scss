@@ -1,9 +1,12 @@
 @import "compass/css3";
 @import "blueprint/typography";
 
+@import 'variables';
+
+@import 'core/typography';
 @import 'core/core';
+
 @import 'layout/layout';
 
-@import 'variables';
 @import 'widgets';
 @import 'templates';

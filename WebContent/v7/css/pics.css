@@ -6,32 +6,32 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 2, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
-body {
-  padding-top: 124px; }
-
-@media (max-width: 979px) {
-  /* line 7, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
-  body {
-    padding-top: 0; }
-
-  /* line 11, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
-  .navbar-fixed-top {
-    margin-bottom: 20px; } }
-/* line 2, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/_global.scss */
+/* line 2, ../sass/pics/core/_core.scss */
 h1.title {
   color: #73BBE8;
   font-size: 30px;
   font-weight: normal; }
 
-/* line 9, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/_global.scss */
+/* line 9, ../sass/pics/core/_core.scss */
 p.subtitle {
   color: #808285;
   font-size: 14px;
   font-weight: normal;
   line-height: 14px; }
 
-/* line 4, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 2, ../sass/pics/layout/_layout.scss */
+body {
+  padding-top: 124px; }
+
+@media (max-width: 979px) {
+  /* line 7, ../sass/pics/layout/_layout.scss */
+  body {
+    padding-top: 0; }
+
+  /* line 11, ../sass/pics/layout/_layout.scss */
+  .navbar-fixed-top {
+    margin-bottom: 20px; } }
+/* line 4, ../sass/pics/templates/reports/_manage.scss */
 .ManageMyReports-page h2 {
   color: #999;
   font-size: 14px;
@@ -39,21 +39,21 @@ p.subtitle {
   margin-bottom: 15px;
   text-align: center; }
 
-/* line 15, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 15, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_menu_container,
 #manage_report_list_container {
   text-align: center; }
 
-/* line 20, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 20, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_menu {
   display: inline-block; }
 
-/* line 26, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 26, ../sass/pics/templates/reports/_manage.scss */
 .lt-ie7 #manage_report_menu,
 .lt-ie8 #manage_report_menu {
   display: inline; }
 
-/* line 31, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 31, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list {
   display: inline-block;
   list-style: none;
@@ -61,12 +61,12 @@ p.subtitle {
   text-align: left;
   width: 60%; }
 
-/* line 41, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 41, ../sass/pics/templates/reports/_manage.scss */
 .lt-ie7 #manage_report_list,
 .lt-ie8 #manage_report_list {
   display: inline; }
 
-/* line 46, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 46, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -80,40 +80,40 @@ p.subtitle {
   overflow: hidden;
   position: relative; }
 
-/* line 57, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 57, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .favorite {
   line-height: normal;
   float: left;
   margin: 9px 0px 0px 3px;
   text-decoration: none; }
 
-/* line 65, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 65, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .icon-star {
   color: #ccc;
   font-size: 13px; }
 
-/* line 71, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 71, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .icon-star.selected {
   color: #a84d10; }
 
-/* line 76, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 76, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .summary {
   float: left;
   margin: 0px 10px; }
 
-/* line 82, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 82, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .name {
   color: #000000;
   margin: 0px 20px 0px 0px; }
 
-/* line 88, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 88, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .created-by {
   color: #999;
   font-size: 10px;
   font-style: italic;
   white-space: nowrap; }
 
-/* line 96, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/v7/sass/pics/templates/reports/_manage.scss */
+/* line 96, ../sass/pics/templates/reports/_manage.scss */
 #manage_report_list .delete {
   border-left: 1px solid #ccc;
   color: #999;
