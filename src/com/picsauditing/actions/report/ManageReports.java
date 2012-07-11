@@ -28,6 +28,9 @@ public class ManageReports extends PicsActionSupport {
 	private static final String MY_REPORTS = "saved";
 	private static final String ALL_REPORTS = "all";
 
+	public static final String MY_REPORTS_URL = "ManageReports!viewMyReports.action";
+	public static final String FAVORITE_REPORTS_URL = "ManageReports!viewFavoriteReports.action";
+
 	@Autowired
 	private ReportAccessor reportAccessor;
 
@@ -113,21 +116,20 @@ public class ManageReports extends PicsActionSupport {
 	public String getPageDescription() {
 		String pageDescription = "";
 
-		if (MY_REPORTS.equals(viewType)) {
+		if (FAVORITE.equals(viewType)) {
 			// TODO add i18n to this
-			pageDescription = "Edit and manage all of your reports.";
-		} else if (FAVORITE.equals(viewType)) {
+			pageDescription = "These reports will show in your Reports menu.";
+		} else if (MY_REPORTS.equals(viewType)) {
 			// TODO add i18n to this
-			pageDescription = "These reports will show in your Reports menu dropdown.";
+			pageDescription = "All of your reports that you've saved, created, and that have been shared with you.";
 		} else if (ALL_REPORTS.equals(viewType)) {
 			// TODO add i18n to this
-			pageDescription = "Find new reports based on your specific needs and what's popular";
+			pageDescription = "Search all your reports and find new ones based on your specific needs and what's popular.";
 		}
 
 		return pageDescription;
 	}
 
-	// TODO move to ReportAccessor
 	public String removeUserReport() throws Exception {
 		try {
 			reportAccessor.removeUserReport(permissions.getUserId(), reportId);
@@ -141,7 +143,7 @@ public class ManageReports extends PicsActionSupport {
 			logger.error(e.toString());
 		}
 
-		return redirectToMyReports();
+		return redirectToFavoriteReports();
 	}
 
 	// TODO move to ReportAccessor
@@ -164,10 +166,9 @@ public class ManageReports extends PicsActionSupport {
 			logger.error(e.toString());
 		}
 
-		return redirectToMyReports();
+		return redirectToFavoriteReports();
 	}
 
-	// TODO move to ReportAccessor
 	public String toggleFavorite() {
 		try {
 			reportAccessor.toggleReportUserFavorite(permissions.getUserId(), reportId);
@@ -179,12 +180,12 @@ public class ManageReports extends PicsActionSupport {
 			logger.error(e.toString());
 		}
 
-		return redirectToMyReports();
+		return redirectToFavoriteReports();
 	}
 
-	private String redirectToMyReports() {
+	private String redirectToFavoriteReports() {
 		try {
-			setUrlForRedirect("ManageMyReports.action");
+			setUrlForRedirect(FAVORITE_REPORTS_URL);
 		} catch (IOException ioe) {
 			logger.error(ioe.toString());
 		}

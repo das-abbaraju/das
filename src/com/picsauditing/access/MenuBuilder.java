@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -278,7 +279,7 @@ public class MenuBuilder {
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
-		reportsMenu.addChild(getText("menu.ManageReports"), "ManageMyReports.action", "manage_reports");
+		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.MY_REPORTS_URL, "manage_reports");
 
 		if (favoriteReports == null)
 			return;

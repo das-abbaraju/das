@@ -422,18 +422,6 @@
 			<result>struts/reports/report_dynamic.jsp</result>
 		</action>
 
-		<action name="ManageFavoriteReports" class="com.picsauditing.actions.report.ManageReports" method="viewFavoriteReports">
-			<result>struts/reports/manage_reports.jsp</result>
-		</action>
-
-		<action name="ManageMyReports" class="com.picsauditing.actions.report.ManageReports" method="viewMyReports">
-			<result>struts/reports/manage_reports.jsp</result>
-		</action>
-
-		<action name="ManageAllReports" class="com.picsauditing.actions.report.ManageReports" method="viewAllReports">
-			<result>struts/reports/manage_reports.jsp</result>
-		</action>
-
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
 			<result>struts/reports/manage_reports.jsp</result>
 		</action>

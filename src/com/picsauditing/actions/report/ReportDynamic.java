@@ -62,7 +62,7 @@ public class ReportDynamic extends PicsActionSupport {
 		if (report == null) {
 			// No matter what junk we get in the url, redirect
 			try {
-				status = setUrlForRedirect("ManageMyReports.action");
+				status = setUrlForRedirect(ManageReports.MY_REPORTS_URL);
 
 				String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("report");
 				// Don't trust user input!

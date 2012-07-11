@@ -1,4 +1,4 @@
-.ManageMyReports-page
+.ManageReports-page
 {
 	h2
 	{
@@ -15,10 +15,32 @@
 {
 	text-align: center;
 }
-	
+
 #manage_report_menu
 {
 	display: inline-block;
+}
+
+#report_search
+{
+	color: #777;
+	padding: 10px;
+	text-align: center;
+}
+
+#report_search input[type="text"]
+{
+	background: #f1f1f2;
+	color: #bbb;
+	height: 12px;
+	@include border-radius(20px);
+	width: 300px;
+}
+
+hr
+{
+    margin: 15px auto;
+	width: 60%;
 }
 
 .lt-ie7 #manage_report_menu,
