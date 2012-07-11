@@ -23,6 +23,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
@@ -58,6 +59,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private UserSwitchDAO userSwitchDAO;
 	@Autowired
 	private FacilitiesEditModel facilitiesEditModel;
+	@Autowired
+	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	private String createType;
 	private List<Integer> facilities;
@@ -225,9 +228,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator.setCountry(country);
 		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
 			operator.setState(state);
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(state.getIsoCode(), country.getIsoCode());
-			operator.setCountrySubdivision(countrySubdivision);
+
+			if (countrySubdivisionDAO.exist(state.getIsoCode()+"-"+country.getIsoCode())){
+				CountrySubdivision countrySubdivision = new CountrySubdivision();
+				countrySubdivision.setIsoCode(state.getIsoCode()+"-"+country.getIsoCode());
+				operator.setCountrySubdivision(countrySubdivision);
+			}
 		}
 
 		if (hasActionErrors()) {

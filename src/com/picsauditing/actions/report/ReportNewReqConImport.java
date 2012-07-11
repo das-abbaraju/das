@@ -25,6 +25,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
@@ -63,6 +64,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	protected EmailAttachmentDAO attachmentDAO;
 	@Autowired
 	protected EmailSenderSpring emailSenderSpring;
+	@Autowired
+	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	private File file;
 	private String fileContentType = null;
@@ -299,9 +302,11 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
 		crr.setState(importedState);
-		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(importedState.getIsoCode(), importedCountry.getIsoCode());
-		crr.setCountrySubdivision(countrySubdivision);
+		if (countrySubdivisionDAO.exist(importedState.getIsoCode()+"-"+importedCountry.getIsoCode())){
+			CountrySubdivision countrySubdivision = new CountrySubdivision();
+			countrySubdivision.setIsoCode(importedState.getIsoCode()+"-"+importedCountry.getIsoCode());
+			crr.setCountrySubdivision(countrySubdivision);
+		}
 		if (zipValue != null) {
 			if (zipValue instanceof Double) {
 				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);

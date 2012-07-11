@@ -15,6 +15,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
@@ -44,6 +45,8 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected JobSiteTaskDAO jobSiteTaskDAO;
 	@Autowired
 	protected JobTaskDAO jobTaskDAO;
+	@Autowired
+	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	protected ContractorAccount contractor;
 	protected JobSite jobSite;
@@ -101,7 +104,9 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setCity(siteCity);
 			jobSite.setCountry(siteCountry);
 			jobSite.setState(siteState);
-			jobSite.setCountrySubdivision(getCountrySubdivision());
+			if (isCountrySubdivision()) {
+				jobSite.setCountrySubdivision(getCountrySubdivision());
+			}
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Added new", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -124,7 +129,9 @@ public class ManageJobSites extends OperatorActionSupport {
 				jobSite.setCountry(siteCountry);
 
 			jobSite.setState(siteState);
-			jobSite.setCountrySubdivision(getCountrySubdivision());
+			if (isCountrySubdivision()) {
+				jobSite.setCountrySubdivision(getCountrySubdivision());
+			}
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Updated", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -134,9 +141,13 @@ public class ManageJobSites extends OperatorActionSupport {
 		return getRedirect();
 	}
 
+	private boolean isCountrySubdivision() {
+		return countrySubdivisionDAO.exist(siteState.getIsoCode() + "-" + siteCountry.getIsoCode());
+	}
+
 	private CountrySubdivision getCountrySubdivision() {
 		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(siteState.getIsoCode(), siteCountry.getIsoCode());
+		countrySubdivision.setIsoCode(siteState.getIsoCode() + "-" + siteCountry.getIsoCode());
 		return countrySubdivision;
 	}
 
