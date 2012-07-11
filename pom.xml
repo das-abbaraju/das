@@ -707,6 +707,7 @@
 			<groupId>com.tacitknowledge</groupId>
 			<artifactId>autopatch</artifactId>
 			<version>1.4.1-PICS</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
