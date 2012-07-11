@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportAccount;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -15,17 +16,21 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.business.NoteFactory;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportUntaggedContractors extends ReportAccount {
+	
 	@Autowired
 	private ContractorTagDAO conTagDAO;
 	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
+	@Autowired
+	private NoteDAO noteDAO;
 
 	private int[] contractors;
 	private OperatorTag tag;
@@ -106,6 +111,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 				conTag.setAuditColumns(permissions);
 
 				conTagDAO.save(conTag);
+				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(conTag, permissions));
 			}
 
 			contractors = null;

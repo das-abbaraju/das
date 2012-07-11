@@ -1,7 +1,6 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -46,6 +45,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.strutsutil.AdvancedValidationAware;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.SpringUtils;
@@ -53,7 +53,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
-public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
+public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware, AdvancedValidationAware {
 
 	protected static Boolean CONFIG = null;
 
@@ -468,7 +468,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public List<BasicDynaBean> getDepartmentList() throws SQLException {
-		String like = (String) ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
+		String like = ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
 		if (like == null)
 			like = "";
 		like = like.trim();
@@ -672,6 +672,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public synchronized void clearMessage() {
 		alertMessages = null;
+	}
+
+	public void setAlertMessages(Collection<String> messages) {
+		alertMessages = messages;
 	}
 
 	/**

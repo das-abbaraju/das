@@ -31,6 +31,7 @@ import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.NaicsDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -60,6 +61,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.business.NoteFactory;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
@@ -83,6 +85,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
+	@Autowired
+	private NoteDAO noteDAO;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -151,6 +155,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				contractor.incrementRecalculation(10);
 				contractorAccountDao.save(contractor);
+				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag, permissions));
 				auditTypeRuleCache.initialize(auditRuleDAO);
 				for (AuditTypeRule atr : auditTypeRuleCache.getRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
@@ -162,9 +167,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("RemoveTag".equals(button)) {
+			noteDAO.save(NoteFactory.generateNoteForRemovingTagFromContractor(tagId, permissions));
 			contractorTagDAO.remove(tagId);
 			contractor.incrementRecalculation(10);
-			contractorAccountDao.save(contractor);
+			contractorAccountDao.save(contractor);			
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {

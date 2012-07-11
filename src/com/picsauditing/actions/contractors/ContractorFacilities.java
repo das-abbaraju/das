@@ -18,6 +18,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -36,6 +37,7 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.business.NoteFactory;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
@@ -47,6 +49,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private OperatorAccountDAO operatorDao;
 	@Autowired
 	private ContractorAccountDAO accountDao;
+	@Autowired
+	private NoteDAO noteDAO;
 	@Autowired
 	private FacilityChanger facilityChanger;
 	@Autowired
@@ -110,6 +114,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					contractor.getOperatorTags().add(cTag);
 					contractor.incrementRecalculation(10);
 					accountDao.save(contractor);
+					noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag, permissions));
 				}
 			}
 

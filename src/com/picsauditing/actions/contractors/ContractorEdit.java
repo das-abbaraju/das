@@ -23,6 +23,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -82,7 +83,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected BillingCalculatorSingle billingService;
 	@Autowired
 	protected NoteDAO noteDao;
-
+	@Autowired
+	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -212,18 +214,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 			}
 			
-			if (!contractor.getCountry().equals(country) ||
-					!contractor.getState().equals(state)) {
+			if (!contractor.getCountry().equals(country) || !contractor.getState().equals(state)) {
 				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 				
 				stampContractorNoteAboutOfficeLocationChange();
 			}
 			contractor.setCountry(country);
 			contractor.setState(state);
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(state.getIsoCode(), country.getIsoCode());
-			contractor.setCountrySubdivision(countrySubdivision);
 			
+			if (countrySubdivisionDAO.exist(state.getIsoCode()+"-"+country.getIsoCode())){
+				CountrySubdivision countrySubdivision = new CountrySubdivision();
+				countrySubdivision.setIsoCode(state.getIsoCode()+"-"+country.getIsoCode());
+				contractor.setCountrySubdivision(countrySubdivision);
+			}
+
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
 
 			if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {

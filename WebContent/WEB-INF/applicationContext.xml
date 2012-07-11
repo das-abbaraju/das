@@ -44,6 +44,7 @@
 	<bean id="ContractorRegistrationRequestDAO" class="com.picsauditing.dao.ContractorRegistrationRequestDAO"/>
 	<bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO"/>
 	<bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
+	<bean id="CountrySubdivisionDAO" class="com.picsauditing.dao.CountrySubdivisionDAO"/>
 	<bean id="EbixLoader" class="com.picsauditing.util.EbixLoader"/>
 	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
 	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>

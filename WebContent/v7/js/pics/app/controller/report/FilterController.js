@@ -29,16 +29,18 @@ Ext.define('PICS.controller.report.FilterController', {
 
         this.control({
             'filteroptions #report_filters': {
-                beforeRender: function () {
+                beforerender: function () {
                     if (this.getReportReportsStore().isLoading()) {
                         this.getReportReportsStore().addListener({
                             load: function (store, records, successful, eOpts) {
                                 that.application.fireEvent('refreshfilters');
+
                                 Ext.defer(that.loadAdvancedFilter, 1, this) //TODO: refactor to take out defer
                             }
                         });
                     } else {
                         this.application.fireEvent('refreshfilters');
+
                         Ext.defer(that.loadAdvancedFilter, 1, this) //TODO: refactor to take out defer
                     }
                 }

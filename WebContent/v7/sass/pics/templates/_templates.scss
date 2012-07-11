@@ -1,1 +1,11 @@
-@import 'reports/manage';
+/*
+ * Templates
+ *
+ * Manages all jsp templates based off file structure.
+ * Place all page templates in this file, including widget overrides.
+ *
+ * @author: Carey Hinoki
+ * @date: 2012-07-10
+ */
+ 
+@import 'report/list';

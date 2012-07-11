@@ -5,15 +5,7 @@
 	title="<s:text name="WhoIs.ClickToHide" />"
 	style="cursor: pointer; position: absolute; border: 1px solid gray; z-index: 10000; background-color: rgb(238, 238, 238); text-align: left; display: none;" >
 
-<s:text name="WhoIs.CreatedBy"><s:param><s:property value="#o.createdBy.name"/></s:param><s:param><s:property value="#o.createdBy.account.name"/></s:param><s:param><s:date name="#o.creationDate"/></s:param></s:text>
-
-<s:if test="#o.createdBy.id != #o.updatedBy.id || #o.updateDate.after(#o.creationDate)">
-	<br /><s:text name="WhoIs.LastUpdatedBy"><s:param><s:property value="#o.updatedBy.name"/></s:param><s:param><s:property value="#o.updatedBy.account.name"/></s:param><s:param><s:date name="#o.updateDate"/></s:param></s:text>
-</s:if>
-
-<s:if test="#addBy != null && #addDate != null" >
-	<br /><s:text name="WhoIs.AddBy" ><s:param><s:property value="#addBy.name"/></s:param><s:param><s:property value="#addDate" /></s:param></s:text>
-</s:if>
+<s:text name="WhoIs.TaggedBy"><s:param><s:property value="#o.updatedBy.name"/></s:param><s:param><s:property value="#o.updatedBy.account.name"/></s:param><s:param><s:date name="#o.updateDate" format="%{getText('date.shorttime')}" /></s:param></s:text>
 
 </div>
 <img class="noprint" src="images/help.gif" width="12" height="12" 

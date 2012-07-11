@@ -44,10 +44,6 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 		this.isoCode = isoCode;
 	}
 	
-	public void setIsoCode (String state, String isoCountry){
-		this.isoCode = isoCountry +"-"+state;
-	}	
-	
 	@ManyToOne
 	@JoinColumn(name = "countryCode")
 	public Country getCountry() {
