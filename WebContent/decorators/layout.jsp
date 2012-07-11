@@ -23,13 +23,12 @@
 		<meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap.css?v=${version}" />
-        <%-- <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap-responsive.css?v=${version}" /> --%>
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/bootstrap-custom.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/font-awesome.css?v=${version}" />
         
         <%-- custom --%>
         <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css" />
+        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme-menu.css" />
         
         <link rel="stylesheet" type="text/css" href="v7/css/pics.css">
         
@@ -51,7 +50,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script>window.jQuery || document.write('<script src="v7/js/libs/jquery-1.7.1.min.js"><\/script>')</script>
         
-        <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
+        <script type="text/javascript" src="v7/js/pics/extjs/ext-all.js"></script>
         <script type="text/javascript" src="v7/js/menu.js"></script>
     </body>
 </html>

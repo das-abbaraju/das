@@ -170,8 +170,8 @@
         
         <nav id="site_navigation"></nav>
         
-        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme-menu.css" />
-        <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
+        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme-menu.css" />
+        <script type="text/javascript" src="v7/js/pics/extjs/ext-all.js"></script>
         <script type="text/javascript" src="v7/js/menu.js"></script>
         
         <% } %>
