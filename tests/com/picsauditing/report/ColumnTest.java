@@ -1,14 +1,11 @@
 package com.picsauditing.report;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.json.simple.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFunction;
-
-import com.picsauditing.report.Column;
 
 @SuppressWarnings("unchecked")
 public class ColumnTest {
@@ -37,11 +34,11 @@ public class ColumnTest {
 	@Test
 	public void testFunction() {
 		jsonObj.put("name", "AccountNameUpperCase");
-		jsonObj.put("function", "UpperCase");
+		jsonObj.put("method", "UpperCase");
 		column.fromJSON(jsonObj);
 		assertEquals(QueryFunction.UpperCase, column.getFunction());
 
-		String expected = "{\"name\":\"AccountNameUpperCase\",\"function\":\"UpperCase\"}";
+		String expected = "{\"name\":\"AccountNameUpperCase\",\"method\":\"UpperCase\"}";
 		assertEquals(expected, column.toJSON(true).toJSONString());
 	}
 
