@@ -1,0 +1,23 @@
+#app_property_list .name
+{
+	.name
+	{
+		width: 20%;
+	}
+	
+	.value
+	{
+		width: 70%;
+	}
+	
+	.actions
+	{
+		width: 10%;
+	}
+	
+	.value p
+	{
+		width: 400px;
+		word-wrap: break-word;
+	}
+}

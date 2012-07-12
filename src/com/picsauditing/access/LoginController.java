@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -234,7 +233,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Method to log in via an ajax overlay
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -253,7 +252,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Result for when the user is not logged in during an ajax request.
-	 *
+	 * 
 	 * @return
 	 */
 	@Anonymous
@@ -265,7 +264,7 @@ public class LoginController extends PicsActionSupport {
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -478,10 +477,6 @@ public class LoginController extends PicsActionSupport {
 
 	public void setLoginLogDAO(UserLoginLogDAO loginLogDAO) {
 		this.loginLogDAO = loginLogDAO;
-	}
-
-	private HttpServletRequest getRequest() {
-		return ServletActionContext.getRequest();
 	}
 
 	private HttpServletResponse getResponse() {

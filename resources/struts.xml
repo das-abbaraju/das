@@ -1535,7 +1535,9 @@
 		</action>
 
 		<action name="ManageAppProperty" class="com.picsauditing.actions.ManageAppProperty">
-			<result>/struts/misc/manage_app_property.jsp</result>
+			<result name="create">/struts/app_property/create.jsp</result>
+			<result name="edit">/struts/app_property/edit.jsp</result>
+			<result name="list">/struts/app_property/list.jsp</result>
 		</action>
 
 		<action name="ManageFlagCriteriaOperator"
