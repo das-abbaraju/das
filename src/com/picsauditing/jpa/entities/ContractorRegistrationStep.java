@@ -18,7 +18,8 @@ public enum ContractorRegistrationStep {
 			return Clients;
 		if (!containsOperator(contractor.getOperators()))
 			return Clients;
-		if (contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly())
+		if (contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly()
+				&& !contractor.isTransportationServices())
 			return Risk;
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))
 			return Risk;
