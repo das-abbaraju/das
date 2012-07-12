@@ -136,7 +136,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 			addActionMessage(sendRecoveryEmail(user));
 
-			return redirect("Login.action");
+			return setUrlForRedirect("Login.action");
 
 		} catch (Exception e) {
 			addActionError(getText("AccountRecovery.error.UserNameNotFound"));
