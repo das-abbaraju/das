@@ -3,6 +3,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     alias: ['widget.searchbox'],
 
     autoScroll: false,
+    autoSelect: false,
     displayField: 'name',
     emptyText: 'search',
     fieldLabel: '<i class="icon-search icon-large"></i>',
@@ -15,6 +16,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         id: 'site_menu_search_list',
         loadingText: 'Searching...',
         maxHeight: 500,
+        minWidth: 400,
 
         tpl: Ext.create('Ext.XTemplate',
             '<ul>',
@@ -32,16 +34,26 @@ Ext.define('PICS.view.layout.SearchBox', {
                         '</div>',
                     '</li>',
                 '</tpl>',
-            '</ul>'
+            '</ul>',
+            '<a href="">',
+                '<div class="search-item-full">',
+                'Full search...',
+                '</div>',
+            '</a>'
         ),
     },
 
     listeners: {
-        select: function(combo, selection) {
-            var post = selection[0];
+        select: function(combo, records, eOpts) {
+            var post = records[0];
             if (post) {
-                // TODO change this to be more betterer
-                window.location = Ext.String.format('http://localhost:8080/SearchBox.action?button=search&searchTerm={0}', post.get('name'));
+                document.location = '/SearchBox.action?button=search&searchTerm=' + post.get('name');
+            }
+        },
+
+        specialkey: function(base, e, eOpts) {
+            if (e.getKey() === e.ENTER) {
+                document.location = '/SearchBox.action?button=search&searchTerm=' + base.getValue();
             }
         }
     },
@@ -64,5 +76,5 @@ Ext.define('PICS.view.layout.SearchBox', {
             }
         }
     },
-    width: 300
+    width: 200
 });

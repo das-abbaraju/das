@@ -74,7 +74,10 @@ public class ReportDynamic extends PicsActionSupport {
 				}
 			} catch (NumberFormatException nfe) {
 				// Someone typed junk into the url
-				logger.error(nfe.toString());
+				logger.warn(nfe.toString());
+			} catch (IOException ioe) {
+				// Someone typed junk into the url
+				logger.warn("Problem with setUrlForRedirect() for not logged in user.", ioe);
 			} catch (Exception e) {
 				// Probably a null pointer
 				logger.error(e.toString());

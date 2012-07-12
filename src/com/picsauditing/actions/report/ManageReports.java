@@ -84,11 +84,6 @@ public class ManageReports extends PicsActionSupport {
 
 			if (FAVORITE.equals(viewType)) {
 				userReports = reportAccessor.findFavoriteUserReports(userId);
-
-				if (CollectionUtils.isEmpty(userReports)) {
-					// TODO add i18n to this
-					addActionMessage("You have not favorited any reports.");
-				}
 			} else if (MY_REPORTS.equals(viewType)) {
 				userReports = reportAccessor.findAllUserReports(userId);
 			} else if (ALL_REPORTS.equals(viewType)) {

@@ -94,7 +94,7 @@ public class ReportDynamicTest {
 		String strutsResult = reportDynamic.execute();
 
 		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-		verify(logger).error("java.lang.NumberFormatException: For input string: \"" + invalidReportId + "\"");
+		verify(logger).warn("java.lang.NumberFormatException: For input string: \"" + invalidReportId + "\"");
 	}
 
 	@Test
