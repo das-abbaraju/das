@@ -17,6 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,6 +51,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.DATE)
+	@ReportField(category = FieldCategory.Invoice, filterType = FilterType.Date)
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -57,6 +61,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@ReportField(category = FieldCategory.Invoice, filterType = FilterType.Date)
 	public Date getPaidDate() {
 		return paidDate;
 	}
@@ -65,6 +70,7 @@ public class Invoice extends Transaction {
 		this.paidDate = paidDate;
 	}
 
+	@ReportField(category = FieldCategory.Invoice, filterType = FilterType.String)
 	public String getPoNumber() {
 		return poNumber;
 	}
@@ -73,6 +79,7 @@ public class Invoice extends Transaction {
 		this.poNumber = poNumber;
 	}
 
+	@ReportField(category = FieldCategory.Invoice, filterType = FilterType.String)
 	public String getNotes() {
 		return notes;
 	}

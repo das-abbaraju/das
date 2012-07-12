@@ -7,6 +7,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldCategory;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name="payment_commission")
@@ -37,6 +42,7 @@ public class PaymentCommission extends BaseTable {
 		this.payment = payment;
 	}
 
+	@ReportField(category = FieldCategory.Commission, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing)
 	public BigDecimal getPaymentAmount() {
 		return paymentAmount;
 	}
@@ -45,6 +51,7 @@ public class PaymentCommission extends BaseTable {
 		this.paymentAmount = paymentAmount;
 	}
 	
+	@ReportField(category = FieldCategory.Commission, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing)
 	public float getActivationPoints() {
 		return activationPoints;
 	}

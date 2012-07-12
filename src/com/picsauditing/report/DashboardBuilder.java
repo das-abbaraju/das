@@ -9,8 +9,6 @@ import org.json.simple.JSONObject;
 import com.picsauditing.jpa.entities.Dashboard;
 import com.picsauditing.jpa.entities.DashboardWidget;
 import com.picsauditing.jpa.entities.WidgetType;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.util.Strings;
 
 /*
  * panels: [ {

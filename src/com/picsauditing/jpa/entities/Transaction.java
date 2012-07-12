@@ -15,6 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldCategory;
+
 @Entity
 @Table(name = "invoice")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -38,6 +43,7 @@ public abstract class Transaction extends BaseTable {
 		this.account = account;
 	}
 
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing)
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -46,6 +52,7 @@ public abstract class Transaction extends BaseTable {
 		this.totalAmount = totalAmount;
 	}
 
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing)
 	public BigDecimal getAmountApplied() {
 		return amountApplied;
 	}
@@ -92,8 +99,10 @@ public abstract class Transaction extends BaseTable {
 		this.qbListID = qbListID;
 	}
 
+	// TODO: No uniform i18nKeyPrefix for this case. Need to know how this affects us.
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.Enum, i18nKeyPrefix = "TransactionStatus")
 	public TransactionStatus getStatus() {
 		return status;
 	}
@@ -103,6 +112,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.String)
 	public Currency getCurrency() {
 		return currency;
 	}

@@ -13,6 +13,7 @@ import com.picsauditing.util.Strings;
 
 public class JpaFieldExtractor {
 	static public Set<Field> addFields(Class<?> clazz, String prefix, String alias) {
+		// TODO: Revise this to allow for super class methods
 		Set<Field> fields = new HashSet<Field>();
 		for (Method method : clazz.getMethods()) {
 			if (clazz.equals(method.getDeclaringClass())) {

@@ -13,6 +13,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.braintree.CreditCard;
 
 @Entity
@@ -28,6 +31,7 @@ public class Payment extends Transaction {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Enum)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
@@ -36,6 +40,7 @@ public class Payment extends Transaction {
 		this.paymentMethod = paymentMethod;
 	}
 
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.String)
 	public String getCheckNumber() {
 		return checkNumber;
 	}
@@ -44,6 +49,7 @@ public class Payment extends Transaction {
 		this.checkNumber = checkNumber;
 	}
 
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.String)
 	public String getTransactionID() {
 		return transactionID;
 	}
@@ -53,6 +59,7 @@ public class Payment extends Transaction {
 	}
 
 	@Column(name = "ccNumber")
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.String)
 	public String getCcNumber() {
 		return ccNumber;
 	}

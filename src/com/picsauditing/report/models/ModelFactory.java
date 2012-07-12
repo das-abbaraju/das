@@ -22,6 +22,10 @@ public class ModelFactory {
 			return new AccountContractorAuditOperatorModel();
 		if (type.equals(ModelType.Country))
 			return new CountryModel();
+		if (type.equals(ModelType.Invoices))
+			return new InvoiceModel();
+		if (type.equals(ModelType.PaymentCommissions))
+			return new PaymentCommissionModel();
 		if (type.equals(ModelType.Operators))
 			return new AccountOperatorModel();
 

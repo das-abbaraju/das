@@ -10,6 +10,8 @@ import com.picsauditing.report.tables.AbstractTable;
 public abstract class AbstractModel {
 
 	protected AbstractTable primaryTable;
+	// TODO: Find a better way of passing down the parent table
+	protected AbstractTable parentTable;
 	protected String defaultSort = null;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 

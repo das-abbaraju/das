@@ -43,4 +43,9 @@ public class ReportUtilTest {
 		assertNotNull(column);
 		assertEquals(fieldName, column.getFieldName());
 	}
+
+	@Test
+	public void testTranslateLabel_FieldIsNull() {
+		// TODO: Write this test
+	}
 }

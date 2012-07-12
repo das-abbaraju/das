@@ -10,6 +10,7 @@ import com.picsauditing.util.Strings;
 public class Column implements JSONable {
 
 	private String fieldName;
+	// TODO: Change all "Function" to "Method"
 	private QueryFunction function = null;
 	private String option;
 	private Field field;
@@ -26,7 +27,7 @@ public class Column implements JSONable {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
 		if (function != null) {
-			json.put("function", function.toString());
+			json.put("method", function.toString());
 			if (!Strings.isEmpty(option))
 				json.put("option", option);
 		}
@@ -42,7 +43,7 @@ public class Column implements JSONable {
 			return;
 
 		this.fieldName = (String) json.get("name");
-		String functionName = (String) json.get("function");
+		String functionName = (String) json.get("method");
 		if (!Strings.isEmpty(functionName)) {
 			this.function = QueryFunction.valueOf(functionName);
 			this.option = (String) json.get("option");

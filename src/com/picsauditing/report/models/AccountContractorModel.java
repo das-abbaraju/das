@@ -10,6 +10,8 @@ public class AccountContractorModel extends AccountModel {
 
 		ContractorTable contractorTable = new ContractorTable(primaryTable.getPrefix(), primaryTable.getAlias());
 		primaryTable.addAllFieldsAndJoins(contractorTable);
+		// TODO: Find a better way of passing down the parent table
+		parentTable = contractorTable;
 	}
 
 }

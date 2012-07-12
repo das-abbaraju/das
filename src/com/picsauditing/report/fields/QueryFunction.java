@@ -8,7 +8,7 @@ public enum QueryFunction {
 	LowerCase,
 	Max(true),
 	Min(true),
-	Month,
+	Month, // TODO: Find a way to display the numeric instead of the date
 	Round,
 	Sum(true),
 	UpperCase,

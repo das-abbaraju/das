@@ -186,6 +186,7 @@ public final class ReportUtil {
 	}
 
 	public static String translateLabel(Field field, Locale locale) {
+		// TODO: Make this null safe for Field
 		String translatedText = getText("Report." + field.getName(), locale);
 		if (translatedText == null) {
 			translatedText = "?Report." + field.getName();
