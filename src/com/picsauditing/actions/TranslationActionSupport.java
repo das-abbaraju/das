@@ -32,7 +32,7 @@ public class TranslationActionSupport extends ActionSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
 	private static final Locale[] supportedLocales = new Locale[] { Locale.ENGLISH, Locale.FRENCH, new Locale("es"),
-			Locale.GERMAN, new Locale("sv"), new Locale("fi") };
+			Locale.GERMAN, new Locale("sv"), new Locale("fi"), new Locale("nl") };
 
 	public static Locale[] getSupportedLocales() {
 		return supportedLocales;
@@ -214,17 +214,16 @@ public class TranslationActionSupport extends ActionSupport {
 	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
 		Map<String, String> translationMap = i18nCache.getText(key);
 		Map<String, String> newTranslationMap = new HashMap<String, String>();
-		
+
 		Locale locale = null;
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
 			String keyStr = entry.getKey();
-			String [] lanCountry = keyStr.split("_");
-			
-			//e.g. en_GB
-			if(lanCountry.length > 1) {
-				locale = new Locale(lanCountry[0],lanCountry[1]);
-			}
-			else {
+			String[] lanCountry = keyStr.split("_");
+
+			// e.g. en_GB
+			if (lanCountry.length > 1) {
+				locale = new Locale(lanCountry[0], lanCountry[1]);
+			} else {
 				locale = new Locale(keyStr);
 			}
 			newTranslationMap.put(locale.getDisplayName(), entry.getValue());
