@@ -104,7 +104,7 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         dashboard_menu.height = 70;
-        dashboard_menu.icon = 'js/pics/app/resources/images/logo.png';
+        dashboard_menu.icon = 'v7/js/pics/app/resources/images/logo.png';
         dashboard_menu.padding = '0px 20px';
         dashboard_menu.scale = 'large';
     },
