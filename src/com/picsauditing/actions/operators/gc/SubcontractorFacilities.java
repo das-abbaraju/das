@@ -28,6 +28,8 @@ public class SubcontractorFacilities extends ContractorActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		subHeading = getText("SubcontractorFacilities.title");
+
 		if (!permissions.isGeneralContractor() && !permissions.isAdmin()) {
 			throw new NoRightsException("General Contractor");
 		}

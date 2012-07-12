@@ -304,7 +304,7 @@ function loadStatus(caoID, addUserNote){
 				</li>
 			</s:if>
 			
-			<s:if test="permissions.generalContractor || permissions.admin">
+			<s:if test="permissions.generalContractor">
 				<li>
 					<a href="SubcontractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('subcontractor_facilities')">class="current"</s:if>>
 						<s:text name="SubcontractorFacilities.title" />

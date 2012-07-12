@@ -8,10 +8,16 @@
 	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
 </head>
-<body>		
-	<h1>
-		<s:text name="SubcontractorFacilities.title" />
-	</h1>
+<body>
+	<s:include value="../contractors/conHeader.jsp" />
+	
+	<div class="info">
+		<s:text name="SubcontractorFacilities.RemovingSitesHelp">
+			<s:param>
+				<s:text name="PicsPhone" />
+			</s:param>
+		</s:text>
+	</div>
 	
 	<s:form id="save" method="POST" enctype="multipart/form-data">
 		<fieldset class="form">
