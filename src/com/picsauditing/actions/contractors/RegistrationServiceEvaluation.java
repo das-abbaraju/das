@@ -302,7 +302,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 	}
 	
-	private void calculateRiskLevels() {
+	/* Test */ void calculateRiskLevels() {
 		Collection<AuditData> auditList = answerMap.values();
 		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
 		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
@@ -320,12 +320,20 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		// we've calculated
 		if (!contractor.isMaterialSupplierOnly()) {
 			safetyRiskEqualOrBelowSelfRating = conSafety.ordinal() >= safety.ordinal();
-			contractor.setSafetyRisk(safety);
+			if (!safetyRiskEqualOrBelowSelfRating) {
+				contractor.setSafetyRisk(safety);
+			} else {
+				contractor.setSafetyRisk(conSafety);
+			}
 		}
 		
 		if (contractor.isMaterialSupplier()) {
 			productRiskEqualOrBelowSelfRating = conProduct.ordinal() >= product.ordinal();
-			contractor.setProductRisk(product);
+			if (!productRiskEqualOrBelowSelfRating) {
+				contractor.setProductRisk(product);
+			} else {
+				contractor.setProductRisk(conProduct);
+			}
 		}
 
 		contractor.setAuditColumns(permissions);
