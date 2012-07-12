@@ -421,7 +421,7 @@ public class PicsMenu {
 			subMenu.addChild("Server Information", "ServerInfo.action", "ServerInfo");
 			subMenu.addChild("Audit Schedule Builder", "AuditScheduleBuilderCron.action", "AuditScheduleBuilder");
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action", "HuntsmanSync");
-			subMenu.addChild("CSS Style Guide", "css.jsp", "CSSStyleGuide");
+			subMenu.addChild("PICS Style Guide", "PicsStyleGuide.action", "PicsStyleGuide");
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action", "ManageAppProperties");
 			subMenu.addChild("Exception Log", "ReportExceptions.action", "ExceptionLog");
 			subMenu.addChild("Batch Insert Translations", "BatchTranslations.action", "BatchInsertTrans");

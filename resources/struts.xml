@@ -1709,6 +1709,13 @@
 		<action name="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium">
 			<result>/struts/selenium/reset_selenium.jsp</result>
 		</action>
+
+		<action name="PicsStyleGuide" class="com.picsauditing.actions.PicsStyleGuide">
+			<result>/struts/style_guide/dashboard.jsp</result>
+			<result name="buttons">/struts/style_guide/buttons.jsp</result>
+			<result name="forms">/struts/style_guide/forms.jsp</result>
+			<result name="pills">/struts/style_guide/pills.jsp</result>
+		</action>
 	</package>
 
 	<!-- Registration -->

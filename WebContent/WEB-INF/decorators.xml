@@ -2,6 +2,7 @@
     <decorator name="layout" page="layout.jsp">
         <pattern>/Manage*Reports*.action</pattern>
         <pattern>/ManageAppProperty*.action</pattern>
+        <pattern>/PicsStyleGuide*.action</pattern>
     </decorator>
 	<decorator name="extjs" page="ext.jsp">
 		<pattern>/ReportDynamic.action</pattern>
