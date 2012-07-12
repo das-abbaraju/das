@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -133,6 +134,26 @@ public class AuditDataSaveTest extends PicsTest {
 				.thenReturn(new ArrayList<AuditCategoryRule>());
 		doNothing().when(auditPercentCalculatior).updatePercentageCompleted(
 				catData);
+	}
+	
+	@Test
+	public void testCheckUniqueCode() throws Exception {
+		Date date;
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		
+		auditData.setAnswer("01/31/2025");
+		
+		setupCheckUniqueCode("exipireMonths12");
+		auditDataSave.checkUniqueCode(audit);
+		assertNotNull(audit.getExpiresDate());
+		date =audit.getExpiresDate();
+		assertEquals("01/31/2026", format.format(date));
+	}
+
+	private void setupCheckUniqueCode(String code) {
+		audit.setExpiresDate(null);
+		audit.setEffectiveDate(null);
+		auditData.getQuestion().setUniqueCode(code);
 	}
 	
 	@Test 
@@ -299,5 +320,4 @@ public class AuditDataSaveTest extends PicsTest {
 		actual = AuditDataSave.restructureNewDate("02/03/01");
 		assertEquals(expected, actual);
 	}
-	
 }

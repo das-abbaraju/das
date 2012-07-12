@@ -42,3 +42,12 @@ and caoOld.opID=23675
 and caoOld.visible=0
 AND caoOld.status='Complete';
 
+-- PICS-6140 update expiration dates
+Update
+contractor_audit ca
+join pqfdata pd on pd.auditID=ca.id
+set ca.expiresDate=DATE_ADD(CONCAT(pd.answer, ' 23:59:59'), INTERVAL 12 MONTH)
+where ca.auditTypeID=331
+and pd.questionID=11062
+and pd.answer is not null and pd.answer !='';
+

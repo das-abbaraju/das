@@ -447,7 +447,7 @@ public class AuditDataSave extends AuditActionSupport {
 			
 	}
 
-	private void checkUniqueCode(ContractorAudit tempAudit) {
+	/* Test */ void checkUniqueCode(ContractorAudit tempAudit) {
 		// TODO: Extract this into it's own class.
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
@@ -504,6 +504,17 @@ public class AuditDataSave extends AuditActionSupport {
 			Date creationDate = DateBean.parseDate(auditData.getAnswer());
 			if (!DateBean.isNullDate(creationDate))
 				tempAudit.setCreationDate(creationDate);
+			auditDao.save(tempAudit);
+		}
+		if ("exipireMonths12".equals(auditData.getQuestion().getUniqueCode())
+				&& !StringUtils.isEmpty(auditData.getAnswer())) {
+			Date expiresDate = DateBean.setToEndOfDay(DateBean.parseDate(auditData.getAnswer()));
+			if (!DateBean.isNullDate(expiresDate)) {
+				Calendar date = Calendar.getInstance();
+				date.setTime(expiresDate);
+				date.add(Calendar.MONTH, 12);
+				tempAudit.setExpiresDate(date.getTime());
+			}
 			auditDao.save(tempAudit);
 		}
 	}
