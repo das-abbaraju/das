@@ -36,7 +36,7 @@
 						doubleListValue="name"
 						leftTitle="%{getText('FacilitiesEdit.OperatorsList')}"
 						rightTitle="%{getText('FacilitiesEdit.SelectedClients')}"
-						addToLeftLabel="%{getText('FacilitiesEdit.Remove')}"
+						allowAddToLeft="false"
 						addToRightLabel="%{getText('FacilitiesEdit.Assign')}"
 						allowAddAllToLeft="false"
 						allowAddAllToRight="false"
