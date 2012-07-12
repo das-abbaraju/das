@@ -53,7 +53,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
-public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware, AdvancedValidationAware {
+public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
+		AdvancedValidationAware {
 
 	protected static Boolean CONFIG = null;
 
@@ -82,9 +83,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 *
+	 * 
 	 * This is also used for plain-text type results.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -100,21 +101,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
@@ -158,18 +159,19 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-		if (!(isBeta||isAlphaEnvironment()||isConfigurationEnvironment()||isLocalhostEnvironment())){
+		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
 			Cookie[] cookiesA = getRequest().getCookies();
 			if (cookiesA != null) {
 				for (int i = 0; i < cookiesA.length; i++) {
-					if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")){
-						isBeta=true;
+					if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
+						isBeta = true;
 					}
 				}
 			}
 		}
-		//String server = InetAddress.getLocalHost().getHostName();
-		//return isBeta || server.equals("organizer1") || server.equals("organizer2");
+		// String server = InetAddress.getLocalHost().getHostName();
+		// return isBeta || server.equals("organizer1") ||
+		// server.equals("organizer2");
 
 		return isBeta;
 	}
@@ -201,7 +203,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * This method is used to set the clear_cache flag in the AppProperty table
 	 * to allow the contractor daemon to reset caches on all 3 servers.
-	 *
+	 * 
 	 */
 	protected void flagClearCache() {
 		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
@@ -242,7 +244,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
-					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.", autoLoginID);
+					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
+							autoLoginID);
 					UserDAO userDAO = SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
 
@@ -514,7 +517,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 *
+	 * 
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -585,7 +588,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 *
+	 * 
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -716,7 +719,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return URLUtils.getProtocol(ServletActionContext.getRequest());
 	}
 
-	private HttpServletRequest getRequest() {
+	protected HttpServletRequest getRequest() {
 		return ServletActionContext.getRequest();
 	}
 }
