@@ -569,14 +569,6 @@ public class DateBean {
 		return dateFormat.format(new Date());
 	}
 
-	public static boolean datesAreEqualInTimeZones(Date thisDate, TimeZone thisDateTimeZone, Date thatDate, TimeZone thatDateTimeZone) {
-		Calendar source = Calendar.getInstance(thisDateTimeZone);
-		source.setTimeInMillis(thisDate.getTime());
-		Calendar destination = Calendar.getInstance(thatDateTimeZone);
-		destination.setTimeInMillis(thatDate.getTime());
-		return source.compareTo(destination) == 0;
-	}
-	
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone) {
 		return convertTime(sourceDate, sourceTimeZone, TimeZone.getDefault());
 	}

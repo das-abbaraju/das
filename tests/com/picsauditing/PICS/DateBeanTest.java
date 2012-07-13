@@ -54,42 +54,6 @@ public class DateBeanTest  {
 	}
 	
 	@Test
-	public void testDatesAreEqualInTimezones_PacificEasternEqual() throws Exception {
-		Calendar eastern = Calendar.getInstance(easternTimeZone);
-		eastern.set(2012, 8, 5, 8, 0, 0);
-		Calendar pacific = Calendar.getInstance(pacificTimeZone);
-		pacific.set(2012, 8, 5, 5, 0, 0);
-
-		boolean datesAreEqual = DateBean.datesAreEqualInTimeZones(pacific.getTime(), pacificTimeZone, eastern.getTime(), easternTimeZone);
-		
-		assertTrue(datesAreEqual);
-	}
-	
-	@Test
-	public void testDatesAreEqualInTimezones_EasternToPacific() throws Exception {
-		Calendar eastern = Calendar.getInstance(easternTimeZone);
-		eastern.set(2012, 8, 5, 8, 0, 0);
-		Calendar pacific = Calendar.getInstance(pacificTimeZone);
-		pacific.set(2012, 8, 5, 5, 0, 0);
-
-		boolean datesAreEqual = DateBean.datesAreEqualInTimeZones(eastern.getTime(), easternTimeZone, pacific.getTime(), pacificTimeZone);
-		
-		assertTrue(datesAreEqual);
-	}
-	
-	@Test
-	public void testDatesAreEqualInTimezones_EasternToPacificNotEqual() throws Exception {
-		Calendar eastern = Calendar.getInstance(easternTimeZone);
-		eastern.set(2012, 8, 5, 8, 0, 0);
-		Calendar pacific = Calendar.getInstance(pacificTimeZone);
-		pacific.set(2012, 8, 5, 3, 0, 0);
-
-		boolean datesAreEqual = DateBean.datesAreEqualInTimeZones(eastern.getTime(), easternTimeZone, pacific.getTime(), pacificTimeZone);
-		
-		assertFalse(datesAreEqual);
-	}
-	
-	@Test
 	public void testConvertTime_UsEasternToEuropeLondon() throws Exception {
 		Date source = DateBean.parseDateTime("09-05-2012 8:00 am");
 		
