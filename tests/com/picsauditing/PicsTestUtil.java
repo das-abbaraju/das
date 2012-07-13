@@ -2,6 +2,8 @@ package com.picsauditing;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -46,9 +48,9 @@ public class PicsTestUtil {
 	@SuppressWarnings("unchecked")
 	private static <T> String fieldNameOfAutowiredFieldOfClass(Class<T> classOfField, Class<T> classOfToObject) {
 		String fieldName = null;
-		Field[] fields = classOfToObject.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
+		List<Field> fields = new ArrayList<Field>();
+		getAllFields(fields, classOfToObject);
+		for (Field field : fields) {
 			Annotation[] annotations = field.getAnnotations();
 			for (int j = 0; j < annotations.length; j++) {
 				Annotation annotation = annotations[j];
@@ -62,6 +64,16 @@ public class PicsTestUtil {
 		}
 		return fieldName;
 	}
+	
+	public static void getAllFields(List<Field> fields, Class<?> type) {
+	    for (Field field: type.getDeclaredFields()) {
+	        fields.add(field);
+	    }
+	    if (type.getSuperclass() != null) {
+	         getAllFields(fields, type.getSuperclass());
+	    }
+	}
+
 	
 	@SuppressWarnings("unchecked")
 	public <T> void autowireEMInjectedDAOs(Object objectToAutowire, EntityManager em) throws InstantiationException,

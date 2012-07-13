@@ -391,7 +391,7 @@ public class DateBean {
 					d = df.parse(dateString);
 					break outerLoop;
 				} catch (ParseException e) {
-					logger.error("Using pattern: {}", pattern, e.getCause());
+					logger.debug("Using pattern: {}", pattern, e.getCause());
 				}
 			}
 		}
@@ -569,23 +569,26 @@ public class DateBean {
 		return dateFormat.format(new Date());
 	}
 
+	public static boolean datesAreEqualInTimeZones(Date thisDate, TimeZone thisDateTimeZone, Date thatDate, TimeZone thatDateTimeZone) {
+		Calendar source = Calendar.getInstance(thisDateTimeZone);
+		source.setTimeInMillis(thisDate.getTime());
+		Calendar destination = Calendar.getInstance(thatDateTimeZone);
+		destination.setTimeInMillis(thatDate.getTime());
+		return source.compareTo(destination) == 0;
+	}
+	
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone) {
 		return convertTime(sourceDate, sourceTimeZone, TimeZone.getDefault());
 	}
 
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone, TimeZone destinationTimeZone) {
 		Calendar c1 = Calendar.getInstance();
-		c1.setTime(sourceDate);
-		if (sourceTimeZone == null) {
-			sourceTimeZone = c1.getTimeZone();
-		}
-
-		Calendar c2 = Calendar.getInstance();
-		c2.setTimeZone(sourceTimeZone);
-		c2.set(c1.get(Calendar.YEAR), c1.get(Calendar.MONTH), c1.get(Calendar.DAY_OF_MONTH), c1
-				.get(Calendar.HOUR_OF_DAY), c1.get(Calendar.MINUTE), c1.get(Calendar.SECOND));
-		// For some reason, this next line is required or the conversion won't
-		// work.
+		c1.setTimeInMillis(sourceDate.getTime());
+		
+		Calendar c2 = Calendar.getInstance(sourceTimeZone);
+		c2.setTimeInMillis(sourceDate.getTime());
+		c2.set(Calendar.HOUR_OF_DAY, c1.get(Calendar.HOUR_OF_DAY));
+		// this must be some kind of bug in java. you MUST look at the hour for the timezone conversion to work
 		c2.get(Calendar.HOUR_OF_DAY);
 		c2.setTimeZone(destinationTimeZone);
 		return c2.getTime();

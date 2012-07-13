@@ -1,16 +1,18 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DateBeanTest  {
+	TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
+	TimeZone pacificTimeZone = TimeZone.getTimeZone("US/Pacific");
 	
 	@Test
 	public void testShowFormat() throws Exception {
@@ -51,13 +53,84 @@ public class DateBeanTest  {
 		assertEquals("0001-01-01", DateBean.toDBFormat(cal.getTime()));
 	}
 	
-	@Ignore
-	@SuppressWarnings("deprecation")
 	@Test
-	public void testTimeZone() throws Exception {
-		Date sourceDate = new Date(999999);
-		Date destDate = DateBean.convertTime(sourceDate, TimeZone.getTimeZone("US/Eastern"), TimeZone.getTimeZone("US/Pacific"));
-		assertEquals(3, sourceDate.getHours() - destDate.getHours());
+	public void testDatesAreEqualInTimezones_PacificEasternEqual() throws Exception {
+		Calendar eastern = Calendar.getInstance(easternTimeZone);
+		eastern.set(2012, 8, 5, 8, 0, 0);
+		Calendar pacific = Calendar.getInstance(pacificTimeZone);
+		pacific.set(2012, 8, 5, 5, 0, 0);
+
+		boolean datesAreEqual = DateBean.datesAreEqualInTimeZones(pacific.getTime(), pacificTimeZone, eastern.getTime(), easternTimeZone);
+		
+		assertTrue(datesAreEqual);
+	}
+	
+	@Test
+	public void testDatesAreEqualInTimezones_EasternToPacific() throws Exception {
+		Calendar eastern = Calendar.getInstance(easternTimeZone);
+		eastern.set(2012, 8, 5, 8, 0, 0);
+		Calendar pacific = Calendar.getInstance(pacificTimeZone);
+		pacific.set(2012, 8, 5, 5, 0, 0);
+
+		boolean datesAreEqual = DateBean.datesAreEqualInTimeZones(eastern.getTime(), easternTimeZone, pacific.getTime(), pacificTimeZone);
+		
+		assertTrue(datesAreEqual);
+	}
+	
+	@Test
+	public void testDatesAreEqualInTimezones_EasternToPacificNotEqual() throws Exception {
+		Calendar eastern = Calendar.getInstance(easternTimeZone);
+		eastern.set(2012, 8, 5, 8, 0, 0);
+		Calendar pacific = Calendar.getInstance(pacificTimeZone);
+		pacific.set(2012, 8, 5, 3, 0, 0);
+
+		boolean datesAreEqual = DateBean.datesAreEqualInTimeZones(eastern.getTime(), easternTimeZone, pacific.getTime(), pacificTimeZone);
+		
+		assertFalse(datesAreEqual);
+	}
+	
+	@Test
+	public void testConvertTime_UsEasternToEuropeLondon() throws Exception {
+		Date source = DateBean.parseDateTime("09-05-2012 8:00 am");
+		
+		Date destination = DateBean.convertTime(source, easternTimeZone, TimeZone.getTimeZone("Europe/London"));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+		assertThat(sdf.format(destination.getTime()), is(equalTo("2012-09-05 13:00:00")));
+	}
+	
+	@Test
+	public void testConvertTime_EuropeLondonToUsPacific() throws Exception {
+		Date source = DateBean.parseDateTime("09-05-2012 8:00 am");
+		
+		Date destination = DateBean.convertTime(source, TimeZone.getTimeZone("Europe/London"), pacificTimeZone);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("US/Pacific"));
+		assertThat(sdf.format(destination.getTime()), is(equalTo("2012-09-05 00:00:00")));
+	}
+	
+	@Test
+	public void testConvertTime_EasternToPacific() throws Exception {
+		Date source = DateBean.parseDateTime("09-05-2012 8:00 am");
+		
+		Date destination = DateBean.convertTime(source, easternTimeZone, pacificTimeZone);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("US/Pacific"));
+		assertThat(sdf.format(destination.getTime()), is(equalTo("2012-09-05 05:00:00")));
+	}
+
+	@Test
+	public void testConvertTime_PacificToPacific() throws Exception {
+		Date source = DateBean.parseDateTime("09-05-2012 8:00 am");
+		
+		Date destination = DateBean.convertTime(source, pacificTimeZone, pacificTimeZone);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		sdf.setTimeZone(TimeZone.getTimeZone("US/Pacific"));
+		assertThat(sdf.format(destination.getTime()), is(equalTo("2012-09-05 08:00:00 PDT")));
 	}
 	
 	@Test
