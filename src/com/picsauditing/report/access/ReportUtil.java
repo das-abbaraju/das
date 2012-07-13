@@ -218,7 +218,7 @@ public final class ReportUtil {
 
 	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {
 		for (ReportUser userReport : userReports) {
-			if (userReport.getId() == reportId)
+			if (userReport.getReport().getId() == reportId)
 				return true;
 		}
 

@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.access.ReportAccessor;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -93,13 +94,12 @@ public class ManageReports extends PicsActionSupport {
 			} else if (ALL_REPORTS.equals(viewType)) {
 				userReports = reportAccessor.findAllUserReports(userId);
 
-				// TODO find solution for global reports
-//				List<ReportUser> globalUserReports = reportAccessor.findGlobalUserReports(userId);
-//				for (ReportUser userReport : globalUserReports) {
-//					if (!ReportUtil.containsReportWithId(userReports, userReport.getId())) {
-//						userReports.add(userReport);
-//					}
-//				}
+				List<Report> publicReports = reportAccessor.findPublicReports();
+				for (Report report : publicReports) {
+					if (!ReportUtil.containsReportWithId(userReports, report.getId())) {
+						userReports.add(new ReportUser(permissions.getUserId(), report));
+					}
+				}
 			}
 		} catch (Exception e) {
 			// TODO add i18n to this

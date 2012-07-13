@@ -135,4 +135,11 @@ public class ReportAccessor {
 
 		return rows;
 	}
+
+	public List<Report> findPublicReports() {
+		String query = "private = 0";
+		List<Report> publicReports = basicDao.findWhere(Report.class, query);
+
+		return publicReports;
+	}
 }
