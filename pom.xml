@@ -33,10 +33,6 @@
 			<id>Hibernate Spatial repo</id>
 			<url>http://www.hibernatespatial.org/repository</url>
 		</repository>
-		<repository>
-			<id>Maven Cobertura Repo</id>
-			<url>http://mvnrepository.com/artifact/org.codehaus.mojo/cobertura-maven-plugin</url>
-		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
