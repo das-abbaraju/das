@@ -149,7 +149,8 @@ public enum Subscription implements Translatable {
 			setRequiredForContractor(true);
 		}
 	},
-	// Please use nightly_updates.sql for controlling opt-out subscription inserts
+	// Please use nightly_updates.sql for controlling opt-out subscription
+	// inserts
 	OpenTasks {
 		public void initialize() {
 			setTemplateID(168);
@@ -191,6 +192,15 @@ public enum Subscription implements Translatable {
 			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
 					SubscriptionTimePeriod.Daily });
 			setDefaultTimePeriod(SubscriptionTimePeriod.Daily);
+			setRequiredForAdmin(true);
+		}
+	},
+	RejectedInsurance {
+		public void initialize() {
+			setTemplateID(248);
+			setSupportedTimePeriods(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
+					SubscriptionTimePeriod.Weekly });
+			setDefaultTimePeriod(SubscriptionTimePeriod.Weekly);
 			setRequiredForAdmin(true);
 		}
 	},
@@ -331,8 +341,7 @@ public enum Subscription implements Translatable {
 	@Override
 	public String getI18nKey() {
 		return (!getClass().getSimpleName().isEmpty() ? getClass().getSimpleName() : getClass().getSuperclass()
-				.getSimpleName())
-				+ "." + toString();
+				.getSimpleName()) + "." + toString();
 	}
 
 	@Override

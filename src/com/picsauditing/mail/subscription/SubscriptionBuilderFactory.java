@@ -25,6 +25,8 @@ public class SubscriptionBuilderFactory {
 	TrialContractorAccountsSubscription trialContractorAccounts;
 	@Autowired
 	CancelledScheduledAuditsSubscription cancelledScheduleAudits;
+	@Autowired
+	InsuranceRejectedNoUpdateSubscription insuranceRejected;
 
 	// Subscription => Builder
 
@@ -61,6 +63,8 @@ public class SubscriptionBuilderFactory {
 			return openTasks;
 		case CancelledScheduledAudits:
 			return cancelledScheduleAudits;
+		case RejectedInsurance:
+			return insuranceRejected;
 		default:
 			throw new MissingSubscriptionException();
 		}
