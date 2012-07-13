@@ -243,7 +243,7 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("modelType", report.getModelType().toString());
 		json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, getLocale()));
 		json.put("success", true);
-		System.out.println(json);
+
 		return JSON;
 	}
 
