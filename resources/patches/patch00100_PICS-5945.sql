@@ -1,8 +1,5 @@
-/* Foreign Keys must be dropped in the target to ensure that requires changes can be done*/
-
 ALTER TABLE `contractor_info` DROP FOREIGN KEY `FK_contractor_info` ;
 
-/* Alter table in target */
 ALTER TABLE `accounts` 
 	ADD COLUMN `countrySubdivision` varchar(10)  COLLATE latin1_swedish_ci NULL after `state`, 
 	CHANGE `zip` `zip` varchar(15)  COLLATE latin1_swedish_ci NULL after `countrySubdivision`, 
@@ -43,7 +40,6 @@ ALTER TABLE `accounts`
 	CHANGE `locale` `locale` varchar(5)  COLLATE latin1_swedish_ci NULL DEFAULT 'en' after `qbSync`, 
 	CHANGE `timezone` `timezone` varchar(50)  COLLATE latin1_swedish_ci NULL after `locale`, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `contractor_audit` 
 	CHANGE `state` `state` varchar(10)  COLLATE latin1_swedish_ci NULL after `city`, 
 	ADD COLUMN `countrySubdivision` varchar(10)  COLLATE latin1_swedish_ci NULL after `state`, 
@@ -54,7 +50,6 @@ ALTER TABLE `contractor_audit`
 	CHANGE `paidDate` `paidDate` date   NULL after `longitude`, 
 	CHANGE `ruleID` `ruleID` int(11)   NULL after `paidDate`, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `contractor_info` 
 	ADD COLUMN `billingCountrySubdivision` varchar(10)  COLLATE latin1_swedish_ci NULL after `billingState`, 
 	CHANGE `billingZip` `billingZip` varchar(10)  COLLATE latin1_swedish_ci NULL after `billingCountrySubdivision`, 
@@ -98,7 +93,6 @@ ALTER TABLE `contractor_info`
 	CHANGE `showInDirectory` `showInDirectory` tinyint(4)   NULL DEFAULT '1' after `hasCanadianCompetitor`, 
 	CHANGE `reviewedContractorBadge` `reviewedContractorBadge` tinyint(4)   NOT NULL DEFAULT '0' after `showInDirectory`, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `contractor_registration_request` 
 	CHANGE `state` `state` varchar(10)  COLLATE latin1_swedish_ci NULL after `city`, 
 	ADD COLUMN `countrySubdivision` varchar(10)  COLLATE latin1_swedish_ci NULL after `state`, 
@@ -118,7 +112,6 @@ ALTER TABLE `contractor_registration_request`
 	CHANGE `reasonForDecline` `reasonForDecline` varchar(500)  COLLATE latin1_swedish_ci NULL after `reasonForRegistration`, 
 	CHANGE `closedOnDate` `closedOnDate` date   NULL after `reasonForDecline`, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `job_site` 
 	CHANGE `state` `state` varchar(10)  COLLATE latin1_swedish_ci NULL after `city`, 
 	ADD COLUMN `countrySubdivision` varchar(10)  COLLATE latin1_swedish_ci NULL after `state`, 
@@ -126,17 +119,14 @@ ALTER TABLE `job_site`
 	CHANGE `projectStart` `projectStart` date   NULL after `country`, 
 	CHANGE `projectStop` `projectStop` date   NULL after `projectStart`, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `ref_country` 
 	CHANGE `isoCode` `isoCode` varchar(10)  COLLATE latin1_swedish_ci NOT NULL DEFAULT '' first, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `ref_country_subdivision` 
 	CHANGE `isoCode` `isoCode` varchar(10)  COLLATE utf8_general_ci NOT NULL first, 
 	CHANGE `countryCode` `countryCode` varchar(10)  COLLATE utf8_general_ci NOT NULL after `isoCode`, 
 	ADD COLUMN `english` varchar(50)  COLLATE utf8_general_ci NULL after `countryCode`, COMMENT='';
 
-/* Alter table in target */
 ALTER TABLE `user_assignment` 
 	CHANGE `state` `state` varchar(10)  COLLATE latin1_swedish_ci NULL after `assignmentType`, 
 	ADD COLUMN `countrySubdivision` varchar(10)  COLLATE latin1_swedish_ci NULL after `state`, 
@@ -146,13 +136,10 @@ ALTER TABLE `user_assignment`
 	CHANGE `conID` `conID` int(11)   NULL after `postal_end`, 
 	CHANGE `auditTypeID` `auditTypeID` int(11)   NULL after `conID`, COMMENT=''; 
 
-/* The foreign keys that were dropped are now re-created*/
-
 ALTER TABLE `contractor_info`
 ADD CONSTRAINT `FK_contractor_info` 
 FOREIGN KEY (`id`) REFERENCES `accounts` (`id`) ON DELETE CASCADE;
 
--- data conversion for pre-existing values
 update accounts a
 join ref_state rs on a.state = rs.isoCode and a.country = rs.countryCode
 set countrySubdivision = concat(country,'-',state)
