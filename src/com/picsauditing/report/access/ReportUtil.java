@@ -162,7 +162,10 @@ public final class ReportUtil {
 			return;
 
 		for (Column column : definition.getColumns()) {
-			column.getField().setText(translateLabel(column.getField(), locale));
+			String translateLabel = translateLabel(column.getField(), locale);
+			if (column.getMethod() != null)
+				translateLabel += " " + getText("ReportSuffix." + column.getMethod().toString(),locale);
+			column.getField().setText(translateLabel);
 		}
 	}
 
@@ -192,9 +195,6 @@ public final class ReportUtil {
 			if (translatedText == null || translatedText.equals(I18nCache.DEFAULT_TRANSLATION)) {
 				translatedText = "?Report." + field.getName();
 			}
-		}
-		else {
-			
 		}
 
 		return translatedText;
