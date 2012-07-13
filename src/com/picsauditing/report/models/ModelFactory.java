@@ -24,6 +24,8 @@ public class ModelFactory {
 			return new CountryModel();
 		if (type.equals(ModelType.Invoices))
 			return new InvoiceModel();
+		if (type.equals(ModelType.InvoiceCommissions))
+			return new InvoiceCommissionModel();
 		if (type.equals(ModelType.PaymentCommissions))
 			return new PaymentCommissionModel();
 		if (type.equals(ModelType.Operators))

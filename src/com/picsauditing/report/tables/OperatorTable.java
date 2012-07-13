@@ -4,6 +4,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class OperatorTable extends AbstractTable {
+	// TODO: This needs to be rewritten as a whole.
 
 	public OperatorTable() {
 		super("operators", "operator", "o", "a.id = o.id AND a.type in ('Operator','Corporate')");
@@ -18,7 +19,6 @@ public class OperatorTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
 		Field operatorName;
 		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName);
 		operatorName.setUrl("FacilitiesEdit.action?operator={accountID}");

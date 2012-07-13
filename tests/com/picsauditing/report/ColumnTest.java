@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
-import com.picsauditing.report.fields.QueryFunction;
+import com.picsauditing.report.fields.QueryMethod;
 
 @SuppressWarnings("unchecked")
 public class ColumnTest {
@@ -32,11 +32,11 @@ public class ColumnTest {
 	}
 
 	@Test
-	public void testFunction() {
+	public void testMethod() {
 		jsonObj.put("name", "AccountNameUpperCase");
 		jsonObj.put("method", "UpperCase");
 		column.fromJSON(jsonObj);
-		assertEquals(QueryFunction.UpperCase, column.getFunction());
+		assertEquals(QueryMethod.UpperCase, column.getMethod());
 
 		String expected = "{\"name\":\"AccountNameUpperCase\",\"method\":\"UpperCase\"}";
 		assertEquals(expected, column.toJSON(true).toJSONString());
@@ -49,16 +49,16 @@ public class ColumnTest {
 	}
 
 	@Test
-	public void testGetFieldNameWithoutFunction() {
-		column.setFieldName("AccountNameUpperCase");
-		column.setFunction(QueryFunction.UpperCase);
-		assertEquals("AccountName", column.getFieldNameWithoutFunction());
-	}
+		public void testGetFieldNameWithoutMethod() {
+			column.setFieldName("AccountNameUpperCase");
+			column.setMethod(QueryMethod.UpperCase);
+			assertEquals("AccountName", column.getFieldNameWithoutMethod());
+		}
 
 	@Test
 	public void testGetFieldNameWithDuplicate() {
 		column.setFieldName("FirstYearDateYear");
-		column.setFunction(QueryFunction.Year);
-		assertEquals("FirstYearDate", column.getFieldNameWithoutFunction());
+		column.setMethod(QueryMethod.Year);
+		assertEquals("FirstYearDate", column.getFieldNameWithoutMethod());
 	}
 }

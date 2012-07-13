@@ -9,14 +9,15 @@ import com.picsauditing.report.tables.AbstractTable;
 
 public abstract class AbstractModel {
 
-	protected AbstractTable primaryTable;
-	// TODO: Find a better way of passing down the parent table
+	protected AbstractTable rootTable;
+	
+	// The value for this should always be reset to the current model's table so that subclasses can use its as its parent. 
 	protected AbstractTable parentTable;
 	protected String defaultSort = null;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 
-	public AbstractTable getPrimaryTable() {
-		return primaryTable;
+	public AbstractTable getRootTable() {
+		return rootTable;
 	}
 
 	public String getDefaultSort() {

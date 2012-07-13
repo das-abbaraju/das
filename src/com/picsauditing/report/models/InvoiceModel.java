@@ -7,8 +7,8 @@ public class InvoiceModel extends AccountContractorModel {
 		super();
 
 		InvoiceTable invoiceTable = new InvoiceTable(parentTable.getPrefix(), parentTable.getAlias());
-		primaryTable.addAllFieldsAndJoins(invoiceTable);
-		// TODO: Find a better way of passing down the parent table
+		rootTable.addAllFieldsAndJoins(invoiceTable);
+
 		parentTable = invoiceTable;
 	}
 }

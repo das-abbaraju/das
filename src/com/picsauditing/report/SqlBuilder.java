@@ -66,13 +66,13 @@ public class SqlBuilder {
 
 		setFrom(model);
 
-		Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(model.getPrimaryTable());
+		Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(model.getRootTable());
 
 		addFieldsAndGroupBy(availableFields, definition.getColumns());
 		addRuntimeFilters(availableFields);
 		addOrderByClauses(model, availableFields);
 
-		addJoins(model.getPrimaryTable());
+		addJoins(model.getRootTable());
 
 		return sql;
 	}
@@ -88,8 +88,8 @@ public class SqlBuilder {
 	}
 
 	private void setFrom(AbstractModel model) {
-		String from = model.getPrimaryTable().getTableName();
-		String alias = model.getPrimaryTable().getAlias();
+		String from = model.getRootTable().getTableName();
+		String alias = model.getRootTable().getAlias();
 		if (!Strings.isEmpty(alias))
 			from += " AS " + alias;
 
@@ -128,7 +128,7 @@ public class SqlBuilder {
 			Field field = availableFields.get(column.getFieldName().toUpperCase());
 
 			if (field != null) {
-				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
+				if (column.getMethod() == null || !column.getMethod().isAggregate()) {
 					// For example: Don't add in accountID automatically if
 					// contractorName uses an aggregation like COUNT
 					dependentFields.addAll(field.getDependentFields());
@@ -182,10 +182,10 @@ public class SqlBuilder {
 		if (column == null)
 			return false;
 
-		if (column.getFunction() == null)
+		if (column.getMethod() == null)
 			return false;
 
-		return column.getFunction().isAggregate();
+		return column.getMethod().isAggregate();
 	}
 
 	private String columnToSql(Column column, Map<String, Field> availableFields) {
@@ -194,10 +194,10 @@ public class SqlBuilder {
 			return "";
 
 		String fieldSql = field.getDatabaseColumnName();
-		if (column.getFunction() == null)
+		if (column.getMethod() == null)
 			return fieldSql;
 
-		switch (column.getFunction()) {
+		switch (column.getMethod()) {
 		case Average:
 			return "AVG(" + fieldSql + ")";
 		case Count:
@@ -317,7 +317,7 @@ public class SqlBuilder {
 		// date filter
 		Field field = availableFields.get(column.getFieldName().toUpperCase());
 		ExtFieldType fieldType = field.getType();
-		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
+		if (fieldType.equals(ExtFieldType.Date) && column.getMethod() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 
 			filterValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");

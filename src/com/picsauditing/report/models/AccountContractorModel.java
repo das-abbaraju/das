@@ -5,12 +5,12 @@ import com.picsauditing.report.tables.ContractorTable;
 public class AccountContractorModel extends AccountModel {
 	public AccountContractorModel() {
 		super();
-		primaryTable.removeField("accountName");
-		primaryTable.removeField("accountType");
+		rootTable.removeField("accountName");
+		rootTable.removeField("accountType");
 
-		ContractorTable contractorTable = new ContractorTable(primaryTable.getPrefix(), primaryTable.getAlias());
-		primaryTable.addAllFieldsAndJoins(contractorTable);
-		// TODO: Find a better way of passing down the parent table
+		ContractorTable contractorTable = new ContractorTable(rootTable.getPrefix(), rootTable.getAlias());
+		rootTable.addAllFieldsAndJoins(contractorTable);
+
 		parentTable = contractorTable;
 	}
 

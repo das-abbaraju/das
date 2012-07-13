@@ -1,6 +1,5 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class UserTable extends AbstractTable {

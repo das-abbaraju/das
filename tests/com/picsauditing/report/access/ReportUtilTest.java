@@ -4,10 +4,12 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 
 import com.picsauditing.report.Column;
+import com.picsauditing.report.fields.Field;
 
 public class ReportUtilTest {
 
@@ -46,6 +48,9 @@ public class ReportUtilTest {
 
 	@Test
 	public void testTranslateLabel_FieldIsNull() {
-		// TODO: Write this test
+		Field field = null;
+		String translatedText = ReportUtil.translateLabel(field, Locale.ENGLISH);
+		
+		assertNull(translatedText);
 	}
 }

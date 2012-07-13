@@ -9,10 +9,12 @@ import com.picsauditing.report.tables.CountryTable;
 public class CountryModel extends AbstractModel {
 	public CountryModel() {
 		super();
-		primaryTable = new CountryTable();
-		primaryTable.addFields();
-		primaryTable.addJoins();
+		rootTable = new CountryTable();
+		rootTable.addFields();
+		rootTable.addJoins();
 		
-		defaultSort = primaryTable.getAlias() + ".isoCode";
+		defaultSort = rootTable.getAlias() + ".isoCode";
+		
+		parentTable = rootTable;
 	}
 }

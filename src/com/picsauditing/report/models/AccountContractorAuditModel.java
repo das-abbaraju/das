@@ -7,6 +7,8 @@ public class AccountContractorAuditModel extends AccountContractorModel {
 		super();
 
 		ContractorAuditTable conAuditTable = new ContractorAuditTable();
-		primaryTable.addAllFieldsAndJoins(conAuditTable);
+		rootTable.addAllFieldsAndJoins(conAuditTable);
+
+		parentTable = conAuditTable;
 	}
 }

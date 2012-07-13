@@ -180,16 +180,21 @@ public final class ReportUtil {
 			return;
 
 		for (Sort sort : definition.getSorts()) {
-			// sort.setFieldName(translateLabel(sort.getField()));
 			sort.getField().setText(translateLabel(sort.getField(), locale));
 		}
 	}
 
 	public static String translateLabel(Field field, Locale locale) {
-		// TODO: Make this null safe for Field
-		String translatedText = getText("Report." + field.getName(), locale);
-		if (translatedText == null) {
-			translatedText = "?Report." + field.getName();
+		String translatedText = null;
+		
+		if (field != null) {
+			translatedText = getText("Report." + field.getName(), locale);
+			if (translatedText == null || translatedText.equals(I18nCache.DEFAULT_TRANSLATION)) {
+				translatedText = "?Report." + field.getName();
+			}
+		}
+		else {
+			
 		}
 
 		return translatedText;

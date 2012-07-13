@@ -7,6 +7,8 @@ public class AccountContractorAuditOperatorModel extends AccountContractorAuditM
 		super();
 
 		ContractorAuditOperatorTable caoTable = new ContractorAuditOperatorTable();
-		primaryTable.addAllFieldsAndJoins(caoTable);
+		rootTable.addAllFieldsAndJoins(caoTable);
+		
+		parentTable = caoTable;
 	}
 }

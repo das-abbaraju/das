@@ -1,6 +1,6 @@
 package com.picsauditing.report.fields;
 
-public enum QueryFunction {
+public enum QueryMethod {
 	Average(true),
 	Count(true),
 	CountDistinct(true),
@@ -8,7 +8,7 @@ public enum QueryFunction {
 	LowerCase,
 	Max(true),
 	Min(true),
-	Month, // TODO: Find a way to display the numeric instead of the date
+	Month,
 	Round,
 	Sum(true),
 	UpperCase,
@@ -17,10 +17,10 @@ public enum QueryFunction {
 
 	private boolean aggregate;
 
-	private QueryFunction() {
+	private QueryMethod() {
 	}
 
-	private QueryFunction(boolean aggregate) {
+	private QueryMethod(boolean aggregate) {
 		this.aggregate = aggregate;
 	}
 

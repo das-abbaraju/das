@@ -210,7 +210,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Column(name = "name", length = 255, nullable = false)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName)
+	@ReportField(filterType = FilterType.AccountName, width = 300)
 	public String getName() {
 		return name;
 	}

@@ -7,11 +7,13 @@ import com.picsauditing.util.PermissionQueryBuilder;
 public class AccountModel extends AbstractModel {
 	public AccountModel() {
 		super();
-		primaryTable = new AccountTable();
-		primaryTable.addFields();
-		primaryTable.addJoins();
+		rootTable = new AccountTable();
+		rootTable.addFields();
+		rootTable.addJoins();
 
-		defaultSort = primaryTable.getAlias() + ".name";
+		defaultSort = rootTable.getAlias() + ".name";
+		
+		parentTable = rootTable;
 	}
 
 	@Override

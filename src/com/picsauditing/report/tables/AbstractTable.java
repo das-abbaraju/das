@@ -165,7 +165,7 @@ public abstract class AbstractTable {
 
 		for (Field field : getAvailableFields().values()) {
 			for (Column column : definition.getColumns()) {
-				if (column.getFieldNameWithoutFunction().equals(field.getName()))
+				if (column.getFieldNameWithoutMethod().equals(field.getName()))
 					return true;
 			}
 			

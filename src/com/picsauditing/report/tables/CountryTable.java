@@ -4,6 +4,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class CountryTable extends AbstractTable {
+	// TODO: This needs to be rewritten as a whole.
 
 	public CountryTable() {
 		super("ref_country", "country", "country", "");

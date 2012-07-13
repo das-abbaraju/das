@@ -14,9 +14,8 @@ import com.picsauditing.util.Strings;
 public class JpaFieldExtractor {
 	public static Set<Field> addFields(Class<?> clazz, String prefix, String alias) {
 		Set<Field> fields = new HashSet<Field>();
-
+		
 		for (Method method : clazz.getMethods()) {
-			// TODO: Revise this to allow for super class methods
 			if (!clazz.equals(method.getDeclaringClass()))
 				continue;
 
@@ -42,6 +41,11 @@ public class JpaFieldExtractor {
 				field.setDatabaseColumnName(alias + "." + columnAnnotation.name());
 			}
 		}
+
+		// TODO: Revise this to allow for super class methods
+//		Class<?> superclass = clazz.getSuperclass();
+//		if (superclass != null)
+//			fields.addAll(addFields(superclass, prefix, alias));
 
 		return fields;
 	}

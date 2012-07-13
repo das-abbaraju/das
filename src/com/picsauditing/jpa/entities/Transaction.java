@@ -99,7 +99,6 @@ public abstract class Transaction extends BaseTable {
 		this.qbListID = qbListID;
 	}
 
-	// TODO: No uniform i18nKeyPrefix for this case. Need to know how this affects us.
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@ReportField(filterType = FilterType.Enum, i18nKeyPrefix = "TransactionStatus")
@@ -112,7 +111,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.String)
+	@ReportField(category = FieldCategory.Invoice, filterType = FilterType.String)
 	public Currency getCurrency() {
 		return currency;
 	}

@@ -150,8 +150,6 @@ public class ReportDynamic extends PicsActionSupport {
 			if (report.getDefinition().getColumns().size() > 0) {
 				List<BasicDynaBean> queryResults = ReportAccessor.runQuery(sql, json);
 				
-				// TODO: Why does this run thrice?  Need to fine tune. 
-
 				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields, permissions, getLocale());
 				json.put("data", queryResultsAsJson);
 
@@ -245,7 +243,7 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("modelType", report.getModelType().toString());
 		json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, getLocale()));
 		json.put("success", true);
-
+		System.out.println(json);
 		return JSON;
 	}
 

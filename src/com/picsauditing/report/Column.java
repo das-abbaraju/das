@@ -4,14 +4,13 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.QueryFunction;
+import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.util.Strings;
 
 public class Column implements JSONable {
 
 	private String fieldName;
-	// TODO: Change all "Function" to "Method"
-	private QueryFunction function = null;
+	private QueryMethod method = null;
 	private String option;
 	private Field field;
 
@@ -26,8 +25,8 @@ public class Column implements JSONable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
-		if (function != null) {
-			json.put("method", function.toString());
+		if (method != null) {
+			json.put("method", method.toString());
 			if (!Strings.isEmpty(option))
 				json.put("option", option);
 		}
@@ -43,9 +42,9 @@ public class Column implements JSONable {
 			return;
 
 		this.fieldName = (String) json.get("name");
-		String functionName = (String) json.get("method");
-		if (!Strings.isEmpty(functionName)) {
-			this.function = QueryFunction.valueOf(functionName);
+		String methodName = (String) json.get("method");
+		if (!Strings.isEmpty(methodName)) {
+			this.method = QueryMethod.valueOf(methodName);
 			this.option = (String) json.get("option");
 		}
 		this.field = (Field) json.get("field");
@@ -59,23 +58,23 @@ public class Column implements JSONable {
 		this.fieldName = fieldName;
 	}
 
-	public String getFieldNameWithoutFunction() {
-		if (function == null)
+	public String getFieldNameWithoutMethod() {
+		if (method == null)
 			return fieldName;
 
-		int startOfFunction = fieldName.lastIndexOf(function.toString());
-		if (startOfFunction < 0)
+		int startOfMethod = fieldName.lastIndexOf(method.toString());
+		if (startOfMethod < 0)
 			return fieldName;
 
-		return fieldName.substring(0, startOfFunction);
+		return fieldName.substring(0, startOfMethod);
 	}
 
-	public QueryFunction getFunction() {
-		return function;
+	public QueryMethod getMethod() {
+		return method;
 	}
 
-	public void setFunction(QueryFunction function) {
-		this.function = function;
+	public void setMethod(QueryMethod method) {
+		this.method = method;
 	}
 
 	public String getOption() {
