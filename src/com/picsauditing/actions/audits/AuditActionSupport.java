@@ -347,8 +347,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public List<AuditStatus> getValidStatuses(int caoID) {
-		List<AuditStatus> validStatuses = new ArrayList<AuditStatus>();
+	public Collection<AuditStatus> getValidStatuses(int caoID) {
+		Collection<AuditStatus> validStatuses = new HashSet<AuditStatus>();
 		for (ContractorAuditOperator cao : conAudit.getSortedOperators()) {
 			if (cao.getId() == caoID) {
 				for (WorkflowStep wfs : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
