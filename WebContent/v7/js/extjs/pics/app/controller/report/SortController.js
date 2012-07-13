@@ -95,7 +95,7 @@ Ext.define('PICS.controller.report.SortController', {
             action: 'sort-report',
             cls: 'sort default',
             height: 26,
-            icon: '../js/pics/resources/themes/images/default/grid/sort_asc.gif',
+            icon: 'v7/js/extjs/pics/resources/themes/images/default/grid/sort_asc.gif',
             iconAlign: 'left',
             menu: new Ext.menu.Menu({
                 items: [{
@@ -111,7 +111,7 @@ Ext.define('PICS.controller.report.SortController', {
         };
 
         if (record.get('direction') === 'DESC') {
-            sort.icon = '../js/pics/resources/themes/images/default/grid/sort_desc.gif';
+            sort.icon = 'v7/js/extjs/pics/resources/themes/images/default/grid/sort_desc.gif';
         }
 
         buttons.push(sort);
@@ -138,11 +138,11 @@ Ext.define('PICS.controller.report.SortController', {
 
     setSortItemProperties: function (component) {
         if (component.record.get('direction') === 'ASC') {
-            component.setIcon('../js/pics/resources/themes/images/default/grid/sort_desc.gif');
-            component.record.set('direction', 'DESC')
+            component.setIcon('v7/js/extjs/pics/resources/themes/images/default/grid/sort_desc.gif');
+            component.record.set('direction', 'DESC');
         } else {
-            component.setIcon('../js/pics/resources/themes/images/default/grid/sort_asc.gif');
-            component.record.set('direction', 'ASC')
+            component.setIcon('v7/js/extjs/pics/resources/themes/images/default/grid/sort_asc.gif');
+            component.record.set('direction', 'ASC');
         }
 
         this.application.fireEvent('refreshreport');
