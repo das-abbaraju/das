@@ -118,14 +118,15 @@ public class OpenTasks extends TranslationActionSupport {
 	private boolean mustApproveUpdatedAgreement() {
 		return !contractor.isAgreementInEffect()
 				&& (permissions.hasPermission(OpPerms.ContractorBilling)
-					|| permissions.hasPermission(OpPerms.ContractorAdmin) 
-					|| permissions.hasPermission(OpPerms.ContractorSafety));
+						|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
+							.hasPermission(OpPerms.ContractorSafety));
 	}
 
 	private void gatherTasksAboutUploadingPqf() {
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (auditIsVisibleUnexpiredForImportPqf(audit)) {
-				// there were no braces for this next if. I am adding them to preserve behavior, but make it explicit
+				// there were no braces for this next if. I am adding them to
+				// preserve behavior, but make it explicit
 				if (audit.hasCaoStatusBefore(AuditStatus.Submitted)) {
 					openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
 				}
@@ -136,7 +137,8 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private boolean auditIsVisibleUnexpiredForImportPqf(ContractorAudit audit) {
-		return audit.isVisibleTo(permissions) && (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired());
+		return audit.isVisibleTo(permissions)
+				&& (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired());
 	}
 
 	private void gatherTasksAboutBillingAndPayments() {
@@ -167,11 +169,16 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAudits() {
+		List <AuditType> auditTypesThatHaveOpenTasks = new ArrayList<AuditType>();
 		for (ContractorAudit conAudit : contractor.getAudits()) {
+			if (!auditTypesThatHaveOpenTasks.contains(conAudit.getAuditType())) {
 			if (conAudit.isVisibleTo(permissions)) {
-				if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
-					if (isOpenTaskNeeded(conAudit, user, permissions)) {
-						addAuditOpenTasks(conAudit);
+					if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
+						if (isOpenTaskNeeded(conAudit, user, permissions)) {
+							boolean addedOpenTask = addAuditOpenTasks(conAudit);
+							if (addedOpenTask)
+								auditTypesThatHaveOpenTasks.add(conAudit.getAuditType());
+						}
 					}
 				}
 			}
@@ -230,7 +237,8 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
-	private void addAuditOpenTasks(ContractorAudit conAudit) {
+	private boolean addAuditOpenTasks(ContractorAudit conAudit) {
+		boolean addedOpenTask = false;
 		openReq = false;
 		String auditName = getText(conAudit.getAuditType().getI18nKey("name"));
 		Object showAuditFor = (conAudit.getAuditFor() != null && !conAudit.getAuditFor().isEmpty()) ? 1 : 0;
@@ -242,9 +250,11 @@ public class OpenTasks extends TranslationActionSupport {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 					openTasks.add(getTextParameterized("ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
 							auditName));
+					addedOpenTask = true;
 				} else {
 					openTasks.add(getTextParameterized("ContractorWidget.message.UploadAndSubmitPolicy",
 							conAudit.getId(), auditName));
+					addedOpenTask = true;
 				}
 			}
 		} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
@@ -252,6 +262,7 @@ public class OpenTasks extends TranslationActionSupport {
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				openTasks.add(getTextParameterized("ContractorWidget.message.ResubmitPolicy", conAudit.getId(),
 						auditName, showAuditFor, auditFor));
+				addedOpenTask = true;
 			}
 		} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
 				&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit.getAuditType()
@@ -279,6 +290,7 @@ public class OpenTasks extends TranslationActionSupport {
 						}
 					}
 					openTasks.add(text);
+					addedOpenTask = true;
 				}
 			} else if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
@@ -315,6 +327,7 @@ public class OpenTasks extends TranslationActionSupport {
 						}
 					}
 					openTasks.add(text);
+					addedOpenTask = true;
 				}
 			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
@@ -341,6 +354,7 @@ public class OpenTasks extends TranslationActionSupport {
 						}
 					}
 					openTasks.add(text);
+					addedOpenTask = true;
 				}
 			}
 		} else if (conAudit.getAuditType().isCanContractorEdit()
@@ -353,6 +367,7 @@ public class OpenTasks extends TranslationActionSupport {
 					if (importPQFComplete) {
 						openTasks.add(getTextParameterized("ContractorWidget.message.PQFOtherRegistry",
 								conAudit.getId()));
+						addedOpenTask = true;
 					}
 				} else if (conAudit.getAuditType().getId() == AuditType.COR
 						&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
@@ -361,9 +376,11 @@ public class OpenTasks extends TranslationActionSupport {
 					text += "<br/>"
 							+ getTextParameterized("ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
 					openTasks.add(text);
+					addedOpenTask = true;
 				} else {
 					openTasks.add(getTextParameterized("ContractorWidget.message.CompleteAndSubmitAudit",
 							conAudit.getId(), auditName, showAuditFor, auditFor));
+					addedOpenTask = true;
 				}
 			}
 		} else if ((conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY || conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY_REVIEW)
@@ -382,7 +399,9 @@ public class OpenTasks extends TranslationActionSupport {
 				openReq = true;
 			}
 			openTasks.add(text);
+			addedOpenTask = true;
 		}
+		return addedOpenTask;
 	}
 
 	private boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
@@ -448,5 +467,5 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 		return false;
-	}	
+	}
 }
