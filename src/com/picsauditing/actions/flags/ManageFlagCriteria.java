@@ -1,6 +1,7 @@
 package com.picsauditing.actions.flags;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,8 +42,47 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 
 	public String save() throws IOException {
 		if (criteria != null) {
+			if (Strings.isEmpty(criteria.getCategory())) {
+				addActionError("Category is a required field.");
+			}
+			if (criteria.getDisplayOrder() < 0) {
+				addActionError("Display Order must be a positive number or 0.");
+			}
+			if (Strings.isEmpty(criteria.getLabel().toString())) {
+				addActionError("Label is a required field.");
+			}
+			if (Strings.isEmpty(criteria.getDescription().toString())) {
+				addActionError("Description is a required field.");
+			}
+			if (Strings.isEmpty(criteria.getComparison())) {
+				criteria.setComparison("=");
+			}
+			
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");
+			} else if (!"NOT EMPTY".equals(criteria.getComparison())){
+				if ("string".equals(criteria.getDataType())
+						&& Strings.isEmpty(criteria.getDefaultValue())) {
+					addActionError("Default hurdle is a required field.");
+				}
+				if ("boolean".equals(criteria.getDataType())) {
+					if ("true".equals(criteria.getDefaultValue())
+							|| "false".equals(criteria.getDefaultValue())
+							|| "".equals(criteria.getDefaultValue()))
+						addActionError("Default hurdle must be true, false, or empty");
+				}
+				if ("date".equals(criteria.getDataType()) && Strings.isEmpty(criteria.getDefaultValue())) {
+					addActionError("Default hurdle is a required field.");
+				}
+				if ("number".equals(criteria.getDataType())
+						&& criteria.getCategory().indexOf("AMB") > -1) {
+					try {
+						BigDecimal number = new BigDecimal(
+								criteria.getDefaultValue());
+					} catch (Exception e) {
+						addActionError("Default hurdle needs to be a valid number.");
+					}
+				}
 			}
 
 			if (criteria.getAuditType() != null && criteria.getAuditType().isAnnualAddendum()
@@ -50,15 +90,26 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 				addActionError("Audit Status cannot be null when Audit Type Annual Update is selected.");
 			}
 
-			if (Strings.isEmpty(criteria.getDefaultValue())) {
-				addActionError("Default hurdle is a required field.");
+			if (criteria.getAuditType() != null && criteria.getQuestion() != null) {
+				addActionError("Audit Type and Question cannot both be set.");
+			}
+
+			if (criteria.getOshaType() != null && criteria.getMultiYearScope() == null) {
+				addActionError("Multi-Year Scope must be set.");
+			}
+
+			if (criteria.getRequiredStatusComparison() != null
+					&& !criteria.getRequiredStatusComparison().equals(
+							"NOT EMPTY")
+					&& criteria.getRequiredStatus() == null) {
+				addActionError("Audit Status must be set.");
 			}
 
 			if (criteria.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "
 						+ "Make sure your flag criteria has at least one language.");
 			}
-
+			
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
 					criteriaDAO.refresh(criteria);
