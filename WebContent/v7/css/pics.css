@@ -7,17 +7,24 @@
  * @date: 2012-07-09
  */
 /* line 2, ../sass/pics/core/_core.scss */
-h1.title {
-  color: #73BBE8;
-  font-size: 30px;
-  font-weight: normal; }
+.page-header {
+  border: 0px;
+  margin: 18px 0px;
+  padding: 0px; }
 
 /* line 9, ../sass/pics/core/_core.scss */
+h1.title {
+  color: #73bbe8;
+  font-size: 36px;
+  font-weight: normal; }
+
+/* line 16, ../sass/pics/core/_core.scss */
 p.subtitle {
   color: #808285;
   font-size: 14px;
   font-weight: normal;
-  line-height: 14px; }
+  line-height: 20px;
+  margin: 0px; }
 
 @media (max-width: 767px) {
   /* line 2, ../sass/pics/layout/_layout.scss */
@@ -28,6 +35,17 @@ p.subtitle {
   .container-fluid {
     padding-right: 20px;
     padding-left: 20px; } }
+/* line 4, ../sass/pics/widgets/twitter_bootstrap/_dropdown.scss */
+.dropdown-menu li > a:hover,
+.dropdown-menu .active > a,
+.dropdown-menu .active > a:hover {
+  background-color: #a84d10;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
+  background-image: -webkit-linear-gradient(#c66603, #a84d10);
+  background-image: -moz-linear-gradient(#c66603, #a84d10);
+  background-image: -o-linear-gradient(#c66603, #a84d10);
+  background-image: linear-gradient(#c66603, #a84d10); }
+
 /*
  * Templates
  *
@@ -37,130 +55,238 @@ p.subtitle {
  * @author: Carey Hinoki
  * @date: 2012-07-10
  */
-/* line 4, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 4, ../sass/pics/templates/app_property/_app_property.scss */
 #app_property_list .name {
   width: 20%; }
-/* line 9, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 9, ../sass/pics/templates/app_property/_app_property.scss */
 #app_property_list .value {
   width: 70%; }
-/* line 14, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 14, ../sass/pics/templates/app_property/_app_property.scss */
 #app_property_list .actions {
   width: 10%; }
-/* line 19, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 19, ../sass/pics/templates/app_property/_app_property.scss */
 #app_property_list .value p {
   width: 400px;
   word-wrap: break-word; }
 
-/* line 4, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-.ManageReports-page h2 {
-  color: #999;
-  font-size: 14px;
-  font-style: italic;
-  margin-bottom: 15px;
-  text-align: center; }
+/*
+ * Manage Report Controller
+ */
+/* line 6, ../sass/pics/templates/report/_manage.scss */
+.ManageReports-page {
+  /*
+   * Menu
+   */
+  /*
+   * Description
+   */
+  /*
+   * List
+   */ }
+  /* line 11, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page #manage_report_menu_container {
+    text-align: center; }
+  /* line 16, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page #manage_report_menu {
+    display: inline-block; }
+  /* line 21, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page #manage_report_menu > li {
+    margin: 0px 5px; }
+  /* line 26, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page #manage_report_menu > li > a {
+    background: #eaeaea;
+    color: #002441;
+    font-size: 16px;
+    padding-bottom: 13px;
+    padding-top: 13px; }
+  /* line 35, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page #manage_report_menu > li > a:hover {
+    background: #ccc; }
+  /* line 40, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page #manage_report_menu > li.active > a {
+    background: #002441;
+    color: #fff; }
+  /* line 46, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page .lt-ie8 #manage_report_menu {
+    display: inline; }
+  /* line 55, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page h3 {
+    color: #999;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 18px;
+    margin-bottom: 15px;
+    text-align: center; }
+  /* line 70, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page .report-list {
+    list-style: none;
+    margin: 0px auto 30px;
+    text-align: left;
+    width: 60%; }
+    /* line 77, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .report {
+      background: #f1f1f2;
+      border: 1px solid #ccc;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      -ms-border-radius: 3px;
+      -o-border-radius: 3px;
+      border-radius: 3px;
+      margin-bottom: 2px; }
+    /* line 85, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .favorite {
+      line-height: normal;
+      float: left;
+      margin: 8px 5px 0px;
+      text-decoration: none; }
+    /* line 93, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .icon-star {
+      color: #ccc;
+      font-size: 12px; }
+    /* line 99, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .icon-star.selected {
+      color: #a84d10; }
+    /* line 104, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .summary {
+      float: left;
+      margin-right: 10px; }
+    /* line 110, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .name {
+      color: #333;
+      float: left;
+      font-size: 13px;
+      line-height: 30px;
+      margin: 0px 10px 0px 0px; }
+    /* line 119, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .created-by {
+      color: #999;
+      font-size: 10px;
+      font-style: italic;
+      line-height: 30px;
+      white-space: nowrap; }
+    /* line 128, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .description {
+      max-width: 400px; }
+    /* line 133, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .options {
+      border-left: 1px solid #ccc;
+      float: right;
+      height: 30px;
+      padding: 0px 5px; }
+    /* line 141, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .options.open {
+      background: #ccc; }
+    /* line 146, ../sass/pics/templates/report/_manage.scss */
+    .ManageReports-page .report-list .options .dropdown-toggle {
+      color: #999;
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      -ms-border-radius: 0px;
+      -o-border-radius: 0px;
+      border-radius: 0px;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      line-height: 30px; }
+  /* line 155, ../sass/pics/templates/report/_manage.scss */
+  .ManageReports-page .lt-ie8 .report-list {
+    display: inline; }
 
-/* line 15, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_menu_container,
-#manage_report_list_container {
-  text-align: center; }
+/*
+ * Favorites
+ */
+/* line 166, ../sass/pics/templates/report/_manage.scss */
+#ManageReports_favorites_page {
+ 	/*
+	 * Excluded Reports
+	 */ }
+  /* line 172, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_favorites_page #report_favorites_list_excluded {
+    margin: 0px auto;
+    width: 60%; }
+    /* line 177, ../sass/pics/templates/report/_manage.scss */
+    #ManageReports_favorites_page #report_favorites_list_excluded h1 {
+      border-bottom: 1px solid #ccc;
+      color: #999;
+      font-size: 18px;
+      margin-bottom: 30px;
+      text-align: left; }
+    /* line 186, ../sass/pics/templates/report/_manage.scss */
+    #ManageReports_favorites_page #report_favorites_list_excluded p {
+      color: #999;
+      font-size: 12px;
+      text-align: center; }
 
-/* line 20, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_menu {
+/*
+ * My Reports
+ */
+/* line 201, ../sass/pics/templates/report/_manage.scss */
+#ManageReports_myReports_page #my_reports_filter {
+  margin: 0px 0px 20px;
+  text-align: center; }
+/* line 207, ../sass/pics/templates/report/_manage.scss */
+#ManageReports_myReports_page #my_reports_filter .btn-group {
   display: inline-block; }
-
-/* line 25, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#report_search {
-  color: #777;
-  padding: 10px;
-  text-align: center; }
-
-/* line 32, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#report_search input[type="text"] {
-  background: #f1f1f2;
-  color: #bbb;
-  height: 12px;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  -ms-border-radius: 20px;
-  -o-border-radius: 20px;
-  border-radius: 20px;
-  width: 300px; }
-
-/* line 41, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-hr {
-  margin: 15px auto;
-  width: 60%; }
-
-/* line 48, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-.lt-ie7 #manage_report_menu,
-.lt-ie8 #manage_report_menu {
+/* line 212, ../sass/pics/templates/report/_manage.scss */
+#ManageReports_myReports_page .lt-ie8 #my_reports_filter .btn-group {
   display: inline; }
 
-/* line 53, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list {
-  display: inline-block;
-  list-style: none;
-  margin: 0px;
-  text-align: left;
-  width: 60%; }
-
-/* line 63, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-.lt-ie7 #manage_report_list,
-.lt-ie8 #manage_report_list {
-  display: inline; }
-
-/* line 68, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .report {
-  background: #f1f1f2;
-  border: 1px solid #ccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
-  line-height: 30px;
-  margin-bottom: 2px;
-  overflow: hidden;
-  position: relative; }
-
-/* line 79, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .favorite {
-  line-height: normal;
-  float: left;
-  margin: 9px 0px 0px 3px;
-  text-decoration: none; }
-
-/* line 87, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .icon-star {
-  color: #ccc;
-  font-size: 13px; }
-
-/* line 93, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .icon-star.selected {
-  color: #a84d10; }
-
-/* line 98, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .summary {
-  float: left;
-  margin: 0px 10px; }
-
-/* line 104, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .name {
-  color: #000000;
-  margin: 0px 20px 0px 0px; }
-
-/* line 110, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .created-by {
-  color: #999;
-  font-size: 10px;
-  font-style: italic;
-  white-space: nowrap; }
-
-/* line 118, C:/Users/UAung/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list.scss */
-#manage_report_list .delete {
-  border-left: 1px solid #ccc;
-  color: #999;
-  line-height: 32px;
-  padding: 0px 5px;
-  position: absolute;
-  right: 0px; }
+/*
+ * Search
+ */
+/* line 222, ../sass/pics/templates/report/_manage.scss */
+#ManageReports_search_page {
+  /*
+   * Search box
+   */ }
+  /* line 228, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page #report_search {
+    margin: 30px 0px 0px;
+    text-align: center; }
+  /* line 234, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page #report_search_form {
+    display: inline-block; }
+    /* line 238, ../sass/pics/templates/report/_manage.scss */
+    #ManageReports_search_page #report_search_form .icon-search {
+      color: #666;
+      position: relative;
+      right: 2px;
+      top: 8px; }
+    /* line 246, ../sass/pics/templates/report/_manage.scss */
+    #ManageReports_search_page #report_search_form input {
+      background: #f1f1f2;
+      color: #999;
+      height: 18px;
+      -webkit-border-radius: 20px;
+      -moz-border-radius: 20px;
+      -ms-border-radius: 20px;
+      -o-border-radius: 20px;
+      border-radius: 20px;
+      width: 350px; }
+  /* line 256, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page .lt-ie8 #report_search_form {
+    display: inline; }
+  /* line 262, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page hr {
+    border: 0px;
+    border-bottom: 1px solid #ccc;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%; }
+  /* line 273, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page .report-list .report {
+    padding: 0px 20px; }
+  /* line 278, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page .report-list .summary {
+    padding-top: 7px; }
+  /* line 284, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page .report-list .name,
+  #ManageReports_search_page .report-list .created-by {
+    line-height: 18px; }
+  /* line 289, ../sass/pics/templates/report/_manage.scss */
+  #ManageReports_search_page .report-list .number-favorites {
+    color: #a84d10;
+    font-size: 12px;
+    float: right;
+    margin: 18px 0px; }

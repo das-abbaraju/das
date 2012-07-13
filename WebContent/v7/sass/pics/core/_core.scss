@@ -1,7 +1,14 @@
+.page-header
+{
+	border: 0px;
+	margin: 18px 0px;
+	padding: 0px;
+}
+
 h1.title
 {
-    color: #73BBE8;
-    font-size: 30px;
+    color: #73bbe8;
+    font-size: 36px;
     font-weight: normal;
 }
 
@@ -10,5 +17,6 @@ p.subtitle
 	color: #808285;
     font-size: 14px;
     font-weight: normal;
-    line-height: 14px;
+    line-height: 20px;
+    margin: 0px;
 }

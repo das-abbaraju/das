@@ -17,7 +17,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.access.ReportAccessor;
-import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -28,8 +27,8 @@ public class ManageReports extends PicsActionSupport {
 	private static final String MY_REPORTS = "saved";
 	private static final String ALL_REPORTS = "all";
 
-	public static final String MY_REPORTS_URL = "ManageReports!viewMyReports.action";
-	public static final String FAVORITE_REPORTS_URL = "ManageReports!viewFavoriteReports.action";
+	public static final String MY_REPORTS_URL = "ManageReports!myReports.action";
+	public static final String FAVORITE_REPORTS_URL = "ManageReports!favorites.action";
 
 	@Autowired
 	private ReportAccessor reportAccessor;
@@ -41,26 +40,31 @@ public class ManageReports extends PicsActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
 	public String execute() {
+	    viewType = MY_REPORTS;
 		runQueryForCurrentView();
-		return SUCCESS;
+
+		return "myReports";
 	}
 
-	public String viewFavoriteReports() {
+	public String favorites() {
 		viewType = FAVORITE;
 		runQueryForCurrentView();
-		return SUCCESS;
+
+		return "favorites";
 	}
 
-	public String viewMyReports() {
+	public String myReports() {
 		viewType = MY_REPORTS;
 		runQueryForCurrentView();
-		return SUCCESS;
+
+		return "myReports";
 	}
 
-	public String viewAllReports() {
+	public String search() {
 		viewType = ALL_REPORTS;
 		runQueryForCurrentView();
-		return SUCCESS;
+
+		return "search";
 	}
 
 	public boolean viewingFavoriteReports() {
