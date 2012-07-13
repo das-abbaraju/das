@@ -252,7 +252,7 @@ class CronStats(CronThread):
 			time.sleep(self.sleeptime)
 
 def main():
-	daemon = qcron("/tmp/con_cron.pid")
+	daemon = qcron("/var/run/con_cron.pid")
 	if len(sys.argv) == 2 :
 		if 'start' == sys.argv[1]:
 			daemon.start()

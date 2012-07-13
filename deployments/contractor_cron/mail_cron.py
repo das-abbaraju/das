@@ -210,7 +210,7 @@ class CronWorker(CronThread):
 			stats_q.put((self.id, starttime, totaltime, success, cronurl))
 
 def main():
-	daemon = qcron("/tmp/mail_cron.pid")
+	daemon = qcron("/var/run/mail_cron.pid")
 	if len(sys.argv) == 2 :
 		if 'start' == sys.argv[1]:
 			daemon.start()
