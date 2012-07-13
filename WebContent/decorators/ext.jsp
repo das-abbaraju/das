@@ -7,22 +7,17 @@
 		<meta charset="utf-8">
 		
 		<title>PICS - <decorator:title default="PICS" /></title>
-		<meta name="description" content="">
-		<meta name="author" content="">
 		
-		<script type="text/javascript" src="v7/js/pics/extjs/bootstrap.js"></script>
-		<%-- <script type="text/javascript" src="js/pics/extjs/ext-all.js"></script> --%>
-        
-        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme.css">
-        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme-menu.css">
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme.css">
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css">
         <link rel="stylesheet" type="text/css" href="v7/css/libs/font-awesome.css">
         
         <%-- TODO: this should be refactored out of the custom css and done properly --%>
-        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-custom.css">
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-custom.css">
 		
 		<decorator:head />
 	</head>
-	<body id="${actionName}-page">
+	<body id="${actionName}_${methodName}_page" class="${actionName}-page page">
 		<decorator:body />
 	</body>
 </html>

@@ -3,7 +3,7 @@ Ext.scopeResetCSS = true;
 Ext.Loader.setConfig({
     enabled: true,
     paths: {
-        PICS: './v7/js/pics/app'
+        PICS: './v7/js/extjs/pics/app'
     }
 });
 

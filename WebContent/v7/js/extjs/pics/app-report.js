@@ -1,7 +1,7 @@
 Ext.Loader.setConfig({
     enabled: true,
     paths: {
-        'Ext.ux': './v7/js/pics/app/ux'
+        'Ext.ux': './v7/js/extjs/pics/app/ux'
     }
 });
 
@@ -88,7 +88,7 @@ Ext.override(Ext.menu.Menu, {
 
 Ext.application({
     name: 'PICS',
-    appFolder: 'v7/js/pics/app',
+    appFolder: 'v7/js/extjs/pics/app',
 
     constants: {
         NUMBERSTORE: [

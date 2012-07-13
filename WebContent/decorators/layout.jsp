@@ -28,7 +28,7 @@
         
         <%-- custom --%>
         <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" href="v7/js/pics/resources/css/my-ext-theme-menu.css" />
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
         
         <link rel="stylesheet" type="text/css" href="v7/css/pics.css">
         
@@ -50,7 +50,13 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script>window.jQuery || document.write('<script src="v7/js/libs/jquery-1.7.1.min.js"><\/script>')</script>
         
-        <script type="text/javascript" src="v7/js/pics/extjs/ext-all.js"></script>
-        <script type="text/javascript" src="v7/js/menu.js"></script>
+        <%-- libs --%>
+        <script type="text/javascript" src="v7/js/libs/bootstrap.js"></script>
+        <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
+        
+        <%-- custom --%>
+        <script type="text/javascript" src="v7/js/pics/core/core.js"></script>
+        <script type="text/javascript" src="v7/js/pics/general/general.js"></script>
+        <script type="text/javascript" src="v7/js/pics/layout/menu.js"></script>
     </body>
 </html>

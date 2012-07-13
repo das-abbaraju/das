@@ -6,7 +6,9 @@
 
 <div id="loadingPage">
     <h1>Loading...</h1>
-    <div id="logo"></div>
+    <img src="../v7/js/extjs/pics/app/resources/images/loading.gif" />
 </div>
 
-<script type="text/javascript" src="v7/js/pics/app-report.js"></script>
+<script type="text/javascript" src="v7/js/extjs/pics/extjs/bootstrap.js"></script>
+<%-- <script type="text/javascript" src="js/extjs/pics/extjs/ext-all.js"></script> --%>
+<script type="text/javascript" src="v7/js/extjs/pics/app-report.js"></script>
