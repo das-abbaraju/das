@@ -26,6 +26,7 @@ public class Report extends BaseTable {
 	private String name;
 	private String description;
 	private String parameters;
+	private boolean isPrivate;
 
 	private Definition definition;
 	private int rowsPerPage = 50;
@@ -63,6 +64,14 @@ public class Report extends BaseTable {
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
+	}
+
+	public boolean isPrivate() {
+		return isPrivate;
+	}
+
+	public void setPrivate(boolean isPrivate) {
+		this.isPrivate = isPrivate;
 	}
 
 	@SuppressWarnings("unchecked")
