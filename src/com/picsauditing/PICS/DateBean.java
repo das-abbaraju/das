@@ -62,6 +62,42 @@ public class DateBean {
 		times.put(24, "06:00 PM");
 	}
 
+	// some patterns come from logs of what users are actually entering
+	// do two digit year date patterns first
+	private static List<String> datePatterns = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+	{
+		add("MM-dd-yy");
+		add("MM/dd/yy");
+		add("MM/dd.yy");
+		add("MM.dd.yy");
+		add("MM dd yy");
+		add("MMMMM dd, yy");
+		add("MMMMM dd yy");
+		add("MMMM dd, yy");
+		add("MMMM dd yy");
+	
+		add("yyyy-MM-dd");
+		add("yyyy/MM/dd");
+		add("yyyy.MM.dd");
+		add("yyyy MM dd");
+		add("MM-dd-yyyy");
+		add("MM/dd/yyyy");
+		add("dd/MM/yyyy");
+		add("dd-MM-yyyy");
+		add("dd.MM.yyyy");
+		add("dd MM yyyy");
+		add("dd MMMMM yyyy");
+		add("dd MMMM yyyy");
+		add("MMMMM dd, yyyy");
+		add("MMMMM dd yyyy");
+		add("MMMM dd, yyyy");
+		add("MMMM dd yyyy");
+		add("MM dd yyyy");
+		add("MM/dd.yyyy");
+		add("MM.dd.yyyy");
+	}};
+	
 	public static String toDBFormat(String month, String day, String year) throws Exception {
 		return toDBFormat(year + "-" + month + "-" + day);
 	}
@@ -338,22 +374,12 @@ public class DateBean {
 		if (Strings.isEmpty(dateString))
 			return null;
 		
+		// do not be tempted to move this to a static variable - SimpleDateFormat is not thread-safe
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
 
-		List<String> patterns = new ArrayList<String>();
-		// TODO Add Unixtimestap as the best option
-		// patterns.add("########");
-		patterns.add("MM-dd-yy");
-		patterns.add("MM/dd/yy");
-		patterns.add("yyyy-MM-dd");
-		patterns.add("yyyy/MM/dd");
-		patterns.add("MM-dd-yyyy");
-		patterns.add("MM/dd/yyyy");
-		patterns.add("dd/MM/yyyy");
-		patterns.add("dd-MM-yyyy");
 		Date d = null;
-		for (String pattern : patterns) {
+		for (String pattern : datePatterns) {
 			try {
 				df.applyPattern(pattern);
 				d = df.parse(dateString);
@@ -367,16 +393,9 @@ public class DateBean {
 	}
 
 	public static Date parseDateTime(String dateString) {
+		// do not be tempted to move this to a static variable - SimpleDateFormat is not thread-safe
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
-
-		List<String> datePatterns = new ArrayList<String>();
-		datePatterns.add("MM-dd-yy");
-		datePatterns.add("MM/dd/yy");
-		datePatterns.add("yyyy-MM-dd");
-		datePatterns.add("yyyy/MM/dd");
-		datePatterns.add("MM-dd-yyyy");
-		datePatterns.add("MM/dd/yyyy");
 
 		List<String> timePatterns = new ArrayList<String>();
 		timePatterns.add("hh:mm a z");

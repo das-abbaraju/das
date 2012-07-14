@@ -4,8 +4,10 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.junit.Test;
@@ -13,6 +15,85 @@ import org.junit.Test;
 public class DateBeanTest  {
 	TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
 	TimeZone pacificTimeZone = TimeZone.getTimeZone("US/Pacific");
+	private static List<String> february03_2001 = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+	{
+		add("2/3/2001");
+		add("2-3-01");
+		add("2/3/01");
+		add("02-03-2001");
+		add("2001/02/03");
+		add("2001/2/3");
+		add("02/03/2001");
+		add("02/03/01");
+		add("February 03, 01");
+		add("February 03 01");
+		add("February 03, 2001");
+		add("February 03 2001");
+		add("02 03 2001");
+		add("03 February 2001");
+		add("02/03.2001");
+		add("02.03.2001");
+		add("02/03.01");
+		add("02.03.01");
+		add("Feb 03, 01");
+		add("Feb 03 01");
+		add("Feb 03, 2001");
+		add("Feb 03 2001");
+		add("03 Feb 2001");		
+	}};
+
+	private static List<String> february03_2001_WithTimes = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+	{
+		add("2/3/2001 08:32 AM PDT");
+		add("2/3/2001 08:32 AM");
+		add("2/3/2001 8:32 AM");
+		add("February 03, 2001 08:32 AM PDT");
+		add("February 03, 2001 08:32 AM");
+		add("February 03, 2001 8:32 AM");
+	}};
+	
+	private static List<String> separators = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+	{
+		add("/"); add("-"); add("."); add(" ");
+	}};
+	
+	private static List<String> dateTemplates = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+	{
+		add("ONE_DIGIT_MONTH{SEPARATOR}ONE_DIGIT_DAY{SEPARATOR}FOUR_DIGIT_YEAR");
+		add("TWO_DIGIT_MONTH{SEPARATOR}ONE_DIGIT_DAY{SEPARATOR}FOUR_DIGIT_YEAR");
+		add("ONE_DIGIT_MONTH{SEPARATOR}TWO_DIGIT_DAY{SEPARATOR}FOUR_DIGIT_YEAR");
+		add("TWO_DIGIT_MONTH{SEPARATOR}TWO_DIGIT_DAY{SEPARATOR}FOUR_DIGIT_YEAR");
+
+		add("ONE_DIGIT_DAY{SEPARATOR}ONE_DIGIT_MONTH{SEPARATOR}FOUR_DIGIT_YEAR");
+		add("ONE_DIGIT_DAY{SEPARATOR}TWO_DIGIT_MONTH{SEPARATOR}FOUR_DIGIT_YEAR");
+		add("TWO_DIGIT_DAY{SEPARATOR}ONE_DIGIT_MONTH{SEPARATOR}FOUR_DIGIT_YEAR");
+		add("TWO_DIGIT_DAY{SEPARATOR}TWO_DIGIT_MONTH{SEPARATOR}FOUR_DIGIT_YEAR");
+
+		add("ONE_DIGIT_MONTH{SEPARATOR}ONE_DIGIT_DAY{SEPARATOR}TWO_DIGIT_YEAR");
+		add("TWO_DIGIT_MONTH{SEPARATOR}ONE_DIGIT_DAY{SEPARATOR}TWO_DIGIT_YEAR");
+		add("ONE_DIGIT_MONTH{SEPARATOR}TWO_DIGIT_DAY{SEPARATOR}TWO_DIGIT_YEAR");
+		add("TWO_DIGIT_MONTH{SEPARATOR}TWO_DIGIT_DAY{SEPARATOR}TWO_DIGIT_YEAR");
+
+		add("FOUR_DIGIT_YEAR{SEPARATOR}TWO_DIGIT_MONTH{SEPARATOR}TWO_DIGIT_DAY");
+		add("FOUR_DIGIT_YEAR{SEPARATOR}TWO_DIGIT_MONTH{SEPARATOR}ONE_DIGIT_DAY");
+		add("FOUR_DIGIT_YEAR{SEPARATOR}ONE_DIGIT_MONTH{SEPARATOR}TWO_DIGIT_DAY");
+		add("FOUR_DIGIT_YEAR{SEPARATOR}ONE_DIGIT_MONTH{SEPARATOR}ONE_DIGIT_DAY");
+		
+		add("LONG_MONTH_NAME ONE_DIGIT_DAY, TWO_DIGIT_YEAR");
+		add("SHORT_MONTH_NAME ONE_DIGIT_DAY, TWO_DIGIT_YEAR");
+		add("LONG_MONTH_NAME ONE_DIGIT_DAY TWO_DIGIT_YEAR");
+		add("SHORT_MONTH_NAME ONE_DIGIT_DAY TWO_DIGIT_YEAR");
+
+		add("LONG_MONTH_NAME ONE_DIGIT_DAY, FOUR_DIGIT_YEAR");
+		add("SHORT_MONTH_NAME ONE_DIGIT_DAY, FOUR_DIGIT_YEAR");
+		add("LONG_MONTH_NAME ONE_DIGIT_DAY FOUR_DIGIT_YEAR");
+		add("SHORT_MONTH_NAME ONE_DIGIT_DAY FOUR_DIGIT_YEAR");
+
+	}};
 	
 	@Test
 	public void testShowFormat() throws Exception {
@@ -21,27 +102,116 @@ public class DateBeanTest  {
 	}
 
 	@Test
-	public void testParseDate() {
+	public void testParseDate_EveryDayForNextYearStartingToday() {
+		int DAYS_IN_A_YEAR = 365;
+		Calendar testDate = startDateZeroTime();
+		
+		for (int days = 0; days < DAYS_IN_A_YEAR; days++) {
+			parseDateAllPatternsAndSeparators(separators, testDate);
+			testDate.add(Calendar.DAY_OF_YEAR, 1);
+		}
+	}
+
+	@Test
+	public void testParseDate_TodayEveryMonthFor10Years() {
+		int MONTHS_TO_TEST = 12*10;
+		Calendar testDate = startDateZeroTime();
+		
+		for (int count = 0; count < MONTHS_TO_TEST; count++) {
+			parseDateAllPatternsAndSeparators(separators, testDate);
+			testDate.add(Calendar.MONTH, 1);
+		}
+	}
+	
+	private Calendar startDateZeroTime() {
+		Calendar testDate = Calendar.getInstance();
+		testDate.set(Calendar.HOUR_OF_DAY, 0);
+		testDate.set(Calendar.MINUTE, 0);
+		testDate.set(Calendar.SECOND, 0);
+		testDate.set(Calendar.MILLISECOND, 0);
+		return testDate;
+	}
+	
+	private void parseDateAllPatternsAndSeparators(List<String> separators, Calendar testDate) {
+		for(String template : dateTemplates) {
+			if (template.contains("{SEPARATOR}")) {
+				for (String separator : separators) {
+					String pattern = template.replaceAll("\\{SEPARATOR\\}", separator);
+					runParseDateTest(testDate, pattern);
+				}
+			} else {
+				runParseDateTest(testDate, template);
+			}
+		}
+	}
+
+	private void runParseDateTest(Calendar testDate, String pattern) {
+		pattern = replaceTemplatePatternsWithTestDate(pattern, testDate);
+		Date actual = DateBean.parseDate(pattern);
+		try {
+			assertEquals(pattern, testDate.getTime(), actual);
+		} catch (AssertionError e) {
+			// because we're allowing day month year and month day year this will sometimes cause
+			// a misparse such as:
+			// 1/8/2012 expected:<Wed Aug 01 00:00:00 MDT 2012> but was:<Sun Jan 08 00:00:00 MST 2012>
+			int day = testDate.get(Calendar.DAY_OF_MONTH);
+			if (day > 12) {
+				// this is only an error if the day cannot be a month
+				throw e;
+			}
+		}
+	}
+
+	private String replaceTemplatePatternsWithTestDate(String template, Calendar testDate) {
+		SimpleDateFormat formatter = new SimpleDateFormat();
+		int day = testDate.get(Calendar.DAY_OF_MONTH);
+		int month = testDate.get(Calendar.MONTH)+1;
+		int year = testDate.get(Calendar.YEAR);
+
+		String pattern = template.replaceAll("ONE_DIGIT_DAY", day+"");
+		String twoDigitDay = (day < 9) ? "0"+day : day+"";
+		pattern = pattern.replaceAll("TWO_DIGIT_DAY", twoDigitDay);
+		
+		pattern = pattern.replaceAll("ONE_DIGIT_MONTH", month+"");
+		String twoDigitMonth = (month < 9) ? "0"+month : month+"";
+		pattern = pattern.replaceAll("TWO_DIGIT_MONTH", twoDigitMonth);
+		
+		pattern = pattern.replaceAll("FOUR_DIGIT_YEAR", year+"");
+		String twoDigitYear = (year > 2000) ? (year-2000)+"" : (year-1900)+"";
+		pattern = pattern.replaceAll("TWO_DIGIT_YEAR", twoDigitYear);
+		
+		formatter.applyPattern("MMMMM");
+		String longMonthName = formatter.format(testDate.getTime());
+		pattern = pattern.replaceAll("LONG_MONTH_NAME", longMonthName);
+		
+		formatter.applyPattern("MMMM");
+		String shortMonthName = formatter.format(testDate.getTime());
+		pattern = pattern.replaceAll("SHORT_MONTH_NAME", shortMonthName);
+		
+		return pattern;
+	}
+	
+	@Test
+	public void testParseDate_Feb_03_2001() {
 		Date expected = DateBean.parseDate("2001-02-03");
 
-		Date actual;
-		actual = DateBean.parseDate("2/3/2001");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("2-3-01");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("2/3/01");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("02-03-2001");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("2001/02/03");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("2001/2/3");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("02/03/2001");
-		assertEquals(expected, actual);
-		actual = DateBean.parseDate("02/03/01");
-		assertEquals(expected, actual);
+		for(String pattern : february03_2001) {
+			Date actual = DateBean.parseDate(pattern);
+			assertEquals(expected, actual);
+		}
 	}
+	
+	@Test
+	public void testParseDateTime() throws Exception {
+		Date expected = DateBean.parseDate("2001-02-03 08:32 AM PDT");
+
+		for(String pattern : february03_2001_WithTimes) {
+			Date actual = DateBean.parseDate(pattern);
+			assertEquals(expected, actual);
+		}
+	
+	}
+
 	
 	@Test
 	public void testDBFormat() {
@@ -351,5 +521,5 @@ public class DateBeanTest  {
 	public void testFormatWithNullValue() {
 		assertEquals("", DateBean.format(null, "MM/dd/yyyy"));
 	}
-	
+
 }
