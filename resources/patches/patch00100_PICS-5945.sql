@@ -1,3 +1,4 @@
+/*
 ALTER TABLE `contractor_info` DROP FOREIGN KEY `FK_contractor_info` ;
 
 ALTER TABLE `accounts` 
@@ -147,18 +148,18 @@ where state is not null
 and countrySubdivision is null;
 
 update 
-contractor_audit ca
+contractor_audit a
 join ref_state rs on a.state = rs.isoCode and a.country = rs.countryCode
 set countrySubdivision = concat(country,'-',state)
-where ca.state is not null 
-and ca.countrySubdivision is null;
+where a.state is not null 
+and a.countrySubdivision is null;
 
 update 
-contractor_info ci
+contractor_info a
 join ref_state rs on a.billingState = rs.isoCode and a.billingCountry = rs.countryCode
 set billingCountrySubdivision = concat(billingCountry,'-',billingState)
-where ci.billingState is not null 
-and ci.billingCountrySubdivision is null;
+where a.billingState is not null 
+and a.billingCountrySubdivision is null;
 
 update 
 contractor_registration_request a
@@ -180,3 +181,4 @@ join ref_state rs on a.state = rs.isoCode and a.country = rs.countryCode
 set countrySubdivision = concat(country,'-',state)
 where state is not null 
 and countrySubdivision is null;
+*/

@@ -27,7 +27,11 @@
 	    <param-name>migration.patchpath</param-name>
 	<param-value>patches:com.picsauditing.conf.db.patch</param-value>  
 	</context-param>
-	<context-param>
+	<context-param> 
+		<param-name>mysql.supportsMultipleStatements</param-name> 
+	<param-value>false</param-value>  
+	</context-param>
+ 	<context-param>
 	    <param-name>migration.datasource</param-name>
 	<param-value>jdbc/pics</param-value>
 	</context-param>
