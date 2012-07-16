@@ -1,29 +1,102 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<%-- URL --%>
-<s:url action="PicsStyleGuide" var="style_guide_dashboard" />
-<s:url action="PicsStyleGuide" method="buttons" var="style_guide_buttons" />
-<s:url action="PicsStyleGuide" method="forms" var="style_guide_forms" />
-<s:url action="PicsStyleGuide" method="pills" var="style_guide_pills" />
+<s:include value="/struts/layout/page_header.jsp">
+    <s:param name="title">PICS Style Guide</s:param>
+</s:include>
 
-<title>PICS Style Guide</title>
+<s:include value="/struts/style_guide/_menu.jsp" />
 
-<s:include value="../actionMessages.jsp" />
+<div class="row-fluid">
+    <div class="span6">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Tag
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <a class="btn">Default</a>
+                    </td>
+                    <td>
+                        Standard gray button with gradient
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-primary">Primary</a>
+                    </td>
+                    <td>
+                        Provides extra visual weight and identifies the primary action in a set of buttons
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-info">Info</a>
+                    </td>
+                    <td>
+                        Used as an alternative to the default styles
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-success">Success</a>
+                    </td>
+                    <td>
+                        Indicates a successful or positive action
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-warning">Warning</a>
+                    </td>
+                    <td>
+                        Indicates caution should be taken with this action
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-danger">Danger</a>
+                    </td>
+                    <td>
+                        Indicates a dangerous or potentially negative action
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-inverse">Inverse</a>
+                    </td>
+                    <td>
+                        Alternate dark gray button, not tied to a semantic action or use
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="span6">
+    
+<pre class="prettyprint linenums">
+&lt;a class="btn"&gt;Default&lt;/a&gt;
 
-<h1 class="title">PICS Style Guide</h1>
+&lt;a class="btn btn-primary"&gt;Primary&lt;/a&gt;
 
-<ul class="nav nav-pills">
-	<li>
-		<a href="${style_guide_dashboard}">Style Guide</a>
-	</li>
-	<li class="active">
-		<a href="${style_guide_buttons}">Buttons</a>
-	</li>
-	<li>
-		<a href="${style_guide_forms}">Forms</a>
-	</li>
-	<li>
-		<a href="${style_guide_pills}">Pills</a>
-	</li>
-</ul>
+&lt;a class="btn btn-info"&gt;Info&lt;/a&gt;
+
+&lt;a class="btn btn-success"&gt;Success&lt;/a&gt;
+
+&lt;a class="btn btn-warning"&gt;Warning&lt;/a&gt;
+
+&lt;a class="btn btn-danger"&gt;Danger&lt;/a&gt;
+
+&lt;a class="btn btn-inverse"&gt;Inverse&lt;/a&gt;
+</pre>
+
+    </div>
+</div>
