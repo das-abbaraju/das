@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -348,6 +349,13 @@ public class EntityFactory {
 
 	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit) {
 		return makeContractorAuditOperator(audit, AuditStatus.Complete);
+	}
+
+	public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
+		Facility facility = new Facility();
+		facility.setOperator(operator);
+		facility.setCorporate(corporate);
+		return facility;
 	}
 
 }

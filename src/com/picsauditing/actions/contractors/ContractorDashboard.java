@@ -48,6 +48,7 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
@@ -170,7 +171,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			noteDAO.save(NoteFactory.generateNoteForRemovingTagFromContractor(tagId, permissions));
 			contractorTagDAO.remove(tagId);
 			contractor.incrementRecalculation(10);
-			contractorAccountDao.save(contractor);			
+			contractorAccountDao.save(contractor);
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
@@ -238,7 +239,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			co = contractor.getNonCorporateOperators().get(0);
 			opID = co.getOperatorAccount().getId();
 		}
-		
+
 		findCorporateOverride();
 
 		calculateEarliestIndividualFlagSummaries();
@@ -268,18 +269,23 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (co == null) {
 			return;
 		}
-		
+
 		if (co.isForcedFlag()) {
 			return;
 		}
-		
-		List<ContractorOperator> contractorOperators = contractorOperatorDAO.findByContractor(contractor.getId(), permissions);
+
+		List<ContractorOperator> contractorOperators = contractorOperatorDAO.findByContractor(contractor.getId(),
+				permissions);
 		for (ContractorOperator contractorOperator : contractorOperators) {
 			if (contractorOperator.equals(co))
 				continue;
 			if (contractorOperator.isForcedFlag()) {
-				corporateFlagOverride = contractorOperator;
-				break;
+				for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
+					if (facility.getCorporate() == contractorOperator.getOperatorAccount()) {
+						corporateFlagOverride = contractorOperator;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -747,33 +753,34 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return true;
 	}
-	
+
 	public String getPercentComplete(FlagCriteria criteria, int operatorId) {
 		String percentComplete = "";
 		if (criteria.getAuditType() != null) {
-			for (ContractorAudit audit:contractor.getAudits()) {
+			for (ContractorAudit audit : contractor.getAudits()) {
 				if (audit.getAuditType().equals(criteria.getAuditType())) {
-					if (percentComplete.length() > 0) percentComplete += ", ";
+					if (percentComplete.length() > 0)
+						percentComplete += ", ";
 					percentComplete += getPercentCompleteForOperator(audit, operatorId);
 				}
 			}
 		}
-		
+
 		if (percentComplete.length() > 0)
 			percentComplete = this.getTextParameterized("ContractorView.Complete", percentComplete);
 		return percentComplete;
-	} 
-	
+	}
+
 	private String getPercentCompleteForOperator(ContractorAudit audit, int operatorId) {
 		int lowestPercentComplete = 101;
 		String answer = "";
-		for (ContractorAuditOperator cao:audit.getOperators()) {
+		for (ContractorAuditOperator cao : audit.getOperators()) {
 			if (cao.isVisible() && cao.getPercentComplete() <= 100) {
 				if (lowestPercentComplete > cao.getPercentComplete())
 					lowestPercentComplete = cao.getPercentComplete();
-				for (ContractorAuditOperatorPermission caop : cao
-						.getCaoPermissions()) {
-					if (caop.getOperator().getId() == operatorId || caop.getOperator().getOperatorHeirarchy().contains(operatorId)) {
+				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+					if (caop.getOperator().getId() == operatorId
+							|| caop.getOperator().getOperatorHeirarchy().contains(operatorId)) {
 						if (audit.getAuditType().isAnnualAddendum()) {
 							return audit.getAuditFor() + ": " + String.valueOf(cao.getPercentComplete()) + "%";
 						}
@@ -782,12 +789,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		String prefix = "";
 		if (audit.getAuditType().isAnnualAddendum()) {
 			prefix = audit.getAuditFor() + ": ";
 		}
 
-		return (lowestPercentComplete <=  100) ? prefix + lowestPercentComplete + "%":"";
+		return (lowestPercentComplete <= 100) ? prefix + lowestPercentComplete + "%" : "";
 	}
 }
