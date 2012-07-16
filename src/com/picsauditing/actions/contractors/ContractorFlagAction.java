@@ -26,6 +26,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FacilitiesDAO;
+import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.NaicsDAO;
@@ -52,6 +53,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.models.contractors.ContractorFlagAnswerDisplay;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
@@ -73,6 +75,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected NaicsDAO naicsDAO;
 	@Autowired
 	protected OperatorAccountDAO opDAO;
+	@Autowired
+	protected FlagCriteriaOperatorDAO flagCriteriaOperatorDao;
+	@Autowired
+	protected ContractorFlagAnswerDisplay contractorFlagAnswerDisplay;
 
 	protected int opID;
 	protected ContractorOperator co;
@@ -114,6 +120,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		} finally {
 			PicsLogger.stop();
 		}
+		
+		contractorFlagAnswerDisplay.setContractor(contractor);
+		contractorFlagAnswerDisplay.setContractorOperator(co);
 
 		return SUCCESS;
 	}
@@ -548,7 +557,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 
 	public String getContractorAnswer(FlagData f, boolean addLabel) {
-		FlagCriteriaContractor fcc = null;
+		/*FlagCriteriaContractor fcc = null;
 		for (FlagCriteriaContractor contractorCriteria : contractor.getFlagCriteria()) {
 			if (contractorCriteria.getCriteria().getId() == f.getCriteria().getId()) {
 				fcc = contractorCriteria;
@@ -558,11 +567,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (fcc == null)
 			return "";
 
-		return getContractorAnswer(fcc, f, addLabel);
+		return getContractorAnswer(fcc, f, addLabel);*/
+		return contractorFlagAnswerDisplay.getContractorAnswer(f, addLabel);
 	}
 
 	public String getContractorAnswer(FlagCriteriaContractor fcc, FlagData f, boolean addLabel) {
-		FlagCriteria fc = f.getCriteria();
+		/*FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();
 
 		if (fc.getCategory().equals("Insurance AMB Class"))
@@ -601,10 +611,17 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				}
 				answer += getText("ContractorFlag.OshaAnswer3") + f.getContractor().getNaics().getCode();
 			}
-		} else if (fc.getDataType().equals(FlagCriteria.NUMBER))
+		}
+		else if (fc.isInsurance()) {
+			int operatorTest = co.getOperatorAccount().getInheritFlagCriteria().getId();
+			FlagCriteriaOperator fco = flagCriteriaOperatorDao.findByOperatorAndCriteriaId(operatorTest, fc.getId());
+			answer = "Requred Limit: " + Strings.formatDecimalComma(fco.getHurdle()) + " Your Limit: " + Strings.formatDecimalComma(answer);
+		}
+		else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);
 		else if (fc.getQuestion() != null && fc.getQuestion().getOption() != null)
 			answer = getText(fc.getQuestion().getOption().getI18nKey() + "." + answer);
+
 
 		answer = Utilities.escapeHTML(answer);
 
@@ -638,7 +655,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 		}
 
-		return answer;
+		return answer;*/
+		return contractorFlagAnswerDisplay.getContractorAnswer(fcc, f, addLabel);
 	}
 
 	public boolean isDisplayTable() {

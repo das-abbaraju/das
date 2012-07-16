@@ -39,6 +39,15 @@ public class FlagCriteriaOperatorDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
+	public FlagCriteriaOperator findByOperatorAndCriteriaId(int operatorId, int criteriaId) {
+		Query query = em.createQuery("FROM FlagCriteriaOperator fco " + 
+				"WHERE fco.criteria.id = ? " +
+				"AND fco.operator.id = ?");
+		query.setParameter(1, criteriaId);
+		query.setParameter(2, operatorId);
+		return (FlagCriteriaOperator) query.getSingleResult();
+	}
+	
 	public List<FlagCriteria> findWhere(String where) {
 		Query query = em.createQuery("From FlagCriteriaOperator WHERE " + where);
 		return query.getResultList();

@@ -25,6 +25,9 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -256,7 +259,7 @@ public class EntityFactory {
 		conAudit.getOperators().add(cao);
 		return cao;
 	}
-
+	
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(counter++);
@@ -357,5 +360,48 @@ public class EntityFactory {
 		facility.setCorporate(corporate);
 		return facility;
 	}
+	public static FlagCriteria makeFlagCriteria() {
+		FlagCriteria flagCriteria = new FlagCriteria();
+		flagCriteria.setId(counter++);
+		flagCriteria.setCategory("Test");
+		flagCriteria.setInsurance(false);
+		return flagCriteria;
+	}
+	public static FlagCriteria makeFlagCriteriaAuditType() {
+		FlagCriteria flagCriteria = makeFlagCriteria();
+		flagCriteria.setAuditType(EntityFactory.makeAuditType(counter++));
+		flagCriteria.setRequiredStatus(AuditStatus.Complete);	
+		
+		return flagCriteria;
+	}
+	
+	public static FlagCriteria makeFlagCriteriaAuditQuestion() {
+		FlagCriteria flagCriteria = makeFlagCriteria();
+		flagCriteria.setQuestion(EntityFactory.makeAuditQuestion());
+		flagCriteria.setComparison("=");
+		flagCriteria.setDataType(FlagCriteria.STRING);
+		flagCriteria.setDefaultValue("Yes");
+			
+		return flagCriteria;
+	}
 
+	public static FlagData makeFlagData() {
+		FlagData flagData = new FlagData();
+		flagData.setId(counter++);
+		flagData.setCriteria(makeFlagCriteriaAuditType());
+		flagData.setContractor(makeContractor());
+		flagData.setFlag(FlagColor.Red);
+		
+		return flagData;
+	}
+
+	public static FlagCriteriaContractor makeFlagCriteriaContractor(String answer) {
+		FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor();
+		flagCriteriaContractor.setId(counter++);
+		flagCriteriaContractor.setAnswer(answer);
+		flagCriteriaContractor.setContractor(makeContractor());
+		flagCriteriaContractor.setCriteria(makeFlagCriteria());
+		
+		return flagCriteriaContractor;
+	}
 }
