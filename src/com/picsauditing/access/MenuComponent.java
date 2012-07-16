@@ -160,6 +160,10 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     	return child;
     }
 
+    public boolean removeChild(MenuComponent child) {
+    	return children.remove(child);
+    }
+
     public boolean isCurrent() {
         if (current)
             return true;

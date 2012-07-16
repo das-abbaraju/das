@@ -1,6 +1,10 @@
 package com.picsauditing.access;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -14,22 +18,21 @@ import com.picsauditing.util.Strings;
  * This is a rewrite of PicsMenu.java for the version 7.0.
  */
 // TODO Verify that all active menus are being translated
-public class MenuBuilder {
+public final class MenuBuilder {
 
 	private static I18nCache i18nCache = I18nCache.getInstance();
+
+	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 
 	private MenuBuilder() {
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions) {
-		return buildMenubar(permissions, null);
+		return buildMenubar(permissions, Collections.<ReportUser> emptyList());
 	}
 
-	@SuppressWarnings("unused")
 	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> favoriteReports) {
 		MenuComponent menubar = new MenuComponent();
-		if (menubar == null)
-			return null;
 
 		if (permissions == null || !permissions.isLoggedIn()) {
 			buildNotLoggedInMenubar(menubar);
@@ -74,8 +77,7 @@ public class MenuBuilder {
 	}
 
 	private static void buildContractorMenubar(MenuComponent menubar, Permissions permissions) {
-		// Don't show a menu for Contractors, they will use their sub menu for
-		// now
+		// Don't show a menu for Contractors, they will use their sub menu for now
 		if (!permissions.getAccountStatus().isActiveDemo()) {
 			menubar.addChild(getText("Registration.CompanyDetails.heading"), "ContractorEdit.action", "contractor_edit");
 			addSupportMenu(menubar);
@@ -153,9 +155,6 @@ public class MenuBuilder {
 
 	private static void addConfigureMenu(MenuComponent menubar, Permissions permissions) {
 		MenuComponent configureMenu = menubar.addChild(getText("menu.Configure"));
-		// We're aliasing this menu because menu components could be added in a
-		// submenu, or the main menu
-		MenuComponent auditsMenu = configureMenu;
 
 		if (permissions.has(OpPerms.Translator)) {
 			MenuComponent translationMenu = configureMenu.addChild("Translations");
@@ -166,26 +165,16 @@ public class MenuBuilder {
 				translationMenu.addChild("Unsynced Translations", "UnsyncedTranslations.action",
 						"unsynced_translations");
 			}
+
 			translationMenu.addChild("View Traced Translations", "ManageTranslations.action?showDoneButton=true",
 					"traced_translations").setTarget("_BLANK");
 		}
 
+		addAuditsSubmenu(configureMenu, permissions);
+
 		if (permissions.has(OpPerms.ManageAudits)) {
-			auditsMenu = configureMenu.addChild(getText("global.Audits"));
-			auditsMenu.addChild("Audit Definition", "ManageAuditType.action", "manage_audit_type");
-			auditsMenu.addChild("Manage Audit Options", "ManageOptionGroup.action", "manage_option_group");
-
-			if (permissions.has(OpPerms.ManageAudits, OpType.Edit)) {
-				auditsMenu.addChild(getText("AuditCategoryMatrix.title"), "AuditCategoryMatrix.action",
-						"audit_category_matrix");
-			}
-		}
-
-		if (permissions.has(OpPerms.ManageAudits))
 			configureMenu.addChild("Flag Criteria", "ManageFlagCriteria.action", "manage_flag_criteria");
-
-		if (permissions.has(OpPerms.ManageAuditTypeRules, OpType.Edit))
-			auditsMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action", "audit_type_rule_search");
+		}
 
 		if (permissions.has(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
 			if (permissions.isCanSeeInsurance()) {
@@ -200,14 +189,9 @@ public class MenuBuilder {
 			}
 		}
 
-		if (permissions.has(OpPerms.ContractorSimulator))
+		if (permissions.has(OpPerms.ContractorSimulator)) {
 			configureMenu.addChild("Contractor Simulator", "ContractorSimulator.action", "contractor_simulator");
-
-		if (permissions.has(OpPerms.ManageCategoryRules, OpType.Edit))
-			configureMenu.addChild("Category Rules", "CategoryRuleSearch.action", "category_rule_search");
-
-		if (permissions.has(OpPerms.ManageAuditWorkFlow))
-			configureMenu.addChild("Workflows", "ManageAuditWorkFlow.action", "manage_audit_work_flow");
+		}
 	}
 
 	private static void addDashboard(MenuComponent menubar) {
@@ -245,25 +229,28 @@ public class MenuBuilder {
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
 		MenuComponent manageMenu = menubar.addChild(getText("menu.Manage"));
 
-		if (permissions.has(OpPerms.EditUsers))
+		if (permissions.has(OpPerms.EditUsers)) {
 			manageMenu.addChild(getText("menu.UserAccounts"), "UsersManage.action", "users_manage");
+		}
 
 		if (permissions.has(OpPerms.UserZipcodeAssignment)) {
-			manageMenu
-					.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
+			manageMenu.addChild(getText("global.CSRAssignments"), "CSRAssignmentMatrix.action", "csr_assignment_matrix");
 			manageMenu.addChild(getText("global.AuditorAssignments"), "AuditorAssignmentMatrix.action",
 					"auditor_assignment_matrix");
 		}
 
-		if (permissions.has(OpPerms.OfficeAuditCalendar))
+		if (permissions.has(OpPerms.OfficeAuditCalendar)) {
 			manageMenu.addChild(getText("AuditCalendar.title"), "AuditCalendar.action", "audit_calendar");
+		}
 
-		if (permissions.has(OpPerms.EditUsers))
+		if (permissions.has(OpPerms.EditUsers)) {
 			manageMenu.addChild(getText("ReportUserPermissionMatrix.title"), "ReportUserPermissionMatrix.action",
 					"report_user_permission_matrix");
+		}
 
-		if (permissions.has(OpPerms.FormsAndDocs))
+		if (permissions.has(OpPerms.FormsAndDocs)) {
 			manageMenu.addChild(getText("Resources.title"), "Resources.action", "resources");
+		}
 
 		if (permissions.has(OpPerms.EditAccountDetails)) {
 			String url = "FacilitiesEdit.action?operator=" + permissions.getAccountId();
@@ -272,11 +259,13 @@ public class MenuBuilder {
 
 		if (permissions.isAdmin()) {
 			String custom = "";
-			if (permissions.hasGroup(User.GROUP_CSR))
+			if (permissions.hasGroup(User.GROUP_CSR)) {
 				custom = "?filter.conAuditorId=" + permissions.getShadowedUserID();
+			}
 
-			if (permissions.hasGroup(User.GROUP_MARKETING))
+			if (permissions.hasGroup(User.GROUP_MARKETING)) {
 				custom = "?filter.accountManager=" + permissions.getUserId();
+			}
 
 			manageMenu.addChild(getText("global.FlagChanges"), "ReportFlagChanges.action" + custom,
 					"report_flag_changes");
@@ -297,9 +286,6 @@ public class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.MY_REPORTS_URL, "manage_reports");
 
-		if (favoriteReports == null)
-			return;
-
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
 			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId(),
@@ -319,59 +305,68 @@ public class MenuBuilder {
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
 		MenuComponent userMenu = menu.addChild(permissions.getName(), null, "user_menu");
 
-		if (permissions.hasPermission(OpPerms.EditProfile))
+		if (permissions.hasPermission(OpPerms.EditProfile)) {
 			userMenu.addChild(getText("Account"), "ProfileEdit.action", "profile_edit");
+		}
 
 		userMenu.addChild(getText("Header.Logout"), "Login.action?button=logout", "logout");
 	}
 
-	// TODO find out where these menus should go
-	private static void addOrphanedMenus(MenuComponent menu, Permissions permissions) {
-		// We're trying to get rid of this
-		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR))
-			menu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action", "create_auditor_invoices");
+	private static void addAuditsSubmenu(MenuComponent parentMenu, Permissions permissions) {
+		MenuComponent auditsMenu = parentMenu.addChild(getText("global.Audits"));
 
-		if (permissions.has(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
-			menu.addChild(getText("OperatorTags.title"), "OperatorTags.action", "operator_tags");
+		if (permissions.has(OpPerms.ManageAudits)) {
+			auditsMenu.addChild("Audit Definition", "ManageAuditType.action", "manage_audit_type");
+			auditsMenu.addChild("Manage Audit Options", "ManageOptionGroup.action", "manage_option_group");
+		}
 
-		// From dev menu
-		menu.addChild("Exception Log", "ReportExceptions.action", "exception_log");
-		menu.addChild("Batch Insert Translations", "BatchTranslations.action", "batch_insert_trans");
+		if (permissions.has(OpPerms.ManageAudits, OpType.Edit)) {
+			auditsMenu.addChild(getText("AuditCategoryMatrix.title"), "AuditCategoryMatrix.action",
+					"audit_category_matrix");
+		}
 
-		// From user menu
-		menu.addChild("Schedule", "MySchedule.action", "my_schedule");
+		if (permissions.has(OpPerms.ManageAuditTypeRules, OpType.Edit)) {
+			auditsMenu.addChild("Audit Type Rules", "AuditTypeRuleSearch.action", "audit_type_rule_search");
+		}
 
-		// From configure menu
-		if (permissions.has(OpPerms.ManageTrades))
-			menu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "trade_taxonomy");
+		if (permissions.has(OpPerms.ManageCategoryRules, OpType.Edit)) {
+			auditsMenu.addChild("Category Rules", "CategoryRuleSearch.action", "category_rule_search");
+		}
+
+		if (permissions.has(OpPerms.ManageAuditWorkFlow)) {
+			auditsMenu.addChild("Workflows", "ManageAuditWorkFlow.action", "manage_audit_work_flow");
+		}
+
+		if (!auditsMenu.hasChildren()) {
+			boolean removed = parentMenu.removeChild(auditsMenu);
+
+			if (!removed) {
+				logger.warn("Unable to remove audit menu with no children.");
+			}
+		}
 	}
 
 	// TODO this menu is very different from the one in PicsMenu, starting on
 	// line ~146
-	private static MenuComponent addContractorSubmenu(MenuComponent menu, Permissions permissions) {
-		if (menu == null || permissions == null)
-			return menu;
-
-		MenuComponent contractorMenu = menu.addChild(getText("global.Contractors"));
-		if (permissions.has(OpPerms.ContractorWatch))
+	private static void addContractorSubmenu(MenuComponent parentMenu, Permissions permissions) {
+		MenuComponent contractorMenu = parentMenu.addChild(getText("global.Contractors"));
+		if (permissions.has(OpPerms.ContractorWatch)) {
 			contractorMenu.addChild(getText("ReportActivityWatch.title"), "ReportActivityWatch.action",
 					"report_activity_watch");
+		}
 
-		if (permissions.has(OpPerms.WatchListManager))
+		if (permissions.has(OpPerms.WatchListManager)) {
 			contractorMenu.addChild(getText("WatchListManager.title"), "WatchListManager.action", "watch_list_manager");
-
-		return contractorMenu;
+		}
 	}
 
-	private static void addEmailSubmenu(MenuComponent menu, Permissions permissions) {
-		if (menu == null || permissions == null)
-			return;
+	private static void addEmailSubmenu(MenuComponent parentMenu, Permissions permissions) {
+		MenuComponent emailMenu = parentMenu.addChild(getText("global.Email"));
 
-		MenuComponent emailMenu = menu.addChild(getText("global.Email"));
-
-		if (permissions.seesAllContractors())
+		if (permissions.seesAllContractors()) {
 			emailMenu.addChild(getText("ProfileEdit.label.EmailSubscriptions"), "ReportEmailSubscription.action",
 					"report_email_subscription");
+		}
 
 		if (permissions.has(OpPerms.EmailTemplates, OpType.Edit)) {
 			emailMenu.addChild(getText("EditEmailTemplate.title"), "EditEmailTemplate.action", "edit_email_template");
@@ -383,11 +378,9 @@ public class MenuBuilder {
 	}
 
 	private static void handleSingleChildMenu(MenuComponent menu) {
-		if (menu == null)
-			return;
-
-		if (menu.getChildren().size() == 1)
+		if (menu.getChildren().size() == 1) {
 			menu = menu.getChildren().get(0);
+		}
 	}
 
 	public static String getHomePage(MenuComponent menu, Permissions permissions) {
@@ -398,7 +391,7 @@ public class MenuBuilder {
 			return "Home.action";
 
 		if (menu == null || menu.getChildren() == null || menu.getChildren().isEmpty())
-			return null;
+			return "Home.action";
 
 		String url = null;
 		for (MenuComponent subMenu : menu.getChildren()) {
@@ -418,6 +411,27 @@ public class MenuBuilder {
 
 	private static String getText(String key) {
 		return i18nCache.getText(key, TranslationActionSupport.getLocaleStatic());
+	}
+
+	// TODO find out where these menus should go
+	private static void orphanedMenus(MenuComponent menu, Permissions permissions) {
+		// We're trying to get rid of this
+		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR))
+			menu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action", "create_auditor_invoices");
+
+		if (permissions.has(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
+			menu.addChild(getText("OperatorTags.title"), "OperatorTags.action", "operator_tags");
+
+		// From dev menu
+		menu.addChild("Exception Log", "ReportExceptions.action", "exception_log");
+		menu.addChild("Batch Insert Translations", "BatchTranslations.action", "batch_insert_trans");
+
+		// From user menu
+		menu.addChild("Schedule", "MySchedule.action", "my_schedule");
+
+		// From configure menu
+		if (permissions.has(OpPerms.ManageTrades))
+			menu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "trade_taxonomy");
 	}
 
 	/* I'm leaving this here to more easily see what menus existed before
