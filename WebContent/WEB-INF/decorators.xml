@@ -23,11 +23,6 @@
 	<decorator name="print" page="print.jsp">
 		<pattern>/*!print*.action</pattern>
 	</decorator>
-	<decorator name="mainExt" page="main_ext.jsp">
-	<!-- Not just yet, Trevor wants to get reports working without ExtJS first
-		<pattern>/ReportDynamic.action</pattern>
-	 -->
-	</decorator>
 	<decorator name="simple" page="simple.jsp">
 		<pattern>/NoteEditor.action</pattern>
 		<pattern>/PrivacyPolicy.action</pattern>
