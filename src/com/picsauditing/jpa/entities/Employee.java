@@ -27,14 +27,12 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.Strings;
- 
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "employee")
 @IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 3) })
-public class Employee extends AbstractIndexableTable {
-
+public class Employee extends AbstractIndexableTable implements Comparable<Employee> {
 	private String firstName;
 	private String lastName;
 	private Account account;
@@ -64,6 +62,7 @@ public class Employee extends AbstractIndexableTable {
 	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
 	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 
+	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 4)
 	public String getFirstName() {
 		return firstName;
@@ -73,6 +72,7 @@ public class Employee extends AbstractIndexableTable {
 		this.firstName = firstName;
 	}
 
+	@Column(nullable = false)
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 5)
 	public String getLastName() {
 		return lastName;
@@ -123,14 +123,19 @@ public class Employee extends AbstractIndexableTable {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	//@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.UserStatus") })
+
+	// @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings",
+	// parameters = { @Parameter(name = "enumClass", value =
+	// "com.picsauditing.jpa.entities.UserStatus") })
 	@Enumerated(EnumType.STRING)
-	public UserStatus getStatus(){
+	public UserStatus getStatus() {
 		return status;
 	}
-	public void setStatus(UserStatus status){
+
+	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
+
 	/**
 	 * PICS Worker Number aka Worker Access Code
 	 * 
@@ -355,12 +360,12 @@ public class Employee extends AbstractIndexableTable {
 	public String getType() {
 		return "EMPLOYEE";
 	}
-	
+
 	@Transient
 	public String getNameTitle() {
-		String last = (Strings.isEmpty(lastName))? "" : lastName.trim();
-		String first = (Strings.isEmpty(firstName))? "" : firstName.trim();
-		String position = (Strings.isEmpty(title))? "" : title.trim();
+		String last = (Strings.isEmpty(lastName)) ? "" : lastName.trim();
+		String first = (Strings.isEmpty(firstName)) ? "" : firstName.trim();
+		String position = (Strings.isEmpty(title)) ? "" : title.trim();
 		String nameTitle = first + " " + last;
 		if (!Strings.isEmpty(position))
 			nameTitle += " / " + position;
@@ -390,8 +395,8 @@ public class Employee extends AbstractIndexableTable {
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append("Employee").append('|').append(this.id).append('|').append(
-				this.getDisplayName()).append('|').append(this.account.name).append("\n");
+		sb.append(this.getReturnType()).append('|').append("Employee").append('|').append(this.id).append('|')
+				.append(this.getDisplayName()).append('|').append(this.account.name).append("\n");
 		return sb.toString();
 	}
 
@@ -403,5 +408,26 @@ public class Employee extends AbstractIndexableTable {
 	@Transient
 	public boolean isRemoved() {
 		return (status == UserStatus.Inactive || status == UserStatus.Deleted);
+	}
+
+	@Override
+	public int compareTo(Employee o) {
+		String otherLastName = Strings.isEmpty(o.getLastName()) ? "" : o.getLastName();
+		String otherFirstName = Strings.isEmpty(o.getFirstName()) ? "" : o.getFirstName();
+		String otherTitle = Strings.isEmpty(o.getTitle()) ? "" : o.getTitle();
+
+		if (!Strings.isEmpty(lastName) && !otherLastName.equals(lastName)) {
+			return lastName.compareTo(otherLastName);
+		}
+
+		if (!Strings.isEmpty(firstName) && !otherFirstName.equals(firstName)) {
+			return firstName.compareTo(otherFirstName);
+		}
+
+		if (!Strings.isEmpty(title) && !otherTitle.equals(title)) {
+			return title.compareTo(otherTitle);
+		}
+
+		return 0;
 	}
 }

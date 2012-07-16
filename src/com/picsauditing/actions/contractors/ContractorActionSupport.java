@@ -1,9 +1,9 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +26,6 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -489,17 +488,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return menu;
 	}
 
-	private boolean isContractorHasEmployeeGuard() {
-		for (ContractorTag tag : contractor.getOperatorTags()) {
-			if (tag.getTag().getTag().equals("HSE Competency")
-					|| tag.getTag().getTag().equals("Implementation Audit Plus")
-					|| tag.getTag().getTag().equals("Integrity Management")
-					|| tag.getTag().getTag().equals("Operator Qualification (OQ)"))
-				return true;
-		}
-		return false;
-	}
-
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
 		if (subMenu.getChildren().size() > 0) {
 			PicsLogger.log("Found [" + subMenu.getChildren().size() + "] " + subMenu.getName()
@@ -922,6 +910,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 				auditBuilder.buildAudits(contractor);
 			}
 		}
+	}
+
+	protected boolean isContractorHasEmployeeGuard() {
+		for (ContractorTag tag : contractor.getOperatorTags()) {
+			if (tag.getTag().getTag().equals("HSE Competency")
+					|| tag.getTag().getTag().equals("Implementation Audit Plus")
+					|| tag.getTag().getTag().equals("Integrity Management")
+					|| tag.getTag().getTag().equals("Operator Qualification (OQ)"))
+				return true;
+		}
+		return false;
 	}
 
 	private void recalculatePQF(ContractorAudit pqf) {

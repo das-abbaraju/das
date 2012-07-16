@@ -40,8 +40,13 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
 	public static final int ANNUALADDENDUM = 11;
-	public static final int INTEGRITYMANAGEMENT = 17; // AKA Competency Review
+
+	// AKA Competency Review
+	public static final int INTEGRITYMANAGEMENT = 17;
+
+	// AKA Training Verification
 	public static final int IMPLEMENTATIONAUDITPLUS = 29;
+
 	public static final int HUNTSMAN_EBIX = 31;
 	public static final int COR = 72;
 	public static final int SUPPLEMENTCOR = 84;
@@ -334,7 +339,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	public boolean isEmployeeSpecificAudit() {
 		return classType.isImEmployee() && (id != HSE_COMPETENCY && id != HSE_COMPETENCY_REVIEW);
 	}
-	
+
 	@Override
 	public int compareTo(AuditType o) {
 		return this.getName().compareTo(o.getName());
@@ -383,7 +388,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	/**
-	 * @return boolean indicating whether or not this Audit Type can be scored. Used for implementing audit score.
+	 * @return boolean indicating whether or not this Audit Type can be scored.
+	 *         Used for implementing audit score.
 	 */
 	@Transient
 	@ReportField(filterType = FilterType.String)
