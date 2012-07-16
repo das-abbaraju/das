@@ -163,7 +163,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (!isBeta) {
 			String betaIP = propertyDAO.getProperty("Beta_IP");
 			String currentIP = InetAddress.getLocalHost().getHostAddress();
-			System.out.println("beta "+betaIP+" current "+currentIP);
 			if (betaIP.equals(currentIP)) {
 				System.out.println("current "+currentIP+" beta "+betaIP);
 				isBeta = true;
