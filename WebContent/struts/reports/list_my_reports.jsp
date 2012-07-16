@@ -4,7 +4,7 @@
 
 <s:include value="../actionMessages.jsp" />
 
-<s:include value="/struts/layout/page_header.jsp">
+<s:include value="/struts/layout/_page_header.jsp">
     <s:param name="title">Manage Reports</s:param>
     <s:param name="subtitle">Favorite, move, update, and search for new reports</s:param>
 </s:include>
