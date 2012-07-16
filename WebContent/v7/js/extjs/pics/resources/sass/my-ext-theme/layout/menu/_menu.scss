@@ -5,12 +5,20 @@ $site_menu_gradient_color_top: #ffffff;
 $site_menu_gradient_color_bottom: #eaeaea;
 $site_menu_text_color: #002441;
 
-$site_menu_over_background_color: #f1f1f2;
-$site_menu_over_border_color: #aeaeae;
-$site_menu_over_border_color_top: #999999;
-$site_menu_over_gradient_color_top: #eaeaea;
-$site_menu_over_gradient_color_bottom: #f1f1f2;
+// site menu - over
+$site_menu_over_background_color: #eaeaea;
+$site_menu_over_box_shadow_color: #cccccc;
+$site_menu_over_gradient_color_top: #ffffff;
+$site_menu_over_gradient_color_bottom: #eaeaea;
 $site_menu_over_text_color: #c66603;
+
+// site menu - active
+$site_menu_active_background_color: #f1f1f2;
+$site_menu_active_border_color: #aeaeae;
+$site_menu_active_border_color_top: #999999;
+$site_menu_active_gradient_color_top: #eaeaea;
+$site_menu_active_gradient_color_bottom: #f1f1f2;
+$site_menu_active_text_color: #c66603;
 
 // site menu - search
 $site_menu_search_text_color: #cccccc;
@@ -45,17 +53,6 @@ $site_menu_separator_border_color_right: #fcfcfc;
     top: 0px !important;
 }
 
-#site_menu .x-menu-active,
-#site_menu .x-over,
-#site_menu .x-pressed
-{
-	background: $site_menu_over_background_color;
-    @include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
-    @include border-radius(0px);
-    border: 1px solid $site_menu_over_border_color;
-    border-top: 1px solid $site_menu_over_border_color_top;
-    border-bottom: 0px;
-}
 
 #site_menu .x-btn .x-btn-inner
 {
@@ -63,11 +60,36 @@ $site_menu_separator_border_color_right: #fcfcfc;
     font-weight: bold;
 }
 
+#site_menu .x-over
+{
+	background: $site_menu_active_background_color;
+    @include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
+    border: 1px solid transparent;
+    border-bottom: 0px;
+    border-top: 1px solid $site_menu_over_gradient_color_top;
+    @include border-radius(0px);
+}
+
+#site_menu .x-over .x-btn-inner
+{
+	color: $site_menu_over_text_color;
+}
+
+#site_menu .x-menu-active,
+#site_menu .x-pressed
+{
+	background: $site_menu_active_background_color;
+    @include background-image(linear-gradient($site_menu_active_gradient_color_top, $site_menu_active_gradient_color_bottom));
+    @include border-radius(0px);
+    border: 1px solid $site_menu_active_border_color;
+    border-top: 1px solid $site_menu_active_gradient_color_top;
+    border-bottom: 0px;
+}
+
 #site_menu .x-menu-active .x-btn-inner,
-#site_menu .x-over .x-btn-inner,
 #site_menu .x-pressed .x-btn-inner
 {
-    color: $site_menu_over_text_color;
+    color: $site_menu_active_text_color;
 }
 
 #site_menu .x-form-text
