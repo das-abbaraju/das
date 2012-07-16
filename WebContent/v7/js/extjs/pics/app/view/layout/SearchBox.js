@@ -44,16 +44,18 @@ Ext.define('PICS.view.layout.SearchBox', {
     },
 
     listeners: {
-        select: function(combo, records, eOpts) {
+        select: function (combo, records, eOpts) {
             var post = records[0];
             if (post) {
                 document.location = '/SearchBox.action?button=search&searchTerm=' + post.get('name');
             }
         },
 
-        specialkey: function(base, e, eOpts) {
+        specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
                 document.location = '/SearchBox.action?button=search&searchTerm=' + base.getValue();
+            } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
+                base.collapse();
             }
         }
     },
@@ -68,7 +70,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         fields: [ 'type', 'id', 'name', 'at' ],
         proxy: {
             type: 'ajax',
-            url: 'SearchBoxJson.action',
+            url: 'SearchBox!json.action',
             reader: {
                 root: 'results',
                 type: 'json',
