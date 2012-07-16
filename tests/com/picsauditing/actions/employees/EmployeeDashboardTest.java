@@ -89,7 +89,7 @@ public class EmployeeDashboardTest {
 
 		assertNotNull(employeeDashboard.getAuditsByYearAndType());
 		assertTrue(employeeDashboard.getAuditsByYearAndType().size() > 0);
-		assertTrue(employeeDashboard.getDisplayedAudits().isEmpty());
+		assertFalse(employeeDashboard.getDisplayedAudits().isEmpty());
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class EmployeeDashboardTest {
 		employeeDashboard.execute();
 
 		assertNotNull(employeeDashboard.getDistinctAuditTypes());
-		assertEquals(2, employeeDashboard.getDistinctAuditTypes().size());
+		assertEquals(3, employeeDashboard.getDistinctAuditTypes().size());
 	}
 
 	@Test
@@ -210,8 +210,9 @@ public class EmployeeDashboardTest {
 		employeeDashboard.startup();
 		employeeDashboard.execute();
 
-		assertEquals((Integer) 2010, employeeDashboard.getYearsDescending().get(0));
-		assertEquals((Integer) 2009, employeeDashboard.getYearsDescending().get(1));
+		assertEquals((Integer) 2012, employeeDashboard.getYearsDescending().get(0));
+		assertEquals((Integer) 2010, employeeDashboard.getYearsDescending().get(1));
+		assertEquals((Integer) 2009, employeeDashboard.getYearsDescending().get(2));
 	}
 
 	private void setupContractor() {
@@ -250,6 +251,8 @@ public class EmployeeDashboardTest {
 	private void addEmployeeSpecificContractorAudits() {
 		contractorAccount.getAudits().add(makeContractorAudit(AuditType.INTEGRITYMANAGEMENT, contractorAccount));
 		contractorAccount.getAudits().add(makeContractorAudit(AuditType.IMPLEMENTATIONAUDITPLUS, contractorAccount));
+		contractorAccount.getAudits().add(makeContractorAudit(AuditType.PQF, contractorAccount));
+		contractorAccount.getAudits().add(makeContractorAudit(AuditType.HSE_COMPETENCY, contractorAccount));
 
 		Calendar calendar = Calendar.getInstance();
 		int year = 2010;
