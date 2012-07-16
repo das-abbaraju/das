@@ -4,15 +4,15 @@
 <%-- URL --%>
 <s:url action="ManageAppProperty" method="create" var="app_property_create" />
 
-<title>Manage App Properties</title>
-
 <s:include value="../actionMessages.jsp" />
 
-<h1 class="title">Manage App Properties</h1>
+<s:include value="/struts/layout/page_header.jsp">
+    <s:param name="title">Manage Application Properties</s:param>
+</s:include>
 
 <ul class="nav nav-pills">
 	<li class="active">
-		<a href="${app_property_create}">Add App Property</a>
+		<a href="${app_property_create}">Add</a>
 	</li>
 </ul>
 

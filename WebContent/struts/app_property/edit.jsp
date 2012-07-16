@@ -5,11 +5,11 @@
 <s:url action="ManageAppProperty" var="app_property_list" />
 <s:url action="ManageAppProperty" method="edit" var="app_property_edit" />
 
-<title>Edit App Property</title>
-
 <s:include value="../actionMessages.jsp" />
 
-<h1 class="title">Edit App Property</h1>
+<s:include value="/struts/layout/page_header.jsp">
+    <s:param name="title">Edit Application Property</s:param>
+</s:include>
 
 <s:form cssClass="well form-horizontal" action="%{#app_property_edit}" name="app_property_edit_form" id="app_property_edit_form">
 	<s:hidden name="property" value="%{property.property}" />

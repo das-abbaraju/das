@@ -5,11 +5,11 @@
 <s:url action="ManageAppProperty" var="app_property_list" />
 <s:url action="ManageAppProperty" method="create" var="app_property_create" />
 
-<title>Create App Property</title>
-
 <s:include value="../actionMessages.jsp" />
 
-<h1 class="title">Create App Property</h1>
+<s:include value="/struts/layout/page_header.jsp">
+    <s:param name="title">Create Application Property</s:param>
+</s:include>
 
 <s:form cssClass="well form-horizontal" action="%{#app_property_create}" name="app_property_create_form" id="app_property_create_form">
 	<fieldset>
