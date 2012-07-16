@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -16,7 +17,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -159,20 +159,31 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
-			Cookie[] cookiesA = getRequest().getCookies();
-			if (cookiesA != null) {
-				for (int i = 0; i < cookiesA.length; i++) {
-					if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
-						isBeta = true;
-					}
-				}
+
+		if (!isBeta) {
+			String betaIP = propertyDAO.getProperty("Beta_IP");
+			String currentIP = InetAddress.getLocalHost().getHostAddress();
+			System.out.println("beta "+betaIP+" current "+currentIP);
+			if (betaIP.equals(currentIP)) {
+				System.out.println("current "+currentIP+" beta "+betaIP);
+				isBeta = true;
 			}
 		}
+		// if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment()
+		// || isLocalhostEnvironment())) {
+		// Cookie[] cookiesA = getRequest().getCookies();
+		// if (cookiesA != null) {
+		// for (int i = 0; i < cookiesA.length; i++) {
+		// if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
+		// isBeta = true;
+		// }
+		// }
+		// }
+		// }
+
 		// String server = InetAddress.getLocalHost().getHostName();
 		// return isBeta || server.equals("organizer1") ||
 		// server.equals("organizer2");
-
 		return isBeta;
 	}
 
@@ -183,7 +194,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
-		return !(isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment());
+		Boolean isStable = getRequestHost().contains("stable");
+		if (!isStable){
+			String stableIP = propertyDAO.getProperty("Stable_IP");
+			String currentIP = InetAddress.getLocalHost().getHostAddress();
+			if (stableIP.equals(currentIP))
+				isStable = true;
+		}
+		return isStable;
 	}
 
 	public boolean isLocalhostEnvironment() {

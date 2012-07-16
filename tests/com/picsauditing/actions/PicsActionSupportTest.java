@@ -1,6 +1,5 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -8,11 +7,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
@@ -22,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -35,7 +33,7 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class })
+@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, InetAddress.class})
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class PicsActionSupportTest {
 	PicsActionSupport picsActionSupport;
@@ -44,7 +42,7 @@ public class PicsActionSupportTest {
 	private EntityManager em;
 	@Mock
 	HttpServletRequest request;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -60,6 +58,8 @@ public class PicsActionSupportTest {
 
 		PowerMockito.mockStatic(ServletActionContext.class);
 		when(ServletActionContext.getRequest()).thenReturn(request);
+
+		PowerMockito.mockStatic(InetAddress.class);
 
 		picsActionSupport = new PicsActionSupport();
 
@@ -111,28 +111,23 @@ public class PicsActionSupportTest {
 	}
 	
 	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBeta() throws Exception {
+	public void testIsBetaEnvironment_UrlContainsWithNoBeta_StableIP() throws Exception {
+		AppProperty appPropertyBetaIP = new AppProperty();
+		appPropertyBetaIP.setProperty("Beta_IP");
+		appPropertyBetaIP.setValue("72.32.206.206");
+		InetAddress mock = mockAddr("72.32.206.207");
+		
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		when (InetAddress.getLocalHost()).thenReturn(mock);
+		when(em.find(AppProperty.class, "Beta_IP")).thenReturn(appPropertyBetaIP);
 		
 		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
 	}
 
-	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckCookieExist() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
-		when(request.getRequestURI()).thenReturn(new String(""));
-		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("USE_BETA", "true") });
-		
-		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
-	}
-
-	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckCookieNotExist() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
-		when(request.getRequestURI()).thenReturn(new String(""));
-		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("Nothing", "true") });
-
-		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
+	private InetAddress mockAddr(String reverseTo) {
+	    InetAddress mock = Mockito.mock(InetAddress.class);
+	    Mockito.doReturn(reverseTo).when(mock).getHostAddress();
+	    return mock;
 	}
 }
