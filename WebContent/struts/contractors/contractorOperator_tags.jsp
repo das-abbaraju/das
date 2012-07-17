@@ -7,7 +7,7 @@
 			<s:if test="#tagRemovable || permissions.admin || (permissions.contractor && tag.visibleToContractor)">
 				<tr>
 					<td><s:if test="tag.operator.id != permissions.accountId"><s:property value="tag.operator.name" />: </s:if><s:property value="tag.tag" /></td>
-					<td><s:text name="global.TaggedBy"/>: <s:set var="o" value="contractorTag" /><s:set var="addBy" value="contractorTag.updatedBy" /><s:date var="addDate" name="contractorTag.updateDate"/><s:include value="../who.jsp" />
+					<td><s:text name="global.TaggedBy"/>: <s:set var="o" value="contractorTag" /><s:set var="addBy" value="contractorTag.createdBy" /><s:date var="addDate" name="contractorTag.creationDate"/><s:include value="../who.jsp" />
 					</td>
 					<s:if test="#tagRemovable">
 						<td><img src="images/cross.png" width="18" height="18" /><a

@@ -43,10 +43,13 @@ function loadFiltersCallback() {
 }
 
 $(function() {
+
+    // Cause the filter form to appear when showsearch is clicked.
 	$('#search').delegate('#showSearch', 'click', function(e) {
 		showSearch();
 	});
 	
+	// Cause the corresponding query text field to appear when a query link is clicked.
 	$('body').delegate('.filterOption a.filterBox', 'click', function(e) {
 		e.preventDefault();
 		var box = $(this).closest('.filterOption').find('.q_box');
@@ -61,6 +64,7 @@ $(function() {
 		}
 	});
 
+	// Clear any form inputs when they appear.
 	$('body').delegate('.filterOption a.clearLink', 'click', function(e) {
 		e.preventDefault();
 		var ele = $(this).closest('span.clearLink');
@@ -81,6 +85,7 @@ $(function() {
 		$(this).closest('.filterOption').find('a.filterBox').click();
 	});
 
+	// Update the status text of filter options using a select form element.
 	$('body').delegate('.filterOption span.select', 'updateQuery', function() {
 		var status_text = '';
 		$(this).find('select option:selected').each(function() {
@@ -99,21 +104,23 @@ $(function() {
 		$(this).closest('.filterOption').find('.q_status_none').text(status_text);
 	});
 
+	// Update the status text of filter options using a text input element.
 	$('body').delegate('.filterOption span.textfield', 'updateQuery', function() {
 		var status_text = '';
 		var text1 = $(this).find(':input[type="text"]').eq(0);
 		var text2 = $(this).find(':input[type="text"]').eq(1);
 
 		if (text1.val() != undefined) {
-			if(text1.val() != '' && text2.val() != '')
-				status_text = 'between '+text1.val()+' and '+ text2.val();
-			if(text1.val() != '' && text2.val() == '')
-				status_text = 'after '+ text1.val();
-			if(text1.val() == '' && text2.val() != '')
-				status_text = 'before '+ text2.val();
-		} else if (text2.val() != '') {
-			queryText = 'before '+ text2.val();
+		    if (text2.val() != undefined) {
+	            if(text1.val() != '' && text2.val() != '')
+	                status_text = 'between '+text1.val()+' and '+ text2.val();
+	            if(text1.val() != '' && text2.val() == '')
+	                status_text = 'after '+ text1.val();
+		    } else if(text1.val() != '') {
+				status_text = 'before '+ text1.val();
+		    }
 		}
+
 		if(status_text=='')
 			status_text = translate('JS.Filters.status.All');
 

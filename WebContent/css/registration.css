@@ -1,99 +1,83 @@
-header, footer, section { display: block; }
+header,footer,section {
+	display: block;
+}
 
-#Registration-page,
-#RegistrationAddClientSite-page,
-#RegistrationServiceEvaluation-page,
-#RegistrationMakePayment-page
-{
+#Registration-page,#RegistrationAddClientSite-page,#RegistrationServiceEvaluation-page,#RegistrationMakePayment-page
+	{
 	background: #94c3e1;
 }
 
-#Registration-page #container,
-#RegistrationAddClientSite-page #container,
-#RegistrationServiceEvaluation-page #container,
-#RegistrationMakePayment-page #container
-{
+#Registration-page #container,#RegistrationAddClientSite-page #container,#RegistrationServiceEvaluation-page #container,#RegistrationMakePayment-page #container
+	{
 	background: #FFFFFF;
 }
 
-header
-{
+header {
 	border: 0px;
 	margin: 0px auto;
 	padding: 0px;
 	width: 960px;
 }
 
-header .chat,
-header .phone,
-header .welcome-message
-{
+header .chat,header .phone,header .welcome-message {
 	float: right;
 	margin-top: 15px;
 }
 
-header .welcome-message
-{
+header .welcome-message {
 	font-size: 14px;
 	line-height: 25px;
 	margin-right: 20px;
 }
 
-header .locale-form
-{
+header .locale-form {
 	float: right;
 	margin-top: 12px;
 	margin-right: 20px;
 }
 
-header .locale-form select
-{
+header .locale-form select {
 	padding: 3px;
 }
 
-header .chat a,
-header .phone
-{
+header .chat a,header .phone {
 	color: #8fc0e0;
 	font-size: 15px;
 }
 
-header .header-menu
-{
+header .header-menu {
 	background: #F5F5F5;
 	margin: 0px;
 	padding: 20px;
 }
 
-header .header-menu li
-{
+header .header-menu li {
 	margin: 0px;
 }
 
-header .phone
-{
+header .phone {
 	padding: 5px 0 5px 21px;
 	background-image: url('../images/phone-icon.png');
 	background-repeat: no-repeat;
 	background-position: left;
 }
 
-header .chat
-{
+header .chat {
 	padding: 5px 0 5px 21px;
 	background-image: url('../images/chat-icon.png');
 	background-repeat: no-repeat;
 	background-position: left;
 }
 
-footer
-{
+footer {
 	background: #A5CEE9;
 	background-repeat: repeat-x;
-	background-image: -khtml-gradient(linear, left top, left bottom, from(#badbf0), to(#94c3e2));
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#badbf0),
+		to(#94c3e2) );
 	background-image: -moz-linear-gradient(top, #badbf0, #94c3e2);
 	background-image: -ms-linear-gradient(top, #badbf0, #94c3e2);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #badbf0), color-stop(100%, #94c3e2));
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #badbf0),
+		color-stop(100%, #94c3e2) );
 	background-image: -webkit-linear-gradient(top, #badbf0, #94c3e2);
 	background-image: -o-linear-gradient(top, #badbf0, #94c3e2);
 	background-image: linear-gradient(top, #badbf0, #94c3e2);
@@ -103,16 +87,14 @@ footer
 	padding: 0px;
 }
 
-footer div.separator
-{
+footer div.separator {
 	border: 0px;
 	border-top: 1px solid #FFFFFF;
 	margin: 2px 0px 0px;
 	padding: 0px;
 }
 
-footer .footer-menu
-{
+footer .footer-menu {
 	color: #6c96b3;
 	font-size: 14px;
 	font-weight: bold;
@@ -121,22 +103,17 @@ footer .footer-menu
 	width: 960px;
 }
 
-footer .footer-menu li
-{
+footer .footer-menu li {
 	float: none;
 	margin-bottom: 10px;
 }
 
-footer .footer-menu a
-{
+footer .footer-menu a {
 	color: #6c96b3;
 }
 
-#Registration-page .registration,
-#RegistrationAddClientSite-page .client-site,
-#RegistrationServiceEvaluation-page .service-evaluation,
-#RegistrationMakePayment-page .make-payment
-{
+#Registration-page .registration,#RegistrationAddClientSite-page .client-site,#RegistrationServiceEvaluation-page .service-evaluation,#RegistrationMakePayment-page .make-payment
+	{
 	margin: 0px auto;
 	width: 960px;
 }
@@ -144,7 +121,7 @@ footer .footer-menu a
 /**
  * registration header
  */
- 
+
 /* .registration-header section
 {
 	background: #A5CEE9;
@@ -162,23 +139,19 @@ footer .footer-menu a
 	height: 100px;
 	width: auto;
 } */
-
-.registration-header section
-{
+.registration-header section {
 	background: url(../images/registration/header_edge_bg.jpg) repeat-x;
 	border-bottom: 7px solid #7BAACA;
 	border-top: 2px solid #AEAFB2;
 	height: 94px;
 }
 
-.registration-header header
-{
+.registration-header header {
 	background: url(../images/registration/header_bg.jpg) no-repeat;
 	height: 94px;
 }
 
-.registration-header h1
-{
+.registration-header h1 {
 	color: #FFFFFF;
 	font-family: Franklin Gothic Medium, Arial;
 	font-size: 40px;
@@ -193,57 +166,46 @@ footer .footer-menu a
 /**
  * registration
  */
- 
-#Registration-page .registration-header header
-{
+#Registration-page .registration-header header {
 	position: relative;
 }
 
-#Registration-page .registration-header header .chat
-{
+#Registration-page .registration-header header .chat {
 	position: absolute;
 	margin: 0px;
 	right: 0px;
 	top: 5px;
 }
 
-#Registration-page .registration-header header .chat img
-{
+#Registration-page .registration-header header .chat img {
 	margin: 0px;
 }
- 
-.registration-form
-{
+
+.registration-form {
 	float: left;
 }
- 
-.registration-form .company-information,
-.registration-form .contact-information,
-.registration-form .account-information
-{
+
+.registration-form .company-information,.registration-form .contact-information,.registration-form .account-information
+	{
 	border: 1px solid #bbd3e3;
 	margin-top: 20px;
 	width: 588px;
 }
 
-.registration-form .company-information input,
-.registration-form .contact-information input,
-.registration-form .account-information input
-{
+.registration-form .company-information input,.registration-form .contact-information input,.registration-form .account-information input
+	{
 	-webkit-box-shadow: inset 0px 2px 3px -1px #878787;
 	-moz-box-shadow: inset 0px 2px 3px -1px #878787;
 	box-shadow: inset 0px 2px 3px -1px #878787;
 }
 
-.registration-form section
-{
+.registration-form section {
 	background: #F5F5F5;
 	margin: 2px;
 	padding: 30px 20px;
 }
 
-.registration-form h1
-{
+.registration-form h1 {
 	background-color: rgb(197, 98, 26);
 	background-color: rgba(197, 98, 26, 0.7);
 	color: #FFFFFF;
@@ -256,32 +218,27 @@ footer .footer-menu a
 	width: 450px;
 }
 
-.registration-form h1 span
-{
+.registration-form h1 span {
 	background-color: rgb(197, 98, 26);
 	font-size: 25px;
 	margin: 0px 10px 0px 20px;
 	padding: 2px 12px;
 }
 
-.registration-form li
-{
+.registration-form li {
 	overflow: hidden;
 }
 
-.registration-form input
-{
+.registration-form input {
 	float: left;
 }
 
-.registration-form .errors
-{
+.registration-form .errors {
 	float: left;
 	margin-left: 10px;
 }
 
-.registration-form .errors li
-{
+.registration-form .errors li,.make-payment-form .errors {
 	background: url(../images/registration/cross.png) no-repeat;
 	color: #C33107;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -293,67 +250,64 @@ footer .footer-menu a
 	top: 3px;
 }
 
-.registration-form .actions
-{
+.make-payment-form .errors {
+	display: inline-block;
+	height: 20px;
+	top: -1px;
+}
+
+.registration-form .actions {
 	overflow: hidden;
 }
 
-.registration-form .contractor-name-duplicate
-{
+.registration-form .contractor-name-duplicate {
 	display: none;
 }
 
-.registration-form .contractor-name-duplicate div.alert-message
-{
+.registration-form .contractor-name-duplicate div.alert-message {
 	font-size: 12px !important;
 	line-height: 20px;
 	margin: 0px 0px 0px 130px !important;
 	width: auto !important;
 }
 
-.registration-form .contractor-name-duplicate p
-{
+.registration-form .contractor-name-duplicate p {
 	line-height: 19px;
 	margin-bottom: 10px;
 	width: auto;
 }
 
-.registration-form .contractor-name-duplicate ul
-{
+.registration-form .contractor-name-duplicate ul {
 	clear: both;
 	list-style-type: disc;
 	margin-left: 20px;
 }
 
-.registration-form .contractor-name-duplicate ul li
-{
+.registration-form .contractor-name-duplicate ul li {
 	margin-bottom: 5px;
 	overflow: inherit;
 }
 
-.registration-form .info-agreement
-{
-	background: url(../images/registration/info_arrow_bg_right2.png) 100% no-repeat;
+.registration-form .info-agreement {
+	background: url(../images/registration/info_arrow_bg_right2.png) 100%
+		no-repeat;
 	height: 67px;
 	float: left;
 	margin: 20px 0px 20px 127px;
 	width: 330px;
 }
 
-.registration-form .actions p
-{
+.registration-form .actions p {
 	font-size: 12px;
 	line-height: 18px;
 	padding: 15px 15px 0px;
 }
 
-.registration-form .actions a
-{
-	color: #ba6219;	
+.registration-form .actions a {
+	color: #ba6219;
 }
 
-.registration-form .actions input
-{
+.registration-form .actions input {
 	float: left;
 	left: 22px;
 	position: relative;
@@ -361,24 +315,21 @@ footer .footer-menu a
 }
 
 /* registration side bar */
-
-.registration-side-bar
-{
+.registration-side-bar {
 	background: url(../images/registration/bg.png) no-repeat;
 	float: left;
 	height: 900px;
 	width: 370px;
 }
 
-.registration-side-bar .info-join
-{
-	background: url(../images/registration/info_arrow_bg_right1.png) no-repeat;
+.registration-side-bar .info-join {
+	background: url(../images/registration/info_arrow_bg_right1.png)
+		no-repeat;
 	height: 109px;
 	margin: 35px 0px 0px 15px;
 }
 
-.registration-side-bar .info-join h1
-{
+.registration-side-bar .info-join h1 {
 	color: #002D4F;
 	font-family: Franklin Gothic Medium, Arial;
 	font-size: 20px;
@@ -387,9 +338,8 @@ footer .footer-menu a
 	top: 18px;
 }
 
-.registration-side-bar .info-qualify,
-.registration-side-bar .info-choice
-{
+.registration-side-bar .info-qualify,.registration-side-bar .info-choice
+	{
 	background-color: rgb(145, 192, 224);
 	background-color: rgba(145, 192, 224, 0.25);
 	padding: 10px 20px 35px;
@@ -397,15 +347,13 @@ footer .footer-menu a
 	width: 220px;
 }
 
-.registration-side-bar .info-choice
-{
+.registration-side-bar .info-choice {
 	margin: 70px 0px 0px 10px;
 	width: 275px;
 }
 
-.registration-side-bar .info-qualify h1,
-.registration-side-bar .info-choice h1
-{
+.registration-side-bar .info-qualify h1,.registration-side-bar .info-choice h1
+	{
 	color: #39749b;
 	font-size: 30px;
 	font-weight: bold;
@@ -413,15 +361,13 @@ footer .footer-menu a
 	margin: 20px 0px;
 }
 
-.registration-side-bar .info-choice ul
-{
+.registration-side-bar .info-choice ul {
 	list-style-type: square;
 	margin-left: 5px;
 }
 
-.registration-side-bar .info-qualify li,
-.registration-side-bar .info-choice li
-{
+.registration-side-bar .info-qualify li,.registration-side-bar .info-choice li
+	{
 	color: #76a7c9;
 	font-size: 18px;
 	font-weight: bold;
@@ -429,19 +375,14 @@ footer .footer-menu a
 	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.registration-side-bar .info-choice li
-{
+.registration-side-bar .info-choice li {
 	font-size: 14px;
 	line-height: 16px;
 }
 
 /* general */
-
-#Registration-page #main .alert-message,
-#RegistrationAddClientSite-page #main .alert-message,
-#RegistrationServiceEvaluation-page #main .alert-message,
-#RegistrationMakePayment-page #main .alert-message
-{
+#Registration-page #main .alert-message,#RegistrationAddClientSite-page #main .alert-message,#RegistrationServiceEvaluation-page #main .alert-message,#RegistrationMakePayment-page #main .alert-message
+	{
 	font-size: 14px;
 	margin: 20px auto;
 	overflow: hidden;
@@ -449,8 +390,7 @@ footer .footer-menu a
 	width: 930px;
 }
 
-.alert-message .icon
-{
+.alert-message .icon {
 	display: block;
 	float: left;
 	height: 16px;
@@ -458,37 +398,30 @@ footer .footer-menu a
 	width: 16px;
 }
 
-.alert-message .icon.warn
-{
-	background: url(../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px -144px no-repeat;
+.alert-message .icon.warn {
+	background:
+		url(../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px
+		-144px no-repeat;
 }
 
-.alert-message p
-{
+.alert-message p {
 	float: left;
 	line-height: 18px;
 	width: 900px;
 }
 
-.registration-form li,
-.client-site-form li,
-.service-evaluation-form li,
-.make-payment-form li
-{
+.registration-form li,.client-site-form li,.service-evaluation-form li,.make-payment-form li
+	{
 	margin-bottom: 10px;
 	overflow: hidden;
 }
 
-.service-evaluation-form li
-{
+.service-evaluation-form li {
 	margin-bottom: 15px;
 }
 
-.registration-form label,
-.client-site-form label,
-.service-evaluation-form label,
-.make-payment-form label
-{
+.registration-form label,.client-site-form label,.service-evaluation-form label,.make-payment-form label
+	{
 	color: #5d5d5d;
 	display: block;
 	float: left;
@@ -497,170 +430,95 @@ footer .footer-menu a
 	line-height: 25px;
 	margin-right: 10px;
 	text-align: right;
-	width: 120px;
+	width: 150px;
 }
 
-.registration-form input,
-.client-site-form input,
-.service-evaluation-form input,
-.make-payment-form input
-{
+.registration-form input,.client-site-form input,.service-evaluation-form input,.make-payment-form input
+	{
 	border: 1px solid #878787;
 	height: 20px;
 	padding: 1px 5px;
 	width: 175px;
 }
 
-.service-evaluation-form input.checkbox
-{
+.service-evaluation-form input.checkbox {
 	width: auto;
 }
 
-.service-evaluation-form ul.checkbox-list,
-.service-evaluation-form ul.radio,
-.make-payment-form ul.radio
-{
+.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio,.make-payment-form ul.radio
+	{
 	float: left;
 }
 
-.service-evaluation-form ul.checkbox-list li,
-.service-evaluation-form ul.radio li,
-.make-payment-form ul.radio li
-{
+.service-evaluation-form ul.checkbox-list li,.service-evaluation-form ul.radio li,.make-payment-form ul.radio li
+	{
 	margin: 0px;
 }
 
-.service-evaluation-form ul.checkbox-list input,
-.service-evaluation-form ul.radio input,
-.make-payment-form ul.radio input
-{
+.service-evaluation-form ul.checkbox-list input,.service-evaluation-form ul.radio input,.make-payment-form ul.radio input
+	{
 	border: 0px;
 	float: left;
 	padding: 0px;
-	margin-right: 6px;
+	margin-right: 5px;
 	width: auto;
 }
 
-.service-evaluation-form ul.checkbox-list label,
-.service-evaluation-form ul.radio label,
-.make-payment-form ul.radio label
-{
+.service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label,.make-payment-form ul.radio label
+	{
 	float: left;
 	width: auto;
 }
 
-.service-evaluation-form ul.radio.inline label,
-.make-payment-form ul.radio.inline label
-{
+.service-evaluation-form ul.radio.inline label,.make-payment-form ul.radio.inline label
+	{
 	padding: 3px 5px 0px 0px;
 }
 
-.registration-form select,
-.client-site-form select,
-.service-evaluation-form select,
-.make-payment-form select
-{
+.registration-form select,.client-site-form select,.service-evaluation-form select,.make-payment-form select
+	{
 	border: 1px solid #878787;
 	margin: 0px;
 	padding: 3px;
 }
 
-.registration-form p,
-.client-site-form p,
-.service-evaluation-form p,
-.make-payment-form p
-{
+.registration-form p,.client-site-form p,.service-evaluation-form p,.make-payment-form p
+	{
 	color: #404040;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.registration-form a,
-.client-site-form a,
-.service-evaluation-form a,
-.make-payment-form a
-{
+.registration-form a,.client-site-form a,.service-evaluation-form a,.make-payment-form a
+	{
 	color: #195F91;
 }
 
-.registration-form a:hover,
-.client-site-form a:hover,
-.service-evaluation-form a:hover,
-.make-payment-form a:hover
-{
+.registration-form a:hover,.client-site-form a:hover,.service-evaluation-form a:hover,.make-payment-form a:hover
+	{
 	text-decoration: none;
 }
 
-.registration-form .help-text,
-.client-site-form .help-text,
-.service-evaluation-form .help-text,
-.make-payment-form .help-text
-{
+.registration-form .help-text,.client-site-form .help-text,.service-evaluation-form .help-text,.make-payment-form .help-text
+	{
 	display: none;
 }
 
-.registration-form .actions input,
-.registration-form .actions button,
-.client-site-form .actions input,
-.client-site-form .actions button,
-.service-evaluation-form .actions input,
-.service-evaluation-form .actions button,
-.make-payment-form .actions input,
-.make-payment-form .actions button
-{
+.registration-form .actions input,.registration-form .actions button,.client-site-form .actions input,.client-site-form .actions button,.service-evaluation-form .actions input,.service-evaluation-form .actions button,.make-payment-form .actions input,.make-payment-form .actions button
+	{
 	height: auto;
 	padding: 9px 20px 10px;
 	width: auto;
 }
 
-.client-site-form .actions p,
-.service-evaluation-form .actions p,
-.make-payment-form .actions p
-{
+.client-site-form .actions p,.service-evaluation-form .actions p,.make-payment-form .actions p
+	{
 	font-size: 12px;
 	line-height: 18px;
-	margin: 10px 0px; 
-}
-
-/* popover */
-
-#Registration-page .popover
-{
-	font-size: 12px;
-}
-
-#Registration-page .popover .arrow
-{
-	left: 60%;
-}
-
-#Registration-page .popover .popover-inner
-{
-	left: -80px;
-	position: relative;
-}
-
-#Registration-page .popover .popover-inner .popover-title
-{
-	display: none;
-}
-
-#Registration-page .popover .popover-inner .popover-content
-{
-	background: #faf3ed;
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-}
-
-#Registration-page .popover .popover-inner .popover-content p
-{
-	line-height: 18px;
+	margin: 10px 0px;
 }
 
 /* registration step */
-
-.registration-header .registration-step
-{
+.registration-header .registration-step {
 	background: url(../images/registration/header_step_bg.jpg) no-repeat;
 	height: 94px;
 	margin: 0px auto;
@@ -668,14 +526,12 @@ footer .footer-menu a
 	width: 960px;
 }
 
-.registration-step ul
-{
+.registration-step ul {
 	left: 144px;
 	position: relative;
 }
 
-.registration-step li
-{
+.registration-step li {
 	color: #cde3f2;
 	float: left;
 	font-family: Franklin Gothic Medium, Arial;
@@ -685,17 +541,12 @@ footer .footer-menu a
 	width: 232px;
 }
 
-.registration-step li.enabled,
-.registration-step li.current
-{
+.registration-step li.enabled,.registration-step li.current {
 	color: #FFFFFF;
 }
 
-.registration-step li a,
-.registration-step li span,
-.registration-step li.disabled a,
-.registration-step li.disabled span
-{
+.registration-step li a,.registration-step li span,.registration-step li.disabled a,.registration-step li.disabled span
+	{
 	background: #c8e0f1;
 	color: #b2d3ea;
 	display: block;
@@ -709,9 +560,7 @@ footer .footer-menu a
 	width: 40px;
 }
 
-.registration-step li.enabled a,
-.registration-step li.enabled span
-{
+.registration-step li.enabled a,.registration-step li.enabled span {
 	background: #9cc7e4;
 	-webkit-box-shadow: -2px -2px 1px -1px #FFFFFF;
 	-moz-box-shadow: -2px -2px 1px -1px #FFFFFF;
@@ -719,28 +568,20 @@ footer .footer-menu a
 	color: #FFFFFF;
 }
 
-.registration-step li.current a,
-.registration-step li.current span
-{
+.registration-step li.current a,.registration-step li.current span {
 	background: #1f4867;
 	color: #FFFFFF;
 }
 
 /* overwrites */
-
-.service-evaluation hr.separator,
-.make-payment hr.separator
-{
+.service-evaluation hr.separator,.make-payment hr.separator {
 	border: 0px;
 	border-top: 2px solid #878787;
 	clear: both;
 	margin: 30px 0px 20px;
 }
 
-.client-site h1,
-.service-evaluation h1,
-.make-payment h1
-{
+.client-site h1,.service-evaluation h1,.make-payment h1 {
 	color: #bb621a;
 	font-family: Franklin Gothic Medium, Arial;
 	font-size: 40px;
@@ -755,9 +596,7 @@ footer .footer-menu a
 }
 
 /* add client site specific */
-
-.client-site-filter
-{
+.client-site-filter {
 	background: #fefaee;
 	height: 100px;
 	overflow: hidden;
@@ -765,52 +604,44 @@ footer .footer-menu a
 	text-align: center;
 }
 
-.client-site-filter ul
-{
+.client-site-filter ul {
 	margin: 35px auto 0px;
 }
 
-.client-site-filter li
-{
-	display: inline;	
+.client-site-filter li {
+	display: inline;
 }
 
-.client-site-filter .search
-{
+.client-site-filter .search {
 	margin: 5px 10px 0px 0px;
 }
 
-.client-site-filter .search label
-{
+.client-site-filter .search label {
 	color: #404040;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 16px;
 	margin-right: 10px;
 }
 
-.client-site-filter .search input
-{
+.client-site-filter .search input {
 	border: 1px solid #878787;
 	height: 20px;
 	padding: 1px 5px;
 	width: 175px;
 }
 
-.client-site .client-site-left
-{
+.client-site .client-site-left {
 	float: left;
 	position: relative;
 }
 
-.client-site .client-site-right
-{
+.client-site .client-site-right {
 	float: right;
 	position: relative;
 }
 
-.client-site .client-site-left label,
-.client-site .client-site-right label
-{
+.client-site .client-site-left label,.client-site .client-site-right label
+	{
 	float: none;
 	line-height: 25px;
 	margin: 0px;
@@ -819,8 +650,7 @@ footer .footer-menu a
 	width: auto;
 }
 
-.client-site .show-all-client-site
-{
+.client-site .show-all-client-site {
 	font-size: 13px;
 	line-height: 25px;
 	position: absolute;
@@ -828,21 +658,19 @@ footer .footer-menu a
 	top: 0px;
 }
 
-.client-site .client-site-left .client-site-list-container,
-.client-site .client-site-right .client-site-list-container
-{
+.client-site .client-site-left .client-site-list-container,.client-site .client-site-right .client-site-list-container
+	{
 	padding: 20px;
 	position: relative;
 }
 
-.client-site .client-site-left .client-site-list-container
-{
+.client-site .client-site-left .client-site-list-container {
 	background: #f5f5f5;
 }
 
-.client-site .client-site-left .client-site-list-container .arrow
-{
-	background: url(../images/registration/client_site_list_arrow.jpg) no-repeat;
+.client-site .client-site-left .client-site-list-container .arrow {
+	background: url(../images/registration/client_site_list_arrow.jpg)
+		no-repeat;
 	height: 52px;
 	position: absolute;
 	right: -26px;
@@ -850,13 +678,11 @@ footer .footer-menu a
 	width: 26px;
 }
 
-.client-site .client-site-right .client-site-list-container
-{
+.client-site .client-site-right .client-site-list-container {
 	background: #ebf4f9;
 }
 
-.client-site .client-site-list
-{
+.client-site .client-site-list {
 	background: #FFFFFF;
 	border: 1px solid #878787;
 	clear: both;
@@ -866,17 +692,15 @@ footer .footer-menu a
 	width: 420px;
 }
 
-.client-site .client-site-list.loading
-{
-	filter:alpha(opacity=40);
-	-khtml-opacity:0.4;
-	-moz-opacity:0.4;
-	opacity:0.4;
+.client-site .client-site-list.loading {
+	filter: alpha(opacity = 40);
+	-khtml-opacity: 0.4;
+	-moz-opacity: 0.4;
+	opacity: 0.4;
 }
 
 /* loading icon for client site search */
-.client-site span.loading
-{
+.client-site span.loading {
 	background: url(../images/loading.gif);
 	display: block;
 	height: 75px;
@@ -887,14 +711,12 @@ footer .footer-menu a
 	width: 75px;
 }
 
-.client-site .client-site-list li
-{
+.client-site .client-site-list li {
 	line-height: 16px;
 	margin: 0px;
 }
 
-.client-site .client-site-list li a
-{
+.client-site .client-site-list li a {
 	color: #404040;
 	display: block;
 	line-height: 23px;
@@ -903,43 +725,35 @@ footer .footer-menu a
 	text-decoration: none;
 }
 
-.client-site .client-site-list li a:hover
-{
-	 background: #F5F5F5;
-	 cursor: default;
-	 font-weight: bold;
+.client-site .client-site-list li a:hover {
+	background: #F5F5F5;
+	cursor: default;
+	font-weight: bold;
 }
 
-.client-site .client-site-list li a:hover .location
-{
+.client-site .client-site-list li a:hover .location {
 	display: none;
 }
 
-.client-site .client-site-list li a:hover .add,
-.client-site .client-site-list li a:hover .remove,
-.client-site .client-site-list li a:hover .info
-{
+.client-site .client-site-list li a:hover .add,.client-site .client-site-list li a:hover .remove,.client-site .client-site-list li a:hover .info
+	{
 	display: block;
 }
 
-.client-site .client-site-list .name
-{
+.client-site .client-site-list .name {
 	float: left;
 	font-size: 12px;
 }
 
-.client-site .client-site-list .location
-{
+.client-site .client-site-list .location {
 	color: #878787;
 	float: right;
 	font-size: 11px;
 	font-weight: normal;
 }
 
-.client-site .client-site-list .add,
-.client-site .client-site-list .remove,
-.client-site .client-site-list .info
-{
+.client-site .client-site-list .add,.client-site .client-site-list .remove,.client-site .client-site-list .info
+	{
 	display: none;
 	float: right;
 	font-size: 11px;
@@ -947,93 +761,79 @@ footer .footer-menu a
 	text-transform: uppercase;
 }
 
-.client-site .client-site-list .info
-{
+.client-site .client-site-list .info {
 	margin-right: 5px;
 	text-transform: lowercase;
 }
 
-.client-site ul.actions
-{
+.client-site ul.actions {
 	margin: 10px auto;
 	padding: 0px;
 	width: 116px;
 }
 
-.client-site ul.actions li
-{
+.client-site ul.actions li {
 	margin: 0px;
 }
 
-.client-site .client-site-list li.inspect,
-.client-site .client-site-list li.inspect a
-{
+.client-site .client-site-list li.inspect,.client-site .client-site-list li.inspect a
+	{
 	background: #FDF5D9;
 }
 
-.client-site .client-site-list li.inspect .client-site-info
-{
+.client-site .client-site-list li.inspect .client-site-info {
 	clear: both;
 	color: #878787;
 	display: block;
 }
 
-.client-site .client-site-list .client-site-info
-{
+.client-site .client-site-list .client-site-info {
 	display: none;
 	font-size: 12px;
 	font-weight: normal;
 }
 
-.client-site-get-started
-{
+.client-site-get-started {
 	float: right;
 	margin-top: 80px;
 	padding: 20px;
 	width: 430px;
 }
 
-.client-site-get-started section
-{
+.client-site-get-started section {
 	clear: both;
 	margin-bottom: 50px;
 }
 
-.client-site-get-started h1
-{
+.client-site-get-started h1 {
 	color: #A94C0F;
 	font-size: 26px;
 	line-height: 26px;
 	margin: 0px;
 }
 
-.client-site-get-started h2
-{
+.client-site-get-started h2 {
 	color: #878787;
 	font-size: 14px;
 	line-height: 18px;
 	margin: 10px 0px 20px;
 }
 
-.client-site-get-started .information-container
-{
+.client-site-get-started .information-container {
 	float: left;
 	width: 345px;
 }
 
-.client-site-get-started img
-{
+.client-site-get-started img {
 	float: left;
 	margin-right: 20px;
 }
 
-.client-site-get-started img.search
-{
+.client-site-get-started img.search {
 	margin-top: 5px;
 }
 
-.client-site-help
-{
+.client-site-help {
 	background: #FFFFFF;
 	bottom: 21px;
 	left: 21px;
@@ -1043,114 +843,94 @@ footer .footer-menu a
 	width: 403px;
 }
 
-.client-site-help h1
-{
+.client-site-help h1 {
 	color: #A94C0F;
 	font-size: 16px;
 	margin: 0px;
 }
 
-.client-site-help h2
-{
+.client-site-help h2 {
 	color: #878787;
 	font-size: 11px;
 }
 
-.client-site-help button
-{
+.client-site-help button {
 	margin: 20px 0px;
 }
 
 /* service evaluation specific */
-
-.service-evaluation label
-{
+.service-evaluation label {
 	margin: 20px 30px 0px 0px;
 	text-align: left;
 	width: 350px;
 }
 
-.services-list
-{
+.services-list {
 	width: 570px;
 }
 
-.services-performed-description p
-{
+.services-performed-description p {
 	color: #BB621A;
 	font-size: 12px;
 	line-height: 16px;
 	margin: 0px 0px 15px;
 }
 
-.service-evaluation-form ul.checkbox-list,
-.service-evaluation-form ul.radio
-{
+.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio
+	{
 	background: #eef5fb;
 	padding: 20px;
 	width: 540px;
 }
 
-.service-evaluation-form ul.checkbox-list input
-{
+.service-evaluation-form ul.checkbox-list input {
 	margin: 3px 6px 3px 0px;
 }
 
-.service-evaluation-form ul.checkbox-list label,
-.service-evaluation-form ul.radio label
-{
+.service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label
+	{
 	margin: 0px 0px 5px;
 	width: 510px;
 }
 
-.service-evaluation-form ul.radio.inline label
-{
+.service-evaluation-form ul.radio.inline label {
 	margin: 0px;
 	width: auto;
 }
 
-.service-evaluation-form div.separator
-{
-	background: url(../images/registration/separator_bg.png) -20px -60px no-repeat;
+.service-evaluation-form div.separator {
+	background: url(../images/registration/separator_bg.png) -20px -60px
+		no-repeat;
 	clear: both;
 	height: 10px;
 	position: relative;
 	top: 20px;
 }
 
-.service-evaluation-form .actions
-{
-	padding-left: 388px;	
+.service-evaluation-form .actions {
+	padding-left: 388px;
 }
 
 /* make payment specific */
-
-.make-payment .membership
-{
+.make-payment .membership {
 	margin-bottom: 30px;
 }
 
-.make-payment .membership,
-.make-payment .membership-help
-{
+.make-payment .membership,.make-payment .membership-help {
 	float: left;
 }
 
-.make-payment table
-{
+.make-payment table {
 	margin-right: 70px;
 	width: 560px;
 }
 
-.make-payment table th,
-.make-payment table td
-{
+.make-payment table th,.make-payment table td {
 	line-height: 20px;
 	padding: 20px;
 }
 
-.make-payment table th
-{
+.make-payment table th {
 	background: #eef6fb;
 	color: #002d4f;
 	font-size: 18px;
@@ -1158,29 +938,24 @@ footer .footer-menu a
 	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.make-payment table td
-{
+.make-payment table td {
 	background: #fcfdfe;
 	color: #5d5d5d;
 	font-size: 14px;
 	position: relative;
 }
 
-.make-payment table th.price,
-.make-payment table td.price
-{
+.make-payment table th.price,.make-payment table td.price {
 	text-align: right;
 }
 
-.make-payment .invoice .help
-{
+.make-payment .invoice .help {
 	bottom: 2px;
 	position: relative;
 	left: 3px;
 }
 
-.make-payment .invoice tfoot td
-{
+.make-payment .invoice tfoot td {
 	background: #c8e0f0;
 	color: #70a7cb;
 	font-size: 24px;
@@ -1189,16 +964,14 @@ footer .footer-menu a
 	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.make-payment .invoice tfoot td span
-{
+.make-payment .invoice tfoot td span {
 	color: #5d5d5d;
 	font-size: 18px;
 	margin-right: 10px;
 	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.make-payment .policy
-{
+.make-payment .policy {
 	line-height: 16px;
 	margin: 20px 0px 0px;
 	overflow: hidden;
@@ -1206,41 +979,34 @@ footer .footer-menu a
 	width: 560px;
 }
 
-.make-payment .policy li
-{
+.make-payment .policy li {
 	display: inline;
 	margin: 0px 10px;
 }
 
-.make-payment .policy li a,
-.make-payment .membership-help a
-{
+.make-payment .policy li a,.make-payment .membership-help a {
 	color: #7f96a7;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 }
 
-.make-payment .policy li a:hover,
-.make-payment .membership-help a:hover
-{
+.make-payment .policy li a:hover,.make-payment .membership-help a:hover
+	{
 	text-decoration: none;
 }
 
-.make-payment .policy a.modal-link
-{
-	vertical-align:top;
+.make-payment .policy a.modal-link {
+	vertical-align: top;
 	line-height: 200%;
 	white-space: nowrap;
 }
 
-.make-payment .membership-help
-{
+.make-payment .membership-help {
 	background: #eef6fb;
 	width: 330px;
 }
 
-.make-payment .membership-help section h1
-{
+.make-payment .membership-help section h1 {
 	background: #bedbed;
 	color: #5d5d5d;
 	float: left;
@@ -1252,8 +1018,7 @@ footer .footer-menu a
 	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.make-payment .membership-help section p
-{
+.make-payment .membership-help section p {
 	clear: both;
 	color: #404040;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1263,14 +1028,11 @@ footer .footer-menu a
 }
 
 /* data import */
-
-.data-import-form
-{
+.data-import-form {
 	display: inline;
 }
 
-.data-import-form input
-{
+.data-import-form input {
 	bottom: 5px;
 	margin-left: 10px;
 	padding: 4px 10px;
@@ -1278,85 +1040,83 @@ footer .footer-menu a
 }
 
 /* billing information */
-
-.make-payment div.separator
-{
-	background: url(../images/registration/separator_bg.png) -20px -60px no-repeat;
+.make-payment div.separator {
+	background: url(../images/registration/separator_bg.png) -20px -60px
+		no-repeat;
 	clear: both;
 	height: 10px;
 	position: relative;
 	top: 20px;
 }
 
-.make-payment-form .creditcard select
-{
+.make-payment-form .creditcard select {
 	margin-bottom: 5px;
 }
 
-.make-payment-form img.card
-{
+.make-payment-form img.card {
 	display: block;
+<<<<<<< HEAD
 	left: 110px;
+=======
+	left: 160px;
+>>>>>>> temp commit
 	margin: 5px 0px;
 	position: relative;
 }
 
+<<<<<<< HEAD
 .make-payment-form .actions
 {
 	padding-left: 110px;
+=======
+.make-payment-form .actions {
+	padding-left: 160px;
+>>>>>>> temp commit
 }
 
-.make-payment-form .actions input.btn
-{
+.make-payment-form .actions input.btn {
 	float: left;
 	padding: 10px 20px 12px;
 	margin: 1px 10px 0px 0px;
 }
 
-.make-payment-form .actions .brain-tree-badge
-{
+.make-payment-form .actions .brain-tree-badge {
 	float: left;
 }
 
-.make-payment-form .check-note
-{
+.make-payment-form .check-note {
 	clear: left;
 	display: none;
 	float: left;
 }
 
-.make-payment .process-check-info
-{
+.make-payment .process-check-info {
 	color: #404040;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	line-height: 18px;
 }
 
-.make-payment .process-check-info a
-{
+.make-payment .process-check-info a {
 	color: #7f96a7;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 }
 
-.make-payment .processing
-{
+.make-payment .processing {
 	display: none;
 	float: left;
 	height: 37px;
 	margin: 2px;
 }
 
-.make-payment .processing img
-{
+.make-payment .processing img {
 	height: 23px;
 	margin: 7px 7px;
 	float: left;
 }
 
-.make-payment .processing p
-{
+.make-payment .processing p {
 	color: #BB621A;
 	float: left;
 	font-size: 13px;
@@ -1364,11 +1124,11 @@ footer .footer-menu a
 	text-shadow: #D6D6D6 1px 1px 1px;
 }
 
-.client-site-modal
-{
+.client-site-modal {
 	margin: -250px 0 0 -250px !important;
 }
 
+<<<<<<< HEAD
 #credit-card-payment-method {
 	float: left;
 }
@@ -1386,4 +1146,34 @@ footer .footer-menu a
 
 #ccexp {
 	display: none;
+=======
+/* Generic Help Text */
+
+#.help {
+	font-size: 12px;
+}
+
+.popover .arrow {
+	left: 60%;
+}
+
+.popover .popover-inner {
+	left: -80px;
+	position: relative;
+}
+
+.popover .popover-inner .popover-title {
+	display: none;
+}
+
+.popover .popover-inner .popover-content {
+	background: #faf3ed;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.popover .popover-inner .popover-content p {
+	line-height: 18px;
+>>>>>>> temp commit
 }
