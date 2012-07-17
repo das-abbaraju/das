@@ -65,7 +65,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             var post = records[0];
 
             if (post) {
-                this.search(post.get('name'));
+                this.search(post.get('result_name'));
             }
         },
 
