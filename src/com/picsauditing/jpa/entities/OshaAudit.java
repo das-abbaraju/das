@@ -164,9 +164,7 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	public boolean isEmpty(OshaType oshaType) {
-		return (getSafetyStatistics(oshaType) == null
-				|| getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null || getSafetyStatistics(oshaType)
-				.getStats(OshaRateType.Hours).equals("0"));
+		return (getSafetyStatistics(oshaType) == null);
 	}
 
 	public String getComment(OshaType oshaType) {
