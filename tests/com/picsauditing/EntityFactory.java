@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -34,6 +35,7 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserStatus;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -47,9 +49,9 @@ import com.picsauditing.mail.SubscriptionTimePeriod;
 public class EntityFactory {
 
 	static private int counter = 1;
-	static private HashMap<String,Country> countries;
-	static private Map<String,State> states;
-	
+	static private HashMap<String, Country> countries;
+	static private Map<String, State> states;
+
 	static public TranslatableString makeTranslatableString(String value) {
 		TranslatableString string = new TranslatableString();
 		string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
@@ -72,9 +74,9 @@ public class EntityFactory {
 
 		OperatorAccount suncorCorporate = new OperatorAccount();
 		suncorCorporate.setId(OperatorAccount.SUNCOR);
-		
+
 		suncorOperator.setParent(suncorCorporate);
-		
+
 		return suncorOperator;
 	}
 
@@ -99,38 +101,50 @@ public class EntityFactory {
 		return contractor;
 	}
 
-	public static Map<String,Country> mostCommonCountries(){
-		if (countries != null && countries.size() >0 ) {
+	static public Employee makeEmployee(Account account) {
+		Employee employee = new Employee();
+		employee.setId(counter++);
+		employee.setStatus(UserStatus.Active);
+		employee.setFirstName("Unit");
+		employee.setLastName("Tester");
+		employee.setTitle("Title");
+		employee.setAccount(account);
+
+		return employee;
+	}
+
+	public static Map<String, Country> mostCommonCountries() {
+		if (countries != null && countries.size() > 0) {
 			return countries;
 		}
 		countries = new HashMap();
-		countries.put("US",makeCountry("US","United States"));
-		countries.put("FR",makeCountry("FR","France"));
-		countries.put("AE",makeCountry("AE","United Arab Emmerits"));
-		countries.put("GB",makeCountry("GB","United Kingdom"));
-		countries.put("CA",makeCountry("CA","Canada"));
-		countries.put("MX",makeCountry("MX","Mexico"));
+		countries.put("US", makeCountry("US", "United States"));
+		countries.put("FR", makeCountry("FR", "France"));
+		countries.put("AE", makeCountry("AE", "United Arab Emmerits"));
+		countries.put("GB", makeCountry("GB", "United Kingdom"));
+		countries.put("CA", makeCountry("CA", "Canada"));
+		countries.put("MX", makeCountry("MX", "Mexico"));
 		return countries;
 	}
 
-	public static Map<String,State> someExampleStates(){
-		if (states != null && states.size() >0 ) {
+	public static Map<String, State> someExampleStates() {
+		if (states != null && states.size() > 0) {
 			return states;
 		}
 		states = new HashMap();
-		
+
 		Country unitedStates = mostCommonCountries().get("US");
-		states.put("CA",makeState("CA",unitedStates,"California"));
-		states.put("TX",makeState("TX",unitedStates,"Texas"));
+		states.put("CA", makeState("CA", unitedStates, "California"));
+		states.put("TX", makeState("TX", unitedStates, "Texas"));
 
 		Country canada = mostCommonCountries().get("CA");
-		states.put("AB",makeState("AB",canada,"Alberta"));
-		states.put("BC",makeState("BC",canada,"British Columbia"));
-		
+		states.put("AB", makeState("AB", canada, "Alberta"));
+		states.put("BC", makeState("BC", canada, "British Columbia"));
+
 		Country unitedKingdom = mostCommonCountries().get("GB");
-		states.put("BU",makeState("BU",unitedKingdom,"Buckinghamshire"));
-		states.put("YK",makeState("YK",unitedKingdom,"Yorkshire"));
-		
+		states.put("BU", makeState("BU", unitedKingdom, "Buckinghamshire"));
+		states.put("YK", makeState("YK", unitedKingdom, "Yorkshire"));
+
 		return states;
 	}
 
@@ -259,16 +273,16 @@ public class EntityFactory {
 		conAudit.getOperators().add(cao);
 		return cao;
 	}
-	
+
 	static public AuditQuestion makeAuditQuestion() {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(counter++);
 		question.setName(makeTranslatableString("jUnit Question " + question.getId()));
-		question.setDependentRequired(new ArrayList<AuditQuestion> ());
-		question.setDependentVisible(new ArrayList<AuditQuestion> ());
+		question.setDependentRequired(new ArrayList<AuditQuestion>());
+		question.setDependentVisible(new ArrayList<AuditQuestion>());
 		long time = (new Date()).getTime();
-		question.setEffectiveDate(new Date(time - (24*60*60*1000L)));
-		question.setExpirationDate(new Date(time + (24*60*60*1000L)));
+		question.setEffectiveDate(new Date(time - (24 * 60 * 60 * 1000L)));
+		question.setExpirationDate(new Date(time + (24 * 60 * 60 * 1000L)));
 		question.setCategory(makeAuditCategory());
 		return question;
 	}
@@ -276,7 +290,7 @@ public class EntityFactory {
 	public static AuditCategory makeAuditCategory() {
 		return makeAuditCategory(counter++);
 	}
-	
+
 	public static AuditCategory makeAuditCategory(int categoryId) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryId);
@@ -360,6 +374,7 @@ public class EntityFactory {
 		facility.setCorporate(corporate);
 		return facility;
 	}
+
 	public static FlagCriteria makeFlagCriteria() {
 		FlagCriteria flagCriteria = new FlagCriteria();
 		flagCriteria.setId(counter++);
@@ -367,21 +382,22 @@ public class EntityFactory {
 		flagCriteria.setInsurance(false);
 		return flagCriteria;
 	}
+
 	public static FlagCriteria makeFlagCriteriaAuditType() {
 		FlagCriteria flagCriteria = makeFlagCriteria();
 		flagCriteria.setAuditType(EntityFactory.makeAuditType(counter++));
-		flagCriteria.setRequiredStatus(AuditStatus.Complete);	
-		
+		flagCriteria.setRequiredStatus(AuditStatus.Complete);
+
 		return flagCriteria;
 	}
-	
+
 	public static FlagCriteria makeFlagCriteriaAuditQuestion() {
 		FlagCriteria flagCriteria = makeFlagCriteria();
 		flagCriteria.setQuestion(EntityFactory.makeAuditQuestion());
 		flagCriteria.setComparison("=");
 		flagCriteria.setDataType(FlagCriteria.STRING);
 		flagCriteria.setDefaultValue("Yes");
-			
+
 		return flagCriteria;
 	}
 
@@ -391,7 +407,7 @@ public class EntityFactory {
 		flagData.setCriteria(makeFlagCriteriaAuditType());
 		flagData.setContractor(makeContractor());
 		flagData.setFlag(FlagColor.Red);
-		
+
 		return flagData;
 	}
 
@@ -401,7 +417,7 @@ public class EntityFactory {
 		flagCriteriaContractor.setAnswer(answer);
 		flagCriteriaContractor.setContractor(makeContractor());
 		flagCriteriaContractor.setCriteria(makeFlagCriteria());
-		
+
 		return flagCriteriaContractor;
 	}
 }

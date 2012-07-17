@@ -19,7 +19,6 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
@@ -51,8 +50,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageEmployees extends AccountActionSupport implements Preparable {
-	@Autowired
-	protected AccountDAO accountDAO;
 	@Autowired
 	protected EmployeeDAO employeeDAO;
 	@Autowired
@@ -113,11 +110,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	@Override
 	public String execute() throws Exception {
-		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
-
 		if (audit != null) {
 			account = audit.getContractorAccount();
 		}
+
+		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 
 		if (employee != null) {
 			account = employee.getAccount();
@@ -146,7 +143,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return SUCCESS;
 	}
 
-	public String add() throws Exception {
+	public String add() {
 		employee = new Employee();
 		return SUCCESS;
 	}
@@ -162,7 +159,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			else if (!ssn.matches("X{5}\\d{4}"))
 				addActionError("Invalid social security number entered.");
 		}
-		if (employee.getEmail().length()>0)
+		if (employee.getEmail().length() > 0)
 			employee.setEmail(EmailAddressUtils.validate(employee.getEmail()));
 
 		employee.setAuditColumns(permissions);
@@ -177,28 +174,37 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 						+ account.getId()) + "#employee=" + employee.getId());
 	}
 
-	public String inactivate() throws Exception {
-		employee.setStatus(UserStatus.Inactive);		
-		employeeDAO.save(employee);
-		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deactivated.");
+	public String inactivate() {
+		if (employee != null) {
+			employee.setStatus(UserStatus.Inactive);
+			employeeDAO.save(employee);
+			addActionMessage("Employee " + employee.getDisplayName() + " Successfully deactivated.");
+		}
+
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 
 		return SUCCESS;
 	}
 
 	public String activate() throws Exception {
-		employee.setStatus(UserStatus.Active);
-		employeeDAO.save(employee);
+		if (employee != null) {
+			employee.setStatus(UserStatus.Active);
+			employeeDAO.save(employee);
+			return this.setUrlForRedirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
+					+ employee.getId());
+		}
 
-		return this.setUrlForRedirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
-				+ employee.getId());
+		return setUrlForRedirect("ManageEmployees.action?id=" + account.getId());
 	}
 
-	public String delete() throws Exception {
-		employee.setStatus(UserStatus.Deleted);
-		employeeDAO.save(employee);
-		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deleted.");
-		employee = null;
+	public String delete() {
+		if (employee != null) {
+			employee.setStatus(UserStatus.Deleted);
+			employeeDAO.save(employee);
+			addActionMessage("Employee " + employee.getDisplayName() + " Successfully deleted.");
+			employee = null;
+		}
+
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 
 		return SUCCESS;
@@ -213,17 +219,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		this.activeEmployees = activeEmployees;
 	}
 
-	/*
-	 * public String delete() throws Exception { employeeDAO.refresh(employee);
-	 * employeeDAO.remove(employee); addActionMessage("Employee " +
-	 * employee.getDisplayName() + " Successfully Deleted."); File f = new
-	 * File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) +
-	 * "emp_" + employee.getId() + ".jpg"); if (f != null) { f.delete(); }
-	 * employee = null;
-	 * 
-	 * return SUCCESS; }
-	 */
-	public String addRoleAjax() throws Exception {
+	public String addRoleAjax() {
 		JobRole jobRole = roleDAO.find(childID);
 		if (employee != null && jobRole != null) {
 			EmployeeRole e = new EmployeeRole();
@@ -242,7 +238,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return "roles";
 	}
 
-	public String removeRoleAjax() throws Exception {
+	public String removeRoleAjax() {
 		if (employee != null && childID > 0) {
 			EmployeeRole e = employeeRoleDAO.find(childID);
 
@@ -256,8 +252,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return "roles";
 	}
 
-	public String addSiteAjax() throws Exception {
-		if (employee != null && op.getId() != 0) {
+	public String addSiteAjax() {
+		if (employee != null && op != null && op.getId() != 0) {
 			EmployeeSite es = new EmployeeSite();
 			es.setEmployee(employee);
 
@@ -280,7 +276,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return "sites";
 	}
 
-	public String removeSiteAjax() throws Exception {
+	public String removeSiteAjax() {
 		if (employee != null && childID > 0) {
 			EmployeeSite es = employeeSiteDAO.find(childID);
 
@@ -305,7 +301,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return "sites";
 	}
 
-	public String newSiteAjax() throws Exception {
+	public String newSiteAjax() {
 		if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
 			jobSite.setAuditColumns(permissions);
 			jobSite.setOperator(op);
@@ -322,7 +318,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return "sites";
 	}
 
-	public String editSiteAjax() throws Exception {
+	public String editSiteAjax() {
 		if (employee != null && childID != 0) {
 			List<String> notes = new ArrayList<String>();
 
