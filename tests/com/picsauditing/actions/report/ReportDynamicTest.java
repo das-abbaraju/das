@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
@@ -37,7 +38,7 @@ import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, ReportUtil.class })
+@PrepareForTest({ I18nCache.class, ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportAccessor.class, ReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
 public class ReportDynamicTest {
 
@@ -62,6 +63,8 @@ public class ReportDynamicTest {
 
 	@Before
 	public void setUp() throws Exception {
+		PowerMockito.mockStatic(I18nCache.class);
+		
 		MockitoAnnotations.initMocks(this);
 
 		PowerMockito.mockStatic(SpringUtils.class);

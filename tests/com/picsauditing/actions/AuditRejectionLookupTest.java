@@ -30,6 +30,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.Action;
 import com.picsauditing.PICS.DBBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.util.Strings;
 
 /*
@@ -38,7 +39,7 @@ import com.picsauditing.util.Strings;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AuditRejectionLookup.class, DBBean.class})
+@PrepareForTest({AuditRejectionLookup.class, DBBean.class, I18nCache.class})
 @PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class AuditRejectionLookupTest {
 	private static final String TRANSLATION_KEY_PREFIX = "Insurance.Rejection.Reason.Code.";
@@ -62,6 +63,7 @@ public class AuditRejectionLookupTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		PowerMockito.mockStatic(I18nCache.class);
 		
 		auditRejectionLookup = PowerMockito.spy(new AuditRejectionLookup());
 		PowerMockito.mockStatic(DBBean.class);

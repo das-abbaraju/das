@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.AnswerMap;
 
 public class AuditDataSaveTest {
@@ -55,7 +56,8 @@ public class AuditDataSaveTest {
 	@Mock private AuditCategoryRuleCache categoryRuleCache;
 	@Mock private AuditPercentCalculator auditPercentCalculatior;
 	@Mock private I18nCache i18nCache;
-
+	@Mock private Database databaseForTesting;
+	
 	private ContractorAccount contractor;
 	private AuditData auditData;
 	private ContractorAudit audit;
@@ -66,7 +68,8 @@ public class AuditDataSaveTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
 		auditDataSave = new AuditDataSave();
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(auditDataSave, this);
 

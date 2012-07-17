@@ -17,12 +17,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.opensymphony.xwork2.Action;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Account;
 
 import static com.picsauditing.actions.PicsActionSupport.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ResetSelenium.class})
+@PrepareForTest({ResetSelenium.class, I18nCache.class})
 @PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class ResetSeleniumTest {
 	
@@ -33,6 +34,7 @@ public class ResetSeleniumTest {
 	@SuppressWarnings({ "serial", "unchecked" })
 	@Before
 	public void setup() throws Exception {
+		PowerMockito.mockStatic(I18nCache.class);
 		MockitoAnnotations.initMocks(this);
 		
 		testList = new ArrayList<SeleniumDeletable>();

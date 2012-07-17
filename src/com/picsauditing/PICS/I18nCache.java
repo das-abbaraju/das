@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.perf4j.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,25 +42,44 @@ public class I18nCache implements Serializable {
 	private volatile transient Table<String, String, String> cache;
 	private transient Map<String, Date> cacheUsage;
 
+	private static Database databaseForTesting = null;
+	private static List<I18nCacheBuildAware> buildListeners = new ArrayList<I18nCacheBuildAware>();
+	
 	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
 	private I18nCache() {
 	}
 
 	public static I18nCache getInstance() {
-		I18nCache cache = INSTANCE;
-		if (cache == null) {
+		if (INSTANCE == null) {
 			synchronized (I18nCache.class) {
-				cache = INSTANCE;
-				if (cache == null) {
-					INSTANCE = new I18nCache();
-				}
+				INSTANCE = new I18nCache();
+				INSTANCE.buildCache();
 			}
 		}
 		return INSTANCE;
 	}
 
+	public void addBuildListener(I18nCacheBuildAware listener) {
+		if (!buildListeners.contains(listener)) {
+			buildListeners.add(listener);
+		}
+	}
+
+	public boolean removeBuildListener(I18nCacheBuildAware listener) {
+		for (I18nCacheBuildAware candidate : buildListeners) {
+			if (candidate.equals(listener)) {
+				return buildListeners.remove(listener);
+			}
+		}
+		return false;
+	}
+
+	public void clearBuildListeners() {
+		buildListeners.clear();
+	}
+	
 	private String findAnyLocale(String key) {
-		Map<String, String> locales = getCache().row(key);
+		Map<String, String> locales = cache.row(key);
 		if (locales == null)
 			return null;
 		if (locales.size() > 0) {
@@ -70,7 +91,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private boolean hasKey(String key, String locale) {
-		return getCache().contains(key, locale);
+		return cache.contains(key, locale);
 	}
 
 	public boolean hasKey(String key, Locale locale) {
@@ -78,12 +99,12 @@ public class I18nCache implements Serializable {
 	}
 
 	public Map<String, String> getText(String key) {
-		return getCache().row(key);
+		return cache.row(key);
 	}
 
 	private String getText(String key, String locale) {
 		updateCacheUsed(key);
-		return getCache().get(key, locale);
+		return cache.get(key, locale);
 	}
 
 	private void updateCacheUsed(String key) {
@@ -91,7 +112,7 @@ public class I18nCache implements Serializable {
 		Calendar yesterday = Calendar.getInstance();
 		yesterday.add(Calendar.DAY_OF_YEAR, -1);
 		if (lastUsed == null || lastUsed.before(yesterday.getTime())) {
-			Database db = new Database();
+			Database db = db();
 			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key)
 					+ "'";
 			cacheUsage.put(key, new Date());
@@ -138,30 +159,20 @@ public class I18nCache implements Serializable {
 		return text.replaceAll("'", "''");
 	}
 
-	public Table<String, String, String> getCache() {
-		if (cache == null) {
-			synchronized (this) {
-				if (cache == null) {
-					buildCache();
-				}
-			}
-		}
-		return cache;
-	}
-
 	public void clear() {
 		synchronized (this) {
 			buildCache();
 		}
 	}
 
-	// WARNING: NOT THREAD SAFE!!!
-	private void buildCache() {
+	// WARNING: NOT THREAD SAFE!!! (Designed to be called from public API clear())
+	protected void buildCache() {
+		boolean successful = true;
+		StopWatch stopWatch = startBuild();
 		try {
-			long startTime = System.currentTimeMillis();
 			Table<String, String, String> newCache = TreeBasedTable.create();
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
-			Database db = new Database();
+			Database db = db();
 			String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 			List<BasicDynaBean> messages = db.select(sql, false);
 			for (BasicDynaBean message : messages) {
@@ -172,15 +183,41 @@ public class I18nCache implements Serializable {
 			}
 			cache = newCache;
 			cacheUsage = newCacheUsage;
-			long endTime = System.currentTimeMillis();
-			logger.info("Built i18n Cache in {} ms", (endTime - startTime));
-
 			LAST_CLEARED = new Date();
 		} catch (SQLException e) {
-			logger.error(e.getMessage());
+			logger.error("Error building i18nCache: {}", e.getMessage());
+			successful = false;
+		} finally {
+			stopBuild(stopWatch, successful);			
 		}
 	}
 
+	private void stopBuild(StopWatch stopWatch, boolean successful) {
+		stopWatch.stop();
+		logger.info("Built i18n Cache in {} ms", stopWatch.getElapsedTime());
+		for (I18nCacheBuildAware listener : buildListeners) {
+			listener.cacheBuildStopped(stopWatch.getElapsedTime(), successful);
+		}
+	}
+
+	private StopWatch startBuild() {
+		StopWatch stopWatch = new StopWatch("I18nCache");
+		stopWatch.start();
+		logger.debug("Starting build of i18nCache: {}", stopWatch.getStartTime());
+		for (I18nCacheBuildAware listener : buildListeners) {
+			listener.cacheBuildStarted(stopWatch.getStartTime());
+		}
+		return stopWatch;
+	}
+
+	private Database db() {
+		if (databaseForTesting == null) {
+			return new Database();
+		} else {
+			return databaseForTesting;
+		}
+	}
+	
 	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
 		String localeString = locale.toString();
 		if (!hasKey(key, localeString)) {
@@ -195,7 +232,7 @@ public class I18nCache implements Serializable {
 					if (insertMissing) {
 						// insert the default msg into the table and the cache
 						try {
-							Database db = new Database();
+							Database db = db();
 
 							AppTranslation newTranslation = new AppTranslation();
 							newTranslation.setKey(key);
@@ -211,6 +248,7 @@ public class I18nCache implements Serializable {
 						} catch (SQLException e) {
 							// In case the translation already existed, it might
 							// be best to clear the cache
+							logger.error("Error putting new translation in DB for locale fallback: {}", e.getMessage());
 							clear();
 						}
 					} else {
@@ -280,7 +318,7 @@ public class I18nCache implements Serializable {
 	public void removeTranslatableStrings(List<String> keys) throws SQLException {
 		if (keys.size() > 0) {
 			for (String key : keys) {
-				getCache().row(key).clear();
+				cache.row(key).clear();
 			}
 
 			String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
