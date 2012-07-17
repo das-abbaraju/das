@@ -68,7 +68,7 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 		closedReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
 
 		if (answerMap == null)
-			answerMap = auditDataDao.findAnswers(auditID);
+			answerMap = auditDataDAO.findAnswers(auditID);
 		
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			AuditCatData parentCatData = getCategories().get(auditCatData.getCategory().getTopParent());

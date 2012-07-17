@@ -71,7 +71,7 @@ public class VerifyAudit extends AuditActionSupport {
 
 	public List<AuditData> getPqfQuestions() {
 		if (pqfQuestions == null) {
-			pqfQuestions = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+			pqfQuestions = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 			
 			Iterator<AuditData> value = pqfQuestions.iterator();
 			while (value.hasNext()) {

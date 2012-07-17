@@ -53,8 +53,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	@Autowired
 	protected AuditCategoryDataDAO catDataDao;
 	@Autowired
-	protected AuditDataDAO auditDataDao;
-	@Autowired
 	protected CertificateDAO certificateDao;
 	@Autowired
 	protected NoteDAO noteDAO;
@@ -162,7 +160,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(
+		Map<Integer, AuditData> answers = auditDataDAO.findAnswersForSafetyManual(
 				conAudit.getContractorAccount().getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;

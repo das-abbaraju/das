@@ -210,7 +210,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					mode = EDIT;
 			} else {
 				// When we want to show all categories
-				answerMap = auditDataDao.findAnswers(auditID);
+				answerMap = auditDataDAO.findAnswers(auditID);
 			}
 
 			checkMode();
@@ -432,10 +432,10 @@ public class ContractorAuditController extends AuditActionSupport {
 	public String getAuditorNotes() {
 		AuditData auditData = null;
 		if (conAudit.getAuditType().isDesktop()) {
-			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 1461);
+			auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 1461);
 		}
 		if (conAudit.getAuditType().getId() == 3) {
-			auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2432);
+			auditData = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2432);
 		}
 		if (auditData != null)
 			return auditData.getAnswer();

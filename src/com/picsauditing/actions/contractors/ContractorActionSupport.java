@@ -73,7 +73,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private AuditDataDAO auditDataDAO;
+	protected AuditDataDAO auditDataDAO;
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired

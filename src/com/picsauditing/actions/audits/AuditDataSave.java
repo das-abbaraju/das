@@ -84,13 +84,13 @@ public class AuditDataSave extends AuditActionSupport {
 			getUser();
 			AuditData newCopy = null;
 			if (auditData.getId() > 0) {
-				newCopy = auditDataDao.find(auditData.getId());
+				newCopy = auditDataDAO.find(auditData.getId());
 			} else {
 				if (auditData.getAudit() == null)
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+				newCopy = auditDataDAO.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
 						.getId());
 			}
 
@@ -217,7 +217,7 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			}
 
-			auditDataDao.save(auditData);
+			auditDataDAO.save(auditData);
 
 			if (conAudit == null) {
 				findConAudit();
@@ -313,7 +313,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 				// Need to refresh the auditData to query up the required
 				// questions off of it
-				auditData = auditDataDao.find(auditData.getId());
+				auditData = auditDataDAO.find(auditData.getId());
 
 				loadAnswerMap();
 			}
@@ -403,7 +403,7 @@ public class AuditDataSave extends AuditActionSupport {
 			if (newCopy.getAnswer().equals(NO)) {
 				recalcAudit = true;
 				for (int incidentQuestionId : OSHA_INCIDENT_RELATED_QUESTION_IDS) {
-					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(),
+					AuditData auditData = auditDataDAO.findAnswerToQuestion(this.auditData.getAudit().getId(),
 							incidentQuestionId);
 					if (auditData == null) {
 						auditData = new AuditData();
@@ -416,14 +416,14 @@ public class AuditDataSave extends AuditActionSupport {
 					auditData.setAuditColumns(permissions);
 					auditData.setAnswer("0");
 
-					auditDataDao.save(auditData);
+					auditDataDAO.save(auditData);
 				}
 			}
 		} else if (newCopy.getQuestion().getId() == COHS_INCIDENT_QUESTION_ID) {
 			if (newCopy.getAnswer().equals(NO)) {
 				recalcAudit = true;
 				for (int incidentQuestionId : COHS_INCIDENT_RELATED_QUESTION_IDS) {
-					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(),
+					AuditData auditData = auditDataDAO.findAnswerToQuestion(this.auditData.getAudit().getId(),
 							incidentQuestionId);
 					if (auditData == null) {
 						auditData = new AuditData();
@@ -436,7 +436,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditData.setAuditColumns(permissions);
 					auditData.setAnswer("0");
 
-					auditDataDao.save(auditData);
+					auditDataDAO.save(auditData);
 				}
 			}
 		}
@@ -578,7 +578,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 		questionIds.addAll(auditData.getQuestion().getSiblingQuestionWatchers());
 
-		answerMap = auditDataDao.findAnswers(auditID, questionIds);
+		answerMap = auditDataDAO.findAnswers(auditID, questionIds);
 	}
 
 	public String getMode() {
@@ -699,35 +699,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if ("Date".equals(questionType)) {
-			SimpleDateFormat s = new SimpleDateFormat(getText("date.short"));
-			Date newDate;
-
-			try {
-				if (answer.length()==10)
-					newDate = s.parse(answer);
-				else
-					newDate = restructureNewDate(answer);
-			} catch (ParseException e) {
-				try {
-					SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
-					newDate = dbFormat.parse(answer);
-				}
-				catch(ParseException err) {
-					addActionError(getText("AuditData.error.InvalidDate"));
-					return false;
-				}
-			}
-
-			if (newDate == null) {
-				addActionError(getText("AuditData.error.InvalidDate"));
-				return false;
-			} else if (newDate.after(DateBean.parseDate("9999-12-31"))) {
-				addActionError(getText("AuditData.error.DateOutOfRange"));
-				return false;
-			} else {
-				String a = DateBean.toDBFormat(newDate);
-				auditData.setAnswer(a);
-			}
+			return setAnswerToDateOrRecordError(auditData, answer);
 		}
 
 		if ("Check Box".equals(questionType)) {
@@ -738,8 +710,20 @@ public class AuditDataSave extends AuditActionSupport {
 		return true;
 	}
 
-	public static Date restructureNewDate(String answer) {
-		return DateBean.parseDate(answer);
+	private boolean setAnswerToDateOrRecordError(AuditData auditData, String answer) {
+		Date newDate = DateBean.parseDate(answer);
+
+		if (newDate == null) {
+			addActionError(getText("AuditData.error.InvalidDate"));
+			return false;
+		} else if (newDate.after(DateBean.parseDate("9999-12-31"))) {
+			addActionError(getText("AuditData.error.DateOutOfRange"));
+			return false;
+		} else {
+			String a = DateBean.toDBFormat(newDate);
+			auditData.setAnswer(a);
+			return true;
+		}
 	}
 
 	public static String trimWhitespaceLeadingZerosAndAllCommas(String answer) {

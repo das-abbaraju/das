@@ -73,10 +73,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			// Try to find the previous version using the passed in auditData
 			// record
 			if (dataID > 0)
-				auditData = auditDataDao.find(dataID);
+				auditData = auditDataDAO.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+				auditData = auditDataDAO.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
@@ -155,10 +155,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			// Try to find the previous version using the passed in auditData
 			// record
 			if (dataID > 0)
-				auditData = auditDataDao.find(dataID);
+				auditData = auditDataDAO.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+				auditData = auditDataDAO.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
@@ -183,7 +183,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 				// remove all files ie (pdf, jpg)
 				auditData.setAnswer(null);
 				auditData.setDateVerified(null);
-				auditDataDao.save(auditData);
+				auditDataDAO.save(auditData);
 				for (File oldFile : getFiles(dataID))
 					FileUtils.deleteFile(oldFile);
 			} catch (Exception e) {
@@ -215,10 +215,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			// Try to find the previous version using the passed in auditData
 			// record
 			if (dataID > 0)
-				auditData = auditDataDao.find(dataID);
+				auditData = auditDataDAO.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+				auditData = auditDataDAO.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
@@ -240,7 +240,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
 		if (copyDataID > 0) {
 			// COPY FILE
-			AuditData toCopy = auditDataDao.find(copyDataID);
+			AuditData toCopy = auditDataDAO.find(copyDataID);
 
 			if (toCopy != null) {
 
@@ -271,7 +271,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		auditData.setAuditColumns(permissions);
 		auditData.setDateVerified(null);
 		
-		auditDataDao.save(auditData);
+		auditDataDAO.save(auditData);
 		dataID = auditData.getId();
 
 		try {
@@ -339,10 +339,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			// Try to find the previous version using the passed in auditData
 			// record
 			if (dataID > 0)
-				auditData = auditDataDao.find(dataID);
+				auditData = auditDataDAO.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+				auditData = auditDataDAO.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
@@ -398,10 +398,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			// Try to find the previous version using the passed in auditData
 			// record
 			if (dataID > 0)
-				auditData = auditDataDao.find(dataID);
+				auditData = auditDataDAO.find(dataID);
 			else {
 				int auditID = conAudit.getId();
-				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+				auditData = auditDataDAO.findAnswerToQuestion(auditID, questionID);
 			}
 		} catch (NoResultException notReallyAProblem) {
 		}
@@ -463,7 +463,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private ImportPqf getImportPqf() {
 		ImportPqf importPqf = null;
 		
-		AuditData data = auditDataDao.findAnswerByConQuestion(getConAudit().getContractorAccount().getId(), 7727);
+		AuditData data = auditDataDAO.findAnswerByConQuestion(getConAudit().getContractorAccount().getId(), 7727);
 		
 		if (data != null && data.isAnswered()) {
 			if (data.getAnswer().equals("514")) // CanQual

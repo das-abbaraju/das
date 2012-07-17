@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 
-public class VerifyAuditTest extends PicsTest {
+public class VerifyAuditTest {
 	private VerifyAudit verifyAudit;
 	
 	private ContractorAccount contractor;
@@ -32,21 +32,16 @@ public class VerifyAuditTest extends PicsTest {
 
 	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 
 		MockitoAnnotations.initMocks(this);
 		
 		verifyAudit = new VerifyAudit();
-		autowireEMInjectedDAOs(verifyAudit);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(verifyAudit, this);
 
 		contractor = EntityFactory.makeContractor();
 		conAudit = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
 
-		PicsTestUtil.forceSetPrivateField(verifyAudit, "auditDataDao",
-				auditDataDao);
-		PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit",
-				conAudit);
-		
+		PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit", conAudit);
 	}
 
 	@Test

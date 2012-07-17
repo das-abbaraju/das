@@ -194,7 +194,7 @@ public class CaoSave extends AuditActionSupport {
 				if (note == null)
 					note = "";
 				if (conAudit.getAuditType().isPqf()) {
-					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+					List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 					note += caoSaveModel.generateNote(temp);
 				} else if (conAudit.getAuditType().isAnnualAddendum()) {
 					note += caoSaveModel.generateNote(conAudit.getData());
