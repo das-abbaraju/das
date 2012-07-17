@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -160,31 +161,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
 
-		if (!isBeta) {
-			String betaIP = propertyDAO.getProperty("Beta_IP");
-			String currentIP = getHostIP();
-			logger.warn("currentIP "+currentIP+" betaIP "+betaIP);
-			if (currentIP.equals(betaIP)) {
-				isBeta = true;
+		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
+			// could be stable or beta, depending on the use_beta cookie
+			if (!getRequestHost().contains("stable")) {
+				Cookie[] cookiesA = getRequest().getCookies();
+				if (cookiesA != null) {
+					for (int i = 0; i < cookiesA.length; i++) {
+						if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
+							isBeta = true;
+						}
+					}
+				}
 			}
 		}
-		// if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment()
-		// || isLocalhostEnvironment())) {
-		// Cookie[] cookiesA = getRequest().getCookies();
-		// if (cookiesA != null) {
-		// for (int i = 0; i < cookiesA.length; i++) {
-		// if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
-		// isBeta = true;
-		// }
-		// }
-		// }
-		// }
-
-		// String server = InetAddress.getLocalHost().getHostName();
-		// return isBeta || server.equals("organizer1") ||
-		// server.equals("organizer2");
 		return isBeta;
 	}
+
 
 	public boolean isConfigurationEnvironment() {
 		Boolean isConfiguration = getRequestHost().contains("config");
@@ -194,11 +186,18 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
 		Boolean isStable = getRequestHost().contains("stable");
-		if (!isStable){
-			String stableIP = propertyDAO.getProperty("Stable_IP");
-			String currentIP = getHostIP();
-			if (currentIP.equals(stableIP)){
-				isStable = true;
+
+		if (!(isStable || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
+			// could be stable or beta, depending on the use_beta cookie
+			if (!getRequestHost().contains("beta")) {
+				Cookie[] cookiesA = getRequest().getCookies();
+				if (cookiesA != null) {
+					for (int i = 0; i < cookiesA.length; i++) {
+						if (!cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
+							isStable = true;
+						}
+					}
+				}
 			}
 		}
 		return isStable;

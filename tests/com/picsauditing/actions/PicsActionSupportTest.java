@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
@@ -19,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -34,7 +34,7 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, I18nCache.class, InetAddress.class})
+@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, I18nCache.class})
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class PicsActionSupportTest {
 	PicsActionSupport picsActionSupport;
@@ -60,8 +60,6 @@ public class PicsActionSupportTest {
 
 		PowerMockito.mockStatic(ServletActionContext.class);
 		when(ServletActionContext.getRequest()).thenReturn(request);
-
-		PowerMockito.mockStatic(InetAddress.class);
 
 		picsActionSupport = new PicsActionSupport();
 
@@ -113,24 +111,62 @@ public class PicsActionSupportTest {
 	}
 
 	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBeta_StableIP() throws Exception {
-		AppProperty appPropertyBetaIP = new AppProperty();
-		appPropertyBetaIP.setProperty("Beta_IP");
-		appPropertyBetaIP.setValue("72.32.206.206");
-		InetAddress mock = mockAddr("72.32.206.207");
-
+	public void testIsBetaEnvironment_UrlContainsWithNoBeta() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		when (InetAddress.getLocalHost()).thenReturn(mock);
-		when(em.find(AppProperty.class, "Beta_IP")).thenReturn(appPropertyBetaIP);
 
 		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
 	}
 
-	private InetAddress mockAddr(String reverseTo) {
-	    InetAddress mock = Mockito.mock(InetAddress.class);
-	    Mockito.doReturn(reverseTo).when(mock).getHostAddress();
-	    return mock;
+	@Test
+	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckCookieExist() throws Exception {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String(""));
+		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("USE_BETA", "true") });
+
+		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
+	}
+
+	@Test
+	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckCookieNotExist() throws Exception {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String(""));
+		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("Nothing", "true") });
+
+		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsLiveEnvironment_UrlContainsStable() throws Exception {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("stable.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue("url has stable", picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlContainsWithNoStable() throws Exception {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse("url does not have stable", picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlContainsWithNoStableCheckCookieExist() throws Exception {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String(""));
+		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("USE_BETA", "true") });
+
+		assertFalse("has beta cookie, its not stable", picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlContainsWithNoStableCheckCookieNotExist() throws Exception {
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String(""));
+		when(request.getCookies()).thenReturn(new Cookie[] { new Cookie("Nothing", "true") });
+
+		assertTrue("has no beta cookie, its stable", picsActionSupport.isLiveEnvironment());
 	}
 
 }
