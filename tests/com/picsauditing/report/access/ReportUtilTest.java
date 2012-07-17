@@ -6,13 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.search.Database;
 
 public class ReportUtilTest {
+	@Mock private Database databaseForTesting;
 
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+	}
+	
 	@Test
 	public void testGetColumnFromFieldName_NullFieldName() {
 		String fieldName = null;
