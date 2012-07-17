@@ -26,6 +26,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
@@ -37,13 +38,16 @@ public class LoginControllerTest {
 	private HttpServletRequest request;
 	@Mock
 	private I18nCache i18nCache;
+	@Mock 
+	private Database databaseForTesting;
 
 	private Map<String, Object> session;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
 		controller = new LoginController();
 
 		session = new HashMap<String, Object>();

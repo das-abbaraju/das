@@ -49,11 +49,13 @@ public class ManageTranslationsTest extends PicsTest {
 	
 	@Before
 	public void TestSetup () throws Exception {
+		setUp();
+		
 		classUnderTest = new ManageTranslations();
 		
 		PowerMockito.mockStatic(ServletActionContext.class);
 		MockitoAnnotations.initMocks(this);
-		setUp();
+		
 		classUnderTest = PowerMockito.spy(new ManageTranslations());
 		autowireEMInjectedDAOs(classUnderTest);
 		
