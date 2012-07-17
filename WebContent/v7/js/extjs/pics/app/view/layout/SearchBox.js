@@ -100,7 +100,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     width: 200,
 
     search: function (term) {
-        document.location = '/SearchBox.action?button=search&searchTerm=' + term;
+        document.location = '/SearchBox.action?button=search&searchTerm=' + escape(term);
 
         return false;
     }
