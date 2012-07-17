@@ -225,9 +225,7 @@
   -webkit-box-sizing: border-box; }
 
 /* line 13, ../themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3,
-.x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend,
-.x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
+.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend, .x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
   margin: 0;
   padding: 0; }
 /* line 18, ../themes/stylesheets/ext4/default/core/_reset.scss */
@@ -238,8 +236,7 @@
 .x-reset fieldset, .x-reset img {
   border: 0; }
 /* line 28, ../themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset address, .x-reset caption, .x-reset cite, .x-reset code,
-.x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
+.x-reset address, .x-reset caption, .x-reset cite, .x-reset code, .x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
   font-style: normal;
   font-weight: normal; }
 /* line 33, ../themes/stylesheets/ext4/default/core/_reset.scss */
@@ -252,8 +249,7 @@
 .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6 {
   font-size: 100%; }
 /* line 46, ../themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset q:before,
-.x-reset q:after {
+.x-reset q:before, .x-reset q:after {
   content: ""; }
 /* line 50, ../themes/stylesheets/ext4/default/core/_reset.scss */
 .x-reset abbr, .x-reset acronym {
@@ -1552,32 +1548,7 @@ tr.x-container:before {
   .x-reset .x-html {
     /* Begin bidirectionality settings (do not change) */ }
     /* line 34, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html html,
-    .x-reset .x-html address,
-    .x-reset .x-html blockquote,
-    .x-reset .x-html body,
-    .x-reset .x-html dd,
-    .x-reset .x-html div,
-    .x-reset .x-html dl,
-    .x-reset .x-html dt,
-    .x-reset .x-html fieldset,
-    .x-reset .x-html form,
-    .x-reset .x-html frame, .x-reset .x-html frameset,
-    .x-reset .x-html h1,
-    .x-reset .x-html h2,
-    .x-reset .x-html h3,
-    .x-reset .x-html h4,
-    .x-reset .x-html h5,
-    .x-reset .x-html h6,
-    .x-reset .x-html noframes,
-    .x-reset .x-html ol,
-    .x-reset .x-html p,
-    .x-reset .x-html ul,
-    .x-reset .x-html center,
-    .x-reset .x-html dir,
-    .x-reset .x-html hr,
-    .x-reset .x-html menu,
-    .x-reset .x-html pre {
+    .x-reset .x-html html, .x-reset .x-html address, .x-reset .x-html blockquote, .x-reset .x-html body, .x-reset .x-html dd, .x-reset .x-html div, .x-reset .x-html dl, .x-reset .x-html dt, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html frame, .x-reset .x-html frameset, .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html noframes, .x-reset .x-html ol, .x-reset .x-html p, .x-reset .x-html ul, .x-reset .x-html center, .x-reset .x-html dir, .x-reset .x-html hr, .x-reset .x-html menu, .x-reset .x-html pre {
       display: block; }
     /* line 35, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html li {
@@ -1608,8 +1579,7 @@ tr.x-container:before {
     .x-reset .x-html colgroup {
       display: table-column-group; }
     /* line 45, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td,
-    .x-reset .x-html th {
+    .x-reset .x-html td, .x-reset .x-html th {
       display: table-cell; }
     /* line 46, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html caption {
@@ -1637,16 +1607,7 @@ tr.x-container:before {
       font-size: 1.17em;
       margin: .83em 0; }
     /* line 62, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h4,
-    .x-reset .x-html p,
-    .x-reset .x-html blockquote,
-    .x-reset .x-html ul,
-    .x-reset .x-html fieldset,
-    .x-reset .x-html form,
-    .x-reset .x-html ol,
-    .x-reset .x-html dl,
-    .x-reset .x-html dir,
-    .x-reset .x-html menu {
+    .x-reset .x-html h4, .x-reset .x-html p, .x-reset .x-html blockquote, .x-reset .x-html ul, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html ol, .x-reset .x-html dl, .x-reset .x-html dir, .x-reset .x-html menu {
       margin: 1.12em 0; }
     /* line 63, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html h5 {
@@ -1657,49 +1618,29 @@ tr.x-container:before {
       font-size: .75em;
       margin: 1.67em 0; }
     /* line 72, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h1,
-    .x-reset .x-html h2,
-    .x-reset .x-html h3,
-    .x-reset .x-html h4,
-    .x-reset .x-html h5,
-    .x-reset .x-html h6,
-    .x-reset .x-html b,
-    .x-reset .x-html strong {
+    .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html b, .x-reset .x-html strong {
       font-weight: bolder; }
     /* line 73, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html blockquote {
       margin-left: 40px;
       margin-right: 40px; }
     /* line 78, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html i,
-    .x-reset .x-html cite,
-    .x-reset .x-html em,
-    .x-reset .x-html var,
-    .x-reset .x-html address {
+    .x-reset .x-html i, .x-reset .x-html cite, .x-reset .x-html em, .x-reset .x-html var, .x-reset .x-html address {
       font-style: italic; }
     /* line 83, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html pre,
-    .x-reset .x-html tt,
-    .x-reset .x-html code,
-    .x-reset .x-html kbd,
-    .x-reset .x-html samp {
+    .x-reset .x-html pre, .x-reset .x-html tt, .x-reset .x-html code, .x-reset .x-html kbd, .x-reset .x-html samp {
       font-family: monospace; }
     /* line 84, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html pre {
       white-space: pre; }
     /* line 88, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html button,
-    .x-reset .x-html textarea,
-    .x-reset .x-html input,
-    .x-reset .x-html select {
+    .x-reset .x-html button, .x-reset .x-html textarea, .x-reset .x-html input, .x-reset .x-html select {
       display: inline-block; }
     /* line 89, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html big {
       font-size: 1.17em; }
     /* line 92, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html small,
-    .x-reset .x-html sub,
-    .x-reset .x-html sup {
+    .x-reset .x-html small, .x-reset .x-html sub, .x-reset .x-html sup {
       font-size: .83em; }
     /* line 93, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html sub {
@@ -1711,28 +1652,19 @@ tr.x-container:before {
     .x-reset .x-html table {
       border-spacing: 2px; }
     /* line 98, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html thead,
-    .x-reset .x-html tbody,
-    .x-reset .x-html tfoot {
+    .x-reset .x-html thead, .x-reset .x-html tbody, .x-reset .x-html tfoot {
       vertical-align: middle; }
     /* line 100, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td,
-    .x-reset .x-html th {
+    .x-reset .x-html td, .x-reset .x-html th {
       vertical-align: inherit; }
     /* line 103, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html s,
-    .x-reset .x-html strike,
-    .x-reset .x-html del {
+    .x-reset .x-html s, .x-reset .x-html strike, .x-reset .x-html del {
       text-decoration: line-through; }
     /* line 104, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html hr {
       border: 1px inset; }
     /* line 109, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol,
-    .x-reset .x-html ul,
-    .x-reset .x-html dir,
-    .x-reset .x-html menu,
-    .x-reset .x-html dd {
+    .x-reset .x-html ol, .x-reset .x-html ul, .x-reset .x-html dir, .x-reset .x-html menu, .x-reset .x-html dd {
       margin-left: 40px; }
     /* line 110, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html ul, .x-reset .x-html menu, .x-reset .x-html dir {
@@ -1741,15 +1673,11 @@ tr.x-container:before {
     .x-reset .x-html ol {
       list-style-type: decimal; }
     /* line 115, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol ul,
-    .x-reset .x-html ul ol,
-    .x-reset .x-html ul ul,
-    .x-reset .x-html ol ol {
+    .x-reset .x-html ol ul, .x-reset .x-html ul ol, .x-reset .x-html ul ul, .x-reset .x-html ol ol {
       margin-top: 0;
       margin-bottom: 0; }
     /* line 117, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html u,
-    .x-reset .x-html ins {
+    .x-reset .x-html u, .x-reset .x-html ins {
       text-decoration: underline; }
     /* line 118, ../themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html br:before {
@@ -2182,8 +2110,7 @@ tr.x-container:before {
   line-height: 16px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon button,
-.x-btn-default-small-icon a {
+.x-btn-default-small-icon button, .x-btn-default-small-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon .x-btn-inner {
@@ -2200,8 +2127,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-left button,
-.x-btn-default-small-icon-text-left a {
+.x-btn-default-small-icon-text-left button, .x-btn-default-small-icon-text-left a {
   height: 16px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-left .x-btn-inner {
@@ -2221,8 +2147,7 @@ tr.x-container:before {
     height: 16px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-right button,
-.x-btn-default-small-icon-text-right a {
+.x-btn-default-small-icon-text-right button, .x-btn-default-small-icon-text-right a {
   height: 16px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-right .x-btn-inner {

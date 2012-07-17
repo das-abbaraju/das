@@ -178,7 +178,7 @@ Ext.application({
     		listeners: {
     			render: function (component, eOpts) {
     				// remove loading background
-    				Ext.get('loadingPage').remove();
+    				Ext.get('loading_page').remove();
      		   }
      	   }
         });
