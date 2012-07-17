@@ -94,7 +94,6 @@ Ext.define('PICS.view.layout.SearchBox', {
             reader: {
                 root: 'results',
                 type: 'json',
-                totalProperty: 'totalCount'
             }
         }
     },
