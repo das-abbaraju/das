@@ -1,13 +1,18 @@
 package com.picsauditing.jpa.entities;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTest;
 
 
-public class OshaAuditTest extends TestCase {
+public class OshaAuditTest extends PicsTest {
 	
 	private static final int CAT_ID_SOMETHING_OTHER_THAN_OSHA = 155;
 
@@ -18,8 +23,8 @@ public class OshaAuditTest extends TestCase {
 	ContractorAccount contractor;
 	OshaAudit oshaAudit2010;
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		super.setUp();
 		contractor = EntityFactory.makeContractor();
 		oshaAudit2010 = EntityFactory.makeOshaAudit(contractor, "2010");
@@ -72,6 +77,12 @@ public class OshaAuditTest extends TestCase {
 	}	
 
 	@Test
+	public void testIsEmpty() {
+		setupAudit_USandUK();
+		assertTrue(oshaAudit2010.isEmpty(OshaType.OSHA));
+	}
+	
+	@Test
 	public void testOshaAuditInitialization() {
 		setupAudit_USandUK();
 		assertEquals("2010", oshaAudit2010.getAuditFor());
@@ -122,4 +133,5 @@ public class OshaAuditTest extends TestCase {
 		setupAudit_USandUK();
 		assertEquals("103.7",oshaAudit2010.getSafetyStatistics(OshaType.UK_HSE).getStats(OshaRateType.IFR));
 	}
+
 }
