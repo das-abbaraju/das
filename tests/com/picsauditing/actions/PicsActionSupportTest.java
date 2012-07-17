@@ -27,13 +27,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, InetAddress.class})
+@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, I18nCache.class, InetAddress.class})
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class PicsActionSupportTest {
 	PicsActionSupport picsActionSupport;
@@ -46,6 +47,7 @@ public class PicsActionSupportTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		PowerMockito.mockStatic(I18nCache.class);
 
 		Map<String, Object> session = new HashMap<String, Object>();
 		session.put("permissions", new Permissions());
