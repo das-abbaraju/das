@@ -163,8 +163,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (!isBeta) {
 			String betaIP = propertyDAO.getProperty("Beta_IP");
 			String currentIP = InetAddress.getLocalHost().getHostAddress();
-			if (betaIP.equals(currentIP)) {
-				System.out.println("current "+currentIP+" beta "+betaIP);
+			if (currentIP.equals(betaIP)) {
 				isBeta = true;
 			}
 		}
@@ -197,8 +196,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (!isStable){
 			String stableIP = propertyDAO.getProperty("Stable_IP");
 			String currentIP = InetAddress.getLocalHost().getHostAddress();
-			if (stableIP.equals(currentIP))
+			if (currentIP.equals(stableIP)){
 				isStable = true;
+			}
 		}
 		return isStable;
 	}
