@@ -5542,11 +5542,11 @@ textarea.x-form-invalid-field {
  * Start Custom
  * Author: Carey Hinoki
  */
-/* line 32, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 34, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_navigation {
-  height: 70px; }
+  height: 50px; }
 
-/* line 37, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 39, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu {
   background: #eaeaea;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
@@ -5558,23 +5558,23 @@ textarea.x-form-invalid-field {
   -moz-box-shadow: #cccccc 0px 2px 2px 0px;
   box-shadow: #cccccc 0px 2px 2px 0px; }
 
-/* line 44, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 46, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-btn-arrow {
   background: none;
   padding: 0px !important; }
 
-/* line 50, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 52, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-btn {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
-/* line 58, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 60, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-btn .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
-/* line 64, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 66, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-over {
   background: #f1f1f2;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
@@ -5591,11 +5591,11 @@ textarea.x-form-invalid-field {
   -o-border-radius: 0px;
   border-radius: 0px; }
 
-/* line 74, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 76, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-over .x-btn-inner {
   color: #c66603; }
 
-/* line 80, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 82, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-menu-active,
 #site_menu .x-pressed {
   background: #f1f1f2;
@@ -5613,12 +5613,12 @@ textarea.x-form-invalid-field {
   border-top: 1px solid #eaeaea;
   border-bottom: 0px; }
 
-/* line 91, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 93, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-menu-active .x-btn-inner,
 #site_menu .x-pressed .x-btn-inner {
   color: #c66603; }
 
-/* line 96, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 98, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-form-text {
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
@@ -5628,54 +5628,117 @@ textarea.x-form-invalid-field {
   height: 22px;
   padding: 12px 5px; }
 
-/* line 103, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 105, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-toolbar-separator-horizontal {
-  border-left-color: #e7e7e7;
-  border-right-color: #fcfcfc; }
+  border-left: 1px solid #e7e7e7;
+  border-right: 0px; }
 
-/* line 109, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 111, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu #logo .x-btn-inner {
   padding: 0px 0px 0px 50px; }
 
-/* line 114, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 116, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search {
   color: #cccccc; }
 
-/* line 119, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list li.even {
-  background: #eeeeee; }
+/* line 121, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search label {
+  margin-top: 7px;
+  text-align: right;
+  width: auto !important; }
 
-/* line 124, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 128, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search .icon-search {
+  font-size: 14px; }
+
+/* line 133, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list {
+  border: 1px solid #a7a7a7;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px; }
+
+/* line 139, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list li:first-child {
+  -moz-border-radius-topleft: 4px;
+  -webkit-border-top-left-radius: 4px;
+  border-top-left-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  -webkit-border-top-right-radius: 4px;
+  border-top-right-radius: 4px; }
+
+/* line 145, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list li:last-child {
+  -moz-border-radius-bottomleft: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 4px; }
+
+/* line 151, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list .even {
+  background: #f1f1f2; }
+
+/* line 156, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list .x-boundlist-item {
+  border: 1px solid transparent; }
+
+/* line 161, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list .x-boundlist-item-over {
+  background: #a84d10;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
+  background-image: -webkit-linear-gradient(#c66603, #a84d10);
+  background-image: -moz-linear-gradient(#c66603, #a84d10);
+  background-image: -o-linear-gradient(#c66603, #a84d10);
+  background-image: linear-gradient(#c66603, #a84d10);
+  border: 0px;
+  border-bottom: 1px solid #a84d10;
+  border-top: 1px solid #c66603;
+  color: #fff; }
+
+/* line 171, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list .search-item {
   line-height: 15px;
   overflow: hidden;
-  padding: 5px; }
-  /* line 130, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  padding: 5px 15px; }
+  /* line 177, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item div {
     clear: both; }
-  /* line 135, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 182, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item em {
     font-weight: bold; }
-  /* line 141, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 188, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item .name,
   #site_menu_search_list .search-item .company {
     float: left;
-    width: 201px; }
-  /* line 147, ../sass/my-ext-theme/layout/menu/_menu.scss */
+    width: 175px; }
+  /* line 194, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item .id {
     float: right; }
-  /* line 152, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 199, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item .type {
     float: right;
     font-style: italic; }
 
-/* line 159, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 206, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#site_menu_search_list .more-results {
+  color: #333;
+  font-weight: bold; }
+
+/* line 212, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu #user_menu .icon-cog {
   margin: 0px 0px 0px 10px; }
 
-/* line 164, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 217, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
+
+/* line 222, ../sass/my-ext-theme/layout/menu/_menu.scss */
+#user_menu .icon-cog {
+  font-size: 16px; }
 
 /* line 14, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-body {

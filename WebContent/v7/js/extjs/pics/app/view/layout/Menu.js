@@ -4,7 +4,7 @@ Ext.define('PICS.view.layout.Menu', {
 
     border: 0,
     enableOverflow: true,
-    height: 70,
+    height: 50,
     id: 'site_menu',
     padding: 0,
 
@@ -49,7 +49,7 @@ Ext.define('PICS.view.layout.Menu', {
             }
 
             // Only apply this styling to top-level toolbar menu items
-            menu_item.height = 70;
+            menu_item.height = 50;
             menu_item.scale = 'large';
         });
     },
@@ -86,13 +86,13 @@ Ext.define('PICS.view.layout.Menu', {
         menu_items.push({
             xtype: 'tbseparator',
             border: 1,
-            height: 70,
-            margin: '0px 0px 0px 15px'
+            height: 50,
+            margin: '0px 0px 0px 20px'
         });
     },
 
     addUserMenu: function (user_menu, menu_items) {
-        user_menu.padding = '0px 15px';
+        user_menu.padding = '0px 20px 0px 20px';
         user_menu.text += '<i class="icon-cog icon-large"></i>';
 
         menu_items.push(user_menu);
@@ -103,9 +103,9 @@ Ext.define('PICS.view.layout.Menu', {
             return;
         }
 
-        dashboard_menu.height = 70;
+        dashboard_menu.height = 50;
         dashboard_menu.icon = 'v7/js/extjs/pics/app/resources/images/logo.png';
-        dashboard_menu.padding = '0px 20px';
+        dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
     },
 

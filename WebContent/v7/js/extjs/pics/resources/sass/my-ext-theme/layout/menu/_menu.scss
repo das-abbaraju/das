@@ -20,17 +20,19 @@ $site_menu_active_gradient_color_top: #eaeaea;
 $site_menu_active_gradient_color_bottom: #f1f1f2;
 $site_menu_active_text_color: #c66603;
 
-// site menu - search
-$site_menu_search_text_color: #cccccc;
-$site_menu_search_item_even_background_color: #eeeeee;
-
 // site menu - separator
 $site_menu_separator_border_color_left: #e7e7e7;
-$site_menu_separator_border_color_right: #fcfcfc;
+
+// site menu - search
+$site_menu_search_text_color: #cccccc;
+
+// site menu - search item
+$site_menu_search_item_even_background_color: #f1f1f2;
+
 
 #site_navigation
 {
-	height: 70px;
+	height: 50px;
 }
 
 #site_menu
@@ -101,8 +103,8 @@ $site_menu_separator_border_color_right: #fcfcfc;
 
 #site_menu .x-toolbar-separator-horizontal
 {
-    border-left-color: $site_menu_separator_border_color_left;
-    border-right-color: $site_menu_separator_border_color_right;
+    border-left: 1px solid $site_menu_separator_border_color_left;
+    border-right: 0px;
 }
 
 #site_menu #logo .x-btn-inner
@@ -115,16 +117,61 @@ $site_menu_separator_border_color_right: #fcfcfc;
 	color: $site_menu_search_text_color;
 }
 
-#site_menu_search_list li.even
+#site_menu_search label
+{
+	margin-top: 7px;
+	text-align: right;
+	width: auto !important;
+}
+
+#site_menu_search .icon-search
+{
+	font-size: 14px;
+}
+
+#site_menu_search_list
+{
+	border: 1px solid #a7a7a7;
+	@include border-radius(5px);
+}
+
+#site_menu_search_list li:first-child
+{
+	@include border-top-left-radius(4px);
+	@include border-top-right-radius(4px);
+}
+
+#site_menu_search_list li:last-child
+{
+	@include border-bottom-left-radius(4px);
+	@include border-bottom-right-radius(4px);
+}
+
+#site_menu_search_list .even
 {
     background: $site_menu_search_item_even_background_color;
+}
+
+#site_menu_search_list .x-boundlist-item
+{
+	border: 1px solid transparent;
+}
+
+#site_menu_search_list .x-boundlist-item-over
+{
+	background: #a84d10;
+	@include background-image(linear-gradient(#c66603, #a84d10));
+	border: 0px;
+	border-bottom: 1px solid #a84d10;
+	border-top: 1px solid #c66603;
+	color: #fff;
 }
 
 #site_menu_search_list .search-item
 {
     line-height: 15px;
     overflow: hidden;
-    padding: 5px;
+    padding: 5px 15px;
 
     div
     {
@@ -140,7 +187,7 @@ $site_menu_separator_border_color_right: #fcfcfc;
     .company
     {
         float: left;
-        width: 201px;
+        width: 175px;
     }
 
     .id
@@ -155,6 +202,12 @@ $site_menu_separator_border_color_right: #fcfcfc;
     }
 }
 
+#site_menu_search_list .more-results
+{
+	color: #333;
+	font-weight: bold;
+}
+
 #site_menu #user_menu .icon-cog
 {
     margin: 0px 0px 0px 10px;
@@ -163,4 +216,9 @@ $site_menu_separator_border_color_right: #fcfcfc;
 .x-menu-overflow .icon-cog
 {
     margin: 0px 0px 0px 5px;
+}
+
+#user_menu .icon-cog
+{
+	font-size: 16px;
 }

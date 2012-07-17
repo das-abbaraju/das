@@ -5,7 +5,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     autoScroll: false,
     autoSelect: false,
     displayField: 'name',
-    emptyText: 'search',
+    emptyText: 'Search',
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
     id: 'site_menu_search',
@@ -14,9 +14,22 @@ Ext.define('PICS.view.layout.SearchBox', {
 
     listConfig: {
         id: 'site_menu_search_list',
+        listeners: {
+            el: {
+                click: {
+                    delegate: '.more-results',
+                    fn: function (e, t, eOpts) {
+                        var cmp = Ext.ComponentQuery.query('searchbox')[0];
+                        var term = cmp.inputEl.getValue();
+
+                        cmp.search(term);
+                    }
+                }
+            }
+        },
         loadingText: 'Searching...',
         maxHeight: 500,
-        minWidth: 400,
+        minWidth: 300,
 
         tpl: Ext.create('Ext.XTemplate',
             '<ul>',
@@ -33,27 +46,32 @@ Ext.define('PICS.view.layout.SearchBox', {
                             '</div>',
                         '</div>',
                     '</li>',
+                    '<tpl if="xindex == xcount">',
+                        '<li>',
+                            '<div class="search-item">',
+                                '<a href="#" class="more-results">',
+                                    'More Results...',
+                                '</a>',
+                            '</div>',
+                        '</li>',
+                    '</tpl>',
                 '</tpl>',
-            '</ul>',
-            '<a href="">',
-                '<div class="search-item-full">',
-                'Full search...',
-                '</div>',
-            '</a>'
+            '</ul>'
         ),
     },
 
     listeners: {
         select: function (combo, records, eOpts) {
             var post = records[0];
+
             if (post) {
-                document.location = '/SearchBox.action?button=search&searchTerm=' + post.get('name');
+                this.search(post.get('name'));
             }
         },
 
         specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
-                document.location = '/SearchBox.action?button=search&searchTerm=' + base.getValue();
+                this.search(base.getValue());
             } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
                 base.collapse();
             }
@@ -61,7 +79,9 @@ Ext.define('PICS.view.layout.SearchBox', {
     },
 
     minChars: 1,
-    name: 'searchTerm',
+    name: 'search_term',
+    pickerAlign: 'br',
+    pickerOffset: [-300, 2],
     queryMode: 'remote',
     queryParam: 'q',
     valueField: 'q',
@@ -78,5 +98,11 @@ Ext.define('PICS.view.layout.SearchBox', {
             }
         }
     },
-    width: 200
+    width: 200,
+
+    search: function (term) {
+        document.location = '/SearchBox.action?button=search&searchTerm=' + term;
+
+        return false;
+    }
 });
