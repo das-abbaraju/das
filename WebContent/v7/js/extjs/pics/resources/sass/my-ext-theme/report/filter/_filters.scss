@@ -66,3 +66,7 @@ $report_filter_remove_filter_icon_minus_color: #ffffff;
 {
 	color: $report_filter_remove_filter_icon_minus_color;
 }
+
+#report_filters .filter-name {
+    white-space: nowrap;
+}

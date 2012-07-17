@@ -88,7 +88,9 @@ $include-default-uis: true !default;
 @import 'my-ext-theme/report/header';
 @import 'my-ext-theme/report/filter';
 @import 'my-ext-theme/report/grid';
+@import 'my-ext-theme/report/loading';
 @import 'my-ext-theme/report/setting';
+@import 'my-ext-theme/widget/widget';
 
 .x-nlg
 {
