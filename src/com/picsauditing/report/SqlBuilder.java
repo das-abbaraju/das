@@ -40,6 +40,7 @@ public class SqlBuilder {
 		return buildSql(report, permissions, pageNumber, false);
 	}
 
+	// TODO remove FOR_DOWNLOAD boolean flag
 	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) {
 		AbstractModel model = report.getModel();
 		sql = initializeSql(model);

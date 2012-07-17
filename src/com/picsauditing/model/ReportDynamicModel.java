@@ -44,15 +44,18 @@ public class ReportDynamicModel {
 		if (baseReports.contains(reportId))
 			return true;
 
-		try {
-			ReportUser user = reportAccessor.findOneUserReport(userId, reportId);
-			if (user == null)
-				return false;
+		if (reportAccessor.isReportPublic(reportId))
 			return true;
 
+		try {
+			ReportUser userReport = reportAccessor.findOneUserReport(userId, reportId);
+			if (userReport != null)
+				return true;
 		} catch (NoResultException e) {
 			return false;
 		}
+
+		return false;
 	}
 
 	public boolean canUserEdit(int userId, Report report) {
@@ -60,8 +63,10 @@ public class ReportDynamicModel {
 			ReportUser user = reportAccessor.findOneUserReport(userId, report.getId());
 			return user.isEditable();
 		} catch (NoResultException e) {
-			return false;
+			// We don't care. The user can't edit.
 		}
+
+		return false;
 	}
 
 	// The only reason this method is static is because ManageReports calls it

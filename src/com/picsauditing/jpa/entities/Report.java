@@ -74,6 +74,11 @@ public class Report extends BaseTable {
 		this.isPrivate = isPrivate;
 	}
 
+	@Transient
+	public boolean isPublic() {
+		return !isPrivate;
+	}
+
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);

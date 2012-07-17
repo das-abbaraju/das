@@ -40,10 +40,13 @@ import com.picsauditing.util.excel.ExcelSheet;
 public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
-	private ReportFilterAutocompleter reportFilterAutocompleter;
-	@Autowired
 	private ReportDynamicModel reportDynamicModel;
+	@Autowired
+	private ReportAccessor reportAccessor;
+	@Autowired
+	private ReportFilterAutocompleter reportFilterAutocompleter;
 
+	// TODO remove this boolean flag
 	private static final boolean FOR_DOWNLOAD = true;
 
 	private Report report;
@@ -149,7 +152,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			if (report.getDefinition().getColumns().size() > 0) {
 				List<BasicDynaBean> queryResults = ReportAccessor.runQuery(sql, json);
-				
+
 				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields, permissions, getLocale());
 				json.put("data", queryResultsAsJson);
 
@@ -247,6 +250,52 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	public String share() {
+		int userId = -1;
+
+		try {
+			String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
+			// Don't trust user input!
+			userId = Integer.parseInt(dirtyReportIdParameter);
+		} catch (Exception e) {
+			logger.error("Problem trying to share a report.", e);
+			json.put("success", false);
+			return JSON;
+		}
+
+		if (reportDynamicModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
+			reportAccessor.connectReportToUser(report, userId);
+			json.put("success", true);
+		} else {
+			json.put("success", false);
+		}
+
+		return JSON;
+	}
+
+	public String shareEditable() {
+		int userId = -1;
+
+		try {
+			String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
+			// Don't trust user input!
+			userId = Integer.parseInt(dirtyReportIdParameter);
+		} catch (Exception e) {
+			logger.error("Problem trying to share a report.", e);
+			json.put("success", false);
+			return JSON;
+		}
+
+		if (reportDynamicModel.canUserEdit(permissions.getUserId(), report)) {
+			reportAccessor.connectReportToUserEditable(report, userId);
+			json.put("success", true);
+		} else {
+			json.put("success", false);
+		}
+
+		return JSON;
+	}
+
 	public String download() {
 		try {
 			ReportDynamicModel.validate(report);
@@ -267,6 +316,7 @@ public class ReportDynamic extends PicsActionSupport {
 		// TODO remove definition from SqlBuilder
 		sqlBuilder.setDefinition(report.getDefinition());
 
+		// TODO remove FOR_DOWNLOAD boolean flag
 		SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
 
 		ReportUtil.localize(report, getLocale());

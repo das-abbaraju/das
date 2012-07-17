@@ -9,8 +9,6 @@ import javax.persistence.NonUniqueResultException;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.ReportValidationException;
@@ -30,8 +28,6 @@ public class ReportAccessor {
 
 	@Autowired
 	private BasicDAO basicDao;
-
-	private static final Logger logger = LoggerFactory.getLogger(ReportAccessor.class);
 
 	public Report findOneReport(int id) throws NoResultException {
 		return basicDao.findOne(Report.class, "t.id = " + id);
@@ -70,15 +66,29 @@ public class ReportAccessor {
 	}
 
 	public void connectReportToUser(Report report, User user) {
-		ReportUser entry = new ReportUser();
+		ReportUser userReport = new ReportUser();
 
-		entry.setAuditColumns(user);
-		entry.setReport(report);
-		// TODO shouldn't this just be user?
-		entry.setUser(report.getCreatedBy());
-		entry.setEditable(false);
+		userReport.setAuditColumns(user);
+		userReport.setReport(report);
+		userReport.setUser(user);
+		userReport.setEditable(false);
 
-		basicDao.save(entry);
+		basicDao.save(userReport);
+	}
+
+	public void connectReportToUser(Report report, int userId) {
+		ReportUser userReport = new ReportUser(userId, report);
+		userReport.setAuditColumns(new User(userId));
+
+		basicDao.save(userReport);
+	}
+
+	public void connectReportToUserEditable(Report report, int userId) {
+		ReportUser userReport = new ReportUser(userId, report);
+		userReport.setAuditColumns(new User(userId));
+		userReport.setEditable(true);
+
+		basicDao.save(userReport);
 	}
 
 	public void grantEditPermission(Report report, User user) {
@@ -104,9 +114,9 @@ public class ReportAccessor {
 	}
 
 	public void deleteReport(Report report) {
-		List<ReportUser> reportUsers = basicDao.findWhere(ReportUser.class, "t.report.id = " + report.getId());
-		for (ReportUser reportUser : reportUsers) {
-			basicDao.remove(reportUser);
+		List<ReportUser> userReports = basicDao.findWhere(ReportUser.class, "t.report.id = " + report.getId());
+		for (ReportUser userReport : userReports) {
+			basicDao.remove(userReport);
 		}
 
 		basicDao.remove(report);
@@ -141,5 +151,18 @@ public class ReportAccessor {
 		List<Report> publicReports = basicDao.findWhere(Report.class, query);
 
 		return publicReports;
+	}
+
+	public boolean isReportPublic(int reportId) {
+		try {
+			Report report = findOneReport(reportId);
+			if (report != null && report.isPublic()) {
+				return true;
+			}
+		} catch (NoResultException nre) {
+			// If the report doesn't exist, it's not public
+		}
+
+		return false;
 	}
 }
