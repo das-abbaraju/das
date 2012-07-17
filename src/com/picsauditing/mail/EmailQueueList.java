@@ -83,11 +83,13 @@ public class EmailQueueList extends ReportActionSupport {
 			return "preview";
 		}
 
-		if (permissions.isContractor()||permissions.isOperatorCorporate()) {
-			if (preview.getToAddresses().contains(permissions.getEmail())
-					|| preview.getBccAddresses().contains(permissions.getEmail())
-					|| preview.getCcAddresses().contains(permissions.getEmail())) {
-				return "preview";
+		if (permissions.isContractor()||permissions.isOperatorCorporate()||permissions.isCorporate()) {
+			if (permissions.getEmail() != null){
+				if (preview.getToAddresses().contains(permissions.getEmail())
+						|| preview.getBccAddresses().contains(permissions.getEmail())
+						|| preview.getCcAddresses().contains(permissions.getEmail())) {
+					return "preview";
+				}
 			}
 		}
 

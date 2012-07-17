@@ -48,7 +48,7 @@
 				<td>
 					<s:property value="toAddresses" />
 				</td>
-				<s:if test="permissions.isAdmin() || permissions.isContractor()||permissions.operatorCorporate">
+				<s:if test="permissions.isAdmin() || permissions.isContractor()|| permissions.isOperatorCorporate()">
 					<td class="center">
 						<a href="EmailQueueList!previewAjax.action?id=<s:property value="id"/>"
 							class="fancybox iframe preview" title="<s:property value="subject"/>"></a>
