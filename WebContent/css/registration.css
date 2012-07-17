@@ -1055,23 +1055,14 @@ footer .footer-menu a {
 
 .make-payment-form img.card {
 	display: block;
-<<<<<<< HEAD
 	left: 110px;
-=======
-	left: 160px;
->>>>>>> temp commit
 	margin: 5px 0px;
 	position: relative;
 }
 
-<<<<<<< HEAD
 .make-payment-form .actions
 {
 	padding-left: 110px;
-=======
-.make-payment-form .actions {
-	padding-left: 160px;
->>>>>>> temp commit
 }
 
 .make-payment-form .actions input.btn {
@@ -1128,7 +1119,6 @@ footer .footer-menu a {
 	margin: -250px 0 0 -250px !important;
 }
 
-<<<<<<< HEAD
 #credit-card-payment-method {
 	float: left;
 }
@@ -1146,7 +1136,8 @@ footer .footer-menu a {
 
 #ccexp {
 	display: none;
-=======
+}
+
 /* Generic Help Text */
 
 #.help {
@@ -1175,5 +1166,4 @@ footer .footer-menu a {
 
 .popover .popover-inner .popover-content p {
 	line-height: 18px;
->>>>>>> temp commit
 }
