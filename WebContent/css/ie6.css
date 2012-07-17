@@ -396,13 +396,13 @@ input,button {
 	margin-top: 15px;
 }
 
-#Registration-page .popover .arrow {
+.Registration-page .popover .arrow {
 	left: 257px;
 	width: 10px;
 	z-index: 99999;
 }
 
-#Registration-page .popover .inner {
+.Registration-page .popover .inner {
 	background: #FFFFFF;
 	border: 2px solid #404040;
 	left: 247px;
@@ -410,18 +410,18 @@ input,button {
 	width: 350px;
 }
 
-#Registration-page .popover .inner .content
+.Registration-page .popover .inner .content
 {
 	padding: 7px;
 }
 
-#RegistrationAddClientSite-page .client-site-left .client-site-list-container,
-#RegistrationAddClientSite-page .client-site-right .client-site-list-container
+.RegistrationAddClientSite-page .client-site-left .client-site-list-container,
+.RegistrationAddClientSite-page .client-site-right .client-site-list-container
 {
 	width: 420px;
 }
 
-#RegistrationAddClientSite-page .client-site-list
+.RegistrationAddClientSite-page .client-site-list
 {
 	position: relative;
 }
@@ -431,12 +431,12 @@ input,button {
 	width: 630px;
 }
 
-#Registration-page .modal,#RegistrationMakePayment-page .modal
+.Registration-page .modal,.RegistrationMakePayment-page .modal
 {
 	display: none;
 }
 
-#RegistrationServiceEvaluation-page .warning
+.RegistrationServiceEvaluation-page .warning
 {
 	background-color: #EEDC94;
 	background-repeat: repeat-x;
@@ -456,12 +456,12 @@ input,button {
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-#RegistrationServiceEvaluation-page .warning .warn
+.RegistrationServiceEvaluation-page .warning .warn
 {
 	background: url(../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px -144px no-repeat;
 }
 
-#RegistrationServiceEvaluation-page .error
+.RegistrationServiceEvaluation-page .error
 {
 	background-color: #C43C35;
 	background-repeat: repeat-x;

@@ -119,12 +119,12 @@
 					
 						<s:if test="contractor.status.activeDemo">
 							<li>
-								<label><s:text name="ContractorPaymentOptions.NextBillingDate"/>:</label>
+								<label><s:text name="ContractorPaymentOptions.NextBillingDate"/></label>
 								<s:date name="contractor.paymentExpires" format="%{getText('date.long')}" />
 							</li>
 							<li>
 								<label>
-									<s:text name="ContractorPaymentOptions.NextBillingAmount"/>:
+									<s:text name="ContractorPaymentOptions.NextBillingAmount"/>
 									
 									<s:if test="contractor.accountLevel.full">
 										(<a href="ContractorPricing.action?con=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
@@ -136,7 +136,7 @@
 										<s:if test="!contractor.fees.get(#feeClass).newLevel.free && #feeClass.membership">
 											<tr>
 												<td colspan="2">
-													<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;
+													<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />&nbsp;
 												</td>
 												<td class="right">
 													<s:property value="contractor.country.currency.symbol" />
@@ -152,13 +152,13 @@
 								
 								<s:if test="contractor.country.currency.cad">
 									<li>
-										<label><s:text name="ContractorPaymentOptions.GST"/>:</label>
+										<label><s:text name="ContractorPaymentOptions.GST"/></label>
 										<s:property value="contractor.country.currency.symbol" />
 										<s:property value="gstFee.amount"/>
 										<s:property value="contractor.country.currency" />
 									</li>
 									<li>
-										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+										<label><s:text name="ContractorPaymentOptions.Total"/></label>
 										<s:property value="contractor.country.currency.symbol" />
 										<s:property value="contractor.newMembershipAmount+gstFee.amount"/>
 										<s:property value="contractor.country.currency" />
@@ -166,13 +166,13 @@
 								</s:if>
                                 <s:elseif test="contractor.country.currency.gbp">
                                     <li>
-                                        <label><s:text name="ContractorPaymentOptions.VAT"/>:</label>
+                                        <label><s:text name="ContractorPaymentOptions.VAT"/></label>
                                         <s:property value="contractor.country.currency.symbol" />
                                         <s:property value="vatFee.amount"/>
                                         <s:property value="contractor.country.currency" />
                                     </li>
                                     <li>
-                                        <label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+                                        <label><s:text name="ContractorPaymentOptions.Total"/></label>
                                         <s:property value="contractor.country.currency.symbol" />
                                         <s:property value="contractor.newMembershipAmount+vatFee.amount"/>
                                         <s:property value="contractor.country.currency" />
@@ -180,7 +180,7 @@
                                 </s:elseif>
 								<s:else>
 									<li>
-										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+										<label><s:text name="ContractorPaymentOptions.Total"/></label>
 										<s:property value="contractor.country.currency.symbol" />
 										<s:property value="contractor.newMembershipAmount"/>
 										<s:property value="contractor.country.currency" />
@@ -203,7 +203,7 @@
 							<s:else>
 								<li>
 									<label>
-										<s:text name="ContractorPaymentOptions.AnnualMembership" />:
+										<s:text name="ContractorPaymentOptions.AnnualMembership" />
 		
 										<s:if test="contractor.accountLevel.full">
 											(<a href="ContractorPricing.action?con=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
@@ -215,7 +215,7 @@
 											<s:if test="!contractor.fees.get(#feeClass).newLevel.free && #feeClass.membership">
 												<tr>
 													<td colspan="2">
-														<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;
+														<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />&nbsp;
 													</td>
 													<td class="right">
 														<s:property value="contractor.country.currency.symbol" />
@@ -232,7 +232,7 @@
 								
 								<s:if test="contractor.accountLevel.full">
 									<li>
-										<label><s:property value="activationFee.fee"/>:</label>
+										<label><s:property value="activationFee.fee"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="activationFee.amount"/>
 										<s:property value="contractor.country.currency" />
@@ -241,7 +241,7 @@
 								
 								<s:if test="importFee.amount > 0">
 									<li>
-										<label><s:property value="importFee.fee"/>:</label>
+										<label><s:property value="importFee.fee"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="importFee.amount"/>
 										<s:property value="contractor.country.currency" />
@@ -250,13 +250,13 @@
 								
 								<s:if test="contractor.country.currency.cad">
 									<li>
-										<label><s:text name="ContractorPaymentOptions.GST"/>:</label>
+										<label><s:text name="ContractorPaymentOptions.GST"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="gstFee.amount"/>
 										<s:property value="contractor.country.currency" />
 									</li>
 									<li>
-										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+										<label><s:text name="ContractorPaymentOptions.Total"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+importFee.amount"/>
 										<s:property value="contractor.country.currency" />
@@ -264,13 +264,13 @@
 								</s:if>
                                 <s:elseif test="contractor.country.currency.gbp || contractor.country.currency.eur">
                                     <li>
-                                        <label><s:text name="ContractorPaymentOptions.VAT"/>:</label>
+                                        <label><s:text name="ContractorPaymentOptions.VAT"/></label>
                                         <s:property value="contractor.country.currency.symbol" />
                                         <s:property value="vatFee.amount"/>
                                         <s:property value="contractor.country.currency" />
                                     </li>
                                     <li>
-                                        <label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+                                        <label><s:text name="ContractorPaymentOptions.Total"/></label>
                                         <s:property value="contractor.country.currency.symbol" />
                                         <s:property value="contractor.newMembershipAmount+vatFee.amount"/>
                                         <s:property value="contractor.country.currency" />
@@ -278,7 +278,7 @@
                                 </s:elseif>
 								<s:else>
 									<li>
-										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+										<label><s:text name="ContractorPaymentOptions.Total"/></label>
 										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="activationFee.amount+contractor.newMembershipAmount+importFee.amount"/>
 										<s:property value="contractor.country.currency" />
@@ -289,19 +289,19 @@
 					</s:if>
 					<s:else>
 						<li>
-							<label><s:text name="global.Status" />:</label>
+							<label><s:text name="global.Status" /></label>
 							<s:property value="ContractorPaymentOptions.NoPaymentRequired"/>
 						</li>
 					</s:else>
 					
 					<li>
-						<label><s:text name="BillingDetail.Info.PaymentMethod" />:</label>
+						<label><s:text name="BillingDetail.Info.PaymentMethod" /></label>
 						<s:property value="contractor.paymentMethod.description"/><br/>
 					</li>
 					
 					<s:if test="contractor.status.active || permissions.admin">
 						<li>
-							<label><s:text name="ContractorPaymentOptions.ContractorAgreement" />:</label>
+							<label><s:text name="ContractorPaymentOptions.ContractorAgreement" /></label>
 							<s:checkbox name="contractor.agreed" disabled="true" />
 													<s:if test="contractor.agreementDate != null">
 								<s:text name="ContractorPaymentOptions.AgreementDate" >
@@ -400,7 +400,7 @@
 						
 						<ol>
 							<li>
-								<label><s:text name="CreditCard.Type" />:</label>
+								<label><s:text name="CreditCard.Type" /></label>
 								<s:property value="cc.cardType"/>
 								
 								<s:if test="!contractor.ccOnFile && contractor.ccExpiration != null">
@@ -408,15 +408,15 @@
 								</s:if>
 							</li>
 							<li>
-								<label><s:text name="CreditCard.Number" />:</label>
+								<label><s:text name="CreditCard.Number" /></label>
 								<s:property value="cc.cardNumber"/>
 							</li>
                             <li>
-                                <label><s:text name="CreditCard.CVVNumber" />:</label>
-                                <img src="images/creditcard.png" class="card" />
+                                <label><s:text name="CreditCard.CVVNumber" /></label>
+                                <s:property value="cc.CVVNumber" />
                             </li>
 							<li>
-								<label><s:text name="CreditCard.Expiration" />:</label>
+								<label><s:text name="CreditCard.Expiration" /></label>
 								<s:property value="cc.expirationDateFormatted"/>
 							</li>
 							<li>
@@ -440,7 +440,7 @@
 					
 					<ol>
 						<li>
-							<label><s:text name="CreditCard.Type" />:</label>
+							<label><s:text name="CreditCard.Type" /></label>
 							<s:radio
 								list="creditCardTypes"
 								name="ccName"
@@ -449,15 +449,13 @@
 							/>
 						</li>
 						<li class="creditcard">
-							<label><s:text name="CreditCard.Number" /></label>
-							<s:textfield name="ccnumber" />
+							<s:textfield label="CreditCard.Number" name="ccnumber" theme="pics" />						
 						</li>
 						<li class="creditcard">
-							<label><s:text name="CreditCard.CVVNumber" /></label>
-							<s:textfield name="cvv" style="width:35px" maxlength="4" />
+							<s:textfield label="CreditCard.CVVNumber" name="cvv" maxlength="4" theme="pics" />
 						</li>
 						<li>
-							<label><s:text name="CreditCard.Expiration" />:</label>
+							<label><s:text name="CreditCard.Expiration" /></label>
 							<s:select id="expMonth" listKey="number" listValue="%{getText(i18nKey)}" list="@com.picsauditing.jpa.entities.Month@values()" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Month')} -" />
 							<s:select id="expYear" list="#{11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Year')} -"></s:select>
 							<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />

@@ -2,12 +2,12 @@ header,footer,section {
 	display: block;
 }
 
-#Registration-page,#RegistrationAddClientSite-page,#RegistrationServiceEvaluation-page,#RegistrationMakePayment-page
+.Registration-page,.RegistrationAddClientSite-page,.RegistrationServiceEvaluation-page,.RegistrationMakePayment-page
 	{
 	background: #94c3e1;
 }
 
-#Registration-page #container,#RegistrationAddClientSite-page #container,#RegistrationServiceEvaluation-page #container,#RegistrationMakePayment-page #container
+.Registration-page #container,.RegistrationAddClientSite-page #container,.RegistrationServiceEvaluation-page #container,.RegistrationMakePayment-page #container
 	{
 	background: #FFFFFF;
 }
@@ -112,7 +112,7 @@ footer .footer-menu a {
 	color: #6c96b3;
 }
 
-#Registration-page .registration,#RegistrationAddClientSite-page .client-site,#RegistrationServiceEvaluation-page .service-evaluation,#RegistrationMakePayment-page .make-payment
+.Registration-page .registration,.RegistrationAddClientSite-page .client-site,.RegistrationServiceEvaluation-page .service-evaluation,.RegistrationMakePayment-page .make-payment
 	{
 	margin: 0px auto;
 	width: 960px;
@@ -166,18 +166,18 @@ footer .footer-menu a {
 /**
  * registration
  */
-#Registration-page .registration-header header {
+.Registration-page .registration-header header {
 	position: relative;
 }
 
-#Registration-page .registration-header header .chat {
+.Registration-page .registration-header header .chat {
 	position: absolute;
 	margin: 0px;
 	right: 0px;
 	top: 5px;
 }
 
-#Registration-page .registration-header header .chat img {
+.Registration-page .registration-header header .chat img {
 	margin: 0px;
 }
 
@@ -381,7 +381,7 @@ footer .footer-menu a {
 }
 
 /* general */
-#Registration-page #main .alert-message,#RegistrationAddClientSite-page #main .alert-message,#RegistrationServiceEvaluation-page #main .alert-message,#RegistrationMakePayment-page #main .alert-message
+.Registration-page #main .alert-message, .RegistrationAddClientSite-page #main .alert-message, .RegistrationServiceEvaluation-page #main .alert-message, .RegistrationMakePayment-page #main .alert-message
 	{
 	font-size: 14px;
 	margin: 20px auto;

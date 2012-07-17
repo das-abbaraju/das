@@ -1,20 +1,19 @@
 (function ($) {
     
-    PICS.define('registration.ConPaymentOptions', {
+    PICS.define('registration.ContractorPaymentOptions', {
         
         methods: {
             init: function ()  {
                 
-                //if ($('#ConPaymentOptions-page').length) {
+                if ($('.ContractorPaymentOptions-page').length) {
                     this.addFieldHelp();
-                //}
+                }
             },
             
             addFieldHelp: function () {
                 var element = $('.help-text');
 
                 element.each(function (key, value) {
-                    alert(value);
                     var html = $(this).html();
                     var label = $(this).siblings('label');
                     var input = $(this).siblings('input[type=text], input[type=password], select');
@@ -23,7 +22,7 @@
                     label.attr('data-content', html.replace('"', "'"));
         
                     label.popover({
-                        placement: 'bottom',
+                        placement: 'top',
                         trigger: 'manual'
                     });
         

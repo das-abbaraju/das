@@ -2,7 +2,7 @@
     PICS.define('registration.RegistrationAddClientSite', {
         methods: {
             init: function () {
-                if ($('#RegistrationAddClientSite-page').length) {
+                if ($('.RegistrationAddClientSite-page').length) {
                     var that = this;
 
                     // ajax filter

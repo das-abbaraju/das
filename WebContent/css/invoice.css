@@ -45,3 +45,16 @@ table.allborder th.right, table.allborder td.right {
 	text-align: right;
 	float: none;
 }
+
+/**
+ Help text for ContractorPaymentOptions
+*/
+#ContractorPaymentOptions__page .help-text
+{
+	display: none;
+}
+
+#ContractorPaymentOptions__page #cvv
+{
+	width: 35px;
+}

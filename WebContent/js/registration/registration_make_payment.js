@@ -4,8 +4,7 @@
         
         methods: {
             init: function ()  {
-                
-                if ($('#RegistrationMakePayment-page').length) {
+                if ($('.RegistrationMakePayment-page').length) {
                     this.addFieldHelp();
                 }
             },
@@ -22,7 +21,7 @@
                     label.attr('data-content', html.replace('"', "'"));
         
                     label.popover({
-                        placement: 'bottom',
+                        placement: 'top',
                         trigger: 'manual'
                     });
         

@@ -208,7 +208,7 @@
 						</li>
 						
 						<li class="creditcard">
-							<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:25px" maxlength="3" />
+							<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" />
 						</li>
 	
 						<li class="expiration-date">

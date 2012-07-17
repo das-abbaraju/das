@@ -6,7 +6,7 @@
 	// autofill email to username field
 	REGISTRATION.autofill_username = {
 		init: function () {
-			if ($('#Registration-page').length) {
+			if ($('.Registration-page').length) {
 				$('#Registration_user_email').bind('blur', this.events.autofill);
 			}
 		},
@@ -26,7 +26,7 @@
 	// contractor create account country / state toggle
 	REGISTRATION.contractor_country = {
 		init: function () {
-			if ($('#Registration-page').length) {
+			if ($('.Registration-page').length) {
 				$('.contractor-country').bind('change', this.events.update_state_list);
 			}
 		},
@@ -60,9 +60,9 @@
 						}
 						
 						if (country_string == 'GB') {
-							$('#Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone.GB"));
+							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone.GB"));
 						} else {
-							$('#Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone"));
+							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone"));
 						}
 					}
 				});
@@ -73,7 +73,7 @@
 	// registration - create account - inline field validation
 	REGISTRATION.field_validate = {
 		init: function () {
-			if ($('#Registration-page').length) {
+			if ($('.Registration-page').length) {
 				// add event handlers to all input / password fields
 				var element = $('.registration-form input[type=text], .registration-form input[type=password]');
 				
@@ -160,7 +160,7 @@
 	// contractor create account help text displayed on input focus
 	REGISTRATION.help_text = {
 		init: function () {
-			if ($('#Registration-page').length) {
+			if ($('.Registration-page').length) {
 				var element = $('.help-text');
 				
 				element.each(function (key, value) {
@@ -250,7 +250,7 @@
 	// make payment form choose check
 	REGISTRATION.payment_check = {
 		init: function () {
-			if ($('#RegistrationMakePayment-page').length) {
+			if ($('.RegistrationMakePayment-page').length) {
 				$('#transact_ccName').bind('change', this.events.change);
 			}
 		},
@@ -277,7 +277,7 @@
 	// make payment form submission hook to modified ccexp date format
 	REGISTRATION.payment_submision = {
 		init: function () {
-			if ($('#RegistrationMakePayment-page').length) {
+			if ($('.RegistrationMakePayment-page').length) {
 				$('.make-payment-form').bind('submit', this.events.submit);
 			}
 		},
@@ -309,7 +309,7 @@
 	// toggle between the sections that are displayed on the service evaluation page
 	REGISTRATION.services_performed_toggle = {
 		init: function () {
-			if ($('#RegistrationServiceEvaluation-page').length) {
+			if ($('.RegistrationServiceEvaluation-page').length) {
 				$('.services-list input[type=checkbox]').bind('click', this.events.toggle);
 			}
 		},
@@ -353,9 +353,9 @@
 	PICS.define('registration.Registration', {
 	    methods: {
 	        init: function () {
-	            $('#Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-	            $('#RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-	            $('#RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
+	            $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+	            $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+	            $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
 	        },
 	        
 	        showBasicModal: function (event) {
