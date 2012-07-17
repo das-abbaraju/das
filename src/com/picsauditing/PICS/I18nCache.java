@@ -37,7 +37,7 @@ public class I18nCache implements Serializable {
 	private transient static I18nCache INSTANCE;
 	private transient static Date LAST_CLEARED;
 
-	private transient Table<String, String, String> cache;
+	private volatile transient Table<String, String, String> cache;
 	private transient Map<String, Date> cacheUsage;
 
 	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
@@ -140,33 +140,45 @@ public class I18nCache implements Serializable {
 
 	public Table<String, String, String> getCache() {
 		if (cache == null) {
-			try {
-				long startTime = System.currentTimeMillis();
-				cache = TreeBasedTable.create();
-				cacheUsage = new HashMap<String, Date>();
-				Database db = new Database();
-				String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
-				List<BasicDynaBean> messages = db.select(sql, false);
-				for (BasicDynaBean message : messages) {
-					String key = String.valueOf(message.get("msgKey"));
-					cache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
-					Date lastUsed = (Date) message.get("lastUsed");
-					cacheUsage.put(key, lastUsed);
+			synchronized (this) {
+				if (cache == null) {
+					buildCache();
 				}
-				long endTime = System.currentTimeMillis();
-				logger.info("Built i18n Cache in {} ms", (endTime - startTime));
-
-				LAST_CLEARED = new Date();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
 			}
 		}
-
 		return cache;
 	}
 
 	public void clear() {
-		cache = null;
+		synchronized (this) {
+			buildCache();
+		}
+	}
+
+	// NOT THREAD SAFE!!!
+	private void buildCache() {
+		try {
+			long startTime = System.currentTimeMillis();
+			Table<String, String, String> newCache = TreeBasedTable.create();
+			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
+			Database db = new Database();
+			String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
+			List<BasicDynaBean> messages = db.select(sql, false);
+			for (BasicDynaBean message : messages) {
+				String key = String.valueOf(message.get("msgKey"));
+				newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+				Date lastUsed = (Date) message.get("lastUsed");
+				cacheUsage.put(key, lastUsed);
+			}
+			cache = newCache;
+			cacheUsage = newCacheUsage;
+			long endTime = System.currentTimeMillis();
+			logger.info("Built i18n Cache in {} ms", (endTime - startTime));
+
+			LAST_CLEARED = new Date();
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		}
 	}
 
 	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
