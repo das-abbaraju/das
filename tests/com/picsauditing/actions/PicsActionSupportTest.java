@@ -7,7 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -33,7 +31,7 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, InetAddress.class})
+@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class})
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class PicsActionSupportTest {
 	PicsActionSupport picsActionSupport;
@@ -58,8 +56,6 @@ public class PicsActionSupportTest {
 
 		PowerMockito.mockStatic(ServletActionContext.class);
 		when(ServletActionContext.getRequest()).thenReturn(request);
-
-		PowerMockito.mockStatic(InetAddress.class);
 
 		picsActionSupport = new PicsActionSupport();
 
