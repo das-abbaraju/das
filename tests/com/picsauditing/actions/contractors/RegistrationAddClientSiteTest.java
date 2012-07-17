@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -58,6 +59,9 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		super.setUp();
+		
 		Map<String, Object> session = new HashMap<String, Object>();
 		session.put("permissions", permissions);
 

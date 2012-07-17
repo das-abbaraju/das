@@ -18,11 +18,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.Permissions;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ BetaPool.class })
+@PrepareForTest({ BetaPool.class, I18nCache.class })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ContractorBadgeTest {
 	private ContractorBadge contractorBadge;
@@ -34,7 +35,8 @@ public class ContractorBadgeTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		PowerMockito.mockStatic(BetaPool.class);
-
+		PowerMockito.mockStatic(I18nCache.class);
+		
 		contractorBadge = new ContractorBadge();
 
 		Map<String, String> toggles = new HashMap<String, String>();

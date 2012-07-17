@@ -26,11 +26,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ManageAppProperty.class, ActionContext.class })
+@PrepareForTest({ ManageAppProperty.class, ActionContext.class, I18nCache.class })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ManageAppPropertyTest {
 	private static final String GET = "GET";
@@ -47,6 +48,8 @@ public class ManageAppPropertyTest {
 
 	@Before
 	public void setUp() {
+		PowerMockito.mockStatic(I18nCache.class);
+		
 		manageAppProperty = new ManageAppProperty();
 
 		Whitebox.setInternalState(manageAppProperty, "appPropertyDAO", appPropertyDAO);

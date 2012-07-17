@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -25,6 +26,7 @@ import org.powermock.reflect.Whitebox;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -45,8 +47,7 @@ import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ReportContractorRiskAssessment.class, ActionContext.class, ReportFilterContractor.class,
-		SpringUtils.class })
+@PrepareForTest({ I18nCache.class, ActionContext.class, SpringUtils.class  })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ReportContractorRiskAssessmentTest {
 	private ContractorAccount contractorAccount;
@@ -71,6 +72,12 @@ public class ReportContractorRiskAssessmentTest {
 	@Mock
 	private UserDAO userDAO;
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		// something in initialization is using ReportFilter which calls I18nCache.getInstance() before our own setup
+		PowerMockito.mockStatic(I18nCache.class);
+	}
+	
 	@Before
 	public void setUp() throws Exception {
 		initializeMocks();
@@ -80,7 +87,7 @@ public class ReportContractorRiskAssessmentTest {
 		initializeContractorAccount();
 		setCustomPageVariables();
 		setExpectedBehaviors();
-		stubStaticFilterMethods();
+		//stubStaticFilterMethods();
 	}
 
 	@Test
@@ -173,9 +180,12 @@ public class ReportContractorRiskAssessmentTest {
 	}
 
 	private void initializeMocks() {
+		// I18nCache must be initialized first for ReportFilterContractor to initialize
+		PowerMockito.mockStatic(I18nCache.class);
 		MockitoAnnotations.initMocks(this);
+		
 		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.mockStatic(ReportFilterContractor.class);
+		//PowerMockito.mockStatic(ReportFilterContractor.class);
 		PowerMockito.mockStatic(SpringUtils.class);
 	}
 
@@ -212,7 +222,7 @@ public class ReportContractorRiskAssessmentTest {
 		return sessions;
 	}
 
-	private void stubStaticFilterMethods() {
+/*	private void stubStaticFilterMethods() {
 		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultName")).toReturn(DEFAULT);
 		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultCity")).toReturn(DEFAULT);
 		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultZip")).toReturn(DEFAULT);
@@ -222,7 +232,7 @@ public class ReportContractorRiskAssessmentTest {
 		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultSelectPerformedBy")).toReturn(
 				DEFAULT);
 	}
-
+*/
 	private List<ContractorAudit> generatePQFWithRiskAnswers() {
 		List<ContractorAudit> contractorAudits = new ArrayList<ContractorAudit>();
 		ContractorAudit contractorAudit = new ContractorAudit();

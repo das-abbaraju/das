@@ -37,20 +37,14 @@ import com.picsauditing.util.YearList;
 public class OshaDisplayTest extends PicsTest {
 	OshaDisplay oshaDisplay;
 
-	@Mock
-	OshaOrganizer oshaOrganizer;
-	
-	@Mock
-	NaicsDAO naicsDao;
-	
-	@Mock
-	YearList yearList;
-	
-	@Mock
-	ContractorAccount contractor;
+	@Mock private OshaOrganizer oshaOrganizer;
+	@Mock private NaicsDAO naicsDao;
+	@Mock private YearList yearList;
+	@Mock private ContractorAccount contractor;
 	
 	@Before
 	public void setUp() throws Exception {
+		super.setUp();
 		MockitoAnnotations.initMocks(this);
 		
 		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();

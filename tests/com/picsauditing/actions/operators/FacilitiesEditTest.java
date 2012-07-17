@@ -36,6 +36,7 @@ public class FacilitiesEditTest extends PicsTest {
 
 	@Before
 	public void setUp() throws Exception {
+		super.setUp();
 		MockitoAnnotations.initMocks(this);
 
 		facilitiesEdit = new FacilitiesEdit();

@@ -80,6 +80,7 @@ public class ContractorActionSupportTest extends PicsTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		super.setUp();
 
 		contractorActionSupport = new ContractorActionSupport();
 		autowireDAOsFromDeclaredMocks(contractorActionSupport, this);
