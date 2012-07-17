@@ -162,7 +162,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		if (!isBeta) {
 			String betaIP = propertyDAO.getProperty("Beta_IP");
-			String currentIP = InetAddress.getLocalHost().getHostAddress();
+			String currentIP = getIP();
+			logger.info("currentIP "+currentIP+" betaIP "+betaIP);
 			if (currentIP.equals(betaIP)) {
 				isBeta = true;
 			}
@@ -195,7 +196,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		Boolean isStable = getRequestHost().contains("stable");
 		if (!isStable){
 			String stableIP = propertyDAO.getProperty("Stable_IP");
-			String currentIP = InetAddress.getLocalHost().getHostAddress();
+			String currentIP = getIP();
 			if (currentIP.equals(stableIP)){
 				isStable = true;
 			}
@@ -470,7 +471,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
-
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
