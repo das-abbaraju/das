@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.Column;
 
 import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.util.Strings;
 
@@ -27,6 +28,7 @@ public class JpaFieldExtractor {
 			String fieldName = stripGetFromMethodName(method.getName());
 			field.setFieldClass(method.getReturnType());
 			field.setName(prefix + fieldName);
+			field.setType(fieldAnnotation.filterType().getFieldType());
 			fields.add(field);
 
 			if (!Strings.isEmpty(fieldAnnotation.sql())) {
