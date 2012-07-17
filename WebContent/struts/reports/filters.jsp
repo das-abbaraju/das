@@ -1371,8 +1371,8 @@
 				<a href="#" class="filterBox">
 					<s:text name="Filters.label.RegistrationDate" />
 				</a>
+                =
 				<span class="q_status">
-					=
 					<s:text name="JS.Filters.status.All" />
 				</span>
 				<br />
@@ -1399,8 +1399,8 @@
 				<a href="#" class="filterBox">
 					<s:text name="Filters.label.ExpiredDate" />
 				</a>
+                =
 				<span class="q_status">
-					=
 					<s:text name="JS.Filters.status.All" />
 				</span>
 				<br />
@@ -1427,8 +1427,8 @@
 				<a href="#" class="filterBox">
 					<s:text name="Filters.label.FollowUpDate" />
 				</a>
+                =
 				<span class="q_status">
-					=
 					<s:text name="JS.Filters.status.All" />
 				</span>
 				<br />
@@ -1585,8 +1585,8 @@
 				<a href="#" class="filterBox">
 					<s:text name="Filters.label.WorkflowStatusChangedDate" />
 				</a>
+                =
 				<span class="q_status">
-					=
 					<s:text name="JS.Filters.status.All" />
 				</span>
 				<br />
@@ -1626,8 +1626,8 @@
 				<a href="#" onclick="showInsuranceTextBoxes('form1_insuranceLimits'); return false;">
 					<s:text name="Filters.label.InsuranceLimits" />
 				</a>
+                =
 				<span id="form1_insuranceLimits_query">
-					=
 					<s:text name="JS.Filters.status.All" />
 				</span>
 				<br />
