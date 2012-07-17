@@ -155,7 +155,7 @@ public class I18nCache implements Serializable {
 		}
 	}
 
-	// NOT THREAD SAFE!!!
+	// WARNING: NOT THREAD SAFE!!!
 	private void buildCache() {
 		try {
 			long startTime = System.currentTimeMillis();
@@ -168,7 +168,7 @@ public class I18nCache implements Serializable {
 				String key = String.valueOf(message.get("msgKey"));
 				newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
 				Date lastUsed = (Date) message.get("lastUsed");
-				cacheUsage.put(key, lastUsed);
+				newCacheUsage.put(key, lastUsed);
 			}
 			cache = newCache;
 			cacheUsage = newCacheUsage;
