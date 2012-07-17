@@ -109,25 +109,31 @@ public class PicsActionSupportTest {
 		
 		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
 	}
-	
+
 	@Test
 	public void testIsBetaEnvironment_UrlContainsWithNoBeta_StableIP() throws Exception {
 		AppProperty appPropertyBetaIP = new AppProperty();
 		appPropertyBetaIP.setProperty("Beta_IP");
 		appPropertyBetaIP.setValue("72.32.206.206");
-		InetAddress mock = mockAddr("72.32.206.207");
-		
+
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		when (InetAddress.getLocalHost()).thenReturn(mock);
+		when (picsActionSupport.getIP()).thenReturn(new String("72.32.206.207"));
 		when(em.find(AppProperty.class, "Beta_IP")).thenReturn(appPropertyBetaIP);
-		
-		//assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
-	}
 
-	private InetAddress mockAddr(String reverseTo) {
-	    InetAddress mock = Mockito.mock(InetAddress.class);
-	    Mockito.doReturn(reverseTo).when(mock).getHostAddress();
-	    return mock;
+		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_UrlContainsWithNoBeta_BetaIP() throws Exception {
+		AppProperty appPropertyBetaIP = new AppProperty();
+		appPropertyBetaIP.setProperty("Beta_IP");
+		appPropertyBetaIP.setValue("72.32.206.207");
+
+		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		when (picsActionSupport.getIP()).thenReturn(new String("72.32.206.207"));
+		when(em.find(AppProperty.class, "Beta_IP")).thenReturn(appPropertyBetaIP);
+
+		assertTrue("ip Match ", picsActionSupport.isBetaEnvironment());
 	}
 }
