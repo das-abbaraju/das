@@ -33,6 +33,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 				+ "AND (ca2.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Complete')) ");
 		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
 		sql.addWhere("ca2.expiresDate IS NULL OR ca2.expiresDate > NOW()");
+		sql.addGroupBy("a.id, ca.id");
 
 		if (getFilter().isUnScheduledAudits()) {
 			sql.addWhere("(ca.contractorConfirm IS NULL OR ca.auditorConfirm IS NULL) AND atype.isScheduled = 1");
