@@ -77,12 +77,6 @@ public class OshaAuditTest extends PicsTest {
 	}	
 
 	@Test
-	public void testIsEmpty() {
-		setupAudit_USandUK();
-		assertTrue(oshaAudit2010.isEmpty(OshaType.OSHA));
-	}
-	
-	@Test
 	public void testOshaAuditInitialization() {
 		setupAudit_USandUK();
 		assertEquals("2010", oshaAudit2010.getAuditFor());
