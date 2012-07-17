@@ -197,14 +197,20 @@
 						<input type="hidden" name="customer_vault" value="update_customer"/>
 					</s:else>			
 				
-					<ul>	
+					<ul id="credit-card-inputs">	
 						<li>
 							<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
 						</li>
+						
 						<li class="creditcard">
 							<s:textfield label="CreditCard.Number" name="ccnumber" />						
 							<img src="images/creditcard.png" class="card" />
 						</li>
+						
+						<li class="creditcard">
+							<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:25px" maxlength="3" />
+						</li>
+	
 						<li class="expiration-date">
 							<label>
 								<s:text name="RegistrationMakePayment.ExpirationDate" />

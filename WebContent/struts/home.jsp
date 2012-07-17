@@ -59,15 +59,8 @@
             						<a href="<s:property value="url"/>" target="_BLANK" class = "debug">URL</a>
             					</pics:permission>
             				</div>
-                            
             				<div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;">
             					<s:property value="content" escape="false" />
-                                
-                                <s:if test="widgetID == 23">
-                                    <p class="widget-info">
-                                        <s:text name="ChartXMLCorporateFlags.DuplicateFlags" />
-                                    </p>
-                                </s:if>
             				</div>
         				</div>
     				</div>

@@ -2,8 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<html>
-	<head>
 		<title><s:text name="ContractorPaymentOptions.PaymentMethod"><s:param value="%{contractor.name}" /></s:text></title>
 		
 		<meta name="help" content="User_Manual_for_Contractors">
@@ -39,8 +37,9 @@
 				return false;
 			}
 		</script>
-	</head>
-	<body>
+
+    <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
+       
 		<s:include value="conHeader.jsp" />
 		<s:include value="../actionMessages.jsp" />
 		
@@ -412,6 +411,10 @@
 								<label><s:text name="CreditCard.Number" />:</label>
 								<s:property value="cc.cardNumber"/>
 							</li>
+                            <li>
+                                <label><s:text name="CreditCard.CVVNumber" />:</label>
+                                <img src="images/creditcard.png" class="card" />
+                            </li>
 							<li>
 								<label><s:text name="CreditCard.Expiration" />:</label>
 								<s:property value="cc.expirationDateFormatted"/>
@@ -445,9 +448,13 @@
 								cssClass="inline"
 							/>
 						</li>
-						<li>
-							<label><s:text name="CreditCard.Number" />:</label>
-							<s:textfield name="ccnumber" size="20" />
+						<li class="creditcard">
+							<label><s:text name="CreditCard.Number" /></label>
+							<s:textfield name="ccnumber" />
+						</li>
+						<li class="creditcard">
+							<label><s:text name="CreditCard.CVVNumber" /></label>
+							<s:textfield name="cvv" style="width:35px" maxlength="4" />
 						</li>
 						<li>
 							<label><s:text name="CreditCard.Expiration" />:</label>
@@ -465,5 +472,4 @@
 				</fieldset>
 			</form>
 		</s:if>
-	</body>
-</html>
+    </div>        

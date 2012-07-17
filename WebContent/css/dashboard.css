@@ -94,13 +94,6 @@ a:hover.panel_edit {
 	color: #012142;
 }
 
-.panel_content .widget-info
-{
-	margin: 10px auto;
-	text-align: center;
-	width: 400px;
-}
-
 #trade-cloud {
 	border: none;
 	padding: inherit;
