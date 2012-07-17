@@ -23,6 +23,17 @@
 			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
 			<result name="getSite">struts/employees/manage_employee_sites_edit.jsp</result>
 		</action>
+		
+		<action name="ManageEmployeeRole"
+			class="com.picsauditing.actions.employees.ManageEmployeeRole">
+			<result>struts/employees/manage_employee_roles.jsp</result>
+		</action>
+		
+		<action name="ManageEmployeeSite"
+			class="com.picsauditing.actions.employees.ManageEmployeeSite">
+			<result>struts/employees/manage_employee_sites.jsp</result>
+			<result name="edit">struts/employees/manage_employee_sites_edit.jsp</result>
+		</action>
 
 		<action name="ManageEmployeesUpload"
 			class="com.picsauditing.actions.employees.ImportEmployees">

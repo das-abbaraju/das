@@ -1,92 +1,97 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<html>
-	<head>
-		<title>
-			<s:text name="ManageEmployees.title" />
-		</title>
-		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+
+<%-- URLS --%>
+<s:url action="EmployeeDashboard" var="employee_dashboard">
+	<s:param name="id">
+		${account.id}
+	</s:param>
+</s:url>
+<s:url action="ManageEmployees" method="add" var="add_employee">
+	<s:param name="account">
+		${account.id}
+	</s:param>
+	<s:param name="audit">
+		${audit.id}
+	</s:param>
+	<s:param name="questionId">
+		${questionId}
+	</s:param>
+</s:url>
+<s:url action="EmployeeList" method="download" var="employee_list_download">
+	<s:param name="filter.accountName">
+		${account.id}
+	</s:param>
+</s:url>
+
+<head>
+	<title>
+		<s:text name="ManageEmployees.title" />
+	</title>
+
+	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
+	<link rel="stylesheet" type="text/css" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css?v=${version}">
+	<link rel="stylesheet" type="text/css" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
+	<style>
+		.sites-label
+		{
+			display: inline !important;
+			font-weight: normal !important;
+		}
 		
-		<s:include value="../jquery.jsp"/>
-		<script type="text/javascript" src="js/manage_employees.js?v=${version}"></script>
-		<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js?v=${version}"></script>
-		
-		<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js?v=${version}"></script>
-		<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
-		
-		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=${version}" />
-		<style>
-			div.dataTables_filter { width: 65%; }
-			div.dataTables_length { width: 35%; }
-			.newJobSite, #siteEditBox { display: none; }
-			#newJobSiteForm { display: none; clear: both; }
-			<s:if test="employee.id == 0 || employee.status.toString().equals('Active')">
-				#termDate { display: none; }
-			</s:if>
-		</style>
-		<script type="text/javascript">
-			var employeeID = '<s:property value="employee == null ? 0 : employee.id"/>';
-			var audit = '<s:property value="audit.id" />';
-			
-			var json_previousLocations = <s:property value="previousLocationsJSON" escape="false"/>;
-			var json_previousTitles = <s:property value="previousTitlesJSON" escape="false"/>;
-			
-			$(function() {
-				startup();
-			});
-			
-			function showExcelUpload() {
-				url = 'ManageEmployeesUpload.action?account=<s:property value="account.id" />';
-				title = translate('JS.ManageEmployees.message.UploadEmployee');
-				pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
-				fileUpload = window.open(url, title, pars);
-				fileUpload.focus();
-			}
-		</script>
-	</head>
+		.layout td
+		{
+			vertical-align: top;
+		}
+	</style>
 	
-	<body>
+	<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
+	<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js?v=${version}"></script>
+	<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js?v=${version}"></script>
+</head>
+<body>
+	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 		<s:if test="audit.id > 0">
-		<s:if test="questionId==3673" >
-			<div class="info">
-				<s:text name="ManageEmployees.Step3">
-					<s:param>
-						<s:property value="audit.id" />
-					</s:param>
-					<s:param>
-						<s:text name="AuditType.99.name" />
-					</s:param>
-				</s:text>
-			</div>
+			<s:if test="questionId == 3673">
+				<div class="info">
+					<s:text name="ManageEmployees.Step3">
+						<s:param>
+							<s:property value="audit.id" />
+						</s:param>
+						<s:param>
+							<s:text name="AuditType.99.name" />
+						</s:param>
+					</s:text>
+				</div>
+			</s:if>
+			<s:elseif test="questionId == 3674">
+				<div class="info">
+					<s:text name="ManageEmployees.Step4">
+						<s:param>
+							<s:property value="audit.id" />
+						</s:param>
+						<s:param>
+							<s:text name="AuditType.99.name" />
+						</s:param>
+					</s:text>
+				</div>
+			</s:elseif>
 		</s:if>
-		<s:elseif test="questionId==3674">
-			<div class="info">
-				<s:text name="ManageEmployees.Step4">
-					<s:param>
-						<s:property value="audit.id" />
-					</s:param>
-					<s:param>
-						<s:text name="AuditType.99.name" />
-					</s:param>
-				</s:text>
-			</div>
-		</s:elseif >
-		</s:if>
-		
+	
 		<h1>
 			<s:property value="account.name" />
 			<span class="sub">
 				<s:text name="ManageEmployees.title" />
 			</span>
 		</h1>
+		
 		<s:include value="../actionMessages.jsp"/>
 	
 		<s:if test="audit == null" >
 			<div>
-				<a href="EmployeeDashboard.action?id=<s:property value='account.id' />" >
+				<a href="${employee_dashboard}">
 					<s:text name="global.EmployeeGUARD" />
 				</a>
 			</div>
@@ -102,24 +107,19 @@
 			</div>
 		</s:if>
 	
-		<s:url action="ManageEmployees" method="add" var="addEmployee">
-			<s:param name="account" value="%{account.id}" />
-			<s:param name="audit" value="%{audit.id}" />
-			<s:param name="questionId" value="%{questionId}" />
-		</s:url>
-		<a href="${addEmployee}" class="add">
+		<a href="${add_employee}" class="add">
 			<s:text name="ManageEmployees.link.Add" />
 		</a>
 		<br />
-		<a href="#" class="add" id="addExcel">
+		<a href="javascript:;" class="add" id="import_excel" data-account="${account.id}">
 			<s:text name="ManageEmployees.link.Import" />
 		</a>
 		
-		<table>
+		<table class="layout">
 			<tr>
-				<s:if test="account.employees.size() > 0">
-					<td style="vertical-align:top; width: 25%;">
-						<table class="report" id="employees">
+				<s:if test="account.employees.size > 0">
+					<td style="width: 25%;">
+						<table class="report" id="employee_table">
 							<thead>
 								<tr>
 									<th>id</th>
@@ -145,17 +145,18 @@
 							</thead>
 							<tbody>
 								<s:iterator value="activeEmployees" id="e">
-									<tr>
+									<tr id="employee_${e.id}">
 										<td>
 											<s:property value="#e.id" />
 										</td>
 										<td>
 											<a
 												href="#employee=<s:property value="#e.id" />"
-												class="loadEmployee"
+												class="load-employee"
 												title="<s:text name="ManageEmployees.title.EditProfile" />"
-												data-audit="<s:property value="audit.id" />"
-												data-questionId="<s:property value="questionId" />"
+												data-audit="${audit.id}"
+												data-employee="${e.id}"
+												data-questionId="${questionId}"
 											>
 												<s:property value="#e.lastName" />
 											</a>
@@ -163,10 +164,11 @@
 										<td>
 											<a
 												href="#employee=<s:property value="#e.id" />"
-												class="loadEmployee"
+												class="load-employee"
 												title="<s:text name="ManageEmployees.title.EditProfile" />"
-												data-audit="<s:property value="audit.id" />"
-												data-questionId="<s:property value="questionId" />"
+												data-audit="${audit.id}"
+												data-employee="${e.id}"
+												data-questionId="${questionId}"
 											>
 												<s:property value="#e.firstName" />
 											</a>
@@ -182,10 +184,11 @@
 										<td class="center">
 											<a
 												href="#employee=<s:property value="#e.id" />"
-												class="loadEmployee edit"
+												class="load-employee edit"
 												title="<s:text name="ManageEmployees.title.EditProfile" />"
-												data-audit="<s:property value="audit.id" />"
-												data-questionId="<s:property value="questionId" />"
+												data-audit="${audit.id}"
+												data-employee="${e.id}"
+												data-questionId="${questionId}"
 											></a>
 										</td>
 										<td class="center">
@@ -200,12 +203,12 @@
 						</table>
 						
 						<br clear="both" />
-						<a href="EmployeeList!download.action?filter.accountName=<s:property value="account.id" />" class="excel"><s:text name="global.Download" /></a>
+						<a href="${employee_list_download}" class="excel"><s:text name="global.Download" /></a>
 					</td>
 					<td style="width: 20px;"></td>
 				</s:if>
-				<td style="vertical-align:top;">
-					<div id="employeeFormDiv">
+				<td>
+					<div id="employee_form">
 						<s:if test="employee != null && employee.id == 0">
 							<s:include value="manage_employees_form.jsp" />
 						</s:if>
@@ -215,5 +218,5 @@
 		</table>
 		
 		<div id="siteEditBox"></div>
-	</body>
-</html>
+	</div>
+</body>
