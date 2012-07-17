@@ -258,7 +258,7 @@ public class ManageEmployeesTest {
 		employee.setId(0);
 
 		saveCommonBehaviors(employee);
-		verify(entityManager, times(1)).persist(any(Note.class));
+		verify(entityManager).persist(any(Note.class));
 	}
 
 	@Test
@@ -336,7 +336,7 @@ public class ManageEmployeesTest {
 		assertTrue(manageEmployees.hasActionMessages());
 		assertEquals(UserStatus.Inactive, manageEmployees.getEmployee().getStatus());
 
-		verify(employeeDAO, times(1)).save(any(Employee.class));
+		verify(employeeDAO).save(any(Employee.class));
 	}
 
 	@Test
@@ -359,7 +359,7 @@ public class ManageEmployeesTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, manageEmployees.activate());
 
-		verify(employeeDAO, times(1)).save(any(Employee.class));
+		verify(employeeDAO).save(any(Employee.class));
 	}
 
 	@Test
@@ -369,7 +369,7 @@ public class ManageEmployeesTest {
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.delete());
 
-		verify(employeeDAO, times(1)).findWhere(anyString());
+		verify(employeeDAO).findWhere(anyString());
 	}
 
 	@Test
@@ -384,8 +384,8 @@ public class ManageEmployeesTest {
 		assertNull(manageEmployees.getEmployee());
 		assertTrue(manageEmployees.hasActionMessages());
 
-		verify(employeeDAO, times(1)).findWhere(anyString());
-		verify(employeeDAO, times(1)).save(any(Employee.class));
+		verify(employeeDAO).findWhere(anyString());
+		verify(employeeDAO).save(any(Employee.class));
 	}
 
 	@Test
@@ -522,8 +522,8 @@ public class ManageEmployeesTest {
 
 		assertEquals("roles", manageEmployees.removeRoleAjax());
 
-		verify(entityManager, times(1)).remove(any(EmployeeRole.class));
-		verify(entityManager, times(1)).persist(any(Note.class));
+		verify(entityManager).remove(any(EmployeeRole.class));
+		verify(entityManager).persist(any(Note.class));
 	}
 
 	@Test
@@ -624,7 +624,7 @@ public class ManageEmployeesTest {
 
 		assertEquals("sites", manageEmployees.removeSiteAjax());
 
-		verify(entityManager, times(1)).find(EmployeeSite.class, 1);
+		verify(entityManager).find(EmployeeSite.class, 1);
 	}
 
 	@Test
@@ -652,9 +652,9 @@ public class ManageEmployeesTest {
 		assertEquals("sites", manageEmployees.removeSiteAjax());
 		assertFalse(employeeSite.isCurrent());
 
-		verify(entityManager, times(1)).find(EmployeeSite.class, 1);
-		verify(entityManager, times(1)).merge(any(EmployeeSite.class));
-		verify(entityManager, times(1)).persist(any(Note.class));
+		verify(entityManager).find(EmployeeSite.class, 1);
+		verify(entityManager).merge(any(EmployeeSite.class));
+		verify(entityManager).persist(any(Note.class));
 		verify(entityManager, never()).remove(any(EmployeeSite.class));
 	}
 
@@ -678,9 +678,9 @@ public class ManageEmployeesTest {
 		assertEquals("sites", manageEmployees.removeSiteAjax());
 		assertTrue(employeeSite.isCurrent());
 
-		verify(entityManager, times(1)).find(EmployeeSite.class, 1);
-		verify(entityManager, times(1)).persist(any(BaseTable.class));
-		verify(entityManager, times(1)).remove(any(EmployeeSite.class));
+		verify(entityManager).find(EmployeeSite.class, 1);
+		verify(entityManager).persist(any(BaseTable.class));
+		verify(entityManager).remove(any(EmployeeSite.class));
 	}
 
 	/*
@@ -780,6 +780,6 @@ public class ManageEmployeesTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, manageEmployees.save());
 
-		verify(employeeDAO, times(1)).save(any(Employee.class));
+		verify(employeeDAO).save(any(Employee.class));
 	}
 }
