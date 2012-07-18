@@ -85,9 +85,8 @@ public class Report extends BaseTable {
 		obj.put("modelType", modelType.toString());
 		obj.put("name", name);
 
-		if (!full) {
+		if (!full)
 			return obj;
-		}
 
 		obj.put("description", description);
 
@@ -97,23 +96,29 @@ public class Report extends BaseTable {
 		}
 
 		String filterExpresion = defaultDefinition.getFilterExpression();
-		if (!Strings.isEmpty(filterExpresion))
+		if (!Strings.isEmpty(filterExpresion)) {
 			obj.put(ReportUtil.FILTER_EXPRESSION, filterExpresion);
+		}
 
-		if (defaultDefinition.getColumns().size() > 0)
+		if (defaultDefinition.getColumns().size() > 0) {
 			obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
-		if (defaultDefinition.getFilters().size() > 0)
+		}
+		if (defaultDefinition.getFilters().size() > 0) {
 			obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
-		if (defaultDefinition.getSorts().size() > 0)
+		}
+		if (defaultDefinition.getSorts().size() > 0) {
 			obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getSorts()));
+		}
 
 		return obj;
 	}
 
 	@Transient
 	public Definition getDefinition() {
-		if (definition == null)
+		if (definition == null) {
 			definition = new Definition(getParameters());
+		}
+
 		return definition;
 	}
 

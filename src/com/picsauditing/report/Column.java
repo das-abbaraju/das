@@ -3,6 +3,7 @@ package com.picsauditing.report;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.util.Strings;
@@ -25,14 +26,27 @@ public class Column implements JSONable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
+
+		// TODO check if this is being used on the front end
 		if (method != null) {
 			json.put("method", method.toString());
-			if (!Strings.isEmpty(option))
+			if (!Strings.isEmpty(option)) {
 				json.put("option", option);
+			}
 		}
 
-		if (field != null)
-			json.put("field", field.toJSONObject());
+		if (field != null) {
+			JSONObject fieldJson = field.toJSONObject();
+
+			if (method != null && method.getType() != ExtFieldType.Auto) {
+				String alteredType = method.getType().toString();
+
+				fieldJson.put("type", alteredType.toLowerCase());
+				fieldJson.put("filterType", alteredType);
+			}
+
+			json.put("field", fieldJson);
+		}
 
 		return json;
 	}
@@ -41,13 +55,14 @@ public class Column implements JSONable {
 		if (json == null)
 			return;
 
-		this.fieldName = (String) json.get("name");
+		fieldName = (String) json.get("name");
 		String methodName = (String) json.get("method");
 		if (!Strings.isEmpty(methodName)) {
-			this.method = QueryMethod.valueOf(methodName);
-			this.option = (String) json.get("option");
+			method = QueryMethod.valueOf(methodName);
+			option = (String) json.get("option");
 		}
-		this.field = (Field) json.get("field");
+
+		field = (Field) json.get("field");
 	}
 
 	public String getFieldName() {
