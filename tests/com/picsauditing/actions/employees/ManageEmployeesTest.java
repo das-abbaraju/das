@@ -82,6 +82,7 @@ public class ManageEmployeesTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		PowerMockito.mockStatic(I18nCache.class);
 
 		manageEmployees = new ManageEmployees();
 
@@ -95,7 +96,6 @@ public class ManageEmployeesTest {
 	@Test(expected = NoRightsException.class)
 	public void testPrepare_ContractorWithoutAdminPermission() throws Exception {
 		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.mockStatic(I18nCache.class);
 		PowerMockito.mockStatic(TranslationActionSupport.class);
 
 		when(I18nCache.getInstance()).thenReturn(i18nCache);
@@ -696,39 +696,11 @@ public class ManageEmployeesTest {
 	 * 
 	 * @Test public void testGetFileName() { fail("Not yet implemented"); }
 	 * 
-	 * @Test public void testGetEmployee() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetEmployee() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testGetSsn() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetSsn() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testGetAudit() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetAudit() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testGetChildID() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetChildID() { fail("Not yet implemented"); }
-	 * 
 	 * @Test public void testIsSelectRolesSites() { fail("Not yet implemented");
 	 * }
 	 * 
 	 * @Test public void testSetSelectRolesSites() {
 	 * fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testGetOp() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetOp() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testGetEsSite() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetEsSite() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testGetJobSite() { fail("Not yet implemented"); }
-	 * 
-	 * @Test public void testSetJobSite() { fail("Not yet implemented"); }
 	 * 
 	 * @Test public void testGetToday() { fail("Not yet implemented"); }
 	 * 
