@@ -84,6 +84,7 @@ $include-default-uis: true !default;
  * Author: Carey Hinoki
  */
 
+@import 'my-ext-theme/alert_message';
 @import 'my-ext-theme/button';
 @import 'my-ext-theme/report/header';
 @import 'my-ext-theme/report/filter';

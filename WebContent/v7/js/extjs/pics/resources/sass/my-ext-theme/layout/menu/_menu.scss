@@ -26,6 +26,9 @@ $site_menu_separator_border_color_left: #e7e7e7;
 // site menu - search
 $site_menu_search_text_color: #cccccc;
 
+// site menu - seach icon
+$site_menu_search_icon_search_text_color: #acacac;
+
 // site menu - search item
 $site_menu_search_item_even_background_color: #f1f1f2;
 
@@ -127,6 +130,7 @@ $site_menu_search_item_even_background_color: #f1f1f2;
 #site_menu_search .icon-search
 {
 	font-size: 14px;
+	@include text-shadow(0px -1px 0px $site_menu_search_icon_search_text_color);
 }
 
 #site_menu_search_list

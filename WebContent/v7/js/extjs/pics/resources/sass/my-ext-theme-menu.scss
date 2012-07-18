@@ -60,6 +60,11 @@ $toolbar-font-size: 13px;
 
 @import 'my-ext-theme/layout/menu';
 
+.x-reset .x-tool img
+{
+	background-image: url('../../app/resources/images/tool-sprites.gif');
+}
+
 .x-nlg
 {
 	#site_menu,
