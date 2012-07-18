@@ -10,11 +10,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
-import org.jboss.util.id.GUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.uuid.EthernetAddress;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.impl.TimeBasedGenerator;
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -44,8 +47,7 @@ public class QBWebConnectorSvcSkeleton {
 
 		boolean finished = false;
 		try {
-
-			if (authenticate.getStrUserName() == null || authenticate.getStrUserName() == null) {
+			if (authenticate.getStrUserName() == null) {
 				return null;
 			}
 
@@ -81,28 +83,12 @@ public class QBWebConnectorSvcSkeleton {
 					.getStrUserName()))
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 
-				QBSession session = new QBSession();
-				session.setSessionId(GUID.asString());
-				session.setLastRequest(new Date());
-				// set country specific fields
-				if ("PICSQBLOADER".equals(authenticate.getStrUserName())) {
-					session.setCurrencyCode("USD");
-					session.setQbID("qbListID");
-				} else if ("PICSQBLOADERCAN".equals(authenticate.getStrUserName())) {
-					session.setCurrencyCode("CAD");
-					session.setQbID("qbListCAID");
-				} else if ("PICSQBLOADERUK".equals(authenticate.getStrUserName())) {
-					session.setCurrencyCode("GBP");
-					session.setQbID("qbListUKID");
-				} else if ("PICSQBLOADEREU".equals(authenticate.getStrUserName())) {
-					session.setCurrencyCode("EUR");
-					session.setQbID("qbListEUID");
-				}
+				QBSession session = setUpSession(authenticate);
+				
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();
 				PicsLogger.log("login valid for user: " + authenticate.getStrUserName() + ", sessionId: " + sessionId);
-
-				session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
+				
 				currentSession = session;
 
 				if (!shouldWeRunThisStep()) {
@@ -152,6 +138,28 @@ public class QBWebConnectorSvcSkeleton {
 
 		PicsLogger.stop();
 		return response;
+	}
+
+	private QBSession setUpSession(Authenticate authenticate) {
+		QBSession session = new QBSession();
+		session.setSessionId(guid());
+		session.setLastRequest(new Date());
+		// set country specific fields
+		if ("PICSQBLOADER".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("USD");
+			session.setQbID("qbListID");
+		} else if ("PICSQBLOADERCAN".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("CAD");
+			session.setQbID("qbListCAID");
+		} else if ("PICSQBLOADERUK".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("GBP");
+			session.setQbID("qbListUKID");
+		} else if ("PICSQBLOADEREU".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("EUR");
+			session.setQbID("qbListEUID");
+		}
+		session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
+		return session;
 	}
 
 	public GetLastErrorResponse getLastError(GetLastError getLastError) {
@@ -384,6 +392,13 @@ public class QBWebConnectorSvcSkeleton {
 			currentSession.setCurrentStep(currentSession.getCurrentStep().incrementStep());
 		} while (!shouldWeRunThisStep() && currentSession.getCurrentStep() != QBIntegrationWorkFlow.Finished);
 
+	}
+	
+	private static String guid() {
+		EthernetAddress ethernetAddress = EthernetAddress.fromInterface();
+		TimeBasedGenerator uuid_gen = Generators.timeBasedGenerator(ethernetAddress);
+		UUID uuid = uuid_gen.generate();
+		return uuid.toString();
 	}
 
 }

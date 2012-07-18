@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
-import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.dao.AuditDataDAO;
@@ -18,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 
 public class CertificateFileUpload extends ContractorActionSupport {
 	private static final long serialVersionUID = 2438788697676816034L;

@@ -339,9 +339,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.baselineFlagDetail = baselineFlagDetail;
 	}
 
-	// added mappedBy="flag" to show which side is the owning side in the
-	// relationship
-	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "flag")
+	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
@@ -352,7 +350,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {

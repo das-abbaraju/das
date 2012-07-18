@@ -10,8 +10,6 @@ import java.util.List;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.util.Strings;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
@@ -25,6 +23,7 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentAdd;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRqType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
 

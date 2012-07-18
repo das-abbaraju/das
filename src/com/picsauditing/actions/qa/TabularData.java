@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.jboss.util.Strings;
+import com.picsauditing.util.Strings;
 
 public class TabularData implements TabularModel {
 	private List<String> columnNames = new ArrayList<String>();
@@ -50,7 +50,7 @@ public class TabularData implements TabularModel {
 			return columnNames.get(columnIndex);
 		}
 		// perhaps better to throw NoSuchColumnException
-		return Strings.EMPTY; 
+		return Strings.EMPTY_STRING; 
 	}
 
 	@Override

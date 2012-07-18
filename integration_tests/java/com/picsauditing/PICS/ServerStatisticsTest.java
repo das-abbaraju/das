@@ -5,8 +5,9 @@ import java.lang.management.OperatingSystemMXBean;
 
 import junit.framework.TestCase;
 
-import org.jboss.util.Strings;
 import org.junit.Before;
+
+import com.picsauditing.util.Strings;
 
 public class ServerStatisticsTest extends TestCase {
 	OperatingSystemMXBean operatingSystem;

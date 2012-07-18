@@ -1,25 +1,23 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
+@AttributeOverride(name = "id", column = @Column(name = "templateID"))
 public class EmailTemplate extends BaseTableRequiringLanguages implements java.io.Serializable {
 	private int accountID;
 	private String templateName = "";
@@ -35,17 +33,6 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
 
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
 			85, 86));
-
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "templateID")
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	@Column(nullable = false)
 	public int getAccountID() {

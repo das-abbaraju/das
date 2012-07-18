@@ -3,7 +3,6 @@ package com.picsauditing.jpa.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -11,7 +10,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 @SuppressWarnings("serial")
-@Entity
 @MappedSuperclass
 public abstract class BaseHistoryRequiringLanguages extends BaseHistory {
 

@@ -1,11 +1,9 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
-@Entity
 @MappedSuperclass
 public abstract class BaseDecisionTreeRule extends BaseHistoryTime implements Comparable<BaseDecisionTreeRule> {
 

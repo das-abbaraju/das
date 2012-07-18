@@ -10,10 +10,9 @@ import java.util.Map;
 
 import javax.persistence.Transient;
 
-import org.jboss.util.Strings;
-
 import com.picsauditing.PICS.OshaVisitable;
 import com.picsauditing.PICS.OshaVisitor;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 
 /**
@@ -130,7 +129,7 @@ public class OshaAudit implements OshaVisitable {
 
 	public String getSpecificRate(OshaType oshaType, OshaRateType rateType) {
 		if (getSafetyStatistics(oshaType) == null) {
-			return Strings.EMPTY;
+			return Strings.EMPTY_STRING;
 		}
 
 		return getSafetyStatistics(oshaType).getStats(rateType);
@@ -169,7 +168,7 @@ public class OshaAudit implements OshaVisitable {
 
 	public String getComment(OshaType oshaType) {
 		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null) {
-			return Strings.EMPTY;
+			return Strings.EMPTY_STRING;
 		}
 
 		return getSafetyStatistics(oshaType).getFileUpload().getComment();

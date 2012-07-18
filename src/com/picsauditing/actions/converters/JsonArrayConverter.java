@@ -4,11 +4,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.struts2.util.StrutsTypeConverter;
-import org.jboss.util.Strings;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("rawtypes")
 public class JsonArrayConverter extends StrutsTypeConverter {

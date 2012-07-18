@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -34,7 +33,6 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 
 @SuppressWarnings("serial")
-@Entity
 @MappedSuperclass
 public abstract class BaseTable extends BaseTranslatable implements JSONable, Serializable, Autocompleteable, JSONAware {
 

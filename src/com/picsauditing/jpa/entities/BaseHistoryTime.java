@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -13,7 +12,6 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
-@Entity
 @MappedSuperclass
 public abstract class BaseHistoryTime extends BaseTable {
 
