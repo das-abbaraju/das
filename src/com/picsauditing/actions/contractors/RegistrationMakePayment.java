@@ -149,7 +149,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		// enforcing workflow steps before completing registration
 		String url = "";
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
 			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
 
