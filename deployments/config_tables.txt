@@ -21,3 +21,4 @@ widget
 widget_user
 workflow
 workflow_step
+workflow_state
