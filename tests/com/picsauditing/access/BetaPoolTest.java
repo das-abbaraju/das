@@ -21,7 +21,17 @@ public class BetaPoolTest {
 	}
 	
 	@Test
+	public void testBetaPoolNumbers() throws Exception {
+		// It is important that these numbers do not change, because we currently rely on being able to refer to these levels by number in the app_properties table.
+		assertEquals(BetaPool.None,BetaPool.getBetaPoolByBetaLevel(0));
+		assertEquals(BetaPool.Developer,BetaPool.getBetaPoolByBetaLevel(1));
+		assertEquals(BetaPool.Stakeholder,BetaPool.getBetaPoolByBetaLevel(2));
+		assertEquals(BetaPool.BetaTester,BetaPool.getBetaPoolByBetaLevel(3));
+		assertEquals(BetaPool.Global,BetaPool.getBetaPoolByBetaLevel(4));
+	}
+	@Test
 	public void testDeveloper() throws Exception {
+		// FIXME Why is this test called testDeveloper()?  There is not anything specifically Developer about it.
 		permissions.getGroups().add(User.GROUP_STAKEHOLDER);
 
 		assertFalse(BetaPool.isUserBetaTester(permissions, BetaPool.None));
@@ -33,6 +43,8 @@ public class BetaPoolTest {
 
 	@Test
 	public void testGlobal() throws Exception {
+		// FIXME How is this test different from testDeveloper()?  Other than doing less?  
+		// FIXME Why is this test called testGlobal()?  There is not anything specifically Global about it.
 		assertFalse(BetaPool.isUserBetaTester(permissions, BetaPool.None));
 		assertFalse(BetaPool.isUserBetaTester(permissions, BetaPool.Developer));
 		assertTrue(BetaPool.isUserBetaTester(permissions, BetaPool.Global));
@@ -55,6 +67,7 @@ public class BetaPoolTest {
 	@Test
 	public void testGetBetaPoolByBetaLevel_GoodNumberNotNone() throws Exception {
 		int numValues = BetaPool.values().length;
+		// FIXME - doing unit tests against random numbers is not a good practice.  Better would be to test the first and last values in the range (if not all of them)
 		int betaLevelToTry = new Random().nextInt(numValues);
 		
 		BetaPool result = BetaPool.getBetaPoolByBetaLevel(betaLevelToTry);

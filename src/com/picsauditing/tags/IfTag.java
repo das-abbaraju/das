@@ -34,7 +34,12 @@ public class IfTag extends ComponentTagSupport {
 	private boolean isToggle(String name) {
 		HttpSession session = pageContext.getSession();
 		Permissions permissions = (Permissions) session.getAttribute("permissions");
-
+		// TODO For a guest user (not logged in) there is no permissions object in session state, thus no ready access to the toggles list.  So, we need to look it up another way.
+		if (permissions == null) {
+			// TODO In the mean time, we'll assume that the toggle in question is never turned on for a guest user.
+			return false;
+		}
+		
 		Map<String, String> toggles = permissions.getToggles();
 
 		if (toggles.containsKey("Toggle." + name)) {
