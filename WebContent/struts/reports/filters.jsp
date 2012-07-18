@@ -336,7 +336,8 @@
 						cssClass="forms"
 						name="filter.flagStatus"
 						multiple="true"
-						size="3" />
+						size="3"
+						value="filter.flagStatus[0]" />
 					<a href="#" class="clearLink">
 						<s:text name="Filters.status.Clear" />
 					</a>
