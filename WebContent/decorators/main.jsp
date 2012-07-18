@@ -50,6 +50,8 @@
 		homePageUrl = PicsMenu.getHomePage(menu, permissions);
 	}
 %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -280,25 +282,33 @@
 							helpUrl += "os_username=admin&os_password=ad9870mins";
 						}
 					%>
-
+					<div id="helpcenter" style="float:left;">
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
-
-					<%  if (liveChatEnabled) { %>
-						<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
-
-						<a id="_lpChatBtn"
-							class="liveperson-chat"
-							href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a"
-							target="chat90511184"
-							onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
-
-							<% if (!Strings.isEmpty(chatIcon)) { %>
-								<img src="<%= chatIcon %>" />
-							<% } else { %>
-								<%= i18nCache.getText("Header.Chat", locale) %>
+					</div>
+					<div id="helpchat" style="float:left;">
+						<pics:toggle name="LiveAgent">
+							<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
+							<img class="liveperson-chat-toggle" src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>
+						</pics:toggle>
+						<pics:toggleElse>
+							<%  if (liveChatEnabled) { %>
+								<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
+		
+								<a id="_lpChatBtn"
+									class="liveperson-chat"
+									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a"
+									target="chat90511184"
+									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+		
+									<% if (!Strings.isEmpty(chatIcon)) { %>
+										<img src="<%= chatIcon %>" />
+									<% } else { %>
+										<%= i18nCache.getText("Header.Chat", locale) %>
+									<% } %>
+								</a>
 							<% } %>
-						</a>
-					<% } %>
+						</pics:toggleElse>
+					</div>					
 				</div>
 
 				<div id="content">
