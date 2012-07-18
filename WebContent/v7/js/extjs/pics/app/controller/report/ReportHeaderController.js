@@ -39,7 +39,14 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
 
             'reportheader button[action=save]': {
                 click: function (cmp, e, eOpts) {
-                    this.saveReport();
+                    var config = PICS.app.configuration;
+
+                    if (config.isEditable()) {
+                        this.saveReport();
+                    } else {
+                        this.showSettingsModal();
+                        this.getReportSettingsModal().query('tabpanel')[0].setActiveTab(1);
+                    }
                 }
             },
 
@@ -137,7 +144,13 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                if (result.error) {
                    Ext.Msg.alert('Status', result.error);
                } else {
-                   Ext.Msg.alert('Status', 'Report Saved Successfully');
+                   var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+                       cls: 'alert alert-success',
+                       html: 'to My Reports in Manage Reports.',
+                       title: 'Report Saved',
+                   });
+
+                   alert_message.show();
 
                    me.application.fireEvent('refreshreport');
                }
@@ -178,8 +191,13 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
             var report_name_field = report_settings_edit_element.query('[name=report_name]')[0];
             var report_description_field = report_settings_edit_element.query('[name=report_description]')[0];
 
-            report_name_field.value = name;
-            report_description_field.value = description;
+            if (report_name_field) {
+                report_name_field.value = name;
+            }
+
+            if (report_description_field) {
+                report_description_field.value = description;
+            }
         }
 
         // TODO: need better loading check

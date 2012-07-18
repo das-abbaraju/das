@@ -9,19 +9,13 @@ Ext.define('PICS.view.report.header.Actions', {
     constructor: function () {
         this.callParent(arguments);
 
-        var config = PICS.app.configuration;
-
-        if (config.isEditable()) {
-            var save = Ext.create('Ext.button.Button', {
-                action: 'save',
-                cls: 'save success',
-                height: 40,
-                text: 'Save',
-                width: 60
-            });
-
-            this.add(save);
-        }
+        var save = Ext.create('Ext.button.Button', {
+            action: 'save',
+            cls: 'save success',
+            height: 40,
+            text: 'Save',
+            width: 60
+        });
 
         var edit = Ext.create('Ext.button.Button', {
             action: 'edit',
@@ -31,6 +25,6 @@ Ext.define('PICS.view.report.header.Actions', {
             width: 40
         });
 
-        this.add(edit);
+        this.add(save, edit);
     }
 });

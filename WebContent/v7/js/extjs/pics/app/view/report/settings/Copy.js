@@ -39,6 +39,18 @@ Ext.define('PICS.view.report.settings.Copy', {
         fieldLabel: 'Description',
         labelAlign: 'right',
         name: 'report_description'
+    }, {
+        xtype: 'displayfield',
+        fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
+        labelAlign: 'right',
+        labelSeparator: '',
+        value: 'Report <strong>is not</strong> a Favorite'
+    }, {
+        xtype: 'displayfield',
+        fieldLabel: '<a href="javascript:;" class="private"><i class="icon-eye-open"></i></a>',
+        labelAlign: 'right',
+        labelSeparator: '',
+        value: 'Report <strong>is not</strong> Private'
     }],
     layout: 'form',
     // custom config

@@ -3,39 +3,13 @@ Ext.define('PICS.view.report.settings.Share', {
     alias: ['widget.reportsettingsshare'],
 
     border: 0,
-    dockedItems: [{
-        xtype: 'toolbar',
-        defaults: {
-            margin: '0 0 0 5'
-        },
-        dock: 'bottom',
-        items: [{
-            cls: 'cancel default',
-            height: 28,
-            text: 'Cancel'
-        }, {
-            cls: 'share primary',
-            height: 28,
-            text: 'Share'
-        }],
-        layout: {
-            pack: 'end'
-        },
-        ui: 'footer'
-    }],
-    id: 'report_share',
     items: [{
-        xtype: 'textfield',
-        fieldLabel: 'Report Name',
-        labelAlign: 'right',
-        name: 'report_name'
-    }, {
-        xtype: 'textarea',
-        fieldLabel: 'Description',
-        labelAlign: 'right',
-        name: 'report_description'
+        cls: 'coming-soon',
+        html: new Ext.Template([
+            '<i class="icon-wrench icon-large"></i>',
+            '<p>Coming Soon</p>'
+        ])
     }],
-    layout: 'form',
     // custom config
     modal_title: 'Share Report',
     title: '<i class="icon-share icon-large"></i>Share'

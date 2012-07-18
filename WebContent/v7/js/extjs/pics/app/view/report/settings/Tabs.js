@@ -11,6 +11,17 @@ Ext.define('PICS.view.report.settings.Tabs', {
     ],
 
     border: false,
+    items: [{
+        xtype: 'reportsettingsedit'
+    }, {
+        xtype: 'reportsettingscopy'
+    }, {
+        xtype: 'reportsettingsshare',
+    }, {
+        xtype: 'reportsettingsexport'
+    }, {
+        xtype: 'reportsettingsprint'
+    }],
     tabBar: {
         border: false,
         height: 60,
@@ -21,29 +32,5 @@ Ext.define('PICS.view.report.settings.Tabs', {
             width: 70
         }
     },
-    tabPosition: 'bottom',
-
-    constructor: function () {
-        this.callParent(arguments);
-
-        var config = PICS.app.configuration;
-
-        if (config.isEditable()) {
-            this.add({
-                xtype: 'reportsettingsedit'
-            });
-        }
-
-        this.add({
-            xtype: 'reportsettingscopy'
-        }, {
-            xtype: 'reportsettingsexport'
-        }, {
-            xtype: 'reportsettingsshare',
-        }, {
-            xtype: 'reportsettingsprint'
-        });
-
-        this.setActiveTab(0);
-    }
+    tabPosition: 'bottom'
 });
