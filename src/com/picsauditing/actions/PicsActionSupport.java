@@ -21,6 +21,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -160,23 +161,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-
-		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
-			// could be stable or beta, depending on the use_beta cookie
-			if (!getRequestHost().contains("stable")) {
-				Cookie[] cookiesA = getRequest().getCookies();
-				if (cookiesA != null) {
-					for (int i = 0; i < cookiesA.length; i++) {
-						if (cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
-							isBeta = true;
-						}
-					}
-				}
+		if (!(isBeta||isAlphaEnvironment()||isConfigurationEnvironment()|| isLocalhostEnvironment())) {
+			//its not beta, alpha, config, and localhost
+			if (isBetaVersion()) {
+				isBeta = true;
 			}
 		}
+
 		return isBeta;
 	}
 
+	public boolean isBetaVersion(){
+		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
+		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
+
+		return PicsOrganizerVersion.greaterThan(major, minor);
+	}
 
 	public boolean isConfigurationEnvironment() {
 		Boolean isConfiguration = getRequestHost().contains("config");
@@ -186,20 +186,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
 		Boolean isStable = getRequestHost().contains("stable");
-
-		if (!(isStable || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
-			// could be stable or beta, depending on the use_beta cookie
-			if (!getRequestHost().contains("beta")) {
-				Cookie[] cookiesA = getRequest().getCookies();
-				if (cookiesA != null) {
-					for (int i = 0; i < cookiesA.length; i++) {
-						if (!cookiesA[i].getName().equalsIgnoreCase("USE_BETA")) {
-							isStable = true;
-						}
-					}
-				}
+		if (!(isStable||isAlphaEnvironment()||isConfigurationEnvironment()|| isLocalhostEnvironment()||isBetaEnvironment())){
+			if (!isBetaVersion()) {
+				isStable = true;
 			}
 		}
+
 		return isStable;
 	}
 
@@ -470,6 +462,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
+
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
@@ -480,10 +473,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getIP() {
 		return ServletActionContext.getRequest().getRemoteAddr();
-	}
-
-	public String getHostIP() throws UnknownHostException{
-		return InetAddress.getLocalHost().getHostAddress();
 	}
 
 	public String getReferer() {
