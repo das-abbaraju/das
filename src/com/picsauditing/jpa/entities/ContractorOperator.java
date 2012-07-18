@@ -55,6 +55,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private Set<FlagDataOverride> overrides = new HashSet<FlagDataOverride>();
 	private String flagDetail;
 	private String baselineFlagDetail;
+	private Date lastStepToGreenDate;
 
 	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
@@ -374,5 +375,13 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 			}
 		}
 		return null;
+	}
+
+	public Date getLastStepToGreenDate() {
+		return lastStepToGreenDate;
+	}
+
+	public void setLastStepToGreenDate(Date lastStepToGreenDate) {
+		this.lastStepToGreenDate = lastStepToGreenDate;
 	}
 }
