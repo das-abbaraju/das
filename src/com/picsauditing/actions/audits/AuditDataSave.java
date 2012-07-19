@@ -42,7 +42,9 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class AuditDataSave extends AuditActionSupport {
@@ -218,6 +220,7 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			auditDataDAO.save(auditData);
+			SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
 
 			if (conAudit == null) {
 				findConAudit();
