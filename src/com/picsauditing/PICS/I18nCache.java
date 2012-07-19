@@ -44,7 +44,7 @@ public class I18nCache implements Serializable {
 
 	private static Database databaseForTesting = null;
 	private static List<I18nCacheBuildAware> buildListeners = new ArrayList<I18nCacheBuildAware>();
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
 	private I18nCache() {
 	}
@@ -52,8 +52,10 @@ public class I18nCache implements Serializable {
 	public static I18nCache getInstance() {
 		if (INSTANCE == null) {
 			synchronized (I18nCache.class) {
-				INSTANCE = new I18nCache();
-				INSTANCE.buildCache();
+				if (INSTANCE == null) {
+					INSTANCE = new I18nCache();
+					INSTANCE.buildCache();
+				}
 			}
 		}
 		return INSTANCE;
@@ -77,7 +79,7 @@ public class I18nCache implements Serializable {
 	public void clearBuildListeners() {
 		buildListeners.clear();
 	}
-	
+
 	private String findAnyLocale(String key) {
 		Map<String, String> locales = cache.row(key);
 		if (locales == null)
@@ -188,7 +190,7 @@ public class I18nCache implements Serializable {
 			logger.error("Error building i18nCache: {}", e.getMessage());
 			successful = false;
 		} finally {
-			stopBuild(stopWatch, successful);			
+			stopBuild(stopWatch, successful);
 		}
 	}
 
@@ -217,7 +219,7 @@ public class I18nCache implements Serializable {
 			return databaseForTesting;
 		}
 	}
-	
+
 	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
 		String localeString = locale.toString();
 		if (!hasKey(key, localeString)) {
