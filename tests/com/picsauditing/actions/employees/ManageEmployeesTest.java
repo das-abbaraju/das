@@ -298,7 +298,7 @@ public class ManageEmployeesTest {
 		employee.setEmail("Hello World");
 
 		saveCommonBehaviors(employee);
-		assertEquals("billing@picsauditing.com", manageEmployees.getEmployee().getEmail());
+		assertEquals("info@picsauditing.com", manageEmployees.getEmployee().getEmail());
 	}
 
 	@Test

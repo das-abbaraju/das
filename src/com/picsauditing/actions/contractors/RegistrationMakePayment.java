@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTree;
 import com.picsauditing.util.braintree.BrainTreeService;
@@ -149,16 +150,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		// enforcing workflow steps before completing registration
 		String url = "";
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
-				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
-			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
-
-			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
-		} else if (contractor.getNonCorporateOperators().size() == 0) {
-			url = "AddClientSite.action?id=" + contractor.getId();
-
-			addActionMessage(getText("ContractorRegistrationFinish.message.AddFacility"));
-		}
+		url = contractorRiskUrl(url);
 
 		if (!url.isEmpty()) {
 			ServletActionContext.getResponse().sendRedirect(url);
@@ -207,7 +199,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(106);
 						emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-						emailBuilder.setToAddresses("billing@picsauditing.com");
+						emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.addToken("permissions", permissions);
 						emailBuilder.addToken("contractor", contractor);
@@ -277,6 +269,20 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
 		return BLANK;
+	}
+
+	private String contractorRiskUrl(String url) {
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
+				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
+			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
+
+			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
+		} else if (contractor.getNonCorporateOperators().size() == 0) {
+			url = "AddClientSite.action?id=" + contractor.getId();
+
+			addActionMessage(getText("ContractorRegistrationFinish.message.AddFacility"));
+		}
+		return url;
 	}
 
 	private void addNote(String subject) {

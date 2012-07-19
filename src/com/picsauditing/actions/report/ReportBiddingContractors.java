@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
@@ -160,7 +161,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				emailBuilder.addToken("permissions", permissions);
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setCriticalPriority();
-				emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
+				emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <"+EmailAddressUtils.getBillingEmail(contractor.getCurrency())+">"
 						: "PICS Info <info@picsauditing.com>");
 				emailQueue.setViewableById(permissions.getTopAccountID());
 				emailSender.send(emailQueue);

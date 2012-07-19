@@ -77,6 +77,7 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.OperatorUtil;
@@ -759,7 +760,7 @@ public class Cron extends PicsActionSupport {
 
 	private void sendInvalidEmailsToBilling(ContractorAccount cAccount) {
 		EmailQueue email = new EmailQueue();
-		email.setToAddresses("billing@picsauditing.com");
+		email.setToAddresses(EmailAddressUtils.getBillingEmail(cAccount.getCurrency()));
 		email.setContractorAccount(cAccount);
 		email.setSubject("Contractor Missing Email Address");
 		email.setBody(cAccount.getName() + " (" + cAccount.getId() + ") has no valid email address. "

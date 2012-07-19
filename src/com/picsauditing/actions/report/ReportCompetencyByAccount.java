@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -99,7 +100,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				emailBuilder.addToken("permissions", permissions);
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setHighPriority();
-				emailQueue.setFromAddress("billing@picsauditing.com");
+				emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 				emailQueue.setViewableById(Account.PicsID);
 				emailSender.send(emailQueue);
 			}

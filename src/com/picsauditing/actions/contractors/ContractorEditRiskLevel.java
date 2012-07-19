@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -182,7 +183,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		emailBuilder.clear();
 		emailBuilder.setTemplate(159);
 		emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-		emailBuilder.setToAddresses("billing@picsauditing.com");
+		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 		emailBuilder.addToken("contractor", contractor);
 		emailBuilder.addToken("currentSafetyRisk", currentRisk);
 		emailBuilder.addToken("newSafetRisk", newRisk);

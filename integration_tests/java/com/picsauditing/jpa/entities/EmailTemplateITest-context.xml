@@ -22,12 +22,11 @@
 	<import resource="classpath:TestDatabaseEntityManager-context.xml"/>
 	
 	<jdbc:initialize-database data-source="dataSource">
-		<jdbc:script location="classpath:create_flag_criteria_table.sql" />
-		<jdbc:script location="classpath:create_app_translation_table.sql" />
-		<jdbc:script location="classpath:flag_criteria_test_data.sql" />
+		<jdbc:script location="classpath:create_email_template_table.sql" />
+		<jdbc:script location="classpath:email_template_test_data.sql" />
 	</jdbc:initialize-database>
 
-	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO" />
+	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO" />
 	<bean id="DBBean" class="com.picsauditing.PICS.DBBean">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>

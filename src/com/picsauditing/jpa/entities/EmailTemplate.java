@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
-@AttributeOverride(name = "id", column = @Column(name = "templateID"))
 public class EmailTemplate extends BaseTableRequiringLanguages implements java.io.Serializable {
 	private int accountID;
 	private String templateName = "";

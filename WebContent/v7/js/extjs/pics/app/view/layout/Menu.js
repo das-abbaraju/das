@@ -51,6 +51,7 @@ Ext.define('PICS.view.layout.Menu', {
             // Only apply this styling to top-level toolbar menu items
             menu_item.height = 50;
             menu_item.scale = 'large';
+            menu_item.hrefTarget = '';
         });
     },
 

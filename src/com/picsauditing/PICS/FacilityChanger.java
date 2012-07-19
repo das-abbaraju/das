@@ -35,6 +35,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.EmailAddressUtils;
 
 /**
  * Adds and removed contractors from operator accounts
@@ -192,7 +193,7 @@ public class FacilityChanger {
 					emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
 					emailBuilder.addToken("operator", co.getOperatorAccount());
 					emailBuilder.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
-					emailBuilder.setToAddresses("billing@picsauditing.com");
+					emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 
 					EmailQueue emailQueue = emailBuilder.build();
 					emailQueue.setHighPriority();

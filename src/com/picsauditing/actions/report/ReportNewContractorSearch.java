@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -265,7 +266,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setFromAddress("billing@picsauditing.com");
+			emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 			emailQueue.setViewableById(Account.PicsID);
 			emailSender.send(emailQueue);
 		}
