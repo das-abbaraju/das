@@ -334,8 +334,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		facilitiesEditModel.addPicsGlobal(operator, permissions);
 
-		facilitiesEditModel.addPicsCountry(operator, permissions);
-
+		if (!operator.isInPicsConsortium()) {
+			facilitiesEditModel.addPicsCountry(operator, permissions);
+		}
+		
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));
