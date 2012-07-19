@@ -195,7 +195,7 @@ public final class MenuBuilder {
 	}
 
 	private static void addDashboard(MenuComponent menubar) {
-		menubar.addChild("Dashboard", "Home.action", "logo");
+		menubar.addChild(getText("OpPerms.Dashboard.description"), "Home.action", "logo");
 	}
 
 	private static void addDevelopmentMenu(MenuComponent menubar, Permissions permissions) {

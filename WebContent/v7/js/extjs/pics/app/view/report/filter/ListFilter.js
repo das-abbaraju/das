@@ -16,7 +16,7 @@ Ext.define('PICS.view.report.filter.ListFilter', {
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({
-            url: 'ReportDynamic!list.action?report=' + url.report + "&fieldName=" + this.record.get('text'),
+            url: 'ReportDynamic!list.action?report=' + url.report + "&fieldName=" + this.record.get('name'),
             success: function (result) {
                 var returnedValues = Ext.decode(result.responseText);
                 me.createFilterCombo(returnedValues.result);

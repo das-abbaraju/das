@@ -134,7 +134,7 @@ public class AccountRecovery extends PicsActionSupport {
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			userDAO.save(user);
 
-			addActionMessage(sendRecoveryEmail(user));
+			addAlertMessage(sendRecoveryEmail(user));
 
 			return setUrlForRedirect("Login.action");
 
