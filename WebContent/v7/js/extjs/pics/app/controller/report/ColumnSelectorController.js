@@ -125,6 +125,11 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
         }));
     },
 
+    searchFocus: function () {
+        var search_field = this.getSearchField();
+        search_field.focus(false, 10);
+    },
+
     showColumnSelector: function(component, e, options) {
         var me = this,
             window = this.getColumnSelector();
@@ -139,6 +144,8 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             });
 
             window.show();
+
+            this.searchFocus();
         }
     },
 
