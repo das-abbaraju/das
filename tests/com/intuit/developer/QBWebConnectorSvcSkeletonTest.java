@@ -1,8 +1,11 @@
 package com.intuit.developer;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -10,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -126,6 +130,7 @@ public class QBWebConnectorSvcSkeletonTest {
 		assertThat(currentStep, is(equalTo(QBIntegrationWorkFlow.DumpUnMappedContractors)));
 	}
 	
+	@Ignore("Very long test")
 	@Test
 	public void testGuid_ReasonablyUnique() throws Exception {
 		// this still passes at 100,000 but it is too slow
