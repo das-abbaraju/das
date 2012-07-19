@@ -415,7 +415,12 @@
 				<s:if test="contractor.paymentMethod.EFT">
                     <tr>
                         <td style="padding: 15px;">
-                            <s:text name="InvoiceDetail.PaymentInstruction" />
+                        	<s:if test="invoice.currency.EUR">
+                            	<s:text name="InvoiceDetail.PaymentInstruction" />
+                            </s:if>
+                            <s:elseif test="invoice.currency.GBP">
+                            	<s:text name="InvoiceDetail.PaymentInstruction_UK" />
+                            </s:elseif>
                         </td>
                     </tr>
                 </s:if>
