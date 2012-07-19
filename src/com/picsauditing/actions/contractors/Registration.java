@@ -101,9 +101,9 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCountry(crr.getCountry());
 					contractor.setState(crr.getState());
 
-					if (countrySubdivisionDAO.exist(crr.getState().getIsoCode()+"-"+crr.getCountry().getIsoCode())){
+					if (countrySubdivisionDAO.exist(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode())){
 						CountrySubdivision countrySubdivision = new CountrySubdivision();
-						countrySubdivision.setIsoCode(crr.getState().getIsoCode()+"-"+crr.getCountry().getIsoCode());
+						countrySubdivision.setIsoCode(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode());
 						contractor.setCountrySubdivision(countrySubdivision);
 					}
 
@@ -245,9 +245,9 @@ public class Registration extends ContractorActionSupport {
 		}
 		if (contractor.getCountry().isHasStates() && state != null){
 			contractor.setState(state);
-			if (countrySubdivisionDAO.exist(contractor.getState().getIsoCode()+"-"+contractor.getCountry().getIsoCode())){
+			if (countrySubdivisionDAO.exist(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode())){
 				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(contractor.getState().getIsoCode()+"-"+contractor.getCountry().getIsoCode());
+				countrySubdivision.setIsoCode(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode());
 				contractor.setCountrySubdivision(countrySubdivision);
 			}
 		}

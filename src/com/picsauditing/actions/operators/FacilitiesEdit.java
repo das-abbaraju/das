@@ -229,9 +229,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
 			operator.setState(state);
 
-			if (countrySubdivisionDAO.exist(state.getIsoCode()+"-"+country.getIsoCode())){
+			if (!countrySubdivisionDAO.exist(operator.getCountry().getIsoCode()+"-"+operator.getState().getIsoCode())){
 				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(state.getIsoCode()+"-"+country.getIsoCode());
+				countrySubdivision.setIsoCode(operator.getCountry().getIsoCode()+"-"+operator.getState().getIsoCode());
 				operator.setCountrySubdivision(countrySubdivision);
 			}
 		}

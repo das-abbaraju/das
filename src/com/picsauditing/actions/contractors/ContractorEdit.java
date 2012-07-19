@@ -220,12 +220,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				
 				stampContractorNoteAboutOfficeLocationChange();
 			}
-			contractor.setCountry(country);
-			contractor.setState(state);
 			
-			if (countrySubdivisionDAO.exist(state.getIsoCode()+"-"+country.getIsoCode())){
+			if (countrySubdivisionDAO.exist(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode())){
 				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(state.getIsoCode()+"-"+country.getIsoCode());
+				countrySubdivision.setIsoCode(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode());
 				contractor.setCountrySubdivision(countrySubdivision);
 			}
 

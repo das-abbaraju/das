@@ -302,9 +302,9 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
 		crr.setState(importedState);
-		if (countrySubdivisionDAO.exist(importedState.getIsoCode()+"-"+importedCountry.getIsoCode())){
+		if (countrySubdivisionDAO.exist(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode())){
 			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(importedState.getIsoCode()+"-"+importedCountry.getIsoCode());
+			countrySubdivision.setIsoCode(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode());
 			crr.setCountrySubdivision(countrySubdivision);
 		}
 		if (zipValue != null) {

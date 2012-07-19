@@ -142,12 +142,12 @@ public class ManageJobSites extends OperatorActionSupport {
 	}
 
 	private boolean isCountrySubdivision() {
-		return countrySubdivisionDAO.exist(siteState.getIsoCode() + "-" + siteCountry.getIsoCode());
+		return countrySubdivisionDAO.exist(siteCountry.getIsoCode() + "-" + siteState.getIsoCode());
 	}
 
 	private CountrySubdivision getCountrySubdivision() {
 		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(siteState.getIsoCode() + "-" + siteCountry.getIsoCode());
+		countrySubdivision.setIsoCode(siteCountry.getIsoCode() + "-" + siteState.getIsoCode());
 		return countrySubdivision;
 	}
 
