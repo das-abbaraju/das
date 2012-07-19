@@ -240,14 +240,14 @@ public class LoginController extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	@Anonymous
 	public String ajax() throws Exception {
-		String result = execute();
-		if ("success".equals(result)) {
-			json = new JSONObject();
-			json.put("loggedIn", permissions.isLoggedIn());
-			return JSON;
-		}
+		if (!AjaxUtils.isAjax(getRequest()))
+			return BLANK;
 
-		return BLANK;
+		execute();
+
+		json = new JSONObject();
+		json.put("loggedIn", permissions.isLoggedIn());
+		return JSON;
 	}
 
 	/**
