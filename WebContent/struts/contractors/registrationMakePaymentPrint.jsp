@@ -84,7 +84,14 @@
 			<tr>
 				<td class="center"><s:property value="permissions.picsPhone" /></td>
 				<td class="center"><s:property value="permissions.picsBillingFax" /></td>
-				<td class="center">billing@picsauditing.com</td>
+				<td class="center">
+					<s:if test="invoice.currency.CAD||invoice.currency.USD">
+						billing@picsauditing.com
+					</s:if>
+					<s:elseif test="invoice.currency.GBP||invoice.currency.EUR">
+						eubilling@picsauditing.com
+					</s:elseif>
+				</td>
 				<td class="center">www.picsorganizer.com</td>
 			</tr>
 		</table>

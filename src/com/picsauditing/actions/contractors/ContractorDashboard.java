@@ -61,6 +61,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.oshadisplay.OshaDisplay;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.NoteFactory;
 
@@ -202,7 +203,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setFromAddress("billing@picsauditing.com");
+			emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 			if (permissions.isOperator())
 				emailQueue.setViewableById(permissions.getTopAccountID());
 			else

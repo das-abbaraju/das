@@ -32,6 +32,7 @@ import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectAccount.Type;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -332,7 +333,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(159);
 		emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-		emailBuilder.setToAddresses("billing@picsauditing.com");
+		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(con.getCurrency()));
 		emailBuilder.addToken("contractor", con);
 		emailBuilder.addToken("currentSafetyRisk", currentRisk);
 		emailBuilder.addToken("newSafetyRisk", newRisk);

@@ -3,6 +3,8 @@ package com.picsauditing.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.Currency;
+
 public class EmailAddressUtils {
 	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
 		Set<String> validEmail = new HashSet<String>();
@@ -38,8 +40,18 @@ public class EmailAddressUtils {
 		if (matchFound)
 			return tempEmail;
 		else
-			return "billing@picsauditing.com";
+			return "info@picsauditing.com";
 
+	}
+
+	public static String getBillingEmail(Currency currency){
+		if (currency.isEUR()||currency.isGBP()){
+			return "\"PICS Billing\"<eubilling@picsauditing.com>";
+		} else if(currency.isCAD()|| currency.isUSD()){
+			return "\"PICS Billing\"<billing@picsauditing.com>";
+		} else {
+			return "\"PICS Billing\"<billing@picsauditing.com>";
+		}
 	}
 	// public static String validate(final String email){
 	// String tempEmail = email.trim();

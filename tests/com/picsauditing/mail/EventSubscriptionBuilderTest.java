@@ -32,7 +32,6 @@ import com.picsauditing.util.SpringUtils;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"EventSubscriptionBuilderTest-context.xml"})
 public class EventSubscriptionBuilderTest {
-	private EventSubscriptionBuilder eventSubscriptionBuilder;
 
 	@Mock private EmailBuilder emailBuilder;
 	@Mock private EmailQueue email;
@@ -52,34 +51,7 @@ public class EventSubscriptionBuilderTest {
 		emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 		emailSubscriptionDAO = (EmailSubscriptionDAO) SpringUtils.getBean("EmailSubscriptionDAO");
 	}
-	@Test
-	public void testGetBillingEmail_UDS() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
-		Method method = EventSubscriptionBuilder.class.getDeclaredMethod("getBillingEmail", Currency.class);
-		method.setAccessible(true);
-		String email = (String) method.invoke(EventSubscriptionBuilder.class, Currency.USD);
-		assertEquals("\"PICS Billing\"<billing@picsauditing.com>", email);
-	}
-	@Test
-	public void testGetBillingEmail_CAD() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
-		Method method = EventSubscriptionBuilder.class.getDeclaredMethod("getBillingEmail", Currency.class);
-		method.setAccessible(true);
-		String email = (String) method.invoke(EventSubscriptionBuilder.class, Currency.CAD);
-		assertEquals("\"PICS Billing\"<billing@picsauditing.com>", email);
-	}
-	@Test
-	public void testGetBillingEmail_GBP() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
-		Method method = EventSubscriptionBuilder.class.getDeclaredMethod("getBillingEmail", Currency.class);
-		method.setAccessible(true);
-		String email = (String) method.invoke(EventSubscriptionBuilder.class, Currency.GBP);
-		assertEquals("\"PICS Billing\"<eubilling@picsauditing.com>", email);
-	}
-	@Test
-	public void testGetBillingEmail_EUR() throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException{
-		Method method = EventSubscriptionBuilder.class.getDeclaredMethod("getBillingEmail", Currency.class);
-		method.setAccessible(true);
-		String email = (String) method.invoke(EventSubscriptionBuilder.class, Currency.EUR);
-		assertEquals("\"PICS Billing\"<eubilling@picsauditing.com>", email);
-	}
+
 	@Test
 	public void testNotifyUpcomingImplementationAudit() throws Exception {
 		ContractorAudit audit = getAudit();

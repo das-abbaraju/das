@@ -456,7 +456,12 @@
     								</td>
                                 </s:if>
 								<td class="center">
-									billing@picsauditing.com
+									<s:if test="invoice.currency.CAD||invoice.currency.USD">
+										billing@picsauditing.com
+									</s:if>
+									<s:elseif test="invoice.currency.GBP||invoice.currency.EUR">
+										eubilling@picsauditing.com
+									</s:elseif>
 								</td>
 								<td class="center">
 									www.picsauditing.com

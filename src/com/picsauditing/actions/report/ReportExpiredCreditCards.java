@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.util.EmailAddressUtils;
 
 @SuppressWarnings("serial")
 public class ReportExpiredCreditCards extends ReportAccount {
@@ -78,7 +79,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 						emailBuilder.setTemplate(59);
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.setContractor(con, OpPerms.ContractorBilling);
-						emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
+						emailBuilder.setFromAddress(EmailAddressUtils.getBillingEmail(con.getCurrency()));
 						EmailQueue email = emailBuilder.build();
 						email.setViewableById(Account.PicsID);
 						emailSender.send(email);

@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
@@ -146,7 +147,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(106);
 						emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-						emailBuilder.setToAddresses("billing@picsauditing.com");
+						emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.addToken("permissions", permissions);
 						emailBuilder.addToken("contractor", contractor);
