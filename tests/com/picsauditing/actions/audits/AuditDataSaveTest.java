@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -64,6 +65,11 @@ public class AuditDataSaveTest {
 	private AnswerMap answerMap;
 	private AuditCatData catData;
 
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {

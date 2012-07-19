@@ -5,21 +5,25 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.search.Database;
 
 public class VerifyAuditTest {
 	private VerifyAudit verifyAudit;
@@ -27,13 +31,18 @@ public class VerifyAuditTest {
 	private ContractorAccount contractor;
 	private ContractorAudit conAudit;
 
-	@Mock
-	private AuditDataDAO auditDataDao;
+	@Mock private AuditDataDAO auditDataDao;
+	@Mock private Database databaseForTesting;
 
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+	
 	@Before
 	public void setUp() throws Exception {
-
 		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		
 		verifyAudit = new VerifyAudit();
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(verifyAudit, this);

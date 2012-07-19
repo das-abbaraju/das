@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.Locale;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,11 @@ public class ContractorFlagAnswerDisplayTest extends PicsTest {
 	private FlagCriteriaContractor flagCriteriaContractor;
 	private FlagData flagData;
 
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);

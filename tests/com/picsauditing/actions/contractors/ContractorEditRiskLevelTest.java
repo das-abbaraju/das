@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,6 +27,11 @@ public class ContractorEditRiskLevelTest {
 	@Mock private ContractorAccount contractor;
 	@Mock private EmailQueue emailQueue;
 	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
 	
 	@Before
 	public void setUp() throws Exception {

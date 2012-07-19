@@ -1,12 +1,37 @@
 package com.picsauditing.util.excel;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class ExcelSheetTest extends TestCase {
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.search.Database;
+
+public class ExcelSheetTest {
+	private ExcelSheet excelSheet;
+
+	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+
+		excelSheet = new ExcelSheet();
+	}
+	
+	@Test
 	public void testDisplayOrder() {
-
-		ExcelSheet excelSheet = new ExcelSheet();
 		excelSheet.addColumn(new ExcelColumn("first")); // order 10
 		excelSheet.addColumn(new ExcelColumn("fourth"), 100);
 		excelSheet.addColumn(new ExcelColumn("second"), 20);

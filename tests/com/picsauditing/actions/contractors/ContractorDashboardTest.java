@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -26,6 +28,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
@@ -39,13 +42,19 @@ public class ContractorDashboardTest {
 	ContractorOperator conCorp;
 	Permissions permissions;
 
-	@Mock
-	ContractorOperatorDAO contractorOperatorDAO;
-
+	@Mock private ContractorOperatorDAO contractorOperatorDAO;
+	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
 		dashboard = new ContractorDashboard();
 
 		contractor = EntityFactory.makeContractor();
