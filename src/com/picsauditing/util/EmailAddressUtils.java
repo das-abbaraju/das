@@ -45,13 +45,11 @@ public class EmailAddressUtils {
 	}
 
 	public static String getBillingEmail(Currency currency){
-		if (currency.isEUR()||currency.isGBP()){
+		if (currency != null && (currency.isEUR() || currency.isGBP())){
 			return "\"PICS Billing\"<eubilling@picsauditing.com>";
-		} else if(currency.isCAD()|| currency.isUSD()){
-			return "\"PICS Billing\"<billing@picsauditing.com>";
 		} else {
 			return "\"PICS Billing\"<billing@picsauditing.com>";
-		}
+		} 
 	}
 	// public static String validate(final String email){
 	// String tempEmail = email.trim();

@@ -10,27 +10,27 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.search.Database;
 
 public class ContractorEditRiskLevelTest {
 	private ContractorEditRiskLevel contractorEditRiskLevel;
 	
-	@Mock
-	EmailSenderSpring emailSender;
-	@Mock
-	EmailBuilder emailBuilder;
-	@Mock
-	ContractorAccount contractor;
-	@Mock
-	EmailQueue emailQueue;
+	@Mock private EmailSenderSpring emailSender;
+	@Mock private EmailBuilder emailBuilder;
+	@Mock private ContractorAccount contractor;
+	@Mock private EmailQueue emailQueue;
+	@Mock private Database databaseForTesting;
 	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		
 		contractorEditRiskLevel = new ContractorEditRiskLevel();
 		
