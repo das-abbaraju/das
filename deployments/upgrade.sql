@@ -51,3 +51,8 @@ where ca.auditTypeID=331
 and pd.questionID=11062
 and pd.answer is not null and pd.answer !='';
 
+-- PICS-6388 update pics consortium
+update
+operators o
+set inPicsConsortium=1
+where id in (4,5,6,7,8,9,10,11);
