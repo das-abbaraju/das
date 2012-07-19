@@ -6,16 +6,16 @@ Ext.define('PICS.controller.report.FilterController', {
         selector: 'reportcolumnselector'
     }, {
         ref: 'filterOptions',
-        selector: 'filteroptions'
+        selector: 'reportfilteroptions'
     }, {
         ref: 'filters',
-        selector: 'filteroptions #report_filters'
+        selector: 'reportfilteroptions #report_filters'
     }, {
         ref: 'advancedFilter',
-        selector: 'filteroptions advancedfilter'
+        selector: 'reportfilteroptions advancedfilter'
     }, {
         ref: 'advancedExpression',
-        selector: 'filteroptions advancedfilter textfield[name=filterexpression]'
+        selector: 'reportfilteroptions advancedfilter textfield[name=filterexpression]'
     }],
 
     stores: [
@@ -28,7 +28,19 @@ Ext.define('PICS.controller.report.FilterController', {
         var that = this;
 
         this.control({
-            'filteroptions #report_filters': {
+            '#report_filter_options_expand': {
+                click: function (cmp, event, eOpts) {
+                    Ext.ComponentQuery.query('reportfilteroptions')[0].expand();
+                }
+            },
+
+            '#report_filter_options_collapse': {
+                click: function (cmp, event, eOpts) {
+                    Ext.ComponentQuery.query('reportfilteroptions')[0].collapse();
+                }
+            },
+
+            'reportfilteroptions #report_filters': {
                 beforerender: function () {
                     if (this.getReportReportsStore().isLoading()) {
                         this.getReportReportsStore().addListener({
@@ -45,27 +57,27 @@ Ext.define('PICS.controller.report.FilterController', {
                     }
                 }
             },
-            'filteroptions button[action=add-filter]': {
-                click: function () {
+            'reportfilteroptions button[action=add-filter]': {
+                click: function (cmp, event, eOpts) {
                     that.application.fireEvent('showcolumnselector', {
                         columnSelectorType: 'filter'
                     });
                 }
             },
-            'filteroptions button[action=search]': {
-                click: function () {
+            'reportfilteroptions button[action=search]': {
+                click: function (cmp, event, eOpts) {
                     that.application.fireEvent('refreshreport');
                 }
             },
-            'filteroptions button[action=update]': {
-                click: function () {
+            'reportfilteroptions button[action=update]': {
+                click: function (cmp, event, eOpts) {
                     this.applyAdvancedFilter();
                 }
             },
-            'filteroptions button[action=remove-filter]': {
+            'reportfilteroptions button[action=remove-filter]': {
                 click: this.removeFilter
             },
-            'filteroptions menuitem[action=toggle-advanced-filtering]': {
+            'reportfilteroptions button[action=toggle-filter-formula]': {
                 click: this.createAdvancedFilter
             },
             '#report_filter_expression button[action=hide]': {

@@ -1,0 +1,62 @@
+// report filter options - header
+$report_filter_options_header_background_color: #73bbe8;
+$report_filter_options_header_border_color: #808285;
+$report_filter_options_header_text_color: #ffffff;
+
+// report filter options_header - add filter
+$report_filter_options_header_add_filter_icon_plus_text_color: #2caf2c;
+
+/*
+ * Filter Header
+ */
+
+#report_filter_options_header
+{
+	background: $report_filter_options_header_background_color;
+	border: 1px solid $report_filter_options_header_border_color !important;
+	@include box-shadow(none);
+	height: 50px;
+	padding: 10px 0px;
+}
+
+#report_filter_options_collapse
+{
+	border: 0px;
+	margin: 0px 10px;
+}
+
+#report_filter_options_collapse.x-over
+{
+	background: none;
+	@include border-radius(0px);
+}
+
+#report_filter_options_collapse span
+{
+	color: #f1f1f2;
+	font-size: 10px;
+}
+
+#report_filter_options_header .header
+{
+	color: $report_filter_options_header_text_color;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+#report_filter_options_header .add-filter
+{
+	margin-right: 10px;
+}
+
+#report_filter_options_header .add-filter button span
+{
+	font-size: 11px;
+	line-height: 24px !important;
+}
+
+#report_filter_options_header .add-filter .icon-plus
+{
+	color: $report_filter_options_header_add_filter_icon_plus_text_color;
+	margin-right: 5px;
+}
