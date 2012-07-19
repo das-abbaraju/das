@@ -18,9 +18,9 @@ import com.picsauditing.util.SpringUtils;
 /**
  * The business logic in FeeClass needs to be pulled out into a service to make
  * it properly testable.
- * 
+ *
  * @author TJB
- * 
+ *
  */
 public enum FeeClass implements Translatable {
 	// TODO combine some of these fees
@@ -100,7 +100,7 @@ public enum FeeClass implements Translatable {
 				}
 			}
 
-			BigDecimal minimumDiscount = (BigDecimal) Collections.min(discounts);
+			BigDecimal minimumDiscount = Collections.min(discounts);
 			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
 			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(0, BigDecimal.ROUND_DOWN);
 		}
@@ -110,7 +110,7 @@ public enum FeeClass implements Translatable {
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date Jan2013InsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
-	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2014-02-01");
+	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-01");
 
 	public boolean isPaymentExpiresNeeded() {
 		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == Activation || this == Reactivation;
@@ -150,6 +150,9 @@ public enum FeeClass implements Translatable {
 
 		for (OperatorAccount operator : operators) {
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
+
+			// TODO: Remove this
+			System.out.println(contractor.getBillingStatus());
 
 			// do I have an operator outside the exclusions list?
 			if (!exclusions.containsKey(operator.getTopAccount().getId())) {
