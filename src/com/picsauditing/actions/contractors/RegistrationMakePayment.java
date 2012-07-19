@@ -149,16 +149,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		// enforcing workflow steps before completing registration
 		String url = "";
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
-				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
-			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
-
-			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
-		} else if (contractor.getNonCorporateOperators().size() == 0) {
-			url = "AddClientSite.action?id=" + contractor.getId();
-
-			addActionMessage(getText("ContractorRegistrationFinish.message.AddFacility"));
-		}
+		url = contractorRiskUrl(url);
 
 		if (!url.isEmpty()) {
 			ServletActionContext.getResponse().sendRedirect(url);
@@ -277,6 +268,20 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
 		return BLANK;
+	}
+
+	private String contractorRiskUrl(String url) {
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
+				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
+			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
+
+			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
+		} else if (contractor.getNonCorporateOperators().size() == 0) {
+			url = "AddClientSite.action?id=" + contractor.getId();
+
+			addActionMessage(getText("ContractorRegistrationFinish.message.AddFacility"));
+		}
+		return url;
 	}
 
 	private void addNote(String subject) {
