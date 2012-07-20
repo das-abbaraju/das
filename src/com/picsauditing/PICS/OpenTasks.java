@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -171,24 +172,20 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAudits() {
-		Map<AuditType, String> auditTypesWithOpenTasks = new HashMap<AuditType, String>();
-
-		// if audit type not repeated then continue
-		// if annual update and audit for not repeated
+		List<String> auditTypeAndForWithOpenTasks = new ArrayList<String>();
+		
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 
-			boolean isAuditTypeRepeated = !auditTypesWithOpenTasks.containsKey(conAudit.getAuditType());
-			boolean auditIsAnnualAddendum = conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM;
-			String auditTypeFor = auditTypesWithOpenTasks.get(conAudit.getAuditType());
-			boolean isAnnualAddendumRepeated = auditIsAnnualAddendum && conAudit.getAuditFor().equals(auditTypeFor);
+			String auditTypeAndFor = conAudit.getAuditType().getId()+StringUtils.defaultIfEmpty(conAudit.getAuditFor(),"");
+			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
 
-			if (!isAuditTypeRepeated || !isAnnualAddendumRepeated) {
+			if (!isAuditTypeAndForRepeated) {
 				if (conAudit.isVisibleTo(permissions)) {
 					if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 						if (isOpenTaskNeeded(conAudit, user, permissions)) {
 							boolean addedOpenTask = addAuditOpenTasks(conAudit);
 							if (addedOpenTask) {
-								auditTypesWithOpenTasks.put(conAudit.getAuditType(), conAudit.getAuditFor());
+								auditTypeAndForWithOpenTasks.add(auditTypeAndFor);
 							}
 						}
 					}
