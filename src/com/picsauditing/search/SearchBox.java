@@ -31,6 +31,9 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LinkBuilder;
 import com.picsauditing.util.Strings;
 
+/**
+ * This is a controller. It should not use any DAOs from its parent.
+ */
 @SuppressWarnings("serial")
 public class SearchBox extends PicsActionSupport implements Preparable {
 
