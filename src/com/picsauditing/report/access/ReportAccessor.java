@@ -33,7 +33,7 @@ public class ReportAccessor {
 		return basicDao.findOne(Report.class, "t.id = " + id);
 	}
 
-	public ReportUser findOneUserReport(int userId, int reportId) throws NoResultException {
+	public ReportUser findOneUserReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
 		List<ReportUser> result = basicDao.findWhere(ReportUser.class, query);
 

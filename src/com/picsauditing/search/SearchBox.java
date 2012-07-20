@@ -1,7 +1,6 @@
 package com.picsauditing.search;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -62,6 +61,8 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	private final int PAGEBREAK = 50;
 	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
 
+	private static final Logger logger = LoggerFactory.getLogger(SearchBox.class);
+
 	@Override
 	public void prepare() throws Exception {
 		String[] urlQuery = (String[]) ActionContext.getContext().getParameters().get("q");
@@ -90,8 +91,26 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String json() throws Exception {
-		execute();
+	public String json() {
+		try {
+			execute();
+		} catch (Exception e) {
+			logger.error("Exception while running execute.", e);
+		}
+
+		JSONArray outputAsJsonArray = convertOutputToJson(output);
+		json.put("results", outputAsJsonArray);
+
+		return JSON;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String userJson() {
+		try {
+			execute();
+		} catch (Exception e) {
+			logger.error("Exception while running execute.", e);
+		}
 
 		JSONArray outputAsJsonArray = convertOutputToJson(output);
 		json.put("results", outputAsJsonArray);
@@ -385,86 +404,5 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 	public int getPAGEBREAK() {
 		return PAGEBREAK;
-	}
-
-	class SearchItem {
-		public int id;
-		public Class<? extends AbstractIndexableTable> type = null;
-		public AbstractIndexableTable record = null;
-
-		public SearchItem(Class<? extends AbstractIndexableTable> type, int id) {
-			this.type = type;
-			this.id = id;
-		}
-
-		public SearchItem(Class<? extends AbstractIndexableTable> type, int id, AbstractIndexableTable record) {
-			this.type = type;
-			this.id = id;
-			this.record = record;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o)
-				return true;
-
-			try {
-				SearchItem si = (SearchItem) o;
-				if (this.id == si.id && this.type == si.type) {
-					return true;
-				}
-			} catch (Exception e) {
-				Logger logger = LoggerFactory.getLogger(SearchBox.class);
-				logger.error("Error in equals for SearchItem");
-			}
-
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			return ((type.getName().hashCode() % 1000) * 10000000) + id;
-		}
-	}
-
-	class SearchList {
-		public List<SearchItem> data = null;
-
-		public SearchList() {
-			data = new ArrayList<SearchItem>();
-		}
-
-		public SearchItem add(SearchItem item) {
-			boolean found = false;
-
-			for (SearchItem other : data) {
-				if (other.equals(item)) {
-					other.record = item.record;
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				data.add(item);
-			}
-
-			return item;
-		}
-
-		public List<AbstractIndexableTable> getRecordsOnly(boolean nullsAllowed) {
-			List<AbstractIndexableTable> recordsOnly = new ArrayList<AbstractIndexableTable>();
-			for (SearchItem item : data) {
-				if (nullsAllowed) {
-					recordsOnly.add(item.record);
-				} else {
-					if (item.record != null) {
-						recordsOnly.add(item.record);
-					}
-				}
-			}
-
-			return recordsOnly;
-		}
 	}
 }

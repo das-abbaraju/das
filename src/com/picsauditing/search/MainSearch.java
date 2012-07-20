@@ -30,6 +30,10 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LinkBuilder;
 import com.picsauditing.util.Strings;
 
+/**
+ * Please add all new search functionality to SearchBox.java
+ */
+@Deprecated
 @SuppressWarnings("serial")
 public class MainSearch extends PicsActionSupport implements Preparable {
 	@Autowired
@@ -317,79 +321,79 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		return PAGEBREAK;
 	}
 
-}
+	private class SearchItem {
+		public int id;
+		public Class<? extends AbstractIndexableTable> type = null;
+		public AbstractIndexableTable record = null;
 
-class SearchItem {
-	public int id;
-	public Class<? extends AbstractIndexableTable> type = null;
-	public AbstractIndexableTable record = null;
+		public SearchItem(Class<? extends AbstractIndexableTable> type, int id) {
+			this.type = type;
+			this.id = id;
+		}
 
-	public SearchItem(Class<? extends AbstractIndexableTable> type, int id) {
-		this.type = type;
-		this.id = id;
-	}
+		public SearchItem(Class<? extends AbstractIndexableTable> type, int id, AbstractIndexableTable record) {
+			this.type = type;
+			this.id = id;
+			this.record = record;
+		}
 
-	public SearchItem(Class<? extends AbstractIndexableTable> type, int id, AbstractIndexableTable record) {
-		this.type = type;
-		this.id = id;
-		this.record = record;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		try {
-			SearchItem si = (SearchItem) o;
-			if (this.id == si.id && this.type == si.type)
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
 				return true;
-			else
+			try {
+				SearchItem si = (SearchItem) o;
+				if (this.id == si.id && this.type == si.type)
+					return true;
+				else
+					return false;
+			} catch (Exception e) {
+				Logger logger = LoggerFactory.getLogger(MainSearch.class);
+				logger.error("Error in equals for SearchItem");
 				return false;
-		} catch (Exception e) {
-			Logger logger = LoggerFactory.getLogger(MainSearch.class);
-			logger.error("Error in equals for SearchItem");
-			return false;
-		}
-	}
-
-	@Override
-	public int hashCode() {
-		return ((type.getName().hashCode() % 1000) * 10000000) + id;
-	}
-
-}
-
-class SearchList {
-	public List<SearchItem> data = null;
-
-	public SearchList() {
-		data = new ArrayList<SearchItem>();
-	}
-
-	public SearchItem add(SearchItem item) {
-		boolean found = false;
-		for (SearchItem other : data) {
-			if (other.equals(item)) {
-				other.record = item.record;
-				found = true;
-				break;
 			}
 		}
-		if (!found)
-			data.add(item);
-		return item;
+
+		@Override
+		public int hashCode() {
+			return ((type.getName().hashCode() % 1000) * 10000000) + id;
+		}
+
 	}
 
-	public List<AbstractIndexableTable> getRecordsOnly(boolean nullsAllowed) {
-		List<AbstractIndexableTable> recordsOnly = new ArrayList<AbstractIndexableTable>();
-		for (SearchItem item : data) {
-			if (nullsAllowed)
-				recordsOnly.add(item.record);
-			else {
-				if (item.record != null)
+	private class SearchList {
+		public List<SearchItem> data = null;
+
+		public SearchList() {
+			data = new ArrayList<SearchItem>();
+		}
+
+		public SearchItem add(SearchItem item) {
+			boolean found = false;
+			for (SearchItem other : data) {
+				if (other.equals(item)) {
+					other.record = item.record;
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				data.add(item);
+			return item;
+		}
+
+		public List<AbstractIndexableTable> getRecordsOnly(boolean nullsAllowed) {
+			List<AbstractIndexableTable> recordsOnly = new ArrayList<AbstractIndexableTable>();
+			for (SearchItem item : data) {
+				if (nullsAllowed)
 					recordsOnly.add(item.record);
+				else {
+					if (item.record != null)
+						recordsOnly.add(item.record);
+				}
 			}
+			return recordsOnly;
 		}
-		return recordsOnly;
 	}
 }
+
