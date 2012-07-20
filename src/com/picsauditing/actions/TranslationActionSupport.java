@@ -32,7 +32,7 @@ public class TranslationActionSupport extends ActionSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
 	private static final Locale[] supportedLocales = new Locale[] { Locale.ENGLISH, Locale.FRENCH, new Locale("es"),
-			Locale.GERMAN, new Locale("sv"), new Locale("fi"), new Locale("nl") };
+			Locale.GERMAN, new Locale("sv"), new Locale("fi"), new Locale("nl"), new Locale("no") };
 
 	public static Locale[] getSupportedLocales() {
 		return supportedLocales;
