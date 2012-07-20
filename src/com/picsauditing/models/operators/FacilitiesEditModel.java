@@ -17,6 +17,13 @@ public class FacilitiesEditModel {
 	@Autowired
 	protected BasicDAO dao;
 
+	public static final int PICS_US = 5;
+	public static final int PICS_CANADA = 6;
+	public static final int PICS_UAE = 7;
+	public static final int PICS_UK = 9;
+	public static final int PICS_FRANCE = 10;
+	public static final int PICS_GERMANY = 11;
+
 	public void addPicsGlobal(OperatorAccount operator, Permissions permissions) {
 		for (Facility f : operator.getCorporateFacilities()) {
 			if (f.getCorporate().getId() == OperatorAccount.PicsConsortium) {
