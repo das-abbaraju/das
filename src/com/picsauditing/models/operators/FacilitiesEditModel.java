@@ -17,13 +17,6 @@ public class FacilitiesEditModel {
 	@Autowired
 	protected BasicDAO dao;
 
-	public static final int PICS_US = 5;
-	public static final int PICS_CANADA = 6;
-	public static final int PICS_UAE = 7;
-	public static final int PICS_UK = 9;
-	public static final int PICS_FRANCE = 10;
-	public static final int PICS_GERMANY = 11;
-
 	public void addPicsGlobal(OperatorAccount operator, Permissions permissions) {
 		for (Facility f : operator.getCorporateFacilities()) {
 			if (f.getCorporate().getId() == OperatorAccount.PicsConsortium) {
@@ -51,6 +44,8 @@ public class FacilitiesEditModel {
 			
 			List<OperatorAccount> picsConsortiums = dao.findWhere(OperatorAccount.class, "inPicsConsortium=1");
 			for(OperatorAccount consortium:picsConsortiums) {
+				if (consortium.getId() == OperatorAccount.PicsConsortium)
+					continue;
 				if (operator.getCountry().getIsoCode().equals(consortium.getCountry().getIsoCode())) {
 					f.setCorporate(consortium);
 					break;
