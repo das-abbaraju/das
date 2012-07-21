@@ -3866,13 +3866,13 @@ browsers will do whacky things with it.
   color: #2caf2c;
   margin-right: 5px; }
 
-/* line 2, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions {
+/* line 2, ../sass/my-ext-theme/report/filter/_toolbar.scss */
+#report_filter_toolbar {
   background: #454545;
   border: 1px solid #333; }
 
-/* line 8, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .x-btn {
+/* line 8, ../sass/my-ext-theme/report/filter/_toolbar.scss */
+#report_filter_toolbar .x-btn {
   background: none;
   border: 0px;
   -webkit-border-radius: 0px;
@@ -3881,38 +3881,40 @@ browsers will do whacky things with it.
   -o-border-radius: 0px;
   border-radius: 0px; }
 
-/* line 15, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .x-btn span {
+/* line 15, ../sass/my-ext-theme/report/filter/_toolbar.scss */
+#report_filter_toolbar .x-btn span {
   color: #999;
   font-size: 11px;
   font-weight: bold; }
 
-/* line 6, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression {
-  padding: 20px 20px 10px; }
-
-/* line 11, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .actions {
-  margin-top: 5px; }
-
-/* line 17, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .hide,
-#report_filter_expression .more-information {
-  background: transparent;
-  border: 0px;
-  padding: 0px; }
-
-/* line 25, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .hide.x-over span,
-#report_filter_expression .more-information.x-over span {
-  text-decoration: underline; }
-
-/* line 31, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .hide span,
-#report_filter_expression .more-information span {
-  color: #cccccc;
-  font-size: 11px;
-  padding: 0px; }
+/* line 2, ../sass/my-ext-theme/report/filter/_formula.scss */
+#report_filter_formula {
+  padding: 12px 30px; }
+  /* line 7, ../sass/my-ext-theme/report/filter/_formula.scss */
+  #report_filter_formula .info,
+  #report_filter_formula .cancel {
+    background: none;
+    border: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px; }
+  /* line 15, ../sass/my-ext-theme/report/filter/_formula.scss */
+  #report_filter_formula .info span,
+  #report_filter_formula .cancel span {
+    padding: 0px; }
+  /* line 21, ../sass/my-ext-theme/report/filter/_formula.scss */
+  #report_filter_formula .info i,
+  #report_filter_formula .cancel i {
+    font-size: 18px;
+    line-height: 18px; }
+  /* line 28, ../sass/my-ext-theme/report/filter/_formula.scss */
+  #report_filter_formula .icon-info-sign {
+    color: #73bbe8; }
+  /* line 33, ../sass/my-ext-theme/report/filter/_formula.scss */
+  #report_filter_formula .icon-remove-sign {
+    color: #ac030c; }
 
 /* line 16, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters {
@@ -3935,6 +3937,11 @@ browsers will do whacky things with it.
   border-top: 1px solid #999999; }
 
 /* line 40, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter-number {
+  display: none;
+  top: 25px !important; }
+
+/* line 46, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-number label {
   color: #999999;
   font-size: 18px;
@@ -3942,23 +3949,44 @@ browsers will do whacky things with it.
   margin: 0px !important;
   text-align: center; }
 
-/* line 49, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 55, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name div {
   color: #333333;
   font-size: 14px;
   font-weight: bold; }
 
-/* line 56, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 62, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter {
+  background: none;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  display: none;
   padding: 0px; }
 
-/* line 61, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 71, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter span {
   padding: 0px; }
 
-/* line 66, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter .icon-minus {
-  color: white; }
+/* line 76, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .remove-filter .icon-remove-sign {
+  color: #ac030c;
+  font-size: 18px;
+  line-height: 18px; }
+
+/* line 83, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters.x-active .filter-number {
+  display: block; }
+
+/* line 91, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter.x-over .filter-number,
+#report_filters .filter.x-form-focus .filter-number,
+#report_filters .filter.x-over .remove-filter,
+#report_filters .filter.x-form-focus .remove-filter {
+  display: block; }
 
 /* line 13, ../sass/my-ext-theme/report/grid/_toolbar.scss */
 #report_toolbar {

@@ -9,7 +9,7 @@ $report_filter_number_color: #999999;
 $report_filter_name_color: #333333;
 
 // report filter - remove button
-$report_filter_remove_filter_icon_minus_color: #ffffff;
+$report_filter_remove_filter_text_color: #ac030c;
 
 
 #report_filters
@@ -36,6 +36,12 @@ $report_filter_remove_filter_icon_minus_color: #ffffff;
 	border-top: 1px solid $report_filter_border_color_bottom;
 }
 
+#report_filters .filter-number
+{
+	display: none;
+	top: 25px !important;
+}
+
 #report_filters .filter-number label
 {
 	color: $report_filter_number_color;
@@ -54,6 +60,10 @@ $report_filter_remove_filter_icon_minus_color: #ffffff;
 
 #report_filters .remove-filter
 {
+	background: none;
+	border: 0px;
+	@include border-radius(0px);
+	display: none;
 	padding: 0px;
 }
 
@@ -62,7 +72,22 @@ $report_filter_remove_filter_icon_minus_color: #ffffff;
 	padding: 0px;
 }
 
-#report_filters .remove-filter .icon-minus
+#report_filters .remove-filter .icon-remove-sign
 {
-	color: $report_filter_remove_filter_icon_minus_color;
+	color: $report_filter_remove_filter_text_color;
+	font-size: 18px;
+	line-height: 18px;
+}
+
+#report_filters.x-active .filter-number
+{
+	display: block;
+}
+
+#report_filters .filter.x-over .filter-number,
+#report_filters .filter.x-form-focus .filter-number,
+#report_filters .filter.x-over .remove-filter,
+#report_filters .filter.x-form-focus .remove-filter
+{
+	display: block;
 }

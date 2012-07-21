@@ -1787,7 +1787,7 @@ tr.x-container:before {
   height: 10px; }
 /* line 19, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset .x-form-text {
-  height: 22px; }
+  height: 25px; }
 /* line 23, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset textarea.x-form-field {
   height: auto; }
@@ -1796,7 +1796,7 @@ tr.x-container:before {
   height: 20px; }
 /* line 32, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset .x-form-trigger {
-  height: 22px; }
+  height: 25px; }
 /* line 36, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset .x-field-default-toolbar .x-form-trigger {
   height: 20px; }
@@ -5443,17 +5443,17 @@ textarea.x-form-field {
 
 /* line 36, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-text {
-  height: 18px;
-  line-height: 15px;
+  height: 21px;
+  line-height: 18px;
   vertical-align: top; }
 
 /* line 43, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-ie8m .x-form-text {
-  line-height: 15px; }
+  line-height: 18px; }
 
 /* line 48, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-border-box .x-form-text {
-  height: 22px; }
+  height: 25px; }
 
 /* line 52, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 textarea.x-form-field {
@@ -5498,7 +5498,7 @@ textarea.x-form-invalid-field {
 
 /* line 100, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-webkit .x-form-empty-field {
-  line-height: 15px; }
+  line-height: 18px; }
 
 /* line 105, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-display-field {
@@ -5522,7 +5522,7 @@ textarea.x-form-invalid-field {
 
 /* line 126, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-ie .x-form-file {
-  height: 23px;
+  height: 26px;
   line-height: 18px;
   vertical-align: middle; }
 
@@ -5799,15 +5799,15 @@ textarea.x-form-invalid-field {
 .x-menu-item-active .x-menu-item-link span {
   color: white; }
 
-/* line 64, ../sass/my-ext-theme-menu.scss */
+/* line 65, ../sass/my-ext-theme-menu.scss */
 .x-reset .x-tool img {
   background-image: url("../../app/resources/images/tool-sprites.gif"); }
 
-/* line 73, ../sass/my-ext-theme-menu.scss */
+/* line 74, ../sass/my-ext-theme-menu.scss */
 .x-nlg #site_menu,
 .x-nlg .x-menu-item-active .x-menu-item-link,
 .x-nlg .x-btn-default-small {
   background-image: none !important; }
-/* line 78, ../sass/my-ext-theme-menu.scss */
+/* line 79, ../sass/my-ext-theme-menu.scss */
 .x-nlg .x-menu-item-active .x-menu-item-link {
   background: #a84d10; }

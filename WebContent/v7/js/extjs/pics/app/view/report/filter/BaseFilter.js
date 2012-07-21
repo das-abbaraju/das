@@ -21,7 +21,7 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
         cls: 'filter-content',
         items: [{
             border: 0,
-            height: 25,
+            height: 30,
             items: [{
                 xtype: 'displayfield',
                 cls: 'filter-name',
@@ -31,11 +31,11 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
             }, {
                 xtype: 'button',
                 action: 'remove-filter',
-                cls: 'remove-filter danger',
-                height: 15,
-                text: '<i class="icon-minus icon-large"></i>',
+                cls: 'remove-filter',
+                height: 16,
+                text: '<i class="icon-remove-sign"></i>',
                 tooltip: 'Remove',
-                width: 30
+                width: 16
             }],
             layout: {
                 type: 'hbox',
@@ -54,6 +54,7 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
         type: 'hbox',
         align: 'middle'
     },
+    overCls: 'x-over',
     width: '100%',
 
     constructor: function () {

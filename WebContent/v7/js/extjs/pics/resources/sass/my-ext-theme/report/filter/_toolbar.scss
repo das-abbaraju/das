@@ -1,17 +1,17 @@
-#report_filter_actions
+#report_filter_toolbar
 {
 	background: #454545;
 	border: 1px solid #333;
 }
 
-#report_filter_actions .x-btn
+#report_filter_toolbar .x-btn
 {
 	background: none;
 	border: 0px;
 	@include border-radius(0px);
 }
 
-#report_filter_actions .x-btn span
+#report_filter_toolbar .x-btn span
 {
 	color: #999;
 	font-size: 11px;

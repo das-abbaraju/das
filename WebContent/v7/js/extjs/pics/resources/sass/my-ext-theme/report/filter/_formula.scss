@@ -1,0 +1,36 @@
+#report_filter_formula
+{
+	padding: 12px 30px;
+	
+	.info,
+	.cancel
+	{
+		background: none;
+		border: 0px;
+		@include border-radius(0px);
+	}
+	
+	.info span,
+	.cancel span
+	{
+		padding: 0px;
+	}
+	
+	.info i,
+	.cancel i
+	{
+		font-size: 18px;
+		line-height: 18px;
+	}
+	
+	
+	.icon-info-sign
+	{
+		color: #73bbe8;
+	}
+	
+	.icon-remove-sign
+	{
+		color: #ac030c;
+	}
+}

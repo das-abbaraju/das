@@ -47,7 +47,7 @@ Ext.define('PICS.view.report.filter.ListFilter', {
     formatStoreData: function (listValues) {
         var listStore = [];
 
-        for (x = 0; x < listValues.length; x++) {
+        for (var x = 0; x < listValues.length; x++) {
             var currentValue = listValues[x];
             listStore.push([currentValue.id, currentValue.name]);
         }

@@ -51,22 +51,17 @@ Ext.define('PICS.model.report.AvailableField', {
         	'name': this.get('name')
         });
 
-        column.set(this.data);
+        column.getAvailableField().set(this.data);
 
         return column;
     },
 
     createFilter: function () {
         var filter = Ext.create('PICS.model.report.Filter', {
-            'name': this.get('name')
+            name: this.get('name')
         });
 
-        filter.set(this.data);
-
-        //set default operator
-        if (filter.get('operator') === "") {
-            filter.set('operator', '');
-        }
+        filter.getAvailableField().set(this.data);
 
         return filter;
     },

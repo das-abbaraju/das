@@ -4,11 +4,11 @@ Ext.define('PICS.view.report.filter.Toolbar', {
 
     dock: 'top',
     height: 25,
-    id: 'report_filter_actions',
+    id: 'report_filter_toolbar',
     items: [{
-        action: 'toggle-filter-formula',
+        action: 'show-filter-formula',
         border: false,
-        cls: 'filter-formula',
+        cls: 'show-filter-formula',
         height: 23,
         text: 'Filter Formula'
     }],
