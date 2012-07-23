@@ -65,13 +65,17 @@ Ext.define('PICS.view.layout.SearchBox', {
             var post = records[0];
 
             if (post) {
-                this.search(post.get('result_name'));
+                var id = escape(post.get('result_id'));
+                var type = escape(post.get('search_type'));
+                var search_terms = 'button=getResult&searchID=' + id + '&searchType=' + type;
+                document.location = '/Search.action?' + search_terms;
             }
         },
 
         specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
-                this.search(base.getValue());
+                var term = escape(base.getValue());
+                document.location = '/SearchBox.action?button=search&searchTerm=' + term;
             } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
                 base.collapse();
             }
@@ -87,7 +91,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     valueField: 'q',
 
     store: {
-        fields: [ 'result_type', 'result_id', 'result_name', 'result_at' ],
+        fields: [ 'result_type', 'result_id', 'result_name', 'result_at', 'search_type' ],
         proxy: {
             type: 'ajax',
             url: 'SearchBox!json.action',
@@ -97,11 +101,5 @@ Ext.define('PICS.view.layout.SearchBox', {
             }
         }
     },
-    width: 200,
-
-    search: function (term) {
-        document.location = '/SearchBox.action?button=search&searchTerm=' + escape(term);
-
-        return false;
-    }
+    width: 200
 });
