@@ -30,6 +30,8 @@ public class ContractorOperatorWaitingOnChangedListener implements ApplicationLi
 	 */
 	@Override
 	public void onApplicationEvent(ContractorOperatorWaitingOnChangedEvent event) {
+		if (event == null) return;
+		
 		Object source = event.getSource();
 		if (source instanceof ContractorOperator) {
 			ContractorOperator co = (ContractorOperator)source;
