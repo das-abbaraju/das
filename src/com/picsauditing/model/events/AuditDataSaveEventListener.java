@@ -41,15 +41,15 @@ public class AuditDataSaveEventListener implements ApplicationListener<AuditData
 	}
 
 	public Set<ContractorOperator> getApplicableOperators(AuditData auditData) {
-		Set<ContractorOperator> operators = new HashSet<ContractorOperator>();
+		Set<ContractorOperator> contractorOperators = new HashSet<ContractorOperator>();
 		List<ContractorAuditOperator> caos = auditData.getAudit().getOperatorsVisible();
 
 		for (ContractorAuditOperator cao : caos) {
-			operators.add(contractorOperatorDAO.find(cao.getAudit().getContractorAccount().getId(), cao.getOperator()
+			contractorOperators.add(contractorOperatorDAO.find(cao.getAudit().getContractorAccount().getId(), cao.getOperator()
 					.getId()));
 		}
 
-		return operators;
+		return contractorOperators;
 	}
 
 	public void resetClock(Set<ContractorOperator> contractorOperators) {
