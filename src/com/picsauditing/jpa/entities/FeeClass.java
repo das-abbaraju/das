@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.actions.operators.OperatorConfiguration;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
@@ -150,9 +151,6 @@ public enum FeeClass implements Translatable {
 
 		for (OperatorAccount operator : operators) {
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
-
-			// TODO: Remove this
-			System.out.println(contractor.getBillingStatus());
 
 			// do I have an operator outside the exclusions list?
 			if (!exclusions.containsKey(operator.getTopAccount().getId())) {
