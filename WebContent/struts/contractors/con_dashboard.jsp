@@ -98,7 +98,15 @@
     				</div>
     			</s:if>
     		</s:if>
-    		
+
+             <s:if test="user.locale.language != 'en'">
+                <div id="betaTranslationsAlert">
+                    <p>
+                        <s:text name="global.BetaTranslations" />
+                    </p>
+                </div>
+            </s:if>
+
     		<table id="contractor_dashboard">
     			<tr>
     				<td style="vertical-align:top; width: 48%">
