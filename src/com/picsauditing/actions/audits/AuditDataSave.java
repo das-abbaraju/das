@@ -3,8 +3,6 @@ package com.picsauditing.actions.audits;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -131,6 +129,7 @@ public class AuditDataSave extends AuditActionSupport {
 				if (!checkAnswerFormat(auditData, null)) {
 					return SUCCESS;
 				}
+				SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
 			} else {
 				// update mode
 				if (!checkAnswerFormat(auditData, newCopy)) {
@@ -156,18 +155,15 @@ public class AuditDataSave extends AuditActionSupport {
 
 				if (answerChanged) {
 					if (isAudit && !isAnnualUpdate) {
-						AuditQuestion question = questionDao.find(auditData
-								.getQuestion().getId());
-						if (question.getOkAnswer() != null
-								&& question.getOkAnswer().contains(
-										auditData.getAnswer())
+						AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+						if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
 								&& permissions.isAdmin()) {
 							newCopy.setDateVerified(new Date());
 							newCopy.setAuditor(getUser());
 						}
 						if (newCopy.isVerified()
-								&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy
-										.getAudit().getAuditType().getId() == AuditType.IEC_AUDIT)) {
+								&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy.getAudit()
+										.getAuditType().getId() == AuditType.IEC_AUDIT)) {
 							newCopy.setDateVerified(null);
 							newCopy.setAuditor(null);
 						}
@@ -181,8 +177,7 @@ public class AuditDataSave extends AuditActionSupport {
 						return SUCCESS;
 					}
 
-					if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)
-							&& permissions.isPicsEmployee())
+					if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
 						newCopy.setWasChanged(YesNo.Yes);
 
 					newCopy.setAnswer(auditData.getAnswer());
@@ -198,7 +193,7 @@ public class AuditDataSave extends AuditActionSupport {
 						newCopy.setDateVerified(new Date());
 						newCopy.setAuditor(getUser());
 					}
-				} 
+				}
 
 				auditData = newCopy;
 			}
@@ -220,7 +215,6 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			auditDataDAO.save(auditData);
-			SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
 
 			if (conAudit == null) {
 				findConAudit();
@@ -229,7 +223,7 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError(getText("Audit.error.AuditNotFound"));
 				return SUCCESS;
 			}
-			
+
 			checkUniqueCode(conAudit);
 
 			if (auditData.getAudit() != null) {
@@ -277,7 +271,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
 								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
-							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Incomplete, permissions);
+							ContractorAuditOperatorWorkflow caow = cao
+									.changeStatus(AuditStatus.Incomplete, permissions);
 							caow.setNotes("Due to data change");
 							caowDAO.save(caow);
 							updateAudit = true;
@@ -399,7 +394,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if (newCopy == null) {
 			return;
 		}
-		
+
 		boolean recalcAudit = false;
 
 		if (newCopy.getQuestion().getId() == OSHA_INCIDENT_QUESTION_ID) {
@@ -447,10 +442,10 @@ public class AuditDataSave extends AuditActionSupport {
 		if (recalcAudit) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		}
-			
+
 	}
 
-	/* Test */ void checkUniqueCode(ContractorAudit tempAudit) {
+	/* Test */void checkUniqueCode(ContractorAudit tempAudit) {
 		// TODO: Extract this into it's own class.
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
