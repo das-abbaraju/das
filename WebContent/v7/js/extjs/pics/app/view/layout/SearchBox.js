@@ -28,7 +28,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             }
         },
         loadingText: 'Searching...',
-        maxHeight: 500,
+        maxHeight: 700,
         minWidth: 300,
 
         tpl: Ext.create('Ext.XTemplate',
@@ -75,7 +75,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
                 var term = escape(base.getValue());
-                document.location = '/SearchBox.action?button=search&searchTerm=' + term;
+                this.search(term);
             } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
                 base.collapse();
             }
@@ -101,5 +101,11 @@ Ext.define('PICS.view.layout.SearchBox', {
             }
         }
     },
-    width: 200
+    width: 200,
+
+    search: function (term) {
+        document.location = '/SearchBox.action?button=search&searchTerm=' + escape(term);
+
+        return false;
+    }
 });
