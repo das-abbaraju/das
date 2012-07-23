@@ -208,11 +208,11 @@
 					<td style="width: 20px;"></td>
 				</s:if>
 				<td>
-					<div id="employee_form">
+					<div id="employee_form"<s:if test="employee.id > 0"> data-employee="${employee.id}"</s:if>>
 						<s:if test="employee != null && employee.id == 0">
 							<s:include value="manage_employees_form.jsp" />
 						</s:if>
-					</div>
+					
 				</td>
 			</tr>
 		</table>

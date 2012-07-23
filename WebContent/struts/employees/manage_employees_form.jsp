@@ -12,7 +12,7 @@
 	</div>
 	<br clear="all" />
 </s:if>
-<s:form id="employeeForm">
+<s:form>
 	<s:hidden name="account" />
 	<s:hidden name="audit" />
 	<s:hidden name="employee" />
@@ -29,7 +29,7 @@
 				<s:textfield name="employee.lastName" theme="formhelp" />
 			</li>
 			<li>
-				<s:textfield id="titleSuggest" name="employee.title" theme="formhelp" />
+				<s:textfield id="titleSuggest" name="employee.title" theme="formhelp" data-json="${previousTitlesJSON}" />
 			</li>
 			<li>
 				<s:select
@@ -192,7 +192,7 @@
 						</div>
 						<ol>
 							<li>
-								<a href="javascript:;" id="employee_nccer_link" class="add">
+								<a href="javascript:;" id="employee_nccer_link" class="add" data-employee="${employee.id}">
 									<s:text name="ManageEmployees.link.EmployeeNCCERUpload" />
 								</a>
 							</li>
@@ -204,27 +204,14 @@
 	</s:if>
 	<fieldset class="form submit">
 		<s:if test="employee.status.toString().equals('Active')">
-			<s:submit
-				method="save"
-				cssClass="picsbutton positive"
-				value="%{getText('button.Save')}" />
+			<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 			<s:if test="employee.id > 0">
-				<s:submit
-					method="inactivate"
-					cssClass="picsbutton negative"
-					value="%{getText('button.Inactivate')}" />
+				<s:submit method="inactivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" />
 			</s:if>
 		</s:if>
 		<s:else>
-			<s:submit
-				method="activate"
-				cssClass="picsbutton positive"
-				value="%{getText('button.Activate')}" />
-			<s:submit
-				method="delete"
-				cssClass="picsbutton negative"
-				id="deleteEmployee"
-				value="%{getText('button.Delete')}" />
+			<s:submit method="activate" cssClass="picsbutton positive" value="%{getText('button.Activate')}" />
+			<s:submit method="delete" cssClass="picsbutton negative" id="deleteEmployee" value="%{getText('button.Delete')}" />
 		</s:else>
 	</fieldset>
 </s:form>

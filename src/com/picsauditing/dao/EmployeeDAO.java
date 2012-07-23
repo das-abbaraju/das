@@ -93,8 +93,8 @@ public class EmployeeDAO extends PicsDAO {
 		 * having count(*) > 1 order by title
 		 */
 		Query query = em.createQuery("SELECT e.title FROM Employee e "
-				+ "WHERE e.account.id IN (SELECT a.id FROM Account a WHERE a.status IN ('Active', 'Pending'))"
-				+ "GROUP BY e.title HAVING COUNT(*) > 1 ORDER BY e.title");
+				+ "WHERE e.account.id IN (SELECT a.id FROM Account a WHERE a.status IN ('Active', 'Pending')) "
+				+ "AND e.title IS NOT NULL GROUP BY e.title HAVING COUNT(*) > 1 ORDER BY e.title");
 		return query.getResultList();
 	}
 

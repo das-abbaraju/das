@@ -52,8 +52,6 @@ public class ManageEmployees extends AccountActionSupport {
 	protected String ssn;
 
 	protected ContractorAudit audit;
-	protected int childID;
-	protected boolean selectRolesSites = false;
 	protected int[] initialSites;
 
 	protected Set<JobRole> unusedJobRoles;
@@ -71,10 +69,6 @@ public class ManageEmployees extends AccountActionSupport {
 	public void findAccount() throws Exception {
 		checkPermissions();
 
-		if (account == null && audit != null) {
-			account = audit.getContractorAccount();
-		}
-
 		if (account == null && employee != null) {
 			account = employee.getAccount();
 		}
@@ -88,18 +82,18 @@ public class ManageEmployees extends AccountActionSupport {
 			account = accountDAO.find(permissions.getAccountId());
 		}
 
-		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		loadActiveEmployees();
 	}
 
 	@Override
 	public String execute() throws Exception {
 		subHeading = getText("ManageEmployees.title");
-		
-				if (audit != null) {
+
+		if (audit != null) {
 			account = audit.getContractorAccount();
 		}
 
-		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		loadActiveEmployees();
 
 		if (employee != null) {
 			account = employee.getAccount();
@@ -138,51 +132,35 @@ public class ManageEmployees extends AccountActionSupport {
 			employee.setAccount(account);
 		}
 
-		if (!Strings.isEmpty(ssn)) {
-			if (ssn.length() == 9) {
-				employee.setSsn(ssn);
-			} else if (!ssn.matches("X{5}\\d{4}")) {
-				addActionError("Invalid social security number entered.");
-			}
-		}
+		checkSsn();
 
 		if (employee.getEmail().length() > 0) {
 			employee.setEmail(EmailAddressUtils.validate(employee.getEmail()));
 		}
 
 		employee.setAuditColumns(permissions);
-		boolean existing = employee.getId() > 0;
-		employee = (Employee) employeeDAO.save(employee);
 
-		if (initialSites != null) {
-			for (Integer operatorID : initialSites) {
-				EmployeeSite employeeSite = new EmployeeSite();
-				employeeSite.setEmployee(employee);
-				employeeSite.setOperator(new OperatorAccount());
-				employeeSite.getOperator().setId(operatorID);
-				employeeSite.setAuditColumns(permissions);
-
-				dao.save(employeeSite);
-			}
-		}
-
-		if (!existing) {
+		if (employee.getId() <= 0) {
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 		}
+
+		employee = (Employee) employeeDAO.save(employee);
+
+		addInitialSites();
 
 		return setUrlForRedirect("ManageEmployees.action?"
 				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account="
 						+ account.getId()) + "#employee=" + employee.getId());
 	}
 
-	public String inactivate() {
+	public String inactivate() throws Exception {
 		if (employee != null) {
 			employee.setStatus(UserStatus.Inactive);
 			employeeDAO.save(employee);
 			addActionMessage("Employee " + employee.getDisplayName() + " Successfully deactivated.");
 		}
 
-		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		loadActiveEmployees();
 
 		return SUCCESS;
 	}
@@ -198,7 +176,7 @@ public class ManageEmployees extends AccountActionSupport {
 		return setUrlForRedirect("ManageEmployees.action?id=" + account.getId());
 	}
 
-	public String delete() {
+	public String delete() throws Exception {
 		if (employee != null) {
 			employee.setStatus(UserStatus.Deleted);
 			employeeDAO.save(employee);
@@ -206,7 +184,7 @@ public class ManageEmployees extends AccountActionSupport {
 			employee = null;
 		}
 
-		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		loadActiveEmployees();
 
 		return SUCCESS;
 	}
@@ -220,7 +198,7 @@ public class ManageEmployees extends AccountActionSupport {
 		this.activeEmployees = activeEmployees;
 	}
 
-	public String loadAjax() {
+	public String load() {
 		return "employees";
 	}
 
@@ -252,22 +230,6 @@ public class ManageEmployees extends AccountActionSupport {
 
 	public void setAudit(ContractorAudit audit) {
 		this.audit = audit;
-	}
-
-	public int getChildID() {
-		return childID;
-	}
-
-	public void setChildID(int childID) {
-		this.childID = childID;
-	}
-
-	public boolean isSelectRolesSites() {
-		return selectRolesSites;
-	}
-
-	public void setSelectRolesSites(boolean selectRolesSites) {
-		this.selectRolesSites = selectRolesSites;
 	}
 
 	public int[] getInitialSites() {
@@ -364,13 +326,6 @@ public class ManageEmployees extends AccountActionSupport {
 		}
 
 		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONArray getPreviousLocationsJSON() {
-		JSONArray a = new JSONArray();
-		a.addAll(employeeDAO.findCommonLocations(account.getId()));
-		return a;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -576,7 +531,6 @@ public class ManageEmployees extends AccountActionSupport {
 
 			return site.getName().compareTo(o.getSite().getName());
 		}
-
 	}
 
 	public class EmployeeMissingTasks {
@@ -606,6 +560,38 @@ public class ManageEmployees extends AccountActionSupport {
 
 		public void setQualifiedTasks(List<JobTask> qualifiedTasks) {
 			this.qualifiedTasks = qualifiedTasks;
+		}
+	}
+
+	private void loadActiveEmployees() throws Exception {
+		if (account == null) {
+			findAccount();
+		} else {
+			activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		}
+	}
+
+	private void checkSsn() {
+		if (!Strings.isEmpty(ssn)) {
+			if (ssn.length() == 9) {
+				employee.setSsn(ssn);
+			} else if (!ssn.matches("X{5}\\d{4}")) {
+				addActionError("Invalid social security number entered.");
+			}
+		}
+	}
+
+	private void addInitialSites() {
+		if (initialSites != null) {
+			for (Integer operatorID : initialSites) {
+				EmployeeSite employeeSite = new EmployeeSite();
+				employeeSite.setEmployee(employee);
+				employeeSite.setOperator(new OperatorAccount());
+				employeeSite.getOperator().setId(operatorID);
+				employeeSite.setAuditColumns(permissions);
+
+				dao.save(employeeSite);
+			}
 		}
 	}
 }

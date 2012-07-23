@@ -4,17 +4,18 @@
             init : function() {
                 var element = $('.ManageEmployees-page');
                 if (element.length) {
-                    var manageEmployees = this;
-
                     this.hashchange.apply(this);
+                    this.initializeEmployee.apply(this);
                     this.setUpEmployeeTable(element.find('#employee_table'));
                     
                     element.delegate('#available_employee_roles', 'change', this.addRole);
+                    element.delegate('#employee_nccer_link', 'click', this.nccerPopup);
                     element.delegate('#import_excel', 'click', this.importExcel);
                     
                     element.delegate('.edit.site', 'click', this.editSite);
                     element.delegate('.remove.role', 'click', this.removeRole);
-                    
+
+                    var manageEmployees = this;
                     $(window).bind('hashchange', function(event) {
                         manageEmployees.hashchange.apply(manageEmployees, [event]);
                     });
@@ -50,21 +51,7 @@
                 var manageEmployees = this;
                 
                 if (fragment) {
-                    $('#employee_form').html(translate('JS.ManageEmployees.message.AjaxLoad')
-                            + ' <img src="images/ajax_process.gif" />');
-                    
-                    PICS.ajax({
-                        url: 'ManageEmployees!loadAjax.action',
-                        data: fragment,
-                        success: function(data, textStatus, XMLHttpRequest) {
-                            $('#employee_form').html(data);
-                            
-                            var id = fragment.split("=")[1];
-                            
-                            manageEmployees.initializeCluetip();
-                            manageEmployees.highlightRow(id);
-                        }
-                    });
+                    manageEmployees.loadEmployee(fragment, manageEmployees);
                 }
             },
             
@@ -96,6 +83,46 @@
                     local : true,
                     clickThrough : false
                 });
+            },
+            
+            initializeEmployee: function() {
+                var employee = $('#employee_form').attr('data-employee');
+                var manageEmployees = this;
+                
+                if (employee) {
+                    manageEmployees.loadEmployee('employee=' + employee, manageEmployees);
+                }
+            },
+            
+            loadEmployee: function(fragment, manageEmployees) {
+                $('#employee_form').html(translate('JS.ManageEmployees.message.AjaxLoad')
+                        + ' <img src="images/ajax_process.gif" />');
+                
+                PICS.ajax({
+                    url: 'ManageEmployees!load.action',
+                    data: fragment,
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $('#employee_form').html(data);
+                        
+                        var id = fragment.split("=")[1];
+                        
+                        manageEmployees.initializeCluetip();
+                        manageEmployees.highlightRow(id);
+                        
+                        manageEmployees.suggestTitle();
+                    }
+                });
+            },
+            
+            nccerPopup: function(event) {
+                var employeeID = $(this).attr('data-employee');
+                
+                var url = 'EmployeeNCCERUpload.action?employee=' + employeeID;
+                var title = translate('JS.ManageEmployees.message.UploadEmployees');
+                var pars = 'scrollbars=yes,resizable=yes,width=650,height=500,toolbar=0,directories=0,menubar=0';
+                var fileUpload = window.open(url, title, pars);
+                
+                fileUpload.focus();
             },
             
             removeRole: function(event) {
@@ -141,6 +168,13 @@
                         sInfoFiltered:"(filtered from _MAX_)"
                     }
                 });
+            },
+            
+            suggestTitle: function() {
+                var titleTextfield = $('#titleSuggest');
+                var json = titleTextfield.attr('data-json');
+                
+                titleTextfield.autocomplete($.parseJSON(json));
             }
         }
     });
