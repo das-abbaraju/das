@@ -74,7 +74,7 @@ Ext.define('PICS.view.layout.SearchBox', {
 
         specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
-                var term = escape(base.getValue());
+                var term = base.getValue();
                 this.search(term);
             } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
                 base.collapse();
