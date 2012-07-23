@@ -32,7 +32,7 @@ public class AuditDataSaveEventListener implements ApplicationListener<AuditData
 		logger.debug("here");
 	}
 
-	public boolean clockNeedsReseting(AuditData auditData) {
+	private boolean clockNeedsReseting(AuditData auditData) {
 		// currently the event is only fired when question is answered for the
 		// first time
 		// we can add logic here if need be later
@@ -40,19 +40,19 @@ public class AuditDataSaveEventListener implements ApplicationListener<AuditData
 		return true;
 	}
 
-	public Set<ContractorOperator> getApplicableOperators(AuditData auditData) {
+	private Set<ContractorOperator> getApplicableOperators(AuditData auditData) {
 		Set<ContractorOperator> contractorOperators = new HashSet<ContractorOperator>();
 		List<ContractorAuditOperator> caos = auditData.getAudit().getOperatorsVisible();
 
 		for (ContractorAuditOperator cao : caos) {
-			contractorOperators.add(contractorOperatorDAO.find(cao.getAudit().getContractorAccount().getId(), cao.getOperator()
-					.getId()));
+			contractorOperators.add(contractorOperatorDAO.find(cao.getAudit().getContractorAccount().getId(), cao
+					.getOperator().getId()));
 		}
 
 		return contractorOperators;
 	}
 
-	public void resetClock(Set<ContractorOperator> contractorOperators) {
+	private void resetClock(Set<ContractorOperator> contractorOperators) {
 		for (ContractorOperator contractorOperator : contractorOperators) {
 			contractorOperator.setLastStepToGreenDate(new Date());
 		}
