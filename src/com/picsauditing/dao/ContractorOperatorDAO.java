@@ -2,7 +2,9 @@ package com.picsauditing.dao;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -17,6 +19,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
 	private final Logger logger = LoggerFactory.getLogger(ContractorOperatorDAO.class);
+
 	public void remove(int id) {
 		ContractorOperator row = find(id);
 		remove(row);
@@ -42,7 +45,8 @@ public class ContractorOperatorDAO extends PicsDAO {
 		if (limit < 0)
 			limit = 1;
 		/*
-		 * This will show demo accounts if the operator is a Demo account, otherwise it will only show Active accounts.
+		 * This will show demo accounts if the operator is a Demo account,
+		 * otherwise it will only show Active accounts.
 		 */
 		Query query = em.createQuery("FROM ContractorOperator WHERE operatorAccount.id = :opID "
 				+ "AND contractorAccount.status IN ('Active', operatorAccount.status) ORDER BY creationDate DESC");
@@ -90,9 +94,8 @@ public class ContractorOperatorDAO extends PicsDAO {
 		} else {
 			where += "co.operatorAccount.id = " + opID;
 		}
-		
+
 		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active','Demo')";
-	
 
 		if (includeBidding) {
 			where += " AND co.contractorAccount.accountLevel = 'BidOnly'";
@@ -101,20 +104,22 @@ public class ContractorOperatorDAO extends PicsDAO {
 		}
 		if (!isCorporate)
 			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";
-		
-		Query query = em.createQuery(where);		
+
+		Query query = em.createQuery(where);
 		return query.getResultList();
 	}
-	public List<ContractorOperator> findPendingApprovalContractorsNoDemo(int opID, boolean includeBidding, boolean isCorporate) {
+
+	public List<ContractorOperator> findPendingApprovalContractorsNoDemo(int opID, boolean includeBidding,
+			boolean isCorporate) {
 		String where = "SELECT co FROM ContractorOperator co WHERE ";
 		if (isCorporate) {
 			where += "co.operatorAccount IN " + "(SELECT f.operator FROM Facility f WHERE f.corporate.id = " + opID
 					+ ")";
 		} else {
 			where += "co.operatorAccount.id = " + opID;
-		}		
-		
-		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active', operatorAccount.status) and co.contractorAccount.name not like '%^%'";		
+		}
+
+		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active', operatorAccount.status) and co.contractorAccount.name not like '%^%'";
 
 		if (includeBidding) {
 			where += " AND co.contractorAccount.accountLevel = 'BidOnly'";
@@ -122,17 +127,17 @@ public class ContractorOperatorDAO extends PicsDAO {
 			where += " AND co.contractorAccount.accountLevel = 'Full'";
 		}
 		if (!isCorporate)
-			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";		
-		Query query = em.createQuery(where);		
+			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";
+		Query query = em.createQuery(where);
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorOperator> findExpiredForceFlags() {
 		Query query = em.createQuery("FROM ContractorOperator WHERE forceFlag IS NOT NULL AND forceEnd < :now");
 		query.setParameter("now", new Date());
 		return query.getResultList();
 	}
-	
+
 	public int getTotalFlagChanges() {
 		String sql = "select count(*) from generalcontractors gc " + "join accounts a on a.id=gc.genId "
 				+ "join accounts contractor on contractor.id = gc.subID " + "where gc.flag != gc.baselineFlag "
@@ -146,10 +151,10 @@ public class ContractorOperatorDAO extends PicsDAO {
 	}
 
 	public int getOperatorsAffectedByFlagChanges() {
-		String sql = "select count(distinct gc.genid) from generalcontractors gc " + "join accounts a on a.id=gc.genId "
-				+ "join accounts contractor on contractor.id = gc.subID " + "where gc.flag != gc.baselineFlag "
-				+ "AND a.type='Operator' " + "AND (gc.baselineFlag != 'Clear') " + "AND (gc.flag != 'Clear') "
-				+ "AND (gc.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
+		String sql = "select count(distinct gc.genid) from generalcontractors gc "
+				+ "join accounts a on a.id=gc.genId " + "join accounts contractor on contractor.id = gc.subID "
+				+ "where gc.flag != gc.baselineFlag " + "AND a.type='Operator' " + "AND (gc.baselineFlag != 'Clear') "
+				+ "AND (gc.flag != 'Clear') " + "AND (gc.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
 				+ "AND (gc.forceFlag IS NULL OR NOW() >= gc.forceEnd) " + "AND (contractor.type='Contractor') "
 				+ "AND (contractor.status IN ('Active')) "
 				+ "AND (contractor.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK))";
@@ -160,15 +165,28 @@ public class ContractorOperatorDAO extends PicsDAO {
 	public List<Integer> getContractorIdsForOperator(String where) {
 		if (Strings.isEmpty(where))
 			throw new IllegalArgumentException("The where clause cannot be an empty String.");
-					
+
 		try {
 			Query query = em.createQuery("SELECT contractorAccount.id FROM ContractorOperator WHERE " + where);
 			return query.getResultList();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		
+
 		return Collections.emptyList();
 	}
-	
+
+	public Set<ContractorOperator> findForOperators(int contractorId, Set<Integer> operatorIds) {
+		try {
+			Query query = em.createQuery("SELECT * FROM ContractorOperator co WHERE co.contractorAccount.id = "
+					+ contractorId + " AND co.operatoAccountr.id IN (" + Strings.implode(operatorIds, ",") + ")");
+			Set<ContractorOperator> results = new HashSet<ContractorOperator>(query.getResultList());
+			return results;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+
+		return Collections.EMPTY_SET;
+	}
+
 }

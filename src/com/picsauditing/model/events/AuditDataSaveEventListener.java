@@ -28,8 +28,6 @@ public class AuditDataSaveEventListener implements ApplicationListener<AuditData
 		if (clockNeedsReseting(auditData)) {
 			resetClock(getApplicableOperators(auditData));
 		}
-
-		logger.debug("here");
 	}
 
 	private boolean clockNeedsReseting(AuditData auditData) {
@@ -41,15 +39,14 @@ public class AuditDataSaveEventListener implements ApplicationListener<AuditData
 	}
 
 	private Set<ContractorOperator> getApplicableOperators(AuditData auditData) {
-		Set<ContractorOperator> contractorOperators = new HashSet<ContractorOperator>();
+		Set<Integer> operatorIds = new HashSet<Integer>();
 		List<ContractorAuditOperator> caos = auditData.getAudit().getOperatorsVisible();
 
 		for (ContractorAuditOperator cao : caos) {
-			contractorOperators.add(contractorOperatorDAO.find(cao.getAudit().getContractorAccount().getId(), cao
-					.getOperator().getId()));
+			operatorIds.add(cao.getOperator().getId());
 		}
 
-		return contractorOperators;
+		return contractorOperatorDAO.findForOperators(auditData.getAudit().getContractorAccount().getId(), operatorIds);
 	}
 
 	private void resetClock(Set<ContractorOperator> contractorOperators) {
