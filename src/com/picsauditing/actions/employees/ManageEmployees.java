@@ -358,14 +358,14 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return "sites";
 	}
 
-	public String getSiteAjax() throws Exception {
+	public String getSiteAjax() {
 		if (childID != 0)
 			esSite = employeeSiteDAO.find(childID);
 
 		return "getSite";
 	}
 
-	public String loadAjax() throws Exception {
+	public String loadAjax() {
 		return "employees";
 	}
 
