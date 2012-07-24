@@ -13,6 +13,10 @@ public class CountrySubdivisionDAO extends PicsDAO  {
 		return query.getResultList();
 	}
 
+	public CountrySubdivision find(String isoCode) {
+		return em.find(CountrySubdivision.class, isoCode);
+	}
+
 	public boolean exist(String isoCode) {
 		if (em.find(CountrySubdivision.class, isoCode) == null)
 			return false;

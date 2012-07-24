@@ -217,18 +217,32 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			
 			if (!contractor.getCountry().equals(country) || !contractor.getState().equals(state)) {
 				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-				
 				stampContractorNoteAboutOfficeLocationChange();
 			}
-			
-			String stateIso = contractor.getState().getIsoCode();
-			String countryIso = contractor.getCountry().getIsoCode();
-			if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				// TODO: Remove in Clean up Phase
-				stateIso = StringUtils.remove(stateIso, "GB_");
-				countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
-				contractor.setCountrySubdivision(countrySubdivision);
+
+			if (country != null && !country.equals(contractor.getCountry())){
+				contractor.setCountry(country);
+			}
+
+			if (state != null && !state.equals(contractor.getState())){
+				State contractorState = stateDAO.find(state.toString());
+				contractor.setState(contractorState);
+			}
+
+			if (contractor.getCountry().isHasStates() && state != null){
+				if (contractor.getCountry().equals(contractor.getState().getCountry())){
+					CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());					
+					if (countrySubdivision != null) {
+						contractor.setCountrySubdivision(countrySubdivision);
+					} else {
+						contractor.setCountrySubdivision(null);
+					}
+				}  else {
+					contractor.setState(null);
+				}
+			} else {
+				contractor.setState(null);
+				contractor.setCountrySubdivision(null);
 			}
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
@@ -280,7 +294,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet", getText(state.getI18nKey())));
+		if (contractor.getCountry().isHasStates()){
+			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet", getText(state.getI18nKey())));
+		}
 		pqfOfficeLocationChange.setId(0);
 		pqfOfficeLocationChange.setCanContractorView(true);
 		noteDao.save(pqfOfficeLocationChange);
