@@ -36,11 +36,11 @@
         </s:url>
 
         <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
-            <s:param name="report">${report_id}</s:param>
+            <s:param name="reportId">${report_id}</s:param>
         </s:url>
 
         <s:url action="ManageReports" method="removeUserReport" var="remove_report_url">
-            <s:param name="report">${report_id}</s:param>
+            <s:param name="reportId">${report_id}</s:param>
         </s:url>
 
         <%-- Icon --%>
@@ -69,9 +69,11 @@
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Options</a>
                 
                 <ul class="dropdown-menu">
+                    <%--
                     <li>
                         <a href="#">Share</a>
                     </li>
+                    --%>
                     <li>
                         <s:if test="%{@com.picsauditing.model.ReportDynamicModel@canUserDelete(permissions.userId, report)}">
                             <a href="${delete_report_url}" class="delete">Delete</a>
