@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +20,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -62,6 +62,8 @@ public class Registration extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 
 	private User user;
 	private String username;
@@ -102,14 +104,17 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCountry(crr.getCountry());
 					contractor.setState(crr.getState());
 
-					String countryIso = crr.getCountry().getIsoCode();
-					String stateIso = crr.getState().getIsoCode();
-					if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
-						CountrySubdivision countrySubdivision = new CountrySubdivision();
-						// TODO: Remove in Clean up Phase
-						stateIso = StringUtils.remove(stateIso, "GB_");
-						countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
-						contractor.setCountrySubdivision(countrySubdivision);
+					if (contractor.getCountry().isHasStates() && contractor.getState() != null){
+						if (contractor.getState().getCountry().equals(contractor.getCountry())){
+							CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+							if (countrySubdivision != null) {
+								contractor.setCountrySubdivision(countrySubdivision);
+							} else {
+								contractor.setCountrySubdivision(null);
+							}
+						}  else {
+							contractor.setState(null);
+						}
 					}
 
 					contractor.setRequestedBy(crr.getRequestedBy());
@@ -248,18 +253,29 @@ public class Registration extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Demo);
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
-		if (contractor.getCountry().isHasStates() && state != null){
-			contractor.setState(state);
-			String countryIso = contractor.getCountry().getIsoCode();
-			String stateIso = contractor.getState().getIsoCode();
-			if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				// TODO: Remove in Clean up Phase
-				stateIso = StringUtils.remove(stateIso, "GB_");
-				countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
-				contractor.setCountrySubdivision(countrySubdivision);
-			}
+
+		if (state != null && !state.equals(contractor.getState())){
+			State contractorState = stateDAO.find(state.toString());
+			contractor.setState(contractorState);
 		}
+
+		if (contractor.getCountry().isHasStates() && state != null){
+			if (contractor.getState().getCountry().equals(contractor.getCountry())){
+				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+				if (countrySubdivision != null) {
+					contractor.setCountrySubdivision(countrySubdivision);
+				} else {
+					contractor.setCountrySubdivision(null);
+				}
+			}  else {
+				contractor.setState(null);
+				contractor.setCountrySubdivision(null);
+			}
+		} else {
+			contractor.setState(null);
+			contractor.setCountrySubdivision(null);
+		}
+
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());

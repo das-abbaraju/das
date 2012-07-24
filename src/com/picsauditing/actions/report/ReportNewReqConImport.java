@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -302,16 +301,29 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
-		crr.setState(importedState);
-		String stateIso = crr.getState().getIsoCode();
-		String countryIso = crr.getCountry().getIsoCode();
-		if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			// TODO: Remove in Clean up Phase
-			stateIso = StringUtils.remove(stateIso, "GB_");
-			countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
-			crr.setCountrySubdivision(countrySubdivision);
+
+		if (importedState != null && !importedState.equals(crr.getState())){
+			State importedStateObj = stateDAO.find(importedState.toString());
+			crr.setState(importedStateObj);
 		}
+
+		if (crr.getCountry().isHasStates() && importedState != null){
+			if (crr.getState().getCountry().equals(crr.getCountry())){
+				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(crr.getCountry().getIsoCode() + "-" + crr.getState().getIsoCode());
+				if (countrySubdivision != null) {
+					crr.setCountrySubdivision(countrySubdivision);
+				} else {
+					crr.setCountrySubdivision(null);
+				}
+			}  else {
+				crr.setState(null);
+				crr.setCountrySubdivision(null);
+			}
+		} else {
+			crr.setState(null);
+			crr.setCountrySubdivision(null);
+		}
+
 		if (zipValue != null) {
 			if (zipValue instanceof Double) {
 				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);

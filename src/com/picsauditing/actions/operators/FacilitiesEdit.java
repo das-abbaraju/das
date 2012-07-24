@@ -14,7 +14,6 @@ import java.util.TreeSet;
 
 import javax.naming.NoPermissionException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,6 +26,7 @@ import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -62,6 +62,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private FacilitiesEditModel facilitiesEditModel;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 
 	private String createType;
 	private List<Integer> facilities;
@@ -225,20 +227,30 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 
-		if (country != null && !country.equals(operator.getCountry()))
+		if (country != null && !country.equals(operator.getCountry())){
 			operator.setCountry(country);
-		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
-			operator.setState(state);
+		}
 
-			String stateIso = operator.getState().getIsoCode();
-			String countryIso = operator.getCountry().getIsoCode();
-			if (!countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				// TODO: Remove in Clean up Phase
-				stateIso = StringUtils.remove(stateIso, "GB_");
-				countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
-				operator.setCountrySubdivision(countrySubdivision);
+		if (state != null && !state.equals(operator.getState())){
+			State contractorState = stateDAO.find(state.toString());
+			operator.setState(contractorState);
+		}
+
+		if (operator.getCountry().isHasStates() && state != null){
+			if (operator.getState().getCountry().equals(operator.getCountry())){
+				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-" + operator.getState().getIsoCode());
+				if (countrySubdivision != null) {
+					operator.setCountrySubdivision(countrySubdivision);
+				} else {
+					operator.setCountrySubdivision(null);
+				}
+			}  else {
+				operator.setState(null);
+				operator.setCountrySubdivision(null);
 			}
+		} else{
+			operator.setState(null);
+			operator.setCountrySubdivision(null);
 		}
 
 		if (hasActionErrors()) {
