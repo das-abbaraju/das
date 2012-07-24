@@ -13,7 +13,7 @@ Ext.define('PICS.view.report.filter.Filters', {
 
         // filter store
         if (!this.store) {
-            // die
+            throw 'Missing Filter Store';
         }
 
         var that = this;

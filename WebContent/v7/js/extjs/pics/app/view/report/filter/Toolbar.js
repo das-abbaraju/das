@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.filter.Toolbar', {
     id: 'report_filter_toolbar',
     items: [{
         action: 'show-filter-formula',
-        border: false,
+        border: 0,
         cls: 'show-filter-formula',
         height: 23,
         text: 'Filter Formula'

@@ -103,6 +103,67 @@ Ext.define('PICS.controller.report.FilterController', {
                 }
             },
 
+            // saving edits to filter store + refresh
+            '#report_filters combobox[name=filter_value]': {
+                select: function (cmp, records, eOpts) {
+                    var filter = this.findParentFilter(cmp);
+                    filter.record.set('value', field.getValue());
+
+                    this.application.fireEvent('refreshreport');
+                }
+            },
+
+            '#report_filters combobox[name=operator]': {
+                select: function (cmp, records, eOpts) {
+                    var filter = this.findParentFilter(cmp);
+                    filter.record.set('operator', cmp.getValue());
+
+                    if (filter.record.get('value') != '') {
+                        this.application.fireEvent('refreshreport');
+                    }
+                }
+            },
+
+            // saving edits to filter store + refresh
+            '#report_filters datefield': {
+                select: function (field, value, eOpts) {
+                    var filter = this.findParentFilter(field);
+                    filter.record.set('value', field.getValue());
+
+                    this.application.fireEvent('refreshreport');
+                }
+            },
+
+            // saving edits to filter store + refresh
+            '\
+            #report_filters textfield,\
+            #report_filters numberfield,\
+            #report_filters datefield,\
+            ': {
+                blur: function (cmp, event, eOpts) {
+                    var filter = this.findParentFilter(cmp);
+                    filter.record.set('value', cmp.getValue());
+                },
+                specialkey: function (field, event) {
+                    if (event.getKey() == event.ENTER) {
+                        var filter = this.findParentFilter(field);
+                        filter.record.set('value', field.getValue());
+
+                        this.application.fireEvent('refreshreport');
+                    }
+                }
+            },
+
+            // saving edits to filter store + refresh
+            '#report_filters checkbox': {
+                change: function (cmp, event, eOpts) {
+                    var filter = this.findParentFilter(cmp);
+                    filter.record.set('value', cmp.getValue());
+
+                    this.application.fireEvent('refreshreport');
+                }
+            },
+
             // remove filter
             'reportfilteroptions button[action=remove-filter]': {
                 click: function (cmp, event, eOpts) {
@@ -152,8 +213,6 @@ Ext.define('PICS.controller.report.FilterController', {
 
         filter_options.removeDocked(filter_formula);
         filter_options.addDocked(filter_toolbar);
-
-        this.application.fireEvent('refreshreport');
     },
 
     findParentFilter: function (cmp) {
