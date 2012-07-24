@@ -45,6 +45,12 @@
 		{
 			vertical-align: top;
 		}
+		
+		#new_project_form,
+		.qualified-tasks
+		{
+			display: none;
+		}
 	</style>
 	
 	<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>

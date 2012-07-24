@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +27,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
+import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.JobContractor;
@@ -275,6 +277,37 @@ public class ManageEmployees extends AccountActionSupport {
 		return hseOperators;
 	}
 
+	public boolean isShowJobRolesSection() throws Exception {
+		boolean hasUnusedJobRoles = getUnusedJobRoles().size() > 0;
+		boolean hasEmployeeRoles = false;
+
+		if (employee != null) {
+			hasEmployeeRoles = employee.getEmployeeRoles().size() > 0;
+		}
+
+		return hasUnusedJobRoles || hasEmployeeRoles;
+	}
+
+	public Set<JobRole> getUnusedJobRoles() throws Exception {
+		findAccount();
+
+		if (unusedJobRoles == null) {
+			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
+
+			for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
+				if (unusedJobRoles.contains(employeeRole.getJobRole()))
+					unusedJobRoles.remove(employeeRole.getJobRole());
+			}
+
+			Iterator<JobRole> roleIter = unusedJobRoles.iterator();
+			while (roleIter.hasNext())
+				if (!roleIter.next().isActive())
+					roleIter.remove();
+		}
+
+		return unusedJobRoles;
+	}
+
 	public String getEmpPhoto() {
 		return getFileName(employee.getId()) + employee.getPhoto();
 	}
@@ -465,6 +498,38 @@ public class ManageEmployees extends AccountActionSupport {
 		Collections.sort(hseOperators);
 	}
 
+	private void loadActiveEmployees() throws Exception {
+		if (account == null) {
+			findAccount();
+		} else {
+			activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+		}
+	}
+
+	private void checkSsn() {
+		if (!Strings.isEmpty(ssn)) {
+			if (ssn.length() == 9) {
+				employee.setSsn(ssn);
+			} else if (!ssn.matches("X{5}\\d{4}")) {
+				addActionError("Invalid social security number entered.");
+			}
+		}
+	}
+
+	private void addInitialSites() {
+		if (initialSites != null) {
+			for (Integer operatorID : initialSites) {
+				EmployeeSite employeeSite = new EmployeeSite();
+				employeeSite.setEmployee(employee);
+				employeeSite.setOperator(new OperatorAccount());
+				employeeSite.getOperator().setId(operatorID);
+				employeeSite.setAuditColumns(permissions);
+
+				dao.save(employeeSite);
+			}
+		}
+	}
+
 	// Classes
 	public class OperatorSite implements Comparable<OperatorSite> {
 		private OperatorAccount operator;
@@ -489,7 +554,7 @@ public class ManageEmployees extends AccountActionSupport {
 			if (site == null)
 				return operator.getId();
 			else
-				return -1 * site.getId();
+				return site.getId();
 		}
 
 		public String getName() {
@@ -560,38 +625,6 @@ public class ManageEmployees extends AccountActionSupport {
 
 		public void setQualifiedTasks(List<JobTask> qualifiedTasks) {
 			this.qualifiedTasks = qualifiedTasks;
-		}
-	}
-
-	private void loadActiveEmployees() throws Exception {
-		if (account == null) {
-			findAccount();
-		} else {
-			activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
-		}
-	}
-
-	private void checkSsn() {
-		if (!Strings.isEmpty(ssn)) {
-			if (ssn.length() == 9) {
-				employee.setSsn(ssn);
-			} else if (!ssn.matches("X{5}\\d{4}")) {
-				addActionError("Invalid social security number entered.");
-			}
-		}
-	}
-
-	private void addInitialSites() {
-		if (initialSites != null) {
-			for (Integer operatorID : initialSites) {
-				EmployeeSite employeeSite = new EmployeeSite();
-				employeeSite.setEmployee(employee);
-				employeeSite.setOperator(new OperatorAccount());
-				employeeSite.getOperator().setId(operatorID);
-				employeeSite.setAuditColumns(permissions);
-
-				dao.save(employeeSite);
-			}
 		}
 	}
 }

@@ -9,17 +9,54 @@
                     this.setUpEmployeeTable(element.find('#employee_table'));
                     
                     element.delegate('#available_employee_roles', 'change', this.addRole);
+                    element.delegate('#hse_operator_list', 'change', this.addOperatorSite);
+                    element.delegate('#oq_project_list', 'change', this.addJobSite);
+                    
                     element.delegate('#employee_nccer_link', 'click', this.nccerPopup);
                     element.delegate('#import_excel', 'click', this.importExcel);
+                    element.delegate('#new_project_link', 'click', this.newJobSitePopup);
                     
                     element.delegate('.edit.site', 'click', this.editSite);
                     element.delegate('.remove.role', 'click', this.removeRole);
+                    element.delegate('.preview.tasks', 'click', this.showTask);
 
                     var manageEmployees = this;
                     $(window).bind('hashchange', function(event) {
                         manageEmployees.hashchange.apply(manageEmployees, [event]);
                     });
                 }
+            },
+            
+            addJobSite: function(event) {
+                var employee = $(this).attr('data-employee');
+                var jobSite = $(this).val();
+                
+                PICS.ajax({
+                    url: 'ManageEmployeeSite!add.action',
+                    data: {
+                        employee: employee,
+                        jobSite: jobSite
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $('#employee_site').html(data);
+                    }
+                });
+            },
+            
+            addOperatorSite: function(event) {
+                var employee = $(this).attr('data-employee');
+                var operator = $(this).val();
+                
+                PICS.ajax({
+                    url: 'ManageEmployeeSite!add.action',
+                    data: {
+                        employee: employee,
+                        operator: operator
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $('#employee_site').html(data);
+                    }
+                });
             },
             
             addRole: function(event) {
@@ -43,7 +80,81 @@
             },
             
             editSite: function(event) {
-                
+                var employeeSite = $(this).attr('data-site');
+                var title = $(this).attr('title');
+            
+                PICS.ajax({
+                    url: 'ManageEmployeeSite!edit.action',
+                    data: {
+                        employeeSite: employeeSite
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        var modal = PICS.modal({
+                            title: title,
+                            content: data,
+                            buttons: [
+                                {
+                                    html: '<a href="javascript:;" class="btn cancel">' + translate('JS.button.Cancel') + '</a>'
+                                },
+                                {
+                                    html: '<a href="javascript:;" class="btn danger">' + translate('JS.RegistrationAddClientSite.RemoveSite') + '</a>'
+                                },
+                                {
+                                    html: '<a href="javascript:;" class="btn success">' + translate('JS.button.Accept') + '</a>'
+                                }
+                            ]
+                        });
+                        
+                        modal.show();
+                        
+                        $(modal.getElement()).delegate('.success', 'click', function() {
+                            var formData = $('#edit_site_form').serialize();
+                            
+                            PICS.ajax({
+                                url: 'ManageEmployeeSite!save.action',
+                                data: formData,
+                                success: function(data, textStatus, XMLHttpRequest) {
+                                    $('#employee_site').html(data);
+                                },
+                                complete: function(XMLHttpRequest, textStatus) {
+                                    modal.hide();
+                                }
+                            });
+                        });
+                        
+                        $(modal.getElement()).delegate('.danger', 'click', function() {
+                            var formData = $('#edit_site_form').serialize();
+                            
+                            PICS.ajax({
+                                url: 'ManageEmployeeSite!expire.action',
+                                data: formData,
+                                success: function(data, textStatus, XMLHttpRequest) {
+                                    $('#employee_site').html(data);
+                                },
+                                complete: function(XMLHttpRequest, textStatus) {
+                                    modal.hide();
+                                }
+                            });
+                        });
+                        
+                        $(modal.getElement()).delegate('.cancel', 'click', function() {
+                            modal.hide();
+                        });
+                    },
+                    complete: function(XMLHttpRequest, textStatus) {
+                        $('.datepicker').datepicker({
+                            changeMonth : true,
+                            changeYear : true,
+                            yearRange : '1940:2039',
+                            showOn : 'button',
+                            buttonImage : 'images/icon_calendar.gif',
+                            buttonImageOnly : true,
+                            buttonText : translate('JS.ChooseADate'),
+                            constrainInput : true,
+                            showAnim : 'fadeIn'
+                        });                        
+                    }
+                });
             },
             
             hashchange: function(event) {
@@ -125,6 +236,33 @@
                 fileUpload.focus();
             },
             
+            newJobSitePopup: function(event) {
+                var title = $(this).text();
+                
+                var modal = PICS.modal({
+                    title: title,
+                    content: $('#new_project_form').html(),
+                    buttons: [
+                        {
+                            html: '<a href="javascript:;" class="btn cancel">' + translate('JS.button.Cancel') + '</a>'
+                        },
+                        {
+                            html: '<a href="javascript:;" class="btn success">' + translate('JS.button.Accept') + '</a>'
+                        }
+                    ]
+                });
+                
+                modal.show();
+                
+                $(modal.getElement()).delegate('.success', 'click', function(event) {
+                    modal.hide();
+                });
+                
+                $(modal.getElement()).delegate('.cancel', 'click', function(event) {
+                    modal.hide();
+                });
+            },
+            
             removeRole: function(event) {
                 var role = $(this).attr('data-role');
                 var remove = confirm(translate('JS.ManageEmployees.confirm.RemoveRole'));
@@ -166,6 +304,16 @@
                         sInfo:"_START_ to _END_ of _TOTAL_",
                         sInfoEmpty:"",
                         sInfoFiltered:"(filtered from _MAX_)"
+                    }
+                });
+            },
+            
+            showTask: function(event) {
+                var order = $(this).attr('data-order');
+                
+                $('.qualified-tasks').each(function() {
+                    if ($(this).attr('data-order') == order) {
+                        $(this).toggle();
                     }
                 });
             },

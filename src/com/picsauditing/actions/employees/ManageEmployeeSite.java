@@ -20,19 +20,19 @@ public class ManageEmployeeSite extends ManageEmployees {
 	protected JobSiteDAO jobSiteDAO;
 
 	private OperatorAccount operator;
-	private EmployeeSite employeeSite = new EmployeeSite();
+	private EmployeeSite employeeSite;
 	private JobSite jobSite = new JobSite();
 
 	public String add() {
-		if (employee != null && operator != null) {
+		if (employee != null) {
 			EmployeeSite employeeSite = new EmployeeSite();
 			employeeSite.setEmployee(employee);
 
-			if (operator.getId() > 0) {
+			if (operator != null) {
 				employeeSite.setOperator(operator);
 			} else {
-				employeeSite.setJobSite(jobSiteDAO.find(-1 * operator.getId()));
-				employeeSite.setOperator(employeeSite.getJobSite().getOperator());
+				employeeSite.setJobSite(jobSite);
+				employeeSite.setOperator(jobSite.getOperator());
 			}
 
 			employeeSite.setAuditColumns(permissions);
@@ -67,45 +67,110 @@ public class ManageEmployeeSite extends ManageEmployees {
 	}
 
 	public String edit() {
-		if (employee != null && childID != 0) {
-			List<String> notes = new ArrayList<String>();
+		return "edit";
+	}
 
-			EmployeeSite es = employeeSiteDAO.find(childID);
+	public String save() {
+		if (employeeSite != null) {
+			List<String> notes = new ArrayList<String>();
+			EmployeeSite existingSite = employeeSiteDAO.find(employeeSite.getId());
+
+			if (employee == null) {
+				employee = employeeSite.getEmployee();
+				account = employee.getAccount();
+			}
 
 			if (employeeSite.getEffectiveDate() != null
-					&& !employeeSite.getEffectiveDate().equals(es.getEffectiveDate()))
+					&& !employeeSite.getEffectiveDate().equals(existingSite.getEffectiveDate())) {
 				notes.add("Updated start date to " + employeeSite.getEffectiveDate());
-			else if (employeeSite.getEffectiveDate() == null && es.getEffectiveDate() != null)
+			} else if (employeeSite.getEffectiveDate() == null && existingSite.getEffectiveDate() != null) {
 				notes.add("Removed start date");
+			}
 
 			if (employeeSite.getExpirationDate() != null
-					&& !employeeSite.getExpirationDate().equals(es.getExpirationDate()))
+					&& !employeeSite.getExpirationDate().equals(existingSite.getExpirationDate())) {
 				notes.add("Updated stop date to " + employeeSite.getExpirationDate());
-			else if (employeeSite.getExpirationDate() == null && es.getExpirationDate() != null)
+			} else if (employeeSite.getExpirationDate() == null && existingSite.getExpirationDate() != null) {
 				notes.add("Removed stop date");
+			}
 
 			if (employeeSite.getOrientationDate() != null
-					&& !employeeSite.getOrientationDate().equals(es.getOrientationDate())) {
+					&& !employeeSite.getOrientationDate().equals(existingSite.getOrientationDate())) {
 				notes.add("Updated orientation date to " + employeeSite.getOrientationDate());
 
 				if (employeeSite.getOrientationExpiration() != null
-						&& !employeeSite.getOrientationExpiration().equals(es.getOrientationExpiration()))
+						&& !employeeSite.getOrientationExpiration().equals(existingSite.getOrientationExpiration())) {
 					notes.add("Updated orientation expiration date to " + employeeSite.getOrientationExpiration());
-			} else if (employeeSite.getOrientationDate() == null && es.getOrientationDate() != null) {
+				}
+			} else if (employeeSite.getOrientationDate() == null && existingSite.getOrientationDate() != null) {
 				notes.add("Removed orientation date");
 				employeeSite.setOrientationExpiration(null);
 			}
 
-			es.setEffectiveDate(employeeSite.getEffectiveDate());
-			es.setExpirationDate(employeeSite.getExpirationDate());
-			es.setOrientationDate(employeeSite.getOrientationDate());
-			es.setOrientationExpiration(employeeSite.getOrientationExpiration());
-			es.setAuditColumns(permissions);
+			existingSite.setEffectiveDate(employeeSite.getEffectiveDate());
+			existingSite.setExpirationDate(employeeSite.getExpirationDate());
+			existingSite.setOrientationDate(employeeSite.getOrientationDate());
+			existingSite.setOrientationExpiration(employeeSite.getOrientationExpiration());
+			existingSite.setAuditColumns(permissions);
 
-			employeeSiteDAO.save(es);
+			employeeSiteDAO.save(existingSite);
 			addNote(Strings.implode(notes));
 		}
 
-		return "edit";
+		return SUCCESS;
+	}
+
+	public String expire() {
+		if (employeeSite != null) {
+			if (employee == null) {
+				employee = employeeSite.getEmployee();
+				account = employee.getAccount();
+			}
+
+			employeeSite.expire();
+			employeeSite.setAuditColumns(permissions);
+
+			employeeSiteDAO.save(employeeSite);
+
+			boolean hasProject = employeeSite.getJobSite() != null;
+
+			String type = "Site";
+			if (hasProject) {
+				type = "Project";
+			}
+
+			String projectSite = employeeSite.getOperator().getName();
+			if (hasProject) {
+				projectSite += ": " + employeeSite.getJobSite().getLabel();
+			}
+
+			addNote(String.format("Expired %s %s", type, projectSite));
+		}
+
+		return SUCCESS;
+	}
+
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
+
+	public EmployeeSite getEmployeeSite() {
+		return employeeSite;
+	}
+
+	public void setEmployeeSite(EmployeeSite employeeSite) {
+		this.employeeSite = employeeSite;
+	}
+
+	public JobSite getJobSite() {
+		return jobSite;
+	}
+
+	public void setJobSite(JobSite jobSite) {
+		this.jobSite = jobSite;
 	}
 }

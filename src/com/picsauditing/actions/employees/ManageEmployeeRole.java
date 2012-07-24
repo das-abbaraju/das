@@ -1,9 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.EmployeeRoleDAO;
@@ -67,36 +63,5 @@ public class ManageEmployeeRole extends ManageEmployees {
 
 	public void setJobRole(JobRole jobRole) {
 		this.jobRole = jobRole;
-	}
-
-	public Set<JobRole> getUnusedJobRoles() throws Exception {
-		findAccount();
-
-		if (unusedJobRoles == null) {
-			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
-
-			for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
-				if (unusedJobRoles.contains(employeeRole.getJobRole()))
-					unusedJobRoles.remove(employeeRole.getJobRole());
-			}
-
-			Iterator<JobRole> roleIter = unusedJobRoles.iterator();
-			while (roleIter.hasNext())
-				if (!roleIter.next().isActive())
-					roleIter.remove();
-		}
-
-		return unusedJobRoles;
-	}
-
-	public boolean isShowJobRolesSection() throws Exception {
-		boolean hasUnusedJobRoles = getUnusedJobRoles().size() > 0;
-		boolean hasEmployeeRoles = false;
-
-		if (employee != null) {
-			hasEmployeeRoles = employee.getEmployeeRoles().size() > 0;
-		}
-
-		return hasUnusedJobRoles || hasEmployeeRoles;
 	}
 }
