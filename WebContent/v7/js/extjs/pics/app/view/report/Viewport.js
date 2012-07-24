@@ -14,7 +14,7 @@ Ext.define('PICS.view.report.Viewport', {
     }, {
         region: 'center',
 
-        border: false,
+        border: 0,
         id: 'content',
         items: [{
         	xtype: 'reportheader',

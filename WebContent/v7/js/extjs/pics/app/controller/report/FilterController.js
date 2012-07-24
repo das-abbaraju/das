@@ -34,9 +34,25 @@ Ext.define('PICS.controller.report.FilterController', {
     ],
 
     init: function() {
-        var that = this;
-
         this.control({
+            // render filter options
+            'reportfilteroptions': {
+                beforerender: function () {
+                    var report_store = this.getReportReportsStore();
+
+                    if (report_store.isLoading()) {
+                        report_store.load({
+                            callback: function (store, records, successful, eOpts) {
+                                this.application.fireEvent('refreshfilters');
+                            },
+                            scope: this
+                        });
+                    } else {
+                        this.application.fireEvent('refreshfilters');
+                    }
+                }
+            },
+
             // collapse filter options
             '#report_filter_options_collapse': {
                 click: function (cmp, event, eOpts) {
@@ -54,7 +70,7 @@ Ext.define('PICS.controller.report.FilterController', {
             // add filter
             'reportfilteroptions button[action=add-filter]': {
                 click: function (cmp, event, eOpts) {
-                    that.application.fireEvent('showcolumnselector', {
+                    this.application.fireEvent('showcolumnselector', {
                         columnSelectorType: 'filter'
                     });
                 }
@@ -85,7 +101,7 @@ Ext.define('PICS.controller.report.FilterController', {
             #report_filters numberfield,\
             #report_filters datefield,\
             #report_filters checkbox,\
-            #report_filters comboboxselect,\
+            #report_filters comboboxselect\
             ': {
                 blur: function (cmp, event, eOpts) {
                     var filter = this.findParentFilter(cmp);
@@ -138,7 +154,7 @@ Ext.define('PICS.controller.report.FilterController', {
             '\
             #report_filters textfield,\
             #report_filters numberfield,\
-            #report_filters datefield,\
+            #report_filters datefield\
             ': {
                 blur: function (cmp, event, eOpts) {
                     var filter = this.findParentFilter(cmp);
@@ -182,17 +198,6 @@ Ext.define('PICS.controller.report.FilterController', {
 
         this.application.on({
             refreshfilters: this.refreshFilters,
-            scope: this
-        });
-    },
-
-    onLaunch: function () {
-        var report_store = this.getReportReportsStore();
-
-        report_store.load({
-            callback: function (store, records, successful, eOpts) {
-                this.application.fireEvent('refreshfilters');
-            },
             scope: this
         });
     },
