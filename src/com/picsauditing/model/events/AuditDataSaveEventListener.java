@@ -1,5 +1,6 @@
 package com.picsauditing.model.events;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +14,9 @@ import org.springframework.context.ApplicationListener;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class AuditDataSaveEventListener implements ApplicationListener<AuditDataSaveEvent> {
 	private final Logger logger = LoggerFactory.getLogger(AuditDataSaveEventListener.class);
@@ -41,9 +44,17 @@ public class AuditDataSaveEventListener implements ApplicationListener<AuditData
 	private Set<ContractorOperator> getApplicableOperators(AuditData auditData) {
 		Set<Integer> operatorIds = new HashSet<Integer>();
 		List<ContractorAuditOperator> caos = auditData.getAudit().getOperatorsVisible();
+		List<ContractorAuditOperatorPermission> caops = new ArrayList<ContractorAuditOperatorPermission>();
 
 		for (ContractorAuditOperator cao : caos) {
-			operatorIds.add(cao.getOperator().getId());
+			caops.addAll(cao.getCaoPermissions());
+		}
+
+		for (ContractorAuditOperatorPermission caop : caops) {
+			OperatorAccount operator = caop.getOperator();
+			if (operator.getType().equals("Operator")) {
+				operatorIds.add(caop.getOperator().getId());
+			}
 		}
 
 		return contractorOperatorDAO.findForOperators(auditData.getAudit().getContractorAccount().getId(), operatorIds);
