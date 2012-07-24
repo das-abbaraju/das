@@ -1,4 +1,4 @@
-package com.picsauditing.report.access;
+package com.picsauditing.provider;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.models.ModelType;
 
 import java.util.ArrayList;
@@ -22,9 +23,9 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
-public class ReportAccessorTest {
+public class ReportProviderTest {
 
-	private ReportAccessor reportAccessor;
+	private ReportProvider reportProvider;
 
 	@Mock private BasicDAO dao;
 	@Mock private Report report;
@@ -33,9 +34,9 @@ public class ReportAccessorTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		reportAccessor = new ReportAccessor();
+		reportProvider = new ReportProvider();
 
-		setInternalState(reportAccessor, "basicDao", dao);
+		setInternalState(reportProvider, "basicDao", dao);
 
 		when(report.getId()).thenReturn(555);
 		when(user.getId()).thenReturn(23);
@@ -43,64 +44,64 @@ public class ReportAccessorTest {
 
 	@Test
 	public void connectReportToUser () {
-		reportAccessor.connectReportToUser(report, user);
+		reportProvider.connectReportToUser(report, user);
 
 		verify(dao).save(any(ReportUser.class));
 	}
 
 	@Test(expected = NoResultException.class)
-	public void grantPermissionToEdit_listTooSmall () {
+	public void grantPermissionToEdit_listTooSmall() {
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(null);
 
-		reportAccessor.grantEditPermission(report, user);
+		reportProvider.grantEditPermission(report, user);
 
 		verify(dao, never()).save(any(ReportUser.class));
 	}
 
 	@Test(expected = NonUniqueResultException.class)
-	public void grantPermissionToEdit_listTooBig () {
+	public void grantPermissionToEdit_listTooBig() {
 		List<ReportUser> testList = new ArrayList<ReportUser>();
 		testList.add(new ReportUser());
 		testList.add(new ReportUser());
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
 
-		reportAccessor.grantEditPermission(report, user);
+		reportProvider.grantEditPermission(report, user);
 
 		verify(dao, never()).save(any(ReportUser.class));
 	}
 
 	@Test
-	public void grantPermissionToEdit_listJustRight () {
+	public void grantPermissionToEdit_listJustRight() {
 		List<ReportUser> testList = new ArrayList<ReportUser>();
 		ReportUser repUser = mock(ReportUser.class);
 		testList.add(repUser);
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
 
-		reportAccessor.grantEditPermission(report, user);
+		reportProvider.grantEditPermission(report, user);
 
 		verify(repUser).setEditable(true);
 		verify(dao).save(repUser);
 	}
 
 	@Test
-	public void revokePermissionToEdit_listJustRight () {
+	public void revokePermissionToEdit_listJustRight() {
 		List<ReportUser> testList = new ArrayList<ReportUser>();
 		ReportUser repUser = mock(ReportUser.class);
 		testList.add(repUser);
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
 
-		reportAccessor.revokeEditPermission(report, user);
+		reportProvider.revokeEditPermission(report, user);
 
 		verify(repUser).setEditable(false);
 		verify(dao).save(repUser);
 	}
 
 	@Test
-	public void saveReport () throws ReportValidationException {
+	public void saveReport() throws ReportValidationException {
 		when(report.getModelType()).thenReturn(ModelType.Accounts);
 		when(report.getParameters()).thenReturn("{}");
 
-		reportAccessor.saveReport(report, user);
+		reportProvider.saveReport(report, user);
 
 		verify(report).setAuditColumns(user);
 		verify(dao).save(report);
@@ -114,7 +115,7 @@ public class ReportAccessorTest {
 		testList.add(mockRU2);
 		when(dao.findWhere(ReportUser.class, "t.report.id = 555")).thenReturn(testList);
 
-		reportAccessor.deleteReport(report);
+		reportProvider.deleteReport(report);
 
 		verify(dao).remove(mockRU1);
 		verify(dao).remove(mockRU2);
@@ -122,8 +123,8 @@ public class ReportAccessorTest {
 	}
 
 	@Test
-	public void findReportByID () {
-		reportAccessor.findOneReport(5);
+	public void findReportByID() {
+		reportProvider.findOneReport(5);
 
 		verify(dao).findOne(Report.class, "t.id = 5");
 	}
@@ -135,7 +136,7 @@ public class ReportAccessorTest {
 		testList.add(repUser);
 		when(dao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
 
-		reportAccessor.removeUserReport(user, report);
+		reportProvider.removeUserReport(user, report);
 
 		verify(dao).remove(repUser);
 	}

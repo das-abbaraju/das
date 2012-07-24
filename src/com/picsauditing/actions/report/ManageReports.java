@@ -30,7 +30,7 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportDynamicModel;
-import com.picsauditing.report.access.ReportAccessor;
+import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryMethod;
@@ -51,7 +51,7 @@ public class ManageReports extends PicsActionSupport {
 	@Autowired
 	private BasicDAO basicDao;
 	@Autowired
-	private ReportAccessor reportAccessor;
+	private ReportProvider reportProvider;
 
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
 	private String viewType;
@@ -107,13 +107,13 @@ public class ManageReports extends PicsActionSupport {
 			int userId = permissions.getUserId();
 
 			if (FAVORITE.equals(viewType)) {
-				userReports = reportAccessor.findFavoriteUserReports(userId);
+				userReports = reportProvider.findFavoriteUserReports(userId);
 			} else if (MY_REPORTS.equals(viewType)) {
-				userReports = reportAccessor.findAllUserReports(userId);
+				userReports = reportProvider.findAllUserReports(userId);
 			} else if (ALL_REPORTS.equals(viewType)) {
-				userReports = reportAccessor.findAllUserReports(userId);
+				userReports = reportProvider.findAllUserReports(userId);
 
-				List<Report> publicReports = reportAccessor.findPublicReports();
+				List<Report> publicReports = reportProvider.findPublicReports();
 				for (Report report : publicReports) {
 					if (!ReportUtil.containsReportWithId(userReports, report.getId())) {
 						userReports.add(new ReportUser(permissions.getUserId(), report));
@@ -146,7 +146,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String removeUserReport() throws Exception {
 		try {
-			reportAccessor.removeUserReport(permissions.getUserId(), reportId);
+			reportProvider.removeUserReport(permissions.getUserId(), reportId);
 			addActionMessage(getText("ManageReports.message.ReportRemoved"));
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
@@ -158,12 +158,11 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToFavoriteReports();
 	}
 
-	// TODO move to ReportAccessor
 	public String deleteReport() throws IOException {
 		try {
-			Report report = reportAccessor.findOneReport(reportId);
+			Report report = reportProvider.findOneReport(reportId);
 			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
-				reportAccessor.deleteReport(report);
+				reportProvider.deleteReport(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {
 				addActionError(getText("ManageReports.error.NoDeletePermissions"));
@@ -180,7 +179,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String toggleFavorite() {
 		try {
-			reportAccessor.toggleReportUserFavorite(permissions.getUserId(), reportId);
+			reportProvider.toggleReportUserFavorite(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.warn(nre.toString());

@@ -1,4 +1,4 @@
-package com.picsauditing.report.access;
+package com.picsauditing.provider;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -24,7 +24,7 @@ import com.picsauditing.search.SelectSQL;
  * This is the persistence layer. It is the only class that should contain a DAO.
  * It should also contain no business logic.
  */
-public class ReportAccessor {
+public class ReportProvider {
 
 	@Autowired
 	private BasicDAO basicDao;
