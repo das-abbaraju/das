@@ -1,19 +1,28 @@
 package com.picsauditing.auditBuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.startsWith;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
 import com.picsauditing.EntityFactory;
@@ -24,6 +33,8 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditQuestionFunction;
+import com.picsauditing.jpa.entities.AuditQuestionFunctionWatcher;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -48,10 +59,11 @@ public class AuditPercentCalculatorTest {
 	private List<AuditCatData> auditCatDataList = new ArrayList<AuditCatData>();
 	private List<AuditCategory> auditCategoryList = new ArrayList<AuditCategory>();
 
-	@Mock
-	private Logger logger;
-	@Mock
-	private AuditDataDAO auditDataDAO;
+	@Mock private Logger logger;
+	@Mock private AuditDataDAO auditDataDAO;
+	@Mock private AuditCatData catData;
+	@Mock private AuditCategory category;
+	@Mock private ContractorAudit contractorAudit;
 
 	@Before
 	public void setUp() throws Exception {
@@ -59,8 +71,8 @@ public class AuditPercentCalculatorTest {
 
 		calculator = new AuditPercentCalculator();
 
-		PicsTestUtil.forceSetPrivateField(calculator, "auditCategoryRuleCache",
-				catRuleCache);
+		Whitebox.setInternalState(calculator, "auditCategoryRuleCache", catRuleCache);
+		Whitebox.setInternalState(calculator, "logger", logger);
 
 		catRules.clear();
 		catRuleCache.clear();
@@ -77,6 +89,261 @@ public class AuditPercentCalculatorTest {
 		audit = EntityFactory.makeContractorAudit(auditType, contractor);
 	}
 
+	@Test
+	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_AllPopulatedAllValidPutsFunctionWatcherQuestionIdInReturn() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<AuditQuestionFunctionWatcher>();
+		
+		fullFunctionWatcherQuestionStubbing(auditQuestions, functions, watchers, true);
+		
+		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
+		
+		assertTrue(ids.contains(2));
+	}
+	
+	@Test
+	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_FunctionWatcherQuestionNotValidForDateReturnsEmptyCollection() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<AuditQuestionFunctionWatcher>();
+		
+		fullFunctionWatcherQuestionStubbing(auditQuestions, functions, watchers, false);
+		
+		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
+		
+		assertTrue(ids.isEmpty());
+	}
+
+	private void fullFunctionWatcherQuestionStubbing(List<AuditQuestion> auditQuestions,
+			List<AuditQuestionFunction> functions, List<AuditQuestionFunctionWatcher> watchers,
+			boolean isDateValid) {
+		AuditQuestion auditQuestion = mock(AuditQuestion.class);
+		when(auditQuestion.getId()).thenReturn(1);
+		auditQuestions.add(auditQuestion);
+
+		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
+		
+		functions.add(auditQuestionFunction);
+		
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		when(auditQuestion.isValidQuestion(validDate)).thenReturn(true);
+		when(auditQuestion.getFunctions()).thenReturn(functions);
+		
+		AuditQuestion watcherAuditQuestion = mock(AuditQuestion.class);
+		when(watcherAuditQuestion.getId()).thenReturn(2);
+		when(watcherAuditQuestion.isValidQuestion(validDate)).thenReturn(isDateValid);
+		
+		AuditQuestionFunctionWatcher aqfw = new AuditQuestionFunctionWatcher();
+		aqfw.setQuestion(watcherAuditQuestion);
+		watchers.add(aqfw);
+		auditQuestionFunction.setWatchers(watchers);
+	}
+	
+	@Test
+	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoWatchersReturnsEmptyCollection() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		
+		AuditQuestion auditQuestion = mock(AuditQuestion.class);
+		when(auditQuestion.getId()).thenReturn(1);
+		auditQuestions.add(auditQuestion);
+
+		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
+		functions.add(auditQuestionFunction);
+		
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		when(auditQuestion.isValidQuestion(validDate)).thenReturn(true);
+		when(auditQuestion.getFunctions()).thenReturn(functions);
+		
+		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
+		
+		assertTrue(ids.isEmpty());
+	}
+	
+	@Test
+	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoFunctionsReturnsEmptyCollection() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		
+		AuditQuestion auditQuestion = mock(AuditQuestion.class);
+		when(auditQuestion.getId()).thenReturn(1);
+		auditQuestions.add(auditQuestion);
+
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		when(auditQuestion.isValidQuestion(validDate)).thenReturn(true);
+		when(auditQuestion.getFunctions()).thenReturn(functions);
+		
+		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
+		
+		assertTrue(ids.isEmpty());
+	}
+	
+	@Test
+	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NotValidQuestionReturnsEmptyCollection() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		
+		AuditQuestion auditQuestion = mock(AuditQuestion.class);
+		when(auditQuestion.getId()).thenReturn(1);
+		auditQuestions.add(auditQuestion);
+
+		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
+		functions.add(auditQuestionFunction);
+		
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		when(auditQuestion.isValidQuestion(validDate)).thenReturn(false);
+
+		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
+		
+		assertTrue(ids.isEmpty());
+	}
+
+	private Date functionWatcherQuestionIdsBasicStubbing(List<AuditQuestion> auditQuestions) {
+		Date validDate = new Date();
+		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(catData.getCategory()).thenReturn(category);
+		when(catData.getAudit()).thenReturn(contractorAudit);
+		when(contractorAudit.getValidDate()).thenReturn(validDate);
+		return validDate;
+	}
+	
+	@Test
+	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoQuestionsReturnsEmptyCollection() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+
+		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
+
+		assertTrue(ids.isEmpty());
+	}
+	
+	@Test
+	public void testCollectQuestionIdsFromAuditCatData_NoRequiredNoVisible() throws Exception {
+		List<AuditQuestion> auditQuestions = mockAuditQuestions(1, 5);
+		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(catData.getCategory()).thenReturn(category);
+		
+		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
+		
+		for (int count = 1; count < questionIDs.size(); count++) {
+			assertTrue(questionIDs.contains(count));
+		}
+		verify(logger, never()).warn(startsWith("Circular required questions detected"), anyInt());
+		verify(logger, never()).warn(startsWith("Circular visible questions detected"), anyInt());
+	}
+
+	@Test
+	public void testCollectQuestionIdsFromAuditCatData_WithRequiredNotCircularNoVisible() throws Exception {
+		List<AuditQuestion> auditQuestions = mockAuditQuestions(1, 5);
+		List<AuditQuestion> requiredQuestions = mockAuditQuestions(6, 5);
+		Iterator<AuditQuestion> requiredQuestionsIterator = requiredQuestions.iterator();
+		for (AuditQuestion question : auditQuestions) {
+			AuditQuestion requiredQuestion = requiredQuestionsIterator.next();
+			when(question.getRequiredQuestion()).thenReturn(requiredQuestion);
+		}
+		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(catData.getCategory()).thenReturn(category);
+		
+		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
+		
+		for (int count = 1; count <= 10; count++) {
+			assertTrue(questionIDs.contains(count));
+		}
+		verify(logger, never()).warn(startsWith("Circular required questions detected"), anyInt());
+	}
+
+	@Test
+	public void testCollectQuestionIdsFromAuditCatData_NoRequiredWithVisibleNotCircular() throws Exception {
+		List<AuditQuestion> auditQuestions = mockAuditQuestions(1, 5);
+		List<AuditQuestion> visibleQuestions = mockAuditQuestions(6, 5);
+		Iterator<AuditQuestion> visibleQuestionsIterator = visibleQuestions.iterator();
+		for (AuditQuestion question : auditQuestions) {
+			AuditQuestion visibleQuestion = visibleQuestionsIterator.next();
+			when(question.getVisibleQuestion()).thenReturn(visibleQuestion);
+		}
+		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(catData.getCategory()).thenReturn(category);
+		
+		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
+		
+		for (int count = 1; count <= 10; count++) {
+			assertTrue(questionIDs.contains(count));
+		}
+	}
+	
+	@Test
+	public void testCollectQuestionIdsFromAuditCatData_WithRequiredWithCircularNoVisible() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		AuditQuestion auditQuestion = mock(AuditQuestion.class);
+		when(auditQuestion.getId()).thenReturn(1);
+		auditQuestions.add(auditQuestion);
+		
+		AuditQuestion requiredQuestion = mock(AuditQuestion.class);
+		when(requiredQuestion.getId()).thenReturn(2);
+		when(auditQuestion.getRequiredQuestion()).thenReturn(requiredQuestion);
+		
+		AuditQuestion requiredQuestion2 = mock(AuditQuestion.class);
+		when(requiredQuestion2.getId()).thenReturn(3);
+		when(requiredQuestion.getRequiredQuestion()).thenReturn(requiredQuestion2);
+		
+		AuditQuestion circularRequiredQuestion = mock(AuditQuestion.class);
+		when(circularRequiredQuestion.getId()).thenReturn(2);
+		when(requiredQuestion2.getRequiredQuestion()).thenReturn(circularRequiredQuestion);
+		
+		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(catData.getCategory()).thenReturn(category);
+		
+		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
+		
+		for (int count = 1; count <= 3; count++) {
+			assertTrue(questionIDs.contains(count));
+		}
+		verify(logger).warn(startsWith("Circular required questions detected"), anyInt());
+	}
+	
+	@Test
+	public void testCollectQuestionIdsFromAuditCatData_WithVisibleWithCircularNoRequired() throws Exception {
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
+		AuditQuestion auditQuestion = mock(AuditQuestion.class);
+		when(auditQuestion.getId()).thenReturn(1);
+		auditQuestions.add(auditQuestion);
+		
+		AuditQuestion visibleQuestion = mock(AuditQuestion.class);
+		when(visibleQuestion.getId()).thenReturn(2);
+		when(auditQuestion.getVisibleQuestion()).thenReturn(visibleQuestion);
+		
+		AuditQuestion visibleQuestion2 = mock(AuditQuestion.class);
+		when(visibleQuestion2.getId()).thenReturn(3);
+		when(visibleQuestion.getVisibleQuestion()).thenReturn(visibleQuestion2);
+		
+		AuditQuestion circularVisibleQuestion = mock(AuditQuestion.class);
+		when(circularVisibleQuestion.getId()).thenReturn(2);
+		when(visibleQuestion2.getVisibleQuestion()).thenReturn(circularVisibleQuestion);
+		
+		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(catData.getCategory()).thenReturn(category);
+		
+		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
+		
+		for (int count = 1; count <= 3; count++) {
+			assertTrue(questionIDs.contains(count));
+		}
+		verify(logger, never()).warn(startsWith("Circular required questions detected"), anyInt());
+		verify(logger).warn(startsWith("Circular visible questions detected"), anyInt());
+	}
+	
+	private List<AuditQuestion> mockAuditQuestions(int startingId, int numberToCreate) {
+		List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+		for (int i = startingId; i < (startingId+numberToCreate); i++) {
+			AuditQuestion auditQuestion = mock(AuditQuestion.class);
+			when(auditQuestion.getId()).thenReturn(i);
+			questions.add(auditQuestion);
+		}
+		return questions;
+	}
+	
 	@Test
 	public void testPercentCalculateComplete_WeightedScore_All_Answer_100()
 			throws Exception {
@@ -312,7 +579,6 @@ public class AuditPercentCalculatorTest {
 	}
 
 	private AuditCatData setupCircularTest(boolean doRequiredQuestions) {
-		PicsTestUtil.forceSetPrivateField(calculator, "logger", logger);
 		PicsTestUtil.forceSetPrivateField(calculator, "auditDataDAO",
 				auditDataDAO);
 

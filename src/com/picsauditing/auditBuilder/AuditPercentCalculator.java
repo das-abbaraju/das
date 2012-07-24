@@ -74,48 +74,8 @@ public class AuditPercentCalculator {
 		Date validDate = catData.getAudit().getValidDate();
 
 		// Get a list of questions/answers for this category
-		Set<Integer> questionIDs = new HashSet<Integer>();
-		Collection<Integer> functionWatcherQuestionIds = new ArrayList<Integer>();
-
-		for (AuditQuestion question : catData.getCategory().getQuestions()) {
-			questionIDs.add(question.getId());
-
-			if (question.getRequiredQuestion() != null) {
-				AuditQuestion q = question.getRequiredQuestion();
-				circularRequiredQuestionIds.clear();
-				while (q != null) {
-					questionIDs.add(q.getId());
-					if (circularRequiredQuestionIds.contains(q.getId())) {
-						logger.warn("Circular required questions detected with question id {}", q.getId());
-						break;
-					}
-					circularRequiredQuestionIds.add(q.getId());
-					q = q.getRequiredQuestion();
-				}
-			}
-			
-			if (question.getVisibleQuestion() != null) {
-				AuditQuestion q = question.getVisibleQuestion();
-				circularVisualQuestionIds.clear();
-				while (q != null) {
-					questionIDs.add(q.getId());
-
-					if (circularVisualQuestionIds.contains(q.getId())) {
-						logger.warn("Circular visible questions detected with question id {}", q.getId());
-						break;
-					}
-					circularVisualQuestionIds.add(q.getId());
-					q = q.getVisibleQuestion();
-				}
-			}
-
-			if (question.isValidQuestion(validDate)) {
-				for (AuditQuestionFunction aqf : question.getFunctions())
-					for (AuditQuestionFunctionWatcher aqfw : aqf.getWatchers())
-						if (aqfw.getQuestion().isValidQuestion(validDate))
-							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
-			}
-		}
+		Set<Integer> questionIDs = collectQuestionIdsFromAuditCatData(catData);
+		Collection<Integer> functionWatcherQuestionIds = collectFunctionWatcherQuestionIdsFromAuditCatData(catData);
 
 		AnswerMap currentWatcherAnswers = auditDataDAO.findAnswersByAuditAndQuestions(catData.getAudit()
 				, functionWatcherQuestionIds);
@@ -271,6 +231,71 @@ public class AuditPercentCalculator {
 		// categoryDataDAO.save(catData);
 	}
 
+	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(AuditCatData catData) {
+		Collection<Integer> functionWatcherQuestionIds = new ArrayList<Integer>();
+		Date validDate = catData.getAudit().getValidDate();
+		
+		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+			if (question.isValidQuestion(validDate)) {
+				for (AuditQuestionFunction aqf : question.getFunctions())
+					for (AuditQuestionFunctionWatcher aqfw : aqf.getWatchers())
+						if (aqfw.getQuestion().isValidQuestion(validDate))
+							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
+			}
+		}
+		
+		return functionWatcherQuestionIds;
+	}
+	
+	private Set<Integer> collectQuestionIdsFromAuditCatData(AuditCatData catData) {
+		Set<Integer> questionIDs = new HashSet<Integer>();
+		
+		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+			questionIDs.add(question.getId());
+
+			if (question.getRequiredQuestion() != null) {
+				questionIDs.addAll(collectChainOfRequiredQuestionIds(question));
+			}
+			
+			if (question.getVisibleQuestion() != null) {
+				questionIDs.addAll(collectChainOfVisibleQuestionIds(question));			
+			}
+		}	
+		return questionIDs;
+	}
+
+	private Set<Integer> collectChainOfRequiredQuestionIds(AuditQuestion question) {
+		Set<Integer> questionIDs = new HashSet<Integer>();
+		HashSet<Integer> requiredQuestionIdsSeen = new HashSet<Integer>();
+		AuditQuestion q = question.getRequiredQuestion();
+		while (q != null) {
+			questionIDs.add(q.getId());
+			if (requiredQuestionIdsSeen.contains(q.getId())) {
+				logger.warn("Circular required questions detected with question id {}", q.getId());
+				return questionIDs;
+			}
+			requiredQuestionIdsSeen.add(q.getId());
+			q = q.getRequiredQuestion();
+		}
+		return questionIDs;
+	}
+	
+	private Set<Integer> collectChainOfVisibleQuestionIds(AuditQuestion question) {
+		Set<Integer> questionIDs = new HashSet<Integer>();
+		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<Integer>();
+		AuditQuestion q = question.getVisibleQuestion();
+		while (q != null) {
+			questionIDs.add(q.getId());
+			if (visibleQuestionIdsSeen.contains(q.getId())) {
+				logger.warn("Circular visible questions detected with question id {}", q.getId());
+				return questionIDs;
+			}
+			visibleQuestionIdsSeen.add(q.getId());
+			q = q.getVisibleQuestion();
+		}
+		return questionIDs;
+	}
+	
 	private int addVerifiedCount(AuditCatData catData, int requiredCount, int verifiedCount, AuditData answer) {
 		AuditQuestion question = answer.getQuestion();
 		// Anything that requires verification, should be
