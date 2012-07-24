@@ -28,7 +28,6 @@ public class ContractorOperatorDAOITest {
 	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired private ContractorOperatorDAO contractorOperatorDAO;
-	@Autowired private AccountDAO accountDAO;
 	
 	@Mock private Database databaseForTesting;
 	
@@ -50,6 +49,5 @@ public class ContractorOperatorDAOITest {
 			add(16); add(1068); add(1251); 
 		}};
 		Set<ContractorOperator> results = contractorOperatorDAO.findForOperators(357, operatorIds);
-		//Account results = accountDAO.find(297);
 	}
 }
