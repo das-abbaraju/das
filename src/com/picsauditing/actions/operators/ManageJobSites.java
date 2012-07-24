@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -147,7 +148,11 @@ public class ManageJobSites extends OperatorActionSupport {
 
 	private CountrySubdivision getCountrySubdivision() {
 		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(siteCountry.getIsoCode() + "-" + siteState.getIsoCode());
+		String stateIso = siteState.getIsoCode();
+		String countryIso = siteCountry.getIsoCode();
+		// TODO: Remove in Clean up Phase
+		stateIso = StringUtils.remove(stateIso, "GB_");
+		countrySubdivision.setIsoCode(countryIso + "-" + stateIso);
 		return countrySubdivision;
 	}
 

@@ -221,9 +221,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				stampContractorNoteAboutOfficeLocationChange();
 			}
 			
-			if (countrySubdivisionDAO.exist(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode())){
+			String stateIso = contractor.getState().getIsoCode();
+			String countryIso = contractor.getCountry().getIsoCode();
+			if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
 				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode());
+				// TODO: Remove in Clean up Phase
+				stateIso = StringUtils.remove(stateIso, "GB_");
+				countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
 				contractor.setCountrySubdivision(countrySubdivision);
 			}
 

@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import javax.naming.NoPermissionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -229,9 +230,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
 			operator.setState(state);
 
-			if (!countrySubdivisionDAO.exist(operator.getCountry().getIsoCode()+"-"+operator.getState().getIsoCode())){
+			String stateIso = operator.getState().getIsoCode();
+			String countryIso = operator.getCountry().getIsoCode();
+			if (!countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
 				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(operator.getCountry().getIsoCode()+"-"+operator.getState().getIsoCode());
+				// TODO: Remove in Clean up Phase
+				stateIso = StringUtils.remove(stateIso, "GB_");
+				countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
 				operator.setCountrySubdivision(countrySubdivision);
 			}
 		}
