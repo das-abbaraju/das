@@ -1,7 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:include value="../actionMessages.jsp"/>
+<s:include value="../../actionMessages.jsp"/>
 
 <ol>
 	<s:if test="employee.employeeRoles.size > 0">

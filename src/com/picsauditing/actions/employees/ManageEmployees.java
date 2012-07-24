@@ -201,7 +201,7 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String load() {
-		return "employees";
+		return "edit";
 	}
 
 	public String getFileName(int eID) {

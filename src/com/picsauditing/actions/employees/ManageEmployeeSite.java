@@ -50,7 +50,9 @@ public class ManageEmployeeSite extends ManageEmployees {
 	}
 
 	public String addNew() {
-		if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
+		boolean jobSiteValid = !Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName());
+
+		if (employee != null && operator != null && jobSiteValid) {
 			jobSite.setAuditColumns(permissions);
 			jobSite.setOperator(operator);
 			jobSite = jobSiteDAO.save(jobSite);
@@ -61,9 +63,11 @@ public class ManageEmployeeSite extends ManageEmployees {
 			employeeSite.setOperator(operator);
 			employeeSite.defaultDates();
 			employeeSiteDAO.save(employeeSite);
+
+			return SUCCESS;
 		}
 
-		return SUCCESS;
+		return "new";
 	}
 
 	public String edit() {

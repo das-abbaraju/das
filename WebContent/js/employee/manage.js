@@ -12,9 +12,9 @@
                     element.delegate('#hse_operator_list', 'change', this.addOperatorSite);
                     element.delegate('#oq_project_list', 'change', this.addJobSite);
                     
-                    element.delegate('#employee_nccer_link', 'click', this.nccerPopup);
+                    element.delegate('#employee_nccer_link', 'click', this.nccer);
                     element.delegate('#import_excel', 'click', this.importExcel);
-                    element.delegate('#new_project_link', 'click', this.newJobSitePopup);
+                    element.delegate('#new_project_link', 'click', this.newJobSite);
                     
                     element.delegate('.edit.site', 'click', this.editSite);
                     element.delegate('.remove.role', 'click', this.removeRole);
@@ -225,7 +225,7 @@
                 });
             },
             
-            nccerPopup: function(event) {
+            nccer: function(event) {
                 var employeeID = $(this).attr('data-employee');
                 
                 var url = 'EmployeeNCCERUpload.action?employee=' + employeeID;
@@ -236,30 +236,48 @@
                 fileUpload.focus();
             },
             
-            newJobSitePopup: function(event) {
+            newJobSite: function(event) {
+                var modal = null;
                 var title = $(this).text();
                 
-                var modal = PICS.modal({
-                    title: title,
-                    content: $('#new_project_form').html(),
-                    buttons: [
-                        {
-                            html: '<a href="javascript:;" class="btn cancel">' + translate('JS.button.Cancel') + '</a>'
-                        },
-                        {
-                            html: '<a href="javascript:;" class="btn success">' + translate('JS.button.Accept') + '</a>'
-                        }
-                    ]
-                });
-                
-                modal.show();
-                
-                $(modal.getElement()).delegate('.success', 'click', function(event) {
-                    modal.hide();
-                });
-                
-                $(modal.getElement()).delegate('.cancel', 'click', function(event) {
-                    modal.hide();
+                PICS.ajax({
+                    url: 'ManageEmployeeSite!addNew.action',
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        modal = PICS.modal({
+                            title: title,
+                            content: data,
+                            buttons: [
+                                {
+                                    html: '<a href="javascript:;" class="btn cancel">' + translate('JS.button.Cancel') + '</a>'
+                                },
+                                {
+                                    html: '<a href="javascript:;" class="btn success">' + translate('JS.button.Accept') + '</a>'
+                                }
+                            ]
+                        });
+                    },
+                    complete: function(XMLHttpRequest, textStatus) {
+                        modal.show();
+                        
+                        $(modal.getElement()).delegate('.success', 'click', function(event) {
+                            var formData = $('#new_project_form').serialize();
+                            
+                            PICS.ajax({
+                                url: 'ManageEmployeeSite!addNew.action',
+                                data: formData,
+                                success: function(data, textStatus, XMLHttpRequest) {
+                                    $('#employee_site').html(data);
+                                },
+                                complete: function(XMLHttpRequest, textStatus) {
+                                    modal.hide();
+                                }
+                            });
+                        });
+                        
+                        $(modal.getElement()).delegate('.cancel', 'click', function(event) {
+                            modal.hide();
+                        });
+                    }
                 });
             },
             

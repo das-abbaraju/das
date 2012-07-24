@@ -89,7 +89,7 @@
 	</fieldset>
 	
 	<s:if test="employee.account.requiresOQ">
-		<s:include value="manage_employees_sites_oq.jsp" />
+		<s:include value="site_oq.jsp" />
 	</s:if>
 </s:if>
 <s:if test="employee.prevAssigned">

@@ -46,7 +46,7 @@
 			vertical-align: top;
 		}
 		
-		#new_project_form,
+		#new_project_div,
 		.qualified-tasks
 		{
 			display: none;
@@ -93,7 +93,7 @@
 			</span>
 		</h1>
 		
-		<s:include value="../actionMessages.jsp"/>
+		<s:include value="../../actionMessages.jsp"/>
 	
 		<s:if test="audit == null" >
 			<div>
@@ -216,9 +216,9 @@
 				<td>
 					<div id="employee_form"<s:if test="employee.id > 0"> data-employee="${employee.id}"</s:if>>
 						<s:if test="employee != null && employee.id == 0">
-							<s:include value="manage_employees_form.jsp" />
+							<s:include value="form.jsp" />
 						</s:if>
-					
+					</div>
 				</td>
 			</tr>
 		</table>
