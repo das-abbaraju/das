@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -302,9 +303,13 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
 		crr.setState(importedState);
-		if (countrySubdivisionDAO.exist(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode())){
+		String stateIso = crr.getState().getIsoCode();
+		String countryIso = crr.getCountry().getIsoCode();
+		if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
 			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode());
+			// TODO: Remove in Clean up Phase
+			stateIso = StringUtils.remove(stateIso, "GB_");
+			countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
 			crr.setCountrySubdivision(countrySubdivision);
 		}
 		if (zipValue != null) {

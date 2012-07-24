@@ -339,9 +339,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.baselineFlagDetail = baselineFlagDetail;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
-	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
-			@JoinColumn(name = "conID", referencedColumnName = "subID") })
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "contractorOperator")
 	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
 	}
@@ -350,9 +348,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.flagDatas = flagDatas;
 	}
 
-	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
-			@JoinColumn(name = "conID", referencedColumnName = "subID") })
+	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "contractorOperator")
 	public Set<FlagDataOverride> getOverrides() {
 		return overrides;
 	}

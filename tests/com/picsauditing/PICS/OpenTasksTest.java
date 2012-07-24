@@ -42,6 +42,8 @@ import com.ibm.icu.util.Calendar;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -87,6 +89,7 @@ public class OpenTasksTest {
 	@Mock private ContractorAccount contractor;
 	@Mock private ContractorAudit audit;
 	@Mock protected ContractorAuditDAO contractorAuditDao;
+	@Mock private OperatorTagDAO operatorTagDao;
 	@Mock private ContractorAuditOperator cao;
 	@Mock private User user;
 	@Mock private Permissions permissions;
@@ -125,6 +128,7 @@ public class OpenTasksTest {
 		Whitebox.setInternalState(openTasks, "i18nCache", i18nCache);
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
+		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
 	}
 
 	private void setUpCollections() {

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -101,9 +102,13 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCountry(crr.getCountry());
 					contractor.setState(crr.getState());
 
-					if (countrySubdivisionDAO.exist(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode())){
+					String countryIso = crr.getCountry().getIsoCode();
+					String stateIso = crr.getState().getIsoCode();
+					if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
 						CountrySubdivision countrySubdivision = new CountrySubdivision();
-						countrySubdivision.setIsoCode(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode());
+						// TODO: Remove in Clean up Phase
+						stateIso = StringUtils.remove(stateIso, "GB_");
+						countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
 						contractor.setCountrySubdivision(countrySubdivision);
 					}
 
@@ -245,9 +250,13 @@ public class Registration extends ContractorActionSupport {
 		}
 		if (contractor.getCountry().isHasStates() && state != null){
 			contractor.setState(state);
-			if (countrySubdivisionDAO.exist(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode())){
+			String countryIso = contractor.getCountry().getIsoCode();
+			String stateIso = contractor.getState().getIsoCode();
+			if (countrySubdivisionDAO.exist(countryIso+"-"+stateIso)){
 				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode());
+				// TODO: Remove in Clean up Phase
+				stateIso = StringUtils.remove(stateIso, "GB_");
+				countrySubdivision.setIsoCode(countryIso+"-"+stateIso);
 				contractor.setCountrySubdivision(countrySubdivision);
 			}
 		}
