@@ -113,7 +113,7 @@ public class SqlBuilder {
 				if (!Strings.isEmpty(joinTable.getAlias()))
 					joinExpression += " AS " + joinTable.getAlias();
 
-				joinExpression += " ON " + joinTable.getWhereClause();
+				joinExpression += " ON " + joinTable.getOnClause();
 				sql.addJoin(joinExpression);
 				addJoins(joinTable);
 			}
