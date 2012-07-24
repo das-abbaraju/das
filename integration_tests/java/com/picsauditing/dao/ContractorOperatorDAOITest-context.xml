@@ -19,14 +19,12 @@
     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd"
 	default-autowire="byName">
 
+	<context:property-placeholder location="classpath:connection.properties"/>
+	
 	<import resource="classpath:TestDatabaseEntityManager-context.xml"/>
 	
-	<jdbc:initialize-database data-source="dataSource">
-		<jdbc:script location="classpath:create_email_template_table.sql" />
-		<jdbc:script location="classpath:email_template_test_data.sql" />
-	</jdbc:initialize-database>
-
-	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO" />
+	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" />
+	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO" />
 	<bean id="DBBean" class="com.picsauditing.PICS.DBBean">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
