@@ -94,7 +94,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
 	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<AuditQuestionFunctionWatcher>();
 
-	private AuditExtractOption extractOption;
 	private List<AuditTransformOption> transformOptions;
 
 	public AuditQuestion() {
@@ -562,15 +561,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 			return "";
 		
 		return getName().toString();
-	}
-
-	@OneToOne(mappedBy = "question", fetch = FetchType.LAZY)
-	public AuditExtractOption getExtractOption() {
-		return extractOption;
-	}
-
-	public void setExtractOption(AuditExtractOption extractOption) {
-		this.extractOption = extractOption;
 	}
 
 	@OneToMany(mappedBy = "sourceQuestion", cascade = { CascadeType.REMOVE })

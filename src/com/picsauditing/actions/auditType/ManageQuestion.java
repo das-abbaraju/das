@@ -53,19 +53,24 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 		super.load(id);
 	}
 
+	private AuditExtractOption auditExtractOptionForAuditQuestion() {
+		return auditQuestionDAO.findAuditExtractOptionByQuestionId(question.getId());
+	}
+	
 	protected void load(AuditQuestion o) {
 		this.question = o;
+		AuditExtractOption extractOption = auditExtractOptionForAuditQuestion();
 		if (question.getRequiredQuestion() != null)
 			requiredQuestionID = question.getRequiredQuestion().getId();
 		if (question.getVisibleQuestion() != null)
 			visibleQuestionID = question.getVisibleQuestion().getId();
-		extractOptionDefined = (question.getExtractOption() != null);
+		extractOptionDefined = (extractOption != null);
 		if (extractOptionDefined) {
-			stopAt = question.getExtractOption().getStopAt().toString();
-			startAtBeginning = question.getExtractOption().isStartAtBeginning();
-			startingPoint = question.getExtractOption().getStartingPoint();
-			collectAsLines = question.getExtractOption().isCollectAsLines();
-			stoppingPoint = question.getExtractOption().getStoppingPoint();
+			stopAt = extractOption.getStopAt().toString();
+			startAtBeginning = extractOption.isStartAtBeginning();
+			startingPoint = extractOption.getStartingPoint();
+			collectAsLines = extractOption.isCollectAsLines();
+			stoppingPoint = extractOption.getStoppingPoint();
 			if (startingPoint == null)
 				startingPoint = "";
 			if (stoppingPoint == null)
@@ -175,35 +180,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			if (question.getScoreWeight() > 0)
 				question.setRequired(true);
 
-			if (extractOptionDefined) {
-				AuditExtractOption option = question.getExtractOption();
-				if (option == null) {
-					option = new AuditExtractOption();
-					option.setQuestion(question);
-					dao.save(option);
-				}
-				option.setCollectAsLines(collectAsLines);
-				option.setStopAt(ImportStopAt.valueOf(stopAt));
-				option.setStartAtBeginning(startAtBeginning);
-				startingPoint = startingPoint.trim();
-				if (startingPoint.length() == 0)
-					option.setStartingPoint(null);
-				else
-					option.setStartingPoint(startingPoint);
-				stoppingPoint = stoppingPoint.trim();
-				if (stoppingPoint.length() == 0)
-					option.setStoppingPoint(null);
-				else
-					option.setStoppingPoint(stoppingPoint);
-				question.setExtractOption(option);
-			} else {
-				AuditExtractOption option = question.getExtractOption();
-				if (option != null) {
-					option.setQuestion(null);
-					dao.remove(option);
-				}
-				question.setExtractOption(null);
-			}
+			manageExtractOption();
 
 			question = auditQuestionDAO.save(question);
 			id = question.getCategory().getId();
@@ -212,6 +189,35 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			return true;
 		}
 		return false;
+	}
+
+	private void manageExtractOption() {
+		AuditExtractOption option = auditExtractOptionForAuditQuestion();
+		if (extractOptionDefined) {
+			if (option == null) {
+				option = new AuditExtractOption();
+				option.setQuestion(question);
+				dao.save(option);
+			}
+			option.setCollectAsLines(collectAsLines);
+			option.setStopAt(ImportStopAt.valueOf(stopAt));
+			option.setStartAtBeginning(startAtBeginning);
+			startingPoint = startingPoint.trim();
+			if (startingPoint.length() == 0)
+				option.setStartingPoint(null);
+			else
+				option.setStartingPoint(startingPoint);
+			stoppingPoint = stoppingPoint.trim();
+			if (stoppingPoint.length() == 0)
+				option.setStoppingPoint(null);
+			else
+				option.setStoppingPoint(stoppingPoint);
+		} else {
+			if (option != null) {
+				option.setQuestion(null);
+				dao.remove(option);
+			}
+		}
 	}
 
 	protected boolean delete() {
@@ -225,8 +231,9 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			id = question.getCategory().getId();
 			auditQuestionDAO.deleteData(AuditCategoryRule.class, "question.id = " + question.getId());
 			auditQuestionDAO.deleteData(AuditTypeRule.class, "question.id = " + question.getId());
-			if (question.getExtractOption() != null) {
-				dao.remove(question.getExtractOption());
+			AuditExtractOption extractOption = auditExtractOptionForAuditQuestion();
+			if (extractOption != null) {
+				dao.remove(extractOption);
 			}
 			auditQuestionDAO.remove(question.getId());
 
