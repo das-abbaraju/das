@@ -32,7 +32,7 @@ public class PhysicalAddressUtilsTest {
 	public void testAssumptions() throws Exception {
 		assertEquals("CA", california.getIsoCode());
 		// assertEquals("CA", california.getI18nKey());
-		assertEquals("California, United States", california.getName());
+		assertEquals("California", california.getName());
 		assertEquals("California", california.getSimpleName());
 	}
 
