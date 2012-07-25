@@ -2,14 +2,15 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilterbaselistfilter'],
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         if (!this.record) {
             // die
         }
 
-        //this.record.set('operator', 'In');
+        // TODO: shouldn't the server do this?
+        this.record.set('operator', 'In');
 
         var list = this.createList(this.record);
 
@@ -22,16 +23,13 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
 
         return {
             xtype: 'combobox',
+            displayField: 'name',
             editable: false,
-            listeners: {
-                change: function (obj, newval, oldval, options) {
-                   //this.up('listfilter').record.set('value', newval);
-                }
-            },
             multiSelect: true,
             name: 'filter_value',
             store: store,
             value: value,
+            valueField: 'id',
             width: 258
         };
     },
@@ -40,7 +38,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
         var url = Ext.Object.fromQueryString(document.location.search);
         var name = record.get('name');
 
-        return {
+        return Ext.create('Ext.data.Store', {
             fields: [{
                 name: 'id',
                 type: 'string'
@@ -55,13 +53,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
                     root: 'result',
                     type: 'json'
                 }
-            },
-            listeners: {
-                load: function () {
-                    //set valueField to pull from json id
-                    //me.child('panel [name=filter_input] boxselect').valueField = 'id';
-                }
             }
-        };
+        });
     }
 });
