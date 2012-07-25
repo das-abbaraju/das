@@ -218,9 +218,9 @@
  */
 /* line 1, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-body {
-  color: black;
+  color: #333333;
   font-size: 12px;
-  font-family: tahoma, arial, verdana, sans-serif; }
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* line 7, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-rtl {
@@ -654,7 +654,7 @@ tr.x-container:before {
     border: 1px solid #a3bad9;
     background-color: #eeeeee;
     color: #222222;
-    font: normal 11px tahoma, arial, verdana, sans-serif; }
+    font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /**
  * Creates the base structure of an Ext.ProgressBar
@@ -775,7 +775,7 @@ tr.x-container:before {
 
 /* line 80, ../themes/stylesheets/ext4/default/widgets/_btn-group.scss */
 .x-btn-group-header-text-default-framed {
-  font: normal 11px tahoma, arial, verdana, sans-serif;
+  font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #3e6aaa; }
 
 /* line 6, ../themes/stylesheets/ext4/default/widgets/_datepicker.scss */
@@ -899,7 +899,7 @@ table.x-datepicker-inner {
     height: 19px;
     padding: 0;
     color: #233d6d;
-    font: normal 10px tahoma, arial, verdana, sans-serif;
+    font: normal 10px "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: right;
     border-bottom: 1px solid #b2d1f5;
     border-collapse: separate;
@@ -930,7 +930,7 @@ table.x-datepicker-inner {
     padding-right: 4px;
     display: block;
     zoom: 1;
-    font: normal 11px tahoma, arial, verdana, sans-serif;
+    font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: black;
     text-decoration: none;
     text-align: right; }
@@ -1012,7 +1012,7 @@ table.x-datepicker-inner {
 .x-monthpicker-item {
   float: left;
   margin: 4px 0 5px 0;
-  font: normal 11px tahoma, arial, verdana, sans-serif;
+  font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
   vertical-align: middle;
   height: 18px;
@@ -1186,7 +1186,7 @@ table.x-datepicker-inner {
   border-bottom: 0 none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   color: white;
-  font: normal 11px tahoma, arial, verdana, sans-serif;
+  font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-image: none;
   background-color: #454545; }
 
@@ -1285,7 +1285,7 @@ table.x-datepicker-inner {
   /* line 199, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-grid-row .x-grid-cell {
     color: null;
-    font: normal 11px/15px tahoma, arial, verdana, sans-serif;
+    font: normal 11px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: white;
     border-color: #ededed;
     border-style: solid;
@@ -1307,13 +1307,13 @@ table.x-datepicker-inner {
 /* line 226, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-alt .x-grid-cell,
 .x-grid-row-alt .x-grid-rowwrap-div {
-  background-color: #fafafa; }
+  background-color: #f1f1f2; }
 
 /* line 231, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-over .x-grid-cell,
 .x-grid-row-over .x-grid-rowwrap-div {
   border-color: #dddddd;
-  background-color: #efefef; }
+  background-color: #f1f1f2; }
 
 /* line 238, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-focused .x-grid-cell,
@@ -1340,7 +1340,7 @@ table.x-datepicker-inner {
 
 /* line 265, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-rowbody {
-  font: normal 11px/13px tahoma, arial, verdana, sans-serif;
+  font: normal 11px/13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 4px; }
   /* line 270, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-grid-rowbody p {
@@ -1564,7 +1564,7 @@ browsers will do whacky things with it.
 /* line 515, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-group-title {
   color: #3764a0;
-  font: bold 11px tahoma, arial, verdana, sans-serif; }
+  font: bold 11px "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* line 521, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-group-hd-collapsed .x-grid-group-title {
@@ -1760,7 +1760,7 @@ browsers will do whacky things with it.
     margin-left: -4px; }
   /* line 738, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-grid-row-editor .x-form-display-field {
-    font: normal 11px/15px tahoma, arial, verdana, sans-serif;
+    font: normal 11px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding-top: 0;
     padding-left: 2px; }
   /* line 744, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -1782,7 +1782,7 @@ browsers will do whacky things with it.
 
 /* line 768, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-editor .x-form-text, .x-grid-row-editor .x-form-text {
-  font: normal 11px/15px tahoma, arial, verdana, sans-serif;
+  font: normal 11px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 18px; }
 
 /* line 776, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -1920,7 +1920,7 @@ browsers will do whacky things with it.
 
 /* line 29, ../themes/stylesheets/ext4/default/widgets/form/_fieldset.scss */
 .x-fieldset-header {
-  font: 11px/14px bold tahoma, arial, verdana, sans-serif;
+  font: 11px/14px bold "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #15428b;
   padding: 0 3px 1px;
   overflow: hidden; }
@@ -2832,7 +2832,7 @@ browsers will do whacky things with it.
   color: #04468c;
   font-weight: bold;
   line-height: 17px;
-  font-family: tahoma, arial, verdana, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px; }
 
 /* line 69, ../themes/stylesheets/ext4/default/mixins/_frame.scss */
@@ -3469,7 +3469,11 @@ browsers will do whacky things with it.
  * @author: Carey Hinoki
  * @date: 2012-07-02
  */
-/* line 145, ../sass/my-ext-theme/_button.scss */
+/* line 143, ../sass/my-ext-theme/_button.scss */
+.x-btn-default-toolbar-small .x-btn-inner {
+  padding: 0px 7px; }
+
+/* line 150, ../sass/my-ext-theme/_button.scss */
 .x-btn.default {
   background: #dcdcdc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
@@ -3479,7 +3483,7 @@ browsers will do whacky things with it.
   background-image: linear-gradient(#f1f1f1, #dcdcdc);
   border: 1px solid #bcbcbc; }
 
-/* line 152, ../sass/my-ext-theme/_button.scss */
+/* line 157, ../sass/my-ext-theme/_button.scss */
 .x-btn.default.x-over {
   background: #ececec;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
@@ -3488,7 +3492,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#f7f7f8, #ececec);
   background-image: linear-gradient(#f7f7f8, #ececec); }
 
-/* line 158, ../sass/my-ext-theme/_button.scss */
+/* line 163, ../sass/my-ext-theme/_button.scss */
 .x-btn.default.x-pressed {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
@@ -3497,7 +3501,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 164, ../sass/my-ext-theme/_button.scss */
+/* line 169, ../sass/my-ext-theme/_button.scss */
 .x-btn.default.x-menu-active {
   background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
@@ -3506,12 +3510,12 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: linear-gradient(#dcdcdc, #cdcdcd); }
 
-/* line 170, ../sass/my-ext-theme/_button.scss */
+/* line 175, ../sass/my-ext-theme/_button.scss */
 .x-btn.default button span {
   color: #333333;
   text-shadow: 0px -1px 0px none; }
 
-/* line 178, ../sass/my-ext-theme/_button.scss */
+/* line 183, ../sass/my-ext-theme/_button.scss */
 .x-btn.primary {
   background: #226396;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
@@ -3521,7 +3525,7 @@ browsers will do whacky things with it.
   background-image: linear-gradient(#73bbe8, #226396);
   border: 1px solid #226396; }
 
-/* line 185, ../sass/my-ext-theme/_button.scss */
+/* line 190, ../sass/my-ext-theme/_button.scss */
 .x-btn.primary.x-over {
   background: #396cc9;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
@@ -3530,7 +3534,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#60c9f3, #396cc9);
   background-image: linear-gradient(#60c9f3, #396cc9); }
 
-/* line 191, ../sass/my-ext-theme/_button.scss */
+/* line 196, ../sass/my-ext-theme/_button.scss */
 .x-btn.primary.x-pressed {
   background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
@@ -3539,7 +3543,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#336f9c, #09366f);
   background-image: linear-gradient(#336f9c, #09366f); }
 
-/* line 197, ../sass/my-ext-theme/_button.scss */
+/* line 202, ../sass/my-ext-theme/_button.scss */
 .x-btn.primary.x-menu-active {
   background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
@@ -3548,12 +3552,12 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#336f9c, #09366f);
   background-image: linear-gradient(#336f9c, #09366f); }
 
-/* line 203, ../sass/my-ext-theme/_button.scss */
+/* line 208, ../sass/my-ext-theme/_button.scss */
 .x-btn.primary button span {
   color: white;
   text-shadow: 0px -1px 0px #226396; }
 
-/* line 211, ../sass/my-ext-theme/_button.scss */
+/* line 216, ../sass/my-ext-theme/_button.scss */
 .x-btn.warning {
   background: #e67e1c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
@@ -3563,7 +3567,7 @@ browsers will do whacky things with it.
   background-image: linear-gradient(#fcc033, #e67e1c);
   border: 1px solid #e67e1c; }
 
-/* line 218, ../sass/my-ext-theme/_button.scss */
+/* line 223, ../sass/my-ext-theme/_button.scss */
 .x-btn.warning.x-over {
   background: #f1a300;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
@@ -3572,7 +3576,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#fcd100, #f1a300);
   background-image: linear-gradient(#fcd100, #f1a300); }
 
-/* line 224, ../sass/my-ext-theme/_button.scss */
+/* line 229, ../sass/my-ext-theme/_button.scss */
 .x-btn.warning.x-pressed {
   background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
@@ -3581,7 +3585,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#ea9000, #d66000);
   background-image: linear-gradient(#ea9000, #d66000); }
 
-/* line 230, ../sass/my-ext-theme/_button.scss */
+/* line 235, ../sass/my-ext-theme/_button.scss */
 .x-btn.warning.x-menu-active {
   background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
@@ -3590,12 +3594,12 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#ea9000, #d66000);
   background-image: linear-gradient(#ea9000, #d66000); }
 
-/* line 236, ../sass/my-ext-theme/_button.scss */
+/* line 241, ../sass/my-ext-theme/_button.scss */
 .x-btn.warning button span {
   color: white;
   text-shadow: 0px -1px 0px #e67e1c; }
 
-/* line 244, ../sass/my-ext-theme/_button.scss */
+/* line 249, ../sass/my-ext-theme/_button.scss */
 .x-btn.info {
   background: #6ca6f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
@@ -3605,7 +3609,7 @@ browsers will do whacky things with it.
   background-image: linear-gradient(#70cfff, #6ca6f6);
   border: 1px solid #6ca6f6; }
 
-/* line 251, ../sass/my-ext-theme/_button.scss */
+/* line 256, ../sass/my-ext-theme/_button.scss */
 .x-btn.info.x-over {
   background: #73d0f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
@@ -3614,7 +3618,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#73ddff, #73d0f6);
   background-image: linear-gradient(#73ddff, #73d0f6); }
 
-/* line 257, ../sass/my-ext-theme/_button.scss */
+/* line 262, ../sass/my-ext-theme/_button.scss */
 .x-btn.info.x-pressed {
   background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
@@ -3623,7 +3627,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
   background-image: linear-gradient(#55a9ff, #5599fc); }
 
-/* line 263, ../sass/my-ext-theme/_button.scss */
+/* line 268, ../sass/my-ext-theme/_button.scss */
 .x-btn.info.x-menu-active {
   background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
@@ -3632,12 +3636,12 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
   background-image: linear-gradient(#55a9ff, #5599fc); }
 
-/* line 269, ../sass/my-ext-theme/_button.scss */
+/* line 274, ../sass/my-ext-theme/_button.scss */
 .x-btn.info button span {
   color: white;
   text-shadow: 0px -1px 0px #6ca6f6; }
 
-/* line 277, ../sass/my-ext-theme/_button.scss */
+/* line 282, ../sass/my-ext-theme/_button.scss */
 .x-btn.success {
   background: #229322;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
@@ -3647,7 +3651,7 @@ browsers will do whacky things with it.
   background-image: linear-gradient(#33c033, #229322);
   border: 1px solid #229322; }
 
-/* line 284, ../sass/my-ext-theme/_button.scss */
+/* line 289, ../sass/my-ext-theme/_button.scss */
 .x-btn.success.x-over {
   background: #25b000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
@@ -3656,7 +3660,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#33d000, #25b000);
   background-image: linear-gradient(#33d000, #25b000); }
 
-/* line 290, ../sass/my-ext-theme/_button.scss */
+/* line 295, ../sass/my-ext-theme/_button.scss */
 .x-btn.success.x-pressed {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
@@ -3665,7 +3669,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 296, ../sass/my-ext-theme/_button.scss */
+/* line 301, ../sass/my-ext-theme/_button.scss */
 .x-btn.success.x-menu-active {
   background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
@@ -3674,12 +3678,12 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#299600, #1c7600);
   background-image: linear-gradient(#299600, #1c7600); }
 
-/* line 302, ../sass/my-ext-theme/_button.scss */
+/* line 307, ../sass/my-ext-theme/_button.scss */
 .x-btn.success button span {
   color: white;
   text-shadow: 0px -1px 0px #229322; }
 
-/* line 310, ../sass/my-ext-theme/_button.scss */
+/* line 315, ../sass/my-ext-theme/_button.scss */
 .x-btn.danger {
   background: #ac030c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
@@ -3689,7 +3693,7 @@ browsers will do whacky things with it.
   background-image: linear-gradient(#f6303c, #ac030c);
   border: 1px solid #ac030c; }
 
-/* line 317, ../sass/my-ext-theme/_button.scss */
+/* line 322, ../sass/my-ext-theme/_button.scss */
 .x-btn.danger.x-over {
   background: #d00900;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
@@ -3698,7 +3702,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#f92626, #d00900);
   background-image: linear-gradient(#f92626, #d00900); }
 
-/* line 323, ../sass/my-ext-theme/_button.scss */
+/* line 328, ../sass/my-ext-theme/_button.scss */
 .x-btn.danger.x-pressed {
   background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
@@ -3707,7 +3711,7 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600); }
 
-/* line 329, ../sass/my-ext-theme/_button.scss */
+/* line 334, ../sass/my-ext-theme/_button.scss */
 .x-btn.danger.x-menu-active {
   background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
@@ -3716,10 +3720,107 @@ browsers will do whacky things with it.
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600); }
 
-/* line 335, ../sass/my-ext-theme/_button.scss */
+/* line 340, ../sass/my-ext-theme/_button.scss */
 .x-btn.danger button span {
   color: white;
   text-shadow: 0px -1px 0px #ac030c; }
+
+/* line 2, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_modal {
+  border: 1px solid #333;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px; }
+
+/* line 8, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_modal_header {
+  background: #454545;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  padding: 10px; }
+
+/* line 16, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_modal_header span {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold; }
+
+/* line 23, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_search {
+  background: #eaeaea; }
+
+/* line 28, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_search label {
+  line-height: 16px;
+  padding: 7px 0px 0px; }
+
+/* line 34, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_search .icon-search {
+  color: #ccc;
+  font-size: 16px; }
+
+/* line 40, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_search .x-form-text {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  height: 25px;
+  padding: 0px 5px; }
+
+/* line 48, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_modal-body,
+#available_field_list-body {
+  border: 0px; }
+
+/* line 55, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-row .x-grid-cell-special {
+  background: #fff;
+  background-image: none !important;
+  border-right: 1px solid #dcdcdc; }
+/* line 62, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-cell-special .x-grid-cell-inner {
+  padding-left: 6px; }
+/* line 68, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-row-alt .x-grid-cell-special,
+#available_field_list .x-grid-row-over .x-grid-cell-special {
+  background: #f1f1f2; }
+/* line 74, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-row-selected .x-grid-cell,
+#available_field_list .x-grid-row-selected .x-grid-rowwrap-div {
+  background: #c3e0f9;
+  border-bottom: 1px solid #78bde8;
+  border-top: 1px solid #78bde8; }
+/* line 81, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-cell-inner {
+  color: #333;
+  font-size: 14px;
+  padding: 5px; }
+/* line 88, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-group-hd .x-grid-cell-inner {
+  background: #454545;
+  border: 0px;
+  border-bottom: 1px solid #333;
+  border-top: 1px solid #333;
+  padding: 7px; }
+/* line 97, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .x-grid-group-title {
+  color: #fff; }
+/* line 102, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_list .number-of-items {
+  color: #999;
+  margin-left: 5px; }
+
+/* line 110, ../sass/my-ext-theme/report/available-field/_modal.scss */
+#available_field_modal_footer {
+  background: #454545; }
 
 /* line 7, ../sass/my-ext-theme/report/header/_summary.scss */
 #report_summary {
@@ -3844,24 +3945,25 @@ browsers will do whacky things with it.
 /* line 35, ../sass/my-ext-theme/report/filter/_header.scss */
 #report_filter_options_collapse span {
   color: #f1f1f2;
-  font-size: 10px; }
+  font-size: 10px;
+  padding: 0px 4px; }
 
-/* line 41, ../sass/my-ext-theme/report/filter/_header.scss */
+/* line 42, ../sass/my-ext-theme/report/filter/_header.scss */
 #report_filter_options_header .header {
   color: white;
   font-size: 18px;
   font-weight: normal; }
 
-/* line 48, ../sass/my-ext-theme/report/filter/_header.scss */
+/* line 49, ../sass/my-ext-theme/report/filter/_header.scss */
 #report_filter_options_header .add-filter {
   margin-right: 10px; }
 
-/* line 53, ../sass/my-ext-theme/report/filter/_header.scss */
+/* line 54, ../sass/my-ext-theme/report/filter/_header.scss */
 #report_filter_options_header .add-filter button span {
   font-size: 11px;
   line-height: 24px !important; }
 
-/* line 59, ../sass/my-ext-theme/report/filter/_header.scss */
+/* line 60, ../sass/my-ext-theme/report/filter/_header.scss */
 #report_filter_options_header .add-filter .icon-plus {
   color: #2caf2c;
   margin-right: 5px; }
@@ -4069,7 +4171,7 @@ browsers will do whacky things with it.
 
 /* line 46, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar button .x-btn-inner {
-  padding-top: 7px !important; }
+  padding: 7px 0px 0px !important; }
 
 /* line 51, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .icon-large {
@@ -4089,41 +4191,37 @@ browsers will do whacky things with it.
   width: 28px; }
 
 /* line 72, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .refresh .x-btn-inner {
-  padding-top: 7px !important; }
-
-/* line 77, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .refresh .icon-refresh {
   font-size: 19px; }
 
-/* line 82, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
+/* line 77, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-toolbar-separator {
   border: 0px;
   border-left: 1px solid #cccccc; }
 
-/* line 88, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
+/* line 83, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-toolbar-text {
   color: #666666;
   font-size: 14px; }
 
-/* line 94, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
+/* line 89, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-form-text {
   height: 25px; }
 
-/* line 99, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
+/* line 94, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .rows-per-page {
   margin-left: 10px; }
 
-/* line 104, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
+/* line 99, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
 #report_grid .paging-toolbar .x-form-trigger {
   height: 25px; }
 
-/* line 31, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 27, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-grid-header-ct {
   border: 1px solid #cccccc !important;
   border-top: 0px !important; }
 
-/* line 37, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 33, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-column-header {
   border-right: 1px solid #333333;
   color: #cccccc;
@@ -4131,63 +4229,60 @@ browsers will do whacky things with it.
   text-shadow: none;
   padding: 0px 0px 0px 7px; }
 
-/* line 46, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 42, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-column-header .x-column-header-trigger {
   background: #454545 url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
   display: block; }
 
-/* line 52, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 48, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-column-header .x-column-header-open .x-column-header-trigger {
   background-position: -14px; }
 
-/* line 57, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 53, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid-body {
   border: 0px;
   border: 1px solid #cccccc !important;
   border-top: 0px !important; }
 
-/* line 64, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 60, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 
-/* line 69, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 67, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-grid-row .x-grid-cell-special {
   background: white;
-  background-image: none !important; }
-
+  background-image: none !important;
+  border-right: 1px solid #dcdcdc; }
 /* line 75, ../sass/my-ext-theme/report/grid/_grid.scss */
+#report_grid .x-grid-row-alt .x-grid-cell-special,
 #report_grid .x-grid-row-over .x-grid-cell-special {
-  background: #f1f1f1; }
-
+  background: #f1f1f2; }
 /* line 81, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-row-alt .x-grid-cell,
-#report_grid .x-grid-row-alt .x-grid-rowwrap-div {
-  background: #f1f1f1;
-  border-top: 0px;
-  border-bottom: 0px; }
-
+#report_grid .x-grid-row-selected .x-grid-cell,
+#report_grid .x-grid-row-selected .x-grid-rowwrap-div {
+  background: #c3e0f9;
+  border-bottom: 1px solid #78bde8;
+  border-top: 1px solid #78bde8; }
 /* line 88, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-grid-cell-inner {
   color: #333333;
   font-size: 14px;
   line-height: 18px;
   padding: 4px 6px 4px; }
-
 /* line 96, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-grid-cell-inner a {
   color: #226396;
   text-decoration: none; }
-
 /* line 102, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid .x-grid-cell-inner a:hover {
   text-decoration: underline; }
 
-/* line 107, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 108, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid_footer {
   border: 1px solid #cccccc !important;
   border-top: 0px !important; }
 
-/* line 113, ../sass/my-ext-theme/report/grid/_grid.scss */
+/* line 114, ../sass/my-ext-theme/report/grid/_grid.scss */
 #report_grid_footer-body {
   background: #454545;
   border: 0px; }
@@ -4371,7 +4466,7 @@ browsers will do whacky things with it.
   display: block;
   font-size: 17px; }
 
-/* line 103, ../sass/my-ext-theme.scss */
+/* line 108, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -4380,7 +4475,7 @@ browsers will do whacky things with it.
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 110, ../sass/my-ext-theme.scss */
+/* line 115, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

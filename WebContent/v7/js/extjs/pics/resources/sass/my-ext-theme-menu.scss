@@ -28,6 +28,9 @@ $scope-reset-css: true;
  */
 
 $border-layout-ct-background: #ffffff;
+$button-small-text-padding: 7px; // bug -- currently does not have a !default in variables/_button.scss
+$button-medium-text-padding: 10px;
+$button-large-text-padding: 10px;
 $button-large-font-size: 13px;
 $color: #333333;
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

@@ -139,6 +139,11 @@ $button_danger_active_gradient_color_top: #c60c0c;
 $button_danger_active_gradient_color_bottom: #8c0600;
 
 
+.x-btn-default-toolbar-small .x-btn-inner
+{
+	padding: 0px 7px;
+}
+
 // default
 
 .x-btn.default

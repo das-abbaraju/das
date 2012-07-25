@@ -46,7 +46,12 @@ Ext.define('PICS.model.report.AvailableField', {
         type: 'string'
     }],
 
-    createColumn: function () {
+    //hack to override ajax request and prevent ExtJs Error
+    proxy: {
+        type: 'memory'
+    },
+
+    toColumn: function () {
         var column = Ext.create('PICS.model.report.Column', {
         	'name': this.get('name')
         });
@@ -56,7 +61,7 @@ Ext.define('PICS.model.report.AvailableField', {
         return column;
     },
 
-    createFilter: function () {
+    toFilter: function () {
         var filter = Ext.create('PICS.model.report.Filter', {
             name: this.get('name')
         });
@@ -64,11 +69,5 @@ Ext.define('PICS.model.report.AvailableField', {
         filter.getAvailableField().set(this.data);
 
         return filter;
-    },
-
-    //hack to override ajax request and prevent ExtJs Error
-    proxy: {
-        type: 'memory'
     }
 });
-
