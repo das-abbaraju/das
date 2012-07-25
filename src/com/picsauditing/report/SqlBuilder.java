@@ -45,7 +45,7 @@ public class SqlBuilder {
 		AbstractModel model = report.getModel();
 		sql = initializeSql(model);
 
-		sql.addWhere(model.getWhereClause(permissions));
+		sql.addWhere("1 " + model.getWhereClause(permissions));
 
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
