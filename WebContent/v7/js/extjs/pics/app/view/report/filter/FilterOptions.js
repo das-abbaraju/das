@@ -1,11 +1,11 @@
-Ext.define('PICS.view.report.filter.Options', {
+Ext.define('PICS.view.report.filter.FilterOptions', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilteroptions'],
 
     requires: [
-        'PICS.view.report.filter.Header',
-        'PICS.view.report.filter.Placeholder',
-        'PICS.view.report.filter.Toolbar'
+        'PICS.view.report.filter.FilterHeader',
+        'PICS.view.report.filter.FilterPlaceholder',
+        'PICS.view.report.filter.FilterToolbar'
     ],
 
     autoScroll: true,

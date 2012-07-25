@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.filter.Placeholder', {
+Ext.define('PICS.view.report.filter.FilterPlaceholder', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilterplaceholder'],
 

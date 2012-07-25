@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.filter.Formula', {
+Ext.define('PICS.view.report.filter.FilterFormula', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportfilterformula'],
 
@@ -37,15 +37,5 @@ Ext.define('PICS.view.report.filter.Formula', {
             align: 'middle'
         },
         width: 280
-    }],
-
-    constructor: function (config) {
-        this.callParent(arguments);
-
-        if (config) {
-            var formula = config.formula.toLowerCase();
-
-            this.child('form textfield[name=filter_formula]').setValue(formula);
-        }
-    }
+    }]
 });

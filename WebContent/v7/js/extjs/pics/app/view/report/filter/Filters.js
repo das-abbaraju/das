@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.filter.Filters', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterfilters'],
+    alias: ['widget.reportfilters'],
     requires: [
         'PICS.view.report.filter.Filter'
     ],
@@ -8,7 +8,7 @@ Ext.define('PICS.view.report.filter.Filters', {
     border: 0,
     id: 'report_filters',
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         // filter store

@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilterbasebooleanfilter'],
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         if (!this.record) {

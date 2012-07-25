@@ -5,7 +5,7 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
     border: 0,
     layout: 'hbox',
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         if (!this.record) {

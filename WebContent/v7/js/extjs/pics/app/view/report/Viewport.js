@@ -4,7 +4,7 @@ Ext.define('PICS.view.report.Viewport', {
     requires: [
         'PICS.view.layout.Header',
         'PICS.view.report.DataSetGrid',
-        'PICS.view.report.filter.Options',
+        'PICS.view.report.filter.FilterOptions',
         'PICS.view.report.Header'
     ],
 

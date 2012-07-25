@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.filter.Filter', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.reportfilterfilter'],
+    alias: ['widget.reportfilter'],
 
     requires: [
         'PICS.view.report.filter.base.AutocompleteFilter',
@@ -25,7 +25,7 @@ Ext.define('PICS.view.report.filter.Filter', {
     overCls: 'x-over',
     width: 320,
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         if (!this.record) {

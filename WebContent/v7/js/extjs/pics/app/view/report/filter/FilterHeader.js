@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.filter.Header', {
+Ext.define('PICS.view.report.filter.FilterHeader', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportfilterheader'],
 

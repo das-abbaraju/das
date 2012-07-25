@@ -1,4 +1,4 @@
-Ext.define('PICS.controller.report.FilterController', {
+Ext.define('PICS.controller.report.Filter', {
     extend: 'Ext.app.Controller',
 
     refs: [{
@@ -29,7 +29,7 @@ Ext.define('PICS.controller.report.FilterController', {
 
     views: [
         'PICS.view.report.filter.Filters',
-        'PICS.view.report.filter.Formula'
+        'PICS.view.report.filter.FilterFormula'
     ],
 
     init: function() {
@@ -160,7 +160,7 @@ Ext.define('PICS.controller.report.FilterController', {
     onFilterFormulaShow: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions(),
             filter_toolbar = this.getFilterToolbar(),
-            filter_formula = Ext.create('PICS.view.report.filter.Formula');
+            filter_formula = Ext.create('PICS.view.report.filter.FilterFormula');
 
         filter_options.removeDocked(filter_toolbar);
         filter_options.addDocked(filter_formula);
@@ -170,7 +170,7 @@ Ext.define('PICS.controller.report.FilterController', {
 
     onFilterFormulaCancel: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions(),
-            filter_toolbar = Ext.create('PICS.view.report.filter.Toolbar'),
+            filter_toolbar = Ext.create('PICS.view.report.filter.FilterToolbar'),
             filter_formula = this.getFilterFormula();
 
         filter_options.removeDocked(filter_formula);
@@ -229,8 +229,9 @@ Ext.define('PICS.controller.report.FilterController', {
     },
 
     onFilterRemove: function (cmp, event, eOpts) {
-        var filter_store = this.getReportReportsStore().first().filters();
-        var record = cmp.up('reportfilterfilter').record;
+        var filter_store = this.getReportReportsStore().first().filters(),
+            filter = this.findParentFilter(cmp),
+            record = filter.record;
 
         if (record) {
             filter_store.remove(record);

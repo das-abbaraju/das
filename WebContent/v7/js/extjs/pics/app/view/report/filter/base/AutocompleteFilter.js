@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
         'Ext.ux.form.BoxSelect'
     ],
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         //this.record.set('operator', 'In');
