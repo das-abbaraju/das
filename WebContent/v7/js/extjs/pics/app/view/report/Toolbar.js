@@ -21,7 +21,6 @@ Ext.define('PICS.view.report.Toolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Column',
-        width: 90
+        text: '<i class="icon-plus icon-large"></i>Add Column'
     }]
 });

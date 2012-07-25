@@ -11,10 +11,6 @@ $report_grid_body_border_color: #cccccc;
 // report rows
 $report_grid_row_background_color: #ffffff;
 
-$report_grid_alt_row_background_color: #f1f1f1;
-
-$report_grid_row_over_background_color: #f1f1f1;
-
 // report cell
 $report_grid_cell_border_right_color: #dcdcdc;
 
@@ -65,42 +61,47 @@ $report_grid_footer_border_color: #cccccc;
 	border-right: 1px solid $report_grid_cell_border_right_color;
 }
 
-#report_grid .x-grid-row .x-grid-cell-special
+#report_grid
 {
-	background: $report_grid_row_background_color;
-	background-image: none !important;
-}
-
-#report_grid .x-grid-row-over .x-grid-cell-special
-{
-	background: $report_grid_row_over_background_color;
-}
-
-#report_grid .x-grid-row-alt .x-grid-cell,
-#report_grid .x-grid-row-alt .x-grid-rowwrap-div
-{
-	background: $report_grid_alt_row_background_color;
-	border-top: 0px;
-	border-bottom: 0px;
-}
-
-#report_grid .x-grid-cell-inner
-{
-	color: $report_grid_cell_text_color;
-	font-size: 14px;
-	line-height: 18px;
-	padding: 4px 6px 4px;
-}
-
-#report_grid .x-grid-cell-inner a
-{
-	color: $report_grid_cell_link_color;
-	text-decoration: none;
-}
-
-#report_grid .x-grid-cell-inner a:hover
-{
-	text-decoration: underline;
+	.x-grid-row .x-grid-cell-special
+	{
+		background: $report_grid_row_background_color;
+		background-image: none !important;
+		border-right: 1px solid #dcdcdc;
+	}
+	
+	.x-grid-row-alt .x-grid-cell-special,
+	.x-grid-row-over .x-grid-cell-special,
+	{
+		background: $grid-row-cell-alt-background;
+	}
+	
+	.x-grid-row-selected .x-grid-cell,
+	.x-grid-row-selected .x-grid-rowwrap-div
+	{
+		background: #c3e0f9;
+		border-bottom: 1px solid #78bde8;
+		border-top: 1px solid #78bde8;
+	}
+	
+	.x-grid-cell-inner
+	{
+		color: $report_grid_cell_text_color;
+		font-size: 14px;
+		line-height: 18px;
+		padding: 4px 6px 4px;
+	}
+	
+	.x-grid-cell-inner a
+	{
+		color: $report_grid_cell_link_color;
+		text-decoration: none;
+	}
+	
+	.x-grid-cell-inner a:hover
+	{
+		text-decoration: underline;
+	}
 }
 
 #report_grid_footer

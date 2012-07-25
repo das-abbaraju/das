@@ -2499,7 +2499,7 @@ tr.x-container:before {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
-  padding: 0 3px; }
+  padding: 0 10px; }
 
 /* line 656, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-medium-icon button,
@@ -2826,7 +2826,7 @@ tr.x-container:before {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
-  padding: 0 3px; }
+  padding: 0 10px; }
 
 /* line 656, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-large-icon button,
@@ -3443,7 +3443,7 @@ tr.x-container:before {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
-  padding: 0 3px; }
+  padding: 0 10px; }
 
 /* line 656, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-medium-icon button,
@@ -3743,7 +3743,7 @@ tr.x-container:before {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
-  padding: 0 3px; }
+  padding: 0 10px; }
 
 /* line 656, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-large-icon button,
@@ -5620,13 +5620,13 @@ textarea.x-form-invalid-field {
 
 /* line 101, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-form-text {
-  -webkit-border-radius: 12px;
-  -moz-border-radius: 12px;
-  -ms-border-radius: 12px;
-  -o-border-radius: 12px;
-  border-radius: 12px;
-  height: 22px;
-  padding: 12px 5px; }
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  height: 25px;
+  padding: 0px 5px; }
 
 /* line 108, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu .x-toolbar-separator-horizontal {
@@ -5643,16 +5643,15 @@ textarea.x-form-invalid-field {
 
 /* line 124, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search label {
-  margin-top: 7px;
-  text-align: right;
-  width: auto !important; }
+  line-height: 14px;
+  padding: 7px 0px 0px; }
 
-/* line 131, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 130, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search .icon-search {
   font-size: 14px;
   text-shadow: 0px -1px 0px #acacac; }
 
-/* line 137, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 136, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
@@ -5661,7 +5660,7 @@ textarea.x-form-invalid-field {
   -o-border-radius: 5px;
   border-radius: 5px; }
 
-/* line 143, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 142, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list li:first-child {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
@@ -5670,7 +5669,7 @@ textarea.x-form-invalid-field {
   -webkit-border-top-right-radius: 4px;
   border-top-right-radius: 4px; }
 
-/* line 149, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 148, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list li:last-child {
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
@@ -5679,15 +5678,15 @@ textarea.x-form-invalid-field {
   -webkit-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px; }
 
-/* line 155, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 154, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list .even {
   background: #f1f1f2; }
 
-/* line 160, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 159, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list .x-boundlist-item {
   border: 1px solid transparent; }
 
-/* line 165, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 164, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list .x-boundlist-item-over {
   background: #a84d10;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
@@ -5700,44 +5699,44 @@ textarea.x-form-invalid-field {
   border-top: 1px solid #c66603;
   color: #fff; }
 
-/* line 175, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 174, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list .search-item {
   line-height: 15px;
   overflow: hidden;
   padding: 5px 15px; }
-  /* line 181, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 180, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item div {
     clear: both; }
-  /* line 186, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 185, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item em {
     font-weight: bold; }
-  /* line 192, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 191, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item .name,
   #site_menu_search_list .search-item .company {
     float: left;
     width: 175px; }
-  /* line 198, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 197, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item .id {
     float: right; }
-  /* line 203, ../sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 202, ../sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu_search_list .search-item .type {
     float: right;
     font-style: italic; }
 
-/* line 210, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 209, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu_search_list .more-results {
   color: #333;
   font-weight: bold; }
 
-/* line 216, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 215, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #site_menu #user_menu .icon-cog {
   margin: 0px 0px 0px 10px; }
 
-/* line 221, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 220, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 
-/* line 226, ../sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 225, ../sass/my-ext-theme/layout/menu/_menu.scss */
 #user_menu .icon-cog {
   font-size: 16px; }
 
@@ -5799,15 +5798,15 @@ textarea.x-form-invalid-field {
 .x-menu-item-active .x-menu-item-link span {
   color: white; }
 
-/* line 65, ../sass/my-ext-theme-menu.scss */
+/* line 68, ../sass/my-ext-theme-menu.scss */
 .x-reset .x-tool img {
   background-image: url("../../app/resources/images/tool-sprites.gif"); }
 
-/* line 74, ../sass/my-ext-theme-menu.scss */
+/* line 77, ../sass/my-ext-theme-menu.scss */
 .x-nlg #site_menu,
 .x-nlg .x-menu-item-active .x-menu-item-link,
 .x-nlg .x-btn-default-small {
   background-image: none !important; }
-/* line 79, ../sass/my-ext-theme-menu.scss */
+/* line 82, ../sass/my-ext-theme-menu.scss */
 .x-nlg .x-menu-item-active .x-menu-item-link {
   background: #a84d10; }

@@ -13,16 +13,16 @@ Ext.define('PICS.view.report.header.Actions', {
             action: 'save',
             cls: 'save success',
             height: 40,
-            text: 'Save',
-            width: 60
+            scale: 'large',
+            text: 'Save'
         });
 
         var edit = Ext.create('Ext.button.Button', {
             action: 'edit',
             cls: 'edit default',
             height: 40,
-            text: '<i class="icon-cog icon-large"></i>',
-            width: 40
+            scale: 'large',
+            text: '<i class="icon-cog icon-large"></i>'
         });
 
         this.add(save, edit);

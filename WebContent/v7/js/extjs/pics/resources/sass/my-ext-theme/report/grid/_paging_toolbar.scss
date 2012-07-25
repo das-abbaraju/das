@@ -44,7 +44,7 @@ $report_grid_paging_toolbar_separator_border_color_left: #cccccc;
 
 #report_grid .paging-toolbar button .x-btn-inner
 {
-	padding-top: 7px !important;
+	padding: 7px 0px 0px !important;
 }
 
 #report_grid .paging-toolbar .icon-large
@@ -66,11 +66,6 @@ $report_grid_paging_toolbar_separator_border_color_left: #cccccc;
 #report_grid .paging-toolbar .refresh button span
 {
 	width: 28px;
-}
-
-#report_grid .paging-toolbar .refresh .x-btn-inner
-{
-	padding-top: 7px !important;
 }
 
 #report_grid .paging-toolbar .refresh .icon-refresh

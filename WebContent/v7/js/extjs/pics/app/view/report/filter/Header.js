@@ -20,7 +20,6 @@ Ext.define('PICS.view.report.filter.Header', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Filter',
-        width: 80
+        text: '<i class="icon-plus icon-large"></i>Add Filter'
     }]
 });

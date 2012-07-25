@@ -10,7 +10,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     hideTrigger: true,
     id: 'site_menu_search',
     labelSeparator: '',
-    labelWidth: 25,
+    labelWidth: 15,
 
     listConfig: {
         id: 'site_menu_search_list',

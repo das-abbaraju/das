@@ -146,5 +146,6 @@ Ext.define('PICS.view.report.DataSetGrid', {
         id: 'report_grid_footer'
     }],
     id: 'report_grid',
-    margin: '0 30 20 0'
+    margin: '0 30 20 0',
+    rowLines: false
 });
