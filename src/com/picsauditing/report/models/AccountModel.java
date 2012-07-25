@@ -15,10 +15,4 @@ public class AccountModel extends AbstractModel {
 		
 		parentTable = rootTable;
 	}
-
-	@Override
-	public String getWhereClause(Permissions permissions) {
-		PermissionQueryBuilder builder = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
-		return builder.toString();
-	}
 }

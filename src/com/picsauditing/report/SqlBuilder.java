@@ -2,16 +2,13 @@ package com.picsauditing.report;
 
 import static com.picsauditing.report.access.ReportUtil.getColumnFromFieldName;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
@@ -24,8 +21,8 @@ import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
@@ -45,7 +42,7 @@ public class SqlBuilder {
 		AbstractModel model = report.getModel();
 		sql = initializeSql(model);
 
-		sql.addWhere("1 " + model.getWhereClause(permissions));
+		setPermissions(permissions);
 
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
@@ -396,5 +393,25 @@ public class SqlBuilder {
 	@Deprecated
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
+	}
+
+	public void setPermissions(Permissions permissions) {
+		if (permissions.isOperatorCorporate()) {
+			// Anytime we query contractor accounts as an operator,
+			// get the flag color/status at the same time
+			String operatorVisibility = permissions.getAccountIdString();
+
+			if (permissions.isGeneralContractor()) {
+				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
+			}
+
+			if (sql.hasJoin("generalcontractors gc")) {
+				sql.addWhere("gc.genID IN (" + operatorVisibility + ")");
+			}
+		}
+
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
+
+		sql.addWhere("1 " + permQuery.toString());
 	}
 }
