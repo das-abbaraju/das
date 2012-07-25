@@ -697,7 +697,7 @@
     									
                                         <s:if test="contractor.primaryContact">
                                             <p class="contact">
-                                                <s:text name="global.ContactPrimary" />
+                                                <s:text name="global.ContactPrimary" />:
                                                 <span class="value">${contractor.primaryContact.name}</span>
                                             </p>
                                             <p class="tabbed tel">
@@ -719,9 +719,9 @@
                                             <s:if test="contractor.primaryContact.id != id">
                                                 <p class="contact">
                                                     <s:text name="global.Contact" />
-                                                    ${contactNumber}
+                                                    ${contactNumber}:
                                                     <s:set name="contactNumber" value="#contactNumber+1" />
-                                                    <span class="value">${name}:</span>
+                                                    <span class="value">${name}</span>
                                                 </p>
                                                 <p class="tabbed tel">
                                                     <s:text name="User.email" />:
