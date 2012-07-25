@@ -397,15 +397,13 @@ public class SqlBuilder {
 
 	public void setPermissions(Permissions permissions) {
 		if (permissions.isOperatorCorporate()) {
-			// Anytime we query contractor accounts as an operator,
-			// get the flag color/status at the same time
 			String operatorVisibility = permissions.getAccountIdString();
 
 			if (permissions.isGeneralContractor()) {
 				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
 			}
 
-			if (sql.hasJoin("generalcontractors gc")) {
+			if (sql.hasJoin("generalcontractors AS gc")) {
 				sql.addWhere("gc.genID IN (" + operatorVisibility + ")");
 			}
 		}
