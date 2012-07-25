@@ -60,7 +60,14 @@
 						<s:iterator value="distinctOperators" var="gcOp2">
 							<td class="center">
 								<s:url var="contractor_flag" action="ContractorFlag">
-									<s:param name="id" value="%{#sub.id}" />
+									<s:param name="id">
+										${sub.id}
+									</s:param>
+									<s:if test="permissions.generalContractor">
+										<s:param name="opID">
+											${gcOp2.id}
+										</s:param>
+									</s:if>
 								</s:url>
 								<a href="${contractor_flag}">
 									<s:property value="table.get(#sub).get(#gcOp2).smallIcon" escape="false" />

@@ -126,8 +126,8 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
-		sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status IN (" + status + ") AND o.id = "
-				+ permissions.getAccountId());
+		sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status IN (" + status + ") AND o.id IN ("
+				+ (permissions.isGeneralContractor() ? visibleOperators : permissions.getAccountId()) + ")");
 		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.opID = o.id AND fdo.conID = gc.subID");
 		sql.addJoin("JOIN (" + generalContractorSQL.toString() + ") general ON general.subID = gc.subID");
 
