@@ -100,6 +100,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
 	private String contractorTypeHelpText = "";
 
+	private CountrySubdivision countrySubdivision;
+
 	public void prepare() throws Exception {
 		if (permissions.isLoggedIn()) {
 			int conID = 0;
@@ -230,16 +232,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 
 			if (contractor.getCountry().isHasStates() && state != null){
-				if (contractor.getCountry().equals(contractor.getState().getCountry())){
-					CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());					
-					if (countrySubdivision != null) {
-						contractor.setCountrySubdivision(countrySubdivision);
-					} else {
-						contractor.setCountrySubdivision(null);
-					}
-				}  else {
-					contractor.setState(null);
-				}
+				updateStateAndCountrySubdivision();
 			} else {
 				contractor.setState(null);
 				contractor.setCountrySubdivision(null);
@@ -277,8 +270,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setPrimaryContact(userDAO.find(contactID));
 			}
 			// contractor.setNeedsIndexing(true);
-			
-
 
 			contractorAccountDao.save(contractor);
 			
@@ -287,6 +278,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		return SUCCESS;
+	}
+
+	private void updateStateAndCountrySubdivision() {
+		if (contractor.getCountry().equals(contractor.getState().getCountry())){
+			countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+			if (countrySubdivision != null) {
+				contractor.setCountrySubdivision(countrySubdivision);
+			} else {
+				contractor.setCountrySubdivision(null);
+			}
+		}  else {
+			contractor.setState(null);
+			contractor.setCountrySubdivision(null);
+		}
 	}
 
 	private void stampContractorNoteAboutOfficeLocationChange() {

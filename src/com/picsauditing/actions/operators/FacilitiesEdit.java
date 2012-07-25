@@ -87,6 +87,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private List<OperatorAccount> notSelectedClients;
 	private List<OperatorAccount> selectedClients;
 
+	private CountrySubdivision countrySubdivision;
+
 	public String execute() throws Exception {
 		findOperator();
 
@@ -237,17 +239,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 
 		if (operator.getCountry().isHasStates() && state != null){
-			if (operator.getState().getCountry().equals(operator.getCountry())){
-				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-" + operator.getState().getIsoCode());
-				if (countrySubdivision != null) {
-					operator.setCountrySubdivision(countrySubdivision);
-				} else {
-					operator.setCountrySubdivision(null);
-				}
-			}  else {
-				operator.setState(null);
-				operator.setCountrySubdivision(null);
-			}
+			updateStateAndCountrySubdivision();
 		} else{
 			operator.setState(null);
 			operator.setCountrySubdivision(null);
@@ -367,6 +359,20 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return REDIRECT;
+	}
+
+	private void updateStateAndCountrySubdivision() {
+		if (operator.getState().getCountry().equals(operator.getCountry())){
+			countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-" + operator.getState().getIsoCode());
+			if (countrySubdivision != null) {
+				operator.setCountrySubdivision(countrySubdivision);
+			} else {
+				operator.setCountrySubdivision(null);
+			}
+		}  else {
+			operator.setState(null);
+			operator.setCountrySubdivision(null);
+		}
 	}
 
 	public String ajaxAutoApproveRelationshipModal() throws Exception {

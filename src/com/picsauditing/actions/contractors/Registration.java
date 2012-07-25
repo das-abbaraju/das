@@ -70,6 +70,7 @@ public class Registration extends ContractorActionSupport {
 	private String confirmPassword;
 	private int requestID;
 	private State state;
+	private CountrySubdivision countrySubdivision;
 
 	@Anonymous
 	@Override
@@ -105,16 +106,10 @@ public class Registration extends ContractorActionSupport {
 					contractor.setState(crr.getState());
 
 					if (contractor.getCountry().isHasStates() && contractor.getState() != null){
-						if (contractor.getState().getCountry().equals(contractor.getCountry())){
-							CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
-							if (countrySubdivision != null) {
-								contractor.setCountrySubdivision(countrySubdivision);
-							} else {
-								contractor.setCountrySubdivision(null);
-							}
-						}  else {
-							contractor.setState(null);
-						}
+						updateStateAndCountrySubdivision();
+					} else {
+						contractor.setState(null);
+						contractor.setCountrySubdivision(null);
 					}
 
 					contractor.setRequestedBy(crr.getRequestedBy());
@@ -132,6 +127,20 @@ public class Registration extends ContractorActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	private void updateStateAndCountrySubdivision() {
+		if (contractor.getState().getCountry().equals(contractor.getCountry())){
+			countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+			if (countrySubdivision != null) {
+				contractor.setCountrySubdivision(countrySubdivision);
+			} else {
+				contractor.setCountrySubdivision(null);
+			}
+		}  else {
+			contractor.setState(null);
+			contractor.setCountrySubdivision(null);
+		}
 	}
 
 	@Anonymous

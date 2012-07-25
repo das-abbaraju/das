@@ -74,6 +74,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
 	private static final int INITIAL_EMAIL = 83;
+	private CountrySubdivision countrySubdivision;
 
 	public String save() throws Exception {
 		String extension = null;
@@ -308,17 +309,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		}
 
 		if (crr.getCountry().isHasStates() && importedState != null){
-			if (crr.getState().getCountry().equals(crr.getCountry())){
-				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(crr.getCountry().getIsoCode() + "-" + crr.getState().getIsoCode());
-				if (countrySubdivision != null) {
-					crr.setCountrySubdivision(countrySubdivision);
-				} else {
-					crr.setCountrySubdivision(null);
-				}
-			}  else {
-				crr.setState(null);
-				crr.setCountrySubdivision(null);
-			}
+			updateStateAndCountrySubdivision(crr);
 		} else {
 			crr.setState(null);
 			crr.setCountrySubdivision(null);
@@ -352,6 +343,20 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		crr.setAuditColumns(permissions);
 		crr.setStatus(ContractorRegistrationRequestStatus.Active);
 		return crr;
+	}
+
+	private void updateStateAndCountrySubdivision(ContractorRegistrationRequest crr) {
+		if (crr.getState().getCountry().equals(crr.getCountry())){
+			countrySubdivision = countrySubdivisionDAO.find(crr.getCountry().getIsoCode() + "-" + crr.getState().getIsoCode());
+			if (countrySubdivision != null) {
+				crr.setCountrySubdivision(countrySubdivision);
+			} else {
+				crr.setCountrySubdivision(null);
+			}
+		}  else {
+			crr.setState(null);
+			crr.setCountrySubdivision(null);
+		}
 	}
 
 	private void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {

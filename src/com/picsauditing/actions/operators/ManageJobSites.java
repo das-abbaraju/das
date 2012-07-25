@@ -75,6 +75,8 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected List<ContractorAccount> newContractors;
 	protected Map<Account, List<Employee>> siteCompanies;
 
+	protected CountrySubdivision countrySubdivision;
+
 	public ManageJobSites() {
 		noteCategory = NoteCategory.OperatorQualification;
 	}
@@ -115,17 +117,7 @@ public class ManageJobSites extends OperatorActionSupport {
 			}
 
 			if (jobSite.getCountry().isHasStates() && siteState != null){
-				if (jobSite.getState().getCountry().equals(jobSite.getCountry())){
-					CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(jobSite.getCountry().getIsoCode() + "-" + jobSite.getState().getIsoCode());
-					if (countrySubdivision != null) {
-						jobSite.setCountrySubdivision(countrySubdivision);
-					} else {
-						jobSite.setCountrySubdivision(null);
-					}
-				}  else {
-					jobSite.setState(null);
-					jobSite.setCountrySubdivision(null);
-				}
+				updateStateAndCountrySubdivision();
 			} else {
 				jobSite.setState(null);
 				jobSite.setCountrySubdivision(null);
@@ -138,6 +130,20 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 
 		return getRedirect();
+	}
+
+	private void updateStateAndCountrySubdivision() {
+		if (jobSite.getState().getCountry().equals(jobSite.getCountry())){
+			countrySubdivision = countrySubdivisionDAO.find(jobSite.getCountry().getIsoCode() + "-" + jobSite.getState().getIsoCode());
+			if (countrySubdivision != null) {
+				jobSite.setCountrySubdivision(countrySubdivision);
+			} else {
+				jobSite.setCountrySubdivision(null);
+			}
+		}  else {
+			jobSite.setState(null);
+			jobSite.setCountrySubdivision(null);
+		}
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
@@ -159,17 +165,7 @@ public class ManageJobSites extends OperatorActionSupport {
 			}
 
 			if (jobSite.getCountry().isHasStates() && siteState != null){
-				if (jobSite.getState().getCountry().equals(jobSite.getCountry())){
-					CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(jobSite.getCountry().getIsoCode() + "-" + jobSite.getState().getIsoCode());
-					if (countrySubdivision != null) {
-						jobSite.setCountrySubdivision(countrySubdivision);
-					} else {
-						jobSite.setCountrySubdivision(null);
-					}
-				}  else {
-					jobSite.setState(null);
-					jobSite.setCountrySubdivision(null);
-				}
+				updateStateAndCountrySubdivision();
 			} else {
 				jobSite.setState(null);
 				jobSite.setCountrySubdivision(null);
