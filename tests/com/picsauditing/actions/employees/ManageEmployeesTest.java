@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,7 +15,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +44,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.employees.ManageEmployees.EmployeeMissingTasks;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
@@ -54,14 +51,12 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.JobContractor;
 import com.picsauditing.jpa.entities.JobRole;
@@ -73,7 +68,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.UserStatus;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ManageEmployees.class, ActionContext.class, I18nCache.class, TranslationActionSupport.class })
+@PrepareForTest({ ManageEmployees.class, ActionContext.class, I18nCache.class })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ManageEmployeesTest {
 	private ManageEmployees manageEmployees;
@@ -102,17 +97,16 @@ public class ManageEmployeesTest {
 		picsTestUtil.autowireEMInjectedDAOs(manageEmployees, entityManager);
 
 		Whitebox.setInternalState(manageEmployees, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(manageEmployees, "i18nCache", i18nCache);
 		Whitebox.setInternalState(manageEmployees, "permissions", permissions);
+
+		when(I18nCache.getInstance()).thenReturn(i18nCache);
+		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("Text");
 	}
 
 	@Test(expected = NoRightsException.class)
 	public void testPrepare_ContractorWithoutAdminPermission() throws Exception {
 		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.mockStatic(TranslationActionSupport.class);
-
-		when(I18nCache.getInstance()).thenReturn(i18nCache);
-		when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.ENGLISH);
-		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("Text");
 
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(false);
@@ -163,17 +157,6 @@ public class ManageEmployeesTest {
 		manageEmployees.prepare();
 
 		assertEquals(account.getId(), manageEmployees.getId());
-	}
-
-	@Test
-	public void testFindAccount_Audit() {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.HSE_COMPETENCY,
-				EntityFactory.makeContractor());
-
-		manageEmployees.setAudit(audit);
-		manageEmployees.findAccount();
-
-		assertEquals(audit.getContractorAccount(), manageEmployees.getAccount());
 	}
 
 	@Test
@@ -396,7 +379,7 @@ public class ManageEmployeesTest {
 		assertNull(manageEmployees.getEmployee());
 		assertTrue(manageEmployees.hasActionMessages());
 
-		verify(employeeDAO).findWhere(anyString());
+		verify(employeeDAO, times(2)).findWhere(anyString());
 		verify(employeeDAO).save(any(Employee.class));
 	}
 
@@ -431,391 +414,8 @@ public class ManageEmployeesTest {
 	}
 
 	@Test
-	public void testAddRoleAjax() {
-		assertEquals("roles", manageEmployees.addRoleAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testAddRoleAjax_Employee() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		assertEquals("roles", manageEmployees.addRoleAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testAddRoleAjax_EmployeeJobRole_New() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		JobRole jobRole = new JobRole();
-		jobRole.setId(1);
-		when(entityManager.find(eq(JobRole.class), anyInt())).thenReturn(jobRole);
-
-		assertEquals("roles", manageEmployees.addRoleAjax());
-
-		// One for EmployeeRole, another for Note
-		verify(entityManager, times(2)).persist(any(BaseTable.class));
-	}
-
-	@Test
-	public void testAddRoleAjax_EmployeeJobRole_Existing() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		JobRole jobRole = new JobRole();
-		jobRole.setId(1);
-
-		EmployeeRole employeeRole = new EmployeeRole();
-		employeeRole.setEmployee(manageEmployees.getEmployee());
-		employeeRole.setJobRole(jobRole);
-
-		manageEmployees.getEmployee().getEmployeeRoles().add(employeeRole);
-
-		when(entityManager.find(eq(JobRole.class), anyInt())).thenReturn(jobRole);
-
-		assertEquals("roles", manageEmployees.addRoleAjax());
-		assertTrue(manageEmployees.hasActionErrors());
-
-		verify(entityManager, never()).persist(any(BaseTable.class));
-	}
-
-	@Test
-	public void testRemoveRoleAjax() {
-		assertEquals("roles", manageEmployees.removeRoleAjax());
-		verify(entityManager, never()).remove(eq(EmployeeRole.class));
-	}
-
-	@Test
-	public void testRemoveRoleAjax_EmployeeOnly() {
-		Employee employee = EntityFactory.makeEmployee(null);
-
-		manageEmployees.setEmployee(employee);
-
-		assertEquals("roles", manageEmployees.removeRoleAjax());
-
-		verify(entityManager, never()).remove(eq(EmployeeRole.class));
-	}
-
-	@Test
-	public void testRemoveRoleAjax_ChildOnly() {
-		manageEmployees.setChildID(1);
-
-		assertEquals("roles", manageEmployees.removeRoleAjax());
-
-		verify(entityManager, never()).remove(eq(EmployeeRole.class));
-	}
-
-	@Test
-	public void testRemoveRoleAjax_EmployeeChild() {
-		Employee employee = EntityFactory.makeEmployee(null);
-		manageEmployees.setEmployee(employee);
-		manageEmployees.setChildID(1);
-
-		assertEquals("roles", manageEmployees.removeRoleAjax());
-
-		verify(entityManager, never()).remove(eq(EmployeeRole.class));
-	}
-
-	@Test
-	public void testRemoveRoleAjax_EmployeeChildRole() {
-		Employee employee = EntityFactory.makeEmployee(null);
-		EmployeeRole employeeRole = new EmployeeRole();
-		employeeRole.setEmployee(employee);
-		employeeRole.setJobRole(new JobRole());
-
-		manageEmployees.setEmployee(employee);
-		manageEmployees.setChildID(1);
-
-		when(entityManager.find(eq(EmployeeRole.class), anyInt())).thenReturn(employeeRole);
-
-		assertEquals("roles", manageEmployees.removeRoleAjax());
-
-		verify(entityManager).remove(any(EmployeeRole.class));
-		verify(entityManager).persist(any(Note.class));
-	}
-
-	@Test
-	public void testAddSiteAjax() {
-		assertEquals("sites", manageEmployees.addSiteAjax());
-	}
-
-	@Test
-	public void testAddSiteAjax_Employee() {
-		Employee employee = EntityFactory.makeEmployee(null);
-
-		manageEmployees.setEmployee(employee);
-
-		assertEquals("sites", manageEmployees.addSiteAjax());
-	}
-
-	@Test
-	public void testAddSiteAjax_Operator() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-
-		manageEmployees.setOp(operatorAccount);
-
-		assertEquals("sites", manageEmployees.addSiteAjax());
-	}
-
-	@Test
-	public void testAddSiteAjax_EmployeeOperatorIDGreaterThanZero() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		Employee employee = EntityFactory.makeEmployee(operatorAccount);
-
-		manageEmployees.setEmployee(employee);
-		manageEmployees.setOp(operatorAccount);
-
-		assertEquals("sites", manageEmployees.addSiteAjax());
-
-		verify(entityManager, times(2)).persist(any(BaseTable.class));
-		assertFalse(manageEmployees.getEmployee().getEmployeeSites().isEmpty());
-	}
-
-	@Test
-	public void testAddSiteAjax_EmployeeOperatorIDZero() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setId(0);
-		Employee employee = EntityFactory.makeEmployee(operatorAccount);
-
-		manageEmployees.setEmployee(employee);
-		manageEmployees.setOp(operatorAccount);
-
-		assertEquals("sites", manageEmployees.addSiteAjax());
-
-		verify(entityManager, never()).persist(any(BaseTable.class));
-	}
-
-	@Test
-	public void testAddSiteAjax_EmployeeOperatorIDLessThanZero() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setId(0 - operatorAccount.getId());
-		Employee employee = EntityFactory.makeEmployee(operatorAccount);
-
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(operatorAccount);
-
-		when(entityManager.find(eq(JobSite.class), anyInt())).thenReturn(jobSite);
-
-		manageEmployees.setEmployee(employee);
-		manageEmployees.setOp(operatorAccount);
-
-		assertEquals("sites", manageEmployees.addSiteAjax());
-
-		verify(entityManager, times(2)).persist(any(BaseTable.class));
-		assertFalse(manageEmployees.getEmployee().getEmployeeSites().isEmpty());
-		assertEquals(jobSite, manageEmployees.getEmployee().getEmployeeSites().get(0).getJobSite());
-	}
-
-	@Test
-	public void testRemoveSiteAjax() {
-		assertEquals("sites", manageEmployees.removeSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testRemoveSiteAjax_ChildID() {
-		manageEmployees.setChildID(1);
-
-		assertEquals("sites", manageEmployees.removeSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testRemoveSiteAjax_Employee() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		assertEquals("sites", manageEmployees.removeSiteAjax());
-	}
-
-	@Test
-	public void testRemoveSiteAjax_ChildIDEmployee_EmployeeSiteNull() {
-		manageEmployees.setChildID(1);
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		assertEquals("sites", manageEmployees.removeSiteAjax());
-
-		verify(entityManager).find(EmployeeSite.class, 1);
-	}
-
-	@Test
-	public void testRemoveSiteAjax_ChildIDEmployee_EmployeeSiteExpired() {
-		manageEmployees.setChildID(1);
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(EntityFactory.makeOperator());
-		jobSite.setLabel("Job Site");
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.YEAR, -1);
-
-		EmployeeSite employeeSite = new EmployeeSite();
-		employeeSite.setId(1);
-		employeeSite.setOperator(jobSite.getOperator());
-		employeeSite.setEffectiveDate(calendar.getTime());
-		employeeSite.setExpirationDate(new Date());
-
-		manageEmployees.getEmployee().getEmployeeSites().add(employeeSite);
-
-		when(entityManager.find(EmployeeSite.class, manageEmployees.getChildID())).thenReturn(employeeSite);
-
-		assertEquals("sites", manageEmployees.removeSiteAjax());
-		assertFalse(employeeSite.isCurrent());
-
-		verify(entityManager).find(EmployeeSite.class, 1);
-		verify(entityManager).merge(any(EmployeeSite.class));
-		verify(entityManager).persist(any(Note.class));
-		verify(entityManager, never()).remove(any(EmployeeSite.class));
-	}
-
-	@Test
-	public void testRemoveSiteAjax_ChildIDEmployee_EmployeeSiteNotExpired() {
-		manageEmployees.setChildID(1);
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(EntityFactory.makeOperator());
-		jobSite.setLabel("Job Site");
-
-		EmployeeSite employeeSite = new EmployeeSite();
-		employeeSite.defaultDates();
-		employeeSite.setOperator(jobSite.getOperator());
-
-		manageEmployees.getEmployee().getEmployeeSites().add(employeeSite);
-
-		when(entityManager.find(EmployeeSite.class, manageEmployees.getChildID())).thenReturn(employeeSite);
-
-		assertEquals("sites", manageEmployees.removeSiteAjax());
-		assertTrue(employeeSite.isCurrent());
-
-		verify(entityManager).find(EmployeeSite.class, 1);
-		verify(entityManager).persist(any(BaseTable.class));
-		verify(entityManager).remove(any(EmployeeSite.class));
-	}
-
-	@Test
-	public void testNewSiteAjax() {
-		assertEquals("sites", manageEmployees.newSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testNewSiteAjax_LabelNotEmptyNameEmpty() {
-		manageEmployees.setJobSite(new JobSite());
-		manageEmployees.getJobSite().setLabel("Label");
-
-		assertEquals("sites", manageEmployees.newSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testNewSiteAjax_LabelEmptyNameNotEmpty() {
-		manageEmployees.setJobSite(new JobSite());
-		manageEmployees.getJobSite().setName("Name");
-
-		assertEquals("sites", manageEmployees.newSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testNewSiteAjax_LabelName() {
-		manageEmployees.setJobSite(new JobSite());
-		manageEmployees.getJobSite().setId(1);
-		manageEmployees.getJobSite().setName("Name");
-		manageEmployees.getJobSite().setLabel("Label");
-
-		assertEquals("sites", manageEmployees.newSiteAjax());
-		assertEquals(manageEmployees.getJobSite(), manageEmployees.getEsSite().getJobSite());
-
-		verify(entityManager).merge(any(EmployeeSite.class));
-		verify(entityManager).persist(any(JobSite.class));
-	}
-
-	@Test
-	public void testEditSiteAjax() {
-		assertEquals("sites", manageEmployees.editSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testEditSiteAjax_Employee() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-
-		assertEquals("sites", manageEmployees.editSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testEditSiteAjax_ChildID() {
-		manageEmployees.setChildID(1);
-
-		assertEquals("sites", manageEmployees.editSiteAjax());
-
-		neverMergedOrPersisted();
-	}
-
-	@Test
-	public void testEditSiteAjax_EmployeeChildID() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(EntityFactory.makeContractor()));
-		manageEmployees.setChildID(1);
-
-		EmployeeSite employeeSite = new EmployeeSite();
-		employeeSite.setId(1);
-		employeeSite.setEmployee(manageEmployees.getEmployee());
-
-		when(entityManager.find(EmployeeSite.class, 1)).thenReturn(employeeSite);
-
-		assertEquals("sites", manageEmployees.editSiteAjax());
-
-		verify(entityManager).find(EmployeeSite.class, 1);
-		verify(entityManager).merge(any(Note.class));
-		verify(entityManager).persist(any(EmployeeSite.class));
-	}
-
-	@Test
-	public void testGetSiteAjax() {
-		assertEquals("getSite", manageEmployees.getSiteAjax());
-	}
-
-	@Test
-	public void testGetSiteAjax_ChildID() {
-		manageEmployees.setChildID(1);
-
-		when(entityManager.find(EmployeeSite.class, 1)).thenReturn(null);
-
-		assertEquals("getSite", manageEmployees.getSiteAjax());
-		assertNull(manageEmployees.getEsSite());
-
-		verify(entityManager).find(EmployeeSite.class, 1);
-	}
-
-	@Test
-	public void testGetSiteAjax_ChildIDEmployeeSiteNotNull() {
-		manageEmployees.setChildID(1);
-
-		EmployeeSite employeeSite = new EmployeeSite();
-
-		when(entityManager.find(EmployeeSite.class, 1)).thenReturn(employeeSite);
-
-		assertEquals("getSite", manageEmployees.getSiteAjax());
-		assertNotNull(manageEmployees.getEsSite());
-		assertEquals(employeeSite, manageEmployees.getEsSite());
-
-		verify(entityManager).find(EmployeeSite.class, 1);
-	}
-
-	@Test
-	public void testLoadAjax() {
-		assertEquals("employees", manageEmployees.loadAjax());
+	public void testLoad() {
+		assertEquals("edit", manageEmployees.load());
 	}
 
 	@Test
@@ -1299,11 +899,6 @@ public class ManageEmployeesTest {
 		assertEquals(PicsActionSupport.REDIRECT, manageEmployees.save());
 
 		verify(employeeDAO).save(any(Employee.class));
-	}
-
-	private void neverMergedOrPersisted() {
-		verify(entityManager, never()).merge(any(BaseTable.class));
-		verify(entityManager, never()).persist(any(BaseTable.class));
 	}
 
 	private JobSiteTask getMissingTasksCommonBehaviors() {

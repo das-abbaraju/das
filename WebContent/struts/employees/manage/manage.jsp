@@ -32,7 +32,6 @@
 
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
-	<link rel="stylesheet" type="text/css" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css?v=${version}">
 	<link rel="stylesheet" type="text/css" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
 	<style>
 		.sites-label

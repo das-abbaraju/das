@@ -24,7 +24,7 @@ public class ManageEmployeeSite extends ManageEmployees {
 	private JobSite jobSite = new JobSite();
 
 	public String add() {
-		if (employee != null) {
+		if (employee != null && (operator != null || jobSite.getId() > 0)) {
 			EmployeeSite employeeSite = new EmployeeSite();
 			employeeSite.setEmployee(employee);
 
@@ -57,6 +57,7 @@ public class ManageEmployeeSite extends ManageEmployees {
 			jobSite.setOperator(operator);
 			jobSite = jobSiteDAO.save(jobSite);
 
+			employeeSite = new EmployeeSite();
 			employeeSite.setAuditColumns(permissions);
 			employeeSite.setEmployee(employee);
 			employeeSite.setJobSite(jobSite);
@@ -72,6 +73,36 @@ public class ManageEmployeeSite extends ManageEmployees {
 
 	public String edit() {
 		return "edit";
+	}
+
+	public String expire() {
+		if (employeeSite != null) {
+			if (employee == null) {
+				employee = employeeSite.getEmployee();
+				account = employee.getAccount();
+			}
+
+			employeeSite.expire();
+			employeeSite.setAuditColumns(permissions);
+
+			employeeSiteDAO.save(employeeSite);
+
+			boolean hasProject = employeeSite.getJobSite() != null;
+
+			String type = "Site";
+			if (hasProject) {
+				type = "Project";
+			}
+
+			String projectSite = employeeSite.getOperator().getName();
+			if (hasProject) {
+				projectSite += ": " + employeeSite.getJobSite().getLabel();
+			}
+
+			addNote(String.format("Expired %s %s", type, projectSite));
+		}
+
+		return SUCCESS;
 	}
 
 	public String save() {
@@ -119,36 +150,6 @@ public class ManageEmployeeSite extends ManageEmployees {
 
 			employeeSiteDAO.save(existingSite);
 			addNote(Strings.implode(notes));
-		}
-
-		return SUCCESS;
-	}
-
-	public String expire() {
-		if (employeeSite != null) {
-			if (employee == null) {
-				employee = employeeSite.getEmployee();
-				account = employee.getAccount();
-			}
-
-			employeeSite.expire();
-			employeeSite.setAuditColumns(permissions);
-
-			employeeSiteDAO.save(employeeSite);
-
-			boolean hasProject = employeeSite.getJobSite() != null;
-
-			String type = "Site";
-			if (hasProject) {
-				type = "Project";
-			}
-
-			String projectSite = employeeSite.getOperator().getName();
-			if (hasProject) {
-				projectSite += ": " + employeeSite.getJobSite().getLabel();
-			}
-
-			addNote(String.format("Expired %s %s", type, projectSite));
 		}
 
 		return SUCCESS;

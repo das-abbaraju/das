@@ -13,6 +13,7 @@ import java.util.Set;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
@@ -44,7 +45,7 @@ import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageEmployees extends AccountActionSupport {
+public class ManageEmployees extends AccountActionSupport implements Preparable {
 	@Autowired
 	protected EmployeeDAO employeeDAO;
 	@Autowired
@@ -67,10 +68,13 @@ public class ManageEmployees extends AccountActionSupport {
 		noteCategory = NoteCategory.Employee;
 	}
 
-	@Before
-	public void findAccount() throws Exception {
+	@Override
+	public void prepare() throws Exception {
 		checkPermissions();
+	}
 
+	@Before
+	public void findAccount() {
 		if (account == null && employee != null) {
 			account = employee.getAccount();
 		}
@@ -84,11 +88,13 @@ public class ManageEmployees extends AccountActionSupport {
 			account = accountDAO.find(permissions.getAccountId());
 		}
 
-		loadActiveEmployees();
+		if (account != null) {
+			loadActiveEmployees();
+		}
 	}
 
 	@Override
-	public String execute() throws Exception {
+	public String execute() {
 		subHeading = getText("ManageEmployees.title");
 
 		if (audit != null) {
@@ -155,7 +161,7 @@ public class ManageEmployees extends AccountActionSupport {
 						+ account.getId()) + "#employee=" + employee.getId());
 	}
 
-	public String inactivate() throws Exception {
+	public String inactivate() {
 		if (employee != null) {
 			employee.setStatus(UserStatus.Inactive);
 			employeeDAO.save(employee);
@@ -178,7 +184,7 @@ public class ManageEmployees extends AccountActionSupport {
 		return setUrlForRedirect("ManageEmployees.action?id=" + account.getId());
 	}
 
-	public String delete() throws Exception {
+	public String delete() {
 		if (employee != null) {
 			employee.setStatus(UserStatus.Deleted);
 			employeeDAO.save(employee);
@@ -277,7 +283,7 @@ public class ManageEmployees extends AccountActionSupport {
 		return hseOperators;
 	}
 
-	public boolean isShowJobRolesSection() throws Exception {
+	public boolean isShowJobRolesSection() {
 		boolean hasUnusedJobRoles = getUnusedJobRoles().size() > 0;
 		boolean hasEmployeeRoles = false;
 
@@ -288,7 +294,7 @@ public class ManageEmployees extends AccountActionSupport {
 		return hasUnusedJobRoles || hasEmployeeRoles;
 	}
 
-	public Set<JobRole> getUnusedJobRoles() throws Exception {
+	public Set<JobRole> getUnusedJobRoles() {
 		findAccount();
 
 		if (unusedJobRoles == null) {
@@ -498,12 +504,8 @@ public class ManageEmployees extends AccountActionSupport {
 		Collections.sort(hseOperators);
 	}
 
-	private void loadActiveEmployees() throws Exception {
-		if (account == null) {
-			findAccount();
-		} else {
-			activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
-		}
+	private void loadActiveEmployees() {
+		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 	}
 
 	private void checkSsn() {
