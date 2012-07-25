@@ -85,7 +85,7 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 
 	@Transient
 	public String getName() {
-		return name.toString();
+		return name.toString() + ", " + country.getName();
 	}
 
 	public void setName(TranslatableString name) {
