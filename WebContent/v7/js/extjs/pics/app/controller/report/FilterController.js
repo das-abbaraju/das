@@ -29,69 +29,39 @@ Ext.define('PICS.controller.report.FilterController', {
 
     views: [
         'PICS.view.report.filter.Filters',
-        'PICS.view.report.filter.Formula',
-        'PICS.view.report.ColumnSelector'
+        'PICS.view.report.filter.Formula'
     ],
 
     init: function() {
         this.control({
             // render filter options
             'reportfilteroptions': {
-                beforerender: function () {
-                    var report_store = this.getReportReportsStore();
-
-                    if (report_store.isLoading()) {
-                        report_store.load({
-                            callback: function (store, records, successful, eOpts) {
-                                this.application.fireEvent('refreshfilters');
-                            },
-                            scope: this
-                        });
-                    } else {
-                        this.application.fireEvent('refreshfilters');
-                    }
-                }
+                beforerender: this.onFilterOptionsBeforeRender
             },
 
             // collapse filter options
             '#report_filter_options_collapse': {
-                click: function (cmp, event, eOpts) {
-                    this.getFilterOptions().collapse();
-                }
+                click: this.onFilterOptionsCollapse
             },
 
             // expand filter options
             '#report_filter_options_expand': {
-                click: function (cmp, event, eOpts) {
-                    this.getFilterOptions().expand();
-                }
+                click: this.onFilterOptionsExpand
             },
 
             // add filter
             'reportfilteroptions button[action=add-filter]': {
-                click: function (cmp, event, eOpts) {
-                    this.application.fireEvent('showcolumnselector', {
-                        columnSelectorType: 'filter'
-                    });
-                }
+                click: this.onAddFilter
             },
 
             // show filter formula
             'reportfiltertoolbar button[action=show-filter-formula]': {
-                click: function (cmp, event, eOpts) {
-                    this.filterFormulaAdd();
-
-                    this.getFilters().addCls('x-active');
-                }
+                click: this.onFilterFormulaShow
             },
 
             // hide filter formula
             'reportfilterformula button[action=cancel]': {
-                click: function (cmp, event, eOpts) {
-                    this.filterFormulaRemove();
-
-                    this.getFilters().removeCls('x-active');
-                }
+                click: this.onFilterFormulaCancel
             },
 
             // show filter-number and remove-filter on filter focus
@@ -103,51 +73,22 @@ Ext.define('PICS.controller.report.FilterController', {
             #report_filters checkbox,\
             #report_filters comboboxselect\
             ': {
-                blur: function (cmp, event, eOpts) {
-                    var filter = this.findParentFilter(cmp);
-
-                    if (filter) {
-                        filter.removeCls('x-form-focus');
-                    }
-                },
-                focus: function (cmp, event, eOpts) {
-                    var filter = this.findParentFilter(cmp);
-
-                    if (filter) {
-                        filter.addCls('x-form-focus');
-                    }
-                }
+                blur: this.onFilterBlur,
+                focus: this.onFilterFocus
             },
 
             // saving edits to filter store + refresh
             '#report_filters combobox[name=filter_value]': {
-                select: function (cmp, records, eOpts) {
-                    var filter = this.findParentFilter(cmp);
-                    filter.record.set('value', field.getValue());
-
-                    this.application.fireEvent('refreshreport');
-                }
+                select: this.onFilterValueSelect
             },
 
             '#report_filters combobox[name=operator]': {
-                select: function (cmp, records, eOpts) {
-                    var filter = this.findParentFilter(cmp);
-                    filter.record.set('operator', cmp.getValue());
-
-                    if (filter.record.get('value') != '') {
-                        this.application.fireEvent('refreshreport');
-                    }
-                }
+                select: this.onFilterOperatorSelect
             },
 
             // saving edits to filter store + refresh
             '#report_filters datefield': {
-                select: function (field, value, eOpts) {
-                    var filter = this.findParentFilter(field);
-                    filter.record.set('value', field.getValue());
-
-                    this.application.fireEvent('refreshreport');
-                }
+                select: this.onFilterValueSelect
             },
 
             // saving edits to filter store + refresh
@@ -156,43 +97,18 @@ Ext.define('PICS.controller.report.FilterController', {
             #report_filters numberfield,\
             #report_filters datefield\
             ': {
-                blur: function (cmp, event, eOpts) {
-                    var filter = this.findParentFilter(cmp);
-                    filter.record.set('value', cmp.getValue());
-                },
-                specialkey: function (field, event) {
-                    if (event.getKey() == event.ENTER) {
-                        var filter = this.findParentFilter(field);
-                        filter.record.set('value', field.getValue());
-
-                        this.application.fireEvent('refreshreport');
-                    }
-                }
+                blur: this.onFilterValueInputBlur,
+                specialkey: this.onFilterValueInputEnter
             },
 
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
-                change: function (cmp, event, eOpts) {
-                    var filter = this.findParentFilter(cmp);
-                    filter.record.set('value', cmp.getValue());
-
-                    this.application.fireEvent('refreshreport');
-                }
+                change: this.onFilterValueSelect
             },
 
             // remove filter
             'reportfilteroptions button[action=remove-filter]': {
-                click: function (cmp, event, eOpts) {
-                    var filter_store = this.getReportReportsStore().first().filters();
-                    var record = cmp.up('reportfilterfilter').record;
-
-                    if (record) {
-                        filter_store.remove(record);
-
-                        this.application.fireEvent('refreshfilters');
-                        this.application.fireEvent('refreshreport');
-                    }
-                }
+                click: this.onFilterRemove
             }
         });
 
@@ -202,29 +118,70 @@ Ext.define('PICS.controller.report.FilterController', {
         });
     },
 
-    filterFormulaAdd: function () {
-        var filter_options = this.getFilterOptions();
-        var filter_toolbar = this.getFilterToolbar();
-        var filter_formula = Ext.create('PICS.view.report.filter.Formula');
+    /**
+     * Filter Options
+     */
+
+    onFilterOptionsBeforeRender: function (cmp, eOpts) {
+        var report_store = this.getReportReportsStore();
+
+        if (report_store.isLoading()) {
+            report_store.load({
+                callback: function (store, records, successful, eOpts) {
+                    this.application.fireEvent('refreshfilters');
+                },
+                scope: this
+            });
+        } else {
+            this.application.fireEvent('refreshfilters');
+        }
+    },
+
+    onFilterOptionsCollapse: function (cmp, event, eOpts) {
+        this.getFilterOptions().collapse();
+    },
+
+    onFilterOptionsExpand: function (cmp, event, eOpts) {
+        this.getFilterOptions().expand();
+    },
+
+    /**
+     * Add Filter
+     */
+
+    onAddFilter: function (cmp, event, eOpts) {
+        this.application.fireEvent('showavailablefieldmodal', 'filter');
+    },
+
+    /**
+     * Filter Formula
+     */
+
+    onFilterFormulaShow: function (cmp, event, eOpts) {
+        var filter_options = this.getFilterOptions(),
+            filter_toolbar = this.getFilterToolbar(),
+            filter_formula = Ext.create('PICS.view.report.filter.Formula');
 
         filter_options.removeDocked(filter_toolbar);
         filter_options.addDocked(filter_formula);
+
+        this.getFilters().addCls('x-active');
     },
 
-    filterFormulaRemove: function () {
-        var filter_options = this.getFilterOptions();
-        var filter_toolbar = Ext.create('PICS.view.report.filter.Toolbar');
-        var filter_formula = this.getFilterFormula();
+    onFilterFormulaCancel: function (cmp, event, eOpts) {
+        var filter_options = this.getFilterOptions(),
+            filter_toolbar = Ext.create('PICS.view.report.filter.Toolbar'),
+            filter_formula = this.getFilterFormula();
 
         filter_options.removeDocked(filter_formula);
         filter_options.addDocked(filter_toolbar);
+
+        this.getFilters().removeCls('x-active');
     },
 
-    findParentFilter: function (cmp) {
-        return cmp.findParentBy(function (cmp) {
-            return cmp.cls == 'filter';
-        });
-    },
+    /**
+     * Filters
+     */
 
     refreshFilters: function () {
         var filter_store = this.getReportReportsStore().first().filters();
@@ -241,6 +198,81 @@ Ext.define('PICS.controller.report.FilterController', {
         // add new filters
         filter_options.add(filters);
     },
+
+    /**
+     * Filter
+     */
+
+    onFilterBlur: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp);
+
+        if (filter) {
+            filter.removeCls('x-form-focus');
+        }
+    },
+
+    onFilterFocus: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp);
+
+        if (filter) {
+            filter.addCls('x-form-focus');
+        }
+    },
+
+    onFilterOperatorSelect: function (cmp, records, eOpts) {
+        var filter = this.findParentFilter(cmp);
+        filter.record.set('operator', cmp.getValue());
+
+        if (filter.record.get('value') != '') {
+            this.application.fireEvent('refreshreport');
+        }
+    },
+
+    onFilterRemove: function (cmp, event, eOpts) {
+        var filter_store = this.getReportReportsStore().first().filters();
+        var record = cmp.up('reportfilterfilter').record;
+
+        if (record) {
+            filter_store.remove(record);
+
+            this.application.fireEvent('refreshfilters');
+
+            if (record.get('value') != '') {
+                this.application.fireEvent('refreshreport');
+            }
+        }
+    },
+
+    onFilterValueInputBlur: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp);
+        filter.record.set('value', cmp.getValue());
+    },
+
+    onFilterValueInputEnter: function (cmp, event) {
+        if (event.getKey() == event.ENTER) {
+            var filter = this.findParentFilter(cmp);
+            filter.record.set('value', cmp.getValue());
+
+            this.application.fireEvent('refreshreport');
+        }
+    },
+
+    onFilterValueSelect: function (cmp, records, eOpts) {
+        var filter = this.findParentFilter(cmp);
+        filter.record.set('value', cmp.getValue());
+
+        this.application.fireEvent('refreshreport');
+    },
+
+    /**
+     * MISC
+     */
+
+    findParentFilter: function (cmp) {
+        return cmp.findParentBy(function (cmp) {
+            return cmp.cls == 'filter';
+        });
+    }
 
     /*applyFilterFormula: function () {
         var report = this.getReportReportsStore().first(),
@@ -328,17 +360,4 @@ Ext.define('PICS.controller.report.FilterController', {
             filter_options.addDocked(advanced_filter);
         }
     },*/
-
-    showColumnSelector: function(component, e, options) {
-        var window = this.getReportColumnSelector();
-
-        if (!window) {
-            var store = this.getReportAvailableFieldsByCategoryStore();
-            store.clearFilter();
-
-            window = Ext.create('PICS.view.report.ColumnSelector');
-            window._column_type = 'filter';
-            window.show();
-        }
-    }
 });
