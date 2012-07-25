@@ -20,6 +20,7 @@ import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.JobTaskDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -47,6 +48,8 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected JobTaskDAO jobTaskDAO;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 
 	protected ContractorAccount contractor;
 	protected JobSite jobSite;
@@ -102,11 +105,32 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setProjectStart(siteStart);
 			jobSite.setProjectStop(siteEnd);
 			jobSite.setCity(siteCity);
-			jobSite.setCountry(siteCountry);
-			jobSite.setState(siteState);
-			if (isCountrySubdivision()) {
-				jobSite.setCountrySubdivision(getCountrySubdivision());
+			if (siteCountry != null && !siteCountry.equals(jobSite.getCountry())){
+				jobSite.setCountry(siteCountry);
 			}
+
+			if (siteState != null && !siteState.equals(jobSite.getState())){
+				State jobSiteState = stateDAO.find(siteState.toString());
+				jobSite.setState(jobSiteState);
+			}
+
+			if (jobSite.getCountry().isHasStates() && siteState != null){
+				if (jobSite.getState().getCountry().equals(jobSite.getCountry())){
+					CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(jobSite.getCountry().getIsoCode() + "-" + jobSite.getState().getIsoCode());
+					if (countrySubdivision != null) {
+						jobSite.setCountrySubdivision(countrySubdivision);
+					} else {
+						jobSite.setCountrySubdivision(null);
+					}
+				}  else {
+					jobSite.setState(null);
+					jobSite.setCountrySubdivision(null);
+				}
+			} else {
+				jobSite.setState(null);
+				jobSite.setCountrySubdivision(null);
+			}
+
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Added new", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -125,13 +149,32 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setProjectStop(siteEnd);
 			jobSite.setCity(siteCity);
 
-			if (!Strings.isEmpty(siteCountry.getIsoCode()))
+			if (siteCountry != null && !siteCountry.equals(jobSite.getCountry())){
 				jobSite.setCountry(siteCountry);
-
-			jobSite.setState(siteState);
-			if (isCountrySubdivision()) {
-				jobSite.setCountrySubdivision(getCountrySubdivision());
 			}
+
+			if (siteState != null && !siteState.equals(jobSite.getState())){
+				State jobSiteState = stateDAO.find(siteState.toString());
+				jobSite.setState(jobSiteState);
+			}
+
+			if (jobSite.getCountry().isHasStates() && siteState != null){
+				if (jobSite.getState().getCountry().equals(jobSite.getCountry())){
+					CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(jobSite.getCountry().getIsoCode() + "-" + jobSite.getState().getIsoCode());
+					if (countrySubdivision != null) {
+						jobSite.setCountrySubdivision(countrySubdivision);
+					} else {
+						jobSite.setCountrySubdivision(null);
+					}
+				}  else {
+					jobSite.setState(null);
+					jobSite.setCountrySubdivision(null);
+				}
+			} else {
+				jobSite.setState(null);
+				jobSite.setCountrySubdivision(null);
+			}
+
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Updated", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -139,16 +182,6 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 
 		return getRedirect();
-	}
-
-	private boolean isCountrySubdivision() {
-		return countrySubdivisionDAO.exist(siteState.getIsoCode() + "-" + siteCountry.getIsoCode());
-	}
-
-	private CountrySubdivision getCountrySubdivision() {
-		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(siteState.getIsoCode() + "-" + siteCountry.getIsoCode());
-		return countrySubdivision;
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)

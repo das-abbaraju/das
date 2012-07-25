@@ -124,7 +124,7 @@ public class BillingCalculatorSingle {
 		boolean hasEmployeeAudits = false;
 		boolean hasOq = false;
 		boolean hasHseCompetency = false;
-		boolean hasCor = false;
+		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
 
 		ruleCache.initialize(auditDAO);
@@ -145,8 +145,8 @@ public class BillingCalculatorSingle {
 				hasEmployeeAudits = true;
 			if (auditType.getId() == AuditType.HSE_COMPETENCY)
 				hasHseCompetency = true;
-			if (auditType.getId() == AuditType.COR)
-				hasCor = true;
+			if (auditType.getId() == AuditType.COR || auditType.getId() == AuditType.IEC_AUDIT)
+				hasCorOrIec = true;
 		}
 
 		for (ContractorAudit ca : contractor.getAudits()) {
@@ -159,7 +159,7 @@ public class BillingCalculatorSingle {
 		for (ContractorOperator co : contractor.getOperators()) {
 			if (co.getOperatorAccount().isRequiresOQ())
 				hasOq = true;
-			if (!hasAuditGUARD && hasCor && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
+			if (!hasAuditGUARD && hasCorOrIec && co.getOperatorAccount().isDescendantOf(OperatorAccount.SUNCOR))
 				hasAuditGUARD = true;
 		}
 

@@ -20,6 +20,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -61,6 +62,8 @@ public class Registration extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 
 	private User user;
 	private String username;
@@ -101,10 +104,17 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCountry(crr.getCountry());
 					contractor.setState(crr.getState());
 
-					if (countrySubdivisionDAO.exist(crr.getState().getIsoCode()+"-"+crr.getCountry().getIsoCode())){
-						CountrySubdivision countrySubdivision = new CountrySubdivision();
-						countrySubdivision.setIsoCode(crr.getState().getIsoCode()+"-"+crr.getCountry().getIsoCode());
-						contractor.setCountrySubdivision(countrySubdivision);
+					if (contractor.getCountry().isHasStates() && contractor.getState() != null){
+						if (contractor.getState().getCountry().equals(contractor.getCountry())){
+							CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+							if (countrySubdivision != null) {
+								contractor.setCountrySubdivision(countrySubdivision);
+							} else {
+								contractor.setCountrySubdivision(null);
+							}
+						}  else {
+							contractor.setState(null);
+						}
 					}
 
 					contractor.setRequestedBy(crr.getRequestedBy());
@@ -243,14 +253,29 @@ public class Registration extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Demo);
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
-		if (contractor.getCountry().isHasStates() && state != null){
-			contractor.setState(state);
-			if (countrySubdivisionDAO.exist(contractor.getState().getIsoCode()+"-"+contractor.getCountry().getIsoCode())){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(contractor.getState().getIsoCode()+"-"+contractor.getCountry().getIsoCode());
-				contractor.setCountrySubdivision(countrySubdivision);
-			}
+
+		if (state != null && !state.equals(contractor.getState())){
+			State contractorState = stateDAO.find(state.toString());
+			contractor.setState(contractorState);
 		}
+
+		if (contractor.getCountry().isHasStates() && state != null){
+			if (contractor.getState().getCountry().equals(contractor.getCountry())){
+				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+				if (countrySubdivision != null) {
+					contractor.setCountrySubdivision(countrySubdivision);
+				} else {
+					contractor.setCountrySubdivision(null);
+				}
+			}  else {
+				contractor.setState(null);
+				contractor.setCountrySubdivision(null);
+			}
+		} else {
+			contractor.setState(null);
+			contractor.setCountrySubdivision(null);
+		}
+
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());

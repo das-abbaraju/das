@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -18,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LocaleController;
 
@@ -26,7 +29,11 @@ public class OpenTasks extends TranslationActionSupport {
 
 	@Autowired
 	protected ContractorAuditDAO contractorAuditDao;
+	@Autowired
+	protected OperatorTagDAO operatorTagDao;
 
+	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
+	
 	private boolean hasImportPQF = false;
 	private boolean importPQFComplete = false;
 	private boolean openReq = false;
@@ -63,6 +70,8 @@ public class OpenTasks extends TranslationActionSupport {
 			gatherTasksAboutWebCamShipments();
 			gatherTasksAboutOperatorQualification();
 		}
+
+		vopakSpecificOperatorQualificationTag();
 
 		return openTasks;
 	}
@@ -169,15 +178,21 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAudits() {
-		List <AuditType> auditTypesThatHaveOpenTasks = new ArrayList<AuditType>();
+		List<String> auditTypeAndForWithOpenTasks = new ArrayList<String>();
+		
 		for (ContractorAudit conAudit : contractor.getAudits()) {
-			if (!auditTypesThatHaveOpenTasks.contains(conAudit.getAuditType())) {
-			if (conAudit.isVisibleTo(permissions)) {
+
+			String auditTypeAndFor = conAudit.getAuditType().getId()+StringUtils.defaultIfEmpty(conAudit.getAuditFor(),"");
+			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
+
+			if (!isAuditTypeAndForRepeated) {
+				if (conAudit.isVisibleTo(permissions)) {
 					if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 						if (isOpenTaskNeeded(conAudit, user, permissions)) {
 							boolean addedOpenTask = addAuditOpenTasks(conAudit);
-							if (addedOpenTask)
-								auditTypesThatHaveOpenTasks.add(conAudit.getAuditType());
+							if (addedOpenTask) {
+								auditTypeAndForWithOpenTasks.add(auditTypeAndFor);
+							}
 						}
 					}
 				}
@@ -208,15 +223,6 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutOperatorQualification() {
-		int vopakCorporateOperatorQualification = 640;
-
-		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if (contractorTag.getTag().getId() == vopakCorporateOperatorQualification) {
-				openTasks.add(getText("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak"));
-				break;
-			}
-		}
-
 		// OQ: Add unmapped employees
 		if (contractor.isRequiresOQ()) {
 			if (contractor.getAssessmentResultStages().size() > 0) {
@@ -233,6 +239,17 @@ public class OpenTasks extends TranslationActionSupport {
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
+			}
+		}
+	}
+
+	private void vopakSpecificOperatorQualificationTag() {
+		OperatorTag vopakCorporateOperatorQualification = operatorTagDao.find(VOPAK_OPERATOR_QUALIFICATION);
+
+		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
+			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification) && contractor.getEmployees().isEmpty()) {
+				openTasks.add(getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak", contractor.getId()));
+				break;
 			}
 		}
 	}

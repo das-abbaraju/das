@@ -1,34 +1,21 @@
-Ext.define('PICS.view.layout.SearchBox', {
+Ext.define('PICS.view.report.settings.UserSearch', {
     extend: 'Ext.form.field.ComboBox',
-    alias: ['widget.searchbox'],
+    alias: ['widget.usersearch'],
 
     autoScroll: false,
     autoSelect: false,
     displayField: 'name',
-    emptyText: 'Search',
+    emptyText: 'Search Users and Groups',
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
-    id: 'site_menu_search',
+    id: 'settings_user_search',
     labelSeparator: '',
     labelWidth: 25,
 
     listConfig: {
-        id: 'site_menu_search_list',
-        listeners: {
-            el: {
-                click: {
-                    delegate: '.more-results',
-                    fn: function (e, t, eOpts) {
-                        var cmp = Ext.ComponentQuery.query('searchbox')[0];
-                        var term = cmp.inputEl.getValue();
-
-                        cmp.search(term);
-                    }
-                }
-            }
-        },
+        id: 'settings_user_search_list',
         loadingText: 'Searching...',
-        maxHeight: 700,
+        maxHeight: 500,
         minWidth: 300,
 
         tpl: Ext.create('Ext.XTemplate',
@@ -46,15 +33,6 @@ Ext.define('PICS.view.layout.SearchBox', {
                             '</div>',
                         '</div>',
                     '</li>',
-                    '<tpl if="xindex == xcount">',
-                        '<li>',
-                            '<div class="search-item">',
-                                '<a href="#" class="more-results">',
-                                    'More Results...',
-                                '</a>',
-                            '</div>',
-                        '</li>',
-                    '</tpl>',
                 '</tpl>',
             '</ul>'
         ),
@@ -62,20 +40,14 @@ Ext.define('PICS.view.layout.SearchBox', {
 
     listeners: {
         select: function (combo, records, eOpts) {
-            var post = records[0];
-
-            if (post) {
-                var id = escape(post.get('result_id'));
-                var type = escape(post.get('search_type'));
-                var search_terms = 'button=getResult&searchID=' + id + '&searchType=' + type;
-                document.location = '/Search.action?' + search_terms;
+            if (records[0]) {
+                this.select(records[0]);
             }
         },
 
         specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
-                var term = base.getValue();
-                this.search(term);
+                this.select(base.getValue());
             } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
                 base.collapse();
             }
@@ -91,10 +63,10 @@ Ext.define('PICS.view.layout.SearchBox', {
     valueField: 'q',
 
     store: {
-        fields: [ 'result_type', 'result_id', 'result_name', 'result_at', 'search_type' ],
+        fields: [ 'result_type', 'result_id', 'result_name', 'result_at' ],
         proxy: {
             type: 'ajax',
-            url: 'SearchBox!json.action',
+            url: 'SearchBox!userJson.action',
             reader: {
                 root: 'results',
                 type: 'json',
@@ -103,8 +75,12 @@ Ext.define('PICS.view.layout.SearchBox', {
     },
     width: 200,
 
-    search: function (term) {
-        document.location = '/SearchBox.action?button=search&searchTerm=' + escape(term);
+    select: function (record) {
+        // Set the selected user
+        //record.get('result_name');
+        //record.get('result_id');
+        //record.get('result_type');
+        //record.get('result_at');
 
         return false;
     }

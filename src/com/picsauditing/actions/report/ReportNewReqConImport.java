@@ -301,12 +301,29 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
-		crr.setState(importedState);
-		if (countrySubdivisionDAO.exist(importedState.getIsoCode()+"-"+importedCountry.getIsoCode())){
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(importedState.getIsoCode()+"-"+importedCountry.getIsoCode());
-			crr.setCountrySubdivision(countrySubdivision);
+
+		if (importedState != null && !importedState.equals(crr.getState())){
+			State importedStateObj = stateDAO.find(importedState.toString());
+			crr.setState(importedStateObj);
 		}
+
+		if (crr.getCountry().isHasStates() && importedState != null){
+			if (crr.getState().getCountry().equals(crr.getCountry())){
+				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(crr.getCountry().getIsoCode() + "-" + crr.getState().getIsoCode());
+				if (countrySubdivision != null) {
+					crr.setCountrySubdivision(countrySubdivision);
+				} else {
+					crr.setCountrySubdivision(null);
+				}
+			}  else {
+				crr.setState(null);
+				crr.setCountrySubdivision(null);
+			}
+		} else {
+			crr.setState(null);
+			crr.setCountrySubdivision(null);
+		}
+
 		if (zipValue != null) {
 			if (zipValue instanceof Double) {
 				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);

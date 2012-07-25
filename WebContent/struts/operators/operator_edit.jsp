@@ -233,7 +233,7 @@
 									
 									<s:iterator value="operator.corporateFacilities" id="facility">
 										|
-										<s:if test="#facility.corporate.picsCorporate && !permissions.admin">
+										<s:if test="#facility.corporate.inPicsConsortium && !permissions.admin">
 											<s:property value="#facility.corporate.name"/>
 										</s:if>
 										<s:else>
@@ -568,6 +568,18 @@
 	                            </pics:permission>
 	                            <s:property value="%{getText('date.short')}" />
 	                        </li>
+	                        <s:if test ="operator.corporate && permissions.hasGroup(9)" >
+							<li>
+								<label>Is In PICS Consortium:</label>
+	                            <s:checkbox 
+	                                name="operator.inPicsConsortium" 
+	                                cssClass="checkbox"
+	                            />
+								<pics:fieldhelp title="Is In PICS Consortium">
+									Used to create PICS countries such as PICS-UK, PICS-US.
+								</pics:fieldhelp>
+							</li>
+							</s:if>
 	                    </ol>
 					</fieldset>
 					

@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.BasicDynaClass;
 import org.apache.commons.beanutils.DynaProperty;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,6 +35,11 @@ public class I18nCacheThreadTest implements I18nCacheBuildAware {
 	private int threadsRunning;
 	
 	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
 	
 	@Before
 	public void setUp() throws Exception {

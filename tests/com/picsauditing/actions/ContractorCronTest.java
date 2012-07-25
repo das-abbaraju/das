@@ -9,11 +9,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.google.common.collect.Lists;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -21,9 +27,22 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.search.Database;
 
 public class ContractorCronTest {
-
+	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+	}
+	
 	/**
 	 * More Test Cases to be added.
 	 * 

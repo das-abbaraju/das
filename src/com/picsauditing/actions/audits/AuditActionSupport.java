@@ -445,7 +445,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (permissions.isAdmin())
 				return true;
 			if (permissions.isOperatorCorporate() && conAudit.getAuditType().getClassType().isPolicy())
-				return !cao.getOperator().isPicsCorporate();
+				return !cao.getOperator().isInPicsConsortium();
 		}
 		return false;
 	}

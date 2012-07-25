@@ -63,6 +63,7 @@ public class OperatorAccount extends Account {
 	private String requiredTags;
 	private BigDecimal discountPercent = BigDecimal.ZERO;
 	private Date discountExpiration;
+	private boolean inPicsConsortium = false;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
@@ -602,9 +603,23 @@ public class OperatorAccount extends Account {
 		return visibleAuditTypes;
 	}
 
-	@Transient
+	
+//	@Transient
+//	public boolean isInPicsConsortium() {
+//		return this.getId() > 3 && this.getId() < 14;
+//	}
+//
 	public boolean isInPicsConsortium() {
-		return this.getId() > 3 && this.getId() < 14;
+		return inPicsConsortium;
+	}
+
+//	@Transient
+//	public boolean isPicsCorporate() {
+//		return inPicsConsortium;
+//	}
+
+	public void setInPicsConsortium(boolean inPicsConsortium) {
+		this.inPicsConsortium = inPicsConsortium;
 	}
 
 	@Transient

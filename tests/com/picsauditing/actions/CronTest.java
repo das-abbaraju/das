@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,6 +21,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -28,6 +30,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.search.Database;
 
 public class CronTest {
 	private Cron cron;
@@ -39,16 +42,20 @@ public class CronTest {
 //	private List<Certificate> certList;
 //	private Map<Integer, List<Integer>> opIdsByCertIds;
 	
-	@Mock
-	private EmailQueueDAO emailQueueDAO;
-	@Mock
-	private EmailBuilder emailBuilder;
-	@Mock
-	protected NoteDAO noteDAO;
+	@Mock private EmailQueueDAO emailQueueDAO;
+	@Mock private EmailBuilder emailBuilder;
+	@Mock protected NoteDAO noteDAO;
+	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		
 		cron = new Cron();
 		

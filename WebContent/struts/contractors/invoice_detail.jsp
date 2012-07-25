@@ -295,7 +295,9 @@
 										<td class="right">
                                             <s:property value="invoice.currency.symbol" />
 											<s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" />
-											<s:property value="invoice.currency"/>
+											<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
+												<s:property value="invoice.currency"/>
+											</s:if>
 										</td>
 									</s:if>
 									<s:else>
@@ -305,7 +307,9 @@
 										<td class="right">
                                             <s:property value="invoice.currency.symbol" />
 											<s:property value="amount" />
-											<s:property value="invoice.currency"/>
+											<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
+												<s:property value="invoice.currency"/>
+											</s:if>
 										</td>
 									</s:else>
 								</tr>
@@ -327,7 +331,9 @@
 								<td class="big right">
                                     <s:property value="invoice.currency.symbol" />
 									<s:property value="invoice.totalAmount" />
-									<s:property value="invoice.currency"/>
+									<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
+										<s:property value="invoice.currency"/>
+									</s:if>
 								</td>
 							</tr>
 							<s:if test="invoice.payments.size() > 0">
@@ -365,7 +371,9 @@
 											<span class="big">
                                                 <s:property value="invoice.currency.symbol" />
 												(<s:property value="amount" />
-												<s:property value="invoice.currency"/>)
+												<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
+													<s:property value="invoice.currency"/>
+												</s:if>)
 											</span>
 											<br />
 										</s:iterator>
@@ -378,7 +386,9 @@
 									<td class="big right">
                                         <s:property value="invoice.currency.symbol" />
 										<s:property value="invoice.balance" />
-										<s:property value="invoice.currency"/>
+										<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
+											<s:property value="invoice.currency"/>
+										</s:if>
 									</td>
 								</tr>
 							</s:if>
@@ -475,8 +485,14 @@
 						</table>
 					</td>
 				</tr>
+				<s:if test="invoice.currency.EUR|| invoice.currency.GBP">
+					<tr>
+						<td>
+							Company registered Number: 07660778 – VAT Number: GB126 9246 04
+						</td>
+					</tr>
+				</s:if>
 			</table>
-		      
 		</s:form>
 	</body>
 </html>

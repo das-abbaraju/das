@@ -24,17 +24,20 @@ Ext.define('PICS.view.report.settings.Share', {
         ui: 'footer'
     }],
     id: 'report_share',
-    items: [{
-        xtype: 'textfield',
-        fieldLabel: 'Report Name',
-        labelAlign: 'right',
-        name: 'report_name'
-    }, {
-        xtype: 'textarea',
-        fieldLabel: 'Description',
-        labelAlign: 'right',
-        name: 'report_description'
-    }],
+    items: [
+        Ext.create('PICS.view.report.settings.UserSearch')
+    ],
+//    items: [{
+//        xtype: 'textfield',
+//        fieldLabel: 'Report Name',
+//        labelAlign: 'right',
+//        name: 'report_name'
+//    }, {
+//        xtype: 'textarea',
+//        fieldLabel: 'Description',
+//        labelAlign: 'right',
+//        name: 'report_description'
+//    }],
     layout: 'form',
     // custom config
     modal_title: 'Share Report',

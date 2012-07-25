@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -15,11 +16,24 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
+	private ContractorOperator contractorOperator;
 	private FlagCriteria criteria;
 	private FlagColor flag;
 	private FlagColor baselineFlag;
 	private FlagCriteriaContractor criteriaContractor;
 
+	@ManyToOne
+	@JoinColumns(
+		{ @JoinColumn(name = "opID", referencedColumnName = "genID", insertable=false, updatable=false),
+		  @JoinColumn(name = "conID", referencedColumnName = "subID", insertable=false, updatable=false) })
+	public ContractorOperator getContractorOperator() {
+		return contractorOperator;
+	}
+	
+	public void setContractorOperator(ContractorOperator contractorOperator) {
+		this.contractorOperator = contractorOperator;
+	}
+	
 	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false)
 	public ContractorAccount getContractor() {

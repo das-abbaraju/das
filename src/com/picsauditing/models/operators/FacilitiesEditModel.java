@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -13,6 +14,9 @@ public class FacilitiesEditModel {
 
 	@Autowired
 	private FacilitiesDAO facilitiesDAO;
+	@Autowired
+	protected BasicDAO dao;
+
 	public static final int PICS_US = 5;
 	public static final int PICS_CANADA = 6;
 	public static final int PICS_UAE = 7;
@@ -42,24 +46,20 @@ public class FacilitiesEditModel {
 	
 		if (picsCountryNeedsToBeAdded) {
 			Facility f = new Facility();
-			f.setCorporate(new OperatorAccount());
 			f.setAuditColumns(permissions);
 			f.setOperator(operator);
 			
-			if (operator.getCountry().getIsoCode().equals("US"))
-				f.getCorporate().setId(PICS_US);
-			else if (operator.getCountry().getIsoCode().equals("CA"))
-				f.getCorporate().setId(PICS_CANADA);
-			else if (operator.getCountry().getIsoCode().equals("AE"))
-				f.getCorporate().setId(PICS_UAE);
-			else if (operator.getCountry().getIsoCode().equals("GB"))
-				f.getCorporate().setId(PICS_UK);
-			else if (operator.getCountry().getIsoCode().equals("FR"))
-				f.getCorporate().setId(PICS_FRANCE);
-			else if (operator.getCountry().getIsoCode().equals("DE"))
-				f.getCorporate().setId(PICS_GERMANY);
+			List<OperatorAccount> picsConsortiums = dao.findWhere(OperatorAccount.class, "inPicsConsortium=1");
+			for(OperatorAccount consortium:picsConsortiums) {
+				if (consortium.getId() == OperatorAccount.PicsConsortium)
+					continue;
+				if (operator.getCountry().getIsoCode().equals(consortium.getCountry().getIsoCode())) {
+					f.setCorporate(consortium);
+					break;
+				}
+			}
 			
-			if (f.getCorporate().getId() > 0) {
+			if (f.getCorporate() != null) {
 				operator.getCorporateFacilities().add(f);
 				facilitiesDAO.save(f);
 			}
@@ -73,7 +73,7 @@ public class FacilitiesEditModel {
 		for (Facility currrentFacility: operator.getCorporateFacilities()) {
 			OperatorAccount corporate = currrentFacility.getCorporate();
 			
-			if (corporate.isPicsCorporate()
+			if (corporate.isInPicsConsortium()
 					&& corporate.getId() != OperatorAccount.PicsConsortium) {
 				if (!corporate.getCountry().equals(operator.getCountry())) {
 					facilitiesToBeRemoved.add(currrentFacility);

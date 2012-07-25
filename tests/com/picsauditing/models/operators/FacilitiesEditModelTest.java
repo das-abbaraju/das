@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
@@ -14,7 +15,9 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -24,28 +27,55 @@ public class FacilitiesEditModelTest extends PicsTest {
 
 	private int NON_ZERO_OPERATOR_ID = 123;
 
-	FacilitiesEditModel facilitiesEditModel;
-	User user;
-	Country country;
-	List<Facility> corporateFacilities;
+	private FacilitiesEditModel facilitiesEditModel;
+	private User user;
+	private Country country;
+	private List<Facility> corporateFacilities;
+	private HashMap<String, OperatorAccount> picsConsortiumMap;
 
 	@Mock
-	OperatorAccount operator;
+	private OperatorAccount operator;
 	@Mock
 	private Permissions permissions;
+	@Mock
+	private BasicDAO dao;
+
+	private List<OperatorAccount> listOfPicsConsortiumAccounts;
 
 	@Before
 	public void setUp() throws Exception {
+		super.setUp();
 		MockitoAnnotations.initMocks(this);
 		user = EntityFactory.makeUser();
 		when(permissions.getUserId()).thenReturn(user.getId());
 		when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
 		facilitiesEditModel = new FacilitiesEditModel();
 		autowireEMInjectedDAOs(facilitiesEditModel);
+		PicsTestUtil.forceSetPrivateField(facilitiesEditModel, "dao", dao);
 		country = new Country();
 		when(operator.getCountry()).thenReturn(country);
 		corporateFacilities = new ArrayList<Facility>();
 		when(operator.getCorporateFacilities()).thenReturn(corporateFacilities);
+		
+		picsConsortiumMap = new HashMap<String, OperatorAccount>();
+		listOfPicsConsortiumAccounts = new ArrayList<OperatorAccount>();
+		
+		createConsortium("US");
+		createConsortium("CA");
+		createConsortium("FR");
+		createConsortium("GB");
+		createConsortium("AE");
+		createConsortium("DE");
+		
+		when(dao.findWhere(OperatorAccount.class, "inPicsConsortium=1")).thenReturn(listOfPicsConsortiumAccounts);
+	}
+
+	private void createConsortium(String code) {
+		OperatorAccount consortium = EntityFactory.makeOperator();
+		consortium.setCountry(new Country(code));
+		consortium.setInPicsConsortium(true);
+		listOfPicsConsortiumAccounts.add(consortium);
+		picsConsortiumMap.put(code, consortium);
 	}
 
 	@Test
@@ -61,68 +91,70 @@ public class FacilitiesEditModelTest extends PicsTest {
 
 	@Test
 	public void testAddPicsCountry_Us() throws Exception {
-		testAddPicsCountry("US", FacilitiesEditModel.PICS_US);
+
+		
+		testAddPicsCountry("US");
 	}
 
 	@Test
 	public void testAddPicsCountry_Canada() throws Exception {
-		testAddPicsCountry("CA", FacilitiesEditModel.PICS_CANADA);
+		testAddPicsCountry("CA");
 	}
 
 	@Test
 	public void testAddPicsCountry_Uae() throws Exception {
-		testAddPicsCountry("AE", FacilitiesEditModel.PICS_UAE);
+		testAddPicsCountry("AE");
 	}
 
 	@Test
 	public void testAddPicsCountry_Uk() throws Exception {
-		testAddPicsCountry("GB", FacilitiesEditModel.PICS_UK);
+		testAddPicsCountry("GB");
 	}
 
 	@Test
 	public void testAddPicsCountry_France() throws Exception {
-		testAddPicsCountry("FR", FacilitiesEditModel.PICS_FRANCE);
+		testAddPicsCountry("FR");
 	}
 
 	@Test
 	public void testAddPicsCountry_Germanny() throws Exception {
-		testAddPicsCountry("DE", FacilitiesEditModel.PICS_GERMANY);
+		testAddPicsCountry("DE");
 	}
 
 	@Test
 	public void testAddPicsCountry_Us_SwitchCountry() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_CANADA, "CA");
-		testAddPicsCountry("US", FacilitiesEditModel.PICS_US);
+		testAddPicsCountry("US");
 	}
 
 	@Test
 	public void testAddPicsCountry_Canada_SwitchCountry() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
-		testAddPicsCountry("CA", FacilitiesEditModel.PICS_CANADA);
+		testAddPicsCountry("CA");
 	}
 
 	@Test
 	public void testAddPicsCountry_Uae_SwitchCountry() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
-		testAddPicsCountry("AE", FacilitiesEditModel.PICS_UAE);
+		testAddPicsCountry("AE");
 	}
 
 	@Test
 	public void testAddPicsCountry_Uk_SwitchCountry() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
-		testAddPicsCountry("GB", FacilitiesEditModel.PICS_UK);
+		testAddPicsCountry("GB");
 	}
 
 	@Test
 	public void testAddPicsCountry_France_SwitchCountry() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
-		testAddPicsCountry("FR", FacilitiesEditModel.PICS_FRANCE);
+		testAddPicsCountry("FR");
 	}
 
 	@Test
 	public void testAddPicsCountry_Germanny_SwitchCountry() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
-		testAddPicsCountry("DE", FacilitiesEditModel.PICS_GERMANY);
+		testAddPicsCountry("DE");
 	}
 
 	@Test
@@ -130,11 +162,11 @@ public class FacilitiesEditModelTest extends PicsTest {
 		String currentIsoCode = "UX";
 		country.setIsoCode(currentIsoCode);
 
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator, permissions);
+		facilitiesEditModel.addPicsCountry(operator, permissions);
 
 		for (Facility facility : operator.getCorporateFacilities()) {
 			OperatorAccount corporate = facility.getCorporate();
-			if (corporate.isPicsCorporate() && corporate.getId() != OperatorAccount.PicsConsortium) {
+			if (corporate.isInPicsConsortium() && corporate.getId() != OperatorAccount.PicsConsortium) {
 				fail("Found unexpected PICS country " + corporate);
 			}
 		}
@@ -147,26 +179,27 @@ public class FacilitiesEditModelTest extends PicsTest {
 		String currentIsoCode = "UX";
 		country.setIsoCode(currentIsoCode);
 
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator, permissions);
+		facilitiesEditModel.addPicsCountry(operator, permissions);
 
 		for (Facility facility : operator.getCorporateFacilities()) {
 			OperatorAccount corporate = facility.getCorporate();
-			if (corporate.isPicsCorporate() && corporate.getId() != OperatorAccount.PicsConsortium) {
+			if (corporate.isInPicsConsortium() && corporate.getId() != OperatorAccount.PicsConsortium) {
 				fail("Found unexpected PICS country " + corporate);
 			}
 		}
 	}
 
-	public void testAddPicsCountry(String currentIsoCode, int picsCountryIdThatShouldBeSet) throws Exception {
+	public void testAddPicsCountry(String currentIsoCode) throws Exception {
 
 		country.setIsoCode(currentIsoCode);
 
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator, permissions);
+		int picsCountryIdThatShouldBeSet = picsConsortiumMap.get(currentIsoCode).getId();
+		facilitiesEditModel.addPicsCountry(operator, permissions);
 		boolean foundExpectedCountry = false;
 
 		for (Facility facility : operator.getCorporateFacilities()) {
 			OperatorAccount corporate = facility.getCorporate();
-			if (corporate.isPicsCorporate() && corporate.getId() != OperatorAccount.PicsConsortium) {
+			if (corporate.isInPicsConsortium() && corporate.getId() != OperatorAccount.PicsConsortium) {
 				if (facility.getCorporate().getId() == picsCountryIdThatShouldBeSet) {
 					foundExpectedCountry = true;
 				} else {
@@ -175,7 +208,7 @@ public class FacilitiesEditModelTest extends PicsTest {
 			}
 		}
 		if (!foundExpectedCountry) {
-			fail("PICS " + currentIsoCode + "US was not found.");
+			fail("PICS " + currentIsoCode + " was not found.");
 		}
 	}
 

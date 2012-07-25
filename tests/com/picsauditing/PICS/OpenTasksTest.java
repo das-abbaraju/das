@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -41,6 +42,8 @@ import com.ibm.icu.util.Calendar;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -58,6 +61,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.search.Database;
 
 public class OpenTasksTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
@@ -85,6 +89,7 @@ public class OpenTasksTest {
 	@Mock private ContractorAccount contractor;
 	@Mock private ContractorAudit audit;
 	@Mock protected ContractorAuditDAO contractorAuditDao;
+	@Mock private OperatorTagDAO operatorTagDao;
 	@Mock private ContractorAuditOperator cao;
 	@Mock private User user;
 	@Mock private Permissions permissions;
@@ -93,6 +98,7 @@ public class OpenTasksTest {
 	@Mock private I18nCache i18nCache;
 	@Mock private UserAccess userAccess;
 	@Mock private Invoice invoice;
+	@Mock private Database databaseForTesting;
 	
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
@@ -103,9 +109,15 @@ public class OpenTasksTest {
 	private List<Invoice> invoices;
 	private List<ContractorAuditOperator> caos;
 	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		
 		openTasks = new OpenTasks(); // class under test
 
@@ -116,6 +128,7 @@ public class OpenTasksTest {
 		Whitebox.setInternalState(openTasks, "i18nCache", i18nCache);
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
+		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
 	}
 
 	private void setUpCollections() {

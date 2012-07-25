@@ -1,11 +1,11 @@
 package com.picsauditing.search;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,6 +31,9 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LinkBuilder;
 import com.picsauditing.util.Strings;
 
+/**
+ * This is a controller. It should not use any DAOs from its parent.
+ */
 @SuppressWarnings("serial")
 public class SearchBox extends PicsActionSupport implements Preparable {
 
@@ -58,6 +61,8 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 	private final int PAGEBREAK = 50;
 	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
+
+	private static final Logger logger = LoggerFactory.getLogger(SearchBox.class);
 
 	@Override
 	public void prepare() throws Exception {
@@ -87,8 +92,26 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String json() throws Exception {
-		execute();
+	public String json() {
+		try {
+			execute();
+		} catch (Exception e) {
+			logger.error("Exception while running execute.", e);
+		}
+
+		JSONArray outputAsJsonArray = convertOutputToJson(output);
+		json.put("results", outputAsJsonArray);
+
+		return JSON;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String userJson() {
+		try {
+			execute();
+		} catch (Exception e) {
+			logger.error("Exception while running execute.", e);
+		}
 
 		JSONArray outputAsJsonArray = convertOutputToJson(output);
 		json.put("results", outputAsJsonArray);
@@ -110,6 +133,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 			JSONObject jsonResult = new JSONObject();
 
+			jsonResult.put("search_type", fields[0]);
 			jsonResult.put("result_type", fields[1]);
 			jsonResult.put("result_id", fields[2]);
 			jsonResult.put("result_name", fields[3]);
@@ -124,7 +148,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	private String buttonAutocomplete(SearchEngine searchEngine) throws Exception {
 		List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 
-		if (terms == null || terms.isEmpty()) {
+		if (CollectionUtils.isEmpty(terms)) {
 			output = "NULL|" + getTextParameterized("MainSearch.NoReturnedResults", searchTerm) + "|";
 			return BLANK;
 		} else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee()) {
@@ -139,12 +163,11 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 
-			if (queryList != null && queryList.size() > 0) {
-				getResults(queryList);
-			} else {
+			if (CollectionUtils.isEmpty(queryList)) {
 				queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
-				getResults(queryList);
 			}
+
+			output = concatQueryResults(queryList);
 		}
 
 		return BLANK;
@@ -153,7 +176,7 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	private String buttonSearch(SearchEngine searchEngine) throws Exception {
 		List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 
-		if (terms == null || terms.isEmpty()) {
+		if (CollectionUtils.isEmpty(terms)) {
 			addActionMessage(getText("MainSearch.NoSearchableTerms"));
 
 			return SUCCESS;
@@ -272,52 +295,54 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 		return records;
 	}
 
-	private void getResults(List<BasicDynaBean> queryList) {
-		StringBuilder sb = new StringBuilder();
+	private String concatQueryResults(List<BasicDynaBean> queryList) {
+		StringBuilder builder = new StringBuilder();
 		List<AbstractIndexableTable> records = getRecords(queryList);
 
 		if (records.size() > 0) {
 			for (Indexable value : records)
-				sb.append(value.getSearchText());
+				builder.append(value.getSearchText());
 		}
 
-		output = sb.toString() + "FULL|" + getText("MainSearch.ClickFullSearch") + "|" + searchTerm.replace(" ", "+");
+		return builder.toString();
 	}
 
-	public List<AbstractIndexableTable> getRecords(List<BasicDynaBean> queryList) {
+	private List<AbstractIndexableTable> getRecords(List<BasicDynaBean> queryList) {
 		ArrayListMultimap<Class<? extends AbstractIndexableTable>, Integer> indexableMap = ArrayListMultimap.create();
 		SearchList recordsList = new SearchList();
 
-		for (BasicDynaBean bdb : queryList) {
-			String check = (String) bdb.get("indexType");
-			int fkID = Integer.parseInt(bdb.get("foreignKey").toString());
-			if (Strings.isEmpty(check)) {
-				check = "A";
+		for (BasicDynaBean queryResult : queryList) {
+			String typeAbbrev = (String) queryResult.get("indexType");
+			int foreignKeyId = Integer.parseInt(queryResult.get("foreignKey").toString());
+			if (Strings.isEmpty(typeAbbrev)) {
+				typeAbbrev = "A";
 			}
 
-			if (check.equals("A") || check.equals("AS") || check.equals("C") || check.equals("CO") || check.equals("O")) {
-				SearchItem searchRecord = new SearchItem(Account.class, fkID);
-				indexableMap.put(Account.class, fkID);
-				recordsList.add(searchRecord);
-			} else if (check.equals("U") || check.equals("G")) {
-				SearchItem searchRecord = new SearchItem(User.class, fkID);
-				indexableMap.put(User.class, fkID);
-				recordsList.add(searchRecord);
-			} else if (check.equals("E")) {
-				SearchItem searchRecord = new SearchItem(Employee.class, fkID);
-				indexableMap.put(Employee.class, fkID);
-				recordsList.add(searchRecord);
+			Class<? extends AbstractIndexableTable> recordClass = null;
+
+			if (typeAbbrev.equals("A") || typeAbbrev.equals("AS") || typeAbbrev.equals("C") || typeAbbrev.equals("CO") || typeAbbrev.equals("O")) {
+				recordClass = Account.class;
+			} else if (typeAbbrev.equals("U") || typeAbbrev.equals("G")) {
+				recordClass = User.class;
+			} else if (typeAbbrev.equals("E")) {
+				recordClass = Employee.class;
 			}
+
+			SearchItem searchRecord = new SearchItem(recordClass, foreignKeyId);
+			indexableMap.put(recordClass, foreignKeyId);
+			recordsList.add(searchRecord);
 		}
 
 		for (Class<? extends AbstractIndexableTable> key : indexableMap.keySet()) {
-			List<? extends AbstractIndexableTable> list = accountDAO.findWhere(key,
-					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
-			if (list != null) {
-				for (AbstractIndexableTable indexEntry : list) {
-					SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
-					recordsList.add(searchRecord);
-				}
+			String query = "t.id IN (" + Strings.implode(indexableMap.get(key)) + ")";
+			List<? extends AbstractIndexableTable> list = accountDAO.findWhere(key, query, 0);
+
+			if (list == null)
+				continue;
+
+			for (AbstractIndexableTable indexEntry : list) {
+				SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
+				recordsList.add(searchRecord);
 			}
 		}
 
@@ -382,86 +407,5 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 	public int getPAGEBREAK() {
 		return PAGEBREAK;
-	}
-
-	class SearchItem {
-		public int id;
-		public Class<? extends AbstractIndexableTable> type = null;
-		public AbstractIndexableTable record = null;
-
-		public SearchItem(Class<? extends AbstractIndexableTable> type, int id) {
-			this.type = type;
-			this.id = id;
-		}
-
-		public SearchItem(Class<? extends AbstractIndexableTable> type, int id, AbstractIndexableTable record) {
-			this.type = type;
-			this.id = id;
-			this.record = record;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o)
-				return true;
-
-			try {
-				SearchItem si = (SearchItem) o;
-				if (this.id == si.id && this.type == si.type) {
-					return true;
-				}
-			} catch (Exception e) {
-				Logger logger = LoggerFactory.getLogger(SearchBox.class);
-				logger.error("Error in equals for SearchItem");
-			}
-
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			return ((type.getName().hashCode() % 1000) * 10000000) + id;
-		}
-	}
-
-	class SearchList {
-		public List<SearchItem> data = null;
-
-		public SearchList() {
-			data = new ArrayList<SearchItem>();
-		}
-
-		public SearchItem add(SearchItem item) {
-			boolean found = false;
-
-			for (SearchItem other : data) {
-				if (other.equals(item)) {
-					other.record = item.record;
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				data.add(item);
-			}
-
-			return item;
-		}
-
-		public List<AbstractIndexableTable> getRecordsOnly(boolean nullsAllowed) {
-			List<AbstractIndexableTable> recordsOnly = new ArrayList<AbstractIndexableTable>();
-			for (SearchItem item : data) {
-				if (nullsAllowed) {
-					recordsOnly.add(item.record);
-				} else {
-					if (item.record != null) {
-						recordsOnly.add(item.record);
-					}
-				}
-			}
-
-			return recordsOnly;
-		}
 	}
 }

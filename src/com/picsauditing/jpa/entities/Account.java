@@ -874,11 +874,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Transient
-	public boolean isPicsCorporate() {
-		return PICS_CORPORATE.contains(this.id);
-	}
-
-	@Transient
 	@Override
 	public String getAutocompleteValue() {
 		return name;

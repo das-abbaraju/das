@@ -26,6 +26,7 @@ import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -61,6 +62,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private FacilitiesEditModel facilitiesEditModel;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 
 	private String createType;
 	private List<Integer> facilities;
@@ -224,16 +227,30 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 
-		if (country != null && !country.equals(operator.getCountry()))
+		if (country != null && !country.equals(operator.getCountry())){
 			operator.setCountry(country);
-		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
-			operator.setState(state);
+		}
 
-			if (countrySubdivisionDAO.exist(state.getIsoCode()+"-"+country.getIsoCode())){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(state.getIsoCode()+"-"+country.getIsoCode());
-				operator.setCountrySubdivision(countrySubdivision);
+		if (state != null && !state.equals(operator.getState())){
+			State contractorState = stateDAO.find(state.toString());
+			operator.setState(contractorState);
+		}
+
+		if (operator.getCountry().isHasStates() && state != null){
+			if (operator.getState().getCountry().equals(operator.getCountry())){
+				CountrySubdivision countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-" + operator.getState().getIsoCode());
+				if (countrySubdivision != null) {
+					operator.setCountrySubdivision(countrySubdivision);
+				} else {
+					operator.setCountrySubdivision(null);
+				}
+			}  else {
+				operator.setState(null);
+				operator.setCountrySubdivision(null);
 			}
+		} else{
+			operator.setState(null);
+			operator.setCountrySubdivision(null);
 		}
 
 		if (hasActionErrors()) {
@@ -334,8 +351,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		facilitiesEditModel.addPicsGlobal(operator, permissions);
 
-		facilitiesEditModel.addPicsCountry(operator, permissions);
-
+		if (!operator.isInPicsConsortium()) {
+			facilitiesEditModel.addPicsCountry(operator, permissions);
+		}
+		
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));

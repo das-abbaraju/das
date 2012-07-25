@@ -2,16 +2,37 @@ package com.picsauditing.PICS;
 
 import junit.framework.TestCase;
 
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
 
 public class BillingCalculatorSingleTest extends TestCase {
-	private BillingCalculatorSingle billingService = new BillingCalculatorSingle();
+	private BillingCalculatorSingle billingService;
 
+	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
+		billingService = new BillingCalculatorSingle();
+	}
+	
 	@Test
 	public void testSetPayingFacilities() {
 		ContractorAccount timecGcCon = new ContractorAccount();

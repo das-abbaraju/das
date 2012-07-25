@@ -74,22 +74,20 @@ public class EmailQueueList extends ReportActionSupport {
 	public String previewAjax() throws NoRightsException {
 		preview = emailQueueDAO.find(id);
 
-//		if (permissions.isOperatorCorporate()) {
-//			permissions.tryPermission(OpPerms.EmailQueue);
-//			return "preview";
-//		}
+		if (permissions.isOperatorCorporate()) {
+			permissions.tryPermission(OpPerms.EmailQueue);
+			return "preview";
+		}
 
 		if (permissions.isPicsEmployee()) {
 			return "preview";
 		}
 
-		if (permissions.isContractor()||permissions.isOperatorCorporate()||permissions.isCorporate()) {
-			if (permissions.getEmail() != null){
-				if (preview.getToAddresses().contains(permissions.getEmail())
-						|| preview.getBccAddresses().contains(permissions.getEmail())
-						|| preview.getCcAddresses().contains(permissions.getEmail())) {
-					return "preview";
-				}
+		if (permissions.isContractor()) {
+			if (preview.getToAddresses().contains(permissions.getEmail())
+					|| preview.getBccAddresses().contains(permissions.getEmail())
+					|| preview.getCcAddresses().contains(permissions.getEmail())) {
+				return "preview";
 			}
 		}
 

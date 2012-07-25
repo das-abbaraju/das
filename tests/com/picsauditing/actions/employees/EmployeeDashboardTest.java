@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import javax.persistence.EntityManager;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -40,22 +41,27 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.search.Database;
 
 public class EmployeeDashboardTest {
 	private ContractorAccount contractorAccount;
 	private EmployeeDashboard employeeDashboard;
 
-	@Mock
-	private EntityManager entityManager;
-	@Mock
-	private I18nCache i18nCache;
-	@Mock
-	private Permissions permissions;
+	@Mock private EntityManager entityManager;
+	@Mock private I18nCache i18nCache;
+	@Mock private Permissions permissions;
+	@Mock private Database databaseForTesting;
+	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
 		employeeDashboard = new EmployeeDashboard();
 		setupContractor();
 

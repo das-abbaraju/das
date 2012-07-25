@@ -54,6 +54,18 @@ a:hover.panel_edit {
 	height: 16px;
 }
 
+.ContractorView-page div#betaTranslationsAlert
+{
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.ContractorView-page div#betaTranslationsAlert p
+{
+	font-size: 14px;
+    color: #A74D0F;
+}
+
 #content div.panel_content {
 	background:#FFFFFF none repeat scroll 0%;
 	border-bottom:1px solid #B3B3B3;
