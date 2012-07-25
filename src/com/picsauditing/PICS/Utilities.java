@@ -11,6 +11,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -129,38 +131,15 @@ public class Utilities {
 	
 	// TODO: Remove this from the Utilities class.  This is not a general
 	//       purpose utility.
-	public static float getIndustryAverage(boolean lwcr, Naics naics) {
+	public static float getIndustryAverage(boolean lwcr, ContractorAccount contractor) {
 		float answer = 0f;
+		ContractorTrade trade = contractor.getTopTrade();
+		
 		if (!lwcr) {
-			answer = naics.getTrir();
-			SelectSQL select = new SelectSQL("ref_trade_alt rta");
-			select.addJoin("join ref_trade rt on rta.tradeID = rt.id");
-
-			select.addField("rt.naicsTRIR");
-			select.addField("rt.naicsLWCR");
-			select.addWhere("rta.category = 'NAICS'");
-			select.addWhere("rta.name=" + naics.getCode());
-
-			Database db = new Database();
-			try {
-				List<BasicDynaBean> results = db.select(select.toString(),
-						false);
-				if (results != null && results.size() > 0) {
-					BasicDynaBean row = results.get(0);
-					answer = Database.toFloat(row, "naicsTRIR");
-				}
-				if (answer == 0f)
-				{
-					NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-					answer = naicsDAO.getIndustryAverage(lwcr, naics);
-				}
-			} catch (Exception e) {
-				NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-				answer = naicsDAO.getIndustryAverage(lwcr, naics);
-			}
-
+			answer = trade.getTrade().getNaicsTRIRI();
 		} else {
-			answer = naics.getLwcr();
+			Naics naics = new Naics();
+			naics.setCode(contractor.getTopTradesNaicsCode());
 			NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
 			answer = naicsDAO.getIndustryAverage(lwcr, naics);
 		}

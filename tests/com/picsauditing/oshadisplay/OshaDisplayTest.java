@@ -63,8 +63,8 @@ public class OshaDisplayTest extends PicsTest {
 		contractorNaics.setCode("81");
 		when(contractor.getNaics()).thenReturn(contractorNaics);
 		when(contractor.getWeightedIndustryAverage()).thenReturn(1.4f);
-		when(Utilities.getIndustryAverage(true, contractorNaics)).thenReturn(0.2f);
-		when(Utilities.getIndustryAverage(false, contractorNaics)).thenReturn(1.2f);
+		when(Utilities.getIndustryAverage(true, contractor)).thenReturn(0.2f);
+		when(Utilities.getIndustryAverage(false, contractor)).thenReturn(1.2f);
 		
 		when(yearList.getYearForScope(MultiYearScope.LastYearOnly)).thenReturn(2011);
 		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(2010);

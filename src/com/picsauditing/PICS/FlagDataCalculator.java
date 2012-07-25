@@ -290,11 +290,10 @@ public class FlagDataCalculator {
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
 							return answer2 > (Utilities
-									.getIndustryAverage(true, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
+									.getIndustryAverage(true, conCriteria.getContractor()) * hurdle2) / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()
-									.getNaics()) * hurdle2) / 100;
+							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()) * hurdle2) / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
 							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor().getNaics()) * hurdle2) / 100;
