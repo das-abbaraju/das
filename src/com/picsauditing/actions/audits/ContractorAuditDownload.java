@@ -23,7 +23,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class ContractorAuditDownload extends AuditActionSupport {
@@ -196,8 +195,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		return sheetStatus;
 	}
 
-	@Testable
-	class SheetStatus {
+	private class SheetStatus {
 		public HSSFSheet sheet;
 		public int rownum;
 		// Common

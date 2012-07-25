@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.flags.FlagAnswerParser;
@@ -25,7 +27,6 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
 
@@ -35,6 +36,8 @@ public class ContractorFlagETL {
 	private AuditDataDAO auditDataDao;
 	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ContractorFlagETL.class);
 
 	public void calculate(ContractorAccount contractor) {
 		// get the information necessary to perform the flagging calculations
@@ -45,11 +48,11 @@ public class ContractorFlagETL {
 
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 		for (FlagCriteria flagCriteria : distinctFlagCriteria) {
-			PicsLogger.log("Starting to calculate = " + flagCriteria);
+			logger.info("Starting to calculate = []", flagCriteria);
 			changes.addAll(executeFlagCriteriaCalculation(flagCriteria, contractor, answerMap));
 		}
 
-		persistFlagCriteriaContractorChanges(contractor, changes);
+		saveFlagCriteriaContractorChanges(contractor, changes);
 	}
 
 	/**
@@ -105,7 +108,7 @@ public class ContractorFlagETL {
 		ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(flagCriteria.getMultiYearScope());
 
 		if (annualUpdate != null) {
-			if (checkForApplicableCategory(flagCriteria, annualUpdate, true)) {
+			if (checkForApplicableCategory(flagCriteria, annualUpdate, true)) { // TODO: should the third argument be true all the time?
 				for (AuditData data : annualUpdate.getData()) {
 					if (data.getQuestion().getId() == flagCriteria.getQuestion().getId()) {
 						flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
@@ -139,7 +142,7 @@ public class ContractorFlagETL {
 			if (fc.getQuestion() != null) {
 				AuditType type = fc.getQuestion().getAuditType();
 				if (type != null && !type.isAnnualAddendum()) {
-					PicsLogger.log("Found question for evaluation: " + fc.getQuestion());
+					logger.info("Found question for evaluation: {}", fc.getQuestion());
 					criteriaQuestionSet.add(fc.getQuestion().getId());
 					if (fc.includeExcess() != null) {
 						criteriaQuestionSet.add(fc.includeExcess());
@@ -214,7 +217,7 @@ public class ContractorFlagETL {
 		}
 	}
 
-	private void persistFlagCriteriaContractorChanges(ContractorAccount contractor, Set<FlagCriteriaContractor> changes) {
+	private void saveFlagCriteriaContractorChanges(ContractorAccount contractor, Set<FlagCriteriaContractor> changes) {
 		Iterator<FlagCriteriaContractor> flagCriteriaList = BaseTable.insertUpdateDeleteManaged(
 				contractor.getFlagCriteria(), changes).iterator();
 		while (flagCriteriaList.hasNext()) {
@@ -263,7 +266,7 @@ public class ContractorFlagETL {
 		OshaOrganizer osha = contractor.getOshaOrganizer();
 		Double answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
 				flagCriteria.getOshaRateType());
-		PicsLogger.log("Answer = " + answer);
+		logger.info("Answer = {}", answer);
 
 		if (answer != null && !answer.equals(Double.valueOf(-1))) {
 			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria,

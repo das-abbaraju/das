@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 
@@ -155,7 +156,7 @@ public class MultiYearValueCalculatorTest {
 	}
 
 	@Test
-	public void getValueFromAuditData_ValidNumericAnswer() throws Exception {
+	public void testGetValueFromAuditData_ValidNumericAnswer() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(9);
@@ -165,13 +166,33 @@ public class MultiYearValueCalculatorTest {
 	}
 	
 	@Test
-	public void getValueFromAuditData_InvalidNumericAnswer() throws Exception {
+	public void testGetValueFromAuditData_InvalidNumericAnswer() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(10);
 		criteria.setQuestion(question);
 		criteria.setDataType(FlagCriteria.NUMBER);
 		assertEquals(Double.valueOf(0.0), Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueInAuditData", criteria, setupAuditDataList()));
+	}
+	
+	@Test
+	public void testCalculateAverageEMR_EmptyList() {
+		OshaResult result = MultiYearValueCalculator.calculateAverageEMR(new ArrayList<OshaResult>());
+		assertTrue(result == null);
+	}
+	
+	@Test
+	public void testCalculateAverageEMR() {
+		OshaResult value1 = new OshaResult.Builder().year("2010").answer("3").build();
+		OshaResult value2 = new OshaResult.Builder().year("2011").verified(false).answer("4").build();
+		OshaResult value3 = new OshaResult.Builder().year("2012").answer("5.0").build();
+		
+		List<OshaResult> oshaResults = new ArrayList<OshaResult>(Arrays.asList(value1, value2, value3));
+		OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults);
+		
+		assertFalse(oshaResult.isVerified());
+		assertEquals("2010, 2011, 2012", oshaResult.getYear());
+		assertEquals("4.0", oshaResult.getAnswer());
 	}
 	
 	private List<AuditData> setupAuditDataList() {

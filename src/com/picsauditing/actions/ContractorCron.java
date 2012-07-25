@@ -610,8 +610,7 @@ public class ContractorCron extends PicsActionSupport {
 		return unsentWeeklyInsuranceSubscriptions;
 	}
 
-	@Testable
-	Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
+	private Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
 		Set<ContractorAudit> expiringAudits = new HashSet<ContractorAudit>();
 		Map<Integer, List<ContractorAudit>> policies = createAuditPolicyMap(contractor);
 

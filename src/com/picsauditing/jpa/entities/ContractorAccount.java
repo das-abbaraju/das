@@ -46,7 +46,6 @@ import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Testable;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -1614,8 +1613,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
-	@Testable
-	void setOshaAudits(List<OshaAudit> oshaAudits) {
+	private void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
 

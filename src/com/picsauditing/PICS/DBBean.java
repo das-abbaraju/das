@@ -10,18 +10,13 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.util.Testable;
-
 public class DBBean implements InitializingBean {
 	
 	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
 	private static DataSource dataSource;
 	
 	// volatile to use as part of the double-locking pattern
-	@Testable
 	static volatile DataSource staticDataSource;
-	
-	@Testable
 	static AtomicInteger instantiationCount = new AtomicInteger(0); 
 	
 	/**

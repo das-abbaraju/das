@@ -10,7 +10,6 @@ import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.QuestionFunction;
 import com.picsauditing.jpa.entities.SafetyStatistics;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
 
 public class OshaOrganizer implements OshaVisitor {
@@ -24,7 +23,6 @@ public class OshaOrganizer implements OshaVisitor {
 	 * 
 	 * @param type
 	 */
-	@Testable
 	public YearList mostRecentThreeYears(OshaType type) {
 		YearList yearList = new YearList();
 

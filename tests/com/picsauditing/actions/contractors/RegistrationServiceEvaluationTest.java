@@ -1,6 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
@@ -26,7 +26,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PermissionToViewContractor;
 
 public class RegistrationServiceEvaluationTest extends PicsTest{
@@ -80,7 +79,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest{
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "answerMap", answerMap);
 		
-		serviceEvaluation.calculateRiskLevels();
+		Whitebox.invokeMethod(serviceEvaluation, "calculateRiskLevels");
 		assertEquals("High", contractor.getProductRisk().toString());
 	}
 

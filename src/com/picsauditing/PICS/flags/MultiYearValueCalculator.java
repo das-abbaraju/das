@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -20,7 +22,6 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
-import com.picsauditing.util.log.PicsLogger;
 
 /**
  * This is a collection of misc. business calculations that are applied to audit
@@ -34,6 +35,8 @@ import com.picsauditing.util.log.PicsLogger;
 public class MultiYearValueCalculator {
 
 	private static final int EMR_YES_NO_QUESTION_ID = 2033;
+	
+	private static final Logger logger = LoggerFactory.getLogger(MultiYearValueCalculator.class);
 
 	/**
 	 * Private default constructor to discourage creating new instances and
@@ -246,8 +249,9 @@ public class MultiYearValueCalculator {
 				
 				oshaResult = new OshaResult.Builder().verified(verified).year(answer2).answer(answer == null ? null : answer.toString()).build();
 			} catch (Throwable t) {
-				PicsLogger.log("Could not cast contractor: " + contractor.getId() + " and answer: "
-						+ ((answer != null) ? answer : "null") + " to a value for criteria: " + flagCriteria.getId());
+				logger.error("Could not cast contractor: {} and answer: {} to a value for criteria: {}", 
+						new Object[] { contractor.getId(), ((answer != null) ? answer : "null"), flagCriteria.getId() });
+
 
 				// The contractor errors out somewhere during the process of
 				// creating their data so we set the answer to null.

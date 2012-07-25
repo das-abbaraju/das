@@ -8,7 +8,9 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.FlagCriteria;
 
 public class FlagAnswerParser {
+	
 	private final static Logger logger = LoggerFactory.getLogger(FlagAnswerParser.class);
+	
 	public static String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {
 		String qType = auditData.getQuestion().getQuestionType();
 		String cType = flagCriteria.getDataType();
@@ -64,6 +66,7 @@ public class FlagAnswerParser {
 			String answer) {
 		if (!"date".equals(cType))
 			logger.warn("WARNING!! {} should be set to date but isn't", flagCriteria);
+		
 		try {
 			DateBean.parseDate(answer);
 			return answer;

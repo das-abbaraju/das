@@ -302,7 +302,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 	}
 	
-	/* Test */ void calculateRiskLevels() {
+	private void calculateRiskLevels() {
 		Collection<AuditData> auditList = answerMap.values();
 		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
 		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);

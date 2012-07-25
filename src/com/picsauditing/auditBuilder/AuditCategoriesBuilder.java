@@ -22,7 +22,6 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.util.Testable;
 
 /**
  * Determine which audits and categories are needed for a contractor.
@@ -212,8 +211,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return governingBody;
 	}
 
-	@Testable
-	Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
+	private Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
 		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
@@ -228,11 +226,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				answers.put(currentQuestionId, answer);
 			}
 		}
+		
 		return answers;
 	}
 	
-	@Testable
-	ContractorAudit findMostRecentAudit(int auditTypeId) {
+	private ContractorAudit findMostRecentAudit(int auditTypeId) {
 		ContractorAudit mostRecentAudit = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == auditTypeId) {
@@ -242,11 +240,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				}
 			}
 		}
+		
 		return mostRecentAudit;
 	}
 
-	@Testable
-	AuditData findAnswer(ContractorAudit auditContainingCurrentQuestion, int currentQuestionId) {
+	private AuditData findAnswer(ContractorAudit auditContainingCurrentQuestion, int currentQuestionId) {
 		if (auditContainingCurrentQuestion != null) {
 			for (AuditData answer : auditContainingCurrentQuestion.getData()) {
 				if (answer.getQuestion().getId() == currentQuestionId) {
@@ -254,6 +252,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				}
 			}
 		}
+		
 		return null;
 	}
 
@@ -263,6 +262,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			if (operatorCategories != null && operatorCategories.contains(category))
 				return true;
 		}
+		
 		return false;
 	}
 }

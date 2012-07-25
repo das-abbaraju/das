@@ -100,6 +100,7 @@ public class AuditDataDAO extends PicsDAO {
 				indexedResult.put(id, row);
 			}
 		}
+		
 		return indexedResult;
 	}
 

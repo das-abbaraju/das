@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.jpa.entities.Naics;
 
@@ -29,7 +30,7 @@ public class NaicsDAOTest {
 		naicsDAO = new NaicsDAO();
 		naicsDAO.setEntityManager(em);
 		
-		List<Naics> naicsList = new ArrayList();
+		List<Naics> naicsList = new ArrayList<Naics>();
 		naicsList.add(constructNaics("52", 0.9, 0.8));
 		naicsList.add(constructNaics("52212", 0.0, 0.0));
 		
@@ -61,9 +62,11 @@ public class NaicsDAOTest {
 	 */
 	@Test
 	public void testFindParent() throws Exception {
-		Naics naics = naicsDAO.findParent("52212");
+		Naics naics = Whitebox.invokeMethod(naicsDAO, "findParent", "52212");
 		assertEquals("52", naics.getCode());
-		assertNull( naicsDAO.findParent("52"));
+		
+		Naics anotherParentSearch = Whitebox.invokeMethod(naicsDAO, "findParent", "52");
+		assertNull(anotherParentSearch);
 	}
 	
 	/*
@@ -107,13 +110,14 @@ public class NaicsDAOTest {
 	 * So, asking for the DART for 54121 should "walk the tree" through 5412 up to 541, to find the first non-zero value.
 	 */
 	@Test
-	public void testGetBroaderNaicsForDart() {
+	public void testGetBroaderNaicsForDart() throws Exception {
 		Naics naics = naicsDAO.find("54121");
 		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
 		// assertEquals(0.0, naics.getDart(), 0.01);
 		assertEquals(0.0, naics.getLwcr(), 0.01);
-		naics = naicsDAO.getBroaderNaicsForDart(naics);
+		naics = Whitebox.invokeMethod(naicsDAO, "getBroaderNaicsForDart", naics);
 		assertEquals("541", naics.getCode());
+		
 		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
 		// assertEquals(0.5, naics.getDart(), 0.01);
 		assertEquals(0.5, naics.getLwcr(), 0.01);

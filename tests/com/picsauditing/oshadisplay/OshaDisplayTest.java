@@ -17,6 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
@@ -58,7 +59,7 @@ public class OshaDisplayTest extends PicsTest {
 	}
 
 	@Test
-	public void testGetStats_IndustryAverage() {
+	public void testGetStats_IndustryAverage() throws Exception {
 		Naics contractorNaics = new Naics();
 		contractorNaics.setCode("81");
 		when(contractor.getNaics()).thenReturn(contractorNaics);
@@ -87,14 +88,14 @@ public class OshaDisplayTest extends PicsTest {
 
 		List<OshaDisplayRow> rows;
 		
-		rows = oshaDisplay.getData(OshaType.OSHA);
+		rows = Whitebox.invokeMethod(oshaDisplay, "getData", OshaType.OSHA);
 		for (OshaDisplayRow row:rows) {
 			if ("TrirAbsolute".equals(row.getTitle())) {
 				assertEquals("1.2", row.getCells().get(4));
 			}
 		}
 
-		rows = oshaDisplay.getData(OshaType.COHS);
+		rows = Whitebox.invokeMethod(oshaDisplay, "getData", OshaType.COHS);
 		for (OshaDisplayRow row:rows) {
 			if ("TrirAbsolute".equals(row.getTitle())) {
 				assertTrue(row.getCells().get(4).startsWith("1.4"));

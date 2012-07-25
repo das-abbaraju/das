@@ -83,7 +83,7 @@ public class OshaDisplay {
 		return columnNames;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map getInfoForParticularOshaType(OshaType oshaType) {
 		Map info = new HashMap();
 		info.put("columnNames", getColumnNames(oshaType));
@@ -92,7 +92,7 @@ public class OshaDisplay {
 		return info;
 	}
 
-	/* Test */ List<OshaDisplayRow> getData(OshaType oshaType) {
+	private List<OshaDisplayRow> getData(OshaType oshaType) {
 		List<OshaDisplayRow> rows = new ArrayList<OshaDisplayRow>();
 		for (OshaRateType rateType : oshaType.rates) {
 			if (!isShowRow(rateType))
@@ -280,7 +280,7 @@ public class OshaDisplay {
 					+ fco.getShortDescription() + "</nobr>";
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map getStats() {
 		Map stats = new HashMap();
 		for (OshaType oshaType : OshaType.values()) {

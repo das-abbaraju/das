@@ -6,7 +6,9 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -54,9 +56,13 @@ public class AuditDataSave extends AuditActionSupport {
 	protected static final int OSHA_INCIDENT_QUESTION_ID = 8838;
 	protected static final int COHS_INCIDENT_QUESTION_ID = 8840;
 
-	protected static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
-	protected static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8841, 8842, 8843, 8844, 11119, 8845,
-			8846, 8847, 11117, 11118 };
+//	protected static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
+	protected static final Set<Integer> OSHA_INCIDENT_RELATED_QUESTION_IDS = 
+			Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(8812, 8813, 8814, 8815, 8816, 8817)));
+	protected static final Set<Integer> COHS_INCIDENT_RELATED_QUESTION_IDS = 
+			Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(8841, 8842, 8843, 8844, 11119, 8845,	8846, 8847, 11117, 11118)));
+//	protected static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8841, 8842, 8843, 8844, 11119, 8845,
+//			8846, 8847, 11117, 11118 };
 
 	private AuditData auditData = null;
 	private String[] multiAnswer;
@@ -447,7 +453,7 @@ public class AuditDataSave extends AuditActionSupport {
 			
 	}
 
-	/* Test */ void checkUniqueCode(ContractorAudit tempAudit) {
+	private void checkUniqueCode(ContractorAudit tempAudit) {
 		// TODO: Extract this into it's own class.
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {

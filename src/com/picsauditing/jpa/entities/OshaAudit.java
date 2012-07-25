@@ -1,32 +1,36 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.Transient;
+import java.util.Set;
 
 import com.picsauditing.PICS.OshaVisitable;
 import com.picsauditing.PICS.OshaVisitor;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 
 /**
  * Decorator for ContractorAudit, specifically for when ContractorAudit is an OSHa type, that adds OSHA-specific logic.
  */
 public class OshaAudit implements OshaVisitable {
+	
 	public static final int CAT_ID_OSHA = 2033; // U.S.
 	public static final int CAT_ID_OSHA_ADDITIONAL = 2209; // U.S.
 	public static final int CAT_ID_MSHA = 2256; // U.S.
 	public static final int CAT_ID_COHS = 2086; // Canada
 	public static final int CAT_ID_UK_HSE = 2092; // U.K.
 	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
-	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] { CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL,
-			CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE };
+
+	// Arrays can have their contents modified during runtime, so make this an unmodifiable set. Since it is only
+	// loaded once, there is no runtime performance hit.
+	public static final Set<Integer> SAFETY_STATISTICS_CATEGORY_IDS = 
+			Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL, 
+					CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
 
 	public static boolean isSafetyStatisticsCategory(int categoryId) {
 		for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {
@@ -41,9 +45,11 @@ public class OshaAudit implements OshaVisitable {
 		if (catId == CAT_ID_OSHA) {
 			return OshaType.OSHA;
 		}
+		
 		if (catId == CAT_ID_COHS) {
 			return OshaType.COHS;
 		}
+		
 		if (catId == CAT_ID_UK_HSE) {
 			return OshaType.UK_HSE;
 		}
@@ -51,9 +57,9 @@ public class OshaAudit implements OshaVisitable {
 		return null;
 	}
 
-	protected ContractorAudit contractorAudit;
+	private ContractorAudit contractorAudit;
 
-	Map<OshaType, SafetyStatistics> safetyStatisticsMap;
+	private Map<OshaType, SafetyStatistics> safetyStatisticsMap;
 
 	public OshaAudit(ContractorAudit contractorAudit) {
 		assert (contractorAudit.getAuditType().isAnnualAddendum());
@@ -75,36 +81,18 @@ public class OshaAudit implements OshaVisitable {
 		return contractorAudit.getOperatorsVisible();
 	}
 
-	@Testable
-	List<AuditCatData> getCategories() {
+	private List<AuditCatData> getCategories() {
 		return contractorAudit.getCategories();
 	}
 
-	@Testable
-	ContractorAudit getContractorAudit() {
-		return contractorAudit;
-	}
-
-	@Testable
-	List<AuditData> getData() {
-		return contractorAudit.getData();
-	}
-
-	@Testable
-	void setCategories(ArrayList<AuditCatData> categories) {
-		contractorAudit.setCategories(categories);
-	}
-
-	@Transient
 	public Collection<SafetyStatistics> getStatistics() {
 		return safetyStatisticsMap.values();
 	}
 
-	@Testable
-	void initializeStatistics() {
+	private void initializeStatistics() {
 		SafetyStatistics safetyStatistics = null;
 		int year = new Integer(contractorAudit.getAuditFor());
-		for (AuditCatData category : this.getCategories()) {
+		for (AuditCatData category : getCategories()) {
 			OshaType oshaType = convertCategoryToOshaType(category.getCategory().getId());
 			if (oshaType != null && category.isApplies()) {
 				if (oshaType == OshaType.OSHA) {
@@ -135,8 +123,7 @@ public class OshaAudit implements OshaVisitable {
 		return getSafetyStatistics(oshaType).getStats(rateType);
 	}
 
-	// TODO I can't find where this actually being used. Need code coverage testing. -- AA
-	// Answer: Line 65 in verification_detail.jsp line 298 in verification_audit.jsp -- Sober Alcoholic
+	// Used in Line 65 in verification_detail.jsp line 298 in verification_audit.jsp
 	public Integer getFileUploadId(OshaType oshaType) {
 		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null
 				|| getSafetyStatistics(oshaType).getFileUpload().getQuestion() == null) {

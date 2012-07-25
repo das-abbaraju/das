@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.actions.operators.OperatorConfiguration;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
