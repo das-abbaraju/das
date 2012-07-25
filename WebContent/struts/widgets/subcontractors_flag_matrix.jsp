@@ -40,20 +40,27 @@
 				<s:iterator value="table.keySet()" var="sub">
 					<tr>
 						<td>
-							<a href="ContractorView.action?id=<s:property value="#sub.id" />">
+							<s:url action="ContractorView" var="contractor_view">
+								<s:param name="id">
+									${sub.id}
+								</s:param>
+							</s:url>
+							<a href="${contractor_view}">
 								<s:property value="#sub.name" />
 							</a>
 							<s:if test="permissions.generalContractor">
-								(<a href="SubcontractorFacilities.action?id=<s:property value="#sub.id" />">
-									Edit Clients
-								</a>)
+								<s:url action="SubcontractorFacilities" var="subcontractor_facilities">
+									<s:param name="id">
+										${sub.id}
+									</s:param>
+								</s:url>
+								(<a href="${subcontractor_facilities}">Edit Clients</a>)
 							</s:if>
 						</td>
 						<s:iterator value="distinctOperators" var="gcOp2">
 							<td class="center">
 								<s:url var="contractor_flag" action="ContractorFlag">
 									<s:param name="id" value="%{#sub.id}" />
-									<s:param name="opID" value="%{#gcOp2.id}" />
 								</s:url>
 								<a href="${contractor_flag}">
 									<s:property value="table.get(#sub).get(#gcOp2).smallIcon" escape="false" />
