@@ -16,7 +16,7 @@ Ext.define('PICS.controller.report.ReportController', {
     	var that = this;
 
     	this.control({
-    		'reportdatasetgrid': {
+    		'reportdata': {
     			render: function () {
     				if (this.getReportReportsStore().isLoading()) {
 			        	this.getReportReportsStore().addListener({

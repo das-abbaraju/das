@@ -70,7 +70,7 @@ Ext.define('PICS.store.report.DataSets', {
             throw 'Data.getReportJSON missing report';
         }
 
-        var data_set_grid = Ext.ComponentQuery.query('reportdatasetgrid')[0];
+        var data_set_grid = Ext.ComponentQuery.query('reportdata')[0];
         var column_store = report.columns();
 
         var data_set_columns = [{
@@ -138,7 +138,7 @@ Ext.define('PICS.store.report.DataSets', {
     },
 
     resetReportPaging: function () {
-        var paging_toolbar = Ext.ComponentQuery.query('reportdatasetgrid pagingtoolbar')[0];
+        var paging_toolbar = Ext.ComponentQuery.query('reportdata pagingtoolbar')[0];
 
         if (paging_toolbar) {
             paging_toolbar.moveFirst();
@@ -147,7 +147,7 @@ Ext.define('PICS.store.report.DataSets', {
 
     updateReportPaging: function (value) {
         var report = Ext.StoreManager.get('report.Reports').first(),
-            paging_toolbar = Ext.ComponentQuery.query('reportdatasetgrid pagingtoolbar')[0];
+            paging_toolbar = Ext.ComponentQuery.query('reportdata pagingtoolbar')[0];
 
         report.set('rowsPerPage', value);
 

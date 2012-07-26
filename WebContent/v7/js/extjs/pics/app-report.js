@@ -117,9 +117,8 @@ Ext.application({
     controllers: [
         'report.AvailableFieldModal',
         'report.ReportController',
-        'report.DataSetController',
         'report.Filter',
-        'report.SortController',
+        'report.ReportData',
         'report.ReportHeaderController'
     ],
 

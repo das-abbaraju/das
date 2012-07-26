@@ -75,6 +75,10 @@ Ext.define('PICS.model.report.Column', {
         data_set_column.sortable = false;
 
         data_set_column.dataIndex = name;
+
+        // don't show column header menu
+        data_set_column.menuDisabled = true;
+
         data_set_column.text = text;
 
         data_set_column.width = width;

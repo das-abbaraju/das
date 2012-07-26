@@ -3,7 +3,8 @@ Ext.define('PICS.view.report.Viewport', {
 
     requires: [
         'PICS.view.layout.Header',
-        'PICS.view.report.DataSetGrid',
+        //'PICS.view.report.DataSetGrid',
+        'PICS.view.report.report.ReportData',
         'PICS.view.report.filter.FilterOptions',
         'PICS.view.report.Header'
     ],
@@ -23,7 +24,7 @@ Ext.define('PICS.view.report.Viewport', {
         	xtype: 'reportfilteroptions',
             region: 'west'
         }, {
-        	xtype: 'reportdatasetgrid',
+        	xtype: 'reportdata',
             region: 'center'
         }],
         layout: 'border'

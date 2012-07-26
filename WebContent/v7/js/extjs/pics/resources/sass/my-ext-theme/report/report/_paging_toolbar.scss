@@ -1,0 +1,130 @@
+// report data paging toolbar
+$report_data_paging_toolbar_background_color: #73bbe8;
+$report_data_paging_toolbar_border_color: #999;
+$report_data_paging_toolbar_text_color: #fff;
+
+// report data paging toolbar - icon
+$report_data_paging_toolbar_icon_text_color: #f1f1f2;
+
+$report_data_paging_toolbar_icon_over_text_color: #fff;
+
+$report_data_paging_toolbar_icon_disabled_text_color: #96ccff;
+
+// report data paging toolbar - separator
+$report_data_paging_toolbar_separator_border_color_left: #96ccff;
+
+// report data paging toolbar - add column
+$report_data_paging_toolbar_add_column_icon_plus_text_color: #2caf2c;
+
+
+#report_data
+{
+	.paging-toolbar
+	{
+		background: $report_data_paging_toolbar_background_color;
+		border: 1px solid $report_data_paging_toolbar_border_color !important;
+		padding: 0px 10px;
+		
+		.x-disabled span
+		{
+			opacity: 1;
+		}
+		
+		.x-toolbar-separator
+		{
+			border: 0px;
+			border-left: 1px solid $report_data_paging_toolbar_separator_border_color_left;
+		}
+		
+		.x-toolbar-text
+		{
+			color: $report_data_paging_toolbar_text_color;
+			font-size: 14px;
+		}
+		
+		.x-form-text
+		{
+			height: 25px;
+		}
+		
+		.rows-per-page
+		{
+			margin-left: 5px;
+		}
+		
+		.x-form-trigger
+		{
+			height: 25px;
+		}
+	}
+	
+	.refresh,
+	.page-first,
+	.page-prev,
+	.page-next,
+	.page-last
+	{
+		background: none;
+		border: 0px;
+		@include border-radius(0px);
+		
+		span
+		{
+			color: $report_data_paging_toolbar_icon_text_color;
+			margin: 0px 5px;
+			padding: 2px 0px 0px !important;
+		}
+	}
+	
+	.refresh span
+	{
+		font-size: 18px;
+		margin: 0px 5px 0px 0px;
+	}
+	
+	.refresh.x-over,
+	.page-first.x-over,
+	.page-prev.x-over,
+	.page-next.x-over,
+	.page-last.x-over
+	{
+		span
+		{
+			color: $report_data_paging_toolbar_icon_over_text_color;
+		}
+	}
+	
+	.refresh.x-disabled,
+	.page-first.x-disabled,
+	.page-prev.x-disabled,
+	.page-next.x-disabled,
+	.page-last.x-disabled
+	{
+		span
+		{
+			color: $report_data_paging_toolbar_icon_disabled_text_color !important;
+		}
+	}
+	
+	.add-column
+	{
+		margin-left: 10px;
+		
+		em
+		{
+			background-image: url('../images/button/s-arrow.gif');
+		}
+		
+		button span
+		{
+			font-size: 11px;
+			line-height: 24px !important;
+		}
+		
+		.icon-plus
+		{
+			color: $report_data_paging_toolbar_add_column_icon_plus_text_color;
+			margin-right: 5px;
+		}
+	}
+}
