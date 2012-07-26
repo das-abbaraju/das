@@ -34,6 +34,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/registration/registration_add_client_site.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration/registration_make_payment.js?v=${version}"></script>
 <script type="text/javascript" src="js/con_payment_options.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor_facilities.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration_request_report.js?v=${version}"></script>
 <script type="text/javascript" src="js/subcontractors_report.js?v=${version}"></script>
 <script type="text/javascript" src="js/trade.js?v=${version}"></script>
