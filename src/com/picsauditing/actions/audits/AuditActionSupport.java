@@ -553,6 +553,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {
+		if (cao.getAudit().getAuditType().isWCB()) {
+			auditSetWCBExpiresDate(cao.getAudit());
+			return;
+		}
+		
 		if (status.isSubmittedResubmitted()) {
 			if (cao.getAudit().getExpiresDate() == null)
 				cao.getAudit().setExpiresDate(getAuditExpirationDate());
@@ -575,6 +580,22 @@ public class AuditActionSupport extends ContractorActionSupport {
 				
 				cao.getAudit().setExpiresDate(expirationDate);
 			}
+		}
+	}
+	
+	private void auditSetWCBExpiresDate(ContractorAudit audit) {
+		boolean allApproved = true;
+		for (ContractorAuditOperator cao:audit.getOperators()) {
+			if (cao.isVisible() && !cao.getStatus().isApproved()) {
+				allApproved = false;
+				break;
+			}
+		}
+		
+		if (allApproved) {
+			audit.setExpiresDate(DateBean.getWCBExpirationDate(audit.getAuditFor()));
+		} else {
+			audit.setExpiresDate(null);
 		}
 	}
 

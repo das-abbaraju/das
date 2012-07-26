@@ -167,6 +167,51 @@ public class DateBean {
 		return temp;
 	}
 
+	/*
+	 * WCB year starts September 1 the next year
+	 * e.g. Sep.1, 2012 would be 2013
+	 * e.g. Aug 31, 2012 would be 2012
+	 */
+	public static String getWCBYear(Date date) {
+		Calendar wcbYearStart = Calendar.getInstance();
+		if (date != null) {
+			wcbYearStart.setTime(date);
+		}
+		wcbYearStart.set(Calendar.MONTH, 8); // September is 8 (zero based)
+		wcbYearStart.set(Calendar.DAY_OF_MONTH, 1);
+		
+		Calendar now = Calendar.getInstance();
+		if (date != null) {
+			now.setTime(date);
+		}
+
+		if (getDateDifference(wcbYearStart.getTime(), now.getTime()) < 0) {
+			return "" + wcbYearStart.get(Calendar.YEAR);
+		}
+		return "" + (wcbYearStart.get(Calendar.YEAR) + 1);
+	}
+
+	public static String getWCBYear() {
+		return getWCBYear(null);
+	}
+	
+	/*
+	 * expiration date is Oct 1st.
+	 */
+	public static Date getWCBExpirationDate(String year) {
+		Calendar expirationDate = Calendar.getInstance();
+		
+		try {
+			expirationDate.set(Calendar.MONTH, 9);
+			expirationDate.set(Calendar.DAY_OF_MONTH, 1);
+			expirationDate.set(Calendar.YEAR, Integer.parseInt(year));
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return expirationDate.getTime();
+	}
+
 	public static String getThreeYearsAheadDate(String fromDate) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 		Date tempDate = showFormat.parse(fromDate);

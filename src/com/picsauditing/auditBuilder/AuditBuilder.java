@@ -94,6 +94,10 @@ public class AuditBuilder {
 							} else if (auditType.getId() == AuditType.WELCOME) {
 								// we should never add another welcome call audit
 								found = true;
+							} else if (auditType.isWCB()) {
+								if (conAudit.getAuditFor().equals(DateBean.getWCBYear())) {
+									found = true;
+								}
 							} else {
 								if (!conAudit.isExpired() && !conAudit.willExpireSoon())
 									// The audit is still valid for a number of days dependent on its type
@@ -110,6 +114,9 @@ public class AuditBuilder {
 						audit.setAuditType(auditType);
 						audit.setAuditColumns(systemUser);
 						contractor.getAudits().add(audit);
+						if (auditType.isWCB()) {
+							audit.setAuditFor(DateBean.getWCBYear());
+						}
 						conAuditDao.save(audit);
 					}
 				}
