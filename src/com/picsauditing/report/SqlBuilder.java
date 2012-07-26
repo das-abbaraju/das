@@ -22,7 +22,6 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
@@ -42,7 +41,7 @@ public class SqlBuilder {
 		AbstractModel model = report.getModel();
 		sql = initializeSql(model);
 
-		setPermissions(permissions);
+		sql.addWhere("1 " + model.getWhereClause(permissions));
 
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
@@ -54,7 +53,8 @@ public class SqlBuilder {
 			sql.setLimit(rowsPerPage);
 			sql.setSQL_CALC_FOUND_ROWS(true);
 		}
-
+		
+		System.out.println(sql.toString());
 		return sql;
 	}
 
@@ -393,23 +393,5 @@ public class SqlBuilder {
 	@Deprecated
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
-	}
-
-	public void setPermissions(Permissions permissions) {
-		if (permissions.isOperatorCorporate()) {
-			String operatorVisibility = permissions.getAccountIdString();
-
-			if (permissions.isGeneralContractor()) {
-				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
-			}
-
-			if (sql.hasJoin("generalcontractors AS gc")) {
-				sql.addWhere("gc.genID IN (" + operatorVisibility + ")");
-			}
-		}
-
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
-
-		sql.addWhere("1 " + permQuery.toString());
 	}
 }
