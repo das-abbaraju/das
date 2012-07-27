@@ -357,6 +357,7 @@
 						<ol>
 							<li>
 								<label>Status:</label>
+								<input type="hidden" name="currentStatus" value="<s:property value="contractor.status" />" />
 								<s:select list="statusList" name="contractor.status" value="%{contractor.status}" />
 							</li>
 							<li>

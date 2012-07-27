@@ -10,7 +10,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -35,6 +38,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -83,8 +87,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected BillingCalculatorSingle billingService;
 	@Autowired
-	protected NoteDAO noteDao;
-	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	private File logo = null;
@@ -101,6 +103,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String contractorTypeHelpText = "";
 
 	private CountrySubdivision countrySubdivision;
+	private HttpServletRequest request;
 
 	public void prepare() throws Exception {
 		if (permissions.isLoggedIn()) {
@@ -130,7 +133,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					.get("contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
-			
+
 			defaultConTypeHelpText();
 		}
 	}
@@ -168,7 +171,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public String save() throws Exception {
 		String ftpDir = getFtpDir();
-
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
 			if (logo != null) {
@@ -216,27 +218,30 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					return SUCCESS;
 				}
 			}
-			
-			if (!contractor.getCountry().equals(country) || !contractor.getState().equals(state)) {
+
+			if ((!contractor.getCountry().equals(country) && country != null)
+					|| (!contractor.getState().equals(state) && state != null)) {
 				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 				stampContractorNoteAboutOfficeLocationChange();
 			}
 
-			if (country != null && !country.equals(contractor.getCountry())){
+			if (country != null && !country.equals(contractor.getCountry())) {
 				contractor.setCountry(country);
 			}
 
-			if (state != null && !state.equals(contractor.getState())){
+			if (state != null && !state.equals(contractor.getState())) {
 				State contractorState = stateDAO.find(state.toString());
 				contractor.setState(contractorState);
 			}
 
-			if (contractor.getCountry().isHasStates() && state != null){
+			if (contractor.getCountry().isHasStates() && state != null) {
 				updateStateAndCountrySubdivision();
 			} else {
 				contractor.setState(null);
 				contractor.setCountrySubdivision(null);
 			}
+
+			addNoteWhenStatusChange();
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
 
@@ -259,7 +264,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
-				
+
 				return SUCCESS;
 			}
 			contractor.setQbSync(true);
@@ -272,7 +277,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			// contractor.setNeedsIndexing(true);
 
 			contractorAccountDao.save(contractor);
-			
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
 		}
@@ -280,15 +284,25 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
+	private void addNoteWhenStatusChange() {
+		request = ServletActionContext.getRequest();
+
+		if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
+			this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
+					+ contractor.getStatus().toString());
+		}
+	}
+
 	private void updateStateAndCountrySubdivision() {
-		if (contractor.getCountry().equals(contractor.getState().getCountry())){
-			countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-" + contractor.getState().getIsoCode());
+		if (contractor.getCountry().equals(contractor.getState().getCountry())) {
+			countrySubdivision = countrySubdivisionDAO.find(contractor.getCountry().getIsoCode() + "-"
+					+ contractor.getState().getIsoCode());
 			if (countrySubdivision != null) {
 				contractor.setCountrySubdivision(countrySubdivision);
 			} else {
 				contractor.setCountrySubdivision(null);
 			}
-		}  else {
+		} else {
 			contractor.setState(null);
 			contractor.setCountrySubdivision(null);
 		}
@@ -299,8 +313,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		if (contractor.getCountry().isHasStates()){
-			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet", getText(state.getI18nKey())));
+		if (contractor.getCountry().isHasStates()) {
+			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
+					getText(state.getI18nKey())));
 		}
 		pqfOfficeLocationChange.setId(0);
 		pqfOfficeLocationChange.setCanContractorView(true);
@@ -488,7 +503,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setOperatorIds(List<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
 	}
-	
+
 	public State getState() {
 		return state;
 	}
