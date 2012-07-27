@@ -463,7 +463,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
-	@ReportField(filterType = FilterType.List, i18nKeyPrefix = "Account", i18nKeySuffix = "type")
 	public String getType() {
 		return type;
 	}

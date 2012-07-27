@@ -90,7 +90,7 @@ abstract public class PicsDAO {
 		return em.find(clazz, id);
 	}
 
-	protected <T extends BaseTable> List<T> findAll(Class<T> clazz) {
+	public <T extends BaseTable> List<T> findAll(Class<T> clazz) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 		return q.getResultList();
 	}

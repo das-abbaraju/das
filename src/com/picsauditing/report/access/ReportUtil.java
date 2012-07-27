@@ -164,7 +164,7 @@ public final class ReportUtil {
 		for (Column column : definition.getColumns()) {
 			String translateLabel = translateLabel(column.getField(), locale);
 			if (column.getMethod() != null)
-				translateLabel += " " + getText("ReportSuffix." + column.getMethod().toString(),locale);
+				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(),locale);
 			column.getField().setText(translateLabel);
 		}
 	}
@@ -200,7 +200,7 @@ public final class ReportUtil {
 		return translatedText;
 	}
 
-	private static String translateCategory(String category, Locale locale) {
+	public static String translateCategory(String category, Locale locale) {
 		String translatedText = getText("Report.Category." + category, locale);
 
 		if (translatedText == null)

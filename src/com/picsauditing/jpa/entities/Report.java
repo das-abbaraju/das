@@ -143,6 +143,9 @@ public class Report extends BaseTable {
 	@Transient
 	// TODO find a better name for this class, like BaseView or something
 	public com.picsauditing.report.tables.AbstractTable getTable() {
-		return getModel().getRootTable();
+		if (getModel() != null) 
+			return getModel().getRootTable();
+		else
+			return null;
 	}
 }

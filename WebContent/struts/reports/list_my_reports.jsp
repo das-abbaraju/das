@@ -19,6 +19,10 @@
         <button class="btn">Date Added</button>
         <button class="btn">Last Opened</button>
     </div>
+
+<span class="debug">
+	<a href="ManageReports!columnsToTranslate.action"><s:text name="global.Download" /></a>
+</span>
 </div>
 
 <ul id="report_my_reports_list" class="report-list">

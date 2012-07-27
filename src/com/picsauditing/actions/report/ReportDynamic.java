@@ -33,8 +33,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
 /**
- * This is a controller. Do not use any DAOs from its parent.
- * This should delegate business concerns and persistence methods.
+ * This is a controller. Do not use any DAOs from its parent. This should
+ * delegate business concerns and persistence methods.
  */
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -90,20 +90,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return status;
 	}
 
-	@Deprecated
-	public String find() {
-		try {
-			ReportDynamicModel.validate(report);
-			json.put("report", report.toJSON(true));
-			json.put("success", true);
-		} catch (Exception e) {
-			logger.error("An error occurred while trying to do a find", e);
-			writeJsonErrorMessage(e);
-		}
-
-		return JSON;
-	}
-
 	public String create() {
 		try {
 			Report newReport = reportDynamicModel.copy(report, new User(permissions.getUserId()));
@@ -153,7 +139,8 @@ public class ReportDynamic extends PicsActionSupport {
 			if (report.getDefinition().getColumns().size() > 0) {
 				List<BasicDynaBean> queryResults = ReportAccessor.runQuery(sql, json);
 
-				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields, permissions, getLocale());
+				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields,
+						permissions, getLocale());
 				json.put("data", queryResultsAsJson);
 
 				json.put("success", true);
