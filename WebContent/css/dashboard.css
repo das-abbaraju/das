@@ -54,16 +54,12 @@ a:hover.panel_edit {
 	height: 16px;
 }
 
-.ContractorView-page div#betaTranslationsAlert
+.ContractorView-page,.Home-page div#betaTranslationsAlert
 {
 	text-align: center;
 	margin-bottom: 5px;
-}
-
-.ContractorView-page div#betaTranslationsAlert p
-{
 	font-size: 14px;
-    color: #A74D0F;
+	color: #A74D0F;	
 }
 
 #content div.panel_content {
