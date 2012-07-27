@@ -107,6 +107,7 @@ public enum FeeClass implements Translatable {
 	},
 	Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, VAT, Misc;
 
+	//after 2013-01-01, we can remove the insureGuard date-based pricing logic.
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date Jan2013InsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
