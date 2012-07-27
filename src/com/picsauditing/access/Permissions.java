@@ -483,6 +483,10 @@ public class Permissions implements Serializable {
 		return (Account.PicsID == accountID);
 	}
 
+	public boolean isSecurity() {
+		return hasGroup(68908);
+	}
+
 	/**
 	 * Is the logged in user an non-PICS employee auditor?
 	 * 
