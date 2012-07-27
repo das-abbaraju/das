@@ -41,11 +41,12 @@ public class OperatorTagDAO extends PicsDAO {
 	}
 
 	public List<OperatorTag> findByOperator(int opID, boolean active) {
-		String hql = "SELECT t FROM OperatorTag t WHERE " +
-				"t.operator.id = :opID OR " +
-				"(t.inheritable = 1 AND " +
-				"t.operator IN (SELECT corporate FROM Facility WHERE operator.id = :opID)" +
-				")";
+		String hql = "SELECT t FROM OperatorTag t WHERE t.operator.id = :opID OR " +
+				"		(t.inheritable = 1 AND " +
+				"			(t.operator IN (SELECT f.corporate FROM Facility f WHERE f.operator.id = :opID) " +
+				"			 OR" +
+				"			 t.operator IN (SELECT f1.corporate FROM Facility f1, Facility f2 WHERE f2.corporate.id = f1.operator.id AND f2.operator.id = :opID)" + 
+				"))";
 		if (active)
 			hql += " AND t.active = 1";
 		hql += " ORDER BY tag";
@@ -53,15 +54,15 @@ public class OperatorTagDAO extends PicsDAO {
 		query.setParameter("opID", opID);
 		return query.getResultList();
 	}
-	
-	public List<OperatorTag> findUnused(int opID){
-		Query query = em.createQuery("FROM OperatorTag o WHERE o.operator.id = ? AND o.operator.id NOT IN "+ 
-				"(SELECT c.tag.id FROM ContractorTag c)");
-		query.setParameter(1, opID);		
-		
+
+	public List<OperatorTag> findUnused(int opID) {
+		Query query = em.createQuery("FROM OperatorTag o WHERE o.operator.id = ? AND o.operator.id NOT IN "
+				+ "(SELECT c.tag.id FROM ContractorTag c)");
+		query.setParameter(1, opID);
+
 		return query.getResultList();
 	}
-	
+
 	public List<OperatorTag> findAll() {
 		Query query = em.createQuery("FROM OperatorTag o");
 		return query.getResultList();
