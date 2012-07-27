@@ -44,14 +44,12 @@ public class EmailAddressUtils {
 
 	}
 
-	public static String getBillingEmail(Currency currency) {
-		if (currency != null
-				&& (currency.isEUR() || currency.isGBP() || currency.isDKK() || currency.isSEK() || currency.isNOK() || currency
-						.isZAR())) {
+	public static String getBillingEmail(Currency currency){
+		if (currency != null && (currency.isEUR() || currency.isGBP())){
 			return "\"PICS Billing\"<eubilling@picsauditing.com>";
 		} else {
 			return "\"PICS Billing\"<billing@picsauditing.com>";
-		}
+		} 
 	}
 	// public static String validate(final String email){
 	// String tempEmail = email.trim();
