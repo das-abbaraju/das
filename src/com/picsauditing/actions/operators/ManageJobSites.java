@@ -111,7 +111,7 @@ public class ManageJobSites extends OperatorActionSupport {
 				jobSite.setCountry(siteCountry);
 			}
 
-			if (siteState != null && !siteState.equals(jobSite.getState())){
+			if ((siteState != null && !siteState.equals(jobSite.getState())) || (jobSite.getState() == null && siteState!=null)){
 				State jobSiteState = stateDAO.find(siteState.toString());
 				jobSite.setState(jobSiteState);
 			}
@@ -159,7 +159,7 @@ public class ManageJobSites extends OperatorActionSupport {
 				jobSite.setCountry(siteCountry);
 			}
 
-			if (siteState != null && !siteState.equals(jobSite.getState())){
+			if ((siteState != null && !siteState.equals(jobSite.getState())) || (jobSite.getState() == null && siteState!=null)){
 				State jobSiteState = stateDAO.find(siteState.toString());
 				jobSite.setState(jobSiteState);
 			}

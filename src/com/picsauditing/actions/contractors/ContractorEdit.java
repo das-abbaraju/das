@@ -220,7 +220,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 
 			if ((!contractor.getCountry().equals(country) && country != null)
-					|| (!contractor.getState().equals(state) && state != null)) {
+					|| (contractor.getState() !=null && !contractor.getState().equals(state) && state != null)) {
 				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 				stampContractorNoteAboutOfficeLocationChange();
 			}
@@ -229,7 +229,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setCountry(country);
 			}
 
-			if (state != null && !state.equals(contractor.getState())) {
+			if ((state != null && !state.equals(contractor.getState())) || (contractor.getState()==null&& state!=null)) {
 				State contractorState = stateDAO.find(state.toString());
 				contractor.setState(contractorState);
 			}

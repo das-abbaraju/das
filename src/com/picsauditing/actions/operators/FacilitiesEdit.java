@@ -233,7 +233,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator.setCountry(country);
 		}
 
-		if (state != null && !state.equals(operator.getState())){
+		if ((state != null && !state.equals(operator.getState())) || (operator.getState() == null && state!=null)){
 			State contractorState = stateDAO.find(state.toString());
 			operator.setState(contractorState);
 		}

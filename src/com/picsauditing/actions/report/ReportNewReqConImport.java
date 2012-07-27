@@ -302,8 +302,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
-
-		if (importedState != null && !importedState.equals(crr.getState())){
+		if ((importedState != null && !importedState.equals(crr.getState())) || (crr.getState() == null && importedState!=null)){
 			State importedStateObj = stateDAO.find(importedState.toString());
 			crr.setState(importedStateObj);
 		}

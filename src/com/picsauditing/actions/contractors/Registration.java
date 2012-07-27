@@ -103,7 +103,11 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCity(crr.getCity());
 					contractor.setZip(crr.getZip());
 					contractor.setCountry(crr.getCountry());
-					contractor.setState(crr.getState());
+					if (crr.getState() != null){
+						contractor.setState(crr.getState());
+					} else {
+						contractor.setState(null);
+					}
 
 					if (contractor.getCountry().isHasStates() && contractor.getState() != null){
 						updateStateAndCountrySubdivision();
