@@ -10,6 +10,8 @@ import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.TranslatableString;
 
@@ -73,12 +75,6 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		flagCriteria.setDescription(somethingTranslation);
 
 		// bad data type
-		flagCriteria.setDataType("");
-		manageFlagCriteria.save();
-		assertTrue(manageFlagCriteria.hasActionErrors());
-		flagCriteria.setDataType("string");
-
-		// bad data type
 		flagCriteria.setDataType("boolean");
 		manageFlagCriteria.save();
 		assertTrue(manageFlagCriteria.hasActionErrors());
@@ -97,6 +93,13 @@ public class ManageFlagCriteriaTest extends PicsTest {
 		assertTrue(manageFlagCriteria.hasActionErrors());
 		flagCriteria.setAuditType(null);
 		flagCriteria.setQuestion(null);
+
+		// no audit type supplied for required status
+		flagCriteria.setRequiredStatusComparison("<");
+		flagCriteria.setRequiredStatus(AuditStatus.Complete);
+		manageFlagCriteria.save();
+		assertTrue(manageFlagCriteria.hasActionErrors());
+		flagCriteria.setRequiredStatus(null);
 	}
 
 }

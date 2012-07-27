@@ -61,10 +61,6 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");
 			} else if (!"NOT EMPTY".equals(criteria.getComparison())){
-				if ("string".equals(criteria.getDataType())
-						&& Strings.isEmpty(criteria.getDefaultValue())) {
-					addActionError("Default hurdle is a required field.");
-				}
 				if ("boolean".equals(criteria.getDataType())) {
 					if ("true".equals(criteria.getDefaultValue())
 							|| "false".equals(criteria.getDefaultValue())
@@ -75,7 +71,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 					addActionError("Default hurdle is a required field.");
 				}
 				if ("number".equals(criteria.getDataType())
-						&& criteria.getCategory().indexOf("AMB") > -1) {
+						&& criteria.getCategory().indexOf("AMB") == -1) {
 					try {
 						BigDecimal number = new BigDecimal(
 								criteria.getDefaultValue());
@@ -101,8 +97,9 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 			if (criteria.getRequiredStatusComparison() != null
 					&& !criteria.getRequiredStatusComparison().equals(
 							"NOT EMPTY")
-					&& criteria.getRequiredStatus() == null) {
-				addActionError("Audit Status must be set.");
+					&& criteria.getRequiredStatus() != null
+					&& criteria.getAuditType() == null) {
+				addActionError("Audit Type must be set.");
 			}
 
 			if (criteria.hasMissingChildRequiredLanguages()) {
