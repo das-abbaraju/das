@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.ReportData', {
 
     store: 'report.DataSets',
 
-    border: false,
+    border: 0,
     // column configuration must be specified - will be overridden dynamically
     columns: [{
         xtype: 'rownumberer'
@@ -17,24 +17,31 @@ Ext.define('PICS.view.report.ReportData', {
     dockedItems: [{
         xtype: 'reportpagingtoolbar',
         dock: 'top'
-    }, {
-        xtype: 'panel',
-        dock: 'bottom',
-        height: 10,
-        id: 'report_data_footer'
     }],
     id: 'report_data',
-    margin: '0 30 20 0',
+    listeners: {
+        reconfigure: function (cmp) {
+            cmp.columns[0].setHeight(23);
+        }
+    },
+    margin: '0 30 0 0',
     rowLines: false,
 
     initComponent: function () {
         this.callParent(arguments);
 
         this.headerCt.on('headerclick', function (header, column, event, html) {
-            var menu = header.getMenu();
-            this.createHeaderMenu(menu);
+            if (column.xtype == 'rownumberer') {
+                return false;
+            };
 
             header.showMenuBy(column.el.dom, column);
+        }, this);
+
+        this.headerCt.on('menucreate', function (header, column, event, html) {
+            var menu = header.getMenu();
+
+            this.createHeaderMenu(menu);
         }, this);
     },
 

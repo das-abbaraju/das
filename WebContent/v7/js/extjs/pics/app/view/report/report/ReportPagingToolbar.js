@@ -4,8 +4,10 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
 
     store: 'report.DataSets',
 
+    border: 0,
     cls: 'paging-toolbar',
     displayInfo: false,
+    enableOverflow: true,
     height: 50,
     id: 'paging_toolbar',
     items: [{

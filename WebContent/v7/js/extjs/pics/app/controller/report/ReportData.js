@@ -39,12 +39,6 @@ Ext.define('PICS.controller.report.ReportData', {
                 }
             },
 
-            // sort_asc
-
-            // sort_desc
-
-            // remove_column
-
             'menu[name=report_data_header_menu] menuitem[name=sort_asc]': {
                 click: function (cmp, event, eOpts) {
                     var sort_store = this.getReportReportsStore().first().sorts(),
