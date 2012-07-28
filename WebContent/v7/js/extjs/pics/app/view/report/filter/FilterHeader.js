@@ -2,6 +2,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportfilterheader'],
 
+    border: 0,
     height: 50,
     items: [{
         xtype: 'button',
@@ -21,5 +22,9 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         cls: 'add-filter default',
         height: 26,
         text: '<i class="icon-plus icon-large"></i>Add Filter'
-    }]
+    }],
+    layout: {
+        type: 'hbox',
+        align: 'middle'
+    }
 });

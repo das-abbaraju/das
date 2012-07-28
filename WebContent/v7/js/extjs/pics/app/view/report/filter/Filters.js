@@ -1,11 +1,13 @@
 Ext.define('PICS.view.report.filter.Filters', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilters'],
+
     requires: [
         'PICS.view.report.filter.Filter'
     ],
 
     border: 0,
+    bodyBorder: 0,
     id: 'report_filters',
 
     initComponent: function () {

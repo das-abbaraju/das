@@ -5,20 +5,32 @@ Ext.define('PICS.controller.report.Filter', {
         ref: 'reportColumnSelector',
         selector: 'reportcolumnselector'
     }, {
-        ref: 'filterOptions',
-        selector: 'reportfilteroptions'
-    }, {
-        ref: 'filterToolbar',
-        selector: 'reportfilteroptions reportfiltertoolbar'
+        ref: 'filterFooter',
+        selector: '#report_filter_options_footer'
     }, {
         ref: 'filterFormula',
         selector: 'reportfilteroptions reportfilterformula'
     }, {
+        ref: 'filterFormulaContainer',
+        selector: 'reportfilteroptions #report_filter_formula_container'
+    }, {
         ref: 'filterFormulaExpression',
         selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
+        ref: 'filterHeader',
+        selector: 'reportfilterheader'
+    }, {
+        ref: 'filterOptions',
+        selector: 'reportfilteroptions'
+    }, {
         ref: 'filters',
         selector: 'reportfilteroptions #report_filters'
+    }, {
+        ref: 'filterToolbar',
+        selector: 'reportfilteroptions reportfiltertoolbar'
+    }, {
+        ref: 'filterToolbarContainer',
+        selector: 'reportfilteroptions #report_filter_toolbar_container'
     }],
 
     stores: [
@@ -36,7 +48,8 @@ Ext.define('PICS.controller.report.Filter', {
         this.control({
             // render filter options
             'reportfilteroptions': {
-                beforerender: this.onFilterOptionsBeforeRender
+                afterlayout: this.onFilterOptionsAfterLayout,
+                beforerender: this.onFilterOptionsBeforeRender,
             },
 
             // collapse filter options
@@ -122,6 +135,40 @@ Ext.define('PICS.controller.report.Filter', {
      * Filter Options
      */
 
+    onFilterOptionsAfterLayout: function (cmp, eOpts) {
+        var filters = this.getFilters();
+
+        if (!filters) {
+            return;
+        }
+
+        var body = Ext.getBody(),
+            filter_footer = this.getFilterFooter(),
+            filter_formula = this.getFilterFormula(),
+            filter_header = this.getFilterHeader(),
+            filter_toolbar = this.getFilterToolbar(),
+            filter_offset;
+
+        // if filters show fully on screen
+        if (body.getHeight() > (filters.el.getY() + filters.getHeight())) {
+            cmp.body.setHeight(filters.getHeight());
+
+        // if filters bleed off screen
+        } else {
+            cmp.body.setHeight(filters.getHeight() - ((filters.el.getY() + filters.getHeight()) - body.getHeight()));
+        }
+
+        if (filter_toolbar) {
+            filter_offset = filter_header.getHeight() + filter_toolbar.getHeight() + filters.getHeight();
+        } else if (filter_formula) {
+            filter_offset = filter_header.getHeight() + filter_formula.getHeight() + filters.getHeight();
+        }
+
+        if (filter_offset) {
+            filter_footer.setPosition(0, filter_offset);
+        }
+    },
+
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
         var report_store = this.getReportReportsStore();
 
@@ -159,22 +206,38 @@ Ext.define('PICS.controller.report.Filter', {
 
     onFilterFormulaShow: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions(),
-            filter_toolbar = this.getFilterToolbar(),
-            filter_formula = Ext.create('PICS.view.report.filter.FilterFormula');
+            filter_toolbar_container = this.getFilterToolbarContainer();
 
-        filter_options.removeDocked(filter_toolbar);
-        filter_options.addDocked(filter_formula);
+        var filter_formula_container = {
+            border: 0,
+            dock: 'top',
+            items: [{
+                xtype: 'reportfilterformula'
+            }],
+            id: 'report_filter_formula_container'
+        };
+
+        filter_options.removeDocked(filter_toolbar_container);
+        filter_options.addDocked(filter_formula_container);
 
         this.getFilters().addCls('x-active');
     },
 
     onFilterFormulaCancel: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions(),
-            filter_toolbar = Ext.create('PICS.view.report.filter.FilterToolbar'),
-            filter_formula = this.getFilterFormula();
+            filter_formula_container = this.getFilterFormulaContainer();
 
-        filter_options.removeDocked(filter_formula);
-        filter_options.addDocked(filter_toolbar);
+        var filter_toolbar_container = {
+            border: 0,
+            dock: 'top',
+            items: [{
+                xtype: 'reportfiltertoolbar'
+            }],
+            id: 'report_filter_toolbar_container'
+        };
+
+        filter_options.removeDocked(filter_formula_container);
+        filter_options.addDocked(filter_toolbar_container);
 
         this.getFilters().removeCls('x-active');
     },

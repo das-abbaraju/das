@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.filter.FilterToolbar', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportfiltertoolbar'],
 
-    dock: 'top',
+    border: 0,
     height: 25,
     id: 'report_filter_toolbar',
     items: [{
