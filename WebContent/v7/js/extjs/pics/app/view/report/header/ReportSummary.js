@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.header.Summary', {
+Ext.define('PICS.view.report.header.ReportSummary', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportheadersummary'],
 

@@ -49,6 +49,18 @@
 	border: 0px;
 }
 
+.x-grid-group-hd-collapsible .x-grid-group-title
+{
+	background-image: url('../../app/resources/images/grid/group-expand.gif');
+	background-position: 100%;
+	padding: 0px;
+}
+
+.x-grid-group-hd-collapsed .x-grid-group-title
+{
+	background-image: url('../../app/resources/images/grid/group-collapse.gif');
+}
+
 #available_field_list
 {
 	.x-grid-row .x-grid-cell-special

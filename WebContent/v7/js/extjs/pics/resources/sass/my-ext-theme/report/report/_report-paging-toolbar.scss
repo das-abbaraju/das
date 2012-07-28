@@ -1,6 +1,5 @@
 // report data paging toolbar
 $report_data_paging_toolbar_background_color: #73bbe8;
-$report_data_paging_toolbar_border_color: #999;
 $report_data_paging_toolbar_text_color: #fff;
 
 // report data paging toolbar - icon
@@ -22,7 +21,6 @@ $report_data_paging_toolbar_add_column_icon_plus_text_color: #2caf2c;
 	.paging-toolbar
 	{
 		background: $report_data_paging_toolbar_background_color;
-		border: 1px solid $report_data_paging_toolbar_border_color !important;
 		padding: 0px 10px;
 		
 		.x-disabled span

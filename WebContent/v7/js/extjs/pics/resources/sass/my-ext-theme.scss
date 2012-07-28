@@ -28,12 +28,12 @@ $include-default: false;
 
 $color: #333333;
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-$form-field-height: 25px !default;
+$form-field-height: 25px;
 $grid-header-background-color: #454545;
-$grid-header-background-gradient: null !default;
+$grid-header-background-gradient: null;
 $grid-header-over-border-color: #454545;
-$grid-header-over-background-gradient: null !default;
-$grid-header-color: #ffffff !default;
+$grid-header-over-background-gradient: null;
+$grid-header-color: #ffffff;
 $grid-row-cell-alt-background: #f1f1f2;
 $grid-row-cell-over-background-color: #f1f1f2;
 
@@ -88,13 +88,13 @@ $include-default-uis: true !default;
  * Author: Carey Hinoki
  */
 
-@import 'my-ext-theme/alert_message';
-@import 'my-ext-theme/button';
-@import 'my-ext-theme/report/available_field';
+@import 'my-ext-theme/report/available-field';
 @import 'my-ext-theme/report/header';
 @import 'my-ext-theme/report/filter';
 @import 'my-ext-theme/report/report';
 @import 'my-ext-theme/report/setting';
+@import 'my-ext-theme/widget/alert-message';
+@import 'my-ext-theme/widget/button';
 
 .x-nlg
 {

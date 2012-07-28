@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.settings.Copy', {
+Ext.define('PICS.view.report.settings.CopySettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingscopy'],
 

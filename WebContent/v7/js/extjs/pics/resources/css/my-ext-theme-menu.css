@@ -5638,21 +5638,21 @@ textarea.x-form-invalid-field {
   padding: 0px 0px 0px 50px; }
 
 /* line 119, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search {
+.site-menu-search {
   color: #cccccc; }
 
 /* line 124, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search label {
+.site-menu-search label {
   line-height: 14px;
   padding: 7px 0px 0px; }
 
 /* line 130, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search .icon-search {
+.site-menu-search .icon-search {
   font-size: 14px;
   text-shadow: 0px -1px 0px #acacac; }
 
 /* line 136, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list {
+.site-menu-search-list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -5661,7 +5661,7 @@ textarea.x-form-invalid-field {
   border-radius: 5px; }
 
 /* line 142, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list li:first-child {
+.site-menu-search-list li:first-child {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
@@ -5670,7 +5670,7 @@ textarea.x-form-invalid-field {
   border-top-right-radius: 4px; }
 
 /* line 148, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list li:last-child {
+.site-menu-search-list li:last-child {
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -5679,15 +5679,15 @@ textarea.x-form-invalid-field {
   border-bottom-right-radius: 4px; }
 
 /* line 154, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list .even {
+.site-menu-search-list .even {
   background: #f1f1f2; }
 
 /* line 159, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list .x-boundlist-item {
+.site-menu-search-list .x-boundlist-item {
   border: 1px solid transparent; }
 
 /* line 164, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list .x-boundlist-item-over {
+.site-menu-search-list .x-boundlist-item-over {
   background: #a84d10;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
   background-image: -webkit-linear-gradient(#c66603, #a84d10);
@@ -5700,31 +5700,31 @@ textarea.x-form-invalid-field {
   color: #fff; }
 
 /* line 174, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list .search-item {
+.site-menu-search-list .search-item {
   line-height: 15px;
   overflow: hidden;
   padding: 5px 15px; }
   /* line 180, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu_search_list .search-item div {
+  .site-menu-search-list .search-item div {
     clear: both; }
   /* line 185, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu_search_list .search-item em {
+  .site-menu-search-list .search-item em {
     font-weight: bold; }
   /* line 191, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu_search_list .search-item .name,
-  #site_menu_search_list .search-item .company {
+  .site-menu-search-list .search-item .name,
+  .site-menu-search-list .search-item .company {
     float: left;
     width: 175px; }
   /* line 197, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu_search_list .search-item .id {
+  .site-menu-search-list .search-item .id {
     float: right; }
   /* line 202, ../sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu_search_list .search-item .type {
+  .site-menu-search-list .search-item .type {
     float: right;
     font-style: italic; }
 
 /* line 209, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#site_menu_search_list .more-results {
+.site-menu-search-list .more-results {
   color: #333;
   font-weight: bold; }
 

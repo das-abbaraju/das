@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.settings.Print', {
+Ext.define('PICS.view.report.settings.PrintSettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingsprint'],
 

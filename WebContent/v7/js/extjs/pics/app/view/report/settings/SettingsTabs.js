@@ -3,11 +3,11 @@ Ext.define('PICS.view.report.settings.Tabs', {
     alias: ['widget.reportsettingstabs'],
 
     requires: [
-        'PICS.view.report.settings.Copy',
-        'PICS.view.report.settings.Edit',
-        'PICS.view.report.settings.Export',
-        'PICS.view.report.settings.Print',
-        'PICS.view.report.settings.Share'
+        'PICS.view.report.settings.CopySettings',
+        'PICS.view.report.settings.EditSettings',
+        'PICS.view.report.settings.ExportSettings',
+        'PICS.view.report.settings.PrintSettings',
+        'PICS.view.report.settings.ShareSettings'
     ],
 
     border: false,

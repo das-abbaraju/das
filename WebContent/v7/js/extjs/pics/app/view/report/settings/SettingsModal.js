@@ -1,9 +1,9 @@
-Ext.define('PICS.view.report.settings.Modal', {
+Ext.define('PICS.view.report.settings.SettingsModal', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportsettingsmodal'],
 
     requires: [
-        'PICS.view.report.settings.Tabs'
+        'PICS.view.report.settings.SettingsTabs'
     ],
 
     draggable: false,

@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.settings.Export', {
+Ext.define('PICS.view.report.settings.ExportSettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingsexport'],
 

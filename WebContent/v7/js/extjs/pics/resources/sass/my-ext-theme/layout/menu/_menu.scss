@@ -115,52 +115,52 @@ $site_menu_search_item_even_background_color: #f1f1f2;
     padding: 0px 0px 0px 50px;
 }
 
-#site_menu_search
+.site-menu-search
 {
 	color: $site_menu_search_text_color;
 }
 
-#site_menu_search label
+.site-menu-search label
 {
 	line-height: 14px;
 	padding: 7px 0px 0px;
 }
 
-#site_menu_search .icon-search
+.site-menu-search .icon-search
 {
 	font-size: 14px;
 	@include text-shadow(0px -1px 0px $site_menu_search_icon_search_text_color);
 }
 
-#site_menu_search_list
+.site-menu-search-list
 {
 	border: 1px solid #a7a7a7;
 	@include border-radius(5px);
 }
 
-#site_menu_search_list li:first-child
+.site-menu-search-list li:first-child
 {
 	@include border-top-left-radius(4px);
 	@include border-top-right-radius(4px);
 }
 
-#site_menu_search_list li:last-child
+.site-menu-search-list li:last-child
 {
 	@include border-bottom-left-radius(4px);
 	@include border-bottom-right-radius(4px);
 }
 
-#site_menu_search_list .even
+.site-menu-search-list .even
 {
     background: $site_menu_search_item_even_background_color;
 }
 
-#site_menu_search_list .x-boundlist-item
+.site-menu-search-list .x-boundlist-item
 {
 	border: 1px solid transparent;
 }
 
-#site_menu_search_list .x-boundlist-item-over
+.site-menu-search-list .x-boundlist-item-over
 {
 	background: #a84d10;
 	@include background-image(linear-gradient(#c66603, #a84d10));
@@ -170,7 +170,7 @@ $site_menu_search_item_even_background_color: #f1f1f2;
 	color: #fff;
 }
 
-#site_menu_search_list .search-item
+.site-menu-search-list .search-item
 {
     line-height: 15px;
     overflow: hidden;
@@ -205,7 +205,7 @@ $site_menu_search_item_even_background_color: #f1f1f2;
     }
 }
 
-#site_menu_search_list .more-results
+.site-menu-search-list .more-results
 {
 	color: #333;
 	font-weight: bold;

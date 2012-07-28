@@ -167,7 +167,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
     },
 
     showSettingsModal: function () {
-        Ext.create('PICS.view.report.settings.Modal').show();
+        Ext.create('PICS.view.report.settings.SettingsModal').show();
     },
 
     updateReportSettingsModalTitle: function (title) {

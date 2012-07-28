@@ -1,0 +1,31 @@
+#report_filter_options
+{
+	border-top: 1px solid #999 !important;
+	
+	.x-panel-body-default
+	{
+		background: transparent;
+	}
+}
+
+#report_filter_options-body
+{
+	border-right: 1px solid #999 !important;
+}
+
+#report_filter_options_footer
+{
+	border-bottom: 1px solid #999 !important;
+	border-right: 1px solid #999 !important;
+}
+
+#report_filter_options_footer-body
+{
+	background: #454545 !important;
+}
+
+@import 'filter-placeholder';
+@import 'filter-header';
+@import 'filter-toolbar';
+@import 'filter-formula';
+@import 'filters';

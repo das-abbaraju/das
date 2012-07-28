@@ -2,7 +2,8 @@
 $report_filters_border_color_bottom: #cccccc;
 
 // report filter
-$report_filter_border_color_bottom: #999999;
+$report_filter_border_color_bottom: #ccc;
+$report_filter_border_color_top: #ccc;
 
 $report_filter_number_color: #999999;
 
@@ -10,12 +11,6 @@ $report_filter_name_color: #333333;
 
 // report filter - remove button
 $report_filter_remove_filter_text_color: #ac030c;
-
-
-#report_filters
-{
-	border-bottom: 1px solid $report_filters_border_color_bottom;
-}
 
 #report_filters-body,
 #report_filters .filter-container-body,
@@ -30,10 +25,14 @@ $report_filter_remove_filter_text_color: #ac030c;
 	width: auto !important;
 }
 
-#report_filters .filter
+#report_filters
 {
-	background: #f1f1f1;
-	border-top: 1px solid $report_filter_border_color_bottom;
+	.filter
+	{
+		background: #f1f1f1;
+		border-bottom: 1px solid $report_filter_border_color_bottom;
+		border-top: 1px solid $report_filter_border_color_top;
+	}
 }
 
 #report_filters .filter-number

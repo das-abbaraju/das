@@ -1,10 +1,10 @@
-Ext.define('PICS.view.report.Header', {
+Ext.define('PICS.view.report.ReportHeader', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportheader'],
 
     requires: [
-        'PICS.view.report.header.Summary',
-        'PICS.view.report.header.Actions'
+        'PICS.view.report.header.ReportSummary',
+        'PICS.view.report.header.ReportActions'
     ],
 
     border: false,
