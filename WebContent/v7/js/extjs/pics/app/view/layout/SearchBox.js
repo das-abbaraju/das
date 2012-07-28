@@ -4,16 +4,16 @@ Ext.define('PICS.view.layout.SearchBox', {
 
     autoScroll: false,
     autoSelect: false,
+    cls: 'site-menu-search',
     displayField: 'name',
     emptyText: 'Search',
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
-    id: 'site_menu_search',
     labelSeparator: '',
     labelWidth: 15,
 
     listConfig: {
-        id: 'site_menu_search_list',
+        cls: 'site-menu-search-list',
         listeners: {
             el: {
                 click: {
