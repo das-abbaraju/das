@@ -121,8 +121,7 @@ public class ManageReports extends PicsActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			// TODO add i18n to this
-			addActionError("There was a problem finding your reports.");
+			addActionError(getText("ManageReports.error.problemFindingReports"));
 			logger.error("Problem with runQueryForCurrentView() in ManageReports", e);
 
 			if (userReports == null) {
@@ -135,14 +134,11 @@ public class ManageReports extends PicsActionSupport {
 		String pageDescription = "";
 
 		if (FAVORITE.equals(viewType)) {
-			// TODO add i18n to this
-			pageDescription = "These reports will show in your Reports menu.";
+			pageDescription = getText("ManageReports.pageDescription.Favorites");
 		} else if (MY_REPORTS.equals(viewType)) {
-			// TODO add i18n to this
-			pageDescription = "All of your reports that you've saved, created, and that have been shared with you.";
+			pageDescription = getText("ManageReports.pageDescription.MyReports");
 		} else if (ALL_REPORTS.equals(viewType)) {
-			// TODO add i18n to this
-			pageDescription = "Search all your reports and find new ones based on your specific needs and what's popular.";
+			pageDescription = getText("ManageReports.pageDescription.AllReports");
 		}
 
 		return pageDescription;
@@ -151,11 +147,9 @@ public class ManageReports extends PicsActionSupport {
 	public String removeUserReport() throws Exception {
 		try {
 			reportAccessor.removeUserReport(permissions.getUserId(), reportId);
-			// TODO add i18n to this
-			addActionMessage("Your report has been removed.");
+			addActionMessage(getText("ManageReports.message.ReportRemoved"));
 		} catch (NoResultException nre) {
-			// TODO add i18n to this
-			addActionMessage("The report you're trying to remove no longer exists.");
+			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
 			logger.warn(nre.toString());
 		} catch (Exception e) {
 			logger.error(e.toString());
@@ -170,15 +164,12 @@ public class ManageReports extends PicsActionSupport {
 			Report report = reportAccessor.findOneReport(reportId);
 			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
 				reportAccessor.deleteReport(report);
-				// TODO add i18n to this
-				addActionMessage("Your report has been deleted.");
+				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {
-				// TODO add i18n to this
-				addActionError("You do not have the necessary permissions to delete this report.");
+				addActionError(getText("ManageReports.error.NoDeletePermissions"));
 			}
 		} catch (NoResultException nre) {
-			// TODO add i18n to this
-			addActionError("The report you're trying to delete no longer exists.");
+			addActionError(getText("ManageReports.error.NoReportToDelete"));
 			logger.warn(nre.toString());
 		} catch (Exception e) {
 			logger.error(e.toString());
@@ -191,8 +182,7 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			reportAccessor.toggleReportUserFavorite(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
-			// TODO add i18n to this
-			addActionMessage("The report you're trying to favorite could not be found.");
+			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.warn(nre.toString());
 		} catch (Exception e) {
 			logger.error(e.toString());
