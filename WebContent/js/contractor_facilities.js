@@ -152,6 +152,35 @@
                 });
             },
             
+            showGeneralContractorModal: function (operatorID, operatorName) {
+                var requiresModal = this.attr('data-general-contractor');
+                
+                if (requiresModal === 'true') {
+                    var modal_title = translate('JS.RegistrationAddClientSite.SelectedClientIsGC', [operatorName]);
+                    
+                    PICS.ajax({
+                        url: 'ContractorFacilities!generalContractorOperators.action',
+                        data: {
+                            operator: operatorID
+                        },
+                        success: function(data, textStatus, XMLHttpRequest) {
+                            var modal = PICS.modal({
+                                title: modal_title,
+                                content: data,
+                                buttons: [
+                                    {
+                                        html: '<a href="javascript:;" class="btn danger">' + translate('JS.button.Close') + '</a>',
+                                        callback: function() {
+                                            PICS.getClass('modal.Modal').hide();
+                                        }
+                                    }
+                                ]
+                            });
+                        }
+                    });
+                }
+            },
+            
             switchToBid: function(event) {
                 var contractor = $(this).attr('data-contractor');
                 var contractorFacilities = event.data.contractorFacilities;
@@ -180,27 +209,33 @@
                 var contractorFacilities = event.data.contractorFacilities;
                 
                 var contractor = $(this).attr('data-contractor');
+                var generalContractor = $(this).attr('data-general-contractor');
                 var operator = $(this).attr('data-operator');
+                var operatorName = $(this).attr('data-operator-name');
                 
-                PICS.ajax({
-                    url: 'ContractorFacilities!validateBidOnly.action',
-                    data: {
-                        contractor: contractor,
-                        operator: operator
-                    },
-                    dataType: "json",
-                    success: function(data, textStatus, XMLHttpRequest) {
-                        if (data.isBidOnlyContractor && !data.isBidOnlyOperator) {
-                            if (confirm(translate("JS.ContractorFacilities.message.UpgradeOffer"))) {
-                                contractorFacilities.addOperator.apply(contractorFacilities, [contractor, operator]);
+                    PICS.ajax({
+                        url: 'ContractorFacilities!validateBidOnly.action',
+                        data: {
+                            contractor: contractor,
+                            operator: operator
+                        },
+                        dataType: "json",
+                        success: function(data, textStatus, XMLHttpRequest) {
+                            if (generalContractor === 'true') {
+                                contractorFacilities.showGeneralContractorModal(operator, operatorName);
                             } else {
-                                return;
+                                if (data.isBidOnlyContractor && !data.isBidOnlyOperator) {
+                                    if (confirm(translate("JS.ContractorFacilities.message.UpgradeOffer"))) {
+                                        contractorFacilities.addOperator.apply(contractorFacilities, [contractor, operator]);
+                                    } else {
+                                        return;
+                                    }
+                                }
+                                
+                                contractorFacilities.add.apply(contractorFacilities, [contractor, operator]);
                             }
                         }
-                        
-                        contractorFacilities.add.apply(contractorFacilities, [contractor, operator]);
-                    }
-                });
+                    });
             }
         }
     });

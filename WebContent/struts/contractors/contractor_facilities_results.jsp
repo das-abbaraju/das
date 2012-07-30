@@ -47,7 +47,12 @@
 						</div>
 					</td>
 					<td class="center">
-						<a href="javascript:;" class="add" data-contractor="${contractor_id}" data-operator="${id}">
+						<a href="javascript:;"
+							class="add"
+							data-contractor="${contractor_id}"
+							data-general-contractor="${operator_result.generalContractor && 'No'.equals(operator_result.doContractorsPay)}"
+							data-operator="${operator_result.id}"
+							data-operator-name="${operator_result.name}">
  							<s:text name="button.Add" />
 						</a>
 					</td>

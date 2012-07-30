@@ -121,7 +121,16 @@ public class ContractorFacilities extends ContractorActionSupport {
 		return JSON;
 	}
 
-	public String load() {
+	public String generalContractorOperators() {
+		if (operator != null) {
+			searchResults = operator.getLinkedClientSites();
+		}
+
+		return "search";
+	}
+
+	public String load() throws Exception {
+		findContractor();
 		currentOperators = contractorOperatorDAO.findByContractor(id, permissions);
 		return "load";
 	}
