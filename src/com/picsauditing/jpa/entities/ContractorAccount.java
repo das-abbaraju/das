@@ -46,6 +46,7 @@ import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.YearList;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -812,17 +813,20 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
-		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, null);
-		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, null);
-		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, null);
-
-		Iterator<MultiYearScope> scopeIter = completeAnnualUpdates.keySet().iterator();
-
+		Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
+		YearList years = new YearList();		
+		
 		for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
-			if (scopeIter.hasNext() && annualUpdate.hasCaoStatus(AuditStatus.Complete))
-				completeAnnualUpdates.put(scopeIter.next(), annualUpdate);
+			if (annualUpdate.hasCaoStatus(AuditStatus.Complete)) {
+				years.add(annualUpdate.getAuditFor());
+				annuals.put(Integer.parseInt(annualUpdate.getAuditFor()), annualUpdate);
+			}
 		}
-
+		
+		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
+		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
+		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
+		
 		return completeAnnualUpdates;
 	}
 
