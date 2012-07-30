@@ -694,9 +694,17 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	@Transient
 	public boolean hasCaoStatusAfter(AuditStatus auditStatus) {
+		return hasCaoStatusAfter(auditStatus, false);
+	}
+
+	@Transient
+	public boolean hasCaoStatusAfter(AuditStatus auditStatus, boolean ignoreNotApplicable) {
 		for (ContractorAuditOperator cao : this.operators) {
-			if (cao.isVisible() && cao.getStatus().after(auditStatus))
+			if (ignoreNotApplicable && cao.getStatus().equals(AuditStatus.NotApplicable))
+				continue;
+			if (cao.isVisible() && cao.getStatus().after(auditStatus)) {
 				return true;
+			}
 		}
 		return false;
 	}

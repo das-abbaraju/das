@@ -164,4 +164,15 @@ public class ContractorAuditTest {
 		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Approved)));
 		assertTrue(contractorAudit.hasCaoStatus(AuditStatus.Approved));
 	}
+
+	@Test
+	public void testHasCaoStatusAfterIgnoreNotApplicable() {
+		ContractorAuditOperator cao1 = EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Submitted);
+		ContractorAuditOperator cao2 = EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.NotApplicable);
+		contractorAudit.getOperators().add(cao1);
+		contractorAudit.getOperators().add(cao2);
+		
+		assertFalse(contractorAudit.hasCaoStatusAfter(AuditStatus.Submitted, true));
+		assertTrue(contractorAudit.hasCaoStatusAfter(AuditStatus.Submitted, false));
+	}
 }
