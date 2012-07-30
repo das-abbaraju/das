@@ -33,6 +33,17 @@ public class ReportProvider {
 		return basicDao.findOne(Report.class, "t.id = " + id);
 	}
 
+	public List<Report> findPublicReports() {
+		String query = "private = 0";
+		List<Report> publicReports = basicDao.findWhere(Report.class, query);
+
+		return publicReports;
+	}
+
+	public List<Report> findAllReports() {
+		return basicDao.findAll(Report.class);
+	}
+
 	public ReportUser findOneUserReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
 		List<ReportUser> result = basicDao.findWhere(ReportUser.class, query);
@@ -46,11 +57,6 @@ public class ReportProvider {
 		return result.get(0);
 	}
 
-	public List<ReportUser> findAllUserReports(int userId) {
-		String query = "t.user.id = " + userId;
-		return basicDao.findWhere(ReportUser.class, query);
-	}
-
 	public List<ReportUser> findFavoriteUserReports(int userId) {
 		String query = "t.user.id = " + userId + " AND is_favorite = 1";
 		return basicDao.findWhere(ReportUser.class, query);
@@ -58,6 +64,11 @@ public class ReportProvider {
 
 	public List<ReportUser> findEditableUserReports(int userId) {
 		String query = "t.user.id = " + userId + " AND is_editable = 1";
+		return basicDao.findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findAllUserReports(int userId) {
+		String query = "t.user.id = " + userId;
 		return basicDao.findWhere(ReportUser.class, query);
 	}
 
@@ -144,13 +155,6 @@ public class ReportProvider {
 		json.put("total", db.getAllRows());
 
 		return rows;
-	}
-
-	public List<Report> findPublicReports() {
-		String query = "private = 0";
-		List<Report> publicReports = basicDao.findWhere(Report.class, query);
-
-		return publicReports;
 	}
 
 	public boolean isReportPublic(int reportId) {
