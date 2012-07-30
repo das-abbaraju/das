@@ -742,7 +742,7 @@ public class Cron extends PicsActionSupport {
 			try {
 				int templateID = pendingAndDelinquentAccts.get(cAccount);
 
-				emailBuilder.clearAll();
+				emailBuilder.clear();
 				emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
 				emailBuilder.setTemplate(templateID);
 
