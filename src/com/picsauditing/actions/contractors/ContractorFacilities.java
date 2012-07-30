@@ -14,7 +14,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -136,7 +135,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 			contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 			accountDao.save(contractor);
 		}
-		if (button != null) {
+
+		if (!Strings.isEmpty(button)) {
 			boolean recalculate = false;
 
 			if (button.equals("search")) {
