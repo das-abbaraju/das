@@ -52,13 +52,23 @@
 .x-grid-group-hd-collapsible .x-grid-group-title
 {
 	background-image: url('../../app/resources/images/grid/group-expand.gif');
-	background-position: 100%;
+	background-position: 100% 0px;
 	padding: 0px;
+}
+
+.x-grid-group-hd-collapsible.x-over .x-grid-group-title
+{
+	background-position: 100% -14px;
 }
 
 .x-grid-group-hd-collapsed .x-grid-group-title
 {
 	background-image: url('../../app/resources/images/grid/group-collapse.gif');
+}
+
+.x-grid-group-hd-collapsed.x-over .x-grid-group-title
+{
+	background-position: 100% -14px;
 }
 
 #available_field_list
