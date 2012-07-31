@@ -2,6 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <s:set var="contractor_id" value="%{contractor.id}" />
+<s:set var="general_contractor_id" value="%{operator.id}" />
 
 <s:if test="searchResults.size() == 0">
 	<div class="alert">
@@ -50,9 +51,10 @@
 						<a href="javascript:;"
 							class="add"
 							data-contractor="${contractor_id}"
-							data-general-contractor="${operator_result.generalContractor && 'No'.equals(operator_result.doContractorsPay)}"
+							data-general-contractor="${general_contractor_id}"
 							data-operator="${operator_result.id}"
-							data-operator-name="${operator_result.name}">
+							data-operator-name="${operator_result.name}"
+							data-needs-modal="<s:property value="isNeedsGeneralContractorModal(#operator_result)" />">
  							<s:text name="button.Add" />
 						</a>
 					</td>

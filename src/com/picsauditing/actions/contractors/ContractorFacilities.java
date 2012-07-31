@@ -124,6 +124,13 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public String generalContractorOperators() {
 		if (operator != null) {
 			searchResults = operator.getLinkedClientSites();
+
+			for (OperatorAccount operatorAccount : contractor.getOperatorAccounts()) {
+				searchResults.remove(operatorAccount);
+			}
+
+			addAlertMessage(getTextParameterized("RegistrationAddClientSite.GeneralContractorsHelp",
+					("Yes".equals(operator.getDoContractorsPay()) ? 1 : 0), operator.getName()));
 		}
 
 		return "search";
@@ -391,6 +398,20 @@ public class ContractorFacilities extends ContractorActionSupport {
 			count++;
 
 		return count;
+	}
+
+	public boolean isNeedsGeneralContractorModal(OperatorAccount operator) {
+		if (operator.isGeneralContractor()) {
+			List<OperatorAccount> linkedClientSites = operator.getLinkedClientSites();
+
+			for (OperatorAccount contractorOperator : contractor.getOperatorAccounts()) {
+				linkedClientSites.remove(contractorOperator);
+			}
+
+			return linkedClientSites.size() > 0;
+		}
+
+		return false;
 	}
 
 	private void addFacilitiesBasedOnRegistrationRequest() throws Exception {
