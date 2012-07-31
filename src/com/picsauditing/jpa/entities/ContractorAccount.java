@@ -496,9 +496,11 @@ public class ContractorAccount extends Account implements JSONable {
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(ccExpiration);
 		expires.set(Calendar.DAY_OF_MONTH, 1);
+		expires.set(Calendar.HOUR_OF_DAY, 23);
+		expires.set(Calendar.MINUTE, 59);
 		expires.add(Calendar.MONTH, 1);
 		expires.add(Calendar.DAY_OF_MONTH, -1);
-
+		
 		return expires.getTime().after(new Date());
 	}
 
