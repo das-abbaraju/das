@@ -1054,7 +1054,7 @@ public class Cron extends PicsActionSupport {
 
 			contractorAccountDAO.save(dpa);
 
-			stampNote(dpa, "Account has been deactivate, this account has been pending for 90 days without payment.", NoteCategory.Billing);
+			stampNote(dpa, "Account has been deactivated, this account has been pending for 90 days without payment.", NoteCategory.Billing);
 		}
 	}
 }
