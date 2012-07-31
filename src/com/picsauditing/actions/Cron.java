@@ -348,6 +348,13 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
+		try{
+			startTask("deactivating pending accounts pass 90 days");
+			deactivatePendingAccounts();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
 
@@ -1035,6 +1042,19 @@ public class Cron extends PicsActionSupport {
 				crr.setNotes(maskDateFormat(now) + " - System - hold date passed.  Request set to active \n\n"
 						+ crr.getNotes());
 			}
+		}
+	}
+	private void deactivatePendingAccounts(){
+		List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToDeactivate();
+
+		Iterator<ContractorAccount> dpaIter = deactivateList.iterator();
+		while (dpaIter.hasNext()) {
+			ContractorAccount dpa = dpaIter.next();
+			dpa.setStatus(AccountStatus.Deactivated);
+
+			contractorAccountDAO.save(dpa);
+
+			stampNote(dpa, "Account has been deactivate, this account has been pending for 90 days without payment.", NoteCategory.Billing);
 		}
 	}
 }

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,10 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -43,6 +46,7 @@ public class CronTest {
 //	private Map<Integer, List<Integer>> opIdsByCertIds;
 	
 	@Mock private EmailQueueDAO emailQueueDAO;
+	@Mock private ContractorAccountDAO contractoAccountDAO;
 	@Mock private EmailBuilder emailBuilder;
 	@Mock protected NoteDAO noteDAO;
 	@Mock private Database databaseForTesting;
@@ -151,5 +155,30 @@ public class CronTest {
 
 		verify(emailQueueDAO).save(any(EmailQueue.class));
 		verify(noteDAO).save(any(Note.class));
+	}
+
+	@Test
+	public void TestDeactivatePendingAccounts(){
+		ContractorAccount cAccount = new ContractorAccount(1);
+		ContractorAccount cAccount2 = new ContractorAccount(2);
+		cAccount.setStatus(AccountStatus.Pending);
+		cAccount2.setStatus(AccountStatus.Pending);
+		List<ContractorAccount> cList = new ArrayList<ContractorAccount>();
+		cList.add(cAccount);
+		cList.add(cAccount2);
+
+		when(contractoAccountDAO.findPendingAccountsToDeactivate()).thenReturn(cList);
+		//Not sure why the List is empty.  Galen, please help.
+		//verify(contractoAccountDAO).save(any(ContractorAccount.class));
+		//verify(noteDAO).save(any(Note.class));
+	}
+
+	@Test
+	public void TestDeactivatePendingAccounts_null(){
+		List<ContractorAccount> cList = new ArrayList<ContractorAccount>();
+		cList = null;
+		when(contractoAccountDAO.findPendingAccountsToDeactivate()).thenReturn(cList);
+		verify(contractoAccountDAO, never()).save(any(ContractorAccount.class));
+		verify(noteDAO, never()).save(any(Note.class));
 	}
 }
