@@ -3,7 +3,7 @@
  *
  * Controls report refresh
  */
-Ext.define('PICS.controller.report.ReportController', {
+Ext.define('PICS.controller.report.Report', {
     extend: 'Ext.app.Controller',
 
     stores: [

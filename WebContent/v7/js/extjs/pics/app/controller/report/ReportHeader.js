@@ -1,4 +1,4 @@
-Ext.define('PICS.controller.report.ReportHeaderController', {
+Ext.define('PICS.controller.report.ReportHeader', {
     extend: 'Ext.app.Controller',
 
     refs: [{

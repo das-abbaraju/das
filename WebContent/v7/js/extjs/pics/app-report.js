@@ -45,10 +45,10 @@ Ext.application({
 
     controllers: [
         'report.AvailableFieldModal',
-        'report.ReportController',
         'report.Filter',
+        'report.Report',
         'report.ReportData',
-        'report.ReportHeaderController'
+        'report.ReportHeader'
     ],
 
     models: [
