@@ -229,18 +229,18 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 
-		if (country != null && !country.equals(operator.getCountry())){
+		if (country != null && !country.equals(operator.getCountry())) {
 			operator.setCountry(country);
 		}
 
-		if ((state != null && !state.equals(operator.getState())) || (operator.getState() == null && state!=null)){
+		if ((state != null && !state.equals(operator.getState())) || (operator.getState() == null && state != null)) {
 			State contractorState = stateDAO.find(state.toString());
 			operator.setState(contractorState);
 		}
 
-		if (operator.getCountry().isHasStates() && state != null){
+		if (operator.getCountry().isHasStates() && state != null) {
 			updateStateAndCountrySubdivision();
-		} else{
+		} else {
 			operator.setState(null);
 			operator.setCountrySubdivision(null);
 		}
@@ -346,7 +346,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (!operator.isInPicsConsortium()) {
 			facilitiesEditModel.addPicsCountry(operator, permissions);
 		}
-		
+
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));
@@ -362,14 +362,15 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	private void updateStateAndCountrySubdivision() {
-		if (operator.getState().getCountry().equals(operator.getCountry())){
-			countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-" + operator.getState().getIsoCode());
+		if (operator.getState() != null && operator.getCountry().equals(operator.getState().getCountry())) {
+			countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-"
+					+ operator.getState().getIsoCode());
 			if (countrySubdivision != null) {
 				operator.setCountrySubdivision(countrySubdivision);
 			} else {
 				operator.setCountrySubdivision(null);
 			}
-		}  else {
+		} else {
 			operator.setState(null);
 			operator.setCountrySubdivision(null);
 		}
@@ -710,6 +711,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		if (operator.getCountry() == null) {
 			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
+		}
+
+		if (operator.getCountry().isHasStates() && (state == null || operator.getState() == null)) {
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInState"));
 		}
 
 		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
