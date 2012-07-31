@@ -3749,39 +3749,28 @@ browsers will do whacky things with it.
   border-bottom: 1px solid #333 !important;
   border-top: 1px solid #333 !important; }
 
-/* line 19, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters-body,
-#report_filters .filter-container-body,
-#report_filters .filter-body,
-#report_filters .x-box-inner {
-  width: 100% !important; }
-
-/* line 24, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .x-box-inner div:first-child {
-  width: auto !important; }
-
-/* line 31, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 26, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter {
-  background: #f1f1f1;
+  background: #f1f1f2;
   border-bottom: 1px solid #cccccc;
   border-top: 1px solid #cccccc; }
-/* line 38, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 33, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-number {
   display: none;
   top: 25px !important; }
-  /* line 43, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 38, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .filter-number label {
     color: #999999;
     font-size: 18px;
     font-weight: bold;
     margin: 0px !important;
     text-align: center; }
-/* line 53, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 48, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name div {
   color: #333333;
   font-size: 14px;
   font-weight: bold; }
-/* line 60, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 55, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter {
   background: none;
   border: 0px;
@@ -3792,20 +3781,20 @@ browsers will do whacky things with it.
   border-radius: 0px;
   display: none;
   padding: 0px; }
-  /* line 68, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 63, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter span {
     padding: 0px; }
-  /* line 73, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 68, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter .icon-remove-sign {
     color: #ac030c;
     font-size: 18px;
     line-height: 18px; }
 
-/* line 83, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 78, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters.x-active .filter-number {
   display: block; }
 
-/* line 91, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 86, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter.x-over .filter-number,
 #report_filters .filter.x-form-focus .filter-number,
 #report_filters .filter.x-over .remove-filter,
@@ -4454,9 +4443,10 @@ browsers will do whacky things with it.
 
 /* line 2, ../sass/my-ext-theme/widget/_triggerfield.scss */
 .x-form-trigger {
-  background-image: url(../../app/resources/images/form/trigger.png); }
+  background-image: url(../../app/resources/images/form/trigger.png);
+  border-bottom: 0px; }
 
-/* line 7, ../sass/my-ext-theme/widget/_triggerfield.scss */
+/* line 8, ../sass/my-ext-theme/widget/_triggerfield.scss */
 .x-form-date-trigger {
   background-image: url(../../app/resources/images/form/date-trigger.png); }
 

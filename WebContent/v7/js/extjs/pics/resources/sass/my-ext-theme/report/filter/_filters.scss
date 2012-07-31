@@ -17,19 +17,14 @@ $report_filter_remove_filter_text_color: #ac030c;
 #report_filters .filter-body,
 #report_filters .x-box-inner
 {
-	width: 100% !important;
-}
-
-#report_filters .x-box-inner div:first-child
-{
-	width: auto !important;
+	//width: 100% !important;
 }
 
 #report_filters
 {
 	.filter
 	{
-		background: #f1f1f1;
+		background: #f1f1f2;
 		border-bottom: 1px solid $report_filter_border_color_bottom;
 		border-top: 1px solid $report_filter_border_color_top;
 	}
