@@ -36,6 +36,11 @@ Ext.define('PICS.view.report.filter.FilterFormula', {
             type: 'hbox',
             align: 'middle'
         },
-        width: 280
-    }]
+        width: 251
+    }],
+    layout: {
+        type: 'hbox',
+        align: 'middle',
+        pack: 'center'
+    }
 });

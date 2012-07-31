@@ -28,7 +28,7 @@ $include-default: false;
 
 $color: #333333;
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-$form-field-height: 25px;
+$form-field-height: 24px;
 $grid-header-background-color: #454545;
 $grid-header-background-gradient: null;
 $grid-header-over-border-color: #454545;
@@ -95,6 +95,8 @@ $include-default-uis: true !default;
 @import 'my-ext-theme/report/setting';
 @import 'my-ext-theme/widget/alert-message';
 @import 'my-ext-theme/widget/button';
+@import 'my-ext-theme/widget/triggerfield';
+
 
 .x-nlg
 {

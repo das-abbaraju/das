@@ -2032,7 +2032,7 @@ browsers will do whacky things with it.
   position: absolute;
   top: -4px;
   right: -2px;
-  height: 33px;
+  height: 32px;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   /* Yes, there's actually a good reason for this...
@@ -2134,7 +2134,7 @@ browsers will do whacky things with it.
   background-image: url('../images/form/trigger.gif');
   background-position: 0 0;
   width: 17px;
-  height: 24px;
+  height: 23px;
   border-bottom: 1px solid #b5b8c8;
   cursor: pointer;
   cursor: hand;
@@ -2142,7 +2142,7 @@ browsers will do whacky things with it.
 
 /* line 24, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-border-box .x-form-trigger {
-  height: 25px; }
+  height: 24px; }
 
 /* line 28, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-field-default-toolbar .x-form-trigger {
@@ -2213,29 +2213,29 @@ browsers will do whacky things with it.
 .x-form-trigger-wrap .x-form-spinner-down {
   background-image: url('../images/form/spinner.gif');
   width: 17px !important;
-  height: 12.5px !important;
+  height: 12px !important;
   font-size: 0;
   /*for IE*/
   border-bottom: 0; }
 /* line 109, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down {
-  background-position: 0 -12.5px; }
+  background-position: 0 -12px; }
 
 /* line 113, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-spinner-down {
-  background-position: -51px -12.5px; }
+  background-position: -51px -12px; }
 
 /* line 116, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down-over {
-  background-position: -17px -12.5px; }
+  background-position: -17px -12px; }
 
 /* line 119, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-spinner-down-over {
-  background-position: -68px -12.5px; }
+  background-position: -68px -12px; }
 
 /* line 122, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down-click {
-  background-position: -34px -12.5px; }
+  background-position: -34px -12px; }
 
 /* line 131, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-field-default-toolbar .x-form-trigger-wrap .x-form-spinner-up,
@@ -2277,7 +2277,7 @@ browsers will do whacky things with it.
 
 /* line 177, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-quirks .prefixie6 .x-form-trigger-input-cell {
-  height: 25px; }
+  height: 24px; }
 /* line 180, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-quirks .prefixie6 .x-field-default-toolbar .x-form-trigger-input-cell {
   height: 20px; }
@@ -3471,52 +3471,60 @@ browsers will do whacky things with it.
 /* line 53, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 .x-grid-group-hd-collapsible .x-grid-group-title {
   background-image: url("../../app/resources/images/grid/group-expand.gif");
-  background-position: 100%;
+  background-position: 100% 0px;
   padding: 0px; }
 
 /* line 60, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+.x-grid-group-hd-collapsible.x-over .x-grid-group-title {
+  background-position: 100% -14px; }
+
+/* line 65, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 .x-grid-group-hd-collapsed .x-grid-group-title {
   background-image: url("../../app/resources/images/grid/group-collapse.gif"); }
 
-/* line 67, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 70, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+.x-grid-group-hd-collapsed.x-over .x-grid-group-title {
+  background-position: 100% -14px; }
+
+/* line 77, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-row .x-grid-cell-special {
   background: #fff;
   background-image: none !important;
   border-right: 1px solid #dcdcdc; }
-/* line 74, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 84, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-cell-special .x-grid-cell-inner {
   padding-left: 6px; }
-/* line 80, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 90, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-row-alt .x-grid-cell-special,
 #available_field_list .x-grid-row-over .x-grid-cell-special {
   background: #f1f1f2; }
-/* line 86, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 96, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-row-selected .x-grid-cell,
 #available_field_list .x-grid-row-selected .x-grid-rowwrap-div {
   background: #c3e0f9;
   border-bottom: 1px solid #78bde8;
   border-top: 1px solid #78bde8; }
-/* line 93, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 103, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-cell-inner {
   color: #333;
   font-size: 14px;
   padding: 5px; }
-/* line 100, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 110, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-group-hd .x-grid-cell-inner {
   background: #454545;
   border: 0px;
   border-bottom: 1px solid #333;
   border-top: 1px solid #333;
   padding: 7px; }
-/* line 109, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 119, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-group-title {
   color: #fff; }
-/* line 114, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 124, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .number-of-items {
   color: #999;
   margin-left: 5px; }
 
-/* line 122, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 132, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_modal_footer {
   background: #454545; }
 
@@ -3586,7 +3594,8 @@ browsers will do whacky things with it.
 
 /* line 23, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options_footer-body {
-  background: #454545 !important; }
+  background: #454545 !important;
+  border-top: 1px solid #333 !important; }
 
 /*
  * Placeholder
@@ -3678,10 +3687,8 @@ browsers will do whacky things with it.
 
 /* line 7, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
 #report_filter_toolbar {
-  background: #454545;
-  border-bottom: 1px solid #333 !important;
-  border-top: 1px solid #333 !important; }
-  /* line 13, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  background: #454545; }
+  /* line 11, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
   #report_filter_toolbar .x-btn {
     background: none;
     border: 0px;
@@ -3690,14 +3697,19 @@ browsers will do whacky things with it.
     -ms-border-radius: 0px;
     -o-border-radius: 0px;
     border-radius: 0px; }
-    /* line 19, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+    /* line 17, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
     #report_filter_toolbar .x-btn span {
       color: #ccc;
       font-size: 11px;
       font-weight: bold; }
-  /* line 29, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  /* line 27, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
   #report_filter_toolbar .x-btn.x-over span {
     color: #fff; }
+
+/* line 34, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+#report_filter_toolbar > div {
+  border-bottom: 1px solid #333 !important;
+  border-top: 1px solid #333 !important; }
 
 /* line 2, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
 #report_filter_formula_container {
@@ -3705,11 +3717,8 @@ browsers will do whacky things with it.
 
 /* line 7, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
 #report_filter_formula {
-  background: #454545;
-  border-bottom: 1px solid #333 !important;
-  border-top: 1px solid #333 !important;
-  padding: 12px 30px; }
-  /* line 15, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  background: #454545; }
+  /* line 12, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .info,
   #report_filter_formula .cancel {
     background: none;
@@ -3719,21 +3728,26 @@ browsers will do whacky things with it.
     -ms-border-radius: 0px;
     -o-border-radius: 0px;
     border-radius: 0px; }
-  /* line 23, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 20, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .info span,
   #report_filter_formula .cancel span {
     padding: 0px; }
-  /* line 29, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 26, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .info i,
   #report_filter_formula .cancel i {
     font-size: 18px;
     line-height: 18px; }
-  /* line 36, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 33, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .icon-info-sign {
     color: #73bbe8; }
-  /* line 41, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 38, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .icon-remove-sign {
     color: #ac030c; }
+
+/* line 44, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+#report_filter_formula > div {
+  border-bottom: 1px solid #333 !important;
+  border-top: 1px solid #333 !important; }
 
 /* line 19, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters-body,
@@ -3751,27 +3765,23 @@ browsers will do whacky things with it.
   background: #f1f1f1;
   border-bottom: 1px solid #cccccc;
   border-top: 1px solid #cccccc; }
-
-/* line 39, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 38, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-number {
   display: none;
   top: 25px !important; }
-
-/* line 45, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .filter-number label {
-  color: #999999;
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0px !important;
-  text-align: center; }
-
-/* line 54, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 43, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .filter-number label {
+    color: #999999;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0px !important;
+    text-align: center; }
+/* line 53, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name div {
   color: #333333;
   font-size: 14px;
   font-weight: bold; }
-
-/* line 61, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 60, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter {
   background: none;
   border: 0px;
@@ -3782,22 +3792,20 @@ browsers will do whacky things with it.
   border-radius: 0px;
   display: none;
   padding: 0px; }
+  /* line 68, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .remove-filter span {
+    padding: 0px; }
+  /* line 73, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .remove-filter .icon-remove-sign {
+    color: #ac030c;
+    font-size: 18px;
+    line-height: 18px; }
 
-/* line 70, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter span {
-  padding: 0px; }
-
-/* line 75, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter .icon-remove-sign {
-  color: #ac030c;
-  font-size: 18px;
-  line-height: 18px; }
-
-/* line 82, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 83, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters.x-active .filter-number {
   display: block; }
 
-/* line 90, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 91, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter.x-over .filter-number,
 #report_filters .filter.x-form-focus .filter-number,
 #report_filters .filter.x-over .remove-filter,
@@ -3821,13 +3829,13 @@ browsers will do whacky things with it.
     font-size: 14px; }
   /* line 44, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-text {
-    height: 25px; }
+    height: 24px; }
   /* line 49, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .rows-per-page {
     margin-left: 5px; }
   /* line 54, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-trigger {
-    height: 25px; }
+    height: 24px; }
 /* line 64, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh,
 #report_data .page-first,
@@ -4444,7 +4452,15 @@ browsers will do whacky things with it.
   color: white;
   text-shadow: 0px -1px 0px #ac030c; }
 
-/* line 108, ../sass/my-ext-theme.scss */
+/* line 2, ../sass/my-ext-theme/widget/_triggerfield.scss */
+.x-form-trigger {
+  background-image: url(../../app/resources/images/form/trigger.png); }
+
+/* line 7, ../sass/my-ext-theme/widget/_triggerfield.scss */
+.x-form-date-trigger {
+  background-image: url(../../app/resources/images/form/date-trigger.png); }
+
+/* line 110, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -4453,7 +4469,7 @@ browsers will do whacky things with it.
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 115, ../sass/my-ext-theme.scss */
+/* line 117, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

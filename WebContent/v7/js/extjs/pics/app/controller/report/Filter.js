@@ -11,9 +11,6 @@ Ext.define('PICS.controller.report.Filter', {
         ref: 'filterFormula',
         selector: 'reportfilteroptions reportfilterformula'
     }, {
-        ref: 'filterFormulaContainer',
-        selector: 'reportfilteroptions #report_filter_formula_container'
-    }, {
         ref: 'filterFormulaExpression',
         selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
@@ -28,9 +25,6 @@ Ext.define('PICS.controller.report.Filter', {
     }, {
         ref: 'filterToolbar',
         selector: 'reportfilteroptions reportfiltertoolbar'
-    }, {
-        ref: 'filterToolbarContainer',
-        selector: 'reportfilteroptions #report_filter_toolbar_container'
     }],
 
     stores: [
@@ -41,7 +35,8 @@ Ext.define('PICS.controller.report.Filter', {
 
     views: [
         'PICS.view.report.filter.Filters',
-        'PICS.view.report.filter.FilterFormula'
+        'PICS.view.report.filter.FilterFormula',
+        'PICS.view.report.filter.FilterToolbar'
     ],
 
     init: function() {
@@ -206,38 +201,35 @@ Ext.define('PICS.controller.report.Filter', {
 
     onFilterFormulaShow: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions(),
-            filter_toolbar_container = this.getFilterToolbarContainer();
+            filter_toolbar = this.getFilterToolbar(),
+            filters = this.getFilters();
 
-        var filter_formula_container = {
-            border: 0,
-            dock: 'top',
-            items: [{
-                xtype: 'reportfilterformula'
-            }],
-            id: 'report_filter_formula_container'
+        if (!filter_options) {
+            return false;
+        }
+
+        var filter_formula = {
+            xtype: 'reportfilterformula',
+            dock: 'top'
         };
 
-        filter_options.removeDocked(filter_toolbar_container);
-        filter_options.addDocked(filter_formula_container);
+        filter_options.removeDocked(filter_toolbar);
+        filter_options.addDocked(filter_formula);
 
-        this.getFilters().addCls('x-active');
+        filters.addCls('x-active');
     },
 
     onFilterFormulaCancel: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions(),
-            filter_formula_container = this.getFilterFormulaContainer();
+            filter_formula = this.getFilterFormula();
 
-        var filter_toolbar_container = {
-            border: 0,
-            dock: 'top',
-            items: [{
-                xtype: 'reportfiltertoolbar'
-            }],
-            id: 'report_filter_toolbar_container'
+        var filter_toolbar = {
+            xtype: 'reportfiltertoolbar',
+            dock: 'top'
         };
 
-        filter_options.removeDocked(filter_formula_container);
-        filter_options.addDocked(filter_toolbar_container);
+        filter_options.removeDocked(filter_formula);
+        filter_options.addDocked(filter_toolbar);
 
         this.getFilters().removeCls('x-active');
     },

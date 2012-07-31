@@ -1787,7 +1787,7 @@ tr.x-container:before {
   height: 10px; }
 /* line 19, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset .x-form-text {
-  height: 25px; }
+  height: 24px; }
 /* line 23, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset textarea.x-form-field {
   height: auto; }
@@ -1796,7 +1796,7 @@ tr.x-container:before {
   height: 20px; }
 /* line 32, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset .x-form-trigger {
-  height: 25px; }
+  height: 24px; }
 /* line 36, ../themes/stylesheets/ext4/default/mixins/_reset-extras.scss */
 .x-border-box .x-reset .x-field-default-toolbar .x-form-trigger {
   height: 20px; }
@@ -5443,17 +5443,17 @@ textarea.x-form-field {
 
 /* line 36, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-text {
-  height: 21px;
-  line-height: 18px;
+  height: 20px;
+  line-height: 17px;
   vertical-align: top; }
 
 /* line 43, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-ie8m .x-form-text {
-  line-height: 18px; }
+  line-height: 17px; }
 
 /* line 48, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-border-box .x-form-text {
-  height: 25px; }
+  height: 24px; }
 
 /* line 52, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 textarea.x-form-field {
@@ -5498,7 +5498,7 @@ textarea.x-form-invalid-field {
 
 /* line 100, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-webkit .x-form-empty-field {
-  line-height: 18px; }
+  line-height: 17px; }
 
 /* line 105, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-display-field {
@@ -5522,7 +5522,7 @@ textarea.x-form-invalid-field {
 
 /* line 126, ../themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-ie .x-form-file {
-  height: 26px;
+  height: 25px;
   line-height: 18px;
   vertical-align: middle; }
 
@@ -5644,7 +5644,7 @@ textarea.x-form-invalid-field {
 /* line 124, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search label {
   line-height: 14px;
-  padding: 7px 0px 0px; }
+  padding: 7px 0px 0px !important; }
 
 /* line 130, ../sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search .icon-search {

@@ -6,9 +6,6 @@
 #report_filter_formula
 {
 	background: #454545;
-	border-bottom: 1px solid #333 !important;
-	border-top: 1px solid #333 !important;
-	padding: 12px 30px;
 	
 	.info,
 	.cancel
@@ -41,4 +38,10 @@
 	{
 		color: #ac030c;
 	}
+}
+
+#report_filter_formula > div
+{
+	border-bottom: 1px solid #333 !important;
+	border-top: 1px solid #333 !important;
 }

@@ -14,12 +14,8 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
     collapsed: false,
     collapsible: true,
     dockedItems: [{
-        border: 0,
-        dock: 'top',
-        items: [{
-            xtype: 'reportfiltertoolbar'
-        }],
-        id: 'report_filter_toolbar_container'
+        xtype: 'reportfiltertoolbar',
+        dock: 'top'
     }, {
         bodyBorder: false,
         border: 0,

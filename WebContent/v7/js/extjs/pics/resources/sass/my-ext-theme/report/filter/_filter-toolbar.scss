@@ -6,8 +6,6 @@
 #report_filter_toolbar
 {
 	background: #454545;
-	border-bottom: 1px solid #333 !important;
-	border-top: 1px solid #333 !important;
 	
 	.x-btn
 	{
@@ -30,4 +28,10 @@
 			color: #fff;
 		}
 	}
+}
+
+#report_filter_toolbar > div
+{
+	border-bottom: 1px solid #333 !important;
+	border-top: 1px solid #333 !important;
 }
