@@ -9,7 +9,7 @@ Ext.Loader.setConfig({
 Ext.require([
     'PICS.store.report.AvailableFields',
     'PICS.store.report.AvailableFieldsByCategory',
-    'PICS.store.report.DataSets',
+    'PICS.store.report.ReportDatas',
     'PICS.store.report.Reports',
     'PICS.view.layout.SearchBox',
     //'PICS.view.report.Viewport'
@@ -59,7 +59,7 @@ Ext.application({
     stores: [
         'report.AvailableFields',
         'report.AvailableFieldsByCategory',
-        'report.DataSets',
+        'report.ReportDatas',
         'report.Reports'
     ],
 

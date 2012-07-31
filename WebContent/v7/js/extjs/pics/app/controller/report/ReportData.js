@@ -8,7 +8,7 @@ Ext.define('PICS.controller.report.ReportData', {
 
     stores: [
         'report.Reports',
-        'report.DataSets'
+        'report.ReportDatas'
     ],
 
     init: function () {
@@ -89,6 +89,9 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onReportReconfigure: function (cmp, eOpts) {
+        var report_paging_toolbar = this.getReportPagingToolbar();
+        report_paging_toolbar.moveFirst();
+
         this.application.fireEvent('refreshreportdisplayinfo');
     },
 
@@ -97,7 +100,18 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onRowsPerPageSelect: function (cmp, records, options) {
-        this.getReportDataSetsStore().updateReportPaging(parseInt(cmp.getValue()));
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_data_store = this.getReportReportDatasStore(),
+            rows_per_page = parseInt(cmp.getValue()),
+            report_paging_toolbar = this.getReportPagingToolbar();
+
+        report.set('rowsPerPage', rows_per_page);
+
+        report_data_store.pageSize = rows_per_page;
+        report_data_store.configureProxyUrl(report);
+
+        report_paging_toolbar.moveFirst();
     },
 
     refreshReportDisplayInfo: function () {

@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
     extend: 'Ext.toolbar.Paging',
     alias: ['widget.reportpagingtoolbar'],
 
-    store: 'report.DataSets',
+    store: 'report.ReportDatas',
 
     border: 0,
     cls: 'paging-toolbar',

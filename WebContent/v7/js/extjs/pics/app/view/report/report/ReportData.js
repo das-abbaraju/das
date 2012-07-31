@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.ReportData', {
         'PICS.view.report.report.ReportPagingToolbar'
     ],
 
-    store: 'report.DataSets',
+    store: 'report.ReportDatas',
 
     border: 0,
     // column configuration must be specified - will be overridden dynamically

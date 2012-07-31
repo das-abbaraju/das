@@ -46,7 +46,8 @@ Ext.define('PICS.model.report.AvailableField', {
         type: 'string'
     }],
 
-    //hack to override ajax request and prevent ExtJs Error
+    // Must have a specified proxy when interacting with the Available Store
+    // hack to override ajax request and prevent ExtJs Error
     proxy: {
         type: 'memory'
     },
