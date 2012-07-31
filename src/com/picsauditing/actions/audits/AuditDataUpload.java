@@ -25,8 +25,10 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.SpringUtils;
 
 public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private static final long serialVersionUID = 2438788697676816034L;
@@ -48,7 +50,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
 	private int copyDataID = 0;
 	private String debugLog = null;
-	
+
 	@Override
 	public void prepare() throws Exception {
 		auditID = this.getParameter("auditData.audit.id");
@@ -61,7 +63,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
 			return SUCCESS;
 		}
-		
+
 		debugLog = null;
 
 		int dataID = auditData.getId();
@@ -133,9 +135,13 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			}
 		}
 
+		if (!hasActionErrors()) {
+			SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
+		}
+
 		return SUCCESS;
 	}
-	
+
 	public String deleteFile() throws Exception {
 		this.findConAudit();
 
@@ -143,7 +149,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
 			return SUCCESS;
 		}
-		
+
 		debugLog = null;
 
 		int dataID = auditData.getId();
@@ -177,7 +183,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			auditData.setQuestion(question);
 		} else
 			dataID = auditData.getId();
-		
+
 		if (dataID > 0) {
 			try {
 				// remove all files ie (pdf, jpg)
@@ -270,7 +276,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		auditData.setAnswer(extension);
 		auditData.setAuditColumns(permissions);
 		auditData.setDateVerified(null);
-		
+
 		auditDataDAO.save(auditData);
 		dataID = auditData.getId();
 
@@ -378,7 +384,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			return BLANK;
 		}
 	}
-	
+
 	private String initialize() throws Exception {
 		this.findConAudit();
 
@@ -386,7 +392,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
 			return SUCCESS;
 		}
-		
+
 		debugLog = null;
 
 		int dataID = auditData.getId();
@@ -421,24 +427,23 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		} else
 			dataID = auditData.getId();
 
-		
 		return null;
 	}
-	
+
 	private String postprocess() {
 		return null;
 	}
 
 	private ContractorAudit getPqfAudit(ContractorAccount contractor, int auditId) {
 		ContractorAudit audit = null;
-		
+
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (conAudit.getAuditType().getId() == auditId) {
 				audit = conAudit;
 				break;
 			}
 		}
-		
+
 		if (audit == null) {
 			AuditType auditType = auditTypeDAO.find(auditId);
 			if (auditType == null) {
@@ -454,28 +459,28 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			auditDao.save(conAudit);
 			contractorAccountDao.save(contractor);
 		}
-		
+
 		auditBuilder.buildAudits(contractor);
-		
+
 		return audit;
 	}
-	
+
 	private ImportPqf getImportPqf() {
 		ImportPqf importPqf = null;
-		
+
 		AuditData data = auditDataDAO.findAnswerByConQuestion(getConAudit().getContractorAccount().getId(), 7727);
-		
+
 		if (data != null && data.isAnswered()) {
 			if (data.getAnswer().equals("514")) // CanQual
-				importPqf = new ImportPqfCanQual();	
+				importPqf = new ImportPqfCanQual();
 			else if (data.getAnswer().equals("518")) // ISN Canada
-				importPqf = new ImportPqfIsn();	
+				importPqf = new ImportPqfIsn();
 			else if (data.getAnswer().equals("515")) // ComplyWorks
-				importPqf = new ImportPqfComplyWorks();				
+				importPqf = new ImportPqfComplyWorks();
 			else if (data.getAnswer().equals("1040")) // ISN US
-				importPqf = new ImportPqfIsnUs();				
+				importPqf = new ImportPqfIsnUs();
 		}
-		
+
 		return importPqf;
 	}
 

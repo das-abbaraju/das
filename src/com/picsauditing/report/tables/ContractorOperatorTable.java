@@ -1,7 +1,7 @@
 package com.picsauditing.report.tables;
 
 public class ContractorOperatorTable extends AbstractTable {
-	
+
 	public ContractorOperatorTable(String parentPrefix, String parentAlias) {
 		super("generalcontractors", "contractorOperator", "gc", "gc.subID = " + parentAlias + ".id");
 		this.parentPrefix = parentPrefix;
@@ -15,5 +15,6 @@ public class ContractorOperatorTable extends AbstractTable {
 
 	@Override
 	public void addJoins() {
+		addLeftJoin(new AccountTable(prefix + "Operator", alias + ".genID"));
 	}
 }

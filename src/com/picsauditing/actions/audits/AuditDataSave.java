@@ -126,73 +126,29 @@ public class AuditDataSave extends AuditActionSupport {
 				// insert mode
 				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
 				auditData.setAudit(audit);
-				if (!checkAnswerFormat(auditData, null)) {
+				if (!answerFormatValid(auditData, null)) {
 					return SUCCESS;
 				}
 				SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
 			} else {
 				// update mode
-				if (!checkAnswerFormat(auditData, newCopy)) {
+				if (!answerFormatValid(auditData, newCopy)) {
 					return SUCCESS;
 				}
 
-				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
-				boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
-				if (auditData.getComment() != null) {
-					if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
-						commentChanged = true;
-				}
+				commentChanged = hasCommentChanged(newCopy);
+				answerChanged = hasAnswerChanged(newCopy);
 
-				if (auditData.getAnswer() != null) {
-					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
-						answerChanged = true;
-				}
-
-				// update mode
 				if (commentChanged) {
 					newCopy.setComment(auditData.getComment());
 				}
 
 				if (answerChanged) {
-					if (isAudit && !isAnnualUpdate) {
-						AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
-						if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
-								&& permissions.isAdmin()) {
-							newCopy.setDateVerified(new Date());
-							newCopy.setAuditor(getUser());
-						}
-						if (newCopy.isVerified()
-								&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy.getAudit()
-										.getAuditType().getId() == AuditType.IEC_AUDIT)) {
-							newCopy.setDateVerified(null);
-							newCopy.setAuditor(null);
-						}
-					} else if (newCopy.isVerified()) {
-						newCopy.setDateVerified(null);
-						newCopy.setAuditor(null);
-					}
-
-					if (!checkAnswerFormat(auditData, newCopy)) {
-						auditData = newCopy;
-						return SUCCESS;
-					}
-
-					if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
-						newCopy.setWasChanged(YesNo.Yes);
-
-					newCopy.setAnswer(auditData.getAnswer());
-
+					changeAuditDataAnswer(newCopy);
 				}
 
 				if (verifyButton) {
-					// verify mode
-					if (newCopy.isVerified()) {
-						newCopy.setDateVerified(null);
-						newCopy.setAuditor(null);
-					} else {
-						newCopy.setDateVerified(new Date());
-						newCopy.setAuditor(getUser());
-					}
+					verifyAuditData(newCopy);
 				}
 
 				auditData = newCopy;
@@ -202,12 +158,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditData.setAuditColumns(permissions);
 
-			int questionId = auditData.getQuestion().getId();
-			if (questionId == 57) {
-				if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
-					addActionError("This is not a valid 2007 NAICS code");
-				}
-			}
+			checkNaicsQuestionAndValidity();
 
 			if (!auditData.getAnswer().isEmpty()) {
 				if (!areAllHSEJobRoleQuestionsAnswered(questionId, auditData.getAudit().getContractorAccount()))
@@ -219,10 +170,13 @@ public class AuditDataSave extends AuditActionSupport {
 			if (conAudit == null) {
 				findConAudit();
 			}
+
+			// TODO IS THIS NEEDED?
 			if (conAudit == null) {
 				addActionError(getText("Audit.error.AuditNotFound"));
 				return SUCCESS;
 			}
+			// END TODO
 
 			checkUniqueCode(conAudit);
 
@@ -353,6 +307,70 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 		autoFillRelatedOshaIncidentsQuestions(auditData);
 		return SUCCESS;
+	}
+
+	private void checkNaicsQuestionAndValidity() {
+		int questionId = auditData.getQuestion().getId();
+		if (questionId == 57) {
+			if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
+				addActionError("This is not a valid 2007 NAICS code");
+			}
+		}
+	}
+
+	private void verifyAuditData(AuditData newCopy) {
+		// verify mode
+		if (newCopy.isVerified()) {
+			newCopy.setDateVerified(null);
+			newCopy.setAuditor(null);
+		} else {
+			newCopy.setDateVerified(new Date());
+			newCopy.setAuditor(getUser());
+		}
+	}
+
+	private void changeAuditDataAnswer(AuditData newCopy) {
+		boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
+		boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
+
+		if (isAudit && !isAnnualUpdate) {
+			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+			if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
+					&& permissions.isAdmin()) {
+				newCopy.setDateVerified(new Date());
+				newCopy.setAuditor(getUser());
+			}
+			if (newCopy.isVerified()
+					&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy.getAudit().getAuditType()
+							.getId() == AuditType.IEC_AUDIT)) {
+				newCopy.setDateVerified(null);
+				newCopy.setAuditor(null);
+			}
+		} else if (newCopy.isVerified()) {
+			newCopy.setDateVerified(null);
+			newCopy.setAuditor(null);
+		}
+
+		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
+			newCopy.setWasChanged(YesNo.Yes);
+
+		newCopy.setAnswer(auditData.getAnswer());
+	}
+
+	private boolean hasAnswerChanged(AuditData newCopy) {
+		if (auditData.getAnswer() != null) {
+			if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean hasCommentChanged(AuditData newCopy) {
+		if (auditData.getComment() != null) {
+			if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
+				return true;
+		}
+		return false;
 	}
 
 	private boolean areAllHSEJobRoleQuestionsAnswered(int questionId, ContractorAccount contractor) {
@@ -626,7 +644,7 @@ public class AuditDataSave extends AuditActionSupport {
 		return list;
 	}
 
-	private boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
+	private boolean answerFormatValid(AuditData auditData, AuditData databaseCopy) {
 
 		if (databaseCopy == null) {
 			databaseCopy = auditData;
