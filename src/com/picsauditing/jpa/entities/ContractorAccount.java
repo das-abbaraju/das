@@ -487,12 +487,12 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isCcExpired() {
-		if (ccExpiration == null)
-			// Because this is new, some haven't been loaded yet
-			// Assume it's fine for now
+		if (ccExpiration == null) {
+			// Because this is new, some haven't been loaded yet. Assume it's fine for now
 			// TODO remove this section once we load all the dates
 			return true;
-
+		}
+		
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(ccExpiration);
 		expires.set(Calendar.DAY_OF_MONTH, 1);
