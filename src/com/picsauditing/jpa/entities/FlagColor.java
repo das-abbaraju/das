@@ -46,17 +46,19 @@ public enum FlagColor implements Translatable {
 				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + title + "\" />";
 	}
 
-	public String getSmallIcon() {
+	public String getSmallIcon(String columnName) {
 		I18nCache cache = I18nCache.getInstance();
 		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
+		if (columnName!=null)
+			title = columnName+": "+title;
 		if (this == FlagColor.Clear)
 			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
 	}
 
-	static public String getSmallIcon(String flagColor) {
-		return valueOf(flagColor).getSmallIcon();
+	static public String getSmallIcon(String flagColor, String columnName) {
+		return valueOf(flagColor).getSmallIcon(columnName);
 	}
 
 	public static FlagColor getWorseColor(FlagColor color1, FlagColor color2) {
