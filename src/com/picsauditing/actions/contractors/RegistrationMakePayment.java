@@ -274,7 +274,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private String contractorRiskUrl(String url) {
 		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
-			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
+			url = "RegistrationServiceEvaluation.action?id=" + contractor.getId();
 
 			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
 		} else if (contractor.getNonCorporateOperators().size() == 0) {
