@@ -127,7 +127,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(true);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn("");
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -148,7 +148,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(true);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn(alias);
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -168,7 +168,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(false);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn("");
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -189,7 +189,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(false);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn(alias);
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);

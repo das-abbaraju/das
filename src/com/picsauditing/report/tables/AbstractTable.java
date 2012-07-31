@@ -19,15 +19,15 @@ public abstract class AbstractTable {
 	protected String alias;
 	protected String parentPrefix;
 	protected String parentAlias;
-	protected String whereClause;
+	protected String onClause;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	protected List<AbstractTable> joinedTables = new ArrayList<AbstractTable>();
 
-	public AbstractTable(String tableName, String prefix, String alias, String whereClause) {
+	public AbstractTable(String tableName, String prefix, String alias, String onClause) {
 		this.tableName = tableName;
 		this.prefix = prefix;
 		this.alias = alias;
-		this.whereClause = whereClause;
+		this.onClause = onClause;
 
 		addFields();
 	}
@@ -83,12 +83,12 @@ public abstract class AbstractTable {
 	public void setParentAlias(String parentAlias) {
 		this.parentAlias = parentAlias;
 	}
-	public String getWhereClause() {
-		return whereClause;
+	public String getOnClause() {
+		return onClause;
 	}
 
-	public void setWhereClause(String whereClause) {
-		this.whereClause = whereClause;
+	public void setOnClause(String onClause) {
+		this.onClause = onClause;
 	}
 
 	public Map<String, Field> getAvailableFields() {

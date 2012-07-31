@@ -72,8 +72,10 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.messaging.FlagChange;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 
@@ -547,6 +549,7 @@ public class ContractorCron extends PicsActionSupport {
 				co.setProcessCompletion(new Date());
 			}
 			co.setWaitingOn(waitingOn);
+			SpringUtils.publishEvent(new ContractorOperatorWaitingOnChangedEvent(co));
 		}
 	}
 
