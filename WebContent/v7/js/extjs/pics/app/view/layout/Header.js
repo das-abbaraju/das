@@ -8,7 +8,7 @@ Ext.define('PICS.view.layout.Header', {
 
     border: 0,
     id: 'header',
-    height: 72, // hack to get box-shadow (should be 70)
+    height: 52, // hack to get box-shadow (should be 50)
     items: [{
         xtype: 'layoutmenu'
     }]

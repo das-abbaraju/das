@@ -3,9 +3,9 @@ Ext.define('PICS.view.report.Viewport', {
 
     requires: [
         'PICS.view.layout.Header',
-        'PICS.view.report.DataSetGrid',
-        'PICS.view.report.FilterOptions',
-        'PICS.view.report.Header'
+        'PICS.view.report.report.ReportData',
+        'PICS.view.report.filter.FilterOptions',
+        'PICS.view.report.header.ReportHeader'
     ],
 
     items: [{
@@ -14,16 +14,16 @@ Ext.define('PICS.view.report.Viewport', {
     }, {
         region: 'center',
 
-        border: false,
+        border: 0,
         id: 'content',
         items: [{
         	xtype: 'reportheader',
             region: 'north'
         }, {
-        	xtype: 'filteroptions',
+            xtype: 'reportfilteroptions',
             region: 'west'
         }, {
-        	xtype: 'reportdatasetgrid',
+        	xtype: 'reportdata',
             region: 'center'
         }],
         layout: 'border'

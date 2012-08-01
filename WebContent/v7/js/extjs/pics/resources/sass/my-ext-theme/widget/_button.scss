@@ -1,0 +1,343 @@
+/**
+ * Button style guide
+ * 
+ * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
+ *
+ * Ext.create('Ext.button.Button', {
+ *     cls: 'default' // theme
+ * });
+ *
+ * @author: Carey Hinoki
+ * @date: 2012-07-02
+ */
+ 
+ 
+// default
+
+$button_default_background_color: #dcdcdc;
+$button_default_border_color: #bcbcbc;
+$button_default_gradient_color_top: #f1f1f1;
+$button_default_gradient_color_bottom: #dcdcdc;
+$button_default_text_color: #333333;
+$button_default_text_shadow_color: none;
+
+$button_default_over_background_color: #ececec;
+$button_default_over_gradient_color_top: #f7f7f8;
+$button_default_over_gradient_color_bottom: #ececec;
+
+$button_default_pressed_background_color: #cdcdcd;
+$button_default_pressed_gradient_color_top: #dcdcdc;
+$button_default_pressed_gradient_color_bottom: #cdcdcd;
+
+$button_default_active_background_color: #cdcdcd;
+$button_default_active_gradient_color_top: #dcdcdc;
+$button_default_active_gradient_color_bottom: #cdcdcd;
+
+// primary
+
+$button_primary_background_color: #226396;
+$button_primary_border_color: #226396;
+$button_primary_gradient_color_top: #73bbe8;
+$button_primary_gradient_color_bottom: #226396;
+$button_primary_text_color: #ffffff;
+$button_primary_text_shadow_color: #226396;
+
+$button_primary_over_background_color: #396cc9;
+$button_primary_over_gradient_color_top: #60c9f3;
+$button_primary_over_gradient_color_bottom: #396cc9;
+
+$button_primary_pressed_background_color: #09366f;
+$button_primary_pressed_gradient_color_top: #336f9c;
+$button_primary_pressed_gradient_color_bottom: #09366f;
+
+$button_primary_active_background_color: #09366f;
+$button_primary_active_gradient_color_top: #336f9c;
+$button_primary_active_gradient_color_bottom: #09366f;
+
+// warning
+
+$button_warning_background_color: #e67e1c;
+$button_warning_border_color: #e67e1c;
+$button_warning_gradient_color_top: #fcc033;
+$button_warning_gradient_color_bottom: #e67e1c;
+$button_warning_text_color: #ffffff;
+$button_warning_text_shadow_color: #e67e1c;
+
+$button_warning_over_background_color: #f1a300;
+$button_warning_over_gradient_color_top: #fcd100;
+$button_warning_over_gradient_color_bottom: #f1a300;
+
+$button_warning_pressed_background_color: #d66000;
+$button_warning_pressed_gradient_color_top: #ea9000;
+$button_warning_pressed_gradient_color_bottom: #d66000;
+
+$button_warning_active_background_color: #d66000;
+$button_warning_active_gradient_color_top: #ea9000;
+$button_warning_active_gradient_color_bottom: #d66000;
+
+// info
+
+$button_info_background_color: #6ca6f6;
+$button_info_border_color: #6ca6f6;
+$button_info_gradient_color_top: #70cfff;
+$button_info_gradient_color_bottom: #6ca6f6;
+$button_info_text_color: #ffffff;
+$button_info_text_shadow_color: #6ca6f6;
+
+$button_info_over_background_color: #73d0f6;
+$button_info_over_gradient_color_top: #73ddff;
+$button_info_over_gradient_color_bottom: #73d0f6;
+
+$button_info_pressed_background_color: #5599fc;
+$button_info_pressed_gradient_color_top: #55a9ff;
+$button_info_pressed_gradient_color_bottom: #5599fc;
+
+$button_info_active_background_color: #5599fc;
+$button_info_active_gradient_color_top: #55a9ff;
+$button_info_active_gradient_color_bottom: #5599fc;
+
+// success
+
+$button_success_background_color: #229322;
+$button_success_border_color: #229322;
+$button_success_gradient_color_top: #33c033;
+$button_success_gradient_color_bottom: #229322;
+$button_success_text_color: #ffffff;
+$button_success_text_shadow_color: #229322;
+
+$button_success_over_background_color: #25b000;
+$button_success_over_gradient_color_top: #33d000;
+$button_success_over_gradient_color_bottom: #25b000;
+
+$button_success_pressed_background_color: #1c7600;
+$button_success_pressed_gradient_color_top: #299600;
+$button_success_pressed_gradient_color_bottom: #1c7600;
+
+$button_success_active_background_color: #1c7600;
+$button_success_active_gradient_color_top: #299600;
+$button_success_active_gradient_color_bottom: #1c7600;
+
+// danger
+
+$button_danger_background_color: #ac030c;
+$button_danger_border_color: #ac030c;
+$button_danger_gradient_color_top: #f6303c;
+$button_danger_gradient_color_bottom: #ac030c;
+$button_danger_text_color: #ffffff;
+$button_danger_text_shadow_color: #ac030c;
+
+$button_danger_over_background_color: #d00900;
+$button_danger_over_gradient_color_top: #f92626;
+$button_danger_over_gradient_color_bottom: #d00900;
+
+$button_danger_pressed_background_color: #8c0600;
+$button_danger_pressed_gradient_color_top: #c60c0c;
+$button_danger_pressed_gradient_color_bottom: #8c0600;
+
+$button_danger_active_background_color: #8c0600;
+$button_danger_active_gradient_color_top: #c60c0c;
+$button_danger_active_gradient_color_bottom: #8c0600;
+
+
+.x-btn-default-toolbar-small .x-btn-inner
+{
+	padding: 0px 7px;
+}
+
+// default
+
+.x-btn.default
+{
+	background: $button_default_background_color;
+	@include background-image(linear-gradient($button_default_gradient_color_top, $button_default_gradient_color_bottom));
+	border: 1px solid $button_default_border_color;
+}
+
+.x-btn.default.x-over
+{
+	background: $button_default_over_background_color;
+	@include background-image(linear-gradient($button_default_over_gradient_color_top, $button_default_over_gradient_color_bottom));
+}
+
+.x-btn.default.x-pressed
+{
+	background: $button_default_pressed_background_color;
+	@include background-image(linear-gradient($button_default_pressed_gradient_color_top, $button_default_pressed_gradient_color_bottom));
+}
+
+.x-btn.default.x-menu-active
+{
+	background: $button_default_active_background_color;
+	@include background-image(linear-gradient($button_default_active_gradient_color_top, $button_default_active_gradient_color_bottom));
+}
+
+.x-btn.default button span
+{
+	color: $button_default_text_color;
+	@include text-shadow(0px -1px 0px $button_default_text_shadow_color);
+}
+
+// primary 
+
+.x-btn.primary
+{
+	background: $button_primary_background_color;
+	@include background-image(linear-gradient($button_primary_gradient_color_top, $button_primary_gradient_color_bottom));
+	border: 1px solid $button_primary_border_color;
+}
+
+.x-btn.primary.x-over
+{
+	background: $button_primary_over_background_color;
+	@include background-image(linear-gradient($button_primary_over_gradient_color_top, $button_primary_over_gradient_color_bottom));
+}
+
+.x-btn.primary.x-pressed
+{
+	background: $button_primary_pressed_background_color;
+	@include background-image(linear-gradient($button_primary_pressed_gradient_color_top, $button_primary_pressed_gradient_color_bottom));
+}
+
+.x-btn.primary.x-menu-active
+{
+	background: $button_primary_active_background_color;
+	@include background-image(linear-gradient($button_primary_active_gradient_color_top, $button_primary_active_gradient_color_bottom));
+}
+
+.x-btn.primary button span
+{
+	color: $button_primary_text_color;
+	@include text-shadow(0px -1px 0px $button_primary_text_shadow_color);
+}
+
+// warning
+
+.x-btn.warning
+{
+	background: $button_warning_background_color;
+	@include background-image(linear-gradient($button_warning_gradient_color_top, $button_warning_gradient_color_bottom));
+	border: 1px solid $button_warning_border_color;
+}
+
+.x-btn.warning.x-over
+{
+	background: $button_warning_over_background_color;
+	@include background-image(linear-gradient($button_warning_over_gradient_color_top, $button_warning_over_gradient_color_bottom));
+}
+
+.x-btn.warning.x-pressed
+{
+	background: $button_warning_pressed_background_color;
+	@include background-image(linear-gradient($button_warning_pressed_gradient_color_top, $button_warning_pressed_gradient_color_bottom));
+}
+
+.x-btn.warning.x-menu-active
+{
+	background: $button_warning_active_background_color;
+	@include background-image(linear-gradient($button_warning_active_gradient_color_top, $button_warning_active_gradient_color_bottom));
+}
+
+.x-btn.warning button span
+{
+	color: $button_warning_text_color;
+	@include text-shadow(0px -1px 0px $button_warning_text_shadow_color);
+}
+
+// info
+
+.x-btn.info
+{
+	background: $button_info_background_color;
+	@include background-image(linear-gradient($button_info_gradient_color_top, $button_info_gradient_color_bottom));
+	border: 1px solid $button_info_border_color;
+}
+
+.x-btn.info.x-over
+{
+	background: $button_info_over_background_color;
+	@include background-image(linear-gradient($button_info_over_gradient_color_top, $button_info_over_gradient_color_bottom));
+}
+
+.x-btn.info.x-pressed
+{
+	background: $button_info_pressed_background_color;
+	@include background-image(linear-gradient($button_info_pressed_gradient_color_top, $button_info_pressed_gradient_color_bottom));
+}
+
+.x-btn.info.x-menu-active
+{
+	background: $button_info_active_background_color;
+	@include background-image(linear-gradient($button_info_active_gradient_color_top, $button_info_active_gradient_color_bottom));
+}
+
+.x-btn.info button span
+{
+	color: $button_info_text_color;
+	@include text-shadow(0px -1px 0px $button_info_text_shadow_color);
+}
+
+// success
+
+.x-btn.success
+{
+	background: $button_success_background_color;
+	@include background-image(linear-gradient($button_success_gradient_color_top, $button_success_gradient_color_bottom));
+	border: 1px solid $button_success_border_color;
+}
+
+.x-btn.success.x-over
+{
+	background: $button_success_over_background_color;
+	@include background-image(linear-gradient($button_success_over_gradient_color_top, $button_success_over_gradient_color_bottom));
+}
+
+.x-btn.success.x-pressed
+{
+	background: $button_success_pressed_background_color;
+	@include background-image(linear-gradient($button_success_pressed_gradient_color_top, $button_success_pressed_gradient_color_bottom));
+}
+
+.x-btn.success.x-menu-active
+{
+	background: $button_success_active_background_color;
+	@include background-image(linear-gradient($button_success_active_gradient_color_top, $button_success_active_gradient_color_bottom));
+}
+
+.x-btn.success button span
+{
+	color: $button_success_text_color;
+	@include text-shadow(0px -1px 0px $button_success_text_shadow_color);
+}
+
+// danger
+
+.x-btn.danger
+{
+	background: $button_danger_background_color;
+	@include background-image(linear-gradient($button_danger_gradient_color_top, $button_danger_gradient_color_bottom));
+	border: 1px solid $button_danger_border_color;
+}
+
+.x-btn.danger.x-over
+{
+	background: $button_danger_over_background_color;
+	@include background-image(linear-gradient($button_danger_over_gradient_color_top, $button_danger_over_gradient_color_bottom));
+}
+
+.x-btn.danger.x-pressed
+{
+	background: $button_danger_pressed_background_color;
+	@include background-image(linear-gradient($button_danger_pressed_gradient_color_top, $button_danger_pressed_gradient_color_bottom));
+}
+
+.x-btn.danger.x-menu-active
+{
+	background: $button_danger_active_background_color;
+	@include background-image(linear-gradient($button_danger_active_gradient_color_top, $button_danger_active_gradient_color_bottom));
+}
+
+.x-btn.danger button span
+{
+	color: $button_danger_text_color;
+	@include text-shadow(0px -1px 0px $button_danger_text_shadow_color);
+}

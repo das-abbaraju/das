@@ -28,10 +28,14 @@ $scope-reset-css: true;
  */
 
 $border-layout-ct-background: #ffffff;
+$button-small-text-padding: 7px; // bug -- currently does not have a !default in variables/_button.scss
+$button-medium-text-padding: 10px;
+$button-large-text-padding: 10px;
 $button-large-font-size: 13px;
 $color: #333333;
 $font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-size: 13px;
+$form-field-height: 24px !default;
 $menu-background-color: #ffffff !default;
 $menu-link-padding: 4px 15px 4px 15px !default;
 $menu-padding: 0px !default;
@@ -59,6 +63,11 @@ $toolbar-font-size: 13px;
  */
 
 @import 'my-ext-theme/layout/menu';
+
+.x-reset .x-tool img
+{
+	background-image: url('../../app/resources/images/tool-sprites.gif');
+}
 
 .x-nlg
 {

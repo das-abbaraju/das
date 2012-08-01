@@ -1,0 +1,117 @@
+// report header
+$report_data_header_border_color: #333333;
+
+// report rows
+$report_data_row_background_color: #ffffff;
+
+// report cell
+$report_data_cell_border_right_color: #dcdcdc;
+
+$report_data_cell_text_color: #333333;
+
+$report_data_cell_link_color: #226396;
+
+
+#report_data
+{
+	border: 1px solid #999;
+
+	// header
+	.x-grid-header-ct
+	{
+		border-bottom: 1px solid $report_data_header_border_color !important;
+		border-left: 1px solid transparent !important;
+		border-right: 1px solid transparent !important;
+		border-top: 1px solid $report_data_header_border_color !important;
+	}
+	
+	.x-column-header
+	{
+		border-right: 1px solid $report_data_header_border_color;
+		font-weight: bold;
+		text-shadow: none;
+	}
+	
+	.x-column-header-inner
+	{
+		cursor: pointer;
+		padding-left: 5px;
+		
+		span
+		{
+			color: #ccc;
+		}
+	}
+	
+	.x-column-header-inner.x-column-header-over
+	{
+		span
+		{
+			color: #fff;
+		}
+	}
+	
+	.x-row-numberer .x-column-header-inner
+	{
+		cursor: auto;
+	}
+	
+	.x-column-header-open
+	{
+		background: #222;
+		border-left: 1px solid #191919;
+		border-right: 1px solid #191919;
+		//border-top: 1px solid #090909;
+	}
+	
+	.x-grid-row .x-grid-cell-special
+	{
+		background: $report_data_row_background_color;
+		background-image: none !important;
+		border-right: 1px solid #dcdcdc;
+	}
+	
+	.x-grid-row-alt .x-grid-cell-special,
+	.x-grid-row-over .x-grid-cell-special,
+	{
+		background: $grid-row-cell-alt-background;
+	}
+	
+	.x-grid-row-selected .x-grid-cell,
+	.x-grid-row-selected .x-grid-rowwrap-div
+	{
+		background: #c3e0f9;
+		border-bottom: 1px solid #78bde8;
+		border-top: 1px solid #78bde8;
+	}
+	
+	.x-grid-cell-inner
+	{
+		color: $report_data_cell_text_color;
+		font-size: 14px;
+		line-height: 18px;
+		padding: 4px 6px 4px;
+	}
+	
+	.x-grid-cell-inner a
+	{
+		color: $report_data_cell_link_color;
+		text-decoration: none;
+	}
+	
+	.x-grid-cell-inner a:hover
+	{
+		text-decoration: underline;
+	}
+}
+
+#report_data-body
+{
+	border: 0px;
+	border-top: 0px !important;
+}
+
+#report_data-body .x-grid-cell
+{
+	border-right: 1px solid $report_data_cell_border_right_color;
+}

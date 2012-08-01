@@ -1,0 +1,37 @@
+#report_filter_toolbar_container
+{
+	border-right: 1px solid #999 !important;
+}
+
+#report_filter_toolbar
+{
+	background: #454545;
+	
+	.x-btn
+	{
+		background: none;
+		border: 0px;
+		@include border-radius(0px);
+		
+		span
+		{
+			color: #ccc;
+			font-size: 11px;
+			font-weight: bold;
+		}
+	}
+	
+	.x-btn.x-over
+	{
+		span
+		{
+			color: #fff;
+		}
+	}
+}
+
+#report_filter_toolbar > div
+{
+	border-bottom: 1px solid #333 !important;
+	border-top: 1px solid #333 !important;
+}
