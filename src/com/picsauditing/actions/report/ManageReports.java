@@ -103,7 +103,7 @@ public class ManageReports extends PicsActionSupport {
 		return ALL_REPORTS;
 	}
 
-	// TODO move to ReportDynamic.java
+	// TODO make this an ajax call
 	public String removeUserReport() {
 		try {
 			reportProvider.removeUserReport(permissions.getUserId(), reportId);
@@ -118,7 +118,7 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	// TODO move to ReportDynamic.java
+	// TODO make this an ajax call
 	public String deleteReport() {
 		try {
 			Report report = reportProvider.findOneReport(reportId);
