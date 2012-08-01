@@ -46,7 +46,6 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.ResultSetMetaData;
 import com.mysql.jdbc.Statement;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -122,7 +121,7 @@ public class ContractorFacilitiesTest {
 		mockActionContext();
 		initializeContractor();
 
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
+		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 
 		verify(entityManager).merge(any(ContractorAccount.class));
 	}
@@ -137,7 +136,7 @@ public class ContractorFacilitiesTest {
 
 		contractorFacilities.setId(contractorAccount.getId());
 
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
+		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 
 		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
@@ -149,7 +148,7 @@ public class ContractorFacilitiesTest {
 		ContractorAccount contractorAccount = initializeContractor();
 		contractorAccount.setStatus(AccountStatus.Pending);
 
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
+		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 
 		verify(entityManager).merge(any(ContractorAccount.class));
 	}
@@ -162,7 +161,7 @@ public class ContractorFacilitiesTest {
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
 		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
 
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
+		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 
 		verify(entityManager).merge(any(ContractorAccount.class));
 	}
@@ -212,7 +211,7 @@ public class ContractorFacilitiesTest {
 		when(entityManager.find(ContractorRegistrationRequest.class, 1)).thenReturn(request);
 		when(permissions.getAccountId()).thenReturn(1);
 
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
+		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 		assertTrue(actionContext.getSession().isEmpty());
 
 		verify(contractorAccount).syncBalance();
@@ -241,7 +240,7 @@ public class ContractorFacilitiesTest {
 		when(entityManager.find(ContractorRegistrationRequest.class, 1)).thenReturn(request);
 		when(permissions.getAccountId()).thenReturn(1);
 
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
+		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
 		assertTrue(actionContext.getSession().isEmpty());
 		assertFalse(contractorAccount.getOperatorTags().isEmpty());
 
@@ -251,33 +250,20 @@ public class ContractorFacilitiesTest {
 	}
 
 	@Test
-	public void testExecute_ButtonEmpty() throws Exception {
-		mockActionContext();
-		initializeContractor();
-
-		contractorFacilities.setButton("");
-
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
-
-		verify(entityManager).merge(any(ContractorAccount.class));
-	}
-
-	@Test
 	public void testExecute_SearchOperatorNameProvided() throws Exception {
 		mockActionContext();
 		initializeContractor();
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setOperator(new OperatorAccount());
 		contractorFacilities.getOperator().setName("Test");
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(new ArrayList<OperatorAccount>());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
 
 	@Test
@@ -285,43 +271,38 @@ public class ContractorFacilitiesTest {
 		mockActionContext();
 		initializeContractor();
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setState("State");
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(new ArrayList<OperatorAccount>());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_SearchStateEmpty() throws Exception {
-		mockActionContext();
+	public void testSearch_StateEmpty() throws Exception {
 		initializeContractor();
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setState("");
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(new ArrayList<OperatorAccount>());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_SearchResults() throws Exception {
-		mockActionContext();
+	public void testSearch_WithResults() throws Exception {
 		ContractorAccount contractorAccount = initializeContractor();
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setState("State");
 		contractorFacilities.setOperator(new OperatorAccount());
 
@@ -345,31 +326,27 @@ public class ContractorFacilitiesTest {
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(contractorAccount.getOperators()).thenReturn(operators);
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 		assertEquals(1, contractorFacilities.getSearchResults().size());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_SearchNonCorporateOperatorsSizeZero() throws Exception {
-		mockActionContext();
+	public void testSearch_NonCorporateOperatorsSizeZero() throws Exception {
 		initializeContractor();
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setOperator(new OperatorAccount());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
 		verifyStatic();
 		SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class));
 	}
 
 	@Test
-	public void testExecute_SearchNonCorporateOperatorsSizeZeroWithResult() throws Exception {
-		mockActionContext();
+	public void testSearch_NonCorporateOperatorsSizeZeroWithResult() throws Exception {
 		initializeContractor();
 
 		BasicDynaBean basicDynaBean = mock(BasicDynaBean.class);
@@ -385,20 +362,18 @@ public class ContractorFacilitiesTest {
 		when(SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class))).thenReturn(
 				data);
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setOperator(new OperatorAccount());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertFalse(contractorFacilities.getSearchResults().isEmpty());
+		assertEquals("Test Operator", contractorFacilities.getSearchResults().get(0).getName());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
 		verifyStatic();
 		SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class));
 	}
 
 	@Test
-	public void testExecute_SearchSimilarOperatorsNonCorporate() throws Exception {
-		mockActionContext();
+	public void testSearch_SimilarOperatorsNonCorporate() throws Exception {
 		ContractorAccount contractorAccount = initializeContractor();
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
 		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
@@ -406,21 +381,17 @@ public class ContractorFacilitiesTest {
 		when(SmartFacilitySuggest.getSimilarOperators(any(ContractorAccount.class), anyInt())).thenReturn(
 				new ArrayList<BasicDynaBean>());
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setOperator(new OperatorAccount());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertTrue(contractorFacilities.hasActionMessages());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
 		verifyStatic();
 		SmartFacilitySuggest.getSimilarOperators(any(ContractorAccount.class), anyInt());
 	}
 
 	@Test
-	public void testExecute_SearchSimilarOperatorCorporateNoSharedOperators() throws Exception {
-		mockActionContext();
-
+	public void testSearch_SimilarOperatorCorporateNoSharedOperators() throws Exception {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		when(entityManager.find(ContractorAccount.class, contractor.getId())).thenReturn(contractor);
 		EntityFactory.addContractorOperator(contractor, EntityFactory.makeOperator());
@@ -441,11 +412,10 @@ public class ContractorFacilitiesTest {
 
 		corporate.getOperatorFacilities().add(facility);
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setId(contractor.getId());
 		contractorFacilities.setOperator(new OperatorAccount());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 		assertFalse(contractorFacilities.getSearchResults().isEmpty());
 
@@ -453,10 +423,7 @@ public class ContractorFacilitiesTest {
 	}
 
 	@Test
-	public void testExecute_SearchSimilarOperatorCorporateSharedOperators() throws Exception {
-		mockActionContext();
-		mockActionContext();
-
+	public void testSearch_SimilarOperatorCorporateSharedOperators() throws Exception {
 		OperatorAccount operator = EntityFactory.makeOperator();
 
 		ContractorAccount contractor = EntityFactory.makeContractor();
@@ -477,11 +444,10 @@ public class ContractorFacilitiesTest {
 
 		corporate.getOperatorFacilities().add(facility);
 
-		contractorFacilities.setButton("search");
 		contractorFacilities.setId(contractor.getId());
 		contractorFacilities.setOperator(new OperatorAccount());
 
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 		assertTrue(contractorFacilities.getSearchResults().isEmpty());
 
@@ -489,8 +455,7 @@ public class ContractorFacilitiesTest {
 	}
 
 	@Test
-	public void testExecute_SearchShowAll() throws Exception {
-		mockActionContext();
+	public void testSearchShowAll() throws Exception {
 		initializeContractor();
 
 		mockStatic(DBBean.class);
@@ -504,186 +469,166 @@ public class ContractorFacilitiesTest {
 		when(statement.executeQuery(anyString())).thenReturn(resultSet);
 		when(resultSet.getMetaData()).thenReturn(metaData);
 
-		contractorFacilities.setButton("searchShowAll");
-		assertEquals("search", contractorFacilities.execute());
+		assertEquals("search", contractorFacilities.searchShowAll());
 
-		verify(entityManager).merge(any(ContractorAccount.class));
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_ValidateBidOnly() throws Exception {
-		mockActionContext();
-		initializeContractor();
-
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operatorAccount);
-
-		contractorFacilities.setOperator(operatorAccount);
-
-		contractorFacilities.setButton("validateBidOnly");
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-	}
-
-	@Test
-	public void testExecute_Load() throws Exception {
-		mockActionContext();
-		initializeContractor();
-
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(new ArrayList<ContractorOperator>());
-
-		contractorFacilities.setButton("load");
-		assertEquals("load", contractorFacilities.execute());
-	}
-
-	@Test
-	public void testExecute_Request() throws Exception {
-		mockActionContext();
-		initializeContractor();
-
-		contractorFacilities.setOperator(new OperatorAccount());
-
-		contractorFacilities.setButton("request");
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-
-		verify(entityManager).merge(any(ContractorAccount.class));
-	}
-
-	@Test
-	public void testExecute_RequestWithOperator() throws Exception {
-		mockActionContext();
+	public void testValidateBidOnly() throws Exception {
 		ContractorAccount contractor = initializeContractor();
 
-		contractorFacilities.setOperator(EntityFactory.makeOperator());
+		OperatorAccount operator = EntityFactory.makeOperator();
+		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
 
-		contractorFacilities.setButton("request");
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(operator);
 
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-		assertEquals(contractorFacilities.getOperator(), contractor.getRequestedBy());
-
-		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.validateBidOnly());
 	}
 
 	@Test
-	public void testExecute_RequestWithOperatorBidOnly() throws Exception {
-		mockActionContext();
-
-		ContractorAccount contractorAccount = initializeContractor(true);
-		contractorAccount.setAccountLevel(AccountLevel.BidOnly);
-
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setAcceptsBids(false);
-
-		contractorFacilities.setOperator(operatorAccount);
-
-		contractorFacilities.setButton("request");
-
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-		assertTrue(contractorAccount.isRenew());
-		assertEquals(AccountLevel.BidOnly, contractorAccount.getAccountLevel());
-
-		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
-	}
-
-	@Test
-	public void testExecute_SwitchToTrialAccount() throws Exception {
-		mockActionContext();
-
-		ContractorAccount contractorAccount = initializeContractor(true);
-
-		contractorFacilities.setButton("SwitchToTrialAccount");
-
-		assertEquals(ActionSupport.SUCCESS, contractorFacilities.execute());
-		assertFalse(contractorAccount.isRenew());
-		assertEquals(AccountLevel.BidOnly, contractorAccount.getAccountLevel());
-
-		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
-	}
-
-	@Test
-	public void testExecute_AddOperatorServiceMismatch() throws Exception {
-		mockActionContext();
+	public void testLoad() throws Exception {
 		initializeContractor();
-
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setOffsiteServices(true);
-		operatorAccount.setOnsiteServices(false);
-		contractorFacilities.setOperator(operatorAccount);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(new ArrayList<ContractorOperator>());
 
-		contractorFacilities.setButton("addOperator");
+		assertEquals("load", contractorFacilities.load());
+	}
 
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-		assertTrue(contractorFacilities.hasActionErrors());
+	@Test
+	public void testSetRequestedBy() throws Exception {
+		ContractorAccount contractor = initializeContractor();
+
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(new OperatorAccount());
+
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.setRequestedBy());
+
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
+	}
+
+	@Test
+	public void testSetRequestedBy_WithOperator() throws Exception {
+		ContractorAccount contractor = initializeContractor();
+
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(EntityFactory.makeOperator());
+
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.setRequestedBy());
+		assertEquals(contractorFacilities.getOperator(), contractor.getRequestedBy());
 
 		verify(entityManager).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_AddOperatorServiceMatch() throws Exception {
-		mockActionContext();
+	public void testSetRequestedBy_WithOperatorBidOnly() throws Exception {
+		ContractorAccount contractor = initializeContractor(true);
+		contractor.setAccountLevel(AccountLevel.BidOnly);
 
-		ContractorAccount contractorAccount = initializeContractor(true);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setAcceptsBids(false);
+
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(operator);
+
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.setRequestedBy());
+		assertTrue(contractor.isRenew());
+		assertEquals(AccountLevel.BidOnly, contractor.getAccountLevel());
+
+		verify(entityManager).merge(any(ContractorAccount.class));
+	}
+
+	@Test
+	public void testSwitchToTrialAccount() throws Exception {
+		ContractorAccount contractor = initializeContractor(true);
+
+		contractorFacilities.setContractor(contractor);
+
+		assertEquals(PicsActionSupport.BLANK, contractorFacilities.switchToTrialAccount());
+		assertFalse(contractor.isRenew());
+		assertEquals(AccountLevel.BidOnly, contractor.getAccountLevel());
+
+		verify(entityManager).merge(any(ContractorAccount.class));
+	}
+
+	@Test
+	public void testAdd_OperatorServiceMismatch() throws Exception {
+		ContractorAccount contractor = initializeContractor();
+
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setOffsiteServices(true);
+		operator.setOnsiteServices(false);
+
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(operator);
+
+		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(query.getResultList()).thenReturn(new ArrayList<ContractorOperator>());
+
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.add());
+		assertTrue(contractorFacilities.hasActionErrors());
+
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
+	}
+
+	@Test
+	public void testAdd_OperatorServiceMatch() throws Exception {
+		ContractorAccount contractor = initializeContractor(true);
 
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
 		operatorAccount.setOnsiteServices(true);
+
+		contractorFacilities.setContractor(contractor);
 		contractorFacilities.setOperator(operatorAccount);
 
-		contractorFacilities.setButton("addOperator");
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.add());
+		assertTrue(contractor.isRenew());
 
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-		assertTrue(contractorAccount.isRenew());
-
-		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
+		verify(entityManager).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_RemoveOperatorPendingContractorNoOperators() throws Exception {
-		mockActionContext();
+	public void testRemove_OperatorPendingContractorNoOperators() throws Exception {
+		ContractorAccount contractor = initializeContractor(true);
+		contractor.setStatus(AccountStatus.Pending);
 
-		ContractorAccount contractorAccount = initializeContractor(true);
-		contractorAccount.setStatus(AccountStatus.Pending);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		contractor.setRequestedBy(operator);
 
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		contractorAccount.setRequestedBy(operatorAccount);
-		contractorFacilities.setOperator(operatorAccount);
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(operator);
 
-		contractorFacilities.setButton("removeOperator");
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.remove());
+		assertNull(contractor.getRequestedBy());
 
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-		assertNull(contractorAccount.getRequestedBy());
-
-		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
+		verify(entityManager, never()).merge(any(ContractorAccount.class));
 	}
 
 	@Test
-	public void testExecute_RemoveOperatorPendingContractorOneOperator() throws Exception {
-		mockActionContext();
-
+	public void testRemove_OperatorPendingContractorOneOperator() throws Exception {
 		OperatorAccount nonCorporate = EntityFactory.makeOperator();
 
-		ContractorAccount contractorAccount = initializeContractor(true);
-		contractorAccount.setStatus(AccountStatus.Pending);
-		EntityFactory.addContractorOperator(contractorAccount, nonCorporate);
+		ContractorAccount contractor = initializeContractor(true);
+		contractor.setStatus(AccountStatus.Pending);
+		EntityFactory.addContractorOperator(contractor, nonCorporate);
 
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		contractorAccount.setRequestedBy(operatorAccount);
-		contractorFacilities.setOperator(operatorAccount);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		contractor.setRequestedBy(operator);
 
-		contractorFacilities.setButton("removeOperator");
+		contractorFacilities.setContractor(contractor);
+		contractorFacilities.setOperator(operator);
 
-		assertEquals(PicsActionSupport.JSON, contractorFacilities.execute());
-		assertEquals(nonCorporate, contractorAccount.getRequestedBy());
+		assertEquals(PicsActionSupport.JSON, contractorFacilities.remove());
+		assertEquals(nonCorporate, contractor.getRequestedBy());
 
-		verify(entityManager, times(3)).merge(any(ContractorAccount.class));
+		verify(entityManager).merge(any(ContractorAccount.class));
 	}
 
 	@Test
 	public void testIsTrialContractor() {
 		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-
 		contractorFacilities.setContractor(contractorAccount);
 
 		assertFalse(contractorFacilities.isTrialContractor());
