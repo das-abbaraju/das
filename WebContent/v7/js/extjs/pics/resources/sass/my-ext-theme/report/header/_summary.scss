@@ -1,7 +1,7 @@
 // report summary
 $report_summary_name_text_color: #73bbe8;
 
-$report_summary_description_color: #828285;
+$report_summary_description_text_color: #808285;
 
 #report_summary
 {
@@ -17,7 +17,7 @@ $report_summary_description_color: #828285;
 
 #report_summary .description
 {
-	color: $report_summary_description_color;
+	color: $report_summary_description_text_color;
 	font-size: 14px;
 	font-weight: normal;
 }
