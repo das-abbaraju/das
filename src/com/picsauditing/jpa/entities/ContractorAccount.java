@@ -1293,7 +1293,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public Boolean hasPastDueInvoice() {
 		for (Invoice in : invoices) {
 			if (in.getStatus().equals(TransactionStatus.Unpaid)) {
-				if (in.getDueDate() != null && in.getDueDate().before(new Date())) {
+				if (in.getDueDate() == null || in.getDueDate().before(new Date())) {
 					return true;
 				}
 			}
