@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -20,7 +19,6 @@ import org.powermock.reflect.Whitebox;
 import com.google.common.collect.Lists;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -54,13 +52,14 @@ public class ContractorCronTest {
 	/**
 	 * Test that no WCBs are added to the list if all the WCBs are NOT about to
 	 * expire and they all have a status of Submitted further in the workflow.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountOnlyWCBs() {
+	public void testContractorAccountOnlyWCBs() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountWithOnlyWCBs();		
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 						
 		assertTrue(audits.isEmpty());
 	}
@@ -68,13 +67,14 @@ public class ContractorCronTest {
 	/**
 	 * The reason for this test is that getExpiringPolicies() only check for expiring
 	 * WCBs or Policies.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountNoPoliciesOrWCBs() {
+	public void testContractorAccountNoPoliciesOrWCBs() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountNoPoliciesOrWCBs();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		
 		assertTrue(audits.isEmpty());
 	}
@@ -82,13 +82,14 @@ public class ContractorCronTest {
 	/**
 	 * Since the Audit (Policy) expired outside the range we are checking for, the list
 	 * returned should be empty.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountPolicyExpiredTwoMonthsAgo() {
+	public void testContractorAccountPolicyExpiredTwoMonthsAgo() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountPolicyExpiredTwoMonthsAgo();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		
 		assertTrue(audits.isEmpty());
 	}
@@ -96,26 +97,28 @@ public class ContractorCronTest {
 	/**
 	 * Since the Audit (WCB) expired outside the range we are checking for, the list
 	 * returned should be empty.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountWCBExpiredTwoMonthsAgo() {
+	public void testContractorAccountWCBExpiredTwoMonthsAgo() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountWCBExpiredTwoMonthsAgo();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		
 		assertTrue(audits.isEmpty());
 	}
 	
 	/**
 	 * Test to verify that the expired Audit returned in the list is the Policy.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountMultipleAuditsExpiredPolicy() {
+	public void testContractorAccountMultipleAuditsExpiredPolicy() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredPolicy();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		
 		assertEquals(1, audits.size());
 		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
@@ -125,11 +128,11 @@ public class ContractorCronTest {
 	}
 	
 	@Test
-	public void testContractorAccountMultipleAuditsExpiredWCB() {
+	public void testContractorAccountMultipleAuditsExpiredWCB() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 
 		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredWCB();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertEquals(1, audits.size());
 		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
@@ -141,13 +144,14 @@ public class ContractorCronTest {
 	/**
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
 	 * Submitted or greater and is for the current year, no audit should be in the list.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountOverlappingValidWCBs() {
+	public void testContractorAccountOverlappingValidWCBs() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYears();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		
 		assertTrue(audits.isEmpty());
 	}
@@ -155,67 +159,68 @@ public class ContractorCronTest {
 	/**
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
 	 * Incomplete, then it should be in the expiring audit list.
+	 * @throws Exception 
 	 */
-	@Ignore("Not ready to run yet.")
 	@Test
-	public void testContractorAccountOverlappingWCBsIncomplete() {
+	public void testContractorAccountOverlappingWCBsIncomplete() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 		
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsIncomplete();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 		
 		assertEquals(1, audits.size());
 		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
 			ContractorAudit contractorAudit = iterator.next();
-			assertEquals(DateBean.addField(new Date(), Calendar.DATE, -2), contractorAudit.getExpiresDate());
+			assertTrue(areDatesEqual(DateBean.addField(new Date(), Calendar.DATE, -2), contractorAudit.getExpiresDate(), 100));
 		}
 	}	
 	
 	/**
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
 	 * Pending, then it should be in the expiring audit list.
+	 * @throws Exception 
 	 */
-	@Ignore("Not ready to run yet.")
 	@Test
-	public void testContractorAccountOverlappingWCBsPending() {
+	public void testContractorAccountOverlappingWCBsPending() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsPending();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertEquals(2, audits.size());
 		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
 			ContractorAudit contractorAudit = iterator.next();
-			assertEquals(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), contractorAudit.getExpiresDate());
+			assertTrue(areDatesEqual(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), contractorAudit.getExpiresDate(), 100));
 		}
 	}
 	
 	/**
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
 	 * Pending, then it should be in the expiring audit list.
+	 * @throws Exception 
 	 */
 	@Test
-	public void testContractorAccountOverlappingWCBsComplete() {
+	public void testContractorAccountOverlappingWCBsComplete() throws Exception {
 		ContractorCron contractorCron = new ContractorCron();
 
 		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsComplete();
-		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		Set<ContractorAudit> audits = Whitebox.invokeMethod(contractorCron, "getExpiringPolicies", contractorAccount);
 
 		assertTrue(audits.isEmpty());
 	}
 	
+	// TODO: Find out if there is another method that does this
 	/**
-	 * If there there are overlapping WCBs, one is expiring and the other has a status of
-	 * Pending, then it should be in the expiring audit list.
+	 * Return true if the Dates are within the range of the offset. 
+	 * 
+	 * @param date1
+	 * @param date2
+	 * @param offset - difference between dates in milliseconds
+	 * @return
 	 */
-	@Test
-	public void testContractorAccountRenewableAudits() {
-		ContractorCron contractorCron = new ContractorCron();
-
-//		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsComplete();
-//		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
-
-//		assertTrue(audits.isEmpty());
+	private boolean areDatesEqual(Date date1, Date date2, long offset) {
+		long actualOffset = Math.abs(date2.getTime() - date1.getTime());
+		return (actualOffset <= offset);
 	}
 	
 	private ContractorAccount setupContractorAccountWCBExpiredTwoMonthsAgo() {

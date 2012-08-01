@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditCategoryMatrixDAO;
-import com.picsauditing.dao.AuditDataDAO;
+//import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -55,7 +55,7 @@ public class AuditBuilder {
 
 	private User systemUser = new User(User.SYSTEM);
 	
-	private AuditDataDAO auditDataDAO;
+//	private AuditDataDAO auditDataDAO;
 	
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToResubmit = new HashSet<ContractorAuditOperator>();
@@ -95,7 +95,7 @@ public class AuditBuilder {
 								// we should never add another welcome call audit
 								found = true;
 							} else if (auditType.isWCB()) {
-								if (conAudit.getAuditFor().equals(DateBean.getWCBYear())) {
+								if (DateBean.getWCBYear().equals(conAudit.getAuditFor())) {
 									found = true;
 								}
 							} else {
@@ -220,24 +220,28 @@ public class AuditBuilder {
 	}
 
 	private boolean canDelete(ContractorAudit conAudit) {
-		// Never delete the PQF
-		if (conAudit.getAuditType().isPqf())
+		// Never delete the PQF or WCB
+		if (conAudit.getAuditType().isPqf() || conAudit.getAuditType().isWCB()) {
 			return false;
+		}
 
 		if (conAudit.getScheduledDate() != null) {
 			return false;
 		}
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Pending))
+			if (cao.getStatus().after(AuditStatus.Pending)) {
 				return false;
-			else if (cao.getPercentComplete() > 0)
+			}
+			else if (cao.getPercentComplete() > 0) {
 				return false;
+			}
 		}
 
 		if (conAudit.getData().size() == 0) {
 			return false;
 		}
+		
 		return true;
 	}
 

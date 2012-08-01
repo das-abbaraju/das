@@ -124,7 +124,7 @@ public class AuditDataSaveTest {
 		auditData.setAnswer("01/31/2025");
 
 		setupCheckUniqueCode("exipireMonths12");
-		auditDataSave.checkUniqueCode(audit);
+		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
 		assertNotNull(audit.getExpiresDate());
 		date = audit.getExpiresDate();
 		assertEquals("01/31/2026", format.format(date));
@@ -270,7 +270,7 @@ public class AuditDataSaveTest {
 
 	@Test
 	public void testExecute_SetAnswerToDateOrRecordError_DateGoodSetAnswer() throws Exception {
-		String testFormat = "dd-MM-yyyy";
+		String testFormat = "MM-dd-yyyy";
 		String dbFormat = "yyyy-MM-dd";
 		SimpleDateFormat format = new SimpleDateFormat(testFormat);
 		Date now = new Date();

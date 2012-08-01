@@ -188,6 +188,7 @@ public class DateBean {
 		if (getDateDifference(wcbYearStart.getTime(), now.getTime()) < 0) {
 			return "" + wcbYearStart.get(Calendar.YEAR);
 		}
+		
 		return "" + (wcbYearStart.get(Calendar.YEAR) + 1);
 	}
 
@@ -548,7 +549,7 @@ public class DateBean {
 	protected static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(field, amount);		
+		calendar.add(field, amount);
 		
 		return calendar;
 	}
@@ -700,6 +701,7 @@ public class DateBean {
 		sunday.set(Calendar.DAY_OF_WEEK, 1);
 		int closestmonth = DateBean.getDateDifference(startDate, month.getTime());
 		int closestsunday = DateBean.getDateDifference(startDate, sunday.getTime());
+		
 		if (closestmonth > closestsunday)
 			return month.getTime();
 		else

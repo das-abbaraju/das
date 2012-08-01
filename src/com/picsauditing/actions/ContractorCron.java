@@ -75,10 +75,10 @@ import com.picsauditing.messaging.Publisher;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
+	
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
@@ -610,8 +610,7 @@ public class ContractorCron extends PicsActionSupport {
 		return unsentWeeklyInsuranceSubscriptions;
 	}
 
-	@Testable
-	Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
+	private Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
 		Set<ContractorAudit> expiringAudits = new HashSet<ContractorAudit>();
 		Map<Integer, List<ContractorAudit>> policies = createAuditPolicyMap(contractor);
 

@@ -13,8 +13,10 @@ import java.util.TimeZone;
 import org.junit.Test;
 
 public class DateBeanTest  {
+	
 	TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
 	TimeZone pacificTimeZone = TimeZone.getTimeZone("US/Pacific");
+	
 	private static List<String> february03_2001 = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
 	{

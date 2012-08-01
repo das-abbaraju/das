@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -456,10 +457,7 @@ public class CaoSave extends AuditActionSupport {
 			}
 		}
 		
-		// TODO: remove this ASAP (once we can expire audits)
-		if (!audit.getAuditType().isWCB()) {
-			expireOldAudits(step, audit);
-		}
+		expireOldAudits(step, audit);
 	}
 
 	private void expireOldAudits(WorkflowStep step, ContractorAudit audit) {
@@ -468,7 +466,10 @@ public class CaoSave extends AuditActionSupport {
 			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
 				if (!oldAudit.equals(audit) && !oldAudit.isExpired()) {
 					if (oldAudit.getAuditType().equals(audit.getAuditType())) {
-						if (!audit.getAuditType().isHasMultiple() && !audit.getAuditType().isRenewable()) {
+						if (audit.getAuditType().isWCB()) {
+							oldAudit.setExpiresDate(DateBean.getWCBExpirationDate(oldAudit.getAuditFor()));
+						}
+						else if (!audit.getAuditType().isHasMultiple() && !audit.getAuditType().isRenewable()) {
 							oldAudit.setExpiresDate(new Date());
 							auditDao.save(oldAudit);
 						}

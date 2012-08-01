@@ -351,15 +351,24 @@ public class ContractorAudit extends AbstractIndexableTable {
 			// We normally don't call getEffectiveDateLabel() for PQF
 			return new Date();
 		}
+		
 		if (auditType.isAnnualAddendum()) {
 			// We normally don't call getEffectiveDateLabel() for Annual Update
 			Calendar cal = Calendar.getInstance();
 			cal.set(Integer.parseInt(auditFor), Calendar.JANUARY, 1);
 			return cal.getTime();
 		}
+		
+		if (auditType.isWCB()) {
+			if (!Strings.isEmpty(auditFor)) {
+				return DateBean.parseDate("01/01/" + auditFor);
+			}
+		}
+		
 		if (effectiveDate != null) {
 			return effectiveDate;
 		}
+		
 		return creationDate;
 	}
 

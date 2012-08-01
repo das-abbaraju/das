@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditData;
@@ -24,6 +28,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class CertificateDAO extends PicsDAO {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CertificateDAO.class);
+	
 	@Transactional(propagation = Propagation.NESTED)
 	public Certificate save(Certificate o) {
 		if (o.getId() == 0) {
@@ -150,7 +157,11 @@ public class CertificateDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Map<Integer, List<Integer>> findOpsMapByCert(List<Integer> certID) {
+	public Map<Integer, List<Integer>> findOpsMapByCert(List<Integer> certificateIds) {
+		if (CollectionUtils.isEmpty(certificateIds)) {
+			return Collections.emptyMap();
+		}
+		
 		Database db = new Database();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
 		SelectSQL sql = new SelectSQL("audit_category_rule acr");
@@ -158,20 +169,22 @@ public class CertificateDAO extends PicsDAO {
 		sql.addJoin("JOIN audit_category ac ON acr.catID = ac.id");
 		sql.addJoin("JOIN audit_question aq ON acr.catID = aq.categoryID");
 		sql.addJoin("JOIN pqfdata pd ON pd.questionID = aq.id");
-		sql.addWhere("pd.answer IN( " + Strings.implode(certID) + ") AND aq.questionType = 'FileCertificate'");
+		sql.addWhere("pd.answer IN( " + Strings.implode(certificateIds) + ") AND aq.questionType = 'FileCertificate'");
 
 		try {
 			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
 			for (BasicDynaBean row : resultBDB) {
-				Integer cID = Integer.parseInt((String) row.get("answer"));
-				Integer opID = (Integer) row.get("opID");
-				if (resultMap.get(cID) == null)
-					resultMap.put(cID, new ArrayList<Integer>());
-				resultMap.get(cID).add(opID);
+				Integer certificateId = Integer.parseInt((String) row.get("answer"));
+				Integer operatorId = (Integer) row.get("opID");
+				if (resultMap.get(certificateId) == null)					
+					resultMap.put(certificateId, new ArrayList<Integer>());
+				
+				resultMap.get(certificateId).add(operatorId);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+			logger.error("Error while searching for certificate ids = {}", certificateIds, e);
 		}
 
 		return resultMap;
