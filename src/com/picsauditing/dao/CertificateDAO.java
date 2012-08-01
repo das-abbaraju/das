@@ -57,7 +57,6 @@ public class CertificateDAO extends PicsDAO {
 		if (row != null)
 			em.remove(row);
 	}
-
 	
 	public List<Certificate> findByConId(int conID) {
 		Query q = em.createQuery("SELECT c FROM Certificate c WHERE c.contractor.id = ? ");
@@ -176,14 +175,13 @@ public class CertificateDAO extends PicsDAO {
 			for (BasicDynaBean row : resultBDB) {
 				Integer certificateId = Integer.parseInt((String) row.get("answer"));
 				Integer operatorId = (Integer) row.get("opID");
-				if (resultMap.get(certificateId) == null)					
+				if (resultMap.get(certificateId) == null) {
 					resultMap.put(certificateId, new ArrayList<Integer>());
+				}
 				
 				resultMap.get(certificateId).add(operatorId);
 			}
 		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 			logger.error("Error while searching for certificate ids = {}", certificateIds, e);
 		}
 
