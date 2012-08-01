@@ -20,10 +20,12 @@
         <button class="btn"><s:text name="ManageReports.myReports.lastOpened" /></button>
     </div>
 
-<span class="debug">
-	<a href="ManageReports!columnsToTranslate.action"><s:text name="global.Download" /></a>
-</span>
+<%--     <span class="debug"> --%>
+<%--     	<a href="ManageReports!columnsToTranslate.action"><s:text name="global.Download" /></a> --%>
+<%--     </span> --%>
 </div>
+
+<s:set name="view_type" value="viewType" />
 
 <ul id="report_my_reports_list" class="report-list">
     <s:iterator value="userReports" var="user_report">
@@ -33,6 +35,7 @@
         <%-- Url --%>
         <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
             <s:param name="reportId">${report_id}</s:param>
+            <s:param name="viewType">${view_type}</s:param>
         </s:url>
 
         <s:url action="ReportDynamic" var="report_url">
