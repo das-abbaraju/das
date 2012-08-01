@@ -18,9 +18,9 @@ import com.picsauditing.util.SpringUtils;
 /**
  * The business logic in FeeClass needs to be pulled out into a service to make
  * it properly testable.
- *
+ * 
  * @author TJB
- *
+ * 
  */
 public enum FeeClass implements Translatable {
 	// TODO combine some of these fees
@@ -107,7 +107,7 @@ public enum FeeClass implements Translatable {
 	},
 	Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, VAT, Misc;
 
-	//after 2013-01-01, we can remove the insureGuard date-based pricing logic.
+	// after 2013-01-01, we can remove the insureGuard date-based pricing logic.
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date Jan2013InsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
@@ -133,8 +133,7 @@ public enum FeeClass implements Translatable {
 	@Override
 	public String getI18nKey() {
 		return (!getClass().getSimpleName().isEmpty() ? getClass().getSimpleName() : getClass().getSuperclass()
-				.getSimpleName())
-				+ "." + this.toString();
+				.getSimpleName()) + "." + this.toString();
 	}
 
 	@Override
@@ -158,7 +157,7 @@ public enum FeeClass implements Translatable {
 				// is it time to start charging this operator for insureguard?
 			} else if (!isUpgrade && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if (isUpgrade
+			} else if ((isUpgrade || contractor.getStatus().isPending())
 					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
 							exclusionExpirationDate))) {
 				return false;
