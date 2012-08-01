@@ -270,7 +270,7 @@ public class AuditDataSaveTest {
 
 	@Test
 	public void testExecute_SetAnswerToDateOrRecordError_DateGoodSetAnswer() throws Exception {
-		String testFormat = "dd-MM-yyyy";
+		String testFormat = "MM-dd-yyyy";
 		String dbFormat = "yyyy-MM-dd";
 		SimpleDateFormat format = new SimpleDateFormat(testFormat);
 		Date now = new Date();
