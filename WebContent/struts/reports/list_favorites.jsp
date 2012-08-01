@@ -13,6 +13,8 @@
 
 <h3><s:text name="ManageReports.favorites.subtitle" /></h3>
 
+<s:set name="view_type" value="viewType" />
+
 <ul id="report_favorites_list" class="report-list">
     <s:iterator value="userReports" var="user_report">
         <s:set name="report" value="#user_report.report" />
@@ -21,6 +23,7 @@
         <%-- Url --%>
         <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
             <s:param name="reportId">${report_id}</s:param>
+            <s:param name="viewType">${view_type}</s:param>
         </s:url>
 
         <s:url action="ReportDynamic" var="report_url">

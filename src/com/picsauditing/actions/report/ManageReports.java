@@ -2,11 +2,11 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +17,13 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
-	// TODO make this an enum or something
-	private static final String FAVORITE = "favorite";
-	private static final String MY_REPORTS = "saved";
-	private static final String ALL_REPORTS = "all";
+	private static final String FAVORITE_REPORTS = "favorites";
+	private static final String MY_REPORTS = "myReports";
+	private static final String ALL_REPORTS = "search";
 
 	public static final String MY_REPORTS_URL = "ManageReports!myReports.action";
 	public static final String FAVORITE_REPORTS_URL = "ManageReports!favorites.action";
@@ -34,71 +32,79 @@ public class ManageReports extends PicsActionSupport {
 	private ReportProvider reportProvider;
 
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
+	// TODO remove viewType after making the toggleFavorite an ajax call
 	private String viewType;
 	private int reportId;
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
 	public String execute() {
-		viewType = MY_REPORTS;
-		runQueryForCurrentView();
-
-		return "myReports";
+		return myReports();
 	}
 
 	public String favorites() {
-		viewType = FAVORITE;
-		runQueryForCurrentView();
+		viewType = FAVORITE_REPORTS;
 
-		return "favorites";
+		try {
+			userReports = reportProvider.findFavoriteUserReports(permissions.getUserId());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!favorites.action", e);
+		}
+
+		if (CollectionUtils.isEmpty(userReports)) {
+			addActionMessage(getText("ManageReports.message.NoFavorites"));
+			userReports = new ArrayList<ReportUser>();
+		}
+
+		return FAVORITE_REPORTS;
 	}
 
 	public String myReports() {
 		viewType = MY_REPORTS;
-		runQueryForCurrentView();
 
-		return "myReports";
+		try {
+			userReports = reportProvider.findAllUserReports(permissions.getUserId());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!myReports.action", e);
+		}
+
+		if (CollectionUtils.isEmpty(userReports)) {
+			addActionMessage(getText("ManageReports.message.NoUserReports"));
+			userReports = new ArrayList<ReportUser>();
+		}
+
+		return MY_REPORTS;
 	}
 
 	public String search() {
 		viewType = ALL_REPORTS;
-		runQueryForCurrentView();
-
-		return "search";
-	}
-
-	private void runQueryForCurrentView() {
-		if (Strings.isEmpty(viewType))
-			viewType = MY_REPORTS;
 
 		try {
 			int userId = permissions.getUserId();
 
-			if (FAVORITE.equals(viewType)) {
-				userReports = reportProvider.findFavoriteUserReports(userId);
-			} else if (MY_REPORTS.equals(viewType)) {
-				userReports = reportProvider.findAllUserReports(userId);
-			} else if (ALL_REPORTS.equals(viewType)) {
-				userReports = reportProvider.findAllUserReports(userId);
+			userReports = reportProvider.findAllUserReports(userId);
 
-				List<Report> publicReports = reportProvider.findPublicReports();
-				for (Report report : publicReports) {
-					if (!ReportUtil.containsReportWithId(userReports, report.getId())) {
-						userReports.add(new ReportUser(permissions.getUserId(), report));
-					}
-				}
+			List<Report> publicReports = reportProvider.findPublicReports();
+			for (Report report : publicReports) {
+				if (ReportUtil.containsReportWithId(userReports, report.getId()))
+					continue;
+
+				userReports.add(new ReportUser(userId, report));
 			}
 		} catch (Exception e) {
-			addActionError(getText("ManageReports.error.problemFindingReports"));
-			logger.error("Problem with runQueryForCurrentView() in ManageReports", e);
-
-			if (userReports == null) {
-				userReports = Collections.emptyList();
-			}
+			logger.error("Unexpected exception in ManageReports!search.action", e);
 		}
+
+		if (CollectionUtils.isEmpty(userReports)) {
+			logger.error("There are no reports in the system. This should never happen.");
+			userReports = new ArrayList<ReportUser>();
+		}
+
+		return ALL_REPORTS;
 	}
 
-	public String removeUserReport() throws Exception {
+	// TODO make this an ajax call
+	public String removeUserReport() {
 		try {
 			reportProvider.removeUserReport(permissions.getUserId(), reportId);
 			addActionMessage(getText("ManageReports.message.ReportRemoved"));
@@ -109,10 +115,11 @@ public class ManageReports extends PicsActionSupport {
 			logger.error(e.toString());
 		}
 
-		return redirectToFavoriteReports();
+		return redirectToPreviousView();
 	}
 
-	public String deleteReport() throws IOException {
+	// TODO make this an ajax call
+	public String deleteReport() {
 		try {
 			Report report = reportProvider.findOneReport(reportId);
 			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
@@ -128,7 +135,7 @@ public class ManageReports extends PicsActionSupport {
 			logger.error(e.toString());
 		}
 
-		return redirectToFavoriteReports();
+		return redirectToPreviousView();
 	}
 
 	public String toggleFavorite() {
@@ -137,16 +144,22 @@ public class ManageReports extends PicsActionSupport {
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.warn(nre.toString());
+		} catch (IOException ioe) {
+			logger.warn(ioe.toString());
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}
 
-		return redirectToFavoriteReports();
+		return redirectToPreviousView();
 	}
 
-	private String redirectToFavoriteReports() {
+	private String redirectToPreviousView() {
 		try {
-			setUrlForRedirect(FAVORITE_REPORTS_URL);
+			if (FAVORITE_REPORTS.equals(viewType)) {
+				setUrlForRedirect(FAVORITE_REPORTS_URL);
+			} else {
+				setUrlForRedirect(MY_REPORTS_URL);
+			}
 		} catch (IOException ioe) {
 			logger.error(ioe.toString());
 		}
@@ -154,7 +167,7 @@ public class ManageReports extends PicsActionSupport {
 		return REDIRECT;
 	}
 
-	public String columnsToTranslate() throws Exception {
+	public String columnsToTranslate() {
 		try {
 			List<Report> allReports = reportProvider.findAllReports();
 			// TODO: Get a button/link for debug only
