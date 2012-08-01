@@ -8,14 +8,14 @@
 	<thead>
 	<tr>
 	    <td>Country</td>
-	    <td>State</td>
+	    <td>CountrySubdivision</td>
 	    <td>Contractor Count</td>
 	</tr>
 	</thead>
-	<s:iterator value="auditedByState">
+	<s:iterator value="auditedByCountrySubdivision">
 	<tr>
 		<td><s:property value="get('country')"/></td>
-		<td><s:property value="get('state')"/></td>
+		<td><s:property value="get('countrySubdivision')"/></td>
 		<td><s:property value="get('cnt')"/></td>
 	</tr>
 	</s:iterator>

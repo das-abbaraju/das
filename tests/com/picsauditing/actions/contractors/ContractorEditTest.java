@@ -30,7 +30,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
@@ -40,7 +39,6 @@ public class ContractorEditTest extends PicsTest{
 	
 	@Mock private ContractorAccount contractor;
 	@Mock private Country country;
-	@Mock private State state;
 	@Mock private CountrySubdivision countrySubdivision;
 	@Mock private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock private Note note;
@@ -68,43 +66,6 @@ public class ContractorEditTest extends PicsTest{
 		when(ServletActionContext.getRequest()).thenReturn(request);
 	}
 	
-	@Test
-	public void testUpdateStateAndCountrySubdivision_countryHasState() throws Exception{
-		state = new State("CA");
-		state.setCountry(new Country("US"));
-		contractor.setState(state);
-		contractor.setCountry(country);
-		contractorEdit.setContractor(contractor);
-		
-		countrySubdivision = new CountrySubdivision("US-CA");
-		Whitebox.setInternalState(contractorEdit, "countrySubdivision", countrySubdivision);
-		when(contractor.getState()).thenReturn(state);				
-		when(contractor.getCountry()).thenReturn(new Country("US"));				
-		when(countrySubdivisionDAO.find(anyString())).thenReturn(countrySubdivision);
-		
-		Whitebox.invokeMethod(contractorEdit, "updateStateAndCountrySubdivision");		
-		verify(contractor).setCountrySubdivision(countrySubdivision);
-	}
-	
-	@Test
-	public void testUpdateStateAndCountrySubdivision_countryHasWrongState() throws Exception{
-		state = new State("CA");
-		country = new Country("US");
-		state.setCountry(new Country("CA"));
-
-		contractor.setState(state);
-		contractor.setCountry(country);
-		contractorEdit.setContractor(contractor);
-
-		countrySubdivision = new CountrySubdivision("CA-CA");
-		when(contractor.getState()).thenReturn(state);		
-		when(contractor.getCountry()).thenReturn(country);		
-		when(countrySubdivisionDAO.find(anyString())).thenReturn(countrySubdivision);
-		Whitebox.invokeMethod(contractorEdit, "updateStateAndCountrySubdivision");		
-		verify(contractor).setState(null);
-		verify(contractor).setCountrySubdivision(null);	
-	}
-
 	@Test
 	public void testAddNoteWhenStatusChange_diffStatus() throws Exception{
 		accountStatus = AccountStatus.Active;

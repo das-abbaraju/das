@@ -18,7 +18,7 @@
 </pics:permission>
 <p><label><s:text name="ContractorAccount.name" />:</label> <s:property value="contractor.name" /></p>
 <p><label><s:text name="ContractorAccount.address" />:</label> <s:property value="contractor.address" /><br />
-<s:property value="contractor.city" />, <s:property value="contractor.state.isoCode" /> <s:property value="contractor.zip" /></p>
+<s:property value="contractor.city" />, <s:property value="contractor.countrySubdivision.isoCode" /> <s:property value="contractor.zip" /></p>
 <p><label><s:text name="ContractorAccount.created" />:</label> <s:date name="contractor.creationDate" format="%{getText('date.long')}" /></p>
 <p><label><s:text name="global.ContactPrimary" />:</label> <s:property value="contractor.primaryContact.name" /></p>
 <p><label><s:text name="User.phone" />:</label> <s:property value="contractor.primaryContact.phone" /></p>

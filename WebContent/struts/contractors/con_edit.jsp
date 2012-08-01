@@ -10,12 +10,12 @@
 <s:include value="conHeader.jsp" />
 
 <script type="text/javascript">
-	function changeState(country) {
-		$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "", needsSuffix: "true", stateString: '<s:property value="contractor.state.isoCode"/>'});
+	function changeCountrySubdivision(country) {
+		$('#countrySubdivision_li').load('CountrySubdivisionListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "", needsSuffix: "true", countrySubdivisionString: '<s:property value="contractor.countrySubdivision.isoCode"/>'});
 	}
 
-	function changeBillingState(country) {
-		$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.billingState', needsSuffix: "false", stateString: '<s:property value="contractor.billingState.isoCode"/>'});
+	function changeBillingCountrySubdivision(country) {
+		$('#billing_countrySubdivision_li').load('CountrySubdivisionListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.billingCountrySubdivision', needsSuffix: "false", countrySubdivisionString: '<s:property value="contractor.billingCountrySubdivision.isoCode"/>'});
 		$('#country_display').val($('#contractorCountry option:selected').text());
 	}
 
@@ -39,14 +39,14 @@
 				$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
 			}
 		}
-		changeState(country);
-		changeBillingState(country);
+		changeCountrySubdivision(country);
+		changeBillingCountrySubdivision(country);
 	}
 
 	$(function() {
 		countryChanged($("#contractorCountry").val());
-		changeState($("#contractorCountry").val());
-		changeBillingState($("#contractorBillingCountry").val());
+		changeCountrySubdivision($("#contractorCountry").val());
+		changeBillingCountrySubdivision($("#contractorBillingCountry").val());
 		$('.datepicker').datepicker();
 		$('.cluetip').cluetip({
 			closeText: "<img src='images/cross.png' width='16' height='16'>",
@@ -140,7 +140,7 @@
 								value="contractor.country.isoCode"
 								onchange="countryChanged(this.value)" />
 						</li>
-						<li id="state_li"></li>
+						<li id="countrySubdivision_li"></li>
 
 						<s:if test="contractor.country.isoCode != 'AE'">
 							<li id="zip_li">
@@ -217,7 +217,7 @@
 							<label><s:text name="ContractorEdit.billingCountry" />:</label>
 							<input type="text" disabled="disabled" id="country_display"/>
 						</li>
-						<li id="billing_state_li"></li>
+						<li id="billing_countrySubdivision_li"></li>
 						<li id="billing_zip_li">
 							<label><s:text name="ContractorEdit.billingZip"/>:</label>
 							<s:textfield name="contractor.billingZip" size="7" />

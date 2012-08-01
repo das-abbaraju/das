@@ -20,7 +20,6 @@ import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.JobTaskDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -33,7 +32,6 @@ import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,8 +46,6 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected JobTaskDAO jobTaskDAO;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-	@Autowired
-	protected StateDAO stateDAO;
 
 	protected ContractorAccount contractor;
 	protected JobSite jobSite;
@@ -59,7 +55,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected String siteName;
 	protected String siteCity;
 	protected Country siteCountry;
-	protected State siteState;
+	protected CountrySubdivision siteCountrySubdivision;
 	protected Date siteStart;
 	protected Date siteEnd;
 	protected Date date = new Date();
@@ -74,8 +70,6 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected List<JobSiteTask> tasks;
 	protected List<ContractorAccount> newContractors;
 	protected Map<Account, List<Employee>> siteCompanies;
-
-	protected CountrySubdivision countrySubdivision;
 
 	public ManageJobSites() {
 		noteCategory = NoteCategory.OperatorQualification;
@@ -111,16 +105,9 @@ public class ManageJobSites extends OperatorActionSupport {
 				jobSite.setCountry(siteCountry);
 			}
 
-			if ((siteState != null && !siteState.equals(jobSite.getState())) || (jobSite.getState() == null && siteState!=null)){
-				State jobSiteState = stateDAO.find(siteState.toString());
-				jobSite.setState(jobSiteState);
-			}
-
-			if (jobSite.getCountry().isHasStates() && siteState != null){
-				updateStateAndCountrySubdivision();
-			} else {
-				jobSite.setState(null);
-				jobSite.setCountrySubdivision(null);
+			if ((siteCountrySubdivision != null && !siteCountrySubdivision.equals(jobSite.getCountrySubdivision())) || (jobSite.getCountrySubdivision() == null && siteCountrySubdivision !=null)){
+				CountrySubdivision jobSiteCountrySubdivision = countrySubdivisionDAO.find(siteCountrySubdivision.toString());
+				jobSite.setCountrySubdivision(jobSiteCountrySubdivision);
 			}
 
 			jobSiteDAO.save(jobSite);
@@ -130,20 +117,6 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 
 		return getRedirect();
-	}
-
-	private void updateStateAndCountrySubdivision() {
-		if (jobSite.getState().getCountry().equals(jobSite.getCountry())){
-			countrySubdivision = countrySubdivisionDAO.find(jobSite.getCountry().getIsoCode() + "-" + jobSite.getState().getIsoCode());
-			if (countrySubdivision != null) {
-				jobSite.setCountrySubdivision(countrySubdivision);
-			} else {
-				jobSite.setCountrySubdivision(null);
-			}
-		}  else {
-			jobSite.setState(null);
-			jobSite.setCountrySubdivision(null);
-		}
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
@@ -159,16 +132,9 @@ public class ManageJobSites extends OperatorActionSupport {
 				jobSite.setCountry(siteCountry);
 			}
 
-			if ((siteState != null && !siteState.equals(jobSite.getState())) || (jobSite.getState() == null && siteState!=null)){
-				State jobSiteState = stateDAO.find(siteState.toString());
-				jobSite.setState(jobSiteState);
-			}
-
-			if (jobSite.getCountry().isHasStates() && siteState != null){
-				updateStateAndCountrySubdivision();
-			} else {
-				jobSite.setState(null);
-				jobSite.setCountrySubdivision(null);
+			if ((siteCountrySubdivision != null && !siteCountrySubdivision.equals(jobSite.getCountrySubdivision())) || (jobSite.getCountrySubdivision() == null && siteCountrySubdivision !=null)){
+				CountrySubdivision jobSiteCountrySubdivision = countrySubdivisionDAO.find(siteCountrySubdivision.toString());
+				jobSite.setCountrySubdivision(jobSiteCountrySubdivision);
 			}
 
 			jobSiteDAO.save(jobSite);
@@ -487,12 +453,12 @@ public class ManageJobSites extends OperatorActionSupport {
 		this.siteCountry = siteCountry;
 	}
 
-	public State getSiteState() {
-		return siteState;
+	public CountrySubdivision getSiteCountrySubdivision() {
+		return siteCountrySubdivision;
 	}
 
-	public void setSiteState(State siteState) {
-		this.siteState = siteState;
+	public void setSiteCountrySubdivision(CountrySubdivision siteCountrySubdivision) {
+		this.siteCountrySubdivision = siteCountrySubdivision;
 	}
 
 	public Date getSiteStart() {

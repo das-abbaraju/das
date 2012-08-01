@@ -55,7 +55,7 @@ $(document).ready(function() {
 				<th><s:text name="User.email" /></th>
 				<th>Address</th>
 				<th><s:text name="global.City" /></th>
-				<th><s:text name="State" /></th>
+				<th><s:text name="CountrySubdivision" /></th>
 				<th><s:text name="Country" /></th>
 				<th><s:text name="global.ZipPostalCode" /></th>
 			</s:if>
@@ -96,7 +96,7 @@ $(document).ready(function() {
 				<td><s:property value="get('contactemail')"/></td>
 				<td><s:property value="get('address')"/></td>
 				<td><s:property value="get('city')"/></td>
-				<td><s:property value="get('state')"/></td>
+				<td><s:property value="get('countrySubdivision')"/></td>
 				<td><s:property value="get('country')"/></td>
 				<td><s:property value="get('zip')"/></td>
 			</s:if>

@@ -61,7 +61,7 @@
 				
 				<s:hidden name="operator" />
 				<s:hidden name="createType" />
-				<s:hidden name="operatorState" value="%{operator.state.isoCode}" id="operatorState" />
+				<s:hidden name="operatorCountrySubdivision" value="%{operator.countrySubdivision.isoCode}" id="operatorCountrySubdivision" />
 				
 				<fieldset class="form">
 					<h2 class="formLegend"><s:text name="FacilitiesEdit.AccountSummary" /></h2>
@@ -353,7 +353,7 @@
 								</div>
 							</s:if>
 						</li>
-						<li id="state_li"></li>
+						<li id="countrySubdivision_li"></li>
 						
 						<s:if test="operator.country.isoCode != 'AE'">
 							<li id="zip_li">

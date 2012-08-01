@@ -19,11 +19,11 @@ import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
@@ -38,7 +38,7 @@ public class UserAssignmentMatrix extends ReportActionSupport implements Prepara
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
-	private StateDAO stateDAO;
+	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
@@ -72,7 +72,7 @@ public class UserAssignmentMatrix extends ReportActionSupport implements Prepara
 	protected void buildQuery() {
 		sql = new SelectSQL("user_assignment ua");
 		sql.addField("u.name as User");
-		sql.addField("state.msgValue AS State");
+		sql.addField("countrySubdivision.msgValue AS CountrySubdivision");
 		sql.addField("country.msgValue AS Country");
 		sql.addField("ua.postal_start AS \"Zip Start\"");
 		sql.addField("ua.postal_end AS \"Zip End\"");
@@ -80,7 +80,7 @@ public class UserAssignmentMatrix extends ReportActionSupport implements Prepara
 		sql.addField("a.status AS \"Contractor Status\"");
 		sql.addJoin("JOIN users u ON ua.userID = u.id");
 		sql.addJoin("LEFT JOIN app_translation country ON country.msgKey = CONCAT('Country.',ua.country) AND country.locale = 'en'");
-		sql.addJoin("LEFT JOIN app_translation state ON state.msgKey = CONCAT('State.',ua.state) AND state.locale = 'en'");
+		sql.addJoin("LEFT JOIN app_translation countrySubdivision ON countrySubdivision.msgKey = CONCAT('CountrySubdivision.',ua.countrySubdivision) AND countrySubdivision.locale = 'en'");
 		sql.addJoin("LEFT JOIN accounts a ON ua.conID = a.id");
 		sql.addWhere("ua.assignmentType = 'CSR'");
 	}
@@ -178,8 +178,8 @@ public class UserAssignmentMatrix extends ReportActionSupport implements Prepara
 		return users;
 	}
 
-	public List<BasicDynaBean> getAuditedByState() {
-		List<BasicDynaBean> list = contractorAuditDAO.findAuditedContractorsByStateCount();
+	public List<BasicDynaBean> getAuditedByCountrySubdivision() {
+		List<BasicDynaBean> list = contractorAuditDAO.findAuditedContractorsByCountrySubdivisionCount();
 
 		return list;
 	}
@@ -188,8 +188,8 @@ public class UserAssignmentMatrix extends ReportActionSupport implements Prepara
 		return countryDAO.findAll();
 	}
 
-	public List<State> getStates() {
-		return stateDAO.findAll();
+	public List<CountrySubdivision> getCountrySubdivisions() {
+		return countrySubdivisionDAO.findAll();
 	}
 
 	public UserAssignment getAssignment() {

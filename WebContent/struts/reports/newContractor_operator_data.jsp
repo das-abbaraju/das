@@ -90,8 +90,8 @@
         		</s:if>
                 
         		<td>
-        			<a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');">
-        				<s:text name="NewContractorSearch.label.CityState" />
+        			<a href="javascript: changeOrderBy('form1','a.country, a.countrySubdivision, a.city, a.name');">
+        				<s:text name="NewContractorSearch.label.CityCountrySubdivision" />
         			</a>
         		</td>
                 
@@ -197,9 +197,9 @@
     				</s:if>
                     
     				<td>
-    					<s:property value="get('city')"/>, <s:property value="get('state')"/>
+    					<s:property value="get('city')"/>, <s:property value="get('countrySubdivision')"/>
                         
-    					<s:if test="get('state') == ''">
+    					<s:if test="get('countrySubdivision') == ''">
     						<s:property value="get('country')"/>
     					</s:if>
     				</td>

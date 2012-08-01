@@ -26,7 +26,6 @@ import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -39,7 +38,6 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -62,8 +60,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private FacilitiesEditModel facilitiesEditModel;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-	@Autowired
-	protected StateDAO stateDAO;
 
 	private String createType;
 	private List<Integer> facilities;
@@ -77,7 +73,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private AccountUser salesRep = null;
 	private AccountUser accountRep = null;
 	private Country country;
-	private State state;
+	private CountrySubdivision countrySubdivision;
 	private int contactID;
 	private boolean autoApproveRelationships;
 
@@ -86,8 +82,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	private List<OperatorAccount> notSelectedClients;
 	private List<OperatorAccount> selectedClients;
-
-	private CountrySubdivision countrySubdivision;
 
 	public String execute() throws Exception {
 		findOperator();
@@ -233,16 +227,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator.setCountry(country);
 		}
 
-		if ((state != null && !state.equals(operator.getState())) || (operator.getState() == null && state != null)) {
-			State contractorState = stateDAO.find(state.toString());
-			operator.setState(contractorState);
-		}
-
-		if (operator.getCountry().isHasStates() && state != null) {
-			updateStateAndCountrySubdivision();
-		} else {
-			operator.setState(null);
-			operator.setCountrySubdivision(null);
+		if ((countrySubdivision != null && !countrySubdivision.equals(operator.getCountrySubdivision())) || (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
+			CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
+			operator.setCountrySubdivision(contractorCountrySubdivision);
 		}
 
 		if (hasActionErrors()) {
@@ -359,21 +346,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return REDIRECT;
-	}
-
-	private void updateStateAndCountrySubdivision() {
-		if (operator.getState() != null && operator.getCountry().equals(operator.getState().getCountry())) {
-			countrySubdivision = countrySubdivisionDAO.find(operator.getCountry().getIsoCode() + "-"
-					+ operator.getState().getIsoCode());
-			if (countrySubdivision != null) {
-				operator.setCountrySubdivision(countrySubdivision);
-			} else {
-				operator.setCountrySubdivision(null);
-			}
-		} else {
-			operator.setState(null);
-			operator.setCountrySubdivision(null);
-		}
 	}
 
 	public String ajaxAutoApproveRelationshipModal() throws Exception {
@@ -532,12 +504,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		this.country = country;
 	}
 
-	public State getState() {
-		return state;
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
 	}
 
-	public void setState(State state) {
-		this.state = state;
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
 	public List<User> getPrimaryOperatorContactUsers() {
@@ -713,8 +685,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
 		}
 
-		if (operator.getCountry().isHasStates() && (state == null || operator.getState() == null)) {
-			errorMessages.add(getText("FacilitiesEdit.PleaseFillInState"));
+		if (operator.getCountry().isHasCountrySubdivisions() && (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
 		}
 
 		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0

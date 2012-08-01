@@ -62,7 +62,7 @@
 						type="submit"
 						name="button"
 						value="Search"
-						onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+						onclick="checkCountrySubdivisionAndCountry('form1_state','form1_country'); return clickSearch('form1');"
 						class="picsbutton positive">
 						<s:text name="button.Search" />
 					</button>
@@ -73,7 +73,7 @@
 						type="submit"
 						name="button"
 						value="Search"
-						onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+						onclick="checkCountrySubdivisionAndCountry('form1_state','form1_country'); return clickSearch('form1');"
 						class="picsbutton positive">
 						<s:text name="button.Search" />
 					</button>
@@ -241,7 +241,7 @@
 		<s:if test="filter.showLocation">
 			<div class="filterOption">
 				<a href="#" class="filterBox">
-					<s:text name="Filters.label.StateProvinceCountry" />
+					<s:text name="Filters.label.CountryCountrySubdivision" />
 				</a>
 				=
 				<span class="q_status">ALL</span>
@@ -1331,14 +1331,14 @@
 			</div>
 		</s:if>
 
-		<s:if test="filter.showBillingState">
+		<s:if test="filter.showBillingCountrySubdivision">
 			<div class="filterOption">
 				<span>
-					<s:text name="ContractorAccount.billingState" />
+					<s:text name="ContractorAccount.billingCountrySubdivision" />
 					:
 					<s:radio
 						list="#{'Activations':getTextNullSafe('Filters.status.Activations'),'Renewals':getTextNullSafe('Filters.status.Renewals'),'Upgrades':getTextNullSafe('Filters.status.Upgrades'),'All':getTextNullSafe('JS.Filters.status.All')}"
-						name="filter.billingState"
+						name="filter.billingCountrySubdivision"
 						theme="pics"
 						cssClass="inline" />
 				</span>

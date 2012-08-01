@@ -34,7 +34,7 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 
 public class FacilitiesEditTest extends PicsTest {
@@ -51,8 +51,6 @@ public class FacilitiesEditTest extends PicsTest {
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
 	private CountrySubdivision countrySubdivision;
-	@Mock
-	private State state;
 
 	@Before
 	public void setUp() throws Exception {
@@ -197,34 +195,6 @@ public class FacilitiesEditTest extends PicsTest {
 				"Business rule violation was not noticed",
 				facilitiesEdit.getActionMessages().contains(
 						UserAccountRole.PICSAccountRep.getDescription() + " is not 100 percent"));
-	}
-
-	@Test
-	public void testUpdateStateAndCountrySubdivision_countryHasState() throws Exception{
-		state = new State("CA");
-		state.setCountry(new Country("US"));
-		countrySubdivision = new CountrySubdivision("US-CA");
-		Whitebox.setInternalState(facilitiesEdit, "countrySubdivision", countrySubdivision);
-		when(operator.getState()).thenReturn(state);
-		when(operator.getCountry()).thenReturn(new Country("US"));
-		when(countrySubdivisionDAO.find(anyString())).thenReturn(countrySubdivision);
-
-		Whitebox.invokeMethod(facilitiesEdit, "updateStateAndCountrySubdivision");
-		verify(operator).setCountrySubdivision(countrySubdivision);
-	}
-
-	@Test
-	public void testUpdateStateAndCountrySubdivision_countryHasWrongState() throws Exception{
-		state = new State("CA");
-		state.setCountry(new Country("CA"));
-		countrySubdivision = new CountrySubdivision("CA-CA");
-		when(operator.getState()).thenReturn(state);
-		when(operator.getCountry()).thenReturn(new Country("US"));
-		when(countrySubdivisionDAO.find(anyString())).thenReturn(countrySubdivision);
-		Whitebox.invokeMethod(facilitiesEdit, "updateStateAndCountrySubdivision");
-
-		verify(operator).setState(null);
-		verify(operator).setCountrySubdivision(null);
 	}
 
 	private AccountUser accountRep() {

@@ -27,12 +27,12 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EventType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -55,7 +55,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	@Autowired
 	private BillingCalculatorSingle billingService;
 
-	private String state = null;
+	private String countrySubdivision = null;
 
 	private OperatorAccount operator = null;
 
@@ -161,11 +161,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
-		if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state))) {
+		if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(countrySubdivision))) {
 			String where = "";
 
-			if (state != null && state.length() > 0) {
-				where += "state = '" + Strings.escapeQuotes(state) + "'";
+			if (countrySubdivision != null && countrySubdivision.length() > 0) {
+				where += "countrySubdivision = '" + Strings.escapeQuotes(countrySubdivision) + "'";
 			}
 
 			if (operator != null && !Strings.isEmpty(operator.getName())) {
@@ -268,7 +268,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		showAll.addField("a.name");
 		showAll.addField("a.dbaName");
 		showAll.addField("a.city");
-		showAll.addField("a.state");
+		showAll.addField("a.countrySubdivision");
 		showAll.addField("a.country");
 		showAll.addField("a.status");
 		showAll.addField("a.onsiteServices");
@@ -320,12 +320,12 @@ public class ContractorFacilities extends ContractorActionSupport {
 		return JSON;
 	}
 
-	public String getState() {
-		return state;
+	public String getCountrySubdivision() {
+		return countrySubdivision;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setCountrySubdivision(String countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
 	public List<ContractorOperator> getCurrentOperators() {
@@ -471,8 +471,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 				o.setDbaName(d.get("dbaName").toString());
 			if (d.get("city") != null)
 				o.setCity(d.get("city").toString());
-			if (d.get("state") != null)
-				o.setState(new State(d.get("state").toString()));
+			if (d.get("countrySubdivision") != null)
+				o.setCountrySubdivision(new CountrySubdivision(d.get("countrySubdivision").toString()));
 			if (d.get("country") != null)
 				o.setCountry(new Country(d.get("country").toString()));
 			o.setStatus(AccountStatus.valueOf(d.get("status").toString()));

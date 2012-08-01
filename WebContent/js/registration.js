@@ -23,39 +23,39 @@
 		}
 	};
 
-	// contractor create account country / state toggle
+	// contractor create account country / country subdivision toggle
 	REGISTRATION.contractor_country = {
 		init: function () {
 			if ($('.Registration-page').length) {
-				$('.contractor-country').bind('change', this.events.update_state_list);
+				$('.contractor-country').bind('change', this.events.update_countrySubdivision_list);
 
-				//autofill state list
+				//autofill Country Subdivision list
 				if ($('.contractor-country').length) {
-				    this.events.update_state_list();
+				    this.events.update_countrySubdivision_list();
 				}
 			}
 		},
 
 		events: {
-			update_state_list: function () {
+			update_countrySubdivision_list: function () {
 				var country_select = $('.contractor-country') || $(this);
 				var country_string = country_select.val();
 
 				AJAX.request({
-					url: 'StateListAjax!registration.action',
+					url: 'CountrySubdivisionListAjax!registration.action',
 					data: {
 						countryString: country_string,
 						prefix: 'contractor.'
 					},
 					success: function (data, textStatus, XMLHttpRequest) {
-						var state_element = $('.registration-form li.state');
+						var countrySubdivision_element = $('.registration-form li.countrySubdivision');
 						var zip_element = $('.registration-form li.zip');
 
 						if ($.trim(data) == '') {
-							state_element.slideUp(400);
+							countrySubdivision_element.slideUp(400);
 						} else {
-							state_element.html(data);
-							state_element.slideDown(400);
+							countrySubdivision_element.html(data);
+							countrySubdivision_element.slideDown(400);
 						}
 
 						if (country_string == 'AE') {

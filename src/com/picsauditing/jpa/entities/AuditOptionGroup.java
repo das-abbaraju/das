@@ -102,7 +102,7 @@ public class AuditOptionGroup extends BaseTableRequiringLanguages {
 	@Transient
 	public String getI18nKey() {
 		if (!Strings.isEmpty(uniqueCode)) {
-			if (uniqueCode.equals("Country") || uniqueCode.equals("State") || uniqueCode.equals("YesNo")
+			if (uniqueCode.equals("Country") || uniqueCode.equals("CountrySubdivision") || uniqueCode.equals("YesNo")
 					|| uniqueCode.equals("LowMedHigh"))
 				return uniqueCode;
 		}

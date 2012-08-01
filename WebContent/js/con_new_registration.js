@@ -103,7 +103,7 @@ $(function() {
 		);
 		stopThinking( {div: 'think_'+fType} );
 	});
-	changeState($("#newContractorCountry").val());
+	changeCountrySubdivision($("#newContractorCountry").val());
 	$('.datepicker').datepicker({
 		showOn: 'button',
 		buttonImage: 'images/icon_calendar.gif',
@@ -177,7 +177,7 @@ function checkUserOther(userID) {
 }
 
 function countryChanged(country) {
-	changeState(country);
+	changeCountrySubdivision(country);
 }
 
 function checkDate(input){

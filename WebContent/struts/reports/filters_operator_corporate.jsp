@@ -13,7 +13,7 @@
 		
 		<div>
 			<button id="searchfilter" type="submit" name="button" value="Search"
-				onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+				onclick="checkCountrySubdivisionAndCountry('form1_state','form1_country'); return clickSearch('form1');"
 				class="picsbutton positive"><s:text name="button.Search" /></button>
 		</div>
 		
@@ -53,7 +53,7 @@
 						name="filter.zip" cssClass="forms" size="5"
 						onfocus="clearText(this)" /></td>
 					<td style="padding-left: 1ex;"><a href="#"
-						onclick="toggleBox('form1_state'); return false;"><s:text name="State" /></a> = <span
+						onclick="toggleBox('form1_state'); return false;"><s:text name="CountrySubdivision" /></a> = <span
 						id="form1_state_query"><s:text name="JS.Filters.status.All" /></span></td>
 					<td style="padding-left: 1ex;"><a href="#"
 						onclick="toggleBox('form1_country'); return false;"><s:text name="Country" /></a> = <span
@@ -62,7 +62,7 @@
 				<tr>
 					<td style="padding-left: 1ex;"><span id="form1_state_select"
 						style="display: none" class="clearLink"><s:select
-						id="form1_state" name="filter.state" list="filter.stateList"
+						id="form1_state" name="filter.countrySubdivision" list="filter.countrySubdivisionList"
 						listKey="isoCode" listValue="name" cssClass="forms" multiple="true"
 						size="15" onclick="clearSelected('form1_country');" /><br />
 					<a class="clearLink" href="#"

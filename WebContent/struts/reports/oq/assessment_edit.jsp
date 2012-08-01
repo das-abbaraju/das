@@ -13,16 +13,16 @@
 	
 	<s:include value="../../jquery.jsp" />
 	<script type="text/javascript">
-		function changeState(country) {
-			$('#state_li').load('StateListAjax.action',{countryString: $('#centerCountry').val(), stateString: '<s:property value="center.state.isoCode"/>'});
+		function changeCountrySubdivision(country) {
+			$('#countrySubdivision_li').load('CountrySubdivisionListAjax.action',{countryString: $('#centerCountry').val(), countrySubdivisionString: '<s:property value="center.countrySubdivision.isoCode"/>'});
 		}
 		
 		function countryChanged(country) {
-			changeState(country);
+			changeCountrySubdivision(country);
 		}
 		
 		$(function() {
-			changeState($("#centerCountry").val());
+			changeCountrySubdivision($("#centerCountry").val());
 			$('.datepicker').datepicker();
 			
 			$('#centerCountry').live('change', function() {
@@ -97,7 +97,7 @@
 						headerValue="- %{getTextNullSafe('Country')} -"
 					/>
 				</li>
-				<li id="state_li"></li>
+				<li id="countrySubdivision_li"></li>
 				<li>
 					<s:textfield name="center.zip" size="7" theme="form" />
 				</li>

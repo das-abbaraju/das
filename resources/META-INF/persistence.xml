@@ -27,6 +27,7 @@
 		<class>com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow</class>
 		<class>com.picsauditing.jpa.entities.ContractorOperator</class>
 		<class>com.picsauditing.jpa.entities.Country</class>
+		<class>com.picsauditing.jpa.entities.CountrySubdivision</class>
 		<class>com.picsauditing.jpa.entities.EmailAttachment</class>
 		<class>com.picsauditing.jpa.entities.EmailQueue</class>
 		<class>com.picsauditing.jpa.entities.EmailStatus</class>
@@ -60,7 +61,6 @@
 		<class>com.picsauditing.jpa.entities.OshaAudit</class>
 		<class>com.picsauditing.jpa.entities.OshaType</class>
 		<class>com.picsauditing.jpa.entities.RulesRow</class>
-		<class>com.picsauditing.jpa.entities.State</class>
 		<class>com.picsauditing.jpa.entities.Token</class>
 		<class>com.picsauditing.jpa.entities.User</class>
 		<class>com.picsauditing.jpa.entities.UserAccess</class>

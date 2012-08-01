@@ -127,8 +127,8 @@
                         <s:textfield id="conAudit_city" name="conAudit.city" theme="form" />
                     </li>
                     <li class="calculatedAddress">
-                        <label><s:text name="State" />:</label>
-                        <s:select id="conAudit_state" name="conAudit.state" list="stateList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - State/Province - "/>
+                        <label><s:text name="CountrySubdivision" />:</label>
+                        <s:select id="conAudit_countrySubdivision" name="conAudit.countrySubdivision" list="countrySubdivisionList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - Country Subdivision - "/>
                     </li>
                     <li>
                         <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" theme="form" />

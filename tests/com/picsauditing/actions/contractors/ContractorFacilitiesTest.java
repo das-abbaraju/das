@@ -267,11 +267,11 @@ public class ContractorFacilitiesTest {
 	}
 
 	@Test
-	public void testExecute_SearchStateProvided() throws Exception {
+	public void testExecute_SearchCountrySubdivisionProvided() throws Exception {
 		mockActionContext();
 		initializeContractor();
 
-		contractorFacilities.setState("State");
+		contractorFacilities.setCountrySubdivision("CountrySubdivision");
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
@@ -284,10 +284,10 @@ public class ContractorFacilitiesTest {
 	}
 
 	@Test
-	public void testSearch_StateEmpty() throws Exception {
+	public void testExecute_SearchCountrySubdivisionEmpty() throws Exception {
 		initializeContractor();
 
-		contractorFacilities.setState("");
+		contractorFacilities.setCountrySubdivision("");
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
@@ -303,7 +303,7 @@ public class ContractorFacilitiesTest {
 	public void testSearch_WithResults() throws Exception {
 		ContractorAccount contractorAccount = initializeContractor();
 
-		contractorFacilities.setState("State");
+		contractorFacilities.setCountrySubdivision("CountrySubdivision");
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		OperatorAccount operatorResult = EntityFactory.makeOperator();

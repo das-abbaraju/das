@@ -128,7 +128,7 @@ tr.dirty a.save { display: inline; }
 		<tr>
 			<th>User</th>
 			<th><s:text name="Country" /></th>
-			<th><s:text name="State" /></th>
+			<th><s:text name="CountrySubdivision" /></th>
 			<th>Zip Start</th>
 			<th>Zip End</th>
 			<th>Contractor</th>
@@ -146,7 +146,7 @@ tr.dirty a.save { display: inline; }
 			<tr>
 				<td><s:select list="users" listKey="id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user" value="%{user.id}"></s:select></td>
 				<td><s:select list="countries" listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -" name="assignment.country" value="%{country.isoCode}"></s:select></td>
-				<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state" value="%{state.isoCode}"></s:select></td>
+				<td><s:select list="countrySubdivisions" listKey="isoCode" listValue="name" headerKey="" headerValue="- countrySubdivision -" name="assignment.countrySubdivision" value="%{countrySubdivision.isoCode}"></s:select></td>
 				<td><s:textfield name="assignment.postalStart" value="%{postalStart}" size="10"/></td>
 				<td><s:textfield name="assignment.postalEnd" value="%{postalEnd}" size="10"/></td>
 				<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
@@ -167,7 +167,7 @@ tr.dirty a.save { display: inline; }
 	<tr id="clone">
 		<td><s:select list="users" listKey = "id" listValue="name" headerKey="0" headerValue="- User -" name="assignment.user"></s:select></td>
 		<td><s:select list="countries" listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -" name="assignment.country"></s:select></td>
-		<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state"></s:select></td>
+		<td><s:select list="countrySubdivisions" listKey="isoCode" listValue="name" headerKey="" headerValue="- countrySubdivision -" name="assignment.countrySubdivision"></s:select></td>
 		<td><s:textfield name="assignment.postalStart" size="10"/></td>
 		<td><s:textfield name="assignment.postalEnd" size="10"/></td>
 		<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" /></td>

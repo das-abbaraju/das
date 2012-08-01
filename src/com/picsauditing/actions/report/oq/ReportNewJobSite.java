@@ -25,7 +25,7 @@ import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -35,7 +35,7 @@ import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.JobContractor;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilter;
@@ -58,7 +58,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 	@Autowired
 	protected CountryDAO countryDAO;
 	@Autowired
-	protected StateDAO stateDAO;
+	protected CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
 
@@ -217,7 +217,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 		sql.addField("js.label");
 		sql.addField("js.name");
 		sql.addField("js.city");
-		sql.addField("js.state");
+		sql.addField("js.countrySubdivision");
 		sql.addField("js.country");
 		sql.addField("js.projectStart");
 		sql.addField("o.name operatorName");
@@ -248,14 +248,14 @@ public class ReportNewJobSite extends ReportActionSupport {
 		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
 			report.addFilter(new SelectFilter("city", "js.city LIKE '%?%'", f.getCity()));
 
-		String stateList = Strings.implodeForDB(f.getState(), ",");
-		if (filterOn(stateList)) {
-			sql.addWhere("js.state IN (" + stateList + ")");
+		String countrySubdivisionList = Strings.implodeForDB(f.getCountrySubdivision(), ",");
+		if (filterOn(countrySubdivisionList)) {
+			sql.addWhere("js.countrySubdivision IN (" + countrySubdivisionList + ")");
 			setFiltered(true);
 		}
 
 		String countryList = Strings.implodeForDB(f.getCountry(), ",");
-		if (filterOn(countryList) && !filterOn(stateList)) {
+		if (filterOn(countryList) && !filterOn(countrySubdivisionList)) {
 			sql.addWhere("js.country IN (" + countryList + ")");
 			setFiltered(true);
 		}
@@ -334,8 +334,8 @@ public class ReportNewJobSite extends ReportActionSupport {
 
 		if (d.get("city") != null)
 			parts.add(d.get("city").toString());
-		if (d.get("state") != null)
-			parts.add(d.get("state").toString());
+		if (d.get("countrySubdivision") != null)
+			parts.add(d.get("countrySubdivision").toString());
 		if (d.get("country") != null)
 			parts.add(d.get("country").toString());
 
@@ -347,7 +347,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 		private String name;
 		private Date start;
 		private String city;
-		private String[] state;
+		private String[] countrySubdivision;
 		private String[] country;
 		private int[] operator;
 
@@ -380,12 +380,12 @@ public class ReportNewJobSite extends ReportActionSupport {
 			this.city = city;
 		}
 
-		public String[] getState() {
-			return state;
+		public String[] getCountrySubdivision() {
+			return countrySubdivision;
 		}
 
-		public void setState(String[] state) {
-			this.state = state;
+		public void setCountrySubdivision(String[] countrySubdivision) {
+			this.countrySubdivision = countrySubdivision;
 		}
 
 		public String[] getCountry() {
@@ -404,14 +404,14 @@ public class ReportNewJobSite extends ReportActionSupport {
 			this.operator = operator;
 		}
 
-		public List<State> getStateList() {
-			List<State> result;
+		public List<CountrySubdivision> getCountrySubdivisionList() {
+			List<CountrySubdivision> result;
 			if (!Strings.isEmpty(permissions.getCountry())) {
 				Set<String> accountCountries = new HashSet<String>();
 				accountCountries.add(permissions.getCountry());
-				result = stateDAO.findByCountries(accountCountries, false);
+				result = countrySubdivisionDAO.findByCountries(accountCountries, false);
 			} else
-				result = stateDAO.findAll();
+				result = countrySubdivisionDAO.findAll();
 
 			return result;
 		}

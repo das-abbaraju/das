@@ -22,7 +22,6 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 	private String label;
 	private String name;
 	private String city;
-	private State state;
 	private CountrySubdivision countrySubdivision;
 	private Country country;
 	private Date projectStart;
@@ -64,16 +63,6 @@ public class JobSite extends BaseTable implements Comparable<JobSite> {
 
 	public void setCity(String city) {
 		this.city = city;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "state")
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
 	}
 
 	@ManyToOne

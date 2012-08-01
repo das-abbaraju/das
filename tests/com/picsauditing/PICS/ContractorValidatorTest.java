@@ -35,7 +35,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 
 public class ContractorValidatorTest extends PicsTest {
 
@@ -104,16 +104,16 @@ public class ContractorValidatorTest extends PicsTest {
 
 	@SuppressWarnings("unchecked")
 	private AuditData setupOfficeLocationTest(String newCountry,
-			String newState, String oldCountry, String oldState, boolean auditDataFindable) {
-		setCountryAndState(contractor, newCountry, newState);
+			String newCountrySubdivision, String oldCountry, String oldCountrySubdivision, boolean auditDataFindable) {
+		setCountryAndCountrySubdivision(contractor, newCountry, newCountrySubdivision);
 		ContractorAccount previousContractorSettings = new ContractorAccount();
-		setCountryAndState(previousContractorSettings, oldCountry, oldState);
+		setCountryAndCountrySubdivision(previousContractorSettings, oldCountry, oldCountrySubdivision);
 
 		when(contractorAccountDao.find(contractor.getId())).thenReturn(
 				previousContractorSettings);
 
 		List<String> uniqueCodes = new ArrayList<String>();
-		uniqueCodes.add(newCountry + "." + newState);
+		uniqueCodes.add(newCountry + "." + newCountrySubdivision);
 		List<AuditQuestion> mockResultSetForAuditQuestionDao = new ArrayList<AuditQuestion>();
 		AuditQuestion officeLocationQuestion = new AuditQuestion();
 		mockResultSetForAuditQuestionDao.add(officeLocationQuestion);
@@ -147,9 +147,9 @@ public class ContractorValidatorTest extends PicsTest {
 		return officeLocationAnswer;
 	}
 
-	private void setCountryAndState(ContractorAccount contractor,
-			String countryIsoCode, String stateIsoCode) {
+	private void setCountryAndCountrySubdivision(ContractorAccount contractor,
+			String countryIsoCode, String countrySubdivisionIsoCode) {
 		contractor.setCountry(new Country(countryIsoCode));
-		contractor.setState(new State(stateIsoCode));
+		contractor.setCountrySubdivision(new CountrySubdivision(countrySubdivisionIsoCode));
 	}
 }

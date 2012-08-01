@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "addr4",
     "addr5",
     "city",
-    "state",
+    "countrySubdivision",
     "postalCode",
     "country",
     "note"
@@ -62,8 +62,8 @@ public class Address {
     protected String addr5;
     @XmlElement(name = "City")
     protected String city;
-    @XmlElement(name = "State")
-    protected String state;
+    @XmlElement(name = "CountrySubdivision")
+    protected String countrySubdivision;
     @XmlElement(name = "PostalCode")
     protected String postalCode;
     @XmlElement(name = "Country")
@@ -216,27 +216,27 @@ public class Address {
     }
 
     /**
-     * Gets the value of the state property.
+     * Gets the value of the country subdivision property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getState() {
-        return state;
+    public String getCountrySubdivision() {
+        return countrySubdivision;
     }
 
     /**
-     * Sets the value of the state property.
+     * Sets the value of the country subdivision property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setState(String value) {
-        this.state = value;
+    public void setCountrySubdivision(String value) {
+        this.countrySubdivision = value;
     }
 
     /**

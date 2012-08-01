@@ -279,8 +279,8 @@ public class AuditScheduleBuilder {
 
 							if (user.getId() == 34065) {
 								// Hi, I'm Phillip Laraway
-								String[] gulfCoastStates = { "TX", "AL", "LA", "MS" };
-								availability.setOnlyInStates(gulfCoastStates);
+								String[] gulfCoastCountrySubdivisions = { "TX", "AL", "LA", "MS" };
+								availability.setOnlyInCountrySubdivisions(gulfCoastCountrySubdivisions);
 							}
 
 							PicsLogger.log("adding AuditorAvailability for " + availability.getStartDate());

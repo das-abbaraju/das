@@ -93,12 +93,12 @@
 									<s:select
 										cssClass="forms clearable"
 										headerKey=""
-										headerValue="- %{getText('ContractorFacilities.StateOrProvince')} -"
+										headerValue="- %{getText('ContractorFacilities.CountrySubdivision')} -"
 										id="search_location"
-										list="getStateList('US|CA')"
+										list="getCountrySubdivisionList('US|CA')"
 										listKey="isoCode"
 										listValue="english"
-										name="state" />
+										name="countrySubdivision" />
 								</nobr>
 							</div>
 						</div>

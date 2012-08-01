@@ -27,7 +27,6 @@ import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -39,7 +38,6 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -53,7 +51,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	@Autowired
 	private ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
-	private StateDAO stateDAO;
+	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
@@ -64,8 +62,6 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	protected EmailAttachmentDAO attachmentDAO;
 	@Autowired
 	protected EmailSenderSpring emailSenderSpring;
-	@Autowired
-	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
 	private File file;
 	private String fileContentType = null;
@@ -269,7 +265,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		Object taxIDValue = getValue(row, 4);
 		String importedAddress = (String) getValue(row, 5);
 		String importedCity = (String) getValue(row, 6);
-		State importedState = (State) getValue(row, 7);
+		CountrySubdivision importedCountrySubdivision = (CountrySubdivision) getValue(row, 7);
 		Object zipValue = getValue(row, 8);
 		Country importedCountry = (Country) getValue(row, 9);
 		OperatorAccount importedRequestedBy = (OperatorAccount) getValue(row, 10);
@@ -302,16 +298,9 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
-		if ((importedState != null && !importedState.equals(crr.getState())) || (crr.getState() == null && importedState!=null)){
-			State importedStateObj = stateDAO.find(importedState.toString());
-			crr.setState(importedStateObj);
-		}
-
-		if (crr.getCountry().isHasStates() && importedState != null){
-			updateStateAndCountrySubdivision(crr);
-		} else {
-			crr.setState(null);
-			crr.setCountrySubdivision(null);
+		if ((importedCountrySubdivision != null && !importedCountrySubdivision.equals(crr.getCountrySubdivision())) || (crr.getCountrySubdivision() == null && importedCountrySubdivision!=null)){
+			CountrySubdivision importedCountrySubdivisionObj = countrySubdivisionDAO.find(importedCountrySubdivision.toString());
+			crr.setCountrySubdivision(importedCountrySubdivisionObj);
 		}
 
 		if (zipValue != null) {
@@ -344,25 +333,11 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		return crr;
 	}
 
-	private void updateStateAndCountrySubdivision(ContractorRegistrationRequest crr) {
-		if (crr.getState().getCountry().equals(crr.getCountry())){
-			countrySubdivision = countrySubdivisionDAO.find(crr.getCountry().getIsoCode() + "-" + crr.getState().getIsoCode());
-			if (countrySubdivision != null) {
-				crr.setCountrySubdivision(countrySubdivision);
-			} else {
-				crr.setCountrySubdivision(null);
-			}
-		}  else {
-			crr.setState(null);
-			crr.setCountrySubdivision(null);
-		}
-	}
-
 	private void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
 		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
 			crr.setRequestedByUserOther(null);
 
-		if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
+		if (Strings.isEmpty(crr.getContact()) || crr.getCountrySubdivision() == null || crr.getCountry() == null
 				|| crr.getRequestedBy() == null)
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
 
@@ -440,7 +415,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				value = row.getCell(cell).getRichStringCellValue().getString();
 
 			if (cell == 7 && !Strings.isEmpty(value.toString()))
-				value = stateDAO.find(value.toString());
+				value = countrySubdivisionDAO.find(value.toString());
 			if (cell == 9 && !Strings.isEmpty(value.toString()))
 				value = countryDAO.find(value.toString());
 			if (cell == 10 && !Strings.isEmpty(value.toString()))

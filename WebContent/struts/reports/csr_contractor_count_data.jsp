@@ -13,14 +13,14 @@
 	<thead>
 		<tr>
 			<td><a href="?orderBy=u.name ASC">CSR Name</a></td>
-			<td><a href="?orderBy=a.state, u.name ASC"><s:text name="State" /></a></td>
-			<td><a href="?orderBy=cnt, u.name, a.state ASC">Contractor Count</a></td>
+			<td><a href="?orderBy=a.countrySubdivision, u.name ASC"><s:text name="CountrySubdivision" /></a></td>
+			<td><a href="?orderBy=cnt, u.name, a.countrySubdivision ASC">Contractor Count</a></td>
 		</tr>
 	</thead>
 	<s:iterator value="data">
 		<tr>
 			<td><s:property value="get('csr')"/></td>
-			<td><s:property value="get('state')"/></td>
+			<td><s:property value="get('countrySubdivision')"/></td>
 			<td><s:property value="get('cnt')"/></td>
 		</tr>
 	</s:iterator>

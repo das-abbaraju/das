@@ -5,7 +5,7 @@ package com.picsauditing.jpa.entities;
  * visit or package can be shipped to).
  * 
  * TODO This could work for ContractorAudit as well, except that ContractorAudit
- * would have to change the return types for getState() and getCountry(), and it
+ * would have to change the return types for getCountrySubdivision() and getCountry(), and it
  * would have to add getAddress2() & getAddress3().
  * 
  */
@@ -19,7 +19,7 @@ public interface PhysicalAddress {
 
 	public String getCity();
 
-	public State getState();
+	public CountrySubdivision getCountrySubdivision();
 
 	public String getZip();
 

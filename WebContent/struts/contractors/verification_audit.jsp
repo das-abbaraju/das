@@ -125,7 +125,7 @@
 						
 						<s:if test="question.questionType == 'License'">
 							<li>
-								<s:property value="@com.picsauditing.util.Constants@displayStateLink(question.question, answer)" escape="false" />
+								<s:property value="@com.picsauditing.util.Constants@displayCountrySubdivisionLink(question.question, answer)" escape="false" />
 							</li>
 						</s:if>
 						

@@ -377,14 +377,14 @@ public class ContractorAuditDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<BasicDynaBean> findAuditedContractorsByStateCount() {
+	public List<BasicDynaBean> findAuditedContractorsByCountrySubdivisionCount() {
 		List<BasicDynaBean> data = null;
 
 		try {
 			Report report = new Report();
 			SelectSQL sql = new SelectSQL("contractor_audit ca");
 			sql.addField("a.country");
-			sql.addField("a.state");
+			sql.addField("a.countrySubdivision");
 			sql.addField("COUNT(DISTINCT ca.conID) AS cnt");
 			sql.addJoin("JOIN users u ON ca.auditorID = u.id");
 			sql.addJoin("JOIN accounts a ON ca.conID = a.id AND a.status = 'Active'");
@@ -392,8 +392,8 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addWhere("ca.auditorID IS NOT NULL");
 			sql.addWhere("ca.auditTypeID IN (2,3)");
 			sql.addWhere("cao.status NOT IN ('NotApplicable')");
-			sql.addGroupBy("a.country, a.state");
-			sql.addOrderBy("a.country, a.state");
+			sql.addGroupBy("a.country, a.countrySubdivision");
+			sql.addOrderBy("a.country, a.countrySubdivision");
 			report.setSql(sql);
 
 			data = report.getPage(false);

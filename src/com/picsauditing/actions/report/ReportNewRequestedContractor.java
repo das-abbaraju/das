@@ -76,7 +76,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.taxID AS TaxID");
 		sql.addField("cr.address AS Address");
 		sql.addField("cr.city AS City");
-		sql.addField("cr.state AS State");
+		sql.addField("cr.countrySubdivision AS CountrySubdivision");
 		sql.addField("cr.zip AS Zip");
 		sql.addField("cr.country AS Country");
 		sql.addField("cr.notes AS notes");
@@ -115,7 +115,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
 				sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
 						+ permissions.getUserId());
-				sql.addWhere("(cr.state = ua.state OR cr.zip BETWEEN ua.postal_start AND ua.postal_end)");
+				sql.addWhere("(cr.countrySubdivision = ua.countrySubdivision OR cr.zip BETWEEN ua.postal_start AND ua.postal_end)");
 			}
 
 			if (isAmSales() && !getFilter().isViewAll()) {
@@ -138,11 +138,11 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		String locationList = Strings.implodeForDB(f.getLocation(), ",");
 		if (filterOn(locationList)) {
-			sql.addWhere("cr.state IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
+			sql.addWhere("cr.countrySubdivision IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
 			sql.addOrderBy("CASE WHEN cr.country IN (" + locationList + ") THEN 1 ELSE 2 END, cr.country");
-			sql.addOrderBy("CASE WHEN cr.state IN (" + locationList + ") THEN 1 ELSE 2 END, cr.state");
+			sql.addOrderBy("CASE WHEN cr.countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END, cr.countrySubdivision");
 			sql.addOrderBy("cr.country");
-			sql.addOrderBy("cr.state");
+			sql.addOrderBy("cr.countrySubdivision");
 			setFiltered(true);
 		}
 
@@ -222,7 +222,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("TaxID", getText("ContractorRegistrationRequest.taxID")));
 		excelSheet.addColumn(new ExcelColumn("Address", getText("ContractorRegistrationRequest.address")));
 		excelSheet.addColumn(new ExcelColumn("City", getText("ContractorRegistrationRequest.city")));
-		excelSheet.addColumn(new ExcelColumn("State", getText("ContractorRegistrationRequest.state")));
+		excelSheet.addColumn(new ExcelColumn("CountrySubdivision", getText("ContractorRegistrationRequest.countrySubdivision")));
 		excelSheet.addColumn(new ExcelColumn("Zip", getText("ContractorRegistrationRequest.zip")));
 		excelSheet.addColumn(new ExcelColumn("Country", getText("ContractorRegistrationRequest.country")));
 

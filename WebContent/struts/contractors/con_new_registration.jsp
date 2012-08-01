@@ -135,7 +135,7 @@
 							<s:text name="ContractorRegistrationRequest.country.fieldhelp" />
 						</div>
 					</li>
-					<li id="state_li"></li>
+					<li id="countrySubdivision_li"></li>
 					<li>
 						<s:textfield
 							name="newContractor.city"
@@ -558,12 +558,12 @@
 				}
 			});
 			
-			function changeState(country) {
-				$('#state_li').load(
-					'StateListAjax.action',
+			function changeCountrySubdivision(country) {
+				$('#countrySubdivision_li').load(
+					'CountrySubdivisionListAjax.action',
 					{
 						countryString: $('#newContractorCountry').val(),
-						stateString: '<s:property value="newContractor.state.isoCode"/>',
+						countrySubdivisionString: '<s:property value="newContractor.countrySubdivision.isoCode"/>',
 						needsSuffix: false,
 						prefix: 'newContractor.'
 					}

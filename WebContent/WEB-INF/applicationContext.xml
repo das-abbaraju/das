@@ -83,7 +83,6 @@
 	<bean id="TradeAlternateDAO" class="com.picsauditing.dao.TradeAlternateDAO"/>
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
-	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
@@ -154,7 +153,7 @@
 	<bean id="ReportDynamicModel" class="com.picsauditing.model.ReportDynamicModel" />
 	<bean id="ReportProvider" class="com.picsauditing.provider.ReportProvider" />
 	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
-	<bean id="StateAutocompleteService" class=" com.picsauditing.actions.autocomplete.StateAutocompleteService" />
+	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>

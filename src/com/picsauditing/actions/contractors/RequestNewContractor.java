@@ -555,8 +555,8 @@ public class RequestNewContractor extends AccountActionSupport {
 			addActionError(getText("RequestNewContractor.error.SelectCountry"));
 		else if (newContractor.getCountry().getIsoCode().equals("US")
 				|| newContractor.getCountry().getIsoCode().equals("CA")) {
-			if (newContractor.getState() == null || Strings.isEmpty(newContractor.getState().getIsoCode()))
-				addActionError(getText("RequestNewContractor.error.SelectState"));
+			if (newContractor.getCountrySubdivision() == null || Strings.isEmpty(newContractor.getCountrySubdivision().getIsoCode()))
+				addActionError(getText("RequestNewContractor.error.SelectCountrySubdivision"));
 		}
 
 		if (Strings.isEmpty(newContractor.getPhone()))

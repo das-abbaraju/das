@@ -7,7 +7,7 @@
                     $('#FacilitiesEdit-page').delegate('#opCountry', 'change', this.updateCountry);
                     $('#FacilitiesEdit-page').delegate('#save_autoApproveRelationships', 'change', this.showAutoApproveRelationshipModal);
 
-                    //autofill state list
+                    //autofill Country Subdivision list
                     if ($('#opCountry').length) {
                         this.updateCountry();
                     }
@@ -15,22 +15,22 @@
             },
 
             updateCountry: function (event) {
-                function updateState(country, state) {
+                function updateCountrySubdivision(country, countrySubdivision) {
                     PICS.ajax({
-                        url: "StateListAjax.action",
+                        url: "CountrySubdivisionListAjax.action",
                         data: {
                             countryString: country,
-                            stateString: state
+                            countrySubdivisionString: countrySubdivision
                         },
                         success: function(data, textStatus, XMLHttpRequest) {
-                            $('#FacilitiesEdit-page #state_li').html(data);
+                            $('#FacilitiesEdit-page #countrySubdivision_li').html(data);
                         }
                     });
                 }
 
                 var element = $('#opCountry') || $(this);
                 var country = element.val();
-                var state = $('#FacilitiesEdit-page #operatorState').val();
+                var countrySubdivision = $('#FacilitiesEdit-page #operatorCountrySubdivision').val();
 
                 if (country == 'AE') {
                     $('#zip_li').hide();
@@ -38,7 +38,7 @@
                     $('#zip_li').show();
                 }
 
-                updateState(country, state);
+                updateCountrySubdivision(country, countrySubdivision);
             },
 
             // show modal to confirm auto approve relationship on facility edit

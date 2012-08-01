@@ -88,8 +88,8 @@ function editSite(siteID) {
 	);
 }
 
-function getStates(country) {
-	$('.loadStates').load('StateListAjax.action',{countryString: country, stateString: '<s:property value="jobSite.state.english"/>'});
+function getCountrySubdivisions(country) {
+	$('.loadCountrySubdivisions').load('CountrySubdivisionListAjax.action',{countryString: country, countrySubdivisionString: '<s:property value="jobSite.countrySubdivision.english"/>'});
 }
 
 function addCompany(conID, siteID) {
@@ -194,7 +194,7 @@ $(function() {
 						</s:if>
 						<s:else>
 							<th><s:text name="global.City" /></th>
-							<th><s:text name="State" /></th>
+							<th><s:text name="CountrySubdivision" /></th>
 							<th><s:text name="Country" /></th>
 							<th><s:text name="JobSite.projectStart" /></th>
 							<th><s:text name="JobSite.projectStop" /></th>
@@ -224,7 +224,7 @@ $(function() {
 								</s:if>
 								<s:else>
 									<td><s:property value="#site.city" /></td>
-									<td><s:property value="#site.state.english" /></td>
+									<td><s:property value="#site.countrySubdivision.english" /></td>
 									<td><s:property value="#site.country.isoCode" /></td>
 									<td><s:date name="#site.projectStart" /></td>
 									<td><s:date name="#site.projectStop" /></td>
@@ -255,7 +255,7 @@ $(function() {
 								</s:if>
 								<s:else>
 									<td><s:property value="#site.city" /></td>
-									<td><s:property value="#site.state.english" /></td>
+									<td><s:property value="#site.countrySubdivision.english" /></td>
 									<td><s:property value="#site.country.isoCode" /></td>
 									<td><s:date name="#site.projectStart" /></td>
 									<td><s:date name="#site.projectStop" /></td>
@@ -291,11 +291,11 @@ $(function() {
 								<li><label><s:text name="Country" />:</label>
 									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
 										headerValue="- Country -" headerKey="" listValue="name"
-										onchange="getStates(this.value);"></s:select>
+										onchange="getCountrySubdivisions(this.value);"></s:select>
 								</li>
-								<li class="loadStates"><label><s:text name="State" />:</label>
-									<s:select list="getStateList('US')" id="state_sel" name="state.isoCode" 
-										headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="stateString"/>
+								<li class="loadCountrySubdivisions"><label><s:text name="CountrySubdivision" />:</label>
+									<s:select list="getCountrySubdivisionList('US')" id="countrySubdivision_sel" name="countrySubdivision.isoCode" 
+										headerKey="" headerValue="- Country Subdivision -" listKey="isoCode" listValue="name" value="countrySubdivisionString"/>
 								</li>
 								<li><label><s:text name="JobSite.projectStart" />:</label>
 									<s:textfield name="siteStart" size="20" cssClass="datepicker" />
@@ -330,7 +330,7 @@ $(function() {
 					<th><s:text name="JobSite.label" /></th>
 					<th><s:text name="JobSite.name" /></th>
 					<th><s:text name="global.City" /></th>
-					<th><s:text name="State" /></th>
+					<th><s:text name="CountrySubdivision" /></th>
 					<th><s:text name="Country" /></th>
 					<th><s:text name="JobSite.projectStart" /></th>
 					<th><s:text name="JobSite.projectStop" /></th>
@@ -346,7 +346,7 @@ $(function() {
 						<td><s:property value="#site.label" /></td>
 						<td><s:property value="#site.name" /></td>
 						<td><s:property value="#site.city" /></td>
-						<td><s:property value="#site.state.english" /></td>
+						<td><s:property value="#site.countrySubdivision.english" /></td>
 						<td><s:property value="#site.country.isoCode" /></td>
 						<td class="center"><s:property value="maskDateFormat(#site.projectStart)" /></td>
 						<td class="center"><s:property value="maskDateFormat(#site.projectStop)" /></td>

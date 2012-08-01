@@ -102,7 +102,7 @@
 						<a href="javascript: changeOrderBy('form1','a.city,a.name');"><s:text name="global.City" /></a>
 					</td>
 					<td>
-						<a href="javascript: changeOrderBy('form1','a.state,a.name');"><s:text name="State" /></a>
+						<a href="javascript: changeOrderBy('form1','a.countrySubdivision,a.name');"><s:text name="CountrySubdivision" /></a>
 					</td>
 					<td>
 						<s:text name="global.ZipPostalCode" />
@@ -251,7 +251,7 @@
 							<s:property value="get('city')"/>
 						</td>
 						<td>
-							<s:property value="get('state')"/>
+							<s:property value="get('countrySubdivision')"/>
 						</td>
 						<td>
 							<s:property value="get('zip')"/>

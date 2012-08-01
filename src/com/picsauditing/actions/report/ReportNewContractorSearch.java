@@ -130,7 +130,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 
 		sql.addField("a.city");
-		sql.addField("a.state");
+		sql.addField("a.countrySubdivision");
 		sql.addField("a.country");
 		sql.addField("a.phone");
 		sql.addField("c.score");

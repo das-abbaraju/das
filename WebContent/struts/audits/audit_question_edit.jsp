@@ -93,7 +93,7 @@
 		
 		<s:if test="#q.questionType == 'License'">
 			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
-			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
+			<s:property value="@com.picsauditing.util.Constants@displayCountrySubdivisionLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
