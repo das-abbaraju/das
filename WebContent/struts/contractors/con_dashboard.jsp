@@ -100,7 +100,7 @@
     		</s:if>
 
              <s:if test="user.locale.language != 'en'">
-                <div id="betaTranslationsAlert">
+                <div id="beta_translations_alert">
                     <p>
                         <s:text name="global.BetaTranslations" />
                     </p>
