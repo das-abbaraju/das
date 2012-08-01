@@ -492,7 +492,7 @@ public class ContractorAccount extends Account implements JSONable {
 			// TODO remove this section once we load all the dates
 			return true;
 		}
-		
+
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(ccExpiration);
 		expires.set(Calendar.DAY_OF_MONTH, 1);
@@ -500,7 +500,7 @@ public class ContractorAccount extends Account implements JSONable {
 		expires.set(Calendar.MINUTE, 59);
 		expires.add(Calendar.MONTH, 1);
 		expires.add(Calendar.DAY_OF_MONTH, -1);
-		
+
 		return expires.getTime().after(new Date());
 	}
 
@@ -676,7 +676,7 @@ public class ContractorAccount extends Account implements JSONable {
 		list.addAll(trades);
 		return list;
 	}
-	
+
 	@Transient
 	public ContractorTrade getTopTrade() {
 		ContractorTrade topTrade = null;
@@ -685,10 +685,10 @@ public class ContractorAccount extends Account implements JSONable {
 				topTrade = trade;
 			}
 		}
-		
+
 		return topTrade;
 	}
-	
+
 	@Transient
 	public String getTopTradesNaicsCode() {
 		Trade trade = getTopTrade().getTrade();
@@ -700,7 +700,7 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 			trade = trade.getParent();
 		}
-		
+
 		return "0";
 	}
 
@@ -816,19 +816,19 @@ public class ContractorAccount extends Account implements JSONable {
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
 		Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
-		YearList years = new YearList();		
-		
+		YearList years = new YearList();
+
 		for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
 			if (annualUpdate.hasCaoStatus(AuditStatus.Complete)) {
 				years.add(annualUpdate.getAuditFor());
 				annuals.put(Integer.parseInt(annualUpdate.getAuditFor()), annualUpdate);
 			}
 		}
-		
+
 		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
 		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
 		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
-		
+
 		return completeAnnualUpdates;
 	}
 
@@ -1293,7 +1293,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public Boolean hasPastDueInvoice() {
 		for (Invoice in : invoices) {
 			if (in.getStatus().equals(TransactionStatus.Unpaid)) {
-				if (in.getDueDate().before(new Date())) {
+				if (in.getDueDate() != null && in.getDueDate().before(new Date())) {
 					return true;
 				}
 			}

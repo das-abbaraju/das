@@ -152,9 +152,6 @@ public enum FeeClass implements Translatable {
 		for (OperatorAccount operator : operators) {
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
 
-			// TODO: Remove this
-			System.out.println(contractor.getBillingStatus());
-
 			// do I have an operator outside the exclusions list?
 			if (!exclusions.containsKey(operator.getTopAccount().getId())) {
 				return false;
