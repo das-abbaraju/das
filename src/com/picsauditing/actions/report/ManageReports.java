@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +44,34 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorites() {
 		viewType = FAVORITE_REPORTS;
-		userReports = reportProvider.findFavoriteUserReports(permissions.getUserId());
+
+		try {
+			userReports = reportProvider.findFavoriteUserReports(permissions.getUserId());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!favorites.action", e);
+		}
+
+		if (CollectionUtils.isEmpty(userReports)) {
+			addActionMessage(getText("ManageReports.message.NoFavorites"));
+			userReports = new ArrayList<ReportUser>();
+		}
 
 		return FAVORITE_REPORTS;
 	}
 
 	public String myReports() {
 		viewType = MY_REPORTS;
-		userReports = reportProvider.findAllUserReports(permissions.getUserId());
+
+		try {
+			userReports = reportProvider.findAllUserReports(permissions.getUserId());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!myReports.action", e);
+		}
+
+		if (CollectionUtils.isEmpty(userReports)) {
+			addActionMessage(getText("ManageReports.message.NoUserReports"));
+			userReports = new ArrayList<ReportUser>();
+		}
 
 		return MY_REPORTS;
 	}
@@ -58,15 +79,25 @@ public class ManageReports extends PicsActionSupport {
 	public String search() {
 		viewType = ALL_REPORTS;
 
-		int userId = permissions.getUserId();
+		try {
+			int userId = permissions.getUserId();
 
-		userReports = reportProvider.findAllUserReports(userId);
+			userReports = reportProvider.findAllUserReports(userId);
 
-		List<Report> publicReports = reportProvider.findPublicReports();
-		for (Report report : publicReports) {
-			if (!ReportUtil.containsReportWithId(userReports, report.getId())) {
+			List<Report> publicReports = reportProvider.findPublicReports();
+			for (Report report : publicReports) {
+				if (ReportUtil.containsReportWithId(userReports, report.getId()))
+					continue;
+
 				userReports.add(new ReportUser(userId, report));
 			}
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports!search.action", e);
+		}
+
+		if (CollectionUtils.isEmpty(userReports)) {
+			logger.error("There are no reports in the system. This should never happen.");
+			userReports = new ArrayList<ReportUser>();
 		}
 
 		return ALL_REPORTS;

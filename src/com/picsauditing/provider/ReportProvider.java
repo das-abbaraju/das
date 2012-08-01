@@ -49,10 +49,10 @@ public class ReportProvider {
 		List<ReportUser> result = basicDao.findWhere(ReportUser.class, query);
 
 		if (CollectionUtils.isEmpty(result))
-			throw new NoResultException();
+			throw new NoResultException("No result found for userId = " + userId + " and reportId = " + reportId);
 
 		if (result.size() > 1)
-			throw new NonUniqueResultException();
+			throw new NonUniqueResultException("Multiple results found for userId = " + userId + " and reportId = " + reportId);
 
 		return result.get(0);
 	}
