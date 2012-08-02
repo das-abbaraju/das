@@ -8,6 +8,7 @@ import java.util.Map;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
+import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
@@ -171,6 +172,11 @@ public abstract class AbstractTable {
 			
 			for (Filter filter : definition.getFilters()) {
 				if (filter.getFieldName().equals(field.getName()))
+					return true;
+			}
+
+			for (Sort sort : definition.getSorts()) {
+				if (sort.getFieldName().equals(field.getName()))
 					return true;
 			}
 		}
