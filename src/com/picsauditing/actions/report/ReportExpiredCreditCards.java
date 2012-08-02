@@ -71,7 +71,9 @@ public class ReportExpiredCreditCards extends ReportAccount {
 	@Override
 	public String execute() throws Exception {
 		if ("Send Email".equals(button)) {
-			if (sendMail.length > 0) {
+			if (sendMail == null) {
+				addActionMessage("Unable to send email - no contractors were selected.");
+			} else if (sendMail.length > 0) {
 				for (String conIDString : sendMail) {
 					try {
 						int conID = Integer.parseInt(conIDString);
