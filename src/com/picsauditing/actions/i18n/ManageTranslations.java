@@ -178,7 +178,7 @@ public class ManageTranslations extends ReportActionSupport {
 				newTranslation.setAuditColumns();
 				newTranslation.setApplicable(true);
 				newTranslation.setSourceLanguage("en");
-				newTranslation.setValue("need translation");
+				newTranslation.setValue("Missing Translation");
 				newTranslation.setQualityRating(TranslationQualityRating.Bad);
 				dao.save(newTranslation);
 			}
