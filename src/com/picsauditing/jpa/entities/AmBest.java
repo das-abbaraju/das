@@ -62,7 +62,7 @@ public class AmBest {
 	private int financialCode;
 	private String companyName;
 	private String companyNameIndex;
-	private String countrySubdivision;
+	private String state;
 	private String country;
 	private Date effectiveDate;
 
@@ -147,12 +147,12 @@ public class AmBest {
 	}
 
 	@Column(length = 2)
-	public String getCountrySubdivision() {
-		return countrySubdivision;
+	public String getState() {
+		return state;
 	}
 
-	public void setCountrySubdivision(String countrySubdivision) {
-		this.countrySubdivision = countrySubdivision;
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	@Column(length = 2)
