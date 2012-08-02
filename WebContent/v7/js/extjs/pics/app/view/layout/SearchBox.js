@@ -4,16 +4,16 @@ Ext.define('PICS.view.layout.SearchBox', {
 
     autoScroll: false,
     autoSelect: false,
+    cls: 'site-menu-search',
     displayField: 'name',
     emptyText: 'Search',
     fieldLabel: '<i class="icon-search icon-large"></i>',
     hideTrigger: true,
-    id: 'site_menu_search',
     labelSeparator: '',
-    labelWidth: 25,
+    labelWidth: 15,
 
     listConfig: {
-        id: 'site_menu_search_list',
+        cls: 'site-menu-search-list',
         listeners: {
             el: {
                 click: {
@@ -28,7 +28,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             }
         },
         loadingText: 'Searching...',
-        maxHeight: 500,
+        maxHeight: 700,
         minWidth: 300,
 
         tpl: Ext.create('Ext.XTemplate',
@@ -65,13 +65,17 @@ Ext.define('PICS.view.layout.SearchBox', {
             var post = records[0];
 
             if (post) {
-                this.search(post.get('result_name'));
+                var id = escape(post.get('result_id'));
+                var type = escape(post.get('search_type'));
+                var search_terms = 'button=getResult&searchID=' + id + '&searchType=' + type;
+                document.location = '/Search.action?' + search_terms;
             }
         },
 
         specialkey: function (base, e, eOpts) {
             if (e.getKey() === e.ENTER) {
-                this.search(base.getValue());
+                var term = base.getValue();
+                this.search(term);
             } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
                 base.collapse();
             }
@@ -87,7 +91,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     valueField: 'q',
 
     store: {
-        fields: [ 'result_type', 'result_id', 'result_name', 'result_at' ],
+        fields: [ 'result_type', 'result_id', 'result_name', 'result_at', 'search_type' ],
         proxy: {
             type: 'ajax',
             url: 'SearchBox!json.action',

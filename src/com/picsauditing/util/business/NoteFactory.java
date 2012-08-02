@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 /**
  * This class utilizes static factory methods to build notes anywhere in the application
@@ -48,29 +49,42 @@ public class NoteFactory {
 			throw new IllegalArgumentException("You must pass in a valid contractor tag.");
 		}
 		
-		String noteMessage = I18nCache.getInstance().getText(translationKey, Locale.US, permissions.getName(), 
-				permissions.getAccountName(), contractorTag.getUpdateDate());
-		
 		Note note = new Note();		
 		note.setAuditColumns(permissions);
 		note.setAccount(contractorTag.getContractor());
 		note.setNoteCategory(NoteCategory.OperatorChanges);
-		note.setSummary(noteMessage);
+		note.setSummary(buildNoteMessageForContractorTagging(contractorTag, permissions, translationKey).trim());
 		note.setViewableBy(lookupOperatorAccount(contractorTag.getTag().getId()));
 		
 		return note;
 	}
 	
-	private static OperatorAccount lookupOperatorAccount(int operatorTagId) {
-		try {
-			OperatorTagDAO operatorTagDAO = SpringUtils.getBean("OperatorTagDAO");
-			OperatorTag operatorTag = operatorTagDAO.find(operatorTagId);
-			return operatorTag.getOperator();
-		} catch (Exception e) {
-			logger.error("Error occurred while looking up OperatorAccount with OperatorTagId = {}", operatorTagId, e);
+	private static String buildNoteMessageForContractorTagging(ContractorTag contractorTag, Permissions permissions, String translationKey) {
+		OperatorTag operatorTag = lookupOperatorTag(contractorTag.getTag().getId());		
+		return messageTagPrefix(operatorTag) + I18nCache.getInstance().getText(translationKey, Locale.US, permissions.getName(), 
+				permissions.getAccountName(), contractorTag.getUpdateDate());
+	}
+	
+	private static String messageTagPrefix(OperatorTag operatorTag) {
+		String prefix = "";
+		if (operatorTag != null) {
+			prefix = operatorTag.getTag();
 		}
 		
-		return null;
+		if (!Strings.isEmpty(prefix)) {
+			prefix = "(Tag: " + prefix + ") ";
+		}
+		
+		return prefix;
+	}
+	
+	private static OperatorAccount lookupOperatorAccount(int operatorTagId) {
+		OperatorTag operatorTag = lookupOperatorTag(operatorTagId);
+		if (operatorTag == null) {
+			return null;
+		}
+		
+		return operatorTag.getOperator();
 	}
 	
 	private static ContractorTag lookupContractorTag(int contractorTagId) {
@@ -82,6 +96,17 @@ public class NoteFactory {
 		}
 		
 		return null;		
+	}
+	
+	private static OperatorTag lookupOperatorTag(int operatorTagId) {
+		try {
+			OperatorTagDAO operatorTagDAO = SpringUtils.getBean("OperatorTagDAO");
+			return operatorTagDAO.find(operatorTagId);
+		} catch (Exception e) {
+			logger.error("Error occurred while looking up OperatorTag with id = {}", operatorTagId, e);
+		}
+		
+		return null;
 	}
 
 }

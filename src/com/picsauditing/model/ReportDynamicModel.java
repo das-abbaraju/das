@@ -18,7 +18,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.access.ReportAccessor;
+import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 
@@ -28,7 +28,7 @@ import com.picsauditing.report.tables.AbstractTable;
 public class ReportDynamicModel {
 
 	@Autowired
-	private ReportAccessor reportAccessor;
+	private ReportProvider reportProvider;
 
 	private static final List<Integer> baseReports =
 			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
@@ -44,11 +44,11 @@ public class ReportDynamicModel {
 		if (baseReports.contains(reportId))
 			return true;
 
-		if (reportAccessor.isReportPublic(reportId))
+		if (reportProvider.isReportPublic(reportId))
 			return true;
 
 		try {
-			ReportUser userReport = reportAccessor.findOneUserReport(userId, reportId);
+			ReportUser userReport = reportProvider.findOneUserReport(userId, reportId);
 			if (userReport != null)
 				return true;
 		} catch (NoResultException e) {
@@ -60,8 +60,8 @@ public class ReportDynamicModel {
 
 	public boolean canUserEdit(int userId, Report report) {
 		try {
-			ReportUser user = reportAccessor.findOneUserReport(userId, report.getId());
-			return user.isEditable();
+			ReportUser userReport = reportProvider.findOneUserReport(userId, report.getId());
+			return userReport.isEditable();
 		} catch (NoResultException e) {
 			// We don't care. The user can't edit.
 		}
@@ -88,11 +88,11 @@ public class ReportDynamicModel {
 		// TODO the front end is passing new report data in the current report,
 		// so we need to change sourceReport to it's old state.
 		// Is this is the desired behavior?
-		reportAccessor.refresh(sourceReport);
+		reportProvider.refresh(sourceReport);
 
-		reportAccessor.saveReport(newReport, user);
-		reportAccessor.connectReportToUser(newReport, user);
-		reportAccessor.grantEditPermission(newReport, user);
+		reportProvider.saveReport(newReport, user);
+		reportProvider.connectReportToUser(newReport, user);
+		reportProvider.grantEditPermission(newReport, user);
 
 		return newReport;
 	}
@@ -102,7 +102,7 @@ public class ReportDynamicModel {
 		if (!canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
 
-		reportAccessor.saveReport(report, new User(permissions.getUserId()));
+		reportProvider.saveReport(report, new User(permissions.getUserId()));
 	}
 
 	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable) {

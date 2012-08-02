@@ -34,13 +34,12 @@ import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -58,7 +57,7 @@ public class Registration extends ContractorActionSupport {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
@@ -66,7 +65,7 @@ public class Registration extends ContractorActionSupport {
 	private String username;
 	private String confirmPassword;
 	private int requestID;
-	private State state;
+	private CountrySubdivision countrySubdivision;
 
 	@Anonymous
 	@Override
@@ -99,12 +98,10 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCity(crr.getCity());
 					contractor.setZip(crr.getZip());
 					contractor.setCountry(crr.getCountry());
-					contractor.setState(crr.getState());
-
-					if (countrySubdivisionDAO.exist(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode())){
-						CountrySubdivision countrySubdivision = new CountrySubdivision();
-						countrySubdivision.setIsoCode(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode());
-						contractor.setCountrySubdivision(countrySubdivision);
+					if (crr.getCountrySubdivision() != null){
+						contractor.setCountrySubdivision(crr.getCountrySubdivision());
+					} else {
+						contractor.setCountrySubdivision(null);
 					}
 
 					contractor.setRequestedBy(crr.getRequestedBy());
@@ -243,14 +240,12 @@ public class Registration extends ContractorActionSupport {
 			contractor.setStatus(AccountStatus.Demo);
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
-		if (contractor.getCountry().isHasStates() && state != null){
-			contractor.setState(state);
-			if (countrySubdivisionDAO.exist(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode())){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode());
-				contractor.setCountrySubdivision(countrySubdivision);
-			}
+
+		if (countrySubdivision != null && !countrySubdivision.equals(contractor.getCountrySubdivision())){
+			CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
+			contractor.setCountrySubdivision(contractorCountrySubdivision);
 		}
+
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());
@@ -359,11 +354,11 @@ public class Registration extends ContractorActionSupport {
 		return !duplicateAccounts.isEmpty();
 	}
 
-	public void setState(State state) {
-		this.state = state;
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
-	public State getState() {
-		return state;
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
 	}
 }

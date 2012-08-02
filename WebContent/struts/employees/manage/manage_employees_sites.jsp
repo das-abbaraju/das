@@ -1,0 +1,210 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
+
+<s:if test="employee.employeeSites.size > 0">
+	<s:if test="employee.account.requiresCompetencyReview">
+		<fieldset class="form">
+			<h2 class="formLegend">
+				<s:text name="ManageEmployees.header.HSESites" />
+			</h2>
+			<ol>
+				<li>
+					<table class="report" style="width: 500px;">
+						<thead>
+							<tr>
+								<th>
+									<s:text name="global.Operator" />
+								</th>
+								<th>
+									<s:text name="ManageEmployees.label.Since" />
+								</th>
+								<th>
+									<s:text name="ManageEmployees.label.Orientation" />
+								</th>
+								<th>
+									<s:text name="button.Edit" />
+								</th>
+							</tr>
+						</thead>
+						<s:iterator value="employee.employeeSites" var="site">
+							<s:if test="#site.current && #site.jobSite == null && #site.operator.requiresCompetencyReview">
+								<tr>
+									<td>
+										${operator.name}
+									</td>
+									<td>
+										<s:date name="effectiveDate" />
+									</td>
+									<td>
+										<s:date name="orientationDate" />
+									</td>
+									<td class="center">
+										<s:set name="edit_site_title">
+											<s:text name="ManageEmployees.header.EditSiteProject">
+												<s:param>
+													${operator.name}
+												</s:param>
+												<s:param value="0" />
+											</s:text>
+										</s:set>
+										<a
+											href="javascript:;"
+											class="edit site"
+											data-employee="${employee.id}"
+											data-site="${id}"
+											title="${edit_site_title}"></a>
+									</td>
+								</tr>
+							</s:if>
+						</s:iterator>
+						<tr>
+							<td colspan="4">
+								<s:if test="hseOperators.size > 0">
+									<s:select
+										data-employee="${employee.id}"
+										headerKey=""
+										headerValue=" - %{getText('ManageEmployees.header.AssignSite')} - "
+										id="hse_operator_list"
+										list="hseOperators"
+										listKey="id"
+										listValue="name" />
+								</s:if>
+								<s:else>
+									<h5>
+										<s:text name="ManageEmployees.message.AssignedAllHSESites" />
+									</h5>
+								</s:else>
+							</td>
+						</tr>
+					</table>
+					<s:if test="hseOperators.size > 0">
+						<div class="fieldhelp" title="<s:text name="ManageEmployees.label.AddHSESite" />">
+							<p>
+								<s:text name="ManageEmployees.label.AddHSESite.fieldhelp" />
+							</p>
+						</div>
+					</s:if>
+				</li>
+			</ol>
+		</fieldset>
+	</s:if>
+	
+	<s:if test="employee.account.requiresOQ">
+		<s:include value="manage_employees_sites_oq.jsp" />
+	</s:if>
+	
+	<s:if test="nonEmployeeGUARDOperators.size > 0">
+		<fieldset class="form">
+			<h2 class="formLegend">
+				<s:text name="global.Operators" />
+			</h2>
+			<ol>
+				<li>
+					<table class="report" style="width: 500px;">
+						<thead>
+							<tr>
+								<th>
+									<s:text name="global.Operator" />
+								</th>
+								<th>
+									<s:text name="button.Remove" />
+								</th>
+							</tr>
+						</thead>
+						<s:iterator value="nonEmployeeGUARDOperators" var="non_eg_operator">
+							<tr>
+								<td>
+									${non_eg_operator.name}
+								</td>
+								<td class="center">
+									<a
+										href="javascript:;"
+										class="remove site"
+										data-employee="${employee.id}"
+										data-operator="${non_eg_operator.id}"></a>
+								</td>
+							</tr>
+						</s:iterator>
+						<tr>
+							<td colspan="2">
+								<s:if test="unusedNonEmployeeGUARDOperators.size > 0">
+									<s:select
+										data-employee="${employee.id}"
+										headerKey=""
+										headerValue=" - %{getText('ManageEmployees.header.AssignSite')} - "
+										id="non_eg_operator_list"
+										list="unusedNonEmployeeGUARDOperators"
+										listKey="id"
+										listValue="name" />
+								</s:if>
+								<s:else>
+									<h5>
+										<s:text name="ManageEmployees.AssignedAllSites" />
+									</h5>
+								</s:else>
+							</td>
+						</tr>
+					</table>
+				</li>
+			</ol>
+		</fieldset>
+	</s:if>
+</s:if>
+<s:if test="employee.prevAssigned">
+	<fieldset class="form">
+		<h2 class="formLegend">
+			<s:text name="ManageEmployees.header.PreviouslyAssignedSitesProjects" />
+		</h2>
+		<ol>
+			<li>
+				<table class="report">
+					<thead>
+						<tr>
+							<th>
+								<s:text name="global.Type" />
+							</th>
+							<th>
+								<s:text name="global.Operator" />
+							</th>
+							<th>
+								<s:text name="JobSite.name" />
+							</th>
+							<th>
+								<s:text name="JobSite.projectStop" />
+							</th>
+						</tr>
+					</thead>
+					<s:iterator value="employee.employeeSites" var="site" status="stat">
+						<s:if test="!#site.current">
+							<tr>
+								<td>
+									<s:if test="#site.jobSite.id > 0">
+										<s:text name="ManageEmployees.header.OQProjects" />
+									</s:if>
+									<s:elseif test="#site.operator.requiresCompetencyReview">
+										<s:text name="ManageEmployees.header.HSESites" />
+									</s:elseif>
+									<s:else>
+										<s:text name="global.Operators" />
+									</s:else>
+								</td>
+								<td>
+									${site.operator.name}
+								</td>
+								<td>
+									<s:if test="#site.jobSite.id > 0">
+										${jobSite.label}
+									</s:if>
+								</td>
+								<td>
+									<s:date name="expirationDate" format="%{getText('date.short')}" />
+								</td>
+							</tr>
+						</s:if>
+					</s:iterator>
+				</table>
+			</li>
+		</ol>
+	</fieldset>
+</s:if>

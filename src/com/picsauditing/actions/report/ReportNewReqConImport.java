@@ -27,7 +27,6 @@ import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -39,10 +38,9 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.FileUtils;
@@ -53,7 +51,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	@Autowired
 	private ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
-	private StateDAO stateDAO;
+	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
@@ -63,9 +61,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	@Autowired
 	protected EmailAttachmentDAO attachmentDAO;
 	@Autowired
-	protected EmailSenderSpring emailSenderSpring;
-	@Autowired
-	protected CountrySubdivisionDAO countrySubdivisionDAO;
+	protected EmailSender emailSender;
 
 	private File file;
 	private String fileContentType = null;
@@ -74,6 +70,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
 	private static final int INITIAL_EMAIL = 83;
+	private CountrySubdivision countrySubdivision;
 
 	public String save() throws Exception {
 		String extension = null;
@@ -216,7 +213,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			EmailBuilder emailBuilder = prepareEmailBuilder(newContractor);
 			try {
 				EmailQueue q = emailBuilder.build();
-				emailSenderSpring.send(q);
+				emailSender.send(q);
 				OperatorForm form = getForm(newContractor);
 				if (form != null)
 					addAttachments(q, form);
@@ -268,7 +265,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		Object taxIDValue = getValue(row, 4);
 		String importedAddress = (String) getValue(row, 5);
 		String importedCity = (String) getValue(row, 6);
-		State importedState = (State) getValue(row, 7);
+		CountrySubdivision importedCountrySubdivision = (CountrySubdivision) getValue(row, 7);
 		Object zipValue = getValue(row, 8);
 		Country importedCountry = (Country) getValue(row, 9);
 		OperatorAccount importedRequestedBy = (OperatorAccount) getValue(row, 10);
@@ -301,12 +298,11 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
-		crr.setState(importedState);
-		if (countrySubdivisionDAO.exist(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode())){
-			CountrySubdivision countrySubdivision = new CountrySubdivision();
-			countrySubdivision.setIsoCode(crr.getCountry().getIsoCode()+"-"+crr.getState().getIsoCode());
-			crr.setCountrySubdivision(countrySubdivision);
+		if ((importedCountrySubdivision != null && !importedCountrySubdivision.equals(crr.getCountrySubdivision())) || (crr.getCountrySubdivision() == null && importedCountrySubdivision!=null)){
+			CountrySubdivision importedCountrySubdivisionObj = countrySubdivisionDAO.find(importedCountrySubdivision.toString());
+			crr.setCountrySubdivision(importedCountrySubdivisionObj);
 		}
+
 		if (zipValue != null) {
 			if (zipValue instanceof Double) {
 				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);
@@ -341,7 +337,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
 			crr.setRequestedByUserOther(null);
 
-		if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
+		if (Strings.isEmpty(crr.getContact()) || crr.getCountrySubdivision() == null || crr.getCountry() == null
 				|| crr.getRequestedBy() == null)
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
 
@@ -419,7 +415,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				value = row.getCell(cell).getRichStringCellValue().getString();
 
 			if (cell == 7 && !Strings.isEmpty(value.toString()))
-				value = stateDAO.find(value.toString());
+				value = countrySubdivisionDAO.find(value.toString());
 			if (cell == 9 && !Strings.isEmpty(value.toString()))
 				value = countryDAO.find(value.toString());
 			if (cell == 10 && !Strings.isEmpty(value.toString()))

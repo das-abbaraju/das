@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -18,7 +19,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 public class AuditCategoriesBuilderTest {
 
 	@Test
-	public void testFindMostRecentAudit() {
+	public void testFindMostRecentAudit() throws Exception {
 		ContractorAccount testContractor = EntityFactory.makeContractor();
 		testContractor.setAudits(new ArrayList<ContractorAudit>());
 		
@@ -44,12 +45,14 @@ public class AuditCategoriesBuilderTest {
 		
 		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
 	
-		assertEquals(3, categoryBuilder.findMostRecentAudit(2).getId());
+		ContractorAudit result = Whitebox.invokeMethod(categoryBuilder, "findMostRecentAudit", 2);
+		
+		assertEquals(3, result.getId());
 		
 	}
 	
 	@Test
-	public void testFindAnswer() {
+	public void testFindAnswer() throws Exception {
 		ContractorAccount testContractor = EntityFactory.makeContractor();
 		ContractorAudit audit = EntityFactory.makeContractorAudit(1, testContractor);
 		audit.setData(new ArrayList<AuditData>());
@@ -67,10 +70,9 @@ public class AuditCategoriesBuilderTest {
 		
 		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
 	
-		assertEquals("pink", categoryBuilder.findAnswer(audit, 1).getAnswer());
-		assertEquals("purple", categoryBuilder.findAnswer(audit, 2).getAnswer());
-		assertEquals("magenta", categoryBuilder.findAnswer(audit, 3).getAnswer());
-		
+		assertEquals("pink", wrapPrivateMethodCall(categoryBuilder, audit, 1).getAnswer());
+		assertEquals("purple", wrapPrivateMethodCall(categoryBuilder, audit, 2).getAnswer());
+		assertEquals("magenta", wrapPrivateMethodCall(categoryBuilder, audit, 3).getAnswer());	
 	}
 
 	private AuditQuestion makeUpQuestion(int id,ContractorAudit audit, String answer) {
@@ -78,5 +80,9 @@ public class AuditCategoriesBuilderTest {
 		question.setId(id);
 		audit.getData().add(EntityFactory.makeAuditData(answer, question));
 		return question;
+	}
+	
+	private AuditData wrapPrivateMethodCall(AuditCategoriesBuilder categoryBuilder, ContractorAudit audit, int currentQuestionId) throws Exception { 
+		return Whitebox.invokeMethod(categoryBuilder, "findAnswer", audit,currentQuestionId);
 	}
 }

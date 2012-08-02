@@ -5,6 +5,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.util.Assert;
 
 /**
@@ -16,6 +17,11 @@ public class SpringUtils implements ApplicationContextAware {
 
 	private static ApplicationContext applicationContext;
 
+	public static void publishEvent(ApplicationEvent event) {
+		Assert.notNull(applicationContext, "ApplicationContext must not be null!");
+		applicationContext.publishEvent(event);
+	}
+	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		SpringUtils.applicationContext = applicationContext;

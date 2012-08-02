@@ -38,7 +38,6 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -74,7 +73,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private AccountUser salesRep = null;
 	private AccountUser accountRep = null;
 	private Country country;
-	private State state;
+	private CountrySubdivision countrySubdivision;
 	private int contactID;
 	private boolean autoApproveRelationships;
 
@@ -224,16 +223,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 
-		if (country != null && !country.equals(operator.getCountry()))
+		if (country != null && !country.equals(operator.getCountry())) {
 			operator.setCountry(country);
-		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState())){
-			operator.setState(state);
+		}
 
-			if (!countrySubdivisionDAO.exist(operator.getCountry().getIsoCode()+"-"+operator.getState().getIsoCode())){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(operator.getCountry().getIsoCode()+"-"+operator.getState().getIsoCode());
-				operator.setCountrySubdivision(countrySubdivision);
-			}
+		if ((countrySubdivision != null && !countrySubdivision.equals(operator.getCountrySubdivision())) || (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
+			CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
+			operator.setCountrySubdivision(contractorCountrySubdivision);
 		}
 
 		if (hasActionErrors()) {
@@ -337,7 +333,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (!operator.isInPicsConsortium()) {
 			facilitiesEditModel.addPicsCountry(operator, permissions);
 		}
-		
+
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));
@@ -508,12 +504,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		this.country = country;
 	}
 
-	public State getState() {
-		return state;
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
 	}
 
-	public void setState(State state) {
-		this.state = state;
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
 	public List<User> getPrimaryOperatorContactUsers() {
@@ -687,6 +683,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		if (operator.getCountry() == null) {
 			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
+		}
+
+		if (operator.getCountry().isHasCountrySubdivisions() && (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
 		}
 
 		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0

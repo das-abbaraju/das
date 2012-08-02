@@ -107,7 +107,8 @@
                 // get values to build full address to send to google
                 var address = $('#conAudit_address').val();
                 var city = $('#conAudit_city').val();
-                var state = $('#conAudit_state').val();
+                var countrySubdivision = $('#conAudit_countrySubdivision').val();
+                var state = countrySubdivision.substr(string.length-2,2);
                 var zip = $('#conAudit_zip').val();
                 var country = $('#conAudit_country').val();
                 

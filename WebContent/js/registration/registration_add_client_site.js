@@ -25,6 +25,13 @@
                     $('.client-site-right').delegate('.client-site-list a:not(.disable) .remove', 'click', function (event) {
                         that.remove_client_site.apply(that, [event]);
                     });
+
+
+                    //add 'click to display' client site button
+                    $('.client-site-list').delegate('.client-site-list li', 'click', this.show_button);
+
+                    //remove 'click to display' styles
+                    $('.client-site-list').delegate('.client-site-list li', 'mouseout', this.hide_button);
                 }
             },
 
@@ -65,7 +72,7 @@
                         that.add_to_selected_client_site_list(client_site);
                     });
                 });
-                
+
             },
 
             add_to_client_site_list: function (client_site, client_site_list) {
@@ -77,35 +84,35 @@
                 client_sites.each(function (key, value) {
                     client_site_names[key] = $(this).find('a .name').text();
                 });
-                
+
                 // Get the name of the client site to be added.
                 var client_site_name = client_site.find('a .name').text();
-                
+
                 // Is the client site already in the list?
                 var existingIndex = $.inArray(client_site_name, client_site_names);
-                
+
                 // If not...
                 if (existingIndex == -1) {
-                    
+
                     // Add the site name to the array of existing site names.
                     client_site_names.push(client_site_name);
-                    
+
                     // Sort the array alphabetically.
                     client_site_names.sort();
 
                     // Identify the index of the newly added site name within the sorted array.
                     var index = $.inArray(client_site_name, client_site_names);
-                    
+
                     // Insert the client site within the array of client sites
                     // (The object array is already sorted alphabetically.)
                     if (client_sites.eq(index).length > 0) {
                         // ...immediately before that index if that index is currently occupied
                         client_sites.eq(index).before(client_site);
                     } else {
-                        // ...or at that same index, if it is not. 
+                        // ...or at that same index, if it is not.
                         client_site_list.append(client_site);
                     }
-    
+
                     // Re-enable client site add.
                     client_site.find('a').removeClass('disable');
                 }
@@ -164,6 +171,11 @@
                 });
             },
 
+            hide_button: function () {
+                $(this).find('.btn').removeAttr('style');
+                $(this).find('.location').removeAttr('style');
+            },
+
             info: function (event) {
                 var element = $(this).closest('a');
                 var container = element.closest('li');
@@ -182,7 +194,7 @@
 
                 var client_site = element.closest('li');
                 var client_site_id = element.attr('data-id');
-                
+
                 // disable client site remove - remove it from delegated event list
                 element.addClass('disable');
 
@@ -208,7 +220,7 @@
                         that.add_to_available_client_site_list(client_site);
                     });
                 });
-                
+
             },
 
             remove: function (client_site_id, success_callback) {
@@ -284,6 +296,11 @@
                 });
             },
 
+            show_button: function () {
+                $(this).find('.btn').show();
+                $(this).find('.location').hide();
+            },
+
             show_general_contractor_modal: function (client_site_element) {
                 var that = this;
 
@@ -317,11 +334,11 @@
                 function initializeModalEvents(config) {
                     var modal = config && config.modal;
                     var general_contractor_element = config && config.general_contractor_element;
-                    
+
                     var id = general_contractor_element.attr('data-id');
                     var general_contractor_id = general_contractor_element.attr('data-general-contractor-id');
                     var requires_site_selection = general_contractor_element.attr('data-requires-site-selection');
-                    
+
                     if (requires_site_selection) {
                         modal.find('.danger').hide();
                         modal.find('.only-work-for').hide();
@@ -346,20 +363,20 @@
                                 that.trigger_client_help_removal();
                             });
                         }
-                        
+
                         general_contractor_element.closest('li').hide();
-                        
+
                         modal.find('.danger').show();
                     });
-                    
+
                     modal.delegate('.only-work-for', 'click', function () {
                         that.add(id, function () {
                             that.add_to_selected_client_site_list(general_contractor_element.closest('li'));
                             that.trigger_client_help_removal();
                         });
-                        
+
                         general_contractor_element.closest('li').hide();
-                        
+
                         PICS.getClass('modal.Modal').hide();
                     });
                 }

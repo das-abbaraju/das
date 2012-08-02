@@ -24,106 +24,77 @@ Ext.define('PICS.model.report.Column', {
         name: 'renderer'
     }],
 
-    setAvailableFieldHandle: function () {
-        var handle = '';
-
-        if (this.getAvailableField().get('name').length > 0) {
-            handle = this.getAvailableField();
-        } else {
-            handle = this;
-        }
-
-        return handle;
-    },
-
-    toDataSetModelField: function () {
-        var available_field = this.setAvailableFieldHandle(),
-            name = available_field.get('name'),
-            type = available_field.get('type');
+    toModelField: function () {
+        var field = this.getAvailableField();
 
         var model_field = {
-            //convert: null,
-            //dateFormat: null,
-            //defaultValue: '',
-            //mapping: null,
-            //persist: true,
-            //sortDir: 'ASC',
-            //sortType: null,
-            //useNull: false,
-            name: name,
-            type: type
+            name: field.get('name'),
+            type: field.get('type')
         };
 
-        if (type == 'date') {
+        if (field.get('type') == 'date') {
             model_field.dateFormat = 'time';
         }
 
         return model_field;
     },
 
-    toDataSetGridColumn: function () {
-        var available_field = this.setAvailableFieldHandle(),
-            data_set_column = {},
-            name = available_field.get('name')
-            renderer = available_field.get('renderer'),
-            text = available_field.get('text'),
-            type = available_field.get('type'),
-            url = available_field.get('url'),
-            width = available_field.get('width') || 150; //TODO: Find a better solution than hardcoding a default width
+    toGridColumn: function () {
+        var field = this.getAvailableField();
 
-        //prevents header click sort
-        data_set_column.sortable = false;
+        var grid_column = {
+            dataIndex: field.get('name'),
+            menuDisabled: true,
+            sortable: false,
+            text: field.get('text'),
+            width: field.get('width') || 150
+        };
 
-        data_set_column.dataIndex = name;
-        data_set_column.text = text;
-
-        data_set_column.width = width;
-
-        switch(type) {
+        switch (field.get('type')) {
             case 'boolean':
-                data_set_column.align = 'center';
-                data_set_column.width = 50;
-                data_set_column.renderer = function (value) {
+                grid_column.align = 'center';
+                grid_column.renderer = function (value) {
                     if (value) {
                         return '<img src="images/tick.png" width="16" height="16" />';
                     }
 
                     return '';
                 };
+                grid_column.width = 50;
 
                 break;
             case 'date':
             case 'datetime':
-                data_set_column.xtype = 'datecolumn';
-                data_set_column.format = 'n/j/Y';
+                grid_column.xtype = 'datecolumn';
+                grid_column.format = 'n/j/Y';
 
                 break;
             case 'float':
-                data_set_column.xtype = 'numbercolumn';
-                data_set_column.align = 'right';
-                data_set_column.width = 75;
+                grid_column.xtype = 'numbercolumn';
+                grid_column.align = 'right';
+                grid_column.width = 75;
 
                 break;
             case 'int':
-                data_set_column.xtype = 'numbercolumn';
-                data_set_column.align = 'right';
-                data_set_column.format = '0000';
-                data_set_column.width = 75;
+                grid_column.xtype = 'numbercolumn';
+                grid_column.align = 'right';
+                grid_column.format = '0000';
+                grid_column.width = 75;
 
                 break;
             default:
                 break;
         }
 
-        if (url) {
-            data_set_column.xtype = 'linkcolumn';
-            data_set_column.url = url;
+        if (field.get('url')) {
+            grid_column.xtype = 'linkcolumn';
+            grid_column.url = field.get('url');
         }
 
-        if (renderer) {
-            data_set_column.renderer = renderer;
+        if (field.get('renderer')) {
+            grid_column.renderer = field.get('renderer');
         }
 
-        return data_set_column;
+        return grid_column;
     }
 });

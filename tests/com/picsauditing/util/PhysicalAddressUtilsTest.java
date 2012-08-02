@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.PhysicalAddress;
 import com.picsauditing.model.general.PhysicalAddressBean;
 
@@ -17,15 +17,15 @@ public class PhysicalAddressUtilsTest {
 
 	Map<String, Country> countries;
 	Country unitedStates;
-	Map<String, State> states;
-	State california;
+	Map<String, CountrySubdivision> countrySubdivisions;
+	CountrySubdivision california;
 
 	@Before
 	public void setUp() throws Exception {
 		countries = EntityFactory.mostCommonCountries();
 		unitedStates = countries.get("US");
-		states = EntityFactory.someExampleStates();
-		california = states.get("CA");
+		countrySubdivisions = EntityFactory.someExampleCountrySubdivisions();
+		california = countrySubdivisions.get("CA");
 	}
 
 	@Test

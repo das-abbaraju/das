@@ -2,7 +2,6 @@ package com.picsauditing.dao;
 
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 
 public class NaicsDAO extends PicsDAO {
 
@@ -10,7 +9,7 @@ public class NaicsDAO extends PicsDAO {
 		return em.find(Naics.class, code);
 	}
 	
-	@Testable Naics findParent(String code) {
+	private Naics findParent(String code) {
 		Naics naics;
 		while (code.length()>1) {
 			code = code.substring(0, code.length() - 1);
@@ -78,8 +77,7 @@ public class NaicsDAO extends PicsDAO {
 		return getBroaderNaics(lwcr,naics2);
 	}
 
-	@Testable 
-	Naics getBroaderNaicsForDart(Naics naics) {
+	private Naics getBroaderNaicsForDart(Naics naics) {
 		String code = naics.getCode();
 		if (Strings.isEmpty(code))
 			return null;
@@ -92,8 +90,8 @@ public class NaicsDAO extends PicsDAO {
 		// if (naics2 == null || naics2.getDart() > 0)
 		if (naics2 == null || naics2.getLwcr() > 0)
 			return naics2;
+		
 		return getBroaderNaicsForDart(naics2);
 	}
-
 
 }

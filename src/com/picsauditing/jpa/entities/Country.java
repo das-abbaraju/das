@@ -159,7 +159,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	}
 
 	@Transient
-	public boolean isHasStates() {
+	public boolean isHasCountrySubdivisions() {
 		return isUS() || isCanada() || isUK();
 	}
 

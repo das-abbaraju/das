@@ -16,7 +16,6 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 
 	private User user;
 	private UserAssignmentType assignmentType;
-	private State state;
 	private CountrySubdivision countrySubdivision;
 	private Country country;
 	private String postalStart;
@@ -42,16 +41,6 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 
 	public void setAssignmentType(UserAssignmentType assignmentType) {
 		this.assignmentType = assignmentType;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "state")
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
 	}
 
 	@ManyToOne
@@ -118,7 +107,7 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 
 		if (country != null)
 			priority += 1;
-		if (state != null)
+		if (countrySubdivision != null)
 			priority += 10;
 		if (postalStart != null || postalEnd != null)
 			priority += 100;
@@ -135,7 +124,7 @@ public class UserAssignment extends BaseTable implements Comparable<UserAssignme
 
 	@Override
 	public String toString() {
-		return String.format("%s state:%s, country:%s, zip:%s-%s, contractor:%s, auditType:%s", user.getName(), state,
+		return String.format("%s countrySubdivision:%s, country:%s, zip:%s-%s, contractor:%s, auditType:%s", user.getName(), countrySubdivision,
 				country, postalStart, postalEnd, contractor == null ? null : contractor.getName(),
 				auditType == null ? null : auditType.getName().toString());
 	}

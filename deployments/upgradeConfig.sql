@@ -6,19 +6,8 @@
 -- SEE upgrade.sql FOR NON-CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
--- PICS-6485 Open Task Updates
-update app_translation 
-set qualityRating=2, msgValue='<a href="https://www.picsorganizer.com/Audit.action?auditID={0,number,#}">Please fix issues with your {1}{2,choice,0#|1# for {3}} Policy</a>' 
-where msgKey='ContractorWidget.message.FixPolicyIssues' and locale='en';
-
-update app_translation 
-set qualityRating=1
-where msgKey='ContractorWidget.message.FixPolicyIssues' and locale!='en';
-
-update app_translation 
-set qualityRating=2, msgValue='Please <a href="https://www.picsorganizer.com/Audit.action?auditID={0,number,#}">upload and submit your {1}{2,choice,0#|1# for {3}} Policy</a>' 
-where msgKey='ContractorWidget.message.UploadAndSubmitPolicy' and locale='en';
-
-update app_translation 
-set qualityRating=1
-where msgKey='ContractorWidget.message.UploadAndSubmitPolicy' and locale!='en';
+-- PICS-6465 AFR Updates
+-- Update UK DOFR to exposure hours
+update audit_question_function_watcher set questionID=9100 where id=190;
+-- Update Germany AFR
+update audit_question_function_watcher SET questionID=9840, uniqueCode='totalHours' where id=166;

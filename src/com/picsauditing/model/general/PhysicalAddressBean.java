@@ -1,7 +1,7 @@
 package com.picsauditing.model.general;
 
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.PhysicalAddress;
 
 public class PhysicalAddressBean implements PhysicalAddress {
@@ -9,18 +9,18 @@ public class PhysicalAddressBean implements PhysicalAddress {
 	public String address2;
 	public String address3;
 	public String city;
-	public State  state;
+	public CountrySubdivision  countrySubdivision;
 	public String zip;
 	public Country country;
 	
-	public PhysicalAddressBean(String address, String address2, String address3, String city, State state, String zip,
+	public PhysicalAddressBean(String address, String address2, String address3, String city, CountrySubdivision countrySubdivision, String zip,
 			Country country) {
 		super();
 		this.address = address;
 		this.address2 = address2;
 		this.address3 = address3;
 		this.city = city;
-		this.state = state;
+		this.countrySubdivision = countrySubdivision;
 		this.zip = zip;
 		this.country = country;
 	}
@@ -46,8 +46,8 @@ public class PhysicalAddressBean implements PhysicalAddress {
 	}
 
 	@Override
-	public State getState() {
-		return state;
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
 	}
 
 	@Override

@@ -127,7 +127,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(true);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn("");
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -148,7 +148,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(true);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn(alias);
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -168,7 +168,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(false);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn("");
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -189,7 +189,7 @@ public class SqlBuilderTest {
 		when(joinTable.isInnerJoin()).thenReturn(false);
 		when(joinTable.getTableName()).thenReturn(tableName);
 		when(joinTable.getAlias()).thenReturn(alias);
-		when(joinTable.getWhereClause()).thenReturn(whereClause);
+		when(joinTable.getOnClause()).thenReturn(whereClause);
 
 		List<AbstractTable> joinTables = new ArrayList<AbstractTable>();
 		joinTables.add(joinTable);
@@ -363,12 +363,6 @@ public class SqlBuilderTest {
 	@Test
 	public void testColumnToSql_UndecoratedIfNoFunction() throws Exception {
 		String result = setUpAndRunColumnToSqlTest(null, DATABASE_COLUMN_NAME);
-		assertEquals(DATABASE_COLUMN_NAME, result);
-	}
-
-	@Test
-	public void testColumnToSql_UndecoratedIfUnrecognizedQueryFunction() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.None, DATABASE_COLUMN_NAME);
 		assertEquals(DATABASE_COLUMN_NAME, result);
 	}
 

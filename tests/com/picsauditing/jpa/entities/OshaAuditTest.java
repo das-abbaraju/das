@@ -1,110 +1,112 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
 
+public class OshaAuditTest {
 
-public class OshaAuditTest extends PicsTest {
-	
 	private static final int CAT_ID_SOMETHING_OTHER_THAN_OSHA = 155;
 
 	private static final int QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR = 8978;
 	private static final int QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR = 8977;
 	private static final int QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR = 8812;
 	
-	ContractorAccount contractor;
+	ContractorAudit contractorAudit;
 	OshaAudit oshaAudit2010;
 	
 	@Before
 	public void setUp() throws Exception {
-		super.setUp();
-		contractor = EntityFactory.makeContractor();
-		oshaAudit2010 = EntityFactory.makeOshaAudit(contractor, "2010");
+		buildFakeContractorAudit();		
+		setupAudit_USandUK();
+		oshaAudit2010 = new OshaAudit(contractorAudit);
+	}
+	
+	private void buildFakeContractorAudit() {
+		AuditType auditType = new AuditType();
+		auditType.setId(AuditType.ANNUALADDENDUM);
+		
+		contractorAudit = new ContractorAudit();	
+		contractorAudit.setAuditType(auditType);
+		contractorAudit.setAuditFor("2010");
 	}
 
-	private void setupAudit_USandUK() {
-		oshaAudit2010.getCategories().add(EntityFactory.addCategories(oshaAudit2010.getContractorAudit(), OshaAudit.CAT_ID_OSHA));
-		oshaAudit2010.getCategories().add(EntityFactory.addCategories(oshaAudit2010.getContractorAudit(), CAT_ID_SOMETHING_OTHER_THAN_OSHA));
-		oshaAudit2010.getCategories().add(EntityFactory.addCategories(oshaAudit2010.getContractorAudit(), OshaAudit.CAT_ID_UK_HSE));
+	private void setupAudit_USandUK() throws Exception {		
+		List<AuditCatData> auditCategories = new ArrayList<AuditCatData>();
+		auditCategories.add(setupMockAuditCatData(contractorAudit, OshaAudit.CAT_ID_OSHA));
+		auditCategories.add(setupMockAuditCatData(contractorAudit,  CAT_ID_SOMETHING_OTHER_THAN_OSHA));
+		auditCategories.add(setupMockAuditCatData(contractorAudit, OshaAudit.CAT_ID_UK_HSE));
 		
-		AuditData trir2010Data = EntityFactory.makeAuditData("4.3",QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
-		oshaAudit2010.getData().add(trir2010Data);
-		
-		AuditData lwcr2010Data = EntityFactory.makeAuditData("5",QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR);
-		oshaAudit2010.getData().add(lwcr2010Data);
-		
-		AuditData fatalities2010Data = EntityFactory.makeAuditData("0",QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR);
-		oshaAudit2010.getData().add(fatalities2010Data);
-		
-		AuditData hours2010Data = EntityFactory.makeAuditData("120000",8810);
-		oshaAudit2010.getData().add(hours2010Data);
-		
-		AuditData daysAwayCases2010Data = EntityFactory.makeAuditData("1",8813);
-		oshaAudit2010.getData().add(daysAwayCases2010Data);
-		
-		AuditData daysAway2010Data = EntityFactory.makeAuditData("10",8814);
-		oshaAudit2010.getData().add(daysAway2010Data);
-		
-		AuditData jobTransfersCases2010Data = EntityFactory.makeAuditData("2",8815);
-		oshaAudit2010.getData().add(jobTransfersCases2010Data);
-		
-		AuditData jobTransfersDays2010Data = EntityFactory.makeAuditData("20",8816);
-		oshaAudit2010.getData().add(jobTransfersDays2010Data);		
+		contractorAudit.setCategories(auditCategories);
 
-		AuditData totalRecordables2010Data = EntityFactory.makeAuditData("7",8817);
-		oshaAudit2010.getData().add(totalRecordables2010Data);
+		List<AuditData> auditDataList = new ArrayList<AuditData>();
 		
-		AuditData ifr2010Data = EntityFactory.makeAuditData("103.7",9060);
-		oshaAudit2010.getData().add(ifr2010Data);
+		AuditData trir2010Data = EntityFactory.makeAuditData("4.3", QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
+		auditDataList.add(trir2010Data);
 		
-		oshaAudit2010.initializeStatistics();
-	}	
+		AuditData lwcr2010Data = EntityFactory.makeAuditData("5", QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR);
+		auditDataList.add(lwcr2010Data);
+		
+		AuditData fatalities2010Data = EntityFactory.makeAuditData("0", QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR);
+		auditDataList.add(fatalities2010Data);
+		
+		AuditData hours2010Data = EntityFactory.makeAuditData("120000", 8810);
+		auditDataList.add(hours2010Data);
+		
+		AuditData daysAwayCases2010Data = EntityFactory.makeAuditData("1", 8813);
+		auditDataList.add(daysAwayCases2010Data);
+		
+		AuditData daysAway2010Data = EntityFactory.makeAuditData("10", 8814);
+		auditDataList.add(daysAway2010Data);
+		
+		AuditData jobTransfersCases2010Data = EntityFactory.makeAuditData("2", 8815);
+		auditDataList.add(jobTransfersCases2010Data);
+		
+		AuditData jobTransfersDays2010Data = EntityFactory.makeAuditData("20", 8816);
+		auditDataList.add(jobTransfersDays2010Data);		
 
-	private void setupAudit_Canada() {
-		//oshaAudit2010.getCategories().add(EntityFactory.addCategories(oshaAudit2010, OshaAudit.CAT_ID_COHS));
+		AuditData totalRecordables2010Data = EntityFactory.makeAuditData("7", 8817);
+		auditDataList.add(totalRecordables2010Data);
 		
-		// TODO Need Canadian questions to be defined
-		// AuditData ??? = EntityFactory.makeAuditData("4.3",QUESTION_ID_???);
-		// oshaAudit2010.getData().add(???);
+		AuditData ifr2010Data = EntityFactory.makeAuditData("103.7", 9060);
+		auditDataList.add(ifr2010Data);
+		
+		contractorAudit.setData(auditDataList);
 	}	
 
 	@Test
-	public void testOshaAuditInitialization() {
-		setupAudit_USandUK();
+	public void testOshaAuditInitialization() throws Exception {
 		assertEquals("2010", oshaAudit2010.getAuditFor());
 	}
 	
+	/**
+	 * Should be 2, i.e. not counting the CAT_ID_SOMETHING_OTHER_THAN_OSHA
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void testStatisticsInitialization() {
-		setupAudit_USandUK();
-		// Should be 2, i.e. not counting the CAT_ID_SOMETHING_OTHER_THAN_OSHA
+	public void testStatisticsInitialization() throws Exception {
 		assertEquals(2, oshaAudit2010.getStatistics().size());
 	}
 	
 	@Test
-	public void testGetTrir(){
-		setupAudit_USandUK();
-		assertEquals("4.3",oshaAudit2010.getSafetyStatistics(OshaType.OSHA).getStats(OshaRateType.TrirAbsolute));
+	public void testGetTrir() throws Exception {
+		assertEquals("4.3", oshaAudit2010.getSafetyStatistics(OshaType.OSHA).getStats(OshaRateType.TrirAbsolute));
 	}
 	
 	@Test
-	public void testOshaToDashboard(){
-		//setupAudit_USandUK();
-		//assertEquals("TRIR: 4.3, LWCR: 5, Fatalities: 0, Hours Worked: 120000",oshaAudit2010.getSafetyStatistics(OshaType.OSHA).toDashboard());
-	}
-	
-	@Test
-	public void testGetAllOshaValues(){
-		setupAudit_USandUK();
-		// @TODO Change these constants to use an ENUM (e.g. an expanded version of OshaRateType)
+	public void testGetAllOshaValues() throws Exception {
+		// TODO Change these constants to use an ENUM (e.g. an expanded version of OshaRateType)
 		assertEquals("1", oshaAudit2010.getSafetyStatistics(OshaType.OSHA).getStats(OshaRateType.DaysAwayCases));
 		assertEquals("10", oshaAudit2010.getSafetyStatistics(OshaType.OSHA).getStats(OshaRateType.DaysAway));
 		assertEquals("2", oshaAudit2010.getSafetyStatistics(OshaType.OSHA).getStats(OshaRateType.JobTransfersCases));
@@ -117,15 +119,26 @@ public class OshaAuditTest extends PicsTest {
 	}
 	
 	@Test
-	public void testUKStatsInitilazation(){
-		setupAudit_USandUK();
+	public void testUKStatsInitilazation() throws Exception {
 		assertNotNull(oshaAudit2010.getSafetyStatistics(OshaType.UK_HSE));
 	}
 	
 	@Test
-	public void testGetIFR(){
-		setupAudit_USandUK();
-		assertEquals("103.7",oshaAudit2010.getSafetyStatistics(OshaType.UK_HSE).getStats(OshaRateType.IFR));
+	public void testGetIFR() throws Exception {
+		assertEquals("103.7", oshaAudit2010.getSafetyStatistics(OshaType.UK_HSE).getStats(OshaRateType.IFR));
+	}
+	
+	private AuditCatData setupMockAuditCatData(ContractorAudit contractorAudit, int categoryId) {
+		AuditCategory mockAuditCategory = Mockito.mock(AuditCategory.class);
+		when(mockAuditCategory.getId()).thenReturn(categoryId);
+		
+		AuditCatData mockAuditCategoryData = Mockito.mock(AuditCatData.class);
+		when(mockAuditCategoryData.getCategory()).thenReturn(mockAuditCategory);
+		when(mockAuditCategoryData.getAudit()).thenReturn(contractorAudit);
+		when(mockAuditCategoryData.getNumRequired()).thenReturn(4);
+		when(mockAuditCategoryData.isApplies()).thenReturn(true);
+		
+		return mockAuditCategoryData;
 	}
 
 }

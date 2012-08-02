@@ -1598,3 +1598,7 @@ div.blockDialog {
 	font-size: 15px;
 	padding: 12px 0px;	
 }
+
+.ui-datepicker {
+	z-index: 12000 !important;
+}

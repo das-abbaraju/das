@@ -15,12 +15,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -60,7 +63,6 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
@@ -72,8 +74,10 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.messaging.FlagChange;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -101,7 +105,9 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private ExceptionService exceptionService;
-	@Autowired
+	
+	// this is @Autowired at the setter because we need @Qualifier which does NOT work
+	// on the variable declaration; only on the method (I think this is a Spring bug)
 	private Publisher flagChangePublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
@@ -365,8 +371,9 @@ public class ContractorCron extends PicsActionSupport {
 		contractor.setRequiresCompetencyReview(false);
 		if (requiresCompetency) {
 			for (ContractorTag tag : contractor.getOperatorTags()) {
-				if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW)
+				if ("HSE Competency".equals(tag.getTag().getTag())) {
 					contractor.setRequiresCompetencyReview(true);
+				}
 			}
 		}
 	}
@@ -547,6 +554,7 @@ public class ContractorCron extends PicsActionSupport {
 				co.setProcessCompletion(new Date());
 			}
 			co.setWaitingOn(waitingOn);
+			SpringUtils.publishEvent(new ContractorOperatorWaitingOnChangedEvent(co));
 		}
 	}
 
@@ -976,5 +984,11 @@ public class ContractorCron extends PicsActionSupport {
 
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
+	}
+
+	@Autowired
+	@Qualifier("FlagChangePublisher")
+	public void setFlagChangePublisher(Publisher flagChangePublisher) {
+		this.flagChangePublisher = flagChangePublisher;
 	}
 }

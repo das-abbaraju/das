@@ -22,7 +22,7 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 	private static final long serialVersionUID = -7010252482295453919L;
 
 	protected String isoCode;
-	protected String name;
+	protected TranslatableString name;
 	protected String english;
 
 	protected Country country;
@@ -43,7 +43,15 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 	public void setIsoCode(String isoCode) {
 		this.isoCode = isoCode;
 	}
-	
+
+	public String getEnglish() {
+		return english;
+	}
+
+	public void setEnglish(String english) {
+		this.english = english;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "countryCode")
 	public Country getCountry() {
@@ -59,7 +67,7 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 		return name.toString() + ", " + country.getName();
 	}
 
-	public void setName(String name) {
+	public void setName(TranslatableString name) {
 		this.name = name;
 	}
 
@@ -87,14 +95,6 @@ public class CountrySubdivision extends BaseTranslatable implements Comparable<C
 	@Transient
 	public String getAutocompleteItem() {
 		return isoCode;
-	}
-
-	public String getEnglish() {
-		return english;
-	}
-
-	public void setEnglish(String english) {
-		this.english = english;
 	}
 
 	@Transient

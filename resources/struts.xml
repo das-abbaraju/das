@@ -244,7 +244,7 @@
 			<result>struts/contractors/contractorOperator_tags.jsp</result>
 		</action>
 
-		<action name="StateListAjax" class="com.picsauditing.actions.StateList">
+		<action name="CountrySubdivisionListAjax" class="com.picsauditing.actions.CountrySubdivisionList">
 			<result>struts/contractors/con_country.jsp</result>
 			<result name="registration">struts/contractors/_registrationCountryList.jsp
 			</result>
@@ -286,18 +286,10 @@
 			<result>struts/forms/con_forms.jsp</result>
 		</action>
 
-		<action name="ContractorFacilities"
-			class="com.picsauditing.actions.contractors.ContractorFacilities">
+		<action name="ContractorFacilities" class="com.picsauditing.actions.contractors.ContractorFacilities">
 			<result>/struts/contractors/contractor_facilities.jsp</result>
-		</action>
-
-		<action name="ContractorFacilityAjax"
-			class="com.picsauditing.actions.contractors.ContractorFacilities">
-			<result>/struts/blank.jsp</result>
-			<result name="load">/struts/contractors/contractor_facilities_assigned.jsp
-			</result>
-			<result name="search">/struts/contractors/contractor_facilities_results.jsp
-			</result>
+			<result name="load">/struts/contractors/contractor_facilities_assigned.jsp</result>
+			<result name="search">/struts/contractors/contractor_facilities_results.jsp</result>
 		</action>
 
 		<action name="ContractorCertificatesAjax"

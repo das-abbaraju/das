@@ -19,6 +19,8 @@
     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd"
 	default-autowire="byName">
 
+	<context:property-placeholder location="classpath:test_connection.properties"/>
+	
 	<import resource="classpath:TestDatabaseEntityManager-context.xml"/>
 	
 	<jdbc:initialize-database data-source="dataSource">

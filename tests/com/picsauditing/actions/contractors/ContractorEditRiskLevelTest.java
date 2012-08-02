@@ -16,13 +16,13 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 
 public class ContractorEditRiskLevelTest {
 	private ContractorEditRiskLevel contractorEditRiskLevel;
 	
-	@Mock private EmailSenderSpring emailSender;
+	@Mock private EmailSender emailSender;
 	@Mock private EmailBuilder emailBuilder;
 	@Mock private ContractorAccount contractor;
 	@Mock private EmailQueue emailQueue;

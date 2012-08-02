@@ -5,21 +5,27 @@
 <s:include value="../actionMessages.jsp" />
 
 <s:include value="/struts/layout/_page_header.jsp">
-    <s:param name="title">Manage Reports</s:param>
-    <s:param name="subtitle">Favorite, move, update, and search for new reports</s:param>
+    <s:param name="title"><s:text name="ManageReports.title" /></s:param>
+    <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>
 </s:include>
 
 <s:include value="/struts/reports/_manage_report_menu.jsp" />
 
-<h3>All of your reports that you've saved, created, and that have been shared with you.</h3>
+<h3><s:text name="ManageReports.myReports.subtitle" /></h3>
 
 <div id="my_reports_filter">
     <div class="btn-group">
-        <button class="btn">Alphabetical</button>
-        <button class="btn">Date Added</button>
-        <button class="btn">Last Opened</button>
+        <button class="btn"><s:text name="ManageReports.myReports.alphabetical" /></button>
+        <button class="btn"><s:text name="ManageReports.myReports.dateAdded" /></button>
+        <button class="btn"><s:text name="ManageReports.myReports.lastOpened" /></button>
     </div>
+
+<%--     <span class="debug"> --%>
+<%--     	<a href="ManageReports!columnsToTranslate.action"><s:text name="global.Download" /></a> --%>
+<%--     </span> --%>
 </div>
+
+<s:set name="view_type" value="viewType" />
 
 <ul id="report_my_reports_list" class="report-list">
     <s:iterator value="userReports" var="user_report">
@@ -29,6 +35,7 @@
         <%-- Url --%>
         <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
             <s:param name="reportId">${report_id}</s:param>
+            <s:param name="viewType">${view_type}</s:param>
         </s:url>
 
         <s:url action="ReportDynamic" var="report_url">
@@ -36,11 +43,11 @@
         </s:url>
 
         <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
-            <s:param name="report">${report_id}</s:param>
+            <s:param name="reportId">${report_id}</s:param>
         </s:url>
 
         <s:url action="ManageReports" method="removeUserReport" var="remove_report_url">
-            <s:param name="report">${report_id}</s:param>
+            <s:param name="reportId">${report_id}</s:param>
         </s:url>
 
         <%-- Icon --%>
@@ -61,31 +68,33 @@
                 </a>
     
                 <s:if test="#report.createdBy.id != permissions.userId">
-                    <span class="created-by">Created by ${report.createdBy.name}</span>
+                    <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
                 </s:if>
             </div>
 
             <div class="btn-group options">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Options</a>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><s:text name="ManageReports.myReports.Options" /></a>
                 
                 <ul class="dropdown-menu">
+                    <%--
                     <li>
                         <a href="#">Share</a>
                     </li>
+                    --%>
                     <li>
                         <s:if test="%{@com.picsauditing.model.ReportDynamicModel@canUserDelete(permissions.userId, report)}">
-                            <a href="${delete_report_url}" class="delete">Delete</a>
+                            <a href="${delete_report_url}" class="delete"><s:text name="ManageReports.myReports.Delete" /></a>
                         </s:if>
                         <s:else>
-                            <a href="${remove_report_url}" class="delete">Remove</a>
+                            <a href="${remove_report_url}" class="delete"><s:text name="ManageReports.myReports.Remove" /></a>
                         </s:else>
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#">Move Up</a>
+                        <a href="#"><s:text name="ManageReports.myReports.MoveUp" /></a>
                     </li>
                     <li>
-                        <a href="#">Move Down</a>
+                        <a href="#"><s:text name="ManageReports.myReports.MoveDown" /></a>
                     </li>
                 </ul>
             </div>

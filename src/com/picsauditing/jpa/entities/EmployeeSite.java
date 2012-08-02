@@ -131,9 +131,10 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 
 	@Override
 	public void defaultDates() {
-		if (jobSite == null || jobSite.getProjectStop() == null)
+		Date now = new Date();
+		if (jobSite == null || jobSite.getProjectStop() == null || now.after(jobSite.getProjectStop())) {
 			super.defaultDates();
-		else {
+		} else {
 			effectiveDate = new Date();
 			expirationDate = jobSite.getProjectStop();
 		}

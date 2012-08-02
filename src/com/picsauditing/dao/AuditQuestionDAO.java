@@ -6,10 +6,13 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditExtractOption;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditQuestionFunction;
 import com.picsauditing.jpa.entities.AuditType;
@@ -17,6 +20,8 @@ import com.picsauditing.jpa.entities.QuestionFunctionType;
 
 @SuppressWarnings("unchecked")
 public class AuditQuestionDAO extends PicsDAO {
+	private final Logger logger = LoggerFactory.getLogger(AuditQuestionDAO.class);
+			
 	@Transactional(propagation = Propagation.NESTED)
 	public AuditQuestion save(AuditQuestion o) {
 		if (o.getId() == 0) {
@@ -134,5 +139,18 @@ public class AuditQuestionDAO extends PicsDAO {
 
 		return query.getResultList();
 
+	}
+	
+	public AuditExtractOption findAuditExtractOptionByQuestionId(int questionId) {
+		Query query = em.createQuery("from AuditExtractOption where question.id = ?");
+		query.setParameter(1, questionId);
+		List<AuditExtractOption> results = query.getResultList();
+		if (results == null || results.size() == 0) {
+			return null;
+		} else if (results.size() > 1) {
+			logger.error("more than one AuditExtractOption found for question {}", questionId);
+			// throw? if we don't we'll return the first one returned below
+		}
+		return results.get(0);
 	}
 }

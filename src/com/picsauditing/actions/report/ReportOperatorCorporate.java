@@ -49,7 +49,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		sql.setType(null);
 
 		sql.addJoin("left JOIN users contact ON contact.id = a.contactID");
-		sql.addField("a.state");
+		sql.addField("a.countrySubdivision");
 		sql.addField("a.city");
 		sql.addField("a.type");
 		sql.addField("a.country");
@@ -120,11 +120,11 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 
 		String locationList = Strings.implodeForDB(f.getLocation(), ",");
 		if (filterOn(locationList)) {
-			sql.addWhere("a.state IN (" + locationList + ") OR a.country IN (" + locationList + ")");
+			sql.addWhere("a.countrySubdivision IN (" + locationList + ") OR a.country IN (" + locationList + ")");
 			sql.addOrderBy("CASE WHEN a.country IN (" + locationList + ") THEN 1 ELSE 2 END, a.country");
-			sql.addOrderBy("CASE WHEN a.state IN (" + locationList + ") THEN 1 ELSE 2 END, a.state");
+			sql.addOrderBy("CASE WHEN a.countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END, a.countrySubdivision");
 			sql.addOrderBy("a.country");
-			sql.addOrderBy("a.state");
+			sql.addOrderBy("a.countrySubdivision");
 			setFiltered(true);
 		}
 
@@ -137,7 +137,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			sql.addField("contact.email AS contactemail");
 			sql.addField("a.address");
 			sql.addField("a.city");
-			sql.addField("a.state");
+			sql.addField("a.countrySubdivision");
 			sql.addField("a.zip");
 			sql.addField("a.web_URL");
 		}

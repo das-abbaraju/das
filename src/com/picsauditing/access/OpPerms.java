@@ -125,6 +125,7 @@ public enum OpPerms implements Translatable{
 	// Operator Qualification
 	ManageProjects("Manage Projects", "Allows operators to view or edit their project sites.", true, true, false, false, true),
 	ManageJobTasks("Manage Job Tasks", "Allows operators to view or edit their job tasks.", true, true, false, false, true),
+	Security("Security", "Security", false, false, false, false, true),
 	
 	// View the Operator Flag Matrix report
 	OperatorFlagMatrix("Operator Flag Matrix", "Allows operators to view the Operator Flag Matrix report.", false, false, false, false, true),

@@ -218,9 +218,9 @@
  */
 /* line 1, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-body {
-  color: black;
+  color: #333333;
   font-size: 12px;
-  font-family: tahoma, arial, verdana, sans-serif; }
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* line 7, ../themes/stylesheets/ext4/default/core/_core.scss */
 .x-rtl {
@@ -654,7 +654,7 @@ tr.x-container:before {
     border: 1px solid #a3bad9;
     background-color: #eeeeee;
     color: #222222;
-    font: normal 11px tahoma, arial, verdana, sans-serif; }
+    font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /**
  * Creates the base structure of an Ext.ProgressBar
@@ -775,7 +775,7 @@ tr.x-container:before {
 
 /* line 80, ../themes/stylesheets/ext4/default/widgets/_btn-group.scss */
 .x-btn-group-header-text-default-framed {
-  font: normal 11px tahoma, arial, verdana, sans-serif;
+  font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #3e6aaa; }
 
 /* line 6, ../themes/stylesheets/ext4/default/widgets/_datepicker.scss */
@@ -899,7 +899,7 @@ table.x-datepicker-inner {
     height: 19px;
     padding: 0;
     color: #233d6d;
-    font: normal 10px tahoma, arial, verdana, sans-serif;
+    font: normal 10px "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: right;
     border-bottom: 1px solid #b2d1f5;
     border-collapse: separate;
@@ -930,7 +930,7 @@ table.x-datepicker-inner {
     padding-right: 4px;
     display: block;
     zoom: 1;
-    font: normal 11px tahoma, arial, verdana, sans-serif;
+    font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: black;
     text-decoration: none;
     text-align: right; }
@@ -1012,7 +1012,7 @@ table.x-datepicker-inner {
 .x-monthpicker-item {
   float: left;
   margin: 4px 0 5px 0;
-  font: normal 11px tahoma, arial, verdana, sans-serif;
+  font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
   vertical-align: middle;
   height: 18px;
@@ -1186,7 +1186,7 @@ table.x-datepicker-inner {
   border-bottom: 0 none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   color: white;
-  font: normal 11px tahoma, arial, verdana, sans-serif;
+  font: normal 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-image: none;
   background-color: #454545; }
 
@@ -1285,7 +1285,7 @@ table.x-datepicker-inner {
   /* line 199, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-grid-row .x-grid-cell {
     color: null;
-    font: normal 11px/15px tahoma, arial, verdana, sans-serif;
+    font: normal 11px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
     background-color: white;
     border-color: #ededed;
     border-style: solid;
@@ -1307,13 +1307,13 @@ table.x-datepicker-inner {
 /* line 226, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-alt .x-grid-cell,
 .x-grid-row-alt .x-grid-rowwrap-div {
-  background-color: #fafafa; }
+  background-color: #f1f1f2; }
 
 /* line 231, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-over .x-grid-cell,
 .x-grid-row-over .x-grid-rowwrap-div {
   border-color: #dddddd;
-  background-color: #efefef; }
+  background-color: #f1f1f2; }
 
 /* line 238, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-focused .x-grid-cell,
@@ -1340,7 +1340,7 @@ table.x-datepicker-inner {
 
 /* line 265, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-rowbody {
-  font: normal 11px/13px tahoma, arial, verdana, sans-serif;
+  font: normal 11px/13px "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 4px; }
   /* line 270, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-grid-rowbody p {
@@ -1513,7 +1513,8 @@ browsers will do whacky things with it.
   background-color: #0f0f0f; }
 
 /* line 459, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
-.col-move-top, .col-move-bottom {
+.col-move-top,
+.col-move-bottom {
   width: 9px;
   height: 9px;
   position: absolute;
@@ -1563,7 +1564,7 @@ browsers will do whacky things with it.
 /* line 515, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-group-title {
   color: #3764a0;
-  font: bold 11px tahoma, arial, verdana, sans-serif; }
+  font: bold 11px "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* line 521, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-group-hd-collapsed .x-grid-group-title {
@@ -1759,7 +1760,7 @@ browsers will do whacky things with it.
     margin-left: -4px; }
   /* line 738, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x-grid-row-editor .x-form-display-field {
-    font: normal 11px/15px tahoma, arial, verdana, sans-serif;
+    font: normal 11px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding-top: 0;
     padding-left: 2px; }
   /* line 744, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -1781,7 +1782,7 @@ browsers will do whacky things with it.
 
 /* line 768, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-editor .x-form-text, .x-grid-row-editor .x-form-text {
-  font: normal 11px/15px tahoma, arial, verdana, sans-serif;
+  font: normal 11px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 18px; }
 
 /* line 776, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -1919,7 +1920,7 @@ browsers will do whacky things with it.
 
 /* line 29, ../themes/stylesheets/ext4/default/widgets/form/_fieldset.scss */
 .x-fieldset-header {
-  font: 11px/14px bold tahoma, arial, verdana, sans-serif;
+  font: 11px/14px bold "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #15428b;
   padding: 0 3px 1px;
   overflow: hidden; }
@@ -2031,7 +2032,7 @@ browsers will do whacky things with it.
   position: absolute;
   top: -4px;
   right: -2px;
-  height: 33px;
+  height: 32px;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   /* Yes, there's actually a good reason for this...
@@ -2133,7 +2134,7 @@ browsers will do whacky things with it.
   background-image: url('../images/form/trigger.gif');
   background-position: 0 0;
   width: 17px;
-  height: 24px;
+  height: 23px;
   border-bottom: 1px solid #b5b8c8;
   cursor: pointer;
   cursor: hand;
@@ -2141,7 +2142,7 @@ browsers will do whacky things with it.
 
 /* line 24, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-border-box .x-form-trigger {
-  height: 25px; }
+  height: 24px; }
 
 /* line 28, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-field-default-toolbar .x-form-trigger {
@@ -2212,29 +2213,29 @@ browsers will do whacky things with it.
 .x-form-trigger-wrap .x-form-spinner-down {
   background-image: url('../images/form/spinner.gif');
   width: 17px !important;
-  height: 12.5px !important;
+  height: 12px !important;
   font-size: 0;
   /*for IE*/
   border-bottom: 0; }
 /* line 109, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down {
-  background-position: 0 -12.5px; }
+  background-position: 0 -12px; }
 
 /* line 113, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-spinner-down {
-  background-position: -51px -12.5px; }
+  background-position: -51px -12px; }
 
 /* line 116, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down-over {
-  background-position: -17px -12.5px; }
+  background-position: -17px -12px; }
 
 /* line 119, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-spinner-down-over {
-  background-position: -68px -12.5px; }
+  background-position: -68px -12px; }
 
 /* line 122, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down-click {
-  background-position: -34px -12.5px; }
+  background-position: -34px -12px; }
 
 /* line 131, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-field-default-toolbar .x-form-trigger-wrap .x-form-spinner-up,
@@ -2276,7 +2277,7 @@ browsers will do whacky things with it.
 
 /* line 177, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-quirks .prefixie6 .x-form-trigger-input-cell {
-  height: 25px; }
+  height: 24px; }
 /* line 180, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-quirks .prefixie6 .x-field-default-toolbar .x-form-trigger-input-cell {
   height: 20px; }
@@ -2831,7 +2832,7 @@ browsers will do whacky things with it.
   color: #04468c;
   font-weight: bold;
   line-height: 17px;
-  font-family: tahoma, arial, verdana, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px; }
 
 /* line 69, ../themes/stylesheets/ext4/default/mixins/_frame.scss */
@@ -3412,283 +3413,136 @@ browsers will do whacky things with it.
  * Start Custom
  * Author: Carey Hinoki
  */
-/**
- * Button style guide
- * 
- * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
- *
- * Ext.create('Ext.button.Button', {
- *     cls: 'default' // theme
- * });
- *
- * @author: Carey Hinoki
- * @date: 2012-07-02
- */
-/* line 145, ../sass/my-ext-theme/_button.scss */
-.x-btn.default {
-  background: #dcdcdc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
-  background-image: linear-gradient(#f1f1f1, #dcdcdc);
-  border: 1px solid #bcbcbc; }
+/* line 2, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_modal {
+  border: 1px solid #333;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px; }
 
-/* line 152, ../sass/my-ext-theme/_button.scss */
-.x-btn.default.x-over {
-  background: #ececec;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
-  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
-  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
-  background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec); }
+/* line 8, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_modal_header {
+  background: #454545;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  padding: 10px; }
 
-/* line 158, ../sass/my-ext-theme/_button.scss */
-.x-btn.default.x-pressed {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
+/* line 16, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_modal_header span {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold; }
 
-/* line 164, ../sass/my-ext-theme/_button.scss */
-.x-btn.default.x-menu-active {
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
+/* line 23, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_search {
+  background: #eaeaea; }
 
-/* line 170, ../sass/my-ext-theme/_button.scss */
-.x-btn.default button span {
-  color: #333333;
-  text-shadow: 0px -1px 0px none; }
+/* line 28, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_search label {
+  line-height: 16px;
+  padding: 7px 0px 0px; }
 
-/* line 178, ../sass/my-ext-theme/_button.scss */
-.x-btn.primary {
-  background: #226396;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
-  background-image: -webkit-linear-gradient(#73bbe8, #226396);
-  background-image: -moz-linear-gradient(#73bbe8, #226396);
-  background-image: -o-linear-gradient(#73bbe8, #226396);
-  background-image: linear-gradient(#73bbe8, #226396);
-  border: 1px solid #226396; }
+/* line 34, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_search .icon-search {
+  color: #ccc;
+  font-size: 16px; }
 
-/* line 185, ../sass/my-ext-theme/_button.scss */
-.x-btn.primary.x-over {
-  background: #396cc9;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
-  background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
-  background-image: -moz-linear-gradient(#60c9f3, #396cc9);
-  background-image: -o-linear-gradient(#60c9f3, #396cc9);
-  background-image: linear-gradient(#60c9f3, #396cc9); }
+/* line 40, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_search .x-form-text {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  height: 25px;
+  padding: 0px 5px; }
 
-/* line 191, ../sass/my-ext-theme/_button.scss */
-.x-btn.primary.x-pressed {
-  background: #09366f;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
-  background-image: -webkit-linear-gradient(#336f9c, #09366f);
-  background-image: -moz-linear-gradient(#336f9c, #09366f);
-  background-image: -o-linear-gradient(#336f9c, #09366f);
-  background-image: linear-gradient(#336f9c, #09366f); }
+/* line 48, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_modal-body,
+#available_field_list-body {
+  border: 0px; }
 
-/* line 197, ../sass/my-ext-theme/_button.scss */
-.x-btn.primary.x-menu-active {
-  background: #09366f;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
-  background-image: -webkit-linear-gradient(#336f9c, #09366f);
-  background-image: -moz-linear-gradient(#336f9c, #09366f);
-  background-image: -o-linear-gradient(#336f9c, #09366f);
-  background-image: linear-gradient(#336f9c, #09366f); }
+/* line 53, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+.x-grid-group-hd-collapsible .x-grid-group-title {
+  background-image: url("../../app/resources/images/grid/group-expand.gif");
+  background-position: 100% 0px;
+  padding: 0px; }
 
-/* line 203, ../sass/my-ext-theme/_button.scss */
-.x-btn.primary button span {
-  color: white;
-  text-shadow: 0px -1px 0px #226396; }
+/* line 60, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+.x-grid-group-hd-collapsible.x-over .x-grid-group-title {
+  background-position: 100% -14px; }
 
-/* line 211, ../sass/my-ext-theme/_button.scss */
-.x-btn.warning {
-  background: #e67e1c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
-  background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
-  background-image: -moz-linear-gradient(#fcc033, #e67e1c);
-  background-image: -o-linear-gradient(#fcc033, #e67e1c);
-  background-image: linear-gradient(#fcc033, #e67e1c);
-  border: 1px solid #e67e1c; }
+/* line 65, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+.x-grid-group-hd-collapsed .x-grid-group-title {
+  background-image: url("../../app/resources/images/grid/group-collapse.gif"); }
 
-/* line 218, ../sass/my-ext-theme/_button.scss */
-.x-btn.warning.x-over {
-  background: #f1a300;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
-  background-image: -webkit-linear-gradient(#fcd100, #f1a300);
-  background-image: -moz-linear-gradient(#fcd100, #f1a300);
-  background-image: -o-linear-gradient(#fcd100, #f1a300);
-  background-image: linear-gradient(#fcd100, #f1a300); }
+/* line 70, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+.x-grid-group-hd-collapsed.x-over .x-grid-group-title {
+  background-position: 100% -14px; }
 
-/* line 224, ../sass/my-ext-theme/_button.scss */
-.x-btn.warning.x-pressed {
-  background: #d66000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
-  background-image: -webkit-linear-gradient(#ea9000, #d66000);
-  background-image: -moz-linear-gradient(#ea9000, #d66000);
-  background-image: -o-linear-gradient(#ea9000, #d66000);
-  background-image: linear-gradient(#ea9000, #d66000); }
+/* line 77, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-row .x-grid-cell-special {
+  background: #fff;
+  background-image: none !important;
+  border-right: 1px solid #dcdcdc; }
+/* line 84, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-cell-special .x-grid-cell-inner {
+  padding-left: 6px; }
+/* line 90, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-row-alt .x-grid-cell-special,
+#available_field_list .x-grid-row-over .x-grid-cell-special {
+  background: #f1f1f2; }
+/* line 96, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-row-selected .x-grid-cell,
+#available_field_list .x-grid-row-selected .x-grid-rowwrap-div {
+  background: #c3e0f9;
+  border-bottom: 1px solid #78bde8;
+  border-top: 1px solid #78bde8; }
+/* line 103, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-cell-inner {
+  color: #333;
+  font-size: 14px;
+  padding: 5px; }
+/* line 110, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-group-hd .x-grid-cell-inner {
+  background: #454545;
+  border: 0px;
+  border-bottom: 1px solid #333;
+  border-top: 1px solid #333;
+  padding: 7px; }
+/* line 119, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .x-grid-group-title {
+  color: #fff; }
+/* line 124, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_list .number-of-items {
+  color: #999;
+  margin-left: 5px; }
 
-/* line 230, ../sass/my-ext-theme/_button.scss */
-.x-btn.warning.x-menu-active {
-  background: #d66000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
-  background-image: -webkit-linear-gradient(#ea9000, #d66000);
-  background-image: -moz-linear-gradient(#ea9000, #d66000);
-  background-image: -o-linear-gradient(#ea9000, #d66000);
-  background-image: linear-gradient(#ea9000, #d66000); }
-
-/* line 236, ../sass/my-ext-theme/_button.scss */
-.x-btn.warning button span {
-  color: white;
-  text-shadow: 0px -1px 0px #e67e1c; }
-
-/* line 244, ../sass/my-ext-theme/_button.scss */
-.x-btn.info {
-  background: #6ca6f6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
-  background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
-  background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
-  background-image: -o-linear-gradient(#70cfff, #6ca6f6);
-  background-image: linear-gradient(#70cfff, #6ca6f6);
-  border: 1px solid #6ca6f6; }
-
-/* line 251, ../sass/my-ext-theme/_button.scss */
-.x-btn.info.x-over {
-  background: #73d0f6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
-  background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
-  background-image: -moz-linear-gradient(#73ddff, #73d0f6);
-  background-image: -o-linear-gradient(#73ddff, #73d0f6);
-  background-image: linear-gradient(#73ddff, #73d0f6); }
-
-/* line 257, ../sass/my-ext-theme/_button.scss */
-.x-btn.info.x-pressed {
-  background: #5599fc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
-  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
-  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
-  background-image: -o-linear-gradient(#55a9ff, #5599fc);
-  background-image: linear-gradient(#55a9ff, #5599fc); }
-
-/* line 263, ../sass/my-ext-theme/_button.scss */
-.x-btn.info.x-menu-active {
-  background: #5599fc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
-  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
-  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
-  background-image: -o-linear-gradient(#55a9ff, #5599fc);
-  background-image: linear-gradient(#55a9ff, #5599fc); }
-
-/* line 269, ../sass/my-ext-theme/_button.scss */
-.x-btn.info button span {
-  color: white;
-  text-shadow: 0px -1px 0px #6ca6f6; }
-
-/* line 277, ../sass/my-ext-theme/_button.scss */
-.x-btn.success {
-  background: #229322;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
-  background-image: -webkit-linear-gradient(#33c033, #229322);
-  background-image: -moz-linear-gradient(#33c033, #229322);
-  background-image: -o-linear-gradient(#33c033, #229322);
-  background-image: linear-gradient(#33c033, #229322);
-  border: 1px solid #229322; }
-
-/* line 284, ../sass/my-ext-theme/_button.scss */
-.x-btn.success.x-over {
-  background: #25b000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
-  background-image: -webkit-linear-gradient(#33d000, #25b000);
-  background-image: -moz-linear-gradient(#33d000, #25b000);
-  background-image: -o-linear-gradient(#33d000, #25b000);
-  background-image: linear-gradient(#33d000, #25b000); }
-
-/* line 290, ../sass/my-ext-theme/_button.scss */
-.x-btn.success.x-pressed {
-  background: #1c7600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
-  background-image: -webkit-linear-gradient(#299600, #1c7600);
-  background-image: -moz-linear-gradient(#299600, #1c7600);
-  background-image: -o-linear-gradient(#299600, #1c7600);
-  background-image: linear-gradient(#299600, #1c7600); }
-
-/* line 296, ../sass/my-ext-theme/_button.scss */
-.x-btn.success.x-menu-active {
-  background: #1c7600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
-  background-image: -webkit-linear-gradient(#299600, #1c7600);
-  background-image: -moz-linear-gradient(#299600, #1c7600);
-  background-image: -o-linear-gradient(#299600, #1c7600);
-  background-image: linear-gradient(#299600, #1c7600); }
-
-/* line 302, ../sass/my-ext-theme/_button.scss */
-.x-btn.success button span {
-  color: white;
-  text-shadow: 0px -1px 0px #229322; }
-
-/* line 310, ../sass/my-ext-theme/_button.scss */
-.x-btn.danger {
-  background: #ac030c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
-  background-image: -webkit-linear-gradient(#f6303c, #ac030c);
-  background-image: -moz-linear-gradient(#f6303c, #ac030c);
-  background-image: -o-linear-gradient(#f6303c, #ac030c);
-  background-image: linear-gradient(#f6303c, #ac030c);
-  border: 1px solid #ac030c; }
-
-/* line 317, ../sass/my-ext-theme/_button.scss */
-.x-btn.danger.x-over {
-  background: #d00900;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
-  background-image: -webkit-linear-gradient(#f92626, #d00900);
-  background-image: -moz-linear-gradient(#f92626, #d00900);
-  background-image: -o-linear-gradient(#f92626, #d00900);
-  background-image: linear-gradient(#f92626, #d00900); }
-
-/* line 323, ../sass/my-ext-theme/_button.scss */
-.x-btn.danger.x-pressed {
-  background: #8c0600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
-  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
-  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
-  background-image: -o-linear-gradient(#c60c0c, #8c0600);
-  background-image: linear-gradient(#c60c0c, #8c0600); }
-
-/* line 329, ../sass/my-ext-theme/_button.scss */
-.x-btn.danger.x-menu-active {
-  background: #8c0600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
-  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
-  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
-  background-image: -o-linear-gradient(#c60c0c, #8c0600);
-  background-image: linear-gradient(#c60c0c, #8c0600); }
-
-/* line 335, ../sass/my-ext-theme/_button.scss */
-.x-btn.danger button span {
-  color: white;
-  text-shadow: 0px -1px 0px #ac030c; }
+/* line 132, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+#available_field_modal_footer {
+  background: #454545; }
 
 /* line 7, ../sass/my-ext-theme/report/header/_summary.scss */
+#report_summary {
+  padding: 18px 30px; }
+
+/* line 12, ../sass/my-ext-theme/report/header/_summary.scss */
 #report_summary .name {
   color: #73bbe8;
   font-size: 30px;
-  font-weight: normal;
-  margin: 18px 20px 0px; }
+  font-weight: normal; }
 
-/* line 15, ../sass/my-ext-theme/report/header/_summary.scss */
+/* line 19, ../sass/my-ext-theme/report/header/_summary.scss */
 #report_summary .description {
-  color: #828285;
+  color: #808285;
   font-size: 14px;
-  font-weight: normal;
-  margin: 0px 20px 20px; }
+  font-weight: normal; }
 
 /* line 6, ../sass/my-ext-theme/report/header/_actions.scss */
 #report_actions {
@@ -3701,7 +3555,7 @@ browsers will do whacky things with it.
 
 /* line 17, ../sass/my-ext-theme/report/header/_actions.scss */
 #report_actions .edit {
-  margin-right: 20px; }
+  margin-right: 30px; }
 
 /* line 22, ../sass/my-ext-theme/report/header/_actions.scss */
 #report_actions .edit button span {
@@ -3717,400 +3571,257 @@ browsers will do whacky things with it.
   margin-right: 10px; }
 
 /* line 38, ../sass/my-ext-theme/report/header/_actions.scss */
-#report_actions .save .x-btn-split-right {
-  background-image: url(../../app/resources/images/splitbutton/arrow-green-off.png);
-  padding-right: 39px !important; }
-
-/* line 44, ../sass/my-ext-theme/report/header/_actions.scss */
 #report_actions .save button span {
   font-size: 15px;
   font-weight: bold;
   text-transform: uppercase; }
 
-/* line 18, ../sass/my-ext-theme/report/filter/_options.scss */
+/* line 2, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options {
-  background: #454545; }
+  border-top: 1px solid #999 !important; }
+  /* line 6, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+  #report_filter_options .x-panel-body-default {
+    background: transparent; }
 
-/* line 23, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options .x-panel-body-default {
-  background: transparent; }
-
-/* line 28, ../sass/my-ext-theme/report/filter/_options.scss */
+/* line 12, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options-body {
-  border: 1px solid #cccccc;
-  border-top: 0px; }
+  border-right: 1px solid #999 !important; }
 
-/* line 34, ../sass/my-ext-theme/report/filter/_options.scss */
+/* line 17, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+#report_filter_options_footer {
+  border-bottom: 1px solid #999 !important;
+  border-right: 1px solid #999 !important; }
+
+/* line 23, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+#report_filter_options_footer-body {
+  background: #454545 !important;
+  border-top: 1px solid #333 !important; }
+
+/*
+ * Placeholder
+ */
+/* line 11, ../sass/my-ext-theme/report/filter/_filter-placeholder.scss */
 #report_filter_options-placeholder {
-  background: #acacac;
-  border: 1px solid #666666 !important;
-  -moz-border-radius-topright: 5px;
-  -webkit-border-top-right-radius: 5px;
-  border-top-right-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  background: #73bbe8;
+  border: 1px solid #999999 !important;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  height: 100px !important;
-  padding: 5px;
+  height: 25px !important;
   top: 100px !important; }
 
-/* line 46, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options-placeholder .x-tool img {
-  background: url(../../app/resources/images/collapse-arrow-off.gif) no-repeat center; }
+/* line 20, ../sass/my-ext-theme/report/filter/_filter-placeholder.scss */
+#report_filter_options-placeholder-body {
+  background: transparent; }
 
-/* line 51, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options-placeholder text {
-  fill: white;
-  font-size: 13px;
-  letter-spacing: 1px; }
+/* line 25, ../sass/my-ext-theme/report/filter/_filter-placeholder.scss */
+#report_filter_options_expand {
+  background: transparent;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px; }
 
-/* line 58, ../sass/my-ext-theme/report/filter/_options.scss */
+/* line 32, ../sass/my-ext-theme/report/filter/_filter-placeholder.scss */
+#report_filter_options_expand span {
+  color: #f1f1f2;
+  font-size: 13px; }
+
+/*
+ * Filter Header
+ */
+/* line 17, ../sass/my-ext-theme/report/filter/_filter-header.scss */
 #report_filter_options_header {
   background: #73bbe8;
-  border: 1px solid #808285 !important;
+  border-right: 1px solid #999999 !important;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  height: 50px;
-  padding: 10px 0px 10px 20px; }
+  height: 50px; }
+  /* line 24, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+  #report_filter_options_header .add-filter {
+    margin-right: 10px; }
+    /* line 28, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+    #report_filter_options_header .add-filter button span {
+      font-size: 11px;
+      line-height: 24px !important; }
+    /* line 34, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+    #report_filter_options_header .add-filter .icon-plus {
+      color: #2caf2c;
+      margin-right: 5px;
+      position: relative;
+      top: 1px; }
 
-/* line 67, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options_header span {
-  color: white;
-  font-size: 18px;
-  font-weight: normal; }
-
-/* line 74, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options_header .x-tool {
-  left: 273px !important;
-  top: 0px !important; }
-
-/* line 81, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options_header .x-tool,
-#report_filter_options_header .x-tool-collapse-left {
-  height: 28px !important;
-  width: 26px !important; }
-
-/* line 87, ../sass/my-ext-theme/report/filter/_options.scss */
-#report_filter_options_header .x-tool-collapse-left {
-  background: url(../../app/resources/images/collapse-off.gif) no-repeat; }
-
-/* line 10, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions {
-  background: #f1f1f2;
-  border: 1px solid #cccccc !important;
-  padding: 0px; }
-
-/* line 17, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .add-filter {
-  margin-left: 10px; }
-
-/* line 22, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .add-filter em {
-  background-image: url("../images/button/s-arrow.gif"); }
-
-/* line 27, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .add-filter button span {
-  font-size: 11px;
-  line-height: 24px !important; }
-
-/* line 33, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .add-filter .icon-plus {
-  color: #2caf2c;
-  margin-right: 5px; }
-
-/* line 39, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .search {
-  margin-right: 10px; }
-
-/* line 44, ../sass/my-ext-theme/report/filter/_actions.scss */
-#report_filter_actions .search button span {
-  font-size: 11px;
-  line-height: 24px !important; }
-
-/* line 6, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression {
-  padding: 20px 20px 10px; }
-
-/* line 11, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .actions {
-  margin-top: 5px; }
-
-/* line 17, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .hide,
-#report_filter_expression .more-information {
-  background: transparent;
+/* line 44, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+#report_filter_options_collapse {
   border: 0px;
-  padding: 0px; }
+  margin: 0px 10px; }
+  /* line 49, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+  #report_filter_options_collapse span {
+    color: #f1f1f2;
+    font-size: 18px;
+    font-weight: normal;
+    padding: 0px 4px; }
+  /* line 57, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+  #report_filter_options_collapse .icon-chevron-left {
+    font-size: 10px;
+    line-height: 24px;
+    margin-right: 5px; }
 
-/* line 25, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .hide.x-over span,
-#report_filter_expression .more-information.x-over span {
-  text-decoration: underline; }
-
-/* line 31, ../sass/my-ext-theme/report/filter/_expression.scss */
-#report_filter_expression .hide span,
-#report_filter_expression .more-information span {
-  color: #cccccc;
-  font-size: 11px;
-  padding: 0px; }
-
-/* line 16, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters {
-  border-bottom: 1px solid #cccccc; }
-
-/* line 24, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters-body,
-#report_filters .filter-container-body,
-#report_filters .filter-body,
-#report_filters .x-box-inner {
-  width: 100% !important; }
-
-/* line 29, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .x-box-inner div:first-child {
-  width: auto !important; }
-
-/* line 34, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .filter {
-  background: #f1f1f1;
-  border-top: 1px solid #999999; }
-
-/* line 40, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .filter-number label {
-  color: #999999;
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0px !important;
-  text-align: center; }
-
-/* line 49, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .filter-name div {
-  color: #333333;
-  font-size: 14px;
-  font-weight: bold; }
-
-/* line 56, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter {
-  padding: 0px; }
-
-/* line 61, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter span {
-  padding: 0px; }
-
-/* line 66, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .remove-filter .icon-minus {
+/* line 67, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+#report_filter_options_collapse.x-over span {
   color: white; }
 
-/* line 70, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 75, ../sass/my-ext-theme/report/filter/_filter-header.scss */
+#report_filter_options_collapse.x-over,
+#report_filter_options_collapse.x-btn-default-toolbar-small-menu-active,
+#report_filter_options_collapse.x-btn-default-toolbar-small-pressed {
+  background: none;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px; }
+
+/* line 2, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+#report_filter_toolbar_container {
+  border-right: 1px solid #999 !important; }
+
+/* line 7, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+#report_filter_toolbar {
+  background: #454545; }
+  /* line 11, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  #report_filter_toolbar .x-btn {
+    background: none;
+    border: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px; }
+    /* line 17, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+    #report_filter_toolbar .x-btn span {
+      color: #ccc;
+      font-size: 11px;
+      font-weight: bold; }
+  /* line 27, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  #report_filter_toolbar .x-btn.x-over span {
+    color: #fff; }
+
+/* line 34, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+#report_filter_toolbar > div {
+  border-bottom: 1px solid #333 !important;
+  border-top: 1px solid #333 !important; }
+
+/* line 2, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+#report_filter_formula_container {
+  border-right: 1px solid #999 !important; }
+
+/* line 7, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+#report_filter_formula {
+  background: #454545; }
+  /* line 11, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .x-form-field {
+    padding-left: 2px; }
+  /* line 17, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .info,
+  #report_filter_formula .cancel {
+    background: none;
+    border: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px; }
+  /* line 25, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .info span,
+  #report_filter_formula .cancel span {
+    padding: 0px; }
+  /* line 31, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .info i,
+  #report_filter_formula .cancel i {
+    font-size: 18px;
+    line-height: 18px; }
+  /* line 38, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .icon-info-sign {
+    color: #73bbe8; }
+  /* line 43, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .icon-remove-sign {
+    color: #ac030c; }
+
+/* line 49, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+#report_filter_formula > div {
+  border-bottom: 1px solid #333 !important;
+  border-top: 1px solid #333 !important; }
+
+/* line 30, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter {
+  background: #f1f1f2;
+  border-bottom: 1px solid #cccccc;
+  border-top: 1px solid white; }
+/* line 37, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter-number {
+  display: none;
+  top: 25px !important; }
+  /* line 42, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .filter-number label {
+    color: #999999;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0px !important;
+    text-align: center; }
+/* line 52, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name {
   white-space: nowrap; }
-
-/* line 13, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar {
-  background: #73bbe8;
-  border: 1px solid #808285 !important;
-  padding: 10px 20px; }
-
-/* line 20, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .header {
-  color: white;
-  font-size: 18px;
-  font-weight: normal;
-  top: 6px !important; }
-
-/* line 28, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts {
+  /* line 56, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .filter-name div {
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold; }
+/* line 64, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .x-form-field {
+  border-color: #bcbcbc;
+  padding-left: 2px; }
+/* line 70, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .autocomplete-filter .x-form-field {
   padding: 0px; }
-
-/* line 34, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts,
-#report_sorts .x-toolbar-default {
-  background: none; }
-
-/* line 39, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .x-btn-split-right {
-  background-image: url("../images/button/s-arrow.gif");
-  padding-right: 14px !important; }
-
-/* line 45, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .sort button span {
-  font-size: 11px;
-  line-height: 24px !important; }
-
-/* line 51, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_sorts .x-btn-icon-text-left .x-btn-icon {
-  background-position: center;
-  margin-left: 3px; }
-
-/* line 57, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .add-column {
-  margin-left: 10px; }
-
-/* line 62, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .add-column em {
-  background-image: url("../images/button/s-arrow.gif"); }
-
-/* line 67, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .add-column button span {
-  font-size: 11px;
-  line-height: 24px !important; }
-
-/* line 73, ../sass/my-ext-theme/report/grid/_toolbar.scss */
-#report_toolbar .add-column .icon-plus {
-  color: #2caf2c;
-  margin-right: 5px; }
-
-/* line 17, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar {
-  background: #f1f1f1;
-  border: 1px solid #cccccc !important;
-  padding: 0px 20px; }
-
-/* line 24, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-over {
-  background: transparent;
-  border: 0px; }
-
-/* line 30, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-btn {
-  border: 0px; }
-
-/* line 35, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-disabled span {
-  opacity: 1; }
-
-/* line 41, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar button,
-#report_grid .paging-toolbar button span {
-  width: 20px; }
-
-/* line 46, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar button .x-btn-inner {
-  padding-top: 7px !important; }
-
-/* line 51, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .icon-large {
-  color: #666666; }
-
-/* line 56, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-over .icon-large {
-  color: #73bbe8; }
-
-/* line 61, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-disabled .icon-large {
-  color: #cccccc; }
-
-/* line 67, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .refresh button,
-#report_grid .paging-toolbar .refresh button span {
-  width: 28px; }
-
-/* line 72, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .refresh .x-btn-inner {
-  padding-top: 7px !important; }
-
-/* line 77, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .refresh .icon-refresh {
-  font-size: 19px; }
-
-/* line 82, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-toolbar-separator {
+/* line 75, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .remove-filter {
+  background: none;
   border: 0px;
-  border-left: 1px solid #cccccc; }
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  display: none;
+  padding: 0px; }
+  /* line 83, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .remove-filter span {
+    padding: 0px; }
+  /* line 88, ../sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .remove-filter .icon-remove-sign {
+    color: #ac030c;
+    font-size: 18px;
+    line-height: 18px; }
 
-/* line 88, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-toolbar-text {
-  color: #666666;
-  font-size: 14px; }
-
-/* line 94, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-form-text {
-  height: 25px; }
-
-/* line 99, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .rows-per-page {
-  margin-left: 10px; }
-
-/* line 104, ../sass/my-ext-theme/report/grid/_paging_toolbar.scss */
-#report_grid .paging-toolbar .x-form-trigger {
-  height: 25px; }
-
-/* line 31, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-header-ct {
-  border: 1px solid #cccccc !important;
-  border-top: 0px !important; }
-
-/* line 37, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-column-header {
-  border-right: 1px solid #333333;
-  color: #cccccc;
-  font-weight: bold;
-  text-shadow: none;
-  padding: 0px 0px 0px 7px; }
-
-/* line 46, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-column-header .x-column-header-trigger {
-  background: #454545 url(../../app/resources/images/grid/grid3-hd-btn.gif) no-repeat left center;
+/* line 98, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters.x-active .filter-number {
   display: block; }
 
-/* line 52, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-column-header .x-column-header-open .x-column-header-trigger {
-  background-position: -14px; }
-
-/* line 57, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid-body {
-  border: 0px;
-  border: 1px solid #cccccc !important;
-  border-top: 0px !important; }
-
-/* line 64, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid-body .x-grid-cell {
-  border-right: 1px solid #dcdcdc; }
-
-/* line 69, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-row .x-grid-cell-special {
+/* line 104, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter.x-over,
+#report_filters .filter.x-form-focus {
   background: white;
-  background-image: none !important; }
+  border-bottom: 1px solid #999999;
+  border-top: 1px solid #999999; }
 
-/* line 75, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-row-over .x-grid-cell-special {
-  background: #f1f1f1; }
-
-/* line 81, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-row-alt .x-grid-cell,
-#report_grid .x-grid-row-alt .x-grid-rowwrap-div {
-  background: #f1f1f1;
-  border-top: 0px;
-  border-bottom: 0px; }
-
-/* line 88, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-cell-inner {
-  color: #333333;
-  font-size: 14px;
-  line-height: 18px;
-  padding: 4px 6px 4px; }
-
-/* line 96, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-cell-inner a {
-  color: #226396;
-  text-decoration: none; }
-
-/* line 102, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid .x-grid-cell-inner a:hover {
-  text-decoration: underline; }
-
-/* line 107, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid_footer {
-  border: 1px solid #cccccc !important;
-  border-top: 0px !important; }
-
-/* line 113, ../sass/my-ext-theme/report/grid/_grid.scss */
-#report_grid_footer-body {
-  background: #454545;
-  border: 0px; }
+/* line 112, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .filter.x-over .remove-filter,
+#report_filters .filter.x-form-focus .remove-filter {
+  display: block; }
 
 /* line 2, ../sass/my-ext-theme/report/loading/_loading.scss */
 #loading_page {
@@ -4130,7 +3841,155 @@ browsers will do whacky things with it.
   margin: 0px;
   padding: 0px; }
 
-/* line 2, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 22, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .paging-toolbar {
+  background: #73bbe8;
+  padding: 0px 10px; }
+  /* line 27, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .paging-toolbar .x-disabled span {
+    opacity: 1; }
+  /* line 32, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .paging-toolbar .x-toolbar-separator {
+    border: 0px;
+    border-left: 1px solid #96ccff; }
+  /* line 38, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .paging-toolbar .x-toolbar-text {
+    color: white;
+    font-size: 14px; }
+  /* line 44, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .paging-toolbar .x-form-text {
+    height: 24px; }
+  /* line 49, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .paging-toolbar .rows-per-page {
+    margin-left: 5px; }
+  /* line 54, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .paging-toolbar .x-form-trigger {
+    height: 24px; }
+/* line 64, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .refresh,
+#report_data .page-first,
+#report_data .page-prev,
+#report_data .page-next,
+#report_data .page-last {
+  background: none;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px; }
+  /* line 70, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .refresh span,
+  #report_data .page-first span,
+  #report_data .page-prev span,
+  #report_data .page-next span,
+  #report_data .page-last span {
+    color: #f1f1f2;
+    margin: 0px 5px;
+    padding: 2px 0px 0px !important; }
+/* line 78, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .refresh span {
+  font-size: 18px;
+  margin: 0px 5px 0px 0px; }
+/* line 90, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .refresh.x-over span,
+#report_data .page-first.x-over span,
+#report_data .page-prev.x-over span,
+#report_data .page-next.x-over span,
+#report_data .page-last.x-over span {
+  color: white; }
+/* line 102, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .refresh.x-disabled span,
+#report_data .page-first.x-disabled span,
+#report_data .page-prev.x-disabled span,
+#report_data .page-next.x-disabled span,
+#report_data .page-last.x-disabled span {
+  color: #96ccff !important; }
+/* line 108, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .add-column {
+  margin-left: 10px; }
+  /* line 112, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .add-column em {
+    background-image: url("../images/button/s-arrow.gif"); }
+  /* line 117, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .add-column button span {
+    font-size: 11px;
+    line-height: 24px !important; }
+  /* line 123, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  #report_data .add-column .icon-plus {
+    color: #2caf2c;
+    margin-right: 5px; }
+
+/* line 16, ../sass/my-ext-theme/report/report/_report.scss */
+#report_data {
+  border: 1px solid #999; }
+  /* line 21, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-header-ct {
+    border-bottom: 1px solid #333333 !important;
+    border-left: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+    border-top: 1px solid #333333 !important; }
+  /* line 29, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-column-header {
+    border-right: 1px solid #333333;
+    font-weight: bold;
+    text-shadow: none; }
+  /* line 36, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-column-header-inner {
+    cursor: pointer;
+    padding-left: 5px; }
+    /* line 41, ../sass/my-ext-theme/report/report/_report.scss */
+    #report_data .x-column-header-inner span {
+      color: #ccc; }
+  /* line 49, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-column-header-inner.x-column-header-over span {
+    color: #fff; }
+  /* line 55, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-row-numberer .x-column-header-inner {
+    cursor: auto; }
+  /* line 60, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-column-header-open {
+    background: #222;
+    border-left: 1px solid #191919;
+    border-right: 1px solid #191919; }
+  /* line 67, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-row .x-grid-cell-special {
+    background: white;
+    border-right: 1px solid #dcdcdc; }
+  /* line 74, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-row-alt .x-grid-cell-special,
+  #report_data .x-grid-row-over .x-grid-cell-special {
+    background: #f1f1f2; }
+  /* line 80, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-row-selected .x-grid-cell,
+  #report_data .x-grid-row-selected .x-grid-rowwrap-div {
+    background: #c3e0f9;
+    border-bottom: 1px solid #78bde8;
+    border-top: 1px solid #78bde8; }
+  /* line 87, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-cell-inner {
+    color: #333333;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 4px 6px 4px; }
+  /* line 95, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-cell-inner a {
+    color: #226396;
+    text-decoration: none; }
+  /* line 101, ../sass/my-ext-theme/report/report/_report.scss */
+  #report_data .x-grid-cell-inner a:hover {
+    text-decoration: underline; }
+
+/* line 107, ../sass/my-ext-theme/report/report/_report.scss */
+#report_data-body {
+  border: 0px;
+  border-top: 0px !important; }
+
+/* line 113, ../sass/my-ext-theme/report/report/_report.scss */
+#report_data-body .x-grid-cell {
+  border-right: 1px solid #dcdcdc; }
+
+/* line 2, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal {
   background: #eaeaea;
   border: 1px solid #333333;
@@ -4140,7 +3999,7 @@ browsers will do whacky things with it.
   -o-border-radius: 0px;
   border-radius: 0px; }
 
-/* line 9, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 9, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_header {
   background: #454545;
   border-bottom: 1px solid #333333 !important;
@@ -4155,115 +4014,215 @@ browsers will do whacky things with it.
   height: 45px;
   padding: 13px; }
 
-/* line 19, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 19, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal_header span {
   color: #ffffff;
   font-size: 18px;
   font-weight: bold; }
 
-/* line 26, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 26, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal-body {
   border: 0px;
   background: #eaeaea; }
 
-/* line 32, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 32, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal-body .x-panel-body-default {
   background: #eaeaea;
   border: 0px !important; }
 
-/* line 38, ../sass/my-ext-theme/report/setting/_setting.scss */
-#report_settings_modal-body .x-form-field {
-  margin-bottom: 10px; }
+/* line 39, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_settings_modal-body .x-form-field,
+#report_settings_modal-body .x-form-display-field {
+  margin-bottom: 7px; }
+
+/* line 44, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+.coming-soon {
+  text-align: center; }
+  /* line 49, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .coming-soon i,
+  .coming-soon p {
+    color: #999; }
+  /* line 54, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .coming-soon i {
+    display: block;
+    font-size: 26px;
+    margin: 60px 0px 10px; }
+  /* line 61, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .coming-soon p {
+    font-size: 24px; }
 
 /***
  * Tab Content
  */
-/* line 49, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 73, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit,
 #report_copy,
 #report_share {
   padding: 8px 10px 10px; }
 
-/* line 56, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 80, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit-body,
 #report_copy-body,
 #report_share-body {
   height: auto !important; }
 
-/* line 63, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 87, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_edit .x-toolbar,
 #report_copy .x-toolbar,
 #report_share .x-toolbar {
   top: auto !important; }
 
-/* line 71, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 95, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_modal .cancel button span,
 #report_settings_modal .edit button span,
 #report_settings_modal .copy button span,
 #report_settings_modal .share button span {
   padding: 0px 7px; }
 
+/* line 104, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_edit .favorite,
+#report_edit .private,
+#report_copy .favorite,
+#report_copy .private {
+  color: #ccc;
+  font-size: 18px;
+  position: relative;
+  text-decoration: none;
+  top: -5px; }
+
+/* line 116, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#settings_no_permission p {
+  color: #333;
+  font-size: 13px;
+  margin: 0px auto;
+  text-align: center;
+  width: 85%; }
+/* line 125, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#settings_no_permission strong {
+  font-weight: bold; }
+/* line 130, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#settings_no_permission .permission-info {
+  font-weight: bold;
+  margin-bottom: 15px;
+  margin-top: 25px; }
+/* line 137, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#settings_no_permission .duplicate-info {
+  color: #666;
+  margin-bottom: 20px; }
+/* line 143, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#settings_no_permission .favorite {
+  color: #ccc;
+  font-size: 18px;
+  text-decoration: none; }
+/* line 150, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#settings_no_permission .icon-star {
+  margin-right: 3px;
+  position: relative;
+  top: 2px; }
+
 /***
  * Tabs
  */
-/* line 80, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 162, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar {
   background: #454545; }
 
-/* line 85, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 167, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab {
   border: 0px;
   border-right: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 5px; }
 
-/* line 93, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 175, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab button {
   background: #454545;
   border: 0px;
   cursor: pointer;
   padding: 0px; }
 
-/* line 101, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 183, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab span {
   color: #cccccc; }
 
-/* line 106, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 188, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-over span {
   color: #ffffff; }
 
-/* line 111, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 193, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active {
   background: #eaeaea;
   border-top: 0px; }
 
-/* line 117, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 199, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active button {
   background: #eaeaea;
   cursor: auto; }
 
-/* line 123, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 205, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active span {
   color: #666666; }
 
-/* line 128, ../sass/my-ext-theme/report/setting/_setting.scss */
+/* line 210, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
 
-/* Box Select Styling*/
-/* line 3, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 2, ../sass/my-ext-theme/widget/_alert-message.scss */
+#alert_message {
+  background: #acf5ac;
+  border: 1px solid #229322;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  left: auto !important;
+  right: 150px !important;
+  top: 73px !important; }
+
+/* line 13, ../sass/my-ext-theme/widget/_alert-message.scss */
+#alert_message_header,
+#alert_message-body {
+  background: #acf5ac; }
+
+/* line 18, ../sass/my-ext-theme/widget/_alert-message.scss */
+#alert_message_header {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  padding: 5px 5px 0px; }
+
+/* line 25, ../sass/my-ext-theme/widget/_alert-message.scss */
+#alert_message_header .x-window-header-text,
+#alert_message-body {
+  color: #39884c;
+  font-size: 13px; }
+
+/* line 31, ../sass/my-ext-theme/widget/_alert-message.scss */
+#alert_message_header .x-window-header-text {
+  font-weight: bold; }
+
+/* line 36, ../sass/my-ext-theme/widget/_alert-message.scss */
+#alert_message-body {
+  border: 0px;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 5px; }
+
+/* line 2, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect.x-form-text {
   cursor: text;
   height: auto;
   overflow-y: auto;
   padding: 0; }
 
-/* line 11, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 12, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect ul.x-boxselect-list {
-  padding: 1px 3px; }
-
-/* line 16, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+  padding: 1px 2px; }
+/* line 17, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect input {
   border: none;
   background: none;
@@ -4271,26 +4230,27 @@ browsers will do whacky things with it.
   line-height: 18px;
   width: 100%; }
 
-/* line 25, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-input, .x-boxselect-item {
+/* line 28, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+.x-boxselect-input,
+.x-boxselect-item {
   display: inline-block;
   position: relative; }
 
-/* line 32, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 35, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .lt-ie8 .x-boxselect-input,
 .lt-ie8 .x-boxselect-item {
   display: inline; }
 
-/* line 38, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 41, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .lt-ie9 .x-boxselect-input,
 .lt-ie9 .x-boxselect-item {
   zoom: 1; }
 
-/* line 43, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 46, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect-stacked .x-boxselect-item {
   display: block; }
 
-/* line 48, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 51, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect-item {
   background-color: #DEE7F8;
   border: 1px solid #CAD8F3;
@@ -4303,30 +4263,30 @@ browsers will do whacky things with it.
   margin: 1px 1px 1px 0;
   padding: 0px 1px 0px 5px !important; }
 
-/* line 58, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 61, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-field:not(.x-item-disabled) .x-boxselect-item:hover {
   background: #BBCEF1;
   border: 1px solid #6D95E0; }
 
-/* line 64, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 67, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-field:not(.x-item-disabled) .x-boxselect-item.selected {
   border: 1px solid #316AD3 !important;
   background: #658FDC !important; }
 
-/* line 70, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 73, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect-item-text {
   line-height: 16px;
   padding-right: 20px !important; }
 
-/* line 76, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 79, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect-item-close {
   cursor: pointer; }
 
-/* line 81, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 84, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-boxselect-hideselections .x-boundlist-selected {
   display: none; }
 
-/* line 86, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
+/* line 89, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
 .x-tab-close-btn {
   background: url("../images/tab/tab-default-close.gif") 0px 0px no-repeat;
   font-size: 0;
@@ -4340,7 +4300,284 @@ browsers will do whacky things with it.
   opacity: 0.6;
   width: 11px; }
 
-/* line 104, ../sass/my-ext-theme.scss */
+/**
+ * Button style guide
+ * 
+ * Theme: 'default', 'primary', 'warning', 'info', 'success', 'danger'
+ *
+ * Ext.create('Ext.button.Button', {
+ *     cls: 'default' // theme
+ * });
+ *
+ * @author: Carey Hinoki
+ * @date: 2012-07-02
+ */
+/* line 143, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn-default-toolbar-small .x-btn-inner {
+  padding: 0px 7px; }
+
+/* line 150, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default {
+  background: #dcdcdc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: linear-gradient(#f1f1f1, #dcdcdc);
+  border: 1px solid #bcbcbc; }
+
+/* line 157, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-over {
+  background: #ececec;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
+  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
+  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
+  background-image: -o-linear-gradient(#f7f7f8, #ececec);
+  background-image: linear-gradient(#f7f7f8, #ececec); }
+
+/* line 163, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-pressed {
+  background: #cdcdcd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
+  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
+
+/* line 169, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default.x-menu-active {
+  background: #cdcdcd;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
+  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
+  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
+
+/* line 175, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.default button span {
+  color: #333333;
+  text-shadow: 0px -1px 0px none; }
+
+/* line 183, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary {
+  background: #226396;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
+  background-image: -webkit-linear-gradient(#73bbe8, #226396);
+  background-image: -moz-linear-gradient(#73bbe8, #226396);
+  background-image: -o-linear-gradient(#73bbe8, #226396);
+  background-image: linear-gradient(#73bbe8, #226396);
+  border: 1px solid #226396; }
+
+/* line 190, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary.x-over {
+  background: #396cc9;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
+  background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
+  background-image: -moz-linear-gradient(#60c9f3, #396cc9);
+  background-image: -o-linear-gradient(#60c9f3, #396cc9);
+  background-image: linear-gradient(#60c9f3, #396cc9); }
+
+/* line 196, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary.x-pressed {
+  background: #09366f;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
+  background-image: -webkit-linear-gradient(#336f9c, #09366f);
+  background-image: -moz-linear-gradient(#336f9c, #09366f);
+  background-image: -o-linear-gradient(#336f9c, #09366f);
+  background-image: linear-gradient(#336f9c, #09366f); }
+
+/* line 202, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary.x-menu-active {
+  background: #09366f;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
+  background-image: -webkit-linear-gradient(#336f9c, #09366f);
+  background-image: -moz-linear-gradient(#336f9c, #09366f);
+  background-image: -o-linear-gradient(#336f9c, #09366f);
+  background-image: linear-gradient(#336f9c, #09366f); }
+
+/* line 208, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.primary button span {
+  color: white;
+  text-shadow: 0px -1px 0px #226396; }
+
+/* line 216, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.warning {
+  background: #e67e1c;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
+  background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
+  background-image: -moz-linear-gradient(#fcc033, #e67e1c);
+  background-image: -o-linear-gradient(#fcc033, #e67e1c);
+  background-image: linear-gradient(#fcc033, #e67e1c);
+  border: 1px solid #e67e1c; }
+
+/* line 223, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.warning.x-over {
+  background: #f1a300;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
+  background-image: -webkit-linear-gradient(#fcd100, #f1a300);
+  background-image: -moz-linear-gradient(#fcd100, #f1a300);
+  background-image: -o-linear-gradient(#fcd100, #f1a300);
+  background-image: linear-gradient(#fcd100, #f1a300); }
+
+/* line 229, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.warning.x-pressed {
+  background: #d66000;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
+  background-image: -webkit-linear-gradient(#ea9000, #d66000);
+  background-image: -moz-linear-gradient(#ea9000, #d66000);
+  background-image: -o-linear-gradient(#ea9000, #d66000);
+  background-image: linear-gradient(#ea9000, #d66000); }
+
+/* line 235, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.warning.x-menu-active {
+  background: #d66000;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
+  background-image: -webkit-linear-gradient(#ea9000, #d66000);
+  background-image: -moz-linear-gradient(#ea9000, #d66000);
+  background-image: -o-linear-gradient(#ea9000, #d66000);
+  background-image: linear-gradient(#ea9000, #d66000); }
+
+/* line 241, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.warning button span {
+  color: white;
+  text-shadow: 0px -1px 0px #e67e1c; }
+
+/* line 249, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.info {
+  background: #6ca6f6;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
+  background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
+  background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
+  background-image: -o-linear-gradient(#70cfff, #6ca6f6);
+  background-image: linear-gradient(#70cfff, #6ca6f6);
+  border: 1px solid #6ca6f6; }
+
+/* line 256, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.info.x-over {
+  background: #73d0f6;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
+  background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
+  background-image: -moz-linear-gradient(#73ddff, #73d0f6);
+  background-image: -o-linear-gradient(#73ddff, #73d0f6);
+  background-image: linear-gradient(#73ddff, #73d0f6); }
+
+/* line 262, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.info.x-pressed {
+  background: #5599fc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
+  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
+  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
+  background-image: -o-linear-gradient(#55a9ff, #5599fc);
+  background-image: linear-gradient(#55a9ff, #5599fc); }
+
+/* line 268, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.info.x-menu-active {
+  background: #5599fc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
+  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
+  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
+  background-image: -o-linear-gradient(#55a9ff, #5599fc);
+  background-image: linear-gradient(#55a9ff, #5599fc); }
+
+/* line 274, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.info button span {
+  color: white;
+  text-shadow: 0px -1px 0px #6ca6f6; }
+
+/* line 282, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.success {
+  background: #229322;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
+  background-image: -webkit-linear-gradient(#33c033, #229322);
+  background-image: -moz-linear-gradient(#33c033, #229322);
+  background-image: -o-linear-gradient(#33c033, #229322);
+  background-image: linear-gradient(#33c033, #229322);
+  border: 1px solid #229322; }
+
+/* line 289, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.success.x-over {
+  background: #25b000;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
+  background-image: -webkit-linear-gradient(#33d000, #25b000);
+  background-image: -moz-linear-gradient(#33d000, #25b000);
+  background-image: -o-linear-gradient(#33d000, #25b000);
+  background-image: linear-gradient(#33d000, #25b000); }
+
+/* line 295, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.success.x-pressed {
+  background: #1c7600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
+  background-image: -webkit-linear-gradient(#299600, #1c7600);
+  background-image: -moz-linear-gradient(#299600, #1c7600);
+  background-image: -o-linear-gradient(#299600, #1c7600);
+  background-image: linear-gradient(#299600, #1c7600); }
+
+/* line 301, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.success.x-menu-active {
+  background: #1c7600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
+  background-image: -webkit-linear-gradient(#299600, #1c7600);
+  background-image: -moz-linear-gradient(#299600, #1c7600);
+  background-image: -o-linear-gradient(#299600, #1c7600);
+  background-image: linear-gradient(#299600, #1c7600); }
+
+/* line 307, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.success button span {
+  color: white;
+  text-shadow: 0px -1px 0px #229322; }
+
+/* line 315, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.danger {
+  background: #ac030c;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
+  background-image: -webkit-linear-gradient(#f6303c, #ac030c);
+  background-image: -moz-linear-gradient(#f6303c, #ac030c);
+  background-image: -o-linear-gradient(#f6303c, #ac030c);
+  background-image: linear-gradient(#f6303c, #ac030c);
+  border: 1px solid #ac030c; }
+
+/* line 322, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.danger.x-over {
+  background: #d00900;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
+  background-image: -webkit-linear-gradient(#f92626, #d00900);
+  background-image: -moz-linear-gradient(#f92626, #d00900);
+  background-image: -o-linear-gradient(#f92626, #d00900);
+  background-image: linear-gradient(#f92626, #d00900); }
+
+/* line 328, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.danger.x-pressed {
+  background: #8c0600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
+  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
+  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
+  background-image: -o-linear-gradient(#c60c0c, #8c0600);
+  background-image: linear-gradient(#c60c0c, #8c0600); }
+
+/* line 334, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.danger.x-menu-active {
+  background: #8c0600;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
+  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
+  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
+  background-image: -o-linear-gradient(#c60c0c, #8c0600);
+  background-image: linear-gradient(#c60c0c, #8c0600); }
+
+/* line 340, ../sass/my-ext-theme/widget/_button.scss */
+.x-btn.danger button span {
+  color: white;
+  text-shadow: 0px -1px 0px #ac030c; }
+
+/* line 2, ../sass/my-ext-theme/widget/_triggerfield.scss */
+.x-form-trigger {
+  background-image: url(../../app/resources/images/form/trigger.png);
+  border-bottom: 0px; }
+
+/* line 8, ../sass/my-ext-theme/widget/_triggerfield.scss */
+.x-form-date-trigger {
+  background-image: url(../../app/resources/images/form/date-trigger.png); }
+
+/* line 111, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -4349,7 +4586,7 @@ browsers will do whacky things with it.
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 111, ../sass/my-ext-theme.scss */
+/* line 118, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

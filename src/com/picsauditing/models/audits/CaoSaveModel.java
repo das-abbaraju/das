@@ -3,11 +3,16 @@ package com.picsauditing.models.audits;
 import java.util.List;
 import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
@@ -18,6 +23,9 @@ import com.picsauditing.util.Strings;
  * 
  */
 public class CaoSaveModel {
+	@Autowired
+	protected AuditPercentCalculator auditPercentCalculator;
+
 	I18nCache i18nCache = I18nCache.getInstance();
 
 	public String generateNote(List<AuditData> auditDataList) {
@@ -49,5 +57,19 @@ public class CaoSaveModel {
 			comment += commentHeader + auditData.getComment() + "\n";
 		}
 		return comment;
+	}
+	
+	public void updatePqfOnIncomplete(ContractorAudit audit, AuditStatus newStatus) {
+		if (audit.getAuditType().isPqf() && newStatus.isIncomplete()) {
+			for (AuditData data:audit.getData()) {
+				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
+					data.setVerified(false);
+					data.setAuditor(null);
+					auditPercentCalculator.percentCalculateComplete(audit, true);
+					break;
+				}
+			}
+		}
+
 	}
 }

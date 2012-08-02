@@ -11,7 +11,7 @@ import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
 
 @SuppressWarnings("serial")
 public abstract class RequiredLanguagesSupport extends PicsActionSupport {
-	public static String[] DEFAULT_LOCALES = new String[] { "en", "fr", "es", "de", "nl", "fi", "sv", "zh", "pt" };
+	public static String[] DEFAULT_LOCALES = new String[] { "en", "fr", "es", "de", "nl", "fi", "sv", "zh", "pt", "no" };
 	protected List<Locale> availableLocales;
 	protected List<Locale> selectedLocales;
 

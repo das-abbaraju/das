@@ -34,7 +34,7 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -63,7 +63,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	private ContractorValidator contractorValidator;
 
@@ -103,11 +103,13 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		this.subHeading = getText(String.format("%s.title", getScope()));
 
-		if (redirectIfNotReadyForThisStep())
+		if (redirectIfNotReadyForThisStep()) {
 			return BLANK;
+		}
 
-		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
+		if (!processPayment && generateOrUpdateInvoiceIfNecessary()) {
 			return BLANK;
+		}
 
 		// Email proforma invoice
 		if ("email".equals(button)) {
@@ -272,9 +274,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private String contractorRiskUrl(String url) {
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly() || contractor
+				.isTransportationServices()))
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
-			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
+			url = "RegistrationServiceEvaluation.action?id=" + contractor.getId();
 
 			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
 		} else if (contractor.getNonCorporateOperators().size() == 0) {
@@ -556,7 +559,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	/**
 	 * ****** End BrainTree Setters ******
-	 *
+	 * 
 	 * @throws Exception
 	 */
 
@@ -567,10 +570,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		types.add("Mastercard");
 		types.add("Discover Card");
 		types.add("American Express");
-
-		if (contractor.getNewMembershipAmount().intValue() > 500) {
-			types.add("Check");
-		}
 
 		return types;
 	}
@@ -653,7 +652,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
-		findContractor();
 		billingService.calculateAnnualFees(contractor);
 		invoice = contractor.findLastUnpaidInvoice();
 		if (invoice == null) {

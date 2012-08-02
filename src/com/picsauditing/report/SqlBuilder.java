@@ -2,16 +2,13 @@ package com.picsauditing.report;
 
 import static com.picsauditing.report.access.ReportUtil.getColumnFromFieldName;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
@@ -24,7 +21,6 @@ import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -45,7 +41,7 @@ public class SqlBuilder {
 		AbstractModel model = report.getModel();
 		sql = initializeSql(model);
 
-		sql.addWhere(model.getWhereClause(permissions));
+		sql.addWhere("1 " + model.getWhereClause(permissions));
 
 		if (!forDownload) {
 			int rowsPerPage = report.getRowsPerPage();
@@ -57,7 +53,8 @@ public class SqlBuilder {
 			sql.setLimit(rowsPerPage);
 			sql.setSQL_CALC_FOUND_ROWS(true);
 		}
-
+		
+		System.out.println(sql.toString());
 		return sql;
 	}
 
@@ -113,7 +110,7 @@ public class SqlBuilder {
 				if (!Strings.isEmpty(joinTable.getAlias()))
 					joinExpression += " AS " + joinTable.getAlias();
 
-				joinExpression += " ON " + joinTable.getWhereClause();
+				joinExpression += " ON " + joinTable.getOnClause();
 				sql.addJoin(joinExpression);
 				addJoins(joinTable);
 			}

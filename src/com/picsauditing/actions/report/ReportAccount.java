@@ -113,7 +113,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			excelSheet.addColumn(new ExcelColumn("contactemail", "Email"));
 			excelSheet.addColumn(new ExcelColumn("address", "Address"));
 			excelSheet.addColumn(new ExcelColumn("city", "City"));
-			excelSheet.addColumn(new ExcelColumn("state", "State"));
+			excelSheet.addColumn(new ExcelColumn("countrySubdivision", "CountrySubdivision"));
 			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code", ExcelCellType.Integer));
 			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
 		}
@@ -376,24 +376,24 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void filterOnLocation() {
 		if (filterOn(getFilter().getLocation())) {
-			List<String> states = new ArrayList<String>();
+			List<String> countrySubdivisions = new ArrayList<String>();
 			List<String> countries = new ArrayList<String>();
 
 			for (String location : getFilter().getLocation()) {
 				if (location.length() > 2) {
 					countries.add(location.replace("_C", ""));
 				} else {
-					states.add(location);
+					countrySubdivisions.add(location);
 				}
 			}
 
 			StringBuilder sb = new StringBuilder();
 
 			filterOnCountries(countries, sb);
-			filterOnStates(states, countries, sb);
+			filterOnCountrySubdivisions(countrySubdivisions, countries, sb);
 
 			sql.addOrderBy("a.country");
-			sql.addOrderBy("a.state");
+			sql.addOrderBy("a.countrySubdivision");
 			sql.addWhere(sb.toString());
 			setFiltered(true);
 		}
@@ -407,16 +407,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 	}
 
-	protected void filterOnStates(List<String> states, List<String> countries, StringBuilder sb) {
-		if (!states.isEmpty()) {
+	protected void filterOnCountrySubdivisions(List<String> countrySubdivisions, List<String> countries, StringBuilder sb) {
+		if (!countrySubdivisions.isEmpty()) {
 			if (!countries.isEmpty())
 				sb.append(" OR ");
 
-			String stateList = Strings.implodeForDB(states, ",");
-			sb.append("a.state IN (").append(stateList).append(") OR ").append("EXISTS (SELECT 'x' FROM pqfdata d ")
+			String countrySubdivisionList = Strings.implodeForDB(countrySubdivisions, ",");
+			sb.append("a.countrySubdivision IN (").append(countrySubdivisionList).append(") OR ").append("EXISTS (SELECT 'x' FROM pqfdata d ")
 					.append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")
-					.append("AND aq.uniqueCode IN (").append(stateList).append(") AND d.answer != 'No' LIMIT 1) ");
-			sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
+					.append("AND aq.uniqueCode IN (").append(countrySubdivisionList).append(") AND d.answer != 'No' LIMIT 1) ");
+			sql.addOrderBy("CASE WHEN a.countrySubdivision IN (" + countrySubdivisionList + ") THEN 1 ELSE 2 END");
 		}
 	}
 
@@ -433,7 +433,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addField("contact.email AS contactemail");
 			sql.addField("a.address");
 			sql.addField("a.city");
-			sql.addField("a.state");
+			sql.addField("a.countrySubdivision");
 			sql.addField("a.zip");
 			sql.addField("a.web_URL");
 		}

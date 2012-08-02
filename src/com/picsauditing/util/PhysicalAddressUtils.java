@@ -40,8 +40,8 @@ public class PhysicalAddressUtils {
 			lines.append(physicalAddress.getCity());
 			lines.append(", ");
 		}
-		if (physicalAddress.getState() != null) {
-			lines.append(physicalAddress.getState().toString());
+		if (physicalAddress.getCountrySubdivision() != null) {
+			lines.append(physicalAddress.getCountrySubdivision().toString());
 			lines.append(" ");
 		}
 		if (!Strings.isEmpty(physicalAddress.getZip())) {
@@ -60,11 +60,11 @@ public class PhysicalAddressUtils {
 	}
 	/**
 	 * Given an object that implements the PhysicalAddress interface (e.g. any of
-	 * the Accounts objects), returns the City/State/Country as a string. If a
+	 * the Accounts objects), returns the City/CountrySubdivision/Country as a string. If a
 	 * base country is specified, and the address is in that country, then the
 	 * country is supressed.
 	 * 
-	 * With this method, states are always spelled out.
+	 * With this method, countrySubdivisions are always spelled out.
 	 * 
 	 * @param fieldDelimiter
 	 *            e.g. "\n" for linefeeds, "(br/)" for HTML breaks, or "; " for
@@ -79,11 +79,11 @@ public class PhysicalAddressUtils {
 			lines.append(streetAddress.getCity());
 			needDelimiter = true;
 		}
-		if (streetAddress.getState() != null) {
+		if (streetAddress.getCountrySubdivision() != null) {
 			if (needDelimiter) {
 				lines.append(fieldDelimiter);
 			}
-			lines.append(streetAddress.getState().getSimpleName());
+			lines.append(streetAddress.getCountrySubdivision().getSimpleName());
 			needDelimiter = true;
 		}
 		if ((streetAddress.getCountry() != null) && !Strings.isEmpty(baseCountryIsoCode)

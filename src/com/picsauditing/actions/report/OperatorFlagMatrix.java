@@ -148,7 +148,10 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 		public String getContentIcon(String k1, String k2) {
 			try {
-				return FlagColor.valueOf(content.get(k1, k2)).getSmallIcon();
+				if (k2 !=null)
+					return FlagColor.valueOf(content.get(k1, k2)).getSmallIcon(k2);
+				else
+					return FlagColor.valueOf(content.get(k1, k2)).getSmallIcon("");
 			} catch (Exception e) {
 				return "";
 			}

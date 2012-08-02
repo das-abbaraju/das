@@ -6,9 +6,11 @@ import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 
 public class CorruptionPerceptionIndexMapTest {
@@ -18,16 +20,19 @@ public class CorruptionPerceptionIndexMapTest {
 	@Before
 	public void setup() {
 		corruptionPerceptionIndexMap = new CorruptionPerceptionIndexMap();
-		corruptionPerceptionIndexMap.map = new HashMap<String, Double>();
-		corruptionPerceptionIndexMap.map.put("US", 7.1);
-		corruptionPerceptionIndexMap.map.put("CA", 8.7);
-		corruptionPerceptionIndexMap.map.put("NZ", 9.5);
-		corruptionPerceptionIndexMap.map.put("IR", 2.7);
-		corruptionPerceptionIndexMap.map.put("LK", 3.0);
+		
+		Map<String, Double> map = new HashMap<String, Double>();
+		map.put("US", 7.1);
+		map.put("CA", 8.7);
+		map.put("NZ", 9.5);
+		map.put("IR", 2.7);
+		map.put("LK", 3.0);
 		
 		// Not all countries are tracked by transparancy.org, for example...
-		corruptionPerceptionIndexMap.map.put("RE", null);
-		corruptionPerceptionIndexMap.map.put("CX", null);
+		map.put("RE", null);
+		map.put("CX", null);
+		
+		Whitebox.setInternalState(corruptionPerceptionIndexMap, "map", map);
 	}
 	
 	@Test

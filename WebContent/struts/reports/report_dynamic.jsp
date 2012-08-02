@@ -5,7 +5,7 @@
 <title>${report.name}</title>
 
 <div id="loading_page">
-    <h1>Loading...</h1>
+    <h1><s:text name="LoadingPage.title" /></h1>
     <img src="../v7/js/extjs/pics/app/resources/images/loading.gif" />
 </div>
 

@@ -17,8 +17,7 @@ public class CorruptionPerceptionIndexMap {
 
 	@Autowired
 	protected CountryDAO countryDAO;
-	@Testable
-	Map<String, Double> map = null;
+	private Map<String, Double> map = null;
 	
 
 	public List<Double> findCorruptionPerceptionIndices(String unparsedJsonCountries) {

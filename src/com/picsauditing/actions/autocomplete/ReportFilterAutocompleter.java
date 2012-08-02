@@ -12,7 +12,7 @@ public final class ReportFilterAutocompleter {
 	@Autowired
 	CountryAutocompleteService countryAutocompleteService;
 	@Autowired
-	StateAutocompleteService stateAutocompleteService;
+	CountrySubdivisionAutocompleteService countrySubdivisionAutocompleteService;
 	@Autowired
 	OperatorTagAutocompleteService operatorTagAutocompleteService;
 	@Autowired
@@ -35,7 +35,7 @@ public final class ReportFilterAutocompleter {
 		case Country:
 			return countryAutocompleteService.tokenJson(searchQuery);
 		case Subdivision:
-			return stateAutocompleteService.tokenJson(searchQuery);
+			return countrySubdivisionAutocompleteService.tokenJson(searchQuery);
 		case Trade:
 			return tradeAutocompleteService.tokenJson(searchQuery);
 		case Operator:

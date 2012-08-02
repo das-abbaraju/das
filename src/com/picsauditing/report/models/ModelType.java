@@ -8,6 +8,7 @@ public enum ModelType {
 	ContractorAuditOperatorWorkflows,
 	ContractorFees,
 	Contractors,
+	ContractorOperator,
 	ContractorTrades,
 	Country,
 	EmailExclusions,

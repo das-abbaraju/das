@@ -99,33 +99,45 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 	@Override
 	protected void buildQuery() {
 		String visibleOperators = permissions.getAccountIdString();
-		if (permissions.isGeneralContractor()) {
-			visibleOperators = Strings.implode(permissions.getLinkedClients());
-		} else if (getFilter().getGeneralContractor() != null) {
+		if (getFilter().getGeneralContractor() != null) {
 			visibleOperators = Strings.implode(getFilter().getGeneralContractor());
+		} else if (permissions.isGeneralContractor()) {
+			visibleOperators = Strings.implode(permissions.getLinkedClients());
 		} else if (permissions.getLinkedGeneralContractors().size() > 0) {
 			visibleOperators = Strings.implode(permissions.getLinkedGeneralContractors());
 		}
 
+		String status = "'Active'";
+		if (permissions.getAccountStatus().isDemo()) {
+			status += ", 'Demo'";
+		}
+
+		SelectSQL generalContractorSQL = new SelectSQL("generalcontractors gc");
+		generalContractorSQL.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status IN (" + status + ")");
+		generalContractorSQL.addJoin("JOIN generalcontractors gcClient ON gcClient.genID = "
+				+ permissions.getAccountId() + " AND gcClient.subID = gc.subID");
+
+		generalContractorSQL.addField("gc.subID");
+		generalContractorSQL.addField("gc.genID");
+		generalContractorSQL.addField("o.name");
+
+		generalContractorSQL.addWhere("gc.genID IN (" + visibleOperators + ")");
+
+		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (" + visibleOperators + ")");
-		sql.addJoin("JOIN operators gco ON gco.id = gc.genID");
-		sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status = 'Active'");
-		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = a.id AND fdo.forceEnd > NOW() AND fdo.opID IN ("
-				+ visibleOperators + ")");
+		sql.addJoin("JOIN accounts o ON o.id = gc.genID AND o.status IN (" + status + ") AND o.id IN ("
+				+ (permissions.isGeneralContractor() ? visibleOperators : permissions.getAccountId()) + ")");
+		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.opID = o.id AND fdo.conID = gc.subID");
+		sql.addJoin("JOIN (" + generalContractorSQL.toString() + ") general ON general.subID = gc.subID");
 
 		sql.addWhere("a.type = 'Contractor'");
-		sql.addWhere("a.status = 'Active'");
-		sql.addWhere("gc.subID IN (SELECT subID FROM generalcontractors WHERE genID = " + permissions.getAccountId()
-				+ ")");
+		sql.addWhere("a.status IN (" + status + ")");
 
 		sql.addField("a.id, a.name, a.status, a.type, a.phone, a.fax, a.creationDate");
 		sql.addField("c.riskLevel, c.safetyRisk, c.productRisk");
-		sql.addField("gc.workStatus, gc.genID, gc.subID, gc.forceEnd");
-		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN gc.flag ELSE '' END flag");
-		sql.addField("CASE gco.doContractorsPay WHEN 'Yes' THEN lower(gc.flag) ELSE '' END lflag");
-		sql.addField("o.name opName");
+		sql.addField("gc.workStatus, gc.genID, gc.subID, gc.forceEnd, gc.flag, LOWER(gc.flag) lflag");
+		sql.addField("general.genID columnID, general.name columnName");
 		sql.addField("fdo.forceEnd as 'dataForceEnd'");
 
 		addFilterToSQL();
@@ -136,8 +148,8 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 			ContractorAccount contractor = dao.find(ContractorAccount.class,
 					Integer.parseInt(bean.get("subID").toString()));
 			OperatorAccount operator = new OperatorAccount();
-			operator.setId(Integer.parseInt(bean.get("genID").toString()));
-			operator.setName(bean.get("opName").toString());
+			operator.setId(Integer.parseInt(bean.get("columnID").toString()));
+			operator.setName(bean.get("columnName").toString());
 
 			FlagColor flag = null;
 

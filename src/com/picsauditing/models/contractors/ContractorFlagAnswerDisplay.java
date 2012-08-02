@@ -95,7 +95,7 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 					}
 				}
 				answer += getText("ContractorFlag.OshaAnswer3")
-						+ f.getContractor().getNaics().getCode();
+						+ f.getContractor().getTopTradesNaicsCode();
 			}
 		} else if (fc.isInsurance()) {
 			int operatorIdOfInheritedFlagCriteria = contractorOperator

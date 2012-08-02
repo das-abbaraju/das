@@ -98,7 +98,15 @@
     				</div>
     			</s:if>
     		</s:if>
-    		
+
+             <s:if test="user.locale.language != 'en'">
+                <div id="beta_translations_alert">
+                    <p>
+                        <s:text name="global.BetaTranslations" />
+                    </p>
+                </div>
+            </s:if>
+
     		<table id="contractor_dashboard">
     			<tr>
     				<td style="vertical-align:top; width: 48%">
@@ -656,7 +664,7 @@
     										<s:property value="contractor.city" />
     									</span>,
     									<span class="region">
-    										<s:property value="contractor.state.isoCode" />
+    										<s:property value="contractor.state" />
     									</span>
     									<span class="postal-code">
     										<s:property value="contractor.zip" />
@@ -689,7 +697,7 @@
     									
                                         <s:if test="contractor.primaryContact">
                                             <p class="contact">
-                                                <s:text name="global.ContactPrimary" />
+                                                <s:text name="global.ContactPrimary" />:
                                                 <span class="value">${contractor.primaryContact.name}</span>
                                             </p>
                                             <p class="tabbed tel">
@@ -711,9 +719,9 @@
                                             <s:if test="contractor.primaryContact.id != id">
                                                 <p class="contact">
                                                     <s:text name="global.Contact" />
-                                                    ${contactNumber}
+                                                    ${contactNumber}:
                                                     <s:set name="contactNumber" value="#contactNumber+1" />
-                                                    <span class="value">${name}:</span>
+                                                    <span class="value">${name}</span>
                                                 </p>
                                                 <p class="tabbed tel">
                                                     <s:text name="User.email" />:

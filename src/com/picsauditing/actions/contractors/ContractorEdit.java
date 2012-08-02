@@ -10,7 +10,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -28,13 +31,13 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -48,7 +51,6 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
@@ -75,15 +77,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected NoteDAO noteDAO;
 	@Autowired
-	protected StateDAO stateDAO;
-	@Autowired
 	protected EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
 	@Autowired
 	protected BillingCalculatorSingle billingService;
-	@Autowired
-	protected NoteDAO noteDao;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
 
@@ -91,7 +89,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String logoFileName = null;
 	private File brochure = null;
 	private String brochureFileName = null;
-	private State state;
+	private CountrySubdivision countrySubdivision;
 	private Country country;
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
@@ -99,6 +97,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
 	private String contractorTypeHelpText = "";
+
+	private HttpServletRequest request;
 
 	public void prepare() throws Exception {
 		if (permissions.isLoggedIn()) {
@@ -128,7 +128,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					.get("contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
-			
+
 			defaultConTypeHelpText();
 		}
 	}
@@ -159,14 +159,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.subHeading = getText("ContractorEdit.subheading");
 
 		findContractor();
-		// Billing state gets set to an empty string
-		if (contractor.getBillingState() != null && Strings.isEmpty(contractor.getBillingState().getIsoCode()))
-			contractor.setBillingState(null);
+		// Billing CountrySubdivision gets set to an empty string
+		if (contractor.getBillingCountrySubdivision() != null && Strings.isEmpty(contractor.getBillingCountrySubdivision().getIsoCode()))
+			contractor.setBillingCountrySubdivision(null);
 	}
 
 	public String save() throws Exception {
 		String ftpDir = getFtpDir();
-
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
 			if (logo != null) {
@@ -214,18 +213,23 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					return SUCCESS;
 				}
 			}
-			
-			if (!contractor.getCountry().equals(country) || !contractor.getState().equals(state)) {
+
+			if ((!contractor.getCountry().equals(country) && country != null)
+					|| (contractor.getCountrySubdivision() !=null && !contractor.getCountrySubdivision().equals(countrySubdivision) && countrySubdivision != null)) {
 				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-				
 				stampContractorNoteAboutOfficeLocationChange();
 			}
-			
-			if (countrySubdivisionDAO.exist(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode())){
-				CountrySubdivision countrySubdivision = new CountrySubdivision();
-				countrySubdivision.setIsoCode(contractor.getCountry().getIsoCode()+"-"+contractor.getState().getIsoCode());
-				contractor.setCountrySubdivision(countrySubdivision);
+
+			if (country != null && !country.equals(contractor.getCountry())) {
+				contractor.setCountry(country);
 			}
+
+			if ((countrySubdivision != null && !countrySubdivision.equals(contractor.getCountrySubdivision())) || (contractor.getCountrySubdivision()==null&& countrySubdivision !=null)) {
+				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
+				contractor.setCountrySubdivision(contractorCountrySubdivision);
+			}
+
+			addNoteWhenStatusChange();
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
 
@@ -248,7 +252,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
-				
+
 				return SUCCESS;
 			}
 			contractor.setQbSync(true);
@@ -259,11 +263,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setPrimaryContact(userDAO.find(contactID));
 			}
 			// contractor.setNeedsIndexing(true);
-			
-
 
 			contractorAccountDao.save(contractor);
-			
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
 		}
@@ -271,12 +272,24 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
+	private void addNoteWhenStatusChange() {
+		request = ServletActionContext.getRequest();
+
+		if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
+			this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
+					+ contractor.getStatus().toString());
+		}
+	}
+
 	private void stampContractorNoteAboutOfficeLocationChange() {
 		User system = new User();
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet", getText(state.getI18nKey())));
+		if (contractor.getCountry().isHasCountrySubdivisions()) {
+			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
+					getText(countrySubdivision.getI18nKey())));
+		}
 		pqfOfficeLocationChange.setId(0);
 		pqfOfficeLocationChange.setCanContractorView(true);
 		noteDao.save(pqfOfficeLocationChange);
@@ -375,7 +388,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public String copyPrimary() throws Exception {
 		contractor.setBillingAddress(contractor.getAddress());
 		contractor.setBillingCity(contractor.getCity());
-		contractor.setBillingState(contractor.getState());
+		contractor.setBillingCountrySubdivision(contractor.getCountrySubdivision());
 		contractor.setBillingCountry(contractor.getCountry());
 		contractor.setBillingZip(contractor.getZip());
 		contractorAccountDao.save(contractor);
@@ -463,13 +476,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setOperatorIds(List<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
 	}
-	
-	public State getState() {
-		return state;
+
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
 	}
 
-	public void setState(State state) {
-		this.state = state;
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
 	}
 
 	public Country getCountry() {

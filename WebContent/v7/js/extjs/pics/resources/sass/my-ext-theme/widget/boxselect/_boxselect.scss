@@ -1,4 +1,3 @@
-/* Box Select Styling*/
 .x-boxselect.x-form-text
 {
     cursor: text;
@@ -7,21 +6,25 @@
     padding: 0;
 }
 
-.x-boxselect ul.x-boxselect-list
+.x-boxselect
 {
-    padding: 1px 3px;
-}
+	ul.x-boxselect-list
+	{
+	    padding: 1px 2px;
+	}
+	
+	input
+	{
+	    border: none;
+	    background: none;
+	    height: 20px;
+	    line-height: 18px;
+	    width: 100%;
+	}
+} 
 
-.x-boxselect input
-{
-    border: none;
-    background: none;
-    height: 20px;
-    line-height: 18px;
-    width: 100%;
-}
-
-.x-boxselect-input, .x-boxselect-item
+.x-boxselect-input,
+.x-boxselect-item
 {
     display: inline-block;
     position: relative;
@@ -36,7 +39,7 @@
 .lt-ie9 .x-boxselect-input,
 .lt-ie9 .x-boxselect-item
 {
-    zoom:1;
+    zoom: 1;
 }
 
 .x-boxselect-stacked .x-boxselect-item

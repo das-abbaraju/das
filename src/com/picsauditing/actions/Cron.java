@@ -72,7 +72,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.search.Database;
@@ -122,7 +122,7 @@ public class Cron extends PicsActionSupport {
 	@Autowired
 	private EbixLoader ebixLoader;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	private IndexerEngine indexer;
 	@Autowired
@@ -350,6 +350,13 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
+		try{
+			startTask("deactivating pending accounts pass 90 days");
+			deactivatePendingAccounts();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
 
@@ -744,7 +751,7 @@ public class Cron extends PicsActionSupport {
 			try {
 				int templateID = pendingAndDelinquentAccts.get(cAccount);
 
-				emailBuilder.clearAll();
+				emailBuilder.clear();
 				emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
 				emailBuilder.setTemplate(templateID);
 
@@ -1037,6 +1044,19 @@ public class Cron extends PicsActionSupport {
 				crr.setNotes(maskDateFormat(now) + " - System - hold date passed.  Request set to active \n\n"
 						+ crr.getNotes());
 			}
+		}
+	}
+	private void deactivatePendingAccounts(){
+		List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToDeactivate();
+
+		Iterator<ContractorAccount> dpaIter = deactivateList.iterator();
+		while (dpaIter.hasNext()) {
+			ContractorAccount dpa = dpaIter.next();
+			dpa.setStatus(AccountStatus.Deactivated);
+
+			contractorAccountDAO.save(dpa);
+
+			stampNote(dpa, "Account has been deactivated, this account has been pending for 90 days without payment.", NoteCategory.Billing);
 		}
 	}
 }

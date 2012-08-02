@@ -86,7 +86,7 @@ public class PicsMenu {
 					subMenu.addChild(getTitle("ContractorTrades"), "ContractorTrades.action", "ContractorTrades");
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
 						subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action", "ManageEmployees");
-					if (permissions.isRequiresCompetencyReview()) {
+					if (permissions.isRequiresCompetencyReview() && !permissions.isSecurity()) {
 						subMenu = menu.addChild(getText("global.HSECompetencies"));
 						subMenu.addChild(getTitle("ManageJobRoles"), "ManageJobRoles.action", "ManageJobRoles");
 						subMenu.addChild(getTitle("EmployeeCompetencies"), "EmployeeCompetencies.action",
@@ -177,7 +177,7 @@ public class PicsMenu {
 		}
 		if (permissions.isCorporate())
 			addChildAction(subMenu, "ReportContractorOperatorFlag");
-		if (permissions.isCorporate() || permissions.getCorporateParent().size() > 0)
+		if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0)&&!permissions.isSecurity())
 			addChildAction(subMenu, "ReportContractorOperatorFlagMatrix");
 		if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
 			addChildAction(subMenu, "OperatorFlagMatrix");
@@ -507,7 +507,7 @@ public class PicsMenu {
 			subMenu.addChild("Flag Changes", "ReportFlagChanges.action" + custom, "FlagChanges");
 		}
 
-		if (permissions.isRequiresCompetencyReview()) {
+		if (permissions.isRequiresCompetencyReview()&&!permissions.isSecurity()) {
 			subMenu = menu.addChild(getText("global.HSECompetencies"));
 
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))

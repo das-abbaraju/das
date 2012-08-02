@@ -83,7 +83,7 @@ public class OshaDisplay {
 		return columnNames;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private Map getInfoForParticularOshaType(OshaType oshaType) {
 		Map info = new HashMap();
 		info.put("columnNames", getColumnNames(oshaType));
@@ -92,7 +92,7 @@ public class OshaDisplay {
 		return info;
 	}
 
-	/* Test */ List<OshaDisplayRow> getData(OshaType oshaType) {
+	private List<OshaDisplayRow> getData(OshaType oshaType) {
 		List<OshaDisplayRow> rows = new ArrayList<OshaDisplayRow>();
 		for (OshaRateType rateType : oshaType.rates) {
 			if (!isShowRow(rateType))
@@ -142,14 +142,14 @@ public class OshaDisplay {
 	
 	private String getIndustryAverage(OshaType oshaType, OshaRateType rateType) {
 		if (rateType == OshaRateType.LwcrAbsolute) {
-			return String.valueOf(Utilities.getIndustryAverage(true, contractor.getNaics()));
+			return String.valueOf(Utilities.getIndustryAverage(true, contractor));
 		} else if (rateType == OshaRateType.TrirAbsolute || rateType == OshaRateType.TrirNaics) {
 			if (oshaType != OshaType.OSHA && oshaType != OshaType.MSHA) {
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 			}
 			if (contractor.getNaics() == null || Strings.isEmpty(contractor.getNaics().getCode()) )
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
-			return String.valueOf(Utilities.getIndustryAverage(false, contractor.getNaics()));
+			return String.valueOf(Utilities.getIndustryAverage(false, contractor));
 		} else if (rateType == OshaRateType.TrirWIA) {
 			return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 		}
@@ -280,7 +280,7 @@ public class OshaDisplay {
 					+ fco.getShortDescription() + "</nobr>";
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map getStats() {
 		Map stats = new HashMap();
 		for (OshaType oshaType : OshaType.values()) {

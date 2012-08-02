@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
@@ -44,23 +45,27 @@ public class I18nCache implements Serializable {
 
 	private static Database databaseForTesting = null;
 	private static List<I18nCacheBuildAware> buildListeners = new ArrayList<I18nCacheBuildAware>();
-
+	static AtomicInteger instantiationCount = new AtomicInteger(0); 
+	
 	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
 	private I18nCache() {
 	}
 
 	public static I18nCache getInstance() {
-		if (INSTANCE == null) {
+		I18nCache cache = INSTANCE;
+		if (cache == null) {
 			synchronized (I18nCache.class) {
-				if (INSTANCE == null) {
+				cache = INSTANCE;
+				if (cache == null) {
 					INSTANCE = new I18nCache();
+					I18nCache.instantiationCount.getAndIncrement();
 					INSTANCE.buildCache();
 				}
 			}
 		}
 		return INSTANCE;
 	}
-
+	
 	public void addBuildListener(I18nCacheBuildAware listener) {
 		if (!buildListeners.contains(listener)) {
 			buildListeners.add(listener);

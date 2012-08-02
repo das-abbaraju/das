@@ -186,7 +186,7 @@ public class EmployeeAddress {
     }
 
     /**
-     * Gets the value of the state property.
+     * Gets the value of the country subdivision property.
      * 
      * @return
      *     possible object is

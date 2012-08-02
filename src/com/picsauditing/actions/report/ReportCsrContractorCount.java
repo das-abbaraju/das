@@ -57,7 +57,7 @@ public class ReportCsrContractorCount extends ReportAccount {
 		
 		sql = new SelectAccount();
 		sql.addField("u.name as csr");
-		sql.addField("a.state as state");
+		sql.addField("a.countrySubdivision as countrySubdivision");
 		sql.addField("count(a.name) as cnt");
 		sql.addJoin("JOIN contractor_info c");
 		sql.addJoin("JOIN users u ON c.welcomeAuditor_id = u.id");
@@ -69,9 +69,9 @@ public class ReportCsrContractorCount extends ReportAccount {
 		sql.addWhere(opIds);
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("a.id = c.id");
-		sql.addGroupBy("u.id, a.state");
+		sql.addGroupBy("u.id, a.countrySubdivision");
 		
-		orderByDefault = "u.name,a.state DESC";
+		orderByDefault = "u.name,a.countrySubdivision DESC";
 		filteredDefault = true;
 		
 		addFilterToSQL();

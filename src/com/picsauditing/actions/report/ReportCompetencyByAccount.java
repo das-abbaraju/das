@@ -24,7 +24,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
@@ -46,7 +46,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	protected OperatorAccount operator;
 	protected ContractorAccount contractor;

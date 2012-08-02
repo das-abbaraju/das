@@ -24,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -67,7 +68,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected String address3;
 	protected String city;
 	protected Country country;
-	protected State state;
 	protected CountrySubdivision countrySubdivision;
 	protected String zip;
 	protected String phone;
@@ -208,18 +208,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "state")
-	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(i18nKeyPrefix = "State", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Subdivision)
-	public State getState() {
-		return this.state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	@ManyToOne
 	@JoinColumn(name = "countrySubdivision")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
 	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Subdivision)
@@ -231,6 +219,11 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.countrySubdivision = countrySubdivision;
 	}
 
+	@Transient
+	public String getState() {
+		return StringUtils.substring(countrySubdivision.getIsoCode(), -2);
+	}
+	
 	@Column(name = "zip", length = 15)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
 	@ReportField(category = FieldCategory.Contact)
@@ -251,15 +244,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Transient
-	@ReportField(category = FieldCategory.Contact, sql = "CONCAT({ALIAS}.city, {ALIAS}.state)", filterable = false)
+	@ReportField(category = FieldCategory.Contact, sql = "CONCAT({ALIAS}.city, {ALIAS}.countrySubdivision)", filterable = false)
 	public String getFullAddress() {
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
 		full.append(address);
 		if (!Strings.isEmpty(city))
 			full.append(", ").append(city);
-		if (state != null)
-			full.append(", ").append(state.getIsoCode());
+		if (countrySubdivision != null)
+			full.append(", ").append(countrySubdivision.getIsoCode());
 		if (country != null && !country.getIsoCode().equals("US"))
 			full.append(", ").append(country.getName());
 		if (!Strings.isEmpty(zip))
@@ -274,10 +267,10 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		if (city != null) {
 			full.append(city.trim());
 		}
-		if (state != null) {
+		if (countrySubdivision != null) {
 			if (full.length() > 0)
 				full.append(", ");
-			full.append(state.getIsoCode());
+			full.append(countrySubdivision.getIsoCode());
 		}
 		if (country != null && !country.getIsoCode().equals(currentCountryCode)) {
 			if (full.length() > 0)
@@ -463,7 +456,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
-	@ReportField(filterType = FilterType.List, i18nKeyPrefix = "Account", i18nKeySuffix = "type")
 	public String getType() {
 		return type;
 	}
@@ -719,7 +711,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			obj.put("address", address);
 			obj.put("dbaName", dbaName);
 			obj.put("city", city);
-			obj.put("state", state == null ? null : state.getIsoCode());
+			obj.put("countrySubdivision", countrySubdivision == null ? null : countrySubdivision.getIsoCode());
 			obj.put("country", country == null ? null : country.getIsoCode());
 			obj.put("zip", zip);
 			obj.put("phone", phone);
@@ -783,8 +775,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 				.append(this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
-		if (this.state != null)
-			sb.append(", ").append(this.state).append("\n");
+		if (this.countrySubdivision != null)
+			sb.append(", ").append(this.countrySubdivision).append("\n");
 		return sb.toString();
 	}
 

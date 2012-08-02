@@ -36,7 +36,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.models.audits.CaoSaveModel;
 import com.picsauditing.util.Strings;
@@ -46,7 +46,7 @@ public class CaoSave extends AuditActionSupport {
 	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
@@ -319,6 +319,8 @@ public class CaoSave extends AuditActionSupport {
 		
 		if (cao.getAudit().getAuditType().isPqf() && newStatus.isSubmitted())
 			EventSubscriptionBuilder.pqfSubmittedForCao(cao);
+		
+		caoSaveModel.updatePqfOnIncomplete(cao.getAudit(), newStatus);
 
 		caoDAO.save(cao);
 		

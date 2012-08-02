@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Constants {
 	
-	private static final String[] STATE_ARRAY = {
+	private static final String[] COUNTRY_SUBDIVISION_ARRAY = {
 			"Alabama","Yes","http://www.genconbd.state.al.us/DATABASE-LIVE/RosterResult.asp","txtlicenseno","action","Search",";",
 			"Alaska","Yes","http://www.dced.state.ak.us/occ/OccSearch/main.cfm?CFID=1607376&CFTOKEN=46ef7aacf0153993-C1C5CF3D-C169-2801-9511A03E87A050E8","LicNum",";",
 			"Arkansas","No","http://www.state.ar.us/clb/search.html?","LicNum","action","search",";",
@@ -33,14 +33,14 @@ public class Constants {
 			"Wisconsin","No","http://apps.commerce.state.wi.us/SB_Credential/SB_CredentialApp?cmd=Search&form=SearchByIdForm&cred_id=",";"
 	};
 	
-	public static String displayStateLink(String selectedState, String licNum) {
+	public static String displayCountrySubdivisionLink(String selectedCountrySubdivision, String licNum) {
 		ArrayList<String> tempAL = new ArrayList<String>();
 	
-		tempAL.addAll(Arrays.asList(STATE_ARRAY));
+		tempAL.addAll(Arrays.asList(COUNTRY_SUBDIVISION_ARRAY));
 		StringBuffer temp = new StringBuffer();
 		ListIterator li = tempAL.listIterator();
 		while (li.hasNext()) {
-			if (((String)li.next()).equals(selectedState)) {
+			if (((String)li.next()).equals(selectedCountrySubdivision)) {
 				String post = (String)li.next();
 				String link = (String)li.next();
 				String licparam = (String)li.next();

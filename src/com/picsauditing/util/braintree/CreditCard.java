@@ -21,6 +21,7 @@ public class CreditCard {
 
 	private String cardNumber = null;
 	private String expirationDate = null;
+	private String cVVNumber = null;
 
 	public String getCardNumber() {
 		return cardNumber;
@@ -68,5 +69,13 @@ public class CreditCard {
 		if (c.equals("6"))
 			return "Discover";
 		return "Unknown";
+	}
+
+	public String getcVVNumber() {
+		return cVVNumber;
+	}
+
+	public void setcVVNumber(String cVVNumber) {
+		this.cVVNumber = cVVNumber;
 	}
 }

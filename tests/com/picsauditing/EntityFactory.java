@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Facility;
@@ -32,7 +33,6 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserStatus;
@@ -50,7 +50,7 @@ public class EntityFactory {
 
 	static private int counter = 1;
 	static private HashMap<String, Country> countries;
-	static private Map<String, State> states;
+	static private Map<String, CountrySubdivision> countrySubdivisions;
 
 	static public TranslatableString makeTranslatableString(String value) {
 		TranslatableString string = new TranslatableString();
@@ -127,33 +127,33 @@ public class EntityFactory {
 		return countries;
 	}
 
-	public static Map<String, State> someExampleStates() {
-		if (states != null && states.size() > 0) {
-			return states;
+	public static Map<String, CountrySubdivision> someExampleCountrySubdivisions() {
+		if (countrySubdivisions != null && countrySubdivisions.size() > 0) {
+			return countrySubdivisions;
 		}
-		states = new HashMap();
+		countrySubdivisions = new HashMap();
 
 		Country unitedStates = mostCommonCountries().get("US");
-		states.put("CA", makeState("CA", unitedStates, "California"));
-		states.put("TX", makeState("TX", unitedStates, "Texas"));
+		countrySubdivisions.put("CA", makeCountrySubdivision("CA", unitedStates, "California"));
+		countrySubdivisions.put("TX", makeCountrySubdivision("TX", unitedStates, "Texas"));
 
 		Country canada = mostCommonCountries().get("CA");
-		states.put("AB", makeState("AB", canada, "Alberta"));
-		states.put("BC", makeState("BC", canada, "British Columbia"));
+		countrySubdivisions.put("AB", makeCountrySubdivision("AB", canada, "Alberta"));
+		countrySubdivisions.put("BC", makeCountrySubdivision("BC", canada, "British Columbia"));
 
 		Country unitedKingdom = mostCommonCountries().get("GB");
-		states.put("BU", makeState("BU", unitedKingdom, "Buckinghamshire"));
-		states.put("YK", makeState("YK", unitedKingdom, "Yorkshire"));
+		countrySubdivisions.put("BU", makeCountrySubdivision("BU", unitedKingdom, "Buckinghamshire"));
+		countrySubdivisions.put("YK", makeCountrySubdivision("YK", unitedKingdom, "Yorkshire"));
 
-		return states;
+		return countrySubdivisions;
 	}
 
-	public static State makeState(String isoCode, Country country, String englishName) {
-		State state = new State(isoCode);
-		state.setCountry(country);
-		state.setEnglish(englishName);
-		state.setName(makeEnglishString(isoCode, englishName));
-		return state;
+	public static CountrySubdivision makeCountrySubdivision(String isoCode, Country country, String englishName) {
+		CountrySubdivision countrySubdivision = new CountrySubdivision(isoCode);
+		countrySubdivision.setCountry(country);
+		countrySubdivision.setEnglish(englishName);
+		countrySubdivision.setName(makeEnglishString(isoCode, englishName));
+		return countrySubdivision;
 	}
 
 	public static Country makeCountry(String isoCode, String englishName) {

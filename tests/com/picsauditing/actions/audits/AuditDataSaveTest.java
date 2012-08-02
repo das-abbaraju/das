@@ -136,42 +136,42 @@ public class AuditDataSaveTest {
 		auditData.getQuestion().setUniqueCode(code);
 	}
 
-	@Test
-	public void testExecute_NoIncidents_HSE_COHS_INCIDENT_QUESTION() throws Exception {
-		AuditType annualType = EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM);
-		audit.setAuditType(annualType);
-
-		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
-		AuditData[] safetyData = null;
-
-		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.COHS_INCIDENT_QUESTION_ID);
-		safetyData = new AuditData[AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length];
-		setupSafetyDataAnswers(safetyData, AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS);
-		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
-
-		String strutsAction = auditDataSave.execute();
-		
-		assertEquals("success", strutsAction);
-		for (int i = 0; i < AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length; i++) {
-			assertEquals("0", safetyData[i].getAnswer());
-		}
-	}
+//	@Test
+//	public void testExecute_NoIncidents_HSE_COHS_INCIDENT_QUESTION() throws Exception {
+//		AuditType annualType = EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM);
+//		audit.setAuditType(annualType);
+//
+//		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
+//		AuditData[] safetyData = null;
+//
+//		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.COHS_INCIDENT_QUESTION_ID);
+//		safetyData = new AuditData[AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length];
+//		setupSafetyDataAnswers(safetyData, AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS);
+//		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+//
+//		String strutsAction = auditDataSave.execute();
+//		
+//		assertEquals("success", strutsAction);
+//		for (int i = 0; i < AuditDataSave.COHS_INCIDENT_RELATED_QUESTION_IDS.length; i++) {
+//			assertEquals("0", safetyData[i].getAnswer());
+//		}
+//	}
 	
-	@Test
-	public void testExecute_NoIncidents_OSHA_INCIDENT_QUESTION() throws Exception {
-		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
-		AuditData[] safetyData = null;
-
-		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.OSHA_INCIDENT_QUESTION_ID);
-		safetyData = new AuditData[AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length];
-		setupSafetyDataAnswers(safetyData, AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS);
-		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
-
-		assertEquals("success", auditDataSave.execute());
-		for (int i = 0; i < AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length; i++) {
-			assertEquals("0", safetyData[i].getAnswer());
-		}
-	}
+//	@Test
+//	public void testExecute_NoIncidents_OSHA_INCIDENT_QUESTION() throws Exception {
+//		AuditQuestion hseIncidentsQuestion = EntityFactory.makeAuditQuestion();
+//		AuditData[] safetyData = null;
+//
+//		setUpIncidentQuestion(hseIncidentsQuestion, AuditDataSave.OSHA_INCIDENT_QUESTION_ID);
+//		safetyData = new AuditData[AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length];
+//		setupSafetyDataAnswers(safetyData, AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS);
+//		when(questionDao.find(hseIncidentsQuestion.getId())).thenReturn(hseIncidentsQuestion);
+//
+//		assertEquals("success", auditDataSave.execute());
+//		for (int i = 0; i < AuditDataSave.OSHA_INCIDENT_RELATED_QUESTION_IDS.length; i++) {
+//			assertEquals("0", safetyData[i].getAnswer());
+//		}
+//	}
 
 	private void setUpIncidentQuestion(AuditQuestion coshIncidentsQuestion, int questionID) {
 		coshIncidentsQuestion.setId(questionID);

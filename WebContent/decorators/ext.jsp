@@ -8,8 +8,8 @@
 		
 		<title>PICS - <decorator:title default="PICS" /></title>
 		
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme.css">
         <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css">
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme.css">
         <link rel="stylesheet" type="text/css" href="v7/css/libs/font-awesome.css">
 		
 		<decorator:head />

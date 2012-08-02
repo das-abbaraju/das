@@ -32,7 +32,6 @@ import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -56,7 +55,7 @@ public class ManageJobSites extends OperatorActionSupport {
 	protected String siteName;
 	protected String siteCity;
 	protected Country siteCountry;
-	protected State siteState;
+	protected CountrySubdivision siteCountrySubdivision;
 	protected Date siteStart;
 	protected Date siteEnd;
 	protected Date date = new Date();
@@ -102,11 +101,15 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setProjectStart(siteStart);
 			jobSite.setProjectStop(siteEnd);
 			jobSite.setCity(siteCity);
-			jobSite.setCountry(siteCountry);
-			jobSite.setState(siteState);
-			if (isCountrySubdivision()) {
-				jobSite.setCountrySubdivision(getCountrySubdivision());
+			if (siteCountry != null && !siteCountry.equals(jobSite.getCountry())){
+				jobSite.setCountry(siteCountry);
 			}
+
+			if ((siteCountrySubdivision != null && !siteCountrySubdivision.equals(jobSite.getCountrySubdivision())) || (jobSite.getCountrySubdivision() == null && siteCountrySubdivision !=null)){
+				CountrySubdivision jobSiteCountrySubdivision = countrySubdivisionDAO.find(siteCountrySubdivision.toString());
+				jobSite.setCountrySubdivision(jobSiteCountrySubdivision);
+			}
+
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Added new", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -125,13 +128,15 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setProjectStop(siteEnd);
 			jobSite.setCity(siteCity);
 
-			if (!Strings.isEmpty(siteCountry.getIsoCode()))
+			if (siteCountry != null && !siteCountry.equals(jobSite.getCountry())){
 				jobSite.setCountry(siteCountry);
-
-			jobSite.setState(siteState);
-			if (isCountrySubdivision()) {
-				jobSite.setCountrySubdivision(getCountrySubdivision());
 			}
+
+			if ((siteCountrySubdivision != null && !siteCountrySubdivision.equals(jobSite.getCountrySubdivision())) || (jobSite.getCountrySubdivision() == null && siteCountrySubdivision !=null)){
+				CountrySubdivision jobSiteCountrySubdivision = countrySubdivisionDAO.find(siteCountrySubdivision.toString());
+				jobSite.setCountrySubdivision(jobSiteCountrySubdivision);
+			}
+
 			jobSiteDAO.save(jobSite);
 			addNote(operator, String.format(noteSummary, "Updated", jobSite.getLabel(), jobSite.getName()));
 		} else {
@@ -139,16 +144,6 @@ public class ManageJobSites extends OperatorActionSupport {
 		}
 
 		return getRedirect();
-	}
-
-	private boolean isCountrySubdivision() {
-		return countrySubdivisionDAO.exist(siteCountry.getIsoCode() + "-" + siteState.getIsoCode());
-	}
-
-	private CountrySubdivision getCountrySubdivision() {
-		CountrySubdivision countrySubdivision = new CountrySubdivision();
-		countrySubdivision.setIsoCode(siteCountry.getIsoCode() + "-" + siteState.getIsoCode());
-		return countrySubdivision;
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
@@ -458,12 +453,12 @@ public class ManageJobSites extends OperatorActionSupport {
 		this.siteCountry = siteCountry;
 	}
 
-	public State getSiteState() {
-		return siteState;
+	public CountrySubdivision getSiteCountrySubdivision() {
+		return siteCountrySubdivision;
 	}
 
-	public void setSiteState(State siteState) {
-		this.siteState = siteState;
+	public void setSiteCountrySubdivision(CountrySubdivision siteCountrySubdivision) {
+		this.siteCountrySubdivision = siteCountrySubdivision;
 	}
 
 	public Date getSiteStart() {

@@ -40,6 +40,7 @@
 	<bean id="ContractorRegistrationRequestDAO" class="com.picsauditing.dao.ContractorRegistrationRequestDAO" />
 	<bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO" />
 	<bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO" />
+	<bean id="CountrySubdivisionDAO" class="com.picsauditing.dao.CountrySubdivisionDAO" />
 	<bean id="EbixLoader" class="com.picsauditing.util.EbixLoader" />
 	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO" />
 	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO" />
@@ -77,7 +78,6 @@
 	<bean id="TradeAlternateDAO" class="com.picsauditing.dao.TradeAlternateDAO" />
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO" />
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO" />
-	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO" />
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO" />
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO" />
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO" />

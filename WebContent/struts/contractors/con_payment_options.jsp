@@ -417,7 +417,7 @@
                             </li>
 							<li>
 								<label><s:text name="CreditCard.Expiration" /></label>
-								<s:property value="cc.expirationDateFormatted"/>
+								<s:property value="cc.FormattedExpirationDateString"/>
 							</li>
 							<li>
 								<a href="?id=<s:property value="id"/>&button=delete" class="remove"><s:text name="button.RemoveCreditCard" /></a>

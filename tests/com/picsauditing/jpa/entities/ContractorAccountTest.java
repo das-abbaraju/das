@@ -2,7 +2,10 @@ package com.picsauditing.jpa.entities;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Before;
@@ -20,6 +23,7 @@ public class ContractorAccountTest {
 		contractor = EntityFactory.makeContractor();
 	}
 	
+	@Ignore
 	@Test
 	public void testCreateInvoiceItems() {
 		// InvoiceFee feeFree = new InvoiceFee(InvoiceFee.FREE);
@@ -118,5 +122,67 @@ public class ContractorAccountTest {
 
 		assertTrue(contractor.getOperators().size() > 1);
 		assertFalse(contractor.isOnlyAssociatedWith(OperatorAccount.SUNCOR));
+	}
+
+	@Test
+	public void testGetCompleteAnnualUpdates() {
+		OperatorAccount operator = EntityFactory.makeOperator();
+		ContractorAudit auditThreeYears = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+		ContractorAudit auditTwoYears = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+		ContractorAudit auditLastYear = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+		
+		ContractorAuditOperator caoThreeYears = EntityFactory.addCao(auditThreeYears, operator);
+		ContractorAuditOperator caoTwoYears = EntityFactory.addCao(auditTwoYears, operator);
+		ContractorAuditOperator caoLastYear = EntityFactory.addCao(auditLastYear, operator);
+		
+		Calendar cal = Calendar.getInstance();
+		int currentYear = cal.get(Calendar.YEAR);
+		auditLastYear.setAuditFor("" + (currentYear - 1));
+		auditTwoYears.setAuditFor("" + (currentYear - 2));
+		auditThreeYears.setAuditFor("" + (currentYear - 3));
+		cal.add(Calendar.YEAR, 3);
+		auditThreeYears.setExpiresDate(cal.getTime());
+		auditTwoYears.setExpiresDate(cal.getTime());
+		auditLastYear.setExpiresDate(cal.getTime());
+		
+		contractor.getAudits().add(auditThreeYears);
+		contractor.getAudits().add(auditTwoYears);
+		contractor.getAudits().add(auditLastYear);
+		
+		caoThreeYears.setStatus(AuditStatus.Pending);
+		caoTwoYears.setStatus(AuditStatus.Pending);
+		caoLastYear.setStatus(AuditStatus.Pending);
+		assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
+		assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+		assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+
+		caoThreeYears.setStatus(AuditStatus.Pending);
+		caoTwoYears.setStatus(AuditStatus.Complete);
+		caoLastYear.setStatus(AuditStatus.Complete);
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+		assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+
+		caoThreeYears.setStatus(AuditStatus.Complete);
+		caoTwoYears.setStatus(AuditStatus.Pending);
+		caoLastYear.setStatus(AuditStatus.Complete);
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
+		assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+
+		caoThreeYears.setStatus(AuditStatus.Complete);
+		caoTwoYears.setStatus(AuditStatus.Complete);
+		caoLastYear.setStatus(AuditStatus.Pending);
+		assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+
+		caoThreeYears.setStatus(AuditStatus.Complete);
+		caoTwoYears.setStatus(AuditStatus.Complete);
+		caoLastYear.setStatus(AuditStatus.Complete);
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
+		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
+
 	}
 }

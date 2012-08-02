@@ -38,7 +38,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
@@ -65,7 +65,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	@Autowired
 	private FacilityChanger facilityChanger;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private List<FlagCriteriaOperator> opCriteria;
 	private OperatorAccount operator;
@@ -130,7 +130,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 
 		sql.addField("a.city");
-		sql.addField("a.state");
+		sql.addField("a.countrySubdivision");
 		sql.addField("a.country");
 		sql.addField("a.phone");
 		sql.addField("c.score");

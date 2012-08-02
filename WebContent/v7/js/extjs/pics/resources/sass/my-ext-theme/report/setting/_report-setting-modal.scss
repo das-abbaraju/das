@@ -1,0 +1,213 @@
+#report_settings_modal
+{
+	background: #eaeaea;
+	border: 1px solid #333333;
+	@include border-radius(0px);
+}
+
+#report_settings_modal_header
+{
+	background: #454545;
+	border-bottom: 1px solid #333333 !important;
+	@include border-radius(0px);
+	@include box-shadow(none);
+	height: 45px;
+	padding: 13px;
+}
+
+#report_settings_modal_header span
+{
+	color: #ffffff;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#report_settings_modal-body
+{
+	border: 0px;
+	background: #eaeaea;
+}
+
+#report_settings_modal-body .x-panel-body-default
+{
+	background: #eaeaea;
+	border: 0px !important;
+}
+
+#report_settings_modal-body .x-form-field,
+#report_settings_modal-body .x-form-display-field
+{
+	margin-bottom: 7px;
+}
+
+.coming-soon
+{
+	text-align: center;
+
+	i,
+	p
+	{
+		color: #999;
+	}
+	
+	i
+	{
+		display: block;
+		font-size: 26px;
+		margin: 60px 0px 10px;
+	}
+	
+	p
+	{
+		font-size: 24px;
+	}
+}
+
+/***
+ * Tab Content
+ */
+
+#report_edit,
+#report_copy,
+#report_share
+{
+	padding: 8px 10px 10px;
+}
+
+#report_edit-body,
+#report_copy-body,
+#report_share-body
+{
+	height: auto !important;
+}
+
+#report_edit .x-toolbar,
+#report_copy .x-toolbar,
+#report_share .x-toolbar
+{
+	top: auto !important;
+}
+
+#report_settings_modal .cancel button span,
+#report_settings_modal .edit button span,
+#report_settings_modal .copy button span,
+#report_settings_modal .share button span
+{
+	padding: 0px 7px;
+}
+
+#report_edit,
+#report_copy
+{
+	.favorite,
+	.private
+	{
+		color: #ccc;
+		font-size: 18px;
+		position: relative;
+		text-decoration: none;
+		top: -5px;
+	}
+}
+
+#settings_no_permission
+{
+	p
+	{
+		color: #333;
+		font-size: 13px;
+		margin: 0px auto;
+		text-align: center;
+		width: 85%;
+	}
+	
+	strong
+	{
+		font-weight: bold;
+	}
+	
+	.permission-info
+	{
+		font-weight: bold;
+		margin-bottom: 15px;
+		margin-top: 25px;
+	}
+	
+	.duplicate-info
+	{
+		color: #666;
+		margin-bottom: 20px;
+	}
+	
+	.favorite
+	{
+		color: #ccc;
+		font-size: 18px;
+		text-decoration: none;
+	}
+	
+	.icon-star
+	{
+		margin-right: 3px;
+		position: relative;
+		top: 2px;
+	}
+}
+
+/***
+ * Tabs
+ */
+ 
+#report_settings_tabbar
+{
+	background: #454545;
+}
+
+#report_settings_tabbar .x-tab
+{
+	border: 0px;
+	border-right: 1px solid #333333;
+	border-top: 1px solid #333333;
+	padding: 5px;
+}
+
+#report_settings_tabbar .x-tab button
+{
+	background: #454545;
+	border: 0px;
+	cursor: pointer;
+	padding: 0px;
+}
+
+#report_settings_tabbar .x-tab span
+{
+	color: #cccccc;
+}
+
+#report_settings_tabbar .x-over span
+{
+	color: #ffffff;
+}
+
+#report_settings_tabbar .x-active
+{
+	background: #eaeaea;
+	border-top: 0px;
+}
+
+#report_settings_tabbar .x-active button
+{
+	background: #eaeaea;
+	cursor: auto;
+}
+
+#report_settings_tabbar .x-active span
+{
+	color: #666666;
+}
+
+#report_settings_tabbar .x-tab button i.icon-large
+{
+	display: block;
+	font-size: 17px;
+}

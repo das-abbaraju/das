@@ -2290,41 +2290,41 @@ public class CertificationServicesStub extends org.apache.axis2.client.Stub {
 		 * field for State
 		 */
 
-		protected java.lang.String localState;
+		protected java.lang.String localCountrySubdivision;
 
 		/*
 		 * This tracker boolean wil be used to detect whether the user called
 		 * the set method for this attribute. It will be used to determine
 		 * whether to include this field in the serialized XML
 		 */
-		protected boolean localStateTracker = false;
+		protected boolean localCountrySubdivisionTracker = false;
 
 		/**
 		 * Auto generated getter method
 		 * 
 		 * @return java.lang.String
 		 */
-		public java.lang.String getState() {
-			return localState;
+		public java.lang.String getCountrySubdivision() {
+			return localCountrySubdivision;
 		}
 
 		/**
 		 * Auto generated setter method
 		 * 
 		 * @param param
-		 *            State
+		 *            CountrySubdivision
 		 */
-		public void setState(java.lang.String param) {
+		public void setCountrySubdivision(java.lang.String param) {
 
 			if (param != null) {
 				// update the setting tracker
-				localStateTracker = true;
+				localCountrySubdivisionTracker = true;
 			} else {
-				localStateTracker = false;
+				localCountrySubdivisionTracker = false;
 
 			}
 
-			this.localState = param;
+			this.localCountrySubdivision = param;
 
 		}
 
@@ -2966,7 +2966,7 @@ public class CertificationServicesStub extends org.apache.axis2.client.Stub {
 
 				xmlWriter.writeEndElement();
 			}
-			if (localStateTracker) {
+			if (localCountrySubdivisionTracker) {
 				namespace = "http://webservices.nace.org/Services/";
 				if (!namespace.equals("")) {
 					prefix = xmlWriter.getPrefix(namespace);
@@ -2974,26 +2974,26 @@ public class CertificationServicesStub extends org.apache.axis2.client.Stub {
 					if (prefix == null) {
 						prefix = generatePrefix(namespace);
 
-						xmlWriter.writeStartElement(prefix, "State", namespace);
+						xmlWriter.writeStartElement(prefix, "CountrySubdivision", namespace);
 						xmlWriter.writeNamespace(prefix, namespace);
 						xmlWriter.setPrefix(prefix, namespace);
 
 					} else {
-						xmlWriter.writeStartElement(namespace, "State");
+						xmlWriter.writeStartElement(namespace, "CountrySubdivision");
 					}
 
 				} else {
-					xmlWriter.writeStartElement("State");
+					xmlWriter.writeStartElement("CountrySubdivision");
 				}
 
-				if (localState == null) {
+				if (localCountrySubdivision == null) {
 					// write the nil attribute
 
-					throw new org.apache.axis2.databinding.ADBException("State cannot be null!!");
+					throw new org.apache.axis2.databinding.ADBException("CountrySubdivision cannot be null!!");
 
 				} else {
 
-					xmlWriter.writeCharacters(localState);
+					xmlWriter.writeCharacters(localCountrySubdivision);
 
 				}
 
@@ -3351,13 +3351,13 @@ public class CertificationServicesStub extends org.apache.axis2.client.Stub {
 					throw new org.apache.axis2.databinding.ADBException("City cannot be null!!");
 				}
 			}
-			if (localStateTracker) {
-				elementList.add(new javax.xml.namespace.QName("http://webservices.nace.org/Services/", "State"));
+			if (localCountrySubdivisionTracker) {
+				elementList.add(new javax.xml.namespace.QName("http://webservices.nace.org/Services/", "CountrySubdivision"));
 
-				if (localState != null) {
-					elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localState));
+				if (localCountrySubdivision != null) {
+					elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCountrySubdivision));
 				} else {
-					throw new org.apache.axis2.databinding.ADBException("State cannot be null!!");
+					throw new org.apache.axis2.databinding.ADBException("CountrySubdivision cannot be null!!");
 				}
 			}
 			if (localZipTracker) {
@@ -3700,12 +3700,12 @@ public class CertificationServicesStub extends org.apache.axis2.client.Stub {
 						reader.next();
 
 					if (reader.isStartElement()
-							&& new javax.xml.namespace.QName("http://webservices.nace.org/Services/", "State")
+							&& new javax.xml.namespace.QName("http://webservices.nace.org/Services/", "CountrySubdivision")
 									.equals(reader.getName())) {
 
 						java.lang.String content = reader.getElementText();
 
-						object.setState(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+						object.setCountrySubdivision(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
 
 						reader.next();
 

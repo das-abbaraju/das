@@ -11,7 +11,7 @@
 	<s:hidden name="orderBy" />
 	
 	<div><button id="searchfilter" type="submit" name="button" value="Search"
-		onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+		onclick="checkCountrySubdivisionAndCountry('form1_state','form1_country'); return clickSearch('form1');"
 		class="picsbutton positive"><s:text name="button.Search" /></button></div>
 
 	<s:if test="filter.showContractor">

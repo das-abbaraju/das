@@ -5,19 +5,19 @@
 <s:include value="../actionMessages.jsp" />
 
 <s:include value="/struts/layout/_page_header.jsp">
-    <s:param name="title">Manage Reports</s:param>
-    <s:param name="subtitle">Favorite, move, update, and search for new reports</s:param>
+    <s:param name="title"><s:text name="ManageReports.title" /></s:param>
+    <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>
 </s:include>
 
 <s:include value="/struts/reports/_manage_report_menu.jsp" />
 
-<h3>Search all your reports and find new ones based on your specific needs and what's popular.</h3>
+<h3><s:text name="ManageReports.search.subtitle" /></h3>
 
 <div id="report_search">
     <s:form id="report_search_form" method="post" cssClass="form-inline">
         <i class="icon-search icon-large"></i>
         
-        <input type="text" name="search" placeholder="Search Reports" />
+        <input type="text" name="search" placeholder="<s:text name="ManageReports.search.searchReports" />" />
     </s:form>
 </div>
 
@@ -40,14 +40,14 @@
                 </a>
     
                 <s:if test="#report.createdBy.id != permissions.userId">
-                    <span class="created-by">Created by ${report.createdBy.name}</span>
+                    <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
                 </s:if>
                 
                 <p class="description">${report.description}</p>
             </div>
 
             <span class="number-favorites">
-                24,389 Favorites
+                24,389 <s:text name="ManageReports.report.Favorites" />
             </span>
             
             <div class="clearfix"></div>

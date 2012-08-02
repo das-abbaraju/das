@@ -274,6 +274,9 @@
             		<li>
                         <label>Required:</label>
             			<s:checkbox name="question.required" />
+						<pics:fieldhelp title="Required">
+            				<p>If checked, the contractor will be required to answer this question.</p>
+            			</pics:fieldhelp>
             		</li>
             		<li>
                         <label>Effective Date:</label>
@@ -481,7 +484,7 @@
                         </s:if>
                         
             			<pics:fieldhelp title="Required by Question">
-            				<p>The question that determines whether or not this question is required.</p>
+            				<p>The question the contractor must answer in order for this question to become required.</p>
             			</pics:fieldhelp>
             		</li>
             		<li>
@@ -489,7 +492,7 @@
             			<s:textfield name="question.requiredAnswer" />
                         
             			<pics:fieldhelp title="Required Answer">
-            				<p>If the "Required by Question" has this answer, this question will become a required question.</p>
+            				<p>The answer the contractor must give on the "Required By" question in order for this question to become required.</p>
             			</pics:fieldhelp>
             		</li>
             		<li>
@@ -497,7 +500,7 @@
             			<s:textfield name="visibleQuestionID" />
             			
                         <pics:fieldhelp title="Visible Question">
-            				<p>The question that determines whether or not this question is visible.</p>
+            				<p>The question the contractor must answer in order for this question to be displayed.</p>
             			</pics:fieldhelp>
             		</li>
             		<li>
@@ -505,7 +508,7 @@
             			<s:textfield name="question.visibleAnswer" />
             			
                         <pics:fieldhelp title="Visible Answer">
-            				<p>If the "Visible" has this answer, this question will become a required question.</p>
+            				<p>The answer the contractor must give on the "Visible By" question in order for this question to be displayed.</p>
             			</pics:fieldhelp>
             		</li>
             		<li>

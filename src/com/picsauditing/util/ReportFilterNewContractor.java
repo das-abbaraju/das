@@ -8,11 +8,11 @@ import java.util.List;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 
@@ -220,9 +220,9 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		return dao.findWhere(true, "", permissions);
 	}
 
-	public List<State> getStateList() {
-		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
-		return stateDAO.findAll();
+	public List<CountrySubdivision> getCountrySubdivisionList() {
+		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		return countrySubdivisionDAO.findAll();
 	}
 
 	public List<OperatorTag> getOperatorTagsList() {

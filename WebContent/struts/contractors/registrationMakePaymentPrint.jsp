@@ -38,7 +38,7 @@
 					c/o <s:property value="billingUser.name" />
 					<br />
 					<s:property value="contractor.address" /><br />
-					<s:property value="contractor.city" />, <s:property value="contractor.state.isoCode" />
+					<s:property value="contractor.city" />, <s:property value="contractor.countrySubdivision.isoCode" />
 					<s:property	value="contractor.zip" />
 				</td>
 				<td>

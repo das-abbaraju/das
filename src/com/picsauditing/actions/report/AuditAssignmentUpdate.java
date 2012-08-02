@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -39,7 +39,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	@Autowired
 	protected EmailBuilder emailBuilder;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	protected Date origScheduledDate = null;
 	protected String origLocation = null;

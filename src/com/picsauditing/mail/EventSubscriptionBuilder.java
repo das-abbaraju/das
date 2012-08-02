@@ -37,10 +37,13 @@ public class EventSubscriptionBuilder {
 	private static EmailSubscriptionDAO subscriptionDAO = (EmailSubscriptionDAO) SpringUtils
 			.getBean("EmailSubscriptionDAO");
 	private static NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-	private static EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+	private static EmailSender emailSender = (EmailSender) SpringUtils.getBean("EmailSender");
 
 	private static final Logger logger = LoggerFactory.getLogger(EventSubscriptionBuilder.class);
 
+	// for test injection only
+	private static EmailBuilder emailBuilder = null;
+	
 	public static void contractorFinishedEvent(EmailSubscriptionDAO subscriptionDAO, ContractorOperator co)
 			throws Exception {
 		Date now = new Date();
@@ -156,7 +159,7 @@ public class EventSubscriptionBuilder {
 
 	public static void notifyUpcomingImplementationAudit(ContractorAudit audit) throws NoUsersDefinedException,
 			IOException {
-		EmailBuilder emailBuilder = new EmailBuilder();
+		EmailBuilder emailBuilder = emailBuilder();
 		emailBuilder.clear();
 		emailBuilder.setTemplate(247);
 		emailBuilder.setConID(audit.getContractorAccount().getId());
@@ -165,8 +168,7 @@ public class EventSubscriptionBuilder {
 		emailBuilder.setUser(audit.getContractorAccount().getActiveUser());
 		emailBuilder.setFromAddress("audits@picsauditing.com");
 		try {
-			EmailQueue email = new EmailQueue();
-			email = emailBuilder.build();
+			EmailQueue email = emailBuilder.build();
 			email.setLowPriority();
 			email.setViewableById(Account.EVERYONE);
 			emailSender.send(email);
@@ -175,6 +177,14 @@ public class EventSubscriptionBuilder {
 					"Sent 1 week prior audit notice Email to " + emailBuilder.getSentTo(), NoteCategory.Audits);
 		} catch (Exception e) {
 			sendInvalidContractorAccountEmail(audit);
+		}
+	}
+	
+	private static EmailBuilder emailBuilder() {
+		if(emailBuilder == null) {
+			return new EmailBuilder();
+		} else {
+			return emailBuilder;
 		}
 	}
 

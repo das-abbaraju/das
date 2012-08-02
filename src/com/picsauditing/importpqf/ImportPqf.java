@@ -17,6 +17,7 @@ import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditExtractOption;
@@ -30,6 +31,8 @@ import com.picsauditing.util.Strings;
 public abstract class ImportPqf {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
+	@Autowired
+	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
@@ -285,7 +288,7 @@ public abstract class ImportPqf {
 		int answersProcessed = 0;
 
 		for (AuditQuestion question : questions) {
-			AuditExtractOption option = question.getExtractOption();
+			AuditExtractOption option = auditExtractOptionForAuditQuestion(question);
 			if (option != null && option.isAnswerFound()) {
 				answersProcessed++;
 
@@ -319,7 +322,7 @@ public abstract class ImportPqf {
 
 		for (int i = 0; i < questions.size(); i++) {
 			AuditQuestion auditQuestion = questions.get(i);
-			AuditExtractOption option = auditQuestion.getExtractOption();
+			AuditExtractOption option = auditExtractOptionForAuditQuestion(auditQuestion);
 
 			if (option == null) {
 				log.append("\n* Question " + auditQuestion.getId() + " has no extraction defined ("
@@ -492,7 +495,7 @@ public abstract class ImportPqf {
 		Logger logger = LoggerFactory.getLogger(ImportPqf.class);
 		logger.info("Dump of Questions/Answers");
 		for (AuditQuestion auditQuestion : questions) {
-			AuditExtractOption option = auditQuestion.getExtractOption();
+			AuditExtractOption option = auditExtractOptionForAuditQuestion(auditQuestion);
 
 			if (option == null) {
 				logger.info("* {} >-No ETL-<", auditQuestion.getName().toString());
@@ -688,4 +691,9 @@ public abstract class ImportPqf {
 	protected String preprocessPage(int page, String text) {
 		return text;
 	}
+	
+	private AuditExtractOption auditExtractOptionForAuditQuestion(AuditQuestion question) {
+		return auditQuestionDAO.findAuditExtractOptionByQuestionId(question.getId());
+	}
+
 }

@@ -13,7 +13,7 @@ Ext.define('PICS.view.report.filter.StringFilter', {
             xtype: 'panel',
             border: 0,
             items: [{
-                xtype: 'combo',
+                xtype: 'combobox',
                 editable: false,
                 listeners: {
                     change: function (obj, newval, oldval, options) {

@@ -15,7 +15,7 @@ $report_actions_edit_icon_cog_text_color: #666666;
 
 #report_actions .edit
 {
-	margin-right: 20px;
+	margin-right: 30px;
 }
 
 #report_actions .edit button span
@@ -32,12 +32,6 @@ $report_actions_edit_icon_cog_text_color: #666666;
 #report_actions .save
 {
 	margin-right: 10px;
-}
-
-#report_actions .save .x-btn-split-right
-{
-	background-image: url(../../app/resources/images/splitbutton/arrow-green-off.png);
-	padding-right: 39px !important;
 }
 
 #report_actions .save button span

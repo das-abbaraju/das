@@ -18,16 +18,34 @@
 	<admin id="amqpAdmin" connection-factory="connectionFactory"/>
 	
 	<queue id="flag-changes" name="flag-changes" />
-	
+	<queue id="email-queue-priority" name="email-queue-priority" />
+	<queue id="email-queue-normal" name="email-queue-normal" />
+		
 	<fanout-exchange name="flag-changes-exchange" xmlns="http://www.springframework.org/schema/rabbit">
 	  <bindings>
 	    <binding queue="flag-changes"/>
 	  </bindings>
 	</fanout-exchange>	
 	
-	<template message-converter="messageConverter" id="flagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
-	<beans:bean id="flagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq">
-		<beans:property name="amqpTemplate" ref="flagChangeTemplate" />
+	<direct-exchange name="email-queue-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	  <bindings>
+	    <binding queue="email-queue-priority" key="email-queue-priority"/>
+	    <binding queue="email-queue-normal" key="email-queue-normal"/>
+	  </bindings>
+	</direct-exchange>
+	
+	<template message-converter="messageConverter" id="FlagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
+	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+		<beans:property name="amqpTemplate" ref="FlagChangeTemplate" />
+		<beans:property name="featureToggleChecker" ref="FeatureToggleChecker" />
+		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.FlagChanges" />
+	</beans:bean>
+
+	<template message-converter="messageConverter" id="EmailQueueTemplate" connection-factory="connectionFactory" exchange="email-queue-exchange"/>
+	<beans:bean id="EmailQueuePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+		<beans:property name="amqpTemplate" ref="EmailQueueTemplate" />
+		<beans:property name="featureToggleChecker" ref="FeatureToggleChecker" />
+		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.EmailQueue" />
 	</beans:bean>
 	
 	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter" />

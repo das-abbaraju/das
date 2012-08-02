@@ -1,0 +1,52 @@
+#report_filter_formula_container
+{
+	border-right: 1px solid #999 !important;
+}
+
+#report_filter_formula
+{
+	background: #454545;
+	
+	.x-form-field
+	{
+		padding-left: 2px;
+	}
+	
+	.info,
+	.cancel
+	{
+		background: none;
+		border: 0px;
+		@include border-radius(0px);
+	}
+	
+	.info span,
+	.cancel span
+	{
+		padding: 0px;
+	}
+	
+	.info i,
+	.cancel i
+	{
+		font-size: 18px;
+		line-height: 18px;
+	}
+	
+	
+	.icon-info-sign
+	{
+		color: #73bbe8;
+	}
+	
+	.icon-remove-sign
+	{
+		color: #ac030c;
+	}
+}
+
+#report_filter_formula > div
+{
+	border-bottom: 1px solid #333 !important;
+	border-top: 1px solid #333 !important;
+}

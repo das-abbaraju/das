@@ -78,10 +78,10 @@
 				<s:text name="global.Location" />:
 			</label>
 			<s:property value="contractor.city" />,
-			<s:if test="contractor.country.hasStates">
-				<s:property value="contractor.state.name" />
+			<s:if test="contractor.country.hasCountrySubdivisions">
+				<s:property value="contractor.countrySubdivision.name" />
 			</s:if>
-			<s:if test="permissions.country != contractor.country.isoCode || !contractor.country.hasStates">
+			<s:if test="permissions.country != contractor.country.isoCode || !contractor.country.hasCountrySubdivisions">
 				<s:property value="contractor.country.name" />
 			</s:if>
 			<br />

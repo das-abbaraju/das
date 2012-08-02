@@ -63,7 +63,7 @@ public class EmailBuilder {
 	}
 
 	public void clearAll() {
-		tokens = new HashMap<String, Object>();
+		//tokens = new HashMap<String, Object>();
 
 		fromAddress = null;
 		password = null;

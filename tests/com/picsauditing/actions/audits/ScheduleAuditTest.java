@@ -50,7 +50,7 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ActionContext.class, ServletActionContext.class, DateBean.class })
@@ -68,7 +68,7 @@ public class ScheduleAuditTest extends PicsTest {
 	@Mock private ContractorAuditDAO auditDao;
 	@Mock private ContractorAccountDAO contractorAccountDao;
 	@Mock private BasicDAO dao;
-	@Mock private EmailSenderSpring emailSender;
+	@Mock private EmailSender emailSender;
 	@Mock private Permissions permissions;
 	@Mock private ActionContext actionContext;
 	@Mock private InvoiceFee rescheduling;

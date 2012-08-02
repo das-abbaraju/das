@@ -4,26 +4,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.toggle.FeatureToggleChecker;
 
 public class PublisherRabbitMq implements Publisher {
-	@Autowired
-	private RabbitTemplate amqpTemplate;
-	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
-
 	private final Logger logger = LoggerFactory.getLogger(PublisherRabbitMq.class);
+	
+	private RabbitTemplate amqpTemplate;
+	private FeatureToggleChecker featureToggleChecker;
+	private String featureToggleName = "Toggle.BackgroundProcesses";
 
 	public void setAmqpTemplate(RabbitTemplate amqpTemplate) {
 		this.amqpTemplate = amqpTemplate;
 	}
 
+	public void setFeatureToggleChecker(FeatureToggleChecker featureToggleChecker) {
+		this.featureToggleChecker = featureToggleChecker;
+	}
+	
+	public void setFeatureToggleName(String featureToggleName) {
+		this.featureToggleName = featureToggleName;
+	}
+	
 	@Override
 	public void publish(Object message) {
 		try {
-			if (featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses")) {
+			if (featureToggleChecker.isFeatureEnabled(featureToggleName)) {
 				amqpTemplate.convertAndSend(message);
 			}
 			
@@ -34,11 +40,9 @@ public class PublisherRabbitMq implements Publisher {
 
 	public void publish(Object message, String routingKey) {
 		try {
-			if (featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses")) {
-				amqpTemplate.setRoutingKey(routingKey);
-				amqpTemplate.convertAndSend(message);
+			if (featureToggleChecker.isFeatureEnabled(featureToggleName)) {
+				amqpTemplate.convertAndSend(routingKey, message);
 			}
-
 		} catch (AmqpException amqpException) {
 			logger.error(amqpException.getMessage(), amqpException);
 		}

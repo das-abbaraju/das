@@ -1,33 +1,34 @@
 package com.picsauditing.mail;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
+import com.picsauditing.search.Database;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"EventSubscriptionBuilderTest-context.xml"})
@@ -36,40 +37,36 @@ public class EventSubscriptionBuilderTest {
 	@Mock private EmailBuilder emailBuilder;
 	@Mock private EmailQueue email;
 	@Mock private EmailTemplate emailTemplate;
+	@Mock private Database databaseForTesting;
 
-	@Autowired private EmailSenderSpring emailSender;
+	@Autowired private EmailSender emailSender;
 	@Autowired private NoteDAO noteDAO;
 	@Autowired private EmailSubscriptionDAO emailSubscriptionDAO;
 	@Autowired private EmailTemplateDAO emailTemplateDAO;
 	
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", (EmailBuilder)null);
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
-		emailTemplateDAO = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
-		noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
-		emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
-		emailSubscriptionDAO = (EmailSubscriptionDAO) SpringUtils.getBean("EmailSubscriptionDAO");
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		Whitebox.setInternalState(EventSubscriptionBuilder.class, "emailBuilder", emailBuilder);
+		
+		when(emailBuilder.build()).thenReturn(email);
 	}
 
 	@Test
 	public void testNotifyUpcomingImplementationAudit() throws Exception {
 		ContractorAudit audit = getAudit();
-
 		when(emailTemplateDAO.find(Mockito.anyInt())).thenReturn(emailTemplate);
-		Mockito.doNothing().when(emailBuilder).clear();
-		Mockito.doNothing().when(emailBuilder).setTemplate(emailTemplate);
-		Mockito.doNothing().when(emailBuilder).setConID(audit.getContractorAccount().getId());
-		Mockito.doNothing().when(emailBuilder).addToken("contractor", audit.getContractorAccount());
-		Mockito.doNothing().when(emailBuilder).setToAddresses(audit.getContractorAccount().getActiveUser().getEmail());
-		Mockito.doNothing().when(emailBuilder).setUser(audit.getContractorAccount().getActiveUser());
-		Mockito.doNothing().when(emailBuilder).setFromAddress("audits@picsauditing.com");
-		when(emailBuilder.build()).thenReturn(email);
 
 		EventSubscriptionBuilder.notifyUpcomingImplementationAudit(audit);
 
-//		verify(emailSender).send(email);
-//		verify(noteDAO).save(any(Note.class));
+		verify(emailSender).send(email);
 	}
 
 	private ContractorAudit getAudit(){

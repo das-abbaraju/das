@@ -24,10 +24,10 @@ function changeStartsWith( formid, v ) {
 	runSearch(search);
 }
 
-// Checks if the state and country are selected. If so,
+// Checks if the country subdivision and country are selected. If so,
 // ignore and clear out the country.
-function checkStateAndCountry( formidState, formidCountry ) {
-	if($('#'+formidState).find('option:selected').val() != null)
+function checkCountrySubdivisionAndCountry( formidCountrySubdivision, formidCountry ) {
+	if($('#'+formidCountrySubdivision).find('option:selected').val() != null)
 		clearSelected(formidCountry);
 }
 

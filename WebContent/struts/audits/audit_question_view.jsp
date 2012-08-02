@@ -26,8 +26,8 @@
 			</s:if>
 		</s:iterator>
 	</s:elseif>
-	<s:elseif test="#q.questionType == 'State'">
-		<s:iterator value="stateList">
+	<s:elseif test="#q.questionType == 'CountrySubdivision'">
+		<s:iterator value="countrySubdivisionList">
 			<s:if test="isoCode == #a.answer">
 				<s:property value="name"/>
 			</s:if>
@@ -92,7 +92,7 @@
 		</s:else>
 		
 		<s:if test="#q.questionType == 'License'">
-			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
+			<s:property value="@com.picsauditing.util.Constants@displayCountrySubdivisionLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 	</s:else>
 	

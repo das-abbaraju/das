@@ -3,10 +3,10 @@ package com.picsauditing.actions.audits;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +42,9 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class AuditDataSave extends AuditActionSupport {
@@ -54,9 +56,16 @@ public class AuditDataSave extends AuditActionSupport {
 	protected static final int OSHA_INCIDENT_QUESTION_ID = 8838;
 	protected static final int COHS_INCIDENT_QUESTION_ID = 8840;
 
-	protected static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
-	protected static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] { 8841, 8842, 8843, 8844, 11119, 8845,
-			8846, 8847, 11117, 11118 };
+	// protected static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new
+	// int[] { 8812, 8813, 8814, 8815, 8816, 8817 };
+	protected static final Set<Integer> OSHA_INCIDENT_RELATED_QUESTION_IDS = Collections
+			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(8812, 8813, 8814, 8815, 8816, 8817)));
+	protected static final Set<Integer> COHS_INCIDENT_RELATED_QUESTION_IDS = Collections
+			.unmodifiableSet(new HashSet<Integer>(Arrays.asList(8841, 8842, 8843, 8844, 11119, 8845, 8846, 8847, 11117,
+					11118)));
+	// protected static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new
+	// int[] { 8841, 8842, 8843, 8844, 11119, 8845,
+	// 8846, 8847, 11117, 11118 };
 
 	private AuditData auditData = null;
 	private String[] multiAnswer;
@@ -126,77 +135,30 @@ public class AuditDataSave extends AuditActionSupport {
 				// insert mode
 				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
 				auditData.setAudit(audit);
-				if (!checkAnswerFormat(auditData, null)) {
+				if (!answerFormatValid(auditData, null)) {
 					return SUCCESS;
 				}
+				SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
 			} else {
 				// update mode
-				if (!checkAnswerFormat(auditData, newCopy)) {
+				if (!answerFormatValid(auditData, newCopy)) {
 					return SUCCESS;
 				}
 
-				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
-				boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
-				if (auditData.getComment() != null) {
-					if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
-						commentChanged = true;
-				}
+				commentChanged = hasCommentChanged(newCopy);
+				answerChanged = hasAnswerChanged(newCopy);
 
-				if (auditData.getAnswer() != null) {
-					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
-						answerChanged = true;
-				}
-
-				// update mode
 				if (commentChanged) {
 					newCopy.setComment(auditData.getComment());
 				}
 
 				if (answerChanged) {
-					if (isAudit && !isAnnualUpdate) {
-						AuditQuestion question = questionDao.find(auditData
-								.getQuestion().getId());
-						if (question.getOkAnswer() != null
-								&& question.getOkAnswer().contains(
-										auditData.getAnswer())
-								&& permissions.isAdmin()) {
-							newCopy.setDateVerified(new Date());
-							newCopy.setAuditor(getUser());
-						}
-						if (newCopy.isVerified()
-								&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy
-										.getAudit().getAuditType().getId() == AuditType.IEC_AUDIT)) {
-							newCopy.setDateVerified(null);
-							newCopy.setAuditor(null);
-						}
-					} else if (newCopy.isVerified()) {
-						newCopy.setDateVerified(null);
-						newCopy.setAuditor(null);
-					}
-
-					if (!checkAnswerFormat(auditData, newCopy)) {
-						auditData = newCopy;
-						return SUCCESS;
-					}
-
-					if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)
-							&& permissions.isPicsEmployee())
-						newCopy.setWasChanged(YesNo.Yes);
-
-					newCopy.setAnswer(auditData.getAnswer());
-
+					changeAuditDataAnswer(newCopy);
 				}
 
 				if (verifyButton) {
-					// verify mode
-					if (newCopy.isVerified()) {
-						newCopy.setDateVerified(null);
-						newCopy.setAuditor(null);
-					} else {
-						newCopy.setDateVerified(new Date());
-						newCopy.setAuditor(getUser());
-					}
-				} 
+					verifyAuditData(newCopy);
+				}
 
 				auditData = newCopy;
 			}
@@ -205,15 +167,12 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditData.setAuditColumns(permissions);
 
-			int questionId = auditData.getQuestion().getId();
-			if (questionId == 57) {
-				if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
-					addActionError("This is not a valid 2007 NAICS code");
-				}
-			}
+			int currentQuestionId = auditData.getQuestion().getId();
+
+			checkNaicsQuestionAndValidity(currentQuestionId);
 
 			if (!auditData.getAnswer().isEmpty()) {
-				if (!areAllHSEJobRoleQuestionsAnswered(questionId, auditData.getAudit().getContractorAccount()))
+				if (!areAllHSEJobRoleQuestionsAnswered(currentQuestionId, auditData.getAudit().getContractorAccount()))
 					return SUCCESS;
 			}
 
@@ -222,11 +181,14 @@ public class AuditDataSave extends AuditActionSupport {
 			if (conAudit == null) {
 				findConAudit();
 			}
+
+			// TODO IS THIS NEEDED?
 			if (conAudit == null) {
 				addActionError(getText("Audit.error.AuditNotFound"));
 				return SUCCESS;
 			}
-			
+			// END TODO
+
 			checkUniqueCode(conAudit);
 
 			if (auditData.getAudit() != null) {
@@ -274,7 +236,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
 								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
-							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Incomplete, permissions);
+							ContractorAuditOperatorWorkflow caow = cao
+									.changeStatus(AuditStatus.Incomplete, permissions);
 							caow.setNotes("Due to data change");
 							caowDAO.save(caow);
 							updateAudit = true;
@@ -357,27 +320,93 @@ public class AuditDataSave extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private boolean areAllHSEJobRoleQuestionsAnswered(int questionId, ContractorAccount contractor) {
-		if (questionId == 3669) {
+	private void checkNaicsQuestionAndValidity(int currentQuestionId) {
+		if (currentQuestionId == 57) {
+			if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
+				addActionError("This is not a valid 2007 NAICS code");
+			}
+		}
+	}
+
+	private void verifyAuditData(AuditData newCopy) {
+		// verify mode
+		if (newCopy.isVerified()) {
+			newCopy.setDateVerified(null);
+			newCopy.setAuditor(null);
+		} else {
+			newCopy.setDateVerified(new Date());
+			newCopy.setAuditor(getUser());
+		}
+	}
+
+	private void changeAuditDataAnswer(AuditData newCopy) {
+		boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
+		boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
+
+		if (isAudit && !isAnnualUpdate) {
+			AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+			if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
+					&& permissions.isAdmin()) {
+				newCopy.setDateVerified(new Date());
+				newCopy.setAuditor(getUser());
+			}
+			if (newCopy.isVerified()
+					&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy.getAudit().getAuditType()
+							.getId() == AuditType.IEC_AUDIT)) {
+				newCopy.setDateVerified(null);
+				newCopy.setAuditor(null);
+			}
+		} else if (newCopy.isVerified()) {
+			newCopy.setDateVerified(null);
+			newCopy.setAuditor(null);
+		}
+
+		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
+			newCopy.setWasChanged(YesNo.Yes);
+
+		newCopy.setAnswer(auditData.getAnswer());
+	}
+
+	private boolean hasAnswerChanged(AuditData newCopy) {
+		if (auditData.getAnswer() != null) {
+			if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean hasCommentChanged(AuditData newCopy) {
+		if (auditData.getComment() != null) {
+			if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean areAllHSEJobRoleQuestionsAnswered(int currentQuestionId, ContractorAccount contractor) {
+		if (currentQuestionId == 3669) {
 			if (contractor.getJobRoles().isEmpty()) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRole"));
 				return false;
 			}
-		} else if (questionId == 3675) {
+		} else if (currentQuestionId == 3675) {
 			for (JobRole role : contractor.getJobRoles()) {
 				if (role.getJobCompetencies().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.CompetencyForEachJobRole"));
 					return false;
 				}
 			}
-		} else if (questionId == 3673) {
+		} else if (currentQuestionId == 3673) {
 			if (contractor.getEmployees().isEmpty()) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.Employee"));
 				return false;
 			}
-		} else if (questionId == 3674) {
-			for (Employee e : contractor.getEmployees()) {
-				if (e.getEmployeeRoles().isEmpty()) {
+		} else if (currentQuestionId == 3674) {
+			for (Employee employee : contractor.getEmployees()) {
+				if (!employee.isActive())
+					continue;
+
+				if (employee.getEmployeeRoles().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRoleForEachEmployee"));
 					return false;
 				}
@@ -396,7 +425,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if (newCopy == null) {
 			return;
 		}
-		
+
 		boolean recalcAudit = false;
 
 		if (newCopy.getQuestion().getId() == OSHA_INCIDENT_QUESTION_ID) {
@@ -444,10 +473,10 @@ public class AuditDataSave extends AuditActionSupport {
 		if (recalcAudit) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		}
-			
+
 	}
 
-	/* Test */ void checkUniqueCode(ContractorAudit tempAudit) {
+	private void checkUniqueCode(ContractorAudit tempAudit) {
 		// TODO: Extract this into it's own class.
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
@@ -628,7 +657,7 @@ public class AuditDataSave extends AuditActionSupport {
 		return list;
 	}
 
-	private boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
+	private boolean answerFormatValid(AuditData auditData, AuditData databaseCopy) {
 
 		if (databaseCopy == null) {
 			databaseCopy = auditData;

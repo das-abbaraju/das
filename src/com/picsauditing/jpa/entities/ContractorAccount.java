@@ -46,7 +46,7 @@ import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Testable;
+import com.picsauditing.util.YearList;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
@@ -65,7 +65,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private OperatorAccount requestedBy;
 	private String billingAddress;
 	private String billingCity;
-	private State billingState;
 	private CountrySubdivision billingCountrySubdivision;
 	private Country billingCountry;
 	private String billingZip;
@@ -267,16 +266,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setBillingCity(String billingCity) {
 		this.billingCity = billingCity;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "billingState")
-	public State getBillingState() {
-		return billingState;
-	}
-
-	public void setBillingState(State billingState) {
-		this.billingState = billingState;
 	}
 
 	@ManyToOne
@@ -487,15 +476,17 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isCcExpired() {
-		if (ccExpiration == null)
-			// Because this is new, some haven't been loaded yet
-			// Assume it's fine for now
+		if (ccExpiration == null) {
+			// Because this is new, some haven't been loaded yet. Assume it's fine for now
 			// TODO remove this section once we load all the dates
 			return true;
+		}
 
 		Calendar expires = Calendar.getInstance();
 		expires.setTime(ccExpiration);
 		expires.set(Calendar.DAY_OF_MONTH, 1);
+		expires.set(Calendar.HOUR_OF_DAY, 23);
+		expires.set(Calendar.MINUTE, 59);
 		expires.add(Calendar.MONTH, 1);
 		expires.add(Calendar.DAY_OF_MONTH, -1);
 
@@ -675,6 +666,33 @@ public class ContractorAccount extends Account implements JSONable {
 		return list;
 	}
 
+	@Transient
+	public ContractorTrade getTopTrade() {
+		ContractorTrade topTrade = null;
+		for (ContractorTrade trade:getTradesSorted()) {
+			if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
+				topTrade = trade;
+			}
+		}
+
+		return topTrade;
+	}
+
+	@Transient
+	public String getTopTradesNaicsCode() {
+		Trade trade = getTopTrade().getTrade();
+		while (trade != null) {
+			for (TradeAlternate alternate:trade.getAlternates()) {
+				if ("NAICS".equals(alternate.getCategory())) {
+					return alternate.getName();
+				}
+			}
+			trade = trade.getParent();
+		}
+
+		return "0";
+	}
+
 	@ReportField
 	public String getTradesSelf() {
 		return tradesSelf;
@@ -786,16 +804,19 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
-		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, null);
-		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, null);
-		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, null);
-
-		Iterator<MultiYearScope> scopeIter = completeAnnualUpdates.keySet().iterator();
+		Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
+		YearList years = new YearList();
 
 		for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
-			if (scopeIter.hasNext() && annualUpdate.hasCaoStatus(AuditStatus.Complete))
-				completeAnnualUpdates.put(scopeIter.next(), annualUpdate);
+			if (annualUpdate.hasCaoStatus(AuditStatus.Complete)) {
+				years.add(annualUpdate.getAuditFor());
+				annuals.put(Integer.parseInt(annualUpdate.getAuditFor()), annualUpdate);
+			}
 		}
+
+		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
+		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
+		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
 
 		return completeAnnualUpdates;
 	}
@@ -1261,7 +1282,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public Boolean hasPastDueInvoice() {
 		for (Invoice in : invoices) {
 			if (in.getStatus().equals(TransactionStatus.Unpaid)) {
-				if (in.getDueDate().before(new Date())) {
+				if (in.getDueDate() == null || in.getDueDate().before(new Date())) {
 					return true;
 				}
 			}
@@ -1587,8 +1608,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
-	@Testable
-	void setOshaAudits(List<OshaAudit> oshaAudits) {
+	private void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
 
