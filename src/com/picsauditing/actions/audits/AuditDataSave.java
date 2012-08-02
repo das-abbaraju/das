@@ -397,15 +397,12 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 			}
 		} else if (currentQuestionId == 3673) {
-			if (contractor.getEmployees().isEmpty()) {
+			if (contractor.getAllEmployees().isEmpty()) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.Employee"));
 				return false;
 			}
 		} else if (currentQuestionId == 3674) {
-			for (Employee employee : contractor.getEmployees()) {
-				if (!employee.isActive())
-					continue;
-
+			for (Employee employee : contractor.getActiveEmployees()) {
 				if (employee.getEmployeeRoles().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRoleForEachEmployee"));
 					return false;

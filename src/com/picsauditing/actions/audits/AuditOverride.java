@@ -39,7 +39,7 @@ public class AuditOverride extends ContractorDocuments {
 		}
 
 		employeesLeftList = new ArrayList<Employee>();
-		for (Employee e : contractor.getEmployees()) {
+		for (Employee e : contractor.getAllEmployees()) {
 			if (e.isActive())
 				employeesLeftList.add(e);
 		}

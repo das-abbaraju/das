@@ -247,7 +247,7 @@ public class OpenTasks extends TranslationActionSupport {
 		OperatorTag vopakCorporateOperatorQualification = operatorTagDao.find(VOPAK_OPERATOR_QUALIFICATION);
 
 		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification) && contractor.getEmployees().isEmpty()) {
+			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification) && contractor.getAllEmployees().isEmpty()) {
 				openTasks.add(getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak", contractor.getId()));
 				break;
 			}
