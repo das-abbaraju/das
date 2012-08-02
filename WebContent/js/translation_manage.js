@@ -150,7 +150,8 @@
             	var data = {};
             	data.translation = form.find('input[name=translation]').val();
             	data[element.attr('name')] = value;
-
+            	data.locale = form.find('input[name="translation.locale"]').val();
+            	data.key2 = form.find('input[name="translation.key"]').val();
 
             	PICS.ajax({
             		url: "ManageTranslationsAjax!update.action",

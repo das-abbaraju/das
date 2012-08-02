@@ -302,7 +302,17 @@ public class ManageTranslationsTest extends PicsTest {
 		assertEquals(resultCode, Action.SUCCESS);
 		assertEquals("TestKey", getInternalState(classUnderTest, "key"));
 	}
-	
+
+	@Test
+	public void testUpdate_null(){
+		//TODO complete test
+	}
+
+	@Test
+	public void testUpdate_notNull(){
+		//TODO complete test
+	}
+
 	@Ignore
 	@Test
 	public void validate_nullKey() {
