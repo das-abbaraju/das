@@ -65,6 +65,7 @@
 	<bean id="IndexableDAO" class="com.picsauditing.dao.IndexableDAO" />
 	<bean id="InsuranceRejectedNoUpdateSubscription" class="com.picsauditing.mail.subscription.InsuranceRejectedNoUpdateSubscription" />
 	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
+	<bean id="InvoiceCommissionDAO" class="com.picsauditing.dao.InvoiceCommissionDAO" />
 	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
 	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
 	<bean id="JobCompetencyDAO" class="com.picsauditing.dao.JobCompetencyDAO"/>
@@ -82,6 +83,7 @@
 	<bean id="TradeDAO" class="com.picsauditing.dao.TradeDAO"/>
 	<bean id="TradeAlternateDAO" class="com.picsauditing.dao.TradeAlternateDAO"/>
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
+	<bean id="PaymentCommissionDAO" class="com.picsauditing.dao.PaymentCommissionDAO" />
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
 	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
@@ -109,6 +111,7 @@
 	<bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
+	<bean id="SaleCommissionDataObservable" class="com.picsauditing.PICS.data.DataObservable" />
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="EmailSenderSpring" class="com.picsauditing.mail.EmailSenderSpring" />
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
@@ -129,6 +132,7 @@
 	<bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" scope="prototype"/>
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
 	<bean id="CancelledScheduledAudits" class="com.picsauditing.mail.subscription.CancelledScheduledAuditsSubscription" scope="prototype"/>
+	<bean id="SaleCommissionService" class="com.picsauditing.salecommission.service.SaleCommissionService" init-method="initService"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
 	
 	<bean id="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium" scope="prototype" />

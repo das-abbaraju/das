@@ -11,6 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.data.ContractorDataEvent;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PICS.data.ContractorDataEvent.ContractorEventType;
+import com.picsauditing.PICS.data.DataEvent;
+import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
@@ -33,6 +38,7 @@ import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
+	
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
@@ -45,6 +51,8 @@ public class BillingDetail extends ContractorActionSupport {
 	private TransactionDAO transactionDAO;
 	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
+	private DataObservable saleCommissionDataObservable;
 
 	private BigDecimal invoiceTotal;
 	private List<InvoiceItem> invoiceItems;
@@ -139,6 +147,9 @@ public class BillingDetail extends ContractorActionSupport {
 				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
 						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
+			
+			this.notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
+			
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}
@@ -154,9 +165,13 @@ public class BillingDetail extends ContractorActionSupport {
 		if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 				&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
 			contractor.setStatus(AccountStatus.Deactivated);
+			
+			notifyDataChange(new ContractorDataEvent(contractor, ContractorDataEvent.ContractorEventType.DEACTIVATION));
+			
 			contractor.setRenew(false);
 			if (contractor.getAccountLevel().isBidOnly())
 				contractor.setReason("Bid Only Account");
+			
 			Note note = new Note(contractor, new User(User.SYSTEM),
 					"Automatically inactivating account based on expired membership");
 			note.setNoteCategory(NoteCategory.Billing);
@@ -235,5 +250,10 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		return freeOperators;
+	}
+	
+	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
+		saleCommissionDataObservable.setChanged();
+		saleCommissionDataObservable.notifyObservers(dataEvent);
 	}
 }

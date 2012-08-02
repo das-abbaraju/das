@@ -1,7 +1,9 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
@@ -180,6 +183,21 @@ public class Utilities {
 		}
 		
 		return true;
+	}
+	
+	public static <E extends BaseTable> List<Integer> getIdList(List<E> entities) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyList();
+		}
+		
+		List<Integer> ids = new ArrayList<Integer>();
+		for (BaseTable entity : entities) {
+			if (entity != null) {
+				ids.add(entity.getId());
+			}
+		}
+		
+		return ids;
 	}
 	
 }

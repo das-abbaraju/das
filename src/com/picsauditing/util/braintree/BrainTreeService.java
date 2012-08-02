@@ -2,11 +2,15 @@ package com.picsauditing.util.braintree;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Transient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.braintreegateway.exceptions.BraintreeException;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.braintree.BrainTreeResponse;
 import com.picsauditing.util.braintree.BrainTreeResponse.BrainTreeRequest;
 import com.picsauditing.util.braintree.CreditCard;
@@ -15,6 +19,33 @@ public class BrainTreeService {
 
 	@Autowired
 	BrainTreeRequest brainTree;
+	
+	@Transient
+	public CreditCard getCreditCard(ContractorAccount contractorAccount) {
+		CreditCard cc = null;
+		BrainTreeService paymentService = (BrainTreeService) SpringUtils.getBean("BrainTreeService");
+
+		// Accounting for transmission errors which result in
+		// exceptions being thrown.
+		boolean transmissionError = true;
+		int retries = 0, quit = 5;
+		while (transmissionError && retries < quit) {
+			try {
+				cc = paymentService.getCreditCard(contractorAccount.getId());
+				transmissionError = false;
+			} catch (Exception communicationProblem) {
+				// a message or packet could have been dropped in transmission
+				// wait and resume retrying
+				retries++;
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		return cc;
+	}
 
 	public CreditCard getCreditCard(int contractorId) throws Exception {
 
