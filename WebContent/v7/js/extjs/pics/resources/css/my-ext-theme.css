@@ -3952,41 +3952,40 @@ browsers will do whacky things with it.
     background: #222;
     border-left: 1px solid #191919;
     border-right: 1px solid #191919; }
-  /* line 68, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 67, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row .x-grid-cell-special {
     background: white;
-    background-image: none !important;
     border-right: 1px solid #dcdcdc; }
-  /* line 76, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 74, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row-alt .x-grid-cell-special,
   #report_data .x-grid-row-over .x-grid-cell-special {
     background: #f1f1f2; }
-  /* line 82, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 80, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row-selected .x-grid-cell,
   #report_data .x-grid-row-selected .x-grid-rowwrap-div {
     background: #c3e0f9;
     border-bottom: 1px solid #78bde8;
     border-top: 1px solid #78bde8; }
-  /* line 89, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 87, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner {
     color: #333333;
     font-size: 14px;
     line-height: 18px;
     padding: 4px 6px 4px; }
-  /* line 97, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 95, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner a {
     color: #226396;
     text-decoration: none; }
-  /* line 103, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 101, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner a:hover {
     text-decoration: underline; }
 
-/* line 109, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 107, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data-body {
   border: 0px;
   border-top: 0px !important; }
 
-/* line 115, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 113, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 
