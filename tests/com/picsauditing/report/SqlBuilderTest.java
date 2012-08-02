@@ -367,12 +367,6 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testColumnToSql_UndecoratedIfUnrecognizedQueryFunction() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.None, DATABASE_COLUMN_NAME);
-		assertEquals(DATABASE_COLUMN_NAME, result);
-	}
-
-	@Test
 	public void testColumnToSql_Average() throws Exception {
 		String result = setUpAndRunColumnToSqlTest(QueryMethod.Average, DATABASE_COLUMN_NAME);
 		assertEquals("AVG(" + DATABASE_COLUMN_NAME + ")", result);
