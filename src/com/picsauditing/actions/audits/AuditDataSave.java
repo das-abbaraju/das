@@ -167,10 +167,12 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditData.setAuditColumns(permissions);
 
-			checkNaicsQuestionAndValidity();
+			int currentQuestionId = auditData.getQuestion().getId();
+
+			checkNaicsQuestionAndValidity(currentQuestionId);
 
 			if (!auditData.getAnswer().isEmpty()) {
-				if (!areAllHSEJobRoleQuestionsAnswered(questionId, auditData.getAudit().getContractorAccount()))
+				if (!areAllHSEJobRoleQuestionsAnswered(currentQuestionId, auditData.getAudit().getContractorAccount()))
 					return SUCCESS;
 			}
 
@@ -318,9 +320,8 @@ public class AuditDataSave extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private void checkNaicsQuestionAndValidity() {
-		int questionId = auditData.getQuestion().getId();
-		if (questionId == 57) {
+	private void checkNaicsQuestionAndValidity(int currentQuestionId) {
+		if (currentQuestionId == 57) {
 			if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
 				addActionError("This is not a valid 2007 NAICS code");
 			}
@@ -382,27 +383,30 @@ public class AuditDataSave extends AuditActionSupport {
 		return false;
 	}
 
-	private boolean areAllHSEJobRoleQuestionsAnswered(int questionId, ContractorAccount contractor) {
-		if (questionId == 3669) {
+	private boolean areAllHSEJobRoleQuestionsAnswered(int currentQuestionId, ContractorAccount contractor) {
+		if (currentQuestionId == 3669) {
 			if (contractor.getJobRoles().isEmpty()) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRole"));
 				return false;
 			}
-		} else if (questionId == 3675) {
+		} else if (currentQuestionId == 3675) {
 			for (JobRole role : contractor.getJobRoles()) {
 				if (role.getJobCompetencies().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.CompetencyForEachJobRole"));
 					return false;
 				}
 			}
-		} else if (questionId == 3673) {
+		} else if (currentQuestionId == 3673) {
 			if (contractor.getEmployees().isEmpty()) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.Employee"));
 				return false;
 			}
-		} else if (questionId == 3674) {
-			for (Employee e : contractor.getEmployees()) {
-				if (e.getEmployeeRoles().isEmpty()) {
+		} else if (currentQuestionId == 3674) {
+			for (Employee employee : contractor.getEmployees()) {
+				if (!employee.isActive())
+					continue;
+
+				if (employee.getEmployeeRoles().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRoleForEachEmployee"));
 					return false;
 				}
