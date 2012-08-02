@@ -35,7 +35,7 @@ public class I18nCache implements Serializable {
 	static public final String I18N_CACHE_KEY = "I18nCache";
 	static public final String CACHE_NAME = "daily";
 	static public final String DEFAULT_LANGUAGE = "en";
-	static public final String DEFAULT_TRANSLATION = "Translation missing";
+	static public final String DEFAULT_TRANSLATION = "";
 
 	private transient static I18nCache INSTANCE;
 	private transient static Date LAST_CLEARED;
@@ -180,13 +180,16 @@ public class I18nCache implements Serializable {
 			Table<String, String, String> newCache = TreeBasedTable.create();
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
 			Database db = db();
-			String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
+			String sql = "SELECT msgKey, locale, msgValue, lastUsed, qualityRating FROM app_translation";
 			List<BasicDynaBean> messages = db.select(sql, false);
+
 			for (BasicDynaBean message : messages) {
-				String key = String.valueOf(message.get("msgKey"));
-				newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
-				Date lastUsed = (Date) message.get("lastUsed");
-				newCacheUsage.put(key, lastUsed);
+				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message.get("qualityRating").equals("0"))) {									
+					String key = String.valueOf(message.get("msgKey"));
+					newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+					Date lastUsed = (Date) message.get("lastUsed");
+					newCacheUsage.put(key, lastUsed);
+				}
 			}
 			cache = newCache;
 			cacheUsage = newCacheUsage;
