@@ -25,29 +25,29 @@ public class ReportBilling extends ReportAccount {
 
 		sql.addWhere("c.mustPay = 'Yes' AND c.renew = 1");
 
-		getFilter().setShowBillingState(true);
+		getFilter().setShowBillingCountrySubdivision(true);
 		getFilter().setShowConWithPendingAudits(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 
-		String billingState = "All";
-		if (getFilter().getBillingState() != null)
-			billingState = getFilter().getBillingState();
+		String billingCountrySubdivision = "All";
+		if (getFilter().getBillingCountrySubdivision() != null)
+			billingCountrySubdivision = getFilter().getBillingCountrySubdivision();
 
 		String where = "";
 		// Show activations and reactivations
-		if (billingState.equals("All") || billingState.equals("Activations")) {
+		if (billingCountrySubdivision.equals("All") || billingCountrySubdivision.equals("Activations")) {
 			where += "(a.status IN ('Pending','Deactivated')) AND c.membershipDate IS NULL AND c.accountLevel = 'Full' AND NOT (cf.feeClass = 'ListOnly' AND cf.newAmount > 0)";
 		}
 		// Show renewals (only on non-bid only accounts)
-		if (billingState.equals("All") || billingState.equals("Renewals")) {
+		if (billingCountrySubdivision.equals("All") || billingCountrySubdivision.equals("Renewals")) {
 			sql.addWhere("");
 			if (where.length() > 0)
 				where += " OR ";
 			where += "(a.status IN ('Active', 'Deactivated') AND cf.newAmount > 0 AND c.paymentExpires < ADDDATE(NOW(), INTERVAL 30 DAY))";
 		}
 		// Show upgrades
-		if (billingState.equals("All") || billingState.equals("Upgrades")) {
+		if (billingCountrySubdivision.equals("All") || billingCountrySubdivision.equals("Upgrades")) {
 			// A note about non-renewal upgrades: just because a contractor
 			// doesn't want to renew
 			// at the end of the year, doesn't mean they shouldn't be charged an

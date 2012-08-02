@@ -85,7 +85,6 @@
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
 	<bean id="PaymentCommissionDAO" class="com.picsauditing.dao.PaymentCommissionDAO" />
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
-	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
@@ -113,14 +112,14 @@
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
 	<bean id="SaleCommissionDataObservable" class="com.picsauditing.PICS.data.DataObservable" />
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
-	<bean id="EmailSenderSpring" class="com.picsauditing.mail.EmailSenderSpring" />
+	<bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
-	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker"/>
+	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker" scope="prototype"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
@@ -158,7 +157,7 @@
 	<bean id="ReportDynamicModel" class="com.picsauditing.model.ReportDynamicModel" />
 	<bean id="ReportProvider" class="com.picsauditing.provider.ReportProvider" />
 	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
-	<bean id="StateAutocompleteService" class=" com.picsauditing.actions.autocomplete.StateAutocompleteService" />
+	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>

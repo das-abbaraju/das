@@ -15,7 +15,7 @@ public class ReportAccountQuick extends ReportAccount {
 		sql = new SelectAccount();
 		sql.addField("dbaName");
 		sql.addField("city");
-		sql.addField("state");
+		sql.addField("countrySubdivision");
 		sql.addWhere("a.type IN ('Operator', 'Corporate', 'Contractor', 'Assessment')");
 		sql.setPermissions(permissions);
 		orderByDefault = "a.type, a.name";

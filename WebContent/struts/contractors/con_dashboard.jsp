@@ -664,7 +664,7 @@
     										<s:property value="contractor.city" />
     									</span>,
     									<span class="region">
-    										<s:property value="contractor.state.isoCode" />
+    										<s:property value="contractor.state" />
     									</span>
     									<span class="postal-code">
     										<s:property value="contractor.zip" />

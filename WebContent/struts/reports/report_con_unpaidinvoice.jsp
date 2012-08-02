@@ -101,7 +101,7 @@
 						</td>
 						<td>
 							<s:property value="get('address')"/><br/>
-							<s:property value="get('city')"/>, <s:property value="get('state')"/> <s:property value="get('zip')"/>
+							<s:property value="get('city')"/>, <s:property value="get('countrySubdivision')"/> <s:property value="get('zip')"/>
 						</td>
 						<td class="center">
 							<s:if test="get('status') == 'Unpaid'">

@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -35,7 +35,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;

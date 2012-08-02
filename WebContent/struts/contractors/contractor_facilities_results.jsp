@@ -10,7 +10,7 @@
 	</div>
 </s:if>
 <s:else>
-	<s:if test="state == '' && operator.name == ''">
+	<s:if test="countrySubdivision == '' && operator.name == ''">
 		<div id="help">
 			<s:text name="ContractorFacilities.SuggestedOperators" />:
 		</div>

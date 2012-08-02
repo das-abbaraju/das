@@ -194,7 +194,7 @@
                         $('form [name="conAudit.phone2"]').val(contractor.primaryContact.email);
                         $('form [name="conAudit.address"]').val(contractor.address);
                         $('form [name="conAudit.city"]').val(contractor.city);
-                        $('form [name="conAudit.state"]').val(contractor.state);
+                        $('form [name="conAudit.countrySubdivision"]').val(contractor.countrySubdivision);
                         $('form [name="conAudit.zip"]').val(contractor.zip);
                         $('form [name="conAudit.country"]').val(contractor.country);
                         

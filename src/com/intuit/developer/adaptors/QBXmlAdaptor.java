@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,8 +184,10 @@ public class QBXmlAdaptor {
 					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 37));
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
 			billAddress.setCity(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()));
-			if (contractor.getBillingState() != null)
-				billAddress.setState(contractor.getBillingState().getIsoCode());
+			if (contractor.getBillingCountrySubdivision() != null) {
+				String isoCode = contractor.getBillingCountrySubdivision().getIsoCode();
+				billAddress.setState(StringUtils.substring(isoCode, -2));
+			}
 			billAddress.setPostalCode(nullSafeZip(contractor.getBillingZip(), contractor.getCountry()));
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
@@ -197,8 +200,10 @@ public class QBXmlAdaptor {
 			billAddress.setAddr2(nullSafeSubString(primary.getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
 			billAddress.setCity(nullSafeCity(contractor.getCity(), contractor.getCountry()));
-			if (contractor.getState() != null)
-				billAddress.setState(contractor.getState().getIsoCode());
+			if (contractor.getCountrySubdivision() != null) {
+				String isoCode = contractor.getCountrySubdivision().getIsoCode();
+				billAddress.setState(StringUtils.substring(isoCode, -2));
+			}
 			billAddress.setPostalCode(nullSafeZip(contractor.getZip(), contractor.getCountry()));
 		}
 		if (contractor.getCountry() != null)

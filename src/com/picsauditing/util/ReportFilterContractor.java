@@ -44,7 +44,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showInParentCorporation = false;
 	protected boolean showWaitingOn = false;
 	protected boolean showEmailTemplate = false;
-	protected boolean showBillingState = false;
+	protected boolean showBillingCountrySubdivision = false;
 	protected boolean showRegistrationDate = true;
 	protected boolean showConWithPendingAudits = false;
 	protected boolean showOpertorTagName = false;
@@ -89,7 +89,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date emailSentDate;
 	protected int emailTemplate;
 	protected ListType emailListType;
-	protected String billingState = "All";
+	protected String billingCountrySubdivision = "All";
 	protected Date registrationDate1;
 	protected Date registrationDate2;
 	protected boolean pendingPqfAnnualUpdate = false;
@@ -247,12 +247,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showEmailTemplate = showEmailTemplate;
 	}
 
-	public boolean isShowBillingState() {
-		return showBillingState;
+	public boolean isShowBillingCountrySubdivision() {
+		return showBillingCountrySubdivision;
 	}
 
-	public void setShowBillingState(boolean showBillingState) {
-		this.showBillingState = showBillingState;
+	public void setShowBillingCountrySubdivision(boolean showBillingCountrySubdivision) {
+		this.showBillingCountrySubdivision = showBillingCountrySubdivision;
 	}
 
 	public boolean isShowRegistrationDate() {
@@ -671,12 +671,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.emailListType = emailListType;
 	}
 
-	public String getBillingState() {
-		return billingState;
+	public String getBillingCountrySubdivision() {
+		return billingCountrySubdivision;
 	}
 
-	public void setBillingState(String billingState) {
-		this.billingState = billingState;
+	public void setBillingCountrySubdivision(String billingCountrySubdivision) {
+		this.billingCountrySubdivision = billingCountrySubdivision;
 	}
 
 	public Date getRegistrationDate1() {

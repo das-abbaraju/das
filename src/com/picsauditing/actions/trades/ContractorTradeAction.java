@@ -23,7 +23,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
@@ -32,7 +32,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 	@Autowired
 	private TradeDAO tradeDAO;
 	@Autowired
-	private EmailSenderSpring sender;
+	private EmailSender sender;
 	@Autowired
 	private NoteDAO noteDAO;
 

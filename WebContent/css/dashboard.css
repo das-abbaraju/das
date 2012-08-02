@@ -54,7 +54,8 @@ a:hover.panel_edit {
 	height: 16px;
 }
 
-#ContractorView__page #beta_translations_alert
+#ContractorView__page #beta_translations_alert,
+#Home__page #beta_translations_alert
 {
 	color: #A74D0F;	
 	font-size: 14px;

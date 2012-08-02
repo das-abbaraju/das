@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.ClientSiteReferral;
 import com.picsauditing.jpa.entities.ClientSiteReferralStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -25,7 +25,7 @@ public class ReferNewClientSite extends PicsActionSupport {
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
-	protected EmailSenderSpring emailSenderSpring;
+	protected EmailSender emailSenderSpring;
 
 	private ClientSiteReferral newClientSite;
 	private ClientSiteReferralStatus status = ClientSiteReferralStatus.Active;

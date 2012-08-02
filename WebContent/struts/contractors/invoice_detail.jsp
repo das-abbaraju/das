@@ -220,14 +220,14 @@
 										<s:property value="contractor.billingAddress" />
 										<br />
 										<s:property value="contractor.billingCity" />,
-										<s:property value="contractor.billingState.isoCode" />
+										<s:property value="contractor.billingCountrySubdivision.isoCode" />
 										<s:property	value="contractor.billingZip" />
 									</s:if>
 									<s:else>
 										<s:property value="contractor.address" />
 										<br />
 										<s:property value="contractor.city" />,
-										<s:property value="contractor.state.isoCode" />
+										<s:property value="contractor.countrySubdivision.isoCode" />
 										<s:property	value="contractor.zip" />
 									</s:else>
 								</td>

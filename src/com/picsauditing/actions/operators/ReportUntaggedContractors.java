@@ -136,7 +136,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 			excelSheet.addColumn(new ExcelColumn("contactemail", "Email"));
 			excelSheet.addColumn(new ExcelColumn("address", "Address"));
 			excelSheet.addColumn(new ExcelColumn("city", "City"));
-			excelSheet.addColumn(new ExcelColumn("state", "State"));
+			excelSheet.addColumn(new ExcelColumn("countrySubdivision", "Country Subdivision"));
 			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code", ExcelCellType.Integer));
 			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
 		}

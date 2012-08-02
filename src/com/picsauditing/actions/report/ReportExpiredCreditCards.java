@@ -11,7 +11,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.util.EmailAddressUtils;
 
@@ -25,7 +25,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private String[] sendMail;
 
@@ -71,7 +71,9 @@ public class ReportExpiredCreditCards extends ReportAccount {
 	@Override
 	public String execute() throws Exception {
 		if ("Send Email".equals(button)) {
-			if (sendMail.length > 0) {
+			if (sendMail == null) {
+				addActionMessage("Unable to send email - no contractors were selected.");
+			} else if (sendMail.length > 0) {
 				for (String conIDString : sendMail) {
 					try {
 						int conID = Integer.parseInt(conIDString);

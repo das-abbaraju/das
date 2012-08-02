@@ -22,7 +22,7 @@ import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -281,7 +281,7 @@ public class QBWebConnectorSvcSkeleton {
 					email.setBody(body.toString());
 					email.setCreationDate(new Date());
 
-					EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+					EmailSender emailSender = (EmailSender) SpringUtils.getBean("EmailSender");
 					emailSender.send(email);
 
 				} catch (Exception notMuchWeCanDoButLogIt) {

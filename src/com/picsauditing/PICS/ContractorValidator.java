@@ -72,9 +72,9 @@ public class ContractorValidator {
 			errorMessages.addElement(getText("ContractorValidator.error.NoAdCity"));
 		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoCountry"));
-		if (contractor.getCountry() != null && contractor.getCountry().isHasStates()) {
-			if (contractor.getState() == null || Strings.isEmpty(contractor.getState().getIsoCode())) {
-				errorMessages.addElement(getText("ContractorValidator.error.NoState"));
+		if (contractor.getCountry() != null && contractor.getCountry().isHasCountrySubdivisions()) {
+			if (contractor.getCountrySubdivision() == null || Strings.isEmpty(contractor.getCountrySubdivision().getIsoCode())) {
+				errorMessages.addElement(getText("ContractorValidator.error.NoCountrySubdivision"));
 			}
 		}
 
@@ -194,10 +194,10 @@ public class ContractorValidator {
 	public void setOfficeLocationInPqfBasedOffOfAddress(
 			ContractorAccount contractor) {
 		
-		String countryStateCode = contractor.getCountry().getIsoCode() + "."
-				+ contractor.getState();
+		String countryCountrySubdivisionCode = contractor.getCountry().getIsoCode() + "."
+				+ contractor.getCountrySubdivision();
 		List<String> uniqueCodes = new ArrayList<String>();
-		uniqueCodes.add(countryStateCode);
+		uniqueCodes.add(countryCountrySubdivisionCode);
 
 		List<AuditQuestion> officeLocationResultSet = auditQuestionDao
 				.findQuestionsByUniqueCodes(uniqueCodes);

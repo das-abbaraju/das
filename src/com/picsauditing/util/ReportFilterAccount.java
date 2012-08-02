@@ -7,11 +7,11 @@ import java.util.Set;
 import com.google.common.collect.Multimap;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
@@ -56,25 +56,25 @@ public class ReportFilterAccount extends ReportFilter {
 		return FlagColor.values();
 	}
 
-	public List<State> getStateList() {
-		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
-		List<State> result;
+	public List<CountrySubdivision> getCountrySubdivisionList() {
+		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		List<CountrySubdivision> result;
 		if (!Strings.isEmpty(permissions.getCountry())) {
 			Set<String> accountCountries = new HashSet<String>();
 			accountCountries.add(permissions.getCountry());
-			result = stateDAO.findByCountries(accountCountries, false);
+			result = countrySubdivisionDAO.findByCountries(accountCountries, false);
 		} else
-			result = stateDAO.findAll();
+			result = countrySubdivisionDAO.findAll();
 
 		return result;
 	}
 
-	public Multimap<Country, State> getStateMap() {
-		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
+	public Multimap<Country, CountrySubdivision> getCountrySubdivisionMap() {
+		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
 
-		Multimap<Country, State> stateMap = stateDAO.getStateMap(permissions.getCountry());
+		Multimap<Country, CountrySubdivision> countrySubdivisionMap = countrySubdivisionDAO.getCountrySubdivisionMap(permissions.getCountry());
 
-		return stateMap;
+		return countrySubdivisionMap;
 	}
 
 	public List<Country> getCountryList() {

@@ -46,6 +46,16 @@ public enum FlagColor implements Translatable {
 				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + title + "\" />";
 	}
 
+	public String getSmallIcon() {
+		I18nCache cache = I18nCache.getInstance();
+		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
+
+		if (this == FlagColor.Clear)
+			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
+		return "<img src=\"images/icon_" + this.toString().toLowerCase()
+				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
+	}
+
 	public String getSmallIcon(String columnName) {
 		I18nCache cache = I18nCache.getInstance();
 		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());

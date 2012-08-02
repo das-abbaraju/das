@@ -72,20 +72,20 @@ public class UserAssignmentDAO extends PicsDAO {
 	}
 
 	public List<UserAssignment> findList(ContractorAccount contractor, UserAssignmentType type, AuditType auditType) {
-		return findList(contractor.getState() != null ? contractor.getState().getIsoCode() : null, contractor
+		return findList(contractor.getCountrySubdivision() != null ? contractor.getCountrySubdivision().getIsoCode() : null, contractor
 				.getCountry() != null ? contractor.getCountry().getIsoCode() : null, contractor.getZip(), contractor
 				.getId(), type, auditType);
 	}
 
 	public List<UserAssignment> findList(ContractorAudit conAudit, UserAssignmentType type, AuditType auditType) {
-		return findList(conAudit.getState(), conAudit.getCountry(), conAudit.getZip(), conAudit.getContractorAccount()
+		return findList(conAudit.getCountrySubdivision(), conAudit.getCountry(), conAudit.getZip(), conAudit.getContractorAccount()
 				.getId(), type, auditType);
 	}
 
-	public List<UserAssignment> findList(String state, String country, String zip, int conID, UserAssignmentType type,
+	public List<UserAssignment> findList(String countrySubdivision, String country, String zip, int conID, UserAssignmentType type,
 			AuditType auditType) {
 		String where = "(country IS NULL OR country.isoCode = :country)";
-		where += " AND (state IS NULL OR state.isoCode = :state)";
+		where += " AND (countrySubdivision IS NULL OR countrySubdivision.isoCode = :countrySubdivision)";
 		// If you want the assignment to be based on any zip code starting
 		// with 9, then use 9% in the postalStart
 		where += " AND ((postalStart IS NULL OR postalStart < :postal OR :postal LIKE postalStart) AND country.isoCode = :country)";
@@ -105,7 +105,7 @@ public class UserAssignmentDAO extends PicsDAO {
 
 		Query q = em.createQuery("FROM UserAssignment WHERE " + where);
 
-		q.setParameter("state", state);
+		q.setParameter("countrySubdivision", countrySubdivision);
 		q.setParameter("country", country);
 		q.setParameter("postal", zip);
 		q.setParameter("conID", conID);
@@ -114,13 +114,13 @@ public class UserAssignmentDAO extends PicsDAO {
 	}
 
 	public List<User> findAuditorsByLocation(ContractorAudit conAudit, UserAssignmentType assignmentType) {
-		String state = conAudit.getState();
+		String countrySubdivision = conAudit.getCountrySubdivision();
 		String country = conAudit.getCountry();
 		String zip = conAudit.getZip();
 		int conID = conAudit.getContractorAccount().getId();
 
 		String where = "(ua.country IS NULL OR ua.country.isoCode = :country)";
-		where += " AND (ua.state IS NULL OR ua.state.isoCode = :state)";
+		where += " AND (ua.countrySubdivision IS NULL OR ua.countrySubdivision.isoCode = :countrySubdivision)";
 		where += " AND (ua.postalStart IS NULL OR ua.postalStart < :postal OR :postal LIKE ua.postalStart)";
 		where += " AND (ua.postalEnd IS NULL OR ua.postalEnd > :postal OR :postal LIKE CONCAT(ua.postalEnd, '%') )";
 		where += " AND ua.contractor IS NULL";
@@ -133,7 +133,7 @@ public class UserAssignmentDAO extends PicsDAO {
 
 		Query q = em.createQuery("select DISTINCT ua.user FROM UserAssignment ua WHERE " + where);
 
-		q.setParameter("state", state);
+		q.setParameter("countrySubdivision", countrySubdivision);
 		q.setParameter("country", country);
 		q.setParameter("postal", zip);
 		q.setParameter("conID", conID);

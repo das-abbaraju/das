@@ -84,7 +84,7 @@ public class SearchEngine {
 		StringBuilder cSb = new StringBuilder();
 		cSb.append("SELECT a.value term, COUNT(a.value) cc FROM ").append(indexTable).append(" a JOIN (");
 		cSb.append(sub).append(
-				") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN (SELECT isoCode FROM ref_state)");
+				") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN (SELECT isoCode FROM ref_country_subdivision)");
 		if (ignore != null && ignore.length() > 0)
 			cSb.append(" AND a.value NOT IN (").append(ignore).append(")");
 		cSb.append(" GROUP BY a.value HAVING cc/").append(total).append(" <.8\n").append("ORDER BY cc DESC LIMIT 10");
@@ -324,7 +324,7 @@ public class SearchEngine {
 
 		sql.addJoin("JOIN operators o ON a.id = o.id");
 		sql.addJoin("LEFT JOIN ref_country rc ON rc.isoCode=a.country");
-		sql.addJoin("LEFT JOIN ref_state rs on rs.isoCode=a.state");
+		sql.addJoin("LEFT JOIN ref_country_subdivision rs ON rs.isoCode=a.countrySubdivision");
 
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
@@ -335,9 +335,8 @@ public class SearchEngine {
 			sb.append(" OR rc.english LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR rc.spanish LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR rc.french LIKE '").append(searchTerm).append("%'");
-			sb.append(" OR a.state LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.countrySubdivision LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR rs.english LIKE '").append(searchTerm).append("%'");
-			sb.append(" OR rs.french LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR a.zip LIKE '").append(searchTerm).append("%'");
 			sb.append(")").append(" OR ");
 		}

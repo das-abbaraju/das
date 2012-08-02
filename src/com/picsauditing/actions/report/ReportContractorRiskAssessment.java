@@ -28,7 +28,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectAccount.Type;
@@ -44,7 +44,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@Autowired
 	protected NoteDAO noteDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	public static String SAFETY = "Safety";
 	public static String PRODUCT = "Product";

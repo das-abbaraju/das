@@ -14,13 +14,13 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
 import com.picsauditing.util.Strings;
 
 public class ExceptionService {
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	protected BasicDAO dao;
 

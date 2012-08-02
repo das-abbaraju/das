@@ -75,15 +75,15 @@
 					<s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" />
 				</li>
 				<li class="calculated-address">
-					<label><s:text name="State" />:</label>
+					<label><s:text name="CountrySubdivision" />:</label>
 					<s:select 
-						id="conAudit_state" 
-						name="conAudit.state"
-						value="%{conAudit.contractorAccount.state}" list="stateList"
+						id="conAudit_countrySubdivision" 
+						name="conAudit.countrySubdivision"
+						value="%{conAudit.contractorAccount.countrySubdivision}" list="countrySubdivisionList"
 						listKey="isoCode" 
 						listValue="name" 
 						headerKey="" 
-						headerValue=" - State/Province - "
+						headerValue=" - Country Subdivision - "
 					/>
 				</li>
 				<li class="calculated-address">

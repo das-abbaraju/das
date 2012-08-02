@@ -61,13 +61,11 @@ $report_data_cell_link_color: #226396;
 		background: #222;
 		border-left: 1px solid #191919;
 		border-right: 1px solid #191919;
-		//border-top: 1px solid #090909;
 	}
 	
 	.x-grid-row .x-grid-cell-special
 	{
 		background: $report_data_row_background_color;
-		background-image: none !important;
 		border-right: 1px solid #dcdcdc;
 	}
 	

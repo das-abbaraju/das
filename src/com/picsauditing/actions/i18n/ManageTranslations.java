@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,8 +24,8 @@ import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
-//import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
+//import com.picsauditing.util.ReportFilter;
 
 @SuppressWarnings("serial")
 public class ManageTranslations extends ReportActionSupport {
@@ -47,6 +48,9 @@ public class ManageTranslations extends ReportActionSupport {
 	private int[] toQualityRatings = null;
 	private Boolean toShowApplicable = null;
 	private String[] toSourceLanguages = null;
+	
+	private HttpServletRequest request;
+	private AppTranslation newTranslation;
 
 	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
@@ -162,8 +166,22 @@ public class ManageTranslations extends ReportActionSupport {
 	@RequiredPermission(value = OpPerms.Translator)
 	public String update() {
 		if (translation != null) {
-			translation.setAuditColumns();
-			dao.save(translation);
+			if (translation.getKey()!= null){
+				translation.setAuditColumns();
+				dao.save(translation);
+			} else {
+				newTranslation = new AppTranslation();
+				request = ServletActionContext.getRequest();
+				newTranslation.setKey(request.getParameter("key2"));
+				newTranslation.setLocale(request.getParameter("locale"));
+				newTranslation.setCreatedBy(userDAO.find(permissions.getUserId()));
+				newTranslation.setAuditColumns();
+				newTranslation.setApplicable(true);
+				newTranslation.setSourceLanguage("en");
+				newTranslation.setValue("");
+				newTranslation.setQualityRating(TranslationQualityRating.Bad);
+				dao.save(newTranslation);
+			}
 		}
 
 		return SUCCESS;

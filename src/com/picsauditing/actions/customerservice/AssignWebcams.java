@@ -8,17 +8,18 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.WebcamDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Webcam;
 import com.picsauditing.util.SpringUtils;
 
+@Deprecated // We are no longer supporting the assignment and distribution of webcams. 
 @SuppressWarnings("serial")
 public class AssignWebcams extends PicsActionSupport implements Preparable {
 
@@ -138,8 +139,8 @@ public class AssignWebcams extends PicsActionSupport implements Preparable {
 		return countryDAO.findAll();
 	}
 
-	public List<State> getStateList() {
-		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
-		return stateDAO.findAll();
+	public List<CountrySubdivision> getCountrySubdivisionList() {
+		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		return countrySubdivisionDAO.findAll();
 	}
 }

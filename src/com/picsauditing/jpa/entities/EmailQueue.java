@@ -20,15 +20,20 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonMethod;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.util.StringUtils;
 
 import com.ibm.icu.util.StringTokenizer;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
+@JsonAutoDetect(JsonMethod.FIELD)
 @Entity
 @Table(name = "email_queue")
 public class EmailQueue implements java.io.Serializable {
+	public static final int HIGH_PRIORITY = 70;
 	private int id;
 	private EmailStatus status = EmailStatus.Pending;
 	private String fromAddress = "";
@@ -47,6 +52,7 @@ public class EmailQueue implements java.io.Serializable {
 	private boolean html = false;
 	private Account viewableBy;
 
+	@JsonProperty
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "emailID")
@@ -68,6 +74,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.status = status;
 	}
 
+	@JsonProperty
 	@Column(length = 150)
 	public String getFromAddress() {
 		return fromAddress;
@@ -93,6 +100,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.fromPassword = fromPassword;
 	}
 
+	@JsonProperty
 	@Column(nullable = false, length = 1000)
 	public String getToAddresses() {
 		return toAddresses;
@@ -109,6 +117,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.toAddresses = toAddresses;
 	}
 
+	@JsonProperty
 	@Column(length = 1000)
 	public String getCcAddresses() {
 		return ccAddresses;
@@ -125,6 +134,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.ccAddresses = ccAddresses;
 	}
 
+	@JsonProperty
 	@Column(length = 1000)
 	public String getBccAddresses() {
 		return bccAddresses;
@@ -141,6 +151,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.bccAddresses = bccAddresses;
 	}
 
+	@JsonProperty
 	@Column(length = 150, nullable = false)
 	public String getSubject() {
 		return subject;
@@ -150,6 +161,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.subject = subject;
 	}
 
+	@JsonProperty
 	public String getBody() {
 		return body;
 	}
@@ -285,6 +297,7 @@ public class EmailQueue implements java.io.Serializable {
 		return returnAddress;
 	}
 
+	@JsonProperty
 	public boolean isHtml() {
 		return html;
 	}
@@ -305,7 +318,7 @@ public class EmailQueue implements java.io.Serializable {
 	
 	public void setHighPriority()
 	{
-		priority = 70;
+		priority = HIGH_PRIORITY;
 	}
 	
 	public void setMediumPriority()

@@ -35,7 +35,7 @@ import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.braintree.BrainTreeService;
@@ -52,7 +52,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	private BrainTreeService paymentService;
 	@Autowired

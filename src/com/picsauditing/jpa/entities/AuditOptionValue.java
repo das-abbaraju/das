@@ -98,7 +98,7 @@ public class AuditOptionValue extends BaseTable {
 	@Transient
 	public String getI18nKey() {
 		if (!Strings.isEmpty(group.getUniqueCode())) {
-			if (group.getUniqueCode().equals("Country") || group.getUniqueCode().equals("State"))
+			if (group.getUniqueCode().equals("Country") || group.getUniqueCode().equals("CountrySubdivision"))
 				return group.getUniqueCode() + "." + getIdentifier();
 		}
 

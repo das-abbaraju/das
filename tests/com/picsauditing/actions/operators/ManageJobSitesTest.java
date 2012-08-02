@@ -26,7 +26,6 @@ import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.JobSite;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 
 public class ManageJobSitesTest extends PicsTest {
@@ -34,7 +33,6 @@ public class ManageJobSitesTest extends PicsTest {
 	User user;
 	@Mock private JobSite jobSite;
 	@Mock private Country country;
-	@Mock private State state;
 	@Mock private CountrySubdivision countrySubdivision;
 	@Mock private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
@@ -81,35 +79,4 @@ public class ManageJobSitesTest extends PicsTest {
 		// assertTrue(permissions.isOperatorCorporate());
 		// assertNotNull(manageJobSites.getOperator());
 	}
-	@Test
-	public void testUpdateStateAndCountrySubdivision_countryHasState() throws Exception{
-		state = new State("CA");
-		state.setCountry(new Country("US"));
-		countrySubdivision = new CountrySubdivision("US-CA");
-		Whitebox.setInternalState(manageJobSites, "countrySubdivision", countrySubdivision);
-		when(jobSite.getState()).thenReturn(state);
-		when(jobSite.getCountry()).thenReturn(new Country("US"));
-		when(countrySubdivisionDAO.find(anyString())).thenReturn(countrySubdivision);
-
-		Whitebox.invokeMethod(manageJobSites, "updateStateAndCountrySubdivision");
-		verify(jobSite).setCountrySubdivision(countrySubdivision);
-	}
-
-	@Test
-	public void testUpdateStateAndCountrySubdivision_countryHasWrongState() throws Exception{
-		state = new State("CA");
-		state.setCountry(new Country("CA"));
-		countrySubdivision = new CountrySubdivision("CA-CA");
-		when(jobSite.getState()).thenReturn(state);
-		when(jobSite.getCountry()).thenReturn(new Country("US"));
-		when(countrySubdivisionDAO.find(anyString())).thenReturn(countrySubdivision);
-		Whitebox.invokeMethod(manageJobSites, "updateStateAndCountrySubdivision");
-		verify(jobSite).setState(null);
-		verify(jobSite).setCountrySubdivision(null);
-	}
-	/*
-	 * @Test public void testNullOperator() throws Exception {
-	 * manageJobSites.execute(); assertFalse(permissions.isOperatorCorporate());
-	 * assertNull(manageJobSites.getOperator()); }
-	 */
 }

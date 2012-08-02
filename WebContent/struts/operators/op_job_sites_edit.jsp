@@ -20,11 +20,11 @@
 				<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode" headerKey=""
 					headerValue="- Country -" listValue="name" value="jobSite.country.isoCode"></s:select>
 			</li>
-			<li class="loadStates">
+			<li class="loadCountrySubdivisions">
 				<s:if test="jobSite.country.isoCode != ''">
-					<label><s:text name="State" />:</label>
-					<s:select list="getStateList(jobSite.country.isoCode)" name="state.isoCode" listKey="isoCode"
-						listValue="name" value="jobSite.state.isoCode"></s:select>
+					<label><s:text name="CountrySubdivision" />:</label>
+					<s:select list="getCountrySubdivisionList(jobSite.country.isoCode)" name="countrySubdivision.isoCode" listKey="isoCode"
+						listValue="name" value="jobSite.countrySubdivision.isoCode"></s:select>
 				</s:if>
 			</li>
 			<li><label><s:text name="JobSite.projectStart" />:</label>

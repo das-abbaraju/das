@@ -36,7 +36,7 @@
 		<td>Type</td>
 		<td>Name</td>
 		<td><s:text name="global.City" /></td>
-		<td><s:text name="State" /></td>
+		<td><s:text name="CountrySubdivision" /></td>
 	</tr>
 	</thead>
 	<s:iterator value="data">
@@ -59,7 +59,7 @@
 				<s:property value="get('city')" />
 			</td>
 			<td>
-				<s:property value="get('state')" />
+				<s:property value="get('countrySubdivision')" />
 			</td>
 		</tr>
 	</s:iterator>

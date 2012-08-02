@@ -10,17 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
@@ -41,7 +41,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
-	private StateDAO stateDAO;
+	private CountrySubdivisionDAO countrySubdivisionDAO;
 
 	public int getId() {
 		return id;
@@ -180,8 +180,8 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	@Deprecated
-	public StateDAO getStateDAO() {
-		return stateDAO;
+	public CountrySubdivisionDAO getCountrySubdivisionDAO() {
+		return countrySubdivisionDAO;
 	}
 
 	public List<Country> getCountryList() {
@@ -199,16 +199,16 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<State> getStateList() {
-		List<State> results = Collections.emptyList();
+	public List<CountrySubdivision> getCountrySubdivisionList() {
+		List<CountrySubdivision> results = Collections.emptyList();
 		if (account == null) {
-			results = stateDAO.findAll();
+			results = countrySubdivisionDAO.findAll();
 		} else {
-			results = stateDAO.findByCountry(account.getCountry());
+			results = countrySubdivisionDAO.findByCountry(account.getCountry());
 		}
 
-		Collections.sort(results, new Comparator<State>() {
-			public int compare(State o1, State o2) {
+		Collections.sort(results, new Comparator<CountrySubdivision>() {
+			public int compare(CountrySubdivision o1, CountrySubdivision o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
@@ -216,21 +216,21 @@ public class AccountActionSupport extends PicsActionSupport {
 		return results;
 	}
 
-	public List<State> getStateList(String countries) {
-		List<State> result;
+	public List<CountrySubdivision> getCountrySubdivisionList(String countries) {
+		List<CountrySubdivision> result;
 		if (countries == null) {
-			result = stateDAO.findAll();
+			result = countrySubdivisionDAO.findAll();
 		} else {
 			boolean negative = false;
 			if (countries.startsWith("!")) {
 				countries = countries.replace("!", "");
 				negative = true;
 			}
-			result = stateDAO.findByCountries(Arrays.asList(countries.split("[|]")), negative);
+			result = countrySubdivisionDAO.findByCountries(Arrays.asList(countries.split("[|]")), negative);
 		}
 
-		Collections.sort(result, new Comparator<State>() {
-			public int compare(State o1, State o2) {
+		Collections.sort(result, new Comparator<CountrySubdivision>() {
+			public int compare(CountrySubdivision o1, CountrySubdivision o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});

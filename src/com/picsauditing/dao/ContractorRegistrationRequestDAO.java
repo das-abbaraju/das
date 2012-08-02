@@ -45,7 +45,7 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 	public List<ContractorRegistrationRequest> findByCSR(int csrID, boolean open, WaitingOn handledBy, int limit) {
 		Query query = em.createQuery("SELECT c FROM ContractorRegistrationRequest c, UserAssignment ua "
 				+ "WHERE ua.country = c.country AND ua.user.id = ? "
-				+ "AND (c.zip BETWEEN ua.postalStart AND ua.postalEnd OR c.state = ua.state) AND c.open = ? "
+				+ "AND (c.zip BETWEEN ua.postalStart AND ua.postalEnd OR c.countrySubdivision = ua.countrySubdivision) AND c.open = ? "
 				+ "AND c.handledBy = ? ORDER BY c.lastContactDate, c.deadline");
 		query.setParameter(1, csrID);
 		query.setParameter(2, open);

@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
+import com.picsauditing.toggle.FeatureToggleChecker;
 import com.picsauditing.util.Strings;
 
 /**
@@ -38,7 +39,9 @@ public class MailCron extends PicsActionSupport {
 	@Autowired
 	private SubscriptionBuilderFactory subscriptionFactory;
 	@Autowired
-	private EmailSenderSpring emailSenderSpring;
+	private EmailSender emailSender;
+	@Autowired
+	private FeatureToggleChecker featureToggleChecker;
 
 	private int subscriptionID = 0;
 
@@ -70,29 +73,29 @@ public class MailCron extends PicsActionSupport {
 			}
 		}
 
-		/**
-		 * Send mail
-		 */
-		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
-		if (emails.size() == 0) {
-			addActionMessage("The email queue is empty");
-			return ACTION_MESSAGES;
-		}
-
-		try {
-			for (EmailQueue email : emails) {
-				emailSenderSpring.sendNow(email);
+		if (!featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")) {
+			// send email from the email_queue
+			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
+			if (emails.size() == 0) {
+				addActionMessage("The email queue is empty");
+				return ACTION_MESSAGES;
 			}
-
-			if (getActionErrors().size() == 0)
-				addActionMessage("Successfully sent " + emails.size() + " email(s)");
-
-		} catch (Exception continueUpTheStack) {
-			changeEmailStatusToError(emails);
-
-			throw continueUpTheStack;
+	
+			try {
+				for (EmailQueue email : emails) {
+					emailSender.sendNow(email);
+				}
+	
+				if (getActionErrors().size() == 0)
+					addActionMessage("Successfully sent " + emails.size() + " email(s)");
+	
+			} catch (Exception continueUpTheStack) {
+				changeEmailStatusToError(emails);
+	
+				throw continueUpTheStack;
+			}
 		}
-
+		
 		return ACTION_MESSAGES;
 	}
 
@@ -112,7 +115,7 @@ public class MailCron extends PicsActionSupport {
 				email.setStatus(EmailStatus.Error);
 				if (Strings.isEmpty(email.getToAddresses()))
 					email.setToAddresses("errors@picsauditing.com");
-				emailSenderSpring.send(email);
+				emailSender.send(email);
 			}
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			logger.error("Error sending email");

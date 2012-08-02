@@ -18,21 +18,21 @@
 	<s:set var="country_value" value="'US'" />
 </s:else>
 
-<s:if test="getStateList(#country_value).size == 0">
-	<s:set var="state_display" value="'display: none;'" />
+<s:if test="getCountrySubdivisionList(#country_value).size == 0">
+	<s:set var="countrySubdivision_display" value="'display: none;'" />
 </s:if>
 <s:else>
-	<s:set var="state_display" value="''" />
+	<s:set var="countrySubdivision_display" value="''" />
 </s:else>
 
 <s:if test="contractor.country.isoCode == 'CA'">
-	<s:set var="state_label_display" value="%{getText('global.Province')}" />
+	<s:set var="countrySubdivision_label_display" value="%{getText('global.Province')}" />
 </s:if>
 <s:elseif test="contractor.country.isoCode == 'GB'">
-	<s:set var="state_label_display" value="%{getText('global.Country')}" />
+	<s:set var="countrySubdivision_label_display" value="%{getText('global.Country')}" />
 </s:elseif>
 <s:else>
-	<s:set var="state_label_display" value="%{getText('global.State')}" />
+	<s:set var="countrySubdivision_label_display" value="%{getText('global.CountrySubdivision')}" />
 </s:else>
 
 <s:set name="chat_url" value="%{protocol +
@@ -158,12 +158,12 @@
 					<li class="city">
 						<s:textfield name="contractor.city" />
 					</li>
-					<li class="state" style="${state_display}">
+					<li class="countrySubdivision" style="${countrySubdivision_display}">
 						<s:select 
-							label="%{#state_label_display}"
-							list="getStateList(#country_value)"
-							cssClass="contractor-state"
-							name="state" 
+							label="%{#countrySubdivision_label_display}"
+							list="getCountrySubdivisionList(#country_value)"
+							cssClass="contractor-countrySubdivision"
+							name="countrySubdivision" 
 							listKey="isoCode" 
 							listValue="simpleName" 
 						/>

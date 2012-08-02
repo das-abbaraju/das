@@ -130,7 +130,7 @@ public class SmartFacilitySuggest {
 		sql.addField(alias + "dbaName");
 		sql.addField(alias + "status");
 		sql.addField(alias + "city");
-		sql.addField(alias + "state");
+		sql.addField(alias + "countrySubdivision");
 		sql.addField(alias + "country");
 		sql.addField(alias + "onsiteServices");
 		sql.addField(alias + "offsiteServices");

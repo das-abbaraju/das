@@ -244,8 +244,7 @@
 												</td>
 												<td>
 													<s:iterator value="#employee.employeeRoles" var="er" status="line">
-														<s:if test="#line.index > 0">, </s:if>
-														<s:property value="#er.jobRole.name" />
+														<s:property value="#er.jobRole.name" /><s:if test="!#line.last">, </s:if>
 													</s:iterator>
 												</td>
 											</tr>
@@ -301,11 +300,8 @@
 												</s:else>
 											</td>
 											<td>
-												<s:set var="addBreak" value="false" />
-												<s:iterator value="#role.jobCompetencies" var="jobCompetency">
-													<s:if test="#addBreak">, </s:if>
-													<s:set var="addBreak" value="true" />
-													<s:property value="#jobCompetency.competency.label" />
+												<s:iterator value="#role.jobCompetencies" var="jobCompetency" status="stat">
+													<s:property value="#jobCompetency.competency.label" /><s:if test="!#stat.last">, </s:if>
 												</s:iterator>
 											</td>
 										</tr>

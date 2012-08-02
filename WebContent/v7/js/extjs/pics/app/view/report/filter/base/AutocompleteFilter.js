@@ -6,14 +6,17 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
         'Ext.ux.form.BoxSelect'
     ],
 
+    cls: 'autocomplete-filter',
+
     initComponent: function () {
         this.callParent(arguments);
-
-        //this.record.set('operator', 'In');
 
         if (!this.record) {
             // die
         }
+
+        // TODO: why the hell is this here
+        this.record.set('operator', 'In');
 
         var autocomplete = this.createAutocomplete(this.record);
 
@@ -22,7 +25,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
 
     createAutocomplete: function (record) {
         var value = record.get('value');
-        var store = this.getStoreForAutocomplete();
+        var store = this.getStoreForAutocomplete(record);
 
         return Ext.create('Ext.ux.form.BoxSelect', {
             delimiter: ',',
@@ -37,9 +40,9 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
                     }
                 },
                 change: function (obj, newval, oldval, options) {
-                    /*newval = newval.replace(/\s/g,"");
+                    newval = newval.replace(/\s/g,"");
 
-                    this.up('autocompletefilter').record.set('value', newval);*/
+                    record.set('value', newval);
                 }
             },
             margin: '0 5 0 0',
@@ -51,7 +54,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             store: store,
             typeAhead: false,
             value: value,
-            valueField: 'searchQuery',
+            valueField: 'id',
             width: 258
         });
     },
@@ -70,16 +73,11 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             }],
             proxy: {
                 type: 'ajax',
+                // TODO: why does this require a report number
                 url: 'ReportDynamic!list.action?report=' + url.report + '&fieldName=' + name,
                 reader: {
                     root: 'result',
                     type: 'json'
-                }
-            },
-            listeners: {
-                load: function () {
-                    //set valueField to pull from json id
-                    //me.child('panel [name=filter_input] boxselect').valueField = 'id';
                 }
             }
         };

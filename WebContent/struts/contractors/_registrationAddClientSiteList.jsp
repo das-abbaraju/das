@@ -18,7 +18,7 @@
 						${result.city},
 					</s:if>
 					
-					${result.state}
+					${result.countrySubdivision}
 					
 					<s:if test="permissions.country != #result.country.isoCode">
 						, ${result.country.isoCode}

@@ -40,7 +40,7 @@ public class AuditorAvailability extends BaseTable {
 
 	private boolean onsiteOnly = false;
 	private boolean webOnly = false;
-	private String onlyInStates = null;
+	private String onlyInCountrySubdivisions = null;
 	
 	@Transient
 	public Date getEndDate() {
@@ -179,24 +179,24 @@ public class AuditorAvailability extends BaseTable {
 		this.webOnly = webOnly;
 	}
 
-	public String getOnlyInStates() {
-		return onlyInStates;
+	public String getOnlyInCountrySubdivisions() {
+		return onlyInCountrySubdivisions;
 	}
 
-	public void setOnlyInStates(String onlyInStates) {
-		this.onlyInStates = onlyInStates;
+	public void setOnlyInCountrySubdivisions(String onlyInCountrySubdivisions) {
+		this.onlyInCountrySubdivisions = onlyInCountrySubdivisions;
 	}
 
-	public void setOnlyInStates(String[] onlyInStates) {
-		this.onlyInStates = Strings.implode(Arrays.asList(onlyInStates), ",");
+	public void setOnlyInCountrySubdivisions(String[] onlyInCountrySubdivisions) {
+		this.onlyInCountrySubdivisions = Strings.implode(Arrays.asList(onlyInCountrySubdivisions), ",");
 	}
 
 	@Transient
-	public String[] getOnlyInStatesArray() {
-		if (onlyInStates == null)
+	public String[] getOnlyInCountrySubdivisionsArray() {
+		if (onlyInCountrySubdivisions == null)
 			return null;
 
-		return onlyInStates.split(",");
+		return onlyInCountrySubdivisions.split(",");
 	}
 
 	public int getMaxDistance() {
@@ -261,16 +261,16 @@ public class AuditorAvailability extends BaseTable {
 			rank += 100;
 		}
 
-		String[] states = getOnlyInStatesArray();
-		if (states != null && states.length > 0) {
-			boolean matchedState = false;
-			for (String state : states) {
-				if (state.equals(conAudit.getState())) {
-					matchedState = true;
+		String[] countrySubdivisions = getOnlyInCountrySubdivisionsArray();
+		if (countrySubdivisions != null && countrySubdivisions.length > 0) {
+			boolean matchedCountrySubdivision = false;
+			for (String countrySubdivision : countrySubdivisions) {
+				if (countrySubdivision.equals(conAudit.getCountrySubdivision())) {
+					matchedCountrySubdivision = true;
 					rank += 25;
 				}
 			}
-			if (!matchedState) {
+			if (!matchedCountrySubdivision) {
 				rank -= 10;
 			}
 		}

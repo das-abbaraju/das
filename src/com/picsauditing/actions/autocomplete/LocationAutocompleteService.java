@@ -8,16 +8,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.Autocompleteable;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.State;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class LocationAutocompleteService extends AutocompleteService<Autocompleteable> {
 	@Autowired
-	protected StateDAO stateDAO;
+	protected CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	protected CountryDAO countryDAO;
 
@@ -28,26 +28,26 @@ public class LocationAutocompleteService extends AutocompleteService<Autocomplet
 			if (q.length() == 2) {
 				// search both iso and translated fields for the 2 letter
 				// combinations
-				List<State> stateList = stateDAO.findWhere("isoCode = '" + Strings.escapeQuotes(q) + "'");
-				List<Country> countryList = countryDAO.findWhere("isoCode = '" + Strings.escapeQuotes(q) + "'");
-				result.addAll(stateList);
+				List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findWhere("isoCode LIKE '%" + Strings.escapeQuotes(q) + "'");
+				List<Country> countryList = countryDAO.findWhere("isoCode LIKE '%" + Strings.escapeQuotes(q) + "'");
+				result.addAll(countrySubdivisionList);
 				result.addAll(countryList);
 
-				stateList = stateDAO.findByTranslatableField(State.class, "%" + Strings.escapeQuotes(q) + "%");
+				countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(CountrySubdivision.class, "%" + Strings.escapeQuotes(q) + "%");
 				countryList = countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(q) + "%");
 
-				result.addAll(stateList);
+				result.addAll(countrySubdivisionList);
 				result.addAll(countryList);
 				return result;
 			} else {
 				// any more or less characters, then search only through
 				// translations
-				List<State> stateList = stateDAO.findByTranslatableField(State.class, "%" + Strings.escapeQuotes(q)
+				List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(CountrySubdivision.class, "%" + Strings.escapeQuotes(q)
 						+ "%");
 				List<Country> countryList = countryDAO.findByTranslatableField(Country.class, "%"
 						+ Strings.escapeQuotes(q) + "%");
 
-				result.addAll(stateList);
+				result.addAll(countrySubdivisionList);
 				result.addAll(countryList);
 
 				return result;
