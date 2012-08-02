@@ -44,7 +44,7 @@ Ext.define('PICS.controller.report.Filter', {
             // render filter options
             'reportfilteroptions': {
                 afterlayout: this.onFilterOptionsAfterLayout,
-                beforerender: this.onFilterOptionsBeforeRender,
+                render: this.onFilterOptionsRender
             },
 
             // collapse filter options
@@ -65,6 +65,17 @@ Ext.define('PICS.controller.report.Filter', {
             // show filter formula
             'reportfiltertoolbar button[action=show-filter-formula]': {
                 click: this.onFilterFormulaShow
+            },
+
+            // load filter formula expression
+            'reportfilterformula': {
+                beforerender: this.onFilterFormulaBeforeRender
+            },
+
+            // save filter formula expression
+            'reportfilterformula textfield[name=filter_formula]': {
+                blur: this.onFilterFormulaBlur,
+                specialkey: this.onFilterFormulaInputEnter
             },
 
             // hide filter formula
@@ -164,18 +175,20 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    onFilterOptionsBeforeRender: function (cmp, eOpts) {
-        var report_store = this.getReportReportsStore();
+    onFilterOptionsRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore();
 
-        if (report_store.isLoading()) {
-            report_store.load({
+        if (store.isLoading()) {
+            store.load({
                 callback: function (store, records, successful, eOpts) {
                     this.application.fireEvent('refreshfilters');
+                    this.showFilterFormula();
                 },
                 scope: this
             });
         } else {
             this.application.fireEvent('refreshfilters');
+            this.showFilterFormula();
         }
     },
 
@@ -200,9 +213,12 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onFilterFormulaShow: function (cmp, event, eOpts) {
+        this.showFilterFormula();
+    },
+
+    showFilterFormula: function () {
         var filter_options = this.getFilterOptions(),
-            filter_toolbar = this.getFilterToolbar(),
-            filters = this.getFilters();
+        filter_toolbar = this.getFilterToolbar();
 
         if (!filter_options) {
             return false;
@@ -215,8 +231,6 @@ Ext.define('PICS.controller.report.Filter', {
 
         filter_options.removeDocked(filter_toolbar);
         filter_options.addDocked(filter_formula);
-
-        filters.addCls('x-active');
     },
 
     onFilterFormulaCancel: function (cmp, event, eOpts) {
@@ -232,6 +246,105 @@ Ext.define('PICS.controller.report.Filter', {
         filter_options.addDocked(filter_toolbar);
 
         this.getFilters().removeCls('x-active');
+    },
+
+    onFilterFormulaBeforeRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            filter_formula = report.get('filterExpression'),
+            filter_formula_expression = this.getFilterFormulaExpression(),
+            filters = this.getFilters();
+
+        if (filter_formula != '') {
+            filter_formula = this.formatFilterFormula(filter_formula);
+
+            filter_formula_expression.setValue(filter_formula);
+        }
+
+        if (filters) {
+            filters.addCls('x-active');
+        }
+    },
+
+    formatFilterFormula: function (formula) {
+        var formatted = formula.replace(/[{}]/g, '');
+
+        formatted = formatted.replace(/\d+/g, function(val) {
+            return parseInt(val) + 1;
+        });
+
+        return formatted;
+    },
+
+    onFilterFormulaBlur: function (cmp, event, eOpts) {
+        this.saveFilterFormula();
+    },
+
+    onFilterFormulaInputEnter: function (cmp, event) {
+        if (event.getKey() != event.ENTER) {
+            return false;
+        }
+
+        this.saveFilterFormula();
+
+        this.application.fireEvent('refreshreport');
+    },
+
+    saveFilterFormula: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            filter_formula = this.getFilterFormulaExpression().value;
+
+        // TODO write a real grammar and parser for our filter formula DSL
+
+        // Split into tokens
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
+        filter_formula = filter_formula.replace(validTokenRegex, ' $& ');
+
+        var tokens = filter_formula.trim().split(/ +/);
+        filter_formula = '';
+
+        // Check for invalid tokens and make sure parens are balanced
+        var parenCount = 0;
+        for (var i = 0; i < tokens.length; i += 1) {
+            var token = tokens[i];
+
+            if (token.search(validTokenRegex) === -1) {
+                return false;
+            }
+
+            if (token === '(') {
+                parenCount += 1;
+                filter_formula += '{';
+            } else if (token === ')') {
+                parenCount -= 1;
+                filter_formula += '}';
+            } else if (token.toUpperCase() === 'AND') {
+                filter_formula += ' AND ';
+            } else if (token.toUpperCase() === 'OR') {
+                filter_formula += ' OR ';
+            } else if (token.search(/[0-9]+/) !== -1) {
+                if (token === '0') {
+                    return false;
+                }
+
+                // Convert from counting number to index
+                var indexNum = new Number(token) - 1;
+                filter_formula += '{' + indexNum + '}';
+            } else {
+                return false;
+            }
+
+            if (parenCount < 0) {
+                return false;
+            }
+        }
+
+        if (parenCount !== 0) {
+            return false;
+        }
+
+        report.set('filterExpression', filter_formula);
     },
 
     /**
@@ -329,91 +442,4 @@ Ext.define('PICS.controller.report.Filter', {
             return cmp.cls == 'filter';
         });
     }
-
-    /*applyFilterFormula: function () {
-        var report = this.getReportReportsStore().first(),
-            formula = this.getFilterFormulaExpression().value;
-
-        // TODO write a real grammar and parser for our filter formula DSL
-
-        // Split into tokens
-        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
-        formula = formula.replace(validTokenRegex, ' $& ');
-
-        var tokens = formula.trim().split(/ +/);
-        formula = '';
-
-        // Check for invalid tokens and make sure parens are balanced
-        var parenCount = 0;
-        for (var i = 0; i < tokens.length; i += 1) {
-            var token = tokens[i];
-
-            if (token.search(validTokenRegex) === -1) {
-                return false;
-            }
-
-            if (token === '(') {
-                parenCount += 1;
-                formula += '{';
-            } else if (token === ')') {
-                parenCount -= 1;
-                formula += '}';
-            } else if (token.toUpperCase() === 'AND') {
-                formula += ' AND ';
-            } else if (token.toUpperCase() === 'OR') {
-                formula += ' OR ';
-            } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0') {
-                    return false;
-                }
-
-                // Convert from counting number to index
-                var indexNum = new Number(token) - 1;
-                formula += '{' + indexNum + '}';
-            } else {
-                return false;
-            }
-
-            if (parenCount < 0) {
-                return false;
-            }
-        }
-
-        if (parenCount !== 0) {
-            return false;
-        }
-
-        report.set('filterExpression', formula);
-
-        this.application.fireEvent('refreshreport');
-    },*/
-
-    /*formatFormula: function (formula) {
-        var formatted = formula.replace(/[{}]/g, '');
-
-        formatted = formatted.replace(/\d+/g, function(val) { return parseInt(val) + 1; });
-
-        return formatted;
-    },
-
-    getFilterFormulaExpressionFromReport: function () {
-        var report = this.getReportReportsStore(),
-            filter_formula = report.first().get('filterExpression');
-
-        return filter_formula;
-    },*/
-
-    /*loadFilterFormula: function () {
-        var expression = this.getFilterFormulaExpressionFromReport(),
-            filter_options = this.getFilterOptions();
-
-        if (expression !== '') {
-            var formula = this.formatFormula(expression);
-            var advanced_filter = Ext.create('PICS.view.report.filter.Formula', {
-                formula: formula
-            });
-
-            filter_options.addDocked(advanced_filter);
-        }
-    },*/
 });
