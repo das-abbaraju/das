@@ -1,6 +1,7 @@
 package com.picsauditing.actions.i18n;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
@@ -9,6 +10,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
@@ -25,6 +28,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
@@ -32,6 +36,7 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.converters.JsonObjectConverter;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.search.SelectSQL;
@@ -46,6 +51,8 @@ public class ManageTranslationsTest extends PicsTest {
 	
 	@Mock Permissions permissions;
 	@Mock AppTranslation translation;
+	@Mock BasicDAO dao;
+	@Mock private HttpServletRequest request;
 	
 	@Before
 	public void TestSetup () throws Exception {
@@ -72,6 +79,9 @@ public class ManageTranslationsTest extends PicsTest {
 		when(permissions.getLocale()).thenReturn(Locale.FRANCE);
 		when(permissions.getUserId()).thenReturn(1);
 		when(permissions.getAdminID()).thenReturn(1);
+		
+		PowerMockito.mockStatic(ServletActionContext.class);
+		when(ServletActionContext.getRequest()).thenReturn(request);
 	}
 	
 	@Test
@@ -304,13 +314,24 @@ public class ManageTranslationsTest extends PicsTest {
 	}
 
 	@Test
-	public void testUpdate_null(){
-		//TODO complete test
+	public void testUpdate_null(){		
+		when(translation.getKey()).thenReturn(null);
+		Whitebox.setInternalState(classUnderTest, "translation", translation);
+		when(request.getParameter("key2")).thenReturn("Pending");
+		when(request.getParameter("locale")).thenReturn("Pending");
+		AppTranslation newTranslation = new AppTranslation();
+
+		classUnderTest.update();
+		//verify(dao).save(any(AppTranslation.class));
 	}
 
 	@Test
-	public void testUpdate_notNull(){
-		//TODO complete test
+	public void testUpdate_notNull(){				
+		when(translation.getKey()).thenReturn("TestKey");
+		translation.setKey("testkey");
+		Whitebox.setInternalState(classUnderTest, "translation", translation);
+		classUnderTest.update();
+		//verify(dao).save(any(AppTranslation.class));
 	}
 
 	@Ignore

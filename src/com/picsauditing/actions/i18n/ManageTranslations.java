@@ -50,6 +50,7 @@ public class ManageTranslations extends ReportActionSupport {
 	private String[] toSourceLanguages = null;
 	
 	private HttpServletRequest request;
+	private AppTranslation newTranslation;
 
 	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
@@ -169,7 +170,7 @@ public class ManageTranslations extends ReportActionSupport {
 				translation.setAuditColumns();
 				dao.save(translation);
 			} else {
-				AppTranslation newTranslation = new AppTranslation();
+				newTranslation = new AppTranslation();
 				request = ServletActionContext.getRequest();
 				newTranslation.setKey(request.getParameter("key2"));
 				newTranslation.setLocale(request.getParameter("locale"));
