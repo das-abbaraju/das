@@ -602,7 +602,10 @@ public class OperatorAccount extends Account {
 		}
 		return visibleAuditTypes;
 	}
-
+	
+	public void setVisibleAuditTypes(Set<Integer> visibleAuditTypes) {
+		this.visibleAuditTypes = visibleAuditTypes;
+	}
 	
 //	@Transient
 //	public boolean isInPicsConsortium() {
