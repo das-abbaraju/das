@@ -75,7 +75,7 @@ public abstract class Transaction extends BaseTable {
 
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -88,7 +88,7 @@ public abstract class Transaction extends BaseTable {
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
-	 * 
+	 *
 	 * @return
 	 */
 	public String getQbListID() {
@@ -125,7 +125,7 @@ public abstract class Transaction extends BaseTable {
 			return;
 		if (status.isPaid() && totalAmount.compareTo(BigDecimal.ZERO) == 0)
 			return;
-		if (totalAmount.compareTo(BigDecimal.ZERO) != 0 && getBalance().compareTo(BigDecimal.ZERO) == 0)
+		if (totalAmount.compareTo(BigDecimal.ZERO) != 0 && getBalance().compareTo(BigDecimal.ZERO) <= 0)
 			status = TransactionStatus.Paid;
 		else
 			status = TransactionStatus.Unpaid;
