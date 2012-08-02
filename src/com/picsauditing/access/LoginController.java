@@ -33,7 +33,6 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -65,7 +64,6 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-			// ServletActionContext.getRequest().getSession().invalidate();
 			return SUCCESS;
 		}
 		loadPermissions(false);
@@ -80,7 +78,6 @@ public class LoginController extends PicsActionSupport {
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null) {
 				addActionMessage(getText("Login.CookiesAreDisabled"));
-
 				return SUCCESS;
 			}
 
@@ -152,15 +149,12 @@ public class LoginController extends PicsActionSupport {
 			switchToUser(switchToUser);
 			username = permissions.getUsername();
 		} else {
-			// Normal login, via the actual Login.action page
-
-			PicsLogger.start("Login", "Normal login");
+			LOG.info("Normal login, via the actual Login.action page");
 			permissions.clear();
 			String error = canLogin();
 			if (error.length() > 0) {
 				logAttempt();
 				addActionError(error);
-				// ServletActionContext.getRequest().getSession().invalidate();
 				ActionContext.getContext().getSession().clear();
 				return SUCCESS;
 			}
@@ -170,8 +164,7 @@ public class LoginController extends PicsActionSupport {
 				user.setResetHash("");
 			}
 
-			// /////////////////
-			PicsLogger.log("logging in user: " + user.getUsername());
+			LOG.info("logging in user");
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
 			permissions.getToggles().putAll(getApplicationToggles());
@@ -189,8 +182,6 @@ public class LoginController extends PicsActionSupport {
 				switchToUser(switchServerToUser);
 				ActionContext.getContext().getSession().put("redirect", "true");
 			}
-
-			PicsLogger.stop();
 		}
 
 		if (permissions.isLoggedIn())
@@ -434,15 +425,6 @@ public class LoginController extends PicsActionSupport {
 			cookie.setMaxAge(0);
 		}
 		getResponse().addCookie(cookie);
-	}
-
-	public void printCookie() {
-		Cookie[] cookiesA = getRequest().getCookies();
-		if (cookiesA != null) {
-			for (int i = 0; i < cookiesA.length; i++) {
-				LOG.error("cookie name " + cookiesA[i].getName() + " cookie value " + cookiesA[i].getValue());
-			}
-		}
 	}
 
 	private void logAttempt() throws Exception {
