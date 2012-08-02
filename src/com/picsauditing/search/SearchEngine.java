@@ -324,7 +324,7 @@ public class SearchEngine {
 
 		sql.addJoin("JOIN operators o ON a.id = o.id");
 		sql.addJoin("LEFT JOIN ref_country rc ON rc.isoCode=a.country");
-		sql.addJoin("LEFT JOIN ref_country_subdivision rs on rs.isoCode=a.country_subdivision");
+		sql.addJoin("LEFT JOIN ref_country_subdivision rs ON rs.isoCode=a.countrySubdivision");
 
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
