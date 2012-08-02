@@ -117,12 +117,12 @@
 					<s:text name="ManageEmployees.header.JobRoles" />
 				</h2>
 				<div id="employee_role">
-					<s:include value="role.jsp" />
+					<s:include value="manage_employees_roles.jsp" />
 				</div>
 			</fieldset>
 		</s:if>
 		<div id="employee_site">
-			<s:include value="site.jsp" />
+			<s:include value="manage_employees_sites.jsp" />
 		</div>
 		<s:if test="employee.account.requiresOQ">
 			<div id="employee_nccer">

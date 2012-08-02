@@ -17,20 +17,20 @@
 
 		<action name="ManageEmployees"
 			class="com.picsauditing.actions.employees.ManageEmployees">
-			<result>struts/employees/manage/manage.jsp</result>
-			<result name="edit">struts/employees/manage/form.jsp</result>
+			<result>struts/employees/manage/manage_employees.jsp</result>
+			<result name="edit">struts/employees/manage/manage_employees_form.jsp</result>
 		</action>
 		
 		<action name="ManageEmployeeRole"
 			class="com.picsauditing.actions.employees.ManageEmployeeRole">
-			<result>struts/employees/manage/role.jsp</result>
+			<result>struts/employees/manage/manage_employees_roles.jsp</result>
 		</action>
 		
 		<action name="ManageEmployeeSite"
 			class="com.picsauditing.actions.employees.ManageEmployeeSite">
-			<result>struts/employees/manage/site.jsp</result>
-			<result name="edit">struts/employees/manage/site_edit.jsp</result>
-			<result name="new">struts/employees/manage/site_oq_new.jsp</result>
+			<result>struts/employees/manage/manage_employees_sites.jsp</result>
+			<result name="edit">struts/employees/manage/manage_employees_sites_edit.jsp</result>
+			<result name="new">struts/employees/manage/manage_employees_sites_oq_new.jsp</result>
 		</action>
 
 		<action name="ManageEmployeesUpload"

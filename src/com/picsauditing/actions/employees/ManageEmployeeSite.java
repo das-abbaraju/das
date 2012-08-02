@@ -41,9 +41,16 @@ public class ManageEmployeeSite extends ManageEmployees {
 			employeeSiteDAO.save(employeeSite);
 			employee.getEmployeeSites().add(employeeSite);
 
-			addNote("Added "
-					+ (employeeSite.getJobSite() != null ? "OQ project " + employeeSite.getOperator().getName() + ": "
-							+ employeeSite.getJobSite().getLabel() : "HSE site " + employeeSite.getOperator().getName()));
+			String note = "Added ";
+			if (jobSite.getId() > 0) {
+				note += "OQ Project " + jobSite.getOperator().getName() + ": " + jobSite.getLabel();
+			} else if (operator.isRequiresCompetencyReview()) {
+				note += "HSE site " + operator.getName();
+			} else {
+				note += "Client site " + operator.getName();
+			}
+
+			addNote(note);
 		}
 
 		return SUCCESS;
@@ -76,6 +83,14 @@ public class ManageEmployeeSite extends ManageEmployees {
 	}
 
 	public String expire() {
+		if (employee != null && operator != null) {
+			for (EmployeeSite existingEmployeeSite : employee.getEmployeeSites()) {
+				if (existingEmployeeSite.getOperator().equals(operator)) {
+					employeeSite = existingEmployeeSite;
+				}
+			}
+		}
+
 		if (employeeSite != null) {
 			if (employee == null) {
 				employee = employeeSite.getEmployee();

@@ -60,7 +60,6 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
@@ -367,8 +366,9 @@ public class ContractorCron extends PicsActionSupport {
 		contractor.setRequiresCompetencyReview(false);
 		if (requiresCompetency) {
 			for (ContractorTag tag : contractor.getOperatorTags()) {
-				if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW)
+				if ("HSE Competency".equals(tag.getTag().getTag())) {
 					contractor.setRequiresCompetencyReview(true);
+				}
 			}
 		}
 	}

@@ -60,6 +60,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected Set<JobRole> unusedJobRoles;
 	protected List<OperatorSite> oqOperators;
 	protected List<OperatorSite> hseOperators;
+	protected List<OperatorAccount> nonEmployeeGUARDOperators;
+	protected List<OperatorAccount> unusedNonEmployeeGUARDOperators;
 	protected List<AssessmentResult> nccerResults;
 
 	private List<Employee> activeEmployees;
@@ -147,12 +149,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		employee.setAuditColumns(permissions);
+		employee = (Employee) employeeDAO.save(employee);
 
-		if (employee.getId() <= 0) {
+		if (employee.getId() == 0) {
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 		}
-
-		employee = (Employee) employeeDAO.save(employee);
 
 		addInitialSites();
 
@@ -260,7 +261,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public List<OperatorSite> getOqOperators() {
 		if (oqOperators == null)
-			getOperators();
+			loadOperators();
 
 		return oqOperators;
 	}
@@ -269,18 +270,36 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		List<OperatorAccount> allOqOperators = new ArrayList<OperatorAccount>();
 
 		for (ContractorOperator co : ((ContractorAccount) account).getOperators()) {
-			if (co.getOperatorAccount().isRequiresOQ())
+			if (co.getOperatorAccount().isRequiresOQ()) {
 				allOqOperators.add(co.getOperatorAccount());
+			}
 		}
 
 		return allOqOperators;
 	}
 
 	public List<OperatorSite> getHseOperators() {
-		if (hseOperators == null)
-			getOperators();
+		if (hseOperators == null) {
+			loadOperators();
+		}
 
 		return hseOperators;
+	}
+
+	public List<OperatorAccount> getNonEmployeeGUARDOperators() {
+		if (nonEmployeeGUARDOperators == null) {
+			loadOperators();
+		}
+
+		return nonEmployeeGUARDOperators;
+	}
+
+	public List<OperatorAccount> getUnusedNonEmployeeGUARDOperators() {
+		if (unusedNonEmployeeGUARDOperators == null) {
+			loadOperators();
+		}
+
+		return unusedNonEmployeeGUARDOperators;
 	}
 
 	public boolean isShowJobRolesSection() {
@@ -416,33 +435,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 	}
 
-	private void fillSites(Set<OperatorSite> returnList, OperatorAccount operator) {
-		if (operator.getJobSites().size() == 0) {
-			boolean found = false;
-			for (OperatorSite os : returnList) {
-				if (os.getOperator().equals(operator) && os.getSite() == null)
-					found = true;
-			}
-
-			if (!found)
-				returnList.add(new OperatorSite(operator));
-		} else {
-			for (JobSite site : operator.getJobSites()) {
-				if (site.getProjectStop() == null || site.getProjectStop().after(new Date())) {
-					boolean found = false;
-					for (OperatorSite os : returnList) {
-						if (os.getSite() != null && os.getSite().equals(site))
-							found = true;
-					}
-
-					if (!found)
-						returnList.add(new OperatorSite(site));
-				}
-			}
-		}
-	}
-
-	private void getOperators() {
+	private void loadOperators() {
 		Set<OperatorSite> returnList = new HashSet<OperatorSite>();
 		oqOperators = new ArrayList<OperatorSite>();
 		hseOperators = new ArrayList<OperatorSite>();
@@ -461,7 +454,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			for (JobContractor jc : contractor.getJobSites()) {
 				returnList.add(new OperatorSite(jc.getJob()));
 			}
-
 		} else if (employee.getAccount().isOperatorCorporate()) {
 			// if operator employee return list of self, and if corporate, child
 			// facilities
@@ -477,31 +469,95 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			}
 		}
 
-		// trimming return list by used entries
-		for (EmployeeSite used : employee.getEmployeeSites()) {
-			if (used.isCurrent()) {
-				Iterator<OperatorSite> iterator = returnList.iterator();
-
-				while (iterator.hasNext()) {
-					OperatorSite os = iterator.next();
-
-					if ((os.getSite() != null && used.getJobSite() != null && used.getJobSite().equals(os.getSite()))
-							|| (os.getSite() == null && used.getJobSite() == null && os.getOperator().equals(
-									used.getOperator())))
-						iterator.remove();
-				}
-			}
-		}
-
-		for (OperatorSite os : returnList) {
-			if (os.getSite() != null)
-				oqOperators.add(os);
-			else
-				hseOperators.add(os);
-		}
+		removeEmployeeSites(returnList);
+		addOperatorSiteToAppropriateList(returnList);
 
 		Collections.sort(oqOperators);
 		Collections.sort(hseOperators);
+
+		loadNonEmployeeGUARDOperators(returnList);
+	}
+
+	private void fillSites(Set<OperatorSite> returnList, OperatorAccount operator) {
+		if (operator.getJobSites().size() == 0) {
+			boolean found = false;
+			for (OperatorSite os : returnList) {
+				if (os.getOperator().equals(operator) && os.getSite() == null) {
+					found = true;
+				}
+			}
+
+			if (!found) {
+				returnList.add(new OperatorSite(operator));
+			}
+		} else {
+			for (JobSite site : operator.getJobSites()) {
+				if (site.getProjectStop() == null || site.getProjectStop().after(new Date())) {
+					boolean found = false;
+					for (OperatorSite os : returnList) {
+						if (os.getSite() != null && os.getSite().equals(site)) {
+							found = true;
+						}
+					}
+
+					if (!found) {
+						returnList.add(new OperatorSite(site));
+					}
+				}
+			}
+		}
+	}
+
+	private void loadNonEmployeeGUARDOperators(Set<OperatorSite> returnList) {
+		Set<OperatorAccount> employeeGUARDSites = new HashSet<OperatorAccount>();
+		for (OperatorSite operatorSite : returnList) {
+			employeeGUARDSites.add(operatorSite.getOperator());
+		}
+
+		nonEmployeeGUARDOperators = new ArrayList<OperatorAccount>();
+
+		for (EmployeeSite employeeSite : employee.getEmployeeSites()) {
+			if (employeeSite.isCurrent() && !nonEmployeeGUARDOperators.contains(employeeSite.getOperator())) {
+				nonEmployeeGUARDOperators.add(employeeSite.getOperator());
+			}
+		}
+
+		nonEmployeeGUARDOperators.removeAll(employeeGUARDSites);
+		Collections.sort(nonEmployeeGUARDOperators);
+
+		loadUnusedNonEmployeeGUARDOperators(employeeGUARDSites);
+	}
+
+	private void loadUnusedNonEmployeeGUARDOperators(Set<OperatorAccount> employeeGUARDSites) {
+		unusedNonEmployeeGUARDOperators = new ArrayList<OperatorAccount>();
+
+		if (employee.getAccount().isContractor()) {
+			ContractorAccount contractor = (ContractorAccount) employee.getAccount();
+			unusedNonEmployeeGUARDOperators.addAll(contractor.getOperatorAccounts());
+		} else if (employee.getAccount().isOperatorCorporate()) {
+			OperatorAccount operator = (OperatorAccount) employee.getAccount();
+
+			loadAllChildFacilities(operator.getTopAccount().getOperatorFacilities());
+		}
+
+		unusedNonEmployeeGUARDOperators.removeAll(employeeGUARDSites);
+		unusedNonEmployeeGUARDOperators.removeAll(nonEmployeeGUARDOperators);
+
+		Collections.sort(unusedNonEmployeeGUARDOperators);
+	}
+
+	private void loadAllChildFacilities(List<Facility> operatorFacilities) {
+		for (Facility facility : operatorFacilities) {
+			OperatorAccount operator = facility.getOperator();
+
+			if (operator.isOperator()) {
+				if (!unusedNonEmployeeGUARDOperators.contains(operator)) {
+					unusedNonEmployeeGUARDOperators.add(operator);
+				}
+			} else {
+				loadAllChildFacilities(operator.getOperatorFacilities());
+			}
+		}
 	}
 
 	private void loadActiveEmployees() {
@@ -526,8 +582,37 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				employeeSite.setOperator(new OperatorAccount());
 				employeeSite.getOperator().setId(operatorID);
 				employeeSite.setAuditColumns(permissions);
+				employeeSite.defaultDates();
 
 				dao.save(employeeSite);
+			}
+		}
+	}
+
+	private void removeEmployeeSites(Set<OperatorSite> returnList) {
+		// trimming return list by used entries
+		for (EmployeeSite used : employee.getEmployeeSites()) {
+			if (used.isCurrent()) {
+				Iterator<OperatorSite> iterator = returnList.iterator();
+
+				while (iterator.hasNext()) {
+					OperatorSite os = iterator.next();
+
+					if ((os.getSite() != null && used.getJobSite() != null && used.getJobSite().equals(os.getSite()))
+							|| (os.getSite() == null && used.getJobSite() == null && os.getOperator().equals(
+									used.getOperator())))
+						iterator.remove();
+				}
+			}
+		}
+	}
+
+	private void addOperatorSiteToAppropriateList(Set<OperatorSite> returnList) {
+		for (OperatorSite operatorSite : returnList) {
+			if (operatorSite.getSite() != null) {
+				oqOperators.add(operatorSite);
+			} else if (operatorSite.getOperator().isRequiresCompetencyReview()) {
+				hseOperators.add(operatorSite);
 			}
 		}
 	}
@@ -576,25 +661,38 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj == null)
+			if (obj == null) {
 				return false;
+			}
+
 			OperatorSite o = (OperatorSite) obj;
-			if (!operator.equals(o.getOperator()))
+
+			if (!operator.equals(o.getOperator())) {
 				return false;
-			if (site == null && o.getSite() == null)
+			}
+
+			if (site == null && o.getSite() == null) {
 				return true;
-			if (site == null)
+			}
+
+			if (site == null) {
 				return false;
+			}
+
 			return site.equals(o.getSite());
 		}
 
 		@Override
 		public int compareTo(OperatorSite o) {
 			int opCompare = operator.compareTo(o.getOperator());
-			if (opCompare != 0)
+
+			if (opCompare != 0) {
 				return opCompare;
-			if (site == null)
+			}
+
+			if (site == null) {
 				return -1;
+			}
 
 			return site.getName().compareTo(o.getSite().getName());
 		}

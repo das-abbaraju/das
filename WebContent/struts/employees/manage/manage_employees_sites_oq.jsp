@@ -29,7 +29,7 @@
 					</tr>
 				</thead>
 				<s:set name="oqSiteCount" value="0" />
-				<s:include value="site_oq_task.jsp" />
+				<s:include value="manage_employees_sites_oq_tasks.jsp" />
 				<s:if test="#oqSiteCount == 0">
 					<tr>
 						<td colspan="5">

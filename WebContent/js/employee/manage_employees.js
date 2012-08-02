@@ -10,6 +10,7 @@
                     
                     element.delegate('#available_employee_roles', 'change', this.addRole);
                     element.delegate('#hse_operator_list', 'change', this.addOperatorSite);
+                    element.delegate('#non_eg_operator_list', 'change', this.addOperatorSite);
                     element.delegate('#oq_project_list', 'change', this.addJobSite);
                     
                     element.delegate('#employee_nccer_link', 'click', this.nccer);
@@ -18,6 +19,7 @@
                     
                     element.delegate('.edit.site', 'click', this.editSite);
                     element.delegate('.remove.role', 'click', this.removeRole);
+                    element.delegate('.remove.site', 'click', this.expireSite);
                     element.delegate('.preview.tasks', 'click', this.showTask);
 
                     var manageEmployees = this;
@@ -153,6 +155,25 @@
                             constrainInput : true,
                             showAnim : 'fadeIn'
                         });                        
+                    }
+                });
+            },
+            
+            expireSite: function(event) {
+                var employee = $(this).attr('data-employee');
+                var operator = $(this).attr('data-operator');
+                
+                PICS.ajax({
+                    url: 'ManageEmployeeSite!expire.action',
+                    data: {
+                        employee: employee,
+                        operator: operator
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $('#employee_site').html(data);
+                    },
+                    complete: function(XMLHttpRequest, textStatus) {
+                        modal.hide();
                     }
                 });
             },
