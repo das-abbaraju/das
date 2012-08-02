@@ -98,6 +98,20 @@ public class ManageEmployeeSiteTest {
 	}
 
 	@Test
+	public void testAdd_EmployeeHSEOperator() {
+		OperatorAccount operatorAccount = EntityFactory.makeOperator();
+		operatorAccount.setRequiresCompetencyReview(true);
+		Employee employee = EntityFactory.makeEmployee(operatorAccount);
+
+		manageEmployeeSite.setEmployee(employee);
+		manageEmployeeSite.setOperator(operatorAccount);
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.add());
+
+		verify(entityManager, times(2)).persist(any(BaseTable.class));
+	}
+
+	@Test
 	public void testAdd_EmployeeJobsite() {
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
 		Employee employee = EntityFactory.makeEmployee(operatorAccount);
@@ -144,7 +158,7 @@ public class ManageEmployeeSiteTest {
 	}
 
 	@Test
-	public void testAddNew_LabelName() {
+	public void testAddNew_EmployeeOperatorJobsite() {
 		manageEmployeeSite.setJobSite(new JobSite());
 		manageEmployeeSite.getJobSite().setId(1);
 		manageEmployeeSite.getJobSite().setName("Name");
@@ -161,6 +175,56 @@ public class ManageEmployeeSiteTest {
 	}
 
 	@Test
+	public void testAddNew_Employee() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+
+		assertEquals("new", manageEmployeeSite.addNew());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
+	public void testAddNew_Operator() {
+		manageEmployeeSite.setOperator(EntityFactory.makeOperator());
+
+		assertEquals("new", manageEmployeeSite.addNew());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
+	public void testAddNew_EmployeeOperator() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployeeSite.setOperator(EntityFactory.makeOperator());
+
+		assertEquals("new", manageEmployeeSite.addNew());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
+	public void testAddNew_EmployeeJobSite() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployeeSite.getJobSite().setLabel("Label");
+		manageEmployeeSite.getJobSite().setName("Name");
+
+		assertEquals("new", manageEmployeeSite.addNew());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
+	public void testAddNew_OperatorJobSite() {
+		manageEmployeeSite.setOperator(EntityFactory.makeOperator());
+		manageEmployeeSite.getJobSite().setLabel("Label");
+		manageEmployeeSite.getJobSite().setName("Name");
+
+		assertEquals("new", manageEmployeeSite.addNew());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
 	public void testEdit() {
 		assertEquals("edit", manageEmployeeSite.edit());
 
@@ -169,6 +233,66 @@ public class ManageEmployeeSiteTest {
 
 	@Test
 	public void testExpire() {
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.expire());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
+	public void testExpire_EmployeeOperator() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployeeSite.setOperator(EntityFactory.makeOperator());
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.expire());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
+	public void testExpire_EmployeeOperatorMatchingEmployeeSite() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployeeSite.setOperator(EntityFactory.makeOperator());
+
+		EmployeeSite employeeSite = new EmployeeSite();
+		employeeSite.setEmployee(manageEmployeeSite.getEmployee());
+		employeeSite.setOperator(manageEmployeeSite.getOperator());
+
+		manageEmployeeSite.getEmployee().getEmployeeSites().add(employeeSite);
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.expire());
+
+		verify(entityManager, times(2)).persist(any(BaseTable.class));
+	}
+
+	@Test
+	public void testExpire_Project() {
+		Employee employee = EntityFactory.makeEmployee(null);
+
+		EmployeeSite employeeSite = new EmployeeSite();
+		employeeSite.setEmployee(employee);
+		employeeSite.setOperator(EntityFactory.makeOperator());
+		employeeSite.setJobSite(new JobSite());
+		employeeSite.getJobSite().setLabel("Label");
+
+		manageEmployeeSite.setEmployee(employee);
+		manageEmployeeSite.setEmployeeSite(employeeSite);
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.expire());
+
+		verify(entityManager, times(2)).persist(any(BaseTable.class));
+	}
+
+	@Test
+	public void testExpire_EmployeeOperatorNotMatchingEmployeeSite() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployeeSite.setOperator(EntityFactory.makeOperator());
+
+		EmployeeSite employeeSite = new EmployeeSite();
+		employeeSite.setEmployee(manageEmployeeSite.getEmployee());
+		employeeSite.setOperator(EntityFactory.makeOperator());
+
+		manageEmployeeSite.getEmployee().getEmployeeSites().add(employeeSite);
+
 		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.expire());
 
 		neverMergedOrPersisted();
@@ -230,6 +354,15 @@ public class ManageEmployeeSiteTest {
 	}
 
 	@Test
+	public void testSave_Employee() {
+		manageEmployeeSite.setEmployee(EntityFactory.makeEmployee(null));
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.save());
+
+		neverMergedOrPersisted();
+	}
+
+	@Test
 	public void testSave_EmployeeSite() {
 		EmployeeSite employeeSite = new EmployeeSite();
 		employeeSite.setId(1);
@@ -242,6 +375,73 @@ public class ManageEmployeeSiteTest {
 		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.save());
 		assertEquals(employeeSite.getEmployee(), manageEmployeeSite.getEmployee());
 		assertEquals(employeeSite.getEmployee().getAccount(), manageEmployeeSite.getAccount());
+
+		verify(entityManager).merge(any(EmployeeSite.class));
+		verify(entityManager).persist(any(Note.class));
+		verify(entityManager, never()).remove(any(BaseTable.class));
+	}
+
+	@Test
+	public void testSave_EmployeeSiteUpdateDates() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 1);
+
+		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
+
+		EmployeeSite employeeSite = new EmployeeSite();
+		employeeSite.setId(1);
+		employeeSite.setEmployee(employee);
+		employeeSite.setEffectiveDate(calendar.getTime());
+		employeeSite.setOrientationDate(calendar.getTime());
+
+		calendar.add(Calendar.YEAR, 1);
+		employeeSite.setExpirationDate(calendar.getTime());
+
+		EmployeeSite employeeSite2 = new EmployeeSite();
+		employeeSite2.setId(1);
+		employeeSite2.setEmployee(employee);
+		employeeSite2.defaultDates();
+
+		manageEmployeeSite.setEmployee(employee);
+		manageEmployeeSite.setEmployeeSite(employeeSite);
+
+		when(entityManager.find(EmployeeSite.class, employeeSite.getId())).thenReturn(employeeSite2);
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.save());
+		assertEquals(employeeSite.getEmployee(), manageEmployeeSite.getEmployee());
+
+		verify(entityManager).merge(any(EmployeeSite.class));
+		verify(entityManager).persist(any(Note.class));
+		verify(entityManager, never()).remove(any(BaseTable.class));
+	}
+
+	@Test
+	public void testSave_EmployeeSiteRemoveDates() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, 1);
+
+		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
+
+		EmployeeSite employeeSite = new EmployeeSite();
+		employeeSite.setId(1);
+		employeeSite.setEmployee(employee);
+		employeeSite.setEffectiveDate(calendar.getTime());
+		employeeSite.setOrientationDate(calendar.getTime());
+
+		calendar.add(Calendar.YEAR, 1);
+		employeeSite.setExpirationDate(calendar.getTime());
+
+		EmployeeSite employeeSite2 = new EmployeeSite();
+		employeeSite2.setId(1);
+		employeeSite2.setEmployee(employee);
+
+		manageEmployeeSite.setEmployee(employee);
+		manageEmployeeSite.setEmployeeSite(employeeSite2);
+
+		when(entityManager.find(EmployeeSite.class, employeeSite.getId())).thenReturn(employeeSite);
+
+		assertEquals(ActionSupport.SUCCESS, manageEmployeeSite.save());
+		assertEquals(employeeSite.getEmployee(), manageEmployeeSite.getEmployee());
 
 		verify(entityManager).merge(any(EmployeeSite.class));
 		verify(entityManager).persist(any(Note.class));

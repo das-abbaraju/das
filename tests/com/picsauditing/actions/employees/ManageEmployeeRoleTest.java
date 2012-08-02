@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 
 import javax.persistence.EntityManager;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,6 +50,11 @@ public class ManageEmployeeRoleTest {
 		picsTestUtil.autowireEMInjectedDAOs(manageEmployeeRole, entityManager);
 
 		Whitebox.setInternalState(manageEmployeeRole, "permissions", permissions);
+	}
+
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Test
@@ -134,6 +140,26 @@ public class ManageEmployeeRoleTest {
 
 		verify(entityManager).persist(any(Note.class));
 		verify(entityManager).remove(any(EmployeeRole.class));
+	}
+
+	@Test
+	public void testGetEmployeeRole() {
+		EmployeeRole employeeRole = new EmployeeRole();
+		employeeRole.setEmployee(new Employee());
+		employeeRole.setJobRole(new JobRole());
+
+		manageEmployeeRole.setEmployeeRole(employeeRole);
+
+		assertEquals(employeeRole, manageEmployeeRole.getEmployeeRole());
+	}
+
+	@Test
+	public void testGetJobRole() {
+		JobRole jobRole = new JobRole();
+
+		manageEmployeeRole.setJobRole(jobRole);
+
+		assertEquals(jobRole, manageEmployeeRole.getJobRole());
 	}
 
 	private void neverMergedOrPersisted() {
