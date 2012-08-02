@@ -214,13 +214,11 @@
 						</td>
 						<td>
 							<s:iterator value="getCaoStats(permissions).keySet()" id="status">
-								<nobr>
-									<s:if test="getCaoStats(permissions).get(#status) > 1">
-										<s:text name="%{getCaoStats(permissions).get(#status).i18nKey}" />
-									</s:if>
+								<logic:notEmpty name="getCaoStatus(permissions).get(#status)">
+									<s:property value="getCaoStats(permissions).get(#status)" />
 									<s:text name="%{#status.i18nKey}" />
-								</nobr>
-								<br/>							
+								</logic:notEmpty>
+								<br />					
 							</s:iterator>
 						</td>
 					</tr>
