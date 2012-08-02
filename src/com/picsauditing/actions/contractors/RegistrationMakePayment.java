@@ -571,10 +571,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		types.add("Discover Card");
 		types.add("American Express");
 
-		if (contractor.getNewMembershipAmount().intValue() > 500) {
-			types.add("Check");
-		}
-
 		return types;
 	}
 
