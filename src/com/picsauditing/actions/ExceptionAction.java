@@ -16,14 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ExceptionAction extends PicsActionSupport {
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private Exception exception;
 	private String exceptionStack;

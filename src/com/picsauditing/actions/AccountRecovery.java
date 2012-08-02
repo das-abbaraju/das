@@ -12,7 +12,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -22,7 +22,7 @@ public class AccountRecovery extends PicsActionSupport {
 	@Autowired
 	private UserDAO userDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private String email, username;
 	private User user;
@@ -161,8 +161,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setCriticalPriority();
 
-			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
-			emailSenderStatic.send(emailQueue);
+			emailSender.send(emailQueue);
 			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
 			return getText("AccountRecovery.error.ResetEmailError");
@@ -187,8 +186,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setCriticalPriority();
 
-			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
-			emailSenderStatic.send(emailQueue);
+			emailSender.send(emailQueue);
 			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
 			return getText("AccountRecovery.error.ResetEmailError");

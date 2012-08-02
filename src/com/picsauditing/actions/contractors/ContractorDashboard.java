@@ -59,7 +59,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -84,7 +84,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
 	@Autowired

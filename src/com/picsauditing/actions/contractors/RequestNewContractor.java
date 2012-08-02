@@ -42,7 +42,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.FileUtils;
@@ -68,7 +68,7 @@ public class RequestNewContractor extends AccountActionSupport {
 	protected UserSwitchDAO userSwitchDAO;
 	
 	@Autowired
-	protected EmailSenderSpring emailSenderSpring;
+	protected EmailSender emailSenderSpring;
 
 	protected String requestedTagIds;
 	protected List<String> rightAnswers;

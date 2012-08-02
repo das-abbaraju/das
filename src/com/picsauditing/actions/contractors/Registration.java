@@ -39,7 +39,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -57,7 +57,7 @@ public class Registration extends ContractorActionSupport {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
 

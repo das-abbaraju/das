@@ -34,7 +34,7 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -63,7 +63,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	private ContractorValidator contractorValidator;
 

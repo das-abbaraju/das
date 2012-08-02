@@ -3,136 +3,153 @@ package com.picsauditing.mail;
 import java.util.Date;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.util.SpringUtils;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.toggle.FeatureToggleChecker;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
-/*
- * Please use new EmailSenderSpring
- */
-@Deprecated
 public class EmailSender {
+	private final Logger logger = LoggerFactory.getLogger(EmailSender.class);
+	
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
+	@Autowired
+	private FeatureToggleChecker featureToggleChecker;
+	
 	private static String defaultPassword = "e3r4t5";
-	private EmailQueueDAO emailQueueDAO = null;
+	
+	// this is @Autowired at the setter because we need @Qualifier which does NOT work
+	// on the variable declaration; only on the method (I think this is a Spring bug)
+	private Publisher emailQueuePublisher;
 
+	@Autowired
+	@Qualifier("EmailQueuePublisher")
+	public void setFlagChangePublisher(Publisher emailQueuePublisher) {
+		this.emailQueuePublisher = emailQueuePublisher;
+	}
+	
 	/**
-	 * Try sending with the first email address info@picsauditing.com still fails, then try regular linux sendmail
 	 * 
 	 * @param email
+	 * @throws MessagingException
 	 */
-	private void sendMail(EmailQueue email, int attempts) {
-		attempts++;
+	private void sendMail(EmailQueue email) throws MessagingException {
+		if (checkDeactivated(email))
+			return;
 
-		try {
-			if (checkDeactivated(email))
-				return;
-
-			GridSender gridSender;
-			if (!Strings.isEmpty(email.getFromPassword())) {
-				// Use a specific email address like
-				// tallred@picsauditing.com
-				// We need the password to correctly authenticate with GMail
-				PicsLogger.log("using SendGrid to send email from " + email.getFromAddress());
-				gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
-			} else {
-				// Use the default info@picsauditing.com address
-				PicsLogger.log("using SendGrid to send email from info@picsauditing.com");
-				gridSender = new GridSender("info@picsauditing.com", defaultPassword);
-			}
-			gridSender.sendMail(email);
-
-			email.setStatus(EmailStatus.Sent);
-			email.setSentDate(new Date());
-
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-
-			emailQueueDAO.save(email);
-		} catch (AddressException e) {
-			email.setStatus(EmailStatus.Error);
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-			emailQueueDAO.save(email);
-		} catch (MessagingException e) {
-			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
-					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
-					+ "\nSUBJECT: " + email.getSubject());
-
-			this.sendMail(email, attempts);
+		GridSender gridSender;
+		if (!Strings.isEmpty(email.getFromPassword())) {
+			// TODO We don't use Gmail anymore. SendGrid only accepts a single username (info@pics) So we should remove this section
+			// We need the password to correctly authenticate with GMail
+			gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
+		} else {
+			// Use the default info@picsauditing.com address
+			gridSender = new GridSender("info@picsauditing.com", defaultPassword);
 		}
+		gridSender.sendMail(email);
+
+		email.setStatus(EmailStatus.Sent);
+		email.setSentDate(new Date());
+
+		emailQueueDAO.save(email);
 	}
 
 	private boolean checkDeactivated(EmailQueue email) {
-		if (email.getContractorAccount() != null && email.getContractorAccount().getStatus().isDeactivated()) {
-			if (email.getEmailTemplate() != null
-					&& !EmailTemplate.VALID_DEACTIVATED_EMAILS().contains(email.getEmailTemplate().getId())) {
-				email.setStatus(EmailStatus.Error);
-				email.setSentDate(new Date());
-				PicsLogger.log("Skipping Email \nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
-						+ "\nSUBJECT: " + email.getSubject());
-				if (emailQueueDAO == null)
-					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-
-				emailQueueDAO.save(email);
-				return true;
-			}
+		if (contractorIsDeactivated(email) && !emailTemplateIsValidForDeactivatedContractors(email)) {
+			logEmailAsSendError(email);
+			return true;
 		}
 		return false;
 	}
 
+	private void logEmailAsSendError(EmailQueue email) {
+		logger.warn("Skipping Email \nFROM: {}\nTO: {}\nSUBJECT: {}", new Object[] {email.getFromAddress(), email.getToAddresses(), email.getSubject()});
+		email.setStatus(EmailStatus.Error);
+		email.setSentDate(new Date());
+		emailQueueDAO.save(email);
+	}
+
+	private boolean contractorIsDeactivated(EmailQueue email) {
+		return (email.getContractorAccount() != null && email.getContractorAccount().getStatus().isDeactivated());
+	}
+	
+	private boolean emailTemplateIsValidForDeactivatedContractors(EmailQueue email) {
+		if (email.getEmailTemplate() == null) {
+			// this duplicates previous behavior before I refactored - if the template is null, then
+			// it is valid for deactivated contractors
+			return true;
+		} else { 
+			return EmailTemplate.VALID_DEACTIVATED_EMAILS().contains(email.getEmailTemplate().getId());
+		}
+	}
+	
 	/**
 	 * Send this through GMail or SendMail
 	 * 
 	 * @param email
-	 * @throws Exception
+	 * @throws MessagingException
 	 */
-	public void sendNow(EmailQueue email) {
-		PicsLogger.start("EmailSender", email.getSubject() + " to " + email.getToAddresses());
-		try {
-			if (checkDeactivated(email))
-				return;
-			// Check all the addresses
-			if (email.getFromAddress2() == null)
-				email.setFromAddress("info@picsauditing.com");
-			if (email.getToAddresses2() == null) {
-				email.setToAddresses(email.getCcAddresses());
-				email.setCcAddresses(null);
+	public void sendNow(EmailQueue email) throws MessagingException {
+		email.cleanupEmailAddresses();
+
+		if (checkDeactivated(email))
+			return;
+		// Check all the addresses
+		if (email.getFromAddress2() == null)
+			email.setFromAddress("info@picsauditing.com");
+		if (email.getToAddresses2() == null) {
+			email.setToAddresses(email.getCcAddresses());
+			email.setCcAddresses(null);
+		}
+		email.getCcAddresses2();
+		email.getBccAddresses2();
+
+		sendMail(email);
+	}
+
+	/**
+	 * Save this email to the queue for sending later
+	 * 
+	 * @param email
+	 */
+	public void send(EmailQueue email) {
+		emailQueueDAO.save(email);
+		publishEnterpriseMessageIfEmailShouldBeSent(email);
+	}
+
+	public void publish(EmailQueue email) {
+		publishEnterpriseMessageIfEmailShouldBeSent(email);
+	}
+	
+	private void publishEnterpriseMessageIfEmailShouldBeSent(EmailQueue email) {
+		if (contractorIsDeactivated(email) && !emailTemplateIsValidForDeactivatedContractors(email)) {
+			// this will write to the database NOW, as opposed to on actual sending of the email we're 
+			// only going to do this if the feature is enabled. We'll log now and not publish for sending
+			if (featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")) {
+				logEmailAsSendError(email);
 			}
-			email.getCcAddresses2();
-			email.getBccAddresses2();
-
-			sendMail(email, 0);
-
-		} catch (AddressException e) {
-			email.setStatus(EmailStatus.Error);
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-			emailQueueDAO.save(email);
-		} finally {
-			PicsLogger.stop();
+		} else {
+			if (email.getPriority() >= EmailQueue.HIGH_PRIORITY) {
+				emailQueuePublisher.publish(email, "email-queue-priority");
+			} else {
+				emailQueuePublisher.publish(email, "email-queue-normal");
+			}
 		}
 	}
 
 	/**
 	 * Save this email to the queue for sending later
-	 * 
-	 * @param email
 	 */
-	public static void send(EmailQueue email) {
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-		emailQueueDAO.save(email);
-	}
-
-	/**
-	 * Save this email to the queue for sending later
-	 */
-	public static void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
+	private void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
 		EmailQueue email = new EmailQueue();
 		email.setCreationDate(new Date());
 		email.setSubject(subject);
@@ -141,10 +158,10 @@ public class EmailSender {
 		email.setToAddresses(toAddress);
 		email.setCcAddresses(ccAddress);
 		email.setCreationDate(new Date());
-		EmailSender.send(email);
+		send(email);
 	}
 
-	public static void send(String toAddress, String subject, String body) throws Exception {
+	public void send(String toAddress, String subject, String body) throws Exception {
 		send(null, toAddress, null, subject, body);
 	}
 

@@ -15,12 +15,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -102,7 +105,9 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private ExceptionService exceptionService;
-	@Autowired
+	
+	// this is @Autowired at the setter because we need @Qualifier which does NOT work
+	// on the variable declaration; only on the method (I think this is a Spring bug)
 	private Publisher flagChangePublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
@@ -979,5 +984,11 @@ public class ContractorCron extends PicsActionSupport {
 
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
+	}
+
+	@Autowired
+	@Qualifier("FlagChangePublisher")
+	public void setFlagChangePublisher(Publisher flagChangePublisher) {
+		this.flagChangePublisher = flagChangePublisher;
 	}
 }

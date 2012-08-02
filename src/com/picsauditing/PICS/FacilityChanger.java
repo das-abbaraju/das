@@ -34,7 +34,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 
 /**
@@ -54,7 +54,7 @@ public class FacilityChanger {
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 	@Autowired
 	protected AuditBuilder auditBuilder = null;
 	@Autowired

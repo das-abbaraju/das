@@ -109,14 +109,14 @@
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
-	<bean id="EmailSenderSpring" class="com.picsauditing.mail.EmailSenderSpring" />
+	<bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
-	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker"/>
+	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker" scope="prototype"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>

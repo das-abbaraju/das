@@ -46,7 +46,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
@@ -91,6 +91,8 @@ public class UsersManage extends PicsActionSupport {
 	protected UserSwitchDAO userSwitchDao;
 	@Autowired
 	protected AppPropertyDAO appPropertyDAO;
+	@Autowired
+	private EmailSender emailSender;
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -1128,8 +1130,7 @@ public class UsersManage extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setCriticalPriority();
 
-			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
-			emailSenderStatic.send(emailQueue);
+			emailSender.send(emailQueue);
 			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
 			return getText("AccountRecovery.error.ResetEmailError");
@@ -1154,8 +1155,7 @@ public class UsersManage extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setCriticalPriority();
 
-			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
-			emailSenderStatic.send(emailQueue);
+			emailSender.send(emailQueue);
 
 			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {

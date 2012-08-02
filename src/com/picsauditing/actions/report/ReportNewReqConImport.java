@@ -40,7 +40,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.FileUtils;
@@ -61,7 +61,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	@Autowired
 	protected EmailAttachmentDAO attachmentDAO;
 	@Autowired
-	protected EmailSenderSpring emailSenderSpring;
+	protected EmailSender emailSender;
 
 	private File file;
 	private String fileContentType = null;
@@ -213,7 +213,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			EmailBuilder emailBuilder = prepareEmailBuilder(newContractor);
 			try {
 				EmailQueue q = emailBuilder.build();
-				emailSenderSpring.send(q);
+				emailSender.send(q);
 				OperatorForm form = getForm(newContractor);
 				if (form != null)
 					addAttachments(q, form);

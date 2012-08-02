@@ -28,7 +28,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -48,7 +48,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private int conID;
 	private ReportFilterWashingtonAudit filter = new ReportFilterWashingtonAudit();

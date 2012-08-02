@@ -43,7 +43,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -82,7 +82,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	@Autowired
 	private UserAccessDAO uaDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private User auditor = null;
 	private InvoiceFee rescheduling;

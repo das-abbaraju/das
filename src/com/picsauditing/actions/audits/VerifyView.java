@@ -31,7 +31,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -42,7 +42,7 @@ public class VerifyView extends ContractorActionSupport {
 	@Autowired
 	protected NoteDAO noteDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();

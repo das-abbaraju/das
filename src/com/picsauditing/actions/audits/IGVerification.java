@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
@@ -31,7 +31,7 @@ public class IGVerification extends ContractorActionSupport {
 	@Autowired
 	protected EmailTemplateDAO templateDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	protected String body;
 	protected String subject;

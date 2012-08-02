@@ -17,7 +17,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
@@ -29,7 +29,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 	@Autowired
 	protected NoteDAO noteDAO;
 	@Autowired
-	private EmailSenderSpring emailSender;
+	private EmailSender emailSender;
 
 	private Date followUpDate = null;
 	private String[] sendMail = null;
