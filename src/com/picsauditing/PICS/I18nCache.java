@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.perf4j.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +185,7 @@ public class I18nCache implements Serializable {
 			List<BasicDynaBean> messages = db.select(sql, false);
 
 			for (BasicDynaBean message : messages) {
-				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message.get("qualityRating").equals("0"))) {									
+				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message.get("qualityRating").equals(0) )) {
 					String key = String.valueOf(message.get("msgKey"));
 					newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
 					Date lastUsed = (Date) message.get("lastUsed");
