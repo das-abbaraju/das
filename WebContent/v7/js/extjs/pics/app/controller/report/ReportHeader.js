@@ -149,7 +149,8 @@ Ext.define('PICS.controller.report.ReportHeader', {
     },
 
     updateReportSettingsEditForm: function () {
-        var store = this.getReportReportsStore();
+        var store = this.getReportReportsStore(),
+            me = this;
 
         function updateSettingsEditFormFromStore(store) {
             var report = store.first(),
@@ -160,8 +161,8 @@ Ext.define('PICS.controller.report.ReportHeader', {
         }
 
         function updateSettingsEditForm(name, description) {
-            var report_name = this.getReportNameEdit(),
-                report_description = this.getReportDescriptionEdit();
+            var report_name = me.getReportNameEdit(),
+                report_description = me.getReportDescriptionEdit();
 
             if (report_name) {
                 report_name.value = name;
@@ -183,8 +184,8 @@ Ext.define('PICS.controller.report.ReportHeader', {
     },
 
     updateReportSummary: function () {
-        var store = this.getReportReportsStore();
-        var me = this;
+        var store = this.getReportReportsStore(),
+            me = this;
 
         function updateSummaryFromStore(store) {
             var report = store.first(),
