@@ -16,6 +16,7 @@ Ext.define('PICS.store.report.ReportDatas', {
             root: 'data',
             type: 'json'
         },
+        timeout: 3000,
         type: 'ajax'
     },
 

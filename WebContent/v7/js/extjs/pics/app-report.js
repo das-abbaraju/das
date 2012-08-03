@@ -48,7 +48,8 @@ Ext.application({
         'report.Filter',
         'report.Report',
         'report.ReportData',
-        'report.ReportHeader'
+        'report.ReportHeader',
+        'report.SettingsModal'
     ],
 
     models: [
