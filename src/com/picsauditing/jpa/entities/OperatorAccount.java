@@ -592,7 +592,7 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * Please use sparingly!! This does a call to a Spring loaded DAO
-	 *
+	 * 
 	 * @return Set of AuditTypeIDs
 	 */
 	@Transient
@@ -604,24 +604,14 @@ public class OperatorAccount extends Account {
 		}
 		return visibleAuditTypes;
 	}
-	
+
 	public void setVisibleAuditTypes(Set<Integer> visibleAuditTypes) {
 		this.visibleAuditTypes = visibleAuditTypes;
 	}
-	
-//	@Transient
-//	public boolean isInPicsConsortium() {
-//		return this.getId() > 3 && this.getId() < 14;
-//	}
-//
+
 	public boolean isInPicsConsortium() {
 		return inPicsConsortium;
 	}
-
-//	@Transient
-//	public boolean isPicsCorporate() {
-//		return inPicsConsortium;
-//	}
 
 	public void setInPicsConsortium(boolean inPicsConsortium) {
 		this.inPicsConsortium = inPicsConsortium;
@@ -659,5 +649,10 @@ public class OperatorAccount extends Account {
 
 		// All other operators
 		return 5;
+	}
+
+	@Transient
+	public boolean isGeneralContractorFree() {
+		return isGeneralContractor() && "No".equals(getDoContractorsPay());
 	}
 }
