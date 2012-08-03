@@ -54,7 +54,6 @@ public class SqlBuilder {
 			sql.setSQL_CALC_FOUND_ROWS(true);
 		}
 		
-		System.out.println(sql.toString());
 		return sql;
 	}
 
