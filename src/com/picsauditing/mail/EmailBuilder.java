@@ -214,6 +214,8 @@ public class EmailBuilder {
 			// Strip out the velocity tags
 			text = text.replace("${", "_");
 			text = text.replace("}", "_");
+			text = text.replace('ì', '"');
+			text = text.replace('î', '"');
 			text = text.replace("`", "'");
 		}
 		for (Token tag : getPicsTags()) {
