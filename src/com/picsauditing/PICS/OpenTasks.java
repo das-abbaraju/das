@@ -200,7 +200,10 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
-	private void gatherTasksAboutWebCamShipments() {
+	/**
+	 * @deprecated
+	 */
+	 private void gatherTasksAboutWebCamShipments() {
 		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
 					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
