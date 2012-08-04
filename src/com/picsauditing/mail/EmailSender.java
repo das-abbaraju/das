@@ -33,10 +33,10 @@ public class EmailSender {
 
 	@Autowired
 	@Qualifier("EmailQueuePublisher")
-	public void setFlagChangePublisher(Publisher emailQueuePublisher) {
+	public void setEmailQueuePublisher(Publisher emailQueuePublisher) {
 		this.emailQueuePublisher = emailQueuePublisher;
 	}
-	
+
 	/**
 	 * 
 	 * @param email
@@ -126,6 +126,10 @@ public class EmailSender {
 		publishEnterpriseMessageIfEmailShouldBeSent(email);
 	}
 
+	public void publishSubscription(EmailQueue email) {
+		emailQueuePublisher.publish(email, "email-subscription");
+	}
+	
 	public void publish(EmailQueue email) {
 		publishEnterpriseMessageIfEmailShouldBeSent(email);
 	}

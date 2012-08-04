@@ -52,27 +52,29 @@ public class MailCron extends PicsActionSupport {
 		/**
 		 * Process Email Subscription
 		 */
-		AppProperty enableSubscriptions = appPropDAO.find("subscription.enable");
-		if (Boolean.parseBoolean(enableSubscriptions.getValue())) {
-			if (subscriptionID > 0) {
-				EmailSubscription emailSubscription = subscriptionDAO.find(subscriptionID);
-
-				if (emailSubscription == null) {
-					addActionError("You must supply a valid subscription id.");
-					return ACTION_MESSAGES;
-				}
-
-				try {
-					SubscriptionBuilder builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
-					builder.sendSubscription(emailSubscription);
-				} catch (Exception continueUpTheStack) {
-					setSubscriptionToBeReprocessedTomorrow(emailSubscription);
-
-					throw continueUpTheStack;
+		if (!featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")) {
+			AppProperty enableSubscriptions = appPropDAO.find("subscription.enable");
+			if (Boolean.parseBoolean(enableSubscriptions.getValue())) {
+				if (subscriptionID > 0) {
+					EmailSubscription emailSubscription = subscriptionDAO.find(subscriptionID);
+	
+					if (emailSubscription == null) {
+						addActionError("You must supply a valid subscription id.");
+						return ACTION_MESSAGES;
+					}
+	
+					try {
+						SubscriptionBuilder builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
+						builder.sendSubscription(emailSubscription);
+					} catch (Exception continueUpTheStack) {
+						setSubscriptionToBeReprocessedTomorrow(emailSubscription);
+	
+						throw continueUpTheStack;
+					}
 				}
 			}
 		}
-
+		
 		if (!featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")) {
 			// send email from the email_queue
 			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
