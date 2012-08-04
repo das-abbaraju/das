@@ -627,12 +627,11 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@OneToMany(mappedBy = "account")
-	@Column(name = "employees")
-	public List<Employee> getAllEmployees() {
+	public List<Employee> getEmployees() {
 		return employees;
 	}
 
-	public void setAllEmployees(List<Employee> employees) {
+	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
 	}
 

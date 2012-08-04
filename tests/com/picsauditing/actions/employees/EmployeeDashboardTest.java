@@ -76,7 +76,7 @@ public class EmployeeDashboardTest {
 	public void testStartup() throws Exception {
 		employeeDashboard.startup();
 
-		for (Employee employee : contractorAccount.getAllEmployees()) {
+		for (Employee employee : contractorAccount.getEmployees()) {
 			assertTrue(employeeDashboard.getActiveEmployees().contains(employee));
 		}
 
@@ -239,7 +239,7 @@ public class EmployeeDashboardTest {
 			employee.setLastName(i + "Last");
 			employee.setTitle(i + "Title");
 
-			contractorAccount.getAllEmployees().add(employee);
+			contractorAccount.getEmployees().add(employee);
 		}
 	}
 

@@ -144,7 +144,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 		JobContractor jc = jsDAO.findJobContractorBySiteContractor(jobSite.getId(), permissions.getAccountId());
 		// Prevent orphan data -- Check current and expired sites
 		boolean found = false;
-		for (Employee e : contractor.getAllEmployees()) {
+		for (Employee e : contractor.getEmployees()) {
 			for (EmployeeSite es : e.getEmployeeSites()) {
 				if (es.getJobSite().equals(jc.getJob()))
 					found = true;
@@ -298,7 +298,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 
 	public List<Employee> getNewEmployees() {
 		if (newEmployees == null) {
-			newEmployees = new ArrayList<Employee>(contractor.getAllEmployees());
+			newEmployees = new ArrayList<Employee>(contractor.getEmployees());
 			Iterator<Employee> iterator = newEmployees.iterator();
 
 			while (iterator.hasNext()) {

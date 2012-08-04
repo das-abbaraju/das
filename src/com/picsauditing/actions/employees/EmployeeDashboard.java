@@ -163,7 +163,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 				return;
 			}
 
-			for (Employee employee : contractor.getAllEmployees()) {
+			for (Employee employee : contractor.getEmployees()) {
 				if (UserStatus.Active == employee.getStatus()) {
 					activeEmployees.add(employee);
 				}

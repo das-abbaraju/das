@@ -397,7 +397,7 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 			}
 		} else if (currentQuestionId == 3673) {
-			if (contractor.getAllEmployees().isEmpty()) {
+			if (contractor.getEmployees().isEmpty()) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.Employee"));
 				return false;
 			}
