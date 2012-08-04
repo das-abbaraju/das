@@ -14,7 +14,7 @@
                     $('.show-all-client-site').bind('click', this.show_all);
 
                     // add client sites - ignore disabled to prevent multiple ajax requests
-                    $('.client-site-left').delegate('.client-site-list a:not(.disable) .add', 'click', function (event) {
+                    $('.client-site-left').delegate('.client-site-list a:not(.disable)', 'click', function (event) {
                         that.add_client_site.apply(that, [event]);
                     });
 
@@ -22,16 +22,9 @@
                     $('.client-site-left, .client-site-right').delegate('.client-site-list .info', 'click', this.info);
 
                     // remove client sites - ignore disabled to prevent multiple ajax requests
-                    $('.client-site-right').delegate('.client-site-list a:not(.disable) .remove', 'click', function (event) {
+                    $('.client-site-right').delegate('.client-site-list a:not(.disable)', 'click', function (event) {
                         that.remove_client_site.apply(that, [event]);
                     });
-
-
-                    //add 'click to display' client site button
-                    $('.client-site-list').delegate('.client-site-list li', 'click', this.show_button);
-
-                    //remove 'click to display' styles
-                    $('.client-site-list').delegate('.client-site-list li', 'mouseout', this.hide_button);
                 }
             },
 
@@ -171,12 +164,9 @@
                 });
             },
 
-            hide_button: function () {
-                $(this).find('.btn').removeAttr('style');
-                $(this).find('.location').removeAttr('style');
-            },
-
             info: function (event) {
+                event.stopPropagation();
+
                 var element = $(this).closest('a');
                 var container = element.closest('li');
 
@@ -294,11 +284,6 @@
                         list.replaceWith(data);
                     }
                 });
-            },
-
-            show_button: function () {
-                $(this).find('.btn').show();
-                $(this).find('.location').hide();
             },
 
             show_general_contractor_modal: function (client_site_element) {
