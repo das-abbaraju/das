@@ -8,7 +8,7 @@ Ext.define('PICS.view.report.settings.EditSettings', {
     modal_title: 'Edit Report',
     title: '<i class="icon-cog icon-large"></i>Settings',
 
-    constructor: function () {
+    initComponent: function () {
         this.callParent(arguments);
 
         var config = PICS.app.configuration;

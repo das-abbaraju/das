@@ -40,20 +40,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         text: '<i class="icon-plus icon-large"></i>Add Column'
     }],
 
-    updateDisplayInfo: function () {
-        var store = this.getStore(),
-            count = store.getTotalCount(),
-            msg;
-
-        if (count === 0) {
-            msg = this.emptyMsg;
-        } else {
-            msg = Ext.String.format('displayed of {0}', Ext.util.Format.number(count, '0,000'));
-        }
-
-        this.down('#display_info').setText(msg);
-    },
-
     getPagingItems: function() {
         var me = this;
 
@@ -151,5 +137,19 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             xtype: 'tbseparator',
             height: 28
         }];
+    },
+    
+    updateDisplayInfo: function () {
+        var store = this.getStore(),
+            count = store.getTotalCount(),
+            msg;
+
+        if (count === 0) {
+            msg = this.emptyMsg;
+        } else {
+            msg = Ext.String.format('displayed of {0}', Ext.util.Format.number(count, '0,000'));
+        }
+
+        this.down('#display_info').setText(msg);
     }
 });

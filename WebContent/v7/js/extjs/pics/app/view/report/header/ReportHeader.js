@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.ReportHeader', {
         'PICS.view.report.header.ReportActions'
     ],
 
-    border: false,
+    border: 0,
     height: 90,
     id: 'report_header',
     items: [{
