@@ -402,10 +402,7 @@ public class AuditDataSave extends AuditActionSupport {
 				return false;
 			}
 		} else if (currentQuestionId == 3674) {
-			for (Employee employee : contractor.getEmployees()) {
-				if (!employee.isActive())
-					continue;
-
+			for (Employee employee : contractor.getActiveEmployees()) {
 				if (employee.getEmployeeRoles().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRoleForEachEmployee"));
 					return false;

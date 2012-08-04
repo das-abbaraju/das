@@ -51,28 +51,28 @@ public class EmployeeDashboard extends ContractorDocuments {
 	public String execute() throws Exception {
 		auditsByYearAndType = TreeBasedTable.create();
 		distinctAuditTypes = new TreeSet<AuditType>();
+		if (getEmployeeGuardAudits() !=null){
+			for (ContractorAudit contractorAudit : getEmployeeGuardAudits()) {
+				AuditType auditType = contractorAudit.getAuditType();
 
-		for (ContractorAudit contractorAudit : getEmployeeGuardAudits()) {
-			AuditType auditType = contractorAudit.getAuditType();
+				if (auditType.isEmployeeSpecificAudit()) {
+					Calendar effectiveLabel = Calendar.getInstance();
+					effectiveLabel.setTime(contractorAudit.getEffectiveDateLabel());
+					int year = effectiveLabel.get(Calendar.YEAR);
 
-			if (auditType.isEmployeeSpecificAudit()) {
-				Calendar effectiveLabel = Calendar.getInstance();
-				effectiveLabel.setTime(contractorAudit.getEffectiveDateLabel());
-				int year = effectiveLabel.get(Calendar.YEAR);
+					Integer count = auditsByYearAndType.get(year, auditType);
+					if (count == null) {
+						count = 0;
+					}
+					count++;
 
-				Integer count = auditsByYearAndType.get(year, auditType);
-				if (count == null) {
-					count = 0;
+					auditsByYearAndType.put(year, auditType, count);
+					distinctAuditTypes.add(auditType);
+				} else {
+					displayedAudits.add(contractorAudit);
 				}
-				count++;
-
-				auditsByYearAndType.put(year, auditType, count);
-				distinctAuditTypes.add(auditType);
-			} else {
-				displayedAudits.add(contractorAudit);
 			}
 		}
-
 		Collections.sort(displayedAudits, new YearsDescending());
 
 		return SUCCESS;

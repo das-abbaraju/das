@@ -799,11 +799,19 @@
     										<s:iterator value="value">
     											<li>
     												<span class="other_operator">
-    													<s:if test="!permissions.generalContractorFree">
-    														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+    													<s:if test="!operatorAccount.generalContractorFree">
+    														<s:url action="ContractorFlag" var="contractor_flag">
+    															<s:param name="id">
+    																${contractor.id}
+    															</s:param>
+    															<s:param name="opID">
+    																${operatorAccount.id}
+    															</s:param>
+    														</s:url>
+    														<a href="${contractor_flag}">
     															<s:property value="flagColor.smallIcon" escape="false" />
     														</a>
-    														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+    														<a href="${contractor_flag}"
     															<s:if test="permissions.admin">
     																title="<s:property value="operatorAccount.name" />: <s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
     																rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"

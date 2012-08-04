@@ -21,17 +21,7 @@ Ext.define('PICS.controller.report.Report', {
 
     	this.control({
     		'reportdata': {
-    			render: function () {
-    				if (this.getReportReportsStore().isLoading()) {
-			        	this.getReportReportsStore().addListener({
-				    		load: function (store, records, successful, eOpts) {
-				    			that.application.fireEvent('refreshreport');
-				    		}
-				    	});
-			        } else {
-			        	this.application.fireEvent('refreshreport');
-			        }
-    			}
+    			render: this.onReportDataRender
     		}
     	});
 
@@ -51,6 +41,18 @@ Ext.define('PICS.controller.report.Report', {
         });
     },
 
+    onReportDataRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore();
+        
+        if (store.isLoading()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                that.application.fireEvent('refreshreport');
+            });
+        } else {
+            this.application.fireEvent('refreshreport');
+        }
+    },
+    
     createReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),

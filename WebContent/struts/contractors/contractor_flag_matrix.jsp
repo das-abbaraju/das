@@ -33,8 +33,10 @@
 							<td class="client-site">
                                 <s:property value="operatorAccount.name" />
                             </td>
-							<s:if test="operatorAccount.gCFree" >
-								<td></td><td></td><td></td>
+							<s:if test="operatorAccount.generalContractorFree" >
+								<td></td>
+								<td></td>
+								<td></td>
 							</s:if>
 							<s:else>
 								<td class="green-flag">

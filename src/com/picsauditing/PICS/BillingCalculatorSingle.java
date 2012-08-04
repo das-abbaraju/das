@@ -144,8 +144,9 @@ public class BillingCalculatorSingle {
 			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
 				hasAuditGUARD = true;
 			if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
-				hasInsureGUARD = true;
 				operatorsRequiringInsureGUARD.addAll(detail.operators);
+				if (!hasInsureGUARD)
+					hasInsureGUARD = qualifiesForInsureGuard(operatorsRequiringInsureGUARD);
 			}
 			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee())
 				hasEmployeeAudits = true;
@@ -265,9 +266,23 @@ public class BillingCalculatorSingle {
 		}
 	}
 
+	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
+				return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
+	}
+
+	private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
+		for (OperatorAccount oa : operators) {
+			int id = oa.getId();
+			if (id == OperatorAccount.OLDCASTLE || id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA)
+				continue;
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * This can only be used on invoices which are in Unpaid status to prevent Syncing errors w/ Quickbooks.
-	 * 
+	 *
 	 * @param toUpdate
 	 * @param updateWith
 	 * @param permissions
@@ -350,8 +365,6 @@ public class BillingCalculatorSingle {
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
 			invoice.setQbSync(true);
 
-//		String notes = "";
-
 		// Calculate the due date for the invoice
 		if (billingStatus.equals("Activation")) {
 			invoice.setDueDate(new Date());
@@ -384,10 +397,10 @@ public class BillingCalculatorSingle {
 			if (item.getInvoiceFee().isMembership())
 				hasMembership = true;
 		}
-		
+
 		if (hasMembership) {
-			invoice.setNotes(getOperatorsString(contractor));
-		}		
+			invoice.setNotes(getOperatorsString(contractor));		
+		}
 
 		for (InvoiceItem item : invoiceItems) {
 			item.setInvoice(invoice);
@@ -406,7 +419,7 @@ public class BillingCalculatorSingle {
 	 * <li>lastUpgradeDate</li>
 	 * <li>paymentExpires</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param contractor
 	 * @return
 	 */
@@ -441,7 +454,7 @@ public class BillingCalculatorSingle {
 
 	/**
 	 * Calculate a prorated amount depending on when the upgrade happens and when the membership expires.
-	 * 
+	 *
 	 * @param contractor
 	 * @param items
 	 * @param upgrades
@@ -641,7 +654,6 @@ public class BillingCalculatorSingle {
 
 		auditBuilder.buildAudits(contractor);
 		auditPercentCalculator.percentCalculateComplete(importAudit);
-
 //		addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true, Account.EVERYONE,
 //				new User(permissions.getUserId()));
 		dao.save(NoteFactory.generateNoteForImportPQF(contractor, permissions));

@@ -2,9 +2,6 @@ Ext.define('PICS.controller.report.Filter', {
     extend: 'Ext.app.Controller',
 
     refs: [{
-        ref: 'reportColumnSelector',
-        selector: 'reportcolumnselector'
-    }, {
         ref: 'filterFooter',
         selector: '#report_filter_options_footer'
     }, {
@@ -193,11 +190,15 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     onFilterOptionsCollapse: function (cmp, event, eOpts) {
-        this.getFilterOptions().collapse();
+        var filter_options = this.getFilterOptions();
+        
+        filter_options.collapse();
     },
 
     onFilterOptionsExpand: function (cmp, event, eOpts) {
-        this.getFilterOptions().expand();
+        var filter_options = this.getFilterOptions();
+        
+        filter_options.expand();
     },
 
     /**
@@ -352,8 +353,10 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     refreshFilters: function () {
-        var filter_store = this.getReportReportsStore().first().filters();
-        var filter_options = this.getFilterOptions();
+        var report_store = this.getReportReportsStore();
+            report = report_store.first(),
+            filter_store = report.filters(),
+            filter_options = this.getFilterOptions();
 
         // remove all filters
         filter_options.removeAll();

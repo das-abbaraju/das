@@ -22,13 +22,15 @@ Ext.define('PICS.store.report.AvailableFields', {
             root: 'fields',
             type: 'json'
         },
+        timeout: 3000,
         type: 'ajax'
     },
 
     constructor: function () {
-        var url = Ext.Object.fromQueryString(document.location.search);
+        var request_parameters = Ext.Object.fromQueryString(document.location.search);
+        var report_id = request_parameters.report;
 
-        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + url.report;
+        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + report_id;
 
         this.callParent(arguments);
     }

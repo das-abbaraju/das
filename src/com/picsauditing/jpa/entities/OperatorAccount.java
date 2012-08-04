@@ -41,9 +41,11 @@ public class OperatorAccount extends Account {
 	public static final int SUNCOR = 10566;
 	public static final int SALES = 23325;
 	public static final int CINTAS = 17144;
+	public static final int CINTAS_CANADA = 17302;
+	public static final int CINTAS_NORTHAMERICA = 17146;
 	public static final int BASF = 6115;
 	public static final int AI = 19344;
-	public static final int Oldcastle = 20481;
+	public static final int OLDCASTLE = 20481;
 	public static final int SUNOCO = 27406;
 
 	private OperatorAccount parent;
@@ -602,24 +604,14 @@ public class OperatorAccount extends Account {
 		}
 		return visibleAuditTypes;
 	}
-	
+
 	public void setVisibleAuditTypes(Set<Integer> visibleAuditTypes) {
 		this.visibleAuditTypes = visibleAuditTypes;
 	}
-	
-//	@Transient
-//	public boolean isInPicsConsortium() {
-//		return this.getId() > 3 && this.getId() < 14;
-//	}
-//
+
 	public boolean isInPicsConsortium() {
 		return inPicsConsortium;
 	}
-
-//	@Transient
-//	public boolean isPicsCorporate() {
-//		return inPicsConsortium;
-//	}
 
 	public void setInPicsConsortium(boolean inPicsConsortium) {
 		this.inPicsConsortium = inPicsConsortium;
@@ -657,5 +649,10 @@ public class OperatorAccount extends Account {
 
 		// All other operators
 		return 5;
+	}
+
+	@Transient
+	public boolean isGeneralContractorFree() {
+		return isGeneralContractor() && "No".equals(getDoContractorsPay());
 	}
 }

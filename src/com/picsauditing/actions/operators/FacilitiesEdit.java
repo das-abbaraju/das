@@ -531,19 +531,24 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		// Adding all SwitchTo users to primary contacts
 		primaryContactSet.addAll(switchToSet);
 
-		OperatorAccount parent = operator.getParent();
-		// Moving up the level hierarchy and finding associated users.
-		// Note: Cannot find users across same hierarchy level, only within
-		// current hierarchy level and parents.
-		while (parent != null) {
-			primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
-			parent = parent.getParent();
-		}
+		addParentPrimaryOperatorContactUsers(primaryContactSet);
 
 		List<User> userList = new ArrayList<User>();
 		userList.addAll(primaryContactSet);
 
 		return userList;
+	}
+
+	private void addParentPrimaryOperatorContactUsers(Set<User> primaryContactSet) {
+		OperatorAccount parent = operator.getParent();
+		Set<OperatorAccount> operatorsAlreadyCovered = new HashSet<OperatorAccount>();
+		operatorsAlreadyCovered.add(operator);
+
+		while (!operatorsAlreadyCovered.contains(parent)) {
+			primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
+			operatorsAlreadyCovered.add(parent);
+			parent = parent.getParent();
+		}
 	}
 
 	public int getContactID() {

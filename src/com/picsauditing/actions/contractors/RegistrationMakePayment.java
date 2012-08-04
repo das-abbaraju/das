@@ -116,6 +116,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (!processPayment && generateOrUpdateInvoiceIfNecessary()) {
 			return BLANK;
+		}
 		
 		notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
 

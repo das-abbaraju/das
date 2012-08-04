@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.header.ReportActions', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportheaderactions'],
 
-    border: false,
+    border: 0,
     id: 'report_actions',
     width: 190,
 
