@@ -145,6 +145,7 @@
 	<bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay" scope="prototype"/>
 	<bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener" scope="prototype"/>
 	<bean id="ContractorOperatorWaitingOnChangedListener" class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
+	<bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"  scope="prototype" />
 
 	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
 	<bean id="AuditQuestionAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />

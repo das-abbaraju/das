@@ -139,6 +139,13 @@
                             Manage Translations
                         </a>
                     </li>
+                    <li>                    
+                        <a
+                            class="edit translate" 
+							href="ManageAuditType!findTranslations.action?id=<s:property value="auditType.id"/>">
+                            Translation Portal
+                        </a>
+                    </li>
                     <li>
                         <label>Class:</label>
                         <s:select list="classList" name="auditType.classType" />
