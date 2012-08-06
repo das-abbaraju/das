@@ -1,14 +1,12 @@
 package com.picsauditing.toggle;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppPropertyValueParseException;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.AppPropertyValueParseException;
 import com.picsauditing.messaging.PublisherRabbitMq;
 
 public class FeatureToggleChecker {
@@ -29,16 +27,14 @@ public class FeatureToggleChecker {
 		try {
 			AppProperty appPropertyFeature = appPropertyDAO.find(appPropertyFeatureName);
 
-			if (appPropertyFeature == null)
-				throw new EntityNotFoundException("AppProperty " + appPropertyFeatureName + " not found");
-
+			if (appPropertyFeature == null) {
+				logger.warn("AppProperty " + appPropertyFeatureName + " not found");
+				return false;
+			}
 			return appPropertyFeature.valueEquals(true);
-		} catch (EntityNotFoundException appPropNotExists) {
-			logger.error(appPropNotExists.getMessage(), appPropNotExists);
 		} catch (AppPropertyValueParseException appPropParseException) {
 			logger.error(appPropParseException.getMessage(), appPropParseException);
 		}
-
 		return false;
 	}
 
