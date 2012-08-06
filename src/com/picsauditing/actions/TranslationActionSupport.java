@@ -144,6 +144,11 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, null, Arrays.asList(args));
 	}
 
+	//pass in the locale
+	public String getTextParameterized(Locale locale, String aTextName, Object... args) {
+		return getText(aTextName, null, locale, Arrays.asList(args));
+	}
+
 	public String getTextNullSafe(String aTextName) {
 		return getText(aTextName, aTextName);
 	}
@@ -166,6 +171,11 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, defaultValue, args, null);
 	}
 
+	//pass in the locale
+	public String getText(String aTextName, String defaultValue, Locale locale, List<?> args) {
+		return getText(aTextName, defaultValue, locale, args, null);
+	}
+
 	@Override
 	public String getText(String aTextName, String defaultValue, String obj) {
 		return super.getText(aTextName, defaultValue, obj);
@@ -179,6 +189,18 @@ public class TranslationActionSupport extends ActionSupport {
 			if (args != null)
 				argArray = args.toArray();
 			return i18nCache.getText(aTextName, getLocaleStatic(), argArray);
+		}
+		return defaultValue;
+	}
+
+	//pass in the locale
+	public String getText(String aTextName, String defaultValue, Locale locale, List<?> args, ValueStack stack) {
+		useKey(aTextName);
+		if (i18nCache.hasKey(aTextName, locale)) {
+			Object[] argArray = null;
+			if (args != null)
+				argArray = args.toArray();
+			return i18nCache.getText(aTextName, locale, argArray);
 		}
 		return defaultValue;
 	}
@@ -277,7 +299,7 @@ public class TranslationActionSupport extends ActionSupport {
 		if (key.contains("'") || key.contains("\""))
 			throw new RuntimeException("i18n key cannot contain quotes");
 		if (key.contains(" ")) {
-			System.out.println("key is " + key);
+			logger.error("i18n key cannot contain spaces");
 			throw new RuntimeException("i18n key cannot contain spaces");
 		}
 
