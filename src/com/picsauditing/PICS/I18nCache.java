@@ -33,10 +33,10 @@ public class I18nCache implements Serializable {
 
 	private static final long serialVersionUID = -9105914451729814391L;
 
-	static public final String I18N_CACHE_KEY = "I18nCache";
-	static public final String CACHE_NAME = "daily";
-	static public final String DEFAULT_LANGUAGE = "en";
-	static public final String DEFAULT_TRANSLATION = "";
+	public static final String I18N_CACHE_KEY = "I18nCache";
+	public static final String CACHE_NAME = "daily";
+	public static final String DEFAULT_LANGUAGE = "en";
+	public static final String DEFAULT_TRANSLATION = "";
 
 	private transient static I18nCache INSTANCE;
 	private transient static Date LAST_CLEARED;
@@ -92,11 +92,14 @@ public class I18nCache implements Serializable {
 		Map<String, String> locales = cache.row(key);
 		if (locales == null)
 			return null;
+
 		if (locales.size() > 0) {
 			for (String locale : locales.keySet()) {
+				// This always returns the first locale. Is that what we want?
 				return locale;
 			}
 		}
+
 		return null;
 	}
 
@@ -105,7 +108,7 @@ public class I18nCache implements Serializable {
 	}
 
 	public boolean hasKey(String key, Locale locale) {
-		return hasKey(key, getLocaleFallback(key, locale, false));
+		return hasKey(key, getLocaleFallback(key, locale));
 	}
 
 	public Map<String, String> getText(String key) {
@@ -114,7 +117,24 @@ public class I18nCache implements Serializable {
 
 	private String getText(String key, String locale) {
 		updateCacheUsed(key);
-		return cache.get(key, locale);
+
+		String value = cache.get(key, locale);
+
+		if (value == null) {
+			value = key;
+		} else if (value.equals(DEFAULT_TRANSLATION)) {
+			value = key;
+
+			if (!locale.equals(DEFAULT_LANGUAGE)) {
+				// If the foreign translation was blank, use the English translation if one exists
+				String englishValue = cache.get(key, DEFAULT_LANGUAGE);
+				if (!DEFAULT_TRANSLATION.equals(englishValue)) {
+					value = englishValue;
+				}
+			}
+		}
+
+		return value;
 	}
 
 	private void updateCacheUsed(String key) {
@@ -136,28 +156,28 @@ public class I18nCache implements Serializable {
 	}
 
 	public String getText(String key, Locale locale) {
-		return getText(key, getLocaleFallback(key, locale, true));
+		return getText(key, getLocaleFallback(key, locale));
 	}
 
 	private String getText(String key, String locale, Object... args) {
 		if (hasKey(key, locale)) {
-			if (args == null || args.length == 0) {
+			if (args == null || args.length == 0)
 				return getText(key, locale);
-			} else {
-				MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)),
-						Strings.parseLocale(locale));
-				StringBuffer buffer = new StringBuffer();
-				message.format(args, buffer, null);
 
-				return buffer.toString();
-			}
+			MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)),
+					Strings.parseLocale(locale));
+			StringBuffer buffer = new StringBuffer();
+			message.format(args, buffer, null);
+
+			return buffer.toString();
 		}
 
+		// TODO This shouldn't return null, but I don't know what this affects
 		return null;
 	}
 
 	public String getText(String key, Locale locale, Object... args) {
-		return getText(key, getLocaleFallback(key, locale, true), args);
+		return getText(key, getLocaleFallback(key, locale), args);
 	}
 
 	private String fixFormatCharacters(String text) {
@@ -229,7 +249,7 @@ public class I18nCache implements Serializable {
 		}
 	}
 
-	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
+	private String getLocaleFallback(String key, Locale locale) {
 		String localeString = locale.toString();
 
 		if (!hasKey(key, localeString)) {
@@ -243,33 +263,6 @@ public class I18nCache implements Serializable {
 
 					if (anyLocale != null)
 						return anyLocale;
-
-					if (insertMissing) {
-						// insert the default msg into the table and the cache
-						try {
-							Database db = getDatabase();
-
-							AppTranslation newTranslation = new AppTranslation();
-							newTranslation.setKey(key);
-							newTranslation.setLocale(localeString);
-							newTranslation.setValue(DEFAULT_TRANSLATION);
-							newTranslation.setApplicable(true);
-							newTranslation.setQualityRating(TranslationQualityRating.Bad);
-							if (newTranslation.isKeyContentDriven()) {
-								newTranslation.setContentDriven(true);
-							}
-
-							db.executeInsert(buildInsertStatement(newTranslation));
-							cache.put(key, localeString, DEFAULT_TRANSLATION);
-						} catch (SQLException e) {
-							// In case the translation already existed, it might
-							// be best to clear the cache
-							logger.error("Error putting new translation in DB for locale fallback: {}", e.getMessage());
-							clear();
-						}
-					} else {
-						return null;
-					}
 				}
 			}
 		}

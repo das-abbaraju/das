@@ -212,9 +212,6 @@ public final class ReportUtil {
 
 		if (field != null) {
 			translatedText = getText("Report." + field.getName(), locale);
-			if (translatedText == null || translatedText.equals(I18nCache.DEFAULT_TRANSLATION)) {
-				translatedText = "?Report." + field.getName();
-			}
 		}
 
 		return translatedText;
