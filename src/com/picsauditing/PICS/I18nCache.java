@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.perf4j.StopWatch;
 import org.slf4j.Logger;
@@ -79,6 +80,7 @@ public class I18nCache implements Serializable {
 				return buildListeners.remove(listener);
 			}
 		}
+
 		return false;
 	}
 
@@ -119,11 +121,12 @@ public class I18nCache implements Serializable {
 		Date lastUsed = cacheUsage.get(key);
 		Calendar yesterday = Calendar.getInstance();
 		yesterday.add(Calendar.DAY_OF_YEAR, -1);
+
 		if (lastUsed == null || lastUsed.before(yesterday.getTime())) {
-			Database db = db();
-			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key)
-					+ "'";
+			Database db = getDatabase();
+			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key) + "'";
 			cacheUsage.put(key, new Date());
+
 			try {
 				db.execute(sql);
 			} catch (SQLException e) {
@@ -138,13 +141,14 @@ public class I18nCache implements Serializable {
 
 	private String getText(String key, String locale, Object... args) {
 		if (hasKey(key, locale)) {
-			if (args == null || args.length == 0)
+			if (args == null || args.length == 0) {
 				return getText(key, locale);
-			else {
+			} else {
 				MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)),
 						Strings.parseLocale(locale));
 				StringBuffer buffer = new StringBuffer();
 				message.format(args, buffer, null);
+
 				return buffer.toString();
 			}
 		}
@@ -156,13 +160,6 @@ public class I18nCache implements Serializable {
 		return getText(key, getLocaleFallback(key, locale, true), args);
 	}
 
-	/**
-	 * Fix characters that cause problems with MessageFormat, such as "'"
-	 * 
-	 * @param text
-	 *            the text to be formatted
-	 * @return text formatted to be used in MessageFormat.format
-	 */
 	private String fixFormatCharacters(String text) {
 		return text.replaceAll("'", "''");
 	}
@@ -181,11 +178,12 @@ public class I18nCache implements Serializable {
 		try {
 			Table<String, String, String> newCache = TreeBasedTable.create();
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
-			Database db = db();
+			Database db = getDatabase();
 			String sql = "SELECT msgKey, locale, msgValue, lastUsed, qualityRating FROM app_translation";
 			List<BasicDynaBean> messages = db.select(sql, false);
 
 			for (BasicDynaBean message : messages) {
+				// TODO Put these checks into the WHERE clause of the select statement above
 				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message
 						.get("qualityRating").equals(0))) {
 					String key = String.valueOf(message.get("msgKey"));
@@ -223,7 +221,7 @@ public class I18nCache implements Serializable {
 		return stopWatch;
 	}
 
-	private Database db() {
+	private Database getDatabase() {
 		if (databaseForTesting == null) {
 			return new Database();
 		} else {
@@ -233,19 +231,23 @@ public class I18nCache implements Serializable {
 
 	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
 		String localeString = locale.toString();
+
 		if (!hasKey(key, localeString)) {
 			localeString = locale.getLanguage();
+
 			if (!hasKey(key, localeString)) {
 				localeString = DEFAULT_LANGUAGE;
+
 				if (!hasKey(key, localeString)) {
 					String anyLocale = findAnyLocale(key);
+
 					if (anyLocale != null)
 						return anyLocale;
 
 					if (insertMissing) {
 						// insert the default msg into the table and the cache
 						try {
-							Database db = db();
+							Database db = getDatabase();
 
 							AppTranslation newTranslation = new AppTranslation();
 							newTranslation.setKey(key);
@@ -253,8 +255,9 @@ public class I18nCache implements Serializable {
 							newTranslation.setValue(DEFAULT_TRANSLATION);
 							newTranslation.setApplicable(true);
 							newTranslation.setQualityRating(TranslationQualityRating.Bad);
-							if (newTranslation.isKeyContentDriven())
+							if (newTranslation.isKeyContentDriven()) {
 								newTranslation.setContentDriven(true);
+							}
 
 							db.executeInsert(buildInsertStatement(newTranslation));
 							cache.put(key, localeString, DEFAULT_TRANSLATION);
@@ -279,12 +282,13 @@ public class I18nCache implements Serializable {
 		if (value == null)
 			return;
 
-		Database db = db();
+		Database db = getDatabase();
 		String sourceLanguage = null;
 
 		if (!requiredLanguages.isEmpty()) {
 			sourceLanguage = requiredLanguages.get(0);
 		}
+
 		// Make sure we handle clearing the cache across multiple servers
 		Iterator<Translation> iterator = value.getTranslations().iterator();
 		while (iterator.hasNext()) {
@@ -302,8 +306,9 @@ public class I18nCache implements Serializable {
 				newTranslation.setApplicable(false);
 			}
 
-			if (newTranslation.isKeyContentDriven())
+			if (newTranslation.isKeyContentDriven()) {
 				newTranslation.setContentDriven(true);
+			}
 
 			if (translationFromCache.isDelete()) {
 				String sql = String.format("DELETE FROM app_translation WHERE msgKey = '%s' AND locale = '%s'", key,
@@ -329,15 +334,16 @@ public class I18nCache implements Serializable {
 	}
 
 	public void removeTranslatableStrings(List<String> keys) throws SQLException {
-		if (keys.size() > 0) {
-			for (String key : keys) {
-				cache.row(key).clear();
-			}
+		if (CollectionUtils.isEmpty(keys))
+			return;
 
-			String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
-			Database db = db();
-			db.executeUpdate(sql);
+		for (String key : keys) {
+			cache.row(key).clear();
 		}
+
+		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
+		Database db = getDatabase();
+		db.executeUpdate(sql);
 	}
 
 	public static Date getLastCleared() {
@@ -354,7 +360,7 @@ public class I18nCache implements Serializable {
 	public void setExpiredTranslationsNotApplicable(String key) throws SQLException {
 		if (!Strings.isEmpty(key)) {
 			String sql = String.format("UPDATE app_translation SET applicable = 0 WHERE msgKey = '%s'", key);
-			Database db = db();
+			Database db = getDatabase();
 			db.executeUpdate(sql);
 		}
 	}
@@ -457,8 +463,9 @@ public class I18nCache implements Serializable {
 				unneededTranslation.setSourceLanguage(source);
 				unneededTranslation.setApplicable(false);
 
-				if (unneededTranslation.isKeyContentDriven())
+				if (unneededTranslation.isKeyContentDriven()) {
 					unneededTranslation.setContentDriven(true);
+				}
 
 				updateRequiredLanguage(locale, unneededTranslation);
 			}
@@ -469,7 +476,7 @@ public class I18nCache implements Serializable {
 		insertUpdateTranslation.setValue(DEFAULT_TRANSLATION);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Bad);
 
-		Database db = db();
+		Database db = getDatabase();
 		db.executeInsert(buildInsertStatement(insertUpdateTranslation));
 	}
 
@@ -480,7 +487,7 @@ public class I18nCache implements Serializable {
 		insertUpdateTranslation.setValue(requiredLanguageMsgValue);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Questionable);
 
-		Database db = db();
+		Database db = getDatabase();
 		db.executeUpdate(buildUpdateStatement(insertUpdateTranslation));
 	}
 }
