@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.perf4j.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +45,10 @@ public class I18nCache implements Serializable {
 
 	private static Database databaseForTesting = null;
 	private static List<I18nCacheBuildAware> buildListeners = new ArrayList<I18nCacheBuildAware>();
-	static AtomicInteger instantiationCount = new AtomicInteger(0); 
-	
+	static AtomicInteger instantiationCount = new AtomicInteger(0);
+
 	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
+
 	private I18nCache() {
 	}
 
@@ -66,7 +66,7 @@ public class I18nCache implements Serializable {
 		}
 		return INSTANCE;
 	}
-	
+
 	public void addBuildListener(I18nCacheBuildAware listener) {
 		if (!buildListeners.contains(listener)) {
 			buildListeners.add(listener);
@@ -158,7 +158,7 @@ public class I18nCache implements Serializable {
 
 	/**
 	 * Fix characters that cause problems with MessageFormat, such as "'"
-	 *
+	 * 
 	 * @param text
 	 *            the text to be formatted
 	 * @return text formatted to be used in MessageFormat.format
@@ -173,7 +173,8 @@ public class I18nCache implements Serializable {
 		}
 	}
 
-	// WARNING: NOT THREAD SAFE!!! (Designed to be called from public API clear())
+	// WARNING: NOT THREAD SAFE!!! (Designed to be called from public API
+	// clear())
 	protected void buildCache() {
 		boolean successful = true;
 		StopWatch stopWatch = startBuild();
@@ -185,7 +186,8 @@ public class I18nCache implements Serializable {
 			List<BasicDynaBean> messages = db.select(sql, false);
 
 			for (BasicDynaBean message : messages) {
-				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message.get("qualityRating").equals(0) )) {
+				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message
+						.get("qualityRating").equals(0))) {
 					String key = String.valueOf(message.get("msgKey"));
 					newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
 					Date lastUsed = (Date) message.get("lastUsed");
@@ -277,7 +279,7 @@ public class I18nCache implements Serializable {
 		if (value == null)
 			return;
 
-		Database db = new Database();
+		Database db = db();
 		String sourceLanguage = null;
 
 		if (!requiredLanguages.isEmpty()) {
@@ -304,8 +306,8 @@ public class I18nCache implements Serializable {
 				newTranslation.setContentDriven(true);
 
 			if (translationFromCache.isDelete()) {
-				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '"
-						+ translationFromCache.getLocale() + "'";
+				String sql = String.format("DELETE FROM app_translation WHERE msgKey = '%s' AND locale = '%s'", key,
+						translationFromCache.getLocale());
 				db.executeUpdate(sql);
 				cache.remove(newTranslation.getKey(), newTranslation.getLocale());
 				iterator.remove();
@@ -317,7 +319,7 @@ public class I18nCache implements Serializable {
 				if (insert != null) {
 					db.executeInsert(insert);
 				}
-				//basicDao.save(newTranslation);
+				// basicDao.save(newTranslation);
 			}
 
 			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
@@ -333,13 +335,28 @@ public class I18nCache implements Serializable {
 			}
 
 			String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
-			Database db = new Database();
+			Database db = db();
 			db.executeUpdate(sql);
 		}
 	}
 
 	public static Date getLastCleared() {
 		return LAST_CLEARED;
+	}
+
+	/**
+	 * Translations get marked not applicable when base history tables like
+	 * audit question get expired.
+	 * 
+	 * @param key
+	 * @throws SQLException
+	 */
+	public void setExpiredTranslationsNotApplicable(String key) throws SQLException {
+		if (!Strings.isEmpty(key)) {
+			String sql = String.format("UPDATE app_translation SET applicable = 0 WHERE msgKey = '%s'", key);
+			Database db = db();
+			db.executeUpdate(sql);
+		}
 	}
 
 	private String buildInsertStatement(AppTranslation translationToinsert) {
@@ -351,12 +368,21 @@ public class I18nCache implements Serializable {
 		}
 
 		String format = "INSERT INTO app_translation (msgKey, locale, msgValue, qualityRating, sourceLanguage, "
-				+ "createdBy, updatedBy, creationDate, updateDate, lastUsed, contentDriven, applicable)"
-				+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d, %d)";
+				+ "createdBy, updatedBy, creationDate, updateDate, lastUsed, contentDriven, applicable) "
+				+ "VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d, %d) "
+				+ "ON DUPLICATE KEY UPDATE msgValue = '%s', qualityRating = %d, "
+				+ "updateDate = NOW(), contentDriven = %d, applicable = %d";
 
-		return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
-				Strings.escapeQuotes(translationToinsert.getValue()), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
-				translationToinsert.isContentDriven() ? 1 : 0, translationToinsert.isApplicable() ? 1 : 0);
+		String msgKey = translationToinsert.getKey();
+		String locale = translationToinsert.getLocale();
+		String msgValue = Strings.escapeQuotes(translationToinsert.getValue());
+		int qualityRating = translationToinsert.getQualityRating().ordinal();
+
+		int contentDriven = translationToinsert.isContentDriven() ? 1 : 0;
+		int applicable = translationToinsert.isApplicable() ? 1 : 0;
+
+		return String.format(format, msgKey, locale, msgValue, qualityRating, sourceLanguage, contentDriven,
+				applicable, msgValue, qualityRating, contentDriven, applicable);
 	}
 
 	private String buildUpdateStatement(AppTranslation translationToUpdate) {
@@ -443,7 +469,7 @@ public class I18nCache implements Serializable {
 		insertUpdateTranslation.setValue(DEFAULT_TRANSLATION);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Bad);
 
-		Database db = new Database();
+		Database db = db();
 		db.executeInsert(buildInsertStatement(insertUpdateTranslation));
 	}
 
@@ -454,7 +480,7 @@ public class I18nCache implements Serializable {
 		insertUpdateTranslation.setValue(requiredLanguageMsgValue);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Questionable);
 
-		Database db = new Database();
+		Database db = db();
 		db.executeUpdate(buildUpdateStatement(insertUpdateTranslation));
 	}
 }
