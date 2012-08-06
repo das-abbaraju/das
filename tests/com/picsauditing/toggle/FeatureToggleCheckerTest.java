@@ -40,7 +40,7 @@ public class FeatureToggleCheckerTest {
 
 		featureToggleChecker.isFeatureEnabled("test");
 
-		verify(logger).error(anyString(), any(Exception.class));
+		verify(logger).warn(anyString(), anyString());
 	}
 
 	@Test

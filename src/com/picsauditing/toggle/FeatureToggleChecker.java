@@ -28,7 +28,7 @@ public class FeatureToggleChecker {
 			AppProperty appPropertyFeature = appPropertyDAO.find(appPropertyFeatureName);
 
 			if (appPropertyFeature == null) {
-				logger.warn("AppProperty " + appPropertyFeatureName + " not found");
+				logger.warn("AppProperty {} not found", appPropertyFeatureName);
 				return false;
 			}
 			return appPropertyFeature.valueEquals(true);
