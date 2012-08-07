@@ -545,12 +545,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		Set<OperatorAccount> operatorsAlreadyCovered = new HashSet<OperatorAccount>();
 		operatorsAlreadyCovered.add(operator);
 
-		if (parent != null) {
-			while (!operatorsAlreadyCovered.contains(parent)) {
-				primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
-				operatorsAlreadyCovered.add(parent);
-				parent = parent.getParent();
-			}
+		while (parent != null && !operatorsAlreadyCovered.contains(parent)) {
+			primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
+			operatorsAlreadyCovered.add(parent);
+			parent = parent.getParent();
 		}
 	}
 
