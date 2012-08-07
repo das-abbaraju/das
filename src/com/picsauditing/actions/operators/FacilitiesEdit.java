@@ -227,7 +227,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator.setCountry(country);
 		}
 
-		if ((countrySubdivision != null && !countrySubdivision.equals(operator.getCountrySubdivision())) || (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
+		if ((countrySubdivision != null && !countrySubdivision.equals(operator.getCountrySubdivision()))
+				|| (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
 			CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
 			operator.setCountrySubdivision(contractorCountrySubdivision);
 		}
@@ -544,10 +545,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		Set<OperatorAccount> operatorsAlreadyCovered = new HashSet<OperatorAccount>();
 		operatorsAlreadyCovered.add(operator);
 
-		while (!operatorsAlreadyCovered.contains(parent)) {
-			primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
-			operatorsAlreadyCovered.add(parent);
-			parent = parent.getParent();
+		if (parent != null) {
+			while (!operatorsAlreadyCovered.contains(parent)) {
+				primaryContactSet.addAll(userDAO.findByAccountID(parent.getId(), "Yes", "No"));
+				operatorsAlreadyCovered.add(parent);
+				parent = parent.getParent();
+			}
 		}
 	}
 
@@ -690,7 +693,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
 		}
 
-		if (operator.getCountry().isHasCountrySubdivisions() && (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
+		if (operator.getCountry().isHasCountrySubdivisions()
+				&& (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
 			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
 		}
 
