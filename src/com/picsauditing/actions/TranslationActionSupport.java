@@ -137,11 +137,19 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, (String) null);
 	}
 
+	public String getText(Locale locale, String aTextName) {
+		return getText(locale, aTextName, (String) null);
+	}
+
 	/**
 	 * This is for a parameter-based getText
 	 */
 	public String getTextParameterized(String aTextName, Object... args) {
 		return getText(aTextName, null, Arrays.asList(args));
+	}
+
+	public String getTextParameterized(Locale locale, String aTextName, Object... args) {
+		return getText(locale, aTextName, null, Arrays.asList(args));
 	}
 
 	public String getTextNullSafe(String aTextName) {
@@ -161,9 +169,18 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, defaultValue, (List<Object>) null);
 	}
 
+	public String getText(Locale locale, String aTextName, String defaultValue) {
+		return getText(locale, aTextName, defaultValue, (List<Object>) null);
+	}
+
+
 	@Override
 	public String getText(String aTextName, String defaultValue, List<?> args) {
 		return getText(aTextName, defaultValue, args, null);
+	}
+
+	public String getText(Locale locale, String aTextName, String defaultValue, List<?> args) {
+		return getText(locale, aTextName, defaultValue, args, null);
 	}
 
 	@Override
@@ -179,6 +196,17 @@ public class TranslationActionSupport extends ActionSupport {
 			if (args != null)
 				argArray = args.toArray();
 			return i18nCache.getText(aTextName, getLocaleStatic(), argArray);
+		}
+		return defaultValue;
+	}
+
+	public String getText(Locale locale, String aTextName, String defaultValue, List<?> args, ValueStack stack) {
+		useKey(aTextName);
+		if (i18nCache.hasKey(aTextName, locale)) {
+			Object[] argArray = null;
+			if (args != null)
+				argArray = args.toArray();
+			return i18nCache.getText(aTextName, locale, argArray);
 		}
 		return defaultValue;
 	}

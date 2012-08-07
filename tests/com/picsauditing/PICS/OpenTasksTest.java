@@ -1,10 +1,10 @@
 package com.picsauditing.PICS;
 
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -42,7 +42,6 @@ import com.ibm.icu.util.Calendar;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -129,6 +128,7 @@ public class OpenTasksTest {
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
 		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
+		when(contractor.getLocale()).thenReturn(Locale.ENGLISH);
 	}
 
 	private void setUpCollections() {

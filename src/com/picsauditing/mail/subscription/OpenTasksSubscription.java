@@ -28,7 +28,7 @@ public class OpenTasksSubscription extends SubscriptionBuilder {
 		try {
 			assert user.getAccount().isContractor();
 			assert subscription.getSubscription() == Subscription.OpenTasks;
-			List<String> tasks = openTasks.getOpenTasks((ContractorAccount) user.getAccount(),user);
+			List<String> tasks = openTasks.getOpenTasksEmail((ContractorAccount) user.getAccount(),user);
 			if (!tasks.isEmpty())
 				tokens.put("tasks", tasks);
 		} catch (Exception e) {
