@@ -10,6 +10,7 @@ $report_filter_border_color_top: #fff;
 $report_filter_focus_background_color: #fff;
 $report_filter_focus_border_color_bottom: #999;
 $report_filter_focus_border_color_top: #999;
+$report_filter_focus_box_shadow_color: #ccc;
 
 // report filter - number
 $report_filter_number_text_color: #999;
@@ -63,12 +64,7 @@ $report_filter_remove_filter_text_color: #ac030c;
 	.x-form-field
 	{
 		border-color: $report_filter_input_border_color;
-		padding-left: 2px;
-	}
-	
-	.autocomplete-filter .x-form-field
-	{
-		padding: 0px;
+		padding-left: 3px;
 	}
 	
 	.remove-filter
@@ -93,6 +89,11 @@ $report_filter_remove_filter_text_color: #ac030c;
 	}
 }
 
+#report_filters-body
+{
+	width: 100% !important;
+}
+
 
 #report_filters.x-active .filter-number
 {
@@ -105,6 +106,8 @@ $report_filter_remove_filter_text_color: #ac030c;
 	background: $report_filter_focus_background_color;
 	border-bottom: 1px solid $report_filter_focus_border_color_bottom;
 	border-top: 1px solid $report_filter_focus_border_color_top;
+	@include box-shadow(0px 1px 1px $report_filter_focus_box_shadow_color);
+	z-index: 1;
 }
 
 #report_filters .filter.x-over .remove-filter,

@@ -5,6 +5,9 @@ Ext.define('PICS.controller.report.ReportHeader', {
         ref: 'reportHeader',
         selector: 'reportheader'
     }, {
+        ref: 'reportHeaderSummary',
+        selector: 'reportheadersummary'
+    }, {
         ref: 'reportSettingsEdit',
         selector: 'reportsettingsedit'
     }, {
@@ -34,7 +37,7 @@ Ext.define('PICS.controller.report.ReportHeader', {
     init: function () {
         this.control({
             'reportheader': {
-                render: this.onReportHeaderRender
+                beforerender: this.onReportHeaderBeforeRender
             },
 
             'reportheader button[action=save]': {
@@ -47,7 +50,7 @@ Ext.define('PICS.controller.report.ReportHeader', {
         });
 
         this.application.on({
-            updatereportsummary: this.updateReportSummary,
+            updatereportsummary: this.onUpdateReportSummary,
             scope: this
         });
     },
@@ -56,7 +59,7 @@ Ext.define('PICS.controller.report.ReportHeader', {
         this.application.fireEvent('showsettingsmodal', 'edit');
     },
 
-    onReportHeaderRender: function (cmp, eOpts) {
+    onReportHeaderBeforeRender: function (cmp, eOpts) {
         this.application.fireEvent('updatereportsummary');
     },
 
@@ -70,34 +73,20 @@ Ext.define('PICS.controller.report.ReportHeader', {
         }
     },
 
-    updateReportSummary: function () {
+    onUpdateReportSummary: function () {
         var store = this.getReportReportsStore(),
-            me = this;
+            report_header_summary = this.getReportHeaderSummary();
 
-        function updateSummaryFromStore(store) {
-            var report = store.first(),
-                report_name = report.get('name'),
-                report_description = report.get('description');
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                var report = store.first();
 
-            updateSummary(report_name, report_description);
-        }
-
-        function updateSummary(name, description) {
-            var report_header_element = me.getReportHeader().getEl(),
-                report_name = report_header_element.query('.name')[0],
-                report_description = report_header_element.query('.description')[0];
-
-            report_name.innerHTML = name;
-            report_description.innerHTML = description;
-        }
-
-        // TODO: need better loading check
-        if (store.isLoading()) {
-            store.on('load', function (store) {
-                updateSummaryFromStore(store);
+                report_header_summary.update(report);
             });
         } else {
-            updateSummaryFromStore(store);
+            var report = store.first();
+
+            report_header_summary.update(report);
         }
     }
 });

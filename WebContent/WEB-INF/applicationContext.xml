@@ -4,14 +4,19 @@
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:task="http://www.springframework.org/schema/task"
     xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
 
 	<context:property-placeholder location="classpath:amqp_connection.properties"/>
 	<import resource="rabbit-config.xml"/>
+	
+	<task:annotation-driven scheduler="myScheduler"/>
+	<task:scheduler id="myScheduler" pool-size="10"/>
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	<bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
@@ -113,6 +118,7 @@
 	<bean id="SaleCommissionDataObservable" class="com.picsauditing.PICS.data.DataObservable" />
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
+	<bean id="EmailSubscriptionHandler" class="com.picsauditing.messaging.subscription.EmailSubscriptionHandler" scope="prototype"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
@@ -143,6 +149,7 @@
 	<bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay" scope="prototype"/>
 	<bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener" scope="prototype"/>
 	<bean id="ContractorOperatorWaitingOnChangedListener" class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
+	<bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"  scope="prototype" />
 
 	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
 	<bean id="AuditQuestionAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />

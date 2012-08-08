@@ -102,6 +102,13 @@
 							Manage Translations
 						</a>
 					</li>
+                    <li>                    
+                        <a
+                            class="edit translate" 
+							href="ManageCategory!findTranslations.action?id=<s:property value="category.id"/>">
+                            Translation Portal
+                        </a>
+                    </li>					
 					<li>
 						<label>Unique Code:</label>
 						<s:textfield name="category.uniqueCode" />

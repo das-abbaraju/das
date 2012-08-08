@@ -1,6 +1,20 @@
+// report filter options
+$report_filter_options_border_color_top: #999;
+
+// report filter options - body
+$report_filter_options_body_border_color_right: #999;
+
+// report filter options - footer
+$report_filter_options_footer_border_color_bottom: #999;
+$report_filter_options_footer_border_color_right: #999;
+
+// report filter options - footer body
+$report_filter_options_footer_body_background_color: #454545;
+$report_filter_options_footer_body_border_color_top: #333;
+
 #report_filter_options
 {
-	border-top: 1px solid #999 !important;
+	border-top: 1px solid $report_filter_options_border_color_top !important;
 	
 	.x-panel-body-default
 	{
@@ -10,19 +24,19 @@
 
 #report_filter_options-body
 {
-	border-right: 1px solid #999 !important;
+	border-right: 1px solid $report_filter_options_body_border_color_right !important;
 }
 
 #report_filter_options_footer
 {
-	border-bottom: 1px solid #999 !important;
-	border-right: 1px solid #999 !important;
+	border-bottom: 1px solid $report_filter_options_footer_border_color_bottom !important;
+	border-right: 1px solid $report_filter_options_footer_border_color_right !important;
 }
 
 #report_filter_options_footer-body
 {
-	background: #454545 !important;
-	border-top: 1px solid #333 !important;
+	background: $report_filter_options_footer_body_background_color !important;
+	border-top: 1px solid $report_filter_options_footer_body_border_color_top !important;
 }
 
 @import 'filter-placeholder';

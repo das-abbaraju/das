@@ -9,9 +9,8 @@ public class UserIndexPage {
 		if (permissions.isContractor()) {
 			if (permissions.getAccountStatus().isActive()) {
 				return "ContractorView.action";
-			} else {
-				return "RegistrationMakePayment.action";
 			}
+			return "RegistrationMakePayment.action";
 		}
 
 		return "Home.action";

@@ -6,7 +6,7 @@
  * Organizes column data for selection purposes
  */
 Ext.define('PICS.store.report.AvailableFieldsByCategory', {
-    extend : 'Ext.data.Store',
+    extend : 'PICS.store.report.base.Store',
     model : 'PICS.model.report.AvailableField',
 
 	autoLoad: false,

@@ -14,7 +14,10 @@
     <ul>
         <s:iterator value="findAllTranslations(#translation_key, #include_locale_static)" var="translation">
             <li>
-                <s:property value="#translation.key" />: <s:property value="#translation.value" />
+            	<a
+           			href="ManageTranslations.action?key=${translation_key}&localeFrom=${user.locale}&localeTo=<s:property value="#translation.key.language" />">
+                	<s:property value="#translation.key.getDisplayName(getUser().getLocale())" />: <s:property value="#translation.value" />
+                </a>
             </li>
         </s:iterator>
     </ul>

@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.filter.base.IntegerFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            // die
+            throw '';
         }
 
         var combobox = this.createCombobox(this.record);
@@ -24,15 +24,16 @@ Ext.define('PICS.view.report.filter.base.IntegerFilter', {
     createCombobox: function (record) {
         var operator = record.get('operator');
 
+        if (!operator) {
+            operator = PICS.app.constants.NUMBERSTORE[0][0];
+
+            record.set('operator', operator);
+        }
+
         return {
             xtype: 'combobox',
             editable: false,
             flex: 1.5,
-            listeners: {
-                change: function (obj, newval, oldval, options) {
-                   //this.up('integerfilter').record.set('operator', newval);
-                }
-            },
             margin: '0 5 0 0',
             name: 'operator',
             store: PICS.app.constants.NUMBERSTORE,
@@ -49,11 +50,6 @@ Ext.define('PICS.view.report.filter.base.IntegerFilter', {
             flex: 2,
             hideTrigger: true,
             keyNavEnabled: false,
-            listeners: {
-                blur: function () {
-                    //this.up('integerfilter').record.set('value', this.value);
-                }
-            },
             mouseWheelEnabled: false,
             name: 'filter_value',
             value: value

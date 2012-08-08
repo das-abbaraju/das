@@ -202,13 +202,21 @@
     									</s:if>
     				
     									<div class="co_flag">
+    										<s:url action="ContractorFlag" var="contractor_flag">
+    											<s:param name="id">
+    												${id}
+    											</s:param>
+    											<s:param name="opID">
+    												${opID}
+    											</s:param>
+    										</s:url>
     										<p>
-    											<a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">
+    											<a href="${contractor_flag}">
     												<s:property value="co.flagColor.bigIcon" escape="false"/>
     											</a>
     										</p>
     										<p>
-    											<a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">
+    											<a href="${contractor_flag}">
     												<s:text name="%{co.flagColor.i18nKey}"/>
     											</a>
     										</p>
@@ -333,12 +341,12 @@
     										<p id="contractorWatch">
     											<span class="watch">
     												<s:text name="ContractorView.WatchingContractor" />
-    												<a href="#" id="stop_watch_link" data-conid="<s:property value="contractor.id" />">
+    												<a href="javascript:;" id="stop_watch_link" data-conid="${contractor.id}">
     													<s:text name="ContractorView.StopWatching" />
     												</a>
     											</span>
     											<span class="stop watch">
-    												<a href="#" id="start_watch_link" data-conid="<s:property value="contractor.id" />">
+    												<a href="javascript:;" id="start_watch_link" data-conid="${contractor.id}">
     													<s:text name="ContractorView.WatchContractor" />
     												</a>
     											</span>
@@ -346,13 +354,15 @@
     									</pics:permission>
     								</div>
     								
-    								<s:if test="permissions.generalContractor && getGCOperators().size > 0">
+    								<s:if test="permissions.generalContractor && generalContractorClientSites.size > 0">
     									<div class="co_select nobr">
     										<s:text name="global.SelectOperator" />:
-    										<s:select 
-    											list="getGCOperators()" 
+    										<s:select
+    											data-contractor="${contractor.id}"
+    											id="active_operator_view"
+    											list="generalContractorClientSites" 
     											listKey="operatorAccount.id" 
-    											listValue="operatorAccount.name" 
+    											listValue="operatorAccount.name"
     											name="opID"
     											headerKey="0" 
     											headerValue="- %{getText('global.Operator')} -"
@@ -363,7 +373,9 @@
     								<s:elseif test="activeOperators.size() > 1">
     									<div class="co_select nobr">
     										<s:text name="global.SelectOperator" />:
-    										<s:select 
+    										<s:select
+    											data-contractor="${contractor.id}"
+    											id="active_operator_view"
     											list="activeOperators" 
     											listKey="operatorAccount.id" 
     											listValue="operatorAccount.name" 
@@ -594,21 +606,12 @@
     									</a>
     								</p>
     								
-    								<s:if test="contractor.generalContractorOperatorAccounts.size > 0">
-    									<s:set name="gc_accounts" value="''" />
-    									<s:iterator value="contractor.generalContractorOperatorAccounts" var="gc_op" status="gc_index">
-    										<s:if test="permissions.operatorCorporate || permissions.visibleAccounts.contains(#gc_op.id)">
-		    									<s:set name="gc_accounts" value="#gc_accounts + #gc_op.name" />
-		    									<s:if test="!#gc_index.last">
-			    									<s:set name="gc_accounts" value="#gc_accounts + ', '" />
-		    									</s:if>
-	    									</s:if>
-    									</s:iterator>
-    									<s:if test="!isStringEmpty(#gc_accounts)">
+    								<s:if test="contractor.generalContractorOperatorAccounts.size > 0 && !permissions.generalContractor">
+    									<s:if test="!isStringEmpty(generalContractorsListing)">
 	    									<p>
 	    										<s:text name="ContractorView.SubcontractingUnder" />:
 	    										<strong>
-	    											<s:property value="#gc_accounts" />
+	    											${generalContractorsListing}
 	    										</strong>
 	    									</p>
     									</s:if>

@@ -5,7 +5,7 @@
  * sends backend report from local to server
  */
 Ext.define('PICS.store.report.Reports', {
-	extend : 'Ext.data.Store',
+	extend : 'PICS.store.report.base.Store',
 	model : 'PICS.model.report.Report',
 
 	autoLoad: true,

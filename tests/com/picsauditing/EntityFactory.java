@@ -254,6 +254,11 @@ public class EntityFactory {
 		return null;
 	}
 
+
+	public static AuditType makeAuditType() {
+		return makeAuditType(counter++);
+	}
+	
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
@@ -436,4 +441,5 @@ public class EntityFactory {
 
 		return flagCriteriaContractor;
 	}
+
 }

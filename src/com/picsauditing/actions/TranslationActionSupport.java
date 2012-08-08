@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -137,11 +138,19 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, (String) null);
 	}
 
+	public String getText(Locale locale, String aTextName) {
+		return getText(locale, aTextName, (String) null);
+	}
+
 	/**
 	 * This is for a parameter-based getText
 	 */
 	public String getTextParameterized(String aTextName, Object... args) {
 		return getText(aTextName, null, Arrays.asList(args));
+	}
+
+	public String getTextParameterized(Locale locale, String aTextName, Object... args) {
+		return getText(locale, aTextName, null, Arrays.asList(args));
 	}
 
 	public String getTextNullSafe(String aTextName) {
@@ -161,9 +170,18 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, defaultValue, (List<Object>) null);
 	}
 
+	public String getText(Locale locale, String aTextName, String defaultValue) {
+		return getText(locale, aTextName, defaultValue, (List<Object>) null);
+	}
+
+
 	@Override
 	public String getText(String aTextName, String defaultValue, List<?> args) {
 		return getText(aTextName, defaultValue, args, null);
+	}
+
+	public String getText(Locale locale, String aTextName, String defaultValue, List<?> args) {
+		return getText(locale, aTextName, defaultValue, args, null);
 	}
 
 	@Override
@@ -179,6 +197,17 @@ public class TranslationActionSupport extends ActionSupport {
 			if (args != null)
 				argArray = args.toArray();
 			return i18nCache.getText(aTextName, getLocaleStatic(), argArray);
+		}
+		return defaultValue;
+	}
+
+	public String getText(Locale locale, String aTextName, String defaultValue, List<?> args, ValueStack stack) {
+		useKey(aTextName);
+		if (i18nCache.hasKey(aTextName, locale)) {
+			Object[] argArray = null;
+			if (args != null)
+				argArray = args.toArray();
+			return i18nCache.getText(aTextName, locale, argArray);
 		}
 		return defaultValue;
 	}
@@ -207,34 +236,52 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(key, null, args);
 	}
 
-	public Map<String, String> findAllTranslations(String key) {
+	public Map<Locale, String> findAllTranslations(String key) {
 		return findAllTranslations(key, true);
 	}
 
-	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
+	public Map<Locale, String> findAllTranslations(String key,
+			Boolean includeLocaleStatic) {
 		Map<String, String> translationMap = i18nCache.getText(key);
-		Map<String, String> newTranslationMap = new HashMap<String, String>();
+		Map<Locale, String> newTranslationMap = new HashMap<Locale, String>();
 
-		Locale locale = null;
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
 			String keyStr = entry.getKey();
-			String[] lanCountry = keyStr.split("_");
 
-			// e.g. en_GB
-			if (lanCountry.length > 1) {
-				locale = new Locale(lanCountry[0], lanCountry[1]);
-			} else {
-				locale = new Locale(keyStr);
-			}
-			newTranslationMap.put(locale.getDisplayName(), entry.getValue());
+			newTranslationMap.put(convertStringToLocale(keyStr),
+					entry.getValue());
 		}
 
 		if (!includeLocaleStatic) {
-			newTranslationMap.remove(getLocaleStatic().getDisplayName());
+			newTranslationMap.remove(getLocaleStatic());
 		}
 
-		Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);
+		return sortTranslationsByLocaleDisplayNames(newTranslationMap);
+	}
 
+	private Locale convertStringToLocale(String keyStr) {
+		Locale locale = null;
+		String[] lanCountry = keyStr.split("_");
+
+		// e.g. en_GB
+		if (lanCountry.length > 1) {
+			locale = new Locale(lanCountry[0], lanCountry[1]);
+		} else {
+			locale = new Locale(keyStr);
+		}
+		return locale;
+	}
+
+	private Map<Locale, String> sortTranslationsByLocaleDisplayNames(
+			Map<Locale, String> newTranslationMap) {
+		Comparator<Locale> displayNameComparator = new Comparator<Locale>() {
+			public int compare(Locale l1, Locale l2) {
+				return l1.getDisplayName().compareTo(l2.getDisplayName());
+			}
+		};
+		Map<Locale, String> sortedTranslationMap = new TreeMap<Locale, String>(
+				displayNameComparator);
+		sortedTranslationMap.putAll(newTranslationMap);
 		return sortedTranslationMap;
 	}
 

@@ -6,7 +6,7 @@
  * Dynamically loads Available Fields By Category Store
  */
 Ext.define('PICS.store.report.AvailableFields', {
-	extend : 'Ext.data.Store',
+    extend : 'PICS.store.report.base.Store',
 	model : 'PICS.model.report.AvailableField',
 
 	autoLoad: true,

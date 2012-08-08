@@ -40,9 +40,9 @@ public class EmailSenderTest {
 		
 		emailSenderSpring = new EmailSender();
 		
-		emailSenderSpring.setFlagChangePublisher(emailQueuePublisher);
 		PicsTestUtil.autowireDAOsFromDeclaredMocks(emailSenderSpring, this);
 		Whitebox.setInternalState(emailSenderSpring, "featureToggleChecker", featureToggleChecker);
+		Whitebox.setInternalState(emailSenderSpring, "emailQueuePublisher", emailQueuePublisher);
 	}
 	@Test
 	public void testPublishEnterpriseMessageIfEmailShouldBeSent_NormalPriorityEmail() throws Exception {

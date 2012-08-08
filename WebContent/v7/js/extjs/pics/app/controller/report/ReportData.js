@@ -43,7 +43,7 @@ Ext.define('PICS.controller.report.ReportData', {
         });
 
         this.application.on({
-            refreshreportdisplayinfo: this.refreshReportDisplayInfo,
+            refreshreportdisplayinfo: this.onRefreshReportDisplayInfo,
             scope: this
         });
     },
@@ -88,9 +88,29 @@ Ext.define('PICS.controller.report.ReportData', {
         this.application.fireEvent('refreshreport');
     },
 
+    onRefreshReportDisplayInfo: function () {
+        var store = this.getReportReportDatasStore(),
+            report_paging_toolbar = this.getReportPagingToolbar(),
+            count;
+
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                count = store.getTotalCount();
+
+                report_paging_toolbar.updateDisplayInfo(count);
+            }, this, {
+                single: true
+            });
+        } else {
+            count = store.getTotalCount();
+
+            report_paging_toolbar.updateDisplayInfo(count);
+        }
+    },
+
     onReportReconfigure: function (cmp, eOpts) {
         var report_paging_toolbar = this.getReportPagingToolbar();
-        report_paging_toolbar.moveFirst();
+            report_paging_toolbar.moveFirst();
 
         this.application.fireEvent('refreshreportdisplayinfo');
     },
@@ -112,11 +132,5 @@ Ext.define('PICS.controller.report.ReportData', {
         report_data_store.configureProxyUrl(report);
 
         report_paging_toolbar.moveFirst();
-    },
-
-    refreshReportDisplayInfo: function () {
-        var report_paging_toolbar = this.getReportPagingToolbar();
-
-        report_paging_toolbar.updateDisplayInfo();
     }
 });

@@ -7,6 +7,7 @@
 <%@page import="com.picsauditing.mail.EmailSender"%>
 <%@page import="com.picsauditing.mail.GridSender"%>
 <%@page import="com.picsauditing.search.Database"%>
+<%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.Timestamp"%>
 <%@page import="org.apache.commons.beanutils.BasicDynaBean"%>
@@ -84,7 +85,8 @@
 	mail.setPriority(priority*10+50);
 	
 	try {
-		EmailSender.send(mail);
+		EmailSender emailSender = (EmailSender) SpringUtils.getBean("EmailSender");
+		emailSender.send(mail);
 	} catch (Exception e) {
 		System.out.println("PICS Exception Handler ... sending email via SendGrid");
 		GridSender sendMail = new GridSender();
