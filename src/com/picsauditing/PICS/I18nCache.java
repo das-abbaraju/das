@@ -120,19 +120,7 @@ public class I18nCache implements Serializable {
 
 		String value = cache.get(key, locale);
 
-		if (value == null) {
-			value = key;
-		} else if (value.equals(DEFAULT_TRANSLATION)) {
-			value = key;
-
-			if (!locale.equals(DEFAULT_LANGUAGE)) {
-				// If the foreign translation was blank, use the English translation if one exists
-				String englishValue = cache.get(key, DEFAULT_LANGUAGE);
-				if (!DEFAULT_TRANSLATION.equals(englishValue)) {
-					value = englishValue;
-				}
-			}
-		}
+		value = getTranslationFallback(key, value, locale);
 
 		return value;
 	}
@@ -172,8 +160,7 @@ public class I18nCache implements Serializable {
 			return buffer.toString();
 		}
 
-		// TODO This shouldn't return null, but I don't know what this affects
-		return null;
+		return getTranslationFallback(key, null, locale);
 	}
 
 	public String getText(String key, Locale locale, Object... args) {
@@ -195,23 +182,25 @@ public class I18nCache implements Serializable {
 	protected void buildCache() {
 		boolean successful = true;
 		StopWatch stopWatch = startBuild();
+
 		try {
 			Table<String, String, String> newCache = TreeBasedTable.create();
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
 			Database db = getDatabase();
-			String sql = "SELECT msgKey, locale, msgValue, lastUsed, qualityRating FROM app_translation";
+
+			String sql = "SELECT msgKey, locale, msgValue, lastUsed " +
+					"FROM app_translation " +
+					"WHERE qualityRating != 0";
+
 			List<BasicDynaBean> messages = db.select(sql, false);
 
 			for (BasicDynaBean message : messages) {
-				// TODO Put these checks into the WHERE clause of the select statement above
-				if (!(message.get("msgValue").equals("Translation Missing") || message.get("msgValue").equals("") || message
-						.get("qualityRating").equals(0))) {
-					String key = String.valueOf(message.get("msgKey"));
-					newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
-					Date lastUsed = (Date) message.get("lastUsed");
-					newCacheUsage.put(key, lastUsed);
-				}
+				String key = String.valueOf(message.get("msgKey"));
+				newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+				Date lastUsed = (Date) message.get("lastUsed");
+				newCacheUsage.put(key, lastUsed);
 			}
+
 			cache = newCache;
 			cacheUsage = newCacheUsage;
 			LAST_CLEARED = new Date();
@@ -251,23 +240,40 @@ public class I18nCache implements Serializable {
 
 	private String getLocaleFallback(String key, Locale locale) {
 		String localeString = locale.toString();
+		if (hasKey(key, localeString))
+			return localeString;
 
-		if (!hasKey(key, localeString)) {
-			localeString = locale.getLanguage();
+		String languageString = locale.getLanguage();
+		if (hasKey(key, languageString))
+			return languageString;
 
-			if (!hasKey(key, localeString)) {
-				localeString = DEFAULT_LANGUAGE;
+		if (!hasKey(key, DEFAULT_LANGUAGE)) {
+			String anyLocale = findAnyLocale(key);
 
-				if (!hasKey(key, localeString)) {
-					String anyLocale = findAnyLocale(key);
+			if (anyLocale != null)
+				return anyLocale;
+		}
 
-					if (anyLocale != null)
-						return anyLocale;
+		return DEFAULT_LANGUAGE;
+	}
+
+	private String getTranslationFallback(String key, String translatedValue, String locale) {
+		String goodTranslatedValue = translatedValue;
+
+		if (!isValidTranslation(goodTranslatedValue)) {
+			goodTranslatedValue = key;
+
+			// If the foreign translation was invalid, check the English translation
+			if (!locale.equals(DEFAULT_LANGUAGE)) {
+				String englishValue = cache.get(key, DEFAULT_LANGUAGE);
+
+				if (isValidTranslation(englishValue)) {
+					goodTranslatedValue = englishValue;
 				}
 			}
 		}
 
-		return localeString;
+		return goodTranslatedValue;
 	}
 
 	public void saveTranslatableString(String key, TranslatableString value, List<String> requiredLanguages)
@@ -346,7 +352,7 @@ public class I18nCache implements Serializable {
 	/**
 	 * Translations get marked not applicable when base history tables like
 	 * audit question get expired.
-	 * 
+	 *
 	 * @param key
 	 * @throws SQLException
 	 */
@@ -482,5 +488,18 @@ public class I18nCache implements Serializable {
 
 		Database db = getDatabase();
 		db.executeUpdate(buildUpdateStatement(insertUpdateTranslation));
+	}
+
+	private boolean isValidTranslation(String translation) {
+		if (translation == null)
+			return false;
+
+		if (DEFAULT_TRANSLATION.equals(translation))
+			return false;
+
+		if ("Translation Missing".equalsIgnoreCase(translation))
+			return false;
+
+		return true;
 	}
 }

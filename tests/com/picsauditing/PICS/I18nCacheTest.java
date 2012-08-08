@@ -40,6 +40,15 @@ public class I18nCacheTest {
 	}
 
 	@Test
+	public void testDefaultTranslationIsEmptyString() {
+		// The fallbacks for missing/invalid translations depend on the default translation
+		// being the empty string.
+		// If you need to change the default translation, please be sure you are
+		// changing it for a good reason.
+		assertEquals("", I18nCache.DEFAULT_TRANSLATION);
+	}
+
+	@Test
 	public void testBuildInsertStatement_withSingleQuote() throws Exception {
 		AppTranslation translationToTest = new AppTranslation();
 
