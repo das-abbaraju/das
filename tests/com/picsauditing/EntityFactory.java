@@ -3,6 +3,7 @@ package com.picsauditing;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -66,6 +67,9 @@ public class EntityFactory {
 		operator.setApprovesRelationships(YesNo.No);
 		operator.setCanSeeInsurance(YesNo.Yes);
 		operator.setInheritFlagCriteria(operator);
+		operator.setVisibleAuditTypes(new HashSet<Integer>());
+		operator.getVisibleAuditTypes().add(1);
+		
 		return operator;
 	}
 
@@ -250,6 +254,11 @@ public class EntityFactory {
 		return null;
 	}
 
+
+	public static AuditType makeAuditType() {
+		return makeAuditType(counter++);
+	}
+	
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
@@ -323,7 +332,7 @@ public class EntityFactory {
 	static public Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
 		try {
-			permission.setAccountPerms(user);
+			permission.login(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -334,6 +343,18 @@ public class EntityFactory {
 		User user = new User(counter++);
 		user.setAccount(new Account());
 		user.getAccount().setId(1100);
+		return user;
+	}
+
+	@SuppressWarnings("rawtypes")
+	static public User makeUser(Class clazz) {
+		User user = new User(counter++);
+		if (clazz.equals(OperatorAccount.class)) {
+			user.setAccount(makeOperator());
+		}
+		if (clazz.equals(ContractorAccount.class)) {
+			user.setAccount(makeContractor());
+		}
 		return user;
 	}
 
@@ -420,4 +441,5 @@ public class EntityFactory {
 
 		return flagCriteriaContractor;
 	}
+
 }

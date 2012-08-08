@@ -249,7 +249,7 @@
 					</fieldset>
 				</s:if>
 				
-				<s:if test="operator.id > 0 && permissions.picsEmployee">
+				<s:if test="permissions.picsEmployee">
 					<fieldset class="form">
 						<h2 class="formLegend"><s:text name="FacilitiesEdit.GeneralContractor" /></h2>
 						<ol>
@@ -260,42 +260,43 @@
 								<s:checkbox 
 	                                name="operator.generalContractor"
 	                                label="FacilitiesEdit.IsGeneralContractor" 
-	                                id="general_contractor_checkbox"
-	                            />
+	                                id="general_contractor_checkbox" />
 							</li>
 							
-							<s:set var="display_linked_client" value="%{'display: inline;'}" />
-							<s:if test="!operator.generalContractor">
-								<s:set var="display_linked_client" value="%{'display: none;'}" />
+							<s:if test="operator.id > 0">
+								<s:set var="display_linked_client" value="%{'display: inline;'}" />
+								<s:if test="!operator.generalContractor">
+									<s:set var="display_linked_client" value="%{'display: none;'}" />
+								</s:if>
+	
+								<li id="linked_clients" style="${display_linked_client}">
+		                            <label>
+		                            	<s:text name="FacilitiesEdit.LinkedClientAccount" />:
+		                            </label>
+		                            <s:optiontransferselect
+										label="Selected Clients"
+										name="selectedClientsLeft"
+										list="notSelectedClients"
+										listKey="id"
+										listValue="name"
+										doubleName="clients"
+										doubleList="selectedClients"
+										doubleListKey="id"
+										doubleListValue="name"
+										leftTitle="%{getText('FacilitiesEdit.OperatorsList')}"
+										rightTitle="%{getText('FacilitiesEdit.SelectedClients')}"
+										addToLeftLabel="%{getText('FacilitiesEdit.Remove')}"
+										addToRightLabel="%{getText('FacilitiesEdit.Assign')}"
+										allowAddAllToLeft="false"
+										allowAddAllToRight="false"
+										allowSelectAll="false"
+										allowUpDownOnLeft="false"
+										allowUpDownOnRight="false"
+										buttonCssClass="arrow"
+										theme="pics"
+			 						/>
+								</li>
 							</s:if>
-
-							<li id="linked_clients" style="${display_linked_client}">
-	                            <label>
-	                            	<s:text name="FacilitiesEdit.LinkedClientAccount" />:
-	                            </label>
-	                            <s:optiontransferselect
-									label="Selected Clients"
-									name="selectedClientsLeft"
-									list="notSelectedClients"
-									listKey="id"
-									listValue="name"
-									doubleName="clients"
-									doubleList="selectedClients"
-									doubleListKey="id"
-									doubleListValue="name"
-									leftTitle="%{getText('FacilitiesEdit.OperatorsList')}"
-									rightTitle="%{getText('FacilitiesEdit.SelectedClients')}"
-									addToLeftLabel="%{getText('FacilitiesEdit.Remove')}"
-									addToRightLabel="%{getText('FacilitiesEdit.Assign')}"
-									allowAddAllToLeft="false"
-									allowAddAllToRight="false"
-									allowSelectAll="false"
-									allowUpDownOnLeft="false"
-									allowUpDownOnRight="false"
-									buttonCssClass="arrow"
-									theme="pics"
-		 						/>
-							</li>
 						</ol>
 					</fieldset>
 				</s:if>
@@ -307,15 +308,38 @@
 						<s:if test="operator.id > 0">
 							<li>
 								<label><s:text name="global.ContactPrimary" />:</label>
-								<s:select list="primaryOperatorContactUsers" name="contactID" listKey="id" listValue="name" headerKey="" headerValue="- %{getText('FacilitiesEdit.SelectAUser')} -" value="%{operator.primaryContact.id}" />
-								
+								<s:select
+									list="primaryOperatorContactUsers"
+									name="contactID"
+									listKey="id"
+									listValue="name"
+									headerKey=""
+									headerValue="- %{getText('FacilitiesEdit.SelectAUser')} -"
+									value="%{operator.primaryContact.id}" />
+	
 								<s:if test="operator.primaryContact">
-									<a href="UsersManage.action?account=<s:property value="operator.id"/>&user=<s:property value="operator.primaryContact.id"/>">
+									<s:url action="UsersManage" var="view_primary_user">
+										<s:param name="account">
+											${operator.id}
+										</s:param>
+										<s:param name="user">
+											${operator.primaryContact.id}
+										</s:param>
+									</s:url>
+									<a href="${view_primary_user}">
 										<s:text name="button.View" />
 									</a>
 								</s:if>
 								<s:else>
-									<a class="add" href="UsersManage!add.action?account=<s:property value="operator.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
+									<s:url action="UsersManage" var="add_primary_user">
+										<s:param name="account">
+											${operator.id}
+										</s:param>
+										<s:param name="isActive" value="'Yes'" />
+										<s:param name="isGroup" />
+										<s:param name="userIsGroup" value="'No'" />
+									</s:url>
+									<a class="add" href="${add_primary_user}">
 										<s:text name="FacilitiesEdit.AddUser" />
 									</a>
 								</s:else>

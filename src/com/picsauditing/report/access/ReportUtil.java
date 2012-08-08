@@ -159,10 +159,11 @@ public final class ReportUtil {
 			JSONObject obj = field.toJSONObject();
 			obj.put("category", translateCategory(field.getCategory().toString(), locale));
 
-			String help = getText("Report." + field.getName() + ".help", locale);
-			if (help != null) {
-				obj.put("help", help);
-			}
+			// TODO Waiting on 6321/6537 to address an issue with translations 
+//			String help = getText("Report." + field.getName() + ".help", locale);
+//			if (help != null) {
+//				obj.put("help", help);
+//			}
 
 			fieldsJsonArray.add(obj);
 		}
@@ -211,9 +212,6 @@ public final class ReportUtil {
 
 		if (field != null) {
 			translatedText = getText("Report." + field.getName(), locale);
-			if (translatedText == null || translatedText.equals(I18nCache.DEFAULT_TRANSLATION)) {
-				translatedText = "?Report." + field.getName();
-			}
 		}
 
 		return translatedText;

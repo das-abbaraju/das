@@ -4,11 +4,23 @@
  * Dynamically generates associated Data Model Class
  */
 Ext.define('PICS.store.report.ReportDatas', {
-    extend: 'Ext.data.Store',
+    extend : 'PICS.store.report.base.Store',
 
     // there is no preset Model - we must place empty fields [] as a default
     // we dynamically create / attach Model which has the actual fields
     fields: [],
+    listeners: {
+        load: function (store, records, successful, eOpts) {
+            if (!successful) {
+                // if it executes this then the reconfigured failed
+                // i am not sure if there is a callback in the reconfigure process
+                // to catch unsuccessful loads via an operaton.error
+
+                // Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                throw '';
+            }
+        }
+    },
     pageSize: 50,
     proxy: {
         reader: {
@@ -16,6 +28,7 @@ Ext.define('PICS.store.report.ReportDatas', {
             root: 'data',
             type: 'json'
         },
+        timeout: 3000,
         type: 'ajax'
     },
 
@@ -30,7 +43,7 @@ Ext.define('PICS.store.report.ReportDatas', {
 
         this.configureReportDataModel(report);
 
-        this.loadReportData(report);
+        this.reconfigureReportData(report);
     },
 
     /**
@@ -84,22 +97,9 @@ Ext.define('PICS.store.report.ReportDatas', {
         this.proxy.reader.setModel(model);
     },
 
-    loadReportData: function (report) {
-        // reload store data
-        this.load({
-            callback: function (records, operation, success) {
-                if (success) {
-                    this.reconfigureReportData(report);
-                } else {
-                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
-                }
-            }
-        });
-    },
-
     reconfigureReportData: function (report) {
-        if (!(report && report.$className == 'PICS.model.report.Report')) {
-            throw '';
+        if (!report || report.modelName != 'PICS.model.report.Report') {
+            throw 'Invalid report record';
         }
 
         var report_data = Ext.ComponentQuery.query('reportdata')[0];

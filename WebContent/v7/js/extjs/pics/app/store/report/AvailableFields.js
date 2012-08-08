@@ -6,7 +6,7 @@
  * Dynamically loads Available Fields By Category Store
  */
 Ext.define('PICS.store.report.AvailableFields', {
-	extend : 'Ext.data.Store',
+    extend : 'PICS.store.report.base.Store',
 	model : 'PICS.model.report.AvailableField',
 
 	autoLoad: true,
@@ -22,13 +22,15 @@ Ext.define('PICS.store.report.AvailableFields', {
             root: 'fields',
             type: 'json'
         },
+        timeout: 3000,
         type: 'ajax'
     },
 
     constructor: function () {
-        var url = Ext.Object.fromQueryString(document.location.search);
+        var request_parameters = Ext.Object.fromQueryString(document.location.search);
+        var report_id = request_parameters.report;
 
-        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + url.report;
+        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + report_id;
 
         this.callParent(arguments);
     }

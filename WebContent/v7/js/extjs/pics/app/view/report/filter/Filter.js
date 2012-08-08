@@ -9,7 +9,6 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.FloatFilter',
         'PICS.view.report.filter.base.IntegerFilter',
         'PICS.view.report.filter.base.ListFilter',
-        'PICS.view.report.filter.base.NumberFilter',
         'PICS.view.report.filter.base.StringFilter',
         'Ext.ux.form.BoxSelect'
     ],
@@ -150,8 +149,6 @@ Ext.define('PICS.view.report.filter.Filter', {
                 cls = 'PICS.view.report.filter.base.FloatFilter';
                 break;
             case 'Integer':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
             case 'Number':
                 cls = 'PICS.view.report.filter.base.IntegerFilter';
                 break;

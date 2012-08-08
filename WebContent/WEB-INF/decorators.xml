@@ -53,7 +53,6 @@
 		<pattern>/user_edit.jsp</pattern>
 		<pattern>/exception_handler.jsp</pattern>
 		<pattern>/reasons.html</pattern>
-		<pattern>/send_welcome_email.jsp</pattern>
 		<pattern>/ChartXML*</pattern>
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/AuditFileUpload.action</pattern>

@@ -11,7 +11,7 @@ Ext.require([
     'PICS.store.report.AvailableFieldsByCategory',
     'PICS.store.report.ReportDatas',
     'PICS.store.report.Reports',
-    'PICS.view.layout.SearchBox',
+    'PICS.view.layout.SearchBox'
     //'PICS.view.report.Viewport'
 ]);
 
@@ -48,7 +48,8 @@ Ext.application({
         'report.Filter',
         'report.Report',
         'report.ReportData',
-        'report.ReportHeader'
+        'report.ReportHeader',
+        'report.SettingsModal'
     ],
 
     models: [

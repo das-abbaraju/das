@@ -1,8 +1,12 @@
 <beans:beans xmlns="http://www.springframework.org/schema/rabbit"
-	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
 	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.1.xsd" 
 	default-autowire="byName">
 
@@ -20,17 +24,26 @@
 	<queue id="flag-changes" name="flag-changes" />
 	<queue id="email-queue-priority" name="email-queue-priority" />
 	<queue id="email-queue-normal" name="email-queue-normal" />
+	<queue id="email-subscription" name="email-subscription" />
+	<queue id="subscription" name="subscription" />
 		
-	<fanout-exchange name="flag-changes-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	<fanout-exchange name="flag-changes-exchange">
 	  <bindings>
 	    <binding queue="flag-changes"/>
 	  </bindings>
 	</fanout-exchange>	
 	
-	<direct-exchange name="email-queue-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	<direct-exchange name="email-queue-exchange">
 	  <bindings>
 	    <binding queue="email-queue-priority" key="email-queue-priority"/>
 	    <binding queue="email-queue-normal" key="email-queue-normal"/>
+	    <binding queue="email-subscription" key="email-subscription"/>
+	  </bindings>
+	</direct-exchange>
+
+	<direct-exchange name="subscription-exchange">
+	  <bindings>
+	    <binding queue="subscription" key="subscription"/>
 	  </bindings>
 	</direct-exchange>
 	
@@ -47,6 +60,22 @@
 		<beans:property name="featureToggleChecker" ref="FeatureToggleChecker" />
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.EmailQueue" />
 	</beans:bean>
+
+	<template message-converter="messageConverter" id="EmailSubscriptionTemplate" connection-factory="connectionFactory" exchange="subscription-exchange" queue="subscription" routing-key="subscription"/>
+	<beans:bean id="EmailSubscriptionPoller" class="com.picsauditing.messaging.subscription.EmailSubscriptionPoller">
+		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.SubscriptionEmail" />
+	</beans:bean>
+
+	<beans:bean id="defaultJavaTypeMapper" class="org.springframework.amqp.support.converter.DefaultJavaTypeMapper">
+<!-- 		<beans:property name="idClassMapping"> -->
+<!-- 			<beans:map> -->
+<!-- 				<beans:entry key="com.picsauditing.jpa.entities.EmailQueue" value="com.picsauditing.mail.Email" /> -->
+<!-- 			</beans:map> -->
+<!-- 		</beans:property> -->
+	</beans:bean>
 	
-	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter" />
+	<beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter">
+		<beans:property name="javaTypeMapper" ref="defaultJavaTypeMapper"/>
+	</beans:bean>
+
 </beans:beans>

@@ -17,21 +17,9 @@ Ext.define('PICS.controller.report.Report', {
     ],
 
     init: function () {
-    	var that = this;
-
     	this.control({
     		'reportdata': {
-    			render: function () {
-    				if (this.getReportReportsStore().isLoading()) {
-			        	this.getReportReportsStore().addListener({
-				    		load: function (store, records, successful, eOpts) {
-				    			that.application.fireEvent('refreshreport');
-				    		}
-				    	});
-			        } else {
-			        	this.application.fireEvent('refreshreport');
-			        }
-    			}
+    			beforerender: this.onReportDataBeforeRender
     		}
     	});
 
@@ -49,6 +37,18 @@ Ext.define('PICS.controller.report.Report', {
             savereport: this.saveReport,
             scope: this
         });
+    },
+
+    onReportDataBeforeRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore();
+
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                this.application.fireEvent('refreshreport');
+            }, this);
+        } else {
+            this.application.fireEvent('refreshreport');
+        }
     },
 
     createReport: function () {
@@ -71,14 +71,15 @@ Ext.define('PICS.controller.report.Report', {
     },
 
     refreshReport: function () {
-        this.getReportReportDatasStore().reload();
+        var store = this.getReportReportDatasStore();
+
+        store.reload();
     },
 
     saveReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!edit.action?' + report.toQueryString(),
-            me = this;
+            url = 'ReportDynamic!edit.action?' + report.toQueryString();
 
         Ext.Ajax.request({
             url: url,

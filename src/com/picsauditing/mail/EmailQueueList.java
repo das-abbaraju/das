@@ -84,9 +84,13 @@ public class EmailQueueList extends ReportActionSupport {
 		}
 
 		if (permissions.isContractor()) {
-			if (preview.getToAddresses().contains(permissions.getEmail())
-					|| preview.getBccAddresses().contains(permissions.getEmail())
-					|| preview.getCcAddresses().contains(permissions.getEmail())) {
+			boolean toContainsEmail = preview.getToAddresses().contains(permissions.getEmail());
+			boolean bccContainsEmail = !Strings.isEmpty(preview.getBccAddresses())
+					&& preview.getBccAddresses().contains(permissions.getEmail());
+			boolean ccContainsEmail = !Strings.isEmpty(preview.getCcAddresses())
+					&& preview.getCcAddresses().contains(permissions.getEmail());
+
+			if (toContainsEmail || bccContainsEmail || ccContainsEmail) {
 				return "preview";
 			}
 		}
@@ -121,8 +125,8 @@ public class EmailQueueList extends ReportActionSupport {
 		}
 
 		if (filterOn(f.getSentDateStart())) {
-			report.addFilter(new SelectFilterDate("sentDate1", "q.sentDate >= '?'", DateBean.format(f
-					.getSentDateStart(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("sentDate1", "q.sentDate >= '?'", DateBean.format(
+					f.getSentDateStart(), "M/d/yy")));
 			setFiltered(true);
 		}
 

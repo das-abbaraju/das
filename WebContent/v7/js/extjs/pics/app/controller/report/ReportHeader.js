@@ -5,6 +5,9 @@ Ext.define('PICS.controller.report.ReportHeader', {
         ref: 'reportHeader',
         selector: 'reportheader'
     }, {
+        ref: 'reportHeaderSummary',
+        selector: 'reportheadersummary'
+    }, {
         ref: 'reportSettingsEdit',
         selector: 'reportsettingsedit'
     }, {
@@ -34,7 +37,7 @@ Ext.define('PICS.controller.report.ReportHeader', {
     init: function () {
         this.control({
             'reportheader': {
-                render: this.onReportHeaderRender
+                beforerender: this.onReportHeaderBeforeRender
             },
 
             'reportheader button[action=save]': {
@@ -43,76 +46,21 @@ Ext.define('PICS.controller.report.ReportHeader', {
 
             'reportheader button[action=edit]': {
                 click: this.onReportEditClick
-            },
-
-            'reportsettingsmodal tabpanel': {
-                render: this.onReportSettingsTabsRender
-            },
-
-            'reportsettingsmodal button[action=cancel]':  {
-                click: this.onReportModalCancelClick
-            },
-
-            'reportsettingsmodal reportsettingsedit': {
-                render: this.onReportModalEditRender
-            },
-
-            'reportsettingsmodal reportsettingsedit button[action=edit]':  {
-                click: this.onReportModalEditClick
-            },
-
-            'reportsettingsmodal reportsettingscopy button[action=copy]':  {
-                click: this.onReportModalCopyClick
-            },
-
-            'reportsettingsmodal #report_settings_tabbar tab': {
-                click: this.onReportModalTabClick
             }
+        });
+
+        this.application.on({
+            updatereportsummary: this.onUpdateReportSummary,
+            scope: this
         });
     },
 
     onReportEditClick: function (cmp, e, eOpts) {
-        this.showSettingsModal();
+        this.application.fireEvent('showsettingsmodal', 'edit');
     },
 
-    onReportHeaderRender: function (cmp, eOpts) {
-        this.updateReportSummary();
-    },
-
-    onReportModalCancelClick: function (cmp, e, eOpts) {
-        this.getReportSettingsModal().close();
-    },
-
-    onReportModalCopyClick: function (cmp, e, eOpts) {
-        var report_name = this.getReportNameCopy().getValue(),
-            report_description = this.getReportDescriptionCopy().getValue();
-
-        this.setReportNameAndDescription(report_name, report_description);
-        this.application.fireEvent('createreport');
-
-        // form reset
-        cmp.up('form').getForm().reset();
-    },
-
-    onReportModalEditClick: function (cmp, e, eOpts) {
-        var report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue();
-
-        this.setReportNameAndDescription(report_name, report_description);
-        this.updateReportSummary();
-        this.application.fireEvent('savereport');
-
-        this.getReportSettingsModal().close();
-    },
-
-    onReportModalEditRender: function (cmp, eOpts) {
-        this.updateReportSettingsEditForm();
-    },
-
-    onReportModalTabClick: function (cmp, e, eOpts) {
-        var title = cmp.card.modal_title;
-
-        this.updateReportSettingsModalTitle(title);
+    onReportHeaderBeforeRender: function (cmp, eOpts) {
+        this.application.fireEvent('updatereportsummary');
     },
 
     onReportSaveClick: function (cmp, e, eOpts) {
@@ -121,95 +69,24 @@ Ext.define('PICS.controller.report.ReportHeader', {
         if (config.isEditable()) {
             this.application.fireEvent('savereport');
         } else {
-            this.showSettingsModal();
-            this.getReportSettingsTabs().setActiveTab(1);
+            this.application.fireEvent('showsettingsmodal', 'copy');
         }
     },
 
-    onReportSettingsTabsRender: function (cmp, eOpts) {
-        var title = cmp.getActiveTab().modal_title;
-
-        this.updateReportSettingsModalTitle(title);
-    },
-
-    setReportNameAndDescription: function (name, description) {
+    onUpdateReportSummary: function () {
         var store = this.getReportReportsStore(),
-            report = store.first();
+            report_header_summary = this.getReportHeaderSummary();
 
-        report.set('name', name);
-        report.set('description', description);
-    },
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                var report = store.first();
 
-    showSettingsModal: function () {
-        Ext.create('PICS.view.report.settings.SettingsModal').show();
-    },
-
-    updateReportSettingsModalTitle: function (title) {
-        this.getReportSettingsModal().setTitle(title);
-    },
-
-    updateReportSettingsEditForm: function () {
-        var store = this.getReportReportsStore();
-
-        function updateSettingsEditFormFromStore(store) {
-            var report = store.first(),
-                report_name = report.get('name'),
-                report_description = report.get('description');
-
-            updateSettingsEditForm(report_name, report_description);
-        }
-
-        function updateSettingsEditForm(name, description) {
-            var report_name = this.getReportNameEdit(),
-                report_description = this.getReportDescriptionEdit();
-
-            if (report_name) {
-                report_name.value = name;
-            }
-
-            if (report_description) {
-                report_description.value = description;
-            }
-        }
-
-        // TODO: need better loading check
-        if (store.isLoading()) {
-            store.on('load', function (store) {
-                updateSettingsEditFormFromStore(store);
+                report_header_summary.update(report);
             });
         } else {
-            updateSettingsEditFormFromStore(store);
-        }
-    },
+            var report = store.first();
 
-    updateReportSummary: function () {
-        var store = this.getReportReportsStore();
-        var me = this;
-
-        function updateSummaryFromStore(store) {
-            var report = store.first(),
-                report_name = report.get('name'),
-                report_description = report.get('description');
-
-            updateSummary(report_name, report_description);
-        }
-
-        function updateSummary(name, description) {
-            var report_header_element = me.getReportHeader().getEl(),
-                report_name = report_header_element.query('.name')[0],
-                report_description = report_header_element.query('.description')[0];
-
-            report_name.innerHTML = name;
-            report_description.innerHTML = description;
-        }
-
-        // TODO: need better loading check
-        if (store.isLoading()) {
-            store.on('load', function (store) {
-                updateSummaryFromStore(store);
-            });
-        } else {
-            updateSummaryFromStore(store);
+            report_header_summary.update(report);
         }
     }
 });

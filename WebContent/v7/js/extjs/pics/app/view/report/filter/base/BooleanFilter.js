@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            // die
+            throw '';
         }
 
         var checkbox = this.createCheckbox(this.record);
@@ -21,16 +21,6 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
             xtype: 'checkbox',
             boxLabel: 'True',
             inputValue: null,
-            listeners: {
-                change: function (obj, newval, oldval, options) {
-                    /*var record = this.up('booleanfilter').record;
-                    if (newval === false) {
-                        record.set('value', 0);
-                    } else {
-                        record.set('value', 1);
-                    }*/
-                }
-            },
             name: 'filter_value',
             value: value
         };

@@ -1,8 +1,12 @@
 package com.picsauditing.search;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,6 +67,15 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchBox.class);
+
+	private static final Set<String> accountIndexTypes = Collections.unmodifiableSet(
+			new HashSet<String>(Arrays.asList("A", "AS", "C", "CO", "O")));
+	private static final Set<String> userIndexTypes = Collections.unmodifiableSet(
+			new HashSet<String>(Arrays.asList("U", "G")));
+	private static final Set<String> employeeIndexTypes = Collections.unmodifiableSet(
+			new HashSet<String>(Arrays.asList("E")));
+	private static final Set<String> nonsearchableIndexTypes = Collections.unmodifiableSet(
+			new HashSet<String>(Arrays.asList("T", "AU")));
 
 	@Override
 	public void prepare() throws Exception {
@@ -320,13 +333,20 @@ public class SearchBox extends PicsActionSupport implements Preparable {
 
 			Class<? extends AbstractIndexableTable> recordClass = null;
 
-			if (typeAbbrev.equals("A") || typeAbbrev.equals("AS") || typeAbbrev.equals("C") || typeAbbrev.equals("CO") || typeAbbrev.equals("O")) {
+			if (accountIndexTypes.contains(typeAbbrev)) {
 				recordClass = Account.class;
-			} else if (typeAbbrev.equals("U") || typeAbbrev.equals("G")) {
+			} else if (userIndexTypes.contains(typeAbbrev)) {
 				recordClass = User.class;
-			} else if (typeAbbrev.equals("E")) {
+			} else if (employeeIndexTypes.contains(typeAbbrev)) {
 				recordClass = Employee.class;
+			} else if (nonsearchableIndexTypes.contains(typeAbbrev)) {
+				// Don't search for these types
+			} else {
+				logger.error("Unrecognized type abbreviation.");
 			}
+
+			if (recordClass == null)
+				continue;
 
 			SearchItem searchRecord = new SearchItem(recordClass, foreignKeyId);
 			indexableMap.put(recordClass, foreignKeyId);

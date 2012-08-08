@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            // die
+            throw '';
         }
 
         var combobox = this.createCombobox(this.record);
@@ -24,15 +24,16 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
     createCombobox: function (record) {
         var value = record.get('operator');
 
+        if (!operator) {
+            operator = PICS.app.constants.NUMBERSTORE[0][0];
+
+            record.set('operator', operator);
+        }
+
         return {
             xtype: 'combobox',
             editable: false,
             flex: 1.5,
-            listeners: {
-                change: function (obj, newval, oldval, options) {
-                   //this.up('datefilter').record.set('operator', newval);
-                }
-            },
             margin: '0 5 0 0',
             name: 'operator',
             store: PICS.app.constants.NUMBERSTORE,
@@ -47,15 +48,6 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
             xtype: 'datefield',
             flex: 2,
             format: 'Y-m-d',
-            listeners: {
-                blur: function () {
-                    /*var datefilter = this.up('datefilter');
-                    var values = datefilter.getValues();
-                    console.log(values);
-
-                    datefilter.record.set('value', values.filter_value);*/
-                }
-            },
             maxValue: new Date(),
             name: 'filter_value',
             value: value

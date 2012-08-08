@@ -17,6 +17,6 @@
 		<span class="redMain" id="countrySubdivision_req">*</span>
 	</s:if>
 	<pics:fieldhelp title="Country Subdivision">
-		<s:text name="ContractorAccount.CountrySubdivision.isoCode.fieldhelp"/>
+		<s:text name="ContractorAccount.countrySubdivision.isoCode.fieldhelp"/>
 	</pics:fieldhelp>
 </s:if>

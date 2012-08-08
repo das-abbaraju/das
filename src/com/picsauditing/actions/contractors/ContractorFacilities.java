@@ -447,6 +447,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 					cTag.setTag(new OperatorTag());
 					cTag.getTag().setId(tagId);
 					cTag.setAuditColumns(permissions);
+					cTag.setCreatedBy(crr.getRequestedByUser());
+					cTag.setUpdatedBy(crr.getRequestedByUser());
 					contractor.getOperatorTags().add(cTag);
 					contractor.incrementRecalculation(10);
 					accountDao.save(contractor);

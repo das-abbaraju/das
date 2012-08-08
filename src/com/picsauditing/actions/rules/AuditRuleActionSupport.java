@@ -95,7 +95,7 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 			if ("Save".equals(button)) {
 				if (save())
 					redirectTo();
-				return SUCCESS;
+				return REDIRECT;
 			}
 			if ("Delete".equals(button)) {
 				delete();

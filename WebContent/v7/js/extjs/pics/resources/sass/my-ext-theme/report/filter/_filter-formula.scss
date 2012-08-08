@@ -1,15 +1,21 @@
-#report_filter_formula_container
-{
-	border-right: 1px solid #999 !important;
-}
+// report filter formula
+$report_filter_formula_background_color: #454545;
+$report_filter_formula_border_color_bottom: #333;
+$report_filter_formula_border_color_top: #333;
+
+// report filter formula - info
+$report_filter_formula_icon_info_text_color: #73bbe8;
+
+// report filter formula - remove
+$report_filter_formula_icon_cancel_text_color: #ac030c;
 
 #report_filter_formula
 {
-	background: #454545;
+	background: $report_filter_formula_background_color;
 	
 	.x-form-field
 	{
-		padding-left: 2px;
+		padding-left: 3px;
 	}
 	
 	.info,
@@ -33,20 +39,40 @@
 		line-height: 18px;
 	}
 	
-	
 	.icon-info-sign
 	{
-		color: #73bbe8;
+		color: $report_filter_formula_icon_info_text_color;
 	}
 	
 	.icon-remove-sign
 	{
-		color: #ac030c;
+		color: $report_filter_formula_icon_cancel_text_color;
 	}
 }
 
 #report_filter_formula > div
 {
-	border-bottom: 1px solid #333 !important;
-	border-top: 1px solid #333 !important;
+	border-bottom: 1px solid $report_filter_formula_border_color_bottom !important;
+	border-top: 1px solid $report_filter_formula_border_color_top !important;
+}
+
+.filter-formula-tooltip
+{
+	h4
+	{
+		font-size: 13px;
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+	
+	span,
+	p
+	{
+		font-size: 11px;
+	}
+	
+	span
+	{
+		font-style: italic;
+	}
 }

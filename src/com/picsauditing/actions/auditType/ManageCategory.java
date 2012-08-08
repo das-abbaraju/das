@@ -1,14 +1,20 @@
 package com.picsauditing.actions.auditType;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
+import com.picsauditing.models.audits.TranslationKeysGenerator;
 
 @SuppressWarnings("serial")
 public class ManageCategory extends ManageAuditType implements Preparable {
@@ -102,7 +108,15 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 		}
 		return false;
 	}
-
+	
+	@Override
+	public String findTranslations() throws IOException {
+		Set<String> usedKeys = translationKeysGenerator.generateCategoryKeys(category);
+		populateSessionVariablesForManageTranslationsRedirect(usedKeys);
+		
+		return setUrlForRedirect("ManageTranslations.action");
+	}
+	
 	protected boolean delete() {
 		try {
 			if (category.getSubCategories().size() > 0) {

@@ -170,8 +170,10 @@ public class Permissions implements Serializable {
 				approvesRelationships = !operator.isAutoApproveRelationships()
 						|| user.hasPermission(OpPerms.ViewUnApproved);
 
+				gcFree = operator.isGeneralContractorFree();
+
 				if (generalContractor || gcFree) {
-					for (OperatorAccount linkedClient : ((OperatorAccount) user.getAccount()).getLinkedClientSites()) {
+					for (OperatorAccount linkedClient : operator.getLinkedClientSites()) {
 						linkedClients.add(linkedClient.getId());
 					}
 				}
@@ -193,11 +195,8 @@ public class Permissions implements Serializable {
 						}
 					}
 
-					if (operator.getCanSeeInsurance().isTrue())
+					if (operator.getCanSeeInsurance().isTrue()) {
 						canSeeInsurance = true;
-
-					if (generalContractor && "No".equals(operator.getDoContractorsPay())) {
-						gcFree = true;
 					}
 				}
 
@@ -207,6 +206,7 @@ public class Permissions implements Serializable {
 					if (operator.getParent() != null) {
 						operatorChildren.add(operator.getParent().getId());
 					}
+
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
 

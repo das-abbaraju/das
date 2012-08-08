@@ -20,7 +20,13 @@ Ext.define('PICS.view.report.filter.FilterFormula', {
             height: 16,
             margin: '0 0 0 10',
             text: '<i class="icon-info-sign"></i>',
-            tooltip: 'help me obiwan',
+            tooltip: [
+                '<div class="filter-formula-tooltip">',
+                    '<h4>Use "()" "AND" "OR"</h4>',
+                    '<span>Example:</span>',
+                    '<p>(1 OR (2 AND 3)) AND 4</p>',
+                '</div>'
+            ].join(''),
             width: 16
         }, {
             xtype: 'button',
@@ -29,7 +35,6 @@ Ext.define('PICS.view.report.filter.FilterFormula', {
             height: 16,
             margin: '0 0 0 10',
             text: '<i class="icon-remove-sign"></i>',
-            tooltip: 'Apply Filter Formula',
             width: 16
         }],
         layout: {

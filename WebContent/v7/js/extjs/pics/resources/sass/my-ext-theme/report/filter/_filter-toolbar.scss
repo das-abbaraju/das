@@ -1,11 +1,17 @@
-#report_filter_toolbar_container
-{
-	border-right: 1px solid #999 !important;
-}
+// report filter toolbar
+$report_filter_toolbar_background_color: #454545;
+$report_filter_toolbar_border_color_bottom: #333;
+$report_filter_toolbar_border_color_top: #333;
+
+// report filter toolbar - button
+$report_filter_toolbar_button_text_color: #ccc;
+
+// report filter toolbar - button over
+$report_filter_toolbar_button_over_text_color: #fff;
 
 #report_filter_toolbar
 {
-	background: #454545;
+	background: $report_filter_toolbar_background_color;
 	
 	.x-btn
 	{
@@ -15,7 +21,7 @@
 		
 		span
 		{
-			color: #ccc;
+			color: $report_filter_toolbar_button_text_color;
 			font-size: 11px;
 			font-weight: bold;
 		}
@@ -25,13 +31,13 @@
 	{
 		span
 		{
-			color: #fff;
+			color: $report_filter_toolbar_button_over_text_color;
 		}
 	}
 }
 
 #report_filter_toolbar > div
 {
-	border-bottom: 1px solid #333 !important;
-	border-top: 1px solid #333 !important;
+	border-bottom: 1px solid $report_filter_toolbar_border_color_bottom !important;
+	border-top: 1px solid $report_filter_toolbar_border_color_top !important;
 }

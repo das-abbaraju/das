@@ -12,7 +12,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            // die
+            throw '';
         }
 
         // TODO: why the hell is this here
@@ -26,6 +26,20 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     createAutocomplete: function (record) {
         var value = record.get('value');
         var store = this.getStoreForAutocomplete(record);
+
+        return {
+            xtype: 'combobox',
+            displayField: 'name',
+            editable: true,
+            hideTrigger: true,
+            multiSelect: false,
+            name: 'filter_value',
+            queryParam: 'searchQuery',
+            store: store,
+            value: value,
+            valueField: 'id',
+            width: 258
+        };
 
         return Ext.create('Ext.ux.form.BoxSelect', {
             delimiter: ',',

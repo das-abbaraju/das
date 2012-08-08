@@ -1,8 +1,12 @@
 package com.picsauditing.actions.auditType;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,6 +29,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.models.audits.TranslationKeysGenerator;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -56,6 +61,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 	protected AuditDecisionTableDAO ruleDAO;
 	@Autowired
 	protected WorkFlowDAO wfDAO;
+	@Autowired
+	protected TranslationKeysGenerator translationKeysGenerator;
 
 	List<? extends AuditRule> relatedRules;
 	List<Workflow> workFlowList = null;
@@ -147,6 +154,20 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		}
 
 		return "top";
+	}
+	
+	public String findTranslations() throws IOException {
+		Set<String> usedKeys = translationKeysGenerator.generateAuditTypeKeys(auditType);
+
+		populateSessionVariablesForManageTranslationsRedirect(usedKeys);
+		
+		return setUrlForRedirect("ManageTranslations.action");
+	}
+	
+	protected void populateSessionVariablesForManageTranslationsRedirect(Set<String> usedKeys) {
+		Map<String, Object> session = ActionContext.getContext().getSession();
+		session.put("usedI18nKeys", usedKeys);
+		session.put(i18nTracing, true);
 	}
 
 	protected void load(int id) {

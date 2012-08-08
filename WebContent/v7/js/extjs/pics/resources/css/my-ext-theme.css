@@ -3461,7 +3461,7 @@ browsers will do whacky things with it.
   -o-border-radius: 15px;
   border-radius: 15px;
   height: 25px;
-  padding: 0px 5px; }
+  padding: 0px 7px; }
 
 /* line 48, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_modal-body,
@@ -3501,30 +3501,28 @@ browsers will do whacky things with it.
 /* line 96, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-row-selected .x-grid-cell,
 #available_field_list .x-grid-row-selected .x-grid-rowwrap-div {
-  background: #c3e0f9;
-  border-bottom: 1px solid #78bde8;
-  border-top: 1px solid #78bde8; }
-/* line 103, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+  background: #c3e0f9; }
+/* line 101, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-cell-inner {
   color: #333;
   font-size: 14px;
   padding: 5px; }
-/* line 110, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 108, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-group-hd .x-grid-cell-inner {
   background: #454545;
   border: 0px;
   border-bottom: 1px solid #333;
   border-top: 1px solid #333;
   padding: 7px; }
-/* line 119, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 117, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-group-title {
   color: #fff; }
-/* line 124, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 122, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .number-of-items {
   color: #999;
   margin-left: 5px; }
 
-/* line 132, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 130, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_modal_footer {
   background: #454545; }
 
@@ -3576,26 +3574,26 @@ browsers will do whacky things with it.
   font-weight: bold;
   text-transform: uppercase; }
 
-/* line 2, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+/* line 16, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options {
-  border-top: 1px solid #999 !important; }
-  /* line 6, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+  border-top: 1px solid #999999 !important; }
+  /* line 20, ../sass/my-ext-theme/report/filter/_filter-options.scss */
   #report_filter_options .x-panel-body-default {
     background: transparent; }
 
-/* line 12, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+/* line 26, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options-body {
-  border-right: 1px solid #999 !important; }
+  border-right: 1px solid #999999 !important; }
 
-/* line 17, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+/* line 31, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options_footer {
-  border-bottom: 1px solid #999 !important;
-  border-right: 1px solid #999 !important; }
+  border-bottom: 1px solid #999999 !important;
+  border-right: 1px solid #999999 !important; }
 
-/* line 23, ../sass/my-ext-theme/report/filter/_filter-options.scss */
+/* line 37, ../sass/my-ext-theme/report/filter/_filter-options.scss */
 #report_filter_options_footer-body {
   background: #454545 !important;
-  border-top: 1px solid #333 !important; }
+  border-top: 1px solid #333333 !important; }
 
 /*
  * Placeholder
@@ -3685,14 +3683,10 @@ browsers will do whacky things with it.
   -o-border-radius: 0px;
   border-radius: 0px; }
 
-/* line 2, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
-#report_filter_toolbar_container {
-  border-right: 1px solid #999 !important; }
-
-/* line 7, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+/* line 13, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
 #report_filter_toolbar {
   background: #454545; }
-  /* line 11, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  /* line 17, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
   #report_filter_toolbar .x-btn {
     background: none;
     border: 0px;
@@ -3701,31 +3695,27 @@ browsers will do whacky things with it.
     -ms-border-radius: 0px;
     -o-border-radius: 0px;
     border-radius: 0px; }
-    /* line 17, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+    /* line 23, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
     #report_filter_toolbar .x-btn span {
-      color: #ccc;
+      color: #cccccc;
       font-size: 11px;
       font-weight: bold; }
-  /* line 27, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  /* line 33, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
   #report_filter_toolbar .x-btn.x-over span {
-    color: #fff; }
+    color: white; }
 
-/* line 34, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+/* line 40, ../sass/my-ext-theme/report/filter/_filter-toolbar.scss */
 #report_filter_toolbar > div {
-  border-bottom: 1px solid #333 !important;
-  border-top: 1px solid #333 !important; }
+  border-bottom: 1px solid #333333 !important;
+  border-top: 1px solid #333333 !important; }
 
-/* line 2, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
-#report_filter_formula_container {
-  border-right: 1px solid #999 !important; }
-
-/* line 7, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+/* line 13, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
 #report_filter_formula {
   background: #454545; }
-  /* line 11, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
-  #report_filter_formula .x-form-field {
-    padding-left: 2px; }
   /* line 17, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  #report_filter_formula .x-form-field {
+    padding-left: 3px; }
+  /* line 23, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .info,
   #report_filter_formula .cancel {
     background: none;
@@ -3735,59 +3725,69 @@ browsers will do whacky things with it.
     -ms-border-radius: 0px;
     -o-border-radius: 0px;
     border-radius: 0px; }
-  /* line 25, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 31, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .info span,
   #report_filter_formula .cancel span {
     padding: 0px; }
-  /* line 31, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 37, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .info i,
   #report_filter_formula .cancel i {
     font-size: 18px;
     line-height: 18px; }
-  /* line 38, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 43, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .icon-info-sign {
     color: #73bbe8; }
-  /* line 43, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+  /* line 48, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
   #report_filter_formula .icon-remove-sign {
     color: #ac030c; }
 
-/* line 49, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+/* line 54, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
 #report_filter_formula > div {
-  border-bottom: 1px solid #333 !important;
-  border-top: 1px solid #333 !important; }
+  border-bottom: 1px solid #333333 !important;
+  border-top: 1px solid #333333 !important; }
 
-/* line 30, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 62, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+.filter-formula-tooltip h4 {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 5px; }
+/* line 70, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+.filter-formula-tooltip span,
+.filter-formula-tooltip p {
+  font-size: 11px; }
+/* line 75, ../sass/my-ext-theme/report/filter/_filter-formula.scss */
+.filter-formula-tooltip span {
+  font-style: italic; }
+
+/* line 31, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter {
   background: #f1f1f2;
   border-bottom: 1px solid #cccccc;
   border-top: 1px solid white; }
-/* line 37, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 38, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-number {
   display: none;
   top: 25px !important; }
-  /* line 42, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 43, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .filter-number label {
     color: #999999;
     font-size: 18px;
     font-weight: bold;
     margin: 0px !important;
     text-align: center; }
-/* line 52, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 53, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name {
   white-space: nowrap; }
-  /* line 56, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 57, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .filter-name div {
     color: #333333;
     font-size: 14px;
     font-weight: bold; }
-/* line 64, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 65, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .x-form-field {
   border-color: #bcbcbc;
-  padding-left: 2px; }
-/* line 70, ../sass/my-ext-theme/report/filter/_filters.scss */
-#report_filters .autocomplete-filter .x-form-field {
-  padding: 0px; }
-/* line 75, ../sass/my-ext-theme/report/filter/_filters.scss */
+  padding-left: 3px; }
+/* line 71, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter {
   background: none;
   border: 0px;
@@ -3798,27 +3798,35 @@ browsers will do whacky things with it.
   border-radius: 0px;
   display: none;
   padding: 0px; }
-  /* line 83, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 79, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter span {
     padding: 0px; }
-  /* line 88, ../sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 84, ../sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter .icon-remove-sign {
     color: #ac030c;
     font-size: 18px;
     line-height: 18px; }
 
-/* line 98, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 93, ../sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters-body {
+  width: 100% !important; }
+
+/* line 99, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters.x-active .filter-number {
   display: block; }
 
-/* line 104, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 105, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter.x-over,
 #report_filters .filter.x-form-focus {
   background: white;
   border-bottom: 1px solid #999999;
-  border-top: 1px solid #999999; }
+  border-top: 1px solid #999999;
+  -webkit-box-shadow: 0px 1px 1px #cccccc;
+  -moz-box-shadow: 0px 1px 1px #cccccc;
+  box-shadow: 0px 1px 1px #cccccc;
+  z-index: 1; }
 
-/* line 112, ../sass/my-ext-theme/report/filter/_filters.scss */
+/* line 115, ../sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter.x-over .remove-filter,
 #report_filters .filter.x-form-focus .remove-filter {
   display: block; }
@@ -3858,14 +3866,15 @@ browsers will do whacky things with it.
     font-size: 14px; }
   /* line 44, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-text {
-    height: 24px; }
-  /* line 49, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+    height: 24px;
+    padding-left: 3px; }
+  /* line 50, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .rows-per-page {
     margin-left: 5px; }
-  /* line 54, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 55, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-trigger {
     height: 24px; }
-/* line 64, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 65, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh,
 #report_data .page-first,
 #report_data .page-prev,
@@ -3878,7 +3887,7 @@ browsers will do whacky things with it.
   -ms-border-radius: 0px;
   -o-border-radius: 0px;
   border-radius: 0px; }
-  /* line 70, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 71, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .refresh span,
   #report_data .page-first span,
   #report_data .page-prev span,
@@ -3887,105 +3896,109 @@ browsers will do whacky things with it.
     color: #f1f1f2;
     margin: 0px 5px;
     padding: 2px 0px 0px !important; }
-/* line 78, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 79, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh span {
   font-size: 18px;
   margin: 0px 5px 0px 0px; }
-/* line 90, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 91, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh.x-over span,
 #report_data .page-first.x-over span,
 #report_data .page-prev.x-over span,
 #report_data .page-next.x-over span,
 #report_data .page-last.x-over span {
   color: white; }
-/* line 102, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 103, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh.x-disabled span,
 #report_data .page-first.x-disabled span,
 #report_data .page-prev.x-disabled span,
 #report_data .page-next.x-disabled span,
 #report_data .page-last.x-disabled span {
   color: #96ccff !important; }
-/* line 108, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 109, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .add-column {
   margin-left: 10px; }
-  /* line 112, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 113, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column em {
     background-image: url("../images/button/s-arrow.gif"); }
-  /* line 117, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 118, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column button span {
     font-size: 11px;
     line-height: 24px !important; }
-  /* line 123, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 124, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column .icon-plus {
     color: #2caf2c;
-    margin-right: 5px; }
+    margin-right: 5px;
+    position: relative;
+    top: 1px; }
 
-/* line 16, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 15, ../sass/my-ext-theme/report/report/_report.scss */
+.x-grid-view {
+  background: #eaeaea; }
+
+/* line 20, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data {
   border: 1px solid #999; }
-  /* line 21, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 25, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-header-ct {
     border-bottom: 1px solid #333333 !important;
     border-left: 1px solid transparent !important;
     border-right: 1px solid transparent !important;
     border-top: 1px solid #333333 !important; }
-  /* line 29, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 33, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header {
     border-right: 1px solid #333333;
     font-weight: bold;
     text-shadow: none; }
-  /* line 36, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 40, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header-inner {
     cursor: pointer;
     padding-left: 5px; }
-    /* line 41, ../sass/my-ext-theme/report/report/_report.scss */
+    /* line 45, ../sass/my-ext-theme/report/report/_report.scss */
     #report_data .x-column-header-inner span {
       color: #ccc; }
-  /* line 49, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 53, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header-inner.x-column-header-over span {
     color: #fff; }
-  /* line 55, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 59, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-row-numberer .x-column-header-inner {
     cursor: auto; }
-  /* line 60, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 64, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header-open {
     background: #222;
     border-left: 1px solid #191919;
     border-right: 1px solid #191919; }
-  /* line 67, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 71, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row .x-grid-cell-special {
     background: white;
     border-right: 1px solid #dcdcdc; }
-  /* line 74, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 78, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row-alt .x-grid-cell-special,
   #report_data .x-grid-row-over .x-grid-cell-special {
     background: #f1f1f2; }
-  /* line 80, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 84, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row-selected .x-grid-cell,
   #report_data .x-grid-row-selected .x-grid-rowwrap-div {
-    background: #c3e0f9;
-    border-bottom: 1px solid #78bde8;
-    border-top: 1px solid #78bde8; }
-  /* line 87, ../sass/my-ext-theme/report/report/_report.scss */
+    background: #c3e0f9; }
+  /* line 89, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner {
     color: #333333;
     font-size: 14px;
     line-height: 18px;
     padding: 4px 6px 4px; }
-  /* line 95, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 97, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner a {
     color: #226396;
     text-decoration: none; }
-  /* line 101, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 103, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner a:hover {
     text-decoration: underline; }
 
-/* line 107, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 109, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data-body {
   border: 0px;
   border-top: 0px !important; }
 
-/* line 113, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 115, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 
@@ -4211,94 +4224,6 @@ browsers will do whacky things with it.
   -webkit-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   padding: 5px; }
-
-/* line 2, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect.x-form-text {
-  cursor: text;
-  height: auto;
-  overflow-y: auto;
-  padding: 0; }
-
-/* line 12, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect ul.x-boxselect-list {
-  padding: 1px 2px; }
-/* line 17, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect input {
-  border: none;
-  background: none;
-  height: 20px;
-  line-height: 18px;
-  width: 100%; }
-
-/* line 28, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-input,
-.x-boxselect-item {
-  display: inline-block;
-  position: relative; }
-
-/* line 35, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.lt-ie8 .x-boxselect-input,
-.lt-ie8 .x-boxselect-item {
-  display: inline; }
-
-/* line 41, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.lt-ie9 .x-boxselect-input,
-.lt-ie9 .x-boxselect-item {
-  zoom: 1; }
-
-/* line 46, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-stacked .x-boxselect-item {
-  display: block; }
-
-/* line 51, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-item {
-  background-color: #DEE7F8;
-  border: 1px solid #CAD8F3;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -o-border-radius: 6px;
-  border-radius: 6px;
-  cursor: default;
-  margin: 1px 1px 1px 0;
-  padding: 0px 1px 0px 5px !important; }
-
-/* line 61, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-field:not(.x-item-disabled) .x-boxselect-item:hover {
-  background: #BBCEF1;
-  border: 1px solid #6D95E0; }
-
-/* line 67, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-field:not(.x-item-disabled) .x-boxselect-item.selected {
-  border: 1px solid #316AD3 !important;
-  background: #658FDC !important; }
-
-/* line 73, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-item-text {
-  line-height: 16px;
-  padding-right: 20px !important; }
-
-/* line 79, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-item-close {
-  cursor: pointer; }
-
-/* line 84, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-boxselect-hideselections .x-boundlist-selected {
-  display: none; }
-
-/* line 89, ../sass/my-ext-theme/widget/boxselect/_boxselect.scss */
-.x-tab-close-btn {
-  background: url("../images/tab/tab-default-close.gif") 0px 0px no-repeat;
-  font-size: 0;
-  height: 11px;
-  line-height: 0;
-  position: absolute;
-  right: 2px;
-  text-indent: -999px;
-  top: 2px;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
-  opacity: 0.6;
-  width: 11px; }
 
 /**
  * Button style guide
@@ -4568,6 +4493,104 @@ browsers will do whacky things with it.
   color: white;
   text-shadow: 0px -1px 0px #ac030c; }
 
+/* line 2, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect.x-form-text {
+  cursor: text;
+  height: auto;
+  overflow-y: auto;
+  padding: 0; }
+
+/* line 12, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect ul.x-boxselect-list {
+  padding: 1px 2px; }
+/* line 17, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect input {
+  border: none;
+  background: none;
+  height: 20px;
+  line-height: 18px;
+  width: 100%; }
+
+/* line 28, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect-input,
+.x-boxselect-item {
+  display: inline-block;
+  position: relative; }
+
+/* line 35, ../sass/my-ext-theme/widget/_boxselect.scss */
+.lt-ie8 .x-boxselect-input,
+.lt-ie8 .x-boxselect-item {
+  display: inline; }
+
+/* line 41, ../sass/my-ext-theme/widget/_boxselect.scss */
+.lt-ie9 .x-boxselect-input,
+.lt-ie9 .x-boxselect-item {
+  zoom: 1; }
+
+/* line 46, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect-stacked .x-boxselect-item {
+  display: block; }
+
+/* line 51, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect-item {
+  background-color: #DEE7F8;
+  border: 1px solid #CAD8F3;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+  border-radius: 6px;
+  cursor: default;
+  margin: 1px 1px 1px 0;
+  padding: 0px 1px 0px 5px !important; }
+
+/* line 61, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-field:not(.x-item-disabled) .x-boxselect-item:hover {
+  background: #BBCEF1;
+  border: 1px solid #6D95E0; }
+
+/* line 67, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-field:not(.x-item-disabled) .x-boxselect-item.selected {
+  border: 1px solid #316AD3 !important;
+  background: #658FDC !important; }
+
+/* line 73, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect-item-text {
+  line-height: 16px;
+  padding-right: 20px !important; }
+
+/* line 79, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect-item-close {
+  cursor: pointer; }
+
+/* line 84, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-boxselect-hideselections .x-boundlist-selected {
+  display: none; }
+
+/* line 89, ../sass/my-ext-theme/widget/_boxselect.scss */
+.x-tab-close-btn {
+  background: url("../images/tab/tab-default-close.gif") 0px 0px no-repeat;
+  font-size: 0;
+  height: 11px;
+  line-height: 0;
+  position: absolute;
+  right: 2px;
+  text-indent: -999px;
+  top: 2px;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+  opacity: 0.6;
+  width: 11px; }
+
+/* line 2, ../sass/my-ext-theme/widget/_tooltip.scss */
+.x-tip {
+  background: #333;
+  border: 1px solid #999;
+  padding: 5px 10px !important; }
+
+/* line 9, ../sass/my-ext-theme/widget/_tooltip.scss */
+.x-tip-body {
+  color: #fff; }
+
 /* line 2, ../sass/my-ext-theme/widget/_triggerfield.scss */
 .x-form-trigger {
   background-image: url(../../app/resources/images/form/trigger.png);
@@ -4577,7 +4600,7 @@ browsers will do whacky things with it.
 .x-form-date-trigger {
   background-image: url(../../app/resources/images/form/date-trigger.png); }
 
-/* line 111, ../sass/my-ext-theme.scss */
+/* line 108, ../sass/my-ext-theme.scss */
 .x-nlg #report_toolbar,
 .x-nlg #paging_toolbar,
 .x-nlg .x-grid-header-ct,
@@ -4586,7 +4609,7 @@ browsers will do whacky things with it.
 .x-nlg .x-btn-default-small,
 .x-nlg #report_filter_actions {
   background-image: none !important; }
-/* line 118, ../sass/my-ext-theme.scss */
+/* line 115, ../sass/my-ext-theme.scss */
 .x-nlg .x-grid-header-ct,
 .x-nlg .x-column-header,
 .x-nlg .x-column-header-over {

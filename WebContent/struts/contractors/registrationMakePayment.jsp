@@ -177,95 +177,93 @@
 		<!-- Credit Card Payment Method -->
 					
 		<div id='credit-card-payment-method'>
-			<s:if test="contractor.paymentMethod.creditCard">
-				<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
-					<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
-					<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
-					<%-- We must do it this way, or we are not PCI compliant --%>
-					<s:hidden name="hash"></s:hidden>
-					<s:hidden name="key_id"></s:hidden>
-					<s:hidden name="orderid"></s:hidden>
-					<s:hidden name="amount"></s:hidden>
-					<s:hidden name="time"></s:hidden>
-					<s:hidden name="company"></s:hidden>
-					<s:hidden name="customer_vault_id"></s:hidden>
-					
-					<s:if test="cc == null">
-						<input type="hidden" name="customer_vault" value="add_customer"/>
-					</s:if>
-					<s:else>
-						<input type="hidden" name="customer_vault" value="update_customer"/>
-					</s:else>			
+			<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
+				<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
+				<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
+				<%-- We must do it this way, or we are not PCI compliant --%>
+				<s:hidden name="hash"></s:hidden>
+				<s:hidden name="key_id"></s:hidden>
+				<s:hidden name="orderid"></s:hidden>
+				<s:hidden name="amount"></s:hidden>
+				<s:hidden name="time"></s:hidden>
+				<s:hidden name="company"></s:hidden>
+				<s:hidden name="customer_vault_id"></s:hidden>
 				
-					<ul id="credit-card-inputs">	
-						<li>
-							<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
-						</li>
-						
-						<li class="creditcard">
-							<s:textfield label="CreditCard.Number" name="ccnumber" />						
-							<img src="images/creditcard.png" class="card" />
-						</li>
-						
-						<li class="creditcard">
-							<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" />
-						</li>
-	
-						<li class="expiration-date">
-							<label>
-								<s:text name="RegistrationMakePayment.ExpirationDate" />
-							</label>
-						
-							<s:select 
-								id="expMonth"
-								headerKey="" 
-								headerValue="- %{getText('ReportCsrActivity.label.Month')} -"
-								listKey="number" 
-								listValue="%{getText(i18nKey)}" 
-								list="@com.picsauditing.jpa.entities.Month@values()"
-								name="ccexpmonth"
-								theme="simple" 
-							/>
-						
-							<s:select 
-								id="expYear" 
-								headerKey="" 
-								headerValue="- %{getText('ReportCsrActivity.label.Year')} -"
-								list="#{12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}"
-								name="ccexpyear"
-								theme="simple" 
-							/>
-						
-							<s:textfield id="ccexp" name="ccexp" theme="simple" />
-						</li>
-						<li class="actions">
-							<s:submit 
-								method="completeRegistration" 
-								key="button.SubmitPayment" 
-								cssClass="btn success" 
-							/>
-                        
-                        	<a href="https://www.braintreegateway.com/merchants/89hr924yx28jmb8g/verified" 
-                        		target="_blank" 
-                        		class="brain-tree-badge">                            
-                            	
-                            	<img src="https://braintree-badges.s3.amazonaws.com/05.png" border="0" />
-                        	</a>
-						
-							<div class="processing">
-								<img src="images/loading.gif" />
-								<p>
-									<s:text name="RegistrationMakePayment.Processing" />
-								</p> 
-							</div>
-						
-							<p class="check-note">
-								<s:text name="ContractorPaymentOptions.InvoiceEmail" />
+				<s:if test="cc == null">
+					<input type="hidden" name="customer_vault" value="add_customer"/>
+				</s:if>
+				<s:else>
+					<input type="hidden" name="customer_vault" value="update_customer"/>
+				</s:else>
+			
+				<ul id="credit-card-inputs">
+					<li>
+						<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
+					</li>
+					
+					<li class="creditcard">
+						<s:textfield label="CreditCard.Number" name="ccnumber" />
+						<img src="images/creditcard.png" class="card" />
+					</li>
+					
+					<li class="creditcard">
+						<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" />
+					</li>
+
+					<li class="expiration-date">
+						<label>
+							<s:text name="RegistrationMakePayment.ExpirationDate" />
+						</label>
+					
+						<s:select
+							id="expMonth"
+							headerKey=""
+							headerValue="- %{getText('ReportCsrActivity.label.Month')} -"
+							listKey="number"
+							listValue="%{getText(i18nKey)}"
+							list="@com.picsauditing.jpa.entities.Month@values()"
+							name="ccexpmonth"
+							theme="simple"
+						/>
+					
+						<s:select
+							id="expYear"
+							headerKey=""
+							headerValue="- %{getText('ReportCsrActivity.label.Year')} -"
+							list="#{12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}"
+							name="ccexpyear"
+							theme="simple"
+						/>
+					
+						<s:textfield id="ccexp" name="ccexp" theme="simple" />
+					</li>
+					<li class="actions">
+						<s:submit
+							method="completeRegistration"
+							key="button.SubmitPayment"
+							cssClass="btn success"
+						/>
+                       
+                       	<a href="https://www.braintreegateway.com/merchants/89hr924yx28jmb8g/verified"
+                       		target="_blank"
+                       		class="brain-tree-badge">
+                           	
+                           	<img src="https://braintree-badges.s3.amazonaws.com/05.png" border="0" />
+                       	</a>
+					
+						<div class="processing">
+							<img src="images/loading.gif" />
+							<p>
+								<s:text name="RegistrationMakePayment.Processing" />
 							</p>
-						</li>
-					</ul>
-				</s:form>
-			</s:if>
+						</div>
+					
+						<p class="check-note">
+							<s:text name="ContractorPaymentOptions.InvoiceEmail" />
+						</p>
+					</li>
+				</ul>
+			</s:form>
 		</div>
 
 		<s:if test="contractor.inEuroZone">

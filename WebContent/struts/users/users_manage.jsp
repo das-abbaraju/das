@@ -394,13 +394,13 @@
 									</s:else></li>
 							</s:if>
 							
-							<s:if test="user.id > 0">
+							<pics:toggle name="DynamicReports">
 								<li>
 									<label> <s:text name="User.useDynamicReport" /></label> 			
 									<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="user.usingDynamicReports" />		 
 																
 								</li>
-							</s:if>
+							</pics:toggle>
 							
 							<!-- CSR Shadowing -->
 							<s:if test="csr && permissions.admin">
