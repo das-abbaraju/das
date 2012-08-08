@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -235,34 +236,52 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(key, null, args);
 	}
 
-	public Map<String, String> findAllTranslations(String key) {
+	public Map<Locale, String> findAllTranslations(String key) {
 		return findAllTranslations(key, true);
 	}
 
-	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
+	public Map<Locale, String> findAllTranslations(String key,
+			Boolean includeLocaleStatic) {
 		Map<String, String> translationMap = i18nCache.getText(key);
-		Map<String, String> newTranslationMap = new HashMap<String, String>();
+		Map<Locale, String> newTranslationMap = new HashMap<Locale, String>();
 
-		Locale locale = null;
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
 			String keyStr = entry.getKey();
-			String[] lanCountry = keyStr.split("_");
 
-			// e.g. en_GB
-			if (lanCountry.length > 1) {
-				locale = new Locale(lanCountry[0], lanCountry[1]);
-			} else {
-				locale = new Locale(keyStr);
-			}
-			newTranslationMap.put(locale.getDisplayName(), entry.getValue());
+			newTranslationMap.put(convertStringToLocale(keyStr),
+					entry.getValue());
 		}
 
 		if (!includeLocaleStatic) {
-			newTranslationMap.remove(getLocaleStatic().getDisplayName());
+			newTranslationMap.remove(getLocaleStatic());
 		}
 
-		Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);
+		return sortTranslationsByLocaleDisplayNames(newTranslationMap);
+	}
 
+	private Locale convertStringToLocale(String keyStr) {
+		Locale locale = null;
+		String[] lanCountry = keyStr.split("_");
+
+		// e.g. en_GB
+		if (lanCountry.length > 1) {
+			locale = new Locale(lanCountry[0], lanCountry[1]);
+		} else {
+			locale = new Locale(keyStr);
+		}
+		return locale;
+	}
+
+	private Map<Locale, String> sortTranslationsByLocaleDisplayNames(
+			Map<Locale, String> newTranslationMap) {
+		Comparator<Locale> displayNameComparator = new Comparator<Locale>() {
+			public int compare(Locale l1, Locale l2) {
+				return l1.getDisplayName().compareTo(l2.getDisplayName());
+			}
+		};
+		Map<Locale, String> sortedTranslationMap = new TreeMap<Locale, String>(
+				displayNameComparator);
+		sortedTranslationMap.putAll(newTranslationMap);
 		return sortedTranslationMap;
 	}
 
