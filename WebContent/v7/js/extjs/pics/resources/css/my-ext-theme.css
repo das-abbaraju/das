@@ -3856,14 +3856,15 @@ browsers will do whacky things with it.
     font-size: 14px; }
   /* line 44, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-text {
-    height: 24px; }
-  /* line 49, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+    height: 24px;
+    padding-left: 3px; }
+  /* line 50, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .rows-per-page {
     margin-left: 5px; }
-  /* line 54, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 55, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-trigger {
     height: 24px; }
-/* line 64, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 65, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh,
 #report_data .page-first,
 #report_data .page-prev,
@@ -3876,7 +3877,7 @@ browsers will do whacky things with it.
   -ms-border-radius: 0px;
   -o-border-radius: 0px;
   border-radius: 0px; }
-  /* line 70, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 71, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .refresh span,
   #report_data .page-first span,
   #report_data .page-prev span,
@@ -3885,105 +3886,109 @@ browsers will do whacky things with it.
     color: #f1f1f2;
     margin: 0px 5px;
     padding: 2px 0px 0px !important; }
-/* line 78, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 79, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh span {
   font-size: 18px;
   margin: 0px 5px 0px 0px; }
-/* line 90, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 91, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh.x-over span,
 #report_data .page-first.x-over span,
 #report_data .page-prev.x-over span,
 #report_data .page-next.x-over span,
 #report_data .page-last.x-over span {
   color: white; }
-/* line 102, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 103, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .refresh.x-disabled span,
 #report_data .page-first.x-disabled span,
 #report_data .page-prev.x-disabled span,
 #report_data .page-next.x-disabled span,
 #report_data .page-last.x-disabled span {
   color: #96ccff !important; }
-/* line 108, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 109, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .add-column {
   margin-left: 10px; }
-  /* line 112, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 113, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column em {
     background-image: url("../images/button/s-arrow.gif"); }
-  /* line 117, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 118, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column button span {
     font-size: 11px;
     line-height: 24px !important; }
-  /* line 123, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 124, ../sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column .icon-plus {
     color: #2caf2c;
-    margin-right: 5px; }
+    margin-right: 5px;
+    position: relative;
+    top: 1px; }
 
-/* line 16, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 15, ../sass/my-ext-theme/report/report/_report.scss */
+.x-grid-view {
+  background: #eaeaea; }
+
+/* line 20, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data {
   border: 1px solid #999; }
-  /* line 21, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 25, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-header-ct {
     border-bottom: 1px solid #333333 !important;
     border-left: 1px solid transparent !important;
     border-right: 1px solid transparent !important;
     border-top: 1px solid #333333 !important; }
-  /* line 29, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 33, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header {
     border-right: 1px solid #333333;
     font-weight: bold;
     text-shadow: none; }
-  /* line 36, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 40, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header-inner {
     cursor: pointer;
     padding-left: 5px; }
-    /* line 41, ../sass/my-ext-theme/report/report/_report.scss */
+    /* line 45, ../sass/my-ext-theme/report/report/_report.scss */
     #report_data .x-column-header-inner span {
       color: #ccc; }
-  /* line 49, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 53, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header-inner.x-column-header-over span {
     color: #fff; }
-  /* line 55, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 59, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-row-numberer .x-column-header-inner {
     cursor: auto; }
-  /* line 60, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 64, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-column-header-open {
     background: #222;
     border-left: 1px solid #191919;
     border-right: 1px solid #191919; }
-  /* line 67, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 71, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row .x-grid-cell-special {
     background: white;
     border-right: 1px solid #dcdcdc; }
-  /* line 74, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 78, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row-alt .x-grid-cell-special,
   #report_data .x-grid-row-over .x-grid-cell-special {
     background: #f1f1f2; }
-  /* line 80, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 84, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-row-selected .x-grid-cell,
   #report_data .x-grid-row-selected .x-grid-rowwrap-div {
-    background: #c3e0f9;
-    border-bottom: 1px solid #78bde8;
-    border-top: 1px solid #78bde8; }
-  /* line 87, ../sass/my-ext-theme/report/report/_report.scss */
+    background: #c3e0f9; }
+  /* line 89, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner {
     color: #333333;
     font-size: 14px;
     line-height: 18px;
     padding: 4px 6px 4px; }
-  /* line 95, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 97, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner a {
     color: #226396;
     text-decoration: none; }
-  /* line 101, ../sass/my-ext-theme/report/report/_report.scss */
+  /* line 103, ../sass/my-ext-theme/report/report/_report.scss */
   #report_data .x-grid-cell-inner a:hover {
     text-decoration: underline; }
 
-/* line 107, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 109, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data-body {
   border: 0px;
   border-top: 0px !important; }
 
-/* line 113, ../sass/my-ext-theme/report/report/_report.scss */
+/* line 115, ../sass/my-ext-theme/report/report/_report.scss */
 #report_data-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 

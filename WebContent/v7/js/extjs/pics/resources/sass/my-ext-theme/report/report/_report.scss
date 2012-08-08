@@ -11,6 +11,10 @@ $report_data_cell_text_color: #333333;
 
 $report_data_cell_link_color: #226396;
 
+.x-grid-view
+{
+	background: #eaeaea;
+}
 
 #report_data
 {
@@ -79,8 +83,6 @@ $report_data_cell_link_color: #226396;
 	.x-grid-row-selected .x-grid-rowwrap-div
 	{
 		background: #c3e0f9;
-		border-bottom: 1px solid #78bde8;
-		border-top: 1px solid #78bde8;
 	}
 	
 	.x-grid-cell-inner

@@ -138,11 +138,9 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             height: 28
         }];
     },
-    
-    updateDisplayInfo: function () {
-        var store = this.getStore(),
-            count = store.getTotalCount(),
-            msg;
+
+    updateDisplayInfo: function (count) {
+        var msg;
 
         if (count === 0) {
             msg = this.emptyMsg;
