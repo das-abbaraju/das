@@ -18,7 +18,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     ],
 
     views: [
-        'PICS.view.report.available-field.AvailableFieldModal'
+        'PICS.view.report.available-field.AvailableFieldModal',
+        'Ext.ux.util.FilterMultipleColumn'
     ],
 
     init: function () {
