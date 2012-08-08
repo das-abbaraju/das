@@ -3461,7 +3461,7 @@ browsers will do whacky things with it.
   -o-border-radius: 15px;
   border-radius: 15px;
   height: 25px;
-  padding: 0px 5px; }
+  padding: 0px 7px; }
 
 /* line 48, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_modal-body,
@@ -3501,30 +3501,28 @@ browsers will do whacky things with it.
 /* line 96, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-row-selected .x-grid-cell,
 #available_field_list .x-grid-row-selected .x-grid-rowwrap-div {
-  background: #c3e0f9;
-  border-bottom: 1px solid #78bde8;
-  border-top: 1px solid #78bde8; }
-/* line 103, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+  background: #c3e0f9; }
+/* line 101, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-cell-inner {
   color: #333;
   font-size: 14px;
   padding: 5px; }
-/* line 110, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 108, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-group-hd .x-grid-cell-inner {
   background: #454545;
   border: 0px;
   border-bottom: 1px solid #333;
   border-top: 1px solid #333;
   padding: 7px; }
-/* line 119, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 117, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .x-grid-group-title {
   color: #fff; }
-/* line 124, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 122, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_list .number-of-items {
   color: #999;
   margin-left: 5px; }
 
-/* line 132, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
+/* line 130, ../sass/my-ext-theme/report/available-field/_available-field-modal.scss */
 #available_field_modal_footer {
   background: #454545; }
 
