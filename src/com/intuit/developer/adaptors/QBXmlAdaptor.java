@@ -128,10 +128,10 @@ public class QBXmlAdaptor {
 			return "";
 
 		if (in.length() < start + end) {
-			return StringEscapeUtils.escapeXml(in.substring(start));
+			return StringEscapeUtils.escapeXml(in).substring(start);
 		}
 
-		return StringEscapeUtils.escapeXml(in.substring(start, end));
+		return StringEscapeUtils.escapeXml(in).substring(start, end);
 	}
 
 	static public String nullSafeZip(String zipCode, Country country) {
