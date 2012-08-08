@@ -41,7 +41,7 @@ Ext.define('PICS.controller.report.Filter', {
             // render filter options
             'reportfilteroptions': {
                 afterlayout: this.onFilterOptionsAfterLayout,
-                render: this.onFilterOptionsRender
+                beforerender: this.onFilterOptionsBeforeRender
             },
 
             // collapse filter options
@@ -103,16 +103,12 @@ Ext.define('PICS.controller.report.Filter', {
             },
 
             // saving edits to filter store + refresh
-            '#report_filters datefield': {
+            'reportfilterbasedatefilter [name=filter_value]': {
                 select: this.onFilterValueSelect
             },
 
             // saving edits to filter store + refresh
-            '\
-            #report_filters textfield,\
-            #report_filters numberfield,\
-            #report_filters datefield\
-            ': {
+            '#report_filters [name=filter_value]': {
                 blur: this.onFilterValueInputBlur,
                 specialkey: this.onFilterValueInputEnter
             },
@@ -172,32 +168,39 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
-    onFilterOptionsRender: function (cmp, eOpts) {
+    onFilterOptionsBeforeRender: function (cmp, eOpts) {
         var store = this.getReportReportsStore();
 
-        if (store.isLoading()) {
-            store.load({
-                callback: function (store, records, successful, eOpts) {
-                    this.application.fireEvent('refreshfilters');
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                var report = store.first();
+
+                this.application.fireEvent('refreshfilters');
+
+                if (report && report.get('filterExpression') != '') {
                     this.showFilterFormula();
-                },
-                scope: this
+                }
             });
         } else {
+            var report = store.first();
+
             this.application.fireEvent('refreshfilters');
-            this.showFilterFormula();
+
+            if (report && report.get('filterExpression') != '') {
+                this.showFilterFormula();
+            }
         }
     },
 
     onFilterOptionsCollapse: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions();
-        
+
         filter_options.collapse();
     },
 
     onFilterOptionsExpand: function (cmp, event, eOpts) {
         var filter_options = this.getFilterOptions();
-        
+
         filter_options.expand();
     },
 
@@ -295,6 +298,13 @@ Ext.define('PICS.controller.report.Filter', {
         var store = this.getReportReportsStore(),
             report = store.first(),
             filter_formula = this.getFilterFormulaExpression().value;
+
+        // Hack: because this is broken
+        if (filter_formula == '') {
+            report.set('filterExpression', filter_formula);
+
+            return false;
+        }
 
         // TODO write a real grammar and parser for our filter formula DSL
 

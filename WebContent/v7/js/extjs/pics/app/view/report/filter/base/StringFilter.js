@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.filter.base.StringFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            // die
+            throw '';
         }
 
         var combobox = this.createCombobox(this.record);
@@ -24,15 +24,16 @@ Ext.define('PICS.view.report.filter.base.StringFilter', {
     createCombobox: function (record) {
         var operator = record.get('operator');
 
+        if (!operator) {
+            operator = PICS.app.constants.TEXTSTORE[0][0];
+
+            record.set('operator', operator);
+        }
+
         return {
             xtype: 'combobox',
             editable: false,
             flex: 1.5,
-            listeners: {
-                change: function (obj, newval, oldval, options) {
-                   //this.up('stringfilter').record.set('operator', newval);
-                }
-            },
             margin: '0 5 0 0',
             name: 'operator',
             store: PICS.app.constants.TEXTSTORE,
@@ -46,11 +47,6 @@ Ext.define('PICS.view.report.filter.base.StringFilter', {
         return {
             xtype: 'textfield',
             flex: 2,
-            listeners: {
-                blur: function () {
-                    //this.up('stringfilter').record.set('value', this.value);
-                }
-            },
             name: 'filter_value',
             value: value
         };

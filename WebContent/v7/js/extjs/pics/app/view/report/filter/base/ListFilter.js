@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            // die
+            throw '';
         }
 
         // TODO: shouldn't the server do this?
@@ -38,7 +38,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
         var url = Ext.Object.fromQueryString(document.location.search);
         var name = record.get('name');
 
-        return Ext.create('Ext.data.Store', {
+        return {
             fields: [{
                 name: 'id',
                 type: 'string'
@@ -48,12 +48,13 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             }],
             proxy: {
                 type: 'ajax',
+                // TODO: why does this require a report number
                 url: 'ReportDynamic!list.action?report=' + url.report + '&fieldName=' + name,
                 reader: {
                     root: 'result',
                     type: 'json'
                 }
             }
-        });
+        };
     }
 });
