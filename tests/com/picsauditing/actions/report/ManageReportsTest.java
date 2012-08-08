@@ -16,19 +16,18 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import org.slf4j.Logger;
 
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.search.Database;
 
 public class ManageReportsTest {
 
 	ManageReports manageReports;
 
-	@Mock private ReportProvider reportProvider;
+	@Mock private ReportDAO reportDao;
 	@Mock private Permissions permissions;
 	@Mock private I18nCache i18nCache;
 	@Mock private Database databaseForTesting;
@@ -44,7 +43,7 @@ public class ManageReportsTest {
 
 		setUpI18nCacheText();
 
-		Whitebox.setInternalState(manageReports, "reportProvider", reportProvider);
+		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "permissions", permissions);
 		Whitebox.setInternalState(manageReports, "i18nCache", i18nCache);
@@ -54,7 +53,7 @@ public class ManageReportsTest {
 	public void testExecute_GoesToMyReportsByDefault() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportProvider.findAllUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
 
 		String result = manageReports.execute();
 
@@ -65,7 +64,7 @@ public class ManageReportsTest {
 	public void testFavorites_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportProvider.findFavoriteUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(userReports);
 
 		String result = manageReports.favorites();
 
@@ -74,7 +73,7 @@ public class ManageReportsTest {
 
 	@Test
 	public void testFavorites_DoesntLeaveUserReportsNull() {
-		when(reportProvider.findFavoriteUserReports(USER_ID)).thenReturn(null);
+		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(null);
 
 		manageReports.favorites();
 
@@ -85,7 +84,7 @@ public class ManageReportsTest {
 	public void testMyReports_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportProvider.findAllUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
 
 		String result = manageReports.myReports();
 
@@ -94,7 +93,7 @@ public class ManageReportsTest {
 
 	@Test
 	public void testMyReports_DoesntLeaveUserReportsNull() {
-		when(reportProvider.findAllUserReports(USER_ID)).thenReturn(null);
+		when(reportDao.findAllUserReports(USER_ID)).thenReturn(null);
 
 		manageReports.myReports();
 
@@ -105,8 +104,8 @@ public class ManageReportsTest {
 	public void testSearch_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportProvider.findAllUserReports(USER_ID)).thenReturn(userReports);
-		when(reportProvider.findPublicReports()).thenReturn(new ArrayList<Report>());
+		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findPublicReports()).thenReturn(new ArrayList<Report>());
 
 		String result = manageReports.search();
 
@@ -115,8 +114,8 @@ public class ManageReportsTest {
 
 	@Test
 	public void testSearch_DoesntLeaveUserReportsNull() {
-		when(reportProvider.findAllUserReports(USER_ID)).thenReturn(null);
-		when(reportProvider.findPublicReports()).thenReturn(new ArrayList<Report>());
+		when(reportDao.findAllUserReports(USER_ID)).thenReturn(null);
+		when(reportDao.findPublicReports()).thenReturn(new ArrayList<Report>());
 
 		manageReports.search();
 

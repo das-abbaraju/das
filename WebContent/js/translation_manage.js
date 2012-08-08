@@ -63,13 +63,15 @@
             },
 
             adjustViewTextWidth: function () {
-                var that = this;
-
-                var width = $('.rate:first').position().left - 30;
+                var that = this,
+                    rate = $('.rate:first');
 
                 $('.translation-list').addClass('dirty');
 
-                $('.view .text').css('width', width);
+                if (rate.length) {
+                    var width = rate.position().left - 30;
+                    $('.view .text').css('width', width);
+                }
 
                 $('.translation-list').removeClass('dirty');
             },

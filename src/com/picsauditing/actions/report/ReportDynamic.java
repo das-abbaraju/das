@@ -21,10 +21,10 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportDynamicModel;
-import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
@@ -42,7 +42,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Autowired
 	private ReportDynamicModel reportDynamicModel;
 	@Autowired
-	private ReportProvider reportProvider;
+	private ReportDAO reportDao;
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
@@ -137,7 +137,7 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 
 			if (report.getDefinition().getColumns().size() > 0) {
-				List<BasicDynaBean> queryResults = ReportProvider.runQuery(sql, json);
+				List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
 
 				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields,
 						permissions, getLocale());
@@ -251,7 +251,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		if (reportDynamicModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
-			reportProvider.connectReportToUser(report, userId);
+			reportDao.connectReportToUser(report, userId);
 			json.put("success", true);
 		} else {
 			json.put("success", false);
@@ -274,7 +274,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		if (reportDynamicModel.canUserEdit(permissions.getUserId(), report)) {
-			reportProvider.connectReportToUserEditable(report, userId);
+			reportDao.connectReportToUserEditable(report, userId);
 			json.put("success", true);
 		} else {
 			json.put("success", false);
@@ -309,7 +309,7 @@ public class ReportDynamic extends PicsActionSupport {
 		ReportUtil.localize(report, getLocale());
 
 		try {
-			exportToExcel(report, ReportProvider.runQuery(sql, json));
+			exportToExcel(report, reportDao.runQuery(sql, json));
 		} catch (SQLException se) {
 			logger.warn(se.toString());
 		} catch (IOException ioe) {
