@@ -568,7 +568,12 @@
 		<s:if test="filter.showGeneralContractors">
 			<div class="filterOption">
 				<a href="#" class="filterBox">
-					<s:text name="FacilitiesEdit.GeneralContractor" />
+					<s:if test="permissions.generalContractor">
+						<s:text name="global.Operators" />
+					</s:if>
+					<s:else>
+						<s:text name="FacilitiesEdit.GeneralContractor" />
+					</s:else>
 				</a>
 				=
 				<span class="q_status">

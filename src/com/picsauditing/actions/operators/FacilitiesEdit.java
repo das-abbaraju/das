@@ -675,7 +675,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	private void loadSelectedClients() {
 		notSelectedClients = operatorDao.findWhere(false, "a.status IN ('Active'"
-				+ (operator.getStatus().isDemo() ? ", 'Demo'" : "") + ")");
+				+ (operator.getStatus().isDemo() ? ", 'Demo'" : "") + ") AND a.id != " + operator.getId());
 		selectedClients = operator.getLinkedClientSites();
 
 		notSelectedClients.removeAll(selectedClients);

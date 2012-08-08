@@ -63,13 +63,16 @@
 									<s:param name="id">
 										${sub.id}
 									</s:param>
-									<s:if test="permissions.generalContractor">
-										<s:param name="opID">
-											${gcOp2.id}
-										</s:param>
-									</s:if>
 								</s:url>
-								<a href="${contractor_flag}">
+								<s:url var="contractor_flag_gc" action="ContractorFlag">
+									<s:param name="id">
+										${sub.id}
+									</s:param>
+									<s:param name="opID">
+										${gcOp2.id}
+									</s:param>
+								</s:url>
+								<a href="${permissions.generalContractor ? contractor_flag_gc : contractor_flag}">
 									<s:property value="table.get(#sub).get(#gcOp2).smallIcon" escape="false" />
 								</a>
 							</td>
