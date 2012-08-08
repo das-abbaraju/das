@@ -8,7 +8,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
         ref: 'reportSettingsTabs',
         selector: 'reportsettingstabs'
     }, {
-        ref: 'reportNoPermissionEdit',
+        ref: 'reportSettingsEdit',
+        selector: 'reportsettingsedit'
+    }, {
+        ref: 'reportSettingsNoPermission',
         selector: 'reportsettingsmodal #settings_no_permission'
     }, {
         ref: 'reportNameEdit',
@@ -31,7 +34,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
     init: function () {
         this.control({
             'reportsettingsmodal tabpanel': {
-                render: this.onReportSettingsTabsRender
+                beforerender: this.onReportSettingsTabsBeforeRender
             },
 
             'reportsettingsmodal button[action=cancel]':  {
@@ -39,7 +42,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reportsettingsedit': {
-                render: this.onReportModalEditRender
+                beforerender: this.onReportModalEditBeforeRender
             },
 
             'reportsettingsmodal reportsettingsedit button[action=edit]':  {
@@ -97,38 +100,26 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.getReportSettingsModal().close();
     },
 
-    onReportModalEditRender: function (cmp, eOpts) {
+    onReportModalEditBeforeRender: function (cmp, eOpts) {
         var store = this.getReportReportsStore(),
-            report_no_permission_edit = this.getReportNoPermissionEdit(),
-            report_name_field = this.getReportNameEdit(),
-            report_description_field = this.getReportDescriptionEdit();
+            report_settings_edit = this.getReportSettingsEdit(),
+            report_no_permission_edit = this.getReportSettingsNoPermission();
 
         // if there is no form - do nothing
         if (report_no_permission_edit) {
             return false;
         }
 
-        function updateSettingsEditFormFromStore(store) {
-            var report = store.first(),
-                report_name = report.get('name'),
-                report_description = report.get('description');
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                var report = store.first();
 
-            if (report_name) {
-                report_name_field.value = report_name;
-            }
-
-            if (report_description) {
-                report_description_field.setValue(report_description);
-            }
-        }
-
-        // TODO: need better loading check
-        if (store.isLoading()) {
-            store.on('load', function (store) {
-                updateSettingsEditFormFromStore(store);
+                report_settings_edit.update(report);
             });
         } else {
-            updateSettingsEditFormFromStore(store);
+            var report = store.first();
+
+            report_settings_edit.update(report);
         }
     },
 
@@ -139,7 +130,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         modal.setTitle(title);
     },
 
-    onReportSettingsTabsRender: function (cmp, eOpts) {
+    onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
         var modal = this.getReportSettingsModal(),
             title = cmp.getActiveTab().modal_title;
 
