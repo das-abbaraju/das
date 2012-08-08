@@ -34,16 +34,11 @@
                 
 				<s:iterator value="activeOperatorsMap">
 					<s:iterator value="value">
-						<tr class="<s:if test="#is_odd == true">odd</s:if>">
-							<td class="client-site">
-                                <s:property value="operatorAccount.name" />
-                            </td>
-							<s:if test="operatorAccount.generalContractorFree" >
-								<td></td>
-								<td></td>
-								<td></td>
-							</s:if>
-							<s:else>
+						<s:if test="!operatorAccount.generalContractorFree" >
+							<tr class="<s:if test="#is_odd == true">odd</s:if>">
+								<td class="client-site">
+	                                <s:property value="operatorAccount.name" />
+	                            </td>
 								<td class="green-flag">
 	                                <s:if test="flagColor.isGreen()">
 	                                    <img src="images/icon_greenFlag.gif" />
@@ -59,15 +54,14 @@
 	                                    <img src="images/icon_redFlag.gif" />
 	                                </s:if>
 	                            </td>
-                            </s:else>
-						</tr>
-                        
-                        <s:if test="#is_odd == true">
-                            <s:set var="is_odd" value="false" />
+							</tr>
+	                        <s:if test="#is_odd == true">
+	                            <s:set var="is_odd" value="false" />
+	                        </s:if>
+	                        <s:else>
+	                            <s:set var="is_odd" value="true" />
+	                        </s:else>
                         </s:if>
-                        <s:else>
-                            <s:set var="is_odd" value="true" />
-                        </s:else>
 					</s:iterator>
 				</s:iterator>
 			</table>
