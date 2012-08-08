@@ -285,10 +285,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	private void addNoteWhenStatusChange() {
 		request = ServletActionContext.getRequest();
-
-		if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-			this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
-					+ contractor.getStatus().toString());
+		if (request.getParameter("currentStatus")!=null){
+			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
+				this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
+						+ contractor.getStatus().toString());
+			}
 		}
 	}
 
