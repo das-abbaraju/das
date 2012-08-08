@@ -28,6 +28,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -63,6 +65,8 @@ public class ImportEmployees extends PicsActionSupport {
 	private HSSFCellStyle boldedStyle;
 	private HSSFFont headerFont;
 	private HSSFCellStyle headerStyle;
+
+	private final Logger logger = LoggerFactory.getLogger(ImportEmployees.class);
 
 	public String save() throws Exception {
 		if (account != null) {
@@ -230,7 +234,8 @@ public class ImportEmployees extends PicsActionSupport {
 								if (row.getCell(currentColumn) != null
 										&& !Strings.isEmpty(row.getCell(currentColumn).toString())) {
 									String name = row.getCell(currentColumn).getStringCellValue();
-									name = name.substring(prefixLength).trim();
+									if (name.length()>0 && name.length() > prefixLength)
+										name = name.substring(prefixLength).trim();
 									names.add(name);
 								}
 							}
@@ -257,6 +262,7 @@ public class ImportEmployees extends PicsActionSupport {
 				addActionMessage(getText("ManageEmployeesUpload.message.NoEmployeesInFile"));
 			}
 		} catch (Exception e) {
+			logger.error(e.toString());
 			addActionError(getText("ManageEmployeesUpload.message.ErrorInFile"));
 		}
 	}
