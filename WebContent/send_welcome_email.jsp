@@ -24,7 +24,8 @@ emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 EmailQueue emailQueue = emailBuilder.build();
 emailQueue.setVeryHighPriority();
 emailQueue.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
-EmailSender.send(emailQueue);
+EmailSender emailSender = (EmailSender) SpringUtils.getBean("EmailSender");
+emailSender.send(emailQueue);
 
 NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 Note note = new Note();
