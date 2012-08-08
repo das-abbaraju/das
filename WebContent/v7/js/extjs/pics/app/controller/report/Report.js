@@ -45,7 +45,7 @@ Ext.define('PICS.controller.report.Report', {
         if (!store.isLoaded()) {
             store.on('load', function (store, records, successful, eOpts) {
                 this.application.fireEvent('refreshreport');
-            });
+            }, this);
         } else {
             this.application.fireEvent('refreshreport');
         }

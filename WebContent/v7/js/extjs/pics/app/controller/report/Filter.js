@@ -180,7 +180,7 @@ Ext.define('PICS.controller.report.Filter', {
                 if (report && report.get('filterExpression') != '') {
                     this.showFilterFormula();
                 }
-            });
+            }, this);
         } else {
             var report = store.first();
 
