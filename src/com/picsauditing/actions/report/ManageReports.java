@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportDynamicModel;
-import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.access.ReportUtil;
 
 @SuppressWarnings("serial")
@@ -29,7 +29,7 @@ public class ManageReports extends PicsActionSupport {
 	public static final String FAVORITE_REPORTS_URL = "ManageReports!favorites.action";
 
 	@Autowired
-	private ReportProvider reportProvider;
+	private ReportDAO reportDao;
 
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
 	// TODO remove viewType after making the toggleFavorite an ajax call
@@ -46,7 +46,7 @@ public class ManageReports extends PicsActionSupport {
 		viewType = FAVORITE_REPORTS;
 
 		try {
-			userReports = reportProvider.findFavoriteUserReports(permissions.getUserId());
+			userReports = reportDao.findFavoriteUserReports(permissions.getUserId());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favorites.action", e);
 		}
@@ -63,7 +63,7 @@ public class ManageReports extends PicsActionSupport {
 		viewType = MY_REPORTS;
 
 		try {
-			userReports = reportProvider.findAllUserReports(permissions.getUserId());
+			userReports = reportDao.findAllUserReports(permissions.getUserId());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!myReports.action", e);
 		}
@@ -82,9 +82,9 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			int userId = permissions.getUserId();
 
-			userReports = reportProvider.findAllUserReports(userId);
+			userReports = reportDao.findAllUserReports(userId);
 
-			List<Report> publicReports = reportProvider.findPublicReports();
+			List<Report> publicReports = reportDao.findPublicReports();
 			for (Report report : publicReports) {
 				if (ReportUtil.containsReportWithId(userReports, report.getId()))
 					continue;
@@ -106,7 +106,7 @@ public class ManageReports extends PicsActionSupport {
 	// TODO make this an ajax call
 	public String removeUserReport() {
 		try {
-			reportProvider.removeUserReport(permissions.getUserId(), reportId);
+			reportDao.removeUserReport(permissions.getUserId(), reportId);
 			addActionMessage(getText("ManageReports.message.ReportRemoved"));
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
@@ -121,9 +121,9 @@ public class ManageReports extends PicsActionSupport {
 	// TODO make this an ajax call
 	public String deleteReport() {
 		try {
-			Report report = reportProvider.findOneReport(reportId);
+			Report report = reportDao.findOneReport(reportId);
 			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
-				reportProvider.deleteReport(report);
+				reportDao.deleteReport(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {
 				addActionError(getText("ManageReports.error.NoDeletePermissions"));
@@ -140,12 +140,10 @@ public class ManageReports extends PicsActionSupport {
 
 	public String toggleFavorite() {
 		try {
-			reportProvider.toggleReportUserFavorite(permissions.getUserId(), reportId);
+			reportDao.toggleReportUserFavorite(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.warn(nre.toString());
-		} catch (IOException ioe) {
-			logger.warn(ioe.toString());
 		} catch (Exception e) {
 			logger.error(e.toString());
 		}
@@ -169,7 +167,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String columnsToTranslate() {
 		try {
-			List<Report> allReports = reportProvider.findAllReports();
+			List<Report> allReports = reportDao.findAllReports();
 			// TODO: Get a button/link for debug only
 			ReportUtil.findColumnsToTranslate(allReports);
 		} catch (IOException ioe) {

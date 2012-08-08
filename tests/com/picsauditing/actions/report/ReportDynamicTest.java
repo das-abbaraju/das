@@ -32,13 +32,12 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportDynamicModel;
-import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ I18nCache.class, ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportProvider.class, ReportUtil.class })
+@PrepareForTest({ I18nCache.class, ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
 public class ReportDynamicTest {
 

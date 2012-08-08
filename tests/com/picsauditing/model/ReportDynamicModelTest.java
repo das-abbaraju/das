@@ -12,18 +12,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportDynamicModel;
-import com.picsauditing.provider.ReportProvider;
 import com.picsauditing.report.models.ModelType;
 
 public class ReportDynamicModelTest {
 
 	private ReportDynamicModel model;
 
-	@Mock private ReportProvider reportProvider;
+	@Mock private ReportDAO reportDao;
 	@Mock private Report report;
 	@Mock private User user;
 
@@ -34,7 +34,7 @@ public class ReportDynamicModelTest {
 		MockitoAnnotations.initMocks(this);
 		model = new ReportDynamicModel();
 
-		setInternalState(model, "reportProvider", reportProvider);
+		setInternalState(model, "reportDao", reportDao);
 
 		when(report.getId()).thenReturn(555);
 		when(user.getId()).thenReturn(USER_ID);
@@ -42,7 +42,7 @@ public class ReportDynamicModelTest {
 
 	@Test
 	public void canUserViewAndCopy_nullQuery() {
-		when(reportProvider.findOneUserReport(anyInt(), anyInt())).thenReturn(null);
+		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(null);
 
 		assertFalse(model.canUserViewAndCopy(USER_ID, report));
 	}
@@ -50,7 +50,7 @@ public class ReportDynamicModelTest {
 	@Test
 	public void canUserViewAndCopy_emptyQuery() {
 
-		when(reportProvider.findOneUserReport(anyInt(), anyInt())).thenThrow(new NoResultException());
+		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenThrow(new NoResultException());
 
 		assertFalse(model.canUserViewAndCopy(USER_ID, report));
 	}
@@ -63,7 +63,7 @@ public class ReportDynamicModelTest {
 	@Test
 	public void canUserViewAndCopy_successfulQuery () {
 
-		when(reportProvider.findOneUserReport(anyInt(), anyInt())).thenReturn(new ReportUser());
+		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(new ReportUser());
 
 		assertTrue(model.canUserViewAndCopy(USER_ID, report));
 	}
@@ -72,7 +72,7 @@ public class ReportDynamicModelTest {
 	public void canUserEdit_Negative() {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(false);
-		when(reportProvider.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
+		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertFalse(model.canUserEdit(USER_ID, report));
 	}
@@ -81,7 +81,7 @@ public class ReportDynamicModelTest {
 	public void canUserEdit_Positive() {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(true);
-		when(reportProvider.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
+		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertTrue(model.canUserEdit(USER_ID, report));
 	}
