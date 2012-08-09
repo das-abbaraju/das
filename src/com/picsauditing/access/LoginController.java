@@ -234,12 +234,17 @@ public class LoginController extends PicsActionSupport {
 		if (!AjaxUtils.isAjax(getRequest()))
 			return BLANK;
 
-		execute();
+		String result = execute();
 
-		json = new JSONObject();
-		json.put("loggedIn", permissions.isLoggedIn());
-		return JSON;
+		if ("success".equals(result)) {
+			json = new JSONObject();
+			json.put("loggedIn", permissions.isLoggedIn());
+			return JSON;
+		}
+
+		return BLANK;
 	}
+
 
 	/**
 	 * Result for when the user is not logged in during an ajax request.
