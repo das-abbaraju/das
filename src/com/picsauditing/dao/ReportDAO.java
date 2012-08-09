@@ -9,6 +9,7 @@ import javax.persistence.NonUniqueResultException;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
@@ -19,6 +20,10 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
 public class ReportDAO extends PicsDAO {
+
+	// TODO temp solution for save not working. I have no clue about this
+	@Autowired
+	private BasicDAO basicDao;
 
 	public Report findOneReport(int id) throws NoResultException {
 		return findOne(Report.class, "t.id = " + id);
@@ -71,7 +76,7 @@ public class ReportDAO extends PicsDAO {
 		ReportDynamicModel.validate(report);
 		report.setAuditColumns(user);
 
-		save(report);
+		basicDao.save(report);
 	}
 
 	public void deleteReport(Report report) {
@@ -104,14 +109,14 @@ public class ReportDAO extends PicsDAO {
 		userReport.setUser(user);
 		userReport.setEditable(false);
 
-		save(userReport);
+		basicDao.save(userReport);
 	}
 
 	public void connectReportToUser(Report report, int userId) {
 		ReportUser userReport = new ReportUser(userId, report);
 		userReport.setAuditColumns(new User(userId));
 
-		save(userReport);
+		basicDao.save(userReport);
 	}
 
 	public void connectReportToUserEditable(Report report, int userId) {
@@ -119,7 +124,7 @@ public class ReportDAO extends PicsDAO {
 		userReport.setAuditColumns(new User(userId));
 		userReport.setEditable(true);
 
-		save(userReport);
+		basicDao.save(userReport);
 	}
 
 	public void grantEditPermission(Report report, User user) {
@@ -134,7 +139,7 @@ public class ReportDAO extends PicsDAO {
 		ReportUser userReport = findOneUserReport(user.getId(), report.getId());
 		userReport.setEditable(value);
 
-		save(userReport);
+		basicDao.save(userReport);
 	}
 
 	public void removeUserReport(User user, Report report) throws NoResultException, NonUniqueResultException {
@@ -149,19 +154,19 @@ public class ReportDAO extends PicsDAO {
 	public void toggleReportUserFavorite(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		ReportUser reportUser = findOneUserReport(userId, reportId);
 		reportUser.toggleFavorite();
-		save(reportUser);
+		basicDao.save(reportUser);
 	}
 
 	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		ReportUser reportUser = findOneUserReport(userId, reportId);
 		reportUser.setFavorite(true);
-		save(reportUser);
+		basicDao.save(reportUser);
 	}
 
 	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		ReportUser reportUser = findOneUserReport(userId, reportId);
 		reportUser.setFavorite(false);
-		save(reportUser);
+		basicDao.save(reportUser);
 	}
 
 	@SuppressWarnings("unchecked")
