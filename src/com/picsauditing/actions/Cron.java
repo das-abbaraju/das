@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -427,10 +428,10 @@ public class Cron extends PicsActionSupport {
 	private void sendEmailPendingAccounts() throws Exception {
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
 
-		String where = "a.country IN ('US','CA') AND ";
+		String where = "a.country IN ('US','CA') AND a.lastContactedByAutomatedEmailDate != CURDATE() AND ";
 		
 		if (!emailExclusionList.isEmpty())
-			where = "u.email NOT IN (" + exclude + ") AND ";
+			where = "u.email NOT IN (" + exclude + ") AND a.lastContactedByAutomatedEmailDate != CURDATE() AND ";
 		
 		String whereReminder = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 WEEK)";
@@ -451,7 +452,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void runAccountEmailBlast(List<ContractorAccount> list, int templateID, String newNote)
-			throws EmailException, IOException {
+			throws EmailException, IOException, ParseException {
 		Map<OperatorAccount, List<ContractorAccount>> operatorContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
 
 		for (ContractorAccount contractor : list) {
@@ -492,6 +493,9 @@ public class Cron extends PicsActionSupport {
 
 						operatorContractors.get(requestedByOperator).add(contractor);
 					}
+					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					contractor.setLastContactedByAutomatedEmailDate(sdf.parse(sdf.format(new Date())));
+					contractorAccountDAO.save(contractor);
 				}
 			}
 		}
@@ -536,10 +540,10 @@ public class Cron extends PicsActionSupport {
 		emailExclusionList.addAll(emailsAlreadySentToPending);
 
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
-		String where = "c.country IN ('US','CA') AND c.conID IS NULL AND ";
+		String where = "c.country IN ('US','CA') AND c.conID IS NULL AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
 
 		if (!emailExclusionList.isEmpty())
-			where = "c.email NOT IN (" + exclude + ") AND ";
+			where = "c.email NOT IN (" + exclude + ") AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
 		
 		String whereReminder = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "CASE WHEN DATEDIFF(c.deadline, c.creationDate) < 14 "
@@ -569,7 +573,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void runCRREmailBlast(List<ContractorRegistrationRequest> list, int templateID, String newNote)
-			throws IOException {
+			throws IOException, ParseException {
 		Map<User, List<ContractorRegistrationRequest>> operatorContractors = new HashMap<User, List<ContractorRegistrationRequest>>();
 
 		for (ContractorRegistrationRequest crr : list) {
@@ -610,7 +614,8 @@ public class Cron extends PicsActionSupport {
 					crr.setLastContactDate(new Date());
 					notes = newNote + notes;
 					crr.setNotes(notes);
-
+					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					crr.setLastContactedByAutomatedEmailDate(sdf.parse(sdf.format(new Date())));
 					if (templateID == regReqFinalEmailTemplate) {
 						if (operatorContractors.get(operatorUser) == null)
 							operatorContractors.put(operatorUser, new ArrayList<ContractorRegistrationRequest>());

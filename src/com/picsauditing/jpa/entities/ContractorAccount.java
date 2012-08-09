@@ -120,7 +120,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
-
+	private Date lastContactedByAutomatedEmailDate;
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
 
@@ -1633,5 +1633,13 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return true;
+	}
+
+	public Date getLastContactedByAutomatedEmailDate() {
+		return lastContactedByAutomatedEmailDate;
+	}
+
+	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
+		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
 	}
 }
