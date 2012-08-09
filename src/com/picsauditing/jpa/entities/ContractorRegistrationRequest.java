@@ -35,6 +35,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private Date holdDate;
 	private User lastContactedBy;
 	private Date lastContactDate;
+	private Date lastContactedByAutomatedEmailDate;
 	private int contactCountByEmail;
 	private int contactCountByPhone;
 	private int matchCount;
@@ -291,6 +292,14 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	@Transient
 	public String getRegistrationLink() {
 		return "http://www.picsorganizer.com/Registration.action?button=" + "request&requestID=" + getId();
+	}
+
+	public Date getLastContactedByAutomatedEmailDate() {
+		return lastContactedByAutomatedEmailDate;
+	}
+
+	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
+		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
 	}
 
 }

@@ -5,6 +5,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,11 +28,13 @@ import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.search.Database;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class })
+@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, AjaxUtils.class })
 public class LoginControllerTest {
 	LoginController controller;
 
@@ -40,13 +44,20 @@ public class LoginControllerTest {
 	private I18nCache i18nCache;
 	@Mock 
 	private Database databaseForTesting;
-
+	@Mock
+	private PicsActionSupport picsActionSupport;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private JSONObject json;
 	private Map<String, Object> session;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		
+		when(permissions.isLoggedIn()).thenReturn(true);
 		
 		controller = new LoginController();
 
@@ -69,6 +80,8 @@ public class LoginControllerTest {
 		PowerMockito.mockStatic(ServletActionContext.class);
 		when(ServletActionContext.getRequest()).thenReturn(request);
 		when(request.getCookies()).thenReturn(new Cookie[] {});
+
+		PowerMockito.mockStatic(AjaxUtils.class);
 	}
 
 	@Test
@@ -90,5 +103,21 @@ public class LoginControllerTest {
 		controller.setButton("logout");
 		assertEquals(LoginController.SUCCESS, controller.execute());
 		assertEquals(0, controller.getActionMessages().size());
+	}
+	
+	@Test
+	public void testAjax_nullAjax() throws Exception{
+		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(false);
+
+		assertEquals("blank", controller.ajax());		
+	}
+	
+	@Test
+	public void testAjax_withAjax() throws Exception{
+		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(true);
+		String result = "success";
+		
+		//json.put("loggedIn", permissions.isLoggedIn());
+		//assertEquals("json", controller.ajax());
 	}
 }

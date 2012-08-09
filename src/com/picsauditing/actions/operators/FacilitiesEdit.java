@@ -241,10 +241,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (errors.size() > 0) {
 			operatorDao.clear();
 			operator = operatorDao.find(operator.getId());
-			List<Facility> operatorFacilities = operator.getOperatorFacilities();
-			for (Facility facility : operatorFacilities) {
-				if (!operatorFacilities.contains(facility)) {
-					facilities.add(facility.getOperator().getId());
+
+			if (operator != null){
+				List<Facility> operatorFacilities = new ArrayList<Facility> ();
+				for (Facility facility : operatorFacilities) {
+					if (!operatorFacilities.contains(facility)) {
+						facilities.add(facility.getOperator().getId());
+					}
 				}
 			}
 

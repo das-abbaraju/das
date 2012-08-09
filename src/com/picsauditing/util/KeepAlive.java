@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.search.Database;
 
 public class KeepAlive {
+	
 	private final static Logger logger = LoggerFactory.getLogger(KeepAlive.class);
 
 	private float loadFactor = 3f;

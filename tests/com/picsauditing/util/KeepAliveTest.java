@@ -18,6 +18,7 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.search.Database;
 
 public class KeepAliveTest {
+	
 	private KeepAlive keepAlive;
 
 	@Mock

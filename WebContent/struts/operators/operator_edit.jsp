@@ -331,7 +331,7 @@
 									</a>
 								</s:if>
 								<s:else>
-									<s:url action="UsersManage" var="add_primary_user">
+									<s:url action="UsersManage!add" var="add_primary_user">
 										<s:param name="account">
 											${operator.id}
 										</s:param>

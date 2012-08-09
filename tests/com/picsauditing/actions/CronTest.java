@@ -2,9 +2,9 @@ package com.picsauditing.actions;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,15 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
@@ -47,6 +50,7 @@ public class CronTest {
 	
 	@Mock private EmailQueueDAO emailQueueDAO;
 	@Mock private ContractorAccountDAO contractoAccountDAO;
+	@Mock private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 	@Mock private EmailBuilder emailBuilder;
 	@Mock protected NoteDAO noteDAO;
 	@Mock private Database databaseForTesting;
@@ -158,7 +162,41 @@ public class CronTest {
 	}
 
 	@Test
-	public void TestDeactivatePendingAccounts(){
+	public void testRunCRREmailBlast() throws Exception{
+		List<ContractorRegistrationRequest> list = new ArrayList<ContractorRegistrationRequest>();
+		ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
+		crr.setName("test");
+		list.add(crr);
+
+		EmailQueue email = new EmailQueue();
+		email.setContractorAccount(new ContractorAccount(3));
+		//email.setEmailTemplate(any(EmailTemplate.class));
+		//when(emailBuilder.build()).thenReturn(email);
+
+		//Whitebox.invokeMethod(cron, "runCRREmailBlast", list, 1, "test");
+
+		//verify(emailQueueDAO).save(any(EmailQueue.class));
+		//verify(contractorRegistrationRequestDAO).save(any(ContractorRegistrationRequest.class));
+	}
+	
+	@Test
+	public void testRunAccountEmailBlast() throws Exception{
+		List<ContractorAccount> list = new ArrayList<ContractorAccount>();
+		ContractorAccount cAccount = new ContractorAccount(1);
+		list.add(cAccount);
+
+		EmailQueue email = new EmailQueue();
+		email.setContractorAccount(new ContractorAccount(3));
+
+		//when(emailBuilder.build()).thenReturn(email);
+		
+		//Whitebox.invokeMethod(cron, "runAccountEmailBlast", list, 1, "test");
+		//verify(emailQueueDAO).save(any(EmailQueue.class));
+		//verify(contractoAccountDAO).save(any(ContractorAccount.class));
+	}
+	
+	@Test
+	public void testDeactivatePendingAccounts(){
 		ContractorAccount cAccount = new ContractorAccount(1);
 		ContractorAccount cAccount2 = new ContractorAccount(2);
 		cAccount.setStatus(AccountStatus.Pending);
