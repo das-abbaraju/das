@@ -1,11 +1,10 @@
 package com.picsauditing.PICS;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -157,6 +156,17 @@ public class BillingCalculatorSingleTest {
 		when(mockOA1.getId()).thenReturn(333);
 		when(mockOA2.getId()).thenReturn(OperatorAccount.OLDCASTLE);
 		assertTrue(billingService.qualifiesForInsureGuard(OAMocksSet));
+	}
+
+	//Test for PICS-6344
+	@Test
+	public void InsureGuardQualificationTest_checkParentage () {
+		OperatorAccount oa = new OperatorAccount();
+		oa.setId(19427);
+		oa.setParent(mockOA2);
+		OAMocksSet.add(oa);
+		when(mockOA2.getId()).thenReturn(OperatorAccount.AI);
+		assertFalse(billingService.qualifiesForInsureGuard(OAMocksSet));
 	}
 
 }
