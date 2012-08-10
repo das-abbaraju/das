@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 public class ReportDAO extends PicsDAO {
 
@@ -63,8 +64,8 @@ public class ReportDAO extends PicsDAO {
 	public List<BasicDynaBean> findReportsForSearchFilter(int userId, String dirtyQuery) {
 		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
 
-		// TODO escape
-		String query = dirtyQuery;
+		// TODO escape properly
+		String query = Strings.escapeQuotes(dirtyQuery);
 
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
