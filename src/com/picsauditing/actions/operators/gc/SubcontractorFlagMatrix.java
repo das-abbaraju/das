@@ -1,6 +1,5 @@
 package com.picsauditing.actions.operators.gc;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -18,6 +17,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.struts2.ServletActionContext;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.report.ReportAccount;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -31,7 +32,9 @@ import com.picsauditing.util.Strings;
 public class SubcontractorFlagMatrix extends ReportAccount {
 	private SelectSQL sql = new SelectSQL("accounts a");
 
-	private Map<ContractorAccount, Map<OperatorAccount, FlagColor>> table = new TreeMap<ContractorAccount, Map<OperatorAccount, FlagColor>>();
+	private Map<ContractorAccount, FlagColor> clientFlags = new TreeMap<ContractorAccount, FlagColor>();
+	private Table<ContractorAccount, OperatorAccount, FlagColor> table = TreeBasedTable.create();
+
 	private Set<OperatorAccount> distinctOperators = new TreeSet<OperatorAccount>();
 
 	public String execute() throws Exception {
@@ -76,11 +79,19 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		return null;
 	}
 
-	public Map<ContractorAccount, Map<OperatorAccount, FlagColor>> getTable() {
+	public Map<ContractorAccount, FlagColor> getClientFlags() {
+		return clientFlags;
+	}
+
+	public void setClientFlags(Map<ContractorAccount, FlagColor> clientFlags) {
+		this.clientFlags = clientFlags;
+	}
+
+	public Table<ContractorAccount, OperatorAccount, FlagColor> getTable() {
 		return table;
 	}
 
-	public void setTable(Map<ContractorAccount, Map<OperatorAccount, FlagColor>> table) {
+	public void setTable(Table<ContractorAccount, OperatorAccount, FlagColor> table) {
 		this.table = table;
 	}
 
@@ -98,6 +109,12 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 
 	@Override
 	protected void buildQuery() {
+		if (!Strings.isEmpty(orderByDefault)) {
+			orderByDefault += ", gen.name";
+		} else {
+			orderByDefault = "gen.name";
+		}
+
 		String visibleOperators = permissions.getAccountIdString();
 		if (getFilter().getGeneralContractor() != null) {
 			visibleOperators = Strings.implode(getFilter().getGeneralContractor());
@@ -149,8 +166,11 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 
 	private void buildMap() {
 		for (BasicDynaBean bean : data) {
-			ContractorAccount contractor = dao.find(ContractorAccount.class,
-					Integer.parseInt(bean.get("subID").toString()));
+			ContractorAccount contractor = new ContractorAccount();
+			contractor.setId(Integer.parseInt(bean.get("id").toString()));
+			contractor.setName(bean.get("name").toString());
+			contractor.setType("Contractor");
+
 			OperatorAccount operator = new OperatorAccount();
 			operator.setId(Integer.parseInt(bean.get("gcID").toString()));
 			operator.setName(bean.get("gcName").toString());
@@ -161,14 +181,11 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 				flag = FlagColor.valueOf(bean.get("flag").toString());
 			}
 
-			if (table.get(contractor) != null) {
-				table.get(contractor).put(operator, flag);
-			} else {
-				Map<OperatorAccount, FlagColor> temp = new HashMap<OperatorAccount, FlagColor>();
-				temp.put(operator, flag);
-				table.put(contractor, temp);
+			if (!permissions.isGeneralContractor() && clientFlags.get(contractor) == null) {
+				clientFlags.put(contractor, flag);
 			}
 
+			table.put(contractor, operator, flag);
 			distinctOperators.add(operator);
 		}
 	}
@@ -205,6 +222,13 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue(creationHelper.createRichTextString(getText("GeneralContractor.SubContractor")));
 
+		if (!permissions.isGeneralContractor()) {
+			headerCellIndex++;
+			cell = row.createCell(headerCellIndex);
+			cell.setCellStyle(headerStyle);
+			cell.setCellValue(creationHelper.createRichTextString(getText("global.Flag")));
+		}
+
 		for (OperatorAccount operator : distinctOperators) {
 			headerCellIndex++;
 			cell = row.createCell(headerCellIndex);
@@ -220,21 +244,34 @@ public class SubcontractorFlagMatrix extends ReportAccount {
 		HSSFCellStyle centerCell = sheet.getWorkbook().createCellStyle();
 		centerCell.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 
-		for (ContractorAccount contractor : table.keySet()) {
+		for (ContractorAccount contractor : table.rowKeySet()) {
 			HSSFRow row = sheet.createRow(rowIndex);
 			int cellIndex = 0;
 
 			HSSFCell cell = row.createCell(cellIndex);
 			cell.setCellValue(creationHelper.createRichTextString(contractor.getName()));
 
+			if (!permissions.isGeneralContractor()) {
+				cellIndex++;
+
+				cell = row.createCell(cellIndex);
+				cell.setCellValue(creationHelper
+						.createRichTextString(getText(clientFlags.get(contractor).getI18nKey())));
+			}
+
 			for (OperatorAccount operator : distinctOperators) {
 				cellIndex++;
 
-				FlagColor flag = table.get(contractor).get(operator);
+				FlagColor flag = table.get(contractor, operator);
 				if (flag != null) {
 					cell = row.createCell(cellIndex);
 					cell.setCellStyle(centerCell);
-					cell.setCellValue(creationHelper.createRichTextString(getText(flag.getI18nKey())));
+
+					if (permissions.isGeneralContractor()) {
+						cell.setCellValue(creationHelper.createRichTextString(getText(flag.getI18nKey())));
+					} else {
+						cell.setCellValue("X");
+					}
 				}
 			}
 
