@@ -179,14 +179,17 @@ public class AuditorAvailability extends BaseTable {
 		this.webOnly = webOnly;
 	}
 
+	@Transient
 	public String getOnlyInCountrySubdivisions() {
 		return onlyInCountrySubdivisions;
 	}
 
+	@Transient
 	public void setOnlyInCountrySubdivisions(String onlyInCountrySubdivisions) {
 		this.onlyInCountrySubdivisions = onlyInCountrySubdivisions;
 	}
 
+	@Transient
 	public void setOnlyInCountrySubdivisions(String[] onlyInCountrySubdivisions) {
 		this.onlyInCountrySubdivisions = Strings.implode(Arrays.asList(onlyInCountrySubdivisions), ",");
 	}
