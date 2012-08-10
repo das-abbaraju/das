@@ -9,7 +9,7 @@
     <s:set var="reschedule_fee_class"></s:set>
 </s:else>
 
-<head>
+
 	<title><s:text name="ScheduleAudit.title" /></title>
 	
 	<meta name="help" content="Scheduling_Audits">
@@ -24,8 +24,7 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 
     <script type="text/javascript" src="js/audit/schedule_audit_edit.js?v=<s:property value="version"/>"></script>
-</head>
-<body>
+
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
         <s:include value="../contractors/conHeader.jsp" />
         
@@ -181,4 +180,3 @@
             </fieldset>
         </s:form>
     </div>
-</body>
