@@ -22,7 +22,7 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
     },
 
     createCombobox: function (record) {
-        var value = record.get('operator');
+        var operator = record.get('operator');
 
         if (!operator) {
             operator = PICS.app.constants.NUMBERSTORE[0][0];
