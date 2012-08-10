@@ -2,6 +2,7 @@ package com.picsauditing.auditBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.QuestionComparator;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.util.Strings;
 
 public class AuditBuilderTest extends PicsTest {
 	AuditBuilder auditBuilder;
@@ -85,6 +87,23 @@ public class AuditBuilderTest extends PicsTest {
 		operator = EntityFactory.makeOperator();
 		contractor.getOperatorAccounts().add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
+	}
+	
+	@Test
+	public void testBuildAudits_WCB() {
+		addTypeRules((new RuleParameters()).setAuditTypeId(145));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(EntityFactory.makeAuditType(145));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(1, contractor.getAudits().size());
+		assertTrue(!Strings.isEmpty(contractor.getAudits().get(0).getAuditFor()));
+
+		// see that it doesn't replicate again
+		auditBuilder.buildAudits(contractor);
+		assertEquals(1, contractor.getAudits().size());
 	}
 	
 	@Test

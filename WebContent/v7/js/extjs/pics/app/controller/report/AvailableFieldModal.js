@@ -73,6 +73,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
 
     onAvailableFieldAdd: function (cmp, event, eOpts) {
         var modal = this.getAvailableFieldModal(),
+            list = this.getAvailableFieldList()
+            search_box = this.getAvailableFieldSearchBox(),
             type = modal.type;
 
         if (type === 'column') {
@@ -83,7 +85,10 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             throw 'Invalid type:' + modal.type + ' - must be (filter|column)';
         }
 
-        modal.destroy();
+        search_box.setValue('');
+        list.getSelectionModel().clearSelections();
+
+        modal.hide();
     },
 
     onAvailableFieldCancel: function (cmp, event, eOpts) {
@@ -107,15 +112,18 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore();
+        var store = this.getReportAvailableFieldsByCategoryStore(),
+            modal = this.getAvailableFieldModal();
 
         store.clearFilter();
         store.sort();
 
-        var modal = Ext.create('PICS.view.report.available-field.AvailableFieldModal', {
-            defaultFocus: 'textfield[name=search_box]',
-            type: type
-        });
+        if (!modal) {
+            var modal = Ext.create('PICS.view.report.available-field.AvailableFieldModal', {
+                defaultFocus: 'textfield[name=search_box]',
+                type: type
+            });
+        }
 
         modal.show();
     }

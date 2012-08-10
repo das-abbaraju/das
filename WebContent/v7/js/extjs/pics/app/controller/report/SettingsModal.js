@@ -106,20 +106,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_no_permission_edit = this.getReportSettingsNoPermission();
 
         // if there is no form - do nothing
-        if (report_no_permission_edit) {
-            return false;
-        }
+        if (!report_no_permission_edit) {
+            if (!store.isLoaded()) {
+                store.on('load', function (store, records, successful, eOpts) {
+                    var report = store.first();
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
+                    report_settings_edit.update(report);
+                });
+            } else {
                 var report = store.first();
 
                 report_settings_edit.update(report);
-            });
-        } else {
-            var report = store.first();
-
-            report_settings_edit.update(report);
+            }
         }
     },
 

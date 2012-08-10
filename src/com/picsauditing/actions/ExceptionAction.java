@@ -81,6 +81,7 @@ public class ExceptionAction extends PicsActionSupport {
 					String headerName = (String) e.nextElement();
 					email.append("\nHeader-" + headerName + ": " + request.getHeader(headerName));
 				}
+
 				EmailQueue mail = new EmailQueue();
 				mail.setSubject("PICS Exception Error"
 						+ (permissions.isLoggedIn() ? " - User ID " + permissions.getUserId() : ""));
@@ -201,7 +202,6 @@ public class ExceptionAction extends PicsActionSupport {
 			try {
 				emailSender.send(mail);
 			} catch (Exception e) {
-				Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
 				logger.error("PICS Exception Handler ... sending email via SendGrid");
 				GridSender sendMail = new GridSender(user, password);
 				mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");

@@ -13,8 +13,10 @@ import java.util.TimeZone;
 import org.junit.Test;
 
 public class DateBeanTest  {
+	
 	TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
 	TimeZone pacificTimeZone = TimeZone.getTimeZone("US/Pacific");
+	
 	private static List<String> february03_2001 = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
 	{
@@ -291,6 +293,23 @@ public class DateBeanTest  {
 	}
 	
 	@Test
+	public void testGetWCBDate() {
+		Calendar calendar = Calendar.getInstance();
+		
+		calendar.set(Calendar.MONTH, 7);
+		calendar.set(Calendar.DAY_OF_MONTH, 31);
+		calendar.set(Calendar.YEAR, 2011);
+		
+		assertEquals("2011", DateBean.getWCBYear(calendar.getTime()));
+
+		calendar.set(Calendar.MONTH, 8);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.YEAR, 2011);
+		
+		assertEquals("2012", DateBean.getWCBYear(calendar.getTime()));
+}
+	
+	@Test
 	public void testGetMarchOfNextYearWithNull() {
 		Date result = DateBean.getMarchOfNextYear(null);
 		assertNull(result);
@@ -520,6 +539,23 @@ public class DateBeanTest  {
 	@Test
 	public void testFormatWithNullValue() {
 		assertEquals("", DateBean.format(null, "MM/dd/yyyy"));
+	}
+
+	@Test
+	public void testGetWCBExpirationDate() {
+		assertNull(DateBean.getWCBExpirationDate(null));
+		assertNull(DateBean.getWCBExpirationDate(""));
+		assertNull(DateBean.getWCBExpirationDate("garbage"));
+		
+		Date date = DateBean.getWCBExpirationDate("2012");
+		assertNotNull(date);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		assertEquals(2012, cal.get(Calendar.YEAR));
+		assertEquals(9, cal.get(Calendar.MONTH));
+		assertEquals(1, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 }

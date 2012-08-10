@@ -553,6 +553,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {
+		if (cao.getAudit().getAuditType().isWCB()) {
+			auditSetWCBExpiresDate(cao, status);
+			return;
+		}
+		
 		if (status.isSubmittedResubmitted()) {
 			if (cao.getAudit().getExpiresDate() == null)
 				cao.getAudit().setExpiresDate(getAuditExpirationDate());
@@ -575,6 +580,36 @@ public class AuditActionSupport extends ContractorActionSupport {
 				
 				cao.getAudit().setExpiresDate(expirationDate);
 			}
+		}
+	}
+	
+	/**
+	 * Only set the expiration date for the WCB if it has a status of "Approved" for
+	 * all the CAOs
+	 * 
+	 * @param audit
+	 */
+	private void auditSetWCBExpiresDate(ContractorAuditOperator updatedCao, AuditStatus newStatus) {
+		ContractorAudit audit = updatedCao.getAudit();
+		if (CollectionUtils.isEmpty(audit.getOperators())) {
+			return;
+		}
+		
+		boolean allCaosAreApproved = true;
+		for (ContractorAuditOperator cao : audit.getOperators()) {
+			// we need to do this here because the modified CAO has not been persisted yet, so the status
+			// to check is the newStatus, not the cao's status
+			if (cao.getId() == updatedCao.getId() && updatedCao.isVisible() && !newStatus.isApproved()) {
+				allCaosAreApproved = false;
+			} else if (cao.getId() != updatedCao.getId() && cao.isVisible() && !cao.getStatus().isApproved()) {
+				allCaosAreApproved = false;
+			}
+		}
+		
+		if (allCaosAreApproved) {
+			audit.setExpiresDate(DateBean.getWCBExpirationDate(audit.getAuditFor()));
+		} else {
+			audit.setExpiresDate(null);
 		}
 	}
 
