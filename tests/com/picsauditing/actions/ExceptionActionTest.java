@@ -101,7 +101,7 @@ public class ExceptionActionTest {
 		when(session.getCreationTime()).thenReturn(now.getTime());
 
 		assertEquals(PicsActionSupport.REDIRECT, exceptionAction.execute());
-		assertEquals("http://www.picsorganizer.com/", exceptionAction.getUrl());
+		assertEquals("//www.picsorganizer.com/", exceptionAction.getUrl());
 
 		verify(dao).save(any(ErrorLog.class));
 	}

@@ -134,7 +134,10 @@ public class ExceptionAction extends PicsActionSupport {
 
 		if (userReported) {
 			email.append("A user has reported an error on PICS\n");
-			setFrom_address(permissions.getEmail());
+
+			if (permissions.isLoggedIn()) {
+				setFrom_address(permissions.getEmail());
+			}
 		} else {
 			email.append("An error occurred on PICS\n\n");
 		}
