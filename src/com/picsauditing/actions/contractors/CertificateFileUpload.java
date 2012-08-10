@@ -279,12 +279,15 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	public boolean isCanDelete() {
 		if(file == null)
 			return false;
+		
 		if(!file.exists())
 			return false;
+		
 		String where = "t.audit.contractorAccount.id = "+ contractor.getId() + " AND t.question.questionType = 'FileCertificate' AND t.answer = '"+ certID +"'";
 		List<AuditData> auditDatas = (List<AuditData>) auditDao.findWhere(AuditData.class, where, 1);
 		if(auditDatas.size() == 0)
 			return true;
+		
 		return false;
 	}
 }

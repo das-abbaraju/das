@@ -79,10 +79,10 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
+	
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired

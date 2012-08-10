@@ -436,11 +436,11 @@ public class OpenTasks extends TranslationActionSupport {
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 					openTasks.add(getTextParameterized("ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
-							auditName));
+							auditName, showAuditFor, auditFor));
 					addedOpenTask = true;
 				} else {
 					openTasks.add(getTextParameterized("ContractorWidget.message.UploadAndSubmitPolicy",
-							conAudit.getId(), auditName));
+							conAudit.getId(), auditName, showAuditFor, auditFor));
 					addedOpenTask = true;
 				}
 			}

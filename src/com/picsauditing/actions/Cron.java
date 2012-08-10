@@ -86,7 +86,7 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
-	static protected User system = new User(User.SYSTEM);
+	
 	@Autowired
 	protected AppPropertyDAO appPropDao;
 	@Autowired
@@ -128,6 +128,8 @@ public class Cron extends PicsActionSupport {
 	private IndexerEngine indexer;
 	@Autowired
 	private EmailBuilder emailBuilder;
+	
+	protected static User system = new User(User.SYSTEM);
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
