@@ -56,19 +56,12 @@ public class ReportCsrActivity extends ReportActionSupport {
 						+ " or summary like '%rejected% PQF%' or summary like '%PQF% to InComplete%')");
 
 		CsrActivitySQL policyVerified = new CsrActivitySQL("0", "0", "count(*)", "0", "0");
-		policyVerified
-				.addJoin("JOIN app_translation t ON t.msgKey LIKE 'AuditType.%' AND n.summary LIKE CONCAT('%', t.msgValue, '%')");
-		policyVerified.addJoin("JOIN audit_type at ON t.msgKey = CONCAT('AuditType.', at.id, '.name')");
-
 		policyVerified.addWhere("(n.summary like '%Verified%' or n.summary like '%Complete%')");
-		policyVerified.addWhere("at.classType = 'Policy'");
+		policyVerified.addWhere("n.noteCategory = 'Insurance'");
 
 		CsrActivitySQL policyRejected = new CsrActivitySQL("0", "0", "0", "count(*)", "0");
-		policyRejected
-				.addJoin("JOIN app_translation t ON t.msgKey LIKE 'AuditType.%' AND n.summary LIKE CONCAT('%', t.msgValue, '%')");
-		policyRejected.addJoin("JOIN audit_type at ON t.msgKey = CONCAT('AuditType.', at.id, '.name')");
-		policyRejected.addWhere("(n.summary like '%rejected%' or n.summary like '%InComplete%')");
-		policyRejected.addWhere("at.classType = 'Policy'");
+		policyRejected.addWhere("(n.summary like '%Rejected%' or n.summary like '%Incomplete%')");
+		policyRejected.addWhere("n.noteCategory = 'Insurance'");
 
 		CsrActivitySQL notesCreated = new CsrActivitySQL("0", "0", "0", "0", "count(*)");
 		String sql = "SELECT sum(AUVerified) as AUVerified, sum(AURejected) as AURejected, sum(InsuranceVerified) as InsuranceVerified, sum(InsuranceRejected) as InsuranceRejected,sum(notesCreated) as notesCreated, u.name, month_name FROM "
