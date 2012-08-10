@@ -37,7 +37,7 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
             margin: '0 5 0 0',
             name: 'operator',
             store: PICS.app.constants.NUMBERSTORE,
-            value: value
+            value: operator
         };
     },
 
