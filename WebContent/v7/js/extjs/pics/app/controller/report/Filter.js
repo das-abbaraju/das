@@ -297,7 +297,7 @@ Ext.define('PICS.controller.report.Filter', {
     saveFilterFormula: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            filter_formula = this.getFilterFormulaExpression().value;
+            filter_formula = this.getFilterFormulaExpression().getValue();
 
         // Hack: because this is broken
         if (filter_formula == '') {
