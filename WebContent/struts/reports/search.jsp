@@ -14,10 +14,10 @@
 <h3><s:text name="ManageReports.search.subtitle" /></h3>
 
 <div id="report_search">
-    <s:form id="report_search_form" method="post" cssClass="form-inline">
+    <s:form id="report_search_form" action="ManageReports!searchList.action" method="get" cssClass="form-inline">
         <i class="icon-search icon-large"></i>
-        
-        <input type="text" name="search" placeholder="<s:text name="ManageReports.search.searchReports" />" />
+
+        <input type="text" name="searchTerm" value="${searchTerm}" placeholder="<s:text name="ManageReports.search.searchReports" />" />
     </s:form>
 </div>
 
@@ -38,18 +38,18 @@
                 <a href="${report_url}" class="name">
                     ${report.name}
                 </a>
-    
+
                 <s:if test="#report.createdBy.id != permissions.userId">
                     <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
                 </s:if>
-                
+
                 <p class="description">${report.description}</p>
             </div>
 
             <span class="number-favorites">
-                24,389 <s:text name="ManageReports.report.Favorites" />
+                ${report.numTimesFavorited} <s:text name="ManageReports.report.Favorites" />
             </span>
-            
+
             <div class="clearfix"></div>
         </li>
     </s:iterator>

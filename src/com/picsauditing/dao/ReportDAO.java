@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -9,6 +10,8 @@ import javax.persistence.NonUniqueResultException;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.ReportValidationException;
@@ -25,6 +28,8 @@ public class ReportDAO extends PicsDAO {
 	@Autowired
 	private BasicDAO basicDao;
 
+	private static final Logger logger = LoggerFactory.getLogger(ReportDAO.class);
+
 	public Report findOneReport(int id) throws NoResultException {
 		return findOne(Report.class, "t.id = " + id);
 	}
@@ -34,6 +39,69 @@ public class ReportDAO extends PicsDAO {
 		List<Report> publicReports = findWhere(Report.class, query);
 
 		return publicReports;
+	}
+
+	public List<BasicDynaBean> findTopTenFavoriteReports(int userId) {
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+
+		try {
+			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
+
+			sql.setLimit(10);
+
+			Database db = new Database();
+			results = db.select(sql.toString(), false);
+		} catch (SQLException se) {
+			logger.warn("SQL Exception in findTopTenFavoriteReports()", se);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in findTopTenFavoriteReports()");
+		}
+
+		return results;
+	}
+
+	public List<BasicDynaBean> findReportsForSearchFilter(int userId, String dirtyQuery) {
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+
+		// TODO escape
+		String query = dirtyQuery;
+
+		try {
+			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
+
+			sql.addWhere("r.name LIKE \"%" + query + "%\" OR r.description LIKE \"%" + query + "%\"");
+
+			Database db = new Database();
+			results = db.select(sql.toString(), false);
+		} catch (SQLException se) {
+			logger.warn("SQL Exception in findReportsForSearchFilter()", se);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in findReportsForSearchfilter()");
+		}
+
+		return results;
+	}
+
+	private SelectSQL setupSqlForSearchFilterQuery(int userId) {
+		SelectSQL sql = new SelectSQL("report r");
+
+		sql.addField("r.id");
+		sql.addField("r.name");
+		sql.addField("r.description");
+		sql.addField("u.name as userName");
+		sql.addField("u.id as userId");
+		sql.addField("count(ru.is_favorite) as numTimesFavorited");
+
+		sql.addGroupBy("r.id");
+
+		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.is_favorite = 1");
+		sql.addJoin("JOIN users as u ON r.createdBy = u.id");
+
+		sql.addWhere("r.private = 0 OR r.createdBy = " + userId);
+
+		sql.addOrderBy("numTimesFavorited DESC");
+
+		return sql;
 	}
 
 	public List<Report> findAllReports() {

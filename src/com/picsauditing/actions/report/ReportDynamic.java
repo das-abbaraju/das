@@ -158,7 +158,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String list() {
 		try {
-			// TODO Add i18n to this
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
@@ -167,7 +166,6 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
-			// TODO Add i18n to this
 			if (field == null)
 				throw new Exception("Available field undefined");
 

@@ -14,6 +14,7 @@ import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 
@@ -27,6 +28,7 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private boolean isPrivate;
+	private int numTimesFavorited;
 
 	private Definition definition;
 	private int rowsPerPage = 50;
@@ -141,11 +143,20 @@ public class Report extends BaseTable {
 	}
 
 	@Transient
-	// TODO find a better name for this class, like BaseView or something
-	public com.picsauditing.report.tables.AbstractTable getTable() {
-		if (getModel() != null) 
+	public AbstractTable getTable() {
+		if (getModel() != null) {
 			return getModel().getRootTable();
-		else
-			return null;
+		}
+
+		return null;
+	}
+
+	@Transient
+	public int getNumTimesFavorited() {
+		return numTimesFavorited;
+	}
+
+	public void setNumTimesFavorited(int numTimesFavorited) {
+		this.numTimesFavorited = numTimesFavorited;
 	}
 }

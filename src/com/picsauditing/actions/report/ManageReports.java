@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,10 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportDynamicModel;
 import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
@@ -25,30 +28,27 @@ public class ManageReports extends PicsActionSupport {
 	private static final String MY_REPORTS = "myReports";
 	private static final String ALL_REPORTS = "search";
 
-	public static final String MY_REPORTS_URL = "ManageReports!myReports.action";
-	public static final String FAVORITE_REPORTS_URL = "ManageReports!favorites.action";
+	public static final String MY_REPORTS_URL = "ManageReports!myReportsList.action";
+	public static final String FAVORITE_REPORTS_URL = "ManageReports!favoritesList.action";
 
 	@Autowired
 	private ReportDAO reportDao;
 
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
-	// TODO remove viewType after making the toggleFavorite an ajax call
-	private String viewType;
 	private int reportId;
+	private String searchTerm;
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
 	public String execute() {
-		return myReports();
+		return myReportsList();
 	}
 
-	public String favorites() {
-		viewType = FAVORITE_REPORTS;
-
+	public String favoritesList() {
 		try {
 			userReports = reportDao.findFavoriteUserReports(permissions.getUserId());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!favorites.action", e);
+			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
 		}
 
 		if (CollectionUtils.isEmpty(userReports)) {
@@ -59,13 +59,11 @@ public class ManageReports extends PicsActionSupport {
 		return FAVORITE_REPORTS;
 	}
 
-	public String myReports() {
-		viewType = MY_REPORTS;
-
+	public String myReportsList() {
 		try {
 			userReports = reportDao.findAllUserReports(permissions.getUserId());
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!myReports.action", e);
+			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
 		}
 
 		if (CollectionUtils.isEmpty(userReports)) {
@@ -76,31 +74,56 @@ public class ManageReports extends PicsActionSupport {
 		return MY_REPORTS;
 	}
 
-	public String search() {
-		viewType = ALL_REPORTS;
-
+	public String searchList() {
 		try {
-			int userId = permissions.getUserId();
-
-			userReports = reportDao.findAllUserReports(userId);
-
-			List<Report> publicReports = reportDao.findPublicReports();
-			for (Report report : publicReports) {
-				if (ReportUtil.containsReportWithId(userReports, report.getId()))
-					continue;
-
-				userReports.add(new ReportUser(userId, report));
-			}
+			addReportsForSearch();
 		} catch (Exception e) {
-			logger.error("Unexpected exception in ManageReports!search.action", e);
+			logger.error("Unexpected exception in ManageReports!searchList.action", e);
 		}
 
 		if (CollectionUtils.isEmpty(userReports)) {
-			logger.error("There are no reports in the system. This should never happen.");
+			addActionMessage("No Reports found.");
 			userReports = new ArrayList<ReportUser>();
 		}
 
 		return ALL_REPORTS;
+	}
+
+	// TODO move this into another class
+	private void addReportsForSearch() {
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+
+		if (Strings.isEmpty(searchTerm)) {
+			// By default, show the top ten most favorited reports sorted by number of favorites
+			results = reportDao.findTopTenFavoriteReports(permissions.getUserId());
+		} else {
+			// Otherwise, search on all public reports and all of the user's reports
+			results = reportDao.findReportsForSearchFilter(permissions.getUserId(), searchTerm);
+		}
+
+		populateUserReports(results);
+	}
+
+	// TODO move this into another class
+	private void populateUserReports(List<BasicDynaBean> results) {
+		userReports = new ArrayList<ReportUser>();
+
+		for (BasicDynaBean result : results) {
+			Report report = new Report();
+
+			report.setId(Integer.parseInt(result.get("id").toString()));
+			report.setName(result.get("name").toString());
+			report.setDescription(result.get("description").toString());
+
+			User user = new User(result.get("userName").toString());
+			user.setId(Integer.parseInt(result.get("userId").toString()))	;
+			report.setCreatedBy(user);
+
+			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
+
+			// TODO consider changing userReports to just List<Report> reportList
+			userReports.add(new ReportUser(0, report));
+		}
 	}
 
 	// TODO make this an ajax call
@@ -153,13 +176,16 @@ public class ManageReports extends PicsActionSupport {
 
 	private String redirectToPreviousView() {
 		try {
-			if (FAVORITE_REPORTS.equals(viewType)) {
-				setUrlForRedirect(FAVORITE_REPORTS_URL);
-			} else {
-				setUrlForRedirect(MY_REPORTS_URL);
+			String referer = getRequest().getHeader("Referer");
+			if (Strings.isEmpty(referer)) {
+				referer = MY_REPORTS_URL;
 			}
-		} catch (IOException ioe) {
-			logger.error(ioe.toString());
+
+			setUrlForRedirect(referer);
+		} catch (IOException e) {
+			logger.warn("Problem setting URL for redirect in ManageReports.redirectToPreviousView()", e);
+		} catch (Exception e) {
+			logger.error("Unexpected problem in 9ManageReports.redirectToPreviousView()");
 		}
 
 		return REDIRECT;
@@ -179,20 +205,12 @@ public class ManageReports extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public void setUserReports(List<ReportUser> userReports) {
-		this.userReports = userReports;
-	}
-
 	public List<ReportUser> getUserReports() {
 		return userReports;
 	}
 
-	public String getViewType() {
-		return viewType;
-	}
-
-	public void setViewType(String viewType) {
-		this.viewType = viewType;
+	public void setUserReports(List<ReportUser> userReports) {
+		this.userReports = userReports;
 	}
 
 	public int getReportId() {
@@ -201,5 +219,13 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setReportId(int reportId) {
 		this.reportId = reportId;
+	}
+
+	public String getSearchTerm() {
+		return searchTerm;
+	}
+
+	public void setSearchTerm(String searchTerm) {
+		this.searchTerm = searchTerm;
 	}
 }

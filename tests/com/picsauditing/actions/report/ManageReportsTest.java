@@ -61,63 +61,63 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testFavorites_ReturnsExpectedResult() {
+	public void testFavoritesList_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
 		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(userReports);
 
-		String result = manageReports.favorites();
+		String result = manageReports.favoritesList();
 
 		assertEquals("favorites", result);
 	}
 
 	@Test
-	public void testFavorites_DoesntLeaveUserReportsNull() {
+	public void testFavoritesList_DoesntLeaveUserReportsNull() {
 		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(null);
 
-		manageReports.favorites();
+		manageReports.favoritesList();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
 	}
 
 	@Test
-	public void testMyReports_ReturnsExpectedResult() {
+	public void testMyReportsList_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
 		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
 
-		String result = manageReports.myReports();
+		String result = manageReports.myReportsList();
 
 		assertEquals("myReports", result);
 	}
 
 	@Test
-	public void testMyReports_DoesntLeaveUserReportsNull() {
+	public void testMyReportsList_DoesntLeaveUserReportsNull() {
 		when(reportDao.findAllUserReports(USER_ID)).thenReturn(null);
 
-		manageReports.myReports();
+		manageReports.myReportsList();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
 	}
 
 	@Test
-	public void testSearch_ReturnsExpectedResult() {
+	public void testSearchList_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
 		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
 		when(reportDao.findPublicReports()).thenReturn(new ArrayList<Report>());
 
-		String result = manageReports.search();
+		String result = manageReports.searchList();
 
 		assertEquals("search", result);
 	}
 
 	@Test
-	public void testSearch_DoesntLeaveUserReportsNull() {
+	public void testSearchList_DoesntLeaveUserReportsNull() {
 		when(reportDao.findAllUserReports(USER_ID)).thenReturn(null);
 		when(reportDao.findPublicReports()).thenReturn(new ArrayList<Report>());
 
-		manageReports.search();
+		manageReports.searchList();
 
 		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
 	}
