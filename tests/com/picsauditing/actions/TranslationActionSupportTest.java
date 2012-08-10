@@ -36,6 +36,7 @@ public class TranslationActionSupportTest extends PicsTest {
 		sortedTranslationMap.put(new Locale("sv"), "Hello");
 		sortedTranslationMap.put(new Locale("nl"), "Hello");
 		sortedTranslationMap.put(new Locale("no"), "Hello");
+		sortedTranslationMap.put(new Locale("pt"), "Hello");
 
 		Map<Locale, String> supposedlySortedTranslationMap = Whitebox
 				.invokeMethod(translationActionSupport,
@@ -43,7 +44,7 @@ public class TranslationActionSupportTest extends PicsTest {
 						sortedTranslationMap);
 
 		String[] expectedValues = new String[] { "Dutch", "English", "French",
-				"German", "Norwegian", "Spanish", "Swedish" };
+				"German", "Norwegian", "Portuguese", "Spanish", "Swedish" };
 		int counter = 0;
 		for (Map.Entry<Locale, String> entry : supposedlySortedTranslationMap
 				.entrySet()) {
