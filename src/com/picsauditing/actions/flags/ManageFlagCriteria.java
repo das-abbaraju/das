@@ -62,9 +62,9 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 				addActionError("DataType is a required field.");
 			} else if (!"NOT EMPTY".equals(criteria.getComparison())){
 				if ("boolean".equals(criteria.getDataType())) {
-					if ("true".equals(criteria.getDefaultValue())
+					if (!("true".equals(criteria.getDefaultValue())
 							|| "false".equals(criteria.getDefaultValue())
-							|| "".equals(criteria.getDefaultValue()))
+							|| "".equals(criteria.getDefaultValue())))
 						addActionError("Default hurdle must be true, false, or empty");
 				}
 				if ("date".equals(criteria.getDataType()) && Strings.isEmpty(criteria.getDefaultValue())) {
