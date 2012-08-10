@@ -10,18 +10,14 @@ Ext.define('PICS.model.report.Column', {
         setterName: 'setAvailableField'
     }],
 
-    // TODO: figure out what these are for
-	fields: [{
-	    name: 'name',
-	    type: 'string'
+    fields: [{
+        // column name
+        name: 'name',
+        type: 'string'
     }, {
+        // column aggragate function aka Count, Min, Max, Year, etc.
         name: 'method',
         type: 'string'
-    }, {
-        name: 'option',
-        type: 'string'
-    }, {
-        name: 'renderer'
     }],
 
     toModelField: function () {

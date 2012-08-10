@@ -42,7 +42,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender
+                beforerender: this.onReportModalEditBeforeRender,
+                render: this.onReportModalEditRender
             },
 
             'reportsettingsmodal reportsettingsedit button[action=edit]':  {
@@ -119,6 +120,23 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 report_settings_edit.update(report);
             }
         }
+    },
+
+    onReportModalEditRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id'),
+            element = cmp.getEl(),
+            favorite = element.down('.favorite');
+
+        favorite.on('click', function (cmp, e, eOpts) {
+            Ext.Ajax.request({
+                url: 'ReportDynamic!favorite.action?report=' + report_id,
+                success: function (result) {
+                    // do something
+                }
+            });
+        });
     },
 
     onReportModalTabClick: function (cmp, e, eOpts) {

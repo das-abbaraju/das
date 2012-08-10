@@ -10,15 +10,15 @@ Ext.define('PICS.model.report.Filter', {
         setterName: 'setAvailableField'
     }],
     fields: [{
+        // filter name
         name: 'name',
         type: 'string'
     }, {
+        // filter operator aka contains, starts with, =, !=, etc.
         name: 'operator',
         type: 'string'
     }, {
-        name: 'column2',
-        type: 'string'
-    }, {
+        // filter value
         name: 'value',
         type: 'string'
     }]

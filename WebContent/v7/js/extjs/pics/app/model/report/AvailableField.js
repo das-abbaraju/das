@@ -2,48 +2,37 @@ Ext.define('PICS.model.report.AvailableField', {
 	extend: 'Ext.data.Model',
 
 	fields: [{
+	    // field category (categorizes fields in available field modal - column, filter picker)
 	    name: 'category',
 	    type: 'string'
     }, {
-        name: 'dateFormat',
-        type: 'string'
-    }, {
-        name: 'filterable',
-        type: 'boolean',
-        defaultValue: true
-    }, {
+        // filter type used to display filter configuration aka drop down, autocomplete, string search, etc.
         name: 'filterType',
         type: 'string'
     }, {
+        // field help
         name: 'help',
         type: 'string'
     }, {
+        // field name
         name: 'name',
         type: 'string'
     }, {
-        name: 'renderer',
-        type: 'string'
-    }, {
-        name: 'sortable',
-        type: 'boolean',
-        defaultValue: true
-    }, {
+        // field translation
         name: 'text',
         type: 'string'
     }, {
+        // type used to generate grid model / column
         name: 'type',
         type: 'string'
     }, {
-        name: 'visible',
-        type: 'boolean',
-        defaultValue: true
+        // url used to generate a url as the value
+        name: 'url',
+        type: 'string'
     }, {
         name: 'width',
         type: 'int',
         defaultValue: 0
-    }, {
-        name: 'url',
-        type: 'string'
     }],
 
     // Must have a specified proxy when interacting with the Available Store

@@ -130,6 +130,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         var cls;
 
         switch (type) {
+            // TODO: this is retarded the backend architecture is invalid
             case 'AccountName':
                 cls = 'PICS.view.report.filter.base.StringFilter';
                 break;

@@ -9,9 +9,11 @@ Ext.define('PICS.model.report.Sort', {
         setterName: 'setAvailableField'
     }],
     fields: [{
+        // sort name
         name: 'name',
         type: 'string'
     }, {
+        // sort direction aka ASC, DESC
         name: 'direction',
         type: 'string',
         defaultValue: 'ASC'

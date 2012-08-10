@@ -7,21 +7,27 @@ Ext.define('PICS.model.report.Report', {
     ],
 
     fields: [{
+        // report id
         name: 'id',
         type: 'int'
     }, {
+        // report base (aka mysql view)
         name: 'modelType',
         type: 'string'
     }, {
+        // report name
         name: 'name',
         type: 'string'
     }, {
+        // report description
         name: 'description',
         type: 'string'
     }, {
+        // query expression used to generate report data aka (1 AND 2) OR 3
         name: 'filterExpression',
         type: 'string'
     }, {
+        // report limit
         name: 'rowsPerPage',
         type: 'int'
     }],
