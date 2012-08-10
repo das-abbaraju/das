@@ -81,7 +81,7 @@ public class BillingCalculatorSingle {
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
-	private I18nCache i18nCache = I18nCache.getInstance();
+	private final I18nCache i18nCache = I18nCache.getInstance();
 
 	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
@@ -261,6 +261,8 @@ public class BillingCalculatorSingle {
 		for (OperatorAccount oa : operators) {
 			int id = oa.getId();
 			if (id == OperatorAccount.OLDCASTLE || id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA)
+				continue;
+			if (oa.isDescendantOf(OperatorAccount.OLDCASTLE) || oa.isDescendantOf(OperatorAccount.AI))
 				continue;
 			return false;
 		}
