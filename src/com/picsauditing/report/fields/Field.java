@@ -3,6 +3,7 @@ package com.picsauditing.report.fields;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +17,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -139,6 +141,28 @@ public class Field implements JSONAware {
 			if (translatedString == null) {
 				translatedString = enumValue.toString();
 			}
+
+			enumAsJson.put("name", translatedString);
+			jsonArray.add(enumAsJson);
+		}
+
+		json.put("result", jsonArray);
+
+		return json;
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject renderLowMedHighFieldAsJson(Locale locale) {
+		JSONArray jsonArray = new JSONArray();
+		JSONObject json = new JSONObject();
+
+		for (Integer key : LowMedHigh.getMap().keySet()) {
+			JSONObject enumAsJson = new JSONObject();
+			enumAsJson.put("id", key.toString());
+
+			LowMedHigh value = LowMedHigh.getMap().get(key);
+			String translationKey = fieldClass.getSimpleName().toString() + "." + value.toString();
+			String translatedString = ReportUtil.getText(translationKey, locale);
 
 			enumAsJson.put("name", translatedString);
 			jsonArray.add(enumAsJson);

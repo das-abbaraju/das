@@ -150,6 +150,11 @@ Ext.define('PICS.view.report.filter.Filter', {
                 cls = 'PICS.view.report.filter.base.FloatFilter';
                 break;
             case 'Integer':
+                cls = 'PICS.view.report.filter.base.IntegerFilter';
+                break;
+            case 'LowMedHigh':
+                cls = 'PICS.view.report.filter.base.ListFilter';
+                break;
             case 'Number':
                 cls = 'PICS.view.report.filter.base.IntegerFilter';
                 break;

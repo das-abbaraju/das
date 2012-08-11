@@ -174,6 +174,8 @@ public class ReportDynamic extends PicsActionSupport {
 			} else if (field.getFilterType().isAutocomplete()) {
 				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
 						searchQuery, permissions);
+			} else if (field.getFilterType().isLowMedHigh()) {
+				json = field.renderLowMedHighFieldAsJson(getLocale());
 			} else {
 				throw new Exception(field.getFilterType() + " not supported by list function.");
 			}
