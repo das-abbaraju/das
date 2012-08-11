@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum ContractorOperatorNumberType implements Translatable {
-	SAP, CRM, LMS, Badging, Vendor, Other;
+	SAP, CRM, LMS, Badging, Vendor, Other, Buyer, EHS;
 
 	@Override
 	public String getI18nKey() {
