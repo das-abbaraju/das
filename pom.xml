@@ -728,7 +728,7 @@
 		<dependency>
 			<groupId>com.tacitknowledge</groupId>
 			<artifactId>autopatch</artifactId>
-			<version>1.4.1-PICS-3</version>
+			<version>1.4.1-PICS-2</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
