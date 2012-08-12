@@ -10,7 +10,8 @@ public abstract class AbstractAutoPatch extends MigrationTaskSupport {
 
 	@Override
 	public Integer getLevel() {
-	    String name = getName().replaceAll("^Patch(\\d*).*$", "\1");
+	    String name = getName();
+	    name = name.replaceAll("^Patch(\\d*).*$", "$1");
 		return new Integer(name);
 	}
 
