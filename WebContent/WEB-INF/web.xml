@@ -25,16 +25,17 @@
 	</context-param>
 	<context-param>
 	    <param-name>migration.patchpath</param-name>
-	<param-value>patches:com.picsauditing.conf.db.patch</param-value>  
-	</context-param>
-	<context-param> 
-		<param-name>mysql.supportsMultipleStatements</param-name> 
-	<param-value>false</param-value>  
+	<param-value>patches:com.picsauditing.autopatches</param-value>  
 	</context-param>
  	<context-param>
 	    <param-name>migration.datasource</param-name>
 	<param-value>jdbc/pics</param-value>
 	</context-param>
+ 	<context-param>
+	    <param-name>migration.strategy</param-name>
+	<param-value>com.tacitknowledge.util.migration.MissingPatchMigrationRunnerStrategy</param-value>
+	</context-param>
+
 	<listener>
 		<listener-class>
 			org.springframework.web.context.ContextLoaderListener

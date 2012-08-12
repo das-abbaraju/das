@@ -73,6 +73,12 @@
 		</rollingPolicy>
 	</appender>
 
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+
 	<!-- Loggers -->
 	<!--
 		NOTE: If you add a new logger, make sure you can set the log level through the Java system properties
@@ -99,6 +105,15 @@
 
 	<logger name="org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog"> 
 		<level value="error" /> 
+	</logger> 
+
+	<logger name="com.tacitknowledge"> 
+		<level value="INFO" /> 
+		<appender-ref ref="STDOUT"/>
+	</logger> 
+	<logger name="com.picsauditing.autopatches"> 
+		<level value="INFO" /> 
+		<appender-ref ref="STDOUT"/>
 	</logger> 
 
 </configuration>
