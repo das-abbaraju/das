@@ -32,6 +32,8 @@ public class ManageReports extends PicsActionSupport {
 	public static final String FAVORITE_REPORTS_URL = "ManageReports!favoritesList.action";
 
 	@Autowired
+	private ReportDynamicModel reportModel;
+	@Autowired
 	private ReportDAO reportDao;
 
 	private List<ReportUser> userReports = new ArrayList<ReportUser>();
@@ -76,7 +78,8 @@ public class ManageReports extends PicsActionSupport {
 
 	public String searchList() {
 		try {
-			addReportsForSearch();
+			List<BasicDynaBean> results = reportModel.getReportsForSearch(searchTerm, permissions.getUserId());
+			userReports = reportModel.populateUserReports(results);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
 		}
@@ -87,43 +90,6 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return ALL_REPORTS;
-	}
-
-	// TODO move this into another class
-	private void addReportsForSearch() {
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
-
-		if (Strings.isEmpty(searchTerm)) {
-			// By default, show the top ten most favorited reports sorted by number of favorites
-			results = reportDao.findTopTenFavoriteReports(permissions.getUserId());
-		} else {
-			// Otherwise, search on all public reports and all of the user's reports
-			results = reportDao.findReportsForSearchFilter(permissions.getUserId(), searchTerm);
-		}
-
-		populateUserReports(results);
-	}
-
-	// TODO move this into another class
-	private void populateUserReports(List<BasicDynaBean> results) {
-		userReports = new ArrayList<ReportUser>();
-
-		for (BasicDynaBean result : results) {
-			Report report = new Report();
-
-			report.setId(Integer.parseInt(result.get("id").toString()));
-			report.setName(result.get("name").toString());
-			report.setDescription(result.get("description").toString());
-
-			User user = new User(result.get("userName").toString());
-			user.setId(Integer.parseInt(result.get("userId").toString()))	;
-			report.setCreatedBy(user);
-
-			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
-
-			// TODO consider changing userReports to just List<Report> reportList
-			userReports.add(new ReportUser(0, report));
-		}
 	}
 
 	// TODO make this an ajax call

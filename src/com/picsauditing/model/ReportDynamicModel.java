@@ -1,5 +1,6 @@
 package com.picsauditing.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import javax.persistence.NoResultException;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,8 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.util.Strings;
 
-/**
- * This is the business layer. It should not have any DAOs in it.
- */
 public class ReportDynamicModel {
 
 	@Autowired
@@ -79,9 +79,8 @@ public class ReportDynamicModel {
 	}
 
 	public Report copy(Report sourceReport, User user) throws NoRightsException, ReportValidationException {
-		// TODO Add i18n to this
 		if (!canUserViewAndCopy(user.getId(), sourceReport))
-			throw new NoRightsException("Invalid User, does not have permission.");
+			throw new NoRightsException("User " + user.getId() + " does not have permission to copy report " + sourceReport.getId());
 
 		Report newReport = copyReportWithoutPermissions(sourceReport);
 
@@ -98,9 +97,8 @@ public class ReportDynamicModel {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
-		// TODO Add i18n to this
 		if (!canUserEdit(permissions.getUserId(), report))
-			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
+			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
 		reportDao.saveReport(report, new User(permissions.getUserId()));
 	}
@@ -138,18 +136,52 @@ public class ReportDynamicModel {
 	}
 
 	public static void validate(Report report) throws ReportValidationException {
-		// TODO Add i18n to this
 		if (report == null)
-			throw new ReportValidationException("Please provide a saved or ad hoc report to run");
+			throw new ReportValidationException("Tried to validate a null report");
 
-		// TODO Add i18n to this
 		if (report.getModelType() == null)
-			throw new ReportValidationException("The report is missing its base", report);
+			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
 
 		try {
 			new JSONParser().parse(report.getParameters());
 		} catch (ParseException e) {
 			throw new ReportValidationException(e, report);
 		}
+	}
+
+	public List<BasicDynaBean> getReportsForSearch(String searchTerm, int userId) {
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+
+		if (Strings.isEmpty(searchTerm)) {
+			// By default, show the top ten most favorited reports sorted by number of favorites
+			results = reportDao.findTopTenFavoriteReports(userId);
+		} else {
+			// Otherwise, search on all public reports and all of the user's reports
+			results = reportDao.findReportsForSearchFilter(userId, searchTerm);
+		}
+
+		return results;
+	}
+
+	public List<ReportUser> populateUserReports(List<BasicDynaBean> results) {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+
+		for (BasicDynaBean result : results) {
+			Report report = new Report();
+
+			report.setId(Integer.parseInt(result.get("id").toString()));
+			report.setName(result.get("name").toString());
+			report.setDescription(result.get("description").toString());
+
+			User user = new User(result.get("userName").toString());
+			user.setId(Integer.parseInt(result.get("userId").toString()));
+			report.setCreatedBy(user);
+
+			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
+
+			userReports.add(new ReportUser(0, report));
+		}
+
+		return userReports;
 	}
 }

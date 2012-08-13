@@ -4,8 +4,14 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.NoResultException;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.ResultSetDynaClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -21,20 +27,26 @@ import com.picsauditing.report.models.ModelType;
 
 public class ReportDynamicModelTest {
 
-	private ReportDynamicModel model;
+	private ReportDynamicModel reportModel;
 
 	@Mock private ReportDAO reportDao;
 	@Mock private Report report;
 	@Mock private User user;
+	@Mock private BasicDynaBean dynaBean;
 
-	private static final int USER_ID = 23;
+	private final int REPORT_ID = 37;
+	private final String REPORT_NAME = "My Report";
+	private final String REPORT_DESCRIPTION = "This is a report";
+	private final int USER_ID = 23;
+	private final String USER_NAME = "User Name";
+	private final int NUM_TIMES_FAVORITED = 10;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		model = new ReportDynamicModel();
+		reportModel = new ReportDynamicModel();
 
-		setInternalState(model, "reportDao", reportDao);
+		setInternalState(reportModel, "reportDao", reportDao);
 
 		when(report.getId()).thenReturn(555);
 		when(user.getId()).thenReturn(USER_ID);
@@ -44,7 +56,7 @@ public class ReportDynamicModelTest {
 	public void canUserViewAndCopy_nullQuery() {
 		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(null);
 
-		assertFalse(model.canUserViewAndCopy(USER_ID, report));
+		assertFalse(reportModel.canUserViewAndCopy(USER_ID, report));
 	}
 
 	@Test
@@ -52,12 +64,12 @@ public class ReportDynamicModelTest {
 
 		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenThrow(new NoResultException());
 
-		assertFalse(model.canUserViewAndCopy(USER_ID, report));
+		assertFalse(reportModel.canUserViewAndCopy(USER_ID, report));
 	}
 
 	@Test
 	public void canUserViewAndCopy_baseReport() {
-		assertTrue(model.canUserViewAndCopy(USER_ID, 2));
+		assertTrue(reportModel.canUserViewAndCopy(USER_ID, 2));
 	}
 
 	@Test
@@ -65,7 +77,7 @@ public class ReportDynamicModelTest {
 
 		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(new ReportUser());
 
-		assertTrue(model.canUserViewAndCopy(USER_ID, report));
+		assertTrue(reportModel.canUserViewAndCopy(USER_ID, report));
 	}
 
 	@Test
@@ -74,7 +86,7 @@ public class ReportDynamicModelTest {
 		when(mockReportUser.isEditable()).thenReturn(false);
 		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
 
-		assertFalse(model.canUserEdit(USER_ID, report));
+		assertFalse(reportModel.canUserEdit(USER_ID, report));
 	}
 
 	@Test
@@ -83,7 +95,7 @@ public class ReportDynamicModelTest {
 		when(mockReportUser.isEditable()).thenReturn(true);
 		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
 
-		assertTrue(model.canUserEdit(USER_ID, report));
+		assertTrue(reportModel.canUserEdit(USER_ID, report));
 	}
 
 	@Test
@@ -105,35 +117,95 @@ public class ReportDynamicModelTest {
 	}
 
 	@Test(expected = ReportValidationException.class)
-		public void testValidate_NullReport() throws ReportValidationException {
-			Report report = null;
+	public void testValidate_NullReport() throws ReportValidationException {
+		Report report = null;
 
-			ReportDynamicModel.validate(report);
-		}
-
-	@Test(expected = ReportValidationException.class)
-		public void testValidate_NullModelType() throws ReportValidationException {
-			Report report = new Report();
-			report.setModelType(null);
-
-			ReportDynamicModel.validate(report);
-		}
+		ReportDynamicModel.validate(report);
+	}
 
 	@Test(expected = ReportValidationException.class)
-		public void testValidate_InvalidReportParameters() throws ReportValidationException {
-			Report report = new Report();
-			report.setModelType(ModelType.Accounts);
-			report.setParameters("NOT_A_REPORT");
+	public void testValidate_NullModelType() throws ReportValidationException {
+		Report report = new Report();
+		report.setModelType(null);
 
-			ReportDynamicModel.validate(report);
-		}
+		ReportDynamicModel.validate(report);
+	}
+
+	@Test(expected = ReportValidationException.class)
+	public void testValidate_InvalidReportParameters() throws ReportValidationException {
+		Report report = new Report();
+		report.setModelType(ModelType.Accounts);
+		report.setParameters("NOT_A_REPORT");
+
+		ReportDynamicModel.validate(report);
+	}
 
 	@Test
-		public void testValidate_ValidReportParameters() throws ReportValidationException {
-			Report report = new Report();
-			report.setModelType(ModelType.Accounts);
-			report.setParameters("{}");
+	public void testValidate_ValidReportParameters() throws ReportValidationException {
+		Report report = new Report();
+		report.setModelType(ModelType.Accounts);
+		report.setParameters("{}");
 
-			ReportDynamicModel.validate(report);
-		}
+		ReportDynamicModel.validate(report);
+	}
+
+	@Test
+	public void testGetReportsForSearch_NullSearchTermCallsTopTenFavorites() {
+		List<BasicDynaBean> userReports = reportModel.getReportsForSearch(null, 0);
+
+		assertNotNull(userReports);
+		verify(reportDao).findTopTenFavoriteReports(anyInt());
+	}
+
+	@Test
+	public void testGetReportsForSearch_BlankSearchTermCallsTopTenFavorites() {
+		List<BasicDynaBean> userReports = reportModel.getReportsForSearch("", 0);
+
+		assertNotNull(userReports);
+		verify(reportDao).findTopTenFavoriteReports(anyInt());
+	}
+
+	@Test
+	public void testGetReportsForSearch_ValidSearchTermCallsFindReportsForSearchFilter() {
+		List<BasicDynaBean> userReports = reportModel.getReportsForSearch("SEARCH_TERM", 0);
+
+		assertNotNull(userReports);
+		verify(reportDao).findReportsForSearchFilter(anyInt(), anyString());
+	}
+
+	@Test
+	public void testPopulateUserReports_NoResultsReturnsEmptyList() {
+		List<BasicDynaBean> emptyResults = new ArrayList<BasicDynaBean>();
+
+		List<ReportUser> userReports = reportModel.populateUserReports(emptyResults);
+
+		assertNotNull(userReports);
+		assertEquals(0, userReports.size());
+	}
+
+	@Test
+	public void testPopulateUserReports_ResultsPopulateCorrectly() {
+		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+		when(dynaBean.get("id")).thenReturn(REPORT_ID);
+		when(dynaBean.get("name")).thenReturn(REPORT_NAME);
+		when(dynaBean.get("description")).thenReturn(REPORT_DESCRIPTION);
+		when(dynaBean.get("userId")).thenReturn(USER_ID);
+		when(dynaBean.get("userName")).thenReturn(USER_NAME);
+		when(dynaBean.get("numTimesFavorited")).thenReturn(NUM_TIMES_FAVORITED);
+		results.add(dynaBean);
+
+		List<ReportUser> userReports = reportModel.populateUserReports(results);
+		ReportUser userReport = userReports.get(0);
+		Report report = userReport.getReport();
+		User user = report.getCreatedBy();
+
+		assertNotNull(userReports);
+		assertEquals(1, userReports.size());
+		assertEquals(REPORT_ID, report.getId());
+		assertEquals(REPORT_NAME, report.getName());
+		assertEquals(REPORT_DESCRIPTION, report.getDescription());
+		assertEquals(USER_ID, user.getId());
+		assertEquals(USER_NAME, user.getName());
+		assertEquals(NUM_TIMES_FAVORITED, report.getNumTimesFavorited());
+	}
 }

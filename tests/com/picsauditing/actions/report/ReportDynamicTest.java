@@ -46,7 +46,7 @@ public class ReportDynamicTest {
 	private Map<String, Object> session;
 
 	@Mock private Permissions permissions;
-	@Mock private ReportDynamicModel reportDynamicModel;
+	@Mock private ReportDynamicModel reportModel;
 	@Mock private HttpServletRequest request;
 	@Mock private ActionContext actionContext;
 
@@ -83,7 +83,7 @@ public class ReportDynamicTest {
 		reportDynamic.setReport(report);
 		when(permissions.getUserId()).thenReturn(941);
 		Whitebox.setInternalState(reportDynamic, "permissions", permissions);
-		Whitebox.setInternalState(reportDynamic, "reportDynamicModel", reportDynamicModel);
+		Whitebox.setInternalState(reportDynamic, "reportModel", reportModel);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class ReportDynamicTest {
 
 	@Test
 	public void testExecute_NullReportUserDoesNotHavePermissionToViewAndCopy() throws Exception {
-		when(reportDynamicModel.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
+		when(reportModel.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
 		reportDynamic.setReport(null);
 
 		String strutsResult = reportDynamic.execute();

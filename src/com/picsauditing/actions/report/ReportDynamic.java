@@ -40,7 +40,7 @@ import com.picsauditing.util.excel.ExcelSheet;
 public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
-	private ReportDynamicModel reportDynamicModel;
+	private ReportDynamicModel reportModel;
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -71,7 +71,7 @@ public class ReportDynamic extends PicsActionSupport {
 				// Don't trust user input!
 				int reportId = Integer.parseInt(dirtyReportIdParameter);
 
-				if (!reportDynamicModel.canUserViewAndCopy(permissions.getUserId(), reportId)) {
+				if (!reportModel.canUserViewAndCopy(permissions.getUserId(), reportId)) {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
@@ -92,7 +92,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String create() {
 		try {
-			Report newReport = reportDynamicModel.copy(report, new User(permissions.getUserId()));
+			Report newReport = reportModel.copy(report, new User(permissions.getUserId()));
 			json.put("success", true);
 			json.put("reportID", newReport.getId());
 		} catch (NoRightsException nre) {
@@ -108,7 +108,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String edit() {
 		try {
-			reportDynamicModel.edit(report, permissions);
+			reportModel.edit(report, permissions);
 			json.put("success", true);
 			json.put("reportID", report.getId());
 		} catch (NoRightsException nre) {
@@ -191,7 +191,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String configuration() {
 		int userId = permissions.getUserId();
 
-		json.put("is_editable", reportDynamicModel.canUserEdit(userId, report));
+		json.put("is_editable", reportModel.canUserEdit(userId, report));
 
 		return JSON;
 	}
@@ -250,7 +250,7 @@ public class ReportDynamic extends PicsActionSupport {
 			return JSON;
 		}
 
-		if (reportDynamicModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
+		if (reportModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
 			reportDao.connectReportToUser(report, userId);
 			json.put("success", true);
 		} else {
@@ -273,7 +273,7 @@ public class ReportDynamic extends PicsActionSupport {
 			return JSON;
 		}
 
-		if (reportDynamicModel.canUserEdit(permissions.getUserId(), report)) {
+		if (reportModel.canUserEdit(permissions.getUserId(), report)) {
 			reportDao.connectReportToUserEditable(report, userId);
 			json.put("success", true);
 		} else {
