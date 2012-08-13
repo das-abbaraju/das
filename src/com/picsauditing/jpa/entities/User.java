@@ -66,6 +66,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public static int CONTRACTOR = 12;
 	protected boolean needsIndexing = true;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL
+	public static final int GROUP_ISR = 71638;
 	// permissions
 	public static int INDEPENDENT_CONTRACTOR = 11265;
 
@@ -105,7 +106,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
 	private List<Report> reports = new ArrayList<Report>();
-	
+
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
@@ -507,7 +508,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * This is a total HACK!! But we can add it to the DB later or something
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -585,7 +586,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * 
+	 *
 	 * @param permissions
 	 *            The new set of permission for this user (transient version of
 	 *            user.permissions)
@@ -707,7 +708,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * Grants all allowable permission types for this OpPerm
-	 * 
+	 *
 	 * @param opPerm
 	 * @param grantorID
 	 *            who is granting the permission
@@ -779,7 +780,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * In UsersManage, another user (non-group) is inserted into this user's
 	 * groups for shadowing
-	 * 
+	 *
 	 * @return shadowed user or null
 	 */
 	@Transient
@@ -806,7 +807,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * Enables subscription if disabled or creates subscription if it does not
 	 * exist.
-	 * 
+	 *
 	 * @param subscription
 	 * @return
 	 */

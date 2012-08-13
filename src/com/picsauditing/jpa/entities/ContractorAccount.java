@@ -20,6 +20,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
@@ -121,6 +122,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
 	private Date lastContactedByAutomatedEmailDate;
+	private User lastContactedByInsideSales;
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
 
@@ -1641,5 +1643,21 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
 		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "lastContactedByInsideSales", nullable = true)
+	public User getLastContactedByInsideSales() {
+		return lastContactedByInsideSales;
+	}
+
+	public void setLastContactedByInsideSales(User SalesUser) {
+		this.lastContactedByInsideSales = SalesUser;
+	}
+
+	public void setLastContactedByInsideSales(int salesUserID) {
+		User tempUser = new User();
+		tempUser.setId(salesUserID);
+		setLastContactedByInsideSales(tempUser);
 	}
 }

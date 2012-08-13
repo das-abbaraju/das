@@ -12,18 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteStatus;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterNote;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class NoteEditor extends AccountActionSupport {
@@ -39,7 +44,7 @@ public class NoteEditor extends AccountActionSupport {
 	private int viewableBy;
 	private int viewableByOther;
 	private boolean embedded = true;
-	private ReportFilterNote filter = new ReportFilterNote();
+	private final ReportFilterNote filter = new ReportFilterNote();
 	private File file;
 	private String fileContentType;
 	private String fileFileName;
@@ -94,6 +99,8 @@ public class NoteEditor extends AccountActionSupport {
 		} else
 			note.setEmployee(null);
 
+		updateInternalSalesInfo(permissions, account);
+
 		note.setAuditColumns(permissions);
 		noteDAO.save(note);
 
@@ -129,6 +136,15 @@ public class NoteEditor extends AccountActionSupport {
 
 		addActionMessage("Successfully saved Note");
 		return mode;
+	}
+
+	protected void updateInternalSalesInfo(Permissions permissions, Account account) {
+		if (permissions.getGroups().contains(User.GROUP_ISR) && account.isContractor()) {
+			ContractorAccountDAO contractorDAO = SpringUtils.getBean("ContractorAccountDAO", ContractorAccountDAO.class);
+			ContractorAccount ca = contractorDAO.find(account.getId());
+			ca.setLastContactedByInsideSales(permissions.getUserId());
+			contractorDAO.save(ca);
+		}
 	}
 
 	@RequiredPermission(value = OpPerms.EditNotes, type = OpType.Delete)
