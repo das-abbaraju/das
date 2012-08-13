@@ -37,7 +37,7 @@ public class QBXmlAdaptor {
 	private InvoiceDAO invoiceDao;
 	private InvoiceItemDAO invoiceItemDao;
 	private AppPropertyDAO appPropertyDao;
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(QBXmlAdaptor.class);
 	static {
 		try {
@@ -127,11 +127,13 @@ public class QBXmlAdaptor {
 		if (in == null)
 			return "";
 
-		if (in.length() < start + end) {
-			return StringEscapeUtils.escapeXml(in).substring(start);
+		String escapedIn = StringEscapeUtils.escapeXml(in);
+
+		if (escapedIn.length() < start + end) {
+			return escapedIn.substring(start);
 		}
 
-		return StringEscapeUtils.escapeXml(in).substring(start, end);
+		return escapedIn.substring(start, end);
 	}
 
 	static public String nullSafeZip(String zipCode, Country country) {
