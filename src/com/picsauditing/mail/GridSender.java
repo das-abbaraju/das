@@ -31,7 +31,7 @@ public class GridSender extends javax.mail.Authenticator {
 	private String password;
 	private Session session;
 
-	private static String defaultPassword = "e3r4t5";
+	private static String defaultPassword = "PicsS@ftey1";
 	
 	public GridSender() {
 		this("info@picsauditing.com", defaultPassword);

@@ -25,7 +25,7 @@ public class EmailSender {
 	@Autowired
 	private FeatureToggleChecker featureToggleChecker;
 	
-	private static String defaultPassword = "e3r4t5";
+	private static String defaultPassword = "PicsS@ftey1";
 	
 	// this is @Autowired at the setter because we need @Qualifier which does NOT work
 	// on the variable declaration; only on the method (I think this is a Spring bug)
