@@ -460,8 +460,7 @@
                                 <pics:fieldhelp title="Contractor Type">
                                     <s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
                                         <h5><s:property value="#conType.type" /></h5>
-
-                                        <s:property value="#conType.description" escape="false" />
+                                        <s:text name="%{'ContractorType.' + #conType + '.Description'}"></s:text>
                                         <br />
                                     </s:iterator>
                                 </pics:fieldhelp>
