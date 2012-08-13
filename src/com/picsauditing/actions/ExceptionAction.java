@@ -33,7 +33,7 @@ public class ExceptionAction extends PicsActionSupport {
 	private String from_address;
 	private String user_name;
 	private String user = "info@picsauditing.com";
-	private String password = "PicsS@ftey1";
+	private String password = "PicsS@fety1";
 
 	private final Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
 
