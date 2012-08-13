@@ -32,7 +32,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -338,7 +338,7 @@ public final class ReportUtil {
 			if (table == null)
 				continue;
 
-			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(table);
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(table);
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();

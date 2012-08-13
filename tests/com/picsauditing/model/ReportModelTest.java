@@ -22,12 +22,12 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.models.ModelType;
 
-public class ReportDynamicModelTest {
+public class ReportModelTest {
 
-	private ReportDynamicModel reportModel;
+	private ReportModel reportModel;
 
 	@Mock private ReportDAO reportDao;
 	@Mock private Report report;
@@ -44,7 +44,7 @@ public class ReportDynamicModelTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		reportModel = new ReportDynamicModel();
+		reportModel = new ReportModel();
 
 		setInternalState(reportModel, "reportDao", reportDao);
 
@@ -104,7 +104,7 @@ public class ReportDynamicModelTest {
 		when(mockUser.getId()).thenReturn(5);
 		when(report.getCreatedBy()).thenReturn(mockUser);
 
-		assertFalse(ReportDynamicModel.canUserDelete(USER_ID, report));
+		assertFalse(ReportModel.canUserDelete(USER_ID, report));
 	}
 
 	@Test
@@ -113,14 +113,14 @@ public class ReportDynamicModelTest {
 		when(mockUser.getId()).thenReturn(USER_ID);
 		when(report.getCreatedBy()).thenReturn(mockUser);
 
-		assertTrue(ReportDynamicModel.canUserDelete(USER_ID, report));
+		assertTrue(ReportModel.canUserDelete(USER_ID, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
 	public void testValidate_NullReport() throws ReportValidationException {
 		Report report = null;
 
-		ReportDynamicModel.validate(report);
+		ReportModel.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -128,7 +128,7 @@ public class ReportDynamicModelTest {
 		Report report = new Report();
 		report.setModelType(null);
 
-		ReportDynamicModel.validate(report);
+		ReportModel.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -137,7 +137,7 @@ public class ReportDynamicModelTest {
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
 
-		ReportDynamicModel.validate(report);
+		ReportModel.validate(report);
 	}
 
 	@Test
@@ -146,7 +146,7 @@ public class ReportDynamicModelTest {
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("{}");
 
-		ReportDynamicModel.validate(report);
+		ReportModel.validate(report);
 	}
 
 	@Test

@@ -16,8 +16,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.util.Strings;
 
@@ -32,7 +31,7 @@ public class ManageReports extends PicsActionSupport {
 	public static final String FAVORITE_REPORTS_URL = "ManageReports!favoritesList.action";
 
 	@Autowired
-	private ReportDynamicModel reportModel;
+	private ReportModel reportModel;
 	@Autowired
 	private ReportDAO reportDao;
 
@@ -111,7 +110,7 @@ public class ManageReports extends PicsActionSupport {
 	public String deleteReport() {
 		try {
 			Report report = reportDao.findOneReport(reportId);
-			if (ReportDynamicModel.canUserDelete(permissions.getUserId(), report)) {
+			if (ReportModel.canUserDelete(permissions.getUserId(), report)) {
 				reportDao.deleteReport(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {

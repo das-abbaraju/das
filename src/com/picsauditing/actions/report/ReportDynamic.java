@@ -24,7 +24,7 @@ import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
@@ -40,7 +40,7 @@ import com.picsauditing.util.excel.ExcelSheet;
 public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
-	private ReportDynamicModel reportModel;
+	private ReportModel reportModel;
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -125,7 +125,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			ReportDynamicModel.validate(report);
+			ReportModel.validate(report);
 
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
@@ -134,7 +134,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			ReportUtil.localize(report, getLocale());
 
-			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 
 			if (report.getDefinition().getColumns().size() > 0) {
 				List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
@@ -161,9 +161,9 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
-			ReportDynamicModel.validate(report);
+			ReportModel.validate(report);
 
-			Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)
@@ -198,7 +198,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String report() {
 		try {
-			ReportDynamicModel.validate(report);
+			ReportModel.validate(report);
 		} catch (Exception e) {
 			writeJsonErrorMessage(e);
 			return JSON;
@@ -222,13 +222,13 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			ReportDynamicModel.validate(report);
+			ReportModel.validate(report);
 		} catch (Exception e) {
 			writeJsonErrorMessage(e);
 			return JSON;
 		}
 
-		Map<String, Field> availableFields = ReportDynamicModel.buildAvailableFields(report.getTable());
+		Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 
 		json.put("modelType", report.getModelType().toString());
 		json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, getLocale()));
@@ -285,7 +285,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String download() {
 		try {
-			ReportDynamicModel.validate(report);
+			ReportModel.validate(report);
 		} catch (ReportValidationException rve) {
 			writeJsonErrorMessage(rve);
 			return JSON;

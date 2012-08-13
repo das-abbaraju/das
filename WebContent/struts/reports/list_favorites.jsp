@@ -54,7 +54,7 @@
                 <a href="${report_url}" class="name">
                     ${report.name}
                 </a>
-    
+
                 <s:if test="#report.createdBy.id != permissions.userId">
                     <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
                 </s:if>
@@ -62,7 +62,7 @@
 
             <div class="btn-group options">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><s:text name="ManageReports.myReports.Options" /></a>
-                
+
                 <ul class="dropdown-menu">
                     <%--
                     <li>
@@ -70,7 +70,7 @@
                     </li>
                     --%>
                     <li>
-                        <s:if test="%{@com.picsauditing.model.ReportDynamicModel@canUserDelete(permissions.userId, report)}">
+                        <s:if test="%{@com.picsauditing.model.ReportModel@canUserDelete(permissions.userId, report)}">
                             <a href="${delete_report_url}" class="delete"><s:text name="ManageReports.myReports.Delete" /></a>
                         </s:if>
                         <s:else>
@@ -86,7 +86,7 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="clearfix"></div>
         </li>
     </s:iterator>

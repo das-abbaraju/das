@@ -31,7 +31,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
@@ -46,7 +46,7 @@ public class ReportDynamicTest {
 	private Map<String, Object> session;
 
 	@Mock private Permissions permissions;
-	@Mock private ReportDynamicModel reportModel;
+	@Mock private ReportModel reportModel;
 	@Mock private HttpServletRequest request;
 	@Mock private ActionContext actionContext;
 
@@ -145,7 +145,7 @@ public class ReportDynamicTest {
 		Report report = new Report();
 		report.setModelType(null);
 		try {
-			ReportDynamicModel.validate(report);
+			ReportModel.validate(report);
 			// Should always throw before this line
 			fail();
 		} catch (ReportValidationException rve) {

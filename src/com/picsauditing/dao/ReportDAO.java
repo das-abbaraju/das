@@ -18,7 +18,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.ReportDynamicModel;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -142,7 +142,7 @@ public class ReportDAO extends PicsDAO {
 	}
 
 	public void saveReport(Report report, User user) throws ReportValidationException {
-		ReportDynamicModel.validate(report);
+		ReportModel.validate(report);
 		report.setAuditColumns(user);
 
 		basicDao.save(report);

@@ -25,7 +25,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
 
-public class ReportDynamicModel {
+public class ReportModel {
 
 	@Autowired
 	private ReportDAO reportDao;
@@ -69,8 +69,7 @@ public class ReportDynamicModel {
 		return false;
 	}
 
-	// The only reason this method is static is because ManageReports calls it
-	// and doesn't have a ReportDynamicModel.
+	// This must be static because it's called from list_favorites.jsp and list_my_reports.jsp
 	public static boolean canUserDelete(int userId, Report report) {
 		if (report.getCreatedBy().getId() == userId)
 			return true;
