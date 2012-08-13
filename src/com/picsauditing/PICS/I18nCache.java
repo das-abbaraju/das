@@ -132,7 +132,8 @@ public class I18nCache implements Serializable {
 
 		if (lastUsed == null || lastUsed.before(yesterday.getTime())) {
 			Database db = getDatabase();
-			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key) + "'";
+			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key)
+					+ "'";
 			cacheUsage.put(key, new Date());
 
 			try {
@@ -188,9 +189,8 @@ public class I18nCache implements Serializable {
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
 			Database db = getDatabase();
 
-			String sql = "SELECT msgKey, locale, msgValue, lastUsed " +
-					"FROM app_translation " +
-					"WHERE qualityRating != 0";
+			String sql = "SELECT msgKey, locale, msgValue, lastUsed " + "FROM app_translation "
+					+ "WHERE qualityRating != 0";
 
 			List<BasicDynaBean> messages = db.select(sql, false);
 
@@ -263,7 +263,8 @@ public class I18nCache implements Serializable {
 		if (!isValidTranslation(goodTranslatedValue)) {
 			goodTranslatedValue = key;
 
-			// If the foreign translation was invalid, check the English translation
+			// If the foreign translation was invalid, check the English
+			// translation
 			if (!locale.equals(DEFAULT_LANGUAGE)) {
 				String englishValue = cache.get(key, DEFAULT_LANGUAGE);
 
@@ -347,21 +348,6 @@ public class I18nCache implements Serializable {
 
 	public static Date getLastCleared() {
 		return LAST_CLEARED;
-	}
-
-	/**
-	 * Translations get marked not applicable when base history tables like
-	 * audit question get expired.
-	 *
-	 * @param key
-	 * @throws SQLException
-	 */
-	public void setExpiredTranslationsNotApplicable(String key) throws SQLException {
-		if (!Strings.isEmpty(key)) {
-			String sql = String.format("UPDATE app_translation SET applicable = 0 WHERE msgKey = '%s'", key);
-			Database db = getDatabase();
-			db.executeUpdate(sql);
-		}
 	}
 
 	private String buildInsertStatement(AppTranslation translationToinsert) {

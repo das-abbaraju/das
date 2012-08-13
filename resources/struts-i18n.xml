@@ -4,11 +4,11 @@
 <struts>
 	<package name="com.picsauditing.i18n" extends="com.picsauditing">
 		<action name="ManageTranslations" class="com.picsauditing.actions.i18n.ManageTranslations">
-			<result>struts/i18n/manage_translations.jsp</result>
+			<result>/struts/i18n/manage_translations.jsp</result>
 		</action>
 		
 		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.i18n.ManageTranslations">
-			<result>struts/blank.jsp</result>
+			<result>/struts/blank.jsp</result>
 		</action>
 		
 		<action name="ManageTranslationsCSV" class="com.picsauditing.actions.i18n.ManageTranslations">
@@ -17,21 +17,25 @@
 		</action>
 		
 		<action name="BatchTranslations" class="com.picsauditing.actions.i18n.BatchTranslationsAction">
-			<result>struts/i18n/batch_translations.jsp</result>
+			<result>/struts/i18n/batch_translations.jsp</result>
 		</action>
 		
 		<action name="TranslationETL" class="com.picsauditing.actions.i18n.TranslationETL">
-			<result>struts/i18n/translation_etl.jsp</result>
-			<result name="data">struts/i18n/translation_etl_data.jsp</result>
-			<result name="upload">struts/i18n/translation_etl_upload.jsp</result>
+			<result>/struts/i18n/translation_etl.jsp</result>
+			<result name="data">/struts/i18n/translation_etl_data.jsp</result>
+			<result name="upload">/struts/i18n/translation_etl_upload.jsp</result>
 		</action>
 		
 		<action name="UnsyncedTranslations" class="com.picsauditing.actions.i18n.UnsyncedTranslations">
-			<result>struts/i18n/unsynced_translations.jsp</result>
+			<result>/struts/i18n/unsynced_translations.jsp</result>
 		</action>
 		
 		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
-			<result>struts/i18n/translate_js.jsp</result>
+			<result>/struts/i18n/translate_js.jsp</result>
+		</action>
+		
+		<action name="ApplicableTranslations" class="com.picsauditing.actions.i18n.ApplicableTranslations">
+			<result>/struts/i18n/applicable_translations.jsp</result>
 		</action>
 	</package>
 </struts>

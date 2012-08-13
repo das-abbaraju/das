@@ -177,7 +177,7 @@ public class PicsMenu {
 		}
 		if (permissions.isCorporate())
 			addChildAction(subMenu, "ReportContractorOperatorFlag");
-		if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0)&&!permissions.isSecurity())
+		if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity())
 			addChildAction(subMenu, "ReportContractorOperatorFlagMatrix");
 		if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
 			addChildAction(subMenu, "OperatorFlagMatrix");
@@ -425,6 +425,7 @@ public class PicsMenu {
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action", "ManageAppProperties");
 			subMenu.addChild("Exception Log", "ReportExceptions.action", "ExceptionLog");
 			subMenu.addChild("Batch Insert Translations", "BatchTranslations.action", "BatchInsertTrans");
+			subMenu.addChild("Update Expired Translations", "ApplicableTranslations.action", "ApplicableTranslations");
 			subMenu.addChild("Dynamic Reporting", "ReportDynamic.action?report=1", "DynamicReporting");
 		}
 
@@ -507,7 +508,7 @@ public class PicsMenu {
 			subMenu.addChild("Flag Changes", "ReportFlagChanges.action" + custom, "FlagChanges");
 		}
 
-		if (permissions.isRequiresCompetencyReview()&&!permissions.isSecurity()) {
+		if (permissions.isRequiresCompetencyReview() && !permissions.isSecurity()) {
 			subMenu = menu.addChild(getText("global.HSECompetencies"));
 
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))

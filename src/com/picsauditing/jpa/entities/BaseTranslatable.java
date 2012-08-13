@@ -67,24 +67,12 @@ public abstract class BaseTranslatable implements Translatable {
 	@PostPersist
 	public void postSave() throws Exception {
 		I18nCache i18nCache = I18nCache.getInstance();
-		boolean current = true;
-
-		try {
-			Method isCurrent = this.getClass().getMethod("isCurrent");
-			current = (Boolean) isCurrent.invoke(this);
-		} catch (Exception e) {
-			// This isn't a history table
-		}
 
 		for (Field field : getTranslatableFields()) {
 			Method getField = this.getClass().getDeclaredMethod("get" + WordUtils.capitalize(field.getName()));
 			String key = this.getI18nKey(field.getName());
 			TranslatableString value = (TranslatableString) getField.invoke(this);
 			i18nCache.saveTranslatableString(key, value, getRequiredLanguagesForEntity());
-
-			if (!current) {
-				i18nCache.setExpiredTranslationsNotApplicable(key);
-			}
 		}
 	}
 
