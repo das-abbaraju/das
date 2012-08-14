@@ -35,11 +35,13 @@ public class ManageReports extends PicsActionSupport {
 	@Autowired
 	private ReportDAO reportDao;
 
-	private List<ReportUser> userReports = new ArrayList<ReportUser>();
+	private List<ReportUser> userReports;
+	private List<ReportUser> userReportsOverflow;
 	private int reportId;
 	private String searchTerm;
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
+	private final int MAX_REPORTS_IN_MENU = 10;
 
 	public String execute() {
 		return myReportsList();
@@ -48,6 +50,7 @@ public class ManageReports extends PicsActionSupport {
 	public String favoritesList() {
 		try {
 			userReports = reportDao.findFavoriteUserReports(permissions.getUserId());
+			handleFavoritesOverflow();
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
 		}
@@ -139,23 +142,6 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	private String redirectToPreviousView() {
-		try {
-			String referer = getRequest().getHeader("Referer");
-			if (Strings.isEmpty(referer)) {
-				referer = MY_REPORTS_URL;
-			}
-
-			setUrlForRedirect(referer);
-		} catch (IOException e) {
-			logger.warn("Problem setting URL for redirect in ManageReports.redirectToPreviousView()", e);
-		} catch (Exception e) {
-			logger.error("Unexpected problem in 9ManageReports.redirectToPreviousView()");
-		}
-
-		return REDIRECT;
-	}
-
 	public String columnsToTranslate() {
 		try {
 			List<Report> allReports = reportDao.findAllReports();
@@ -170,12 +156,42 @@ public class ManageReports extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	private String redirectToPreviousView() {
+		try {
+			String referer = getRequest().getHeader("Referer");
+			if (Strings.isEmpty(referer)) {
+				// TODO make this a full URL and add a test for it
+				referer = MY_REPORTS_URL;
+			}
+
+			setUrlForRedirect(referer);
+		} catch (IOException e) {
+			logger.warn("Problem setting URL for redirect in ManageReports.redirectToPreviousView()", e);
+		} catch (Exception e) {
+			logger.error("Unexpected problem in ManageReports.redirectToPreviousView()");
+		}
+
+		return REDIRECT;
+	}
+
+	private void handleFavoritesOverflow() {
+		if (userReports.size() <= MAX_REPORTS_IN_MENU)
+			return;
+
+		userReportsOverflow = userReports.subList(MAX_REPORTS_IN_MENU, userReports.size());
+		userReports = userReports.subList(0, MAX_REPORTS_IN_MENU);
+	}
+
 	public List<ReportUser> getUserReports() {
 		return userReports;
 	}
 
 	public void setUserReports(List<ReportUser> userReports) {
 		this.userReports = userReports;
+	}
+
+	public List<ReportUser> getUserReportsOverflow() {
+		return userReportsOverflow;
 	}
 
 	public int getReportId() {

@@ -25,8 +25,6 @@
 <%--     </span> --%>
 </div>
 
-<s:set name="view_type" value="viewType" />
-
 <ul id="report_my_reports_list" class="report-list">
     <s:iterator value="userReports" var="user_report">
         <s:set name="report" value="#user_report.report" />
@@ -35,7 +33,6 @@
         <%-- Url --%>
         <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
             <s:param name="reportId">${report_id}</s:param>
-            <s:param name="viewType">${view_type}</s:param>
         </s:url>
 
         <s:url action="ReportDynamic" var="report_url">
@@ -89,13 +86,15 @@
                             <a href="${remove_report_url}" class="delete"><s:text name="ManageReports.myReports.Remove" /></a>
                         </s:else>
                     </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#"><s:text name="ManageReports.myReports.MoveUp" /></a>
-                    </li>
-                    <li>
-                        <a href="#"><s:text name="ManageReports.myReports.MoveDown" /></a>
-                    </li>
+                    <s:if test="favorite">
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#"><s:text name="ManageReports.myReports.MoveUp" /></a>
+                        </li>
+                        <li>
+                            <a href="#"><s:text name="ManageReports.myReports.MoveDown" /></a>
+                        </li>
+                    </s:if>
                 </ul>
             </div>
 
