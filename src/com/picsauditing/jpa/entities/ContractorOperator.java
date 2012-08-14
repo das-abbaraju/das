@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -376,7 +375,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return null;
 	}
 
-	@ReportField(category = FieldCategory.General, filterType = FilterType.Date)
+	// TODO set Category
+	@ReportField(filterType = FilterType.Date)
 	public Date getLastStepToGreenDate() {
 		return lastStepToGreenDate;
 	}

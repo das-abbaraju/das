@@ -145,7 +145,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
+	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -191,7 +191,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
+	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits)
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -201,7 +201,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date)
+	@ReportField(filterType = FilterType.Date, category = FieldCategory.AuditScheduling)
 	public Date getScheduledDate() {
 		return scheduledDate;
 	}
@@ -239,7 +239,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		return true;
 	}
 
-	@ReportField(filterType = FilterType.String)
+	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits)
 	public String getAuditLocation() {
 		return auditLocation;
 	}
@@ -261,7 +261,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(filterType = FilterType.Integer)
+	@ReportField(filterType = FilterType.Integer, category = FieldCategory.Audits)
 	public int getScore() {
 		return score;
 	}
@@ -424,7 +424,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.CSR, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.AuditScheduling, filterType = FilterType.Date)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
 	}
@@ -434,7 +434,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.CSR, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.AuditScheduling, filterType = FilterType.Date)
 	public Date getAuditorConfirm() {
 		return auditorConfirm;
 	}
@@ -456,7 +456,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(filterType = FilterType.String)
+	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits)
 	public String getAuditFor() {
 		return auditFor;
 	}

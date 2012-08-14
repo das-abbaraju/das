@@ -4,18 +4,26 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class CountryTable extends AbstractTable {
-	// TODO: This needs to be rewritten as a whole.
 
 	public CountryTable() {
 		super("ref_country", "country", "country", "");
 	}
 
+	public CountryTable(String prefix, String alias, String foreignKey) {
+		super("ref_country", prefix, alias, alias + ".isoCode = " + foreignKey);
+	}
+
+	public CountryTable(String alias, String foreignKey) {
+		super("ref_country", alias, alias, alias + ".isoCode = " + foreignKey);
+	}
+	
 	public void addFields() {
-		addField(prefix + "Code", alias + ".isoCode", FilterType.String);
+		addFields(com.picsauditing.jpa.entities.Country.class);
+		
+		// TODO set Category
 		Field countryName = addField(prefix + "Name", alias + ".isoCode", FilterType.String);
 		countryName.setTranslationPrefixAndSuffix("Country", "");
 		countryName.setWidth(100);
-		addField(prefix + "Currency", alias + ".currency", FilterType.String);
 	}
 
 	public void addJoins() {

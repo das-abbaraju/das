@@ -17,14 +17,17 @@ public class AccountTable extends AbstractTable {
 	}
 	
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setWidth(80);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
+		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date).setCategory(FieldCategory.AccountDetails);
 		
 		addFields(com.picsauditing.jpa.entities.Account.class);
 	}
 
 	public void addJoins() {
-		addLeftJoin(new UserTable(prefix + "Contact", alias + ".contactID"));
-		addLeftJoin(new NaicsTable(prefix + "Naics", alias + ".naics"));
+		UserTable primaryContact = new UserTable(prefix + "Contact", alias + ".contactID");
+		primaryContact.setOverrideCategory(FieldCategory.AccountInformation);
+		addLeftJoin(primaryContact);
+		
+		NaicsTable naicsStatistics = new NaicsTable(prefix + "Naics", alias + ".naics");
+		addLeftJoin(naicsStatistics);
 	}
 }

@@ -5,6 +5,7 @@ import com.picsauditing.report.tables.ContractorTable;
 public class AccountContractorModel extends AccountModel {
 	public AccountContractorModel() {
 		super();
+		rootTable.removeField("accountID");
 		rootTable.removeField("accountName");
 		rootTable.removeField("accountType");
 

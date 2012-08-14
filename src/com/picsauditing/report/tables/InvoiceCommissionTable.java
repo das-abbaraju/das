@@ -13,6 +13,8 @@ public class InvoiceCommissionTable extends AbstractTable {
 	}
 
 	public void addJoins() { 
-		addLeftJoin(new UserTable(prefix + "RecipientUser", alias + ".userID"));
+		UserTable recipient = new UserTable(prefix + "RecipientUser", alias + ".userID");
+		recipient.setOverrideCategory(FieldCategory.Commission);
+		addLeftJoin(recipient);
 	}
 }

@@ -20,9 +20,9 @@
         <button class="btn"><s:text name="ManageReports.myReports.lastOpened" /></button>
     </div>
 
-<%--     <span class="debug"> --%>
-<%--     	<a href="ManageReports!columnsToTranslate.action"><s:text name="global.Download" /></a> --%>
-<%--     </span> --%>
+     <span class="debug">
+     	<a href="ManageReports!columnsToTranslate.action"><s:text name="global.Download" /></a>
+     </span>
 </div>
 
 <ul id="report_my_reports_list" class="report-list">

@@ -17,7 +17,7 @@ public class AuditTypeTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.Audits);
 
 		addFields(com.picsauditing.jpa.entities.AuditType.class);
 	}

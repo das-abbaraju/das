@@ -22,13 +22,13 @@ public class ContractorAuditTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.Audits);
+		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date).setCategory(FieldCategory.Audits);
 
 		addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
 
 		Field auditTypeName;
-		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String);
+		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String).setCategory(FieldCategory.Audits);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
 		auditTypeName.setWidth(100);
@@ -37,8 +37,13 @@ public class ContractorAuditTable extends AbstractTable {
 	public void addJoins() {
 		addLeftJoin(new AuditTypeTable(prefix + "Type", alias + ".auditTypeID"));
 
-		addLeftJoin(new UserTable(prefix + "Auditor", alias + ".auditorID"));
-		addLeftJoin(new UserTable(prefix + "ClosingAuditor", alias + ".closingAuditorID"));
+		UserTable auditor = new UserTable(prefix + "Auditor", alias + ".auditorID");
+		auditor.setOverrideCategory(FieldCategory.Auditors);
+		addLeftJoin(auditor);
+
+		UserTable closingAuditor = new UserTable(prefix + "ClosingAuditor", alias + ".closingAuditorID");
+		closingAuditor.setOverrideCategory(FieldCategory.Auditors);
+		addLeftJoin(closingAuditor);
 
 		// TODO: Add auditDataTable
 	}

@@ -131,7 +131,7 @@ public class ReportDynamic extends PicsActionSupport {
 			sqlBuilder.setDefinition(report.getDefinition());
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
-
+			System.out.println(sql.toString());
 			ReportUtil.localize(report, getLocale());
 
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
@@ -152,7 +152,7 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			logError(e);
 		}
-
+		System.out.println(json.toString());
 		return JSON;
 	}
 

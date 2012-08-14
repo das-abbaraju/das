@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+
 @SuppressWarnings("serial")
 @Entity
 public class Naics implements java.io.Serializable {
@@ -13,6 +16,7 @@ public class Naics implements java.io.Serializable {
 
 	@Id
 	@Column(nullable = false, length = 6)
+	@ReportField(category = FieldCategory.ContractorSpecificDetails)
 	public String getCode() {
 		return code;
 	}
@@ -21,6 +25,7 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
+	@ReportField(category = FieldCategory.ContractorStatistics)
 	public float getTrir() {
 		return trir;
 	}
@@ -29,6 +34,7 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
+	@ReportField(category = FieldCategory.ContractorStatistics)
 	public float getLwcr() {
 		return lwcr;
 	}
@@ -36,5 +42,4 @@ public class Naics implements java.io.Serializable {
 	public void setLwcr(float lwcr) {
 		this.lwcr = lwcr;
 	}
-
 }

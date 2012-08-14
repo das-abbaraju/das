@@ -215,7 +215,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "taxID", length = 100)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Integer)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -312,7 +312,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "safetyRisk", nullable = false)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.LowMedHigh)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -322,7 +322,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.Date)
 	public Date getSafetyRiskVerified() {
 		return safetyRiskVerified;
 	}
@@ -332,7 +332,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "productRisk", nullable = false)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.LowMedHigh)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
@@ -342,7 +342,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.Date)
 	public Date getProductRiskVerified() {
 		return productRiskVerified;
 	}
@@ -352,7 +352,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "transportationRisk", nullable = false)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.LowMedHigh)
 	public LowMedHigh getTransportationRisk() {
 		return transportationRisk;
 	}
@@ -362,7 +362,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.Date)
 	public Date getTransportationRiskVerified() {
 		return transportationRiskVerified;
 	}
@@ -526,7 +526,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.ContractorSpecificDetails, filterType = FilterType.Date)
 	public Date getMembershipDate() {
 		return this.membershipDate;
 	}
@@ -555,7 +555,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Date, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.ContractorSpecificDetails, filterType = FilterType.Date, requiredPermissions = OpPerms.Billing)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}
@@ -695,7 +695,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return "0";
 	}
 
-	@ReportField
+	@ReportField(category = FieldCategory.ContractorClassification)
 	public String getTradesSelf() {
 		return tradesSelf;
 	}
@@ -704,7 +704,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.tradesSelf = tradesSelf;
 	}
 
-	@ReportField
+	@ReportField(category = FieldCategory.ContractorClassification)
 	public String getTradesSub() {
 		return tradesSub;
 	}
@@ -738,7 +738,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return daysAgo.after(tradesUpdated);
 	}
 
-	@ReportField(filterType = FilterType.Integer)
+	@ReportField(filterType = FilterType.Integer, category = FieldCategory.ContractorStatistics)
 	public int getScore() {
 		return score;
 	}
@@ -1372,7 +1372,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.ContractorClassification, filterType = FilterType.Boolean)
 	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}

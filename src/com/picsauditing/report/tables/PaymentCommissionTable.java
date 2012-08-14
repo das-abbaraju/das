@@ -13,6 +13,8 @@ public class PaymentCommissionTable extends AbstractTable {
 	}
 
 	public void addJoins() {
-		addLeftJoin(new PaymentTable(prefix + "Payment", alias + ".paymentID"));
+		PaymentTable payment = new PaymentTable(prefix + "Payment", alias + ".paymentID");
+		payment.setOverrideCategory(FieldCategory.Commission);
+		addLeftJoin(payment);
 	}
 }

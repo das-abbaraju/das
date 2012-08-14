@@ -18,12 +18,13 @@ public class PaymentTable extends AbstractTable {
 	}
 	
 	public void addFields() {
+		// TODO set Category
 		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
 
 		addFields(com.picsauditing.jpa.entities.Payment.class);
 	}
 
 	public void addJoins() {
-		addLeftJoin(new AccountTable(prefix + "Account", alias + ".accountID"));
+		addLeftJoin(new ContractorTable(prefix + "Account", alias + ".accountID"));
 	}
 }

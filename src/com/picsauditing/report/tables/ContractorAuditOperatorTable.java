@@ -17,12 +17,14 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
 
 		addFields(com.picsauditing.jpa.entities.ContractorAuditOperator.class);
 	}
 
 	public void addJoins() {
-		addJoin(new AccountTable(prefix + "Account", alias + ".opID"));
+		AccountTable auditingSite = new AccountTable(prefix + "Account", alias + ".opID");
+		auditingSite.setOverrideCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+		addJoin(auditingSite);
 	}
 }

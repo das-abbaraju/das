@@ -15,18 +15,20 @@ public class ContractorTable extends AbstractTable {
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
 
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setWidth(80);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.ContractorSpecificDetails).setWidth(80);
 
 		Field contractorName;
-		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName);
+		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName).setCategory(FieldCategory.ContractorSpecificDetails);
 		contractorName.setUrl("ContractorView.action?id={" + prefix + "ID}");
 		contractorName.setWidth(300);
 
+		// TODO Remove eventually
 		Field contractorEdit;
 		contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
 		contractorEdit.setUrl("ContractorEdit.action?id={" + prefix + "ID}");
 		contractorEdit.setWidth(100);
 
+		// TODO Remove eventually
 		Field contractorAudits;
 		contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
 		contractorAudits.setUrl("ContractorDocuments.action?id={" + prefix + "ID}");
@@ -34,8 +36,16 @@ public class ContractorTable extends AbstractTable {
 	}
 
 	public void addJoins() {
-		addLeftJoin(new UserTable(prefix + "CustomerService", alias + ".welcomeAuditor_id"));
-		addLeftJoin(new AccountTable(prefix + "RequestedByOperator", alias + ".requestedByID"));
-		addLeftJoin(new ContractorAuditTable(prefix + "PQF", prefix + "PQF", "conID", alias + ".id AND " + prefix + "PQF.auditTypeID = 1"));
+		UserTable customerServiceRep = new UserTable(prefix + "CustomerService", alias + ".welcomeAuditor_id");
+		customerServiceRep.setOverrideCategory(FieldCategory.CustomerServiceRepresentatives);
+		addLeftJoin(customerServiceRep);
+		
+		AccountTable requestedByOperator = new AccountTable(prefix + "RequestedByOperator", alias + ".requestedByID");
+		requestedByOperator.setOverrideCategory(FieldCategory.RequestingClientSite);
+		addLeftJoin(requestedByOperator);
+		
+		ContractorAuditTable pqf = new ContractorAuditTable(prefix + "PQF", prefix + "PQF", "conID", alias + ".id AND " + prefix + "PQF.auditTypeID = 1");
+		pqf.setOverrideCategory(FieldCategory.PQF);
+		addLeftJoin(pqf);
 	}
 }

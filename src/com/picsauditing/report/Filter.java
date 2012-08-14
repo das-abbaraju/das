@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
@@ -144,6 +145,12 @@ public class Filter implements JSONable {
 	}
 
 	public boolean isHasTranslations() {
-		return field.getFilterType().isAutocomplete() || field.getFilterType().isEnum();
+		if (field != null) {
+			FilterType filterType = field.getFilterType();
+
+			return filterType.isAutocomplete() || filterType.isEnum();
+		}
+		
+		return false;
 	}
 }

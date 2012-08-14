@@ -21,6 +21,7 @@ public abstract class AbstractTable {
 	protected String parentPrefix;
 	protected String parentAlias;
 	protected String onClause;
+	protected FieldCategory overrideCategory;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	protected List<AbstractTable> joinedTables = new ArrayList<AbstractTable>();
 
@@ -84,6 +85,15 @@ public abstract class AbstractTable {
 	public void setParentAlias(String parentAlias) {
 		this.parentAlias = parentAlias;
 	}
+
+	public FieldCategory getOverrideCategory() {
+		return overrideCategory;
+	}
+
+	public void setOverrideCategory(FieldCategory overrideCategory) {
+		this.overrideCategory = overrideCategory;
+	}
+
 	public String getOnClause() {
 		return onClause;
 	}
@@ -93,7 +103,17 @@ public abstract class AbstractTable {
 	}
 
 	public Map<String, Field> getAvailableFields() {
+		overrideExistingCategories();
+		
 		return availableFields;
+	}
+
+	private void overrideExistingCategories() {
+		if (overrideCategory != null) {
+			for (String fieldName : availableFields.keySet()) {
+				availableFields.get(fieldName).setCategory(overrideCategory);
+			}
+		}
 	}
 
 	public void removeField(String name) {
@@ -183,5 +203,4 @@ public abstract class AbstractTable {
 
 		return false;
 	}
-
 }

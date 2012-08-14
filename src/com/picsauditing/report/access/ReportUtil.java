@@ -1,16 +1,18 @@
 package com.picsauditing.report.access;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
 
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.beanutils.DynaProperty;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -20,10 +22,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.DynaProperty;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -159,11 +157,10 @@ public final class ReportUtil {
 			JSONObject obj = field.toJSONObject();
 			obj.put("category", translateCategory(field.getCategory().toString(), locale));
 
-			// TODO Waiting on 6321/6537 to address an issue with translations 
-//			String help = getText("Report." + field.getName() + ".help", locale);
-//			if (help != null) {
-//				obj.put("help", help);
-//			}
+			String help = getText("Report." + field.getName() + ".help", locale);
+			if (help != null) {
+				obj.put("help", help);
+			}
 
 			fieldsJsonArray.add(obj);
 		}
@@ -182,10 +179,14 @@ public final class ReportUtil {
 			return;
 
 		for (Column column : definition.getColumns()) {
-			String translateLabel = translateLabel(column.getField(), locale);
+			Field field = column.getField();
+			String translateLabel = translateLabel(field, locale);
 			if (column.getMethod() != null)
 				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(),locale);
-			column.getField().setText(translateLabel);
+			if (field != null)
+			{
+				field.setText(translateLabel);
+			}
 		}
 	}
 
@@ -194,7 +195,9 @@ public final class ReportUtil {
 			return;
 
 		for (Filter filter : definition.getFilters()) {
-			filter.getField().setText(translateLabel(filter.getField(), locale));
+			Field field = filter.getField();
+			if (field != null) 
+				field.setText(translateLabel(field, locale));
 		}
 	}
 

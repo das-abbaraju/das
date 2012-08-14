@@ -111,7 +111,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Invoice, filterType = FilterType.String)
+	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.String)
 	public Currency getCurrency() {
 		return currency;
 	}

@@ -29,6 +29,9 @@ import org.hibernate.annotations.Where;
 
 import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
@@ -63,6 +66,7 @@ public class OperatorAccount extends Account {
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
 	private String requiredTags;
+	private BigDecimal activationFee;
 	private BigDecimal discountPercent = BigDecimal.ZERO;
 	private Date discountExpiration;
 	private boolean inPicsConsortium = false;
@@ -110,6 +114,8 @@ public class OperatorAccount extends Account {
 	 * Yes, No, Multiple
 	 */
 	@Column(nullable = false, length = 8)
+	// TODO set category
+	@ReportField
 	public String getDoContractorsPay() {
 		return this.doContractorsPay;
 	}
@@ -120,6 +126,8 @@ public class OperatorAccount extends Account {
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
+	// TODO set category
+	@ReportField
 	public YesNo getCanSeeInsurance() {
 		return this.canSeeInsurance;
 	}
@@ -141,6 +149,8 @@ public class OperatorAccount extends Account {
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Column(name = "isUserManualUploaded", nullable = false)
 	@Enumerated(EnumType.STRING)
+	// TODO set category
+	@ReportField
 	public YesNo getIsUserManualUploaded() {
 		return this.isUserManualUploaded;
 	}
@@ -178,6 +188,8 @@ public class OperatorAccount extends Account {
 		this.oshaType = oshaType;
 	}
 
+	// TODO set category
+	@ReportField
 	public boolean isPrimaryCorporate() {
 		return primaryCorporate;
 	}
@@ -186,6 +198,8 @@ public class OperatorAccount extends Account {
 		this.primaryCorporate = primaryCorporate;
 	}
 
+	// TODO set category
+	@ReportField
 	public boolean isAutoApproveInsurance() {
 		return autoApproveInsurance;
 	}
@@ -219,12 +233,22 @@ public class OperatorAccount extends Account {
 		return null;
 	}
 
+	// TODO set category
+	@ReportField
 	public String getRequiredTags() {
 		return requiredTags;
 	}
 
 	public void setRequiredTags(String requiredTags) {
 		this.requiredTags = requiredTags;
+	}
+
+	public BigDecimal getActivationFee() {
+		return activationFee;
+	}
+
+	public void setActivationFee(BigDecimal activationFee) {
+		this.activationFee = activationFee;
 	}
 
 	@Column(nullable = false)
@@ -250,6 +274,8 @@ public class OperatorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
+	// TODO set category
+	@ReportField
 	public Date getDiscountExpiration() {
 		return discountExpiration;
 	}

@@ -1,5 +1,20 @@
 package com.picsauditing.report.tables;
 
 public enum FieldCategory {
-	General, Billing, Contact, Classification, Commission, CSR, Invoice, NAICS, SafetyStats;
+	AccountDetails, 
+	AccountInformation, 
+	AuditScheduling, 
+	Auditors, 
+	Audits, 
+	Billing, 
+	ClientSiteMonitoringAnAudit, 
+	Commission, 
+	ContractorClassification, 
+	ContractorSpecificDetails, 
+	ContractorStatistics, 
+	CustomerServiceRepresentatives, 
+	General,
+	Invoicing,
+	PQF, 
+	RequestingClientSite;
 }
