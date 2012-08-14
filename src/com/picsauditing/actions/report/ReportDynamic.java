@@ -131,7 +131,6 @@ public class ReportDynamic extends PicsActionSupport {
 			sqlBuilder.setDefinition(report.getDefinition());
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
-			System.out.println(sql.toString());
 			ReportUtil.localize(report, getLocale());
 
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
@@ -146,13 +145,13 @@ public class ReportDynamic extends PicsActionSupport {
 				json.put("success", true);
 			}
 		} catch (ReportValidationException rve) {
-			logError(rve);
+			writeJsonError(rve);
 		} catch (SQLException se) {
-			logError(se);
+			writeJsonError(se);
 		} catch (Exception e) {
-			logError(e);
+			writeJsonError(e);
 		}
-		System.out.println(json.toString());
+
 		return JSON;
 	}
 
@@ -349,7 +348,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	// TODO: Refactor, because it seems just like the jsonException method.
-	private void logError(Exception e) {
+	private void writeJsonError(Exception e) {
 		json.put("success", false);
 		String message = e.getMessage();
 
