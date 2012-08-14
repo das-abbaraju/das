@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
@@ -309,11 +310,11 @@ public class SqlBuilder {
 	}
 
 	private String toValueSql(Filter filter, Column column, Map<String, Field> availableFields) {
-		String filterValue = Strings.escapeQuotes(filter.getValue());
-
-		// date filter
 		Field field = availableFields.get(column.getFieldName().toUpperCase());
 		ExtFieldType fieldType = field.getType();
+
+		String filterValue = Strings.escapeQuotes(filter.getValue());
+		
 		if (fieldType.equals(ExtFieldType.Date) && column.getMethod() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 
@@ -339,7 +340,10 @@ public class SqlBuilder {
 			// TODO
 		}
 
-		return "'" + filterValue + "'";
+		if (fieldType.equals(ExtFieldType.Boolean))
+			return filterValue;
+		else
+			return addQuotesToValues(filterValue);
 	}
 
 	private String addQuotesToValues(String unquotedValuesString) {
