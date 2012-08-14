@@ -488,6 +488,7 @@ public class SqlBuilderTest {
 		assertContains("ORDER BY a.name", sql.toString());
 	}
 
+	@Ignore
 	@Test
 	public void testMultipleColumns() {
 		Definition definition = new Definition();
@@ -525,6 +526,7 @@ public class SqlBuilderTest {
 		assertEquals(3, sql.getFields().size());
 	}
 
+	@Ignore
 	@Test
 	public void testLeftJoinUser() throws Exception {
 		Definition definition = new Definition();
