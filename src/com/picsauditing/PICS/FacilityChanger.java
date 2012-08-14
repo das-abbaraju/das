@@ -192,7 +192,7 @@ public class FacilityChanger {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
 					emailBuilder.addToken("operator", co.getOperatorAccount());
-					emailBuilder.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
+					emailBuilder.setFromAddress("\"IT\"<errors@picsauditing.com>");
 					emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 
 					EmailQueue emailQueue = emailBuilder.build();

@@ -125,7 +125,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit="
 						+ contractorAudit.getId() + "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
-				emailBuilder.setFromAddress("\"Jesse Cota\"<jcota@picsauditing.com>");
+				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
 				email.setViewableById(Account.PicsID);

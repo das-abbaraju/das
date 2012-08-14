@@ -641,7 +641,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					+ "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setUser(conAudit.getAuditor());
-			emailBuilder.setFromAddress("\"Mina Mina\"<mmina@picsauditing.com>");
+			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
 			email.setViewableById(Account.PicsID);
 			emailSender.send(email);

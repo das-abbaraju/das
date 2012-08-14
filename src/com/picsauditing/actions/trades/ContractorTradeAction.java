@@ -115,7 +115,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (trade.getTrade().getContractorCount() == 0) {
 			EmailQueue emailQueue = new EmailQueue();
 			emailQueue.setSubject("New Trade Selected.");
-			emailQueue.setToAddresses("mmina@picsauditing.com");
+			emailQueue.setToAddresses("audits@picsauditing.com");
 			emailQueue.setBody("Trade: " + trade.getTrade().getId() + "-" + trade.getTrade().getName()
 					+ " Contractor: " + contractor.getId() + "-" + contractor.getName());
 
