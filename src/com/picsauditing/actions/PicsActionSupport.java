@@ -1,7 +1,6 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -17,7 +16,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -161,8 +159,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
 		Boolean isBeta = getRequestHost().contains("beta");
-		if (!(isBeta||isAlphaEnvironment()||isConfigurationEnvironment()|| isLocalhostEnvironment())) {
-			//its not beta, alpha, config, and localhost
+		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
+			// its not beta, alpha, config, and localhost
 			if (isBetaVersion()) {
 				isBeta = true;
 			}
@@ -171,7 +169,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return isBeta;
 	}
 
-	public boolean isBetaVersion(){
+	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
 
@@ -186,7 +184,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
 		Boolean isStable = getRequestHost().contains("stable");
-		if (!(isStable||isAlphaEnvironment()||isConfigurationEnvironment()|| isLocalhostEnvironment()||isBetaEnvironment())){
+		if (!(isStable || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment())) {
 			if (!isBetaVersion()) {
 				isStable = true;
 			}

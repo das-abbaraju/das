@@ -2,7 +2,7 @@
 
 <span class="question">
 	<span class="questionNumber"><s:property value="#q.expandedNumber"/></span>
-	<s:property value="#q.name" escape="false"/>
+	<s:property value="getStrippedHref(#q.name)" escape="false"/>
 </span>
 
 <br clear="all">

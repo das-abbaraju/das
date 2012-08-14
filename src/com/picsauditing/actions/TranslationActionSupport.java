@@ -174,7 +174,6 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(locale, aTextName, defaultValue, (List<Object>) null);
 	}
 
-
 	@Override
 	public String getText(String aTextName, String defaultValue, List<?> args) {
 		return getText(aTextName, defaultValue, args, null);
@@ -240,16 +239,14 @@ public class TranslationActionSupport extends ActionSupport {
 		return findAllTranslations(key, true);
 	}
 
-	public Map<Locale, String> findAllTranslations(String key,
-			Boolean includeLocaleStatic) {
+	public Map<Locale, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
 		Map<String, String> translationMap = i18nCache.getText(key);
 		Map<Locale, String> newTranslationMap = new HashMap<Locale, String>();
 
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
 			String keyStr = entry.getKey();
 
-			newTranslationMap.put(convertStringToLocale(keyStr),
-					entry.getValue());
+			newTranslationMap.put(convertStringToLocale(keyStr), entry.getValue());
 		}
 
 		if (!includeLocaleStatic) {
@@ -257,32 +254,6 @@ public class TranslationActionSupport extends ActionSupport {
 		}
 
 		return sortTranslationsByLocaleDisplayNames(newTranslationMap);
-	}
-
-	private Locale convertStringToLocale(String keyStr) {
-		Locale locale = null;
-		String[] lanCountry = keyStr.split("_");
-
-		// e.g. en_GB
-		if (lanCountry.length > 1) {
-			locale = new Locale(lanCountry[0], lanCountry[1]);
-		} else {
-			locale = new Locale(keyStr);
-		}
-		return locale;
-	}
-
-	private Map<Locale, String> sortTranslationsByLocaleDisplayNames(
-			Map<Locale, String> newTranslationMap) {
-		Comparator<Locale> displayNameComparator = new Comparator<Locale>() {
-			public int compare(Locale l1, Locale l2) {
-				return l1.getDisplayName().compareTo(l2.getDisplayName());
-			}
-		};
-		Map<Locale, String> sortedTranslationMap = new TreeMap<Locale, String>(
-				displayNameComparator);
-		sortedTranslationMap.putAll(newTranslationMap);
-		return sortedTranslationMap;
 	}
 
 	@Override
@@ -316,6 +287,14 @@ public class TranslationActionSupport extends ActionSupport {
 		return usedKeys;
 	}
 
+	public String getStrippedHref(String text) {
+		if (text.contains("href") && text.contains("www.picsorganizer.com")) {
+			text = text.replaceAll("(href\\s*=\\s*[\"']*)(https?:)?//www.picsorganizer.com/?", "$1");
+		}
+
+		return text;
+	}
+
 	private void useKey(String key) {
 		if (key == null)
 			throw new RuntimeException("i18n key cannot be NULL");
@@ -338,5 +317,29 @@ public class TranslationActionSupport extends ActionSupport {
 			}
 		} catch (Exception doNothing) {
 		}
+	}
+
+	private Locale convertStringToLocale(String keyStr) {
+		Locale locale = null;
+		String[] lanCountry = keyStr.split("_");
+
+		// e.g. en_GB
+		if (lanCountry.length > 1) {
+			locale = new Locale(lanCountry[0], lanCountry[1]);
+		} else {
+			locale = new Locale(keyStr);
+		}
+		return locale;
+	}
+
+	private Map<Locale, String> sortTranslationsByLocaleDisplayNames(Map<Locale, String> newTranslationMap) {
+		Comparator<Locale> displayNameComparator = new Comparator<Locale>() {
+			public int compare(Locale l1, Locale l2) {
+				return l1.getDisplayName().compareTo(l2.getDisplayName());
+			}
+		};
+		Map<Locale, String> sortedTranslationMap = new TreeMap<Locale, String>(displayNameComparator);
+		sortedTranslationMap.putAll(newTranslationMap);
+		return sortedTranslationMap;
 	}
 }

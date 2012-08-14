@@ -18,9 +18,9 @@
 </label>
 
 <ol>
-	<s:iterator value="openTasks">
+	<s:iterator value="openTasks" var="open_task">
 		<li>
-			<s:property escape="false"/>
+			<s:property value="getStrippedHref(#open_task)" escape="false" />
 		</li>
 	</s:iterator>
 </ol>
