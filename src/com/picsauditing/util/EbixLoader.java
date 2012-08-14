@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketException;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
+import com.picsauditing.actions.Cron;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -26,6 +28,8 @@ public class EbixLoader {
 	private AppPropertyDAO appPropDao;
 	private ContractorAuditDAO contractorAuditDAO;
 	private ContractorAccountDAO contractorAccountDAO;
+
+	private final Logger logger = LoggerFactory.getLogger(EbixLoader.class);
 
 	public EbixLoader(AppPropertyDAO appPropDao, ContractorAuditDAO contractorAuditDAO,
 			ContractorAccountDAO contractorAccountDAO) {
@@ -110,8 +114,12 @@ public class EbixLoader {
 									}
 
 									if (CollectionUtils.isEmpty(audits)) {
-										PicsLogger.log("WARNING: Ebix record found for contractor "
+										if (conAccount != null){
+											logger.warn("WARNING: Ebix record found for contractor "
 												+ conAccount.getId() + " but no Ebix Compliance audit was found");
+										} else {
+											logger.warn("WARNING: Ebix record found for contractor MISSING CONTRACTOR ID but no Ebix Compliance audit was found");
+										}
 										continue;
 									}
 
