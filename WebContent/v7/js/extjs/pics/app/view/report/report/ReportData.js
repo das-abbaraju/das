@@ -59,6 +59,13 @@ Ext.define('PICS.view.report.ReportData', {
             name: 'sort_desc',
             text: 'Sort Descending'
         }, {
+            xtype: 'menuseparator'
+        }, {
+            name: 'function',
+            text: 'Functions...'
+        }, {
+            xtype: 'menuseparator'
+        }, {
             name: 'remove_column',
             text: 'Remove'
         });

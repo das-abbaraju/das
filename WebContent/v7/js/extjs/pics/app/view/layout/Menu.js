@@ -199,8 +199,7 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         items.splice(1, 0, {
-            xtype: 'menuseparator',
-            width: 2
+            xtype: 'menuseparator'
         });
 
         items.splice(2, 0, {

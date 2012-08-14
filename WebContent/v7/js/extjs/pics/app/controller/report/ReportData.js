@@ -29,16 +29,20 @@ Ext.define('PICS.controller.report.ReportData', {
                 click: this.onAddColumn
             },
 
+            'menu[name=report_data_header_menu] menuitem[name=function]': {
+                click: this.onColumnFunction
+            },
+
+            'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
+                click: this.onColumnRemove
+            },
+
             'menu[name=report_data_header_menu] menuitem[name=sort_asc]': {
                 click: this.onColumnSortAsc
             },
 
             'menu[name=report_data_header_menu] menuitem[name=sort_desc]': {
                 click: this.onColumnSortDesc
-            },
-
-            'menu[name=report_data_header_menu] menuitem[name=remove_column]': {
-                click: this.onColumnRemove
             }
         });
 
@@ -50,6 +54,18 @@ Ext.define('PICS.controller.report.ReportData', {
 
     onAddColumn: function (cmp, event, eOpts) {
         this.application.fireEvent('showavailablefieldmodal', 'column');
+    },
+
+    onColumnFunction: function (cmp, event, eOpts) {
+        var column_store = this.getReportReportsStore().first().columns(),
+            column_name = cmp.up('menu').activeHeader.dataIndex,
+            column = column_store.findRecord('name', column_name);
+
+        var modal = Ext.create('PICS.view.report.function.FunctionModal', {
+            column: column
+        });
+
+        modal.show();
     },
 
     onColumnRemove: function (cmp, event, eOpts) {
