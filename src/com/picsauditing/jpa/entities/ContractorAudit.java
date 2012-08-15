@@ -133,7 +133,8 @@ public class ContractorAudit extends AbstractIndexableTable {
 		this.operators = operators;
 	}
 
-	// TODO Should we pass in permissions to this? See ConInsureGuard.java execute() lines 54-67
+	// TODO Should we pass in permissions to this? See ConInsureGuard.java
+	// execute() lines 54-67
 	@Transient
 	public List<ContractorAuditOperator> getOperatorsVisible() {
 		return new Grepper<ContractorAuditOperator>() {
@@ -311,8 +312,9 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	/**
 	 * 
-	 * @see isAboutToExpire() they are basically the same thing, but we decided to keep both since isAboutToExpire
-	 *      accounts for the year which is important when dealing with PQF class audits
+	 * @see isAboutToExpire() they are basically the same thing, but we decided
+	 *      to keep both since isAboutToExpire accounts for the year which is
+	 *      important when dealing with PQF class audits
 	 */
 	@Transient
 	public boolean willExpireSoon() {
@@ -350,24 +352,24 @@ public class ContractorAudit extends AbstractIndexableTable {
 			// We normally don't call getEffectiveDateLabel() for PQF
 			return new Date();
 		}
-		
+
 		if (auditType.isAnnualAddendum()) {
 			// We normally don't call getEffectiveDateLabel() for Annual Update
 			Calendar cal = Calendar.getInstance();
 			cal.set(Integer.parseInt(auditFor), Calendar.JANUARY, 1);
 			return cal.getTime();
 		}
-		
+
 		if (auditType.isWCB()) {
 			if (!Strings.isEmpty(auditFor)) {
 				return DateBean.parseDate("01/01/" + auditFor);
 			}
 		}
-		
+
 		if (effectiveDate != null) {
 			return effectiveDate;
 		}
-		
+
 		return creationDate;
 	}
 
@@ -452,7 +454,8 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM for "John Doe"
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
+	 * for "John Doe"
 	 * 
 	 * @return
 	 */
@@ -726,13 +729,20 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	public boolean hasOnlyInvisibleCaos() {
-		if (this.operators.size() > 0 && this.getOperatorsVisible().size() == 0)
+		if (this.operators.size() > 0 && this.getOperatorsVisible().size() == 0) {
 			return true;
+		}
+
+		if (this.operators.isEmpty()) {
+			return true;
+		}
+
 		return false;
 	}
 
 	@Transient
-	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions, Set<AuditCategory> requiredCategories) {
+	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,
+			Set<AuditCategory> requiredCategories) {
 		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
 		List<AuditCatData> sortedCats = getCategories();
 		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
@@ -853,12 +863,12 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 		return getExpiresDate().before(new Date()) && getExpiresDate().after(oneWeekAgo.getTime());
 	}
-	
+
 	@Transient
 	public boolean isExpiringSoon() {
 		return (willExpireWithinTwoWeeks() || expiredUpToAWeekAgo());
 	}
-	
+
 	@Transient
 	public boolean isExpiringRenewableAudit() {
 		return getAuditType().isRenewable() && isExpiringSoon();
