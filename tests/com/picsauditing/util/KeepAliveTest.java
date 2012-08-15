@@ -27,9 +27,9 @@ public class KeepAliveTest {
 	@Mock
 	private HttpServletRequest request;
 	@Mock
-	private OperatingSystemMXBean operatingSystemMXBean;
-	@Mock
 	private HttpServletResponse response;
+	@Mock
+	private OperatingSystemMXBean operatingSystemMXBean;
 
 	@Before
 	public void setUp() throws Exception {
@@ -106,5 +106,28 @@ public class KeepAliveTest {
 		when(database.execute(anyString())).thenThrow(new SQLException());
 
 		assertEquals(KeepAlive.DATABASE_UNACCESSIBLE, keepAlive.getKeepAliveStatus());
+	}
+
+	@Test
+	public void testPlainText() throws Exception {
+		when(operatingSystemMXBean.getSystemLoadAverage()).thenReturn(1.0);
+		when(database.execute(anyString())).thenReturn(true);
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/"));
+		when(request.getRequestURI()).thenReturn("/");
+		// when(request.getParameter("callback")).thenReturn("123456789");
+
+		assertEquals(KeepAlive.SYSTEM_OK, keepAlive.getOutput());
+	}
+
+	@Test
+	public void testPlainText_test2() throws Exception {
+		when(operatingSystemMXBean.getSystemLoadAverage()).thenReturn(1.0);
+		when(database.execute(anyString())).thenReturn(true);
+		when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/"));
+		when(request.getRequestURI()).thenReturn("/");
+		when(request.getParameter("callback")).thenReturn("123456789");
+		when(request.getParameter("output")).thenReturn(KeepAlive.OUTPUT_JSONP);
+
+		assertEquals("123456789({\"status\":\"SYSTEM OK\"})", keepAlive.getOutput());
 	}
 }
