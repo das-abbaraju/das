@@ -44,7 +44,7 @@
 								<s:text name="global.Audits" />
 							</div>
 							<div class="panel_content">
-								<s:if test="displayedAudits.size > 0 || auditsByYearAndType.size > 0">
+								<s:if test="displayedAudits.size() > 0 || auditsByYearAndType.size() > 0">
 									<table class="table">
 										<thead>
 											<tr>
