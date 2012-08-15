@@ -224,7 +224,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setCountry(country);
 			}
 
-			if ((countrySubdivision != null && !countrySubdivision.equals(contractor.getCountrySubdivision())) || (contractor.getCountrySubdivision()==null&& countrySubdivision !=null)) {
+			if ((countrySubdivision != null && !countrySubdivision.equals(contractor.getCountrySubdivision())) || (contractor.getCountrySubdivision() == null && countrySubdivision !=null)) {
 				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
 				contractor.setCountrySubdivision(contractorCountrySubdivision);
 			}
@@ -483,6 +483,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
 	}
 
 	public Country getCountry() {
