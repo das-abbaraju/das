@@ -94,13 +94,9 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 				addActionError("Multi-Year Scope must be set.");
 			}
 
-			if (criteria.getRequiredStatusComparison() != null
-					&& !criteria.getRequiredStatusComparison().equals(
-							"NOT EMPTY")
-					&& criteria.getRequiredStatus() != null
-					&& criteria.getAuditType() == null) {
-				addActionError("Audit Type must be set.");
-			}
+			//if (criteria.getRequiredStatusComparison() != null && !criteria.getRequiredStatusComparison().equals("NOT EMPTY") && criteria.getRequiredStatus() != null && criteria.getAuditType() == null) {
+			//	addActionError("Audit Type must be set.");
+			//}
 
 			if (criteria.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "
