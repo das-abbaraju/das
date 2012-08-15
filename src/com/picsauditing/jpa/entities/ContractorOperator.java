@@ -375,7 +375,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return null;
 	}
 
-	// TODO set Category
 	@ReportField(filterType = FilterType.Date)
 	public Date getLastStepToGreenDate() {
 		return lastStepToGreenDate;

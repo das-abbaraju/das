@@ -56,7 +56,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Id
 	@Column(nullable = false, length = 2)
-	// TODO set Category
 	@ReportField()
 	public String getIsoCode() {
 		return isoCode;
@@ -67,7 +66,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	}
 
 	@Transient
-	// TODO set Category
 	@ReportField()
 	public String getName() {
 		return name.toString();
@@ -136,7 +134,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	// TODO set Category
 	@ReportField()
 	public Currency getCurrency() {
 		return currency;
