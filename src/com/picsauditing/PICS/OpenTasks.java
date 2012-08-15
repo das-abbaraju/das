@@ -86,11 +86,13 @@ public class OpenTasks extends TranslationActionSupport {
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutRelationshipBetweenContractorAndPicsEmail();
 		}
+		
 		gatherTasksAboutUploadingPqfEmail(); // sets hasImportPQF,
 												// importPQFComplete
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutBillingAndPaymentsEmail();
 		}
+		
 		gatherTasksAboutAuditsEmail(); // uses hasImportPQF, importPQFComplete
 
 		if (!permissions.isOperatorCorporate()) {
@@ -126,55 +128,44 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutDeclaringTrades() {
-		// check if trades need review
-		if (contractor.getTrades().size() == 0) {
-			openTasks.add(getTextParameterized("ContractorWidget.message.NoTradesSelected", contractor.getId()));
-		} else if (contractor.isNeedsTradesUpdated()) {
-			openTasks.add(getTextParameterized("ContractorWidget.message.NeedsTradesUpdated", contractor.getId()));
-		}
+		gatherTasksAboutDeclaringTrades(getLocaleStatic());
 	}
 
 	private void gatherTasksAboutDeclaringTradesEmail() {
+		gatherTasksAboutDeclaringTrades(contractor.getLocale());
+	}
+
+	private void gatherTasksAboutDeclaringTrades(Locale locale) {
 		// check if trades need review
 		if (contractor.getTrades().size() == 0) {
-			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.NoTradesSelected",
+			openTasks.add(getTextParameterized(locale, "ContractorWidget.message.NoTradesSelected",
 					contractor.getId()));
 		} else if (contractor.isNeedsTradesUpdated()) {
-			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.NeedsTradesUpdated",
+			openTasks.add(getTextParameterized(locale, "ContractorWidget.message.NeedsTradesUpdated",
 					contractor.getId()));
 		}
 	}
-
+	
 	private void gatherTasksAboutRelationshipBetweenContractorAndPics() {
-		if (mustApproveUpdatedAgreement()) {
-			openTasks.add(getTextParameterized("ContractorWidget.message.UpdatedAgreement", contractor.getId()));
-		}
-		if (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin()) {
-			if (contractor.getUsers().size() == 1 && !contractor.getSoleProprietor()
-					&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
-				openTasks.add(getText("ContractorWidget.message.RequiresTwoUsers"));
-			}
-
-			if (contractor.getAccountLevel().isBidOnly()) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.BidOnlyUpdgrade",
-						contractor.getPaymentExpires(), contractor.getId()));
-			}
-		}
+		gatherTasksAboutRelationshipBetweenContractorAndPics(getLocaleStatic());
 	}
 
 	private void gatherTasksAboutRelationshipBetweenContractorAndPicsEmail() {
+		gatherTasksAboutRelationshipBetweenContractorAndPics(contractor.getLocale());
+	}
+	
+	private void gatherTasksAboutRelationshipBetweenContractorAndPics(Locale locale) {
 		if (mustApproveUpdatedAgreement()) {
-			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.UpdatedAgreement",
-					contractor.getId()));
+			openTasks.add(getTextParameterized(locale, "ContractorWidget.message.UpdatedAgreement", contractor.getId()));
 		}
 		if (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin()) {
 			if (contractor.getUsers().size() == 1 && !contractor.getSoleProprietor()
 					&& DateBean.getDateDifference(contractor.getCreationDate()) > -180) {
-				openTasks.add(getText(contractor.getLocale(), "ContractorWidget.message.RequiresTwoUsers"));
+				openTasks.add(getText(locale, "ContractorWidget.message.RequiresTwoUsers"));
 			}
 
 			if (contractor.getAccountLevel().isBidOnly()) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.BidOnlyUpdgrade",
+				openTasks.add(getTextParameterized(locale, "ContractorWidget.message.BidOnlyUpdgrade",
 						contractor.getPaymentExpires(), contractor.getId()));
 			}
 		}
@@ -188,26 +179,20 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutUploadingPqf() {
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (auditIsVisibleUnexpiredForImportPqf(audit)) {
-				// there were no braces for this next if. I am adding them to
-				// preserve behavior, but make it explicit
-				if (audit.hasCaoStatusBefore(AuditStatus.Submitted)) {
-					openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
-				}
-				hasImportPQF = true;
-				importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
-			}
-		}
+		gatherTasksAboutUploadingPqfEmail(getLocaleStatic());
 	}
 
 	private void gatherTasksAboutUploadingPqfEmail() {
+		gatherTasksAboutUploadingPqfEmail(contractor.getLocale());
+	}
+	
+	private void gatherTasksAboutUploadingPqfEmail(Locale locale) {
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (auditIsVisibleUnexpiredForImportPqf(audit)) {
 				// there were no braces for this next if. I am adding them to
 				// preserve behavior, but make it explicit
 				if (audit.hasCaoStatusBefore(AuditStatus.Submitted)) {
-					openTasks.add(getTextParameterized(contractor.getLocale(),
+					openTasks.add(getTextParameterized(locale,
 							"ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
 				}
 				hasImportPQF = true;
@@ -222,45 +207,26 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutBillingAndPayments() {
-		if (permissions.hasPermission(OpPerms.ContractorBilling) || user.getAccount().isAdmin()) {
-			String billingStatus = contractor.getBillingStatus();
-			if ("Upgrade".equals(billingStatus)
-					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
-				openTasks.add(getTextParameterized(
-						"ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),
-						contractor.getId()));
-			}
-
-			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
-				for (Invoice invoice : contractor.getInvoices()) {
-					if (invoice.getStatus().isUnpaid()) {
-						openTasks.add(getTextParameterized("ContractorWidget.message.OpenInvoiceReminder"
-								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
-								invoice.getBalance(), invoice.getDueDate(), invoice.getCurrency().getSymbol()));
-					}
-				}
-			}
-
-			if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.UpdatePaymentMethod"
-						+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), contractor.getId()));
-			}
-		}
+		gatherTasksAboutBillingAndPaymentsEmail(getLocaleStatic());
 	}
 
 	private void gatherTasksAboutBillingAndPaymentsEmail() {
+		gatherTasksAboutBillingAndPaymentsEmail(contractor.getLocale());
+	}
+	
+	private void gatherTasksAboutBillingAndPaymentsEmail(Locale locale) {
 		if (permissions.hasPermission(OpPerms.ContractorBilling) || user.getAccount().isAdmin()) {
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.GenerateInvoice"
+				openTasks.add(getTextParameterized(locale, "ContractorWidget.message.GenerateInvoice"
 						+ ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""), contractor.getId()));
 			}
 
 			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
 				for (Invoice invoice : contractor.getInvoices()) {
 					if (invoice.getStatus().isUnpaid()) {
-						openTasks.add(getTextParameterized(contractor.getLocale(),
+						openTasks.add(getTextParameterized(locale,
 								"ContractorWidget.message.OpenInvoiceReminder"
 										+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
 								invoice.getBalance(), invoice.getDueDate(), invoice.getCurrency().getSymbol()));
@@ -269,7 +235,7 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 
 			if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-				openTasks.add(getTextParameterized(contractor.getLocale(),
+				openTasks.add(getTextParameterized(locale,
 						"ContractorWidget.message.UpdatePaymentMethod"
 								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), contractor.getId()));
 			}
@@ -277,30 +243,14 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAudits() {
-		List<String> auditTypeAndForWithOpenTasks = new ArrayList<String>();
-
-		for (ContractorAudit conAudit : contractor.getAudits()) {
-
-			String auditTypeAndFor = conAudit.getAuditType().getId()
-					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "");
-			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
-
-			if (!isAuditTypeAndForRepeated) {
-				if (conAudit.isVisibleTo(permissions)) {
-					if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
-						if (isOpenTaskNeeded(conAudit, user, permissions)) {
-							boolean addedOpenTask = addAuditOpenTasks(conAudit);
-							if (addedOpenTask) {
-								auditTypeAndForWithOpenTasks.add(auditTypeAndFor);
-							}
-						}
-					}
-				}
-			}
-		}
+		gatherTasksAboutAuditsEmail(getLocaleStatic());
 	}
 
 	private void gatherTasksAboutAuditsEmail() {
+		gatherTasksAboutAuditsEmail(contractor.getLocale());
+	}
+	
+	private void gatherTasksAboutAuditsEmail(Locale locale) {
 		List<String> auditTypeAndForWithOpenTasks = new ArrayList<String>();
 
 		for (ContractorAudit conAudit : contractor.getAudits()) {
@@ -313,7 +263,7 @@ public class OpenTasks extends TranslationActionSupport {
 				if (conAudit.isVisibleTo(permissions)) {
 					if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 						if (isOpenTaskNeeded(conAudit, user, permissions)) {
-							boolean addedOpenTask = addAuditOpenTasksEmail(conAudit);
+							boolean addedOpenTask = addAuditOpenTasks(conAudit, locale);
 							if (addedOpenTask) {
 								auditTypeAndForWithOpenTasks.add(auditTypeAndFor);
 							}
@@ -324,35 +274,18 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
-	/**
-	 * @deprecated
-	 */
+	@Deprecated
 	private void gatherTasksAboutWebCamShipments() {
-		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
-					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-
-				String carrier = contractor.getWebcam().getCarrier();
-
-				if (carrier != null) {
-					if (carrier.equals("FedEx")) {
-						openTasks.add(getTextParameterized("ContractorWidget.message.WebcamHasShippedFedEx", contractor
-								.getWebcam().getTrackingNumber()));
-					} else if (carrier.equals("Purolator")) {
-						openTasks.add(getTextParameterized("ContractorWidget.message.WebcamHasShippedPurolator",
-								contractor.getWebcam().getTrackingNumber()));
-					} else {
-						openTasks.add(getText("ContractorWidget.message.WebcamHasShippedGeneric"));
-					}
-				}
-			}
-		}
+		gatherTasksAboutWebCamShipments(getLocaleStatic());
 	}
 
-	/**
-	 * @deprecated
-	 */
+	@Deprecated
 	private void gatherTasksAboutWebCamShipmentsEmail() {
+		gatherTasksAboutWebCamShipments(contractor.getLocale());
+	}
+	
+	@Deprecated
+	private void gatherTasksAboutWebCamShipments(Locale locale) {
 		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
 					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
@@ -361,15 +294,15 @@ public class OpenTasks extends TranslationActionSupport {
 
 				if (carrier != null) {
 					if (carrier.equals("FedEx")) {
-						openTasks.add(getTextParameterized(contractor.getLocale(),
+						openTasks.add(getTextParameterized(locale,
 								"ContractorWidget.message.WebcamHasShippedFedEx", contractor.getWebcam()
 										.getTrackingNumber()));
 					} else if (carrier.equals("Purolator")) {
-						openTasks.add(getTextParameterized(contractor.getLocale(),
+						openTasks.add(getTextParameterized(locale,
 								"ContractorWidget.message.WebcamHasShippedPurolator", contractor.getWebcam()
 										.getTrackingNumber()));
 					} else {
-						openTasks.add(getText(contractor.getLocale(),
+						openTasks.add(getText(locale,
 								"ContractorWidget.message.WebcamHasShippedGeneric"));
 					}
 				}
@@ -378,27 +311,14 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutOperatorQualification() {
-		// OQ: Add unmapped employees
-		if (contractor.isRequiresOQ()) {
-			if (contractor.getAssessmentResultStages().size() > 0) {
-				boolean unmapped = false;
-
-				for (AssessmentResultStage stage : contractor.getAssessmentResultStages()) {
-					if (stage.getPicsEmployee() == null) {
-						unmapped = true;
-						break;
-					}
-				}
-
-				if (unmapped)
-					if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
-					}
-			}
-		}
+		gatherTasksAboutOperatorQualificationEmail(getLocaleStatic());
 	}
 
 	private void gatherTasksAboutOperatorQualificationEmail() {
+		gatherTasksAboutOperatorQualificationEmail(contractor.getLocale());
+	}
+	
+	private void gatherTasksAboutOperatorQualificationEmail(Locale locale) {
 		// OQ: Add unmapped employees
 		if (contractor.isRequiresOQ()) {
 			if (contractor.getAssessmentResultStages().size() > 0) {
@@ -411,47 +331,35 @@ public class OpenTasks extends TranslationActionSupport {
 					}
 				}
 
-				if (unmapped)
+				if (unmapped) {
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-						openTasks.add(getText(contractor.getLocale(),
+						openTasks.add(getText(locale,
 								"ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
+				}
 			}
 		}
 	}
 
 	private void vopakSpecificOperatorQualificationTag() {
-		OperatorTag vopakCorporateOperatorQualification = operatorTagDao.find(VOPAK_OPERATOR_QUALIFICATION);
-
-		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification)
-					&& contractor.getEmployees().isEmpty()) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak",
-						contractor.getId()));
-				break;
-			}
-		}
+		vopakSpecificOperatorQualificationTagEmail(getLocaleStatic());
 	}
 
 	private void vopakSpecificOperatorQualificationTagEmail() {
+		vopakSpecificOperatorQualificationTagEmail(contractor.getLocale());
+	}
+	
+	private void vopakSpecificOperatorQualificationTagEmail(Locale locale) {
 		OperatorTag vopakCorporateOperatorQualification = operatorTagDao.find(VOPAK_OPERATOR_QUALIFICATION);
 
 		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
 			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification)
 					&& contractor.getEmployees().isEmpty()) {
-				openTasks.add(getTextParameterized(contractor.getLocale(),
+				openTasks.add(getTextParameterized(locale,
 						"ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak", contractor.getId()));
 				break;
 			}
 		}
-	}
-
-	private boolean addAuditOpenTasks(ContractorAudit conAudit) {
-		return addAuditOpenTasks(conAudit, getLocaleStatic());
-	}
-
-	private boolean addAuditOpenTasksEmail(ContractorAudit conAudit) {
-		return addAuditOpenTasks(conAudit, contractor.getLocale());
 	}
 	
 	private boolean addAuditOpenTasks(ContractorAudit conAudit, Locale locale) {
@@ -683,9 +591,12 @@ public class OpenTasks extends TranslationActionSupport {
 				if (audit.getAuditType().getId() == AuditType.COR
 						&& DateBean.isLessThanTheeYearAgo(audit.getExpiresDate()))
 					return true;
-			} catch (Exception ignore) {
+			} catch (Exception e) {
+				logger.error("Error occurred while checking if the date is less than three" +
+						" years ago for audit id = {}", conAudit.getId(), e);
 			}
 		}
+		
 		return false;
 	}
 }
