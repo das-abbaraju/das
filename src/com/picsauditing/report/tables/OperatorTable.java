@@ -19,12 +19,11 @@ public class OperatorTable extends AbstractTable {
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.OperatorAccount.class);
 
-		// TODO: set Category
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setWidth(80);
-		addField(prefix + "IsCorporate", alias + ".isCorporate", FilterType.Integer).setWidth(80);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.ClientSitePreferences).setWidth(80);
+		addField(prefix + "IsCorporate", alias + ".isCorporate", FilterType.Integer).setCategory(FieldCategory.ClientSitePreferences).setWidth(80);
 
 		Field operatorName;
-		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName);
+		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setCategory(FieldCategory.ClientSitePreferences);
 		operatorName.setUrl("FacilitiesEdit.action?operator={" + prefix + "ID}");
 		operatorName.setWidth(300);
 	}

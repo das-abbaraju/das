@@ -114,8 +114,7 @@ public class OperatorAccount extends Account {
 	 * Yes, No, Multiple
 	 */
 	@Column(nullable = false, length = 8)
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences)
 	public String getDoContractorsPay() {
 		return this.doContractorsPay;
 	}
@@ -126,8 +125,7 @@ public class OperatorAccount extends Account {
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences)
 	public YesNo getCanSeeInsurance() {
 		return this.canSeeInsurance;
 	}
@@ -149,8 +147,7 @@ public class OperatorAccount extends Account {
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Column(name = "isUserManualUploaded", nullable = false)
 	@Enumerated(EnumType.STRING)
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences)
 	public YesNo getIsUserManualUploaded() {
 		return this.isUserManualUploaded;
 	}
@@ -188,8 +185,7 @@ public class OperatorAccount extends Account {
 		this.oshaType = oshaType;
 	}
 
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Boolean)
 	public boolean isPrimaryCorporate() {
 		return primaryCorporate;
 	}
@@ -198,8 +194,7 @@ public class OperatorAccount extends Account {
 		this.primaryCorporate = primaryCorporate;
 	}
 
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Boolean)
 	public boolean isAutoApproveInsurance() {
 		return autoApproveInsurance;
 	}
@@ -233,8 +228,7 @@ public class OperatorAccount extends Account {
 		return null;
 	}
 
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences)
 	public String getRequiredTags() {
 		return requiredTags;
 	}
@@ -274,8 +268,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	// TODO set category
-	@ReportField
+	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Date)
 	public Date getDiscountExpiration() {
 		return discountExpiration;
 	}

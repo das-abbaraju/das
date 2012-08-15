@@ -20,7 +20,6 @@ public class CountryTable extends AbstractTable {
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.Country.class);
 		
-		// TODO set Category
 		Field countryName = addField(prefix + "Name", alias + ".isoCode", FilterType.String);
 		countryName.setTranslationPrefixAndSuffix("Country", "");
 		countryName.setWidth(100);

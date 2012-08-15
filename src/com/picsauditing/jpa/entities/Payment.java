@@ -30,7 +30,6 @@ public class Payment extends Transaction {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	// TODO set Category
 	@ReportField(filterType = FilterType.Enum)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
@@ -40,7 +39,6 @@ public class Payment extends Transaction {
 		this.paymentMethod = paymentMethod;
 	}
 
-	// TODO set Category
 	@ReportField(filterType = FilterType.String)
 	public String getCheckNumber() {
 		return checkNumber;
@@ -50,7 +48,6 @@ public class Payment extends Transaction {
 		this.checkNumber = checkNumber;
 	}
 
-	// TODO set Category
 	@ReportField(filterType = FilterType.String)
 	public String getTransactionID() {
 		return transactionID;
@@ -61,7 +58,6 @@ public class Payment extends Transaction {
 	}
 
 	@Column(name = "ccNumber")
-	// TODO set Category
 	@ReportField(filterType = FilterType.String)
 	public String getCcNumber() {
 		return ccNumber;
