@@ -21,7 +21,7 @@ public class I18nCacheTest {
 
 	I18nCache i18nCache;
 
-	private final Locale UNSUPPORTED_LOCALE = Locale.CANADA;
+	private final Locale FOREIGN_LOCALE = Locale.CANADA;
 
 	@Mock
 	private Database databaseForTesting;
@@ -94,7 +94,7 @@ public class I18nCacheTest {
 	public void testGetText_MissingKeyForeignLocaleShouldReturnKey() {
 		String key = "INVALID_KEY";
 
-		String value = i18nCache.getText(key, UNSUPPORTED_LOCALE);
+		String value = i18nCache.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
 	}
@@ -112,9 +112,9 @@ public class I18nCacheTest {
 	public void testGetText_MissingKeyForeignLocaleShouldNotInsertIntoDatabase() {
 		String key = "INVALID_KEY";
 
-		i18nCache.getText(key, UNSUPPORTED_LOCALE);
+		i18nCache.getText(key, FOREIGN_LOCALE);
 
-		assertFalse(i18nCache.hasKey(key, UNSUPPORTED_LOCALE));
+		assertFalse(i18nCache.hasKey(key, FOREIGN_LOCALE));
 	}
 
 	@Test
@@ -125,7 +125,7 @@ public class I18nCacheTest {
 		Whitebox.setInternalState(i18nCache, "cache", cache);
 
 		String englishValue = i18nCache.getText(key, Locale.ENGLISH);
-		String foriegnValue = i18nCache.getText(key, UNSUPPORTED_LOCALE);
+		String foriegnValue = i18nCache.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(englishValue, foriegnValue);
 	}
@@ -149,7 +149,7 @@ public class I18nCacheTest {
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
 		Whitebox.setInternalState(i18nCache, "cache", cache);
 
-		String value = i18nCache.getText(key, UNSUPPORTED_LOCALE);
+		String value = i18nCache.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
 	}
@@ -159,10 +159,10 @@ public class I18nCacheTest {
 		String key = "VALID_KEY";
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), "VALID_TRANSLATION");
-		cache.put(key, UNSUPPORTED_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
+		cache.put(key, FOREIGN_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
 		Whitebox.setInternalState(i18nCache, "cache", cache);
 
-		String foreignValue = i18nCache.getText(key, UNSUPPORTED_LOCALE);
+		String foreignValue = i18nCache.getText(key, FOREIGN_LOCALE);
 		String englishValue = i18nCache.getText(key, Locale.ENGLISH);
 
 		assertEquals(englishValue, foreignValue);
@@ -173,7 +173,7 @@ public class I18nCacheTest {
 		String key = "VALID_KEY";
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
-		cache.put(key, UNSUPPORTED_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
+		cache.put(key, FOREIGN_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
 		Whitebox.setInternalState(i18nCache, "cache", cache);
 
 		String value = i18nCache.getText(key, Locale.ENGLISH);
@@ -186,10 +186,10 @@ public class I18nCacheTest {
 		String key = "VALID_KEY";
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
-		cache.put(key, UNSUPPORTED_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
+		cache.put(key, FOREIGN_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
 		Whitebox.setInternalState(i18nCache, "cache", cache);
 
-		String value = i18nCache.getText(key, UNSUPPORTED_LOCALE);
+		String value = i18nCache.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
 	}
