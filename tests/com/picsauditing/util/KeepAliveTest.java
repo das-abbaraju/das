@@ -8,6 +8,7 @@ import java.lang.management.OperatingSystemMXBean;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,12 +28,14 @@ public class KeepAliveTest {
 	private HttpServletRequest request;
 	@Mock
 	private OperatingSystemMXBean operatingSystemMXBean;
+	@Mock
+	private HttpServletResponse response;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		keepAlive = new KeepAlive(request);
+		keepAlive = new KeepAlive(request, response, false);
 		PicsTestUtil.forceSetPrivateField(keepAlive, "operatingSystemMXBean", operatingSystemMXBean);
 		PicsTestUtil.forceSetPrivateField(keepAlive, "database", database);
 	}
