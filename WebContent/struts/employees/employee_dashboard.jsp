@@ -69,26 +69,17 @@
 											<s:iterator value="yearsDescending" var="audit_group_year">
 												<s:iterator value="distinctAuditTypes" var="audit_group_type">
 													<s:if test="auditsByYearAndType.get(#audit_group_year, #audit_group_type) != null">
-														<s:if test="#audit_group_type.id == 17">
-															<s:url action="EmployeeDashboard" method="competencyReview" var="employee_audit_group">
-																<s:param name="id">
-																	${contractor.id}
-																</s:param>
-																<s:param name="year">
-																	${audit_group_year}
-																</s:param>
-															</s:url>
-														</s:if>
-														<s:else>
-															<s:url action="EmployeeDashboard" method="trainingVerification" var="employee_audit_group">
-																<s:param name="id">
-																	${contractor.id}
-																</s:param>
-																<s:param name="year">
-																	${audit_group_year}
-																</s:param>
-															</s:url>
-														</s:else>
+														<s:url action="EmployeeDashboard" method="employeeGUARDAudits" var="employee_audit_group">
+															<s:param name="id">
+																${contractor.id}
+															</s:param>
+															<s:param name="auditTypeID">
+																${audit_group_type.id}
+															</s:param>
+															<s:param name="year">
+																${audit_group_year}
+															</s:param>
+														</s:url>
 														<tr>
 															<td>
 																<a href="${employee_audit_group}">
@@ -96,15 +87,13 @@
 																</a>
 															</td>
 															<td>
-																<s:property value="auditsByYearAndType.get(#audit_group_year, #audit_group_type)" />
+																${auditsByYearAndType.get(audit_group_year, audit_group_type)}
 															</td>
-															<td>
-															</td>
+															<td></td>
 															<td>
 																${audit_group_year}
 															</td>
-															<td>
-															</td>
+															<td></td>
 														</tr>
 													</s:if>
 												</s:iterator>

@@ -30,6 +30,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 	@Autowired
 	protected EmployeeDAO employeeDAO;
 
+	private int auditTypeID;
 	private int year;
 
 	private List<Employee> activeEmployees;
@@ -51,7 +52,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 	public String execute() throws Exception {
 		auditsByYearAndType = TreeBasedTable.create();
 		distinctAuditTypes = new TreeSet<AuditType>();
-		if (getEmployeeGuardAudits() !=null){
+		if (getEmployeeGuardAudits() != null) {
 			for (ContractorAudit contractorAudit : getEmployeeGuardAudits()) {
 				AuditType auditType = contractorAudit.getAuditType();
 
@@ -78,14 +79,20 @@ public class EmployeeDashboard extends ContractorDocuments {
 		return SUCCESS;
 	}
 
-	public String competencyReview() {
-		addAuditsBasedOnType(AuditType.INTEGRITYMANAGEMENT);
+	public String employeeGUARDAudits() {
+		if (auditTypeID > 0) {
+			filterDisplayedAuditTypesBy(auditTypeID);
+		}
+
 		return SUCCESS;
 	}
 
-	public String trainingVerification() {
-		addAuditsBasedOnType(AuditType.IMPLEMENTATIONAUDITPLUS);
-		return SUCCESS;
+	public int getAuditTypeID() {
+		return auditTypeID;
+	}
+
+	public void setAuditTypeID(int auditTypeID) {
+		this.auditTypeID = auditTypeID;
 	}
 
 	public int getYear() {
@@ -194,14 +201,14 @@ public class EmployeeDashboard extends ContractorDocuments {
 		}
 	}
 
-	private void addAuditsBasedOnType(int id) {
+	private void filterDisplayedAuditTypesBy(int auditTypeID) {
 		for (ContractorAudit contractorAudit : getEmployeeGuardAudits()) {
 			AuditType auditType = contractorAudit.getAuditType();
 
 			Calendar effectiveLabel = Calendar.getInstance();
 			effectiveLabel.setTime(contractorAudit.getEffectiveDateLabel());
 
-			if (id == auditType.getId()) {
+			if (auditTypeID == auditType.getId()) {
 				if (year == 0 || (year > 0 && effectiveLabel.get(Calendar.YEAR) == year)) {
 					displayedAudits.add(contractorAudit);
 				}

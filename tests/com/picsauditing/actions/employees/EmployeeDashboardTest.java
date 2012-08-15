@@ -47,21 +47,25 @@ public class EmployeeDashboardTest {
 	private ContractorAccount contractorAccount;
 	private EmployeeDashboard employeeDashboard;
 
-	@Mock private EntityManager entityManager;
-	@Mock private I18nCache i18nCache;
-	@Mock private Permissions permissions;
-	@Mock private Database databaseForTesting;
-	
+	@Mock
+	private EntityManager entityManager;
+	@Mock
+	private I18nCache i18nCache;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private Database databaseForTesting;
+
 	@AfterClass
 	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-		
+
 		employeeDashboard = new EmployeeDashboard();
 		setupContractor();
 
@@ -101,8 +105,9 @@ public class EmployeeDashboardTest {
 	@Test
 	public void testCompetencyReview_NoYearSet() throws Exception {
 		employeeDashboard.startup();
+		employeeDashboard.setAuditTypeID(AuditType.INTEGRITYMANAGEMENT);
 
-		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.competencyReview());
+		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.employeeGUARDAudits());
 
 		assertNotNull(employeeDashboard.getDisplayedAudits());
 		assertFalse(employeeDashboard.getDisplayedAudits().isEmpty());
@@ -112,8 +117,9 @@ public class EmployeeDashboardTest {
 	public void testCompetencyReview_YearSet() throws Exception {
 		employeeDashboard.startup();
 		employeeDashboard.setYear(2000);
+		employeeDashboard.setAuditTypeID(AuditType.INTEGRITYMANAGEMENT);
 
-		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.competencyReview());
+		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.employeeGUARDAudits());
 
 		assertNotNull(employeeDashboard.getDisplayedAudits());
 		assertTrue(employeeDashboard.getDisplayedAudits().isEmpty());
@@ -122,8 +128,9 @@ public class EmployeeDashboardTest {
 	@Test
 	public void testTrainingVerification_NoYearSet() throws Exception {
 		employeeDashboard.startup();
+		employeeDashboard.setAuditTypeID(AuditType.IMPLEMENTATIONAUDITPLUS);
 
-		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.trainingVerification());
+		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.employeeGUARDAudits());
 
 		assertNotNull(employeeDashboard.getDisplayedAudits());
 		assertFalse(employeeDashboard.getDisplayedAudits().isEmpty());
@@ -133,8 +140,9 @@ public class EmployeeDashboardTest {
 	public void testTrainingVerification_YearSet() throws Exception {
 		employeeDashboard.startup();
 		employeeDashboard.setYear(2000);
+		employeeDashboard.setAuditTypeID(AuditType.IMPLEMENTATIONAUDITPLUS);
 
-		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.trainingVerification());
+		assertEquals(PicsActionSupport.SUCCESS, employeeDashboard.employeeGUARDAudits());
 
 		assertNotNull(employeeDashboard.getDisplayedAudits());
 		assertTrue(employeeDashboard.getDisplayedAudits().isEmpty());
