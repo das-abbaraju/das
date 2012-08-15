@@ -4,31 +4,67 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.search.Database;
 
 public class KeepAlive {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(KeepAlive.class);
 
 	private float loadFactor = 3f;
 
 	private HttpServletRequest request;
+	private HttpServletResponse response;
 	private OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
 	private Database database = new Database();
+
+	private String output;
+	private boolean manualShutdown;
 
 	public static final String SYSTEM_OK = "SYSTEM OK";
 	public static final String SYSTEM_LOAD = "SYSTEM LOAD = %.2f";
 	public static final String DATABASE_UNACCESSIBLE = "DATABASE UNACCESSIBLE";
 
-	public KeepAlive(HttpServletRequest request) {
+	public static final String OUTPUT_JSONP = "JSONP";
+
+	public KeepAlive(HttpServletRequest request, HttpServletResponse response, boolean manualShutdown) {
 		this.request = request;
+		this.response = response;
+		this.manualShutdown = manualShutdown;
 	}
 
-	public String getKeepAliveStatus() {
+	public String getOutput() {
+		output = request.getParameter("output");
+		if (OUTPUT_JSONP.equals(output)) {
+			return getJsonOutput();
+		}
+
+		return getKeepAliveStatus();
+	}
+
+	@SuppressWarnings("unchecked")
+	private String getJsonOutput() {
+		// Assume it's JSONP for now. If we add more types we can modify
+		// this
+		//response.setContentType("application/jsonp");
+		// response.setContentType("application/json");
+		response.setContentType("application/javascript");
+
+		JSONObject json = new JSONObject();
+		json.put("status", getKeepAliveStatus());
+		String callback = request.getParameter("callback");
+		return callback + "(" + json.toString() + ")";
+	}
+
+	String getKeepAliveStatus() {
+		if (manualShutdown) {
+			return "SYSTEM NOT OK";
+		}
 		setLoadFactor();
 		double systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
 
