@@ -30,6 +30,12 @@ public class ManageReports extends PicsActionSupport {
 	public static final String MY_REPORTS_URL = "ManageReports!myReportsList.action";
 	public static final String FAVORITE_REPORTS_URL = "ManageReports!favoritesList.action";
 
+	public static final String ALPHA_SORT = "alpha";
+	public static final String DATE_ADDED_SORT = "dateAdded";
+	public static final String LAST_OPENED_SORT = "lastOpened";
+
+	public static final int MAX_REPORTS_IN_MENU = 10;
+
 	@Autowired
 	private ReportModel reportModel;
 	@Autowired
@@ -37,11 +43,13 @@ public class ManageReports extends PicsActionSupport {
 
 	private List<ReportUser> userReports;
 	private List<ReportUser> userReportsOverflow;
+
+	// URL parameters
 	private int reportId;
 	private String searchTerm;
+	private String sort;
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
-	private final int MAX_REPORTS_IN_MENU = 10;
 
 	public String execute() {
 		return myReportsList();
@@ -50,7 +58,7 @@ public class ManageReports extends PicsActionSupport {
 	public String favoritesList() {
 		try {
 			userReports = reportDao.findFavoriteUserReports(permissions.getUserId());
-			handleFavoritesOverflow();
+			splitFavoritesList();
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
 		}
@@ -65,7 +73,9 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			userReports = reportDao.findAllUserReports(permissions.getUserId());
+			userReports = reportModel.getUserReportsForMyReports(sort, permissions.getUserId());
+		} catch (IllegalArgumentException iae) {
+			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
 		}
@@ -80,8 +90,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String searchList() {
 		try {
-			List<BasicDynaBean> results = reportModel.getReportsForSearch(searchTerm, permissions.getUserId());
-			userReports = reportModel.populateUserReports(results);
+			userReports = reportModel.getUserReportsForSearch(searchTerm, permissions.getUserId());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
 		}
@@ -94,7 +103,6 @@ public class ManageReports extends PicsActionSupport {
 		return ALL_REPORTS;
 	}
 
-	// TODO make this an ajax call
 	public String removeUserReport() {
 		try {
 			reportDao.removeUserReport(permissions.getUserId(), reportId);
@@ -109,7 +117,6 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	// TODO make this an ajax call
 	public String deleteReport() {
 		try {
 			Report report = reportDao.findOneReport(reportId);
@@ -174,7 +181,7 @@ public class ManageReports extends PicsActionSupport {
 		return REDIRECT;
 	}
 
-	private void handleFavoritesOverflow() {
+	private void splitFavoritesList() {
 		if (userReports.size() <= MAX_REPORTS_IN_MENU)
 			return;
 
@@ -208,5 +215,29 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setSearchTerm(String searchTerm) {
 		this.searchTerm = searchTerm;
+	}
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public String getAlphaSort() {
+		return ALPHA_SORT;
+	}
+
+	public String getDateAddedSort() {
+		return DATE_ADDED_SORT;
+	}
+
+	public String getLastOpenedSort() {
+		return LAST_OPENED_SORT;
+	}
+
+	public String getMyReportsUrl() {
+		return MY_REPORTS_URL;
 	}
 }

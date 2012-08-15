@@ -203,6 +203,8 @@ public class ReportDynamic extends PicsActionSupport {
 			return JSON;
 		}
 
+		reportDao.updateLastOpened(permissions.getUserId(), report.getId());
+
 		// TODO remove definition from SqlBuilder
 		sqlBuilder.setDefinition(report.getDefinition());
 

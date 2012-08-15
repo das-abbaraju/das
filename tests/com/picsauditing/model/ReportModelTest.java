@@ -4,14 +4,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.ResultSetDynaClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -150,34 +148,34 @@ public class ReportModelTest {
 	}
 
 	@Test
-	public void testGetReportsForSearch_NullSearchTermCallsTopTenFavorites() {
-		List<BasicDynaBean> userReports = reportModel.getReportsForSearch(null, 0);
+	public void testGetUserReportsForSearch_NullSearchTermCallsTopTenFavorites() {
+		List<ReportUser> userReports = reportModel.getUserReportsForSearch(null, 0);
 
 		assertNotNull(userReports);
-		verify(reportDao).findTopTenFavoriteReports(anyInt());
+		verify(reportDao).findTenMostFavoritedReports(anyInt());
 	}
 
 	@Test
-	public void testGetReportsForSearch_BlankSearchTermCallsTopTenFavorites() {
-		List<BasicDynaBean> userReports = reportModel.getReportsForSearch("", 0);
+	public void testGetUserReportsForSearch_BlankSearchTermCallsTopTenFavorites() {
+		List<ReportUser> userReports = reportModel.getUserReportsForSearch("", 0);
 
 		assertNotNull(userReports);
-		verify(reportDao).findTopTenFavoriteReports(anyInt());
+		verify(reportDao).findTenMostFavoritedReports(anyInt());
 	}
 
 	@Test
-	public void testGetReportsForSearch_ValidSearchTermCallsFindReportsForSearchFilter() {
-		List<BasicDynaBean> userReports = reportModel.getReportsForSearch("SEARCH_TERM", 0);
+	public void testGetUserReportsForSearch_ValidSearchTermCallsFindReportsForSearchFilter() {
+		List<ReportUser> userReports = reportModel.getUserReportsForSearch("SEARCH_TERM", 0);
 
 		assertNotNull(userReports);
-		verify(reportDao).findReportsForSearchFilter(anyInt(), anyString());
+		verify(reportDao).findUserReportsForSearchFilter(anyInt(), anyString());
 	}
 
 	@Test
 	public void testPopulateUserReports_NoResultsReturnsEmptyList() {
 		List<BasicDynaBean> emptyResults = new ArrayList<BasicDynaBean>();
 
-		List<ReportUser> userReports = reportModel.populateUserReports(emptyResults);
+		List<ReportUser> userReports = ReportModel.populateUserReports(emptyResults);
 
 		assertNotNull(userReports);
 		assertEquals(0, userReports.size());
@@ -194,7 +192,7 @@ public class ReportModelTest {
 		when(dynaBean.get("numTimesFavorited")).thenReturn(NUM_TIMES_FAVORITED);
 		results.add(dynaBean);
 
-		List<ReportUser> userReports = reportModel.populateUserReports(results);
+		List<ReportUser> userReports = ReportModel.populateUserReports(results);
 		ReportUser userReport = userReports.get(0);
 		Report report = userReport.getReport();
 		User user = report.getCreatedBy();

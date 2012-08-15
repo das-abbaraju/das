@@ -15,9 +15,9 @@
 
 <div id="my_reports_filter">
     <div class="btn-group">
-        <button class="btn"><s:text name="ManageReports.myReports.alphabetical" /></button>
-        <button class="btn"><s:text name="ManageReports.myReports.dateAdded" /></button>
-        <button class="btn"><s:text name="ManageReports.myReports.lastOpened" /></button>
+        <a href="${myReportsUrl}?sort=${alphaSort}" class="btn"><s:text name="ManageReports.myReports.alphabetical" /></a>
+        <a href="${myReportsUrl}?sort=${dateAddedSort}" class="btn"><s:text name="ManageReports.myReports.dateAdded" /></a>
+        <a href="${myReportsUrl}?sort=${lastOpenedSort}" class="btn"><s:text name="ManageReports.myReports.lastOpened" /></a>
     </div>
 </div>
 
@@ -82,15 +82,6 @@
                             <a href="${remove_report_url}" class="delete"><s:text name="ManageReports.myReports.Remove" /></a>
                         </s:else>
                     </li>
-                    <s:if test="favorite">
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#"><s:text name="ManageReports.myReports.MoveUp" /></a>
-                        </li>
-                        <li>
-                            <a href="#"><s:text name="ManageReports.myReports.MoveDown" /></a>
-                        </li>
-                    </s:if>
                 </ul>
             </div>
 

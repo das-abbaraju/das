@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
@@ -148,21 +149,40 @@ public class ReportModel {
 		}
 	}
 
-	public List<BasicDynaBean> getReportsForSearch(String searchTerm, int userId) {
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+	public List<ReportUser> getUserReportsForSearch(String searchTerm, int userId) {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(searchTerm)) {
 			// By default, show the top ten most favorited reports sorted by number of favorites
-			results = reportDao.findTopTenFavoriteReports(userId);
+			userReports = reportDao.findTenMostFavoritedReports(userId);
 		} else {
 			// Otherwise, search on all public reports and all of the user's reports
-			results = reportDao.findReportsForSearchFilter(userId, searchTerm);
+			userReports = reportDao.findUserReportsForSearchFilter(userId, searchTerm);
 		}
 
-		return results;
+		return userReports;
 	}
 
-	public List<ReportUser> populateUserReports(List<BasicDynaBean> results) {
+
+	public List<ReportUser> getUserReportsForMyReports(String sort, int userId) throws IllegalArgumentException {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+
+		if (Strings.isEmpty(sort)) {
+			userReports = reportDao.findUserReports(userId);
+		} else if (sort.equals(ManageReports.ALPHA_SORT)) {
+			userReports = reportDao.findUserReportsByAlpha(userId);
+		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
+			userReports = reportDao.findUserReportsByDateAdded(userId);
+		} else if (sort.equals(ManageReports.LAST_OPENED_SORT)) {
+			userReports = reportDao.findUserReportsByLastUsed(userId);
+		} else {
+			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
+		}
+
+		return userReports;
+	}
+
+	public static List<ReportUser> populateUserReports(List<BasicDynaBean> results) {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		for (BasicDynaBean result : results) {

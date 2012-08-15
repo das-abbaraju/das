@@ -1,10 +1,14 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @SuppressWarnings("serial")
 @Entity
@@ -15,6 +19,8 @@ public class ReportUser extends BaseTable {
 	private Report report;
 	private boolean isEditable;
 	private boolean isFavorite;
+	private Date lastOpened;
+	private int favoriteSortIndex;
 
 	public ReportUser() {
 	}
@@ -66,5 +72,23 @@ public class ReportUser extends BaseTable {
 
 	public void toggleFavorite() {
 		isFavorite = !isFavorite;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getLastOpened() {
+		return lastOpened;
+	}
+
+	public void setLastOpened(Date lastOpened) {
+		this.lastOpened = lastOpened;
+	}
+
+	@Column(nullable = false)
+	public int getFavoriteSortIndex() {
+		return favoriteSortIndex;
+	}
+
+	public void setFavoriteSortIndex(int favoriteSortIndex) {
+		this.favoriteSortIndex = favoriteSortIndex;
 	}
 }

@@ -47,7 +47,7 @@ public class ReportDAOTest {
 
 	@Ignore
 	@Test
-	public void connectReportToUser () {
+	public void testConnectReportToUser() {
 		reportDao.connectReportToUser(report, user);
 
 		verify(reportDao).save(any(ReportUser.class));

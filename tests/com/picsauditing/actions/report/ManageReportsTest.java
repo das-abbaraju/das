@@ -53,7 +53,7 @@ public class ManageReportsTest {
 	public void testExecute_GoesToMyReportsByDefault() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findUserReports(USER_ID)).thenReturn(userReports);
 
 		String result = manageReports.execute();
 
@@ -84,7 +84,7 @@ public class ManageReportsTest {
 	public void testMyReportsList_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findUserReports(USER_ID)).thenReturn(userReports);
 
 		String result = manageReports.myReportsList();
 
@@ -93,7 +93,7 @@ public class ManageReportsTest {
 
 	@Test
 	public void testMyReportsList_DoesntLeaveUserReportsNull() {
-		when(reportDao.findAllUserReports(USER_ID)).thenReturn(null);
+		when(reportDao.findUserReports(USER_ID)).thenReturn(null);
 
 		manageReports.myReportsList();
 
@@ -104,7 +104,7 @@ public class ManageReportsTest {
 	public void testSearchList_ReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
-		when(reportDao.findAllUserReports(USER_ID)).thenReturn(userReports);
+		when(reportDao.findUserReports(USER_ID)).thenReturn(userReports);
 		when(reportDao.findPublicReports()).thenReturn(new ArrayList<Report>());
 
 		String result = manageReports.searchList();
@@ -114,7 +114,7 @@ public class ManageReportsTest {
 
 	@Test
 	public void testSearchList_DoesntLeaveUserReportsNull() {
-		when(reportDao.findAllUserReports(USER_ID)).thenReturn(null);
+		when(reportDao.findUserReports(USER_ID)).thenReturn(null);
 		when(reportDao.findPublicReports()).thenReturn(new ArrayList<Report>());
 
 		manageReports.searchList();

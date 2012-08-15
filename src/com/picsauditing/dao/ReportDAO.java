@@ -2,6 +2,9 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -42,8 +45,8 @@ public class ReportDAO extends PicsDAO {
 		return publicReports;
 	}
 
-	public List<BasicDynaBean> findTopTenFavoriteReports(int userId) {
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+	public List<ReportUser> findTenMostFavoritedReports(int userId) {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
@@ -51,18 +54,19 @@ public class ReportDAO extends PicsDAO {
 			sql.setLimit(10);
 
 			Database db = new Database();
-			results = db.select(sql.toString(), false);
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+			userReports = ReportModel.populateUserReports(results);
 		} catch (SQLException se) {
 			logger.warn("SQL Exception in findTopTenFavoriteReports()", se);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findTopTenFavoriteReports()");
 		}
 
-		return results;
+		return userReports;
 	}
 
-	public List<BasicDynaBean> findReportsForSearchFilter(int userId, String dirtyQuery) {
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
+	public List<ReportUser> findUserReportsForSearchFilter(int userId, String dirtyQuery) {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		// TODO escape properly
 		String query = Strings.escapeQuotes(dirtyQuery);
@@ -73,14 +77,15 @@ public class ReportDAO extends PicsDAO {
 			sql.addWhere("r.name LIKE \"%" + query + "%\" OR r.description LIKE \"%" + query + "%\"");
 
 			Database db = new Database();
-			results = db.select(sql.toString(), false);
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+			userReports = ReportModel.populateUserReports(results);
 		} catch (SQLException se) {
 			logger.warn("SQL Exception in findReportsForSearchFilter()", se);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findReportsForSearchfilter()");
 		}
 
-		return results;
+		return userReports;
 	}
 
 	private SelectSQL setupSqlForSearchFilterQuery(int userId) {
@@ -124,7 +129,16 @@ public class ReportDAO extends PicsDAO {
 
 	public List<ReportUser> findFavoriteUserReports(int userId) {
 		String query = "t.user.id = " + userId + " AND is_favorite = 1";
-		return findWhere(ReportUser.class, query);
+		List<ReportUser> userReports = findWhere(ReportUser.class, query);
+
+		Collections.sort(userReports, new Comparator<ReportUser>() {
+			@Override
+			public int compare(ReportUser ru1, ReportUser ru2) {
+				return ru1.getFavoriteSortIndex() - ru2.getFavoriteSortIndex();
+			}
+		});
+
+		return userReports;
 	}
 
 	public List<ReportUser> findEditableUserReports(int userId) {
@@ -132,8 +146,38 @@ public class ReportDAO extends PicsDAO {
 		return findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findAllUserReports(int userId) {
+	public List<ReportUser> findUserReports(int userId) {
 		String query = "t.user.id = " + userId;
+		return findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findUserReportsByAlpha(int userId) {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+
+		try {
+			userReports = findUserReports(userId);
+
+			// Sort by report name, ignoring case
+			Collections.sort(userReports, new Comparator<ReportUser>() {
+				@Override
+				public int compare(ReportUser ru1, ReportUser ru2) {
+					return ru1.getReport().getName().compareToIgnoreCase(ru2.getReport().getName());
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDAO.findAllUserReportsByAlpha()", e);
+		}
+
+		return userReports;
+	}
+
+	public List<ReportUser> findUserReportsByDateAdded(int userId) {
+		String query = "t.user.id = " + userId + " ORDER BY creationDate DESC";
+		return findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findUserReportsByLastUsed(int userId) {
+		String query = "t.user.id = " + userId + " ORDER BY lastOpened DESC";
 		return findWhere(ReportUser.class, query);
 	}
 
@@ -151,10 +195,10 @@ public class ReportDAO extends PicsDAO {
 	public void deleteReport(Report report) {
 		List<ReportUser> userReports = findWhere(ReportUser.class, "t.report.id = " + report.getId());
 		for (ReportUser userReport : userReports) {
-			remove(userReport);
+			basicDao.remove(userReport);
 		}
 
-		remove(report);
+		basicDao.remove(report);
 	}
 
 	public boolean isReportPublic(int reportId) {
@@ -196,6 +240,12 @@ public class ReportDAO extends PicsDAO {
 		basicDao.save(userReport);
 	}
 
+	public int getFavoriteCount(int userId) {
+		List<ReportUser> userReports = findFavoriteUserReports(userId);
+
+		return userReports.size();
+	}
+
 	public void grantEditPermission(Report report, User user) {
 		setUserEditPermissions(report, user, true);
 	}
@@ -207,7 +257,6 @@ public class ReportDAO extends PicsDAO {
 	private void setUserEditPermissions(Report report, User user, boolean value) throws NoResultException, NonUniqueResultException {
 		ReportUser userReport = findOneUserReport(user.getId(), report.getId());
 		userReport.setEditable(value);
-
 		basicDao.save(userReport);
 	}
 
@@ -217,25 +266,25 @@ public class ReportDAO extends PicsDAO {
 
 	public void removeUserReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		ReportUser userReport = findOneUserReport(userId, reportId);
-		remove(userReport);
+		basicDao.remove(userReport);
 	}
 
 	public void toggleReportUserFavorite(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		ReportUser reportUser = findOneUserReport(userId, reportId);
-		reportUser.toggleFavorite();
-		basicDao.save(reportUser);
+		ReportUser userReport = findOneUserReport(userId, reportId);
+		userReport.toggleFavorite();
+		basicDao.save(userReport);
 	}
 
 	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		ReportUser reportUser = findOneUserReport(userId, reportId);
-		reportUser.setFavorite(true);
-		basicDao.save(reportUser);
+		ReportUser userReport = findOneUserReport(userId, reportId);
+		userReport.setFavorite(true);
+		basicDao.save(userReport);
 	}
 
 	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		ReportUser reportUser = findOneUserReport(userId, reportId);
-		reportUser.setFavorite(false);
-		basicDao.save(reportUser);
+		ReportUser userReport = findOneUserReport(userId, reportId);
+		userReport.setFavorite(false);
+		basicDao.save(userReport);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -245,5 +294,11 @@ public class ReportDAO extends PicsDAO {
 		json.put("total", db.getAllRows());
 
 		return rows;
+	}
+
+	public void updateLastOpened(int userId, int reportId) {
+		ReportUser userReport = findOneUserReport(userId, reportId);
+		userReport.setLastOpened(new Date());
+		basicDao.save(userReport);
 	}
 }
