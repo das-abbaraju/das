@@ -135,9 +135,14 @@ public class ReportModel {
 		}
 	}
 
+	/**
+	 * Rudimentary validation of a report object. Currently, this only means
+	 * that the model type is set and that the report-spec is parsable as valid
+	 * JSON.
+	 */
 	public static void validate(Report report) throws ReportValidationException {
 		if (report == null)
-			throw new ReportValidationException("Tried to validate a null report");
+			throw new ReportValidationException("Report object is null. (Possible security concern.)");
 
 		if (report.getModelType() == null)
 			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);

@@ -109,9 +109,9 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.ReportRemoved"));
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
-			logger.warn(nre.toString());
+			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.error("Uncaught exception in removeUserReport(). ",e);
 		}
 
 		return redirectToPreviousView();
@@ -128,9 +128,9 @@ public class ManageReports extends PicsActionSupport {
 			}
 		} catch (NoResultException nre) {
 			addActionError(getText("ManageReports.error.NoReportToDelete"));
-			logger.warn(nre.toString());
+			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.error("Uncaught exception in deleteReport(). ",e);
 		}
 
 		return redirectToPreviousView();
@@ -141,9 +141,9 @@ public class ManageReports extends PicsActionSupport {
 			reportDao.toggleReportUserFavorite(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
-			logger.warn(nre.toString());
+			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.error("Uncaught exception in toggleFavorite(). ",e);
 		}
 
 		return redirectToPreviousView();
