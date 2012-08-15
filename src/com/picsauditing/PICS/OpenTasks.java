@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -446,6 +447,14 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private boolean addAuditOpenTasks(ContractorAudit conAudit) {
+		return addAuditOpenTasks(conAudit, getLocaleStatic());
+	}
+
+	private boolean addAuditOpenTasksEmail(ContractorAudit conAudit) {
+		return addAuditOpenTasks(conAudit, contractor.getLocale());
+	}
+	
+	private boolean addAuditOpenTasks(ContractorAudit conAudit, Locale locale) {
 		boolean addedOpenTask = false;
 		openReq = false;
 		String auditName = getText(conAudit.getAuditType().getI18nKey("name"));
@@ -456,11 +465,11 @@ public class OpenTasks extends TranslationActionSupport {
 			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-					openTasks.add(getTextParameterized("ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
+					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
 							auditName, showAuditFor, auditFor));
 					addedOpenTask = true;
 				} else {
-					openTasks.add(getTextParameterized("ContractorWidget.message.UploadAndSubmitPolicy",
+					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.UploadAndSubmitPolicy",
 							conAudit.getId(), auditName, showAuditFor, auditFor));
 					addedOpenTask = true;
 				}
@@ -468,7 +477,7 @@ public class OpenTasks extends TranslationActionSupport {
 		} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.ResubmitPolicy", conAudit.getId(),
+				openTasks.add(getTextParameterized(locale, "ContractorWidget.message.ResubmitPolicy", conAudit.getId(),
 						auditName, showAuditFor, auditFor));
 				addedOpenTask = true;
 			}
@@ -483,18 +492,18 @@ public class OpenTasks extends TranslationActionSupport {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard",
+						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard",
 								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
 					} else {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
+						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
 								showAuditFor, auditFor);
 					}
 
 					if (!openReq) {
-						text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
+						text += "<br/>" + getText(locale, "ContractorWidget.message.OpenRequirementsNote");
 						openReq = true;
 						if (conAudit.getAuditType().isDesktop()) {
-							text += "<br/>" + getText("ContractorWidget.message.ManualAuditNote");
+							text += "<br/>" + getText(locale, "ContractorWidget.message.ManualAuditNote");
 						}
 					}
 					openTasks.add(text);
@@ -505,32 +514,32 @@ public class OpenTasks extends TranslationActionSupport {
 						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 					String text = "";
 					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
-						text = getTextParameterized("ContractorWidget.message.ScheduleYourImplementationAudit",
+						text = getTextParameterized(locale, "ContractorWidget.message.ScheduleYourImplementationAudit",
 								conAudit.getId(), auditName, showAuditFor, auditFor);
 					} else {
 						Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 						Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 						if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-							text = getTextParameterized("ContractorWidget.message.UpcomingAuditConductedBy",
+							text = getTextParameterized(locale, "ContractorWidget.message.UpcomingAuditConductedBy",
 
 							conAudit.getId(), auditName, showAuditor, (conAudit.getAuditor() != null) ? conAudit
 									.getAuditor().getName() : "", showScheduledDate, conAudit.getScheduledDate());
 						} else if (conAudit.getAuditType().getId() == AuditType.COR) {
-							text = getTextParameterized("ContractorWidget.message.CompleteAndSubmitAudit",
+							text = getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",
 									conAudit.getId(), auditName, showAuditFor, auditFor);
 							if (!isPreviousValidCorAuditExists(conAudit)) {
 								text += "<br/>"
-										+ getTextParameterized("ContractorWidget.message.ReviewCORNote",
+										+ getTextParameterized(locale, "ContractorWidget.message.ReviewCORNote",
 												conAudit.getCreationDate());
 							}
 						} else {
-							text = getTextParameterized("ContractorWidget.message.PrepareForAnUpcomingAudit",
+							text = getTextParameterized(locale, "ContractorWidget.message.PrepareForAnUpcomingAudit",
 
 							conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
 									conAudit.getScheduledDate(), showAuditor,
 									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
 							if (conAudit.getAuditType().isImplementation()) {
-								text += "<br/>" + getText("ContractorWidget.message.ImplementationAuditNote");
+								text += "<br/>" + getText(locale, "ContractorWidget.message.ImplementationAuditNote");
 							}
 						}
 					}
@@ -544,21 +553,21 @@ public class OpenTasks extends TranslationActionSupport {
 					String text = "";
 
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard",
+						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard",
 								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
 					} else {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
+						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
 								showAuditFor, auditFor);
 					}
 					if (conAudit.getAuditType().getId() == AuditType.COR) {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
+						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
 								auditName, showAuditFor, auditFor);
 					}
 					if (!openReq) {
-						text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
+						text += "<br/>" + getText(locale, "ContractorWidget.message.OpenRequirementsNote");
 						openReq = true;
 						if (conAudit.getAuditType().isDesktop()) {
-							text += "<br/>" + getText("ContractorWidget.message.ManualAuditNote");
+							text += "<br/>" + getText(locale, "ContractorWidget.message.ManualAuditNote");
 						}
 					}
 					openTasks.add(text);
@@ -573,20 +582,20 @@ public class OpenTasks extends TranslationActionSupport {
 					// Show a message for filling out the rest of the PQF if the
 					// Import PQF is COMPLETE
 					if (importPQFComplete) {
-						openTasks.add(getTextParameterized("ContractorWidget.message.PQFOtherRegistry",
+						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.PQFOtherRegistry",
 								conAudit.getId()));
 						addedOpenTask = true;
 					}
 				} else if (conAudit.getAuditType().getId() == AuditType.COR
 						&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-					String text = getTextParameterized("ContractorWidget.message.ReviewCOR", conAudit.getId(),
+					String text = getTextParameterized(locale, "ContractorWidget.message.ReviewCOR", conAudit.getId(),
 							auditName, showAuditFor, auditFor);
 					text += "<br/>"
-							+ getTextParameterized("ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
+							+ getTextParameterized(locale, "ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
 					openTasks.add(text);
 					addedOpenTask = true;
 				} else {
-					openTasks.add(getTextParameterized("ContractorWidget.message.CompleteAndSubmitAudit",
+					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",
 							conAudit.getId(), auditName, showAuditFor, auditFor));
 					addedOpenTask = true;
 				}
@@ -596,205 +605,22 @@ public class OpenTasks extends TranslationActionSupport {
 			Integer conAuditID = conAudit.getId();
 			String text = "";
 			if (conAudit.getAuditType().getClassType().isEmployee()) {
-				text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard",
+				text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard",
 						contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
 			} else {
-				text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
+				text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
 						showAuditFor, auditFor);
 			}
+			
 			if (!openReq) {
-				text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
+				text += "<br/>" + getText(locale, "ContractorWidget.message.OpenRequirementsNote");
 				openReq = true;
 			}
+			
 			openTasks.add(text);
 			addedOpenTask = true;
 		}
-		return addedOpenTask;
-	}
-
-	private boolean addAuditOpenTasksEmail(ContractorAudit conAudit) {
-		boolean addedOpenTask = false;
-		openReq = false;
-		String auditName = getText(conAudit.getAuditType().getI18nKey("name"));
-		Object showAuditFor = (conAudit.getAuditFor() != null && !conAudit.getAuditFor().isEmpty()) ? 1 : 0;
-		String auditFor = conAudit.getAuditFor();
-
-		if (conAudit.getAuditType().getClassType().isPolicy()) {
-			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
-					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-					openTasks.add(getTextParameterized(contractor.getLocale(),
-							"ContractorWidget.message.FixPolicyIssues", conAudit.getId(), auditName));
-					addedOpenTask = true;
-				} else {
-					openTasks.add(getTextParameterized(contractor.getLocale(),
-							"ContractorWidget.message.UploadAndSubmitPolicy", conAudit.getId(), auditName));
-					addedOpenTask = true;
-				}
-			}
-		} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
-			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ResubmitPolicy",
-						conAudit.getId(), auditName, showAuditFor, auditFor));
-				addedOpenTask = true;
-			}
-		} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
-				&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit.getAuditType()
-						.getId() == AuditType.WA_STATE_VERIFICATION && conAudit.hasCaoStatusAfter(AuditStatus.Pending)))
-				&& (conAudit.getAuditType().getId() != AuditType.SHELL_COMPETENCY_REVIEW)) {
-			if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())
-						&& !conAudit.getAuditType().isCorIecWaState()) {
-					Integer conAuditID = conAudit.getId();
-					String text = "";
-					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(),
-								conAuditID, auditName, showAuditFor, auditFor);
-					} else {
-						text = getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.OpenRequirements", conAuditID, auditName, showAuditFor,
-								auditFor);
-					}
-
-					if (!openReq) {
-						text += "<br/>"
-								+ getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
-						openReq = true;
-						if (conAudit.getAuditType().isDesktop()) {
-							text += "<br/>"
-									+ getText(contractor.getLocale(), "ContractorWidget.message.ManualAuditNote");
-						}
-					}
-					openTasks.add(text);
-					addedOpenTask = true;
-				}
-			} else if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-					String text = "";
-					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
-						text = getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.ScheduleYourImplementationAudit", conAudit.getId(),
-								auditName, showAuditFor, auditFor);
-					} else {
-						Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
-						Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
-						if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-							text = getTextParameterized(contractor.getLocale(),
-									"ContractorWidget.message.UpcomingAuditConductedBy",
-
-									conAudit.getId(), auditName, showAuditor,
-									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "",
-									showScheduledDate, conAudit.getScheduledDate());
-						} else if (conAudit.getAuditType().getId() == AuditType.COR) {
-							text = getTextParameterized(contractor.getLocale(),
-									"ContractorWidget.message.CompleteAndSubmitAudit", conAudit.getId(), auditName,
-									showAuditFor, auditFor);
-							if (!isPreviousValidCorAuditExists(conAudit)) {
-								text += "<br/>"
-										+ getTextParameterized(contractor.getLocale(),
-												"ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
-							}
-						} else {
-							text = getTextParameterized(contractor.getLocale(),
-									"ContractorWidget.message.PrepareForAnUpcomingAudit",
-
-									conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
-									conAudit.getScheduledDate(), showAuditor,
-									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
-							if (conAudit.getAuditType().isImplementation()) {
-								text += "<br/>"
-										+ getText(contractor.getLocale(),
-												"ContractorWidget.message.ImplementationAuditNote");
-							}
-						}
-					}
-					openTasks.add(text);
-					addedOpenTask = true;
-				}
-			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-					Integer conAuditID = conAudit.getId();
-					String text = "";
-
-					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(),
-								conAuditID, auditName, showAuditFor, auditFor);
-					} else {
-						text = getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.OpenRequirements", conAuditID, auditName, showAuditFor,
-								auditFor);
-					}
-					if (conAudit.getAuditType().getId() == AuditType.COR) {
-						text = getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(), auditName,
-								showAuditFor, auditFor);
-					}
-					if (!openReq) {
-						text += "<br/>"
-								+ getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
-						openReq = true;
-						if (conAudit.getAuditType().isDesktop()) {
-							text += "<br/>"
-									+ getText(contractor.getLocale(), "ContractorWidget.message.ManualAuditNote");
-						}
-					}
-					openTasks.add(text);
-					addedOpenTask = true;
-				}
-			}
-		} else if (conAudit.getAuditType().isCanContractorEdit()
-				&& conAudit.getAuditType().getId() != AuditType.IMPORT_PQF) {
-			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
-					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				if (conAudit.getAuditType().isPqf() && hasImportPQF) {
-					// Show a message for filling out the rest of the PQF if the
-					// Import PQF is COMPLETE
-					if (importPQFComplete) {
-						openTasks.add(getTextParameterized(contractor.getLocale(),
-								"ContractorWidget.message.PQFOtherRegistry", conAudit.getId()));
-						addedOpenTask = true;
-					}
-				} else if (conAudit.getAuditType().getId() == AuditType.COR
-						&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-					String text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCOR",
-							conAudit.getId(), auditName, showAuditFor, auditFor);
-					text += "<br/>"
-							+ getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCORNote",
-									conAudit.getCreationDate());
-					openTasks.add(text);
-					addedOpenTask = true;
-				} else {
-					openTasks.add(getTextParameterized(contractor.getLocale(),
-							"ContractorWidget.message.CompleteAndSubmitAudit", conAudit.getId(), auditName,
-							showAuditFor, auditFor));
-					addedOpenTask = true;
-				}
-			}
-		} else if ((conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY || conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY_REVIEW)
-				&& conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
-			Integer conAuditID = conAudit.getId();
-			String text = "";
-			if (conAudit.getAuditType().getClassType().isEmployee()) {
-				text = getTextParameterized(contractor.getLocale(),
-						"ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(), conAuditID,
-						auditName, showAuditFor, auditFor);
-			} else {
-				text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirements",
-						conAuditID, auditName, showAuditFor, auditFor);
-			}
-			if (!openReq) {
-				text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
-				openReq = true;
-			}
-			openTasks.add(text);
-			addedOpenTask = true;
-		}
+		
 		return addedOpenTask;
 	}
 
