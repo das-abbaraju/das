@@ -229,6 +229,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setCountrySubdivision(contractorCountrySubdivision);
 			}
 
+			if (!contractor.getCountry().isHasCountrySubdivisions()){
+				contractor.setCountrySubdivision(null);
+			}
+
 			addNoteWhenStatusChange();
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
