@@ -35,7 +35,7 @@ public class OpenTasks extends TranslationActionSupport {
 	protected OperatorTagDAO operatorTagDao;
 
 	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
-	
+
 	private boolean hasImportPQF = false;
 	private boolean importPQFComplete = false;
 	private boolean openReq = false;
@@ -44,6 +44,7 @@ public class OpenTasks extends TranslationActionSupport {
 	private User user;
 	private Permissions permissions;
 	private final Logger logger = LoggerFactory.getLogger(OpenTasks.class);
+
 	/**
 	 * Gathers Open Tasks, restricting the list based on user permissions and
 	 * the viewed contractor account.
@@ -84,7 +85,8 @@ public class OpenTasks extends TranslationActionSupport {
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutRelationshipBetweenContractorAndPicsEmail();
 		}
-		gatherTasksAboutUploadingPqfEmail(); // sets hasImportPQF, importPQFComplete
+		gatherTasksAboutUploadingPqfEmail(); // sets hasImportPQF,
+												// importPQFComplete
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutBillingAndPaymentsEmail();
 		}
@@ -134,9 +136,11 @@ public class OpenTasks extends TranslationActionSupport {
 	private void gatherTasksAboutDeclaringTradesEmail() {
 		// check if trades need review
 		if (contractor.getTrades().size() == 0) {
-			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.NoTradesSelected", contractor.getId()));
+			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.NoTradesSelected",
+					contractor.getId()));
 		} else if (contractor.isNeedsTradesUpdated()) {
-			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.NeedsTradesUpdated", contractor.getId()));
+			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.NeedsTradesUpdated",
+					contractor.getId()));
 		}
 	}
 
@@ -159,7 +163,8 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void gatherTasksAboutRelationshipBetweenContractorAndPicsEmail() {
 		if (mustApproveUpdatedAgreement()) {
-			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.UpdatedAgreement", contractor.getId()));
+			openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.UpdatedAgreement",
+					contractor.getId()));
 		}
 		if (permissions.hasPermission(OpPerms.ContractorAdmin) || user.getAccount().isAdmin()) {
 			if (contractor.getUsers().size() == 1 && !contractor.getSoleProprietor()
@@ -201,7 +206,8 @@ public class OpenTasks extends TranslationActionSupport {
 				// there were no braces for this next if. I am adding them to
 				// preserve behavior, but make it explicit
 				if (audit.hasCaoStatusBefore(AuditStatus.Submitted)) {
-					openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
+					openTasks.add(getTextParameterized(contractor.getLocale(),
+							"ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
 				}
 				hasImportPQF = true;
 				importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
@@ -219,7 +225,8 @@ public class OpenTasks extends TranslationActionSupport {
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),
+				openTasks.add(getTextParameterized(
+						"ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),
 						contractor.getId()));
 			}
 
@@ -245,33 +252,36 @@ public class OpenTasks extends TranslationActionSupport {
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),
-						contractor.getId()));
+				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.GenerateInvoice"
+						+ ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""), contractor.getId()));
 			}
 
 			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
 				for (Invoice invoice : contractor.getInvoices()) {
 					if (invoice.getStatus().isUnpaid()) {
-						openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenInvoiceReminder"
-								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
+						openTasks.add(getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.OpenInvoiceReminder"
+										+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
 								invoice.getBalance(), invoice.getDueDate(), invoice.getCurrency().getSymbol()));
 					}
 				}
 			}
 
 			if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.UpdatePaymentMethod"
-						+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), contractor.getId()));
+				openTasks.add(getTextParameterized(contractor.getLocale(),
+						"ContractorWidget.message.UpdatePaymentMethod"
+								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), contractor.getId()));
 			}
 		}
 	}
 
 	private void gatherTasksAboutAudits() {
 		List<String> auditTypeAndForWithOpenTasks = new ArrayList<String>();
-		
+
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 
-			String auditTypeAndFor = conAudit.getAuditType().getId()+StringUtils.defaultIfEmpty(conAudit.getAuditFor(),"");
+			String auditTypeAndFor = conAudit.getAuditType().getId()
+					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "");
 			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
 
 			if (!isAuditTypeAndForRepeated) {
@@ -294,7 +304,8 @@ public class OpenTasks extends TranslationActionSupport {
 
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 
-			String auditTypeAndFor = conAudit.getAuditType().getId()+StringUtils.defaultIfEmpty(conAudit.getAuditFor(),"");
+			String auditTypeAndFor = conAudit.getAuditType().getId()
+					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "");
 			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
 
 			if (!isAuditTypeAndForRepeated) {
@@ -311,10 +322,11 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 	}
+
 	/**
 	 * @deprecated
 	 */
-	 private void gatherTasksAboutWebCamShipments() {
+	private void gatherTasksAboutWebCamShipments() {
 		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
 					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
@@ -335,30 +347,34 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 	}
-	 /**
-		 * @deprecated
-		 */
-		 private void gatherTasksAboutWebCamShipmentsEmail() {
-			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-				if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
-						&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
 
-					String carrier = contractor.getWebcam().getCarrier();
+	/**
+	 * @deprecated
+	 */
+	private void gatherTasksAboutWebCamShipmentsEmail() {
+		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
+			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
+					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
 
-					if (carrier != null) {
-						if (carrier.equals("FedEx")) {
-							openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.WebcamHasShippedFedEx", contractor
-									.getWebcam().getTrackingNumber()));
-						} else if (carrier.equals("Purolator")) {
-							openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.WebcamHasShippedPurolator",
-									contractor.getWebcam().getTrackingNumber()));
-						} else {
-							openTasks.add(getText(contractor.getLocale(), "ContractorWidget.message.WebcamHasShippedGeneric"));
-						}
+				String carrier = contractor.getWebcam().getCarrier();
+
+				if (carrier != null) {
+					if (carrier.equals("FedEx")) {
+						openTasks.add(getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.WebcamHasShippedFedEx", contractor.getWebcam()
+										.getTrackingNumber()));
+					} else if (carrier.equals("Purolator")) {
+						openTasks.add(getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.WebcamHasShippedPurolator", contractor.getWebcam()
+										.getTrackingNumber()));
+					} else {
+						openTasks.add(getText(contractor.getLocale(),
+								"ContractorWidget.message.WebcamHasShippedGeneric"));
 					}
 				}
 			}
 		}
+	}
 
 	private void gatherTasksAboutOperatorQualification() {
 		// OQ: Add unmapped employees
@@ -396,7 +412,8 @@ public class OpenTasks extends TranslationActionSupport {
 
 				if (unmapped)
 					if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-						openTasks.add(getText(contractor.getLocale(), "ContractorWidget.message.AssessmentResultsNeedMatching"));
+						openTasks.add(getText(contractor.getLocale(),
+								"ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
 			}
 		}
@@ -406,8 +423,10 @@ public class OpenTasks extends TranslationActionSupport {
 		OperatorTag vopakCorporateOperatorQualification = operatorTagDao.find(VOPAK_OPERATOR_QUALIFICATION);
 
 		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification) && contractor.getEmployees().isEmpty()) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak", contractor.getId()));
+			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification)
+					&& contractor.getEmployees().isEmpty()) {
+				openTasks.add(getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak",
+						contractor.getId()));
 				break;
 			}
 		}
@@ -417,8 +436,10 @@ public class OpenTasks extends TranslationActionSupport {
 		OperatorTag vopakCorporateOperatorQualification = operatorTagDao.find(VOPAK_OPERATOR_QUALIFICATION);
 
 		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
-			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification) && contractor.getEmployees().isEmpty()) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak", contractor.getId()));
+			if (contractorTag.getTag().equals(vopakCorporateOperatorQualification)
+					&& contractor.getEmployees().isEmpty()) {
+				openTasks.add(getTextParameterized(contractor.getLocale(),
+						"ContractorWidget.message.OpenRequirementsEmployeeGuard.Vopak", contractor.getId()));
 				break;
 			}
 		}
@@ -602,20 +623,20 @@ public class OpenTasks extends TranslationActionSupport {
 			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-					openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
-							auditName));
+					openTasks.add(getTextParameterized(contractor.getLocale(),
+							"ContractorWidget.message.FixPolicyIssues", conAudit.getId(), auditName));
 					addedOpenTask = true;
 				} else {
-					openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.UploadAndSubmitPolicy",
-							conAudit.getId(), auditName));
+					openTasks.add(getTextParameterized(contractor.getLocale(),
+							"ContractorWidget.message.UploadAndSubmitPolicy", conAudit.getId(), auditName));
 					addedOpenTask = true;
 				}
 			}
 		} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
 			if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
-				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ResubmitPolicy", conAudit.getId(),
-						auditName, showAuditFor, auditFor));
+				openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ResubmitPolicy",
+						conAudit.getId(), auditName, showAuditFor, auditFor));
 				addedOpenTask = true;
 			}
 		} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
@@ -629,18 +650,22 @@ public class OpenTasks extends TranslationActionSupport {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsEmployeeGuard",
-								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+						text = getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(),
+								conAuditID, auditName, showAuditFor, auditFor);
 					} else {
-						text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
-								showAuditFor, auditFor);
+						text = getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.OpenRequirements", conAuditID, auditName, showAuditFor,
+								auditFor);
 					}
 
 					if (!openReq) {
-						text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
+						text += "<br/>"
+								+ getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
 						openReq = true;
 						if (conAudit.getAuditType().isDesktop()) {
-							text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.ManualAuditNote");
+							text += "<br/>"
+									+ getText(contractor.getLocale(), "ContractorWidget.message.ManualAuditNote");
 						}
 					}
 					openTasks.add(text);
@@ -651,32 +676,39 @@ public class OpenTasks extends TranslationActionSupport {
 						|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 					String text = "";
 					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
-						text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ScheduleYourImplementationAudit",
-								conAudit.getId(), auditName, showAuditFor, auditFor);
+						text = getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.ScheduleYourImplementationAudit", conAudit.getId(),
+								auditName, showAuditFor, auditFor);
 					} else {
 						Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 						Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 						if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-							text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.UpcomingAuditConductedBy",
+							text = getTextParameterized(contractor.getLocale(),
+									"ContractorWidget.message.UpcomingAuditConductedBy",
 
-							conAudit.getId(), auditName, showAuditor, (conAudit.getAuditor() != null) ? conAudit
-									.getAuditor().getName() : "", showScheduledDate, conAudit.getScheduledDate());
+									conAudit.getId(), auditName, showAuditor,
+									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "",
+									showScheduledDate, conAudit.getScheduledDate());
 						} else if (conAudit.getAuditType().getId() == AuditType.COR) {
-							text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.CompleteAndSubmitAudit",
-									conAudit.getId(), auditName, showAuditFor, auditFor);
+							text = getTextParameterized(contractor.getLocale(),
+									"ContractorWidget.message.CompleteAndSubmitAudit", conAudit.getId(), auditName,
+									showAuditFor, auditFor);
 							if (!isPreviousValidCorAuditExists(conAudit)) {
 								text += "<br/>"
-										+ getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCORNote",
-												conAudit.getCreationDate());
+										+ getTextParameterized(contractor.getLocale(),
+												"ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
 							}
 						} else {
-							text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.PrepareForAnUpcomingAudit",
+							text = getTextParameterized(contractor.getLocale(),
+									"ContractorWidget.message.PrepareForAnUpcomingAudit",
 
-							conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
+									conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
 									conAudit.getScheduledDate(), showAuditor,
 									(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
 							if (conAudit.getAuditType().isImplementation()) {
-								text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.ImplementationAuditNote");
+								text += "<br/>"
+										+ getText(contractor.getLocale(),
+												"ContractorWidget.message.ImplementationAuditNote");
 							}
 						}
 					}
@@ -690,21 +722,26 @@ public class OpenTasks extends TranslationActionSupport {
 					String text = "";
 
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsEmployeeGuard",
-								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+						text = getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(),
+								conAuditID, auditName, showAuditFor, auditFor);
 					} else {
-						text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
-								showAuditFor, auditFor);
+						text = getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.OpenRequirements", conAuditID, auditName, showAuditFor,
+								auditFor);
 					}
 					if (conAudit.getAuditType().getId() == AuditType.COR) {
-						text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
-								auditName, showAuditFor, auditFor);
+						text = getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(), auditName,
+								showAuditFor, auditFor);
 					}
 					if (!openReq) {
-						text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
+						text += "<br/>"
+								+ getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
 						openReq = true;
 						if (conAudit.getAuditType().isDesktop()) {
-							text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.ManualAuditNote");
+							text += "<br/>"
+									+ getText(contractor.getLocale(), "ContractorWidget.message.ManualAuditNote");
 						}
 					}
 					openTasks.add(text);
@@ -719,21 +756,23 @@ public class OpenTasks extends TranslationActionSupport {
 					// Show a message for filling out the rest of the PQF if the
 					// Import PQF is COMPLETE
 					if (importPQFComplete) {
-						openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.PQFOtherRegistry",
-								conAudit.getId()));
+						openTasks.add(getTextParameterized(contractor.getLocale(),
+								"ContractorWidget.message.PQFOtherRegistry", conAudit.getId()));
 						addedOpenTask = true;
 					}
 				} else if (conAudit.getAuditType().getId() == AuditType.COR
 						&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-					String text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCOR", conAudit.getId(),
-							auditName, showAuditFor, auditFor);
+					String text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCOR",
+							conAudit.getId(), auditName, showAuditFor, auditFor);
 					text += "<br/>"
-							+ getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
+							+ getTextParameterized(contractor.getLocale(), "ContractorWidget.message.ReviewCORNote",
+									conAudit.getCreationDate());
 					openTasks.add(text);
 					addedOpenTask = true;
 				} else {
-					openTasks.add(getTextParameterized(contractor.getLocale(), "ContractorWidget.message.CompleteAndSubmitAudit",
-							conAudit.getId(), auditName, showAuditFor, auditFor));
+					openTasks.add(getTextParameterized(contractor.getLocale(),
+							"ContractorWidget.message.CompleteAndSubmitAudit", conAudit.getId(), auditName,
+							showAuditFor, auditFor));
 					addedOpenTask = true;
 				}
 			}
@@ -742,11 +781,12 @@ public class OpenTasks extends TranslationActionSupport {
 			Integer conAuditID = conAudit.getId();
 			String text = "";
 			if (conAudit.getAuditType().getClassType().isEmployee()) {
-				text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsEmployeeGuard",
-						contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+				text = getTextParameterized(contractor.getLocale(),
+						"ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(), conAuditID,
+						auditName, showAuditFor, auditFor);
 			} else {
-				text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
-						showAuditFor, auditFor);
+				text = getTextParameterized(contractor.getLocale(), "ContractorWidget.message.OpenRequirements",
+						conAuditID, auditName, showAuditFor, auditFor);
 			}
 			if (!openReq) {
 				text += "<br/>" + getText(contractor.getLocale(), "ContractorWidget.message.OpenRequirementsNote");
