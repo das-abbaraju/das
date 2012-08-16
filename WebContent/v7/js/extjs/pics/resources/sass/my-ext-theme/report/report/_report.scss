@@ -73,10 +73,14 @@ $report_data_cell_link_color: #226396;
 		border-right: 1px solid #dcdcdc;
 	}
 	
-	.x-grid-row-alt .x-grid-cell-special,
-	.x-grid-row-over .x-grid-cell-special,
+	.x-grid-row-alt .x-grid-cell-special
 	{
 		background: $grid-row-cell-alt-background;
+	}
+	
+	.x-grid-row-over .x-grid-cell-special
+	{
+		background: $grid-row-cell-over-background-color;
 	}
 	
 	.x-grid-row-selected .x-grid-cell,

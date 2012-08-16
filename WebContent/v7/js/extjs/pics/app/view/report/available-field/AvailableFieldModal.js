@@ -65,7 +65,7 @@ Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
     layout: 'fit',
     modal: true,
     resizable: false,
-    width: 500,
+    width: 600,
 
     initComponent: function () {
         // type is used to determine context of modal - will add fields to filter or column store

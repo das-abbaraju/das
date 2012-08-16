@@ -118,10 +118,14 @@ $available_field_modal_footer_background_color: #454545;
 		padding-left: 6px;
 	}
 	
-	.x-grid-row-alt .x-grid-cell-special,
-	.x-grid-row-over .x-grid-cell-special,
+	.x-grid-row-alt .x-grid-cell-special
 	{
 		background: $grid-row-cell-alt-background;
+	}
+	
+	.x-grid-row-over .x-grid-cell-special
+	{
+		background: $grid-row-cell-over-background-color;
 	}
 	
 	.x-grid-row-selected .x-grid-cell,
@@ -135,6 +139,13 @@ $available_field_modal_footer_background_color: #454545;
 		color: $available_field_list_row_text_color;
 		font-size: 14px;
 		padding: 5px;
+	}
+	
+	.help
+	{
+		color: #999;
+		font-size: 12px;
+		margin-left: 20px;
 	}
 	
 	.x-grid-group-hd .x-grid-cell-inner

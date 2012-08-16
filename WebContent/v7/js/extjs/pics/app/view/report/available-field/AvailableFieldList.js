@@ -6,13 +6,15 @@ Ext.define('PICS.view.report.available-field.AvailableFieldList', {
 
     border: 0,
     columns: [{
+    	xtype: 'templatecolumn',
         dataIndex: 'text',
         text: 'Column Name',
+        tpl: '{text} <span class="help">{help}</span>',
         flex: 1
     }],
     enableColumnHide: false,
     features: Ext.create('Ext.grid.feature.Grouping', {
-        groupHeaderTpl: 'Category: {name} <span class="number-of-items">({rows.length} item{[values.rows.length != 1 ? "s" : ""]})</span>'
+        groupHeaderTpl: '{name} <span class="number-of-items">({rows.length} item{[values.rows.length != 1 ? "s" : ""]})</span>'
     }),
     hideHeaders: true,
     id: 'available_field_list',
