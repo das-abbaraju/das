@@ -326,10 +326,10 @@ Ext.define('PICS.controller.report.Filter', {
 
             if (token === '(') {
                 parenCount += 1;
-                filter_formula += '{';
+                filter_formula += token;
             } else if (token === ')') {
                 parenCount -= 1;
-                filter_formula += '}';
+                filter_formula += token;
             } else if (token.toUpperCase() === 'AND') {
                 filter_formula += ' AND ';
             } else if (token.toUpperCase() === 'OR') {
