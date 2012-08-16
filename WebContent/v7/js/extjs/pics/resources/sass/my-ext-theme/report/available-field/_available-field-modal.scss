@@ -1,12 +1,45 @@
+// available field modal
+$available_field_modal_border_color: #333;
+
+// available field modal - header
+$available_field_modal_header_background_color: #454545;
+$available_field_modal_header_text_color: #fff;
+
+// available field modal - search
+$available_field_modal_search_background_color: #eaeaea;
+
+// available field modal - search icon
+$available_field_modal_search_icon_search_text_color: #ccc;
+
+// available field list - group
+$available_field_list_group_background_color: #454545;
+$available_field_list_group_border_color_bottom: #333;
+$available_field_list_group_border_color_top: #333;
+$available_field_list_group_text_color: #fff;
+
+// available field list - group num items
+$available_field_list_group_num_items_text_color: #999;
+
+// available field list - row
+$available_field_list_row_background_color: #fff;
+$available_field_list_row_border_color_right: #dcdcdc;
+$available_field_list_row_text_color: #333;
+
+// available field list - row selected
+$available_field_list_row_selected_background_color: #c3e0f9;
+
+// available field modal - footer
+$available_field_modal_footer_background_color: #454545;
+
 #available_field_modal
 {
-	border: 1px solid #333;
+	border: 1px solid $available_field_modal_border_color;
 	@include border-radius(0px);
 }
 
 #available_field_modal_header
 {
-	background: #454545;
+	background: $available_field_modal_header_background_color;
 	border: 0px;
 	@include border-radius(0px);
 	padding: 10px;
@@ -14,14 +47,14 @@
 
 #available_field_modal_header span
 {
-	color: #fff;
+	color: $available_field_modal_header_text_color;
 	font-size: 18px;
 	font-weight: bold;
 }
 
 #available_field_search
 {
-	background: #eaeaea;
+	background: $available_field_modal_search_background_color;
 }
 
 #available_field_search label
@@ -32,7 +65,7 @@
 
 #available_field_search .icon-search
 {
-	color: #ccc;
+	color: $available_field_modal_search_icon_search_text_color;
 	font-size: 16px;
 }
 
@@ -75,9 +108,9 @@
 {
 	.x-grid-row .x-grid-cell-special
 	{
-		background: #fff;
+		background: $available_field_list_row_background_color;
 		background-image: none !important;
-		border-right: 1px solid #dcdcdc;
+		border-right: 1px solid $available_field_list_row_border_color_right;
 	}
 	
 	.x-grid-cell-special .x-grid-cell-inner
@@ -94,33 +127,33 @@
 	.x-grid-row-selected .x-grid-cell,
 	.x-grid-row-selected .x-grid-rowwrap-div
 	{
-		background: #c3e0f9;
+		background: $available_field_list_row_selected_background_color;
 	}
 	
 	.x-grid-cell-inner
 	{
-		color: #333;
+		color: $available_field_list_row_text_color;
 		font-size: 14px;
 		padding: 5px;
 	}
 	
 	.x-grid-group-hd .x-grid-cell-inner
 	{
-		background: #454545;
+		background: $available_field_list_group_background_color;
 		border: 0px;
-		border-bottom: 1px solid #333;
-		border-top: 1px solid #333;
+		border-bottom: 1px solid $available_field_list_group_border_color_bottom;
+		border-top: 1px solid $available_field_list_group_border_color_top;
 		padding: 7px;
 	}
 	
 	.x-grid-group-title
 	{
-		color: #fff;
+		color: $available_field_list_group_text_color;
 	}
 	
 	.number-of-items
 	{
-		color: #999;
+		color: $available_field_list_group_num_items_text_color;
 		margin-left: 5px;
 	}
 }
@@ -128,5 +161,5 @@
 
 #available_field_modal_footer
 {
-	background: #454545;
+	background: $available_field_modal_footer_background_color;
 }
