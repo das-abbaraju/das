@@ -430,10 +430,10 @@ public class Cron extends PicsActionSupport {
 	private void sendEmailPendingAccounts() throws Exception {
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
 
-		String where = "a.country IN ('US','CA') AND a.lastContactedByAutomatedEmailDate != CURDATE() AND ";
+		String where = "a.country IN ('US','CA') AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
 		
 		if (!emailExclusionList.isEmpty())
-			where = "u.email NOT IN (" + exclude + ") AND a.lastContactedByAutomatedEmailDate != CURDATE() AND ";
+			where = "u.email NOT IN (" + exclude + ") AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
 		
 		String whereReminder = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 WEEK)";
