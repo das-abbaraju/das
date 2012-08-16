@@ -29,6 +29,7 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
@@ -127,10 +128,15 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			ReportModel.validate(report);
 
+//			System.out.println("\n" + "REPORT: " + report.getId() + "\n" + JSONUtilities.prettyPrint(report.getParameters()));
+
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
+
+//			System.out.println("\n" + sql.toString());
+
 			ReportUtil.localize(report, getLocale());
 
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
@@ -152,6 +158,8 @@ public class ReportDynamic extends PicsActionSupport {
 			writeJsonError(e);
 		}
 
+//		System.out.println("\n" + JSONUtilities.prettyPrint(json.toString()));
+		
 		return JSON;
 	}
 

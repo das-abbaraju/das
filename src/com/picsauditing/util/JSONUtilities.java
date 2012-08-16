@@ -43,4 +43,15 @@ public class JSONUtilities {
 		
 		return false;
 	}
+	
+	public static String prettyPrint(String string) {
+		string = string.replace("{", "\t{");
+		string = string.replace("}", "}\n");
+		string = string.replace("[", "\t[");
+		string = string.replace("]", "]\n");
+		string = string.replace(",\t{", ",\n{");
+		string = string.replace(",\t[", ",\n[");
+		
+		return string;
+	}
 }

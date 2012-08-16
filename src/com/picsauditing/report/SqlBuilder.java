@@ -23,6 +23,7 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
@@ -229,13 +230,14 @@ public class SqlBuilder {
 		if (definition.getFilters().isEmpty())
 			return;
 
-		Set<Filter> whereFilters = new HashSet<Filter>();
-		Set<Filter> havingFilters = new HashSet<Filter>();
+		List<Filter> whereFilters = new ArrayList<Filter>();
+		List<Filter> havingFilters = new ArrayList<Filter>();
 
 		for (Filter filter : definition.getFilters()) {
 			// TODO we might want to verify the filter is properly defined
 			// before including it
 			// if (filter.isFullyDefined()) { }
+			
 			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
 			if (isAggregate(column)) {
 				havingFilters.add(filter);
