@@ -45,6 +45,7 @@ Ext.application({
 
     controllers: [
         'report.AvailableFieldModal',
+        'report.ColumnFunctionModal',
         'report.Filter',
         'report.Report',
         'report.ReportData',

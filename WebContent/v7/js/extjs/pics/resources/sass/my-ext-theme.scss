@@ -36,6 +36,8 @@ $grid-header-over-background-gradient: null;
 $grid-header-color: #ffffff;
 $grid-row-cell-alt-background: #f1f1f2;
 $grid-row-cell-over-background-color: #f1f1f2;
+$loadmask-backgorund: #000;
+$loadmask-opacity: 0.65;
 
 // End ExtJS4 Overwrites
 
@@ -89,6 +91,7 @@ $include-default-uis: true !default;
  */
 
 @import 'my-ext-theme/report/available-field';
+@import 'my-ext-theme/report/column-function';
 @import 'my-ext-theme/report/header';
 @import 'my-ext-theme/report/filter';
 @import 'my-ext-theme/report/loading';

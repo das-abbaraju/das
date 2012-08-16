@@ -16,6 +16,10 @@ Ext.define('PICS.controller.report.ReportData', {
             'reportdata': {
                 reconfigure: this.onReportReconfigure
             },
+            
+            'reportdata headercontainer': {
+            	columnmove: this.onColumnMove
+            },
 
             'reportpagingtoolbar button[itemId=refresh]': {
                 click: this.onReportRefreshClick
@@ -52,28 +56,90 @@ Ext.define('PICS.controller.report.ReportData', {
         });
     },
 
+    // find index position of the grid column starting after the row numberer (row number)
+    findGridColumnIndexPosition: function (column) {
+        var grid_columns = Ext.ComponentQuery.query('reportdata gridcolumn'),
+            num_grid_columns = grid_columns.length,
+            index_position = -1;
+
+        // remove first grid column - row numberer
+        grid_columns = grid_columns.slice(1, num_grid_columns);
+
+        Ext.each(grid_columns, function (grid_column, index) {
+            if (column.id == grid_column.id) {
+                index_position = index;
+
+                return;
+            }
+        });
+
+        return index_position;
+    },
+
     onAddColumn: function (cmp, event, eOpts) {
         this.application.fireEvent('showavailablefieldmodal', 'column');
     },
 
     onColumnFunction: function (cmp, event, eOpts) {
-        var column_store = this.getReportReportsStore().first().columns(),
-            column_name = cmp.up('menu').activeHeader.dataIndex,
-            column = column_store.findRecord('name', column_name);
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column_store = report.columns(),
+            selected_grid_column = cmp.up('menu').activeHeader,
+            selected_grid_column_index,
+            selected_column;
 
-        var modal = Ext.create('PICS.view.report.function.FunctionModal', {
-            column: column
-        });
+        selected_grid_column_index = this.findGridColumnIndexPosition(selected_grid_column);
 
-        modal.show();
+        if (selected_grid_column_index == -1) {
+            throw 'Grid column not found';
+        }
+
+        selected_column = column_store.getAt(selected_grid_column_index);
+
+        this.application.fireEvent('showcolumnfunctionmodal', selected_column);
     },
+    
+    onColumnMove: function (cmp, column, fromIdx, toIdx, eOpts) {
+		var report_store = this.getReportReportsStore(),
+			report = report_store.first(),
+			column_store = report.columns(),
+			columns = [];
+		
+		// generate an array of columns from column store
+		column_store.each(function (column, index) {
+			columns[index] = column;
+		});
+		
+		// splice out the column store - column your moving
+		var spliced_column = columns.splice((fromIdx - 1), 1);
+		
+		// insert the column store - column to the position you moved it to 
+		columns.splice((toIdx - 1), 0, spliced_column);
+		
+		// remove all column store records
+		column_store.removeAll();
+		
+		// re-insert column store records in the new position
+		Ext.each(columns, function (column, index) {
+			column_store.add(column);
+		});
+	},
 
     onColumnRemove: function (cmp, event, eOpts) {
-        var column_store = this.getReportReportsStore().first().columns(),
-            column_name = cmp.up('menu').activeHeader.dataIndex,
-            column = column_store.findRecord('name', column_name);
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column_store = report.columns(),
+            selected_grid_column = cmp.up('menu').activeHeader,
+            selected_grid_column_index,
+            selected_column;
 
-        column_store.remove(column);
+        selected_grid_column_index = this.findGridColumnIndexPosition(selected_grid_column);
+
+        if (selected_grid_column_index == -1) {
+            throw 'Grid column not found';
+        }
+
+        column_store.removeAt(selected_grid_column_index);
 
         this.application.fireEvent('refreshreport');
     },
