@@ -34,12 +34,14 @@
 
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
-
-	UserDAO userDao = SpringUtils.getBean("UserDAO");
-	User user = userDao.find(permissions.getUserId());
 	boolean useDynamicReports = false;
-	if (user != null)
-		useDynamicReports = user.isUsingDynamicReports();
+	if (permissions != null){
+		UserDAO userDao = SpringUtils.getBean("UserDAO");
+		User user = userDao.find(permissions.getUserId());
+
+		if (user != null)
+			useDynamicReports = user.isUsingDynamicReports();
+	}
 
 	MenuComponent menu = new MenuComponent();
 	String homePageUrl = "";
