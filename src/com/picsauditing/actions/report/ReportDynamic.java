@@ -159,7 +159,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 //		System.out.println("\n" + JSONUtilities.prettyPrint(json.toString()));
-		
+
 		return JSON;
 	}
 
@@ -189,6 +189,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			json.put("success", true);
 		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
 			writeJsonErrorMessage(e);
 		}
 
@@ -206,25 +207,27 @@ public class ReportDynamic extends PicsActionSupport {
 	public String report() {
 		try {
 			ReportModel.validate(report);
+
+			reportDao.updateLastOpened(permissions.getUserId(), report.getId());
+
+			// TODO remove definition from SqlBuilder
+			sqlBuilder.setDefinition(report.getDefinition());
+
+			// TODO find out what else this method is doing besides building sql
+			sqlBuilder.buildSql(report, permissions, pageNumber);
+
+			ReportUtil.localize(report, getLocale());
+
+			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), getLocale());
+
+			json.put("report", report.toJSON(true));
+			json.put("success", true);
+		} catch (ReportValidationException rve) {
+			writeJsonErrorMessage(rve);
 		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
 			writeJsonErrorMessage(e);
-			return JSON;
 		}
-
-		reportDao.updateLastOpened(permissions.getUserId(), report.getId());
-
-		// TODO remove definition from SqlBuilder
-		sqlBuilder.setDefinition(report.getDefinition());
-
-		// TODO find out what else this method is doing besides building sql
-		sqlBuilder.buildSql(report, permissions, pageNumber);
-
-		ReportUtil.localize(report, getLocale());
-
-		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), getLocale());
-
-		json.put("report", report.toJSON(true));
-		json.put("success", true);
 
 		return JSON;
 	}
@@ -232,38 +235,41 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			ReportModel.validate(report);
+
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
+
+			json.put("modelType", report.getModelType().toString());
+			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, getLocale()));
+			json.put("success", true);
 		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
 			writeJsonErrorMessage(e);
-			return JSON;
 		}
-
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
-
-		json.put("modelType", report.getModelType().toString());
-		json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, getLocale()));
-		json.put("success", true);
 
 		return JSON;
 	}
 
 	public String share() {
 		int userId = -1;
+		String dirtyReportIdParameter = "";
 
 		try {
-			String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
+			dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
 			// Don't trust user input!
 			userId = Integer.parseInt(dirtyReportIdParameter);
-		} catch (Exception e) {
-			logger.error("Problem trying to share a report.", e);
-			json.put("success", false);
-			return JSON;
-		}
 
-		if (reportModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
-			reportDao.connectReportToUser(report, userId);
-			json.put("success", true);
-		} else {
-			json.put("success", false);
+			if (reportModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
+				reportDao.connectReportToUser(report, userId);
+				json.put("success", true);
+			} else {
+				json.put("success", false);
+			}
+		} catch (NumberFormatException nfe) {
+			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
+			writeJsonError(nfe);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
+			writeJsonError(e);
 		}
 
 		return JSON;
@@ -271,22 +277,25 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String shareEditable() {
 		int userId = -1;
+		String dirtyReportIdParameter = "";
 
 		try {
-			String dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
+			dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
 			// Don't trust user input!
 			userId = Integer.parseInt(dirtyReportIdParameter);
-		} catch (Exception e) {
-			logger.error("Problem trying to share a report.", e);
-			json.put("success", false);
-			return JSON;
-		}
 
-		if (reportModel.canUserEdit(permissions.getUserId(), report)) {
-			reportDao.connectReportToUserEditable(report, userId);
-			json.put("success", true);
-		} else {
-			json.put("success", false);
+			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
+				reportDao.connectReportToUserEditable(report, userId);
+				json.put("success", true);
+			} else {
+				json.put("success", false);
+			}
+		} catch (NumberFormatException nfe) {
+			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
+			writeJsonError(nfe);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
+			writeJsonError(e);
 		}
 
 		return JSON;
@@ -304,27 +313,27 @@ public class ReportDynamic extends PicsActionSupport {
 			return JSON;
 		}
 
-		if (ReportUtil.hasNoColumns(report)) {
-			logger.warn("User tried to download a report with no columns as an excel spreadsheet. Should we not allow that?");
-			return SUCCESS;
-		}
-
-		// TODO remove definition from SqlBuilder
-		sqlBuilder.setDefinition(report.getDefinition());
-
-		// TODO remove FOR_DOWNLOAD boolean flag
-		SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
-
-		ReportUtil.localize(report, getLocale());
-
 		try {
+			if (ReportUtil.hasNoColumns(report)) {
+				logger.warn("User tried to download a report with no columns as an excel spreadsheet. Should we not allow that?");
+				return SUCCESS;
+			}
+
+			// TODO remove definition from SqlBuilder
+			sqlBuilder.setDefinition(report.getDefinition());
+
+			// TODO remove FOR_DOWNLOAD boolean flag
+			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
+
+			ReportUtil.localize(report, getLocale());
+
 			exportToExcel(report, reportDao.runQuery(sql, json));
 		} catch (SQLException se) {
-			logger.warn(se.toString());
+			logger.error(se.toString());
 		} catch (IOException ioe) {
-			logger.warn(ioe.toString());
+			logger.error(ioe.toString());
 		} catch (Exception e) {
-			logger.error(e.toString());
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
 		}
 
 		return SUCCESS;
