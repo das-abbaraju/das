@@ -35,7 +35,7 @@
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
 	boolean useDynamicReports = false;
-	if (permissions != null){
+	if (permissions.getUserId() > 0){
 		UserDAO userDao = SpringUtils.getBean("UserDAO");
 		User user = userDao.find(permissions.getUserId());
 
