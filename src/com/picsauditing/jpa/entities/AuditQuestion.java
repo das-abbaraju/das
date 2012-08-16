@@ -18,7 +18,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -60,7 +59,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private boolean hasRequirement;
 	private boolean required;
 	private boolean groupedWithPrevious;
-	private boolean flaggable;
 	private boolean showComment;
 	private String requiredAnswer;
 	private String visibleAnswer;
@@ -116,7 +114,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.uniqueCode = a.uniqueCode;
 		this.title = a.title;
 		this.groupedWithPrevious = a.groupedWithPrevious;
-		this.flaggable = a.flaggable;
 		this.showComment = a.showComment;
 		this.riskLevel = a.riskLevel;
 		this.helpPage = a.helpPage;
@@ -279,15 +276,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	public void setGroupedWithPrevious(boolean groupedWithPrevious) {
 		this.groupedWithPrevious = groupedWithPrevious;
-	}
-
-	@Column(nullable = false)
-	public boolean isFlaggable() {
-		return flaggable;
-	}
-
-	public void setFlaggable(boolean flaggable) {
-		this.flaggable = flaggable;
 	}
 
 	@Enumerated(EnumType.ORDINAL)

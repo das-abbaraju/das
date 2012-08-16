@@ -459,10 +459,6 @@
                             <s:param name="include_locale_static">true</s:param>
                         </s:include>
             		</li>
-            		<li>
-                        <label>Flaggable:</label>
-            			<s:checkbox name="question.flaggable"/>
-            		</li>
                     
             		<s:if test="auditType.scoreable">
             			<li class="scoreWeight" <s:if test="!(question.questionType.equals('MultipleChoice'))">style="display: none;"</s:if>>
