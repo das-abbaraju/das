@@ -668,33 +668,6 @@ public class ContractorAccount extends Account implements JSONable {
 		return list;
 	}
 
-	@Transient
-	public ContractorTrade getTopTrade() {
-		ContractorTrade topTrade = null;
-		for (ContractorTrade trade:getTradesSorted()) {
-			if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
-				topTrade = trade;
-			}
-		}
-
-		return topTrade;
-	}
-
-	@Transient
-	public String getTopTradesNaicsCode() {
-		Trade trade = getTopTrade().getTrade();
-		while (trade != null) {
-			for (TradeAlternate alternate:trade.getAlternates()) {
-				if ("NAICS".equals(alternate.getCategory())) {
-					return alternate.getName();
-				}
-			}
-			trade = trade.getParent();
-		}
-
-		return "0";
-	}
-
 	@ReportField(category = FieldCategory.ContractorClassification)
 	public String getTradesSelf() {
 		return tradesSelf;

@@ -74,15 +74,16 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 					if (fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
 						answer += getText("ContractorFlag.OshaAnswer2");
 						if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
-							answer += (Utilities.getIndustryAverage(true, contractor) * Float.parseFloat(fco
+							answer += (Utilities.getIndustryAverage(true, contractor.getNaics()) * Float.parseFloat(fco
 									.criteriaValue())) / 100;
 						if (fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							answer += (Utilities.getIndustryAverage(false, contractor) * Float.parseFloat(fco
+							answer += (Utilities.getIndustryAverage(false, contractor.getNaics()) * Float.parseFloat(fco
 									.criteriaValue())) / 100;
 						}
 					}
 				}
-				answer += getText("ContractorFlag.OshaAnswer3") + f.getContractor().getTopTradesNaicsCode();
+				answer += getText("ContractorFlag.OshaAnswer3")
+						+ f.getContractor().getNaics().getCode();
 			}
 		} else if (fc.isInsurance()) {
 			int operatorIdOfInheritedFlagCriteria = contractorOperator.getOperatorAccount().getInheritFlagCriteria()
