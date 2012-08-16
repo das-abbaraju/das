@@ -1,0 +1,5 @@
+.x-css-shadow
+{
+	// @include border-radius(0px !important);
+	@include box-shadow(#333 0px 0px 3px !important);
+}
