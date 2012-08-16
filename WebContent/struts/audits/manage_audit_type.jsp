@@ -308,6 +308,10 @@
                                     If greater than 0 and class type is not PQF, then this number is added to today's date.
                                 </li>
                             </ul>
+                            <p>
+                               	Note: Changing this field will NOT update existing audits.  Please contact the
+                               	Software Development Team for a data conversion.
+                            </p>
                         </pics:fieldhelp>
                     </li>
                     <li>
