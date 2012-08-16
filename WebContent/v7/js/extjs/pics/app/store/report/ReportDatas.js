@@ -5,24 +5,23 @@
  */
 Ext.define('PICS.store.report.ReportDatas', {
     extend : 'PICS.store.report.base.Store',
+    
+    requires: [
+        'Ext.window.MessageBox'
+    ],
 
     // there is no preset Model - we must place empty fields [] as a default
     // we dynamically create / attach Model which has the actual fields
     fields: [],
-    listeners: {
-        load: function (store, records, successful, eOpts) {
-            if (!successful) {
-                // if it executes this then the reconfigured failed
-                // i am not sure if there is a callback in the reconfigure process
-                // to catch unsuccessful loads via an operaton.error
-
-                // Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
-                throw '';
-            }
-        }
-    },
     pageSize: 50,
     proxy: {
+        listeners: {
+            exception: function (proxy, response, operation, eOpts) {
+                if (operation.success == false) {
+                	Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                }
+            }
+        },
         reader: {
             messageProperty: 'message',
             root: 'data',
@@ -34,7 +33,7 @@ Ext.define('PICS.store.report.ReportDatas', {
 
     reload: function () {
         var store = Ext.StoreManager.get('report.Reports'),
-        report = store.first();
+            report = store.first();
 
         // initialize store page size
         report.set('rowsPerPage', this.pageSize);
@@ -54,8 +53,8 @@ Ext.define('PICS.store.report.ReportDatas', {
      * @param report
      */
     configureProxyUrl: function (report) {
-        if (!(report && report.$className == 'PICS.model.report.Report')) {
-            throw '';
+        if (!report || report.modelName != 'PICS.model.report.Report') {
+            throw 'Invalid report record';
         }
 
         this.proxy.url = 'ReportDynamic!data.action?' + report.toQueryString();
@@ -67,8 +66,8 @@ Ext.define('PICS.store.report.ReportDatas', {
         }
 
         function generateReportDataModelFieldsFromColumnStore() {
-            var column_store = report.columns();
-            var model_fields = [];
+            var column_store = report.columns(),
+                model_fields = [];
 
             // generate model fields
             column_store.each(function (record) {
@@ -102,8 +101,8 @@ Ext.define('PICS.store.report.ReportDatas', {
             throw 'Invalid report record';
         }
 
-        var report_data = Ext.ComponentQuery.query('reportdata')[0];
-        var column_store = report.columns();
+        var report_data = Ext.ComponentQuery.query('reportdata')[0],
+            column_store = report.columns();
 
         var report_data_columns = [{
             xtype: 'rownumberer',
