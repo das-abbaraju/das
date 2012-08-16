@@ -297,7 +297,15 @@ public class ReportDAO extends PicsDAO {
 	}
 
 	public void updateLastOpened(int userId, int reportId) {
-		ReportUser userReport = findOneUserReport(userId, reportId);
+		ReportUser userReport;
+
+		try {
+			userReport = findOneUserReport(userId, reportId);
+		} catch (NoResultException nre) {
+			// If the user is viewing a new public report, can't update this yet
+			return;
+		}
+
 		userReport.setLastOpened(new Date());
 		basicDao.save(userReport);
 	}
