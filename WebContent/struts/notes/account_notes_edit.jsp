@@ -37,7 +37,7 @@
 			<fieldset class="form">
 				<h2 class="formLegend"><s:text name="NoteEditor.header" /></h2>
 				
-				<ol>
+				<ol>asd
 					<li>
 						<label>
 							<s:text name="NoteEditor.Note" />:
@@ -120,7 +120,10 @@
 					</pics:permission>
 				</s:if>
 				
-				<s:submit method="close" value="%{getText('button.Close')}" cssClass="picsbutton" onclick="closePage();" />
+                <button name="button" class="picsbutton" type="button" value="cancel" onclick="closePage()">
+                    <s:text name="button.Close" />
+                </button>
+
 			</fieldset>
 		</s:form>
 		
