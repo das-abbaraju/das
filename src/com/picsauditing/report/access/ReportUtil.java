@@ -133,15 +133,15 @@ public final class ReportUtil {
 				return;
 
 			String[] values = filterValue.split(",");
-			String[] translationValueNameArray = new String[values.length];
+			String[] translationValueArray = new String[values.length];
 
 			for (int i = 0; i < values.length; i++) {
 				String translationKey = filter.getField().getI18nKey(values[i]);
-				translationValueNameArray[i] = getText(translationKey, locale);
+				translationValueArray[i] = getText(translationKey, locale);
 			}
 
-			String translatedValueNames = StringUtils.join(translationValueNameArray, ",");
-			filter.setValueNames(translatedValueNames);
+			String translatedValue = StringUtils.join(translationValueArray, ",");
+			filter.setValue(translatedValue);
 		}
 	}
 
