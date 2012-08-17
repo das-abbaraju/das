@@ -59,7 +59,8 @@ public enum FlagColor implements Translatable {
 	public String getSmallIcon(String columnName) {
 		I18nCache cache = I18nCache.getInstance();
 		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
-		if (columnName!=null)
+
+		if (columnName != null && columnName.length() > 0)
 			title = columnName+": "+title;
 		if (this == FlagColor.Clear)
 			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());

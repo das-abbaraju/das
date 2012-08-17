@@ -36,9 +36,9 @@ function includeDetail(x, y) {
 }
 
 var flags = {
-		"Red": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Red')" escape="false"/>',
-		"Green": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Green')" escape="false"/>',
-		"Amber": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Amber')" escape="false"/>'
+		"Red": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Red', '')" escape="false"/>',
+		"Green": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Green', '')" escape="false"/>',
+		"Amber": '<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon('Amber', '')" escape="false"/>'
 }
 
 function resolveFlags(detail, baseline, title, gcId, id, opId) {
