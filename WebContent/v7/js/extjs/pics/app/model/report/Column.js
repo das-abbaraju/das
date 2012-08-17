@@ -43,6 +43,7 @@ Ext.define('PICS.model.report.Column', {
             menuDisabled: true,
             sortable: false,
             text: field.get('text'),
+            tooltip: field.get('help'),
             width: field.get('width') || 150
         };
 
