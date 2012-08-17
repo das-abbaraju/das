@@ -14,13 +14,14 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.Database;
 
 public class ReportUtilTest {
 	@Mock private Database databaseForTesting;
-	
+
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
@@ -31,7 +32,7 @@ public class ReportUtilTest {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 	}
-	
+
 	@Test
 	public void testGetColumnFromFieldName_NullFieldName() {
 		String fieldName = null;
@@ -69,7 +70,21 @@ public class ReportUtilTest {
 	public void testTranslateLabel_FieldIsNull() {
 		Field field = null;
 		String translatedText = ReportUtil.translateLabel(field, Locale.ENGLISH);
-		
+
 		assertNull(translatedText);
+	}
+
+	@Test public void testSwapSortOrder() {
+		int valOne = 1;
+		int valTwo = 2;
+		ReportUser userReportOne = new ReportUser();
+		ReportUser userReportTwo = new ReportUser();
+		userReportOne.setFavoriteSortIndex(valOne);
+		userReportTwo.setFavoriteSortIndex(valTwo);
+
+		ReportUtil.swapSortOrder(userReportOne, userReportTwo);
+
+		assertEquals(valOne, userReportTwo.getFavoriteSortIndex());
+		assertEquals(valTwo, userReportOne.getFavoriteSortIndex());
 	}
 }

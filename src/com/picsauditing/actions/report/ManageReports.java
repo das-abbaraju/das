@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +21,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
-
-	private static final String FAVORITE_REPORTS = "favorites";
-	private static final String MY_REPORTS = "myReports";
-	private static final String ALL_REPORTS = "search";
 
 	public static final String MY_REPORTS_URL = "ManageReports!myReportsList.action";
 	public static final String FAVORITE_REPORTS_URL = "ManageReports!favoritesList.action";
@@ -58,17 +53,21 @@ public class ManageReports extends PicsActionSupport {
 	public String favoritesList() {
 		try {
 			userReports = reportDao.findFavoriteUserReports(permissions.getUserId());
-			splitFavoritesList();
+
+			if (CollectionUtils.isEmpty(userReports)) {
+				addActionMessage(getText("ManageReports.message.NoFavorites"));
+				userReports = new ArrayList<ReportUser>();
+			}
+
+			if (userReports.size() > MAX_REPORTS_IN_MENU) {
+				userReportsOverflow = userReports.subList(MAX_REPORTS_IN_MENU, userReports.size());
+				userReports = userReports.subList(0, MAX_REPORTS_IN_MENU);
+			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
 		}
 
-		if (CollectionUtils.isEmpty(userReports)) {
-			addActionMessage(getText("ManageReports.message.NoFavorites"));
-			userReports = new ArrayList<ReportUser>();
-		}
-
-		return FAVORITE_REPORTS;
+		return "favorites";
 	}
 
 	public String myReportsList() {
@@ -85,7 +84,7 @@ public class ManageReports extends PicsActionSupport {
 			userReports = new ArrayList<ReportUser>();
 		}
 
-		return MY_REPORTS;
+		return "myReports";
 	}
 
 	public String searchList() {
@@ -100,7 +99,7 @@ public class ManageReports extends PicsActionSupport {
 			userReports = new ArrayList<ReportUser>();
 		}
 
-		return ALL_REPORTS;
+		return "search";
 	}
 
 	public String removeUserReport() {
@@ -111,7 +110,7 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in removeUserReport(). ",e);
+			logger.error("Uncaught exception in removeUserReport(). ", e);
 		}
 
 		return redirectToPreviousView();
@@ -130,7 +129,7 @@ public class ManageReports extends PicsActionSupport {
 			addActionError(getText("ManageReports.error.NoReportToDelete"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in deleteReport(). ",e);
+			logger.error("Uncaught exception in deleteReport(). ", e);
 		}
 
 		return redirectToPreviousView();
@@ -143,7 +142,7 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.favorite(). ",e);
+			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
 		}
 
 		return redirectToPreviousView();
@@ -156,10 +155,48 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.favorite(). ",e);
+			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
 		}
 
 		return redirectToPreviousView();
+	}
+
+	public String moveUp() {
+		try {
+			moveUserReport(-1);
+		} catch (NoResultException nre) {
+			// Don't do anything
+			logger.warn("No result found in ManageReports.moveUp()", nre);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.moveUp(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String moveDown() {
+		try {
+			moveUserReport(1);
+		} catch (NoResultException nre) {
+			// Don't do anything
+			logger.warn("No result found in ManageReports.moveDown()", nre);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ManageReports.moveDown(). ", e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	private void moveUserReport(int offset) throws Exception {
+		int userId = permissions.getUserId();
+		ReportUser userReport = reportDao.findOneUserReport(userId, reportId);
+		int displacedIndex = userReport.getFavoriteSortIndex() + offset;
+		ReportUser displacedUserReport = reportDao.findOneUserReportByFavoriteSortIndex(userId, displacedIndex);
+
+		ReportUtil.swapSortOrder(userReport, displacedUserReport);
+
+		reportDao.save(userReport);
+		reportDao.save(displacedUserReport);
 	}
 
 	public String columnsToTranslate() {
@@ -192,14 +229,6 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return REDIRECT;
-	}
-
-	private void splitFavoritesList() {
-		if (userReports.size() <= MAX_REPORTS_IN_MENU)
-			return;
-
-		userReportsOverflow = userReports.subList(MAX_REPORTS_IN_MENU, userReports.size());
-		userReports = userReports.subList(0, MAX_REPORTS_IN_MENU);
 	}
 
 	public List<ReportUser> getUserReports() {

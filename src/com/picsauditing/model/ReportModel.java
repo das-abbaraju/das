@@ -175,11 +175,11 @@ public class ReportModel {
 		if (Strings.isEmpty(sort)) {
 			userReports = reportDao.findUserReports(userId);
 		} else if (sort.equals(ManageReports.ALPHA_SORT)) {
-			userReports = reportDao.findUserReportsByAlpha(userId);
+			userReports = reportDao.findUserReportsSortByAlpha(userId);
 		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
-			userReports = reportDao.findUserReportsByDateAdded(userId);
+			userReports = reportDao.findUserReportsSortByDateAdded(userId);
 		} else if (sort.equals(ManageReports.LAST_OPENED_SORT)) {
-			userReports = reportDao.findUserReportsByLastUsed(userId);
+			userReports = reportDao.findUserReportsSortByLastUsed(userId);
 		} else {
 			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
 		}

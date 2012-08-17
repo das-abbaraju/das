@@ -116,15 +116,12 @@ public class ReportDAO extends PicsDAO {
 
 	public ReportUser findOneUserReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
-		List<ReportUser> result = findWhere(ReportUser.class, query);
+		return findOne(ReportUser.class, query);
+	}
 
-		if (CollectionUtils.isEmpty(result))
-			throw new NoResultException("No result found for userId = " + userId + " and reportId = " + reportId);
-
-		if (result.size() > 1)
-			throw new NonUniqueResultException("Multiple results found for userId = " + userId + " and reportId = " + reportId);
-
-		return result.get(0);
+	public ReportUser findOneUserReportByFavoriteSortIndex(int userId, int favoriteSortIndex) throws NoResultException, NonUniqueResultException {
+		String query = "t.user.id = " + userId + " AND t.favoriteSortIndex = " + favoriteSortIndex;
+		return findOne(ReportUser.class, query);
 	}
 
 	public List<ReportUser> findFavoriteUserReports(int userId) {
@@ -151,7 +148,7 @@ public class ReportDAO extends PicsDAO {
 		return findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findUserReportsByAlpha(int userId) {
+	public List<ReportUser> findUserReportsSortByAlpha(int userId) {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		try {
@@ -171,12 +168,12 @@ public class ReportDAO extends PicsDAO {
 		return userReports;
 	}
 
-	public List<ReportUser> findUserReportsByDateAdded(int userId) {
+	public List<ReportUser> findUserReportsSortByDateAdded(int userId) {
 		String query = "t.user.id = " + userId + " ORDER BY creationDate DESC";
 		return findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findUserReportsByLastUsed(int userId) {
+	public List<ReportUser> findUserReportsSortByLastUsed(int userId) {
 		String query = "t.user.id = " + userId + " ORDER BY lastOpened DESC";
 		return findWhere(ReportUser.class, query);
 	}

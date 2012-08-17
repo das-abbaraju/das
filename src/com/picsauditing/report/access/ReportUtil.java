@@ -134,6 +134,7 @@ public final class ReportUtil {
 
 			String[] values = filterValue.split(",");
 			String[] translationValueNameArray = new String[values.length];
+
 			for (int i = 0; i < values.length; i++) {
 				String translationKey = filter.getField().getI18nKey(values[i]);
 				translationValueNameArray[i] = getText(translationKey, locale);
@@ -182,10 +183,12 @@ public final class ReportUtil {
 			Field field = column.getField();
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
-			if (column.getMethod() != null)
+
+			if (column.getMethod() != null) {
 				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(),locale);
-			if (field != null)
-			{
+			}
+
+			if (field != null) {
 				field.setText(translateLabel);
 				field.setHelp(translateHelp);
 			}
@@ -241,11 +244,15 @@ public final class ReportUtil {
 	public static String translateCategory(String category, Locale locale) {
 		String translatedText = getText("Report.Category." + category, locale);
 
-		if (translatedText == null)
+		// TODO getText() should never return null
+		if (translatedText == null) {
 			translatedText = getText("Report.Category.General", locale);
+		}
 
-		if (translatedText == null)
+		// TODO getText() should never return null
+		if (translatedText == null) {
 			translatedText = "?Report.Category." + category;
+		}
 
 		return translatedText;
 	}
@@ -377,5 +384,11 @@ public final class ReportUtil {
 			String fieldSuffixKey = "Report.Suffix." + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
+	}
+
+	public static void swapSortOrder(ReportUser ru1, ReportUser ru2) {
+		int temp = ru1.getFavoriteSortIndex();
+		ru1.setFavoriteSortIndex(ru2.getFavoriteSortIndex());
+		ru2.setFavoriteSortIndex(temp);
 	}
 }

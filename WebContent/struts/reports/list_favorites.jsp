@@ -76,10 +76,10 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#"><s:text name="ManageReports.myReports.MoveUp" /></a>
+                        <a href="ManageReports!moveUp.action?reportId=${report_id}"><s:text name="ManageReports.myReports.MoveUp" /></a>
                     </li>
                     <li>
-                        <a href="#"><s:text name="ManageReports.myReports.MoveDown" /></a>
+                        <a href="ManageReports!moveDown.action?reportId=${report_id}"><s:text name="ManageReports.myReports.MoveDown" /></a>
                     </li>
                 </ul>
             </div>
@@ -154,11 +154,11 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#"><s:text name="ManageReports.myReports.MoveUp" /></a>
+                        <a href="ManageReports!moveUp.action?reportId=${report_id}"><s:text name="ManageReports.myReports.MoveUp" /></a>
                     </li>
                     <li>
-                        <a href="#"><s:text name="ManageReports.myReports.MoveDown" /></a>
-                    </li>
+                        <a href="ManageReports!moveDown.action?reportId=${report_id}"><s:text name="ManageReports.myReports.MoveDown" /></a>
+                     </li>
                 </ul>
             </div>
 
