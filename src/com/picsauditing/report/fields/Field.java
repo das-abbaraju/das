@@ -116,7 +116,7 @@ public class Field implements JSONAware {
 
 		for (Object enumValue : fieldClass.getEnumConstants()) {
 			JSONObject enumAsJson = new JSONObject();
-			enumAsJson.put("id", enumValue.toString());
+			enumAsJson.put("key", enumValue.toString());
 
 			String translationKey = fieldClass.getSimpleName().toString() + "." + enumValue.toString();
 			String translatedString = ReportUtil.getText(translationKey, locale);
@@ -125,7 +125,7 @@ public class Field implements JSONAware {
 				translatedString = enumValue.toString();
 			}
 
-			enumAsJson.put("name", translatedString);
+			enumAsJson.put("value", translatedString);
 			jsonArray.add(enumAsJson);
 		}
 
@@ -141,13 +141,13 @@ public class Field implements JSONAware {
 
 		for (Integer key : LowMedHigh.getMap().keySet()) {
 			JSONObject enumAsJson = new JSONObject();
-			enumAsJson.put("id", key.toString());
+			enumAsJson.put("key", key.toString());
 
 			LowMedHigh value = LowMedHigh.getMap().get(key);
 			String translationKey = fieldClass.getSimpleName().toString() + "." + value.toString();
 			String translatedString = ReportUtil.getText(translationKey, locale);
 
-			enumAsJson.put("name", translatedString);
+			enumAsJson.put("value", translatedString);
 			jsonArray.add(enumAsJson);
 		}
 
