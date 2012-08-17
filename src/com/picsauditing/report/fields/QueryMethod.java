@@ -4,11 +4,11 @@ public enum QueryMethod {
 	// None,
 	Count(true, ExtFieldType.Int),
 	CountDistinct(true, ExtFieldType.Int),
-	GroupConcat(true, ExtFieldType.String),
+	GroupConcat(true, ExtFieldType.String), 
 	Max(true),
 	Min(true),
 	
-	Average(true),
+	Average(true), 
 	Round(false, ExtFieldType.Int), // Parameter means decimal place
 	Sum(true),
 	
@@ -21,7 +21,7 @@ public enum QueryMethod {
 	Year(false, ExtFieldType.String), // 2012
 	YearMonth(false, ExtFieldType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
 	WeekDay(false, ExtFieldType.String), // Monday TODO translate the 1
-	Hour(false, ExtFieldType.String), // 23
+	Hour(false, ExtFieldType.String), // 23 
 	Date // 2012-01-31
 	;
 

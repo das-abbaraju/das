@@ -220,6 +220,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), getLocale());
 
+//			System.out.println("\n REPORT FULL: " + JSONUtilities.prettyPrint(report.toJSON(true).toString()));
+
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (ReportValidationException rve) {

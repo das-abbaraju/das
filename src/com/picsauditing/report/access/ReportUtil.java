@@ -181,11 +181,13 @@ public final class ReportUtil {
 		for (Column column : definition.getColumns()) {
 			Field field = column.getField();
 			String translateLabel = translateLabel(field, locale);
+			String translateHelp = translateHelp(field, locale);
 			if (column.getMethod() != null)
 				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(),locale);
 			if (field != null)
 			{
 				field.setText(translateLabel);
+				field.setHelp(translateHelp);
 			}
 		}
 	}
@@ -196,8 +198,10 @@ public final class ReportUtil {
 
 		for (Filter filter : definition.getFilters()) {
 			Field field = filter.getField();
-			if (field != null) 
+			if (field != null) {
 				field.setText(translateLabel(field, locale));
+				field.setHelp(translateHelp(field, locale));
+			}
 		}
 	}
 
@@ -206,7 +210,11 @@ public final class ReportUtil {
 			return;
 
 		for (Sort sort : definition.getSorts()) {
-			sort.getField().setText(translateLabel(sort.getField(), locale));
+			Field field = sort.getField();
+			if (field != null) {
+				field.setText(translateLabel(field, locale));
+				field.setHelp(translateHelp(field, locale));
+			}
 		}
 	}
 
@@ -215,6 +223,16 @@ public final class ReportUtil {
 
 		if (field != null) {
 			translatedText = getText("Report." + field.getName(), locale);
+		}
+
+		return translatedText;
+	}
+
+	public static String translateHelp(Field field, Locale locale) {
+		String translatedText = null;
+
+		if (field != null) {
+			translatedText = getText("Report." + field.getName() + ".help", locale);
 		}
 
 		return translatedText;

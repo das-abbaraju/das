@@ -27,11 +27,12 @@ public class Report extends BaseTable {
 	private String name;
 	private String description;
 	private String parameters;
+	private int rowsPerPage = 50;
+	
 	private boolean isPrivate;
 	private int numTimesFavorited;
 
 	private Definition definition;
-	private int rowsPerPage = 50;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)

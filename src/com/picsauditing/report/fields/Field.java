@@ -3,7 +3,6 @@ package com.picsauditing.report.fields;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +15,6 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
@@ -29,24 +27,23 @@ import com.picsauditing.util.Strings;
  */
 public class Field implements JSONAware {
 
-	private Class<?> fieldClass;
+	private FieldCategory category = FieldCategory.General;
+	private FilterType filterType = FilterType.String;
 	private String name;
 	private String text;
-	private String databaseColumnName;
-	private FilterType filterType = FilterType.String;
-	private AutocompleteType autocompleteType = AutocompleteType.None;
-	private int width = 200;
-	private boolean visible = true;
-	private boolean filterable = true;
-	private boolean sortable = true;
-	private boolean hidden = false;
-	private int flex = 0;
+	private String suffix;
 	private ExtFieldType type = ExtFieldType.Auto;
 	private String url;
-	private JavaScript renderer;
+	private int width = 200;
+	private String help;
+
+	private Class<?> fieldClass;
+	private String databaseColumnName;
+	private AutocompleteType autocompleteType = AutocompleteType.None;
+	private boolean hidden = false;
+	
 	private String preTranslation;
 	private String postTranslation;
-	private FieldCategory category = FieldCategory.General;
 	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
 
 	/**
@@ -59,9 +56,6 @@ public class Field implements JSONAware {
 		url = annotation.url();
 		preTranslation = annotation.i18nKeyPrefix();
 		postTranslation = annotation.i18nKeySuffix();
-		visible = annotation.visible();
-		filterable = annotation.filterable();
-		sortable = annotation.sortable();
 		category = annotation.category();
 		requiredPermissions = new HashSet<OpPerms>(Arrays.asList(annotation.requiredPermissions()));
 	}
@@ -90,26 +84,15 @@ public class Field implements JSONAware {
 		JSONObject json = new JSONObject();
 		json.put("name", name);
 		json.put("text", text);
+		json.put("help", help);
 
 		if (width > 0)
 			json.put("width", width);
-		if (!visible)
-			json.put("visible", visible);
-		if (!filterable)
-			json.put("filterable", filterable);
-		if (!sortable)
-			json.put("sortable", sortable);
 		if (hidden)
 			json.put("hidden", hidden);
 
-		if (flex > 0)
-			json.put("flex", flex);
-
 		if (!Strings.isEmpty(url))
 			json.put("url", url);
-
-		if (renderer != null && renderer.toJSONString().length() > 0)
-			json.put("renderer", renderer);
 
 		if (filterType != null) {
 			json.put("filterType", filterType.toString());
@@ -241,6 +224,14 @@ public class Field implements JSONAware {
 		this.text = text;
 	}
 
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+
 	public String getDatabaseColumnName() {
 		return databaseColumnName;
 	}
@@ -265,16 +256,16 @@ public class Field implements JSONAware {
 		this.width = width;
 	}
 
-	public void setSortable(boolean sortable) {
-		this.sortable = sortable;
-	}
-
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
 
-	public void setFlex(int flex) {
-		this.flex = flex;
+	public String getHelp() {
+		return help;
+	}
+
+	public void setHelp(String help) {
+		this.help = help;
 	}
 
 	public ExtFieldType getType() {
@@ -287,10 +278,6 @@ public class Field implements JSONAware {
 
 	public void setType(ExtFieldType type) {
 		this.type = type;
-	}
-
-	public void setRenderer(JavaScript renderer) {
-		this.renderer = renderer;
 	}
 
 	public void setUrl(String url) {
@@ -320,16 +307,6 @@ public class Field implements JSONAware {
 
 	public Field requirePermission(OpPerms opPerm) {
 		requiredPermissions.add(opPerm);
-		return this;
-	}
-
-	public Field setVisible(boolean visible) {
-		this.visible = visible;
-		return this;
-	}
-
-	public Field setFilterable(boolean filterable) {
-		this.filterable = filterable;
 		return this;
 	}
 

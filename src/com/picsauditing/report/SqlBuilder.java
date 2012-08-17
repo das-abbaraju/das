@@ -17,13 +17,11 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
@@ -125,7 +123,7 @@ public class SqlBuilder {
 		// Make sure column has a field(?)
 		for (Column column : columns) {
 			Field field = availableFields.get(column.getFieldName().toUpperCase());
-
+			
 			if (field != null) {
 				if (column.getMethod() == null || !column.getMethod().isAggregate()) {
 					// For example: Don't add in accountID automatically if
@@ -205,6 +203,12 @@ public class SqlBuilder {
 			return "COUNT(DISTINCT " + fieldSql + ")";
 		case Date:
 			return "DATE(" + fieldSql + ")";
+		case GroupConcat:
+			return "GROUP_CONCAT(" + fieldSql + ")";
+		case Hour:
+			return "HOUR(" + fieldSql + ")";
+		case Left:
+			return "LEFT(" + fieldSql + ")";
 		case LowerCase:
 			return "LOWER(" + fieldSql + ")";
 		case Max:
@@ -219,8 +223,12 @@ public class SqlBuilder {
 			return "SUM(" + fieldSql + ")";
 		case UpperCase:
 			return "UPPER(" + fieldSql + ")";
+		case WeekDay:
+			return "DATE_FORMAT(" + fieldSql + ",'%W')";
 		case Year:
 			return "YEAR(" + fieldSql + ")";
+		case YearMonth:
+			return "DATE_FORMAT(" + fieldSql + ",'%Y-%m')";
 		}
 
 		return fieldSql;
@@ -383,7 +391,6 @@ public class SqlBuilder {
 
 			sql.addOrderBy(fieldName);
 			Field field = availableFields.get(sort.getFieldName().toUpperCase());
-//			sort.setField(getFieldFromFieldName(sort.getFieldName()));
 			sort.setField(field);
 		}
 	}

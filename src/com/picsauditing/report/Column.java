@@ -12,7 +12,7 @@ public class Column implements JSONable {
 
 	private String fieldName;
 	private QueryMethod method = null;
-	private String option;
+
 	private Field field;
 
 	public Column() {
@@ -30,9 +30,6 @@ public class Column implements JSONable {
 		// TODO check if this is being used on the front end
 		if (method != null) {
 			json.put("method", method.toString());
-			if (!Strings.isEmpty(option)) {
-				json.put("option", option);
-			}
 		}
 
 		if (field != null) {
@@ -59,7 +56,6 @@ public class Column implements JSONable {
 		String methodName = (String) json.get("method");
 		if (!Strings.isEmpty(methodName)) {
 			method = QueryMethod.valueOf(methodName);
-			option = (String) json.get("option");
 		}
 
 		field = (Field) json.get("field");
@@ -90,14 +86,6 @@ public class Column implements JSONable {
 
 	public void setMethod(QueryMethod method) {
 		this.method = method;
-	}
-
-	public String getOption() {
-		return option;
-	}
-
-	public void setOption(String option) {
-		this.option = option;
 	}
 
 	public Field getField() {
