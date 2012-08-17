@@ -89,12 +89,14 @@
     </s:iterator>
 </ul>
 
-<div id="report_favorites_list_excluded">
-    <h1><s:text name="ManageReports.favorites.NotIncluded" /></h1>
-    <p>
-        <s:text name="ManageReports.favorites.NotInMenu" />
-    </p>
-</div>
+<s:if test="userReportsOverflow.size > 0">
+    <div id="report_favorites_list_excluded">
+        <h1><s:text name="ManageReports.favorites.NotIncluded" /></h1>
+        <p>
+            <s:text name="ManageReports.favorites.NotInMenu" />
+        </p>
+    </div>
+</s:if>
 
 <ul id="report_favorites_overflow_list" class="report-list">
     <s:iterator value="userReportsOverflow" var="user_report">
