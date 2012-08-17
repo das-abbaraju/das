@@ -137,7 +137,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			System.out.println("\n" + sql.toString());
 
-			ReportUtil.localize(report, getLocale());
+			ReportUtil.localize(report, permissions.getLocale());
 
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 
@@ -145,7 +145,7 @@ public class ReportDynamic extends PicsActionSupport {
 				List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
 
 				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields,
-						permissions, getLocale());
+						permissions, permissions.getLocale());
 				json.put("data", queryResultsAsJson);
 
 				json.put("success", true);
@@ -177,12 +177,12 @@ public class ReportDynamic extends PicsActionSupport {
 				throw new Exception("Available field undefined");
 
 			if (field.getFilterType().isEnum()) {
-				json = field.renderEnumFieldAsJson(getLocale());
+				json = field.renderEnumFieldAsJson(permissions.getLocale());
 			} else if (field.getFilterType().isAutocomplete()) {
 				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
 						searchQuery, permissions);
 			} else if (field.getFilterType().isLowMedHigh()) {
-				json = field.renderLowMedHighFieldAsJson(getLocale());
+				json = field.renderLowMedHighFieldAsJson(permissions.getLocale());
 			} else {
 				throw new Exception(field.getFilterType() + " not supported by list function.");
 			}
@@ -216,9 +216,9 @@ public class ReportDynamic extends PicsActionSupport {
 			// TODO find out what else this method is doing besides building sql
 			sqlBuilder.buildSql(report, permissions, pageNumber);
 
-			ReportUtil.localize(report, getLocale());
+			ReportUtil.localize(report, permissions.getLocale());
 
-			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), getLocale());
+			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
 //			System.out.println("\n REPORT FULL: " + JSONUtilities.prettyPrint(report.toJSON(true).toString()));
 
@@ -242,7 +242,7 @@ public class ReportDynamic extends PicsActionSupport {
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 
 			json.put("modelType", report.getModelType().toString());
-			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, getLocale()));
+			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, permissions.getLocale()));
 			json.put("success", true);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
@@ -328,7 +328,7 @@ public class ReportDynamic extends PicsActionSupport {
 			// TODO remove FOR_DOWNLOAD boolean flag
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
 
-			ReportUtil.localize(report, getLocale());
+			ReportUtil.localize(report, permissions.getLocale());
 
 			exportToExcel(report, reportDao.runQuery(sql, json));
 		} catch (SQLException se) {
