@@ -1,8 +1,21 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anySet;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +36,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -40,24 +55,33 @@ import com.picsauditing.jpa.entities.TranslatableString;
 @PrepareForTest(ContractorFlagETL.class)
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ContractorFlagETLTest {
-	
+
 	private ContractorFlagETL contractorFlagETL;
 	private PicsTestUtil picsTestUtil = new PicsTestUtil();
-	
-	@Mock private EntityManager em;
-	@Mock private FlagCriteria flagCriteria;
-	@Mock private AuditQuestion auditQuestion;
-	@Mock private AuditType auditType;
-	@Mock private ContractorAccount contractor;
-	@Mock private AuditCategory auditCategory;
-	@Mock private HashMap<Integer, AuditData> answerMap;
-	@Mock private ContractorAudit audit;
-	@Mock private AuditData auditData;
+
+	@Mock
+	private EntityManager em;
+	@Mock
+	private FlagCriteria flagCriteria;
+	@Mock
+	private AuditQuestion auditQuestion;
+	@Mock
+	private AuditType auditType;
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private AuditCategory auditCategory;
+	@Mock
+	private HashMap<Integer, AuditData> answerMap;
+	@Mock
+	private ContractorAudit audit;
+	@Mock
+	private AuditData auditData;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		
+
 		contractorFlagETL = new ContractorFlagETL();
 		picsTestUtil.autowireEMInjectedDAOs(contractorFlagETL, em);
 	}
@@ -65,8 +89,8 @@ public class ContractorFlagETLTest {
 	@Test
 	public void testCheckForMissingAnswer_NotFlaggableWhenMissing() throws Exception {
 		when(flagCriteria.isFlaggableWhenMissing()).thenReturn(false);
-		FlagCriteriaContractor result = 
-				Whitebox.invokeMethod(contractorFlagETL, "checkForMissingAnswer", flagCriteria, contractor);
+		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "checkForMissingAnswer", flagCriteria,
+				contractor);
 		assertNull(result);
 	}
 
@@ -77,8 +101,8 @@ public class ContractorFlagETLTest {
 		when(flagCriteria.isFlaggableWhenMissing()).thenReturn(true);
 		when(flagCriteria.getId()).thenReturn(FLAG_CRITERIA_ID);
 		when(contractor.getId()).thenReturn(CONTRACTOR_ID);
-		FlagCriteriaContractor result = 
-				Whitebox.invokeMethod(contractorFlagETL, "checkForMissingAnswer", flagCriteria, contractor);
+		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "checkForMissingAnswer", flagCriteria,
+				contractor);
 		assertNotNull(result);
 		assertNull(result.getAnswer2());
 		assertNull(result.getAnswer());
@@ -91,7 +115,7 @@ public class ContractorFlagETLTest {
 		when(translatableString.toString()).thenReturn("test description");
 		Set<FlagCriteria> flagCriteriaSet = new HashSet<FlagCriteria>();
 		int questionId = 1;
-		for(int i = 0; i < numberToCreate; i++, questionId++) {
+		for (int i = 0; i < numberToCreate; i++, questionId++) {
 			AuditType auditType = mock(AuditType.class);
 			when(auditType.isAnnualAddendum()).thenReturn(Boolean.FALSE);
 			AuditQuestion auditQuestion = mock(AuditQuestion.class);
@@ -102,19 +126,20 @@ public class ContractorFlagETLTest {
 			when(flagCriteria.getCategory()).thenReturn("test category");
 			when(flagCriteria.getDescription()).thenReturn(translatableString);
 			when(flagCriteria.includeExcess()).thenReturn(null);
-			
+
 			flagCriteriaSet.add(flagCriteria);
 		}
 		return flagCriteriaSet;
 	}
-	
+
 	@Test
 	public void testGetFlaggableAuditQuestionIds_AuditTypeIsNotAnnualAddendumNoExcess() throws Exception {
 		Set<FlagCriteria> distinctFlagCriteria = mockFlagCriteriaQuestionsNotAnnualAddendumNoExcess(3);
-		
-		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds", distinctFlagCriteria);
-		
-		for (FlagCriteria flagCriteria: distinctFlagCriteria) {
+
+		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds",
+				distinctFlagCriteria);
+
+		for (FlagCriteria flagCriteria : distinctFlagCriteria) {
 			int questionId = flagCriteria.getQuestion().getId();
 			assertTrue(criteriaQuestionSet.contains(questionId));
 		}
@@ -127,9 +152,10 @@ public class ContractorFlagETLTest {
 		when(auditQuestion.getAuditType()).thenReturn(auditType);
 		Set<FlagCriteria> distinctFlagCriteria = new HashSet<FlagCriteria>();
 		distinctFlagCriteria.add(flagCriteria);
-		
-		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds", distinctFlagCriteria);
-		
+
+		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds",
+				distinctFlagCriteria);
+
 		assertTrue(criteriaQuestionSet.isEmpty());
 	}
 
@@ -139,264 +165,456 @@ public class ContractorFlagETLTest {
 		when(auditQuestion.getAuditType()).thenReturn(null);
 		Set<FlagCriteria> distinctFlagCriteria = new HashSet<FlagCriteria>();
 		distinctFlagCriteria.add(flagCriteria);
-		
-		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds", distinctFlagCriteria);
-		
+
+		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds",
+				distinctFlagCriteria);
+
 		assertTrue(criteriaQuestionSet.isEmpty());
 	}
-	
+
 	@Test
 	public void testGetFlaggableAuditQuestionIds_NoFlagCriteria() throws Exception {
 		Set<FlagCriteria> distinctFlagCriteria = new HashSet<FlagCriteria>();
-		
-		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds", distinctFlagCriteria);
-		
+
+		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds",
+				distinctFlagCriteria);
+
 		assertTrue(criteriaQuestionSet.isEmpty());
 	}
-	
+
 	@Test
 	public void testGetFlaggableAuditQuestionIds_CriteriaHasNullQuestion() throws Exception {
 		Set<FlagCriteria> distinctFlagCriteria = new HashSet<FlagCriteria>();
 		distinctFlagCriteria.add(flagCriteria);
-		
-		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds", distinctFlagCriteria);
-		
+
+		Set<Integer> criteriaQuestionSet = Whitebox.invokeMethod(contractorFlagETL, "getFlaggableAuditQuestionIds",
+				distinctFlagCriteria);
+
 		assertTrue(criteriaQuestionSet.isEmpty());
 	}
-	
+
 	@Test
 	public void testRunAnnualUpdateFlaggingForCategoryOnMultiYearScope_Annual_Update_Audit() throws Exception {
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
 		when(auditType.isAnnualAddendum()).thenReturn(true);
-		when(auditQuestion.getAuditType()).thenReturn(auditType);		
+		when(auditQuestion.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope", flagCriteria);
+
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope",
+				flagCriteria);
 		assertTrue(result);
 	}
-	
+
 	@Test
 	public void testRunAnnualUpdateFlaggingForCategoryOnMultiYearScope_Null_Category() throws Exception {
 		when(auditQuestion.getCategory()).thenReturn(null);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope", flagCriteria);
+
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope",
+				flagCriteria);
 		assertFalse(result);
 	}
-	
+
 	@Test
 	public void testRunAnnualUpdateFlaggingForCategoryOnMultiYearScope_Not_Annual_Update() throws Exception {
 		when(auditQuestion.getCategory()).thenReturn(null);
 		when(auditType.isAnnualAddendum()).thenReturn(false);
-		when(auditQuestion.getAuditType()).thenReturn(auditType);		
+		when(auditQuestion.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope", flagCriteria);
+
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope",
+				flagCriteria);
 		assertFalse(result);
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_No_Question_No_OSHA() throws Exception {
 		when(flagCriteria.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(flagCriteria.getQuestion()).thenReturn(null);
-		
-		Set<FlagCriteriaContractor> flagCriteriaContractor = Whitebox.invokeMethod(contractorFlagETL, "executeFlagCriteriaCalculation",
-				flagCriteria, contractor, answerMap);
-		assertEquals(1, flagCriteriaContractor.size());		
+
+		Set<FlagCriteriaContractor> flagCriteriaContractor = Whitebox.invokeMethod(contractorFlagETL,
+				"executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
+		assertEquals(1, flagCriteriaContractor.size());
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_EMR_Question() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
-		PowerMockito.doReturn(new HashSet<FlagCriteriaContractor>()).when(spy, "calculateFlagCriteriaForEMR", anyObject(), anyObject());
-		
+		PowerMockito.doReturn(new HashSet<FlagCriteriaContractor>()).when(spy, "calculateFlagCriteriaForEMR",
+				anyObject(), anyObject());
+
 		when(flagCriteria.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(auditQuestion.getId()).thenReturn(AuditQuestion.EMR);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
+
+		setCategoryApplicable(spy);
+
 		Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
 		PowerMockito.verifyPrivate(spy, times(1)).invoke("calculateFlagCriteriaForEMR", anyObject(), anyObject());
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_CITATIONS_Question_No_Flag_Criteria_Returned() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
 		PowerMockito.doReturn(null).when(spy, "generateFlaggableData", anyObject(), anyObject(), anyBoolean());
-		
+
 		when(flagCriteria.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(auditQuestion.getId()).thenReturn(AuditQuestion.CITATIONS);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
-		assertEquals(1, results.size());		
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(), anyBoolean());
+
+		setCategoryApplicable(spy);
+
+		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation",
+				flagCriteria, contractor, answerMap);
+		assertEquals(1, results.size());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(),
+				anyBoolean());
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_CITATIONS_Question_Flag_Criteria_Returned() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
-		PowerMockito.doReturn(new FlagCriteriaContractor()).when(spy, "generateFlaggableData", anyObject(), anyObject(), anyBoolean());
-		
+		PowerMockito.doReturn(new FlagCriteriaContractor()).when(spy, "generateFlaggableData", anyObject(),
+				anyObject(), anyBoolean());
+
 		when(flagCriteria.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(auditQuestion.getId()).thenReturn(AuditQuestion.CITATIONS);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
-		assertEquals(2, results.size());		
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(), anyBoolean());
+
+		setCategoryApplicable(spy);
+
+		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation",
+				flagCriteria, contractor, answerMap);
+		assertEquals(2, results.size());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(),
+				anyBoolean());
 	}
-	
+
 	@Test
-	public void testExecuteFlagCriteriaCalculation_Annual_Update_Multi_Year_No_Flag_Criteria_Returned() throws Exception {
+	public void testExecuteFlagCriteriaCalculation_Annual_Update_Multi_Year_No_Flag_Criteria_Returned()
+			throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
 		PowerMockito.doReturn(true).when(spy, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope", anyObject());
 		PowerMockito.doReturn(null).when(spy, "generateFlaggableData", anyObject(), anyObject(), anyBoolean());
-		
+
 		when(flagCriteria.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(auditQuestion.getId()).thenReturn(1);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
-		assertEquals(1, results.size());		
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(), anyBoolean());
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("runAnnualUpdateFlaggingForCategoryOnMultiYearScope", anyObject());
+
+		setCategoryApplicable(spy);
+
+		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation",
+				flagCriteria, contractor, answerMap);
+		assertEquals(1, results.size());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(),
+				anyBoolean());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("runAnnualUpdateFlaggingForCategoryOnMultiYearScope",
+				anyObject());
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_Annual_Update_Multi_Year_Flag_Criteria_Returned() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
 		PowerMockito.doReturn(true).when(spy, "runAnnualUpdateFlaggingForCategoryOnMultiYearScope", anyObject());
-		PowerMockito.doReturn(new FlagCriteriaContractor()).when(spy, "generateFlaggableData", anyObject(), anyObject(), anyBoolean());
-		
+		PowerMockito.doReturn(new FlagCriteriaContractor()).when(spy, "generateFlaggableData", anyObject(),
+				anyObject(), anyBoolean());
+
 		when(flagCriteria.getAuditType()).thenReturn(auditType);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(auditQuestion.getId()).thenReturn(1);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
-		assertEquals(2, results.size());		
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(), anyBoolean());
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("runAnnualUpdateFlaggingForCategoryOnMultiYearScope", anyObject());
+
+		setCategoryApplicable(spy);
+
+		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation",
+				flagCriteria, contractor, answerMap);
+		assertEquals(2, results.size());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("generateFlaggableData", anyObject(), anyObject(),
+				anyBoolean());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("runAnnualUpdateFlaggingForCategoryOnMultiYearScope",
+				anyObject());
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_Non_EMR_Criteria() throws Exception {
-		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());		
-		PowerMockito.doReturn(new HashSet<FlagCriteriaContractor>()).when(spy, "performFlaggingForNonEMR", anyObject(), anyMap(), anyObject());
-		
+		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
+		PowerMockito.doReturn(new HashSet<FlagCriteriaContractor>()).when(spy, "performFlaggingForNonEMR", anyObject(),
+				anyMap(), anyObject());
+
 		when(flagCriteria.getAuditType()).thenReturn(null);
 		when(flagCriteria.getOshaType()).thenReturn(null);
 		when(auditQuestion.getId()).thenReturn(1);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
-		assertTrue(results.isEmpty());		
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("performFlaggingForNonEMR", anyObject(), anyMap(), anyObject());
+		when(auditQuestion.getAuditType()).thenReturn(auditType);
+
+		setCategoryApplicable(spy);
+
+		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation",
+				flagCriteria, contractor, answerMap);
+		assertTrue(results.isEmpty());
+		PowerMockito.verifyPrivate(spy, times(1))
+				.invoke("performFlaggingForNonEMR", anyObject(), anyMap(), anyObject());
+
 	}
-	
+
 	@Test
 	public void testExecuteFlagCriteriaCalculation_OSHA_TYPE() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
 		PowerMockito.doNothing().when(spy, "performOshaFlagCalculations", anyObject(), anySet(), anyObject());
-		
+
 		when(flagCriteria.getOshaType()).thenReturn(OshaType.OSHA);
-		
-		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation", flagCriteria, contractor, answerMap);
+
+		Set<FlagCriteriaContractor> results = Whitebox.invokeMethod(spy, "executeFlagCriteriaCalculation",
+				flagCriteria, contractor, answerMap);
 		assertTrue(results.isEmpty());
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("performOshaFlagCalculations", anyObject(), anySet(), anyObject());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("performOshaFlagCalculations", anyObject(), anySet(),
+				anyObject());
 	}
-	
+
 	@Test
 	public void testCalculateFlagCriteriaForEMR() throws Exception {
-		
+
 	}
-	
+
 	@Test
 	public void testGenerateFlaggableData_No_Annual_Updates() throws Exception {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new HashMap<MultiYearScope, ContractorAudit>();
 		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, null);
 		doReturn(completeAnnualUpdates).when(contractor).getCompleteAnnualUpdates();
 		when(flagCriteria.getMultiYearScope()).thenReturn(MultiYearScope.LastYearOnly);
-		
-		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "generateFlaggableData", flagCriteria, contractor, false);
+
+		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "generateFlaggableData", flagCriteria,
+				contractor, false);
 		assertNull(result);
-	}	
-	
+	}
+
 	@Test
 	public void testGenerateFlaggableData_No_ApplicableCategories() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
 		PowerMockito.doReturn(false).when(spy, "checkForApplicableCategory", anyObject(), anyObject(), anyBoolean());
-		
+
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new HashMap<MultiYearScope, ContractorAudit>();
 		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, audit);
 		doReturn(completeAnnualUpdates).when(contractor).getCompleteAnnualUpdates();
 		when(flagCriteria.getMultiYearScope()).thenReturn(MultiYearScope.LastYearOnly);
-		
-		FlagCriteriaContractor result = Whitebox.invokeMethod(spy, "generateFlaggableData", flagCriteria, contractor, false);
+
+		FlagCriteriaContractor result = Whitebox.invokeMethod(spy, "generateFlaggableData", flagCriteria, contractor,
+				false);
 		assertNull(result);
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("checkForApplicableCategory", anyObject(), anyObject(), anyBoolean());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("checkForApplicableCategory", anyObject(), anyObject(),
+				anyBoolean());
 	}
-	
+
 	@Test
 	public void testGenerateFlaggableData() throws Exception {
 		ContractorFlagETL spy = PowerMockito.spy(new ContractorFlagETL());
 		PowerMockito.doReturn(true).when(spy, "checkForApplicableCategory", anyObject(), anyObject(), anyBoolean());
-		
+
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new HashMap<MultiYearScope, ContractorAudit>();
 		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, audit);
 		doReturn(completeAnnualUpdates).when(contractor).getCompleteAnnualUpdates();
 		when(flagCriteria.getMultiYearScope()).thenReturn(MultiYearScope.LastYearOnly);
 		when(auditQuestion.getId()).thenReturn(29);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		when(auditData.getQuestion()).thenReturn(auditQuestion);		
+		when(auditData.getQuestion()).thenReturn(auditQuestion);
 		List<AuditData> auditDataList = Arrays.asList(auditData);
-		when(audit.getData()).thenReturn(auditDataList);		
+		when(audit.getData()).thenReturn(auditDataList);
 		when(audit.getAuditFor()).thenReturn("2012");
-		
-		FlagCriteriaContractor result = Whitebox.invokeMethod(spy, "generateFlaggableData", flagCriteria, contractor, false);
+
+		FlagCriteriaContractor result = Whitebox.invokeMethod(spy, "generateFlaggableData", flagCriteria, contractor,
+				false);
 		assertNotNull(result);
 		assertEquals("", result.getAnswer());
 		assertEquals("for Year: 2012", result.getAnswer2());
-		PowerMockito.verifyPrivate(spy, times(1)).invoke("checkForApplicableCategory", anyObject(), anyObject(), anyBoolean());
+		PowerMockito.verifyPrivate(spy, times(1)).invoke("checkForApplicableCategory", anyObject(), anyObject(),
+				anyBoolean());
 	}
-	
+
 	@Test
 	public void testCheckForApplicableCategory_Not_Apply_Category() throws Exception {
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit, false);
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit,
+				false);
 		assertFalse(result);
 	}
-	
+
 	@Test
 	public void testCheckForApplicableCategory_Null_Question_Category() throws Exception {
 		when(auditQuestion.getCategory()).thenReturn(null);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
-		
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit, true);
+
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit,
+				true);
 		assertFalse(result);
 	}
-	
+
 	@Test
 	public void testCheckForApplicableCategory_Category_Not_Applicable() throws Exception {
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
 		doReturn(false).when(audit).isCategoryApplicable(anyInt());
-		
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit, true);
+
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit,
+				true);
 		assertFalse(result);
 	}
-	
+
 	@Test
 	public void testCheckForApplicableCategory() throws Exception {
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
 		when(flagCriteria.getQuestion()).thenReturn(auditQuestion);
 		doReturn(true).when(audit).isCategoryApplicable(anyInt());
-		
-		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit, true);
+
+		Boolean result = Whitebox.invokeMethod(contractorFlagETL, "checkForApplicableCategory", flagCriteria, audit,
+				true);
 		assertTrue(result);
+	}
+
+	@Test
+	public void testGetApplicableCategories_ParentNotApplicable() throws Exception {
+		AuditCategory parent = EntityFactory.makeAuditCategory();
+		AuditCatData parentData = new AuditCatData();
+		parentData.setApplies(false);
+		parentData.setCategory(parent);
+
+		AuditCategory child = EntityFactory.makeAuditCategory();
+		child.setParent(parent);
+		AuditCatData childData = new AuditCatData();
+		childData.setApplies(true);
+		childData.setCategory(child);
+
+		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+		categoryData.add(parentData);
+		categoryData.add(childData);
+
+		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
+		audit.setCategories(categoryData);
+
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		audits.add(audit);
+
+		when(contractor.getAudits()).thenReturn(audits);
+
+		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				contractor);
+
+		assertNotNull(applicableCategories);
+		assertTrue(applicableCategories.isEmpty());
+	}
+
+	@Test
+	public void testGetApplicableCategories_ParentApplicable() throws Exception {
+		AuditCategory parent = EntityFactory.makeAuditCategory();
+		AuditCatData parentData = new AuditCatData();
+		parentData.setApplies(true);
+		parentData.setCategory(parent);
+
+		AuditCategory child = EntityFactory.makeAuditCategory();
+		child.setParent(parent);
+		AuditCatData childData = new AuditCatData();
+		childData.setApplies(true);
+		childData.setCategory(child);
+
+		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+		categoryData.add(parentData);
+		categoryData.add(childData);
+
+		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
+		audit.setCategories(categoryData);
+
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		audits.add(audit);
+
+		when(contractor.getAudits()).thenReturn(audits);
+
+		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				contractor);
+
+		assertNotNull(applicableCategories);
+		assertFalse(applicableCategories.isEmpty());
+		assertTrue(applicableCategories.contains(parent));
+		assertTrue(applicableCategories.contains(child));
+	}
+
+	@Test
+	public void testGetApplicableCategories_ChildNotApplicable() throws Exception {
+		AuditCategory parent = EntityFactory.makeAuditCategory();
+		AuditCatData parentData = new AuditCatData();
+		parentData.setApplies(true);
+		parentData.setCategory(parent);
+
+		AuditCategory child = EntityFactory.makeAuditCategory();
+		child.setParent(parent);
+		AuditCatData childData = new AuditCatData();
+		childData.setApplies(false);
+		childData.setCategory(child);
+
+		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+		categoryData.add(parentData);
+		categoryData.add(childData);
+
+		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
+		audit.setCategories(categoryData);
+
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		audits.add(audit);
+
+		when(contractor.getAudits()).thenReturn(audits);
+
+		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				contractor);
+
+		assertNotNull(applicableCategories);
+		assertFalse(applicableCategories.isEmpty());
+		assertTrue(applicableCategories.contains(parent));
+		assertFalse(applicableCategories.contains(child));
+	}
+
+	@Test
+	public void testGetApplicableCategories_Cyclical() throws Exception {
+		AuditCategory parent = EntityFactory.makeAuditCategory();
+		AuditCatData parentData = new AuditCatData();
+		parentData.setApplies(true);
+		parentData.setCategory(parent);
+
+		AuditCategory child = EntityFactory.makeAuditCategory();
+		child.setParent(parent);
+		AuditCatData childData = new AuditCatData();
+		childData.setApplies(true);
+		childData.setCategory(child);
+
+		parent.setParent(child);
+
+		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+		categoryData.add(parentData);
+		categoryData.add(childData);
+
+		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
+		audit.setCategories(categoryData);
+
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		audits.add(audit);
+
+		when(contractor.getAudits()).thenReturn(audits);
+
+		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				contractor);
+
+		assertNotNull(applicableCategories);
+		assertFalse(applicableCategories.isEmpty());
+		assertTrue(applicableCategories.contains(parent));
+		assertTrue(applicableCategories.contains(child));
+	}
+
+	private void setCategoryApplicable(ContractorFlagETL spy) throws Exception {
+		Set<AuditCategory> categories = new HashSet<AuditCategory>();
+		categories.add(auditCategory);
+
+		when(auditQuestion.getCategory()).thenReturn(auditCategory);
+		PowerMockito.doReturn(categories).when(spy, "getApplicableCategories", contractor);
 	}
 }

@@ -115,8 +115,9 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			for (BasicDynaBean f : flags) {
 				int conID = (Integer) f.get("conID");
 
-				if (conFlags.get(conID) == null)
+				if (conFlags.get(conID) == null) {
 					conFlags.put(conID, new ArrayList<FlagData>());
+				}
 
 				FlagData d = new FlagData();
 				d.setContractor(new ContractorAccount());
@@ -127,10 +128,13 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				d.setCriteria(flagCriteriaOperator.getCriteria());
 
 				FlagCriteriaContractor fcc = new FlagCriteriaContractor();
-				fcc.setAnswer(f.get("answer").toString());
+				if (f.get("answer") != null) {
+					fcc.setAnswer(f.get("answer").toString());
+				}
 
-				if (f.get("answer2") != null)
+				if (f.get("answer2") != null) {
 					fcc.setAnswer2(f.get("answer2").toString());
+				}
 
 				d.setCriteriaContractor(fcc);
 
@@ -324,8 +328,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		return override;
 	}
 
-	static private List<BasicDynaBean> getContractorResultsByCriteriaAndOperator(FlagCriteriaOperator fco, OperatorAccount op, Database db)
-			throws Exception {
+	static private List<BasicDynaBean> getContractorResultsByCriteriaAndOperator(FlagCriteriaOperator fco,
+			OperatorAccount op, Database db) throws Exception {
 		List<Integer> children = new ArrayList<Integer>();
 		children.add(op.getId());
 		for (Facility f : op.getOperatorFacilities())

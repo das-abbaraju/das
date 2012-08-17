@@ -17,6 +17,8 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AmBest;
+import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
@@ -29,14 +31,13 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class ContractorFlagETL {
-
 	@Autowired
 	private FlagCriteriaDAO flagCriteriaDao;
 	@Autowired
 	private AuditDataDAO auditDataDao;
 	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ContractorFlagETL.class);
 
 	public void calculate(ContractorAccount contractor) {
@@ -65,7 +66,6 @@ public class ContractorFlagETL {
 	 */
 	private Set<FlagCriteriaContractor> executeFlagCriteriaCalculation(FlagCriteria flagCriteria,
 			ContractorAccount contractor, Map<Integer, AuditData> answerMap) {
-
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		if (flagCriteria.getAuditType() != null) {
@@ -73,20 +73,25 @@ public class ContractorFlagETL {
 		}
 
 		if (flagCriteria.getQuestion() != null) {
-			if (AuditQuestion.EMR == flagCriteria.getQuestion().getId()) {
-				changes.addAll(calculateFlagCriteriaForEMR(flagCriteria, contractor));
-			} else if (flagCriteria.getQuestion().getId() == AuditQuestion.CITATIONS) {
-				FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor, false);
-				if (flagCriteriaContractor != null) {
-					changes.add(flagCriteriaContractor);
+			Set<AuditCategory> applicableCategories = getApplicableCategories(contractor);
+			if (applicableCategories.contains(flagCriteria.getQuestion().getCategory())) {
+				if (AuditQuestion.EMR == flagCriteria.getQuestion().getId()) {
+					changes.addAll(calculateFlagCriteriaForEMR(flagCriteria, contractor));
+				} else if (flagCriteria.getQuestion().getId() == AuditQuestion.CITATIONS) {
+					FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor,
+							false);
+					if (flagCriteriaContractor != null) {
+						changes.add(flagCriteriaContractor);
+					}
+				} else if (runAnnualUpdateFlaggingForCategoryOnMultiYearScope(flagCriteria)) {
+					FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor,
+							true);
+					if (flagCriteriaContractor != null) {
+						changes.add(flagCriteriaContractor);
+					}
+				} else {
+					changes.addAll(performFlaggingForNonEMR(contractor, answerMap, flagCriteria));
 				}
-			} else if (runAnnualUpdateFlaggingForCategoryOnMultiYearScope(flagCriteria)) {
-				FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor, true);
-				if (flagCriteriaContractor != null) {
-					changes.add(flagCriteriaContractor);
-				}
-			} else {
-				changes.addAll(performFlaggingForNonEMR(contractor, answerMap, flagCriteria));
 			}
 		}
 
@@ -108,7 +113,8 @@ public class ContractorFlagETL {
 		ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(flagCriteria.getMultiYearScope());
 
 		if (annualUpdate != null) {
-			if (checkForApplicableCategory(flagCriteria, annualUpdate, true)) { // TODO: should the third argument be true all the time?
+			if (checkForApplicableCategory(flagCriteria, annualUpdate, true)) {
+				// TODO: should the third argument be true all the time?
 				for (AuditData data : annualUpdate.getData()) {
 					if (data.getQuestion().getId() == flagCriteria.getQuestion().getId()) {
 						flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
@@ -137,13 +143,14 @@ public class ContractorFlagETL {
 	 */
 	private Set<Integer> getFlaggableAuditQuestionIds(Set<FlagCriteria> distinctFlagCriteria) {
 		Set<Integer> criteriaQuestionSet = new HashSet<Integer>();
-
 		for (FlagCriteria fc : distinctFlagCriteria) {
-			if (fc.getQuestion() != null) {
-				AuditType type = fc.getQuestion().getAuditType();
+			AuditQuestion question = fc.getQuestion();
+			if (question != null) {
+				AuditType type = question.getAuditType();
 				if (type != null && !type.isAnnualAddendum()) {
-					logger.info("Found question for evaluation: {}", fc.getQuestion());
-					criteriaQuestionSet.add(fc.getQuestion().getId());
+					logger.info("Found question for evaluation: {}", question);
+					criteriaQuestionSet.add(question.getId());
+
 					if (fc.includeExcess() != null) {
 						criteriaQuestionSet.add(fc.includeExcess());
 					}
@@ -201,6 +208,47 @@ public class ContractorFlagETL {
 		return changes;
 	}
 
+	private Set<AuditCategory> getApplicableCategories(ContractorAccount contractor) {
+		Set<AuditCategory> applicableCategories = new HashSet<AuditCategory>();
+		for (ContractorAudit audit : contractor.getAudits()) {
+			for (AuditCatData categoryData : audit.getCategories()) {
+				// Find all applicable categories
+				if (categoryData.isApplies()) {
+					applicableCategories.add(categoryData.getCategory());
+				}
+			}
+		}
+
+		// If the ancestors aren't applicable, then remove category
+		Iterator<AuditCategory> iterator = applicableCategories.iterator();
+		while (iterator.hasNext()) {
+			AuditCategory category = iterator.next();
+			AuditCategory parent = category.getParent();
+
+			// Breadcrumbs in case we have a cyclical relationship somewhere
+			Set<Integer> alreadyProcessed = new HashSet<Integer>();
+			alreadyProcessed.add(category.getId());
+
+			while (parent != null) {
+				if (alreadyProcessed.contains(parent.getId())) {
+					logger.warn("Audit Category {} has a cyclical relationship! " + "Please check the configuration.",
+							parent.getId());
+					break;
+				}
+
+				if (!applicableCategories.contains(parent)) {
+					iterator.remove();
+					break;
+				}
+
+				alreadyProcessed.add(parent.getId());
+				parent = parent.getParent();
+			}
+		}
+
+		return applicableCategories;
+	}
+
 	private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData,
 			FlagCriteriaContractor fcc) {
 		AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
@@ -245,7 +293,7 @@ public class ContractorFlagETL {
 					if (oshaResult.isVerified()) {
 						answer2 = oshaResult.getYear() + "<br/><span class=\"verified\">Verified</span>";
 					}
-					
+
 					fcc.setAnswer2(answer2);
 
 					changes.add(fcc);
@@ -296,5 +344,4 @@ public class ContractorFlagETL {
 
 		return null;
 	}
-
 }
