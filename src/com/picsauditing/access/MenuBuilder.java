@@ -223,7 +223,10 @@ public final class MenuBuilder {
 		devMenu.addChild(getText("menu.Dev.ConOpFlagDifferences"), "ContractorFlagDifference.action", "flag_differences");
 		devMenu.addChild(getText("menu.Dev.AuditScheduleBuilder"), "AuditScheduleBuilderCron.action", "audit_schedule_builder");
 
+		devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
+		
 		devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
+		
 	}
 
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
