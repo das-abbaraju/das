@@ -1,9 +1,11 @@
 package com.picsauditing.PICS;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -73,7 +74,7 @@ public class ContractorFlagETL {
 		}
 
 		if (flagCriteria.getQuestion() != null) {
-			Set<AuditCategory> applicableCategories = getApplicableCategories(contractor);
+			Set<AuditCategory> applicableCategories = getApplicableCategories(flagCriteria.getQuestion(), contractor);
 			if (applicableCategories.contains(flagCriteria.getQuestion().getCategory())) {
 				if (AuditQuestion.EMR == flagCriteria.getQuestion().getId()) {
 					changes.addAll(calculateFlagCriteriaForEMR(flagCriteria, contractor));
@@ -100,6 +101,21 @@ public class ContractorFlagETL {
 		}
 
 		return changes;
+	}
+
+	private Set<AuditCategory> getApplicableCategories(AuditQuestion question, ContractorAccount contractor) {
+		if (question == null || contractor == null || question.getAuditType() == null) {
+			return Collections.emptySet();
+		}
+
+		Set<AuditCategory> applicableCategories = new TreeSet<AuditCategory>();
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == question.getAuditType().getId()) {
+				applicableCategories = audit.getVisibleCategories();
+			}
+		}
+
+		return applicableCategories;
 	}
 
 	private boolean runAnnualUpdateFlaggingForCategoryOnMultiYearScope(FlagCriteria flagCriteria) {
@@ -206,47 +222,6 @@ public class ContractorFlagETL {
 		}
 
 		return changes;
-	}
-
-	private Set<AuditCategory> getApplicableCategories(ContractorAccount contractor) {
-		Set<AuditCategory> applicableCategories = new HashSet<AuditCategory>();
-		for (ContractorAudit audit : contractor.getAudits()) {
-			for (AuditCatData categoryData : audit.getCategories()) {
-				// Find all applicable categories
-				if (categoryData.isApplies()) {
-					applicableCategories.add(categoryData.getCategory());
-				}
-			}
-		}
-
-		// If the ancestors aren't applicable, then remove category
-		Iterator<AuditCategory> iterator = applicableCategories.iterator();
-		while (iterator.hasNext()) {
-			AuditCategory category = iterator.next();
-			AuditCategory parent = category.getParent();
-
-			// Breadcrumbs in case we have a cyclical relationship somewhere
-			Set<Integer> alreadyProcessed = new HashSet<Integer>();
-			alreadyProcessed.add(category.getId());
-
-			while (parent != null) {
-				if (alreadyProcessed.contains(parent.getId())) {
-					logger.warn("Audit Category {} has a cyclical relationship! " + "Please check the configuration.",
-							parent.getId());
-					break;
-				}
-
-				if (!applicableCategories.contains(parent)) {
-					iterator.remove();
-					break;
-				}
-
-				alreadyProcessed.add(parent.getId());
-				parent = parent.getParent();
-			}
-		}
-
-		return applicableCategories;
 	}
 
 	private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData,

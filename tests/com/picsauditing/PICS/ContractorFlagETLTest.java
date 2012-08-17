@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 
@@ -38,7 +39,6 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -475,139 +475,67 @@ public class ContractorFlagETLTest {
 	}
 
 	@Test
-	public void testGetApplicableCategories_ParentNotApplicable() throws Exception {
-		AuditCategory parent = EntityFactory.makeAuditCategory();
-		AuditCatData parentData = new AuditCatData();
-		parentData.setApplies(false);
-		parentData.setCategory(parent);
+	public void testGetApplicableCategories_Null() throws Exception {
+		Set<AuditCategory> results = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				(AuditQuestion) null, contractor);
 
-		AuditCategory child = EntityFactory.makeAuditCategory();
-		child.setParent(parent);
-		AuditCatData childData = new AuditCatData();
-		childData.setApplies(true);
-		childData.setCategory(child);
+		assertNotNull(results);
+		assertTrue(results.isEmpty());
 
-		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-		categoryData.add(parentData);
-		categoryData.add(childData);
+		results = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories", auditQuestion,
+				(ContractorAccount) null);
 
-		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
-		audit.setCategories(categoryData);
+		assertNotNull(results);
+		assertTrue(results.isEmpty());
 
-		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		audits.add(audit);
+		when(auditQuestion.getAuditType()).thenReturn(null);
 
-		when(contractor.getAudits()).thenReturn(audits);
+		results = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories", auditQuestion, contractor);
 
-		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
-				contractor);
-
-		assertNotNull(applicableCategories);
-		assertTrue(applicableCategories.isEmpty());
+		assertNotNull(results);
+		assertTrue(results.isEmpty());
 	}
 
 	@Test
-	public void testGetApplicableCategories_ParentApplicable() throws Exception {
-		AuditCategory parent = EntityFactory.makeAuditCategory();
-		AuditCatData parentData = new AuditCatData();
-		parentData.setApplies(true);
-		parentData.setCategory(parent);
+	public void testGetApplicableCategories_NoMatch() throws Exception {
+		AuditType auditTypeOnContractor = EntityFactory.makeAuditType();
+		ContractorAudit audit = EntityFactory.makeContractorAudit(auditTypeOnContractor, contractor);
 
-		AuditCategory child = EntityFactory.makeAuditCategory();
-		child.setParent(parent);
-		AuditCatData childData = new AuditCatData();
-		childData.setApplies(true);
-		childData.setCategory(child);
-
-		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-		categoryData.add(parentData);
-		categoryData.add(childData);
-
-		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
-		audit.setCategories(categoryData);
+		AuditType auditTypeOnQuestion = EntityFactory.makeAuditType();
 
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		audits.add(audit);
 
+		when(auditQuestion.getAuditType()).thenReturn(auditTypeOnQuestion);
 		when(contractor.getAudits()).thenReturn(audits);
 
-		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
-				contractor);
+		Set<AuditCategory> results = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+				(AuditQuestion) null, contractor);
 
-		assertNotNull(applicableCategories);
-		assertFalse(applicableCategories.isEmpty());
-		assertTrue(applicableCategories.contains(parent));
-		assertTrue(applicableCategories.contains(child));
+		assertNotNull(results);
+		assertTrue(results.isEmpty());
 	}
 
 	@Test
-	public void testGetApplicableCategories_ChildNotApplicable() throws Exception {
-		AuditCategory parent = EntityFactory.makeAuditCategory();
-		AuditCatData parentData = new AuditCatData();
-		parentData.setApplies(true);
-		parentData.setCategory(parent);
-
-		AuditCategory child = EntityFactory.makeAuditCategory();
-		child.setParent(parent);
-		AuditCatData childData = new AuditCatData();
-		childData.setApplies(false);
-		childData.setCategory(child);
-
-		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-		categoryData.add(parentData);
-		categoryData.add(childData);
-
-		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
-		audit.setCategories(categoryData);
+	public void testGetApplicableCategories_Match() throws Exception {
+		AuditType auditType = EntityFactory.makeAuditType();
 
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		audits.add(audit);
 
+		Set<AuditCategory> categories = new TreeSet<AuditCategory>();
+		categories.add(auditCategory);
+
+		when(audit.getAuditType()).thenReturn(auditType);
+		when(audit.getVisibleCategories()).thenReturn(categories);
+		when(auditQuestion.getAuditType()).thenReturn(auditType);
 		when(contractor.getAudits()).thenReturn(audits);
 
-		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
+		Set<AuditCategory> results = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories", auditQuestion,
 				contractor);
 
-		assertNotNull(applicableCategories);
-		assertFalse(applicableCategories.isEmpty());
-		assertTrue(applicableCategories.contains(parent));
-		assertFalse(applicableCategories.contains(child));
-	}
-
-	@Test
-	public void testGetApplicableCategories_Cyclical() throws Exception {
-		AuditCategory parent = EntityFactory.makeAuditCategory();
-		AuditCatData parentData = new AuditCatData();
-		parentData.setApplies(true);
-		parentData.setCategory(parent);
-
-		AuditCategory child = EntityFactory.makeAuditCategory();
-		child.setParent(parent);
-		AuditCatData childData = new AuditCatData();
-		childData.setApplies(true);
-		childData.setCategory(child);
-
-		parent.setParent(child);
-
-		List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-		categoryData.add(parentData);
-		categoryData.add(childData);
-
-		ContractorAudit audit = EntityFactory.makeContractorAudit(EntityFactory.makeAuditType(), contractor);
-		audit.setCategories(categoryData);
-
-		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		audits.add(audit);
-
-		when(contractor.getAudits()).thenReturn(audits);
-
-		Set<AuditCategory> applicableCategories = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories",
-				contractor);
-
-		assertNotNull(applicableCategories);
-		assertFalse(applicableCategories.isEmpty());
-		assertTrue(applicableCategories.contains(parent));
-		assertTrue(applicableCategories.contains(child));
+		assertNotNull(results);
+		assertFalse(results.isEmpty());
 	}
 
 	private void setCategoryApplicable(ContractorFlagETL spy) throws Exception {
@@ -615,6 +543,6 @@ public class ContractorFlagETLTest {
 		categories.add(auditCategory);
 
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
-		PowerMockito.doReturn(categories).when(spy, "getApplicableCategories", contractor);
+		PowerMockito.doReturn(categories).when(spy, "getApplicableCategories", auditQuestion, contractor);
 	}
 }

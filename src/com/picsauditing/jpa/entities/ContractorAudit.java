@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
@@ -45,6 +49,7 @@ import com.picsauditing.util.Strings;
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorAudit extends AbstractIndexableTable {
+	private Logger logger = LoggerFactory.getLogger(ContractorAudit.class);
 
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
@@ -774,6 +779,46 @@ public class ContractorAudit extends AbstractIndexableTable {
 		}
 
 		return categories;
+	}
+
+	@Transient
+	public Set<AuditCategory> getVisibleCategories() {
+		Set<AuditCategory> visibleCategories = new HashSet<AuditCategory>();
+		for (AuditCatData categoryData : this.getCategories()) {
+			// Find all applicable categories
+			if (categoryData.isApplies()) {
+				visibleCategories.add(categoryData.getCategory());
+			}
+		}
+
+		// If the ancestors aren't applicable, then remove category
+		Iterator<AuditCategory> iterator = visibleCategories.iterator();
+		while (iterator.hasNext()) {
+			AuditCategory category = iterator.next();
+			AuditCategory parent = category.getParent();
+
+			// Breadcrumbs in case we have a cyclical relationship somewhere
+			Set<Integer> alreadyProcessed = new HashSet<Integer>();
+			alreadyProcessed.add(category.getId());
+
+			while (parent != null) {
+				if (alreadyProcessed.contains(parent.getId())) {
+					logger.warn("Audit Categories {} have a cyclical relationship! Please check the configuration.",
+							Strings.implode(alreadyProcessed));
+					break;
+				}
+
+				if (!visibleCategories.contains(parent)) {
+					iterator.remove();
+					break;
+				}
+
+				alreadyProcessed.add(parent.getId());
+				parent = parent.getParent();
+			}
+		}
+
+		return visibleCategories;
 	}
 
 	@Transient
