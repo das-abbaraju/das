@@ -211,36 +211,39 @@ public class ReportDAO extends PicsDAO {
 		return false;
 	}
 
-	public void connectReportToUser(Report report, User user) {
+	public ReportUser connectReportToUser(Report report, User user) {
 		ReportUser userReport = new ReportUser();
 
 		userReport.setAuditColumns(user);
 		userReport.setReport(report);
 		userReport.setUser(user);
 		userReport.setEditable(false);
+		userReport.setLastOpened(new Date());
 
 		basicDao.save(userReport);
+
+		return userReport;
 	}
 
-	public void connectReportToUser(Report report, int userId) {
+	public ReportUser connectReportToUser(Report report, int userId) {
 		ReportUser userReport = new ReportUser(userId, report);
 		userReport.setAuditColumns(new User(userId));
+		userReport.setLastOpened(new Date());
 
 		basicDao.save(userReport);
+
+		return userReport;
 	}
 
-	public void connectReportToUserEditable(Report report, int userId) {
+	public ReportUser connectReportToUserEditable(Report report, int userId) {
 		ReportUser userReport = new ReportUser(userId, report);
 		userReport.setAuditColumns(new User(userId));
+		userReport.setLastOpened(new Date());
 		userReport.setEditable(true);
 
 		basicDao.save(userReport);
-	}
 
-	public int getFavoriteCount(int userId) {
-		List<ReportUser> userReports = findFavoriteUserReports(userId);
-
-		return userReports.size();
+		return userReport;
 	}
 
 	public void grantEditPermission(Report report, User user) {
@@ -264,18 +267,6 @@ public class ReportDAO extends PicsDAO {
 	public void removeUserReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		ReportUser userReport = findOneUserReport(userId, reportId);
 		basicDao.remove(userReport);
-	}
-
-	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		ReportUser userReport = findOneUserReport(userId, reportId);
-		userReport.setFavorite(true);
-		basicDao.save(userReport);
-	}
-
-	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		ReportUser userReport = findOneUserReport(userId, reportId);
-		userReport.setFavorite(false);
-		basicDao.save(userReport);
 	}
 
 	@SuppressWarnings("unchecked")

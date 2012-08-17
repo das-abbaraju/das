@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.parser.JSONParser;
@@ -22,6 +23,7 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
@@ -207,5 +209,59 @@ public class ReportModel {
 		}
 
 		return userReports;
+	}
+
+	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
+		ReportUser userReport;
+
+		try {
+			userReport = reportDao.findOneUserReport(userId, reportId);
+		} catch (NoResultException nre) {
+			// Need to connect user to report first
+			Report report = reportDao.findOneReport(reportId);
+			userReport = reportDao.connectReportToUser(report, userId);
+		}
+
+		cascadeFavoriteReportIndices(userId, 1, 1);
+
+		userReport.setFavoriteSortIndex(1);
+		userReport.setFavorite(true);
+		reportDao.save(userReport);
+	}
+
+	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
+		ReportUser unfavoritedUserReport = reportDao.findOneUserReport(userId, reportId);
+		unfavoritedUserReport.setFavorite(false);
+
+		int removedSortIndex = unfavoritedUserReport.getFavoriteSortIndex();
+		unfavoritedUserReport.setFavoriteSortIndex(0);
+		reportDao.save(unfavoritedUserReport);
+
+		cascadeFavoriteReportIndices(userId, removedSortIndex + 1, -1);
+	}
+
+	public void moveUserReport(int userId, int reportId, int offset) throws Exception {
+		ReportUser userReport = reportDao.findOneUserReport(userId, reportId);
+		int displacedIndex = userReport.getFavoriteSortIndex() + offset;
+		ReportUser displacedUserReport = reportDao.findOneUserReportByFavoriteSortIndex(userId, displacedIndex);
+
+		ReportUtil.swapSortOrder(userReport, displacedUserReport);
+
+		reportDao.save(userReport);
+		reportDao.save(displacedUserReport);
+	}
+
+	public void cascadeFavoriteReportIndices(int userId, int startIndex, int offset) {
+		int newIndex = startIndex + offset;
+
+		for (ReportUser userReport : reportDao.findFavoriteUserReports(userId)) {
+			if (userReport.getFavoriteSortIndex() < startIndex)
+				continue;
+
+			userReport.setFavoriteSortIndex(newIndex);
+			reportDao.save(userReport);
+
+			newIndex += 1;
+		}
 	}
 }

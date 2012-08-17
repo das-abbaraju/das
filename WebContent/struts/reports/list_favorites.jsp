@@ -92,9 +92,6 @@
 <s:if test="userReportsOverflow.size > 0">
     <div id="report_favorites_list_excluded">
         <h1><s:text name="ManageReports.favorites.NotIncluded" /></h1>
-        <p>
-            <s:text name="ManageReports.favorites.NotInMenu" />
-        </p>
     </div>
 </s:if>
 

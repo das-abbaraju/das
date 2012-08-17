@@ -137,7 +137,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favorite() {
 		try {
-			reportDao.favoriteReport(permissions.getUserId(), reportId);
+			reportModel.favoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
@@ -150,7 +150,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String unfavorite() {
 		try {
-			reportDao.unfavoriteReport(permissions.getUserId(), reportId);
+			reportModel.unfavoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
@@ -163,7 +163,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveUp() {
 		try {
-			moveUserReport(-1);
+			reportModel.moveUserReport(permissions.getUserId(), reportId, -1);
 		} catch (NoResultException nre) {
 			// Don't do anything
 			logger.warn("No result found in ManageReports.moveUp()", nre);
@@ -176,7 +176,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveDown() {
 		try {
-			moveUserReport(1);
+			reportModel.moveUserReport(permissions.getUserId(), reportId, 1);
 		} catch (NoResultException nre) {
 			// Don't do anything
 			logger.warn("No result found in ManageReports.moveDown()", nre);
@@ -185,18 +185,6 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return redirectToPreviousView();
-	}
-
-	private void moveUserReport(int offset) throws Exception {
-		int userId = permissions.getUserId();
-		ReportUser userReport = reportDao.findOneUserReport(userId, reportId);
-		int displacedIndex = userReport.getFavoriteSortIndex() + offset;
-		ReportUser displacedUserReport = reportDao.findOneUserReportByFavoriteSortIndex(userId, displacedIndex);
-
-		ReportUtil.swapSortOrder(userReport, displacedUserReport);
-
-		reportDao.save(userReport);
-		reportDao.save(displacedUserReport);
 	}
 
 	public String columnsToTranslate() {
