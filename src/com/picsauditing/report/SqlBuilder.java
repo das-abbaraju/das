@@ -193,6 +193,10 @@ public class SqlBuilder {
 		String fieldSql = field.getDatabaseColumnName();
 		if (column.getMethod() == null)
 			return fieldSql;
+		
+		if (column.getMethod().isAggregate()) {
+			field.setUrl(null);
+		}
 
 		switch (column.getMethod()) {
 		case Average:
