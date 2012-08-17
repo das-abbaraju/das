@@ -136,14 +136,27 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	public String toggleFavorite() {
+	public String favorite() {
 		try {
-			reportDao.toggleReportUserFavorite(permissions.getUserId(), reportId);
+			reportDao.favoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in toggleFavorite(). ",e);
+			logger.error("Uncaught exception in ManageReports.favorite(). ",e);
+		}
+
+		return redirectToPreviousView();
+	}
+
+	public String unfavorite() {
+		try {
+			reportDao.unfavoriteReport(permissions.getUserId(), reportId);
+		} catch (NoResultException nre) {
+			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
+			logger.error(nre.toString());
+		} catch (Exception e) {
+			logger.error("Uncaught exception in ManageReports.favorite(). ",e);
 		}
 
 		return redirectToPreviousView();

@@ -19,7 +19,7 @@
         <s:set name="report_id" value="#report.id" />
 
         <%-- Url --%>
-        <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
+        <s:url action="ManageReports" method="unfavorite" var="report_favorite_url">
             <s:param name="reportId">${report_id}</s:param>
         </s:url>
 
@@ -102,7 +102,7 @@
         <s:set name="report_id" value="#report.id" />
 
         <%-- Url --%>
-        <s:url action="ManageReports" method="toggleFavorite" var="report_favorite_url">
+        <s:url action="ManageReports" method="unfavorite" var="report_favorite_url">
             <s:param name="reportId">${report_id}</s:param>
         </s:url>
 

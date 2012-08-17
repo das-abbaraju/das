@@ -269,12 +269,6 @@ public class ReportDAO extends PicsDAO {
 		basicDao.remove(userReport);
 	}
 
-	public void toggleReportUserFavorite(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		ReportUser userReport = findOneUserReport(userId, reportId);
-		userReport.toggleFavorite();
-		basicDao.save(userReport);
-	}
-
 	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		ReportUser userReport = findOneUserReport(userId, reportId);
 		userReport.setFavorite(true);

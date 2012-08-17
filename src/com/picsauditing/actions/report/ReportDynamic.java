@@ -223,6 +223,7 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (ReportValidationException rve) {
+			logger.warn("Invalid report in ReportDynamic.report()", rve);
 			writeJsonErrorMessage(rve);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);

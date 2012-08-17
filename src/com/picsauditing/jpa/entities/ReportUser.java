@@ -70,10 +70,6 @@ public class ReportUser extends BaseTable {
 		this.isFavorite = isFavorite;
 	}
 
-	public void toggleFavorite() {
-		isFavorite = !isFavorite;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getLastOpened() {
 		return lastOpened;
