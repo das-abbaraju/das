@@ -15,11 +15,7 @@ public class FieldTest {
 	private static final String name = "name";
 	private static final String text = "text";
 	private static final int width = 10;
-	private static final boolean visible = false;
-	private static final boolean sortable = false;
-	private static final boolean filterable = false;
 	private static final boolean hidden = true;
-	private static final int flex = 20;
 	private static final String url = "url";
 
 	private static final String value = "value";
@@ -41,7 +37,6 @@ public class FieldTest {
 		JSONObject json = field.toJSONObject();
 
 		assertNull(json.get("name"));
-		assertNull(json.get("flex"));
 		assertNull(json.get("url"));
 		assertNull(json.get("text"));
 		assertNull(json.get("type"));
@@ -81,7 +76,6 @@ public class FieldTest {
 		field = new Field(name, null, filterType);
 		field.setText(text);
 		field.setWidth(width);
-		field.setFlex(flex);
 		field.setUrl(url);
 
 		JSONObject json = field.toJSONObject();
@@ -89,7 +83,6 @@ public class FieldTest {
 		assertEquals(name, json.get("name"));
 		assertEquals(text, json.get("text"));
 		assertEquals(width, json.get("width"));
-		assertEquals(flex, json.get("flex"));
 		assertEquals(url, json.get("url"));
 		assertEquals(text, json.get("text"));
 		assertEquals(filterType.getFieldType().toString().toLowerCase(), json.get("type"));
@@ -114,9 +107,6 @@ public class FieldTest {
 
 	@Test
 	public void testToJsonObject_BooleansNotWritten() {
-		field.setVisible(true);
-		field.setSortable(true);
-		field.setFilterable(true);
 		field.setHidden(false);
 
 		JSONObject json = field.toJSONObject();
@@ -129,16 +119,10 @@ public class FieldTest {
 
 	@Test
 	public void testToJsonObject_BooleansWritten() {
-		field.setVisible(visible);
-		field.setSortable(sortable);
-		field.setFilterable(filterable);
 		field.setHidden(hidden);
 
 		JSONObject json = field.toJSONObject();
 
-		assertEquals(visible, json.get("visible"));
-		assertEquals(sortable, json.get("sortable"));
-		assertEquals(filterable, json.get("filterable"));
 		assertEquals(hidden, json.get("hidden"));
 	}
 
