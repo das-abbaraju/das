@@ -2,14 +2,14 @@ package com.picsauditing.report.fields;
 
 public enum QueryMethod {
 	// None,
-	Count(true, ExtFieldType.Int),
-	CountDistinct(true, ExtFieldType.Int),
+	Count(true, ExtFieldType.String),
+	CountDistinct(true, ExtFieldType.String),
 	GroupConcat(true, ExtFieldType.String), 
 	Max(true),
 	Min(true),
 	
 	Average(true), 
-	Round(false, ExtFieldType.Int), // Parameter means decimal place
+	Round(false, ExtFieldType.String), // Parameter means decimal place
 	Sum(true),
 	
 	Left, // Parameter means number of characters
