@@ -128,7 +128,6 @@ public class DefinitionTest {
 	
 	private void commonMergeTestSetup() {
 		when(column.getFieldName()).thenReturn("Column");
-		when(filter.getValueNames()).thenReturn("Filter Names");
 		when(sort.getFieldName()).thenReturn("Sort FieldName");
 		
 		spiedDefinition.setColumns(Arrays.asList(column));
@@ -138,7 +137,6 @@ public class DefinitionTest {
 	
 	private void commonMergeTestVerification() {
 		assertEquals("Column", definition.getColumns().get(0).getFieldName());
-		assertEquals("Filter Names", definition.getFilters().get(0).getValueNames());
 		assertEquals("Sort FieldName", definition.getSorts().get(0).getFieldName());
 	}
 }
