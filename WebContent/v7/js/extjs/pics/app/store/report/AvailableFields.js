@@ -22,7 +22,7 @@ Ext.define('PICS.store.report.AvailableFields', {
             root: 'fields',
             type: 'json'
         },
-        timeout: 3000,
+        timeout: 5000,
         type: 'ajax'
     },
 
