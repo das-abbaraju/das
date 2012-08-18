@@ -168,7 +168,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveUp() {
 		try {
-			reportModel.moveUserReport(permissions.getUserId(), reportId, -1);
+			reportModel.moveUserReportUpOne(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			// Don't do anything
 			logger.warn("No result found in ManageReports.moveUp()", nre);
@@ -181,7 +181,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String moveDown() {
 		try {
-			reportModel.moveUserReport(permissions.getUserId(), reportId, 1);
+			reportModel.moveUserReportDownOne(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
 			// Don't do anything
 			logger.warn("No result found in ManageReports.moveDown()", nre);

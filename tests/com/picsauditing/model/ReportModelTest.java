@@ -11,6 +11,7 @@ import javax.persistence.NoResultException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -205,5 +206,17 @@ public class ReportModelTest {
 		assertEquals(USER_ID, user.getId());
 		assertEquals(USER_NAME, user.getName());
 		assertEquals(NUM_TIMES_FAVORITED, report.getNumTimesFavorited());
+	}
+
+	@Ignore
+	@Test
+	public void testUnfavorite_TopReport() {
+		// TODO fixed this bug, need a test to verify behavior
+	}
+
+	@Ignore
+	@Test
+	public void testUnfavorite_BottomReport() {
+		// TODO another important edge case
 	}
 }

@@ -385,10 +385,4 @@ public final class ReportUtil {
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
 	}
-
-	public static void swapSortOrder(ReportUser ru1, ReportUser ru2) {
-		int temp = ru1.getFavoriteSortIndex();
-		ru1.setFavoriteSortIndex(ru2.getFavoriteSortIndex());
-		ru2.setFavoriteSortIndex(temp);
-	}
 }

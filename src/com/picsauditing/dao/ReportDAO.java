@@ -11,6 +11,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,8 @@ public class ReportDAO extends PicsDAO {
 	// TODO temp solution for save not working. I have no clue about this
 	@Autowired
 	private BasicDAO basicDao;
+
+	private Database database = null;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDAO.class);
 
@@ -270,7 +273,7 @@ public class ReportDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
-		Database db = new Database();
+		Database db = database();
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		json.put("total", db.getAllRows());
 
@@ -289,5 +292,41 @@ public class ReportDAO extends PicsDAO {
 
 		userReport.setLastOpened(new Date());
 		basicDao.save(userReport);
+	}
+
+	public void cascadeFavoriteReportSorting(int userId, int offset, int start, int end) throws SQLException {
+		String query = "UPDATE report_user" +
+				" SET favoriteSortIndex = favoriteSortIndex + " + offset +
+				" WHERE userID = " + userId +
+				" AND favoriteSortIndex >= " + start +
+				" AND favoriteSortIndex <= " + end;
+
+		database().executeUpdate(query);
+	}
+
+	public int getFavoriteCount(int userId) throws SQLException, Exception {
+		SelectSQL sql = new SelectSQL("report_user");
+		sql.addField("count(reportID) AS favoriteCount");
+		sql.addWhere("userID = " + userId + " AND is_favorite = 1");
+
+		List<BasicDynaBean> results = database().select(sql.toString(), false);
+
+		int favoriteCount;
+		if (CollectionUtils.isNotEmpty(results)) {
+			Long favoriteCountLong = (Long) results.get(0).get("favoriteCount");
+			favoriteCount = favoriteCountLong.intValue();
+		} else {
+			favoriteCount = findFavoriteUserReports(userId).size();
+		}
+
+		return favoriteCount;
+	}
+
+	private Database database() {
+		if (database == null) {
+			database = new Database();
+		}
+
+		return database;
 	}
 }

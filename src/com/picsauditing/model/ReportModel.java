@@ -1,5 +1,6 @@
 package com.picsauditing.model;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -211,7 +212,7 @@ public class ReportModel {
 		return userReports;
 	}
 
-	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
+	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException, SQLException, Exception {
 		ReportUser userReport;
 
 		try {
@@ -222,46 +223,67 @@ public class ReportModel {
 			userReport = reportDao.connectReportToUser(report, userId);
 		}
 
-		cascadeFavoriteReportIndices(userId, 1, 1);
+		int favoriteCount =  reportDao.getFavoriteCount(userId);
+		reportDao.cascadeFavoriteReportSorting(userId, 1, 1, favoriteCount);
 
 		userReport.setFavoriteSortIndex(1);
 		userReport.setFavorite(true);
 		reportDao.save(userReport);
 	}
 
-	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException {
+	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException, SQLException, Exception {
 		ReportUser unfavoritedUserReport = reportDao.findOneUserReport(userId, reportId);
-		unfavoritedUserReport.setFavorite(false);
-
 		int removedSortIndex = unfavoritedUserReport.getFavoriteSortIndex();
+
+		int favoriteCount =  reportDao.getFavoriteCount(userId);
+		reportDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, favoriteCount);
+
 		unfavoritedUserReport.setFavoriteSortIndex(0);
+		unfavoritedUserReport.setFavorite(false);
 		reportDao.save(unfavoritedUserReport);
-
-		cascadeFavoriteReportIndices(userId, removedSortIndex + 1, -1);
 	}
 
-	public void moveUserReport(int userId, int reportId, int offset) throws Exception {
+	public void moveUserReportUpOne(int userId, int reportId) throws Exception {
+		ReportUser reportToMove = reportDao.findOneUserReport(userId, reportId);
+		int prevIndex = reportToMove.getFavoriteSortIndex();
+		moveUserReportToIndex(userId, reportToMove, prevIndex - 1);
+	}
+
+	public void moveUserReportDownOne(int userId, int reportId) throws Exception {
+		ReportUser reportToMove = reportDao.findOneUserReport(userId, reportId);
+		int prevIndex = reportToMove.getFavoriteSortIndex();
+		moveUserReportToIndex(userId, reportToMove, prevIndex + 1);
+	}
+
+	public void moveUserReportToIndex(int userId, int reportId, int newIndex) throws Exception {
 		ReportUser userReport = reportDao.findOneUserReport(userId, reportId);
-		int displacedIndex = userReport.getFavoriteSortIndex() + offset;
-		ReportUser displacedUserReport = reportDao.findOneUserReportByFavoriteSortIndex(userId, displacedIndex);
-
-		ReportUtil.swapSortOrder(userReport, displacedUserReport);
-
-		reportDao.save(userReport);
-		reportDao.save(displacedUserReport);
+		moveUserReportToIndex(userId, userReport, newIndex);
 	}
 
-	public void cascadeFavoriteReportIndices(int userId, int startIndex, int offset) {
-		int newIndex = startIndex + offset;
+	public void moveUserReportToIndex(int userId, ReportUser userReport, int newIndex) throws Exception {
+		if (newIndex < 1 || newIndex > reportDao.getFavoriteCount(userId))
+			return;
 
-		for (ReportUser userReport : reportDao.findFavoriteUserReports(userId)) {
-			if (userReport.getFavoriteSortIndex() < startIndex)
-				continue;
+		if (userReport.getFavoriteSortIndex() == newIndex)
+			return;
 
-			userReport.setFavoriteSortIndex(newIndex);
-			reportDao.save(userReport);
+		int offset, start, end;
 
-			newIndex += 1;
+		if (userReport.getFavoriteSortIndex() < newIndex) {
+			// Moving down in list, other reports move up
+			offset = -1;
+			start = userReport.getFavoriteSortIndex() + 1;
+			end = newIndex;
+		} else {
+			// Moving up in list, other reports move down
+			offset = 1;
+			start = newIndex;
+			end = userReport.getFavoriteSortIndex() - 1;
 		}
+
+		reportDao.cascadeFavoriteReportSorting(userId, offset, start, end);
+
+		userReport.setFavoriteSortIndex(newIndex);
+		reportDao.save(userReport);
 	}
 }
