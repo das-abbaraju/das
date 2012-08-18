@@ -69,7 +69,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	private CertificateDAO certificateDAO;
 	@Autowired
-	private OperatorAccountDAO operatorDAO;
+	protected OperatorAccountDAO operatorDAO;
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired

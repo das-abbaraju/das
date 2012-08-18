@@ -66,8 +66,9 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * This is dynamically set by AuditBuilder.fillAuditCategories() when one or more CAOs require this category. If
-	 * Override==true, then the value must be manually set
+	 * This is dynamically set by AuditBuilder.fillAuditCategories() when one or
+	 * more CAOs require this category. If Override==true, then the value must
+	 * be manually set
 	 */
 	@Column(nullable = false)
 	public boolean isApplies() {
@@ -151,7 +152,6 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 
 	@Transient
 	public String getPrintableScore() {
-
 		if (getScorePossible() > 0) {
 
 			int tempScore = Math.round(score);

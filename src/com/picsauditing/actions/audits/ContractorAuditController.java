@@ -48,6 +48,15 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class ContractorAuditController extends AuditActionSupport {
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
+	// Import PQF
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private AuditTypeDAO auditTypeDAO;
+	@Autowired
+	protected AuditDecisionTableDAO auditDecisionTableDAO;
 
 	protected String mode = null;
 	static private String VIEW = "View";
@@ -68,16 +77,6 @@ public class ContractorAuditController extends AuditActionSupport {
 	private Set<Integer> operatorIds = new TreeSet<Integer>();
 	private List<OperatorAccount> operators;
 	private List<AuditCategory> cats = new ArrayList<AuditCategory>();
-
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
-	// Import PQF
-	@Autowired
-	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
-	private AuditTypeDAO auditTypeDAO;
-	@Autowired
-	private AuditDecisionTableDAO auditDecisionTableDAO;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
