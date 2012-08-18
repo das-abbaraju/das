@@ -56,7 +56,11 @@
         
         <%-- custom --%>
         <script type="text/javascript" src="v7/js/pics/core/core.js"></script>
-        <script type="text/javascript" src="v7/js/pics/general/general.js"></script>
         <script type="text/javascript" src="v7/js/pics/layout/menu.js"></script>
+        <script type="text/javascript" src="v7/js/pics/widgets/modal.js"></script>
+        
+        <script type="text/javascript" src="v7/js/pics/report/list-favorites-controller.js"></script>
+        <script type="text/javascript" src="v7/js/pics/report/list-my-reports-controller.js"></script>
+        <script type="text/javascript" src="v7/js/pics/report/search-controller.js"></script>
     </body>
 </html>

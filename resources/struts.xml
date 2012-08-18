@@ -407,6 +407,7 @@
 			<result name="favorites">struts/reports/list_favorites.jsp</result>
 			<result name="myReports">struts/reports/list_my_reports.jsp</result>
 			<result name="search">struts/reports/search.jsp</result>
+			<result name="searchList">struts/reports/_search-list.jsp</result>
 		</action>
 
 		<action name="Dashboard" class="com.picsauditing.actions.DashboardHome">

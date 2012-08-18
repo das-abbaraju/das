@@ -7,7 +7,7 @@
 <s:url action="ManageReports!searchList" var="manage_all_reports_url" />
 
 <div id="manage_report_menu_container">
-    <ul id="manage_report_menu" class="nav nav-pills">
+    <ul id="manage_report_menu" class="nav nav-tabs">
         <li class="${methodName == 'favoritesList' ? 'active' : ''}">
             <a href="${manage_favorite_reports_url}"><s:text name="ManageReports.report.Favorites" /></a>
         </li>

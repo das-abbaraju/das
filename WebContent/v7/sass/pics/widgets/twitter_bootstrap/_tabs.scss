@@ -1,0 +1,37 @@
+.nav-tabs
+{
+	border-color: #ccc;
+}
+
+.nav-tabs > li
+{
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.nav-tabs > li > a
+{
+	background: #eaeaea;
+	@include background-image(linear-gradient(#f1f1f2, #eaeaea));
+	border: 1px solid #ccc;
+	color: #808285;
+	font-size: 16px;
+	padding-bottom: 13px;
+	padding-top: 13px;
+}
+
+.nav-tabs > li > a:hover
+{
+	background: #f1f1f2;
+	@include background-image(linear-gradient(#fff, #f1f1f2));
+	border-color: #ccc #ccc #ccc;
+}
+
+.nav-tabs > .active > a,
+.nav-tabs > .active > a:hover
+{
+	background: #fff;
+	border-color: #ccc;
+	border-bottom-color: transparent;
+	color: #333;
+}

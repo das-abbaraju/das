@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -97,6 +98,10 @@ public class ManageReports extends PicsActionSupport {
 		if (CollectionUtils.isEmpty(userReports)) {
 			addActionMessage("No Reports found.");
 			userReports = new ArrayList<ReportUser>();
+		}
+		
+		if (AjaxUtils.isAjax(getRequest())) {
+			return "searchList";
 		}
 
 		return "search";

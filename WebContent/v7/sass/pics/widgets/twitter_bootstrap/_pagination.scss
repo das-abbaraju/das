@@ -1,0 +1,12 @@
+.pagination li [class^=icon-],
+.pagination li [class*=icon-]
+{
+	line-height: 28px;
+	width: auto;
+}
+
+.pagination a
+{
+	@include background-image(linear-gradient(#f1f1f2, #dcdcdc));
+	color: #333;
+}
