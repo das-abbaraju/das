@@ -117,9 +117,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractorAccountDao.save(contractor);
 			try {
 				EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
-				addActionMessage(getText("InvoiceDetail.message.SentEmail"));
+				addActionMessage(getText("RegistrationMakePayment.message.SentProFormaEmail"));
 			} catch (Exception e) {
-				addActionError(getText("InvoiceDetail.message.EmailFail"));
+				addActionError(getText("RegistrationMakePayment.message.ProFormaEmailError"));
 			}
 
 			url = "Login.action";
