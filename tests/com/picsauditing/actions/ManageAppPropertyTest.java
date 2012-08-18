@@ -49,7 +49,7 @@ public class ManageAppPropertyTest {
 	@Before
 	public void setUp() {
 		PowerMockito.mockStatic(I18nCache.class);
-		
+
 		manageAppProperty = new ManageAppProperty();
 
 		Whitebox.setInternalState(manageAppProperty, "appPropertyDAO", appPropertyDAO);
@@ -171,22 +171,7 @@ public class ManageAppPropertyTest {
 		when(httpServletRequest.getMethod()).thenReturn(POST);
 		when(httpServletRequest.getParameter(ManageAppProperty.SAVE)).thenReturn(ManageAppProperty.SAVE);
 
-		assertEquals("create", manageAppProperty.create());
-		assertEquals("Hello", manageAppProperty.getProperty().getProperty());
-		assertEquals("World", manageAppProperty.getProperty().getValue());
-
-		verify(appPropertyDAO, only()).save(any(AppProperty.class));
-	}
-
-	@Test
-	public void testCreate_POST_Save_RedirectSaveAndAdd() throws Exception {
-		manageAppProperty.setNewProperty("Hello");
-		manageAppProperty.setNewValue("World");
-
-		when(httpServletRequest.getMethod()).thenReturn(POST);
-		when(httpServletRequest.getParameter(ManageAppProperty.SAVE_ADD)).thenReturn(ManageAppProperty.SAVE_ADD);
-
-		assertEquals("create", manageAppProperty.create());
+		assertEquals(PicsActionSupport.REDIRECT, manageAppProperty.create());
 		assertEquals("Hello", manageAppProperty.getProperty().getProperty());
 		assertEquals("World", manageAppProperty.getProperty().getValue());
 
@@ -296,25 +281,7 @@ public class ManageAppPropertyTest {
 		manageAppProperty.getProperty().setValue("World");
 		manageAppProperty.setNewValue("Universe");
 
-		assertEquals("edit", manageAppProperty.edit());
-		assertEquals("Hello", manageAppProperty.getProperty().getProperty());
-		assertEquals("Universe", manageAppProperty.getProperty().getValue());
-		assertFalse(manageAppProperty.hasActionErrors());
-
-		verify(appPropertyDAO, only()).save(any(AppProperty.class));
-	}
-
-	@Test
-	public void testEdit_POST_Save_RedirectSaveAdd() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
-		when(httpServletRequest.getParameter(ManageAppProperty.SAVE_ADD)).thenReturn(ManageAppProperty.SAVE_ADD);
-
-		manageAppProperty.setProperty(new AppProperty());
-		manageAppProperty.getProperty().setProperty("Hello");
-		manageAppProperty.getProperty().setValue("World");
-		manageAppProperty.setNewValue("Universe");
-
-		assertEquals("edit", manageAppProperty.edit());
+		assertEquals(PicsActionSupport.REDIRECT, manageAppProperty.edit());
 		assertEquals("Hello", manageAppProperty.getProperty().getProperty());
 		assertEquals("Universe", manageAppProperty.getProperty().getValue());
 		assertFalse(manageAppProperty.hasActionErrors());

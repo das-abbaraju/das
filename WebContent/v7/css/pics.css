@@ -6,19 +6,19 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 2, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
+/* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
 .page-header {
   border: 0px;
   margin: 18px 0px;
   padding: 0px; }
 
-/* line 9, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
+/* line 9, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
 h1.title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal; }
 
-/* line 16, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
+/* line 16, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
 p.subtitle {
   color: #808285;
   font-size: 14px;
@@ -27,15 +27,15 @@ p.subtitle {
   margin: 0px; }
 
 @media (max-width: 767px) {
-  /* line 2, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
+  /* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
   body {
     padding: 0px; }
 
-  /* line 6, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
+  /* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
   .container-fluid {
     padding-right: 20px;
     padding-left: 20px; } }
-/* line 4, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_dropdown.scss */
+/* line 4, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_dropdown.scss */
 .dropdown-menu li > a:hover,
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
@@ -55,24 +55,33 @@ p.subtitle {
  * @author: Carey Hinoki
  * @date: 2012-07-10
  */
-/* line 4, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
-#app_property_list .name {
+/* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+.ManageAppProperty-page #app_property_list .name {
   width: 20%; }
-/* line 9, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
-#app_property_list .value {
+/* line 11, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+.ManageAppProperty-page #app_property_list .value {
   width: 70%; }
-/* line 14, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
-#app_property_list .actions {
+/* line 16, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+.ManageAppProperty-page #app_property_list .actions {
   width: 10%; }
-/* line 19, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
-#app_property_list .value p {
+/* line 21, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+.ManageAppProperty-page #app_property_list .value p {
   width: 400px;
   word-wrap: break-word; }
+/* line 31, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+.ManageAppProperty-page #app_property_edit_form .form-actions,
+.ManageAppProperty-page #app_property_create_form .form-actions {
+  text-align: right;
+  width: 220px; }
+/* line 37, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+.ManageAppProperty-page #app_property_edit_form .form-actions .btn,
+.ManageAppProperty-page #app_property_create_form .form-actions .btn {
+  margin-left: 10px; }
 
 /*
  * Manage Report Controller
  */
-/* line 6, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 .ManageReports-page {
   /*
    * Menu
@@ -83,33 +92,33 @@ p.subtitle {
   /*
    * List
    */ }
-  /* line 11, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 11, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu_container {
     text-align: center; }
-  /* line 16, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 16, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu {
     display: inline-block; }
-  /* line 21, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 21, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu > li {
     margin: 0px 5px; }
-  /* line 26, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 26, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu > li > a {
     background: #eaeaea;
     color: #002441;
     font-size: 16px;
     padding-bottom: 13px;
     padding-top: 13px; }
-  /* line 35, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 35, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu > li > a:hover {
     background: #ccc; }
-  /* line 40, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 40, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu > li.active > a {
     background: #002441;
     color: #fff; }
-  /* line 46, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 46, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .lt-ie8 #manage_report_menu {
     display: inline; }
-  /* line 55, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 55, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page h3 {
     color: #999;
     font-size: 14px;
@@ -118,13 +127,13 @@ p.subtitle {
     line-height: 18px;
     margin-bottom: 15px;
     text-align: center; }
-  /* line 70, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 70, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .report-list {
     list-style: none;
     margin: 0px auto 30px;
     text-align: left;
     width: 60%; }
-    /* line 77, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 77, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .report {
       background: #f1f1f2;
       border: 1px solid #ccc;
@@ -134,50 +143,50 @@ p.subtitle {
       -o-border-radius: 3px;
       border-radius: 3px;
       margin-bottom: 2px; }
-    /* line 85, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 85, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .favorite {
       line-height: normal;
       float: left;
       margin: 8px 5px 0px;
       text-decoration: none; }
-    /* line 93, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 93, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .icon-star {
       color: #ccc;
       font-size: 12px; }
-    /* line 99, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 99, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .icon-star.selected {
       color: #a84d10; }
-    /* line 104, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 104, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .summary {
       float: left;
       margin-right: 10px; }
-    /* line 110, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 110, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .name {
       color: #333;
       float: left;
       font-size: 13px;
       line-height: 30px;
       margin: 0px 10px 0px 0px; }
-    /* line 119, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 119, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .created-by {
       color: #999;
       font-size: 10px;
       font-style: italic;
       line-height: 30px;
       white-space: nowrap; }
-    /* line 128, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 128, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .description {
       max-width: 400px; }
-    /* line 133, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 133, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options {
       border-left: 1px solid #ccc;
       float: right;
       height: 30px;
       padding: 0px 5px; }
-    /* line 141, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 141, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options.open {
       background: #ccc; }
-    /* line 146, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 146, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options .dropdown-toggle {
       color: #999;
       -webkit-border-radius: 0px;
@@ -189,30 +198,30 @@ p.subtitle {
       -moz-box-shadow: none;
       box-shadow: none;
       line-height: 30px; }
-  /* line 155, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 155, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .lt-ie8 .report-list {
     display: inline; }
 
 /*
  * Favorites
  */
-/* line 166, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 166, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 #ManageReports_favoritesList_page {
  	/*
 	 * Excluded Reports
 	 */ }
-  /* line 172, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 172, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_favoritesList_page #report_favorites_list_excluded {
     margin: 0px auto;
     width: 60%; }
-    /* line 177, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 177, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     #ManageReports_favoritesList_page #report_favorites_list_excluded h1 {
       border-bottom: 1px solid #ccc;
       color: #999;
       font-size: 18px;
       margin-bottom: 30px;
       text-align: left; }
-    /* line 186, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 186, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     #ManageReports_favoritesList_page #report_favorites_list_excluded p {
       color: #999;
       font-size: 12px;
@@ -221,39 +230,39 @@ p.subtitle {
 /*
  * My Reports
  */
-/* line 201, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 201, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 #ManageReports_myReportsList_page #my_reports_filter {
   margin: 0px 0px 20px;
   text-align: center; }
-/* line 207, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 207, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 #ManageReports_myReportsList_page #my_reports_filter .btn-group {
   display: inline-block; }
-/* line 212, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 212, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 #ManageReports_myReportsList_page .lt-ie8 #my_reports_filter .btn-group {
   display: inline; }
 
 /*
  * Search
  */
-/* line 222, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 222, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 #ManageReports_searchList_page {
   /*
    * Search box
    */ }
-  /* line 228, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 228, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page #report_search {
     margin: 30px 0px 0px;
     text-align: center; }
-  /* line 234, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 234, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page #report_search_form {
     display: inline-block; }
-    /* line 238, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 238, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     #ManageReports_searchList_page #report_search_form .icon-search {
       color: #666;
       position: relative;
       right: 2px;
       top: 8px; }
-    /* line 246, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 246, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     #ManageReports_searchList_page #report_search_form input {
       background: #f1f1f2;
       color: #999;
@@ -264,27 +273,27 @@ p.subtitle {
       -o-border-radius: 20px;
       border-radius: 20px;
       width: 350px; }
-  /* line 256, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 256, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page .lt-ie8 #report_search_form {
     display: inline; }
-  /* line 262, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 262, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page hr {
     border: 0px;
     border-bottom: 1px solid #ccc;
     margin-left: auto;
     margin-right: auto;
     width: 60%; }
-  /* line 273, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 273, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page .report-list .report {
     padding: 0px 20px; }
-  /* line 278, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 278, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page .report-list .summary {
     padding-top: 7px; }
-  /* line 284, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 284, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page .report-list .name,
   #ManageReports_searchList_page .report-list .created-by {
     line-height: 18px; }
-  /* line 289, /Users/mike/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 289, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   #ManageReports_searchList_page .report-list .number-favorites {
     color: #a84d10;
     font-size: 12px;

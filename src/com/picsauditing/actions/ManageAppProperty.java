@@ -16,7 +16,6 @@ public class ManageAppProperty extends PicsActionSupport {
 	private AppPropertyDAO appPropertyDAO;
 
 	public static final String SAVE = "save";
-	public static final String SAVE_ADD = "save_add";
 
 	private AppProperty property = new AppProperty();
 	private String newProperty;
@@ -50,7 +49,7 @@ public class ManageAppProperty extends PicsActionSupport {
 			property.setValue(newValue);
 			appPropertyDAO.save(property);
 
-			updateActionToRedirectDependingOnParameters(action);
+			action = updateActionToRedirectDependingOnParameters(action);
 		}
 
 		return action;
@@ -72,7 +71,7 @@ public class ManageAppProperty extends PicsActionSupport {
 			property.setValue(newValue);
 			appPropertyDAO.save(property);
 
-			updateActionToRedirectDependingOnParameters(action);
+			action = updateActionToRedirectDependingOnParameters(action);
 		}
 
 		return action;
@@ -119,13 +118,11 @@ public class ManageAppProperty extends PicsActionSupport {
 		this.newValue = newValue;
 	}
 
-	private void updateActionToRedirectDependingOnParameters(String action) throws Exception {
+	private String updateActionToRedirectDependingOnParameters(String action) throws Exception {
 		if (getRequest().getParameter(SAVE) != null) {
-			action = setUrlForRedirect("ManageAppProperty!edit.action?property=" + property.getProperty());
+			return setUrlForRedirect("ManageAppProperty.action");
 		}
 
-		if (getRequest().getParameter(SAVE_ADD) != null) {
-			action = setUrlForRedirect("ManageAppProperty!create.action");
-		}
+		return action;
 	}
 }

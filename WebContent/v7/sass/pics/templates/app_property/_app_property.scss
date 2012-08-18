@@ -1,23 +1,41 @@
-#app_property_list
+.ManageAppProperty-page
 {
-	.name
-	{
-		width: 20%;
-	}
-	
-	.value
-	{
-		width: 70%;
-	}
-	
-	.actions
-	{
-		width: 10%;
-	}
-	
-	.value p
-	{
-		width: 400px;
-		word-wrap: break-word;
-	}
+    #app_property_list
+    {
+        .name
+        {
+            width: 20%;
+        }
+
+        .value
+        {
+            width: 70%;
+        }
+
+        .actions
+        {
+            width: 10%;
+        }
+
+        .value p
+        {
+            width: 400px;
+            word-wrap: break-word;
+        }
+    }
+
+    #app_property_edit_form,
+    #app_property_create_form
+    {
+        .form-actions
+        {
+            text-align: right;
+            width: 220px;
+        }
+
+        .form-actions .btn
+        {
+            margin-left: 10px;
+        }
+    }
 }
