@@ -1,4 +1,6 @@
-# SED script to convert NAICS TRIR data obtained from http://www.bls.gov/iif/oshsum.htm into SQL statements
+# SED script to convert NAICS TRIR data obtained from the U.S. Bureau of Labor Statistics 
+# at http://www.bls.gov/iif/oshsum.htm into SQL statements
+# 
 # Craig Jones 2/28/2012
 #
 # To run this script, install SED.exe from http://gnuwin32.sourceforge.net/packages/sed.htm
