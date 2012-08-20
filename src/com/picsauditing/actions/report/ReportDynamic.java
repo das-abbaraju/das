@@ -125,17 +125,20 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String data() {
+//		long start = System.currentTimeMillis();
+//		System.out.println("\n" + "START: " + start);
+
 		try {
 			ReportModel.validate(report);
 
-			System.out.println("\n" + "REPORT: " + report.getId() + "\n" + JSONUtilities.prettyPrint(report.getParameters()));
+//			System.out.println("\n" + "REPORT: " + report.getId() + "\n" + JSONUtilities.prettyPrint(report.getParameters()));
 
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
-			System.out.println("\n" + sql.toString());
+//			System.out.println("\n" + sql.toString());
 
 			ReportUtil.localize(report, permissions.getLocale());
 
@@ -158,7 +161,11 @@ public class ReportDynamic extends PicsActionSupport {
 			writeJsonError(e);
 		}
 
-		System.out.println("\n" + JSONUtilities.prettyPrint(json.toString()));
+//		System.out.println("\n" + JSONUtilities.prettyPrint(json.toString()));
+//
+//		long end = System.currentTimeMillis();
+//		System.out.println("\n" + "End: " + end);
+//		System.out.println("\n" + "Diff: " + (end-start));
 
 		return JSON;
 	}

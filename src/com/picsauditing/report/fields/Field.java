@@ -252,6 +252,10 @@ public class Field implements JSONAware {
 		return autocompleteType;
 	}
 
+	public int getWidth() {
+		return width;
+	}
+
 	public void setWidth(int width) {
 		this.width = width;
 	}
@@ -280,6 +284,10 @@ public class Field implements JSONAware {
 		this.type = type;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}
@@ -303,6 +311,11 @@ public class Field implements JSONAware {
 
 	public Set<OpPerms> getRequiredPermissions() {
 		return requiredPermissions;
+	}
+
+	public Field setRequiredPermissions(Set<OpPerms> requiredPermissions) {
+		this.requiredPermissions = requiredPermissions;
+		return this;
 	}
 
 	public Field requirePermission(OpPerms opPerm) {
