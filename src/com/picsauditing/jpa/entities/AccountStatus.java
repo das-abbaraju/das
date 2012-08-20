@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum AccountStatus implements Translatable {
-	Active, Pending, Demo, Deleted, Deactivated;
+	Requested, Active, Pending, Demo, Deleted, Deactivated;
 
 	public boolean isActive() {
 		return this.equals(Active);
@@ -32,13 +32,13 @@ public enum AccountStatus implements Translatable {
 	public boolean isActiveDemo() {
 		return this.equals(Active) || this.equals(Demo);
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.name();
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey(String property) {
