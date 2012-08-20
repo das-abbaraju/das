@@ -100,9 +100,9 @@ public class ManageReports extends PicsActionSupport {
 			userReports = new ArrayList<ReportUser>();
 		}
 		
-		if (AjaxUtils.isAjax(getRequest())) {
+		/*if (AjaxUtils.isAjax(getRequest())) {
 			return "searchList";
-		}
+		}*/
 
 		return "search";
 	}
