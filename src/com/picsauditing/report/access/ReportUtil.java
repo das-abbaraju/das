@@ -65,7 +65,7 @@ public final class ReportUtil {
 			return null;
 
 		for (Column column : columns) {
-			if (column.getFieldName().equals(fieldName))
+			if (column.getFieldNameWithoutMethod().equals(fieldName))
 				return column;
 		}
 
@@ -181,8 +181,11 @@ public final class ReportUtil {
 
 		for (Column column : definition.getColumns()) {
 			Field field = column.getField();
+			
+			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
+			field.setName(column.getFieldName());
 
 			if (column.getMethod() != null) {
 				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(),locale);
@@ -244,12 +247,10 @@ public final class ReportUtil {
 	public static String translateCategory(String category, Locale locale) {
 		String translatedText = getText("Report.Category." + category, locale);
 
-		// TODO getText() should never return null
 		if (translatedText == null) {
 			translatedText = getText("Report.Category.General", locale);
 		}
 
-		// TODO getText() should never return null
 		if (translatedText == null) {
 			translatedText = "?Report.Category." + category;
 		}
@@ -257,8 +258,8 @@ public final class ReportUtil {
 		return translatedText;
 	}
 
-	public static boolean hasNoColumns(Report report) {
-		return (report.getDefinition().getColumns().size() < 1);
+	public static boolean hasColumns(Report report) {
+		return (report.getDefinition().getColumns().size() >= 1);
 	}
 
 	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {

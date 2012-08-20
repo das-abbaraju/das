@@ -125,26 +125,19 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String data() {
-//		long start = System.currentTimeMillis();
-//		System.out.println("\n" + "START: " + start);
-
 		try {
 			ReportModel.validate(report);
-
-//			System.out.println("\n" + "REPORT: " + report.getId() + "\n" + JSONUtilities.prettyPrint(report.getParameters()));
 
 			// TODO remove definition from SqlBuilder
 			sqlBuilder.setDefinition(report.getDefinition());
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
-//			System.out.println("\n" + sql.toString());
-
 			ReportUtil.localize(report, permissions.getLocale());
 
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 
-			if (report.getDefinition().getColumns().size() > 0) {
+			if (ReportUtil.hasColumns(report)) {
 				List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
 
 				JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields,
@@ -160,12 +153,6 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			writeJsonError(e);
 		}
-
-//		System.out.println("\n" + JSONUtilities.prettyPrint(json.toString()));
-//
-//		long end = System.currentTimeMillis();
-//		System.out.println("\n" + "End: " + end);
-//		System.out.println("\n" + "Diff: " + (end-start));
 
 		return JSON;
 	}
@@ -226,8 +213,6 @@ public class ReportDynamic extends PicsActionSupport {
 			ReportUtil.localize(report, permissions.getLocale());
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
-
-//			System.out.println("\n REPORT FULL: " + JSONUtilities.prettyPrint(report.toJSON(true).toString()));
 
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
@@ -324,7 +309,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		try {
-			if (ReportUtil.hasNoColumns(report)) {
+			if (!ReportUtil.hasColumns(report)) {
 				logger.warn("User tried to download a report with no columns as an excel spreadsheet. Should we not allow that?");
 				return SUCCESS;
 			}

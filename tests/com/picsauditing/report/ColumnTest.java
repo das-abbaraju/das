@@ -47,18 +47,4 @@ public class ColumnTest {
 		column.setFieldName("AccountName");
 		assertEquals("AccountName", column.getFieldName());
 	}
-
-	@Test
-		public void testGetFieldNameWithoutMethod() {
-			column.setFieldName("AccountNameUpperCase");
-			column.setMethod(QueryMethod.UpperCase);
-			assertEquals("AccountName", column.getFieldNameWithoutMethod());
-		}
-
-	@Test
-	public void testGetFieldNameWithDuplicate() {
-		column.setFieldName("FirstYearDateYear");
-		column.setMethod(QueryMethod.Year);
-		assertEquals("FirstYearDate", column.getFieldNameWithoutMethod());
-	}
 }

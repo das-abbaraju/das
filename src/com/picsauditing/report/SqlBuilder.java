@@ -122,10 +122,19 @@ public class SqlBuilder {
 		// Make sure column has a field(?)
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();
+			
+			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
+			String fieldName = column.getFieldName();
+			if (fieldName.equals(fieldNameWithoutMethod) && column.getMethod() != null) {
+				fieldName = fieldName + column.getMethod().toString();
+				column.setFieldName(fieldName);
+			}
 
-			Field field = getCopyOfAvailableField(availableFields, column.getFieldName());
+			Field field = getCopyOfAvailableField(availableFields, fieldNameWithoutMethod);
 
 			if (field != null) {
+				field.setName(fieldName);
+
 				if (column.getMethod() == null || !column.getMethod().isAggregate()) {
 					// For example: Don't add in accountID automatically if
 					// contractorName uses an aggregation like COUNT
@@ -137,7 +146,7 @@ public class SqlBuilder {
 					sql.addGroupBy(columnSql);
 				}
 
-				sql.addField(columnSql + " AS `" + column.getFieldName() + "`");
+				sql.addField(columnSql + " AS `" + fieldName + "`");
 				column.setField(field);
 			}
 
@@ -175,7 +184,7 @@ public class SqlBuilder {
 
 	private boolean isFieldIncluded(String fieldName) {
 		for (Column column : definition.getColumns()) {
-			if (column.getFieldName().equals(fieldName))
+			if (column.getFieldNameWithoutMethod().equals(fieldName))
 				return true;
 		}
 		return false;
@@ -183,7 +192,11 @@ public class SqlBuilder {
 
 	private boolean usesGroupBy(Map<String, Field> availableFields) {
 		for (Column column : definition.getColumns()) {
-			Field field = availableFields.get(column.getFieldName().toUpperCase());
+			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
+			if (fieldNameWithoutMethod == null)
+				continue;
+			
+			Field field = availableFields.get(fieldNameWithoutMethod.toUpperCase());
 			if (field != null) {
 				if (isAggregate(column)) {
 					return true;
@@ -332,10 +345,10 @@ public class SqlBuilder {
 	}
 
 	private String toColumnSql(Column column, Field field) {
-		String columnSQL = columnToSql(column, field);
-
 		if (column.getFieldName().equals("accountName"))
-			columnSQL = "a.nameIndex";
+			field.setDatabaseColumnName("a.nameIndex");
+
+		String columnSQL = columnToSql(column, field);
 
 		return columnSQL;
 	}
