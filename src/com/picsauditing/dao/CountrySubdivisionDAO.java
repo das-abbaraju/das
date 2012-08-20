@@ -22,6 +22,7 @@ public class CountrySubdivisionDAO extends PicsDAO {
 		return em.find(CountrySubdivision.class, isoCode);
 	}
 
+	// FIXME: What is this country parameter for?
 	public Multimap<Country, CountrySubdivision> getCountrySubdivisionMap(String country) {
 		Multimap<Country, CountrySubdivision> result = LinkedHashMultimap.create();
 

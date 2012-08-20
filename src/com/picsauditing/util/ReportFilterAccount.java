@@ -10,8 +10,8 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.FlagColor;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
@@ -52,27 +52,35 @@ public class ReportFilterAccount extends ReportFilter {
 				cache.getText("global.Operator", getLocaleStatic()) };
 	}
 
-	public FlagColor[] getFlagStatusList() throws Exception {
+	public FlagColor[] getFlagStatusList() {
 		return FlagColor.values();
 	}
 
 	public List<CountrySubdivision> getCountrySubdivisionList() {
-		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils
+				.getBean("CountrySubdivisionDAO");
+
 		List<CountrySubdivision> result;
-		if (!Strings.isEmpty(permissions.getCountry())) {
+		if (permissions != null && !Strings.isEmpty(permissions.getCountry())) {
 			Set<String> accountCountries = new HashSet<String>();
 			accountCountries.add(permissions.getCountry());
 			result = countrySubdivisionDAO.findByCountries(accountCountries, false);
-		} else
+		} else {
 			result = countrySubdivisionDAO.findAll();
+		}
 
 		return result;
 	}
 
 	public Multimap<Country, CountrySubdivision> getCountrySubdivisionMap() {
-		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		Multimap<Country, CountrySubdivision> countrySubdivisionMap = null;
 
-		Multimap<Country, CountrySubdivision> countrySubdivisionMap = countrySubdivisionDAO.getCountrySubdivisionMap(permissions.getCountry());
+		if (permissions != null) {
+			CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils
+					.getBean("CountrySubdivisionDAO");
+
+			countrySubdivisionMap = countrySubdivisionDAO.getCountrySubdivisionMap(permissions.getCountry());
+		}
 
 		return countrySubdivisionMap;
 	}
@@ -139,8 +147,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getAccountName() {
-		if (Strings.isEmpty(accountName))
+		if (Strings.isEmpty(accountName)) {
 			accountName = getDefaultName();
+		}
 
 		return accountName;
 	}
@@ -150,8 +159,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getCity() {
-		if (Strings.isEmpty(city))
+		if (Strings.isEmpty(city)) {
 			city = getDefaultCity();
+		}
 
 		return city;
 	}
@@ -169,8 +179,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getZip() {
-		if (Strings.isEmpty(zip))
+		if (Strings.isEmpty(zip)) {
 			zip = getDefaultZip();
+		}
 
 		return zip;
 	}
