@@ -14,6 +14,10 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Objects;
@@ -24,6 +28,7 @@ import com.picsauditing.access.GeneralContractorNotApprovedException;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -35,6 +40,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -67,6 +73,8 @@ import com.picsauditing.util.business.NoteFactory;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
+	private static Logger logger = LoggerFactory.getLogger(ContractorDashboard.class);
+
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
@@ -335,6 +343,24 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public int getOpID() {
 		return opID;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getContractorAndOperatorNames() throws Exception  {
+		int id = Integer.parseInt(getRequest().getParameter("id"));
+		int opID = Integer.parseInt(getRequest().getParameter("opId"));
+		json = new JSONObject();
+
+		if (id > 0 && opID > 0) {
+			findContractor();
+
+			co = contractorOperatorDAO.find(id, opID);
+			json.put("result", "success");
+			json.put("contractorName", co.getContractorAccount().getName());
+			json.put("operatorName", co.getOperatorAccount().getName());
+		}
+
+		return JSON;
 	}
 
 	public void setOpID(int opID) {
@@ -740,6 +766,39 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return percentComplete;
 	}
 
+	public List<User> getUsersWithPermission(OpPerms operatorPermission) {
+		List<User> visibleUsersWithPermissions = new ArrayList<User>();
+
+		if (co != null) {
+			for (User user : co.getOperatorAccount().getUsers()) {
+				Permissions permissions = new Permissions();
+				try {
+					permissions.login(user);
+
+					if (permissions.hasPermission(operatorPermission)) {
+						visibleUsersWithPermissions.add(user);
+					}
+				} catch (Exception e) {
+					logger.error("Cannot login user", e);
+				}
+			}
+		}
+
+		return visibleUsersWithPermissions;
+	}
+
+	public User getPicsRepresentativeForOperator() {
+		if (co != null) {
+			for (AccountUser accountUser : co.getOperatorAccount().getAccountUsers()) {
+				if (accountUser.isCurrent()) {
+					return accountUser.getUser();
+				}
+			}
+		}
+
+		return null;
+	}
+
 	private void setOpIDToFirstClientSiteIfGCFree() {
 		if (permissions.isGeneralContractorFree() && permissions.getLinkedClients().size() > 0) {
 			for (OperatorAccount client : contractor.getOperatorAccounts()) {
@@ -831,7 +890,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return null;
 	}
-	
+
 	private void checkIfGeneralContractorRecordIsValid() {
 		if (co == null || (co.getOperatorAccount() != null && !co.getOperatorAccount().isGeneralContractor())) {
 			addActionError(getText("ContractorView.SelectGeneralContractor"));

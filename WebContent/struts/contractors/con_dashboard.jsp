@@ -186,21 +186,11 @@
     										<s:text name="ContractorView.PendingGeneralContractorsAlert" />
     									</div>
     								</s:if>
-    				
+
     								<s:if test="co != null">
-    									<s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
-    										<s:if test="co.workStatusPending">
-    											<div class="alert">
-    												<s:text name="ContractorView.NotApprovedYet" />
-    											</div>
-    										</s:if>
-    										<s:elseif test="co.workStatusRejected">
-    											<div class="alert">
-    												<s:text name="ContractorView.NotApproved" />
-    											</div>
-    										</s:elseif>
-    									</s:if>
-    				
+
+                                        <s:include value="_con-dashboard-message.jsp" />
+
     									<div class="co_flag">
     										<s:url action="ContractorFlag" var="contractor_flag">
     											<s:param name="id">

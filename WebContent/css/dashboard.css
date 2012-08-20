@@ -1,3 +1,4 @@
+
 #content div.column {
 	float: left;
 	width: 46%;
@@ -168,6 +169,21 @@ tr.hurdle {
 
 table.report tr.hurdle td {
 	font-size: 11px;
+}
+
+#ContractorView__page .contractor-status-buttons
+{
+    text-align: right;
+}
+
+#ContractorView__page .contractor-status-buttons button
+{
+    margin-left: 10px;
+}
+
+#ContractorView__page ul.users-with-permissions
+{
+    margin: 0px;
 }
 
 /* widgets */
