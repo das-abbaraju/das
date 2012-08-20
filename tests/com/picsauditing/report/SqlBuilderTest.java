@@ -220,15 +220,19 @@ public class SqlBuilderTest {
 		verify(sql, times(2)).addJoin(anyString());
 	}
 
+	@Ignore
 	@Test
 	public void testAddFieldsAndGroupBy_Simple() throws Exception {
 		SqlBuilder builderSpy = PowerMockito.spy(builder);
 		PowerMockito.doReturn(Boolean.FALSE).when(builderSpy, "usesGroupBy", any(Map.class));
+		Whitebox.setInternalState(builderSpy, "sql", sql);
 		List<Column> columns = new ArrayList<Column>();
 		when(column.getFieldName()).thenReturn(FIELD_NAME);
 		when(column.getMethod()).thenReturn(QueryMethod.Count);
 		columns.add(column);
 		Map<String, Field> availableFields = new HashMap<String, Field>();
+		Field field = new Field(FIELD_NAME, "", FilterType.String);
+		availableFields.put(FIELD_NAME.toUpperCase(), field);
 
 		Whitebox.invokeMethod(builderSpy, "addFieldsAndGroupBy", availableFields, columns);
 
@@ -350,95 +354,6 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testColumnToSql_BlankIfNoField() throws Exception {
-		String columnName = "columnName";
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-		Column column = new Column(columnName);
-
-		String result = Whitebox.invokeMethod(builder, "columnToSql", column, availableFields);
-
-		assertEquals("", result);
-	}
-
-	@Test
-	public void testColumnToSql_UndecoratedIfNoFunction() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(null, DATABASE_COLUMN_NAME);
-		assertEquals(DATABASE_COLUMN_NAME, result);
-	}
-
-	@Test
-	public void testColumnToSql_Average() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Average, DATABASE_COLUMN_NAME);
-		assertEquals("AVG(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Count() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Count, DATABASE_COLUMN_NAME);
-		assertEquals("COUNT(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_CountDistinct() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.CountDistinct, DATABASE_COLUMN_NAME);
-		assertEquals("COUNT(DISTINCT " + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Date() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Date, DATABASE_COLUMN_NAME);
-		assertEquals("DATE(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_LowerCase() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.LowerCase, DATABASE_COLUMN_NAME);
-		assertEquals("LOWER(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_UpperCase() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.UpperCase, DATABASE_COLUMN_NAME);
-		assertEquals("UPPER(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Max() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Max, DATABASE_COLUMN_NAME);
-		assertEquals("MAX(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Min() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Min, DATABASE_COLUMN_NAME);
-		assertEquals("MIN(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Month() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Month, DATABASE_COLUMN_NAME);
-		assertEquals("MONTH(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Round() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Round, DATABASE_COLUMN_NAME);
-		assertEquals("ROUND(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Sum() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Sum, DATABASE_COLUMN_NAME);
-		assertEquals("SUM(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
-	public void testColumnToSql_Year() throws Exception {
-		String result = setUpAndRunColumnToSqlTest(QueryMethod.Year, DATABASE_COLUMN_NAME);
-		assertEquals("YEAR(" + DATABASE_COLUMN_NAME + ")", result);
-	}
-
-	@Test
 	public void testAddQuotesToValues_Blank() throws Exception {
 		String unquotedValues = "";
 
@@ -463,19 +378,6 @@ public class SqlBuilderTest {
 		String quotedValues = Whitebox.invokeMethod(builder, "addQuotesToValues", unquotedValues);
 
 		assertEquals("'1','2','3'", quotedValues);
-	}
-
-	public String setUpAndRunColumnToSqlTest(QueryMethod queryFunction, String databaseColumnName) throws Exception {
-		when(field.getDatabaseColumnName()).thenReturn(databaseColumnName);
-
-		String columnName = "columnName";
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-		availableFields.put(columnName.toUpperCase(), field);
-
-		when(column.getFieldName()).thenReturn(columnName);
-		when(column.getMethod()).thenReturn(queryFunction);
-
-		return Whitebox.invokeMethod(builder, "columnToSql", column, availableFields);
 	}
 
 //	@Ignore("This is in the wrong class. It should be in AccountModelTest")
@@ -628,14 +530,14 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testGroupByContractorName() {
-		Column contractorNameCount = new Column("contractorNameCount");
+		Column contractorNameCount = new Column("contractorName");
 		contractorNameCount.setMethod(QueryMethod.Count);
 		Definition definition = new Definition();
 		definition.getColumns().add(contractorNameCount);
 		builder.setDefinition(definition);
 
 		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
-		assertEquals(0, sql.getFields().size());
+		assertEquals(1, sql.getFields().size());
 //		assertEquals("", sql.getOrderBy());
 	}
 
