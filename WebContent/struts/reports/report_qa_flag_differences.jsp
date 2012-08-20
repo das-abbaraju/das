@@ -55,27 +55,6 @@
 	</table>
 </div>
 <div>
-	<h2>Flag Differences Data Details Report</h2>
-	<table class="report">
-		<thead>
-			<tr>		
-			  <s:iterator var="columnName" value="flagAnalyzer.flagDataDiffDetails.columnNames">
-				<th><s:property value="columnName"/></th>
-			  </s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-		  <s:iterator var="row" value="flagAnalyzer.flagDataDiffDetails.rows">
-			  <tr>
-			  	<s:iterator var="datum" value="#row" status="stat">
-			  		<td><s:property value="#datum.getValue()"/></td>
-			  	</s:iterator>
-			  </tr>
-		  </s:iterator>
-		</tbody>
-	</table>
-</div>
-<div>
 	<h2>Flag Differences CAO Status Report</h2>
 	<table class="report">
 		<thead>

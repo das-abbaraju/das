@@ -19,46 +19,44 @@ import com.picsauditing.search.SelectSQL;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(QueryRunnerFactory.class)
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
+@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class FlagAnalyzerTest {
 	private FlagAnalyzer flagAnalyzer;
-	
-	@Mock private QueryRunner queryRunner;
-	@Mock private TabularModel velocityData;
-	@Mock private TabularModel flagDiffData;
-	@Mock private TabularModel flagDataDiffDetails;
-	@Mock private TabularModel flagDiffCaoStatus;
-	
+
+	@Mock
+	private QueryRunner queryRunner;
+	@Mock
+	private TabularModel velocityData;
+	@Mock
+	private TabularModel flagDiffData;
+	@Mock
+	private TabularModel flagDiffCaoStatus;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		
+
 		PowerMockito.mockStatic(QueryRunnerFactory.class);
 		when(QueryRunnerFactory.instance((SelectSQL) anyObject())).thenReturn(queryRunner);
-		
+
 		flagAnalyzer = new FlagAnalyzer();
 	}
 
 	@Test
 	public void testRun() throws Exception {
-		when(queryRunner.run())
-		.thenReturn(velocityData)
-		.thenReturn(flagDiffData)
-		.thenReturn(flagDataDiffDetails)
-		.thenReturn(flagDiffCaoStatus);
-		
+		when(queryRunner.run()).thenReturn(velocityData).thenReturn(flagDiffData).thenReturn(flagDiffCaoStatus);
+
 		flagAnalyzer.run();
-		
+
 		assertEquals(velocityData, flagAnalyzer.getVelocityData());
 		assertEquals(flagDiffData, flagAnalyzer.getFlagDiffData());
-		assertEquals(flagDataDiffDetails, flagAnalyzer.getFlagDataDiffDetails());
 		assertEquals(flagDiffCaoStatus, flagAnalyzer.getFlagDiffCaoStatus());
 	}
-	
+
 	@Test
 	public void testRun_SQLException() throws Exception {
 		when(queryRunner.run()).thenThrow(new SQLException());
-		try{
+		try {
 			flagAnalyzer.run();
 			fail("expected exception not thrown");
 		} catch (SQLException e) {
