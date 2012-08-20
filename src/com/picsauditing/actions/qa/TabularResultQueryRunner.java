@@ -12,16 +12,16 @@ import com.picsauditing.PICS.DBBean;
 import com.picsauditing.search.SelectSQL;
 
 public class TabularResultQueryRunner implements QueryRunner {
-	private SelectSQL query;
+	private String query;
 	private TabularModel data = new TabularData();
 	private Connection connection;
-	
+
 	public TabularModel run() throws SQLException {
 		Connection dbConnection = getDbConnection();
 		Statement stmt = dbConnection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		ResultSet rs = null;
 		try {
-			rs = stmt.executeQuery(query.toString());
+			rs = stmt.executeQuery(query);
 			setColumnNamesOnData(rs);
 			setDataValues(rs);
 		} catch (SQLException e) {
@@ -30,21 +30,28 @@ public class TabularResultQueryRunner implements QueryRunner {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {
-			if (rs != null) rs.close();
-			if (stmt != null) stmt.close();
-			if (dbConnection != null) dbConnection.close();
+			if (rs != null)
+				rs.close();
+			if (stmt != null)
+				stmt.close();
+			if (dbConnection != null)
+				dbConnection.close();
 		}
 		return data;
 	}
 
 	public void setSelectSQL(SelectSQL query) {
+		this.query = query.toString();
+	}
+
+	public void setSelectSQL(String query) {
 		this.query = query;
 	}
-	
+
 	public void setTabularModelForData(TabularModel data) {
 		this.data = data;
 	}
-	
+
 	private void setColumnNamesOnData(ResultSet rs) throws SQLException {
 		ResultSetMetaData rsMeta = rs.getMetaData();
 		int columnCount = rsMeta.getColumnCount();
@@ -64,16 +71,16 @@ public class TabularResultQueryRunner implements QueryRunner {
 			row++;
 		}
 	}
-	
+
 	private Connection getDbConnection() throws SQLException {
 		if (this.connection == null) {
 			this.connection = DBBean.getDBConnection();
 		}
 		return this.connection;
 	}
-	
+
 	protected void setDbConnection(Connection connection) {
 		this.connection = connection;
 	}
-	
+
 }

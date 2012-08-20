@@ -1,32 +1,20 @@
 package com.picsauditing.actions.qa;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.picsauditing.search.SelectSQL;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(QueryRunnerFactory.class)
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class FlagAnalyzerTest {
+public class FlagAnalyzerTest extends AnalyzerTest {
 	private FlagAnalyzer flagAnalyzer;
 
-	@Mock
-	private QueryRunner queryRunner;
-	@Mock
-	private TabularModel velocityData;
 	@Mock
 	private TabularModel flagDiffData;
 	@Mock
@@ -36,19 +24,17 @@ public class FlagAnalyzerTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		PowerMockito.mockStatic(QueryRunnerFactory.class);
-		when(QueryRunnerFactory.instance((SelectSQL) anyObject())).thenReturn(queryRunner);
+		super.setUp();
 
 		flagAnalyzer = new FlagAnalyzer();
 	}
 
 	@Test
 	public void testRun() throws Exception {
-		when(queryRunner.run()).thenReturn(velocityData).thenReturn(flagDiffData).thenReturn(flagDiffCaoStatus);
+		when(queryRunner.run()).thenReturn(flagDiffData).thenReturn(flagDiffCaoStatus);
 
 		flagAnalyzer.run();
 
-		assertEquals(velocityData, flagAnalyzer.getVelocityData());
 		assertEquals(flagDiffData, flagAnalyzer.getFlagDiffData());
 		assertEquals(flagDiffCaoStatus, flagAnalyzer.getFlagDiffCaoStatus());
 	}
@@ -63,5 +49,4 @@ public class FlagAnalyzerTest {
 			assertTrue("expected exception thrown", true);
 		}
 	}
-
 }

@@ -17,8 +17,6 @@ public class FlagAnalyzer extends Analyzer {
 	}
 
 	public void run() throws SQLException {
-		super.run();
-
 		QueryRunner analysis = QueryRunnerFactory.instance(buildInitialQuery());
 		flagDiffData = analysis.run();
 

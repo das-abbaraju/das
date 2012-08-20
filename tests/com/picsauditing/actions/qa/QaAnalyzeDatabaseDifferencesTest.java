@@ -1,9 +1,12 @@
 package com.picsauditing.actions.qa;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,13 +19,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PicsTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)

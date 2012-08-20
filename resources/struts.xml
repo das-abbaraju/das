@@ -931,6 +931,11 @@
 			<result>struts/reports/report_import_pqf.jsp</result>
 		</action>
 
+		<action name="QaAnalyzeFlagChangeVelocity" method="executeFlagChangeVelocity"
+				class="com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences">
+			<result>struts/reports/report_qa_flag_change_velocity.jsp</result>
+		</action>
+
 		<action name="QaAnalyzeFlagDifferences" method="executeFlags"
 				class="com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences">
 			<result>struts/reports/report_qa_flag_differences.jsp</result>
