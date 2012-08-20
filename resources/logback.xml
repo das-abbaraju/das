@@ -37,6 +37,20 @@
 		</timeBasedFileNamingAndTriggeringPolicy>
 	</appender>
 
+	<appender name="MissingTranslationAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${destination}_missing_translations.log</file>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss},%msg%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${destination}_missing_translations_%d{yyyy-MM-dd}.log</FileNamePattern>
+		</rollingPolicy>
+		<maxHistory>10</maxHistory>
+		<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+			<maxFileSize>100MB</maxFileSize>
+		</timeBasedFileNamingAndTriggeringPolicy>
+	</appender>
+
 	<!-- Perf4J appenders -->
 
 	<appender name="graphExecutionTimes" class="org.perf4j.logback.GraphingStatisticsAppender">
@@ -98,22 +112,27 @@
 		<appender-ref ref="CoalescingStatistics"/>
 		<appender-ref ref="perf4jFileAppender"/>
 	</logger>
-	
+
 	<logger name="org.perf4j.DebugTimingLogger" additivity="false" level="${loglevel_timing:-debug}">
 		<appender-ref ref="perf4jFileAppender"/>
 	</logger>
 
-	<logger name="org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog"> 
-		<level value="error" /> 
-	</logger> 
+	<logger name="org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog">
+		<level value="error" />
+	</logger>
 
-	<logger name="com.tacitknowledge"> 
-		<level value="INFO" /> 
+	<logger name="com.tacitknowledge">
+		<level value="INFO" />
 		<appender-ref ref="STDOUT"/>
-	</logger> 
-	<logger name="com.picsauditing.autopatches"> 
-		<level value="INFO" /> 
+	</logger>
+
+	<logger name="com.picsauditing.autopatches">
+		<level value="INFO" />
 		<appender-ref ref="STDOUT"/>
-	</logger> 
+	</logger>
+
+	<logger name="com.picsauditing.PICS.I18nCache" level="${loglevel_translations:-error}">
+		<appender-ref ref="MissingTranslationAppender"/>
+	</logger>
 
 </configuration>

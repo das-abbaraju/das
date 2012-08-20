@@ -263,13 +263,16 @@ public class I18nCache implements Serializable {
 		if (!isValidTranslation(goodTranslatedValue)) {
 			goodTranslatedValue = key;
 
-			// If the foreign translation was invalid, check the English
-			// translation
-			if (!locale.equals(DEFAULT_LANGUAGE)) {
+			if (locale.equals(DEFAULT_LANGUAGE)) {
+				logger.error("Translation key '" + key + "' has no translation whatsoever.");
+			} else {
+				// If a foreign translation was invalid, check the English translation
 				String englishValue = cache.get(key, DEFAULT_LANGUAGE);
 
 				if (isValidTranslation(englishValue)) {
 					goodTranslatedValue = englishValue;
+				} else {
+					logger.error("Translation key '" + key + "' has no translation whatsoever.");
 				}
 			}
 		}
