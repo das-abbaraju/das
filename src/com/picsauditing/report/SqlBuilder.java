@@ -13,8 +13,10 @@ import org.apache.commons.lang.StringUtils;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
@@ -32,14 +34,14 @@ public class SqlBuilder {
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) {
+	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) throws ReportValidationException {
 		return buildSql(report, permissions, pageNumber, false);
 	}
 
 	// TODO remove FOR_DOWNLOAD boolean flag
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) {
+	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) throws ReportValidationException {
 		AbstractModel model = report.getModel();
-		sql = initializeSql(model);
+		sql = initializeSql(model, permissions);
 
 		sql.addWhere("1 " + model.getWhereClause(permissions));
 
@@ -58,7 +60,7 @@ public class SqlBuilder {
 	}
 
 	// TODO change this to pass in a report
-	public SelectSQL initializeSql(AbstractModel model) {
+	public SelectSQL initializeSql(AbstractModel model, Permissions permissions) throws ReportValidationException {
 		sql = new SelectSQL();
 
 		setFrom(model);
@@ -66,7 +68,7 @@ public class SqlBuilder {
 		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable());
 
 		addFieldsAndGroupBy(availableFields, definition.getColumns());
-		addRuntimeFilters(availableFields);
+		addRuntimeFilters(availableFields, permissions);
 		addOrderByClauses(model, availableFields);
 
 		addJoins(model.getRootTable());
@@ -268,7 +270,7 @@ public class SqlBuilder {
 		return fieldSql;
 	}
 
-	private void addRuntimeFilters(Map<String, Field> availableFields) {
+	private void addRuntimeFilters(Map<String, Field> availableFields, Permissions permissions) throws ReportValidationException {
 		if (definition.getFilters().isEmpty())
 			return;
 
@@ -308,6 +310,10 @@ public class SqlBuilder {
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
 				whereIndex++;
 			}
+		}
+		
+		if (where.contains("{")) {
+			throw new ReportValidationException(ReportUtil.getText("DynamicReports.FilterExpressionInvalid", permissions.getLocale()));
 		}
 		sql.addWhere(where);
 
