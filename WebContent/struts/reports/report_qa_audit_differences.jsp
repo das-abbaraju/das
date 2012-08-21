@@ -53,27 +53,5 @@
 		</tbody>
 	</table>
 </div>
-<div>
-	<h2>Equivalent Audits Where AuditFor Not Equal</h2>
-	<table class="report">
-		<thead>
-			<tr>		
-			  <s:iterator var="columnName" value="auditAnalyzer.auditForDiffData.columnNames">
-				<th><s:property value="columnName"/></th>
-			  </s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-		  <s:iterator var="row" value="auditAnalyzer.auditForDiffData.rows">
-			  <tr>
-			  	<s:iterator var="datum" value="#row" status="stat">
-			  		<td><s:property value="#datum.getValue()"/></td>
-			  	</s:iterator>
-			  </tr>
-		  </s:iterator>
-		</tbody>
-	</table>
-</div>
-
 </body>
 </html>

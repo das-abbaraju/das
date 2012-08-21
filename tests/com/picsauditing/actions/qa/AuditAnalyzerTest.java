@@ -19,8 +19,6 @@ public class AuditAnalyzerTest extends AnalyzerTest {
 	private TabularModel auditDiffData;
 	@Mock
 	private TabularModel caoDiffData;
-	@Mock
-	private TabularModel auditForDiffData;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,13 +31,12 @@ public class AuditAnalyzerTest extends AnalyzerTest {
 
 	@Test
 	public void testRun() throws Exception {
-		when(queryRunner.run()).thenReturn(auditDiffData).thenReturn(caoDiffData).thenReturn(auditForDiffData);
+		when(queryRunner.run()).thenReturn(auditDiffData).thenReturn(caoDiffData);
 
 		auditAnalyzer.run();
 
 		assertEquals(auditDiffData, auditAnalyzer.getAuditDiffData());
 		assertEquals(caoDiffData, auditAnalyzer.getCaoDiffData());
-		assertEquals(auditForDiffData, auditAnalyzer.getAuditForDiffData());
 	}
 
 	@Test

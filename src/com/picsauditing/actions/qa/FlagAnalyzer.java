@@ -34,10 +34,13 @@ public class FlagAnalyzer extends Analyzer {
 		selectSQL.addField("gc2.flag as `" + rightLabel + " Flag`");
 		selectSQL.addField("gc2.baselineFlag as `" + rightLabel + " Old Flag`");
 		selectSQL.addField("gc2.flagLastUpdated as `" + rightLabel + " FlagLastUpdated`");
+		selectSQL.addJoin("JOIN " + leftDatabase + ".accounts a ON a.id = gc1.genID ");
 		selectSQL.addJoin("JOIN " + rightDatabase + ".generalcontractors gc2 on gc2.id = gc1.id");
-		selectSQL.addWhere("gc1.flagLastUpdated > date_sub(now(), INTERVAL 1 DAY) ");
-		selectSQL.addWhere("gc2.flagLastUpdated > date_sub(now(), INTERVAL 1 DAY)");
+		selectSQL.addWhere("gc1.flagLastUpdated > DATE_FORMAT(@now:=now(),'%Y-%m-%e')  ");
+		selectSQL.addWhere("gc2.flagLastUpdated > DATE_FORMAT(@now,'%Y-%m-%e') ");
 		selectSQL.addWhere("gc1.flag <> gc2.flag");
+		selectSQL.addWhere("gc1.flag <> gc1.baselineFlag");
+		selectSQL.addWhere("a.status = 'Active'");
 		selectSQL.addOrderBy("gc1.subID");
 		selectSQL.addOrderBy("gc1.genID");
 		return selectSQL;
@@ -56,16 +59,23 @@ public class FlagAnalyzer extends Analyzer {
 		selectSQL.addField("cao2.percentVerified as `" + rightLabel + " CAO Percent Verified`");
 		selectSQL.addField("cao2.percentComplete as `" + rightLabel + " CAO Percent Complete`");
 		selectSQL.addField("cao2.statusChangedDate as `" + rightLabel + " CAO Status Changed`");
-		selectSQL.addJoin("JOIN " + rightDatabase + ".generalcontractors gc2 on gc2.id = gc1.id");
 		selectSQL.addJoin("JOIN " + leftDatabase + ".contractor_audit ca1 on ca1.conID = gc1.subID");
+		selectSQL.addJoin("JOIN " + leftDatabase + ".accounts a on a.id = ca1.conID");
 		selectSQL.addJoin("JOIN " + leftDatabase
 				+ ".contractor_audit_operator cao1 on gc1.genID = cao1.opID and ca1.id = cao1.auditID");
 		selectSQL.addJoin("JOIN " + rightDatabase + ".contractor_audit_operator cao2 on cao2.id = cao1.id");
-		selectSQL.addWhere("gc1.flagLastUpdated > date_sub(now(), INTERVAL 1 DAY)");
-		selectSQL.addWhere("gc2.flagLastUpdated > date_sub(now(), INTERVAL 1 DAY)");
+		selectSQL.addJoin("JOIN " + rightDatabase + ".generalcontractors gc2 on gc2.id = gc1.id");
+		selectSQL.addWhere("gc1.flagLastUpdated > DATE_FORMAT(@now:=now(),'%Y-%m-%e')");
 		selectSQL.addWhere("gc1.flag <> gc2.flag");
+		selectSQL.addWhere("gc1.flag <> gc1.baselineFlag");
+		selectSQL.addWhere("a.status = 'Active'");
 		selectSQL
 				.addWhere("(cao1.statusChangedDate > date_sub(now(), INTERVAL 1 DAY) OR cao2.statusChangedDate > date_sub(now(), INTERVAL 1 DAY))");
+		selectSQL.addWhere("cao1.creationDate < DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY),'%Y-%m-%e-12-00')");
+		selectSQL.addWhere("gc1.creationDate < DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY),'%Y-%m-%e-12-00')");
+		selectSQL.addWhere("ca1.creationDate < DATE_FORMAT(DATE_SUB(now(), INTERVAL 1 DAY),'%Y-%m-%e-12-00')");
+		selectSQL.addWhere("ca1.expiresDate > @now");
+		selectSQL.addWhere("gc2.flagLastUpdated > DATE_FORMAT(@now:=now(),'%Y-%m-%e')");
 		return selectSQL;
 	}
 
