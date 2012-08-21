@@ -150,7 +150,7 @@ public class ReportDAO extends PicsDAO {
 		return findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findUserReportsSortByAlpha(int userId) {
+	public List<ReportUser> findUserReportsSortByAlphaAsc(int userId) {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		try {
@@ -170,12 +170,42 @@ public class ReportDAO extends PicsDAO {
 		return userReports;
 	}
 
-	public List<ReportUser> findUserReportsSortByDateAdded(int userId) {
+	public List<ReportUser> findUserReportsSortByAlphaDesc(int userId) {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+
+		try {
+			userReports = findUserReports(userId);
+
+			// Sort by report name, ignoring case
+			Collections.sort(userReports, new Comparator<ReportUser>() {
+				@Override
+				public int compare(ReportUser ru1, ReportUser ru2) {
+					return ru2.getReport().getName().compareToIgnoreCase(ru1.getReport().getName());
+				}
+			});
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDAO.findAllUserReportsByAlpha()", e);
+		}
+
+		return userReports;
+	}
+
+	public List<ReportUser> findUserReportsSortByDateAddedAsc(int userId) {
+		String query = "t.user.id = " + userId + " ORDER BY creationDate ASC";
+		return findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findUserReportsSortByDateAddedDesc(int userId) {
 		String query = "t.user.id = " + userId + " ORDER BY creationDate DESC";
 		return findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findUserReportsSortByLastUsed(int userId) {
+	public List<ReportUser> findUserReportsSortByLastUsedAsc(int userId) {
+		String query = "t.user.id = " + userId + " ORDER BY lastOpened ASC";
+		return findWhere(ReportUser.class, query);
+	}
+
+	public List<ReportUser> findUserReportsSortByLastUsedDesc(int userId) {
 		String query = "t.user.id = " + userId + " ORDER BY lastOpened DESC";
 		return findWhere(ReportUser.class, query);
 	}

@@ -172,17 +172,29 @@ public class ReportModel {
 	}
 
 
-	public List<ReportUser> getUserReportsForMyReports(String sort, int userId) throws IllegalArgumentException {
+	public List<ReportUser> getUserReportsForMyReports(String sort, String direction, int userId) throws IllegalArgumentException {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(sort)) {
 			userReports = reportDao.findUserReports(userId);
 		} else if (sort.equals(ManageReports.ALPHA_SORT)) {
-			userReports = reportDao.findUserReportsSortByAlpha(userId);
+			if (ManageReports.ASC.equals(direction)) {
+				userReports = reportDao.findUserReportsSortByAlphaAsc(userId);
+			} else {
+				userReports = reportDao.findUserReportsSortByAlphaDesc(userId);
+			}
 		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
-			userReports = reportDao.findUserReportsSortByDateAdded(userId);
+			if (ManageReports.ASC.equals(direction)) {
+				userReports = reportDao.findUserReportsSortByDateAddedAsc(userId);
+			} else {
+				userReports = reportDao.findUserReportsSortByDateAddedDesc(userId);
+			}
 		} else if (sort.equals(ManageReports.LAST_OPENED_SORT)) {
-			userReports = reportDao.findUserReportsSortByLastUsed(userId);
+			if (ManageReports.ASC.equals(direction)) {
+				userReports = reportDao.findUserReportsSortByLastUsedAsc(userId);
+			} else {
+				userReports = reportDao.findUserReportsSortByLastUsedDesc(userId);
+			}
 		} else {
 			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
 		}

@@ -25,11 +25,12 @@ import com.picsauditing.util.Strings;
 public class ManageReports extends PicsActionSupport {
 
 	public static final String MY_REPORTS_URL = "ManageReports!myReportsList.action";
-	public static final String FAVORITE_REPORTS_URL = "ManageReports!favoritesList.action";
 
 	public static final String ALPHA_SORT = "alpha";
 	public static final String DATE_ADDED_SORT = "dateAdded";
 	public static final String LAST_OPENED_SORT = "lastOpened";
+	public static final String ASC = "asc";
+	public static final String DESC = "desc";
 
 	public static final int MAX_REPORTS_IN_MENU = 10;
 
@@ -45,6 +46,7 @@ public class ManageReports extends PicsActionSupport {
 	private int reportId;
 	private String searchTerm;
 	private String sort;
+	private String direction;
 
 	private HttpServletRequest requestForTesting;
 
@@ -76,7 +78,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			userReports = reportModel.getUserReportsForMyReports(sort, permissions.getUserId());
+			userReports = reportModel.getUserReportsForMyReports(sort, direction, permissions.getUserId());
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -268,6 +270,35 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setSort(String sort) {
 		this.sort = sort;
+	}
+
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
+	public String getAlphaSortDirection() {
+		if (!ALPHA_SORT.equals(sort) || DESC.equals(direction))
+			return ASC;
+
+		return DESC;
+	}
+
+	public String getDateAddedSortDirection() {
+		if (!DATE_ADDED_SORT.equals(sort) || ASC.equals(direction))
+			return DESC;
+
+		return ASC;
+	}
+
+	public String getLastOpenedSortDirection() {
+		if (!LAST_OPENED_SORT.equals(sort) || ASC.equals(direction))
+			return DESC;
+
+		return ASC;
 	}
 
 	public String getAlphaSort() {
