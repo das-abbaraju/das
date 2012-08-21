@@ -1,13 +1,20 @@
 package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Before;
@@ -24,6 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
@@ -53,6 +61,8 @@ public class SqlBuilderTest {
 	@Mock private Definition definition;
 	@Mock private Field field;
 	@Mock private Column column;
+	@Mock private Permissions permissions;
+	private Locale locale = Locale.ENGLISH;
 
 	@Before
 	public void setUp() throws Exception {
@@ -383,7 +393,9 @@ public class SqlBuilderTest {
 //	@Ignore("This is in the wrong class. It should be in AccountModelTest")
 	@Test
 	public void testFromTable() throws Exception {
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		when(permissions.getLocale()).thenReturn(locale);
+
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertEquals(0, sql.getFields().size());
 		assertContains("FROM accounts AS a", sql.toString());
@@ -391,14 +403,15 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testMultipleColumns() {
+	public void testMultipleColumns() throws Exception {
 		Definition definition = new Definition();
 		definition.getColumns().add(new Column("accountID"));
 		definition.getColumns().add(new Column("accountName"));
 		definition.getColumns().add(new Column("accountStatus"));
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertEquals(3, sql.getFields().size());
 
@@ -408,21 +421,23 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testJoins() {
-		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
+	public void testJoins() throws Exception {
+		when(permissions.getLocale()).thenReturn(locale);
+		SelectSQL sql = builder.initializeSql(new AccountContractorModel(), permissions);
 
 		String expected = "JOIN contractor_info AS c ON a.id = c.id AND a.type = 'Contractor'";
 		assertContains(expected, sql.toString());
 	}
 
 	@Test
-	public void testContractorColumns() {
+	public void testContractorColumns() throws Exception {
 		Definition definition = new Definition();
 		definition.getColumns().add(new Column("contractorName"));
 		definition.getColumns().add(new Column("contractorScore"));
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
+		SelectSQL sql = builder.initializeSql(new AccountContractorModel(), permissions);
 
 		assertEquals(3, sql.getFields().size());
 	}
@@ -434,15 +449,16 @@ public class SqlBuilderTest {
 		definition.getColumns().add(new Column("accountName"));
 		definition.getColumns().add(new Column("accountContactName"));
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertEquals(3, sql.getFields().size());
 		assertContains("LEFT JOIN users AS accountContact ON accountContact.id = a.contactID", sql.toString());
 	}
 
 	@Test
-	public void testFilters() {
+	public void testFilters() throws Exception {
 		Definition definition = new Definition();
 		definition.getColumns().add(new Column("accountName"));
 		Filter filter = new Filter();
@@ -451,21 +467,23 @@ public class SqlBuilderTest {
 		filter.setValue("Trevor's");
 		definition.getFilters().add(filter);
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\\'s%'))", sql.toString());
 	}
 
 	@Ignore("NullPointerException I don't have time to fix now - Mike N.")
 	@Test
-	public void testFiltersWithComplexColumn() {
+	public void testFiltersWithComplexColumn() throws Exception {
 		String columnName = "accountCreationDateYear";
 		Definition definition = new Definition();
 		Column column = new Column(columnName);
 		column.setMethod(QueryMethod.Year);
 		definition.getColumns().add(column);
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
 		Filter filter = new Filter();
 		filter.setFieldName(columnName);
@@ -474,22 +492,23 @@ public class SqlBuilderTest {
 
 		definition.getFilters().add(filter);
 
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
 	}
 
 	@Ignore("accountStatusCount needs to be added to availableFields")
 	@Test
-	public void testGroupBy() {
+	public void testGroupBy() throws Exception {
 		Definition definition = new Definition();
 		definition.getColumns().add(new Column("accountStatus"));
 		Column column = new Column("accountStatusCount");
 		column.setMethod(QueryMethod.Count);
 		definition.getColumns().add(column);
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertContains("COUNT(a.status)", sql.toString());
 		assertContains("GROUP BY a.status", sql.toString());
@@ -497,7 +516,7 @@ public class SqlBuilderTest {
 
 	@Ignore("NullPointerException I don't have time to fix now - Mike N.")
 	@Test
-	public void testHaving() {
+	public void testHaving() throws Exception {
 		// {"filters":[{"column":"contractorName","operator":"BeginsWith","value":"Da"}]}
 		Definition definition = new Definition();
 		definition.getColumns().add(new Column("accountStatus"));
@@ -505,6 +524,7 @@ public class SqlBuilderTest {
 		column.setMethod(QueryMethod.Count);
 		definition.getColumns().add(column);
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
 		{
 			Filter filter = new Filter();
@@ -521,7 +541,7 @@ public class SqlBuilderTest {
 			definition.getFilters().add(filter);
 		}
 
-		SelectSQL sql = builder.initializeSql(new AccountModel());
+		SelectSQL sql = builder.initializeSql(new AccountModel(), permissions);
 
 		assertContains("HAVING (COUNT(a.name) > '5')", sql.toString());
 		assertContains("WHERE ((a.nameIndex LIKE 'A%'))", sql.toString());
@@ -529,28 +549,30 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testGroupByContractorName() {
+	public void testGroupByContractorName() throws Exception {
 		Column contractorNameCount = new Column("contractorName");
 		contractorNameCount.setMethod(QueryMethod.Count);
 		Definition definition = new Definition();
 		definition.getColumns().add(contractorNameCount);
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(new AccountContractorModel());
+		SelectSQL sql = builder.initializeSql(new AccountContractorModel(), permissions);
 		assertEquals(1, sql.getFields().size());
 //		assertEquals("", sql.getOrderBy());
 	}
 
 	@Test
-	public void testSorts() {
+	public void testSorts() throws Exception {
 		AbstractModel accountModel = new AccountModel();
 
 		Sort sort = new Sort("accountStatus");
 		Definition definition = new Definition();
 		definition.getSorts().add(sort);
 		builder.setDefinition(definition);
+		when(permissions.getLocale()).thenReturn(locale);
 
-		SelectSQL sql = builder.initializeSql(accountModel);
+		SelectSQL sql = builder.initializeSql(accountModel, permissions);
 		assertContains("ORDER BY a.status", sql.toString());
 
 //		definition.getColumns().add(new Column("accountStatus"));
@@ -558,7 +580,7 @@ public class SqlBuilderTest {
 //		assertContains("ORDER BY accountStatus", sql.toString());
 
 		sort.setAscending(false);
-		sql = builder.initializeSql(accountModel);
+		sql = builder.initializeSql(accountModel, permissions);
 		assertContains("ORDER BY a.status DESC", sql.toString());
 	}
 }
