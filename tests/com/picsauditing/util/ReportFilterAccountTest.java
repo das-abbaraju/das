@@ -11,7 +11,6 @@ import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +27,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
@@ -315,65 +313,13 @@ public class ReportFilterAccountTest {
 	}
 
 	@Test
-	public void testGetStatusList_NullPermissions() {
+	public void testGetStatusList() {
 		assertNotNull(accountFilter.getStatusList());
 
-		int resultLength = accountFilter.getStatusList().length;
-		int originalLength = AccountStatus.values().length;
-
-		assertEquals(originalLength - 1, resultLength);
-	}
-
-	@Test
-	public void testGetStatusList_Contractor() {
-		accountFilter.setPermissions(permissions);
-		when(permissions.isContractor()).thenReturn(true);
-
-		assertNotNull(accountFilter.getStatusList());
-
-		int resultLength = accountFilter.getStatusList().length;
-		int originalLength = AccountStatus.values().length;
-
-		assertEquals(originalLength - 1, resultLength);
-	}
-
-	@Test
-	public void testGetStatusList_OperatorNoPermission() {
-		accountFilter.setPermissions(permissions);
-		when(permissions.isOperatorCorporate()).thenReturn(true);
-		assertNotNull(accountFilter.getStatusList());
-
-		int resultLength = accountFilter.getStatusList().length;
-		int originalLength = AccountStatus.values().length;
-
-		assertEquals(originalLength - 1, resultLength);
-	}
-
-	@Test
-	public void testGetStatusList_OperatorWithPermission() {
-		accountFilter.setPermissions(permissions);
-		when(permissions.isOperatorCorporate()).thenReturn(true);
-		when(permissions.hasPermission(OpPerms.RequestNewContractor)).thenReturn(true);
-
-		assertNotNull(accountFilter.getStatusList());
-
-		int resultLength = accountFilter.getStatusList().length;
-		int originalLength = AccountStatus.values().length;
-
-		assertEquals(originalLength, resultLength);
-	}
-
-	@Test
-	public void testGetStatusList_PicsEmployee() {
-		accountFilter.setPermissions(permissions);
-		when(permissions.isPicsEmployee()).thenReturn(true);
-
-		assertNotNull(accountFilter.getStatusList());
-
-		int resultLength = accountFilter.getStatusList().length;
-		int originalLength = AccountStatus.values().length;
-
-		assertEquals(originalLength, resultLength);
+		AccountStatus[] statuses = AccountStatus.values();
+		for (int index = 0; index < statuses.length; index++) {
+			assertEquals(statuses[index], accountFilter.getStatusList()[index]);
+		}
 	}
 
 	@Test

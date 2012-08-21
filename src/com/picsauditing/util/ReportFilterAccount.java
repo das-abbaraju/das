@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Multimap;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
@@ -208,22 +207,7 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public AccountStatus[] getStatusList() {
-		if (!viewRequestedStatus()) {
-			int size = AccountStatus.values().length - 1;
-			AccountStatus[] statusList = new AccountStatus[size];
-			int index = 0;
-
-			for (AccountStatus status : AccountStatus.values()) {
-				if (status != AccountStatus.Requested) {
-					statusList[index] = status;
-					index++;
-				}
-			}
-
-			return statusList;
-		} else {
-			return AccountStatus.values();
-		}
+		return AccountStatus.values();
 	}
 
 	public boolean isPrimaryInformation() {
@@ -272,19 +256,5 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public static String getDefaultZip() {
 		return String.format("- %s -", cache.getText("global.ZipPostalCode", getLocaleStatic()));
-	}
-
-	private boolean viewRequestedStatus() {
-		if (permissions != null) {
-			if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.RequestNewContractor)) {
-				return true;
-			}
-
-			if (permissions.isPicsEmployee()) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }
