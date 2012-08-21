@@ -191,8 +191,7 @@ public class I18nCache implements Serializable {
 			Map<String, Date> newCacheUsage = new HashMap<String, Date>();
 			Database db = getDatabase();
 
-			String sql = "SELECT msgKey, locale, msgValue, lastUsed " + "FROM app_translation "
-					+ "WHERE qualityRating != 0";
+			String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 
 			List<BasicDynaBean> messages = db.select(sql, false);
 
