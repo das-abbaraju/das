@@ -19,15 +19,21 @@ public class AuditAnalyzer extends Analyzer {
 	public void run() throws SQLException {
 		QueryRunner analysis = QueryRunnerFactory.instance(buildQueryForAuditsCreatedInLeftNotCreatedInRight());
 		auditDiffData = analysis.run();
+		auditDiffData.setColumnEntityName(1, "Contractor");
+		auditDiffData.setColumnEntityName(2, "Audit");
 
 		QueryRunner analysis2 = QueryRunnerFactory.instance(buildQueryForCAOsCreatedInLeftNotCreatedInRight());
 		caoDiffData = analysis2.run();
+		caoDiffData.setColumnEntityName(1, "Contractor");
+		caoDiffData.setColumnEntityName(2, "Operator");
+		caoDiffData.setColumnEntityName(3, "Audit");
 	}
 
 	private SelectSQL buildQueryForAuditsCreatedInLeftNotCreatedInRight() {
 		SelectSQL selectSQL = new SelectSQL(leftDatabase + ".contractor_audit ca1 ");
 		selectSQL.addField("ca1.conID as `Contractor`");
-		selectSQL.addField("ca1.auditTypeID `" + leftLabel + " AuditType`");
+		selectSQL.addField("ca1.id as `Audit`");
+		selectSQL.addField("ca1.auditTypeID as `" + leftLabel + " AuditType`");
 		selectSQL.addJoin("JOIN " + leftDatabase + ".accounts a on a.id = ca1.conID");
 		selectSQL.addJoin("LEFT JOIN " + rightDatabase
 				+ ".contractor_audit ca2 on ca2.auditTypeID = ca1.auditTypeID and ca2.conID = ca1.conID");
@@ -53,6 +59,7 @@ public class AuditAnalyzer extends Analyzer {
 		selectSQL.addField("cao1.id as `CAO`");
 		selectSQL.addField("ca1.conID as `Contractor`");
 		selectSQL.addField("cao1.opID as `Operator`");
+		selectSQL.addField("ca1.id as `Audit`");
 		selectSQL.addField("ca1.auditTypeID as `Audit Type`");
 		selectSQL.addJoin("JOIN " + leftDatabase + ".contractor_audit ca1 on ca1.id = cao1.auditID");
 		selectSQL.addJoin("JOIN " + leftDatabase + ".accounts a on a.id = ca1.conID");

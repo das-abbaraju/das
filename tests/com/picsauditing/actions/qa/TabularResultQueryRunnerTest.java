@@ -103,7 +103,7 @@ public class TabularResultQueryRunnerTest {
 		when(resultSet.getMetaData()).thenReturn(resultSetMetaData);
 		when(resultSetMetaData.getColumnCount()).thenReturn(columnNames.size());
 		for (int i = 1; i <= columnNames.size(); i++) {
-			when(resultSetMetaData.getColumnName(i)).thenReturn(columnNames.get(i - 1));
+			when(resultSetMetaData.getColumnLabel(i)).thenReturn(columnNames.get(i - 1));
 		}
 
 		TabularResultQueryRunner analysis = (TabularResultQueryRunner) QueryRunnerFactory.instance(query, returnedData);

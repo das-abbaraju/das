@@ -57,7 +57,7 @@ public class TabularResultQueryRunner implements QueryRunner {
 		int columnCount = rsMeta.getColumnCount();
 		List<String> columnNames = new ArrayList<String>();
 		for (int i = 1; i <= columnCount; i++) {
-			columnNames.add(rsMeta.getColumnName(i));
+			columnNames.add(rsMeta.getColumnLabel(i));
 		}
 		data.setColumnNames(columnNames);
 	}

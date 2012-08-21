@@ -19,9 +19,12 @@ public class FlagAnalyzer extends Analyzer {
 	public void run() throws SQLException {
 		QueryRunner analysis = QueryRunnerFactory.instance(buildInitialQuery());
 		flagDiffData = analysis.run();
+		flagDiffData.setColumnEntityName(1, "Contractor");
+		flagDiffData.setColumnEntityName(2, "Operator");
 
 		QueryRunner analysis3 = QueryRunnerFactory.instance(buildFlagDiffCaoStatusQuery());
 		flagDiffCaoStatus = analysis3.run();
+		flagDiffCaoStatus.setColumnEntityName(1, "Contractor");
 	}
 
 	private SelectSQL buildInitialQuery() {

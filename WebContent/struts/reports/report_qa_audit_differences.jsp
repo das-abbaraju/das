@@ -13,45 +13,13 @@
 <s:include value="../actionMessages.jsp"></s:include>
 <div>
 	<h2>Audits Created On <s:property value="leftDatabase"/> But Not On <s:property value="rightDatabase"/></h2>
-	<table class="report">
-		<thead>
-			<tr>		
-			  <s:iterator var="columnName" value="auditAnalyzer.auditDiffData.columnNames">
-				<th><s:property value="columnName"/></th>
-			  </s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-		  <s:iterator var="row" value="auditAnalyzer.auditDiffData.rows">
-			  <tr>
-			  	<s:iterator var="datum" value="#row" status="stat">
-			  		<td><s:property value="#datum.getValue()"/></td>
-			  	</s:iterator>
-			  </tr>
-		  </s:iterator>
-		</tbody>
-	</table>
+	<s:set name="data" value="auditAnalyzer.auditDiffData"/>
+	<s:include value="report_qa_tablemodel_table.jsp"/>
 </div>
 <div>
 	<h2>CAOs Created On <s:property value="leftDatabase"/> But Not On <s:property value="rightDatabase"/></h2>
-	<table class="report">
-		<thead>
-			<tr>		
-			  <s:iterator var="columnName" value="auditAnalyzer.caoDiffData.columnNames">
-				<th><s:property value="columnName"/></th>
-			  </s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-		  <s:iterator var="row" value="auditAnalyzer.caoDiffData.rows">
-			  <tr>
-			  	<s:iterator var="datum" value="#row" status="stat">
-			  		<td><s:property value="#datum.getValue()"/></td>
-			  	</s:iterator>
-			  </tr>
-		  </s:iterator>
-		</tbody>
-	</table>
+	<s:set name="data" value="auditAnalyzer.caoDiffData"/>
+	<s:include value="report_qa_tablemodel_table.jsp"/>
 </div>
 </body>
 </html>

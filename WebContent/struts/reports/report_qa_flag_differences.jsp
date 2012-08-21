@@ -14,45 +14,13 @@
 
 <div>
 	<h2>Flag Differences High-Level Report</h2>
-	<table class="report">
-		<thead>
-			<tr>		
-			  <s:iterator var="columnName" value="flagAnalyzer.flagDiffData.columnNames">
-				<th><s:property value="columnName"/></th>
-			  </s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-		  <s:iterator var="row" value="flagAnalyzer.flagDiffData.rows">
-			  <tr>
-			  	<s:iterator var="datum" value="#row" status="stat">
-			  		<td><s:property value="#datum.getValue()"/></td>
-			  	</s:iterator>
-			  </tr>
-		  </s:iterator>
-		</tbody>
-	</table>
+	<s:set name="data" value="flagAnalyzer.flagDiffData"/>
+	<s:include value="report_qa_tablemodel_table.jsp"/>
 </div>
 <div>
 	<h2>Flag Differences CAO Status Report</h2>
-	<table class="report">
-		<thead>
-			<tr>		
-			  <s:iterator var="columnName" value="flagAnalyzer.flagDiffCaoStatus.columnNames">
-				<th><s:property value="columnName"/></th>
-			  </s:iterator>
-			</tr>
-		</thead>
-		<tbody>
-		  <s:iterator var="row" value="flagAnalyzer.flagDiffCaoStatus.rows">
-			  <tr>
-			  	<s:iterator var="datum" value="#row" status="stat">
-			  		<td><s:property value="#datum.getValue()"/></td>
-			  	</s:iterator>
-			  </tr>
-		  </s:iterator>
-		</tbody>
-	</table>
+	<s:set name="data" value="flagAnalyzer.flagDiffCaoStatus"/>
+	<s:include value="report_qa_tablemodel_table.jsp"/>
 </div>
 </body>
 </html>
