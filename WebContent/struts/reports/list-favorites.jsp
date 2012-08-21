@@ -43,7 +43,7 @@
         </s:if>
 
         <li class="report">
-            <a href="${report_favorite_url}" class="favorite">
+            <a href="${report_favorite_url}" class="favorite" data-id="${report_id}">
                 <i class="icon-star icon-large ${is_favorite_class}"></i>
             </a>
 
