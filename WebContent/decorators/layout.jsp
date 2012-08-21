@@ -62,5 +62,7 @@
         <script type="text/javascript" src="v7/js/pics/report/list-favorites-controller.js"></script>
         <script type="text/javascript" src="v7/js/pics/report/list-my-reports-controller.js"></script>
         <script type="text/javascript" src="v7/js/pics/report/search-controller.js"></script>
+        
+        <script type="text/javascript" src="v7/js/pics/report/report.js"></script>
     </body>
 </html>
