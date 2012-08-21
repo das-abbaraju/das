@@ -58,7 +58,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.PermissionToViewContractor;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -576,8 +575,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(false, "", permissions);
+		return operatorDAO.findWhere(false, "", permissions);
 	}
 
 	/**
