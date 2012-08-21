@@ -193,7 +193,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String configuration() {
 		int userId = permissions.getUserId();
 
-		json.put("is_editable", reportModel.canUserEdit(userId, report));
+		json.put("editable", reportModel.canUserEdit(userId, report));
 
 		return JSON;
 	}

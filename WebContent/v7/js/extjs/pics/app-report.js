@@ -90,7 +90,7 @@ Ext.application({
                PICS.app.configuration = (function config() {
                    return {
                        isEditable: function () {
-                           return result.is_editable;
+                           return result.editable;
                        }
                    };
                }());

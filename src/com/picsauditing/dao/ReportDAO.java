@@ -98,11 +98,11 @@ public class ReportDAO extends PicsDAO {
 		sql.addField("r.description");
 		sql.addField("u.name as userName");
 		sql.addField("u.id as userId");
-		sql.addField("count(ru.is_favorite) as numTimesFavorited");
+		sql.addField("count(ru.favorite) as numTimesFavorited");
 
 		sql.addGroupBy("r.id");
 
-		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.is_favorite = 1");
+		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.favorite = 1");
 		sql.addJoin("JOIN users as u ON r.createdBy = u.id");
 
 		sql.addWhere("r.private = 0 OR r.createdBy = " + userId);
@@ -127,7 +127,7 @@ public class ReportDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findFavoriteUserReports(int userId) {
-		String query = "t.user.id = " + userId + " AND is_favorite = 1";
+		String query = "t.user.id = " + userId + " AND favorite = 1";
 		List<ReportUser> userReports = findWhere(ReportUser.class, query);
 
 		Collections.sort(userReports, new Comparator<ReportUser>() {
@@ -141,7 +141,7 @@ public class ReportDAO extends PicsDAO {
 	}
 
 	public List<ReportUser> findEditableUserReports(int userId) {
-		String query = "t.user.id = " + userId + " AND is_editable = 1";
+		String query = "t.user.id = " + userId + " AND editable = 1";
 		return findWhere(ReportUser.class, query);
 	}
 
@@ -307,7 +307,7 @@ public class ReportDAO extends PicsDAO {
 	public int getFavoriteCount(int userId) throws SQLException, Exception {
 		SelectSQL sql = new SelectSQL("report_user");
 		sql.addField("count(reportID) AS favoriteCount");
-		sql.addWhere("userID = " + userId + " AND is_favorite = 1");
+		sql.addWhere("userID = " + userId + " AND favorite = 1");
 
 		List<BasicDynaBean> results = database().select(sql.toString(), false);
 

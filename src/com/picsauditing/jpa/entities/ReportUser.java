@@ -17,8 +17,8 @@ public class ReportUser extends BaseTable {
 
 	private User user;
 	private Report report;
-	private boolean isEditable;
-	private boolean isFavorite;
+	private boolean editable;
+	private boolean favorite;
 	private Date lastOpened;
 	private int favoriteSortIndex;
 
@@ -28,8 +28,8 @@ public class ReportUser extends BaseTable {
 	public ReportUser(int userId, Report report) {
 		this.user = new User(userId);
 		this.report = report;
-		this.isEditable = false;
-		this.isFavorite = false;
+		this.editable = false;
+		this.favorite = false;
 	}
 
 	@ManyToOne
@@ -52,22 +52,22 @@ public class ReportUser extends BaseTable {
 		this.report = report;
 	}
 
-	@Column(name = "is_editable", nullable = false)
+	@Column(name = "editable", nullable = false)
 	public boolean isEditable() {
-		return isEditable;
+		return editable;
 	}
 
-	public void setEditable(boolean isEditable) {
-		this.isEditable = isEditable;
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
-	@Column(name = "is_favorite", nullable = false)
+	@Column(name = "favorite", nullable = false)
 	public boolean isFavorite() {
-		return isFavorite;
+		return favorite;
 	}
 
-	public void setFavorite(boolean isFavorite) {
-		this.isFavorite = isFavorite;
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
