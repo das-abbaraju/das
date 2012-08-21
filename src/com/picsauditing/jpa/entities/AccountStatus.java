@@ -36,13 +36,13 @@ public enum AccountStatus implements Translatable, PermissionAware {
 	public boolean isActiveDemo() {
 		return this.equals(Active) || this.equals(Demo);
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.name();
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey(String property) {
@@ -52,7 +52,7 @@ public enum AccountStatus implements Translatable, PermissionAware {
 	public boolean isVisibleTo(Permissions permissions) {
 		if (this == Deleted || this == Demo)
 			return permissions.hasPermission(OpPerms.AllContractors);
-		
+
 		return true;
 	}
 }
