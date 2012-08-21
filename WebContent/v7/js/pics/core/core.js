@@ -76,9 +76,9 @@ if (typeof Object.create !== 'function') {
                     type: 'POST',
                     dataType: 'html',
                     data: {},
-                    success: function(data, textStatus, XMLHttpRequest) {},
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {},
-                    complete: function(XMLHttpRequest, textStatus) {}
+                    success: function(data, textStatus, jqXHR) {},
+                    error: function(jqXHR, textStatus, errorThrown) {},
+                    complete: function(jqXHR, textStatus) {}
                 };
                 
                 var config = {};
