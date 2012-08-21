@@ -65,7 +65,7 @@ public final class ReportUtil {
 			return null;
 
 		for (Column column : columns) {
-			if (column.getFieldNameWithoutMethod().equals(fieldName))
+			if (column.getFieldName().equals(fieldName))
 				return column;
 		}
 
