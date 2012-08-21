@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.persistence.Transient;
 
+import com.google.common.base.Strings;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 
@@ -60,7 +61,7 @@ public enum FlagColor implements Translatable {
 		I18nCache cache = I18nCache.getInstance();
 		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
 
-		if (columnName != null && columnName.length() > 0)
+		if (!Strings.isNullOrEmpty(columnName))
 			title = columnName+": "+title;
 		if (this == FlagColor.Clear)
 			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
