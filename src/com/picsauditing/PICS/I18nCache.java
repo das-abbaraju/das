@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
@@ -258,26 +260,39 @@ public class I18nCache implements Serializable {
 	}
 
 	private String getTranslationFallback(String key, String translatedValue, String locale) {
-		String goodTranslatedValue = translatedValue;
+		if (isValidTranslation(translatedValue))
+			return translatedValue;
 
-		if (!isValidTranslation(goodTranslatedValue)) {
-			goodTranslatedValue = key;
+		Permissions permissions = null;
 
-			if (locale.equals(DEFAULT_LANGUAGE)) {
-				logger.error("Translation key '" + key + "' has no translation whatsoever.");
+		try {
+			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		} catch (Exception e) {
+			logger.error("Error trying to get permissions object in I18nCache: ", e);
+		}
+
+		// Default fallback is blank if there is no good translation
+		String fallbackTranslation = "";
+
+		// Translation key is the fallback for PICS employees only
+		if (permissions != null && permissions.isPicsEmployee()) {
+			fallbackTranslation = key;
+		}
+
+		if (locale.equals(DEFAULT_LANGUAGE)) {
+			logger.error("Translation key '" + key + "' has no translation whatsoever.");
+		} else {
+			// If a foreign translation was invalid, check the English translation
+			String englishValue = cache.get(key, DEFAULT_LANGUAGE);
+
+			if (isValidTranslation(englishValue)) {
+				fallbackTranslation = englishValue;
 			} else {
-				// If a foreign translation was invalid, check the English translation
-				String englishValue = cache.get(key, DEFAULT_LANGUAGE);
-
-				if (isValidTranslation(englishValue)) {
-					goodTranslatedValue = englishValue;
-				} else {
-					logger.error("Translation key '" + key + "' has no translation whatsoever.");
-				}
+				logger.error("Translation key '" + key + "' has no translation whatsoever.");
 			}
 		}
 
-		return goodTranslatedValue;
+		return fallbackTranslation;
 	}
 
 	public void saveTranslatableString(String key, TranslatableString value, List<String> requiredLanguages)
