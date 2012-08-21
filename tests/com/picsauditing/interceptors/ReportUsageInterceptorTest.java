@@ -46,7 +46,7 @@ public class ReportUsageInterceptorTest {
 		
 		classUnderTest = new ReportUsageInterceptor();
 		fauxSession = new HashMap<String, Object>();
-			fauxSession.put("permissions", permissions);
+		fauxSession.put("permissions", permissions);
 		when(actionContext.getSession()).thenReturn(fauxSession);
 		when(permissions.getUserId()).thenReturn(1);
 		

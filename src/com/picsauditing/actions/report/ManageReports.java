@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -44,6 +45,8 @@ public class ManageReports extends PicsActionSupport {
 	private int reportId;
 	private String searchTerm;
 	private String sort;
+
+	private HttpServletRequest requestForTesting;
 
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
@@ -99,10 +102,10 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage("No Reports found.");
 			userReports = new ArrayList<ReportUser>();
 		}
-		
-		/*if (AjaxUtils.isAjax(getRequest())) {
+
+		if (AjaxUtils.isAjax(request())) {
 			return "searchList";
-		}*/
+		}
 
 		return "search";
 	}
@@ -222,6 +225,13 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		return REDIRECT;
+	}
+
+	private HttpServletRequest request() {
+		if (requestForTesting != null)
+			return requestForTesting;
+
+		return getRequest();
 	}
 
 	public List<ReportUser> getUserReports() {
