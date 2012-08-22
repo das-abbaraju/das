@@ -78,7 +78,8 @@
                     <s:select 
                         id="conAudit_country" 
                         name="conAudit.country"
-                        value="#countryString" list="countryList"
+                        value="#countryString"
+                        list="countryList"
                         listKey="isoCode" 
                         listValue="name" 
                         headerKey="" 
@@ -86,7 +87,7 @@
                     />
                 </li>
                 <li id="conAudit_countrySubdivision_li" class="calculated-address">
-                    <s:include value="../contractors/_con_country.jsp"></s:include>
+                    <s:include value="../contractors/_con-country.jsp"></s:include>
                 </li>
                 <li class="calculated-address">
 					<label><s:text name="global.City" />:</label>

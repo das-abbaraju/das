@@ -39,7 +39,7 @@
                 var element = $(this);
                 var country_string = element.val();
 
-                AJAX.request({
+                PICS.ajax({
                     url: 'CountrySubdivisionListAjax.action',
                     data: {
                         countryString: country_string,
