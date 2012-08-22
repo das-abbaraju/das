@@ -9,6 +9,14 @@ PICS.define('report.ListFavoritesController', {
                 $('#report_favorites').delegate('.favorite', 'click', function (event) {
                     that.onFavoriteClick.apply(that, [event]);
                 });
+                
+                $('#report_favorites').delegate('.move-down', 'click', function (event) {
+                    that.onMoveDownClick.apply(that, [event]);
+                });
+                
+                $('#report_favorites').delegate('.move-up', 'click', function (event) {
+                    that.onMoveUpClick.apply(that, [event]);
+                });
             }
         },
         
@@ -23,6 +31,42 @@ PICS.define('report.ListFavoritesController', {
             event.preventDefault();
         },
         
+        onMoveDownClick: function (event) {
+            var element = $(event.currentTarget);
+            
+            PICS.ajax({
+                url: element.attr('href'),
+                success: function (data, textStatus, jqXHR) {
+                    PICS.ajax({
+                        url: 'ManageReports!favoritesList.action',
+                        success: function (data, textStatus, jqXHR) {
+                            $('#report_favorites').html(data);
+                        }
+                    });
+                }
+            });
+            
+            event.preventDefault();
+        },
+        
+        onMoveUpClick: function (event) {
+            var element = $(event.currentTarget);
+            
+            PICS.ajax({
+                url: element.attr('href'),
+                success: function (data, textStatus, jqXHR) {
+                    PICS.ajax({
+                        url: 'ManageReports!favoritesList.action',
+                        success: function (data, textStatus, jqXHR) {
+                            $('#report_favorites').html(data);
+                        }
+                    });
+                }
+            });
+            
+            event.preventDefault();
+        },
+        
         unfavorite: function (element, icon) {
             var body = $('body'),
                 report_id = element.attr('data-id');
@@ -32,7 +76,7 @@ PICS.define('report.ListFavoritesController', {
                     PICS.ajax({
                         url: 'ManageReports!favoritesList.action',
                         success: function (data, textStatus, jqXHR) {
-                            $('#report_favorites').replaceWith(data);
+                            $('#report_favorites').html(data);
                         }
                     });
                 });

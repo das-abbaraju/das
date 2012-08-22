@@ -7,7 +7,7 @@
 
 <s:include value="../actionMessages.jsp" />
 
-<s:include value="/struts/layout/_page_header.jsp">
+<s:include value="/struts/layout/_page-header.jsp">
     <s:param name="title">Create Application Property</s:param>
 </s:include>
 

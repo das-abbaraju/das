@@ -4,7 +4,7 @@
 
 <s:include value="../actionMessages.jsp" />
 
-<s:include value="/struts/layout/_page_header.jsp">
+<s:include value="/struts/layout/_page-header.jsp">
     <s:param name="title"><s:text name="ManageReports.title" /></s:param>
     <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>
 </s:include>
