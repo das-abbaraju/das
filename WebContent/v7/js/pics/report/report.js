@@ -1,9 +1,6 @@
 PICS.define('report.Report', {
     methods: {
         init: function () {
-            // bind custom event favorite
-            // bind custom event unfavorite
-            
             if ($('#ManageReports_myReportsList_page').length || $('#ManageReports_favoritesList_page').length) {
                 var body = $('body');
                 

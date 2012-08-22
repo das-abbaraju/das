@@ -6,7 +6,7 @@ PICS.define('report.ListFavoritesController', {
                 
                 $('.dropdown-toggle').dropdown();
                 
-                $('.favorite').on('click', function (event) {
+                $('#report_favorites').delegate('.favorite', 'click', function (event) {
                     that.onFavoriteClick.apply(that, [event]);
                 });
             }
@@ -28,7 +28,14 @@ PICS.define('report.ListFavoritesController', {
                 report_id = element.attr('data-id');
             
             function success(data, textStatus, jqXHR) {
-                element.closest('li').remove();
+                element.closest('li').fadeOut(750, function () {
+                    PICS.ajax({
+                        url: 'ManageReports!favoritesList.action',
+                        success: function (data, textStatus, jqXHR) {
+                            $('#report_favorites').replaceWith(data);
+                        }
+                    });
+                });
             }
             
             var params = [
