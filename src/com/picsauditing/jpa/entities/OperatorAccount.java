@@ -124,10 +124,17 @@ public class OperatorAccount extends Account {
 	}
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
+	@Column(name = "canSeeInsurance", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@ReportField(category = FieldCategory.ClientSitePreferences)
 	public YesNo getCanSeeInsurance() {
+		checkCanSeeInsurance();
 		return this.canSeeInsurance;
+	}
+
+	private void checkCanSeeInsurance(){
+		if (this.canSeeInsurance == null)
+			this.canSeeInsurance = YesNo.No;
 	}
 
 	public void setCanSeeInsurance(YesNo canSeeInsurance) {

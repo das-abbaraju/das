@@ -209,10 +209,9 @@ public class Permissions implements Serializable {
 
 					for (Facility facility : operator.getOperatorFacilities()) {
 						operatorChildren.add(facility.getOperator().getId());
-						if (facility.getOperator().getCanSeeInsurance() != null){
-							if (facility.getOperator().getCanSeeInsurance().isTrue())
-								canSeeInsurance = true;
-						}
+
+						if (facility.getOperator().getCanSeeInsurance().isTrue())
+							canSeeInsurance = true;
 					}
 				}
 			}
