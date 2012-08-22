@@ -18,14 +18,13 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 	private final Logger logger = LoggerFactory.getLogger(AuditCategoryRuleCache.class);
 	
 	public List<AuditCategoryRule> getRules(ContractorAccount contractor, AuditType auditType) {
-		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
 		if (getData() == null)
 			return null;
 
 		RuleFilter contractorFilter = new RuleFilter(contractor);
 		contractorFilter.addAuditType(auditType);
 
-		rules = getData().next(contractorFilter);
+		List<AuditCategoryRule> rules = getData().next(contractorFilter);
 
 		Collections.sort(rules);
 		Collections.reverse(rules);
@@ -33,7 +32,7 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		return rules;
 	}
 
-	public void initialize(List<AuditCategoryRule> rules) {
+	protected void initialize(List<AuditCategoryRule> rules) {
 		data = new AuditTypes();
 		for (AuditCategoryRule rule : rules) {
 			if (rule.getId() > 30470)
@@ -42,7 +41,7 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		}
 	}
 
-	public void initialize(AuditDecisionTableDAO dao) {
+	public synchronized void initialize(AuditDecisionTableDAO dao) {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
 			initialize(dao.findAllRules(AuditCategoryRule.class));
@@ -51,7 +50,7 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		}
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		data = null;
 	}
 

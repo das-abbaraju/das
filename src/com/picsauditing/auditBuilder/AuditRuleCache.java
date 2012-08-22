@@ -3,6 +3,7 @@ package com.picsauditing.auditBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -10,7 +11,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Trade;
 
-public class AuditRuleCache<R extends AuditRule> {
+public abstract class AuditRuleCache<R extends AuditRule> {
 
 	private class FilterRule implements RuleFilterable<R> {
 		List<R> rules;
@@ -221,4 +222,5 @@ public class AuditRuleCache<R extends AuditRule> {
 		}
 	}
 
+    public abstract void initialize(AuditDecisionTableDAO dao);
 }

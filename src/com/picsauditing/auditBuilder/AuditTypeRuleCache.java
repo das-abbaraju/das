@@ -30,14 +30,14 @@ public class AuditTypeRuleCache extends AuditRuleCache<AuditTypeRule> {
 		return rules;
 	}
 
-	public void initialize(List<AuditTypeRule> rules) {
+	protected void initialize(List<AuditTypeRule> rules) {
 		data = new SafetyRisks();
 		for (AuditTypeRule rule : rules) {
 			data.add(rule);
 		}
 	}
 
-	public void initialize(AuditDecisionTableDAO dao) {
+	public synchronized void initialize(AuditDecisionTableDAO dao) {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
 			initialize(dao.findAllRules(AuditTypeRule.class));
@@ -46,7 +46,7 @@ public class AuditTypeRuleCache extends AuditRuleCache<AuditTypeRule> {
 		}
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		data = null;
 	}
 
