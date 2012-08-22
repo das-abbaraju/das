@@ -38,6 +38,7 @@
 	<bean id="AuditOptionValueDAO" class="com.picsauditing.dao.AuditOptionValueDAO"/>
 	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO"/>
 	<bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO"/>
+	<bean id="AuditRejectionCodeDAO" class="com.picsauditing.dao.AuditRejectionCodeDAO"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>

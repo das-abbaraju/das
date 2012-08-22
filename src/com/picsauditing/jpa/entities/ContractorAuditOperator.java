@@ -27,7 +27,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_operator")
-public class ContractorAuditOperator extends BaseTable implements Comparable<ContractorAuditOperator>{
+public class ContractorAuditOperator extends BaseTable implements Comparable<ContractorAuditOperator> {
 
 	private ContractorAudit audit;
 	private OperatorAccount operator;
@@ -39,6 +39,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	private FlagColor flag = null;
 	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<ContractorAuditOperatorWorkflow>();
+	private AuditSubStatus auditSubStatus;
 
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -210,6 +211,15 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	
 	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
 		this.caoWorkflow = caoWorkflow;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public AuditSubStatus getAuditSubStatus() {
+		return auditSubStatus;
+	}
+	
+	public void setAuditSubStatus(AuditSubStatus auditSubStatus) {
+		this.auditSubStatus = auditSubStatus;
 	}
 
 	@Transient

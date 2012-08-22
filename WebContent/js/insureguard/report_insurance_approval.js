@@ -172,7 +172,8 @@
                 
                 // open modal to show reject policy form
                 showPolicyRejectModal: function (cao_id, operator_visible, success_callback) {
-                    if (!cao_id) {
+					
+					if (!cao_id) {
                         throw 'insureguard.ReportInsuranceApproval:showPolicyRejectModal requires cao_id';
                     }
                     
@@ -208,7 +209,7 @@
                             if (tagit_element.length) {
                                 tagit_element.tagit({
                                     postType: 'string',
-                                    source: 'AuditRejectLookupAjax.action',
+                                    source: 'AuditRejectLookupAjax.action?caoId=' + cao_id,
                                     formatter_drop_down: '%id%',
                                     formatter_tag: '%id%'
                                 });

@@ -4,24 +4,17 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -31,7 +24,12 @@ import org.powermock.reflect.Whitebox;
 import com.opensymphony.xwork2.Action;
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.util.Strings;
+import com.picsauditing.dao.AuditRejectionCodeDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.AuditRejectionCode;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 /*
  * populateJsonArray is tested with execute
@@ -42,124 +40,99 @@ import com.picsauditing.util.Strings;
 @PrepareForTest({AuditRejectionLookup.class, DBBean.class, I18nCache.class})
 @PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class AuditRejectionLookupTest {
-	private static final String TRANSLATION_KEY_PREFIX = "Insurance.Rejection.Reason.Code.";
-	private AuditRejectionLookup auditRejectionLookup;
 	
-	private Map<String, String> keyValueTestData =
-			Collections.unmodifiableMap(new HashMap<String, String>() {
-				private static final long serialVersionUID = 1L;
-				{
-					put("BP.Carson.NA.WOS", "Policy must include; BP, its directors, officers, employees and agents as additional insured and a Waiver of subrogation is required for ALL policies (except workers comp).");
-					put("Performance.Pipe.All.NAI", 
-							"Additional language must appear as follows \"The certificate holder is included as an additional insured under the referenced General Liability, Umbrella\\/Excess Liability and Automobile Liability policies as required by written contract or agreement. All of the referenced insurance waives subrogation in favor of certificate holder as required by written contract or agreement.\"");
-					put("Thomas.Steel.All.ICH.CHI","Certificate holder can be the following below:\nApollo Metals:\n1001 Fourteenth Avenue\nBethlehem, PA\n18018\nOr\nApollo Metals\nc\\/o PICS\nP.O. Box 51387\nIrvine, CA. 92619-1387\nThomas Steel Strip Corp.\nDelaware Avenue, NW\nWarren, OH\n44485\nOr\nThomas Steel Strip Corp.\nc\\/o PICS\nP.O. Box 51387\nIrvine, CA. 92619-1387");
-				}
-			});
+	AuditRejectionLookup auditRejectionLookup;
+
+	@Mock
+	private AuditRejectionCodeDAO auditRejectionCodeDao;
+	@Mock
+	private ContractorAuditOperatorDAO contractorAuditOperatorDao;
 	
-	@Mock private ResultSet results; 
-	@Mock private Connection connection;
-	@Mock private Statement statement;
+	@Mock
+	private ContractorAuditOperator cao;
+	@Mock
+	private I18nCache mockCache;
 	
+	@Mock
+	private List<ContractorAuditOperatorPermission> caops;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		PowerMockito.mockStatic(I18nCache.class);
+		PowerMockito.when(I18nCache.getInstance()).thenReturn(mockCache);
 		
-		auditRejectionLookup = PowerMockito.spy(new AuditRejectionLookup());
-		PowerMockito.mockStatic(DBBean.class);
-
-		when(DBBean.getDBConnection()).thenReturn(connection);
-		when(connection.createStatement()).thenReturn(statement);
-		when(statement.executeQuery(anyString())).thenReturn(results);
+		auditRejectionLookup = PowerMockito.spy(new AuditRejectionLookup());	
+		
+		Whitebox.setInternalState(auditRejectionLookup, AuditRejectionCodeDAO.class, auditRejectionCodeDao);
+		Whitebox.setInternalState(auditRejectionLookup, ContractorAuditOperatorDAO.class, contractorAuditOperatorDao);
 	}
-
+	
 	@Test
-	public void testExecute_OneResult() throws Exception {
-		when(results.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.FALSE);
-		when(results.getString(1)).thenReturn(TRANSLATION_KEY_PREFIX+"BP.Carson.NA.WOS");
-		when(results.getString(2)).thenReturn(keyValueTestData.get("BP.Carson.NA.WOS"));
+	public void testExecute() throws Exception {
+		when(cao.getCaoPermissions()).thenReturn(caops);
+		when(contractorAuditOperatorDao.find(anyInt())).thenReturn(cao);
+		
+		List<AuditRejectionCode> codes = buildMockListRejectionCodes();
+		when(auditRejectionCodeDao.findByCaoPermissions(anyListOf(ContractorAuditOperatorPermission.class))).thenReturn(codes);
+		
+		PowerMockito.doReturn("Policy must include; BP, its directors, officers, employees and agents as additional insured " +
+				"and a Waiver of subrogation is required for ALL policies (except workers comp).")
+						.when(auditRejectionLookup, "getRejectionText", any(AuditRejectionCode.class));
 		
 		String strutsResponse = auditRejectionLookup.execute();
 		String json = auditRejectionLookup.getJsonArray().toString();
 		
 		assertEquals(Action.SUCCESS, strutsResponse);
-		assertEquals("[{\"id\":\"BP.Carson.NA.WOS\",\"value\":\"Policy must include; BP, its directors, officers, employees and agents as additional insured and a Waiver of subrogation is required for ALL policies (except workers comp).\"}]", json);
+		assertEquals("[{\"id\":\"WAIVER_OF_SUBROGATION\",\"value\":\"Policy must include; BP, its directors, officers, employees and agents as " +
+				"additional insured and a Waiver of subrogation is required for ALL policies (except workers comp).\"}]", json);
 	}
 	
 	@Test
-	public void testExecute_ManyResults() throws Exception {
-		stubResultsToReturnTrueOnNextEqualToTestDataSize();
-		stubResultsToReturnAllTestData();
-		
-		String strutsResponse = auditRejectionLookup.execute();
-		
-		assertEquals(Action.SUCCESS, strutsResponse);
-		assertEquals(jsonArrayFromTestData(), auditRejectionLookup.getJsonArray());
-	}
-
-	private void stubResultsToReturnTrueOnNextEqualToTestDataSize() throws SQLException {
-		when(results.next()).thenAnswer(new Answer() {
-			private int countCalls = 0; 
-			public Object answer(InvocationOnMock invocation) {
-				if (countCalls++ < keyValueTestData.size()) {
-					return Boolean.TRUE;
-				} else {
-					return Boolean.FALSE;
-				}
-			}
-		});
-	}
-
-	private void stubResultsToReturnAllTestData() throws SQLException {
-		when(results.getString(anyInt())).thenAnswer(new Answer() {
-			private Iterator<String> keys = keyValueTestData.keySet().iterator();
-			private String msgKey;
-			public Object answer(InvocationOnMock invocation) {
-				Object toReturn = null;
-				Object[] args = invocation.getArguments();
-				int i = (Integer) args[0];
-				if (i == 1) {
-					msgKey = keys.next();
-					toReturn = TRANSLATION_KEY_PREFIX+msgKey;
-				} else if (i == 2) {
-					toReturn = keyValueTestData.get(msgKey);
-				}
-				return toReturn;
-			}
-		});
-	}
-
-	@SuppressWarnings("unchecked")
-	private JSONArray jsonArrayFromTestData() {
-		JSONArray jsonArray = new JSONArray();
-		for (String msgKey: keyValueTestData.keySet()) {
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("id", msgKey);
-			jsonObject.put("value", keyValueTestData.get(msgKey));
-			jsonArray.add(jsonObject);
-		}
-		return jsonArray;
+	public void testPopulateJsonArray_EmptyList() throws Exception {
+		JSONArray result = Whitebox.invokeMethod(auditRejectionLookup, "populateJsonArray", new ArrayList<AuditRejectionCode>());
+		assertEquals("[]", result.toJSONString());	
 	}
 	
 	@Test
-	public void testParseCode_keysWithPrefixForAllTestData() throws Exception {
-		for (String msgKey: keyValueTestData.keySet()) {
-			String testKey = TRANSLATION_KEY_PREFIX + msgKey; 
-			String newMsgKey = Whitebox.invokeMethod(auditRejectionLookup, "parseCode", testKey);
-			assertEquals(msgKey, newMsgKey);
-		}
+	public void testPopulateJsonArray_NullList() throws Exception {
+		JSONArray result = Whitebox.invokeMethod(auditRejectionLookup, "populateJsonArray", (Object[]) null);
+		assertEquals("[]", result.toJSONString());
 	}
-
+	
 	@Test
-	public void testParseCode_nullKey() throws Exception {
-		String newMsgKey = Whitebox.invokeMethod(auditRejectionLookup, "parseCode", (Object[])null);
-		assertTrue(Strings.isEmpty(newMsgKey));
+	public void testGetRejectionText() throws Exception {
+		when(mockCache.hasKey(anyString(), any(Locale.class))).thenReturn(true);
+		when(mockCache.getText(anyString(), any(Locale.class), anyVararg())).thenReturn("Additional language must appear as follows \"The certificate holder is included as an additional insured under the " +
+				"referenced General Liability, Umbrella\\/Excess Liability and Automobile Liability policies as required by written contract or agreement. " +
+				"All of the referenced insurance waives subrogation in favor of certificate holder as required by written contract or agreement.\"");
+		PowerMockito.doNothing().when(auditRejectionLookup, "useKey", anyString());
+
+		AuditRejectionCode auditRejectionCode = buildMockAuditRejectionCode(124, "NO_ADDITIONAL_INSURED");
+				
+		String result = Whitebox.invokeMethod(auditRejectionLookup, "getRejectionText", auditRejectionCode);
+
+		assertEquals("Additional language must appear as follows \"The certificate holder is included as an additional insured under the " +
+				"referenced General Liability, Umbrella\\/Excess Liability and Automobile Liability policies as required by written contract or agreement. " +
+				"All of the referenced insurance waives subrogation in favor of certificate holder as required by written contract or agreement.\"", result);
 	}
-
-	@Test
-	public void testParseCode_emptyKey() throws Exception {
-		String newMsgKey = Whitebox.invokeMethod(auditRejectionLookup, "parseCode", "");
-		assertTrue(Strings.isEmpty(newMsgKey));
+	
+	private List<AuditRejectionCode> buildMockListRejectionCodes() {
+		List<AuditRejectionCode> mocks = new ArrayList<AuditRejectionCode>();
+		mocks.add(buildMockAuditRejectionCode(123, "WAIVER_OF_SUBROGATION"));
+		
+		return mocks;
+	}
+	
+	private AuditRejectionCode buildMockAuditRejectionCode(int operatorId, String rejectionCode) {
+		OperatorAccount operator = Mockito.mock(OperatorAccount.class);
+		AuditRejectionCode auditRejectionCode = Mockito.mock(AuditRejectionCode.class);
+		
+		when(operator.getId()).thenReturn(operatorId);
+		when(auditRejectionCode.getOperator()).thenReturn(operator);
+		when(auditRejectionCode.getRejectionCode()).thenReturn(rejectionCode);
+		
+		return auditRejectionCode;
 	}
 
 }

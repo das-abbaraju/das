@@ -1,69 +1,69 @@
 package com.picsauditing.actions;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
-import com.google.common.base.Strings;
-import com.picsauditing.PICS.DBBean;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.DatabaseUtil;
+import com.picsauditing.dao.AuditRejectionCodeDAO;
+import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.jpa.entities.AuditRejectionCode;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 
 @SuppressWarnings("serial")
 public class AuditRejectionLookup extends PicsActionSupport {
 
-	private static final String TRANSLATION_KEY_PREFIX = "Insurance.Rejection.Reason.Code.";
-	private static final String TRANSLATION_KEY_FOR_REJECTION_CODE = TRANSLATION_KEY_PREFIX + "%";
+	private static final String TRANSLATION_KEY_PREFIX = "AuditRejection";
+	
+	@Autowired
+	private AuditRejectionCodeDAO auditRejectionCodeDao;
+	@Autowired
+	private ContractorAuditOperatorDAO contractorAuditOperatorDao;
+	
+	private int caoId;
 
 	@Override
 	public String execute() throws Exception {
-		SelectSQL selectSQL = new SelectSQL("app_translation");
-		selectSQL.addField("msgKey");
-		selectSQL.addField("msgValue");
-		selectSQL.addWhere(buildWhereClause());
-
-		Connection conn = null;
-		ResultSet results = null;
-		try {
-			conn = DBBean.getDBConnection();
-			results = conn.createStatement().executeQuery(selectSQL.toString());
-		} finally {
-			DatabaseUtil.closeResultSet(results);
-			DatabaseUtil.closeConnection(conn);
+		ContractorAuditOperator cao = contractorAuditOperatorDao.find(caoId);
+		if (cao != null) {
+			List<AuditRejectionCode> auditRejectionCodes = auditRejectionCodeDao.findByCaoPermissions(cao.getCaoPermissions());
+			jsonArray = populateJsonArray(auditRejectionCodes);
 		}
-
-		populateJsonArray(results);
-
+		
 		return SUCCESS;
 	}
-
-	private String buildWhereClause() {
-		return ("locale = '" + getLocaleStatic().getLanguage() + "' AND msgKey LIKE '"
-				+ TRANSLATION_KEY_FOR_REJECTION_CODE + "'");
-	}
-
+	
 	@SuppressWarnings("unchecked")
-	private void populateJsonArray(ResultSet results) throws Exception {
-		if (results == null)
-			return;
+	private JSONArray populateJsonArray(List<AuditRejectionCode> auditRejectionCodes) {
+		JSONArray jsonArray = new JSONArray();
+		if (CollectionUtils.isEmpty(auditRejectionCodes)) {
+			return jsonArray;
+		}
 		
-		while (results.next()) {
+		for (AuditRejectionCode auditRejectionCode : auditRejectionCodes) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("id", parseCode(results.getString(1)));
-			jsonObject.put("value", results.getString(2));
+			jsonObject.put("id", auditRejectionCode.getRejectionCode());
+			jsonObject.put("value", getRejectionText(auditRejectionCode));
 			jsonArray.add(jsonObject);
 		}
+		
+		return jsonArray;
 	}
-
-	private String parseCode(String msgKey) {
-		if (!Strings.isNullOrEmpty(msgKey)) {
-			if (msgKey.length() > TRANSLATION_KEY_PREFIX.length()) {
-				return msgKey.substring(TRANSLATION_KEY_PREFIX.length());
-			}
-		}
-
-		return Strings.nullToEmpty(msgKey);
+	
+	private String getRejectionText(AuditRejectionCode auditRejectionCode) {
+		String translationKey = TRANSLATION_KEY_PREFIX + "." + auditRejectionCode.getOperator().getId() 
+				+ "." + auditRejectionCode.getRejectionCode();
+		return getText(translationKey);
+	}
+	
+	public int getCaoId() {
+		return caoId;
+	}
+	
+	public void setCaoId(int caoId) {
+		this.caoId = caoId;
 	}
 
 }
