@@ -28,9 +28,9 @@
         
         <%-- custom --%>
         <link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css?v=${version}" />
         
-        <link rel="stylesheet" type="text/css" href="v7/css/pics.css">
+        <link rel="stylesheet" type="text/css" href="v7/css/pics.css?v=${version}" />
         
         <decorator:head />
         
