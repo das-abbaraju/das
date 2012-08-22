@@ -114,7 +114,6 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 			locales.add(new Locale("fr", "FR"));
 			locales.add(new Locale("de"));
 			// locales.add(new Locale("ja"));
-			locales.add(new Locale("pt"));
 			locales.add(new Locale("es"));
 			locales.add(new Locale("es", "MX"));
 			locales.add(new Locale("es", "ES"));
