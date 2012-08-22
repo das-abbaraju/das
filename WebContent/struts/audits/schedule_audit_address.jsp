@@ -70,37 +70,40 @@
 					<s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/>
                     <s:text name="ScheduleAudit.message.SuiteApartment" />
 				</li>
+                <li class="calculated-address">
+                    <label><s:text name="Country" />:</label>
+                    <s:select 
+                        id="conAudit_country" 
+                        name="conAudit.country"
+                        value="%{conAudit.contractorAccount.country.isoCode}" list="countryList"
+                        listKey="isoCode" 
+                        listValue="name" 
+                        headerKey="" 
+                        headerValue=" - Country - "
+                    />
+                </li>
+                <s:include value="con_country.jsp"></s:include>
+<%--
+                <li id="conAudit_countrySubdivision_li" class="calculated-address">
+                    <label><s:text name="CountrySubdivision" />:</label>
+                    <s:select 
+                        id="conAudit_countrySubdivision" 
+                        name="conAudit.countrySubdivision"
+                        value="%{conAudit.contractorAccount.countrySubdivision}" list="countrySubdivisionList"
+                        listKey="isoCode" 
+                        listValue="name" 
+                        headerKey="" 
+                        headerValue=" - Country Subdivision - "
+                    />
+                </li>
+--%>                
 				<li class="calculated-address">
 					<label><s:text name="global.City" />:</label>
 					<s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" />
 				</li>
-				<li class="calculated-address">
-					<label><s:text name="CountrySubdivision" />:</label>
-					<s:select 
-						id="conAudit_countrySubdivision" 
-						name="conAudit.countrySubdivision"
-						value="%{conAudit.contractorAccount.countrySubdivision}" list="countrySubdivisionList"
-						listKey="isoCode" 
-						listValue="name" 
-						headerKey="" 
-						headerValue=" - Country Subdivision - "
-					/>
-				</li>
-				<li class="calculated-address">
+				<li id="conAudit_zip_li" class="calculated-address">
 					<label><s:text name="global.ZipPostalCode" />:</label>
 					<s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/>
-				</li>
-				<li class="calculated-address">
-					<label><s:text name="Country" />:</label>
-					<s:select 
-						id="conAudit_country" 
-						name="conAudit.country"
-						value="%{conAudit.contractorAccount.country.isoCode}" list="countryList"
-						listKey="isoCode" 
-						listValue="name" 
-						headerKey="" 
-						headerValue=" - Country - "
-					/>
 				</li>
 				<li class="verify-address-manual" style="display: none;">
 					<s:checkbox id="unverifiedCheckbox" name="unverifiedCheckbox" />

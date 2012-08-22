@@ -8,10 +8,11 @@
                     $('#verifyButton').bind('click', function (event) {
                         that.addressVerify.apply(that, [event]);
                     });
-                    
+
                     $('.calculated-address input').bind('keydown', PICS.throttle(this.addressUnverify, 250));
                     
                     $('.calculated-address select').bind('change', this.addressUnverify);
+                    $('#ScheduleAudit__page').delegate('#conAudit_country', 'change', this.updateCountrySubdivisionList);
                     
                     $('#unverifiedCheckbox').bind('change', function (event) {
                         if ($(this).is(':checked')) {
@@ -31,6 +32,36 @@
                         $('#verifyButton').show();
                     }
                 }
+            },
+            
+            updateCountrySubdivisionList: function () {
+                var element = $(this);
+                var country_string = element.val();
+
+                AJAX.request({
+                    url: 'CountrySubdivisionListAjax.action',
+                    data: {
+                        countryString: country_string,
+                        prefix: 'contractor.'
+                    },
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var countrySubdivision_element = $('#conAudit_countrySubdivision_li');
+                        var zip_element = $('#conAudit_zip_li');
+
+                        if ($.trim(data) == '') {
+                            countrySubdivision_element.slideUp(400);
+                        } else {
+                            countrySubdivision_element.html(data);
+                            countrySubdivision_element.slideDown(400);
+                        }
+
+                        if (country_string == 'AE') {
+                            zip_element.slideUp(400);
+                        } else {
+                            zip_element.slideDown(400);
+                        }
+                    }
+                });              
             },
             
             /**
@@ -108,7 +139,7 @@
                 var address = $('#conAudit_address').val();
                 var city = $('#conAudit_city').val();
                 var countrySubdivision = $('#conAudit_countrySubdivision').val();
-                var state = countrySubdivision.substr(string.length-2,2);
+                var state = countrySubdivision.substr(countrySubdivision.length-2,2) || '';
                 var zip = $('#conAudit_zip').val();
                 var country = $('#conAudit_country').val();
                 

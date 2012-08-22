@@ -3,16 +3,29 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="getCountrySubdivisionList(countryString).size() > 0">
-	<label>
-		<s:if test="countryString == 'CA'">
-			<s:text name="ContractorAccount.province"/>:
-		</s:if>
-		<s:else>
-			<s:text name="ContractorAccount.countrySubdivision"/>:
-		</s:else>
-	</label>
-	<s:select list="getCountrySubdivisionList(countryString)" id="countrySubdivision_sel" name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"  
-		listKey="isoCode" listValue="simpleName" value="countrySubdivisionString" headerKey="" headerValue="- %{countryString == 'CA' ? getText('ContractorAccount.province') : getText('ContractorAccount.countrySubdivision')} -"/>
+    <s:if test="countryString == 'US'">
+        <s:set var="label" value="'CountrySubdivision'" />
+    </s:if>
+	<s:elseif test="countryString == 'CA'">
+		<s:set var="label" value="'ContractorAccount.province'" />
+    </s:elseif>
+	<s:elseif test="countryString == 'GB'">
+		<s:set var="label" value="'ContractorAccount.county'" />
+    </s:elseif>
+    <s:else>
+		<s:set var="label" value="'ContractorAccount.countrySubdivision'" />
+    </s:else>
+    <s:select
+        label="%{#label}"
+        id="Registration_contractor_countrySubdivision"
+        list="getCountrySubdivisionList(countryString)" 
+        cssClass="contractor-countrySubdivision"
+        name="countrySubdivision" 
+        listKey="isoCode" 
+        listValue="simpleName"
+        theme="pics"
+        value="countrySubdivisionString"
+    />
 	<s:if test="countrySubdivisionString.length() < 1" >
 		<span class="redMain" id="countrySubdivision_req">*</span>
 	</s:if>
