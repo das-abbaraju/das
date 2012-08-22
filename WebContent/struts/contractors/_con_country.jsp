@@ -2,14 +2,16 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:if test="getCountrySubdivisionList(countryString).size() > 0">
-    <s:if test="countryString == 'US'">
+<s:set var="countryString" value="countryString" />
+
+<s:if test="getCountrySubdivisionList(#countryString).size() > 0">
+    <s:if test="#countryString == 'US'">
         <s:set var="label" value="'CountrySubdivision'" />
     </s:if>
-	<s:elseif test="countryString == 'CA'">
+	<s:elseif test="#countryString == 'CA'">
 		<s:set var="label" value="'ContractorAccount.province'" />
     </s:elseif>
-	<s:elseif test="countryString == 'GB'">
+	<s:elseif test="#countryString == 'GB'">
 		<s:set var="label" value="'ContractorAccount.county'" />
     </s:elseif>
     <s:else>
@@ -17,11 +19,11 @@
     </s:else>
     <s:select
         label="%{#label}"
-        id="Registration_contractor_countrySubdivision"
-        list="getCountrySubdivisionList(countryString)" 
+        id="countrySubdivision_sel"
+        list="getCountrySubdivisionList(#countryString)"
         cssClass="contractor-countrySubdivision"
-        name="countrySubdivision" 
-        listKey="isoCode" 
+        name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"
+        listKey="isoCode"
         listValue="simpleName"
         theme="pics"
         value="countrySubdivisionString"

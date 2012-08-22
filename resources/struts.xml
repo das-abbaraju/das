@@ -238,7 +238,7 @@
 		</action>
 
 		<action name="CountrySubdivisionListAjax" class="com.picsauditing.actions.CountrySubdivisionList">
-			<result>struts/contractors/con_country.jsp</result>
+			<result>struts/contractors/_con_country.jsp</result>
 			<result name="registration">struts/contractors/_registrationCountryList.jsp	</result>
 		</action>
 

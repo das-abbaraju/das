@@ -12,8 +12,9 @@
                     $('.calculated-address input').bind('keydown', PICS.throttle(this.addressUnverify, 250));
                     
                     $('.calculated-address select').bind('change', this.addressUnverify);
+
                     $('#ScheduleAudit__page').delegate('#conAudit_country', 'change', this.updateCountrySubdivisionList);
-                    
+
                     $('#unverifiedCheckbox').bind('change', function (event) {
                         if ($(this).is(':checked')) {
                             $('#submitButton').show();
@@ -139,12 +140,11 @@
                 var address = $('#conAudit_address').val();
                 var city = $('#conAudit_city').val();
                 var countrySubdivision = $('#conAudit_countrySubdivision').val();
-                var state = countrySubdivision.substr(countrySubdivision.length-2,2) || '';
+                var state = (countrySubdivision) ? countrySubdivision.substr(countrySubdivision.length-2,2) : '';
                 var zip = $('#conAudit_zip').val();
                 var country = $('#conAudit_country').val();
-                
                 var full_address = [address, city, state, zip, country].join(', ');
-                
+
                 var geocoder = new google.maps.Geocoder();
                 
                 if (geocoder) {
