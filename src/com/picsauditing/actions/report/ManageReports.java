@@ -53,7 +53,13 @@ public class ManageReports extends PicsActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ManageReports.class);
 
 	public String execute() {
-		return myReportsList();
+		try {
+			setUrlForRedirect(MY_REPORTS_URL);
+		} catch (IOException ioe) {
+			logger.error("Problem redirecting from default action in ManageReports.", ioe);
+		}
+
+		return REDIRECT;
 	}
 
 	public String favoritesList() {

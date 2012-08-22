@@ -5,29 +5,12 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Matchers.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
-import org.apache.http.HttpRequest;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.RequestLine;
-import org.apache.http.params.HttpParams;
-import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -74,14 +57,14 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testExecute_GoesToMyReportsByDefault() {
+	public void testExecute_RedirectsToMyReportsByDefault() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
 		when(reportDao.findUserReports(USER_ID)).thenReturn(userReports);
 
 		String result = manageReports.execute();
 
-		assertEquals("myReports", result);
+		assertEquals("redirect", result);
 	}
 
 	@Test
