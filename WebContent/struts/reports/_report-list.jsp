@@ -84,7 +84,7 @@
                                 </a>
                             </s:if>
                             <s:else>
-                                <a href="${remove_report_url}" class="delete">
+                                <a href="${remove_report_url}" class="remove">
                                     <s:text name="ManageReports.myReports.Remove" />
                                 </a>
                             </s:else>
