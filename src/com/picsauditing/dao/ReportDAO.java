@@ -71,12 +71,14 @@ public class ReportDAO extends PicsDAO {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		// TODO escape properly
-		String query = Strings.escapeQuotes(dirtyQuery);
+		String query = "\"%" + Strings.escapeQuotes(dirtyQuery) + "%\"";
 
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
 
-			sql.addWhere("r.name LIKE \"%" + query + "%\" OR r.description LIKE \"%" + query + "%\"");
+			sql.addWhere("r.name LIKE " + query +
+					" OR r.description LIKE " + query +
+					" OR u.name LIKE " + query);
 
 			Database db = new Database();
 			List<BasicDynaBean> results = db.select(sql.toString(), false);
