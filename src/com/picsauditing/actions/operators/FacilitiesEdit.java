@@ -243,7 +243,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator = operatorDao.find(operator.getId());
 
 			if (operator != null){
-				List<Facility> operatorFacilities = new ArrayList<Facility> ();
+				List<Facility> operatorFacilities = operator.getOperatorFacilities();
 				for (Facility facility : operatorFacilities) {
 					if (!operatorFacilities.contains(facility)) {
 						facilities.add(facility.getOperator().getId());
@@ -254,7 +254,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			for (String error : errors)
 				addActionError(error);
 
-			return SUCCESS;
+			return REDIRECT;
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
