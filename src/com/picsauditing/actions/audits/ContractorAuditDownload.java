@@ -195,7 +195,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		return sheetStatus;
 	}
 
-	private class SheetStatus {
+	public class SheetStatus {
 		public HSSFSheet sheet;
 		public int rownum;
 		// Common

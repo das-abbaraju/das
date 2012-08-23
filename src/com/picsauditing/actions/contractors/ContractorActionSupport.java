@@ -129,6 +129,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			permissionToViewContractor.setActiveAudits(getActiveAudits());
 			permissionToViewContractor.setOperators(getOperators());
 		}
+
 		return permissionToViewContractor.check(limitedView);
 	}
 
@@ -617,12 +618,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 						}
 					}
 				}
-				
+
 				if (remove)
 					itr.remove();
 			}
 		}
-		
+
 		return certificates;
 	}
 
@@ -679,10 +680,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 		AuditStatus status = getActiveAuditsStatuses().get(conAudit);
 		if (status == null)
 			return false;
-		
+
 		if (status.after(AuditStatus.Resubmitted))
 			return true;
-		
+
 		return false;
 	}
 

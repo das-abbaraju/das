@@ -69,7 +69,7 @@ public class EntityFactory {
 		operator.setInheritFlagCriteria(operator);
 		operator.setVisibleAuditTypes(new HashSet<Integer>());
 		operator.getVisibleAuditTypes().add(1);
-		
+
 		return operator;
 	}
 
@@ -254,11 +254,10 @@ public class EntityFactory {
 		return null;
 	}
 
-
 	public static AuditType makeAuditType() {
 		return makeAuditType(counter++);
 	}
-	
+
 	static public AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
@@ -303,6 +302,8 @@ public class EntityFactory {
 	public static AuditCategory makeAuditCategory(int categoryId) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryId);
+		auditCategory.setName(makeTranslatableString("Audit Category " + categoryId));
+		auditCategory.setNumber(categoryId);
 		return auditCategory;
 	}
 
