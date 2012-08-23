@@ -68,10 +68,25 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testFavoritesList_ReturnsExpectedResult() {
+	public void testFavoritesList_AjaxReturnsExpectedResult() {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 		userReports.add(new ReportUser());
 		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(userReports);
+		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
+		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
+
+		String result = manageReports.favoritesList();
+
+		assertEquals("favoritesList", result);
+	}
+
+	@Test
+	public void testFavoritesList_NotAjaxReturnsExpectedResult() {
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+		userReports.add(new ReportUser());
+		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(userReports);
+		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
+		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		String result = manageReports.favoritesList();
 
@@ -81,6 +96,7 @@ public class ManageReportsTest {
 	@Test
 	public void testFavoritesList_DoesntLeaveUserReportsNull() {
 		when(reportDao.findFavoriteUserReports(USER_ID)).thenReturn(null);
+		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.favoritesList();
 

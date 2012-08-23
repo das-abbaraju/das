@@ -78,10 +78,10 @@ public class ManageReports extends PicsActionSupport {
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
 		}
-		
-		/*if (AjaxUtils.isAjax(getRequest())) {
+
+		if (AjaxUtils.isAjax(request())) {
 			return "favoritesList";
-		}*/
+		}
 
 		return "favorites";
 	}
@@ -99,7 +99,7 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.NoUserReports"));
 			userReports = new ArrayList<ReportUser>();
 		}
-		
+
 		return "myReports";
 	}
 
