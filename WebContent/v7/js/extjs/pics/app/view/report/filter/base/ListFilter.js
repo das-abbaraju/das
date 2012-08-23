@@ -23,13 +23,13 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
 
         return {
             xtype: 'combobox',
-            displayField: 'name',
+            displayField: 'value',
             editable: false,
             multiSelect: true,
             name: 'filter_value',
             store: store,
             value: value,
-            valueField: 'id',
+            valueField: 'key',
             width: 258
         };
     },
@@ -40,10 +40,10 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
 
         return {
             fields: [{
-                name: 'id',
+                name: 'key',
                 type: 'string'
             }, {
-                name: 'name',
+                name: 'value',
                 type: 'string'
             }],
             proxy: {

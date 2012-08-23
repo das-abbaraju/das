@@ -29,7 +29,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
 
         return {
             xtype: 'combobox',
-            displayField: 'name',
+            displayField: 'value',
             editable: true,
             hideTrigger: true,
             multiSelect: false,
@@ -37,13 +37,13 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             queryParam: 'searchQuery',
             store: store,
             value: value,
-            valueField: 'id',
+            valueField: 'key',
             width: 258
         };
 
         return Ext.create('Ext.ux.form.BoxSelect', {
             delimiter: ',',
-            displayField: 'name',
+            displayField: 'value',
             forceSelection: true,
             hideTrigger: true,
             listeners: {
@@ -68,7 +68,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             store: store,
             typeAhead: false,
             value: value,
-            valueField: 'id',
+            valueField: 'key',
             width: 258
         });
     },
@@ -79,10 +79,10 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
 
         return {
             fields: [{
-                name: 'id',
+                name: 'key',
                 type: 'string'
             }, {
-                name: 'name',
+                name: 'value',
                 type: 'string'
             }],
             proxy: {
