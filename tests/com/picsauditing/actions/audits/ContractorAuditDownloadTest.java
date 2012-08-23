@@ -146,9 +146,9 @@ public class ContractorAuditDownloadTest {
 
 	@Test
 	public void testFillExcelCategories_NoViewableCategories() throws Exception {
-		int rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelCategories", Collections.emptySet(),
+		Integer rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelCategories", Collections.emptySet(),
 				EntityFactory.makeAuditCategory(), 1);
-		assertEquals(1, rowNum);
+		assertEquals(1, rowNum.intValue());
 
 		verify(sheet, never()).createRow(anyInt());
 		verify(row, never()).createCell(anyInt(), anyInt());
@@ -185,8 +185,8 @@ public class ContractorAuditDownloadTest {
 
 	@Test
 	public void testFillExcelQuestions_NoQuestions() throws Exception {
-		int rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", Collections.emptyList(), 1);
-		assertEquals(1, rowNum);
+		Integer rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", Collections.emptyList(), 1);
+		assertEquals(1, rowNum.intValue());
 
 		verify(sheet, never()).createRow(anyInt());
 		verify(row, never()).createCell(anyInt(), anyInt());
