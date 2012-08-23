@@ -1,6 +1,7 @@
 package com.picsauditing.auditBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
@@ -15,10 +16,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -361,6 +365,42 @@ public class AuditBuilderTest extends PicsTest {
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
+	}
+	
+	@Test
+	public void testFoundCurrentYearWCB_NullAuditFor() throws Exception {
+		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
+		when(audit.getAuditFor()).thenReturn(null);
+		
+		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
+		assertTrue(result);
+	}
+	
+	@Test
+	public void testFoundCurrentYearWCB_BlankAuditFor() throws Exception {
+		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
+		when(audit.getAuditFor()).thenReturn(" ");
+		
+		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
+		assertTrue(result);
+	}
+	
+	@Test
+	public void testFoundCurrentYearWCB_CurrentYearAuditFor() throws Exception {
+		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
+		when(audit.getAuditFor()).thenReturn(DateBean.getWCBYear());
+		
+		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
+		assertTrue(result);
+	}
+	
+	@Test
+	public void testFoundCurrentYearWCB_PreviousYearAuditFor() throws Exception {
+		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
+		when(audit.getAuditFor()).thenReturn("2011");
+		
+		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
+		assertFalse(result);
 	}
 
 	private void addTypeRules(RuleParameters params) {

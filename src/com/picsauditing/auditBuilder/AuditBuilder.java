@@ -95,9 +95,7 @@ public class AuditBuilder {
 								// we should never add another welcome call audit
 								found = true;
 							} else if (auditType.isWCB()) {
-								if (DateBean.getWCBYear().equals(conAudit.getAuditFor())) {
-									found = true;
-								}
+								found = this.foundCurrentYearWCB(conAudit);
 							} else {
 								if (!conAudit.isExpired() && !conAudit.willExpireSoon())
 									// The audit is still valid for a number of days dependent on its type
@@ -178,6 +176,20 @@ public class AuditBuilder {
 		}
 		
 		conAuditDao.save(contractor);
+	}
+	
+	/**
+	 * The purpose of having this method is to make sure duplicate WCBs are created until the
+	 * auditFor fields in the WCB is corrected. 
+	 */
+	private boolean foundCurrentYearWCB(ContractorAudit audit) {
+		if (Strings.isEmpty(audit.getAuditFor())) {
+			return true;
+		} else if (DateBean.getWCBYear().equals(audit.getAuditFor())) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private boolean isValidAudit(ContractorAudit conAudit) {
