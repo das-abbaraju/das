@@ -120,31 +120,6 @@ public final class ReportUtil {
 		return jsonRows;
 	}
 
-	public static void localize(Report report, Locale locale) {
-		if (CollectionUtils.isEmpty(report.getDefinition().getFilters()))
-			return;
-
-		for (Filter filter : report.getDefinition().getFilters()) {
-			if (!filter.isHasTranslations())
-				continue;
-
-			String filterValue = Strings.escapeQuotes(filter.getValue());
-			if (Strings.isEmpty(filterValue))
-				return;
-
-			String[] values = filterValue.split(",");
-			String[] translationValueArray = new String[values.length];
-
-			for (int i = 0; i < values.length; i++) {
-				String translationKey = filter.getField().getI18nKey(values[i]);
-				translationValueArray[i] = getText(translationKey, locale);
-			}
-
-			String translatedValue = StringUtils.join(translationValueArray, ",");
-			filter.setValue(translatedValue);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	public static JSONArray translateAndJsonify(Map<String, Field> availableFields, Permissions permissions, Locale locale) {
 		JSONArray fieldsJsonArray = new JSONArray();

@@ -29,7 +29,6 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
@@ -133,8 +132,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
-			ReportUtil.localize(report, permissions.getLocale());
-
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
 
 			if (ReportUtil.hasColumns(report)) {
@@ -209,8 +206,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 			// TODO find out what else this method is doing besides building sql
 			sqlBuilder.buildSql(report, permissions, pageNumber);
-
-			ReportUtil.localize(report, permissions.getLocale());
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
@@ -319,8 +314,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 			// TODO remove FOR_DOWNLOAD boolean flag
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
-
-			ReportUtil.localize(report, permissions.getLocale());
 
 			exportToExcel(report, reportDao.runQuery(sql, json));
 		} catch (SQLException se) {
