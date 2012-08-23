@@ -28,7 +28,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorAuditDownload extends ContractorAuditController {
-	private HSSFWorkbook wb;
+	private AuditCategoriesBuilder builder;
+
+	private HSSFWorkbook workbook = new HSSFWorkbook();
 	private HSSFSheet sheet;
 	// Styles
 	private HSSFFont boldFont;
@@ -41,8 +43,7 @@ public class ContractorAuditDownload extends ContractorAuditController {
 	public String execute() throws Exception {
 		findConAudit();
 
-		wb = new HSSFWorkbook();
-		sheet = wb.createSheet(conAudit.getAuditType().getName().toString().replaceAll("[^\\w\\s]", "-"));
+		sheet = workbook.createSheet(conAudit.getAuditType().getName().toString().replaceAll("[^\\w\\s]", "-"));
 
 		initializeStyles();
 
@@ -66,7 +67,10 @@ public class ContractorAuditDownload extends ContractorAuditController {
 		cell.setCellValue(header);
 
 		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+
+		if (builder == null) {
+			builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+		}
 
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
 		if (permissions.isOperatorCorporate()) {
@@ -101,31 +105,31 @@ public class ContractorAuditDownload extends ContractorAuditController {
 	}
 
 	private void setBoldFont() {
-		boldFont = wb.createFont();
+		boldFont = workbook.createFont();
 		boldFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
 	}
 
 	private void initializeHeaderStyle() {
-		headerStyle = wb.createCellStyle();
+		headerStyle = workbook.createCellStyle();
 		headerStyle.setFont(boldFont);
 		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 	}
 
 	private void initializeCategoryStyle() {
-		categoryStyle = wb.createCellStyle();
+		categoryStyle = workbook.createCellStyle();
 		categoryStyle.setFont(boldFont);
 	}
 
 	private void initializeQuestionStyle() {
-		questionStyle = wb.createCellStyle();
+		questionStyle = workbook.createCellStyle();
 		questionStyle.setWrapText(true);
 	}
 
 	private void initializeHyperlinkStyle() {
-		HSSFFont hyperlinkFont = wb.createFont();
+		HSSFFont hyperlinkFont = workbook.createFont();
 		hyperlinkFont.setUnderline(HSSFFont.U_SINGLE);
 		hyperlinkFont.setColor(HSSFColor.BLUE.index);
-		hyperlinkStyle = wb.createCellStyle();
+		hyperlinkStyle = workbook.createCellStyle();
 		hyperlinkStyle.setFont(hyperlinkFont);
 	}
 
@@ -252,7 +256,7 @@ public class ContractorAuditDownload extends ContractorAuditController {
 		ServletActionContext.getResponse().setHeader("Content-Disposition",
 				"attachment; filename=" + header.replaceAll("[^\\w\\s]", "-") + ".xls");
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		wb.write(outstream);
+		workbook.write(outstream);
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
 	}

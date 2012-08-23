@@ -24,8 +24,11 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +45,9 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.audits.ContractorAuditDownload.SheetStatus;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -54,8 +59,8 @@ import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.util.PermissionToViewContractor;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ContractorAuditDownload.class, HSSFSheet.class, HSSFRow.class, I18nCache.class,
-		ServletActionContext.class })
+@PrepareForTest({ ContractorAuditDownload.class, HSSFCellStyle.class, HSSFFont.class, HSSFRow.class, HSSFSheet.class,
+		I18nCache.class, ServletActionContext.class })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ContractorAuditDownloadTest {
 	private ContractorAuditDownload auditDownload;
@@ -63,8 +68,13 @@ public class ContractorAuditDownloadTest {
 
 	private AuditType auditType;
 	private ContractorAccount contractor;
-	private SheetStatus sheetStatus;
 
+	@Mock
+	private AuditCategoryRuleCache auditCategoryRuleCache;
+	@Mock
+	private AuditCategoriesBuilder auditCategoriesBuilder;
+	@Mock
+	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Mock
 	private ContractorAudit audit;
 	@Mock
@@ -72,9 +82,15 @@ public class ContractorAuditDownloadTest {
 	@Mock
 	private HSSFCell cell;
 	@Mock
+	private HSSFCellStyle cellStyle;
+	@Mock
+	private HSSFFont font;
+	@Mock
 	private HSSFRow row;
 	@Mock
 	private HSSFSheet sheet;
+	@Mock
+	private HSSFWorkbook workbook;
 	@Mock
 	private HttpServletResponse response;
 	@Mock
@@ -98,12 +114,7 @@ public class ContractorAuditDownloadTest {
 		contractor = EntityFactory.makeContractor();
 		testUtil.autowireEMInjectedDAOs(auditDownload, entityManager);
 
-		sheetStatus = (auditDownload).new SheetStatus();
-		sheetStatus.sheet = sheet;
-
-		Whitebox.setInternalState(auditDownload, "permissions", permissions);
-		Whitebox.setInternalState(auditDownload, "permissionToViewContractor", permissionToViewContractor);
-
+		setPrivateVariables();
 		setExpectedBehavior();
 	}
 
@@ -135,9 +146,9 @@ public class ContractorAuditDownloadTest {
 
 	@Test
 	public void testFillExcelCategories_NoViewableCategories() throws Exception {
-		SheetStatus status = Whitebox.invokeMethod(auditDownload, "fillExcelCategories", sheetStatus,
-				Collections.emptySet(), EntityFactory.makeAuditCategory());
-		assertEquals(sheetStatus, status);
+		int rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelCategories", Collections.emptySet(),
+				EntityFactory.makeAuditCategory(), 1);
+		assertEquals(1, rowNum);
 
 		verify(sheet, never()).createRow(anyInt());
 		verify(row, never()).createCell(anyInt(), anyInt());
@@ -147,10 +158,10 @@ public class ContractorAuditDownloadTest {
 	public void testFillExcelCategories_ViewableCategory() throws Exception {
 		AuditCategory category = EntityFactory.makeAuditCategory();
 
-		Set<Integer> viewable = new HashSet<Integer>();
-		viewable.add(category.getId());
+		Set<AuditCategory> viewable = new HashSet<AuditCategory>();
+		viewable.add(category);
 
-		Whitebox.invokeMethod(auditDownload, "fillExcelCategories", sheetStatus, viewable, category);
+		Whitebox.invokeMethod(auditDownload, "fillExcelCategories", viewable, category, 1);
 
 		verify(sheet).createRow(anyInt());
 		verify(row).createCell(anyInt(), anyInt());
@@ -162,11 +173,11 @@ public class ContractorAuditDownloadTest {
 		AuditCategory child = EntityFactory.makeAuditCategory();
 		category.getSubCategories().add(child);
 
-		Set<Integer> viewable = new HashSet<Integer>();
-		viewable.add(category.getId());
-		viewable.add(child.getId());
+		Set<AuditCategory> viewable = new HashSet<AuditCategory>();
+		viewable.add(category);
+		viewable.add(child);
 
-		Whitebox.invokeMethod(auditDownload, "fillExcelCategories", sheetStatus, viewable, category);
+		Whitebox.invokeMethod(auditDownload, "fillExcelCategories", viewable, category, 1);
 
 		verify(sheet, times(2)).createRow(anyInt());
 		verify(row, times(2)).createCell(anyInt(), anyInt());
@@ -174,9 +185,8 @@ public class ContractorAuditDownloadTest {
 
 	@Test
 	public void testFillExcelQuestions_NoQuestions() throws Exception {
-		SheetStatus status = Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", sheetStatus,
-				Collections.emptyList());
-		assertEquals(sheetStatus, status);
+		int rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", Collections.emptyList(), 1);
+		assertEquals(1, rowNum);
 
 		verify(sheet, never()).createRow(anyInt());
 		verify(row, never()).createCell(anyInt(), anyInt());
@@ -190,7 +200,7 @@ public class ContractorAuditDownloadTest {
 		List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 		questions.add(question);
 
-		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", sheetStatus, questions);
+		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", questions, 1);
 
 		verify(sheet, never()).createRow(anyInt());
 		verify(row, never()).createCell(anyInt());
@@ -204,7 +214,7 @@ public class ContractorAuditDownloadTest {
 		questions.add(question);
 
 		Whitebox.setInternalState(auditDownload, "conAudit", audit);
-		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", sheetStatus, questions);
+		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", questions, 1);
 
 		verify(sheet).createRow(anyInt());
 		verify(row).createCell(anyInt());
@@ -225,7 +235,7 @@ public class ContractorAuditDownloadTest {
 		questions.add(question);
 
 		Whitebox.setInternalState(auditDownload, "conAudit", audit);
-		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", sheetStatus, questions);
+		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", questions, 1);
 
 		verify(sheet, times(2)).createRow(anyInt());
 		verify(row, times(2)).createCell(anyInt());
@@ -244,7 +254,7 @@ public class ContractorAuditDownloadTest {
 		questions.add(question);
 
 		Whitebox.setInternalState(auditDownload, "conAudit", audit);
-		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", sheetStatus, questions);
+		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", questions, 1);
 
 		verify(sheet).createRow(anyInt());
 		verify(row, times(2)).createCell(anyInt());
@@ -264,7 +274,7 @@ public class ContractorAuditDownloadTest {
 		questions.add(question);
 
 		Whitebox.setInternalState(auditDownload, "conAudit", audit);
-		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", sheetStatus, questions);
+		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", questions, 1);
 
 		verify(sheet).createRow(anyInt());
 		verify(row, times(3)).createCell(anyInt());
@@ -277,6 +287,16 @@ public class ContractorAuditDownloadTest {
 		when(ServletActionContext.getResponse()).thenReturn(response);
 	}
 
+	private void setPrivateVariables() {
+		Whitebox.setInternalState(auditDownload, "auditCategoryRuleCache", auditCategoryRuleCache);
+		Whitebox.setInternalState(auditDownload, "builder", auditCategoriesBuilder);
+		Whitebox.setInternalState(auditDownload, "auditDecisionTableDAO", auditDecisionTableDAO);
+		Whitebox.setInternalState(auditDownload, "permissions", permissions);
+		Whitebox.setInternalState(auditDownload, "permissionToViewContractor", permissionToViewContractor);
+		Whitebox.setInternalState(auditDownload, "sheet", sheet);
+		Whitebox.setInternalState(auditDownload, "workbook", workbook);
+	}
+
 	private void setExpectedBehavior() throws Exception {
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(audit.getContractorAccount()).thenReturn(contractor);
@@ -287,6 +307,9 @@ public class ContractorAuditDownloadTest {
 		when(permissionToViewContractor.check(anyBoolean())).thenReturn(true);
 		when(response.getOutputStream()).thenReturn(outputStream);
 		// Sheet
+		when(workbook.createSheet(anyString())).thenReturn(sheet);
+		PowerMockito.doReturn(cellStyle).when(workbook).createCellStyle();
+		PowerMockito.doReturn(font).when(workbook).createFont();
 		PowerMockito.doReturn(row).when(sheet).createRow(anyInt());
 		PowerMockito.doReturn(cell).when(row).createCell(anyInt());
 		PowerMockito.doReturn(cell).when(row).createCell(anyInt(), anyInt());
