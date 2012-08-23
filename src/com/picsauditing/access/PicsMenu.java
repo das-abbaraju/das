@@ -8,7 +8,9 @@ import java.util.Iterator;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggleChecker;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -431,7 +433,6 @@ public class PicsMenu {
 
 		subMenu = menu.addChild(getText("menu.Reports"));
 
-		// TODO - remove these hacks
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp", "SiteOrientationReport");
 		}
@@ -506,6 +507,19 @@ public class PicsMenu {
 			if (permissions.hasGroup(User.GROUP_MARKETING))
 				custom = "?filter.accountManager=" + permissions.getUserId();
 			subMenu.addChild("Flag Changes", "ReportFlagChanges.action" + custom, "FlagChanges");
+		}
+
+		// Temporary inclusion for Dynamic Reports preview for BASF users
+		try {
+			if (permissions.getAccountId() == OperatorAccount.BASF) {
+				FeatureToggleChecker featureToggleChecker = SpringUtils.getBean("FeatureToggleChecker");
+
+				if (featureToggleChecker.isFeatureEnabled("Toggle.BASFDynamicReportsPreview")) {
+					subMenu.addChild(getText("menu.StepsToGreen"), "ReportDynamic.action?report=7", "StepsToGreenDRPreview");
+				}
+			}
+		} catch (Exception e) {
+			// This is a temporary preview, we don't care
 		}
 
 		if (permissions.isRequiresCompetencyReview() && !permissions.isSecurity()) {
