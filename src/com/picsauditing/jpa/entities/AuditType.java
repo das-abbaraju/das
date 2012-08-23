@@ -89,7 +89,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	protected List<AuditCategory> topCategories;
 
-	private static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[] { 145, 146,
+	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[] { 145, 146,
 			143, 170, 261, 168, 148, 147, 169, 166, 167, 144 }));
 
 	public AuditType() {

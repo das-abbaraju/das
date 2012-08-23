@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
@@ -90,7 +91,7 @@ public class AuditDataDAO extends PicsDAO {
 
 		for (AuditData row : result) {
 			int id = row.getQuestion().getId();
-			if (!Strings.isEmpty(row.getAudit().getAuditFor()))
+			if (!Strings.isEmpty(row.getAudit().getAuditFor()) && !AuditType.CANADIAN_PROVINCES.contains(row.getAudit().getAuditType().getId()))
 				throw new RuntimeException("ERROR AuditDataDAO:findAnswersByContractor(" + conID + "," + id
 						+ ") getAuditFor not empty for audit id: " + row.getAudit().getId());
 			if (indexedResult.containsKey(id)) {
