@@ -15,7 +15,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,11 +32,10 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 
 public class FacilitiesEditTest extends PicsTest {
@@ -51,6 +52,8 @@ public class FacilitiesEditTest extends PicsTest {
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
 	private CountrySubdivision countrySubdivision;
+	@Mock
+	private UserDAO userDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -195,6 +198,18 @@ public class FacilitiesEditTest extends PicsTest {
 				"Business rule violation was not noticed",
 				facilitiesEdit.getActionMessages().contains(
 						UserAccountRole.PICSAccountRep.getDescription() + " is not 100 percent"));
+	}
+
+	@Test
+	public void testGetPrimaryOperatorContactUsers() throws Exception{
+		Set<User> primaryContactSet = new HashSet<User>();
+		List<User> findUser = new ArrayList<User>();
+		List<User> findGroup = new ArrayList<User>();
+		when(userDAO.findByAccountID(operator.getId(), "Yes", "No")).thenReturn(findUser);
+		when(userDAO.findByAccountID(operator.getId(), "Yes", "Yes")).thenReturn(findGroup);
+		List<User> userList = new ArrayList<User>();
+		Whitebox.invokeMethod(facilitiesEdit, "addParentPrimaryOperatorContactUsers", primaryContactSet);
+		assertEquals(userList.size(), primaryContactSet.size());
 	}
 
 	private AccountUser accountRep() {

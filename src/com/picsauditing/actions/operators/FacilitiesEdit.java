@@ -15,12 +15,15 @@ import java.util.TreeSet;
 import javax.naming.NoPermissionException;
 
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
@@ -82,6 +85,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	private List<OperatorAccount> notSelectedClients;
 	private List<OperatorAccount> selectedClients;
+
+	private final Logger logger = LoggerFactory.getLogger(FacilitiesEdit.class);
 
 	public String execute() throws Exception {
 		findOperator();
@@ -517,7 +522,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public List<User> getPrimaryOperatorContactUsers() {
-		Set<User> primaryContactSet = new TreeSet<User>();
+		Set<User> primaryContactSet = new HashSet<User>();
 
 		primaryContactSet.addAll(userDAO.findByAccountID(operator.getId(), "Yes", "No"));
 
@@ -532,9 +537,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		// Adding users that can switch to groups on account
 		for (User u : groupSet)
 			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
-		// Adding all SwitchTo users to primary contacts
-		primaryContactSet.addAll(switchToSet);
 
+		// Adding all SwitchTo users to primary contacts
+		try{
+			primaryContactSet.addAll(switchToSet);
+		} catch (Exception e){
+			logger.error(e.toString());
+		}
 		addParentPrimaryOperatorContactUsers(primaryContactSet);
 
 		List<User> userList = new ArrayList<User>();
