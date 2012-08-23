@@ -13,6 +13,7 @@
 <s:include value="/struts/reports/_report-list.jsp">
     <s:param name="list_id">report_favorites_list</s:param>
     <s:param name="list_class">report-list</s:param>
+    <s:param name="enable_sort" value="true" />
     <s:param name="enable_move_up" value="false" />
     <s:param name="enable_move_down" value="#has_overflow_list"/>
 </s:include>
@@ -28,6 +29,7 @@
 <s:include value="/struts/reports/_report-list.jsp">
     <s:param name="list_id">report_favorites_overflow_list</s:param>
     <s:param name="list_class">report-list</s:param>
+    <s:param name="enable_sort" value="true" />
     <s:param name="enable_move_up" value="true" />
     <s:param name="enable_move_down" value="false"/>
 </s:include>

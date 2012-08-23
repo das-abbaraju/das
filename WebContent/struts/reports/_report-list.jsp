@@ -14,6 +14,12 @@
     <s:set var="list_class">report-list</s:set>
 <% } %>
 
+<% if (request.getParameter("enable_sort") != null) { %>
+    <s:set var="enable_sort">${param.enable_sort}</s:set>
+<% } else { %>
+    <s:set var="enable_sort" value="true" />
+<% } %>
+
 <% if (request.getParameter("enable_move_up") != null) { %>
     <s:set var="enable_move_up">${param.enable_move_up}</s:set>
 <% } else { %>
@@ -89,22 +95,25 @@
                                 </a>
                             </s:else>
                         </li>
-                        <li class="divider"></li>
                         
-                        <s:if test="!#rowstatus.first || (#rowstatus.first && #enable_move_up)">
-                            <li>
-                                <a href="ManageReports!moveUp.action?reportId=${report_id}" class="move-up">
-                                    <s:text name="ManageReports.myReports.MoveUp" />
-                                </a>
-                            </li>    
-                        </s:if>
-                        
-                        <s:if test="!#rowstatus.last || (#rowstatus.last && #enable_move_down)">
-                            <li>
-                                <a href="ManageReports!moveDown.action?reportId=${report_id}" class="move-down">
-                                    <s:text name="ManageReports.myReports.MoveDown" />
-                                </a>
-                            </li>
+                        <s:if test="#enable_sort">
+                            <li class="divider"></li>
+                            
+                            <s:if test="!#rowstatus.first || (#rowstatus.first && #enable_move_up)">
+                                <li>
+                                    <a href="ManageReports!moveUp.action?reportId=${report_id}" class="move-up">
+                                        <s:text name="ManageReports.myReports.MoveUp" />
+                                    </a>
+                                </li>    
+                            </s:if>
+                            
+                            <s:if test="!#rowstatus.last || (#rowstatus.last && #enable_move_down)">
+                                <li>
+                                    <a href="ManageReports!moveDown.action?reportId=${report_id}" class="move-down">
+                                        <s:text name="ManageReports.myReports.MoveDown" />
+                                    </a>
+                                </li>
+                            </s:if>
                         </s:if>
                     </ul>
                 </div>

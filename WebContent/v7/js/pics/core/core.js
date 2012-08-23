@@ -236,6 +236,21 @@ if (typeof Object.create !== 'function') {
                 return _classes;
             },
             
+            getRequestParameters: function (url) {
+                if (typeof url != 'string') {
+                    throw 'Invalid url';
+                }
+                
+                var query_string = {},
+                    regex = new RegExp('([^?=&]+)(=([^&]*))?', 'g');
+                
+                url.replace(regex, function(match, p1, p2, p3, offset, string) {
+                    query_string[p1] = p3;
+                });
+                
+                return query_string;
+            },
+            
             loading: function (selector) {
                 var element = $(selector);
                 var height = element.height();

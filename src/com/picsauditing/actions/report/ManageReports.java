@@ -99,7 +99,11 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.NoUserReports"));
 			userReports = new ArrayList<ReportUser>();
 		}
-
+		
+		/*if (AjaxUtils.isAjax(getRequest())) {
+			return "myReportsList";
+		}*/
+		
 		return "myReports";
 	}
 
