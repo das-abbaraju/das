@@ -53,7 +53,7 @@ Sole Proprietor: <s:if test="contractor.soleProprietor">Yes</s:if><s:else>No</s:
 </s:iterator>
 
 <h2>Audit Type Rules</h2>
-<a href="#" onclick="$('#auditCatRules').toggle(); return false;">Show/Hide</a>
+<a href="#" onclick="$('#allTypeRules').toggle(); return false;">Show/Hide</a>
 <div id="allTypeRules"></div>
 
 <h2>Audit Types &amp; Rules</h2>
