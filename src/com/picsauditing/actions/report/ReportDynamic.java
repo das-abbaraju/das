@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,6 +178,45 @@ public class ReportDynamic extends PicsActionSupport {
 			} else {
 				throw new Exception(field.getFilterType() + " not supported by list function.");
 			}
+
+			json.put("success", true);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
+			writeJsonErrorMessage(e);
+		}
+
+		return JSON;
+	}
+
+	public String translateValue() {
+		try {
+			if (Strings.isEmpty(fieldName))
+				throw new Exception("Please pass a fieldName when calling list");
+
+			ReportModel.validate(report);
+
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
+			Field field = availableFields.get(fieldName.toUpperCase());
+
+			if (field == null)
+				throw new Exception("Available field undefined");
+
+			JSONArray jsonArray = new JSONArray();
+
+			String translatedString = ReportUtil.getText(field.getI18nKey(searchQuery), permissions.getLocale());
+
+			JSONObject translationMap = new JSONObject();
+			translationMap.put("key", searchQuery);
+
+			if (translatedString == null) {
+				translatedString = searchQuery;
+			}
+
+			translationMap.put("value", translatedString);
+
+			jsonArray.add(translationMap);
+
+			json.put("result", jsonArray);
 
 			json.put("success", true);
 		} catch (Exception e) {
