@@ -402,7 +402,7 @@ Ext.define('PICS.controller.report.Filter', {
 
     onFilterOperatorSelect: function (cmp, records, eOpts) {
         var filter = this.findParentFilter(cmp);
-        filter.record.set('operator', cmp.getValue());
+        filter.record.set('operator', cmp.getSubmitValue());
 
         if (filter.record.get('value') != '') {
             this.application.fireEvent('refreshreport');
@@ -427,13 +427,13 @@ Ext.define('PICS.controller.report.Filter', {
 
     onFilterValueInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getValue());
+        filter.record.set('value', cmp.getSubmitValue());
     },
 
     onFilterValueInputEnter: function (cmp, event) {
         if (event.getKey() == event.ENTER) {
             var filter = this.findParentFilter(cmp);
-            filter.record.set('value', cmp.getValue());
+            filter.record.set('value', cmp.getSubmitValue());
 
             this.application.fireEvent('refreshreport');
         }
@@ -441,7 +441,7 @@ Ext.define('PICS.controller.report.Filter', {
 
     onFilterValueSelect: function (cmp, records, eOpts) {
         var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getValue());
+        filter.record.set('value', cmp.getSubmitValue());
 
         this.application.fireEvent('refreshreport');
     },
