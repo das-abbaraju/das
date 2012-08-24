@@ -287,7 +287,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		availableSet = new AvailableSet();
 		for (AuditorAvailability timeslot : timeslots) {
-			if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
+			if (availableSet.size() >= 15 && !availableSet.contains(timeslot)) {
 				break;
 			}
 			availableSet.add(timeslot);
