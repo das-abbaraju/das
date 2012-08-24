@@ -42,7 +42,7 @@ public class CountryAutocompleteService extends AutocompleteService<Country> {
 		
 		if (queryContainsIsoCodes(queryString)) { 
 			// no need to escape string because it will fail Regex check
-			result.addAll(countryDAO.findWhere("isoCode IN (" + queryString + ")"));
+			result.addAll(countryDAO.findWhere("isoCode IN ('" + queryString + "')"));
 			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + queryString + "%"));
 		} else {
 			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(queryString) + "%"));
