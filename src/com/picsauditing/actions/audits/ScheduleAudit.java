@@ -562,8 +562,30 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public boolean isNeedsExpediteFee(Date newDate) {
-		return DateBean.isWithinTenBusinessDays(new LocalDate(newDate));
+		if (conAudit.getScheduledDate() != null && newDate.after(conAudit.getScheduledDate()))
+			return false;
+
+		if (newDate != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+
+			Calendar compare = Calendar.getInstance();
+			compare.setTime(newDate);
+			compare.set(Calendar.HOUR_OF_DAY, 0);
+			compare.set(Calendar.MINUTE, 0);
+			compare.set(Calendar.SECOND, 0);
+
+			cal.set(Calendar.ZONE_OFFSET, compare.get(Calendar.ZONE_OFFSET));
+			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 10;
+		}
+
+		return false;
 	}
+
+	// return DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate(newDate),
+	// 10);
 
 	private void createInvoice(InvoiceFee fee, String notes) throws Exception {
 		Invoice invoice = new Invoice();
