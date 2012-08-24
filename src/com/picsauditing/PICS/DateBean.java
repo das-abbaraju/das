@@ -196,15 +196,15 @@ public class DateBean {
 		return getWCBYear(null);
 	}
 	
-	/*
-	 * expiration date is Oct 1st.
+	/**
+	 * expiration date is December 31st.
 	 */
 	public static Date getWCBExpirationDate(String year) {
 		Calendar expirationDate = Calendar.getInstance();
 		
 		try {
-			expirationDate.set(Calendar.MONTH, 9);
-			expirationDate.set(Calendar.DAY_OF_MONTH, 1);
+			expirationDate.set(Calendar.MONTH, 11);
+			expirationDate.set(Calendar.DAY_OF_MONTH, 31);
 			expirationDate.set(Calendar.YEAR, Integer.parseInt(year));
 		} catch (Exception e) {
 			return null;

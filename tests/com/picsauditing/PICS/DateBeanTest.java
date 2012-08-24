@@ -554,8 +554,8 @@ public class DateBeanTest  {
 		cal.setTime(date);
 		
 		assertEquals(2012, cal.get(Calendar.YEAR));
-		assertEquals(9, cal.get(Calendar.MONTH));
-		assertEquals(1, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(11, cal.get(Calendar.MONTH));
+		assertEquals(31, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 }
