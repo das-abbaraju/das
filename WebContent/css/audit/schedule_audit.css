@@ -21,24 +21,47 @@
 }
 
 #ScheduleAudit_address_page li#li_availability div.cal_day {
-	float: left;
-	padding: 10px 20px;
-	margin: 10px;
 	border: 1px dashed #999;
-	width: 14em;
-	height: 10em;
+	float: left;
+	height: 154px;
+	margin: 10px;
+	padding: 10px 20px;
+	width: 224px;
+}
+
+#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date
+{
+	height: 150px;
+	width: 220px;
+}
+
+#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date,
+#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date:hover
+{
+	border: 3px solid red;
+}
+
+#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date p
+{
+	color: red;
+	float: right;
+	font-size: 10px;
+	line-height: 10px;
+	margin: 0px;
+	padding: 0px;
+	text-align: right;
 }
 
 #ScheduleAudit_address_page li#li_availability div.cal_day div.cal_times {
 	height:80%;
+	margin: 0;
 	overflow:auto;
 	padding: 0;
-	margin: 0;
 }
 
 #ScheduleAudit_address_page li#li_availability div.cal_day:hover {
-	border: 1px solid #002240;
 	background-color: white;
+	border: 1px solid #002240;
 }
 
 #ScheduleAudit_address_page li#li_availability a {

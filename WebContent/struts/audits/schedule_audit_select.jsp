@@ -49,7 +49,7 @@
     					<s:text name="ScheduleAudit.message.ChooseAvailableTime" />
     				</li>
     				<li id="li_availability">
-    					<s:include value="schedule_audit_select_content.jsp"/>
+                        <s:include value="_schedule_audit_select_content.jsp"/>
     				</li>
     				<li>
     					<input type="button" id="show_next" class="picsbutton" value="<s:text name="ScheduleAudit.button.ShowMoreTimeslots" />" />
