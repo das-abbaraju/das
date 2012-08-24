@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:if test="co.operatorAccount.id == permissions.accountId">
-    <s:if test="permissions.hasPermission('ViewUnApproved')">
+    <s:if test="permissions.hasPermission('ViewUnApproved') || (permissions.approvesRelationships && permissions.hasPermission('ContractorApproval'))">
         <s:if test="co.workStatusPending">
             <div class="alert">
                 <p>
