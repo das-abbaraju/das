@@ -1,12 +1,20 @@
 package com.picsauditing.report.fields;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 
 public class FieldTest {
 
@@ -184,4 +192,29 @@ public class FieldTest {
 		assertTrue(dependentFields.contains("accountID"));
 		assertTrue(dependentFields.contains("reportName"));
 	}
+	
+
+	@Test
+	public void testGetAllFields_NoPermissionsTrue() {
+		Permissions permissions = EntityFactory.makePermission();
+		assertTrue(field.canUserSeeQueryField(permissions));
+	}
+	
+	@Test
+	public void testGetAllFields_BillingPermissionsFalse() {
+		field.requirePermission(OpPerms.Billing);
+		Permissions permissions = EntityFactory.makePermission();
+		
+		assertFalse(field.canUserSeeQueryField(permissions));
+	}
+	
+	@Test
+	public void testGetAllFields_BillingPermissionsTrue() {
+		field.requirePermission(OpPerms.Billing);
+		Permissions permissions = EntityFactory.makePermission();
+		
+		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+		assertTrue(field.canUserSeeQueryField(permissions));
+	}
+	
 }

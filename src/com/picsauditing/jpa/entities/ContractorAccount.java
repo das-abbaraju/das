@@ -410,7 +410,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * grant "free" lifetime accounts to certain contractors. Yes or No
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, sql = "CASE mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
 	public String getMustPay() {
 		return this.mustPay;
 	}

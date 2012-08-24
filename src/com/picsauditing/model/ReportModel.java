@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
@@ -106,10 +106,19 @@ public class ReportModel {
 		reportDao.saveReport(report, new User(permissions.getUserId()));
 	}
 
-	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable) {
+	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable, Permissions permissions) {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
 
 		addAllAvailableFields(availableFields, baseTable);
+
+		Iterator<String> iterator = availableFields.keySet().iterator();
+		while(iterator.hasNext()) {
+			String fieldName = iterator.next();
+			Field field = availableFields.get(fieldName);
+			if (!field.canUserSeeQueryField(permissions)) {
+				iterator.remove();
+			}
+		}
 
 		return availableFields;
 	}

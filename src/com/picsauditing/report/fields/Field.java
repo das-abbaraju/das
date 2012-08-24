@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
@@ -44,7 +45,7 @@ public class Field implements JSONAware {
 	
 	private String preTranslation;
 	private String postTranslation;
-	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
+	private OpPerms requiredPermission;
 
 	/**
 	 * Currently autocomplete is only supported via entity annotations
@@ -57,7 +58,7 @@ public class Field implements JSONAware {
 		preTranslation = annotation.i18nKeyPrefix();
 		postTranslation = annotation.i18nKeySuffix();
 		category = annotation.category();
-		requiredPermissions = new HashSet<OpPerms>(Arrays.asList(annotation.requiredPermissions()));
+		requiredPermission = annotation.requiredPermissions();
 	}
 
 	public Field(String name, String databaseColumnName, FilterType filterType) {
@@ -195,19 +196,6 @@ public class Field implements JSONAware {
 		return true;
 	}
 
-	public boolean canUserSeeQueryField(Permissions permissions) {
-		if (CollectionUtils.isEmpty(requiredPermissions))
-			return true;
-
-		// TODO shouldn't be the opposite: if the user doesn't have a single permssion, it should return false?
-		for (OpPerms requiredPermission : requiredPermissions) {
-			if (permissions.hasPermission(requiredPermission))
-				return true;
-		}
-
-		return false;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -309,18 +297,19 @@ public class Field implements JSONAware {
 		this.postTranslation = postTranslation;
 	}
 
-	public Set<OpPerms> getRequiredPermissions() {
-		return requiredPermissions;
-	}
-
-	public Field setRequiredPermissions(Set<OpPerms> requiredPermissions) {
-		this.requiredPermissions = requiredPermissions;
-		return this;
-	}
-
 	public Field requirePermission(OpPerms opPerm) {
-		requiredPermissions.add(opPerm);
+		requiredPermission = opPerm;
 		return this;
+	}
+
+	public boolean canUserSeeQueryField(Permissions permissions) {
+		if (requiredPermission == null)
+			return true;
+
+		if (requiredPermission.isNone())
+			return true;
+		
+		return permissions.hasPermission(requiredPermission);
 	}
 
 	public void setFieldClass(Class<?> fieldClass) {
@@ -337,5 +326,23 @@ public class Field implements JSONAware {
 
 	public String getPostTranslation() {
 		return postTranslation;
+	}
+	
+	public Field clone() {
+		Field copiedField = new Field(name, databaseColumnName, filterType);
+		copiedField.category = category;
+		copiedField.text = text;
+		copiedField.suffix = suffix;
+		copiedField.type = type;
+		copiedField.url = url;
+		copiedField.width = width;
+		copiedField.help = help;
+		copiedField.fieldClass = fieldClass;
+		copiedField.autocompleteType = autocompleteType;
+		copiedField.hidden = hidden;
+		copiedField.preTranslation = preTranslation;
+		copiedField.postTranslation = postTranslation;
+		copiedField.requiredPermission = requiredPermission;
+		return copiedField;
 	}
 }

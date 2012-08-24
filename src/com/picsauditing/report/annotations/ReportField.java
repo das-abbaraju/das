@@ -14,11 +14,11 @@ import com.picsauditing.report.tables.FieldCategory;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface ReportField {
-	
+
 	FilterType filterType() default FilterType.String;
 
 	AutocompleteType autocomplete() default AutocompleteType.None;
-	
+
 	int width() default 100;
 
 	boolean visible() default true;
@@ -37,6 +37,6 @@ public @interface ReportField {
 
 	FieldCategory category() default FieldCategory.General;
 
-	OpPerms[] requiredPermissions() default {};
-	
+	OpPerms requiredPermissions() default OpPerms.None;
+
 }

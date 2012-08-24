@@ -134,7 +134,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
 
 			if (ReportUtil.hasColumns(report)) {
 				List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
@@ -163,7 +163,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			ReportModel.validate(report);
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)
@@ -196,7 +196,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			ReportModel.validate(report);
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)
@@ -274,7 +274,7 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			ReportModel.validate(report);
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable());
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
 
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, permissions.getLocale()));

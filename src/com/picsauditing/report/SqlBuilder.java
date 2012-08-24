@@ -65,7 +65,7 @@ public class SqlBuilder {
 
 		setFrom(model);
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable());
+		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
 
 		addFieldsAndGroupBy(availableFields, definition.getColumns());
 		addRuntimeFilters(availableFields, permissions);
@@ -132,45 +132,31 @@ public class SqlBuilder {
 				column.setFieldName(fieldName);
 			}
 
-			Field field = getCopyOfAvailableField(availableFields, fieldNameWithoutMethod);
+			Field field = availableFields.get(fieldNameWithoutMethod.toUpperCase());
 
-			if (field != null) {
-				field.setName(fieldName);
+			if (field == null)
+				continue;
+			
+			field = field.clone();
+			
+			field.setName(fieldName);
 
-				if (column.getMethod() == null || !column.getMethod().isAggregate()) {
-					// For example: Don't add in accountID automatically if
-					// contractorName uses an aggregation like COUNT
-					dependentFields.addAll(field.getDependentFields());
-				}
-
-				String columnSql = columnToSql(column, field);
-				if (usesGroupBy && !isAggregate(column)) {
-					sql.addGroupBy(columnSql);
-				}
-
-				sql.addField(columnSql + " AS `" + fieldName + "`");
-				column.setField(field);
+			if (column.getMethod() == null || !column.getMethod().isAggregate()) {
+				// For example: Don't add in accountID automatically if
+				// contractorName uses an aggregation like COUNT
+				dependentFields.addAll(field.getDependentFields());
 			}
+
+			String columnSql = columnToSql(column, field);
+			if (usesGroupBy && !isAggregate(column)) {
+				sql.addGroupBy(columnSql);
+			}
+
+			sql.addField(columnSql + " AS `" + fieldName + "`");
+			column.setField(field);
 
 			addDependentFields(dependentFields, field);
 		}
-	}
-
-	private Field getCopyOfAvailableField(Map<String, Field> availableFields, String fieldName) {
-		Field originalField = availableFields.get(fieldName.toUpperCase());
-		Field copiedField = new Field(originalField.getName(), originalField.getDatabaseColumnName(), originalField.getFilterType());
-		copiedField.setTranslationPrefixAndSuffix(originalField.getPreTranslation(), originalField.getPostTranslation());
-		copiedField.setText(originalField.getText());
-		copiedField.setAutocompleteType(originalField.getAutocompleteType());
-		copiedField.setWidth(originalField.getWidth());
-		copiedField.setHelp(originalField.getHelp());
-		copiedField.setType(originalField.getType());
-		copiedField.setUrl(originalField.getUrl());
-		copiedField.setCategory(originalField.getCategory());
-		copiedField.setRequiredPermissions(originalField.getRequiredPermissions());
-		copiedField.setFieldClass(originalField.getFieldClass());
-		
-		return copiedField;
 	}
 
 	private void addDependentFields(Set<String> dependentFields, Field field) {
@@ -289,7 +275,7 @@ public class SqlBuilder {
 				whereFilters.add(filter);
 			}
 
-			Field field = getCopyOfAvailableField(availableFields, filter.getFieldName());
+			Field field = availableFields.get(filter.getFieldName().toUpperCase()).clone();
 			filter.setField(field);
 		}
 
@@ -417,7 +403,7 @@ public class SqlBuilder {
 
 		for (Sort sort : definition.getSorts()) {
 			String fieldName = sort.getFieldName();
-			Field field = getCopyOfAvailableField(availableFields, fieldName);
+			Field field = availableFields.get(fieldName.toUpperCase()).clone();
 
 			Column column = getColumnFromFieldName(fieldName, definition.getColumns());
 			if (column == null) {
@@ -431,13 +417,6 @@ public class SqlBuilder {
 			sql.addOrderBy(fieldName);
 			sort.setField(field);
 		}
-	}
-
-	// Setters
-
-	@Deprecated
-	public Definition getDefinition() {
-		return definition;
 	}
 
 	@Deprecated
