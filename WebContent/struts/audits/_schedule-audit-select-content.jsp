@@ -4,18 +4,22 @@
 <s:iterator value="availableSet.days">
 
     <s:if test="isNeedsExpediteFee(key)">
-        <s:set var="expidite" value="true" />
+        <s:set var="expedite" value="true" />
+        <s:set var="expedite_class">rush-date</s:set>
     </s:if>
     <s:else>
-        <s:set var="expidite" value="false" />
+        <s:set var="expedite" value="false" />
+        <s:set var="expedite_class" value="''" />
     </s:else>
-	<div class="cal_day <s:if test="#expidite">rush_date</s:if>">
-        <s:if test="expidite">
+
+    <div class="cal_day ${expedite_class}">
+        <s:if test="#expedite">
             <p>
                <s:text name="ScheduleAudit.RushAudit.Name" /><br />
                <s:text name="ScheduleAudit.RushAudit.Fee" />
             </p>
         </s:if>
+
         <h4><s:date name="key" format="EE, MMM d" /></h4>
         <div class="cal_times">
             <s:iterator value="value" var="auditorAvailability">
@@ -30,6 +34,7 @@
             </s:iterator>
         </div>
     </div>
+
 </s:iterator>
 
 <s:if test="availableSet.days.size() == 0">

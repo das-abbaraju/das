@@ -14,13 +14,13 @@
 
 /* ScheduleAuditSelect */
 
-#ScheduleAudit_address_page li#li_availability {
+#ScheduleAudit_address_page #li_availability {
 	width: 100%;
 	margin: 5px;
 	padding: 5px;
 }
 
-#ScheduleAudit_address_page li#li_availability div.cal_day {
+#ScheduleAudit_address_page #li_availability .cal_day {
 	border: 1px dashed #999;
 	float: left;
 	height: 154px;
@@ -29,19 +29,19 @@
 	width: 224px;
 }
 
-#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date
+#ScheduleAudit_address_page #li_availability .cal_day.rush-date
 {
 	height: 150px;
 	width: 220px;
 }
 
-#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date,
-#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date:hover
+#ScheduleAudit_address_page #li_availability .cal_day.rush-date,
+#ScheduleAudit_address_page #li_availability .cal_day.rush-date:hover
 {
 	border: 3px solid red;
 }
 
-#ScheduleAudit_address_page li#li_availability div.cal_day.rush_date p
+#ScheduleAudit_address_page #li_availability .cal_day.rush-date p
 {
 	color: red;
 	float: right;
@@ -52,19 +52,19 @@
 	text-align: right;
 }
 
-#ScheduleAudit_address_page li#li_availability div.cal_day div.cal_times {
+#ScheduleAudit_address_page #li_availability .cal_day .cal_times {
 	height:80%;
 	margin: 0;
 	overflow:auto;
 	padding: 0;
 }
 
-#ScheduleAudit_address_page li#li_availability div.cal_day:hover {
+#ScheduleAudit_address_page #li_availability .cal_day:hover {
 	background-color: white;
 	border: 1px solid #002240;
 }
 
-#ScheduleAudit_address_page li#li_availability a {
+#ScheduleAudit_address_page #li_availability a {
 	padding: 5px;
 	border: 1px solid #4686BF;
 	white-space: nowrap;
@@ -72,7 +72,7 @@
 	line-height: 35px;
 }
 
-#ScheduleAudit_address_page li#li_availability a:hover {
+#ScheduleAudit_address_page #li_availability a:hover {
 	background-color: #ffffbb;
 }
 

@@ -1432,10 +1432,8 @@
 			<result name="confirm">struts/audits/schedule_audit_confirm.jsp</result>
 			<result name="summary">struts/audits/schedule_audit_summary.jsp</result>
 			<result name="edit">struts/audits/schedule_audit_edit.jsp</result>
-			<result name="picker">struts/audits/schedule_audit_select_content.jsp
-			</result>
-			<result name="ScheduleAuditExpediteModal">/struts/audits/_schedule_audit_expedite_modal.jsp
-			</result>
+			<result name="picker">struts/audits/_schedule-audit-select-content.jsp</result>
+			<result name="ScheduleAuditExpediteModal">/struts/audits/_schedule_audit_expedite_modal.jsp</result>
 		</action>
 
 		<action name="AuditCalendar" class="com.picsauditing.actions.audits.AuditCalendar">
