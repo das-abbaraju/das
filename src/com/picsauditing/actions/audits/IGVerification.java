@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class IGVerification extends ContractorActionSupport {
@@ -57,7 +58,8 @@ public class IGVerification extends ContractorActionSupport {
 		EmailTemplate template = templateDAO.find(132);
 
 		List<ContractorAuditOperator> caos = caoDAO.findByCaoStatus(1000, permissions,
-				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' AND ca.expiresDate > NOW()"
+				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' " +
+				"AND (ca.expiresDate > NOW() OR ca.auditType.id IN (" + Strings.implode(AuditType.CANADIAN_PROVINCES) + "))" 
 						+ "AND cao.audit.contractorAccount.id = " + contractor.getId(), "cao.audit.contractorAccount");
 
 		caowList = new ArrayList<ContractorAuditOperatorWorkflow>();
