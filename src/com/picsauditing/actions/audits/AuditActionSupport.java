@@ -599,9 +599,9 @@ public class AuditActionSupport extends ContractorActionSupport {
 		for (ContractorAuditOperator cao : audit.getOperators()) {
 			// we need to do this here because the modified CAO has not been persisted yet, so the status
 			// to check is the newStatus, not the cao's status
-			if (cao.getId() == updatedCao.getId() && updatedCao.isVisible() && !newStatus.isApproved()) {
+			if (cao.getId() == updatedCao.getId() && updatedCao.isVisible() && !(newStatus.isApproved() || newStatus.isNotApplicable())) {
 				allCaosAreApproved = false;
-			} else if (cao.getId() != updatedCao.getId() && cao.isVisible() && !cao.getStatus().isApproved()) {
+			} else if (cao.getId() != updatedCao.getId() && cao.isVisible() && !(cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())) {
 				allCaosAreApproved = false;
 			}
 		}
