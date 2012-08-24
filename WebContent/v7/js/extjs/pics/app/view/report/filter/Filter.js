@@ -130,10 +130,6 @@ Ext.define('PICS.view.report.filter.Filter', {
         var cls;
 
         switch (type) {
-            // TODO: this is retarded the backend architecture is invalid
-            case 'AccountName':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
             case 'Autocomplete':
                 cls = 'PICS.view.report.filter.base.AutocompleteFilter';
                 break;
@@ -155,11 +151,11 @@ Ext.define('PICS.view.report.filter.Filter', {
             case 'LowMedHigh':
                 cls = 'PICS.view.report.filter.base.ListFilter';
                 break;
-            case 'Number':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
             case 'String':
                 cls = 'PICS.view.report.filter.base.StringFilter';
+                break;
+            case 'DaysAgo':
+                // Add new filter for days ago for Steps to Green report
                 break;
             default:
                 cls = null;
