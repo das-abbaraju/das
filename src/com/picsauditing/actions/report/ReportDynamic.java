@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
@@ -202,7 +203,13 @@ public class ReportDynamic extends PicsActionSupport {
 				throw new Exception("Available field undefined");
 
 			JSONArray jsonArray = new JSONArray();
+			String[] values = searchQuery.split(",");
+			String[] translationValueArray = new String[values.length];
 
+			for (int i = 0; i < values.length; i++) {
+				String translationKey = field.getI18nKey(values[i]);
+				translationValueArray[i] = ReportUtil.getText(translationKey, permissions.getLocale());
+			}
 			String translatedString = ReportUtil.getText(field.getI18nKey(searchQuery), permissions.getLocale());
 
 			JSONObject translationMap = new JSONObject();
@@ -211,6 +218,7 @@ public class ReportDynamic extends PicsActionSupport {
 			if (translatedString == null) {
 				translatedString = searchQuery;
 			}
+			translatedString = StringUtils.join(translationValueArray, ",");
 
 			translationMap.put("value", translatedString);
 
