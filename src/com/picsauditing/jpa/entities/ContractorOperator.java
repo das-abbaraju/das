@@ -105,6 +105,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	 * @return P=Pending, Y=Yes, N=No
 	 */
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.Enum)
 	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
@@ -183,6 +184,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.Enum)
 	public FlagColor getBaselineFlag() {
 		return baselineFlag;
 	}
@@ -222,6 +224,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.Enum)
 	public FlagColor getForceFlag() {
 		return forceFlag;
 	}
@@ -258,6 +261,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
+	@ReportField(filterType = FilterType.Date)
 	public Date getProcessCompletion() {
 		return processCompletion;
 	}
@@ -292,6 +296,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "flag", nullable = false)
+	@ReportField(filterType = FilterType.Enum)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
@@ -310,6 +315,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "waitingOn", nullable = false)
+	@ReportField(filterType = FilterType.Enum)
 	public WaitingOn getWaitingOn() {
 		return waitingOn;
 	}
