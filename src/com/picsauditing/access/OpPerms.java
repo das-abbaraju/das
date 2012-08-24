@@ -12,7 +12,9 @@ import com.picsauditing.jpa.entities.Translatable;
  * 
  * OpPerms stands for Operator Permissions, but it is actually a misnomer.
  */
-public enum OpPerms implements Translatable{
+public enum OpPerms implements Translatable {
+	None("No Permission", "Default permission if a permission is required but no privileges should be granted.", false, false, false, false, false),
+	
 	// Development Permission
 	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test.", true, true, true, false, false),
 	Debug("Debug", "Allows PICS users to see debugging information", false, false, true, false, false),
@@ -254,5 +256,9 @@ public enum OpPerms implements Translatable{
 
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
+	}
+	
+	public boolean isNone() {
+		return this == None;
 	}
 }

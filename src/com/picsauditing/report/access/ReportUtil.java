@@ -26,7 +26,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
@@ -41,8 +43,8 @@ import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
 
 /**
- * This is a utility class for Dynamic Reports. It should handle all heavy lifting
- * not directly related to routing, persistence, or business logic.
+ * This is a utility class for Dynamic Reports. It should handle all heavy
+ * lifting not directly related to routing, persistence, or business logic.
  */
 public final class ReportUtil {
 
@@ -121,7 +123,8 @@ public final class ReportUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static JSONArray translateAndJsonify(Map<String, Field> availableFields, Permissions permissions, Locale locale) {
+	public static JSONArray translateAndJsonify(Map<String, Field> availableFields, Permissions permissions,
+			Locale locale) {
 		JSONArray fieldsJsonArray = new JSONArray();
 
 		for (Field field : availableFields.values()) {
@@ -156,14 +159,14 @@ public final class ReportUtil {
 
 		for (Column column : definition.getColumns()) {
 			Field field = column.getField();
-			
+
 			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
 			field.setName(column.getFieldName());
 
 			if (column.getMethod() != null) {
-				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(),locale);
+				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(), locale);
 			}
 
 			if (field != null) {
@@ -292,8 +295,8 @@ public final class ReportUtil {
 		ServletActionContext.getResponse().flushBuffer();
 	}
 
-	private static int createExcelSheet(Map<String, String> translations, HSSFWorkbook workBook, HSSFCellStyle cellStyle,
-			HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
+	private static int createExcelSheet(Map<String, String> translations, HSSFWorkbook workBook,
+			HSSFCellStyle cellStyle, HSSFCellStyle headerStyle, int sheetNumber, Locale locale) {
 		HSSFSheet sheet = workBook.createSheet();
 
 		sheet.setDefaultColumnStyle(0, cellStyle);
@@ -342,7 +345,7 @@ public final class ReportUtil {
 			if (table == null)
 				continue;
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(table);
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(table, createSuperUserPermissions());
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();
@@ -360,5 +363,15 @@ public final class ReportUtil {
 			String fieldSuffixKey = "Report.Suffix." + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
+	}
+
+	private static Permissions createSuperUserPermissions() {
+		Permissions permissions = new Permissions();
+		for (OpPerms opPerm : OpPerms.values()) {
+			UserAccess userAccess = new UserAccess();
+			userAccess.setOpPerm(opPerm);
+			permissions.getPermissions().add(userAccess);
+		}
+		return permissions;
 	}
 }

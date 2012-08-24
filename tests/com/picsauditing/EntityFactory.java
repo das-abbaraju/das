@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -441,6 +443,17 @@ public class EntityFactory {
 		flagCriteriaContractor.setCriteria(makeFlagCriteria());
 
 		return flagCriteriaContractor;
+	}
+	
+	public static void addUserPermission(Permissions permissions, OpPerms opPerm) {
+		UserAccess userAccess = new UserAccess();
+		userAccess.setOpPerm(opPerm);
+		userAccess.setViewFlag(opPerm.usesView());
+		userAccess.setEditFlag(opPerm.usesEdit());
+		userAccess.setDeleteFlag(opPerm.usesDelete());
+		userAccess.setGrantFlag(true);
+		
+		permissions.getPermissions().add(userAccess);
 	}
 
 }

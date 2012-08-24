@@ -322,28 +322,6 @@ public class SqlBuilderTest {
 		assertFalse(result.booleanValue());
 	}
 
-	@Ignore("Too low level")
-	@Test
-	public void testUsesGroupBy_TrueIfFieldIsAggregrate() throws Exception {
-		String fieldName = "fieldName";
-		when(column.getFieldName()).thenReturn(fieldName);
-//		when(queryFunction.isAggregate()).thenReturn(true);
-//		when(column.getFunction()).thenReturn(queryFunction);
-
-		List<Column> columns = new ArrayList<Column>();
-		columns.add(column);
-
-		when(definition.getColumns()).thenReturn(columns);
-		Whitebox.setInternalState(builder, "definition", definition);
-
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-		availableFields.put(fieldName.toUpperCase(), new Field(fieldName, fieldName, FilterType.AccountName));
-
-		Boolean result = Whitebox.invokeMethod(builder, "usesGroupBy", availableFields);
-
-		assertTrue(result.booleanValue());
-	}
-
 	@Test
 	public void testIsAggregate_FalseIfColumnIsNull() throws Exception {
 		Column column = null;
@@ -497,7 +475,7 @@ public class SqlBuilderTest {
 		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
 	}
 
-	@Ignore("accountStatusCount needs to be added to availableFields")
+	// @Ignore("accountStatusCount needs to be added to availableFields")
 	@Test
 	public void testGroupBy() throws Exception {
 		Definition definition = new Definition();
