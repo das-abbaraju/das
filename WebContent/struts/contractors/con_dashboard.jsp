@@ -348,7 +348,7 @@
     									<div class="co_select nobr">
     										<s:text name="global.SelectOperator" />:
     										<s:select
-    											data-contractor="${contractor.id}"
+    											data-contractor="contractor.id"
     											id="active_operator_view"
     											list="generalContractorClientSites" 
     											listKey="operatorAccount.id" 
@@ -364,7 +364,7 @@
     									<div class="co_select nobr">
     										<s:text name="global.SelectOperator" />:
     										<s:select
-    											data-contractor="${contractor.id}"
+    											data-contractor="contractor.id"
     											id="active_operator_view"
     											list="activeOperators" 
     											listKey="operatorAccount.id" 
