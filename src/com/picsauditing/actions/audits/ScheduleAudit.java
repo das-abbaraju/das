@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.struts2.ServletActionContext;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -561,26 +562,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public boolean isNeedsExpediteFee(Date newDate) {
-		if (conAudit.getScheduledDate() != null && newDate.after(conAudit.getScheduledDate()))
-			return false;
-
-		if (newDate != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-
-			Calendar compare = Calendar.getInstance();
-			compare.setTime(newDate);
-			compare.set(Calendar.HOUR_OF_DAY, 0);
-			compare.set(Calendar.MINUTE, 0);
-			compare.set(Calendar.SECOND, 0);
-
-			cal.set(Calendar.ZONE_OFFSET, compare.get(Calendar.ZONE_OFFSET));
-			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 10;
-		}
-
-		return false;
+		return DateBean.isWithinTenBusinessDays(new LocalDate(newDate));
 	}
 
 	private void createInvoice(InvoiceFee fee, String notes) throws Exception {

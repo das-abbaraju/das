@@ -13,6 +13,12 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import net.objectlab.kit.datecalc.common.DateCalculator;
+import net.objectlab.kit.datecalc.common.HolidayHandlerType;
+import net.objectlab.kit.datecalc.joda.LocalDateKitCalculatorsFactory;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +37,8 @@ public class DateBean {
 			"September", "October", "November", "December" };
 
 	protected static Map<Integer, String> times = new TreeMap<Integer, String>();
-    
-	private static final Logger logger = LoggerFactory.getLogger(DateBean.class); 
+
+	private static final Logger logger = LoggerFactory.getLogger(DateBean.class);
 
 	static {
 		times.put(0, "06:00 AM");
@@ -66,38 +72,39 @@ public class DateBean {
 	// do two digit year date patterns first
 	private static List<String> datePatterns = new ArrayList<String>() {
 		private static final long serialVersionUID = 1L;
-	{
-		add("MM-dd-yy");
-		add("MM/dd/yy");
-		add("MM/dd.yy");
-		add("MM.dd.yy");
-		add("MM dd yy");
-		add("MMMMM dd, yy");
-		add("MMMMM dd yy");
-		add("MMMM dd, yy");
-		add("MMMM dd yy");
-	
-		add("yyyy-MM-dd");
-		add("yyyy/MM/dd");
-		add("yyyy.MM.dd");
-		add("yyyy MM dd");
-		add("MM-dd-yyyy");
-		add("MM/dd/yyyy");
-		add("dd/MM/yyyy");
-		add("dd-MM-yyyy");
-		add("dd.MM.yyyy");
-		add("dd MM yyyy");
-		add("dd MMMMM yyyy");
-		add("dd MMMM yyyy");
-		add("MMMMM dd, yyyy");
-		add("MMMMM dd yyyy");
-		add("MMMM dd, yyyy");
-		add("MMMM dd yyyy");
-		add("MM dd yyyy");
-		add("MM/dd.yyyy");
-		add("MM.dd.yyyy");
-	}};
-	
+		{
+			add("MM-dd-yy");
+			add("MM/dd/yy");
+			add("MM/dd.yy");
+			add("MM.dd.yy");
+			add("MM dd yy");
+			add("MMMMM dd, yy");
+			add("MMMMM dd yy");
+			add("MMMM dd, yy");
+			add("MMMM dd yy");
+
+			add("yyyy-MM-dd");
+			add("yyyy/MM/dd");
+			add("yyyy.MM.dd");
+			add("yyyy MM dd");
+			add("MM-dd-yyyy");
+			add("MM/dd/yyyy");
+			add("dd/MM/yyyy");
+			add("dd-MM-yyyy");
+			add("dd.MM.yyyy");
+			add("dd MM yyyy");
+			add("dd MMMMM yyyy");
+			add("dd MMMM yyyy");
+			add("MMMMM dd, yyyy");
+			add("MMMMM dd yyyy");
+			add("MMMM dd, yyyy");
+			add("MMMM dd yyyy");
+			add("MM dd yyyy");
+			add("MM/dd.yyyy");
+			add("MM.dd.yyyy");
+		}
+	};
+
 	public static String toDBFormat(String month, String day, String year) throws Exception {
 		return toDBFormat(year + "-" + month + "-" + day);
 	}
@@ -144,7 +151,8 @@ public class DateBean {
 			java.util.Date tempDate = DBFormat.parse(dateString);
 			temp = showFormat.format(tempDate);
 		} catch (Exception e) {
-			logger.error("Invalid DB Date format in DateBean.toShowFormat(): failed converting {} to {}", dateString, temp);
+			logger.error("Invalid DB Date format in DateBean.toShowFormat(): failed converting {} to {}", dateString,
+					temp);
 			temp = "";
 		}// catch
 		return temp;
@@ -168,8 +176,7 @@ public class DateBean {
 	}
 
 	/*
-	 * WCB year starts September 1 the next year
-	 * e.g. Sep.1, 2012 would be 2013
+	 * WCB year starts September 1 the next year e.g. Sep.1, 2012 would be 2013
 	 * e.g. Aug 31, 2012 would be 2012
 	 */
 	public static String getWCBYear(Date date) {
@@ -179,7 +186,7 @@ public class DateBean {
 		}
 		wcbYearStart.set(Calendar.MONTH, 8); // September is 8 (zero based)
 		wcbYearStart.set(Calendar.DAY_OF_MONTH, 1);
-		
+
 		Calendar now = Calendar.getInstance();
 		if (date != null) {
 			now.setTime(date);
@@ -188,20 +195,20 @@ public class DateBean {
 		if (getDateDifference(wcbYearStart.getTime(), now.getTime()) < 0) {
 			return "" + wcbYearStart.get(Calendar.YEAR);
 		}
-		
+
 		return "" + (wcbYearStart.get(Calendar.YEAR) + 1);
 	}
 
 	public static String getWCBYear() {
 		return getWCBYear(null);
 	}
-	
+
 	/**
 	 * expiration date is December 31st.
 	 */
 	public static Date getWCBExpirationDate(String year) {
 		Calendar expirationDate = Calendar.getInstance();
-		
+
 		try {
 			expirationDate.set(Calendar.MONTH, 11);
 			expirationDate.set(Calendar.DAY_OF_MONTH, 31);
@@ -209,7 +216,7 @@ public class DateBean {
 		} catch (Exception e) {
 			return null;
 		}
-		
+
 		return expirationDate.getTime();
 	}
 
@@ -305,7 +312,7 @@ public class DateBean {
 	 */
 	public static Date getEndOfTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(4000, Calendar.JANUARY, 1,23,59,59);
+		cal.set(4000, Calendar.JANUARY, 1, 23, 59, 59);
 		return cal.getTime();
 	}
 
@@ -316,7 +323,7 @@ public class DateBean {
 	 */
 	public static Date getStartOfPicsTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(2000, Calendar.JANUARY, 1,0,0,0);
+		cal.set(2000, Calendar.JANUARY, 1, 0, 0, 0);
 		return cal.getTime();
 	}
 
@@ -345,7 +352,7 @@ public class DateBean {
 		cal.add(Calendar.YEAR, -1);
 		Date yearAgo = cal.getTime();
 		Date testDate = showFormat.parse(dateString);
-		
+
 		return yearAgo.before(testDate);
 	}
 
@@ -353,7 +360,7 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.YEAR, -3);
 		Date threeYearsAgo = cal.getTime();
-		
+
 		return threeYearsAgo.before(testDate);
 	}
 
@@ -364,7 +371,7 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 		Date testDate = showFormat.parse(testDateString);
-		
+
 		return today.before(testDate);
 	}
 
@@ -386,7 +393,7 @@ public class DateBean {
 				return i;
 			}
 		}
-		
+
 		return 12;
 	}
 
@@ -419,8 +426,9 @@ public class DateBean {
 	public static Date parseDate(String dateString) {
 		if (Strings.isEmpty(dateString))
 			return null;
-		
-		// do not be tempted to move this to a static variable - SimpleDateFormat is not thread-safe
+
+		// do not be tempted to move this to a static variable -
+		// SimpleDateFormat is not thread-safe
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
 
@@ -439,7 +447,8 @@ public class DateBean {
 	}
 
 	public static Date parseDateTime(String dateString) {
-		// do not be tempted to move this to a static variable - SimpleDateFormat is not thread-safe
+		// do not be tempted to move this to a static variable -
+		// SimpleDateFormat is not thread-safe
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
 
@@ -470,16 +479,16 @@ public class DateBean {
 			return null;
 
 		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.MONTH, months);
-		
+
 		return cal.getTime();
 	}
 
 	public static Date addDays(Date startDate, int days) {
 		if (startDate == null || days == 0)
 			return null;
-		
+
 		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.DATE, days);
-		
+
 		return cal.getTime();
 	}
 
@@ -501,11 +510,12 @@ public class DateBean {
 	 * @return
 	 */
 	public static Date getFirstofMonth(Date startDate, int months) {
-		if (startDate == null) return null;
+		if (startDate == null)
+			return null;
 
 		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.MONTH, months);
 		calendar.set(Calendar.DATE, 1);
-		
+
 		return calendar.getTime();
 	}
 
@@ -523,7 +533,7 @@ public class DateBean {
 
 		return cal.getTime();
 	}
-	
+
 	public static Date getMarchOfThatYear(Date startDate) {
 		if (startDate == null)
 			return null;
@@ -534,48 +544,48 @@ public class DateBean {
 
 		return cal.getTime();
 	}
-	
+
 	public static Date getFirstOfNextYear(Date startDate) {
 		if (startDate == null) {
 			return null;
 		}
-		
-		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.YEAR, 1);		
+
+		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.YEAR, 1);
 		calendar = setDefaultsForMonth(calendar, Calendar.JANUARY);
-		
+
 		return calendar.getTime();
 	}
-	
+
 	protected static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(field, amount);
-		
+
 		return calendar;
 	}
-	
+
 	protected static Calendar setDefaultsForMonth(Calendar calendar, int month) {
 		calendar.set(Calendar.MONTH, month);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);		
-		
+		calendar.set(Calendar.MILLISECOND, 0);
+
 		return calendar;
 	}
-	
+
 	public static Date setToEndOfDay(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.set(Calendar.HOUR_OF_DAY, 23);
 		calendar.set(Calendar.MINUTE, 59);
 		calendar.set(Calendar.SECOND, 59);
-		calendar.set(Calendar.MILLISECOND, 0);	
-		
+		calendar.set(Calendar.MILLISECOND, 0);
+
 		return calendar.getTime();
 	}
-	
+
 	public static Date setToStartOfDay(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -587,19 +597,19 @@ public class DateBean {
 
 		return calendar.getTime();
 	}
-	
+
 	/**
-	 * Returns the integer year of the date argument or
-	 * zero if the date is null.
+	 * Returns the integer year of the date argument or zero if the date is
+	 * null.
 	 * 
 	 * @param date
 	 * @return
 	 */
 	public static int getYearFromDate(Date date) {
 		if (date == null) {
-			return 0; 
+			return 0;
 		}
-		
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar.get(Calendar.YEAR);
@@ -625,7 +635,7 @@ public class DateBean {
 	public static boolean isBeforeAWeek(Date startDate) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, -5);
-		
+
 		return calendar.getTime().before(startDate);
 	}
 
@@ -641,11 +651,12 @@ public class DateBean {
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone, TimeZone destinationTimeZone) {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTimeInMillis(sourceDate.getTime());
-		
+
 		Calendar c2 = Calendar.getInstance(sourceTimeZone);
 		c2.setTimeInMillis(sourceDate.getTime());
 		c2.set(Calendar.HOUR_OF_DAY, c1.get(Calendar.HOUR_OF_DAY));
-		// this must be some kind of bug in java. you MUST look at the hour for the timezone conversion to work
+		// this must be some kind of bug in java. you MUST look at the hour for
+		// the timezone conversion to work
 		c2.get(Calendar.HOUR_OF_DAY);
 		c2.setTimeZone(destinationTimeZone);
 		return c2.getTime();
@@ -701,10 +712,21 @@ public class DateBean {
 		sunday.set(Calendar.DAY_OF_WEEK, 1);
 		int closestmonth = DateBean.getDateDifference(startDate, month.getTime());
 		int closestsunday = DateBean.getDateDifference(startDate, sunday.getTime());
-		
+
 		if (closestmonth > closestsunday)
 			return month.getTime();
 		else
 			return sunday.getTime();
+	}
+
+	public static boolean isWithinTenBusinessDays(LocalDate selectedDate) {
+		DateCalculator<LocalDate> cal = LocalDateKitCalculatorsFactory.getDefaultInstance().getDateCalculator("US",
+				HolidayHandlerType.FORWARD);
+
+		cal.setStartDate(new LocalDate());
+
+		LocalDate tenBusinessDaysFromNow = cal.moveByDays(10).getCurrentBusinessDate();
+
+		return selectedDate.isBefore(tenBusinessDaysFromNow);
 	}
 }
