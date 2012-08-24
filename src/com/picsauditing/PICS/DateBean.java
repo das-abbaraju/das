@@ -719,14 +719,14 @@ public class DateBean {
 			return sunday.getTime();
 	}
 
-	public static boolean isWithinTenBusinessDays(LocalDate selectedDate) {
+	public static boolean dateIsWithinNumberOfBusinessDays(LocalDate selectedDate, int numOfBusinessDays) {
 		DateCalculator<LocalDate> cal = LocalDateKitCalculatorsFactory.getDefaultInstance().getDateCalculator("US",
 				HolidayHandlerType.FORWARD);
 
 		cal.setStartDate(new LocalDate());
 
-		LocalDate tenBusinessDaysFromNow = cal.moveByDays(10).getCurrentBusinessDate();
+		LocalDate todayPlusNumOfBusinessDaysFromNow = cal.moveByDays(numOfBusinessDays).getCurrentBusinessDate();
 
-		return selectedDate.isBefore(tenBusinessDaysFromNow);
+		return selectedDate.isBefore(todayPlusNumOfBusinessDaysFromNow);
 	}
 }

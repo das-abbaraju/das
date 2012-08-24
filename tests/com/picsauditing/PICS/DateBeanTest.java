@@ -568,11 +568,10 @@ public class DateBeanTest {
 	}
 
 	@Test
-	public void testIsWithinTenBusinessDays() {
-		LocalDate todayPlusFive = new LocalDate().plusDays(5);
-		LocalDate todayPlusTwenty = new LocalDate().plusDays(20);
-
-		assertEquals(true, DateBean.isWithinTenBusinessDays(todayPlusFive));
-		assertEquals(false, DateBean.isWithinTenBusinessDays(todayPlusTwenty));
+	public void testDateIsWithinNumberOfBusinessDays() {
+		assertEquals(true, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate(), 10));
+		assertEquals(true, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(5), 10));
+		assertEquals(false, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(10), 10));
+		assertEquals(false, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(15), 10));
 	}
 }
