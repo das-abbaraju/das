@@ -12,7 +12,6 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -40,7 +39,6 @@ import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.util.Strings;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -60,18 +58,6 @@ public final class ReportUtil {
 
 	public static String getText(String key, Locale locale) {
 		return i18nCache.getText(key, locale);
-	}
-
-	public static Column getColumnFromFieldName(String fieldName, List<Column> columns) {
-		if (fieldName == null)
-			return null;
-
-		for (Column column : columns) {
-			if (column.getFieldName().equals(fieldName))
-				return column;
-		}
-
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")

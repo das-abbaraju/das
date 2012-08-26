@@ -32,6 +32,7 @@ import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 /**
@@ -128,10 +129,8 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			ReportModel.validate(report);
 
-			// TODO remove definition from SqlBuilder
-			sqlBuilder.setDefinition(report.getDefinition());
-
-			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber);
+			SelectSQL sql = sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
+			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 
 			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
 
@@ -145,7 +144,7 @@ public class ReportDynamic extends PicsActionSupport {
 				json.put("success", true);
 			}
 		} catch (ReportValidationException rve) {
-			writeJsonError(rve);
+			writeJsonError(getText(rve.getMessage()));
 		} catch (SQLException se) {
 			writeJsonError(se);
 		} catch (Exception e) {
@@ -248,11 +247,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			reportDao.updateLastOpened(permissions.getUserId(), report.getId());
 
-			// TODO remove definition from SqlBuilder
-			sqlBuilder.setDefinition(report.getDefinition());
-
-			// TODO find out what else this method is doing besides building sql
-			sqlBuilder.buildSql(report, permissions, pageNumber);
+			sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
@@ -356,11 +351,7 @@ public class ReportDynamic extends PicsActionSupport {
 				return SUCCESS;
 			}
 
-			// TODO remove definition from SqlBuilder
-			sqlBuilder.setDefinition(report.getDefinition());
-
-			// TODO remove FOR_DOWNLOAD boolean flag
-			SelectSQL sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
+			SelectSQL sql = sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
 
 			exportToExcel(report, reportDao.runQuery(sql, json));
 		} catch (SQLException se) {
@@ -378,7 +369,13 @@ public class ReportDynamic extends PicsActionSupport {
 		ExcelSheet excelSheet = new ExcelSheet();
 		excelSheet.setData(rawData);
 
-		excelSheet = sqlBuilder.extractColumnsToExcel(excelSheet);
+		{
+			SelectSQL sql = sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
+			for (String field : sql.getFields()) {
+				String alias = SelectSQL.getAlias(field);
+				excelSheet.addColumn(new ExcelColumn(alias, alias));
+			}
+		}
 
 		String filename = report.getName();
 		excelSheet.setName(filename);
@@ -401,15 +398,18 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("error", e.getCause() + " " + e.getMessage());
 	}
 
-	// TODO: Refactor, because it seems just like the jsonException method.
 	private void writeJsonError(Exception e) {
-		json.put("success", false);
 		String message = e.getMessage();
 
 		if (message == null) {
 			message = e.toString();
 		}
+		
+		writeJsonError(message);
+	}
 
+	private void writeJsonError(String message) {
+		json.put("success", false);
 		json.put("message", message);
 	}
 

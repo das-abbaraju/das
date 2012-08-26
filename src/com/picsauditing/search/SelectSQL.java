@@ -264,4 +264,14 @@ public class SelectSQL {
 			alias = field;
 		return alias;
 	}
+	
+	public void setPageNumber(int rowsPerPage, int pageNumber) {
+		if (pageNumber > 1) {
+			setStartRow((pageNumber - 1) * rowsPerPage);
+		}
+
+		setLimit(rowsPerPage);
+		setSQL_CALC_FOUND_ROWS(true);
+	}
+
 }

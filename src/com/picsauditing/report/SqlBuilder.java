@@ -1,7 +1,5 @@
 package com.picsauditing.report;
 
-import static com.picsauditing.report.access.ReportUtil.getColumnFromFieldName;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,12 +9,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
@@ -30,61 +25,28 @@ import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
-
-	// TODO remove definition, get from Report passed in instead
 	private Definition definition = new Definition();
 	private SelectSQL sql;
+	private Map<String, Field> availableFields;
 
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) throws ReportValidationException {
-		return buildSql(report, permissions, pageNumber, false);
-	}
-
-	// TODO remove FOR_DOWNLOAD boolean flag
-	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) throws ReportValidationException {
-		AbstractModel model = report.getModel();
-		sql = initializeSql(model, permissions);
-
-		sql.addWhere("1 " + model.getWhereClause(permissions));
-
-		if (!forDownload) {
-			int rowsPerPage = report.getRowsPerPage();
-
-			if (pageNumber > 1) {
-				sql.setStartRow((pageNumber - 1) * rowsPerPage);
-			}
-
-			sql.setLimit(rowsPerPage);
-			sql.setSQL_CALC_FOUND_ROWS(true);
-		}
+	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions) throws ReportValidationException {
+		this.definition = definition;
 		
-		return sql;
-	}
-
-	// TODO change this to pass in a report
-	public SelectSQL initializeSql(AbstractModel model, Permissions permissions) throws ReportValidationException {
 		sql = new SelectSQL();
 
 		setFrom(model);
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
 
-		addFieldsAndGroupBy(availableFields, definition.getColumns());
-		addRuntimeFilters(availableFields, permissions);
-		addOrderByClauses(model, availableFields);
+		addFieldsAndGroupBy(definition.getColumns());
+		addRuntimeFilters(permissions);
+		addOrderByClauses(model);
 
 		addJoins(model.getRootTable());
 
+		sql.addWhere("1 " + model.getWhereClause(permissions));
+		
 		return sql;
-	}
-
-	@Anonymous
-	public ExcelSheet extractColumnsToExcel(ExcelSheet excelSheet) {
-		for (String field : sql.getFields()) {
-			String alias = SelectSQL.getAlias(field);
-			excelSheet.addColumn(new ExcelColumn(alias, alias));
-		}
-
-		return excelSheet;
 	}
 
 	private void setFrom(AbstractModel model) {
@@ -119,8 +81,8 @@ public class SqlBuilder {
 		}
 	}
 
-	private void addFieldsAndGroupBy(Map<String, Field> availableFields, List<Column> columns) {
-		boolean usesGroupBy = usesGroupBy(availableFields);
+	private void addFieldsAndGroupBy(List<Column> columns) {
+		boolean usesGroupBy = usesGroupBy();
 
 		// Make sure column has a field(?)
 		for (Column column : columns) {
@@ -133,12 +95,10 @@ public class SqlBuilder {
 				column.setFieldName(fieldName);
 			}
 
-			Field field = availableFields.get(fieldNameWithoutMethod.toUpperCase());
+			Field field = getAvailableFieldCopy(column);
 
 			if (field == null)
 				continue;
-			
-			field = field.clone();
 			
 			field.setName(fieldName);
 
@@ -159,7 +119,21 @@ public class SqlBuilder {
 			addDependentFields(dependentFields, field);
 		}
 	}
+	
+	private Field getAvailableFieldCopy(Column column) {
+		String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
+		return getAvailableFieldCopy(fieldNameWithoutMethod);
+	}
 
+	private Field getAvailableFieldCopy(String fieldName) {
+		Field field = availableFields.get(fieldName.toUpperCase());
+
+		if (field == null)
+			return null;
+		
+		return field.clone();
+	}
+	
 	private void addDependentFields(Set<String> dependentFields, Field field) {
 		for (String fieldName : dependentFields) {
 			if (isFieldIncluded(fieldName))
@@ -179,7 +153,7 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private boolean usesGroupBy(Map<String, Field> availableFields) {
+	private boolean usesGroupBy() {
 		for (Column column : definition.getColumns()) {
 			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
 			if (fieldNameWithoutMethod == null)
@@ -257,7 +231,7 @@ public class SqlBuilder {
 		return fieldSql;
 	}
 
-	private void addRuntimeFilters(Map<String, Field> availableFields, Permissions permissions) throws ReportValidationException {
+	private void addRuntimeFilters(Permissions permissions) throws ReportValidationException {
 		if (definition.getFilters().isEmpty())
 			return;
 
@@ -265,19 +239,26 @@ public class SqlBuilder {
 		List<Filter> havingFilters = new ArrayList<Filter>();
 
 		for (Filter filter : definition.getFilters()) {
-			// TODO we might want to verify the filter is properly defined
-			// before including it
-			// if (filter.isFullyDefined()) { }
+			if (!filter.isValid())
+				continue;
 			
 			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
+			if (column == null) {
+				Field field = getAvailableFieldCopy(filter.getFieldName());
+				if (field != null) {
+					whereFilters.add(filter);
+					filter.setField(field.clone());
+				}
+				continue;
+			}
+			
 			if (isAggregate(column)) {
 				havingFilters.add(filter);
 			} else {
 				whereFilters.add(filter);
 			}
-
-			Field field = availableFields.get(filter.getFieldName().toUpperCase()).clone();
-			filter.setField(field);
+			
+			filter.setField(getAvailableFieldCopy(column));
 		}
 
 		String where = definition.getFilterExpression();
@@ -291,25 +272,20 @@ public class SqlBuilder {
 
 		int whereIndex = 0;
 		for (Filter filter : whereFilters) {
-			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
-			if (!isAggregate(column)) {
-				String filterExp = toFilterSql(filter, filter.getField());
-				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
-				whereIndex++;
-			}
+			String filterExp = toFilterSql(filter, filter.getField());
+			where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
+			whereIndex++;
 		}
 		
 		if (where.contains("{")) {
-			throw new ReportValidationException(ReportUtil.getText("DynamicReports.FilterExpressionInvalid", permissions.getLocale()));
+			// TODO Create a new Exception call ReportFilterExpression extends 
+			throw new ReportValidationException("DynamicReports.FilterExpressionInvalid");
 		}
 		sql.addWhere(where);
 
 		for (Filter filter : havingFilters) {
-			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
-			if (isAggregate(column)) {
-				String filterExp = toFilterSql(filter, filter.getField());
-				sql.addHaving(filterExp);
-			}
+			String filterExp = toFilterSql(filter, filter.getField());
+			sql.addHaving(filterExp);
 		}
 	}
 
@@ -397,9 +373,9 @@ public class SqlBuilder {
 		return StringUtils.join(quotedList.toArray(),",");
 	}
 
-	private void addOrderByClauses(AbstractModel model, Map<String, Field> availableFields) {
+	private void addOrderByClauses(AbstractModel model) {
 		if (definition.getSorts().isEmpty()) {
-			if (usesGroupBy(availableFields))
+			if (usesGroupBy())
 				return;
 
 			sql.addOrderBy(model.getDefaultSort());
@@ -407,25 +383,36 @@ public class SqlBuilder {
 		}
 
 		for (Sort sort : definition.getSorts()) {
-			String fieldName = sort.getFieldName();
-			Field field = availableFields.get(fieldName.toUpperCase()).clone();
-
-			Column column = getColumnFromFieldName(fieldName, definition.getColumns());
+			String fieldName;
+			Column column = getColumnFromFieldName(sort.getFieldName(), definition.getColumns());
 			if (column == null) {
+				Field field = getAvailableFieldCopy(sort.getFieldName());
 				if (field != null && field.getDatabaseColumnName() != null)
 					fieldName = field.getDatabaseColumnName();
+				else
+					continue;
+				sort.setField(field);
+			} else {
+				fieldName = column.getFieldName();
+				sort.setField(getAvailableFieldCopy(column));
 			}
 
 			if (!sort.isAscending())
 				fieldName += " DESC";
 
 			sql.addOrderBy(fieldName);
-			sort.setField(field);
 		}
 	}
+	
+	private Column getColumnFromFieldName(String fieldName, List<Column> columns) {
+		if (fieldName == null)
+			return null;
 
-	@Deprecated
-	public void setDefinition(Definition definition) {
-		this.definition = definition;
+		for (Column column : columns) {
+			if (column.getFieldName().equals(fieldName))
+				return column;
+		}
+
+		return null;
 	}
 }
