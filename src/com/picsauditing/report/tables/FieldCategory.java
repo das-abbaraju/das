@@ -10,6 +10,7 @@ public enum FieldCategory {
 	ClientSiteMonitoringAnAudit,
 	ClientSitePreferences,
 	Commission, 
+	CompanyStatus, 
 	ContractorClassification, 
 	ContractorSpecificDetails, 
 	ContractorStatistics, 
