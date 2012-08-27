@@ -24,6 +24,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
@@ -45,6 +46,8 @@ public class ReportDynamic extends PicsActionSupport {
 	private ReportModel reportModel;
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
@@ -245,7 +248,7 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			ReportModel.validate(report);
 
-			reportDao.updateLastOpened(permissions.getUserId(), report.getId());
+			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
 
 			sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
 
@@ -291,7 +294,7 @@ public class ReportDynamic extends PicsActionSupport {
 			userId = Integer.parseInt(dirtyReportIdParameter);
 
 			if (reportModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
-				reportDao.connectReportToUser(report, userId);
+				reportModel.connectReportToUser(report, userId);
 				json.put("success", true);
 			} else {
 				json.put("success", false);
@@ -317,7 +320,7 @@ public class ReportDynamic extends PicsActionSupport {
 			userId = Integer.parseInt(dirtyReportIdParameter);
 
 			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
-				reportDao.connectReportToUserEditable(report, userId);
+				reportModel.connectReportToUserEditable(report, userId);
 				json.put("success", true);
 			} else {
 				json.put("success", false);

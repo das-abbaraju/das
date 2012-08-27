@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportModel;
@@ -38,6 +39,8 @@ public class ManageReports extends PicsActionSupport {
 	private ReportModel reportModel;
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportUserDAO reportUserDao;
 
 	private List<ReportUser> userReports;
 	private List<ReportUser> userReportsOverflow;
@@ -64,7 +67,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favoritesList() {
 		try {
-			userReports = reportDao.findFavoriteUserReports(permissions.getUserId());
+			userReports = reportUserDao.findAllFavorite(permissions.getUserId());
 
 			if (CollectionUtils.isEmpty(userReports)) {
 				addActionMessage(getText("ManageReports.message.NoFavorites"));
@@ -128,7 +131,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String removeUserReport() {
 		try {
-			reportDao.removeUserReport(permissions.getUserId(), reportId);
+			reportUserDao.remove(permissions.getUserId(), reportId);
 			addActionMessage(getText("ManageReports.message.ReportRemoved"));
 		} catch (NoResultException nre) {
 			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
@@ -142,9 +145,9 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() {
 		try {
-			Report report = reportDao.findOneReport(reportId);
+			Report report = reportDao.findOne(reportId);
 			if (ReportModel.canUserDelete(permissions.getUserId(), report)) {
-				reportDao.deleteReport(report);
+				reportDao.remove(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {
 				addActionError(getText("ManageReports.error.NoDeletePermissions"));
@@ -213,7 +216,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String columnsToTranslate() {
 		try {
-			List<Report> allReports = reportDao.findAllReports();
+			List<Report> allReports = reportDao.findAll();
 			// TODO: Get a button/link for debug only
 			ReportUtil.findColumnsToTranslate(allReports);
 		} catch (IOException ioe) {

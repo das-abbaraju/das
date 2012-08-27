@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.report.ManageReports;
-import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ReportUser;
 
@@ -14,7 +14,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 public class Menu extends PicsActionSupport {
 
 	@Autowired
-	private ReportDAO reportDao;
+	private ReportUserDAO reportUserDao;
 
 	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
@@ -22,7 +22,7 @@ public class Menu extends PicsActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 
-		List<ReportUser> favoriteReports = reportDao.findFavoriteUserReports(permissions.getUserId());
+		List<ReportUser> favoriteReports = reportUserDao.findAllFavorite(permissions.getUserId());
 
 		if (favoriteReports.size() > ManageReports.MAX_REPORTS_IN_MENU) {
 			favoriteReports = favoriteReports.subList(0, ManageReports.MAX_REPORTS_IN_MENU);

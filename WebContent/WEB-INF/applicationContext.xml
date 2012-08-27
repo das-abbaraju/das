@@ -90,6 +90,7 @@
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
 	<bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
+	<bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>

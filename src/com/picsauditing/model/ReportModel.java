@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -34,6 +36,8 @@ public class ReportModel {
 
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportUserDAO reportUserDao;
 
 	private static final List<Integer> baseReports =
 			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
@@ -49,11 +53,11 @@ public class ReportModel {
 		if (baseReports.contains(reportId))
 			return true;
 
-		if (reportDao.isReportPublic(reportId))
+		if (reportDao.isPublic(reportId))
 			return true;
 
 		try {
-			ReportUser userReport = reportDao.findOneUserReport(userId, reportId);
+			ReportUser userReport = reportUserDao.findOne(userId, reportId);
 			if (userReport != null)
 				return true;
 		} catch (NoResultException e) {
@@ -65,7 +69,7 @@ public class ReportModel {
 
 	public boolean canUserEdit(int userId, Report report) {
 		try {
-			ReportUser userReport = reportDao.findOneUserReport(userId, report.getId());
+			ReportUser userReport = reportUserDao.findOne(userId, report.getId());
 			return userReport.isEditable();
 		} catch (NoResultException e) {
 			// We don't care. The user can't edit.
@@ -93,9 +97,10 @@ public class ReportModel {
 		// Is this is the desired behavior?
 		reportDao.refresh(sourceReport);
 
-		reportDao.saveReport(newReport, user);
-		reportDao.connectReportToUser(newReport, user);
-		reportDao.grantEditPermission(newReport, user);
+		reportDao.save(newReport, user);
+		connectReportToUser(newReport, user);
+		// This is a new report owned by the user, unconditionally give them edit permission
+		reportUserDao.setEditPermissions(newReport, user, true);
 
 		return newReport;
 	}
@@ -104,7 +109,7 @@ public class ReportModel {
 		if (!canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
-		reportDao.saveReport(report, new User(permissions.getUserId()));
+		reportDao.save(report, new User(permissions.getUserId()));
 	}
 
 	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable, Permissions permissions) {
@@ -116,6 +121,7 @@ public class ReportModel {
 		while(iterator.hasNext()) {
 			String fieldName = iterator.next();
 			Field field = availableFields.get(fieldName);
+
 			if (!field.canUserSeeQueryField(permissions)) {
 				iterator.remove();
 			}
@@ -172,10 +178,10 @@ public class ReportModel {
 
 		if (Strings.isEmpty(searchTerm)) {
 			// By default, show the top ten most favorited reports sorted by number of favorites
-			userReports = reportDao.findTenMostFavoritedReports(userId);
+			userReports = reportUserDao.findTenMostFavoritedReports(userId);
 		} else {
 			// Otherwise, search on all public reports and all of the user's reports
-			userReports = reportDao.findUserReportsForSearchFilter(userId, searchTerm);
+			userReports = reportUserDao.findAllForSearchFilter(userId, searchTerm);
 		}
 
 		return userReports;
@@ -186,24 +192,24 @@ public class ReportModel {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(sort)) {
-			userReports = reportDao.findUserReports(userId);
+			userReports = reportUserDao.findAll(userId);
 		} else if (sort.equals(ManageReports.ALPHA_SORT)) {
 			if (ManageReports.ASC.equals(direction)) {
-				userReports = reportDao.findUserReportsSortByAlphaAsc(userId);
+				userReports = reportUserDao.findAllSortByAlphaAsc(userId);
 			} else {
-				userReports = reportDao.findUserReportsSortByAlphaDesc(userId);
+				userReports = reportUserDao.findAllSortByAlphaDesc(userId);
 			}
 		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
 			if (ManageReports.ASC.equals(direction)) {
-				userReports = reportDao.findUserReportsSortByDateAddedAsc(userId);
+				userReports = reportUserDao.findAllSortByDateAddedAsc(userId);
 			} else {
-				userReports = reportDao.findUserReportsSortByDateAddedDesc(userId);
+				userReports = reportUserDao.findAllSortByDateAddedDesc(userId);
 			}
 		} else if (sort.equals(ManageReports.LAST_OPENED_SORT)) {
 			if (ManageReports.ASC.equals(direction)) {
-				userReports = reportDao.findUserReportsSortByLastUsedAsc(userId);
+				userReports = reportUserDao.findAllSortByLastUsedAsc(userId);
 			} else {
-				userReports = reportDao.findUserReportsSortByLastUsedDesc(userId);
+				userReports = reportUserDao.findAllSortByLastUsedDesc(userId);
 			}
 		} else {
 			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
@@ -238,15 +244,15 @@ public class ReportModel {
 		ReportUser userReport;
 
 		try {
-			userReport = reportDao.findOneUserReport(userId, reportId);
+			userReport = reportUserDao.findOne(userId, reportId);
 		} catch (NoResultException nre) {
 			// Need to connect user to report first
-			Report report = reportDao.findOneReport(reportId);
-			userReport = reportDao.connectReportToUser(report, userId);
+			Report report = reportDao.findOne(reportId);
+			userReport = connectReportToUser(report, userId);
 		}
 
-		int favoriteCount =  reportDao.getFavoriteCount(userId);
-		reportDao.cascadeFavoriteReportSorting(userId, 1, 1, favoriteCount);
+		int favoriteCount =  reportUserDao.getFavoriteCount(userId);
+		reportUserDao.cascadeFavoriteReportSorting(userId, 1, 1, favoriteCount);
 
 		userReport.setFavoriteSortIndex(1);
 		userReport.setFavorite(true);
@@ -254,11 +260,11 @@ public class ReportModel {
 	}
 
 	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException, SQLException, Exception {
-		ReportUser unfavoritedUserReport = reportDao.findOneUserReport(userId, reportId);
+		ReportUser unfavoritedUserReport = reportUserDao.findOne(userId, reportId);
 		int removedSortIndex = unfavoritedUserReport.getFavoriteSortIndex();
 
-		int favoriteCount =  reportDao.getFavoriteCount(userId);
-		reportDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, favoriteCount);
+		int favoriteCount =  reportUserDao.getFavoriteCount(userId);
+		reportUserDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, favoriteCount);
 
 		unfavoritedUserReport.setFavoriteSortIndex(0);
 		unfavoritedUserReport.setFavorite(false);
@@ -266,24 +272,24 @@ public class ReportModel {
 	}
 
 	public void moveUserReportUpOne(int userId, int reportId) throws Exception {
-		ReportUser reportToMove = reportDao.findOneUserReport(userId, reportId);
+		ReportUser reportToMove = reportUserDao.findOne(userId, reportId);
 		int prevIndex = reportToMove.getFavoriteSortIndex();
 		moveUserReportToIndex(userId, reportToMove, prevIndex - 1);
 	}
 
 	public void moveUserReportDownOne(int userId, int reportId) throws Exception {
-		ReportUser reportToMove = reportDao.findOneUserReport(userId, reportId);
+		ReportUser reportToMove = reportUserDao.findOne(userId, reportId);
 		int prevIndex = reportToMove.getFavoriteSortIndex();
 		moveUserReportToIndex(userId, reportToMove, prevIndex + 1);
 	}
 
 	public void moveUserReportToIndex(int userId, int reportId, int newIndex) throws Exception {
-		ReportUser userReport = reportDao.findOneUserReport(userId, reportId);
+		ReportUser userReport = reportUserDao.findOne(userId, reportId);
 		moveUserReportToIndex(userId, userReport, newIndex);
 	}
 
 	public void moveUserReportToIndex(int userId, ReportUser userReport, int newIndex) throws Exception {
-		if (newIndex < 1 || newIndex > reportDao.getFavoriteCount(userId))
+		if (newIndex < 1 || newIndex > reportUserDao.getFavoriteCount(userId))
 			return;
 
 		if (userReport.getFavoriteSortIndex() == newIndex)
@@ -303,9 +309,56 @@ public class ReportModel {
 			end = userReport.getFavoriteSortIndex() - 1;
 		}
 
-		reportDao.cascadeFavoriteReportSorting(userId, offset, start, end);
+		reportUserDao.cascadeFavoriteReportSorting(userId, offset, start, end);
 
 		userReport.setFavoriteSortIndex(newIndex);
 		reportDao.save(userReport);
+	}
+
+	public ReportUser connectReportToUser(Report report, User user) {
+		ReportUser userReport = new ReportUser();
+
+		userReport.setAuditColumns(user);
+		userReport.setReport(report);
+		userReport.setUser(user);
+		userReport.setEditable(false);
+		userReport.setLastOpened(new Date());
+
+		reportUserDao.save(userReport);
+
+		return userReport;
+	}
+
+	public ReportUser connectReportToUser(Report report, int userId) {
+		ReportUser userReport = new ReportUser(userId, report);
+		userReport.setAuditColumns(new User(userId));
+		userReport.setLastOpened(new Date());
+
+		reportUserDao.save(userReport);
+
+		return userReport;
+	}
+
+
+	public ReportUser connectReportToUserEditable(Report report, int userId) {
+		ReportUser userReport = new ReportUser(userId, report);
+		userReport.setAuditColumns(new User(userId));
+		userReport.setLastOpened(new Date());
+		userReport.setEditable(true);
+
+		reportUserDao.save(userReport);
+
+		return userReport;
+	}
+
+	public void grantEditPermission(Report report, User user) {
+		// TODO check if current user has permission to grant edit
+		reportUserDao.setEditPermissions(report, user, true);
+	}
+
+
+	public void revokeEditPermission(Report report, User user) {
+		// TODO check if current user has permission to revoke edit
+		reportUserDao.setEditPermissions(report, user, false);
 	}
 }

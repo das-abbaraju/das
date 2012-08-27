@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -29,6 +30,7 @@ public class ReportModelTest {
 	private ReportModel reportModel;
 
 	@Mock private ReportDAO reportDao;
+	@Mock private ReportUserDAO reportUserDao;
 	@Mock private Report report;
 	@Mock private User user;
 	@Mock private BasicDynaBean dynaBean;
@@ -46,6 +48,7 @@ public class ReportModelTest {
 		reportModel = new ReportModel();
 
 		setInternalState(reportModel, "reportDao", reportDao);
+		setInternalState(reportModel, "reportUserDao", reportUserDao);
 
 		when(report.getId()).thenReturn(555);
 		when(user.getId()).thenReturn(USER_ID);
@@ -53,7 +56,7 @@ public class ReportModelTest {
 
 	@Test
 	public void canUserViewAndCopy_nullQuery() {
-		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(null);
+		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(null);
 
 		assertFalse(reportModel.canUserViewAndCopy(USER_ID, report));
 	}
@@ -61,7 +64,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserViewAndCopy_emptyQuery() {
 
-		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenThrow(new NoResultException());
+		when(reportUserDao.findOne(anyInt(), anyInt())).thenThrow(new NoResultException());
 
 		assertFalse(reportModel.canUserViewAndCopy(USER_ID, report));
 	}
@@ -74,7 +77,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserViewAndCopy_successfulQuery () {
 
-		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(new ReportUser());
+		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(new ReportUser());
 
 		assertTrue(reportModel.canUserViewAndCopy(USER_ID, report));
 	}
@@ -83,7 +86,7 @@ public class ReportModelTest {
 	public void canUserEdit_Negative() {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(false);
-		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
+		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertFalse(reportModel.canUserEdit(USER_ID, report));
 	}
@@ -92,7 +95,7 @@ public class ReportModelTest {
 	public void canUserEdit_Positive() {
 		ReportUser mockReportUser = mock(ReportUser.class);
 		when(mockReportUser.isEditable()).thenReturn(true);
-		when(reportDao.findOneUserReport(anyInt(), anyInt())).thenReturn(mockReportUser);
+		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(mockReportUser);
 
 		assertTrue(reportModel.canUserEdit(USER_ID, report));
 	}
@@ -153,7 +156,7 @@ public class ReportModelTest {
 		List<ReportUser> userReports = reportModel.getUserReportsForSearch(null, 0);
 
 		assertNotNull(userReports);
-		verify(reportDao).findTenMostFavoritedReports(anyInt());
+		verify(reportUserDao).findTenMostFavoritedReports(anyInt());
 	}
 
 	@Test
@@ -161,7 +164,7 @@ public class ReportModelTest {
 		List<ReportUser> userReports = reportModel.getUserReportsForSearch("", 0);
 
 		assertNotNull(userReports);
-		verify(reportDao).findTenMostFavoritedReports(anyInt());
+		verify(reportUserDao).findTenMostFavoritedReports(anyInt());
 	}
 
 	@Test
@@ -169,7 +172,7 @@ public class ReportModelTest {
 		List<ReportUser> userReports = reportModel.getUserReportsForSearch("SEARCH_TERM", 0);
 
 		assertNotNull(userReports);
-		verify(reportDao).findUserReportsForSearchFilter(anyInt(), anyString());
+		verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
 	}
 
 	@Test
@@ -218,5 +221,13 @@ public class ReportModelTest {
 	@Test
 	public void testUnfavorite_BottomReport() {
 		// TODO another important edge case
+	}
+
+	@Ignore
+	@Test
+	public void testConnectReportToUser() {
+		reportModel.connectReportToUser(report, user);
+
+		verify(reportUserDao).save(any(ReportUser.class));
 	}
 }
