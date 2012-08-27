@@ -24,9 +24,9 @@ public class AuditAnalyzer extends Analyzer {
 
 		QueryRunner analysis2 = QueryRunnerFactory.instance(buildQueryForCAOsCreatedInLeftNotCreatedInRight());
 		caoDiffData = analysis2.run();
-		caoDiffData.setColumnEntityName(1, "Contractor");
-		caoDiffData.setColumnEntityName(2, "Operator");
-		caoDiffData.setColumnEntityName(3, "Audit");
+		caoDiffData.setColumnEntityName(2, "Contractor");
+		caoDiffData.setColumnEntityName(3, "Operator");
+		caoDiffData.setColumnEntityName(4, "Audit");
 	}
 
 	private SelectSQL buildQueryForAuditsCreatedInLeftNotCreatedInRight() {
