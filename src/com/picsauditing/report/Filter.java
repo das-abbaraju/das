@@ -46,10 +46,7 @@ public class Filter implements JSONable {
 		parseOperator(json);
 
 		this.value = (String) json.get("value");
-
-		// We are going to ignore this and set this each time from
-		// availableFields in SqlBuilder
-		// this.field = (Field) json.get("field");
+		this.field = (Field) json.get("field");
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -123,8 +120,6 @@ public class Filter implements JSONable {
 	}
 
 	public boolean isValid() {
-		// TODO This should be fleshed out some more to validate all the
-		// different filter types to make sure they are all properly defined.
 		if (Strings.isEmpty(value))
 			return false;
 
@@ -145,7 +140,7 @@ public class Filter implements JSONable {
 
 			return filterType.isAutocomplete() || filterType.isEnum();
 		}
-
+		
 		return false;
 	}
 }
