@@ -1,9 +1,13 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +18,7 @@ import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -140,6 +145,7 @@ public class ReportDynamicTest {
 		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
 
+	@Ignore
 	@Test
 	public void testData_ReportFailsValidation() throws Exception {
 		Report report = new Report();
