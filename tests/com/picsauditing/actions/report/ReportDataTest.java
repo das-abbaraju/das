@@ -1,10 +1,8 @@
 package com.picsauditing.actions.report;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -13,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,17 +29,19 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ I18nCache.class, ServletActionContext.class, ActionContext.class, SpringUtils.class, LoggerFactory.class, ReportUtil.class })
+@PrepareForTest({ I18nCache.class, ServletActionContext.class, ActionContext.class, SpringUtils.class,
+		LoggerFactory.class, ReportUtil.class })
 @PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
-public class ReportDynamicTest {
-
-	private ReportDynamic reportDynamic;
+public class ReportDataTest {
+	private ReportData reportDynamic;
 	private Report report;
 	private Map<String, Object> session;
 
@@ -78,7 +79,7 @@ public class ReportDynamicTest {
 
 		report = new Report();
 
-		reportDynamic = new ReportDynamic();
+		reportDynamic = new ReportData();
 		reportDynamic.setReport(report);
 		when(permissions.getUserId()).thenReturn(941);
 		Whitebox.setInternalState(reportDynamic, "permissions", permissions);
@@ -86,48 +87,29 @@ public class ReportDynamicTest {
 	}
 
 	@Test
-	public void testExecute_RedirectIfUserTypedJunkInUrl() throws Exception {
-		// If the url is something like report=JUNK_HERE, the report will always be null
-		reportDynamic.setReport(null);
-		String invalidReportId = "NOT_A_VALID_REPORT_ID";
-		when(request.getParameter("report")).thenReturn(invalidReportId);
+	public void testData_JsonResult() throws Exception {
+		report.setModelType(ModelType.Contractors);
 
 		String strutsResult = reportDynamic.execute();
 
-		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-		verify(logger).warn("java.lang.NumberFormatException: For input string: \"" + invalidReportId + "\"");
+		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
 
 	@Test
-	public void testExecute_NullReportServletActionContextThrowsException() throws Exception {
-		PowerMockito.doThrow(new RuntimeException("test exception")).when(ServletActionContext.class);
-		ServletActionContext.getRequest();
-		reportDynamic.setReport(null);
+	public void testData_ReportFailsValidation() throws Exception {
+		Report report = new Report();
+		report.setModelType(null);
+		try {
+			ReportModel.validate(report);
+			// Should always throw before this line
+			fail();
+		} catch (ReportValidationException rve) {
+		}
 
 		String strutsResult = reportDynamic.execute();
+		JSONObject json = reportDynamic.getJson();
 
-		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-		verify(logger).error("java.lang.RuntimeException: test exception");
+		assertFalse((Boolean)json.get("success"));
+		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
-
-	@Test
-	public void testExecute_NullReport() throws Exception {
-		reportDynamic.setReport(null);
-
-		String strutsResult = reportDynamic.execute();
-
-		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-	}
-
-	@Test
-	public void testExecute_NullReportUserDoesNotHavePermissionToViewAndCopy() throws Exception {
-		when(reportModel.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
-		reportDynamic.setReport(null);
-
-		String strutsResult = reportDynamic.execute();
-
-		assertEquals(ReportDynamic.REDIRECT, strutsResult);
-		assertThat((String)session.get("errorMessage"), is("You do not have permissions to view that report."));
-	}
-
 }
