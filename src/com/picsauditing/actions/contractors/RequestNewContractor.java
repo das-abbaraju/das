@@ -21,6 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -66,7 +69,7 @@ public class RequestNewContractor extends AccountActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
-	
+
 	@Autowired
 	protected EmailSender emailSenderSpring;
 
@@ -103,8 +106,16 @@ public class RequestNewContractor extends AccountActionSupport {
 	public static final String PHONE = "Phone";
 
 	private final Logger LOG = LoggerFactory.getLogger(RequestNewContractor.class);
-			
-	public String execute() {
+
+	public String execute() throws Exception {
+		if (!permissions.isPicsEmployee() && !permissions.isOperatorCorporate()) {
+			throw new NoRightsException(getText("global.Operator"));
+		}
+
+		if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.RequestNewContractor)) {
+			throw new NoRightsException(OpPerms.RequestNewContractor, OpType.View);
+		}
+
 		if (newContractor == null || newContractor.getId() == 0) {
 			newContractor = new ContractorRegistrationRequest();
 			if (!permissions.isPicsEmployee()) {
@@ -185,7 +196,7 @@ public class RequestNewContractor extends AccountActionSupport {
 	}
 
 	public String matchingList() {
-		if (button.equals("MatchingList")) {
+		if ("MatchingList".equals(button)) {
 			if (newContractor != null) {
 				newContractor = crrDAO.find(newContractor.getId());
 				potentialMatches = runGapAnalysis(newContractor);
@@ -202,16 +213,14 @@ public class RequestNewContractor extends AccountActionSupport {
 				return BLANK;
 			}
 		}
-		return SUCCESS;
 
+		return SUCCESS;
 	}
 
 	public String loadTags() {
-		/*	
-		 *  (\__/)
-		*	(='.'=)
-		*	(")_(")
-		*/ 
+		// (\__/)
+		// (='.'=)
+		// (")_(")
 		return SUCCESS;
 	}
 
@@ -408,7 +417,7 @@ public class RequestNewContractor extends AccountActionSupport {
 	}
 
 	public List<OperatorForm> getForms() {
-		if (forms == null) {
+		if (forms == null && newContractor != null && newContractor.getRequestedBy() != null) {
 			Set<OperatorForm> allForms = new HashSet<OperatorForm>();
 			Set<OperatorAccount> family = new HashSet<OperatorAccount>();
 			family.add(newContractor.getRequestedBy());
@@ -544,6 +553,32 @@ public class RequestNewContractor extends AccountActionSupport {
 		this.status = status;
 	}
 
+	protected void sendEmail() {
+		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
+			EmailBuilder emailBuilder = prepareEmailBuilder();
+			try {
+				EmailQueue q = emailBuilder.build();
+				emailSenderSpring.send(q);
+				OperatorForm form = getForm();
+				if (form != null)
+					addAttachments(q, form);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	protected EmailBuilder prepareEmailBuilder() {
+		EmailBuilder email = new EmailBuilder();
+		email.setToAddresses(newContractor.getEmail());
+
+		email.setFromAddress("info@picsauditing.com");
+
+		email.setTemplate(INITIAL_EMAIL);
+		email.addToken("newContractor", newContractor);
+		return email;
+	}
+
 	private void checkContactFields() {
 		if (Strings.isEmpty(newContractor.getName()))
 			addActionError(getText("RequestNewContractor.error.FillContractorName"));
@@ -555,7 +590,8 @@ public class RequestNewContractor extends AccountActionSupport {
 			addActionError(getText("RequestNewContractor.error.SelectCountry"));
 		else if (newContractor.getCountry().getIsoCode().equals("US")
 				|| newContractor.getCountry().getIsoCode().equals("CA")) {
-			if (newContractor.getCountrySubdivision() == null || Strings.isEmpty(newContractor.getCountrySubdivision().getIsoCode()))
+			if (newContractor.getCountrySubdivision() == null
+					|| Strings.isEmpty(newContractor.getCountrySubdivision().getIsoCode()))
 				addActionError(getText("RequestNewContractor.error.SelectCountrySubdivision"));
 		}
 
@@ -601,32 +637,6 @@ public class RequestNewContractor extends AccountActionSupport {
 		if (newContractor != null && note != null)
 			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note
 					+ (newContractor.getNotes() != null ? "\n\n" + newContractor.getNotes() : ""));
-	}
-
-	private void sendEmail() {
-		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
-			EmailBuilder emailBuilder = prepareEmailBuilder();
-			try {
-				EmailQueue q = emailBuilder.build();
-				emailSenderSpring.send(q);
-				OperatorForm form = getForm();
-				if (form != null)
-					addAttachments(q, form);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private EmailBuilder prepareEmailBuilder() {
-		EmailBuilder email = new EmailBuilder();
-		email.setToAddresses(newContractor.getEmail());
-
-		email.setFromAddress("info@picsauditing.com");
-
-		email.setTemplate(INITIAL_EMAIL);
-		email.addToken("newContractor", newContractor);
-		return email;
 	}
 
 	private void loadRequestedTags() {
