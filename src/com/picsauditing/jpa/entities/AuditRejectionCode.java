@@ -13,8 +13,8 @@ import javax.persistence.Table;
 public class AuditRejectionCode extends BaseTable {
 
 	private OperatorAccount operator;
-	private String rejectionCode;
 	private AuditSubStatus auditSubStatus;
+	private String rejectionReason;
 	
 	private static final long serialVersionUID = -6751099062193684624L;
 	
@@ -28,14 +28,6 @@ public class AuditRejectionCode extends BaseTable {
 		this.operator = operator;
 	}
 	
-	public String getRejectionCode() {
-		return rejectionCode;
-	}
-	
-	public void setRejectionCode(String rejectionCode) {
-		this.rejectionCode = rejectionCode;
-	}
-	
 	@Column(name = "rejectionCategory")
 	@Enumerated(EnumType.STRING)
 	public AuditSubStatus getAuditSubStatus() {
@@ -44,6 +36,14 @@ public class AuditRejectionCode extends BaseTable {
 	
 	public void setAuditSubStatus(AuditSubStatus auditSubStatus) {
 		this.auditSubStatus = auditSubStatus;
+	}
+	
+	public String getRejectionReason() {
+		return rejectionReason;
+	}
+	
+	public void setRejectionReason(String rejectionReason) {
+		this.rejectionReason = rejectionReason;
 	}
 
 }

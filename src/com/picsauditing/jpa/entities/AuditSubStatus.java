@@ -3,18 +3,22 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum  AuditSubStatus implements Translatable {
-	LIMITS_NOT_MET, NO_ADDITIONAL_INSURED, NO_WAVER_OF_SUBROGATION;
+	NoValidCertificate, LimitsNotMet, NoAdditionalInsured, NoWaiverOfSubrogation;
+	
+	public boolean isNoValidCertificate() {
+		return this == NoValidCertificate;
+	}
 	
 	public boolean isLimitsNotMet() {
-		return this.equals(LIMITS_NOT_MET);
+		return this == LimitsNotMet;
 	}
 
 	public boolean isNoAdditionalInsured() {
-		return this.equals(NO_ADDITIONAL_INSURED);
+		return this == NoAdditionalInsured;
 	}
 
 	public boolean isNoWaverOfSubrogation() {
-		return this.equals(NO_WAVER_OF_SUBROGATION);
+		return this == NoWaiverOfSubrogation;
 	}
 
 	@Transient

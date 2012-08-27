@@ -15,8 +15,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 @SuppressWarnings("serial")
 public class AuditRejectionLookup extends PicsActionSupport {
 
-	private static final String TRANSLATION_KEY_PREFIX = "AuditRejection";
-	
 	@Autowired
 	private AuditRejectionCodeDAO auditRejectionCodeDao;
 	@Autowired
@@ -44,18 +42,12 @@ public class AuditRejectionLookup extends PicsActionSupport {
 		
 		for (AuditRejectionCode auditRejectionCode : auditRejectionCodes) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("id", auditRejectionCode.getRejectionCode());
-			jsonObject.put("value", getRejectionText(auditRejectionCode));
+			jsonObject.put("id", auditRejectionCode.getAuditSubStatus().toString());
+			jsonObject.put("value", auditRejectionCode.getRejectionReason());
 			jsonArray.add(jsonObject);
 		}
 		
 		return jsonArray;
-	}
-	
-	private String getRejectionText(AuditRejectionCode auditRejectionCode) {
-		String translationKey = TRANSLATION_KEY_PREFIX + "." + auditRejectionCode.getOperator().getId() 
-				+ "." + auditRejectionCode.getRejectionCode();
-		return getText(translationKey);
 	}
 	
 	public int getCaoId() {
