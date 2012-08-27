@@ -377,7 +377,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.lastStepToGreenDate = lastStepToGreenDate;
 	}
 
-	@Transient
+	@ManyToOne
+	@JoinColumn(name = "requestedByUserID", nullable = true)
 	public User getRequestedBy() {
 		return requestedBy;
 	}
@@ -386,7 +387,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.requestedBy = requestedBy;
 	}
 
-	@Transient
+	@Column(name = "requestedByUser")
 	public String getRequestedByOther() {
 		return requestedByOther;
 	}
@@ -395,7 +396,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.requestedByOther = requestedByOther;
 	}
 
-	@Transient
 	public Date getDeadline() {
 		return deadline;
 	}
@@ -404,7 +404,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.deadline = deadline;
 	}
 
-	@Transient
 	public String getReasonForRegistration() {
 		return reasonForRegistration;
 	}

@@ -135,7 +135,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private User lastContactedByInsideSales;
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
-	// Registration Request
+	// Registration Requests
 	private Date followUpDate;
 	private int contactCountByEmail;
 	private int contactCountByPhone;
