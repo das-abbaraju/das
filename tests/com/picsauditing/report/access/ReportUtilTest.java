@@ -16,11 +16,12 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.Database;
 
 public class ReportUtilTest {
-	@Mock private Database databaseForTesting;
+	@Mock
+	private Database databaseForTesting;
 
 	@AfterClass
 	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Before

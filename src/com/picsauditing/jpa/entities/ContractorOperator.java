@@ -27,7 +27,6 @@ import org.springframework.util.CollectionUtils;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;

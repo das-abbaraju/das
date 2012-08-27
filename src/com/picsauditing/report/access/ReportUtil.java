@@ -233,7 +233,7 @@ public final class ReportUtil {
 	}
 
 	public static boolean hasColumns(Report report) {
-		return (report.getDefinition().getColumns().size() >= 1);
+		return (report.getDefinition().getColumns().size() > 0);
 	}
 
 	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {

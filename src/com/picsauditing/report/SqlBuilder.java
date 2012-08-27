@@ -248,6 +248,10 @@ public class SqlBuilder {
 					filter.setField(field.clone());
 				}
 				continue;
+			}
+
+			if (isAggregate(column)) {
+				havingFilters.add(filter);
 			} else {
 				filter.setField(getAvailableFieldCopy(column));
 			}
@@ -259,6 +263,8 @@ public class SqlBuilder {
 					whereFilters.add(filter);
 				}
 			}
+
+			filter.setField(getAvailableFieldCopy(column));
 		}
 
 		String where = definition.getFilterExpression();
@@ -335,22 +341,22 @@ public class SqlBuilder {
 		}
 
 		switch (filter.getOperator()) {
-			case NotBeginsWith:
-			case BeginsWith:
-				return "'" + filterValue + "%'";
-			case NotEndsWith:
-			case EndsWith:
-				return "'%" + filterValue + "'";
-			case NotContains:
-			case Contains:
-				return "'%" + filterValue + "%'";
-			case NotIn:
-			case In:
-				filterValue = addQuotesToValues(filterValue);
-				return "(" + filterValue + ")";
-			case NotEmpty:
-			case Empty:
-				// TODO
+		case NotBeginsWith:
+		case BeginsWith:
+			return "'" + filterValue + "%'";
+		case NotEndsWith:
+		case EndsWith:
+			return "'%" + filterValue + "'";
+		case NotContains:
+		case Contains:
+			return "'%" + filterValue + "%'";
+		case NotIn:
+		case In:
+			filterValue = addQuotesToValues(filterValue);
+			return "(" + filterValue + ")";
+		case NotEmpty:
+		case Empty:
+			// TODO
 		}
 
 		if (fieldType.equals(ExtFieldType.Boolean)) {
