@@ -114,7 +114,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			excelSheet.addColumn(new ExcelColumn("address", "Address"));
 			excelSheet.addColumn(new ExcelColumn("city", "City"));
 			excelSheet.addColumn(new ExcelColumn("countrySubdivision", "CountrySubdivision"));
-			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code", ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code"));
 			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
 		}
 		if (isShowTrade()) {
