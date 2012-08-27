@@ -60,26 +60,46 @@ public class ScheduleAuditTest extends PicsTest {
 	private Map<String, Object> session;
 	private Map<String, Object> parameters;
 
-	@Mock private AuditorAvailabilityDAO auditorAvailabilityDAO;
-	@Mock private InvoiceDAO invoiceDAO;
-	@Mock private InvoiceFeeDAO feeDAO;
-	@Mock private InvoiceItemDAO itemDAO;
-	@Mock private UserAccessDAO uaDAO;
-	@Mock private ContractorAuditDAO auditDao;
-	@Mock private ContractorAccountDAO contractorAccountDao;
-	@Mock private BasicDAO dao;
-	@Mock private EmailSender emailSender;
-	@Mock private Permissions permissions;
-	@Mock private ActionContext actionContext;
-	@Mock private InvoiceFee rescheduling;
-	@Mock private InvoiceFee expedite;
-	@Mock private User auditor;
-	@Mock private ContractorAudit conAudit;
-	@Mock private HttpServletResponse httpServletResponse;
-	@Mock private ContractorAccount contractor;
-	@Mock private AuditType auditType;
-	@Mock private Country country;
-	@Mock private Invoice invoice;
+	@Mock
+	private AuditorAvailabilityDAO auditorAvailabilityDAO;
+	@Mock
+	private InvoiceDAO invoiceDAO;
+	@Mock
+	private InvoiceFeeDAO feeDAO;
+	@Mock
+	private InvoiceItemDAO itemDAO;
+	@Mock
+	private UserAccessDAO uaDAO;
+	@Mock
+	private ContractorAuditDAO auditDao;
+	@Mock
+	private ContractorAccountDAO contractorAccountDao;
+	@Mock
+	private BasicDAO dao;
+	@Mock
+	private EmailSender emailSender;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private ActionContext actionContext;
+	@Mock
+	private InvoiceFee rescheduling;
+	@Mock
+	private InvoiceFee expedite;
+	@Mock
+	private User auditor;
+	@Mock
+	private ContractorAudit conAudit;
+	@Mock
+	private HttpServletResponse httpServletResponse;
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private AuditType auditType;
+	@Mock
+	private Country country;
+	@Mock
+	private Invoice invoice;
 
 	@Before
 	public void setUp() throws Exception {
@@ -88,9 +108,9 @@ public class ScheduleAuditTest extends PicsTest {
 		PowerMockito.mockStatic(ServletActionContext.class);
 		PowerMockito.mockStatic(DateBean.class);
 		super.setUp();
-		
+
 		scheduleAudit = new ScheduleAudit();
-		
+
 		autowireDAOsFromDeclaredMocks(scheduleAudit, this);
 		Whitebox.setInternalState(scheduleAudit, "permissions", permissions);
 		Whitebox.setInternalState(scheduleAudit, "conAudit", conAudit);
@@ -107,36 +127,36 @@ public class ScheduleAuditTest extends PicsTest {
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0)).thenReturn(expedite);
 		when(ServletActionContext.getResponse()).thenReturn(httpServletResponse);
 	}
-	
-	@Test(expected=NoRightsException.class)
+
+	@Test(expected = NoRightsException.class)
 	public void testSave_UserIsNotAdmin() throws Exception {
 		when(permissions.isAdmin()).thenReturn(false);
-		
-		scheduleAudit.save();	
+
+		scheduleAudit.save();
 	}
-	
+
 	@Test
 	public void testSave_NullAuditorSendsBackToEdit() throws Exception {
 		when(permissions.isAdmin()).thenReturn(true);
-		Whitebox.setInternalState(scheduleAudit, "auditor", (User)null);
-		
+		Whitebox.setInternalState(scheduleAudit, "auditor", (User) null);
+
 		String strutsAction = scheduleAudit.save();
-		
+
 		assertThat(strutsAction, is(equalTo("edit")));
 	}
-	
+
 	@Test
 	public void testSave_NullScheduledDateSendsBackToEdit() throws Exception {
 		when(permissions.isAdmin()).thenReturn(true);
 		Whitebox.setInternalState(scheduleAudit, "auditor", auditor);
 		when(DateBean.parseDateTime(anyString())).thenReturn(null);
 		String strutsAction = scheduleAudit.save();
-		
+
 		assertThat(strutsAction, is(equalTo("edit")));
 	}
-	
+
 	@Test
-	public void testSave_NothingChanged() throws Exception {	
+	public void testSave_NothingChanged() throws Exception {
 		Calendar timeScheduledViaUI = Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
 		timeScheduledViaUI.set(2012, 8, 5, 8, 0, 0);
 		Date dateScheduledViaUI = timeScheduledViaUI.getTime();
@@ -152,21 +172,23 @@ public class ScheduleAuditTest extends PicsTest {
 		when(permissions.getTimezone()).thenReturn(TimeZone.getTimeZone("US/Eastern"));
 		when(permissions.getUserId()).thenReturn(941);
 		when(conAudit.getAuditor()).thenReturn(new User(941));
-		when(auditDao.findScheduledAudits(eq(941), (Date)any(), (Date)any())).thenReturn(new ArrayList<ContractorAudit>());
+		when(auditDao.findScheduledAudits(eq(941), (Date) any(), (Date) any())).thenReturn(
+				new ArrayList<ContractorAudit>());
 		when(conAudit.getAuditorConfirm()).thenReturn(new Date());
 		when(conAudit.getContractorConfirm()).thenReturn(new Date());
 		when(conAudit.getScheduledDate()).thenReturn(dateScheduledViaUI);
-		when(DateBean.convertTime(dateScheduledViaUI, TimeZone.getTimeZone("US/Eastern"))).thenReturn(dateScheduledViaUI);
-		
+		when(DateBean.convertTime(dateScheduledViaUI, TimeZone.getTimeZone("US/Eastern"))).thenReturn(
+				dateScheduledViaUI);
+
 		String strutsAction = scheduleAudit.save();
-		
+
 		assertThat(strutsAction, is(equalTo("blank")));
-		verify(conAudit, never()).setScheduledDate((Date)any());
+		verify(conAudit, never()).setScheduledDate((Date) any());
 		verify(httpServletResponse).sendRedirect(anyString());
 	}
-	
+
 	@Test
-	public void testSave_ChangedScheduledDateNoFeeRequired() throws Exception {	
+	public void testSave_ChangedScheduledDateNoFeeRequired() throws Exception {
 		Calendar timeScheduledViaUI = Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
 		timeScheduledViaUI.add(Calendar.MONTH, 2);
 		Date dateScheduledViaUI = timeScheduledViaUI.getTime();
@@ -187,23 +209,25 @@ public class ScheduleAuditTest extends PicsTest {
 		when(permissions.getTimezone()).thenReturn(TimeZone.getTimeZone("US/Eastern"));
 		when(permissions.getUserId()).thenReturn(941);
 		when(conAudit.getAuditor()).thenReturn(new User(941));
-		when(auditDao.findScheduledAudits(eq(941), (Date)any(), (Date)any())).thenReturn(new ArrayList<ContractorAudit>());
+		when(auditDao.findScheduledAudits(eq(941), (Date) any(), (Date) any())).thenReturn(
+				new ArrayList<ContractorAudit>());
 		when(conAudit.getAuditorConfirm()).thenReturn(new Date());
 		when(conAudit.getContractorConfirm()).thenReturn(new Date());
 		when(conAudit.getScheduledDate()).thenReturn(originalScheduledDate);
-		when(DateBean.convertTime(dateScheduledViaUI, TimeZone.getTimeZone("US/Eastern"))).thenReturn(dateScheduledViaUI);
-		
+		when(DateBean.convertTime(dateScheduledViaUI, TimeZone.getTimeZone("US/Eastern"))).thenReturn(
+				dateScheduledViaUI);
+
 		String strutsAction = scheduleAudit.save();
-		
+
 		assertThat(strutsAction, is(equalTo("blank")));
 		verify(conAudit).setScheduledDate(dateScheduledViaUI);
 		verify(conAudit).setContractorConfirm(null);
-		verify(contractorAccountDao, never()).save((ContractorAccount)any());
+		verify(contractorAccountDao, never()).save((ContractorAccount) any());
 		verify(httpServletResponse).sendRedirect(anyString());
 	}
-	
+
 	@Test
-	public void testSave_ChangedScheduledDateFeeRequiredBecauseScheduledDateTomorrow() throws Exception {	
+	public void testSave_ChangedScheduledDateFeeRequiredBecauseScheduledDateTomorrow() throws Exception {
 		Calendar timeScheduledViaUI = Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
 		timeScheduledViaUI.add(Calendar.MONTH, 1);
 		Date dateScheduledViaUI = timeScheduledViaUI.getTime();
@@ -213,25 +237,25 @@ public class ScheduleAuditTest extends PicsTest {
 		Date originalScheduledDate = originalScheduledTime.getTime();
 
 		setupForSaveTest(dateScheduledViaUI, originalScheduledDate);
-		
+
 		String strutsAction = scheduleAudit.save();
-		
+
 		assertThat(strutsAction, is(equalTo("blank")));
 		verify(conAudit).setScheduledDate(dateScheduledViaUI);
 		verify(conAudit).setContractorConfirm(null);
-		verify(contractorAccountDao).save((ContractorAccount)any());
-		verify(invoiceDAO).save((Invoice)any());
+		verify(contractorAccountDao).save((ContractorAccount) any());
+		verify(invoiceDAO).save((Invoice) any());
 		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
 		verify(itemDAO).save(captor.capture());
 		InvoiceItem itemSaved = captor.getValue();
 		InvoiceFee fee = itemSaved.getInvoiceFee();
 		assertThat(rescheduling, is(equalTo(fee)));
-		verify(dao).save((Note)any());
+		verify(dao).save((Note) any());
 		verify(httpServletResponse).sendRedirect(anyString());
 	}
 
 	@Test
-	public void testSave_ChangedScheduledDateFeeRequiredForExpedite() throws Exception {	
+	public void testSave_ChangedScheduledDateFeeRequiredForExpedite() throws Exception {
 		Calendar timeScheduledViaUI = Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
 		timeScheduledViaUI.add(Calendar.DAY_OF_YEAR, 1);
 		Date dateScheduledViaUI = timeScheduledViaUI.getTime();
@@ -242,26 +266,25 @@ public class ScheduleAuditTest extends PicsTest {
 
 		setupForSaveTest(dateScheduledViaUI, originalScheduledDate);
 		when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0)).thenReturn(expedite);
-		
-		
+
 		String strutsAction = scheduleAudit.save();
-		
+
 		assertThat(strutsAction, is(equalTo("blank")));
 		verify(conAudit).setScheduledDate(dateScheduledViaUI);
 		verify(conAudit).setContractorConfirm(null);
-		verify(contractorAccountDao).save((ContractorAccount)any());
-		verify(invoiceDAO).save((Invoice)any());
+		verify(contractorAccountDao).save((ContractorAccount) any());
+		verify(invoiceDAO).save((Invoice) any());
 		ArgumentCaptor<InvoiceItem> captor = ArgumentCaptor.forClass(InvoiceItem.class);
 		verify(itemDAO).save(captor.capture());
 		InvoiceItem itemSaved = captor.getValue();
 		InvoiceFee fee = itemSaved.getInvoiceFee();
 		assertThat(expedite, is(equalTo(fee)));
-		verify(dao).save((Note)any());
+		verify(dao).save((Note) any());
 		verify(httpServletResponse).sendRedirect(anyString());
 	}
 
-	
-	// this class obviously has too many responsibilities and dependencies for a simple test to require this
+	// this class obviously has too many responsibilities and dependencies for a
+	// simple test to require this
 	// much setup.
 	private void setupForSaveTest(Date dateScheduledViaUI, Date originalScheduledDate) {
 		String scheduledDateDay = "NOT_REAL";
@@ -276,15 +299,17 @@ public class ScheduleAuditTest extends PicsTest {
 		when(permissions.getTimezone()).thenReturn(TimeZone.getTimeZone("US/Eastern"));
 		when(permissions.getUserId()).thenReturn(941);
 		when(conAudit.getAuditor()).thenReturn(new User(941));
-		when(auditDao.findScheduledAudits(eq(941), (Date)any(), (Date)any())).thenReturn(new ArrayList<ContractorAudit>());
+		when(auditDao.findScheduledAudits(eq(941), (Date) any(), (Date) any())).thenReturn(
+				new ArrayList<ContractorAudit>());
 		when(conAudit.getAuditorConfirm()).thenReturn(new Date());
 		when(conAudit.getContractorConfirm()).thenReturn(new Date());
 		when(conAudit.getScheduledDate()).thenReturn(originalScheduledDate);
 		when(conAudit.getAuditType()).thenReturn(auditType);
 		when(auditType.getI18nKey("name")).thenReturn("test");
-		when(DateBean.convertTime(dateScheduledViaUI, TimeZone.getTimeZone("US/Eastern"))).thenReturn(dateScheduledViaUI);
+		when(DateBean.convertTime(dateScheduledViaUI, TimeZone.getTimeZone("US/Eastern"))).thenReturn(
+				dateScheduledViaUI);
 		Whitebox.setInternalState(scheduleAudit, "contractor", contractor);
 		when(contractor.getCountry()).thenReturn(country);
-		when(invoiceDAO.save((Invoice)any())).thenReturn(invoice);
+		when(invoiceDAO.save((Invoice) any())).thenReturn(invoice);
 	}
 }

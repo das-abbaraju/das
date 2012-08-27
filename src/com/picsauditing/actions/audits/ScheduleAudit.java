@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.struts2.ServletActionContext;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -561,31 +562,18 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return false;
 	}
 
-	public boolean isNeedsExpediteFee(Date newDate) {
-		if (conAudit.getScheduledDate() != null && newDate.after(conAudit.getScheduledDate()))
-			return false;
+	public boolean isNeedsExpediteFee(Date selectedDate) {
+		if (selectedDate != null) {
+			if (conAudit.getScheduledDate() != null && selectedDate.after(conAudit.getScheduledDate()))
+				return false;
 
-		if (newDate != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-
-			Calendar compare = Calendar.getInstance();
-			compare.setTime(newDate);
-			compare.set(Calendar.HOUR_OF_DAY, 0);
-			compare.set(Calendar.MINUTE, 0);
-			compare.set(Calendar.SECOND, 0);
-
-			cal.set(Calendar.ZONE_OFFSET, compare.get(Calendar.ZONE_OFFSET));
-			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 10;
+			LocalDate selectedDateJoda = new LocalDate(selectedDate);
+			Days days = Days.daysBetween(new LocalDate(), selectedDateJoda);
+			return (days.getDays() < 14);
 		}
 
 		return false;
 	}
-
-	// return DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate(newDate),
-	// 10);
 
 	private void createInvoice(InvoiceFee fee, String notes) throws Exception {
 		Invoice invoice = new Invoice();
