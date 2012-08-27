@@ -38,6 +38,10 @@ Ext.define('PICS.controller.report.Filter', {
 
     init: function() {
         this.control({
+            'reportfilter': {
+                render: this.onFilterRender
+            },
+            
             // render filter options
             'reportfilteroptions': {
                 afterlayout: this.onFilterOptionsAfterLayout,
@@ -202,6 +206,24 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_options = this.getFilterOptions();
 
         filter_options.expand();
+    },
+    
+    onFilterRender: function (cmp, eOpts) {
+        var record = cmp.record,
+            field = record.getAvailableField();
+        
+        Ext.create('Ext.tip.ToolTip', {
+            anchor: 'left',
+            showDelay: 0,
+            target: cmp.el.down('.filter-name'),
+            html: [
+                '<div>',
+                    '<p>' + field.get('help') + '</p>',
+                '</div>'
+            ].join('')
+        });
+            
+        Ext.QuickTips.init();
     },
 
     /**

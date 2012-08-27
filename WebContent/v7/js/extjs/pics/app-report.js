@@ -66,15 +66,15 @@ Ext.application({
     ],
 
     launch: function () {
-    	var that = this;
+        var that = this;
 
-    	// save reference to application
+        // save reference to application
         PICS.app = this;
 
         this.getConfiguration({
-        	success: function () {
-        		that.createViewport.apply(that);
-        	}
+            success: function () {
+                that.createViewport.apply(that);
+            }
         });
     },
 
@@ -97,20 +97,20 @@ Ext.application({
 
                // success callback
                if (options && options.success && typeof options.success == 'function') {
-            	   options.success();
+                   options.success();
                }
            }
         });
     },
 
     createViewport: function () {
-    	Ext.create('PICS.view.report.Viewport', {
-    		listeners: {
-    			render: function (component, eOpts) {
-    				// remove loading background
-    				Ext.get('loading_page').remove();
-     		   }
-     	   }
+        Ext.create('PICS.view.report.Viewport', {
+            listeners: {
+                render: function (component, eOpts) {
+                    // remove loading background
+                    Ext.get('loading_page').remove();
+                }
+            }
         });
     }
 });

@@ -10,13 +10,6 @@ Ext.define('PICS.store.report.AvailableFields', {
 	model : 'PICS.model.report.AvailableField',
 
 	autoLoad: true,
-	listeners: {
-        load: function (store, records, successful, operation, options) {
-            var available_fields_by_category_store = Ext.StoreManager.get('report.AvailableFieldsByCategory');
-
-            available_fields_by_category_store.data = store.data;
-        }
-    },
 	proxy: {
 	    reader: {
             root: 'fields',
@@ -33,5 +26,15 @@ Ext.define('PICS.store.report.AvailableFields', {
         this.proxy.url = 'ReportDynamic!availableFields.action?report=' + report_id;
 
         this.callParent(arguments);
+        
+        this.bindOnLoadEvent();
+    },
+    
+    bindOnLoadEvent: function () {
+        this.on('load', function (store, records, successful, options) {
+            var available_fields_by_category_store = Ext.StoreManager.get('report.AvailableFieldsByCategory');
+
+            available_fields_by_category_store.data = store.data;
+        });
     }
 });

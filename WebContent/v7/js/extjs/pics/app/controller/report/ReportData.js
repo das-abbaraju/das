@@ -7,6 +7,7 @@ Ext.define('PICS.controller.report.ReportData', {
     }],
 
     stores: [
+        'report.AvailableFields',
         'report.Reports',
         'report.ReportDatas'
     ],
@@ -19,6 +20,10 @@ Ext.define('PICS.controller.report.ReportData', {
             
             'reportdata headercontainer': {
             	columnmove: this.onColumnMove
+            },
+            
+            'reportdata gridcolumn': {
+                render: this.onColumnRender
             },
 
             'reportpagingtoolbar button[itemId=refresh]': {
@@ -142,6 +147,42 @@ Ext.define('PICS.controller.report.ReportData', {
         column_store.removeAt(selected_grid_column_index);
 
         this.application.fireEvent('refreshreport');
+    },
+    
+    onColumnRender: function (cmp, eOpts) {
+        var store = this.getReportAvailableFieldsStore();
+        
+        function createTooltip(store) {
+            var field = store.findRecord('name', cmp.dataIndex);
+            
+            if (!field) {
+                return false;
+            }
+            
+            var help = field.get('help');
+        
+            Ext.create('Ext.tip.ToolTip', {
+                anchor: 'bottom',
+                showDelay: 0,
+                target: cmp.el,
+                html: [
+                    '<div>',
+                        '<h3>' + field.get('text') + '</h3>',
+                        '<p>' + field.get('help') + '</p>',
+                    '</div>'
+                ].join('')
+            });
+            
+            Ext.QuickTips.init();
+        }
+        
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                createTooltip(store);
+            });
+        } else {
+            createTooltip(store);
+        }
     },
 
     onColumnSortAsc: function (cmp, event, eOpts) {
