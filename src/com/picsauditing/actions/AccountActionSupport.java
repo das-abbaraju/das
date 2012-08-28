@@ -162,7 +162,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		note.setCanContractorView(canContractorView);
 		note.setStatus(NoteStatus.Closed);
 		note.setEmployee(employee);
-		dao.save(note);
+		noteDao.save(note);
 		return note;
 	}
 
