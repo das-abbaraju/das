@@ -3,10 +3,12 @@ package com.picsauditing.report;
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.report.fields.QueryFilterOperator;
@@ -84,8 +86,9 @@ public class SqlBuilderTest {
 		addFilter(column.getFieldName(), QueryFilterOperator.BeginsWith, "Trevor's");
 
 		initializeSql();
-
+		
 		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\\'s%'))", sql.toString());
+		assertAllFiltersHaveFields();
 	}
 
 	@Test
@@ -96,8 +99,26 @@ public class SqlBuilderTest {
 		addFilter(column.getFieldName(), QueryFilterOperator.GreaterThan, "2010");
 
 		initializeSql();
-
+		
 		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
+		assertAllFiltersHaveFields();
+	}
+
+	@Test
+	public void testInvalidFilters() throws Exception {
+		Column column = addColumn("accountName");
+		addFilter(column.getFieldName(), QueryFilterOperator.BeginsWith, null);
+		EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
+
+		initializeSql();
+		
+		assertAllFiltersHaveFields();
+	}
+
+	private void assertAllFiltersHaveFields() {
+		for (Filter filter : definition.getFilters()) {
+			Assert.assertTrue(filter + " is missing the field", filter.getField() != null);
+		}
 	}
 
 	@Test

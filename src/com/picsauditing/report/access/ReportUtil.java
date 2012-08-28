@@ -37,6 +37,7 @@ import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.report.tables.AbstractTable;
 
@@ -146,7 +147,9 @@ public final class ReportUtil {
 		for (Column column : definition.getColumns()) {
 			Field field = column.getField();
 
-			field.setName(column.getFieldNameWithoutMethod());
+			if (field == null) {
+				field = new Field(column.getFieldNameWithoutMethod(), "", FilterType.String);
+			}
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
 			field.setName(column.getFieldName());
@@ -155,10 +158,8 @@ public final class ReportUtil {
 				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(), locale);
 			}
 
-			if (field != null) {
-				field.setText(translateLabel);
-				field.setHelp(translateHelp);
-			}
+			field.setText(translateLabel);
+			field.setHelp(translateHelp);
 		}
 	}
 

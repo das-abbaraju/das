@@ -20,17 +20,16 @@ import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.excel.ExcelColumn;
-import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 	private Map<String, Field> availableFields;
 
-	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions) throws ReportValidationException {
+	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions)
+			throws ReportValidationException {
 		this.definition = definition;
-		
+
 		sql = new SelectSQL();
 
 		setFrom(model);
@@ -44,7 +43,7 @@ public class SqlBuilder {
 		addJoins(model.getRootTable());
 
 		sql.addWhere("1 " + model.getWhereClause(permissions));
-		
+
 		return sql;
 	}
 
@@ -86,7 +85,7 @@ public class SqlBuilder {
 		// Make sure column has a field(?)
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();
-			
+
 			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
 			String fieldName = column.getFieldName();
 			if (fieldName.equals(fieldNameWithoutMethod) && column.getMethod() != null) {
@@ -98,7 +97,7 @@ public class SqlBuilder {
 
 			if (field == null)
 				continue;
-			
+
 			field.setName(fieldName);
 
 			if (column.getMethod() == null || !column.getMethod().isAggregate()) {
@@ -118,7 +117,7 @@ public class SqlBuilder {
 			addDependentFields(dependentFields, field);
 		}
 	}
-	
+
 	private Field getAvailableFieldCopy(Column column) {
 		String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
 		return getAvailableFieldCopy(fieldNameWithoutMethod);
@@ -127,12 +126,14 @@ public class SqlBuilder {
 	private Field getAvailableFieldCopy(String fieldName) {
 		Field field = availableFields.get(fieldName.toUpperCase());
 
-		if (field == null)
+		if (field == null) {
+			// System.out.println("Failed to find available field " + fieldName + " from set: " + availableFields.keySet());
 			return null;
-		
+		}
+
 		return field.clone();
 	}
-	
+
 	private void addDependentFields(Set<String> dependentFields, Field field) {
 		for (String fieldName : dependentFields) {
 			if (isFieldIncluded(fieldName))
@@ -157,7 +158,7 @@ public class SqlBuilder {
 			String fieldNameWithoutMethod = column.getFieldNameWithoutMethod();
 			if (fieldNameWithoutMethod == null)
 				continue;
-			
+
 			Field field = availableFields.get(fieldNameWithoutMethod.toUpperCase());
 			if (field != null) {
 				if (isAggregate(column)) {
@@ -185,7 +186,7 @@ public class SqlBuilder {
 		String fieldSql = field.getDatabaseColumnName();
 		if (column.getMethod() == null)
 			return fieldSql;
-		
+
 		if (column.getMethod().isAggregate()) {
 			field.setUrl(null);
 		}
@@ -238,9 +239,6 @@ public class SqlBuilder {
 		List<Filter> havingFilters = new ArrayList<Filter>();
 
 		for (Filter filter : definition.getFilters()) {
-			if (!filter.isValid())
-				continue;
-			
 			Column column = getColumnFromFieldName(filter.getFieldName(), definition.getColumns());
 			if (column == null) {
 				Field field = getAvailableFieldCopy(filter.getFieldName());
@@ -249,15 +247,17 @@ public class SqlBuilder {
 					filter.setField(field.clone());
 				}
 				continue;
-			}
-			
-			if (isAggregate(column)) {
-				havingFilters.add(filter);
 			} else {
-				whereFilters.add(filter);
+				filter.setField(getAvailableFieldCopy(column));
 			}
-			
-			filter.setField(getAvailableFieldCopy(column));
+
+			if (filter.isValid()) {
+				if (isAggregate(column)) {
+					havingFilters.add(filter);
+				} else {
+					whereFilters.add(filter);
+				}
+			}
 		}
 
 		String where = definition.getFilterExpression();
@@ -275,9 +275,9 @@ public class SqlBuilder {
 			where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
 			whereIndex++;
 		}
-		
+
 		if (where.contains("{")) {
-			// TODO Create a new Exception call ReportFilterExpression extends 
+			// TODO Create a new Exception call ReportFilterExpression extends
 			throw new ReportValidationException("DynamicReports.FilterExpressionInvalid");
 		}
 		sql.addWhere(where);
@@ -325,7 +325,7 @@ public class SqlBuilder {
 		ExtFieldType fieldType = field.getType();
 
 		String filterValue = Strings.escapeQuotes(filter.getValue());
-		
+
 		if (fieldType.equals(ExtFieldType.Date) && column.getMethod() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 
@@ -361,11 +361,11 @@ public class SqlBuilder {
 		String[] unquotedValues = unquotedValuesString.split(",");
 		List<String> quotedList = new ArrayList<String>();
 
-		for (String unquotedValue : unquotedValues){
+		for (String unquotedValue : unquotedValues) {
 			quotedList.add("'" + unquotedValue.trim() + "'");
 		}
 
-		return StringUtils.join(quotedList.toArray(),",");
+		return StringUtils.join(quotedList.toArray(), ",");
 	}
 
 	private void addOrderByClauses(AbstractModel model) {
@@ -398,7 +398,7 @@ public class SqlBuilder {
 			sql.addOrderBy(fieldName);
 		}
 	}
-	
+
 	private Column getColumnFromFieldName(String fieldName, List<Column> columns) {
 		if (fieldName == null)
 			return null;

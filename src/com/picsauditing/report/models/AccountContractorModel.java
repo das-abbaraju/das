@@ -1,11 +1,12 @@
 package com.picsauditing.report.models;
 
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.ContractorTable;
 
 public class AccountContractorModel extends AccountModel {
 	public AccountContractorModel() {
 		super();
-		rootTable.removeField("accountID");
+		hideAccountID();
 		rootTable.removeField("accountName");
 		rootTable.removeField("accountType");
 
@@ -13,6 +14,13 @@ public class AccountContractorModel extends AccountModel {
 		rootTable.addAllFieldsAndJoins(contractorTable);
 
 		parentTable = contractorTable;
+	}
+
+	private void hideAccountID() {
+		Field accountID = rootTable.getAvailableFields().get("accountID");
+		if (accountID != null) {
+			accountID.setHidden(true);
+		}
 	}
 
 }
