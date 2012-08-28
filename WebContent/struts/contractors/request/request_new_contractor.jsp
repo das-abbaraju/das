@@ -39,7 +39,10 @@
 		</div>
 	</s:if>
 	
-	<s:form>
+	<s:form validate="true">
+		<s:hidden name="requestedContractor" />
+		<s:hidden name="requestRelationship" />
+		
 		<fieldset class="form">
 			<h2 class="formLegend">
 				<s:text name="RequestNewContractor.header.CompanyInformation" />

@@ -49,6 +49,7 @@
 		
 		<action name="RequestNewContractorAccount" class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
 			<result>/struts/contractors/request/request_new_contractor.jsp</result>
+			<result name="input">/struts/contractors/request/request_new_contractor.jsp</result>
 			<result name="backToReport" type="redirectAction">
 				<param name="actionName">ReportNewRequestedContractor</param>
 			</result>

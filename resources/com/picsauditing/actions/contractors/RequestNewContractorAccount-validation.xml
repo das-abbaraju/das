@@ -1,0 +1,62 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+	"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+	<field name="requestedContractor.name">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="minLength">2</param>
+			<param name="trim">true</param>
+			<message>${getText("JS.Validation.Minimum2Characters")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestedContractor.primaryContact.name">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="maxLength">100</param>
+			<param name="trim">true</param>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestedContractor.primaryContact.phone">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="regex" short-circuit="true">
+			<!--
+				Allow NANP phones with leadings 1s and potential x1234 extensions as
+				well as international formatted phone numbers. Modified from
+				http://blog.stevenlevithan.com/archives/validate-phone-number and
+				shown in the Regular Expressions Cookbook (O'Reilly, 2009)
+			-->
+			<param name="expression"><![CDATA[^(\+?(?:\(?[0-9]\)?[-. ]{0,2}){9,14}[0-9])((\s){0,4}((?i)x|(?i)ext)(\s){0,4}[\d]{1,5})?$]]></param>
+			<message>${getText("JS.Validation.InvalidPhoneFormat")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestedContractor.primaryContact.email">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="email" short-circuit="true">
+			<message>${getText("JS.Validation.ValidEmail")}</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="maxLength">100</param>
+			<param name="trim">true</param>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestedContractor.country">
+		<field-validator type="required" short-circuit="true">
+			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+	</field>
+</validators>
