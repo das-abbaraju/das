@@ -9,7 +9,7 @@
     <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>
 </s:include>
 
-<s:include value="/struts/reports/_manage_report_menu.jsp" />
+<s:include value="/struts/report/_report-list-menu.jsp" />
 
 <h3><s:text name="ManageReports.myReports.subtitle" /></h3>
 
@@ -37,5 +37,5 @@
 </div>
 
 <div id="report_my_reports">
-    <s:include value="/struts/reports/_list-my-reports.jsp" />
+    <s:include value="/struts/report/_list-my-reports.jsp" />
 </div>
