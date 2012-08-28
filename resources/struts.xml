@@ -1151,6 +1151,9 @@
 	</package>
 
 	<!-- Registration -->
+	<include file="struts-reports.xml" />
+
+	<!-- Registration -->
 	<include file="struts-registration.xml" />
 
 	<!-- Widgets / Charts / Graphs -->
