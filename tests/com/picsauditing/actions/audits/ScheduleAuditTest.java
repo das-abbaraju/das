@@ -14,6 +14,7 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.picsauditing.dao.*;
 import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,14 +33,6 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AuditorAvailabilityDAO;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -74,8 +67,8 @@ public class ScheduleAuditTest extends PicsTest {
 	private ContractorAuditDAO auditDao;
 	@Mock
 	private ContractorAccountDAO contractorAccountDao;
-	@Mock
-	private BasicDAO dao;
+    @Mock
+	private NoteDAO dao;
 	@Mock
 	private EmailSender emailSender;
 	@Mock
