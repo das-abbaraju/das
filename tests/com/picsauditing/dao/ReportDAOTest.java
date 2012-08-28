@@ -21,38 +21,55 @@ public class ReportDAOTest {
 
 	private ReportDAO reportDao;
 
-	@Mock private EntityManager mockEntityManager;
+	@Mock private EntityManager entityManager;
 	@Mock private Report report;
 	@Mock private User user;
+
+	private final int REPORT_ID = 37;
+	private final int USER_ID = 5;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		reportDao = new ReportDAO();
-		reportDao.setEntityManager(mockEntityManager);
+		reportDao.setEntityManager(entityManager);
 
-		when(report.getId()).thenReturn(555);
-		when(user.getId()).thenReturn(23);
-	}
-
-	@Ignore
-	@Test
-	public void testSaveReport() throws ReportValidationException {
 		when(report.getModelType()).thenReturn(ModelType.Accounts);
 		when(report.getParameters()).thenReturn("{}");
+		when(report.getId()).thenReturn(REPORT_ID);
+		when(user.getId()).thenReturn(USER_ID);
+	}
 
+	@Test
+	public void mockUserIsMockedWithUserId() {
+		assertEquals(USER_ID, user.getId());
+	}
+
+	@Test
+	public void mockReportIsMockedWithReportId() {
+		assertEquals(REPORT_ID, report.getId());
+	}
+
+	@Test
+	public void testSave() throws ReportValidationException {
 		reportDao.save(report, user);
 
 		verify(report).setAuditColumns(user);
-		verify(reportDao).save(report);
+		verify(entityManager).merge(report);
 	}
 
-	@Ignore
 	@Test
-	public void testFindReportByID() {
-		reportDao.findOne(5);
+	public void testRemove_CallsEntityManageRemove() {
+		reportDao.remove(report);
 
-		verify(reportDao).findOne(Report.class, "t.id = 5");
+		verify(entityManager).remove(report);
+	}
+
+	@Test
+	public void testRemove_DoesntCallEntityManageRemoveIfnull() {
+		reportDao.remove(null);
+
+		verify(entityManager, never()).remove(any(Report.class));
 	}
 }

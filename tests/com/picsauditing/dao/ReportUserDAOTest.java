@@ -47,6 +47,16 @@ public class ReportUserDAOTest {
 	}
 
 	@Test
+	public void mockUserIsMockedWithUserId() {
+		assertEquals(USER_ID, user.getId());
+	}
+
+	@Test
+	public void mockReportIsMockedWithReportId() {
+		assertEquals(REPORT_ID, report.getId());
+	}
+
+	@Test
 	public void testSave_PersistIfNew() {
 		when(userReport.getId()).thenReturn(0);
 
