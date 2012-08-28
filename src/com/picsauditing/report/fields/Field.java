@@ -1,13 +1,11 @@
 package com.picsauditing.report.fields;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
@@ -15,7 +13,6 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserAccess;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
@@ -42,7 +39,7 @@ public class Field implements JSONAware {
 	private String databaseColumnName;
 	private AutocompleteType autocompleteType = AutocompleteType.None;
 	private boolean hidden = false;
-	
+
 	private String preTranslation;
 	private String postTranslation;
 	private OpPerms requiredPermission;
@@ -308,7 +305,7 @@ public class Field implements JSONAware {
 
 		if (requiredPermission.isNone())
 			return true;
-		
+
 		return permissions.hasPermission(requiredPermission);
 	}
 
@@ -327,7 +324,7 @@ public class Field implements JSONAware {
 	public String getPostTranslation() {
 		return postTranslation;
 	}
-	
+
 	public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, filterType);
 		copiedField.category = category;
