@@ -49,6 +49,7 @@ $.growlUI = function(title, message, timeout, onClose) {
 
 // plugin method for blocking element content
 $.fn.block = function(opts) {
+    console.log(opts);
 	return this.unblock({ fadeOut: 0 }).each(function() {
 		if ($.css(this,'position') == 'static')
 			this.style.position = 'relative';
@@ -81,7 +82,7 @@ $.blockUI.defaults = {
 	// these and use an external stylesheet then do this in your code:
 	// $.blockUI.defaults.css = {};
 	css: {
-		padding:	0,
+		padding:	5,
 		margin:		0,
 		width:		'30%',
 		top:		'40%',
