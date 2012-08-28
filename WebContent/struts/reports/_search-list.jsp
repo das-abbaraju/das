@@ -8,7 +8,7 @@
             <s:set name="report_id" value="#report.id" />
     
             <%-- Url --%>
-            <s:url action="ReportDynamic" var="report_url">
+            <s:url action="Report" var="report_url">
                 <s:param name="report">${report_id}</s:param>
             </s:url>
     
