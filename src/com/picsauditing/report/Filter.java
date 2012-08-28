@@ -125,7 +125,7 @@ public class Filter implements JSONable {
 	public boolean isValid() {
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
-		if (Strings.isEmpty(value))
+		if (Strings.isEmpty(value) && operator != QueryFilterOperator.Empty && operator != QueryFilterOperator.NotEmpty)
 			return false;
 
 		return true;

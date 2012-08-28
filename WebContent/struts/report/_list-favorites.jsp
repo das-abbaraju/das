@@ -10,7 +10,7 @@
 
 <%-- cannot pass list as a include : param - bypass via setter --%>
 <s:set var="reports" value="userReports" />
-<s:include value="/struts/reports/_report-list.jsp">
+<s:include value="/struts/report/_report-list.jsp">
     <s:param name="list_id">report_favorites_list</s:param>
     <s:param name="list_class">report-list</s:param>
     <s:param name="enable_sort" value="true" />
@@ -26,7 +26,7 @@
 
 <%-- cannot pass list as a include : param - bypass via setter --%>
 <s:set var="reports" value="userReportsOverflow" />
-<s:include value="/struts/reports/_report-list.jsp">
+<s:include value="/struts/report/_report-list.jsp">
     <s:param name="list_id">report_favorites_overflow_list</s:param>
     <s:param name="list_class">report-list</s:param>
     <s:param name="enable_sort" value="true" />
