@@ -54,5 +54,9 @@
 				<param name="actionName">ReportNewRequestedContractor</param>
 			</result>
 		</action>
+		
+		<action name="DataConversionRequestAccount" class="com.picsauditing.actions.DataConversionRequestAccount">
+			<result>/struts/blank.jsp</result>
+		</action>
 	</package>
 </struts>

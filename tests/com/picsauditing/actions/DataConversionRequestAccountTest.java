@@ -1,11 +1,17 @@
 package com.picsauditing.actions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -15,11 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.search.Database;
 
 public class DataConversionRequestAccountTest {
@@ -30,6 +38,8 @@ public class DataConversionRequestAccountTest {
 	private Database database;
 	@Mock
 	private EntityManager entityManager;
+	@Mock
+	private Permissions permissions;
 	@Mock
 	private Query query;
 
@@ -42,6 +52,8 @@ public class DataConversionRequestAccountTest {
 		picsTestUtil = new PicsTestUtil();
 
 		picsTestUtil.autowireEMInjectedDAOs(requestConversion, entityManager);
+
+		Whitebox.setInternalState(requestConversion, "permissions", permissions);
 	}
 
 	@AfterClass
@@ -51,16 +63,29 @@ public class DataConversionRequestAccountTest {
 
 	@Test
 	public void testExecute() {
-		assertEquals(PicsActionSupport.SUCCESS, requestConversion.execute());
-	}
-
-	@Test
-	public void testNeedsUpgrade() {
 		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(query.getResultList()).thenReturn(Collections.emptyList());
+
+		assertEquals(PicsActionSupport.SUCCESS, requestConversion.execute());
 
 		verify(entityManager).createQuery(anyString());
 		verify(entityManager, never()).merge(any(BaseTable.class));
 		verify(entityManager, never()).persist(any(BaseTable.class));
 		verify(query).getResultList();
+	}
+
+	@Test
+	public void testNeedsUpgrade_NoResults() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(requestConversion, "needsUpgrade"));
+	}
+
+	@Test
+	public void testNeedsUpgrade_HasResults() throws Exception {
+		List<ContractorRegistrationRequest> needsConversion = new ArrayList<ContractorRegistrationRequest>();
+		needsConversion.add(new ContractorRegistrationRequest());
+
+		Whitebox.setInternalState(requestConversion, "requestsNeedingConversion", needsConversion);
+
+		assertTrue((Boolean) Whitebox.invokeMethod(requestConversion, "needsUpgrade"));
 	}
 }
