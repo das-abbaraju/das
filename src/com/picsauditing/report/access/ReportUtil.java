@@ -83,21 +83,30 @@ public final class ReportUtil {
 					// TODO we get nulls if the column name is custom such
 					// as contractorNameCount. Convert this to contractorName
 					jsonRow.put(column, value);
-
 				} else if (field.canUserSeeQueryField(permissions)) {
-
 					if (field.isTranslated()) {
 						String key = field.getI18nKey(value.toString());
 						jsonRow.put(column, getText(key, locale));
-
+					} else if (field.getName().contains("StatusSubstatus")) {
+						String[] valueString = ((String) value).split(":");
+						
+						String statusI18nKey = "AuditStatus." + valueString[0];
+						String statusTranslation = getText(statusI18nKey, locale);
+						String valueTranslated = statusTranslation;
+						
+						if (valueString.length > 1) {
+							String subStatusI18nKey = "AuditSubStatus." + valueString[1];
+							String subStatusTranslation = getText(subStatusI18nKey, locale);
+							valueTranslated += ": " + subStatusTranslation;
+						}
+						
+						jsonRow.put(column, valueTranslated);
 					} else if (value instanceof java.sql.Date) {
 						java.sql.Date valueAsDate = (java.sql.Date) value;
 						jsonRow.put(column, valueAsDate.getTime());
-
 					} else if (value instanceof java.sql.Timestamp) {
 						Timestamp valueAsTimestamp = (Timestamp) value;
 						jsonRow.put(column, valueAsTimestamp.getTime());
-
 					} else {
 						jsonRow.put(column, value.toString());
 					}

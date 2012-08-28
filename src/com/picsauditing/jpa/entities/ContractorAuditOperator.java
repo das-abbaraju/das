@@ -67,7 +67,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.ClientSiteMonitoringAnAudit, i18nKeyPrefix = "AuditStatus")
 	public AuditStatus getStatus() {
 		return status;
 	}
@@ -214,6 +214,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	}
 	
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.ClientSiteMonitoringAnAudit, i18nKeyPrefix = "AuditSubStatus")
 	public AuditSubStatus getAuditSubStatus() {
 		return auditSubStatus;
 	}
