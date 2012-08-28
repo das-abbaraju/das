@@ -12,6 +12,8 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +57,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.ReportFilterContractor;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
@@ -75,8 +73,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected EmailQueueDAO emailQueueDAO;
 	@Autowired
-	protected NoteDAO noteDAO;
-	@Autowired
 	protected EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
@@ -84,6 +80,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected BillingCalculatorSingle billingService;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+    @Autowired
+    protected AuditBuilder auditBuilder;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -194,45 +192,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setBrochureFile(extension);
 			}
 
-			// account for disabled checkboxes not coming though
-			// but only if populated/presented
 			if (!permissions.isContractor()) {
-				if (contractor.isContractorTypeRequired(ContractorType.Onsite))
-					conTypes.add(ContractorType.Onsite);
-				if (contractor.isContractorTypeRequired(ContractorType.Offsite))
-					conTypes.add(ContractorType.Offsite);
-				if (contractor.isContractorTypeRequired(ContractorType.Supplier))
-					conTypes.add(ContractorType.Supplier);
-				if (contractor.isContractorTypeRequired(ContractorType.Transportation))
-					conTypes.add(ContractorType.Transportation);
-
-				contractor.setAccountTypes(conTypes);
-				contractor.resetRisksBasedOnTypes();
-
-				if (!conTypesOK()) {
+                processContractorTypes();
+				if (!conTypesOK())
 					return SUCCESS;
-				}
 			}
 
-			if ((!contractor.getCountry().equals(country) && country != null)
-					|| (contractor.getCountrySubdivision() !=null && !contractor.getCountrySubdivision().equals(countrySubdivision) && countrySubdivision != null)) {
-				contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-				stampContractorNoteAboutOfficeLocationChange();
-			}
-
-			if (country != null && !country.equals(contractor.getCountry())) {
-				contractor.setCountry(country);
-			}
-
-			if ((countrySubdivision != null && !countrySubdivision.equals(contractor.getCountrySubdivision())) || (contractor.getCountrySubdivision() == null && countrySubdivision !=null)) {
-				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
-				contractor.setCountrySubdivision(contractorCountrySubdivision);
-			}
-
-			if (!contractor.getCountry().isHasCountrySubdivisions()){
-				contractor.setCountrySubdivision(null);
-			}
-
+            handleLocationChange();
 			addNoteWhenStatusChange();
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
@@ -259,6 +225,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 				return SUCCESS;
 			}
+            auditBuilder.buildAudits(contractor);
 			contractor.setQbSync(true);
 			contractor.incrementRecalculation();
 			contractor.setNameIndex();
@@ -276,11 +243,54 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-	private void addNoteWhenStatusChange() {
+    private void processContractorTypes() {
+        // account for disabled checkboxes not coming though
+        // but only if populated/presented
+        if (contractor.isContractorTypeRequired(ContractorType.Onsite))
+            conTypes.add(ContractorType.Onsite);
+        if (contractor.isContractorTypeRequired(ContractorType.Offsite))
+            conTypes.add(ContractorType.Offsite);
+        if (contractor.isContractorTypeRequired(ContractorType.Supplier))
+            conTypes.add(ContractorType.Supplier);
+        if (contractor.isContractorTypeRequired(ContractorType.Transportation))
+            conTypes.add(ContractorType.Transportation);
+
+        contractor.setAccountTypes(conTypes);
+        contractor.resetRisksBasedOnTypes();
+    }
+
+    void handleLocationChange() {
+        boolean countryHasChanged = country != null && !country.equals(contractor.getCountry());
+
+        if (countryHasChanged) {
+            contractor.setCountry(country);
+        }
+
+        if (!contractor.getCountry().isHasCountrySubdivisions()){
+            contractor.setCountrySubdivision(null);
+            countrySubdivision = null;
+        }
+
+        boolean subdivisionHasChanged = (countrySubdivision != null) && (!countrySubdivision.equals(contractor.getCountrySubdivision()));
+
+        if (subdivisionHasChanged) {
+                contractor.setCountrySubdivision(countrySubdivisionDAO.find(countrySubdivision.toString()));
+        }
+
+        if (countryHasChanged || subdivisionHasChanged) {
+            contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
+            stampContractorNoteAboutOfficeLocationChange();
+        }
+    }
+
+    private void addNoteWhenStatusChange() {
 		request = ServletActionContext.getRequest();
 		if (request.getParameter("currentStatus")!=null){
+            System.out.print(request.getParameter("CurrentStatus"));
+            System.out.print(contractor.getStatus().toString());
 			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-				this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
+				System.out.print("Should have made a note.");
+                this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
 						+ contractor.getStatus().toString());
 			}
 		}
@@ -291,9 +301,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		if (contractor.getCountry().isHasCountrySubdivisions()) {
+		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
 			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
-					getText(countrySubdivision.getI18nKey())));
+				getText(countrySubdivision.getI18nKey())));
 		}
 		pqfOfficeLocationChange.setId(0);
 		pqfOfficeLocationChange.setCanContractorView(true);
@@ -381,7 +391,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				note.setViewableById(Account.PicsID);
 				note.setCanContractorView(false);
 				note.setStatus(NoteStatus.Closed);
-				noteDAO.save(note);
+				noteDao.save(note);
 
 				this.addActionMessage(getText("ContractorEdit.message.EmailSent"));
 			}

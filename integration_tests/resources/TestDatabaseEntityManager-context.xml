@@ -28,24 +28,17 @@
 		<property name="persistenceUnitName" value="punit" />
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="showSql" value="true" />
+				<property name="showSql" value="false" />
 				<property name="database" value="MYSQL" />
 			</bean>
 		</property>
 	</bean>
 
-	<!-- Make sure you create the pics_test database and give the pics user access to it --> 
-
-	<bean id="dataSourceTemplate" 
-	      class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${jdbc.local.driverClassName}" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
-	</bean>
-
-	<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-	    <property name="dataSource" ref="dataSourceTemplate" />
 		<property name="maxActive" value="60" />
 		<property name="maxIdle" value="20" />
 		<property name="maxWait" value="10000" />

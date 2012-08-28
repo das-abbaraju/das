@@ -50,10 +50,11 @@
                         content: data,
                         buttons: [{
                             html: [
-                                '<a href="javascript:;" class="btn cancel-expedite">' + translate('JS.button.Cancel') + '</a>',
-                                '<a href="javascript:;" class="btn success accept-expedite">' + translate('JS.button.Accept') + '</a>'
-                            ].join('')
-                        }]
+                                   '<a href="javascript:;" class="btn success accept-expedite">' + translate('JS.ScheduleAudit.Btn.AcceptFee') + '</a>',
+                                   '<a href="javascript:;" class="btn cancel-expedite">' + translate('JS.ScheduleAudit.Btn.DeclineFee') + '</a>'
+                                ].join('')
+                        }],
+                        width: 650
                     });
                     
                     return modal;

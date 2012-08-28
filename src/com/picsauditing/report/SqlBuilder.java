@@ -14,6 +14,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
@@ -247,6 +248,10 @@ public class SqlBuilder {
 					filter.setField(field.clone());
 				}
 				continue;
+			}
+
+			if (isAggregate(column)) {
+				havingFilters.add(filter);
 			} else {
 				filter.setField(getAvailableFieldCopy(column));
 			}
@@ -258,6 +263,8 @@ public class SqlBuilder {
 					whereFilters.add(filter);
 				}
 			}
+
+			filter.setField(getAvailableFieldCopy(column));
 		}
 
 		String where = definition.getFilterExpression();
@@ -300,9 +307,12 @@ public class SqlBuilder {
 
 		String columnSql = toColumnSql(column, field);
 
-		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
+		boolean isEmpty = filter.getOperator().equals(QueryFilterOperator.Empty);
+		boolean isNotEmpty = filter.getOperator().equals(QueryFilterOperator.NotEmpty);
+		
+		if (isEmpty) {
 			return columnSql + " IS NULL OR " + columnSql + " = ''";
-		} else if (filter.getOperator().equals(QueryFilterOperator.NotEmpty)) {
+		} else if (isNotEmpty) {
 			return columnSql + " IS NOT NULL OR " + columnSql + " != ''";
 		}
 
@@ -313,8 +323,9 @@ public class SqlBuilder {
 	}
 
 	private String toColumnSql(Column column, Field field) {
-		if (column.getFieldName().equals("accountName"))
+		if (column.getFieldName().equals("accountName")) {
 			field.setDatabaseColumnName("a.nameIndex");
+		}
 
 		String columnSQL = columnToSql(column, field);
 
@@ -351,10 +362,13 @@ public class SqlBuilder {
 			// TODO
 		}
 
-		if (fieldType.equals(ExtFieldType.Boolean))
+		if (fieldType.equals(ExtFieldType.Boolean)) {
 			return filterValue;
-		else
-			return addQuotesToValues(filterValue);
+		} else if (field.getFilterType() == FilterType.DaysAgo) {
+			return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + "DAY)";
+		}
+
+		return addQuotesToValues(filterValue);
 	}
 
 	private String addQuotesToValues(String unquotedValuesString) {

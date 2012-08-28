@@ -169,6 +169,10 @@ Ext.define('PICS.view.report.filter.Filter', {
             case 'String':
                 cls = 'PICS.view.report.filter.base.StringFilter';
                 break;
+            case 'DaysAgo':
+                // Add new filter for days ago for Steps to Green report
+                cls = 'PICS.view.report.filter.base.IntegerFilter';
+                break;
             default:
                 cls = null;
                 break;

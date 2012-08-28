@@ -159,6 +159,7 @@ public final class ReportUtil {
 			if (field == null) {
 				field = new Field(column.getFieldNameWithoutMethod(), "", FilterType.String);
 			}
+			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
 			field.setName(column.getFieldName());
@@ -233,7 +234,7 @@ public final class ReportUtil {
 	}
 
 	public static boolean hasColumns(Report report) {
-		return (report.getDefinition().getColumns().size() >= 1);
+		return (report.getDefinition().getColumns().size() > 0);
 	}
 
 	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {

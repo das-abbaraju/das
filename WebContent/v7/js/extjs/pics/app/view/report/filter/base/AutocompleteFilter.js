@@ -88,7 +88,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             proxy: {
                 type: 'ajax',
                 // TODO: why does this require a report number
-                url: 'ReportDynamic!list.action?report=' + url.report + '&fieldName=' + name,
+                url: 'ReportAutocomplete.action?report=' + url.report + '&fieldName=' + name,
                 reader: {
                     root: 'result',
                     type: 'json'

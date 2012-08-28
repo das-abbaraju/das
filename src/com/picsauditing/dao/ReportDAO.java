@@ -25,18 +25,21 @@ public class ReportDAO extends PicsDAO {
 
 	@Autowired
 	private ReportUserDAO reportUserDao;
+	@Autowired
+	private ReportModel reportModel;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDAO.class);
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void save(Report report, User user) throws ReportValidationException {
 		ReportModel.validate(report);
 		report.setAuditColumns(user);
 
-		saveInternal(report);
+		save(report);
 	}
 
 	@Transactional(propagation = Propagation.NESTED)
-	private Report saveInternal(Report report) {
+	public Report save(Report report) {
 		if (report.getId() == 0) {
 			em.persist(report);
 		} else {
@@ -46,25 +49,16 @@ public class ReportDAO extends PicsDAO {
 		return report;
 	}
 
-	public void remove(int id) {
-		Report report = findOne(id);
-		remove(report);
-	}
-
-	public void remove(Report report) {
-		List<ReportUser> userReports = reportUserDao.findAllByReportId(report.getId());
-		for (ReportUser userReport : userReports) {
-			reportUserDao.remove(userReport);
-		}
-
-		removeInternal(report);
-	}
-
 	@Transactional(propagation = Propagation.NESTED)
-	private void removeInternal(Report report) {
+	public void remove(Report report) {
 		if (report != null) {
 			em.remove(report);
 		}
+	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void refresh(Report report) {
+		em.refresh(report);
 	}
 
 	public Report findOne(int id) throws NoResultException {
@@ -77,26 +71,7 @@ public class ReportDAO extends PicsDAO {
 
 	public List<Report> findAllPublic() {
 		String query = "private = 0";
-		List<Report> publicReports = findWhere(Report.class, query);
-
-		return publicReports;
-	}
-
-	public void refresh(Report report) {
-		super.refresh(report);
-	}
-
-	public boolean isPublic(int reportId) {
-		try {
-			Report report = findOne(reportId);
-			if (report != null && report.isPublic()) {
-				return true;
-			}
-		} catch (NoResultException nre) {
-			// If the report doesn't exist, it's not public
-		}
-
-		return false;
+		return findWhere(Report.class, query);
 	}
 
 	@SuppressWarnings("unchecked")

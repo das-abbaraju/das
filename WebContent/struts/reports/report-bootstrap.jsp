@@ -10,5 +10,4 @@
 </div>
 
 <script type="text/javascript" src="v7/js/extjs/pics/extjs/bootstrap.js"></script>
-<%-- <script type="text/javascript" src="js/extjs/pics/extjs/ext-all.js"></script> --%>
 <script type="text/javascript" src="v7/js/extjs/pics/app-report.js"></script>

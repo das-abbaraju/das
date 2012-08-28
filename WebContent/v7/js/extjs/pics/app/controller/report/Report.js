@@ -64,7 +64,7 @@ Ext.define('PICS.controller.report.Report', {
                 if (result.error) {
                     Ext.Msg.alert('Status', result.error);
                 } else {
-                    document.location = 'ReportDynamic.action?report=' + result.reportID;
+                    document.location = 'Report.action?report=' + result.reportID;
                 }
             }
         });

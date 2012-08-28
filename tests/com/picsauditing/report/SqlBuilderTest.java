@@ -189,4 +189,5 @@ public class SqlBuilderTest {
 	private void initializeSql() throws ReportValidationException {
 		sql = builder.initializeSql(new AccountModel(), definition, permissions);
 	}
+
 }
