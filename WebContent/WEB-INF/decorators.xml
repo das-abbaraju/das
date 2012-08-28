@@ -5,7 +5,7 @@
         <pattern>/PicsStyleGuide*.action</pattern>
     </decorator>
 	<decorator name="extjs" page="ext.jsp">
-		<pattern>/ReportDynamic.action</pattern>
+		<pattern>/Report.action</pattern>
 		<pattern>/Dashboard.action</pattern>
 		<pattern>/Trevor.action</pattern>
 	</decorator>

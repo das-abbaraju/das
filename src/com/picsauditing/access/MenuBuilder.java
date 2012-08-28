@@ -293,7 +293,7 @@ public final class MenuBuilder {
 
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
-			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId(),
+			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
 					"report_" + report.getId());
 		}
 	}

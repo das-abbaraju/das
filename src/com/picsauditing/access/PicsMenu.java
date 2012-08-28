@@ -428,7 +428,7 @@ public class PicsMenu {
 			subMenu.addChild("Exception Log", "ReportExceptions.action", "ExceptionLog");
 			subMenu.addChild("Batch Insert Translations", "BatchTranslations.action", "BatchInsertTrans");
 			subMenu.addChild("Update Expired Translations", "ApplicableTranslations.action", "ApplicableTranslations");
-			subMenu.addChild("Dynamic Reporting", "ReportDynamic.action?report=1", "DynamicReporting");
+			subMenu.addChild("Dynamic Reporting", "Report.action?report=1", "DynamicReporting");
 		}
 
 		subMenu = menu.addChild(getText("menu.Reports"));
@@ -515,7 +515,7 @@ public class PicsMenu {
 				FeatureToggleChecker featureToggleChecker = SpringUtils.getBean("FeatureToggleChecker");
 
 				if (featureToggleChecker.isFeatureEnabled("Toggle.BASFDynamicReportsPreview")) {
-					subMenu.addChild(getText("menu.StepsToGreen"), "ReportDynamic.action?report=7", "StepsToGreenDRPreview");
+					subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
 				}
 			}
 		} catch (Exception e) {
