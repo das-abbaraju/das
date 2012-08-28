@@ -59,7 +59,7 @@ Ext.define('PICS.store.report.ReportDatas', {
             throw 'Invalid report record';
         }
 
-        this.proxy.url = 'ReportDynamic!data.action?' + report.toQueryString();
+        this.proxy.url = 'ReportData.action?' + report.toQueryString();
     },
 
     configureReportDataModel: function (report) {

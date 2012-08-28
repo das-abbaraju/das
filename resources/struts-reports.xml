@@ -3,8 +3,17 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
 	<package name="com.picsauditing.report" extends="com.picsauditing">
+		<action name="Report" class="com.picsauditing.actions.report.ReportBootstrap">
+			<result>struts/reports/report-bootstrap.jsp</result>
+		</action>
+		
 		<action name="ReportDynamic" class="com.picsauditing.actions.report.ReportDynamic">
-			<result>struts/reports/report_dynamic.jsp</result>
+		</action>
+		<action name="ReportData" class="com.picsauditing.actions.report.ReportData">
+		</action>
+		<action name="ReportDownload" class="com.picsauditing.actions.report.ReportDownload">
+		</action>
+		<action name="ReportAutocomplete" class="com.picsauditing.actions.report.ReportDynamicAutocomplete">
 		</action>
 
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">

@@ -60,7 +60,7 @@ Ext.define('PICS.controller.dashboard.DashboardController', {
                             root: 'data',
                             type: 'json'
                         },
-                        url: 'ReportDynamic!data.action?report=' + config.id
+                        url: 'ReportData.action?report=' + config.id
                     }
                 }
             } ]
@@ -82,7 +82,7 @@ Ext.define('PICS.controller.dashboard.DashboardController', {
                             root: 'data',
                             type: 'json'
                         },
-                        url: 'ReportDynamic!data.action?report=' + config.id
+                        url: 'ReportData.action?report=' + config.id
                     }
                 },
                 columns: config.columns
