@@ -27,21 +27,37 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	public String execute() throws Exception {
 		checkPermission();
 
-		if (permissions.isOperator()) {
-			if (requestedContractor.getId() == 0 && requestedContractor.getRequestedBy() == null) {
-				OperatorAccount requestedBy = operatorDAO.find(permissions.getAccountId());
+		setRequestedBy();
+
+		initializeRequest();
+
+		return SUCCESS;
+	}
+
+	private void setRequestedBy() {
+		if (permissions.isOperatorCorporate()) {
+			OperatorAccount requestedBy = operatorDAO.find(permissions.getAccountId());
+
+			if (permissions.isOperator() && requestedContractor.getId() == 0
+					&& requestedContractor.getRequestedBy() == null) {
 				requestedContractor.setRequestedBy(requestedBy);
 			}
-		}
 
+			for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
+				if (contractorOperator.getOperatorAccount().equals(requestedContractor.getRequestedBy())) {
+					requestRelationship = contractorOperator;
+				}
+			}
+		}
+	}
+
+	private void initializeRequest() {
 		if (requestedContractor.getId() == 0) {
 			requestedContractor.setStatus(AccountStatus.Requested);
 
 			ContractorRegistrationRequest request = new ContractorRegistrationRequest();
 			requestedContractor.getRegistrationRequests().add(request);
 		}
-
-		return SUCCESS;
 	}
 
 	public String save() {
