@@ -28,11 +28,11 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            throw 'Missing Filter Record';
+            Ext.Error.raise('Invalid filter record');
         }
 
         if (!this.index) {
-            throw 'Missing Filter Index';
+            Ext.Error.raise('Invalid filter index');
         }
 
         var filter_number = this.createFilterNumber(this.index);
@@ -75,7 +75,11 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     createFilterTitle: function (record) {
         var field = record.getAvailableField();
-        var text = field.get('text');
+        var text = field && field.get('text');
+        
+        if (!text) {
+            Ext.Error.raise('Invalid filter text');
+        }
 
         if (text.length >= 29) {
             text = text.substring(0, 29) + '...';
@@ -110,12 +114,16 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     createFilterInput: function (record) {
         var field = record.getAvailableField();
-        var type = field.get('filterType');
+        var type = field && field.get('filterType');
+        
+        if (!type) {
+            Ext.Error.raise('Invalid filter type');
+        }
 
         var cls = this.getFilterClassByType(type);
 
         if (!cls) {
-            throw 'Missing cls for this.getFilterClassByType(' + type + ')';
+            Ext.Error.raise('Invalid filter cls');
         }
 
         return Ext.create(cls, {
