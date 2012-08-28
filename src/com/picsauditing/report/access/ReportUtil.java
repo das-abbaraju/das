@@ -159,6 +159,7 @@ public final class ReportUtil {
 			if (field == null) {
 				field = new Field(column.getFieldNameWithoutMethod(), "", FilterType.String);
 			}
+			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
 			String translateHelp = translateHelp(field, locale);
 			field.setName(column.getFieldName());
