@@ -9,24 +9,17 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
 public class ReportDAO extends PicsDAO {
-
-	@Autowired
-	private ReportUserDAO reportUserDao;
-	@Autowired
-	private ReportModel reportModel;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDAO.class);
 
