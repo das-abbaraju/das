@@ -14,6 +14,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AbstractModel;
@@ -313,8 +314,9 @@ public class SqlBuilder {
 	}
 
 	private String toColumnSql(Column column, Field field) {
-		if (column.getFieldName().equals("accountName"))
+		if (column.getFieldName().equals("accountName")) {
 			field.setDatabaseColumnName("a.nameIndex");
+		}
 
 		String columnSQL = columnToSql(column, field);
 
@@ -333,28 +335,31 @@ public class SqlBuilder {
 		}
 
 		switch (filter.getOperator()) {
-		case NotBeginsWith:
-		case BeginsWith:
-			return "'" + filterValue + "%'";
-		case NotEndsWith:
-		case EndsWith:
-			return "'%" + filterValue + "'";
-		case NotContains:
-		case Contains:
-			return "'%" + filterValue + "%'";
-		case NotIn:
-		case In:
-			filterValue = addQuotesToValues(filterValue);
-			return "(" + filterValue + ")";
-		case NotEmpty:
-		case Empty:
-			// TODO
+			case NotBeginsWith:
+			case BeginsWith:
+				return "'" + filterValue + "%'";
+			case NotEndsWith:
+			case EndsWith:
+				return "'%" + filterValue + "'";
+			case NotContains:
+			case Contains:
+				return "'%" + filterValue + "%'";
+			case NotIn:
+			case In:
+				filterValue = addQuotesToValues(filterValue);
+				return "(" + filterValue + ")";
+			case NotEmpty:
+			case Empty:
+				// TODO
 		}
 
-		if (fieldType.equals(ExtFieldType.Boolean))
+		if (fieldType.equals(ExtFieldType.Boolean)) {
 			return filterValue;
-		else
-			return addQuotesToValues(filterValue);
+		} else if (field.getFilterType() == FilterType.DaysAgo) {
+			return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + "DAY)";
+		}
+
+		return addQuotesToValues(filterValue);
 	}
 
 	private String addQuotesToValues(String unquotedValuesString) {
