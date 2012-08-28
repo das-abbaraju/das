@@ -24,6 +24,7 @@ public class ReportDynamicAutocomplete extends PicsActionSupport {
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
+    // TODO: why does this require a report?
 	private Report report;
 
 	private String fieldName = "";
