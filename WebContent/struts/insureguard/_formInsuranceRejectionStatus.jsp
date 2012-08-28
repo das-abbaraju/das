@@ -12,5 +12,7 @@
     	<input class="insurance-rejection-tagit" name="jsonArray" />
     </pics:toggle>
     
+    <ul id='rejection_tag_list'></ul>
+
     <s:textarea name="note" cssClass="notes" />
 </form>

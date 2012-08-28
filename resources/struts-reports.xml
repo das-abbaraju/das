@@ -17,12 +17,12 @@
 		</action>
 
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
-			<result name="favorites">struts/reports/list-favorites.jsp</result>
-			<result name="favoritesList">struts/reports/_list-favorites.jsp</result>
-			<result name="myReports">struts/reports/list-my-reports.jsp</result>
-			<result name="myReportsList">struts/reports/_list-my-reports.jsp</result>
-			<result name="search">struts/reports/search.jsp</result>
-			<result name="searchList">struts/reports/_search-list.jsp</result>
+			<result name="favorites">struts/report/list-favorites.jsp</result>
+			<result name="favoritesList">struts/report/_list-favorites.jsp</result>
+			<result name="myReports">struts/report/list-my-reports.jsp</result>
+			<result name="myReportsList">struts/report/_list-my-reports.jsp</result>
+			<result name="search">struts/report/search.jsp</result>
+			<result name="searchList">struts/report/_search-list.jsp</result>
 		</action>
 		
 		<!-- Contractor List -->

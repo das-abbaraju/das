@@ -516,6 +516,8 @@ public class PicsMenu {
 
 				if (featureToggleChecker.isFeatureEnabled("Toggle.BASFDynamicReportsPreview")) {
 					subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
+					subMenu.addChild(getText("menu.NonApprovedPolicyAnalysis"), "Report.action?report=8", "NonApprovedPolicyAnalysisDRPreview");
+					subMenu.addChild(getText("menu.NonApprovedPolicyAnalysisExpanded"), "Report.action?report=9", "NonApprovedPolicyAnalysisExpandedDRPreview");
 				}
 			}
 		} catch (Exception e) {

@@ -51,6 +51,17 @@
 	text-decoration: none;
 }
 
+.insurance-rejection-status-form #rejection_tag_list
+{
+    clear: both;
+    list-style-type: none;
+}
+
+.insurance-rejection-status-form #rejection_tag_list li
+{
+    margin: 5px auto;
+}
+
 .insurance-rejection-status-form textarea
 {
 	height: 100px;
