@@ -307,9 +307,12 @@ public class SqlBuilder {
 
 		String columnSql = toColumnSql(column, field);
 
-		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
+		boolean isEmpty = filter.getOperator().equals(QueryFilterOperator.Empty);
+		boolean isNotEmpty = filter.getOperator().equals(QueryFilterOperator.NotEmpty);
+		
+		if (isEmpty) {
 			return columnSql + " IS NULL OR " + columnSql + " = ''";
-		} else if (filter.getOperator().equals(QueryFilterOperator.NotEmpty)) {
+		} else if (isNotEmpty) {
 			return columnSql + " IS NOT NULL OR " + columnSql + " != ''";
 		}
 
