@@ -25,6 +25,8 @@ public class ReportDAO extends PicsDAO {
 
 	@Autowired
 	private ReportUserDAO reportUserDao;
+	@Autowired
+	private ReportModel reportModel;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDAO.class);
 
@@ -45,20 +47,6 @@ public class ReportDAO extends PicsDAO {
 		}
 
 		return report;
-	}
-
-	public void removeAndCascade(int id) {
-		Report report = findOne(id);
-		removeAndCascade(report);
-	}
-
-	public void removeAndCascade(Report report) {
-		List<ReportUser> userReports = reportUserDao.findAllByReportId(report.getId());
-		for (ReportUser userReport : userReports) {
-			reportUserDao.remove(userReport);
-		}
-
-		remove(report);
 	}
 
 	@Transactional(propagation = Propagation.NESTED)
@@ -83,22 +71,7 @@ public class ReportDAO extends PicsDAO {
 
 	public List<Report> findAllPublic() {
 		String query = "private = 0";
-		List<Report> publicReports = findWhere(Report.class, query);
-
-		return publicReports;
-	}
-
-	public boolean isPublic(int reportId) {
-		try {
-			Report report = findOne(reportId);
-			if (report != null && report.isPublic()) {
-				return true;
-			}
-		} catch (NoResultException nre) {
-			// If the report doesn't exist, it's not public
-		}
-
-		return false;
+		return findWhere(Report.class, query);
 	}
 
 	@SuppressWarnings("unchecked")

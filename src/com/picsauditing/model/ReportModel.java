@@ -16,6 +16,8 @@ import javax.persistence.NonUniqueResultException;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -42,6 +44,8 @@ public class ReportModel {
 	private static final List<Integer> baseReports =
 			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
 
+	private static final Logger logger = LoggerFactory.getLogger(ReportModel.class);
+
 	public boolean canUserViewAndCopy(int userId, Report report) {
 		if (report == null)
 			return false;
@@ -53,7 +57,7 @@ public class ReportModel {
 		if (baseReports.contains(reportId))
 			return true;
 
-		if (reportDao.isPublic(reportId))
+		if (isReportPublic(reportId))
 			return true;
 
 		try {
@@ -363,5 +367,41 @@ public class ReportModel {
 	public void revokeEditPermission(Report report, User user) {
 		// TODO check if current user has permission to revoke edit
 		reportUserDao.setEditPermissions(report, user, false);
+	}
+
+	public void removeAndCascade(int reportId) {
+		Report report = reportDao.findOne(reportId);
+		removeAndCascade(report);
+	}
+
+	public void removeAndCascade(Report report) {
+		List<ReportUser> userReports = reportUserDao.findAllByReportId(report.getId());
+
+		for (ReportUser userReport : userReports) {
+			int userId = userReport.getUser().getId();
+
+			try {
+				moveUserReportToIndex(userId, userReport, reportUserDao.getFavoriteCount(userId));
+			} catch (Exception e) {
+				logger.error("Unable to get favorite count to cascade favorite indices in ReportDAO.removeAndCascade(Report)");
+			}
+
+			reportUserDao.remove(userReport);
+		}
+
+		reportDao.remove(report);
+	}
+
+	public boolean isReportPublic(int reportId) {
+		try {
+			Report report = reportDao.findOne(reportId);
+			if (report != null && report.isPublic()) {
+				return true;
+			}
+		} catch (NoResultException nre) {
+			// If the report doesn't exist, it's not public
+		}
+
+		return false;
 	}
 }
