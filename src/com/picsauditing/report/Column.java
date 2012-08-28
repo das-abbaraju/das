@@ -8,41 +8,31 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.util.Strings;
 
-public class Column implements JSONable {
+public class Column extends ReportElement implements JSONable {
 
-	private String fieldName;
 	private QueryMethod method = null;
-
-	private Field field;
 
 	public Column() {
 	}
 
 	public Column(String fieldName) {
-		this.fieldName = fieldName;
+		super(fieldName);
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
-		JSONObject json = new JSONObject();
-		json.put("name", fieldName);
+		JSONObject json = super.toJSON(full);
 
-		// TODO check if this is being used on the front end
 		if (method != null) {
 			json.put("method", method.toString());
-		}
 
-		if (field != null) {
-			JSONObject fieldJson = field.toJSONObject();
-
-			if (method != null && method.getType() != ExtFieldType.Auto) {
+			if (method.getType() != ExtFieldType.Auto) {
 				String alteredType = method.getType().toString();
 
+				JSONObject fieldJson = (JSONObject) json.get("field");
 				fieldJson.put("type", alteredType.toLowerCase());
 				fieldJson.put("filterType", alteredType);
 			}
-
-			json.put("field", fieldJson);
 		}
 
 		return json;
@@ -52,13 +42,16 @@ public class Column implements JSONable {
 		if (json == null)
 			return;
 
-		fieldName = (String) json.get("name");
+		super.fromJSON(json);
+		
+		parseMethodName(json);
+	}
+
+	private void parseMethodName(JSONObject json) {
 		String methodName = (String) json.get("method");
 		if (!Strings.isEmpty(methodName)) {
 			method = QueryMethod.valueOf(methodName);
 		}
-
-		field = (Field) json.get("field");
 	}
 
 	public String getFieldName() {

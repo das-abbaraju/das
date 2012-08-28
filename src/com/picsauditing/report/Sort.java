@@ -6,31 +6,24 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.util.Strings;
 
-public class Sort implements JSONable {
+public class Sort extends ReportElement implements JSONable {
 
-	private String fieldName;
 	private boolean ascending = true;
-	private Field field;
 
 	public Sort() {
 	}
 
 	public Sort(String fieldName) {
-		this.fieldName = fieldName;
+		super(fieldName);
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
-		JSONObject json = new JSONObject();
-		json.put("name", fieldName);
+		JSONObject json = super.toJSON(full);
 
 		if (!ascending)
 			json.put("direction", "DESC");
-
-		if (field != null)
-			json.put("field", field.toJSONObject());
 
 		return json;
 	}
@@ -39,28 +32,18 @@ public class Sort implements JSONable {
 		if (json == null)
 			return;
 
-		fieldName = (String) json.get("name");
-
+		super.fromJSON(json);
+		
 		ascending = true;
 		String direction = (String) json.get("direction");
 		if (direction != null && direction.equals("DESC"))
 			ascending = false;
-
-		field = (Field) json.get("field");
 	}
 
 	// We might want to consider moving this to QueryField
 	public String toSQL(Map<String, Field> availableFields) {
 		String fieldSQL = availableFields.get(fieldName).getDatabaseColumnName();
 		return fieldSQL;
-	}
-
-	public String getFieldName() {
-		return Strings.escapeQuotes(fieldName);
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
 	}
 
 	public boolean isAscending() {
@@ -71,11 +54,7 @@ public class Sort implements JSONable {
 		this.ascending = ascending;
 	}
 
-	public Field getField() {
-		return field;
-	}
-
-	public void setField(Field field) {
-		this.field = field;
+	public String toString() {
+		return super.toString() + (ascending ? " ASC" : " DESC");
 	}
 }

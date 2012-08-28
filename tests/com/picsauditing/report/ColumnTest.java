@@ -1,5 +1,6 @@
 package com.picsauditing.report;
 
+import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.assertEquals;
 
 import org.json.simple.JSONObject;
@@ -17,8 +18,9 @@ public class ColumnTest {
 	public void testEmpty() {
 		column.fromJSON(jsonObj);
 
-		String expected = "{\"name\":null}";
-		assertEquals(expected, column.toJSON(true).toJSONString());
+		String expected = "\"name\":null";
+		assertContains(expected, column.toJSON(true).toJSONString());
+		assertContains("field", column.toJSON(true).toJSONString());
 	}
 
 	@Test
@@ -27,8 +29,8 @@ public class ColumnTest {
 		column.fromJSON(jsonObj);
 		assertEquals("AccountName", column.getFieldName());
 
-		String expected = "{\"name\":\"AccountName\"}";
-		assertEquals(expected, column.toJSON(true).toJSONString());
+		String expected = "\"name\":\"AccountName\"";
+		assertContains(expected, column.toJSON(true).toJSONString());
 	}
 
 	@Test
@@ -38,8 +40,8 @@ public class ColumnTest {
 		column.fromJSON(jsonObj);
 		assertEquals(QueryMethod.UpperCase, column.getMethod());
 
-		String expected = "{\"name\":\"AccountNameUpperCase\",\"method\":\"UpperCase\"}";
-		assertEquals(expected, column.toJSON(true).toJSONString());
+		String expected = "\"name\":\"AccountNameUpperCase\",\"method\":\"UpperCase\"";
+		assertContains(expected, column.toJSON(true).toJSONString());
 	}
 
 	@Test

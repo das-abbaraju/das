@@ -7,30 +7,23 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
-public class Filter implements JSONable {
+public class Filter extends ReportElement implements JSONable {
 
-	private String fieldName;
 	private QueryFilterOperator operator;
 	private String value;
 
-	private Field field;
-
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
-		JSONObject json = new JSONObject();
-		json.put("name", fieldName);
+		JSONObject json = super.toJSON(full);
 
 		if (operator != null)
 			json.put("operator", operator.toString());
 		if (value != null)
 			json.put("value", value);
-		if (field != null)
-			json.put("field", field.toJSONObject());
 
 		return json;
 	}
@@ -39,17 +32,11 @@ public class Filter implements JSONable {
 		if (json == null)
 			return;
 
-		fieldName = (String) json.get("name");
-		if (fieldName == null)
-			return;
+		super.fromJSON(json);
 
 		parseOperator(json);
 
 		this.value = (String) json.get("value");
-
-		// We are going to ignore this and set this each time from
-		// availableFields in SqlBuilder
-		// this.field = (Field) json.get("field");
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -98,14 +85,6 @@ public class Filter implements JSONable {
 		return json;
 	}
 
-	public String getFieldName() {
-		return fieldName;
-	}
-
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
 	public QueryFilterOperator getOperator() {
 		return operator;
 	}
@@ -131,14 +110,6 @@ public class Filter implements JSONable {
 		return true;
 	}
 
-	public Field getField() {
-		return field;
-	}
-
-	public void setField(Field field) {
-		this.field = field;
-	}
-
 	public boolean isHasTranslations() {
 		if (field != null) {
 			FilterType filterType = field.getFilterType();
@@ -147,5 +118,9 @@ public class Filter implements JSONable {
 		}
 
 		return false;
+	}
+	
+	public String toString() {
+		return super.toString() + " " + operator + " " + value;
 	}
 }

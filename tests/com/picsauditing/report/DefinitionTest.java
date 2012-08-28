@@ -1,5 +1,6 @@
 package com.picsauditing.report;
 
+import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -84,8 +85,8 @@ public class DefinitionTest {
 		assertEquals(2, definition.getColumns().size());
 		assertEquals("AccountID", definition.getColumns().get(0).getFieldName());
 
-		String expected = "{\"columns\":[{\"name\":\"AccountID\"},{\"name\":\"AccountName\"}]}";
-		assertEquals(expected, definition.toJSON(true).toJSONString());
+		assertContains("\"name\":\"AccountID\"", definition.toJSON(true).toJSONString());
+		assertContains("\"name\":\"AccountName\"", definition.toJSON(true).toJSONString());
 	}
 
 	@SuppressWarnings("unchecked")

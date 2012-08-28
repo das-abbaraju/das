@@ -1,5 +1,6 @@
 package com.picsauditing.report;
 
+import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.*;
 
 import org.json.simple.JSONObject;
@@ -13,20 +14,7 @@ public class SortTest {
 	private JSONObject jsonObj = new JSONObject();
 
 	@Test
-	public void testEmpty() {
-		sort.fromJSON(jsonObj);
-
-		String expected = "{\"name\":null}";
-		assertEquals(expected, sort.toJSON(true).toJSONString());
-	}
-
-	@Test
 	public void testNameOnly() {
-		jsonObj.put("name", "AccountName");
-		sort.fromJSON(jsonObj);
-		assertEquals("AccountName", sort.getFieldName());
-
-		String expected = "{\"name\":\"AccountName\"}";
-		assertEquals(expected, sort.toJSON(true).toJSONString());
+		// TODO write some custom stuff for Sorts
 	}
 }
