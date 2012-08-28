@@ -98,9 +98,8 @@ public class ReportModel {
 		reportDao.refresh(sourceReport);
 
 		reportDao.save(newReport, user);
-		connectReportToUser(newReport, user);
 		// This is a new report owned by the user, unconditionally give them edit permission
-		reportUserDao.setEditPermissions(newReport, user, true);
+		connectReportToUserEditable(newReport, user.getId());
 
 		return newReport;
 	}
@@ -341,8 +340,12 @@ public class ReportModel {
 
 
 	public ReportUser connectReportToUserEditable(Report report, int userId) {
-		ReportUser userReport = new ReportUser(userId, report);
-		userReport.setAuditColumns(new User(userId));
+		return connectReportToUserEditable(report, new User(userId));
+	}
+
+	public ReportUser connectReportToUserEditable(Report report, User user) {
+		ReportUser userReport = new ReportUser(user.getId(), report);
+		userReport.setAuditColumns(user);
 		userReport.setLastOpened(new Date());
 		userReport.setEditable(true);
 

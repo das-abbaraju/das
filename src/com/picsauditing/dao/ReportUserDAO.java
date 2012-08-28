@@ -40,10 +40,12 @@ public class ReportUserDAO extends PicsDAO {
 		return userReport;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(User user, Report report) throws NoResultException, NonUniqueResultException {
 		remove(user.getId(), report.getId());
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int userId, int reportId) {
 		ReportUser userReport = findOne(userId, reportId);
 		remove(userReport);

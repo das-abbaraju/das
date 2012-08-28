@@ -37,8 +37,7 @@ import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 /**
- * This is a controller. Do not use any DAOs from its parent. This should
- * delegate business concerns and persistence methods.
+ * This is a controller. It should delegate business concerns and persistence methods.
  */
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {

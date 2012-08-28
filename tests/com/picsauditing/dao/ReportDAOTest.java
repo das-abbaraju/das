@@ -43,7 +43,7 @@ public class ReportDAOTest {
 
 	@Ignore
 	@Test
-	public void saveReport() throws ReportValidationException {
+	public void testSaveReport() throws ReportValidationException {
 		when(report.getModelType()).thenReturn(ModelType.Accounts);
 		when(report.getParameters()).thenReturn("{}");
 
@@ -55,23 +55,23 @@ public class ReportDAOTest {
 
 	@Ignore
 	@Test
-	public void deleteReport() throws NoResultException {
+	public void testDeleteReport() throws NoResultException {
 		List<ReportUser> testList = new ArrayList<ReportUser>();
 		ReportUser mockRU1 = mock(ReportUser.class), mockRU2 = mock(ReportUser.class);
 		testList.add(mockRU1);
 		testList.add(mockRU2);
 		when(reportDao.findWhere(ReportUser.class, "t.report.id = 555")).thenReturn(testList);
 
-		reportDao.remove(report);
+		reportDao.removeAndCascade(report);
 
 		verify(reportDao).remove(mockRU1);
 		verify(reportDao).remove(mockRU2);
-		verify(reportDao).remove(report);
+		verify(reportDao).removeAndCascade(report);
 	}
 
 	@Ignore
 	@Test
-	public void findReportByID() {
+	public void testFindReportByID() {
 		reportDao.findOne(5);
 
 		verify(reportDao).findOne(Report.class, "t.id = 5");
