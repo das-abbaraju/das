@@ -29,7 +29,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String zip;
 	private Country country;
 	private String reasonForRegistration;
-	private ContractorRegistrationRequestStatus status;
+	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 	private String reasonForDecline;
 	private Date deadline;
 	private Date holdDate;
@@ -40,137 +40,166 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private int contactCountByPhone;
 	private int matchCount;
 	private String notes;
-
 	private ContractorAccount contractor;
-
 	private String operatorTags;
+	private String registrationHash;
 
+	@Deprecated
 	public String getName() {
 		return name;
 	}
 
+	@Deprecated
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Deprecated
 	@ManyToOne
 	@JoinColumn(name = "requestedByID")
 	public OperatorAccount getRequestedBy() {
 		return requestedBy;
 	}
 
+	@Deprecated
 	public void setRequestedBy(OperatorAccount requestedBy) {
 		this.requestedBy = requestedBy;
 	}
 
+	@Deprecated
 	@ManyToOne
 	@JoinColumn(name = "requestedByUserID")
 	public User getRequestedByUser() {
 		return requestedByUser;
 	}
 
+	@Deprecated
 	public void setRequestedByUser(User requestedByUser) {
 		this.requestedByUser = requestedByUser;
 	}
 
+	@Deprecated
 	@Column(name = "requestedByUser")
 	public String getRequestedByUserOther() {
 		return requestedByUserOther;
 	}
 
+	@Deprecated
 	public void setRequestedByUserOther(String requestedByUserOther) {
 		this.requestedByUserOther = requestedByUserOther;
 	}
 
+	@Deprecated
 	public String getContact() {
 		return contact;
 	}
 
+	@Deprecated
 	public void setContact(String contact) {
 		this.contact = contact;
 	}
 
+	@Deprecated
 	public String getPhone() {
 		return phone;
 	}
 
+	@Deprecated
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
+	@Deprecated
 	@Column(nullable = false)
 	public String getEmail() {
 		return email;
 	}
 
+	@Deprecated
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	@Deprecated
 	public String getTaxID() {
 		return taxID;
 	}
 
+	@Deprecated
 	public void setTaxID(String taxID) {
 		this.taxID = taxID;
 	}
 
+	@Deprecated
 	public String getAddress() {
 		return address;
 	}
 
+	@Deprecated
 	public void setAddress(String address) {
 		this.address = address;
 	}
 
+	@Deprecated
 	public String getCity() {
 		return city;
 	}
 
+	@Deprecated
 	public void setCity(String city) {
 		this.city = city;
 	}
 
+	@Deprecated
 	@ManyToOne
 	@JoinColumn(name = "countrySubdivision")
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
 	}
 
+	@Deprecated
 	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
 		this.countrySubdivision = countrySubdivision;
 	}
 
+	@Deprecated
 	public String getZip() {
 		return zip;
 	}
 
+	@Deprecated
 	public void setZip(String zip) {
 		this.zip = zip;
 	}
 
+	@Deprecated
 	@ManyToOne
 	@JoinColumn(name = "country", nullable = false)
 	public Country getCountry() {
 		return country;
 	}
 
+	@Deprecated
 	public void setCountry(Country country) {
 		this.country = country;
 	}
 
+	@Deprecated
 	public Date getDeadline() {
 		return deadline;
 	}
 
+	@Deprecated
 	public void setDeadline(Date deadline) {
 		this.deadline = deadline;
 	}
 
+	@Deprecated
 	public String getReasonForRegistration() {
 		return reasonForRegistration;
 	}
 
+	@Deprecated
 	public void setReasonForRegistration(String reasonForRegistration) {
 		this.reasonForRegistration = reasonForRegistration;
 	}
@@ -193,35 +222,44 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.reasonForDecline = reasonForDecline;
 	}
 
+	@Deprecated
 	public Date getHoldDate() {
 		return holdDate;
 	}
 
+	@Deprecated
 	public void setHoldDate(Date holdDate) {
 		this.holdDate = holdDate;
 	}
 
+	@Deprecated
 	@ManyToOne
 	@JoinColumn(name = "lastContactedBy")
 	public User getLastContactedBy() {
 		return lastContactedBy;
 	}
 
+	@Deprecated
 	public void setLastContactedBy(User lastContactedBy) {
 		this.lastContactedBy = lastContactedBy;
 	}
 
+	@Deprecated
 	public Date getLastContactDate() {
 		return lastContactDate;
 	}
 
+	@Deprecated
 	public void setLastContactDate(Date lastContactDate) {
 		this.lastContactDate = lastContactDate;
 	}
 
-	@Transient
-	public int getContactCount() {
-		return contactCountByEmail + contactCountByPhone;
+	public Date getLastContactedByAutomatedEmailDate() {
+		return lastContactedByAutomatedEmailDate;
+	}
+
+	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
+		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
 	}
 
 	public int getContactCountByEmail() {
@@ -238,6 +276,11 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	public void setContactCountByPhone(int contactCountByPhone) {
 		this.contactCountByPhone = contactCountByPhone;
+	}
+
+	@Transient
+	public int getContactCount() {
+		return contactCountByEmail + contactCountByPhone;
 	}
 
 	public int getMatchCount() {
@@ -266,14 +309,25 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.contractor = con;
 	}
 
+	@Deprecated
 	public String getOperatorTags() {
 		return operatorTags;
 	}
 
+	@Deprecated
 	public void setOperatorTags(String operatorTags) {
 		this.operatorTags = operatorTags;
 	}
 
+	public String getRegistrationHash() {
+		return registrationHash;
+	}
+
+	public void setRegistrationHash(String registrationHash) {
+		this.registrationHash = registrationHash;
+	}
+
+	@Deprecated
 	@Transient
 	public String getRequestedByUserString() {
 		return requestedByUser == null ? getRequestedByUserOther() : requestedByUser.getName();
@@ -288,18 +342,4 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void contactByPhone() {
 		contactCountByPhone++;
 	}
-
-	@Transient
-	public String getRegistrationLink() {
-		return "https://www.picsorganizer.com/Registration.action?button=request&requestID=" + getId();
-	}
-
-	public Date getLastContactedByAutomatedEmailDate() {
-		return lastContactedByAutomatedEmailDate;
-	}
-
-	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
-		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
-	}
-
 }

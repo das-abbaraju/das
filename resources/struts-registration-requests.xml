@@ -46,5 +46,12 @@
 			<result name="success">struts/reports/report_con_new_reg_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
+		<action name="RequestNewContractorAccount" class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
+			<result>/struts/contractors/request/request_new_contractor.jsp</result>
+			<result name="backToReport" type="redirectAction">
+				<param name="actionName">ReportNewRequestedContractor</param>
+			</result>
+		</action>
 	</package>
 </struts>

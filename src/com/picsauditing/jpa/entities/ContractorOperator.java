@@ -396,6 +396,19 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.requestedByOther = requestedByOther;
 	}
 
+	@Transient
+	public String getRequestedByName() {
+		if (getRequestedBy() != null) {
+			return getRequestedBy().getName();
+		}
+
+		if (!Strings.isEmpty(getRequestedByOther())) {
+			return getRequestedByOther();
+		}
+
+		return null;
+	}
+
 	public Date getDeadline() {
 		return deadline;
 	}

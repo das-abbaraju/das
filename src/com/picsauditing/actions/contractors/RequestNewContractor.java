@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -96,10 +94,6 @@ public class RequestNewContractor extends AccountActionSupport {
 	public String execute() throws Exception {
 		if (!permissions.isPicsEmployee() && !permissions.isOperatorCorporate()) {
 			throw new NoRightsException(getText("global.Operator"));
-		}
-
-		if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.RequestNewContractor)) {
-			throw new NoRightsException(OpPerms.RequestNewContractor, OpType.View);
 		}
 
 		if (newContractor == null || newContractor.getId() == 0) {
