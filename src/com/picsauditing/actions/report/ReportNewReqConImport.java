@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -125,7 +126,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-
+	
 	private void importData(File file) {
 		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
 		Workbook wb = null;
@@ -136,9 +137,9 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				Sheet sheet = wb.getSheetAt(i);
 				for (Row row : sheet) {
-					// skip the header
-					if (row.getCell(0).getRichStringCellValue().getString().contains("Account"))
+					if (skipHeaderRow(row)) {
 						continue;
+					}
 
 					// skip empty row: Assuming that no company name = empty row
 					if (getValue(row, 0) == null)
@@ -152,6 +153,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				}
 			}
 		} catch (Exception e) {
+			logger.error("Error while importing contractor registration request.", e);
 			addActionError(getText("ReportNewReqConImport.CheckFormat"));
 		}
 
@@ -171,6 +173,21 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));
 		}
+	}
+	
+	private boolean skipHeaderRow(Row row) {
+		Cell cell = row.getCell(0);
+		if (cell != null) {
+			RichTextString richText = cell.getRichStringCellValue();
+			if (richText != null) {
+				String cellValue = richText.getString();
+				if (!Strings.isEmpty(cellValue) && cellValue.contains("Account")) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	private void prependToRequestNotes(String note, ContractorRegistrationRequest newContractor) {
