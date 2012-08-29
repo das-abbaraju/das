@@ -11,7 +11,7 @@
 			<message>${getText("JS.Validation.Minimum2Characters")}</message>
 		</field-validator>
 	</field>
-	
+
 	<field name="requestedContractor.primaryContact.name">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillContactName")}</message>
@@ -22,12 +22,12 @@
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
 	</field>
-	
+
 	<field name="requestedContractor.primaryContact.phone">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillPhoneNumber")}</message>
 		</field-validator>
-		<field-validator type="regex">
+		<field-validator type="regex" short-circuit="true">
 			<!--
 				Allow NANP phones with leadings 1s and potential x1234 extensions as
 				well as international formatted phone numbers. Modified from
@@ -38,7 +38,7 @@
 			<message>${getText("JS.Validation.InvalidPhoneFormat")}</message>
 		</field-validator>
 	</field>
-	
+
 	<field name="requestedContractor.primaryContact.email">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillValidEmail")}</message>
@@ -52,43 +52,46 @@
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
 	</field>
-	
+
 	<field name="requestedContractor.country">
 		<field-validator type="required">
 			<message>${getText("RequestNewContractor.error.SelectCountry")}</message>
 		</field-validator>
 	</field>
-	
-	<validator type="expression">
-		<param name="expression">requestRelationship.operatorAccount.id gt 0</param>
-		<message>${getText("RequestNewContractor.error.SelectRequestedByAccount")}</message>
-	</validator>
 
-	<validator type="expression">
-		<param name="expression">requestRelationship.requestedBy.id gt 0</param>
-		<message>${getText("RequestNewContractor.error.SelectRequestedUser")}</message>
-	</validator
-	 
-	<validator type="expression">
-		<param name="expression">requestRelationship.country.isocode.length() gt 0</param>
-		<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
-	</validator>
-	
-	<validator type="expression">
-		<param name="expression">requestRelationship.countrySubdivision.isocode.length()
-			gt 0</param>
-		<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
-	</validator>
-	
 	<field name="requestRelationship.deadline">
 		<field-validator type="required">
 			<message>${getText("RequestNewContractor.error.SelectDeadline")}</message>
 		</field-validator>
 	</field>
+
+	<validator type="fieldexpression">
+		<param name="fieldname">requestRelationship.reasonForRegistration</param>
+		<param name="expression"><![CDATA[requestRelationship.reasonForRegistration.length() > 0]]></param>
+		<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
+	</validator>
 	
-	<field name="requestRelationship.reasonForRegistration">
-		<field-validator type="required">
-			<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
-		</field-validator>
-	</field>
+	<validator type="fieldexpression">
+		<param name="fieldname">requestRelationship.operatorAccount</param>
+		<param name="expression"><![CDATA[requestRelationship.operatorAccount.id > 0]]></param>
+		<message>${getText("RequestNewContractor.error.SelectRequestedByAccount")}</message>
+	</validator>
+	
+	<validator type="fieldexpression">
+		<param name="fieldname">requestRelationship.requestedBy</param>
+		<param name="expression"><![CDATA[requestRelationship.requestedBy.id > 0]]></param>
+		<message>${getText("RequestNewContractor.error.SelectRequestedUser")}</message>
+	</validator>
+
+	<validator type="fieldexpression">
+		<param name="fieldname">requestedContractor.country</param>
+		<param name="expression"><![CDATA[requestedContractor.country.isoCode.length() > 0]]></param>
+		<message>${getText("RequestNewContractor.error.SelectCountry")}</message>
+	</validator>
+	
+	<validator type="fieldexpression">
+		<param name="fieldname">requestedContractor.countrySubdivision</param>
+		<param name="expression"><![CDATA[requestedContractor.countrySubdivision != null && requestedContractor.countrySubdivision.isoCode.length() > 0]]></param>
+		<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
+	</validator>
 </validators>
