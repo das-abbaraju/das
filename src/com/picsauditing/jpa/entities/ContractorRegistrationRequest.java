@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.Strings;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_registration_request")
@@ -325,6 +327,12 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	public void setRegistrationHash(String registrationHash) {
 		this.registrationHash = registrationHash;
+	}
+
+	@Transient
+	public void generateHash() {
+		Date now = new Date();
+		setRegistrationHash(Strings.hash("request" + getId() + now.toString()));
 	}
 
 	@Deprecated
