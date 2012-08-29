@@ -49,7 +49,6 @@ $.growlUI = function(title, message, timeout, onClose) {
 
 // plugin method for blocking element content
 $.fn.block = function(opts) {
-    console.log(opts);
 	return this.unblock({ fadeOut: 0 }).each(function() {
 		if ($.css(this,'position') == 'static')
 			this.style.position = 'relative';
