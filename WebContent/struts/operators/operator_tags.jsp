@@ -167,7 +167,7 @@
 								<s:if test="#tag.operator.id == #globalOperator.id">
 									<s:if test="permissions.isCanAddRuleForOperator(operator)">
 										<s:if test="!auditTypeRules.empty">
-											<a data-url="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" class="modal-link btn">Audit Rules</a>
+											<a data-url="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags&includeExpired=true" class="modal-link btn">Audit Rules</a>
 										</s:if>
 										
 										<s:if test="!auditCategoryRules.empty">
