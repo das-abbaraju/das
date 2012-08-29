@@ -10,6 +10,7 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	private String countrySubdivisionString;
 	private String prefix;
 	private boolean needsSuffix = true;
+	private boolean required;
 
 	@Override
 	@Anonymous
@@ -17,7 +18,7 @@ public class CountrySubdivisionList extends AccountActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	@Anonymous
 	public String registration() throws Exception {
 		return "registration";
@@ -64,6 +65,14 @@ public class CountrySubdivisionList extends AccountActionSupport {
 //        }
         return value;
 }
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
 
 	public String getCountrySubdivisionPrefix() {
 		if (prefix == null)

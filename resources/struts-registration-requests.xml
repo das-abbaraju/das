@@ -21,8 +21,8 @@
 			<result>/struts/blank.jsp</result>
 		</action>		
 
-		<action name="OperatorUserListAjax"
-			class="com.picsauditing.actions.contractors.RequestNewContractor">
+		<action name="OperatorUserList"
+			class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
 			<result>/struts/users/operator_users.jsp</result>
 		</action>
 		
@@ -50,9 +50,6 @@
 		<action name="RequestNewContractorAccount" class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
 			<result>/struts/contractors/request/request_new_contractor.jsp</result>
 			<result name="input">/struts/contractors/request/request_new_contractor.jsp</result>
-			<result name="backToReport" type="redirectAction">
-				<param name="actionName">ReportNewRequestedContractor</param>
-			</result>
 		</action>
 		
 		<action name="DataConversionRequestAccount" class="com.picsauditing.actions.DataConversionRequestAccount">

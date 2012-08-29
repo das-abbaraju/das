@@ -53,7 +53,6 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/contractor/edit-account/edit-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/contractor/lc-cor/lc-cor-controller.js?v=${version}"></script>
 <script type="text/javascript" src="js/contractor/third-party-identifier/identifier-controller.js?v=${version}"></script>
-
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>
 <script type="text/javascript" src="TranslateJS.action"></script>

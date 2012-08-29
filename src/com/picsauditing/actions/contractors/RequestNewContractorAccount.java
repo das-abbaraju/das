@@ -1,15 +1,19 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.util.Strings;
 
@@ -17,6 +21,8 @@ import com.picsauditing.util.Strings;
 public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
+	private UserSwitchDAO userSwitchDAO;
 
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
@@ -27,37 +33,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	public String execute() throws Exception {
 		checkPermission();
 
+		initializeRequest();
 		setRequestedBy();
 
-		initializeRequest();
-
 		return SUCCESS;
-	}
-
-	private void setRequestedBy() {
-		if (permissions.isOperatorCorporate()) {
-			OperatorAccount requestedBy = operatorDAO.find(permissions.getAccountId());
-
-			if (permissions.isOperator() && requestedContractor.getId() == 0
-					&& requestedContractor.getRequestedBy() == null) {
-				requestedContractor.setRequestedBy(requestedBy);
-			}
-
-			for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
-				if (contractorOperator.getOperatorAccount().equals(requestedContractor.getRequestedBy())) {
-					requestRelationship = contractorOperator;
-				}
-			}
-		}
-	}
-
-	private void initializeRequest() {
-		if (requestedContractor.getId() == 0) {
-			requestedContractor.setStatus(AccountStatus.Requested);
-
-			ContractorRegistrationRequest request = new ContractorRegistrationRequest();
-			requestedContractor.getRegistrationRequests().add(request);
-		}
 	}
 
 	public String save() {
@@ -102,6 +81,44 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		}
 
 		return true;
+	}
+
+	public List<User> getOperatorUsers() {
+		int operatorID = requestRelationship.getOperatorAccount().getId();
+		List<User> usersAndSwitchTos = userDAO.findByAccountID(operatorID, "Yes", "No");
+		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(operatorID);
+
+		usersAndSwitchTos.addAll(switchTos);
+		return usersAndSwitchTos;
+	}
+
+	private void initializeRequest() {
+		if (requestedContractor.getId() == 0) {
+			requestedContractor.setStatus(AccountStatus.Requested);
+
+			ContractorRegistrationRequest request = new ContractorRegistrationRequest();
+			requestedContractor.getRegistrationRequests().add(request);
+
+			requestedContractor.setRequestedBy(new OperatorAccount());
+			requestedContractor.setPrimaryContact(new User());
+		}
+	}
+
+	private void setRequestedBy() {
+		if (permissions.isOperatorCorporate()) {
+			OperatorAccount requestedBy = operatorDAO.find(permissions.getAccountId());
+
+			if (permissions.isOperator() && requestedContractor.getId() == 0
+					&& requestedContractor.getRequestedBy() == null) {
+				requestedContractor.setRequestedBy(requestedBy);
+			}
+
+			for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
+				if (contractorOperator.getOperatorAccount().equals(requestedContractor.getRequestedBy())) {
+					requestRelationship = contractorOperator;
+				}
+			}
+		}
 	}
 
 	private void checkPermission() throws NoRightsException {

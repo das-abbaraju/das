@@ -1,12 +1,11 @@
-<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
-	"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>
 	<field name="requestedContractor.name">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillContractorName")}</message>
 		</field-validator>
-		<field-validator type="stringlength" short-circuit="true">
+		<field-validator type="stringlength">
 			<param name="minLength">2</param>
 			<param name="trim">true</param>
 			<message>${getText("JS.Validation.Minimum2Characters")}</message>
@@ -14,10 +13,10 @@
 	</field>
 	
 	<field name="requestedContractor.primaryContact.name">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillContactName")}</message>
 		</field-validator>
-		<field-validator type="stringlength" short-circuit="true">
+		<field-validator type="stringlength">
 			<param name="maxLength">100</param>
 			<param name="trim">true</param>
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
@@ -25,10 +24,10 @@
 	</field>
 	
 	<field name="requestedContractor.primaryContact.phone">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillPhoneNumber")}</message>
 		</field-validator>
-		<field-validator type="regex" short-circuit="true">
+		<field-validator type="regex">
 			<!--
 				Allow NANP phones with leadings 1s and potential x1234 extensions as
 				well as international formatted phone numbers. Modified from
@@ -41,13 +40,13 @@
 	</field>
 	
 	<field name="requestedContractor.primaryContact.email">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillValidEmail")}</message>
 		</field-validator>
-		<field-validator type="email" short-circuit="true">
+		<field-validator type="email">
 			<message>${getText("JS.Validation.ValidEmail")}</message>
 		</field-validator>
-		<field-validator type="stringlength" short-circuit="true">
+		<field-validator type="stringlength">
 			<param name="maxLength">100</param>
 			<param name="trim">true</param>
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
@@ -55,8 +54,41 @@
 	</field>
 	
 	<field name="requestedContractor.country">
-		<field-validator type="required" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
+		<field-validator type="required">
+			<message>${getText("RequestNewContractor.error.SelectCountry")}</message>
+		</field-validator>
+	</field>
+	
+	<validator type="expression">
+		<param name="expression">requestRelationship.operatorAccount.id gt 0</param>
+		<message>${getText("RequestNewContractor.error.SelectRequestedByAccount")}</message>
+	</validator>
+
+	<validator type="expression">
+		<param name="expression">requestRelationship.requestedBy.id gt 0</param>
+		<message>${getText("RequestNewContractor.error.SelectRequestedUser")}</message>
+	</validator
+	 
+	<validator type="expression">
+		<param name="expression">requestRelationship.country.isocode.length() gt 0</param>
+		<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
+	</validator>
+	
+	<validator type="expression">
+		<param name="expression">requestRelationship.countrySubdivision.isocode.length()
+			gt 0</param>
+		<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
+	</validator>
+	
+	<field name="requestRelationship.deadline">
+		<field-validator type="required">
+			<message>${getText("RequestNewContractor.error.SelectDeadline")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestRelationship.reasonForRegistration">
+		<field-validator type="required">
+			<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
 		</field-validator>
 	</field>
 </validators>
