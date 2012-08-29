@@ -23,6 +23,8 @@ import com.picsauditing.jpa.entities.YesNo;
 
 @SuppressWarnings("serial")
 public class DataConversionRequestAccount extends PicsActionSupport {
+	private int limit = 10;
+
 	private static Logger logger = LoggerFactory.getLogger(DataConversionRequestAccount.class);
 
 	@Autowired
@@ -54,6 +56,14 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	public int getLimit() {
+		return limit;
+	}
+
+	public void setLimit(int limit) {
+		this.limit = limit;
 	}
 
 	private boolean needsUpgrade() {
@@ -136,6 +146,6 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 
 	private List<ContractorRegistrationRequest> findRequestsNeedingConversion() {
 		return requestDAO.findWhere(ContractorRegistrationRequest.class,
-				"t.contractor IS NULL AND t.status IN ('Active', 'Hold')", 10);
+				"t.contractor IS NULL AND t.status IN ('Active', 'Hold')", limit);
 	}
 }
