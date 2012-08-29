@@ -12,6 +12,7 @@ import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.SqlBuilder;
@@ -31,7 +32,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
 	public String create() {
-		// TODO Should we move this to ManageReports?
 		try {
 			Report newReport = reportModel.copy(report, new User(permissions.getUserId()));
 			json.put("success", true);
@@ -41,14 +41,13 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("error", nre.getMessage());
 		} catch (Exception e) {
 			logger.error("An error occurred while copying a report for user {}", permissions.getUserId(), e);
-			writeJsonErrorMessage(e);
+			writeJsonError(e);
 		}
 
 		return JSON;
 	}
 
 	public String edit() {
-		// TODO Should we move this to ManageReports?
 		try {
 			reportModel.edit(report, permissions);
 			json.put("success", true);
@@ -59,17 +58,26 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			logger.error("An error occurred while editing a report id = {} for user {}", report.getId(),
 					permissions.getUserId());
-			writeJsonErrorMessage(e);
+			writeJsonError(e);
 		}
 
 		return JSON;
 	}
 
 	public String configuration() {
-		// TODO Should we move this to ManageReports?
 		int userId = permissions.getUserId();
+		boolean editable = false, favorite = false;
 
-		json.put("editable", reportModel.canUserEdit(userId, report));
+		try {
+			editable = reportModel.canUserEdit(userId, report);
+			ReportUser userReport = reportUserDao.findOne(userId, report.getId());
+			favorite = userReport.isFavorite();
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.configuration()", e);
+		}
+
+		json.put("editable", editable);
+		json.put("favorite", favorite);
 
 		return JSON;
 	}
@@ -89,10 +97,10 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", true);
 		} catch (ReportValidationException rve) {
 			logger.warn("Invalid report in ReportDynamic.report()", rve);
-			writeJsonErrorMessage(rve);
+			writeJsonError(rve);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
-			writeJsonErrorMessage(e);
+			writeJsonError(e);
 		}
 
 		return JSON;
@@ -109,14 +117,13 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("success", true);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
-			writeJsonErrorMessage(e);
+			writeJsonError(e);
 		}
 
 		return JSON;
 	}
 
 	public String share() {
-		// TODO Should we move this to ManageReports?
 		int userId = -1;
 		String dirtyReportIdParameter = "";
 
@@ -143,7 +150,6 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String shareEditable() {
-		// TODO Should we move this to ManageReports?
 		int userId = -1;
 		String dirtyReportIdParameter = "";
 
@@ -169,24 +175,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	private void writeJsonErrorMessage(Exception e) {
-		json.put("success", false);
-		json.put("error", e.getCause() + " " + e.getMessage());
-	}
-
 	private void writeJsonError(Exception e) {
-		String message = e.getMessage();
-
-		if (message == null) {
-			message = e.toString();
-		}
-
-		writeJsonError(message);
-	}
-
-	private void writeJsonError(String message) {
 		json.put("success", false);
-		json.put("message", message);
+		json.put("message", e.toString());
 	}
 
 	public Report getReport() {
