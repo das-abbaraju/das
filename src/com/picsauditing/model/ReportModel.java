@@ -29,7 +29,6 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.Column;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
@@ -41,22 +40,9 @@ public class ReportModel {
 	@Autowired
 	private ReportUserDAO reportUserDao;
 
-	private static final List<Integer> baseReports =
-			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportModel.class);
 
-	public boolean canUserViewAndCopy(int userId, Report report) {
-		if (report == null)
-			return false;
-
-		return canUserViewAndCopy(userId, report.getId());
-	}
-
 	public boolean canUserViewAndCopy(int userId, int reportId) {
-		if (baseReports.contains(reportId))
-			return true;
-
 		if (isReportPublic(reportId))
 			return true;
 
@@ -91,7 +77,7 @@ public class ReportModel {
 	}
 
 	public Report copy(Report sourceReport, User user) throws NoRightsException, ReportValidationException {
-		if (!canUserViewAndCopy(user.getId(), sourceReport))
+		if (!canUserViewAndCopy(user.getId(), sourceReport.getId()))
 			throw new NoRightsException("User " + user.getId() + " does not have permission to copy report " + sourceReport.getId());
 
 		Report newReport = copyReportWithoutPermissions(sourceReport);
@@ -318,23 +304,12 @@ public class ReportModel {
 		reportDao.save(userReport);
 	}
 
-	public ReportUser connectReportToUser(Report report, User user) {
-		ReportUser userReport = new ReportUser();
-
-		userReport.setAuditColumns(user);
-		userReport.setReport(report);
-		userReport.setUser(user);
-		userReport.setEditable(false);
-		userReport.setLastOpened(new Date());
-
-		reportUserDao.save(userReport);
-
-		return userReport;
-	}
-
 	public ReportUser connectReportToUser(Report report, int userId) {
 		ReportUser userReport = new ReportUser(userId, report);
+
 		userReport.setAuditColumns(new User(userId));
+		userReport.setEditable(false);
+		userReport.setFavorite(false);
 		userReport.setLastOpened(new Date());
 
 		reportUserDao.save(userReport);
@@ -342,16 +317,13 @@ public class ReportModel {
 		return userReport;
 	}
 
-
 	public ReportUser connectReportToUserEditable(Report report, int userId) {
-		return connectReportToUserEditable(report, new User(userId));
-	}
+		ReportUser userReport = new ReportUser(userId, report);
 
-	public ReportUser connectReportToUserEditable(Report report, User user) {
-		ReportUser userReport = new ReportUser(user.getId(), report);
-		userReport.setAuditColumns(user);
-		userReport.setLastOpened(new Date());
+		userReport.setAuditColumns(new User(userId));
 		userReport.setEditable(true);
+		userReport.setFavorite(false);
+		userReport.setLastOpened(new Date());
 
 		reportUserDao.save(userReport);
 

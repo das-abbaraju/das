@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -22,34 +23,68 @@ import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 
 public class ReportUserDAOTest {
-	
+
 	private ReportUserDAO reportUserDao;
 
-	@Mock private EntityManager mockEntityManager;
+	@Mock private EntityManager entityManager;
 	@Mock private Report report;
 	@Mock private User user;
+	@Mock private ReportUser userReport;
+
+	private final int REPORT_ID = 37;
+	private final int USER_ID = 5;
+	private final int REPORT_USER_ID = 101;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		reportUserDao = new ReportUserDAO();
-		reportUserDao.setEntityManager(mockEntityManager);
+		reportUserDao.setEntityManager(entityManager);
 
-		when(report.getId()).thenReturn(555);
-		when(user.getId()).thenReturn(23);
+		when(report.getId()).thenReturn(REPORT_ID);
+		when(user.getId()).thenReturn(USER_ID);
 	}
 
-	@Ignore
 	@Test
-	public void testRemove() throws Exception {
-		List<ReportUser> testList = new ArrayList<ReportUser>();
-		ReportUser repUser = mock(ReportUser.class);
-		testList.add(repUser);
-		when(reportUserDao.findWhere(ReportUser.class, "t.user.id = 23 AND t.report.id = 555")).thenReturn(testList);
+	public void mockUserIsMockedWithUserId() {
+		assertEquals(USER_ID, user.getId());
+	}
 
-		reportUserDao.remove(user, report);
+	@Test
+	public void mockReportIsMockedWithReportId() {
+		assertEquals(REPORT_ID, report.getId());
+	}
 
-		verify(reportUserDao).remove(repUser);
+	@Test
+	public void testSave_PersistIfNew() {
+		when(userReport.getId()).thenReturn(0);
+
+		reportUserDao.save(userReport);
+
+		verify(entityManager).persist(userReport);
+	}
+
+	@Test
+	public void testSave_MergeIfExists() {
+		when(userReport.getId()).thenReturn(REPORT_USER_ID);
+
+		reportUserDao.save(userReport);
+
+		verify(entityManager).merge(userReport);
+	}
+
+	@Test
+	public void testRemove_CallsEntityManagerRemove() {
+		reportUserDao.remove(userReport);
+
+		verify(entityManager).remove(userReport);
+	}
+
+	@Test
+	public void testRemove_DoesntCallEntityManagerRemoveIfNull() {
+		reportUserDao.remove(null);
+
+		verify(entityManager, never()).remove(userReport);
 	}
 }

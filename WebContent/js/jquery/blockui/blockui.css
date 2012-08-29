@@ -17,8 +17,8 @@ body > .blockOverlay {
 .blockElement{
 	background-image: url("../../../images/loader.gif");
 	background-repeat: no-repeat;
-	background-position: 12px 13px;
 	background-color: rgba(255, 255, 255, 0.9);	
+	background-position: 5px 5px;
 	padding-left: 35px;
 	top: 20%;
 	z-index: 96;

@@ -1,5 +1,6 @@
 package com.picsauditing.auditBuilder;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -11,11 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditCategoryMatrixDAO;
-//import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -55,8 +56,6 @@ public class AuditBuilder {
 
 	private User systemUser = new User(User.SYSTEM);
 	
-//	private AuditDataDAO auditDataDAO;
-	
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToResubmit = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToSubmit = new HashSet<ContractorAuditOperator>();
@@ -95,7 +94,7 @@ public class AuditBuilder {
 								// we should never add another welcome call audit
 								found = true;
 							} else if (auditType.isWCB()) {
-								found = this.foundCurrentYearWCB(conAudit);
+								found = foundCurrentYearWCB(conAudit);
 							} else {
 								if (!conAudit.isExpired() && !conAudit.willExpireSoon())
 									// The audit is still valid for a number of days dependent on its type
@@ -183,13 +182,33 @@ public class AuditBuilder {
 	 * auditFor fields in the WCB is corrected. 
 	 */
 	private boolean foundCurrentYearWCB(ContractorAudit audit) {
-		if (Strings.isEmpty(audit.getAuditFor())) {
+		if (Strings.isEmpty(audit.getAuditFor())) { // TODO: remove this once all the WCBs have consistent auditFor
 			return true;
-		} else if (DateBean.getWCBYear().equals(audit.getAuditFor())) {
+		} else if (findAllWCBAuditYears(audit.getContractorAccount()).contains(DateBean.getWCBYear())) {
 			return true;
 		}
 		
 		return false;
+	}
+	
+	private List<String> findAllWCBAuditYears(ContractorAccount contractor) {
+		List<String> years = new ArrayList<String>();
+		List<ContractorAudit> audits = contractor.getAudits();
+		if (CollectionUtils.isEmpty(audits)) {
+			return years;
+		}
+		
+		for (ContractorAudit audit : audits) {
+			if (isAuditWCB(audit)) {
+				years.add(audit.getAuditFor());
+			}
+		}
+		
+		return years;
+	}
+
+	private boolean isAuditWCB(ContractorAudit audit) {
+		return audit != null && audit.getAuditType() != null && AuditType.CANADIAN_PROVINCES.contains(audit.getAuditType().getId());
 	}
 	
 	private boolean isValidAudit(ContractorAudit conAudit) {

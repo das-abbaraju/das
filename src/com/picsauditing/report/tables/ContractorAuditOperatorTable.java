@@ -29,6 +29,6 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 	public void addJoins() {
 		AccountTable auditingSite = new AccountTable(prefix + "Account", alias + ".opID");
 		auditingSite.setOverrideCategory(FieldCategory.ClientSiteMonitoringAnAudit);
-		addJoin(auditingSite);
+		addLeftJoin(auditingSite);
 	}
 }

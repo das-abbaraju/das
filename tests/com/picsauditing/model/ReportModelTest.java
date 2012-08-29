@@ -31,8 +31,9 @@ public class ReportModelTest {
 
 	@Mock private ReportDAO reportDao;
 	@Mock private ReportUserDAO reportUserDao;
-	@Mock private Report report;
 	@Mock private User user;
+	@Mock private Report report;
+	@Mock private ReportUser userReport;
 	@Mock private BasicDynaBean dynaBean;
 
 	private final int REPORT_ID = 37;
@@ -50,83 +51,98 @@ public class ReportModelTest {
 		setInternalState(reportModel, "reportDao", reportDao);
 		setInternalState(reportModel, "reportUserDao", reportUserDao);
 
-		when(report.getId()).thenReturn(555);
 		when(user.getId()).thenReturn(USER_ID);
+		when(report.getId()).thenReturn(REPORT_ID);
 	}
 
 	@Test
-	public void canUserViewAndCopy_nullQuery() {
-		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(null);
-
-		assertFalse(reportModel.canUserViewAndCopy(USER_ID, report));
+	public void mockUserIsMockedWithUserId() {
+		assertEquals(USER_ID, user.getId());
 	}
 
 	@Test
-	public void canUserViewAndCopy_emptyQuery() {
-
-		when(reportUserDao.findOne(anyInt(), anyInt())).thenThrow(new NoResultException());
-
-		assertFalse(reportModel.canUserViewAndCopy(USER_ID, report));
+	public void mockReportIsMockedWithReportId() {
+		assertEquals(REPORT_ID, report.getId());
 	}
 
 	@Test
-	public void canUserViewAndCopy_baseReport() {
-		assertTrue(reportModel.canUserViewAndCopy(USER_ID, 2));
+	public void canUserViewAndCopy_TrueIfPublicReport() {
+		when(report.isPublic()).thenReturn(true);
+		when(reportDao.findOne(REPORT_ID)).thenReturn(report);
+
+		assertTrue(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
 	}
 
 	@Test
-	public void canUserViewAndCopy_successfulQuery () {
+	public void canUserViewAndCopy_FalseIfPrivateReportNoAssociationWithUser() {
+		when(report.isPublic()).thenReturn(false);
+		when(reportDao.findOne(REPORT_ID)).thenReturn(report);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(null);
 
-		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(new ReportUser());
-
-		assertTrue(reportModel.canUserViewAndCopy(USER_ID, report));
+		assertFalse(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
 	}
 
 	@Test
-	public void canUserEdit_Negative() {
-		ReportUser mockReportUser = mock(ReportUser.class);
-		when(mockReportUser.isEditable()).thenReturn(false);
-		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(mockReportUser);
+	public void canUserViewAndCopy_TrueIfAssociationWithUser() {
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(new ReportUser());
+
+		assertTrue(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
+	}
+
+	@Test
+	public void canUserViewAndCopy_FalseIfNoResultException() {
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+
+		assertFalse(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
+	}
+
+	@Test
+	public void canUserEdit_FalseIfNoResultException() {
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 
 		assertFalse(reportModel.canUserEdit(USER_ID, report));
 	}
 
 	@Test
-	public void canUserEdit_Positive() {
-		ReportUser mockReportUser = mock(ReportUser.class);
-		when(mockReportUser.isEditable()).thenReturn(true);
-		when(reportUserDao.findOne(anyInt(), anyInt())).thenReturn(mockReportUser);
+	public void canUserEdit_FalseIfNoEditPermission() {
+		when(userReport.isEditable()).thenReturn(false);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(userReport);
+
+		assertFalse(reportModel.canUserEdit(USER_ID, report));
+	}
+
+	@Test
+	public void canUserEdit_TrueIfEditPermission() {
+		when(userReport.isEditable()).thenReturn(true);
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(userReport);
 
 		assertTrue(reportModel.canUserEdit(USER_ID, report));
 	}
 
 	@Test
-	public void canUserDelete_Negative() {
-		User mockUser = mock(User.class);
-		when(mockUser.getId()).thenReturn(5);
-		when(report.getCreatedBy()).thenReturn(mockUser);
+	public void canUserDelete_FalseIfNotCreatedByUser() {
+		User otherUser = mock(User.class);
+		when(report.getCreatedBy()).thenReturn(otherUser);
 
 		assertFalse(ReportModel.canUserDelete(USER_ID, report));
 	}
 
 	@Test
-	public void canUserDelete_Positive() {
-		User mockUser = mock(User.class);
-		when(mockUser.getId()).thenReturn(USER_ID);
-		when(report.getCreatedBy()).thenReturn(mockUser);
+	public void canUserDelete_TrueIfCreatedByUser() {
+		when(report.getCreatedBy()).thenReturn(user);
 
 		assertTrue(ReportModel.canUserDelete(USER_ID, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
-	public void testValidate_NullReport() throws ReportValidationException {
+	public void testValidate_ThrowsExceptionIfNullReport() throws ReportValidationException {
 		Report report = null;
 
 		ReportModel.validate(report);
 	}
 
 	@Test(expected = ReportValidationException.class)
-	public void testValidate_NullModelType() throws ReportValidationException {
+	public void testValidate_ThrowsExceptionIfNullModelType() throws ReportValidationException {
 		Report report = new Report();
 		report.setModelType(null);
 
@@ -134,7 +150,7 @@ public class ReportModelTest {
 	}
 
 	@Test(expected = ReportValidationException.class)
-	public void testValidate_InvalidReportParameters() throws ReportValidationException {
+	public void testValidate_ThrowsExceptionIfInvalidReportParameters() throws ReportValidationException {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
@@ -223,11 +239,25 @@ public class ReportModelTest {
 		// TODO another important edge case
 	}
 
-	@Ignore
 	@Test
 	public void testConnectReportToUser() {
-		reportModel.connectReportToUser(report, user);
+		ReportUser userReport = reportModel.connectReportToUser(report, USER_ID);
 
-		verify(reportUserDao).save(any(ReportUser.class));
+		verify(reportUserDao).save(userReport);
+		assertEquals(REPORT_ID, userReport.getReport().getId());
+		assertEquals(USER_ID, userReport.getUser().getId());
+		assertFalse(userReport.isEditable());
+		assertFalse(userReport.isFavorite());
+	}
+
+	@Test
+	public void testConnectReportToUserEditable() {
+		ReportUser userReport = reportModel.connectReportToUserEditable(report, USER_ID);
+
+		verify(reportUserDao).save(userReport);
+		assertEquals(REPORT_ID, userReport.getReport().getId());
+		assertEquals(USER_ID, userReport.getUser().getId());
+		assertTrue(userReport.isEditable());
+		assertFalse(userReport.isFavorite());
 	}
 }
