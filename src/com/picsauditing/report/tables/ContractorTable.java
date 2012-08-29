@@ -15,10 +15,10 @@ public class ContractorTable extends AbstractTable {
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
 
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.ContractorSpecificDetails).setWidth(80);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.AccountInformation).setWidth(80);
 
 		Field contractorName;
-		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName).setCategory(FieldCategory.ContractorSpecificDetails);
+		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName).setCategory(FieldCategory.AccountInformation);
 		contractorName.setUrl("ContractorView.action?id={" + prefix + "ID}");
 		contractorName.setWidth(300);
 

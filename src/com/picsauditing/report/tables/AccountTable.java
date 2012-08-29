@@ -17,8 +17,8 @@ public class AccountTable extends AbstractTable {
 	}
 	
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.AccountDetails);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date).setCategory(FieldCategory.AccountDetails);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.AccountInformation);
+		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date).setCategory(FieldCategory.AccountInformation);
 		
 		addFields(com.picsauditing.jpa.entities.Account.class);
 	}
