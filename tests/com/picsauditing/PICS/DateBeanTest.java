@@ -572,12 +572,11 @@ public class DateBeanTest {
 		assertEquals(31, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
-	@Ignore
 	@Test
-	public void testDateIsWithinNumberOfBusinessDays() {
-		assertEquals(true, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate(), 10));
-		assertEquals(true, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(5), 10));
-		assertEquals(false, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(10), 10));
-		assertEquals(false, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(15), 10));
+	public void testBusinessDaysBetween() {
+		assertEquals(0, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 25), new LocalDate(2012, 8, 24)));
+		assertEquals(1, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 23), new LocalDate(2012, 8, 24)));
+		assertEquals(4, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 20), new LocalDate(2012, 8, 24)));
+		assertEquals(5, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 14), new LocalDate(2012, 8, 21)));
 	}
 }
