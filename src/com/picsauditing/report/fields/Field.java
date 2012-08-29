@@ -1,13 +1,11 @@
 package com.picsauditing.report.fields;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
@@ -15,7 +13,6 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserAccess;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
@@ -42,6 +39,9 @@ public class Field implements JSONAware {
 	private String databaseColumnName;
 	private AutocompleteType autocompleteType = AutocompleteType.None;
 	private boolean hidden = false;
+	private boolean visible = false;
+	private boolean filterable = false;
+	private boolean sortable = false;
 	
 	private String preTranslation;
 	private String postTranslation;
@@ -91,6 +91,12 @@ public class Field implements JSONAware {
 			json.put("width", width);
 		if (hidden)
 			json.put("hidden", hidden);
+		if (visible)
+			json.put("visible", visible);
+		if (filterable)
+			json.put("filterable", filterable);
+		if (sortable)
+			json.put("sortable", sortable);
 
 		if (!Strings.isEmpty(url))
 			json.put("url", url);
@@ -328,6 +334,30 @@ public class Field implements JSONAware {
 		return postTranslation;
 	}
 	
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isFilterable() {
+		return filterable;
+	}
+
+	public void setFilterable(boolean filterable) {
+		this.filterable = filterable;
+	}
+
+	public boolean isSortable() {
+		return sortable;
+	}
+
+	public void setSortable(boolean sortable) {
+		this.sortable = sortable;
+	}
+
 	public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, filterType);
 		copiedField.category = category;
