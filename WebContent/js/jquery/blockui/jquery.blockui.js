@@ -81,7 +81,7 @@ $.blockUI.defaults = {
 	// these and use an external stylesheet then do this in your code:
 	// $.blockUI.defaults.css = {};
 	css: {
-		padding:	0,
+		padding:	5,
 		margin:		0,
 		width:		'30%',
 		top:		'40%',

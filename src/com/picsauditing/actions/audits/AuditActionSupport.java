@@ -231,6 +231,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 		}
+		
 		if (!actionStatus.isEmpty()) {
 			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en.hasNext();) {
 				if (!(en.next().getValue().size() > 1))

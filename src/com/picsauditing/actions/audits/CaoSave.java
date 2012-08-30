@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditSubStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -62,6 +64,7 @@ public class CaoSave extends AuditActionSupport {
 	private boolean viewCaoTable = false;
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
+	private AuditSubStatus auditSubStatus;
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
 	private boolean addUserNote=false;
 
@@ -224,20 +227,30 @@ public class CaoSave extends AuditActionSupport {
 	 * @throws RecordNotFoundException
 	 * @throws NoRightsException
 	 */
-	@SuppressWarnings("unchecked")
 	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException, ParseException {
-	    JSONArray reasonCodes = new JSONArray();
-        for (int index = 0; index < jsonArray.size(); index++) {
-            JSONObject jsonObject = (JSONObject) jsonArray.get(index);
-            reasonCodes.add(jsonObject.get("id"));
-        }
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("noteCodes", reasonCodes);
-        jsonObject.put("additionalComment", note);
-        note = jsonObject.toJSONString();
+		List<String> rejectionReasons = new ArrayList<String>();
+		StringBuilder concatenatedNote = new StringBuilder();
+		for (int index = 0; index < jsonArray.size(); index++) {
+			JSONObject jsonObject = (JSONObject) jsonArray.get(index);
+			rejectionReasons.add((String)jsonObject.get("id"));
+			concatenatedNote.append((String) jsonObject.get("value")).append("\n"); 
+		}
+		
+		note = concatenatedNote.append(note).append("\n").toString(); 
+		
+		auditSubStatus = determineAuditSubStatus(rejectionReasons);		
         
         return save();
+	}
+	
+	private AuditSubStatus determineAuditSubStatus(List<String> rejectionCodes) {
+		for (AuditSubStatus status : AuditSubStatus.values()) {
+			if (rejectionCodes.contains(status.toString())) {
+				return status;
+			}
+		}
+		
+		return AuditSubStatus.Other;
 	}
 
 	public String save() throws RecordNotFoundException, EmailException, IOException, NoRightsException {
@@ -248,10 +261,13 @@ public class CaoSave extends AuditActionSupport {
 				return SUCCESS;
 			}
 		}
+		
 		for (Integer cID : caoIDs)
 			save(cID);
+		
 		if (conAudit != null)
 			getValidSteps();
+			
 		if (viewCaoTable)
 			return "caoTable";
 		else
@@ -293,6 +309,7 @@ public class CaoSave extends AuditActionSupport {
 		AuditStatus newStatus = step.getNewStatus();
 
 		cao.changeStatus(newStatus, permissions);
+		cao.setAuditSubStatus(auditSubStatus);
 	
 		auditSetExpiresDate(cao, newStatus);
 

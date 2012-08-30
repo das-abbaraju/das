@@ -9,6 +9,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditSubStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -123,6 +124,8 @@ public class AuditOverride extends ContractorDocuments {
 			caow.setNotes(getTextParameterized("AuditOverride.ManuallyChangingStatus", cao.getOperator().getName()));
 			caoDAO.save(caow);
 		}
+		
+		updateAuditSubStatusForRejectedPolicy(cao);
 
 		conAudit.getOperators().add(cao);
 		conAudit.setLastRecalculation(null);
@@ -146,6 +149,12 @@ public class AuditOverride extends ContractorDocuments {
 				NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 		return conAudit;
+	}
+
+	private void updateAuditSubStatusForRejectedPolicy(ContractorAuditOperator cao) {
+		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus() == AuditStatus.Incomplete) {
+			cao.setAuditSubStatus(AuditSubStatus.Other);
+		}
 	}
 
 	@Override

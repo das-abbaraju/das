@@ -1,7 +1,11 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +15,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.joda.time.LocalDate;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DateBeanTest {
@@ -568,10 +573,10 @@ public class DateBeanTest {
 	}
 
 	@Test
-	public void testDateIsWithinNumberOfBusinessDays() {
-		assertEquals(true, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate(), 10));
-		assertEquals(true, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(5), 10));
-		assertEquals(false, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(10), 10));
-		assertEquals(false, DateBean.dateIsWithinNumberOfBusinessDays(new LocalDate().plusDays(15), 10));
+	public void testBusinessDaysBetween() {
+		assertEquals(0, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 25), new LocalDate(2012, 8, 24)));
+		assertEquals(1, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 23), new LocalDate(2012, 8, 24)));
+		assertEquals(4, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 20), new LocalDate(2012, 8, 24)));
+		assertEquals(5, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 14), new LocalDate(2012, 8, 21)));
 	}
 }

@@ -126,7 +126,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-
+	
 	private void importData(File file) {
 		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
 		Workbook wb = null;

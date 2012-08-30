@@ -103,8 +103,14 @@ public class OperatorTag extends BaseTable {
 	}
 
 	@OneToMany(mappedBy = "tag")
-	@Where(clause = "expirationDate > NOW()")
 	public List<AuditTypeRule> getAuditTypeRules() {
+		return auditTypeRules;
+	}
+
+	@Transient
+	@OneToMany(mappedBy = "tag")
+	@Where(clause = "expirationDate > NOW()")
+	public List<AuditTypeRule> getNonExpiredAuditTypeRules() {
 		return auditTypeRules;
 	}
 

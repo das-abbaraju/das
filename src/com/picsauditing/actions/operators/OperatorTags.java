@@ -81,7 +81,7 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Delete)
 	public String remove() throws Exception {
 		OperatorTag t = operatorTagDAO.find(tagID);
-		if (!t.getAuditCategoryRules().isEmpty() || !t.getAuditTypeRules().isEmpty()
+		if (!t.getAuditCategoryRules().isEmpty() || !t.getNonExpiredAuditTypeRules().isEmpty()
 				|| !t.getOperatorFlagCriteria().isEmpty()) {
 			addActionError(getText("OperatorTags.TagInUseByConfig"));
 			return SUCCESS;

@@ -21,6 +21,8 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 
 	protected AuditTypeRule comparisonRule;
 
+	private boolean includeExpired = false;
+
 	@Autowired
 	protected AuditTypeRuleCache auditTypeRuleCache;
 
@@ -57,10 +59,17 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			rules = ruleDAO.findAuditTypeRulesByTags(tags);
 		} else if (comparisonRule != null) {
 			Set<String> whereClauses = new LinkedHashSet<String>();
-			whereClauses.add("(t.effectiveDate < NOW() AND t.expirationDate > NOW())");
+
+			whereClauses.add("(t.effectiveDate < NOW())");
+
+			if (!includeExpired) {
+				whereClauses.add("t.expirationDate > NOW()");
+			}
+
 			if (!comparisonRule.isInclude()) {
 				whereClauses.add("t.include = 0");
 			}
+
 			if (comparisonRule.getAuditType() != null) {
 				whereClauses.add("(t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId()
 						+ " OR t.dependentAuditType.id = " + comparisonRule.getAuditType().getId() + ")");
@@ -110,5 +119,13 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 
 	public void setComparisonRule(AuditTypeRule comparisonRule) {
 		this.comparisonRule = comparisonRule;
+	}
+
+	public boolean getIncludeExpired() {
+		return includeExpired;
+	}
+
+	public void setIncludeExpired(boolean includeExpired) {
+		this.includeExpired = includeExpired;
 	}
 }

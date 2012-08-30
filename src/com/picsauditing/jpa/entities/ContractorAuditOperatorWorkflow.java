@@ -112,14 +112,14 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	// TODO: change this so that it will be set to the correct locale
 	private String buildNotes(JSONObject jsonObject) {
 		StringBuilder concatenatedNotes = new StringBuilder();
-		JSONArray reasonCodes = (JSONArray) jsonObject.get("noteCodes");
+//		JSONArray reasonCodes = (JSONArray) jsonObject.get("noteCodes");
 		
-		for (int index = 0; index < reasonCodes.size(); index++) {
-			String reasonCode = (String) reasonCodes.get(index);
-			if (!Strings.isNullOrEmpty(reasonCode)) {
-				concatenatedNotes.append(I18nCache.getInstance().getText("Insurance.Rejection.Reason.Code." + reasonCode, Locale.US) + "\n");
-			}
-		}
+//		for (int index = 0; index < reasonCodes.size(); index++) {
+//			String reasonCode = (String) reasonCodes.get(index);
+//			if (!Strings.isNullOrEmpty(reasonCode)) {
+//				concatenatedNotes.append(I18nCache.getInstance().getText("Insurance.Rejection.Reason.Code." + reasonCode, Locale.US) + "\n");
+//			}
+//		}
 		
 		concatenatedNotes.append(Strings.nullToEmpty((String) jsonObject.get("additionalComment")));
 		

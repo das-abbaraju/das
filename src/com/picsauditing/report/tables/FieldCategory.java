@@ -1,22 +1,22 @@
 package com.picsauditing.report.tables;
 
 public enum FieldCategory {
-	AccountDetails, 
-	AccountInformation, 
-	AuditScheduling, 
-	Auditors, 
-	Audits, 
-	Billing, 
+	AccountInformation,
+	ContactInformation,
+	Classification,
+	CompanyStatistics,
+	CompanyStatus,
+	CustomerServiceRepresentatives,
+	ReportingClientSite,
+	RequestingClientSite,
+	Audits,
+	AuditScheduling,
+	Auditors,
+	PQF,
 	ClientSiteMonitoringAnAudit,
-	ClientSitePreferences,
-	Commission, 
-	CompanyStatus, 
-	ContractorClassification, 
-	ContractorSpecificDetails, 
-	ContractorStatistics, 
-	CustomerServiceRepresentatives, 
-	General,
+	Billing,
+	Commission,
 	Invoicing,
-	PQF, 
-	RequestingClientSite;
+	ClientSitePreferences,
+	General;
 }

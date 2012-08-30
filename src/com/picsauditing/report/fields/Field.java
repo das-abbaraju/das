@@ -38,8 +38,11 @@ public class Field implements JSONAware {
 	private Class<?> fieldClass;
 	private String databaseColumnName;
 	private AutocompleteType autocompleteType = AutocompleteType.None;
+	// TODO Drop hidden
 	private boolean hidden = false;
-
+	private boolean visible = false;
+	private boolean filterable = false;
+	private boolean sortable = false;
 	private String preTranslation;
 	private String postTranslation;
 	private OpPerms requiredPermission;
@@ -88,6 +91,12 @@ public class Field implements JSONAware {
 			json.put("width", width);
 		if (hidden)
 			json.put("hidden", hidden);
+		if (visible)
+			json.put("visible", visible);
+		if (filterable)
+			json.put("filterable", filterable);
+		if (sortable)
+			json.put("sortable", sortable);
 
 		if (!Strings.isEmpty(url))
 			json.put("url", url);
@@ -324,6 +333,30 @@ public class Field implements JSONAware {
 	public String getPostTranslation() {
 		return postTranslation;
 	}
+	
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isFilterable() {
+		return filterable;
+	}
+
+	public void setFilterable(boolean filterable) {
+		this.filterable = filterable;
+	}
+
+	public boolean isSortable() {
+		return sortable;
+	}
+
+	public void setSortable(boolean sortable) {
+		this.sortable = sortable;
+	}
 
 	public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, filterType);
@@ -337,6 +370,9 @@ public class Field implements JSONAware {
 		copiedField.fieldClass = fieldClass;
 		copiedField.autocompleteType = autocompleteType;
 		copiedField.hidden = hidden;
+		copiedField.visible = visible;
+		copiedField.filterable = filterable;
+		copiedField.sortable = sortable;
 		copiedField.preTranslation = preTranslation;
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;

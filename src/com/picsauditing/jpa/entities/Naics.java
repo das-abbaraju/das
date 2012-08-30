@@ -16,7 +16,7 @@ public class Naics implements java.io.Serializable {
 
 	@Id
 	@Column(nullable = false, length = 6)
-	@ReportField(category = FieldCategory.ContractorSpecificDetails)
+	@ReportField(category = FieldCategory.Classification)
 	public String getCode() {
 		return code;
 	}
@@ -25,7 +25,7 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
-	@ReportField(category = FieldCategory.ContractorStatistics)
+	@ReportField(category = FieldCategory.CompanyStatistics)
 	public float getTrir() {
 		return trir;
 	}
@@ -34,7 +34,7 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
-	@ReportField(category = FieldCategory.ContractorStatistics)
+	@ReportField(category = FieldCategory.CompanyStatistics)
 	public float getLwcr() {
 		return lwcr;
 	}

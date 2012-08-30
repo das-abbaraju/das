@@ -108,6 +108,16 @@
 		text-decoration: none;
 		top: -5px;
 	}
+
+    .selected
+	{
+	   color: #A84D10;
+	}
+
+	input[type="text"
+	{
+	   padding: 1px 3px;
+	}
 }
 
 #settings_no_permission
@@ -151,6 +161,11 @@
 		margin-right: 3px;
 		position: relative;
 		top: 2px;
+	}
+
+    .selected
+	{
+	   color: #A84D10;
 	}
 }
 
