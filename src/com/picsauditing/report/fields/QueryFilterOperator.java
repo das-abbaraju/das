@@ -28,4 +28,13 @@ public enum QueryFilterOperator {
 	public String getOperand() {
 		return operand;
 	}
+	
+	public boolean isSingleValue() {
+		if (this == In)
+			return false;
+		if (this == NotIn)
+			return false;
+		
+		return true;
+	}
 }

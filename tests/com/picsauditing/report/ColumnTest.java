@@ -45,8 +45,25 @@ public class ColumnTest {
 	}
 
 	@Test
+	public void testOldSchoolColumnName() throws Exception {
+		column.setFieldName("FacilityCountCount");
+		column.setMethod(QueryMethod.Count);
+		assertEquals("FacilityCount__Count", column.getFieldName());
+		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
+		assertEquals(QueryMethod.Count, column.getMethod());
+	}
+
+	@Test
 	public void testGetFieldName() {
 		column.setFieldName("AccountName");
 		assertEquals("AccountName", column.getFieldName());
+	}
+	
+	@Test
+	public void testGetFieldNameWithoutMethod() {
+		column.setFieldName("FacilityCount__Count");
+		assertEquals("FacilityCount__Count", column.getFieldName());
+		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
+		assertEquals(QueryMethod.Count, column.getMethod());
 	}
 }

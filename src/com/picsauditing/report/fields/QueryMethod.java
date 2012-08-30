@@ -57,4 +57,8 @@ public enum QueryMethod {
 		}
 		return false;
 	}
+
+	public boolean isTypeAuto() {
+		return this.type == ExtFieldType.Auto;
+	}
 }

@@ -12,7 +12,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.search.SelectSQL;
@@ -93,14 +92,13 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testFiltersWithComplexColumn() throws Exception {
-		Column column = addColumn("accountCreationDateYear");
-		column.setMethod(QueryMethod.Year);
+		Column column = addColumn("accountCreationDate__Year");
 
 		addFilter(column.getFieldName(), QueryFilterOperator.GreaterThan, "2010");
 
 		initializeSql();
 		
-		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
+		assertContains("(YEAR(a.creationDate) > 2010)", sql.toString());
 		assertAllFiltersHaveFields();
 	}
 
@@ -124,28 +122,26 @@ public class SqlBuilderTest {
 	@Test
 	public void testGroupBy() throws Exception {
 		addColumn("accountStatus");
-		Column column = addColumn("accountStatusCount");
-		column.setMethod(QueryMethod.Count);
+		addColumn("accountStatus__Count");
 
 		initializeSql();
 
 		assertContains("a.status AS `accountStatus`", sql.toString());
-		assertContains("COUNT(a.status) AS `accountStatusCount`", sql.toString());
+		assertContains("COUNT(a.status) AS `accountStatus__Count`", sql.toString());
 		assertContains("GROUP BY a.status", sql.toString());
 	}
 
 	@Test
 	public void testHaving() throws Exception {
 		addColumn("accountStatus");
-		Column column = addColumn("accountNameCount");
-		column.setMethod(QueryMethod.Count);
+		addColumn("accountName__Count");
 
-		addFilter("accountNameCount", QueryFilterOperator.GreaterThan, "5");
+		addFilter("accountName__Count", QueryFilterOperator.GreaterThan, "5");
 		addFilter("accountName", QueryFilterOperator.BeginsWith, "A");
 
 		initializeSql();
 
-		assertContains("HAVING (COUNT(a.name) > '5')", sql.toString());
+		assertContains("HAVING (COUNT(a.name) > 5)", sql.toString());
 		assertContains("WHERE ((a.nameIndex LIKE 'A%'))", sql.toString());
 		assertContains("GROUP BY a.status", sql.toString());
 	}
@@ -175,7 +171,7 @@ public class SqlBuilderTest {
 		Filter filter = new Filter();
 		filter.setFieldName(fieldName);
 		filter.setOperator(operator);
-		filter.setValue(value);
+		filter.values.add(value);
 		definition.getFilters().add(filter);
 		return filter;
 	}

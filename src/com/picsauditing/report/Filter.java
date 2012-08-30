@@ -1,29 +1,48 @@
 package com.picsauditing.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 public class Filter extends ReportElement implements JSONable {
 
+	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
+
 	private QueryFilterOperator operator;
-	private String value;
+	List<String> values = new ArrayList<String>();
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
 
-		if (operator != null)
+		if (operator != null) {
 			json.put("operator", operator.toString());
-		if (value != null)
-			json.put("value", value);
+		}
+		if (values.size() == 1) {
+			// Until the front end changes the JavaScript, we need this for
+			// backwards compatibility
+			json.put("value", values.get(0));
+		}
+		JSONArray valueArray = new JSONArray();
+		valueArray.addAll(values);
+		json.put("values", valueArray);
 
 		return json;
 	}
@@ -36,7 +55,21 @@ public class Filter extends ReportElement implements JSONable {
 
 		parseOperator(json);
 
-		this.value = (String) json.get("value");
+		JSONArray valuesJsonArray = (JSONArray) json.get("values");
+		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
+			for (Object value : valuesJsonArray) {
+				this.values.add(value.toString());
+			}
+		} else {
+			String value = (String) json.get("value");
+			if (value != null) {
+				logger.warn("Still using filter.value instead of filter.values");
+				// Until the front end changes the JavaScript and all the
+				// reports
+				// are converted, we need this for backwards compatibility
+				this.values.add(value);
+			}
+		}
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -93,19 +126,97 @@ public class Filter extends ReportElement implements JSONable {
 		this.operator = operator;
 	}
 
-	public String getValue() {
-		return value;
+	public List<String> getValues() {
+		return values;
+	}
+	
+	public String getSql() {
+		if (fieldName.equals("accountName")) {
+			field.setDatabaseColumnName("a.nameIndex");
+		}
+
+		return super.getSql();
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public String getSqlForFilter() throws ReportValidationException {
+		if (!isValid())
+			return "true";
+
+		String columnSql = getSql();
+
+		boolean isEmpty = operator.equals(QueryFilterOperator.Empty);
+		boolean isNotEmpty = operator.equals(QueryFilterOperator.NotEmpty);
+		
+		if (isEmpty) {
+			return columnSql + " IS NULL OR " + columnSql + " = ''";
+		} else if (isNotEmpty) {
+			return columnSql + " IS NOT NULL OR " + columnSql + " != ''";
+		}
+
+		String operand = operator.getOperand();
+		String valueSql = toValueSql();
+
+		return columnSql + " " + operand + " " + valueSql;
+	}
+
+	private String toValueSql() throws ReportValidationException {
+		if (operator == null)
+			throw new ReportValidationException("missing operator for field " + fieldName);
+		
+		if (operator.isSingleValue()) {
+			return buildFilterSingleValue();
+		} else {
+			return "(" + Strings.implodeForDB(values, ",") + ")";
+		}
+	}
+
+	private String buildFilterSingleValue() {
+		// TODO Just fix the field's type
+		ExtFieldType fieldType = getField().getType();
+		if (isHasMethodWithDifferentFieldType()) {
+			fieldType = getMethod().getType();
+		}
+		
+		String filterValue = Strings.escapeQuotes(getValues().get(0));
+		
+		if (fieldType.equals(ExtFieldType.Date)) {
+			QueryDateParameter parameter = new QueryDateParameter(filterValue);
+			return StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
+		}
+		
+		switch (getOperator()) {
+		case NotBeginsWith:
+		case BeginsWith:
+			return "'" + filterValue + "%'";
+		case NotEndsWith:
+		case EndsWith:
+			return "'%" + filterValue + "'";
+		case NotContains:
+		case Contains:
+			return "'%" + filterValue + "%'";
+		case NotEmpty:
+		case Empty:
+			return "";
+		}
+		
+		if (fieldType.equals(ExtFieldType.Boolean)) {
+			return filterValue;
+		} else if (getField().getFilterType() == FilterType.DaysAgo) {
+			return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
+		}
+		return filterValue;
 	}
 
 	public boolean isValid() {
+		if (operator == QueryFilterOperator.Empty)
+			return true;
+		if (operator == QueryFilterOperator.NotEmpty)
+			return true;
+		if (values.isEmpty())
+			return false;
+
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
-		if (Strings.isEmpty(value) && operator != QueryFilterOperator.Empty && operator != QueryFilterOperator.NotEmpty)
-			return false;
 
 		return true;
 	}
@@ -119,8 +230,8 @@ public class Filter extends ReportElement implements JSONable {
 
 		return false;
 	}
-	
+
 	public String toString() {
-		return super.toString() + " " + operator + " " + value;
+		return super.toString() + " " + operator + " " + values;
 	}
 }

@@ -98,7 +98,7 @@ public class DefinitionTest {
 		Filter filter = new Filter();
 		filter.setFieldName("AccountID");
 		filter.setOperator(QueryFilterOperator.Equals);
-		filter.setValue("123");
+		filter.values.add("123");
 		list.add(filter.toJSON(true));
 		String notTestingNow = filter.toJSON(true).toJSONString();
 

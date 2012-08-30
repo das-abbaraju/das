@@ -11,6 +11,7 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.util.Strings;
 
 public abstract class AbstractTable {
 
@@ -203,4 +204,19 @@ public abstract class AbstractTable {
 
 		return false;
 	}
+	
+	public String getJoinSql() {
+		String joinExpression = "";
+
+		if (!isInnerJoin())
+			joinExpression += "LEFT ";
+
+		joinExpression += "JOIN " + getTableName();
+		if (!Strings.isEmpty(getAlias()))
+			joinExpression += " AS " + getAlias();
+
+		joinExpression += " ON " + getOnClause();
+		return joinExpression;
+	}
+
 }

@@ -6,6 +6,9 @@ import static org.junit.Assert.*;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
+import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 
 import com.picsauditing.report.Filter;
@@ -19,7 +22,7 @@ public class FilterTest {
 	public void testBlankOperator() {
 		jsonObj.put("name", "accountID");
 		jsonObj.put("operator", "");
-		
+
 		filter.fromJSON(jsonObj);
 
 		String expected = "\"name\":\"accountID\",\"operator\":\"Equals\"";
@@ -34,9 +37,22 @@ public class FilterTest {
 		filter.fromJSON(jsonObj);
 		assertEquals("AccountName", filter.getFieldName());
 		assertEquals(QueryFilterOperator.BeginsWith, filter.getOperator());
-		assertEquals("Trevor's", filter.getValue());
+		assertEquals("Trevor's", filter.getValues().get(0));
 
 		String expected = "\"name\":\"AccountName\",\"value\":\"Trevor's\",\"operator\":\"BeginsWith\"";
 		assertContains(expected, filter.toJSON(true).toJSONString());
+	}
+
+	@Test
+	public void testInvalidFilter() throws ReportValidationException {
+		assertEquals("true", filter.getSqlForFilter());
+	}
+
+	@Test
+	public void testFilter() throws ReportValidationException {
+		filter.setFieldName("FieldName");
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
+		filter.setOperator(QueryFilterOperator.Empty);
+		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
 	}
 }
