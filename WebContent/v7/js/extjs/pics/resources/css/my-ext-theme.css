@@ -4181,84 +4181,88 @@ browsers will do whacky things with it.
 #report_edit .selected,
 #report_copy .selected {
   color: #A84D10; }
+/* line 118, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_edit input[type="text"],
+#report_copy input[type="text"] {
+  padding: 1px 3px; }
 
-/* line 121, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 126, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 85%; }
-/* line 130, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 135, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission strong {
   font-weight: bold; }
-/* line 135, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 140, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
-/* line 142, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 147, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
-/* line 148, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 153, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission .favorite {
   color: #ccc;
   font-size: 18px;
   text-decoration: none; }
-/* line 155, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 160, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission .icon-star {
   margin-right: 3px;
   position: relative;
   top: 2px; }
-/* line 162, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 167, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #settings_no_permission .selected {
   color: #A84D10; }
 
 /***
  * Tabs
  */
-/* line 172, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 177, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar {
   background: #454545; }
 
-/* line 177, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 182, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab {
   border: 0px;
   border-right: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 5px; }
 
-/* line 185, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 190, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab button {
   background: #454545;
   border: 0px;
   cursor: pointer;
   padding: 0px; }
 
-/* line 193, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 198, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab span {
   color: #cccccc; }
 
-/* line 198, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 203, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-over span {
   color: #ffffff; }
 
-/* line 203, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 208, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active {
   background: #eaeaea;
   border-top: 0px; }
 
-/* line 209, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 214, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active button {
   background: #eaeaea;
   cursor: auto; }
 
-/* line 215, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 220, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active span {
   color: #666666; }
 
-/* line 220, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 225, C:/Users/JBrownell/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
