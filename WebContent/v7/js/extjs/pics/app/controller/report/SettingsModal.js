@@ -43,7 +43,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsettingsedit': {
                 beforerender: this.onReportModalEditBeforeRender,
-                render: this.onReportModalEditRender
+                favorite: this.onReportFavorite,
+                unfavorite: this.onReportUnFavorite
             },
 
             'reportsettingsmodal reportsettingsedit button[action=edit]':  {
@@ -62,6 +63,26 @@ Ext.define('PICS.controller.report.SettingsModal', {
         this.application.on({
             showsettingsmodal: this.showSettingsModal,
             scope: this
+        });
+    },
+
+   onReportFavorite: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id');
+
+        Ext.Ajax.request({
+            url: 'ManageReports!favorite.action?reportId=' + report_id
+        });
+    },
+
+    onReportUnFavorite: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id');
+
+        Ext.Ajax.request({
+            url: 'ManageReports!unfavorite.action?reportId=' + report_id
         });
     },
 
@@ -90,7 +111,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var store = this.getReportReportsStore(),
             report = store.first(),
             report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue();
+            report_description = this.getReportDescriptionEdit().getValue(),
+            edit_settings = cmp.up('#report_edit'),
+            is_favorite = edit_settings.checkFavoriteStatus();
+            config = PICS.app.configuration;
+
+        if (is_favorite) {
+            edit_settings.fireEvent('favorite');
+            config.setIsFavorite(true);
+        } else {
+            edit_settings.fireEvent('unfavorite');
+            config.setIsFavorite(false);
+        }
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -122,23 +154,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
     },
 
-    onReportModalEditRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            report_id = report.get('id'),
-            element = cmp.getEl(),
-            favorite = element.down('.favorite');
-
-        favorite.on('click', function (cmp, e, eOpts) {
-            Ext.Ajax.request({
-                url: 'ReportDynamic!favorite.action?report=' + report_id,
-                success: function (result) {
-                    // do something
-                }
-            });
-        });
-    },
-
     onReportModalTabClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal(),
             title = cmp.card.modal_title;
@@ -163,13 +178,5 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
 
         modal.show();
-    },
-
-    updateReportSettingsEditForm: function () {
-        var store = this.getReportReportsStore(),
-            report_name_field = this.getReportNameEdit(),
-            report_description_field = this.getReportDescriptionEdit();
-
-
     }
 });

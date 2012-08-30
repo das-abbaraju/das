@@ -91,7 +91,14 @@ Ext.application({
                    return {
                        isEditable: function () {
                            return result.editable;
+                       },
+                       isFavorite: function () {
+                           return result.favorite
+                       },
+                       setIsFavorite: function (bool) {
+                           result.favorite = bool;
                        }
+
                    };
                }());
 

@@ -108,6 +108,11 @@
 		text-decoration: none;
 		top: -5px;
 	}
+
+    .selected
+	{
+	   color: #A84D10;
+	}
 }
 
 #settings_no_permission
@@ -151,6 +156,11 @@
 		margin-right: 3px;
 		position: relative;
 		top: 2px;
+	}
+
+    .selected
+	{
+	   color: #A84D10;
 	}
 }
 

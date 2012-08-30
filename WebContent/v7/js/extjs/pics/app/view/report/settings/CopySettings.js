@@ -39,7 +39,7 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         fieldLabel: 'Description',
         labelAlign: 'right',
         name: 'report_description'
-    }, {
+    }/*, {
         xtype: 'displayfield',
         fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
         labelAlign: 'right',
@@ -51,7 +51,7 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         labelAlign: 'right',
         labelSeparator: '',
         value: 'Report <strong>is not</strong> Private'
-    }],
+    }*/],
     layout: 'form',
     // custom config
     modal_title: 'Duplicate Report',
