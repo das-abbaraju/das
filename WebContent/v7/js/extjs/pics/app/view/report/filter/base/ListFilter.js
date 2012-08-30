@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            throw '';
+            Ext.Error.raise('Invalid filter record');
         }
 
         // TODO: shouldn't the server do this?

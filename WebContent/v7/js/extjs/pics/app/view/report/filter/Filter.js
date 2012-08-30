@@ -75,8 +75,13 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     createFilterTitle: function (record) {
         var field = record.getAvailableField();
+
+        if (!field) {
+            Ext.Error.raise('Invalid available field');
+        }
+
         var text = field && field.get('text');
-        
+
         if (!text) {
             Ext.Error.raise('Invalid filter text');
         }
@@ -114,8 +119,13 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     createFilterInput: function (record) {
         var field = record.getAvailableField();
+
+        if (!field) {
+            Ext.Error.raise('Invalid available field');
+        }
+
         var type = field && field.get('filterType');
-        
+
         if (!type) {
             Ext.Error.raise('Invalid filter type');
         }

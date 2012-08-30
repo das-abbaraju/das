@@ -82,7 +82,7 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
         } else if (type === 'filter') {
             this.addFilterToReport();
         } else {
-            throw 'Invalid type:' + modal.type + ' - must be (filter|column)';
+            Ext.Error.raise('Invalid type:' + modal.type + ' - must be (filter|column)');
         }
 
         list.getSelectionModel().clearSelections();

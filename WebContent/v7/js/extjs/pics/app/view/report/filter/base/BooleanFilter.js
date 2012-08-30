@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            throw '';
+            Ext.Error.raise('Invalid filter record');
         }
 
         var checkbox = this.createCheckbox(this.record);

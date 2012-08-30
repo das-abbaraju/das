@@ -66,7 +66,7 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
 
     initComponent: function () {
         if (!this.column || this.column.modelName != 'PICS.model.report.Column') {
-            throw 'Invalid column record';
+            Ext.Error.raise('Invalid column record');
         }
 
         this.callParent(arguments);

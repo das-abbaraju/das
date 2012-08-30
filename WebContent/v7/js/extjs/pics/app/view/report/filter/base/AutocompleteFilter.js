@@ -12,7 +12,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
         this.callParent(arguments);
 
         if (!this.record) {
-            throw '';
+            Ext.Error.raise('Invalid filter record');
         }
 
         // TODO: why the hell is this here

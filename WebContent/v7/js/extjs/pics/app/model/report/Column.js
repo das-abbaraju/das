@@ -23,6 +23,10 @@ Ext.define('PICS.model.report.Column', {
     toModelField: function () {
         var field = this.getAvailableField();
 
+        if (!field) {
+            Ext.Error.raise('Invalid available field');
+        }
+
         var model_field = {
             name: field.get('name'),
             type: field.get('type')
@@ -37,6 +41,10 @@ Ext.define('PICS.model.report.Column', {
 
     toGridColumn: function () {
         var field = this.getAvailableField();
+
+        if (!field) {
+            Ext.Error.raise('Invalid available field');
+        }
 
         var grid_column = {
             dataIndex: field.get('name'),

@@ -17,11 +17,11 @@ Ext.define('PICS.controller.report.ReportData', {
             'reportdata': {
                 reconfigure: this.onReportReconfigure
             },
-            
+
             'reportdata headercontainer': {
             	columnmove: this.onColumnMove
             },
-            
+
             'reportdata gridcolumn': {
                 render: this.onColumnRender
             },
@@ -96,34 +96,34 @@ Ext.define('PICS.controller.report.ReportData', {
         selected_grid_column_index = this.findGridColumnIndexPosition(selected_grid_column);
 
         if (selected_grid_column_index == -1) {
-            throw 'Grid column not found';
+            Ext.Error.raise('Invalid Grid column');
         }
 
         selected_column = column_store.getAt(selected_grid_column_index);
 
         this.application.fireEvent('showcolumnfunctionmodal', selected_column);
     },
-    
+
     onColumnMove: function (cmp, column, fromIdx, toIdx, eOpts) {
 		var report_store = this.getReportReportsStore(),
 			report = report_store.first(),
 			column_store = report.columns(),
 			columns = [];
-		
+
 		// generate an array of columns from column store
 		column_store.each(function (column, index) {
 			columns[index] = column;
 		});
-		
+
 		// splice out the column store - column your moving
 		var spliced_column = columns.splice((fromIdx - 1), 1);
-		
-		// insert the column store - column to the position you moved it to 
+
+		// insert the column store - column to the position you moved it to
 		columns.splice((toIdx - 1), 0, spliced_column);
-		
+
 		// remove all column store records
 		column_store.removeAll();
-		
+
 		// re-insert column store records in the new position
 		Ext.each(columns, function (column, index) {
 			column_store.add(column);
@@ -141,26 +141,26 @@ Ext.define('PICS.controller.report.ReportData', {
         selected_grid_column_index = this.findGridColumnIndexPosition(selected_grid_column);
 
         if (selected_grid_column_index == -1) {
-            throw 'Grid column not found';
+            Ext.Error.raise('Invalid Grid column');
         }
 
         column_store.removeAt(selected_grid_column_index);
 
         this.application.fireEvent('refreshreport');
     },
-    
+
     onColumnRender: function (cmp, eOpts) {
         var store = this.getReportAvailableFieldsStore();
-        
+
         function createTooltip(store) {
             var field = store.findRecord('name', cmp.dataIndex);
-            
+
             if (!field) {
                 return false;
             }
-            
+
             var help = field.get('help');
-        
+
             Ext.create('Ext.tip.ToolTip', {
                 anchor: 'bottom',
                 showDelay: 0,
@@ -172,10 +172,10 @@ Ext.define('PICS.controller.report.ReportData', {
                     '</div>'
                 ].join('')
             });
-            
+
             Ext.QuickTips.init();
         }
-        
+
         if (!store.isLoaded()) {
             store.on('load', function (store, records, successful, eOpts) {
                 createTooltip(store);

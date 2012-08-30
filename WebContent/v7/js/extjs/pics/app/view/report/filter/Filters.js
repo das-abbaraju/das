@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.Filters', {
 
         // filter store
         if (!this.store) {
-            throw 'Missing Filter Store';
+            Ext.Error.raise('Invalid Filter Store');
         }
 
         var that = this;

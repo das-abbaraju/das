@@ -5,7 +5,7 @@
  */
 Ext.define('PICS.store.report.ReportDatas', {
     extend : 'PICS.store.report.base.Store',
-    
+
     requires: [
         'Ext.window.MessageBox'
     ],
@@ -18,7 +18,7 @@ Ext.define('PICS.store.report.ReportDatas', {
         listeners: {
             exception: function (proxy, response, operation, eOpts) {
             	console.log(proxy, response, operation, eOpts);
-            	
+
                 if (operation.success == false) {
                 	Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
                 }
@@ -56,7 +56,7 @@ Ext.define('PICS.store.report.ReportDatas', {
      */
     configureProxyUrl: function (report) {
         if (!report || report.modelName != 'PICS.model.report.Report') {
-            throw 'Invalid report record';
+            Ext.Error.raise('Invalid report record');
         }
 
         this.proxy.url = 'ReportData.action?' + report.toQueryString();
@@ -64,7 +64,7 @@ Ext.define('PICS.store.report.ReportDatas', {
 
     configureReportDataModel: function (report) {
         if (!(report && report.$className == 'PICS.model.report.Report')) {
-            throw '';
+            Ext.Error.raise('Invalid report record');
         }
 
         function generateReportDataModelFieldsFromColumnStore() {
@@ -100,7 +100,7 @@ Ext.define('PICS.store.report.ReportDatas', {
 
     reconfigureReportData: function (report) {
         if (!report || report.modelName != 'PICS.model.report.Report') {
-            throw 'Invalid report record';
+            Ext.Error.raise('Invalid report record');
         }
 
         var report_data = Ext.ComponentQuery.query('reportdata')[0],

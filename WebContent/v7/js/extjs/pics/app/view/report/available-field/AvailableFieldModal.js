@@ -70,7 +70,7 @@ Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
     initComponent: function () {
         // type is used to determine context of modal - will add fields to filter or column store
         if (this.type != 'filter' && this.type != 'column') {
-            throw 'Invalid type:' + this.type + ' - must be (filter|column)';
+            Ext.Error.raise('Invalid type:' + this.type + ' - must be (filter|column)');
         }
 
         this.title = this.getTitle(this.type);

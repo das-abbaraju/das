@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.header.ReportSummary', {
 
     update: function (report) {
         if (!report || report.modelName != 'PICS.model.report.Report') {
-            throw 'Invalid report';
+            Ext.Error.raise('Invalid report record');
         }
 
         var data = report ? report.data : {};
