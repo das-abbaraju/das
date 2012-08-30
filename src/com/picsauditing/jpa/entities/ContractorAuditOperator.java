@@ -106,7 +106,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 		if (audit.getEffectiveDate() == null)
 			audit.setEffectiveDate(new Date());
-		
+				
 		return caow;
 	}
 
