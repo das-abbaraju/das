@@ -30,7 +30,8 @@ import com.picsauditing.util.excel.ExcelSheet;
  */
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDownload extends PicsActionSupport {
-
+	// TODO Consider extending ReportData
+	
 	@Autowired
 	private ReportDAO reportDao;
 

@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.ExtFieldType;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.util.Strings;
 
@@ -14,25 +15,6 @@ public class Column extends ReportElement implements JSONable {
 
 	public Column(String fieldName) {
 		super(fieldName);
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONObject toJSON(boolean full) {
-		JSONObject json = super.toJSON(full);
-
-		if (method != null) {
-			json.put("method", method.toString());
-
-			if (method.getType() != ExtFieldType.Auto) {
-				String alteredType = method.getType().toString();
-
-				JSONObject fieldJson = (JSONObject) json.get("field");
-				fieldJson.put("type", alteredType.toLowerCase());
-				fieldJson.put("filterType", alteredType);
-			}
-		}
-
-		return json;
 	}
 
 	public void fromJSON(JSONObject json) {

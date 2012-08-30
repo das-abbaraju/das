@@ -25,7 +25,7 @@ public class Filter extends ReportElement implements JSONable {
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
-	private QueryFilterOperator operator;
+	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	List<String> values = new ArrayList<String>();
 
 	@SuppressWarnings("unchecked")
@@ -129,7 +129,7 @@ public class Filter extends ReportElement implements JSONable {
 	public List<String> getValues() {
 		return values;
 	}
-	
+
 	public String getSql() {
 		if (fieldName.equals("accountName")) {
 			field.setDatabaseColumnName("a.nameIndex");
@@ -146,7 +146,7 @@ public class Filter extends ReportElement implements JSONable {
 
 		boolean isEmpty = operator.equals(QueryFilterOperator.Empty);
 		boolean isNotEmpty = operator.equals(QueryFilterOperator.NotEmpty);
-		
+
 		if (isEmpty) {
 			return columnSql + " IS NULL OR " + columnSql + " = ''";
 		} else if (isNotEmpty) {
@@ -162,7 +162,7 @@ public class Filter extends ReportElement implements JSONable {
 	private String toValueSql() throws ReportValidationException {
 		if (operator == null)
 			throw new ReportValidationException("missing operator for field " + fieldName);
-		
+
 		if (operator.isSingleValue()) {
 			return buildFilterSingleValue();
 		} else {
@@ -171,40 +171,84 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	private String buildFilterSingleValue() {
-		// TODO Just fix the field's type
-		ExtFieldType fieldType = getField().getType();
-		if (isHasMethodWithDifferentFieldType()) {
-			fieldType = getMethod().getType();
-		}
-		
-		String filterValue = Strings.escapeQuotes(getValues().get(0));
-		
+		ExtFieldType fieldType = getActualFieldTypeForFilter();
+
+		String filterValue = getValues().get(0);
+
 		if (fieldType.equals(ExtFieldType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 			return StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
 		}
-		
-		switch (getOperator()) {
-		case NotBeginsWith:
-		case BeginsWith:
-			return "'" + filterValue + "%'";
-		case NotEndsWith:
-		case EndsWith:
-			return "'%" + filterValue + "'";
-		case NotContains:
-		case Contains:
-			return "'%" + filterValue + "%'";
-		case NotEmpty:
-		case Empty:
-			return "";
-		}
-		
+
 		if (fieldType.equals(ExtFieldType.Boolean)) {
-			return filterValue;
-		} else if (getField().getFilterType() == FilterType.DaysAgo) {
-			return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
+			if (filterValue.equals("1"))
+				return true + "";
+			if (filterValue.equalsIgnoreCase("true"))
+				return true + "";
+			if (filterValue.equalsIgnoreCase("Y"))
+				return true + "";
+			if (filterValue.equalsIgnoreCase("Yes"))
+				return true + "";
+			return false + "";
 		}
-		return filterValue;
+
+		if (fieldType.equals(ExtFieldType.Float)) {
+			return Float.parseFloat(filterValue) + "";
+		}
+
+		if (fieldType.equals(ExtFieldType.Int)) {
+			filterValue = Integer.parseInt(filterValue) + "";
+
+			if (field.getFilterType() == FilterType.DaysAgo) {
+				return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
+			}
+			return filterValue;
+		}
+
+		if (fieldType.equals(ExtFieldType.String)) {
+			filterValue = Strings.escapeQuotes(filterValue);
+			
+			switch (operator) {
+			case NotBeginsWith:
+			case BeginsWith:
+				return "'" + filterValue + "%'";
+			case NotEndsWith:
+			case EndsWith:
+				return "'%" + filterValue + "'";
+			case NotContains:
+			case Contains:
+				return "'%" + filterValue + "%'";
+			case NotEmpty:
+			case Empty:
+				return "";
+			default:
+				return "'" + filterValue + "'";
+			}
+		}
+
+		throw new RuntimeException(fieldType + " has no filter caluculation defined yet");
+	}
+
+	private ExtFieldType getActualFieldTypeForFilter() {
+		ExtFieldType fieldType = field.getType();
+		if (hasMethodWithDifferentFieldType()) {
+			fieldType = method.getType();
+		}
+		
+		if (fieldType == ExtFieldType.Auto) {
+			fieldType = ExtFieldType.String;
+		}
+		field.setType(fieldType);
+		return fieldType;
+	}
+
+	private boolean hasMethodWithDifferentFieldType() {
+		if (method == null || method.getType() == null)
+			return false;
+		if (method.isTypeAuto())
+			return false;
+
+		return true;
 	}
 
 	public boolean isValid() {

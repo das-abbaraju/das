@@ -38,11 +38,9 @@ public class Field implements JSONAware {
 	private Class<?> fieldClass;
 	private String databaseColumnName;
 	private AutocompleteType autocompleteType = AutocompleteType.None;
-	// TODO Drop hidden
-	private boolean hidden = false;
-	private boolean visible = false;
-	private boolean filterable = false;
-	private boolean sortable = false;
+	private boolean visible = true;
+	private boolean filterable = true;
+	private boolean sortable = true;
 	private String preTranslation;
 	private String postTranslation;
 	private OpPerms requiredPermission;
@@ -59,6 +57,9 @@ public class Field implements JSONAware {
 		postTranslation = annotation.i18nKeySuffix();
 		category = annotation.category();
 		requiredPermission = annotation.requiredPermissions();
+		visible = annotation.visible();
+		filterable = annotation.filterable();
+		sortable = annotation.sortable();
 	}
 
 	public Field(String name, String databaseColumnName, FilterType filterType) {
@@ -75,7 +76,7 @@ public class Field implements JSONAware {
 		}
 
 		if (StringUtils.endsWithIgnoreCase(name, "id")) {
-			hidden = true;
+			visible = false;
 		}
 	}
 
@@ -89,8 +90,6 @@ public class Field implements JSONAware {
 
 		if (width > 0)
 			json.put("width", width);
-		if (hidden)
-			json.put("hidden", hidden);
 		if (visible)
 			json.put("visible", visible);
 		if (filterable)
@@ -254,10 +253,6 @@ public class Field implements JSONAware {
 		this.width = width;
 	}
 
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-
 	public String getHelp() {
 		return help;
 	}
@@ -369,7 +364,6 @@ public class Field implements JSONAware {
 		copiedField.help = help;
 		copiedField.fieldClass = fieldClass;
 		copiedField.autocompleteType = autocompleteType;
-		copiedField.hidden = hidden;
 		copiedField.visible = visible;
 		copiedField.filterable = filterable;
 		copiedField.sortable = sortable;

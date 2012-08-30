@@ -19,7 +19,7 @@ public class AccountContractorModel extends AccountModel {
 	private void hideAccountID() {
 		Field accountID = rootTable.getAvailableFields().get("accountID");
 		if (accountID != null) {
-			accountID.setHidden(true);
+			accountID.setVisible(false);
 		}
 	}
 

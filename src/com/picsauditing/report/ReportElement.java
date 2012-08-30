@@ -103,15 +103,6 @@ public class ReportElement implements JSONable {
 		return method.isAggregate();
 	}
 
-	public boolean isHasMethodWithDifferentFieldType() {
-		if (method == null || method.getType() == null)
-			return false;
-		if (method.isTypeAuto())
-			return false;
-		
-		return true;
-	}
-
 	public String getSql() {
 		String fieldSql = field.getDatabaseColumnName();
 		if (method == null)

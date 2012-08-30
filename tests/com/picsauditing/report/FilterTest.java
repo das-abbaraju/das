@@ -49,10 +49,19 @@ public class FilterTest {
 	}
 
 	@Test
-	public void testFilter() throws ReportValidationException {
+	public void testFilterEmpty() throws ReportValidationException {
 		filter.setFieldName("FieldName");
 		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
 		filter.setOperator(QueryFilterOperator.Empty);
 		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
+	}
+
+	@Test
+	public void testFilterWithValue() throws ReportValidationException {
+		filter.setFieldName("FieldName");
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
+		filter.getValues().add("Trevor's");
+		
+		assertEquals("fieldName = 'Trevor\\'s'", filter.getSqlForFilter());
 	}
 }

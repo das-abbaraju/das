@@ -40,7 +40,7 @@ public class ColumnTest {
 		column.fromJSON(jsonObj);
 		assertEquals(QueryMethod.UpperCase, column.getMethod());
 
-		String expected = "\"name\":\"AccountNameUpperCase\",\"method\":\"UpperCase\"";
+		String expected = "\"name\":\"AccountNameUpperCase\"";
 		assertContains(expected, column.toJSON(true).toJSONString());
 	}
 
@@ -65,5 +65,14 @@ public class ColumnTest {
 		assertEquals("FacilityCount__Count", column.getFieldName());
 		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
 		assertEquals(QueryMethod.Count, column.getMethod());
+	}
+	
+	@Test
+	public void testToJsonWithNonAutoMethod() {
+		column.setFieldName("FacilityCount__Count");
+		JSONObject json = column.toJSON(true);
+		Column column2 = new Column();
+		column2.fromJSON(json);
+		assertEquals(column.getFieldName(), column2.getFieldName());
 	}
 }

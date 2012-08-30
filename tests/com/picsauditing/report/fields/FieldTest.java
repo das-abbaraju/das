@@ -23,7 +23,6 @@ public class FieldTest {
 	private static final String name = "name";
 	private static final String text = "text";
 	private static final int width = 10;
-	private static final boolean hidden = true;
 	private static final String url = "url";
 
 	private static final String value = "value";
@@ -61,10 +60,7 @@ public class FieldTest {
 	@Test
 	public void testToJsonObject_HiddenIfCreatedWithNameEndsInId() {
 		field = new Field(name + "id", null, null);
-
-		JSONObject json = field.toJSONObject();
-
-		assertEquals(true, json.get("hidden"));
+		assertFalse(field.isVisible());
 	}
 
 	@Test
@@ -114,24 +110,12 @@ public class FieldTest {
 	}
 
 	@Test
-	public void testToJsonObject_BooleansNotWritten() {
-		field.setHidden(false);
-
+	public void testToJsonObject_Booleans() {
 		JSONObject json = field.toJSONObject();
 
-		assertNull(json.get("visible"));
-		assertNull(json.get("sortable"));
-		assertNull(json.get("filterable"));
-		assertNull(json.get("hidden"));
-	}
-
-	@Test
-	public void testToJsonObject_BooleansWritten() {
-		field.setHidden(hidden);
-
-		JSONObject json = field.toJSONObject();
-
-		assertEquals(hidden, json.get("hidden"));
+		assertTrue((Boolean) json.get("visible"));
+		assertTrue((Boolean) json.get("sortable"));
+		assertTrue((Boolean) json.get("filterable"));
 	}
 
 	@Test

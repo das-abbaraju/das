@@ -2,14 +2,14 @@ package com.picsauditing.report.fields;
 
 public enum QueryMethod {
 	// None,
-	Count(true, ExtFieldType.String),
-	CountDistinct(true, ExtFieldType.String),
+	Count(true, ExtFieldType.Int),
+	CountDistinct(true, ExtFieldType.Int),
 	GroupConcat(true, ExtFieldType.String), 
 	Max(true),
 	Min(true),
 	
 	Average(true), 
-	Round(false, ExtFieldType.String), // Parameter means decimal place
+	Round(false, ExtFieldType.Int), // Parameter means decimal place
 	Sum(true),
 	
 	Left, // Parameter means number of characters
@@ -17,11 +17,11 @@ public enum QueryMethod {
 	LowerCase,
 	UpperCase,
 	
-	Month(false, ExtFieldType.String), // January TODO translate the 1 into January
-	Year(false, ExtFieldType.String), // 2012
+	Month(false, ExtFieldType.Int), // January TODO translate the 1 into January
+	Year(false, ExtFieldType.Int), // 2012
 	YearMonth(false, ExtFieldType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
-	WeekDay(false, ExtFieldType.String), // Monday TODO translate the 1
-	Hour(false, ExtFieldType.String), // 23 
+	WeekDay(false, ExtFieldType.Int), // Monday TODO translate the 1
+	Hour(false, ExtFieldType.Int), // 23 
 	Date // 2012-01-31
 	;
 

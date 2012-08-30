@@ -49,6 +49,8 @@ public class ReportData extends PicsActionSupport {
 
 	private void getData() throws ReportValidationException, SQLException {
 		ReportModel.validate(report);
+		
+		// TODO If the query fails, then try to return the SQL in JSON
 
 		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
 		sql.setPageNumber(report.getRowsPerPage(), pageNumber);
