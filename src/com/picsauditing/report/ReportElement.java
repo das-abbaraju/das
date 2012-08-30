@@ -48,7 +48,7 @@ public class ReportElement implements JSONable {
 		if (json == null)
 			return;
 
-		fieldName = (String) json.get("name");
+		setFieldName((String) json.get("name"));
 
 		// this.field = (Field) json.get("field");
 		// We are going to ignore the field and set this each time from
