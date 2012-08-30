@@ -126,13 +126,9 @@
 							value="%{requestedContractor.country.isoCode}"
 						/>
 					</li>
-					<s:if test="requestedCountractor.country == null">
-						<li id="countrySubdivision_li"></li>
-					</s:if>
-					<s:else>
-						<li id="countrySubdivision_li">
+					<li id="countrySubdivision_li">
+						<s:if test="requestedContractor.country != null">
 							<s:select
-								headerKey=""
 								id="countrySubdivision_sel"
 								label="%{requestedContractor.country.isoCode == 'CA' ? 'ContractorAccount.province' : 'ContractorAccount.countrySubdivision'}"
 								list="getCountrySubdivisionList(requestedContractor.country.isoCode)"
@@ -141,9 +137,10 @@
 								name="requestedContractor.countrySubdivision"
 								required="true"
 								theme="formhelp"
+								value="%{requestedContractor.countrySubdivision.isoCode}"
 							/>
-						</li>
-					</s:else>
+						</s:if>
+					</li>
 					<li>
 						<s:textfield
 							name="requestedContractor.city"
@@ -193,7 +190,11 @@
 							value="%{requestedContractor.requestedBy.id}"
 						/>
 					</li>
-					<li id="user_list"></li>
+					<li id="user_list">
+						<s:if test="requestedContractor.requestedBy.id > 0">
+							<s:include value="../../users/operator_users.jsp" />
+						</s:if>
+					</li>
 					<li>
 						<a href="#email_preview" class="preview fancybox">
 							<s:text name="RequestNewContractor.PreviewEmail" />

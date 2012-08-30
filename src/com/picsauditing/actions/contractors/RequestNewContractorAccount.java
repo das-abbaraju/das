@@ -69,7 +69,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Override
 	public String execute() throws Exception {
 		checkPermission();
-
 		initializeRequest();
 		setRequestedBy();
 
@@ -83,7 +82,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestedContractor.setRequestedBy(requestedBy);
 		requestRelationship.setOperatorAccount(requestedBy);
 
-		setRequiredFields();
+		setRequiredFieldsAndSaveEntities();
 		ContractorRegistrationRequest legacyRequest = saveLegacyRequest(requestedBy);
 
 		if (newRequest) {
@@ -160,9 +159,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	public List<User> getOperatorUsers() {
-		int operatorID = requestRelationship.getOperatorAccount().getId();
-		List<User> usersAndSwitchTos = userDAO.findByAccountID(operatorID, "Yes", "No");
-		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(operatorID);
+		OperatorAccount operator = findOperator();
+		List<User> usersAndSwitchTos = userDAO.findByAccountID(operator.getId(), "Yes", "No");
+		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(operator.getId());
 
 		usersAndSwitchTos.addAll(switchTos);
 		return usersAndSwitchTos;
@@ -267,7 +266,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return new OperatorAccount();
 	}
 
-	private void setRequiredFields() {
+	private void setRequiredFieldsAndSaveEntities() {
 		// NAICS is required for accounts
 		requestedContractor.setNaics(new Naics());
 		requestedContractor.getNaics().setCode("0");

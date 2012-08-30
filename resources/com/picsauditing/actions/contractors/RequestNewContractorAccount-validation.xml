@@ -62,18 +62,9 @@
 	
 	<field name="requestedContractor.countrySubdivision">
 		<field-validator type="required">
-			<message>1 ${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
-		</field-validator>
-		<field-validator type="fieldexpression">
-			<param name="expression"><![CDATA[ requestedContractor.countrySubdivision != null ]]></param>
-			<message>2 ${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
+			<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
 		</field-validator>
 	</field>
-	
-	<validator type="expression">
-		<param name="expression"><![CDATA[ requestedContractor.countrySubdivision != null ]]></param>
-		<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
-	</validator>
 
 	<field name="requestedContractor.requestedBy">
 		<field-validator type="fieldexpression">
@@ -81,11 +72,13 @@
 			<message>${getText("RequestNewContractor.error.SelectRequestedByAccount")}</message>
 		</field-validator>
 	</field>
-
-	<validator type="expression">
-		<param name="expression"><![CDATA[ requestRelationship.requestedBy != null || requestRelationship.requestedByOther.length() > 0 ]]></param>
-		<message>${getText("RequestNewContractor.error.SelectRequestedUser")}</message>
-	</validator>
+	
+	<field name="requestRelationship.requestedBy">
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ requestRelationship.requestedBy != null || requestRelationship.requestedByOther != null ]]></param>
+			<message>${getText("RequestNewContractor.error.SelectRequestedByUser")}</message>
+		</field-validator>
+	</field>
 	
 	<field name="requestRelationship.deadline">
 		<field-validator type="required">

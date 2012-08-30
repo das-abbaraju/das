@@ -21,7 +21,7 @@
                         showAnim : 'fadeIn'
                     });
                     
-                    if ($('#countrySubdivision_li').html().trim()) {
+                    if (!$('#countrySubdivision_li').html().trim()) {
                         $('#country').trigger('change');
                     }
                 }
