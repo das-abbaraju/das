@@ -60,7 +60,8 @@
                     return modal;
                 }
                 
-                var expedite = $(this).closest('.cal_day').hasClass('rush-date');
+                var element = $(this);
+                var expedite = element.closest('.cal_day').hasClass('rush-date');
                 if (expedite) {
                     event.preventDefault();
                     
@@ -68,7 +69,6 @@
                         url: 'ScheduleAudit!ajaxScheduleAuditExpediteModal.action',
                         success: function (data, textStatus, XMLHttpRequest) {
                             var modal = createModal(data);
-                            console.log(modal);
                             modal.show();
                             
                             $('.schedule-audit-expedite-modal').delegate('.accept-expedite', 'click', function (event) {
