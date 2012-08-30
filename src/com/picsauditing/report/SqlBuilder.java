@@ -45,6 +45,7 @@ public class SqlBuilder {
 
 		sql.addWhere("1 " + model.getWhereClause(permissions));
 
+		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");
 		return sql;
 	}

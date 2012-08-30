@@ -1,6 +1,8 @@
 package com.picsauditing.report;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.ExtFieldType;
@@ -10,6 +12,8 @@ import com.picsauditing.util.Strings;
 
 public class Column extends ReportElement implements JSONable {
 
+	private static final Logger logger = LoggerFactory.getLogger(Column.class);
+	
 	public Column() {
 	}
 
@@ -29,7 +33,11 @@ public class Column extends ReportElement implements JSONable {
 	private void parseMethodName(JSONObject json) {
 		String methodName = (String) json.get("method");
 		if (!Strings.isEmpty(methodName)) {
-			method = QueryMethod.valueOf(methodName);
+			try {
+				method = QueryMethod.valueOf(methodName);
+			} catch (Exception e) {
+				logger.error("Using QueryMethod of " + methodName + " that doesn't exist");
+			}
 		}
 	}
 
