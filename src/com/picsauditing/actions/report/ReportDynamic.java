@@ -1,5 +1,7 @@
 package com.picsauditing.actions.report;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
@@ -170,6 +172,26 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
 			writeJsonError(e);
+		}
+
+		return JSON;
+	}
+
+	public String translateValues() {
+		try {
+			String[] untranslatedValues = getRequest().getParameterValues("value");
+			List<String> translatedValues = new ArrayList<String>();
+
+			for (String untranslatedValue : untranslatedValues) {
+				translatedValues.add(getText(untranslatedValue.toString()));
+			}
+
+			json.put("success", true);
+			json.put("values", translatedValues);
+		} catch (Exception e) {
+			json.put("success", false);
+			json.put("message", e.toString());
+			logger.error("Unexpected exception in ReportDynamic.translateValues()", e);
 		}
 
 		return JSON;
