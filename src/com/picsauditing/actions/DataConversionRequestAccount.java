@@ -5,38 +5,30 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class DataConversionRequestAccount extends PicsActionSupport {
-	private int limit = 10;
-
+public class DataConversionRequestAccount extends AccountActionSupport {
 	private static Logger logger = LoggerFactory.getLogger(DataConversionRequestAccount.class);
 
-	@Autowired
-	private ContractorAccountDAO contractorDAO;
-	@Autowired
-	private ContractorOperatorDAO contractorOperatorDAO;
-	@Autowired
-	private ContractorRegistrationRequestDAO requestDAO;
-	@Autowired
-	private OperatorAccountDAO operatorDAO;
-
-	List<ContractorRegistrationRequest> requestsNeedingConversion = Collections.emptyList();
+	private int limit = 10;
+	private List<ContractorRegistrationRequest> requestsNeedingConversion = Collections.emptyList();
 
 	@Anonymous
 	@Override
@@ -76,18 +68,36 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 			createContractorOperatorFrom(request, contractor);
 			User user = createUserFrom(request, contractor);
 
+			// Move notes and tag
+			Note note = addNote(contractor, "Imported from Registration Request", NoteCategory.Registration,
+					LowMedHigh.Med, false, 1, request.getLastContactedBy());
+			note.setBody(request.getNotes());
+			dao.save(note);
+
+			addContractorTags(request, contractor);
+
 			contractor.setPrimaryContact(user);
 			contractor.getUsers().add(user);
-			contractor = (ContractorAccount) contractorDAO.save(contractor);
+			contractor = (ContractorAccount) dao.save(contractor);
 
 			request.setContractor(contractor);
-			requestDAO.save(request);
+			dao.save(request);
 		}
+	}
+
+	private List<ContractorRegistrationRequest> findRequestsNeedingConversion() {
+		return dao.findWhere(ContractorRegistrationRequest.class, "t.contractor IS NULL", limit);
 	}
 
 	private ContractorAccount createContractorFrom(ContractorRegistrationRequest request) {
 		ContractorAccount contractor = new ContractorAccount();
-		contractor.setStatus(AccountStatus.Requested);
+
+		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful == request.getStatus()) {
+			contractor.setStatus(AccountStatus.Deactivated);
+		} else {
+			contractor.setStatus(AccountStatus.Requested);
+		}
+
 		contractor.setName(request.getName());
 		contractor.setTaxId(request.getTaxID());
 		contractor.setAddress(request.getAddress());
@@ -105,7 +115,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		contractor.setUpdateDate(request.getUpdateDate());
 		contractor.setUpdatedBy(request.getUpdatedBy());
 
-		return (ContractorAccount) contractorDAO.save(contractor);
+		return (ContractorAccount) dao.save(contractor);
 	}
 
 	private void createContractorOperatorFrom(ContractorRegistrationRequest request, ContractorAccount contractor) {
@@ -126,7 +136,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		link.setFlagColor(FlagColor.Clear);
 		link.setAuditColumns();
 
-		link = (ContractorOperator) contractorOperatorDAO.save(link);
+		link = (ContractorOperator) dao.save(link);
 	}
 
 	private User createUserFrom(ContractorRegistrationRequest request, ContractorAccount contractor) {
@@ -144,8 +154,26 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		return user;
 	}
 
-	private List<ContractorRegistrationRequest> findRequestsNeedingConversion() {
-		return requestDAO.findWhere(ContractorRegistrationRequest.class,
-				"t.contractor IS NULL AND t.status IN ('Active', 'Hold')", limit);
+	private void addContractorTags(ContractorRegistrationRequest request, ContractorAccount contractor) {
+		if (!Strings.isEmpty(request.getOperatorTags())) {
+			for (String tag : request.getOperatorTags().split(",")) {
+				try {
+					int tagID = Integer.parseInt(tag);
+
+					OperatorTag operatorTag = dao.find(OperatorTag.class, tagID);
+
+					ContractorTag contractorTag = new ContractorTag();
+					contractorTag.setContractor(contractor);
+					contractorTag.setTag(operatorTag);
+					contractorTag.setAuditColumns(permissions);
+
+					dao.save(contractorTag);
+					contractor.getOperatorTags().add(contractorTag);
+				} catch (Exception e) {
+					logger.error("Could not parse operator tag {} from {} for registration request #{}", new Object[] {
+							tag, request.getOperatorTags(), request.getId() });
+				}
+			}
+		}
 	}
 }
