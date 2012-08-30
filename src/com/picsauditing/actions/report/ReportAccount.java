@@ -380,7 +380,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			List<String> countries = new ArrayList<String>();
 
 			for (String location : getFilter().getLocation()) {
-				if (location.length() > 2) {
+				if (location.contains("_C")) {
 					countries.add(location.replace("_C", ""));
 				} else {
 					countrySubdivisions.add(location);
@@ -407,15 +407,18 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 	}
 
-	protected void filterOnCountrySubdivisions(List<String> countrySubdivisions, List<String> countries, StringBuilder sb) {
+	protected void filterOnCountrySubdivisions(List<String> countrySubdivisions, List<String> countries,
+			StringBuilder sb) {
 		if (!countrySubdivisions.isEmpty()) {
 			if (!countries.isEmpty())
 				sb.append(" OR ");
 
 			String countrySubdivisionList = Strings.implodeForDB(countrySubdivisions, ",");
-			sb.append("a.countrySubdivision IN (").append(countrySubdivisionList).append(") OR ").append("EXISTS (SELECT 'x' FROM pqfdata d ")
+			sb.append("a.countrySubdivision IN (").append(countrySubdivisionList).append(") OR ")
+					.append("EXISTS (SELECT 'x' FROM pqfdata d ")
 					.append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")
-					.append("AND aq.uniqueCode IN (").append(countrySubdivisionList).append(") AND d.answer != 'No' LIMIT 1) ");
+					.append("AND aq.uniqueCode IN (").append(countrySubdivisionList)
+					.append(") AND d.answer != 'No' LIMIT 1) ");
 			sql.addOrderBy("CASE WHEN a.countrySubdivision IN (" + countrySubdivisionList + ") THEN 1 ELSE 2 END");
 		}
 	}
