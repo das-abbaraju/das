@@ -122,11 +122,28 @@
 							listValue="name"
 							name="requestedContractor.country"
 							required="true"
-							value="%{requestedContractor.country == null ? permissions.country : requestedContractor.country.isoCode}"
 							theme="formhelp"
+							value="%{requestedContractor.country.isoCode}"
 						/>
 					</li>
-					<li id="countrySubdivision_li"></li>
+					<s:if test="requestedCountractor.country == null">
+						<li id="countrySubdivision_li"></li>
+					</s:if>
+					<s:else>
+						<li id="countrySubdivision_li">
+							<s:select
+								headerKey=""
+								id="countrySubdivision_sel"
+								label="%{requestedContractor.country.isoCode == 'CA' ? 'ContractorAccount.province' : 'ContractorAccount.countrySubdivision'}"
+								list="getCountrySubdivisionList(requestedContractor.country.isoCode)"
+								listKey="isoCode"
+								listValue="simpleName"
+								name="requestedContractor.countrySubdivision"
+								required="true"
+								theme="formhelp"
+							/>
+						</li>
+					</s:else>
 					<li>
 						<s:textfield
 							name="requestedContractor.city"
@@ -173,7 +190,8 @@
 							name="requestedContractor.requestedBy"
 							required="true"
 							theme="formhelp"
-							value="%{requestedContractor.requestedBy.id}" />
+							value="%{requestedContractor.requestedBy.id}"
+						/>
 					</li>
 					<li id="user_list"></li>
 					<li>

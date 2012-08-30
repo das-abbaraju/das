@@ -138,7 +138,7 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testSave_MissingContractorSpecificFields() {
+	public void testSave_MissingContractorSpecificFields() throws Exception {
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.save());
 		assertTrue(requestNewContractorAccount.hasActionErrors());
 
@@ -147,7 +147,7 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testSave_MissingOperatorSpecificFields() {
+	public void testSave_MissingOperatorSpecificFields() throws Exception {
 		// TODO: Set contractor fields here
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.save());
 		assertTrue(requestNewContractorAccount.hasActionErrors());

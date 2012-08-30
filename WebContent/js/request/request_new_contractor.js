@@ -21,26 +21,30 @@
                         showAnim : 'fadeIn'
                     });
                     
-                    $('#country').trigger('change');
+                    if ($('#countrySubdivision_li').html().trim()) {
+                        $('#country').trigger('change');
+                    }
                 }
             },
             
             loadCountrySubdivision: function (event) {
                 var isocode = $(this).val();
                 
-                PICS.ajax({
-                    url: 'CountrySubdivisionListAjax.action',
-                    data: {
-                        countryString: isocode,
-                        countrySubdivisionString: isocode,
-                        needsSuffix: false,
-                        required: true,
-                        prefix: 'requestedContractor.'
-                    },
-                    success: function(data, textStatus, XMLHttpRequest) {
-                        $('#countrySubdivision_li').html(data);
-                    }
-                });
+                if (isocode.trim()) {
+                    PICS.ajax({
+                        url: 'CountrySubdivisionListAjax.action',
+                        data: {
+                            countryString: isocode,
+                            countrySubdivisionString: isocode,
+                            needsSuffix: false,
+                            required: true,
+                            prefix: 'requestedContractor.'
+                        },
+                        success: function(data, textStatus, XMLHttpRequest) {
+                            $('#countrySubdivision_li').html(data);
+                        }
+                    });
+                }
             },
             
             loadOperatorUsers: function (event) {

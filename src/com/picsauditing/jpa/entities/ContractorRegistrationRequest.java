@@ -293,12 +293,20 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.matchCount = matchCount;
 	}
 
+	@Deprecated
 	public String getNotes() {
 		return notes;
 	}
 
+	@Deprecated
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	@Deprecated
+	@Transient
+	public void addToNotes(String note, User user) {
+		setNotes(String.format("%tD - %s - %s\n\n%s", new Date(), user.getName(), note, getNotes()));
 	}
 
 	@ManyToOne
