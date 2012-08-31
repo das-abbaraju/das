@@ -144,7 +144,7 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 		user.setName(request.getContact());
 		user.setEmail(request.getEmail());
 		user.setPhone(request.getPhone());
-		user.setUsername(request.getEmail() + "-" + request.getId());
+		user.setUsername(request.getEmail() + "-" + contractor.getId());
 		user.setAccount(contractor);
 		// Other required fields
 		user.setIsGroup(YesNo.No);
