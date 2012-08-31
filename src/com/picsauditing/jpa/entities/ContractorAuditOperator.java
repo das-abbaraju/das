@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
@@ -97,6 +99,10 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		setAuditColumns(permissions);
 		setStatusChangedDate(new Date());
 		this.status = auditStatus;
+		
+		if (status != AuditStatus.Incomplete) {
+			auditSubStatus = null;
+		}
 
 		if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())
 			return caow;
@@ -128,7 +134,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	
 	@Transient
 	public boolean isTopCaowUserNote() {
-		if (caoWorkflow != null && caoWorkflow.size() > 0) {
+		if (CollectionUtils.isNotEmpty(caoWorkflow)) {
 			List<ContractorAuditOperatorWorkflow> sortedCoaws = new ArrayList<ContractorAuditOperatorWorkflow>(caoWorkflow);
 			Collections.sort(sortedCoaws, new Comparator<ContractorAuditOperatorWorkflow>() {
 				@Override
@@ -138,6 +144,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 						return 1;
 					else if (caow1 != null && caow1.getCreationDate().after(coaw2.getCreationDate()))
 						return -1;
+					
 					return 0;
 				}
 			});
@@ -147,6 +154,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 				return true;
 			}
 		}
+		
 		return false; 
 	}
 
@@ -189,6 +197,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	public int getPercent() {
 		if (status.isPending())
 			return this.percentComplete;
+		
 		if (status.isSubmittedResubmitted())
 			return this.percentVerified;
 
