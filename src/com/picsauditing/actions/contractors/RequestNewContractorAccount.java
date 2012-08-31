@@ -8,14 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.struts2.interceptor.validation.SkipValidation;
-import org.apache.struts2.util.StrutsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.io.Files;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -350,8 +348,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		if (newRequest) {
 			primaryContact.setAccount(requestedContractor);
 			primaryContact.setIsGroup(YesNo.No);
-			primaryContact.setUsername(String.format("%s-%tF-%d", primaryContact.getEmail(), new Date(),
-					requestedContractor.getId()));
+			primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(), requestedContractor.getId()));
 			primaryContact.setAuditColumns(permissions);
 
 			requestedContractor.setPrimaryContact(primaryContact);
