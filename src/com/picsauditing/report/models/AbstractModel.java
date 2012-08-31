@@ -1,9 +1,11 @@
 package com.picsauditing.report.models;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 
@@ -24,7 +26,7 @@ public abstract class AbstractModel {
 		return defaultSort;
 	}
 
-	public String getWhereClause(Permissions permissions) {
+	public String getWhereClause(Permissions permissions, List<Filter> filters) {
 		return "";
 	}
 }

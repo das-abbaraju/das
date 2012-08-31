@@ -2,6 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import javax.persistence.Transient;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+
 public enum AccountStatus implements Translatable {
 	Active, Pending, Demo, Deleted, Deactivated;
 
@@ -43,5 +46,12 @@ public enum AccountStatus implements Translatable {
 	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
+	}
+
+	public boolean canSee(Permissions permissions) {
+		if (this == Deleted || this == Demo)
+			return permissions.hasPermission(OpPerms.AllContractors);
+		
+		return true;
 	}
 }

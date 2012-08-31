@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -49,7 +50,8 @@ public class ArchivedAccounts extends ReportAccount {
 		}
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
-		qb.setShowPendingDeactivated(true);
+		qb.addVisibleStatus(AccountStatus.Deactivated);
+		qb.addVisibleStatus(AccountStatus.Pending);
 		qb.setWorkingFacilities(false);
 		sql.addWhere("1 " + qb.toString());
 

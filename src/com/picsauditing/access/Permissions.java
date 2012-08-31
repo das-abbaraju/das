@@ -499,7 +499,7 @@ public class Permissions implements Serializable {
 		if (isAdmin())
 			return false;
 
-		return hasGroup(11);
+		return hasGroup(User.GROUP_AUDITOR);
 	}
 
 	public boolean isInsuranceOnlyContractorUser() {

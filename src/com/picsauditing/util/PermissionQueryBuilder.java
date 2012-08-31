@@ -1,7 +1,11 @@
 package com.picsauditing.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AccountStatus;
 
 public class PermissionQueryBuilder {
 	static final public int SQL = 1;
@@ -11,6 +15,8 @@ public class PermissionQueryBuilder {
 	private boolean showPendingDeactivated = false;
 	protected Permissions permissions;
 	private boolean workingFacilities = true;
+	private String subquery;
+	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();;
 
 	public PermissionQueryBuilder(Permissions permissions) {
 		this(permissions, SQL);
@@ -21,27 +27,51 @@ public class PermissionQueryBuilder {
 		setQueryLanguage(queryLanguage);
 	}
 
+	@Deprecated
 	public String toString() {
+		String whereClause = buildQuery();
+
+		if (Strings.isEmpty(whereClause))
+			return "";
+		else
+			return "AND " + whereClause;
+	}
+
+	public String buildQuery() {
 		// For Nobody
 		if (permissions == null || !permissions.isLoggedIn())
-			return "AND 1<>1";
+			return "1=0";
 
 		// For Admins and Contractors (easy ones)
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return "";
 
 		if (permissions.isContractor()) {
-			return "AND " + accountAlias + ".id = " + permissions.getAccountId();
+			return "" + accountAlias + ".id = " + permissions.getAccountId();
 		}
 
 		// Assessment Centers
 		if (permissions.isAssessment()) {
-			return "AND " + accountAlias + ".status IN ('Active', 'Pending', 'Deactivated')";
+			return "" + accountAlias + ".status IN ('Active', 'Pending', 'Deactivated')";
 		}
 
-		// For Operators, Corporate, Audits (hard ones)
-		String subquery = "";
-		// sorry, String was easier to read than a StringBuffer
+		buildSubQuery();
+
+		// /////////////////////////
+		if (subquery.length() == 0)
+			// If we never set the query, then show no contractors
+			return "1=0";
+
+		String query = buildStatusFilter();
+
+		if (queryLanguage == HQL)
+			return query += " AND " + accountAlias + " IN (" + subquery + ")";
+		else
+			return query += " AND " + accountAlias + ".id IN (" + subquery + ")";
+	}
+
+	private void buildSubQuery() {
+		subquery = "";
 
 		if (permissions.isOperator()) {
 			String operatorIDs = permissions.getAccountIdString();
@@ -98,26 +128,30 @@ public class PermissionQueryBuilder {
 			else
 				subquery = "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();
 		}
+	}
 
-		// /////////////////////////
-		if (subquery.length() == 0)
-			// If we never set the query, then show no contractors
-			return "AND 1=0";
+	private String buildStatusFilter() {
+		defaultVisibleStatuses();
+		String statusList = Strings.implodeForDB(visibleStatuses, ",");
+		return accountAlias + ".status IN (" + statusList + ")";
+	}
 
-		String query = "AND " + accountAlias + ".status IN ('Active'";
+	private void defaultVisibleStatuses() {
+		if (visibleStatuses.isEmpty()) {
+			if (showPendingDeactivated) {
+				visibleStatuses.add(AccountStatus.Pending);
+				visibleStatuses.add(AccountStatus.Deactivated);
+			}
+		}
+
+		visibleStatuses.add(AccountStatus.Active);
 
 		if (permissions.getAccountStatus().isDemo())
-			query += ",'Demo'";
+			visibleStatuses.add(AccountStatus.Demo);
+	}
 
-		if (showPendingDeactivated)
-			query += ",'Pending','Deactivated','Requested'";
-
-		query += ") AND " + accountAlias;
-
-		if (queryLanguage == HQL)
-			return query += " IN (" + subquery + ")";
-		else
-			return query += ".id IN (" + subquery + ")";
+	public void addVisibleStatus(AccountStatus status) {
+		visibleStatuses.add(status);
 	}
 
 	public int getQueryLanguage() {
@@ -125,17 +159,14 @@ public class PermissionQueryBuilder {
 	}
 
 	public void setQueryLanguage(int queryLanguage) {
-		if (queryLanguage == HQL)
-			this.accountAlias = "contractorAccount";
+		if (queryLanguage == HQL) {
+			setAccountAlias("contractorAccount");
+		}
 		this.queryLanguage = queryLanguage;
 	}
 
 	public void setAccountAlias(String accountAlias) {
 		this.accountAlias = accountAlias;
-	}
-
-	public void setShowPendingDeactivated(boolean value) {
-		this.showPendingDeactivated = value;
 	}
 
 	public void setWorkingFacilities(boolean workingFacilities) {

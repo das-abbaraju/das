@@ -43,31 +43,11 @@ public class SqlBuilder {
 
 		addJoins(model.getRootTable());
 
-		String permissionWhereClause = model.getWhereClause(permissions);
-		if (permissions.isOperatorCorporate()) {
-			// THIS IS A TOTAL HACK FOR THE BASF DEMO
-			// TODO refactor PermissionQueryBuilder so it doesn't have to be hacked so much
-			if (filteringOnAccountStatus()) {
-				permissionWhereClause = permissionWhereClause.replace("a.status IN ('Active') AND ", "");
-			}
-		}
-		sql.addWhere("1 " + permissionWhereClause);
+		sql.addWhere(model.getWhereClause(permissions, definition.getFilters()));
 		
-		System.out.println(sql);
-
 		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");
 		return sql;
-	}
-
-	private boolean filteringOnAccountStatus() {
-		for (Filter filter : definition.getFilters()) {
-			if (filter.getFieldName().equals("accountStatus") && filter.isValid()) {
-				// TODO Make sure they only search for Active, Pending, Requested, Deactived
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void setFrom(AbstractModel model) {
