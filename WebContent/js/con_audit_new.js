@@ -250,6 +250,12 @@
 			save: function(event) {
 				var element = $(this);
 				var form = $('form.qform', element);
+
+				// Allow save only if an answer has been given.
+				if (!element.find(':radio:checked').val()) {
+				    return false;
+				}
+
 				var url = 'AuditDataSaveAjax.action';
 				var data = form.serializeArray();
 				
