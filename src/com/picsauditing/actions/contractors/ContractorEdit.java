@@ -80,8 +80,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected BillingCalculatorSingle billingService;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-    @Autowired
-    protected AuditBuilder auditBuilder;
+//    @Autowired
+//    protected AuditBuilder auditBuilder;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -225,7 +225,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 				return SUCCESS;
 			}
-            auditBuilder.buildAudits(contractor);
+//            auditBuilder.buildAudits(contractor);
 			contractor.setQbSync(true);
 			contractor.incrementRecalculation();
 			contractor.setNameIndex();
