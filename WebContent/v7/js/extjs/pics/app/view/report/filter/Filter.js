@@ -149,6 +149,9 @@ Ext.define('PICS.view.report.filter.Filter', {
 
         switch (type) {
             // TODO: this is retarded the backend architecture is invalid
+            case 'AccountID':
+                cls = 'PICS.view.report.filter.base.AccountIDFilter';
+                break;
             case 'AccountName':
                 cls = 'PICS.view.report.filter.base.StringFilter';
                 break;
@@ -160,6 +163,10 @@ Ext.define('PICS.view.report.filter.Filter', {
                 break;
             case 'Date':
                 cls = 'PICS.view.report.filter.base.DateFilter';
+                break;
+            case 'DaysAgo':
+                // Add new filter for days ago for Steps to Green report
+                cls = 'PICS.view.report.filter.base.IntegerFilter';
                 break;
             case 'Enum':
                 cls = 'PICS.view.report.filter.base.ListFilter';
@@ -179,9 +186,8 @@ Ext.define('PICS.view.report.filter.Filter', {
             case 'String':
                 cls = 'PICS.view.report.filter.base.StringFilter';
                 break;
-            case 'DaysAgo':
-                // Add new filter for days ago for Steps to Green report
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
+            case 'UserID':
+                cls = 'PICS.view.report.filter.base.UserIDFilter';
                 break;
             default:
                 cls = null;
