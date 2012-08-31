@@ -110,7 +110,7 @@ public class PermissionQueryBuilder {
 			query += ",'Demo'";
 
 		if (showPendingDeactivated)
-			query += ",'Pending','Deactivated'";
+			query += ",'Pending','Deactivated','Requested'";
 
 		query += ") AND " + accountAlias;
 

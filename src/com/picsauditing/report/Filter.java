@@ -1,6 +1,8 @@
 package com.picsauditing.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -62,12 +64,17 @@ public class Filter extends ReportElement implements JSONable {
 			}
 		} else {
 			String value = (String) json.get("value");
-			if (value != null) {
+			if (!Strings.isEmpty(value)) {
 				logger.warn("Still using filter.value instead of filter.values");
 				// Until the front end changes the JavaScript and all the
 				// reports
 				// are converted, we need this for backwards compatibility
-				this.values.add(value);
+				if (value.contains(",")) {
+					String[] valueSplit = value.split(",");
+					this.values.addAll(Arrays.asList(valueSplit));
+				} else {
+					this.values.add(value);
+				}
 			}
 		}
 	}

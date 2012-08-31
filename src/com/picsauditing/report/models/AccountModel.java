@@ -19,7 +19,6 @@ public class AccountModel extends AbstractModel {
 	@Override
 	public String getWhereClause(Permissions permissions) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
-
 		return permQuery.toString();
 	}
 }

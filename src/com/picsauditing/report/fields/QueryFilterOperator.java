@@ -17,7 +17,9 @@ public enum QueryFilterOperator {
 	Contains("LIKE"),
 	NotContains("NOT LIKE"),
 	Empty("IS NULL"),
-	NotEmpty("NOT IS NULL");
+	NotEmpty("NOT IS NULL"),
+	CurrentUser("="),
+	CurrentAccount("=");
 	
 	private String operand;
 
