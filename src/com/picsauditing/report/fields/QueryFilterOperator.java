@@ -47,7 +47,7 @@ public enum QueryFilterOperator {
 			return false;
 		if (this == CurrentUser)
 			return false;
-		if (this == CurrentUser)
+		if (this == CurrentAccount)
 			return false;
 		
 		return true;
