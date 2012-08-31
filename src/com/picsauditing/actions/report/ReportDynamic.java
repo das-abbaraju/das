@@ -20,6 +20,7 @@ import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -179,19 +180,31 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String translateValues() {
 		try {
+			ReportModel.validate(report);
+
+			String fieldName = getRequest().getParameter("fieldName");
+			if (Strings.isEmpty(fieldName))
+				throw new Exception("You need to pass a fieldName to get the translated field values.");
+
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
+			Field field = availableFields.get(fieldName.toUpperCase());
+
+			if (field == null)
+				throw new Exception("Available field undefined");
+
 			String[] untranslatedValues = getRequest().getParameterValues("value");
 			List<String> translatedValues = new ArrayList<String>();
 
-			for (String untranslatedValue : untranslatedValues) {
-				translatedValues.add(getText(untranslatedValue.toString()));
+			for (String value : untranslatedValues) {
+				String key = field.getI18nKey(value);
+				translatedValues.add(getText(key));
 			}
 
-			json.put("success", true);
 			json.put("values", translatedValues);
+			json.put("success", true);
 		} catch (Exception e) {
-			json.put("success", false);
-			json.put("message", e.toString());
 			logger.error("Unexpected exception in ReportDynamic.translateValues()", e);
+			writeJsonError(e);
 		}
 
 		return JSON;
