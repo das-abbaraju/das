@@ -297,7 +297,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "flag", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus)
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "FlagColor")
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
