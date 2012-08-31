@@ -224,12 +224,10 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.reasonForDecline = reasonForDecline;
 	}
 
-	@Deprecated
 	public Date getHoldDate() {
 		return holdDate;
 	}
 
-	@Deprecated
 	public void setHoldDate(Date holdDate) {
 		this.holdDate = holdDate;
 	}
@@ -306,7 +304,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	@Deprecated
 	@Transient
 	public void addToNotes(String note, User user) {
-		setNotes(String.format("%tD - %s - %s\n\n%s", new Date(), user.getName(), note, getNotes()));
+		setNotes(String.format("%tD - %s - %s\n\n%s", new Date(), user.getName(), note,
+				Strings.isEmpty(getNotes()) ? "" : getNotes()));
 	}
 
 	@ManyToOne

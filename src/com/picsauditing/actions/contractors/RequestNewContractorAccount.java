@@ -7,12 +7,15 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.apache.struts2.util.StrutsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.io.Files;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -33,6 +36,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.FileUtils;
@@ -61,8 +65,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
+	private User primaryContact = new User();
 
-	private List<OperatorTag> tags = new ArrayList<OperatorTag>();
+	private List<OperatorTag> operatorTags;
+	private List<OperatorTag> requestedTags;
+
+	private OperatorTag[] remainingOperatorTags;
+	private OperatorTag[] selectedRequestedTags;
+
 	// Email
 	private EmailBuilder emailBuilder = new EmailBuilder();
 
@@ -71,6 +81,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		checkPermission();
 		initializeRequest();
 		setRequestedBy();
+		loadTags();
+
+		primaryContact = requestedContractor.getPrimaryContact();
 
 		return SUCCESS;
 	}
@@ -82,32 +95,31 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestedContractor.setRequestedBy(requestedBy);
 		requestRelationship.setOperatorAccount(requestedBy);
 
-		setRequiredFieldsAndSaveEntities();
+		setRequiredFieldsAndSaveEntities(newRequest);
 		ContractorRegistrationRequest legacyRequest = saveLegacyRequest(requestedBy);
 
 		if (newRequest) {
 			EmailQueue email = buildEmail();
+			email.setContractorAccount(requestedContractor);
 			emailSender.send(email);
 			requestedContractor.getFirstRegistrationRequest().contactByEmail();
 			requestedContractor.getFirstRegistrationRequest().setLastContactedByAutomatedEmailDate(new Date());
 
 			addContractorLetterAttachmentTo(email);
-
 			addNote(legacyRequest);
 		}
 
 		setOperatorTags();
-
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 
-		return SUCCESS;
+		addActionMessage(getText("RequestNewContractor.SuccessfullySaved"));
+		return setUrlForRedirect("RequestNewContractorAccount.action?requestedContractor="
+				+ requestedContractor.getId());
 	}
 
-	private void addNote(ContractorRegistrationRequest legacyRequest) {
-		// Save notes to RR note field and a new Note entity
-		String note = "Sent initial contact email.";
-		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
-		addNote(requestedContractor, note);
+	@SkipValidation
+	public String load() {
+		return SUCCESS;
 	}
 
 	public ContractorAccount getRequestedContractor() {
@@ -126,12 +138,52 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		this.requestRelationship = requestRelationship;
 	}
 
-	public List<OperatorTag> getTags() {
-		return tags;
+	public User getPrimaryContact() {
+		return primaryContact;
 	}
 
-	public void setTags(List<OperatorTag> tags) {
-		this.tags = tags;
+	public void setPrimaryContact(User primaryContact) {
+		this.primaryContact = primaryContact;
+	}
+
+	public List<OperatorTag> getOperatorTags() {
+		if (operatorTags == null) {
+			loadTags();
+		}
+
+		return operatorTags;
+	}
+
+	public void setOperatorTags(List<OperatorTag> operatorTags) {
+		this.operatorTags = operatorTags;
+	}
+
+	public List<OperatorTag> getRequestedTags() {
+		if (requestedTags == null) {
+			loadTags();
+		}
+
+		return requestedTags;
+	}
+
+	public void setRequestedTags(List<OperatorTag> requestedTags) {
+		this.requestedTags = requestedTags;
+	}
+
+	public OperatorTag[] getRemainingOperatorTags() {
+		return remainingOperatorTags;
+	}
+
+	public void setRemainingOperatorTags(OperatorTag[] remainingOperatorTags) {
+		this.remainingOperatorTags = remainingOperatorTags;
+	}
+
+	public OperatorTag[] getSelectedRequestedTags() {
+		return selectedRequestedTags;
+	}
+
+	public void setSelectedRequestedTags(OperatorTag[] selectedRequestedTags) {
+		this.selectedRequestedTags = selectedRequestedTags;
 	}
 
 	public String getEmailPreview() {
@@ -167,6 +219,21 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return usersAndSwitchTos;
 	}
 
+	public Date getToday() {
+		return new Date();
+	}
+
+	private void checkPermission() throws NoRightsException {
+		if (!permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
+			throw new NoRightsException(getText("global.Operators"));
+		}
+
+		if (permissions.isOperatorCorporate() && requestedContractor.getRequestedBy() != null
+				&& !permissions.getVisibleAccounts().contains(requestedContractor.getRequestedBy().getId())) {
+			throw new NoRightsException(getText("AccountType.Admin"));
+		}
+	}
+
 	private void initializeRequest() {
 		if (requestedContractor.getId() == 0) {
 			requestedContractor.setStatus(AccountStatus.Requested);
@@ -175,7 +242,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			requestedContractor.getRegistrationRequests().add(request);
 
 			requestedContractor.setRequestedBy(new OperatorAccount());
-			requestedContractor.setPrimaryContact(new User());
 
 			requestedContractor.setCountry(new Country());
 			requestedContractor.getCountry().setIsoCode(permissions.getCountry());
@@ -190,24 +256,28 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 					&& requestedContractor.getRequestedBy() == null) {
 				requestedContractor.setRequestedBy(requestedBy);
 			}
+		}
 
-			for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
-				if (contractorOperator.getOperatorAccount().equals(requestedContractor.getRequestedBy())) {
-					requestRelationship = contractorOperator;
-				}
+		for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
+			if (contractorOperator.getOperatorAccount().equals(requestedContractor.getRequestedBy())) {
+				requestRelationship = contractorOperator;
 			}
 		}
 	}
 
-	private void checkPermission() throws NoRightsException {
-		if (!permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
-			throw new NoRightsException(getText("global.Operators"));
+	private void loadTags() {
+		OperatorAccount operator = findOperator();
+
+		if (requestedTags == null) {
+			requestedTags = new ArrayList<OperatorTag>();
 		}
 
-		if (permissions.isOperatorCorporate() && requestedContractor.getRequestedBy() != null
-				&& !permissions.getVisibleAccounts().contains(requestedContractor.getRequestedBy().getId())) {
-			throw new NoRightsException(getText("AccountType.Admin"));
+		operatorTags = getOperatorViewableTags(operator.getId());
+		for (ContractorTag tag : getViewableExistingContractorTags(operatorTags)) {
+			requestedTags.add(tag.getTag());
 		}
+
+		operatorTags.removeAll(requestedTags);
 	}
 
 	private ContractorRegistrationRequest saveLegacyRequest(OperatorAccount requestedBy) {
@@ -266,16 +336,36 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return new OperatorAccount();
 	}
 
-	private void setRequiredFieldsAndSaveEntities() {
+	private void setRequiredFieldsAndSaveEntities(boolean newRequest) {
 		// NAICS is required for accounts
-		requestedContractor.setNaics(new Naics());
-		requestedContractor.getNaics().setCode("0");
+		if (newRequest) {
+			requestedContractor.setNaics(new Naics());
+			requestedContractor.getNaics().setCode("0");
+		}
+
 		requestedContractor.setAuditColumns(permissions);
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 
+		// Username and isGroup is required
+		if (newRequest) {
+			primaryContact.setAccount(requestedContractor);
+			primaryContact.setIsGroup(YesNo.No);
+			primaryContact.setUsername(String.format("%s-%tF-%d", primaryContact.getEmail(), new Date(),
+					requestedContractor.getId()));
+			primaryContact.setAuditColumns(permissions);
+
+			requestedContractor.setPrimaryContact(primaryContact);
+			requestedContractor.getUsers().add(primaryContact);
+		}
+
+		primaryContact = (User) dao.save(primaryContact);
+
 		// Flag is required for contractorOperator
+		if (newRequest) {
+			requestRelationship.setFlagColor(FlagColor.Clear);
+		}
+
 		requestRelationship.setContractorAccount(requestedContractor);
-		requestRelationship.setFlagColor(FlagColor.Clear);
 		requestRelationship.setAuditColumns(permissions);
 		requestRelationship = (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
 	}
@@ -322,17 +412,35 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		}
 	}
 
-	private void setOperatorTags() {
-		List<ContractorTag> existing = new ArrayList<ContractorTag>(requestedContractor.getOperatorTags());
+	private void addNote(ContractorRegistrationRequest legacyRequest) {
+		// Save notes to RR note field and a new Note entity
+		String note = "Sent initial contact email.";
+		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
+		addNote(requestedContractor, note);
+	}
 
-		if (permissions.isOperatorCorporate()) {
-			List<OperatorTag> viewable = operatorTagDAO.findByOperator(permissions.getAccountId(), true);
-			existing = getViewableExistingContractorTags(viewable);
-		}
+	private void setOperatorTags() {
+		List<ContractorTag> existing = getVisibleExistingTags();
 
 		removeUnneededTags(existing);
 		removeExistingTagsFromSelected(existing);
 		addRemainingTags();
+	}
+
+	private List<ContractorTag> getVisibleExistingTags() {
+		List<ContractorTag> existing = new ArrayList<ContractorTag>(requestedContractor.getOperatorTags());
+
+		if (permissions.isOperatorCorporate()) {
+			List<OperatorTag> viewable = getOperatorViewableTags(permissions.getAccountId());
+			existing = getViewableExistingContractorTags(viewable);
+		}
+
+		return existing;
+	}
+
+	private List<OperatorTag> getOperatorViewableTags(int accountID) {
+		List<OperatorTag> viewable = operatorTagDAO.findByOperator(accountID, true);
+		return viewable;
 	}
 
 	private List<ContractorTag> getViewableExistingContractorTags(List<OperatorTag> viewable) {
@@ -352,7 +460,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		while (tagIterator.hasNext()) {
 			ContractorTag existingTag = tagIterator.next();
 
-			if (!tags.contains(existingTag.getTag())) {
+			if (!requestedTags.contains(existingTag.getTag())) {
 				tagIterator.remove();
 				contractorTagDAO.remove(existingTag);
 				requestedContractor.getOperatorTags().remove(existingTag);
@@ -362,12 +470,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	private void removeExistingTagsFromSelected(List<ContractorTag> existingViewable) {
 		for (ContractorTag existing : existingViewable) {
-			tags.remove(existing.getTag());
+			requestedTags.remove(existing.getTag());
 		}
 	}
 
 	private void addRemainingTags() {
-		for (OperatorTag operatorTag : tags) {
+		for (OperatorTag operatorTag : requestedTags) {
 			ContractorTag tag = new ContractorTag();
 			tag.setContractor(requestedContractor);
 			tag.setTag(operatorTag);

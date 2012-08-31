@@ -12,7 +12,7 @@
 		</field-validator>
 	</field>
 
-	<field name="requestedContractor.primaryContact.name">
+	<field name="primaryContact.name">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillContactName")}</message>
 		</field-validator>
@@ -23,7 +23,7 @@
 		</field-validator>
 	</field>
 
-	<field name="requestedContractor.primaryContact.phone">
+	<field name="primaryContact.phone">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillPhoneNumber")}</message>
 		</field-validator>
@@ -39,7 +39,7 @@
 		</field-validator>
 	</field>
 
-	<field name="requestedContractor.primaryContact.email">
+	<field name="primaryContact.email">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillValidEmail")}</message>
 		</field-validator>
@@ -75,14 +75,18 @@
 	
 	<field name="requestRelationship.requestedBy">
 		<field-validator type="fieldexpression">
-			<param name="expression"><![CDATA[ requestRelationship.requestedBy != null || requestRelationship.requestedByOther != null ]]></param>
-			<message>${getText("RequestNewContractor.error.SelectRequestedByUser")}</message>
+			<param name="expression"><![CDATA[ (requestRelationship.requestedByName != null) ]]></param>
+			<message>${getText("RequestNewContractor.error.SelectRequestedUser")}</message>
 		</field-validator>
 	</field>
 	
 	<field name="requestRelationship.deadline">
 		<field-validator type="required">
 			<message>${getText("RequestNewContractor.error.SelectDeadline")}</message>
+		</field-validator>
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ requestRelationship.deadline.after(today) ]]></param>
+			<message>${getText("RequestNewContractor.error.PastDeadline")}</message>
 		</field-validator>
 	</field>
 	

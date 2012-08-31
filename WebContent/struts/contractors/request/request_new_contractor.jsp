@@ -18,6 +18,12 @@
 			<s:text name="RequestNewContractor.title" />
 		</h1>
 		
+		<s:if test="hasFieldErrors()">
+			<div class="alert">
+				<s:text name="RequestNewContractor.ErrorSaving" />
+			</div>
+		</s:if>
+		
 		<s:include value="../../actionMessages.jsp" />
 		
 		<pics:permission perm="RequestNewContractor">
@@ -48,6 +54,7 @@
 		<s:form action="RequestNewContractorAccount" validate="true">
 			<s:hidden name="requestedContractor" />
 			<s:hidden name="requestRelationship" />
+			<s:hidden name="primaryContact" />
 			
 			<fieldset class="form">
 				<h2 class="formLegend">
@@ -58,6 +65,7 @@
 					<li>
 						<s:textfield
 							cssClass="checkReq"
+							id="company_name"
 							name="requestedContractor.name"
 							size="35"
 							theme="formhelp"
@@ -68,7 +76,8 @@
 					<li>
 						<s:textfield
 							cssClass="checkReq"
-							name="requestedContractor.primaryContact.name"
+							id="contact_name"
+							name="primaryContact.name"
 							theme="formhelp"
 							required="true"
 						/>
@@ -77,7 +86,7 @@
 					<li>
 						<s:textfield
 							cssClass="checkReq"
-							name="requestedContractor.primaryContact.phone"
+							name="primaryContact.phone"
 							required="true"
 							size="20"
 							theme="formhelp"
@@ -88,7 +97,7 @@
 						<s:textfield
 							cssClass="checkReq"
 							id="email"
-							name="requestedContractor.primaryContact.email"
+							name="primaryContact.email"
 							required="true"
 							size="30"
 							theme="formhelp"
@@ -126,7 +135,7 @@
 							value="%{requestedContractor.country.isoCode}"
 						/>
 					</li>
-					<li id="countrySubdivision_li">
+					<li id="country_subdivision">
 						<s:if test="requestedContractor.country != null">
 							<s:select
 								id="countrySubdivision_sel"
@@ -146,7 +155,6 @@
 							name="requestedContractor.city"
 							size="20"
 							id="city"
-							cssClass="show-address"
 							theme="formhelp"
 						/>
 					</li>
@@ -179,7 +187,7 @@
 						<s:select
 							headerKey="0" 
 							headerValue="RequestNewContractor.header.SelectAnOperator" 
-							id="operatorsList"
+							id="operator_list"
 							label="ContractorAccount.requestedBy"
 							list="operatorList"
 							listKey="id"
@@ -192,7 +200,7 @@
 					</li>
 					<li id="user_list">
 						<s:if test="requestedContractor.requestedBy.id > 0">
-							<s:include value="../../users/operator_users.jsp" />
+							<s:include value="operator_users.jsp" />
 						</s:if>
 					</li>
 					<li>
@@ -219,18 +227,11 @@
 							theme="formhelp"
 						/>
 					</li>
-					<li id="loadTagsList">
-						<label>
-							<s:text name="RequestNewContractor.OperatorTags" />
-						</label>
-						<div class="fieldhelp">
-							<h3>
-								<s:text name="RequestNewContractor.OperatorTags" />
-							</h3>
-							<s:text name="RequestNewContractor.OperatorTags.fieldhelp" />
-						</div>
-					</li>
-					
+					<s:if test="requestedContractor.id > 0">
+						<li id="tag_list">
+							<s:include value="operator_tags.jsp" />
+						</li>
+					</s:if>
 				</ol>
 			</fieldset>
 			
@@ -298,23 +299,29 @@
 									<s:text name="ContractorRegistrationRequest.label.status" />:
 								</label>
 								<s:select 
-									id="status" 
+									id="request_status" 
 									list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
 									listValue="getText(i18nKey)"
 									name="requestedContractor.firstRegistrationRequest.status"
 								/>
 							</li>
-							<li id="holdDateLi">
+							<li id="hold_date">
 								<s:textfield
 									id="holdDate"
-									name="requestedContractor.firstRegistrationRequest.followUpDate"
+									label="ContractorRegistrationRequest.holdDate"
+									name="requestedContractor.firstRegistrationRequest.holdDate"
 									cssClass="datepicker"
 									size="10"
 									theme="formhelp"
 								/>
 							</li>
-							<li id="reasonDeclinedLi">
-								<s:textarea name="requestedContractor.reasonForDecline" id="reasonForDecline" theme="formhelp" />
+							<li id="reason_declined">
+								<s:textarea
+									id="reasonForDecline"
+									label="ContractorRegistrationRequest.reasonForDecline"
+									name="requestedContractor.firstRegistrationRequest.reasonForDecline"
+									theme="formhelp"
+								/>
 								<div class="fieldhelp">
 									<h3>
 										<s:text name="RequestNewContractor.label.reasonForDecline" />
@@ -336,7 +343,7 @@
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
 									</label>
-									<s:date name="requestedContractor.firstRegistrationRequest.followUpDate" format="%{getText('date.short')}"/>
+									<s:date name="requestedContractor.firstRegistrationRequest.holdDate" format="%{getText('date.short')}"/>
 								</li>
 							</s:if>
 							
@@ -345,7 +352,7 @@
 									<label>
 										<s:text name="RequestNewContractor.label.reasonForDecline" />:
 									</label>
-									<s:property value="requestedContractor.reasonForDecline" />
+									<s:property value="requestedContractor.firstRegistrationRequest.reasonForDecline" />
 								</li>
 							</s:if>
 						</s:else>

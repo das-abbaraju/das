@@ -21,9 +21,19 @@
 			<result>/struts/blank.jsp</result>
 		</action>		
 
-		<action name="OperatorUserList"
+		<action name="RequestingOperatorUserList"
 			class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
+			<result>/struts/contractors/request/operator_users.jsp</result>
+		</action>
+		
+		<action name="OperatorUserListAjax"
+			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/users/operator_users.jsp</result>
+		</action>
+		
+		<action name="RequestingOperatorTagList"
+			class="com.picsauditing.actions.contractors.RequestNewContractorAccount" method="load">
+			<result>/struts/contractors/request/operator_tags.jsp</result>
 		</action>
 		
 		<action name="OperatorTagsAjax"

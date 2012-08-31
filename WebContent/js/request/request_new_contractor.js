@@ -5,9 +5,10 @@
                 var element = $('.RequestNewContractorAccount-page');
 
                 if (element.length) {
+                    element.delegate('#city', 'keyup', this.toggleAddressZip);
                     element.delegate('#country', 'change', this.loadCountrySubdivision);
-                    element.delegate('#operatorsList', 'change', this.loadOperatorUsers);
-                    element.delegate('#requestedUser', 'change', this.toggleOtherTextfield);
+                    element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
+                    element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
                     
                     $('.datepicker').datepicker({
                         changeMonth : true,
@@ -18,12 +19,19 @@
                         buttonImageOnly : true,
                         buttonText : translate('JS.ChooseADate'),
                         constrainInput : true,
-                        showAnim : 'fadeIn'
+                        showAnim : 'fadeIn',
+                        minDate: 1
                     });
                     
-                    if (!$('#countrySubdivision_li').html().trim()) {
+                    if (!$('#country_subdivision').html().trim()) {
                         $('#country').trigger('change');
                     }
+                    
+                    if ($('#user_list').html().trim()) {
+                        $('#requesting_user').trigger('change');
+                    }
+                    
+                    $('#city').trigger('keyup');
                 }
             },
             
@@ -41,17 +49,17 @@
                             prefix: 'requestedContractor.'
                         },
                         success: function(data, textStatus, XMLHttpRequest) {
-                            $('#countrySubdivision_li').html(data);
+                            $('#country_subdivision').html(data);
                         }
                     });
                 }
             },
             
-            loadOperatorUsers: function (event) {
+            loadOperatorUsersAndTags: function (event) {
                 var opID = $(this).val();
                 
                 PICS.ajax({
-                   url: 'OperatorUserList.action',
+                   url: 'RequestingOperatorUserList.action',
                    data: {
                        'requestRelationship.operatorAccount': opID
                    },
@@ -59,13 +67,33 @@
                        $('#user_list').html(data);
                    }
                 });
+                
+                PICS.ajax({
+                    url: 'RequestingOperatorTagList.action',
+                    data: {
+                        'requestRelationship.operatorAccount': opID
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        $('#tag_list').html(data);
+                    }
+                });
+            },
+            
+            toggleAddressZip: function (event) {
+                var city = $(this).val();
+                
+                if (city) {
+                    $('.address-zip').show();
+                } else {
+                    $('.address-zip').hide();
+                }
             },
             
             toggleOtherTextfield: function (event) {
-                if ($(this).val() != 0) {
-                    $('#requestedOther').hide();
+                if ($(this).val() > 0) {
+                    $('#requesting_other').hide();
                 } else {
-                    $('#requestedOther').show();
+                    $('#requesting_other').show();
                 }
             }
         }

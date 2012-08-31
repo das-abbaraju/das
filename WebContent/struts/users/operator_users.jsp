@@ -1,19 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+
+<label>
+	<s:text name="ContractorRegistrationRequest.requestedByUser" />:
+</label>
 
 <s:select
 	headerKey="0"
-	headerValue="RequestNewContractor.Other"
+	headerValue="- %{getText('RequestNewContractor.Other')} -"
 	id="requestedUser"
-	label="ContractorOperator.requestedBy"
-	list="operatorUsers"
+	list="getUsersList(opID)"
 	listKey="id"
 	listValue="name"
-	name="requestRelationship.requestedBy"
-	required="true"
-	theme="formhelp"
-	value="%{requestRelationship.requestedByUser.id}"
+	name="newContractor.requestedByUser"
+	value="%{newContractor.requestedByUser.id}"
 />
-	
-<s:textfield name="requestRelationship.requestedByOther" id="requestedOther" size="20" />
+
+<s:textfield
+	id="requestedOther"
+	name="newContractor.requestedByUserOther"
+	size="20"
+/>
+
+<div class="fieldhelp">
+	<h3>
+		<s:text name="ContractorRegistrationRequest.requestedByUser" />
+	</h3>
+	<s:text name="ContractorRegistrationRequest.requestedByUser.fieldhelp" />
+</div>
