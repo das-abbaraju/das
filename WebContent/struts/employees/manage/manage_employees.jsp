@@ -112,7 +112,7 @@
 			</div>
 		</s:if>
 	
-		<a href="${add_employee}" class="add">
+		<a href="${add_employee}" class="add" id="addNewEmployee">
 			<s:text name="ManageEmployees.link.Add" />
 		</a>
 		<br />

@@ -203,13 +203,13 @@
 			
 			<fieldset class="form submit">
 				<div>
-					<input type="submit" class="picsbutton positive" name="button" value="Save"/>
+					<input type="submit" class="picsbutton positive" name="button" value="Save" id="save"/>
 					
 					<s:if test="category.subCategories.size == 0 && category.questions.size == 0">
-						<input type="submit" class="picsbutton negative" name="button" value="Delete" onclick="return confirm('Are you sure you want to delete this category?');" />
+						<input type="submit" class="picsbutton negative" name="button" value="Delete" onclick="return confirm('Are you sure you want to delete this category?');" id="delete" />
 					</s:if>
 					
-					<input type="submit" class="picsbutton" name="button" value="UpdateAllAuditsCategories"/>	
+					<input type="submit" class="picsbutton" name="button" value="UpdateAllAuditsCategories" id="updateAllAuditsCategories"/>	
 				</div>
 			</fieldset>
 		</s:form>
@@ -227,7 +227,7 @@
 					</s:iterator>
 				</ul>
 				
-				<a class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
+				<a id="addNewSubCategory" class="add" href="ManageCategory.action?button=AddNew&parentID=<s:property value="category.parentAuditType.id"/>&categoryParent.id=<s:property value="category.id" />">Add New Sub Category</a>
 				
 				<div id="list-info"></div>
 			</div>
@@ -244,7 +244,7 @@
 					</s:iterator>
 				</ul>
 				
-				<a class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
+				<a id="addNewQuestion" class="add" href="ManageQuestion.action?button=AddNew&parentID=<s:property value="category.id"/>&categoryParent.id=<s:property value="category.id"/>&question.category.id=<s:property value="category.id"/>">Add New Question</a>
 				
 				<div id="listQ-info"></div>
 			</div>
@@ -254,7 +254,7 @@
 			<div id="rules"></div>
 			
 			<pics:permission perm="ManageCategoryRules" type="Edit">
-				<a href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
+				<a id="addNewCategoryRule" href="CategoryRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="category.auditType.id" />&ruleAuditCategoryId=<s:property value="category.id" />" class="add">Add New Category Rule</a>
 			</pics:permission>
 		</s:if>
 	</body>

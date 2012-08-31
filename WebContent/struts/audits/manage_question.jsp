@@ -617,9 +617,9 @@
         	</s:if>
         	<fieldset class="form submit">
         		<div>
-        			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
-        			<input type="button" class="picsbutton" value="Copy" onclick="copyQuestion(<s:property value="id"/>)"/>
-        			<input type="button" class="picsbutton" value="Move" onclick="moveQuestion(<s:property value="id"/>)"/>
+        			<button id="save" class="picsbutton positive" name="button" type="submit" value="save">Save</button>
+        			<input type="button" id="copyQuestion" class="picsbutton" value="Copy" onclick="copyQuestion(<s:property value="id"/>)"/>
+        			<input type="button" id="moveQuestion" class="picsbutton" value="Move" onclick="moveQuestion(<s:property value="id"/>)"/>
         		<s:if test="question.id > 0">
         			<input type="submit" name="button" class="picsbutton negative" value="Delete"
         				onclick="return confirm('Are you sure you want to delete this question?');" />

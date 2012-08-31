@@ -344,13 +344,13 @@
             </fieldset>
             
             <fieldset class="form submit">
-                <input type="submit" class="picsbutton positive" name="button" value="Save"/>
-                
+                <input type="submit" class="picsbutton positive" name="button" value="Save" id="save" />
+
                 <s:if test="auditType.id > 0 && auditType.categories.size == 0">
-                    <input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete"/>
+                    <input id="deleteButton" type="submit" class="picsbutton negative" name="button" value="Delete" id="delete" />
                 </s:if>
                 
-                <input type="submit" class="picsbutton" name="button" value="UpdateAllAudits"/>
+                <input type="submit" class="picsbutton" name="button" value="UpdateAllAudits" id="updateAllAudits" />
             </fieldset>
         </div>
     </s:form>
@@ -401,7 +401,7 @@
         
         <pics:permission perm="EditFlagCriteria">
             <a href="ManageFlagCriteria!edit.action?criteria.displayOrder=999&criteria.dataType=boolean&criteria.comparison=%3d&criteria.defaultValue=false&criteria.allowCustomValue=false&criteria.requiredStatus=Complete&criteria.category=Paperwork&criteria.auditType=<s:property value="auditType.id" />&criteria.label=<s:property value="auditType.name" />&criteria.description=<s:property value="auditType.name" />%20is%20missing"
-                class="add">
+                class="add" id="manageFlagCriteria">
                 Add New Audit Type Flag Criteria
             </a>
         </pics:permission>
@@ -417,7 +417,7 @@
         
         <pics:permission perm="ManageAuditTypeRules" type="Edit" >
             <a href="AuditTypeRuleEditor.action?button=New&ruleAuditTypeId=<s:property value="id" />"
-                class="add">
+                class="add" id="auditTypeRuleEditor">
                 Add New Audit Type Rule
             </a>
         </pics:permission>

@@ -4,7 +4,7 @@
 
 <pics:permission perm="EditNotes" type="Edit">
 	<div>
-		<input type="button" class="picsbutton positive" name="button" onclick="noteEditor('<s:property value="id"/>', 0, 'edit');" value="<s:text name="VerifyView.button.AddNote" />" />
+		<input type="button" class="picsbutton positive" name="button" id="addNote" onclick="noteEditor('<s:property value="id"/>', 0, 'edit');" value="<s:text name="VerifyView.button.AddNote" />" />
 	</div>
 </pics:permission>
 
