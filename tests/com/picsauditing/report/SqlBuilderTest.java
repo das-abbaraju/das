@@ -11,6 +11,8 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AccountModel;
@@ -25,7 +27,11 @@ public class SqlBuilderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		permissions = EntityFactory.makePermission();
+		User user = new User(123);
+		user.setAccount(new Account());
+		user.getAccount().setId(1100);
+		
+		permissions = EntityFactory.makePermission(user);
 		builder = new SqlBuilder();
 		definition = new Definition();
 	}
@@ -100,6 +106,20 @@ public class SqlBuilderTest {
 		
 		assertContains("(YEAR(a.creationDate) > 2010)", sql.toString());
 		assertAllFiltersHaveFields();
+	}
+
+	@Test
+	public void testFilterMyAccount() throws Exception {
+		addFilter("accountID", QueryFilterOperator.CurrentAccount, null);
+		initializeSql();
+		assertContains("(a.id = 1100)", sql.toString());
+	}
+
+	@Test
+	public void testFilterMyUser() throws Exception {
+		addFilter("accountContactID", QueryFilterOperator.CurrentUser, null);
+		initializeSql();
+		assertContains("(accountContact.id = 123)", sql.toString());
 	}
 
 	@Test

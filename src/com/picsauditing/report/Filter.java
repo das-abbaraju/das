@@ -2,7 +2,6 @@ package com.picsauditing.report;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -263,6 +263,10 @@ public class Filter extends ReportElement implements JSONable {
 			return true;
 		if (operator == QueryFilterOperator.NotEmpty)
 			return true;
+		if (operator == QueryFilterOperator.CurrentAccount)
+			return true;
+		if (operator == QueryFilterOperator.CurrentUser)
+			return true;
 		if (values.isEmpty())
 			return false;
 
@@ -272,6 +276,20 @@ public class Filter extends ReportElement implements JSONable {
 		return true;
 	}
 
+	public void updateCurrentUser(Permissions permissions) {
+		if (operator == QueryFilterOperator.CurrentAccount) {
+			operator = QueryFilterOperator.Equals;
+			values.clear();
+			values.add(permissions.getAccountIdString());
+		}
+		
+		if (operator == QueryFilterOperator.CurrentUser) {
+			operator = QueryFilterOperator.Equals;
+			values.clear();
+			values.add(permissions.getUserIdString());
+		}
+	}
+	
 	public boolean isHasTranslations() {
 		if (field != null) {
 			FilterType filterType = field.getFilterType();

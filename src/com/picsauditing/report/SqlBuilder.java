@@ -170,6 +170,7 @@ public class SqlBuilder {
 			filter.addFieldCopy(availableFields);
 			
 			if (filter.isValid()) {
+				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {
 					havingFilters.add(filter);
 				} else {

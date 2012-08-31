@@ -8,6 +8,8 @@ public enum FilterType {
 	Date(ExtFieldType.Date),
 	DateTime(ExtFieldType.Date),
 	AccountName(ExtFieldType.String),
+	AccountID(ExtFieldType.Int),
+	UserID(ExtFieldType.Int),
 	DaysAgo(ExtFieldType.Int),
 	LowMedHigh,
 	Enum,

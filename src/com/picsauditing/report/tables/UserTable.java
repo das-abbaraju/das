@@ -13,7 +13,7 @@ public class UserTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer);
+		addField(prefix + "ID", alias + ".id", FilterType.UserID);
 
 		addFields(com.picsauditing.jpa.entities.User.class);
 	}

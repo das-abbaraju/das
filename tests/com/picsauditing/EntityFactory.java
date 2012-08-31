@@ -123,7 +123,7 @@ public class EntityFactory {
 		if (countries != null && countries.size() > 0) {
 			return countries;
 		}
-		countries = new HashMap();
+		countries = new HashMap<String, Country>();
 		countries.put("US", makeCountry("US", "United States"));
 		countries.put("FR", makeCountry("FR", "France"));
 		countries.put("AE", makeCountry("AE", "United Arab Emmerits"));
@@ -137,7 +137,7 @@ public class EntityFactory {
 		if (countrySubdivisions != null && countrySubdivisions.size() > 0) {
 			return countrySubdivisions;
 		}
-		countrySubdivisions = new HashMap();
+		countrySubdivisions = new HashMap<String, CountrySubdivision>();
 
 		Country unitedStates = mostCommonCountries().get("US");
 		countrySubdivisions.put("CA", makeCountrySubdivision("CA", unitedStates, "California"));
