@@ -34,18 +34,13 @@ public class Filter extends ReportElement implements JSONable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
 
-		if (operator != null) {
-			json.put("operator", operator.toString());
-		}
-		if (values.size() == 1) {
-			// Until the front end changes the JavaScript, we need this for
-			// backwards compatibility
-			json.put("value", values.get(0));
-		}
-		JSONArray valueArray = new JSONArray();
-		valueArray.addAll(values);
-		json.put("values", valueArray);
+		json.put("operator", operator.toString());
 
+		if (operator.isValueUsed()) {
+			JSONArray valueArray = new JSONArray();
+			valueArray.addAll(values);
+			json.put("values", valueArray);
+		}
 		return json;
 	}
 
@@ -214,7 +209,7 @@ public class Filter extends ReportElement implements JSONable {
 
 		if (fieldType.equals(ExtFieldType.String)) {
 			filterValue = Strings.escapeQuotes(filterValue);
-			
+
 			switch (operator) {
 			case NotBeginsWith:
 			case BeginsWith:
@@ -241,7 +236,7 @@ public class Filter extends ReportElement implements JSONable {
 		if (hasMethodWithDifferentFieldType()) {
 			fieldType = method.getType();
 		}
-		
+
 		if (fieldType == ExtFieldType.Auto) {
 			fieldType = ExtFieldType.String;
 		}
@@ -259,14 +254,9 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public boolean isValid() {
-		if (operator == QueryFilterOperator.Empty)
+		if (!operator.isValueUsed())
 			return true;
-		if (operator == QueryFilterOperator.NotEmpty)
-			return true;
-		if (operator == QueryFilterOperator.CurrentAccount)
-			return true;
-		if (operator == QueryFilterOperator.CurrentUser)
-			return true;
+
 		if (values.isEmpty())
 			return false;
 
@@ -278,18 +268,16 @@ public class Filter extends ReportElement implements JSONable {
 
 	public void updateCurrentUser(Permissions permissions) {
 		if (operator == QueryFilterOperator.CurrentAccount) {
-			operator = QueryFilterOperator.Equals;
 			values.clear();
 			values.add(permissions.getAccountIdString());
 		}
-		
+
 		if (operator == QueryFilterOperator.CurrentUser) {
-			operator = QueryFilterOperator.Equals;
 			values.clear();
 			values.add(permissions.getUserIdString());
 		}
 	}
-	
+
 	public boolean isHasTranslations() {
 		if (field != null) {
 			FilterType filterType = field.getFilterType();

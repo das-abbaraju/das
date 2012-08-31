@@ -39,8 +39,10 @@ public class FilterTest {
 		assertEquals(QueryFilterOperator.BeginsWith, filter.getOperator());
 		assertEquals("Trevor's", filter.getValues().get(0));
 
-		String expected = "\"name\":\"AccountName\",\"value\":\"Trevor's\",\"operator\":\"BeginsWith\"";
-		assertContains(expected, filter.toJSON(true).toJSONString());
+		String jsonString = filter.toJSON(true).toJSONString();
+		assertContains("\"name\":\"AccountName\"", jsonString);
+		assertContains("\"values\":[\"Trevor's\"]", jsonString);
+		assertContains("\"operator\":\"BeginsWith\"", jsonString);
 	}
 
 	@Test

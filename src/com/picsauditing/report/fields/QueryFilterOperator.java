@@ -39,4 +39,17 @@ public enum QueryFilterOperator {
 		
 		return true;
 	}
+	
+	public boolean isValueUsed() {
+		if (this == Empty)
+			return false;
+		if (this == NotEmpty)
+			return false;
+		if (this == CurrentUser)
+			return false;
+		if (this == CurrentUser)
+			return false;
+		
+		return true;
+	}
 }
