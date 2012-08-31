@@ -47,7 +47,7 @@ public class ContractorEditTest {
 	@Mock private BasicDAO basicDAO;
 	@Mock private HttpServletRequest mockRequest;
 	@Mock private AccountStatus accountStatus;
-    @Mock private AuditBuilder mockAuditBuilder;
+//    @Mock private AuditBuilder mockAuditBuilder;
     @Mock private ContractorAccountDAO mockContractorAccountDao;
     @Mock private ContractorValidator mockConValidator;
     @Mock private Permissions mockPermissions;
@@ -73,7 +73,7 @@ public class ContractorEditTest {
 
         classUnderTest = new ContractorEdit();
         classUnderTest.setContractor(mockContractor);
-        classUnderTest.auditBuilder = mockAuditBuilder;
+//        classUnderTest.auditBuilder = mockAuditBuilder;
         classUnderTest.contractorAccountDao = mockContractorAccountDao;
         classUnderTest.contractorValidator = mockConValidator;
         classUnderTest.userDAO = mockUserDao;
@@ -105,7 +105,7 @@ public class ContractorEditTest {
         // Now calls auditBuilder.buildAudits(contractor);
         classUnderTest.save();
 
-        verify(mockAuditBuilder).buildAudits(mockContractor);
+//        verify(mockAuditBuilder).buildAudits(mockContractor);
         verify(mockContractor).setQbSync(true);
         verify(mockContractor).incrementRecalculation();
         verify(mockContractor).setNameIndex();
