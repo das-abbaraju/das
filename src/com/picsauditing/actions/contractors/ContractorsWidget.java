@@ -24,11 +24,12 @@ public class ContractorsWidget extends PicsActionSupport {
 	}
 
 	public List<? extends BaseTable> getNewContractors() {
-		if(permissions.isAdmin()){
+		if (permissions.isAdmin()) {
 			return accountDao.findNewContractors(permissions, 20);
-		} else if(permissions.isOperatorCorporate()){
+		} else if (permissions.isOperatorCorporate()) {
 			return contractorOperatorDAO.findNewContractorOperators(permissions.getAccountId(), 10);
 		}
+
 		return null;
 	}
 }

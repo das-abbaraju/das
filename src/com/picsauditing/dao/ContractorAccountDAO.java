@@ -34,7 +34,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
 	private final Logger logger = LoggerFactory.getLogger(ContractorAccountDAO.class);
-	
+
 	public void remove(ContractorAccount row, String ftpDir) {
 		FileUtils.deleteFile(ftpDir + "/logos/" + row.getLogoFile());
 		String filename = "brochure_" + row.getId() + "." + row.getBrochureFile();
@@ -174,18 +174,25 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<ContractorAccount> findNewContractors(Permissions permissions, int limit) {
-		if (permissions == null)
+		if (permissions == null) {
 			return new ArrayList<ContractorAccount>();
+		}
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		String where = "1=1 ";
+
 		if (permissions.hasGroup(User.GROUP_CSR)) {
 			where = " auditor.id = " + permissions.getShadowedUserID();
 		}
+
+		where += " AND status IN ('Active', 'Pending', 'Demo')";
+
 		String hql = "FROM ContractorAccount contractorAccount WHERE " + where + " " + qb.toString()
 				+ " ORDER BY creationDate DESC";
+
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
+
 		return query.getResultList();
 	}
 
@@ -412,9 +419,9 @@ public class ContractorAccountDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<ContractorAccount> findPendingAccountsToDeactivate(){
-		String sql = "select * from accounts a join contractor_info c on a.id = c.id join users u on a.contactid = u.id join invoice i on a.id = i.accountID " +
-				"where a.status = 'PENDING' and i.status = 'Unpaid' and DATE(a.creationDate) < DATE_SUB(CURDATE(),INTERVAL 90 DAY) order by a.creationDate desc";
+	public List<ContractorAccount> findPendingAccountsToDeactivate() {
+		String sql = "select * from accounts a join contractor_info c on a.id = c.id join users u on a.contactid = u.id join invoice i on a.id = i.accountID "
+				+ "where a.status = 'PENDING' and i.status = 'Unpaid' and DATE(a.creationDate) < DATE_SUB(CURDATE(),INTERVAL 90 DAY) order by a.creationDate desc";
 		Query query = em.createNativeQuery(sql, ContractorAccount.class);
 		return query.getResultList();
 	}
