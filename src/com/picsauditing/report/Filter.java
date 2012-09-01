@@ -51,7 +51,7 @@ public class Filter extends ReportElement implements JSONable {
 		super.fromJSON(json);
 
 		parseOperator(json);
-
+		
 		JSONArray valuesJsonArray = (JSONArray) json.get("values");
 		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
 			for (Object value : valuesJsonArray) {
@@ -179,7 +179,8 @@ public class Filter extends ReportElement implements JSONable {
 
 		if (fieldType.equals(ExtFieldType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
-			return StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
+			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
+			return "'" + dateValue + "'";
 		}
 
 		if (fieldType.equals(ExtFieldType.Boolean)) {
