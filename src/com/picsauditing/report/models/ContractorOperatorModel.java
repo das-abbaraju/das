@@ -1,7 +1,7 @@
 package com.picsauditing.report.models;
 
 import java.util.List;
-
+import org.springframework.util.StringUtils;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.tables.ContractorOperatorTable;
@@ -26,11 +26,13 @@ public class ContractorOperatorModel extends AccountContractorModel {
 			String operatorVisibility = permissions.getAccountIdString();
 
 			if (permissions.isGeneralContractor()) {
-				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
+				operatorVisibility += Strings.implode(permissions.getLinkedClients()) + ",";
 			}
 			else if (permissions.isCorporate()) {
-				operatorVisibility += "," + Strings.implode(permissions.getOperatorChildren());
+				operatorVisibility = Strings.implode(permissions.getOperatorChildren()) + ",";
 			}
+			
+			operatorVisibility = StringUtils.trimTrailingCharacter(operatorVisibility, ',');
 
 			whereSql += " AND gc.genID IN (" + operatorVisibility + ")";
 		}
