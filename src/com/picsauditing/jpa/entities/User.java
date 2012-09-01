@@ -210,7 +210,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Column(name = "name", length = 255, nullable = false)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.String, width = 300)
+	@ReportField(filterType = FilterType.String, width = 150)
 	public String getName() {
 		return name;
 	}
@@ -351,7 +351,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Column(name = "phone", length = 50)
-	@ReportField(filterType = FilterType.String)
+	@ReportField(filterType = FilterType.String, width = 125)
 	public String getPhone() {
 		return phone;
 	}
@@ -371,7 +371,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Column(length = 15)
-	@ReportField(filterType = FilterType.String)
+	@ReportField(filterType = FilterType.String, width = 125)
 	public String getFax() {
 		return fax;
 	}

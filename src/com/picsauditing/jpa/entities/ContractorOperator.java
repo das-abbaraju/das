@@ -316,7 +316,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "waitingOn", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus)
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "WaitingOn")
 	public WaitingOn getWaitingOn() {
 		return waitingOn;
 	}
