@@ -215,7 +215,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "taxID", length = 100)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer, requiredPermissions = OpPerms.AllContractors)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -809,7 +809,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.AllContractors)
 	public boolean isRenew() {
 		return renew;
 	}
@@ -1371,7 +1371,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Enum)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Enum, requiredPermissions = OpPerms.AllContractors)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
 	}
