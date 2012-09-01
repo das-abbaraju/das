@@ -125,7 +125,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.Audits)
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.Audits, i18nKeyPrefix = "AuditTypeClass")
 	public AuditTypeClass getClassType() {
 		return classType;
 	}

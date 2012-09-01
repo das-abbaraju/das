@@ -24,9 +24,10 @@ public class FilterTest {
 		jsonObj.put("operator", "");
 
 		filter.fromJSON(jsonObj);
+		String filterJson = filter.toJSON(true).toJSONString();
 
-		String expected = "\"name\":\"accountID\",\"operator\":\"Equals\"";
-		assertContains(expected, filter.toJSON(true).toJSONString());
+		assertContains("\"name\":\"accountID\"", filterJson);
+		assertContains("\"operator\":\"Equals\"", filterJson);
 	}
 
 	@Test
@@ -40,6 +41,7 @@ public class FilterTest {
 		assertEquals("Trevor's", filter.getValues().get(0));
 
 		String jsonString = filter.toJSON(true).toJSONString();
+
 		assertContains("\"name\":\"AccountName\"", jsonString);
 		assertContains("\"values\":[\"Trevor's\"]", jsonString);
 		assertContains("\"operator\":\"BeginsWith\"", jsonString);
@@ -55,6 +57,7 @@ public class FilterTest {
 		filter.setFieldName("FieldName");
 		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
 		filter.setOperator(QueryFilterOperator.Empty);
+
 		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
 	}
 
@@ -63,7 +66,7 @@ public class FilterTest {
 		filter.setFieldName("FieldName");
 		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
 		filter.getValues().add("Trevor's");
-		
+
 		assertEquals("fieldName = 'Trevor\\'s'", filter.getSqlForFilter());
 	}
 }

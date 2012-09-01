@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,6 +41,13 @@ public class Filter extends ReportElement implements JSONable {
 			JSONArray valueArray = new JSONArray();
 			valueArray.addAll(values);
 			json.put("values", valueArray);
+
+			// Until we phase out the old code, we need this for backwards compatibility
+			if (values.size() == 1) {
+				json.put("value", values.get(0));
+			} else {
+				json.put("value", StringUtils.join(values, ","));
+			}
 		}
 		return json;
 	}
@@ -51,27 +59,8 @@ public class Filter extends ReportElement implements JSONable {
 		super.fromJSON(json);
 
 		parseOperator(json);
-		
-		JSONArray valuesJsonArray = (JSONArray) json.get("values");
-		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
-			for (Object value : valuesJsonArray) {
-				this.values.add(value.toString());
-			}
-		} else {
-			String value = (String) json.get("value");
-			if (!Strings.isEmpty(value)) {
-				logger.warn("Still using filter.value instead of filter.values");
-				// Until the front end changes the JavaScript and all the
-				// reports
-				// are converted, we need this for backwards compatibility
-				if (value.contains(",")) {
-					String[] valueSplit = value.split(",");
-					this.values.addAll(Arrays.asList(valueSplit));
-				} else {
-					this.values.add(value);
-				}
-			}
-		}
+
+		parseValues(json);
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -82,6 +71,39 @@ public class Filter extends ReportElement implements JSONable {
 		}
 
 		this.operator = QueryFilterOperator.valueOf(object.toString());
+	}
+
+	private void parseValues(JSONObject json) {
+		JSONArray valuesJsonArray = null;
+
+		try {
+			valuesJsonArray = (JSONArray) json.get("values");
+		} catch (ClassCastException cce) {
+			logger.warn("A filter's values field is not a JSONArray", cce);
+		} catch (Exception e) {
+			logger.warn("Old format report that doesn't have 'values' in filter for fieldName = {0}", fieldName);
+		}
+
+		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
+			for (Object value : valuesJsonArray) {
+				this.values.add(value.toString());
+			}
+		} else {
+			String value = (String) json.get("value");
+
+			if (Strings.isEmpty(value))
+				return;
+
+			logger.warn("Still using filter.value instead of filter.values");
+
+			if (value.contains(",")) {
+				logger.warn("Old style filter value found with commas separating multiple values. Until we phase out the old code, we need this for backwards compatibility");
+				String[] valueSplit = value.split(",");
+				this.values.addAll(Arrays.asList(valueSplit));
+			} else {
+				this.values.add(value);
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
