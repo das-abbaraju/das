@@ -110,9 +110,10 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testFilterMyAccount() throws Exception {
-		addFilter("accountID", QueryFilterOperator.CurrentAccount, null);
+		Filter filter = addFilter("accountID", QueryFilterOperator.CurrentAccount, null);
 		initializeSql();
 		assertContains("(a.id = 1100)", sql.toString());
+		assertEquals("CurrentAccount shouldn't change to Equals", QueryFilterOperator.CurrentAccount, filter.getOperator());
 	}
 
 	@Test
