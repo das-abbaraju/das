@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.Filter;
+import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.ContractorAuditOperatorTable;
 import com.picsauditing.util.Strings;
 
@@ -12,9 +13,14 @@ public class AccountContractorAuditOperatorModel extends AccountContractorAuditM
 		super();
 
 		ContractorAuditOperatorTable caoTable = new ContractorAuditOperatorTable();
+		caoTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(caoTable);
 
 		parentTable = caoTable;
+		
+		rootTable.getTable("account").includeRequiredAndAverageColumns();
+		rootTable.getTable("contractor").includeRequiredAndAverageColumns();
+		rootTable.removeJoin("accountContact");
 	}
 
 	@Override

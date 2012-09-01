@@ -11,6 +11,7 @@ public class AccountContractorModel extends AccountModel {
 		rootTable.removeField("accountType");
 
 		ContractorTable contractorTable = new ContractorTable(rootTable.getPrefix(), rootTable.getAlias());
+		contractorTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(contractorTable);
 
 		parentTable = contractorTable;

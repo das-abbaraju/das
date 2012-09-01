@@ -11,11 +11,23 @@ import com.picsauditing.report.tables.AbstractTable;
 
 public abstract class AbstractModel {
 
+	/**
+	 * The base table for the Highest Parent class. For example: AccountTable
+	 */
 	protected AbstractTable rootTable;
-	
-	// The value for this should always be reset to the current model's table so that subclasses can use its as its parent. 
+
+	/**
+	 * The value for this should always be reset to the current model's table so
+	 * that subclasses can use its as its parent. For example:
+	 * PaymentCommissionTable
+	 * 
+	 */
 	protected AbstractTable parentTable;
 	protected String defaultSort = null;
+	/**
+	 * All selectable fields that a user can query/filter/sort from on this
+	 * Model
+	 */
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 
 	public AbstractTable getRootTable() {

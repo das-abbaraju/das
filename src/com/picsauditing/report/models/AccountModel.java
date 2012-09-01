@@ -12,7 +12,7 @@ public class AccountModel extends AbstractModel {
 	public AccountModel() {
 		super();
 		rootTable = new AccountTable();
-		rootTable.addFields();
+		rootTable.includeAllColumns();
 		rootTable.addJoins();
 
 		defaultSort = rootTable.getAlias() + ".name";

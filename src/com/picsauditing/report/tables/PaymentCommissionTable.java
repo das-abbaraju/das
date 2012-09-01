@@ -14,6 +14,7 @@ public class PaymentCommissionTable extends AbstractTable {
 
 	public void addJoins() {
 		PaymentTable payment = new PaymentTable(prefix + "Payment", alias + ".paymentID");
+		payment.includeRequiredAndAverageColumns();
 		payment.setOverrideCategory(FieldCategory.Commission);
 		addLeftJoin(payment);
 	}

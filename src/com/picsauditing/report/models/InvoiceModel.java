@@ -7,8 +7,13 @@ public class InvoiceModel extends AccountContractorModel {
 		super();
 
 		InvoiceTable invoiceTable = new InvoiceTable(parentTable.getPrefix(), parentTable.getAlias());
+		invoiceTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(invoiceTable);
 
 		parentTable = invoiceTable;
+		
+		rootTable.removeJoin("accountNaics");
+		rootTable.removeJoin("contractorPQF");
+		rootTable.getTable("contractorCustomerService").includeOnlyRequiredColumns();
 	}
 }

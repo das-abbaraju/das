@@ -136,6 +136,7 @@ public class ReportModel {
 	 * which we've decided to walk recursively.
 	 */
 	private static void addAllAvailableFields(Map<String, Field> availableFields, AbstractTable table) {
+		table.addFields();
 		availableFields.putAll(table.getAvailableFields());
 
 		for (AbstractTable joinTable : table.getJoins()) {

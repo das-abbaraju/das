@@ -2,13 +2,18 @@ package com.picsauditing.report.tables;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
+import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
@@ -23,16 +28,20 @@ public abstract class AbstractTable {
 	protected String parentAlias;
 	protected String onClause;
 	protected FieldCategory overrideCategory;
+	protected FieldImportance includedColumnImportance = FieldImportance.Required;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	protected List<AbstractTable> joinedTables = new ArrayList<AbstractTable>();
 
+	private static final Logger logger = LoggerFactory.getLogger(AbstractTable.class);
+	
 	public AbstractTable(String tableName, String prefix, String alias, String onClause) {
 		this.tableName = tableName;
 		this.prefix = prefix;
 		this.alias = alias;
 		this.onClause = onClause;
 
-		addFields();
+		// We need to wait to add the fields until they tell us how important this table is
+		// addFields();
 	}
 
 	public abstract void addFields();
@@ -95,6 +104,22 @@ public abstract class AbstractTable {
 		this.overrideCategory = overrideCategory;
 	}
 
+	public FieldImportance getIncludedColumnImportance() {
+		return includedColumnImportance;
+	}
+
+	public void includeOnlyRequiredColumns() {
+		this.includedColumnImportance = FieldImportance.Required;
+	}
+
+	public void includeRequiredAndAverageColumns() {
+		this.includedColumnImportance = FieldImportance.Average;
+	}
+
+	public void includeAllColumns() {
+		this.includedColumnImportance = FieldImportance.Low;
+	}
+
 	public String getOnClause() {
 		return onClause;
 	}
@@ -104,17 +129,7 @@ public abstract class AbstractTable {
 	}
 
 	public Map<String, Field> getAvailableFields() {
-		overrideExistingCategories();
-		
 		return availableFields;
-	}
-
-	private void overrideExistingCategories() {
-		if (overrideCategory != null) {
-			for (String fieldName : availableFields.keySet()) {
-				availableFields.get(fieldName).setCategory(overrideCategory);
-			}
-		}
 	}
 
 	public void removeField(String name) {
@@ -138,7 +153,8 @@ public abstract class AbstractTable {
 	// Method chaining should only be for a single class
 	protected Field addField(String fieldName, String sql, FilterType filter) {
 		Field field = new Field(fieldName, sql, filter);
-		
+		overrideCategory(field);
+
 		// We don't want to be case sensitive when matching names
 		availableFields.put(fieldName.toUpperCase(), field);
 		return field;
@@ -159,18 +175,36 @@ public abstract class AbstractTable {
 		return table;
 	}
 
-	public AbstractTable addAllFieldsAndJoins(AbstractTable table) {
+	public void addAllFieldsAndJoins(AbstractTable table) {
 		joinedTables.add(table);
-		table.addFields();
+		// TODO rename this method to addAllJoinsPlusOneMoreLevel()
+		// table.addFields();
 		table.addJoins();
-
-		return table;
 	}
 
 	public void addFields(@SuppressWarnings("rawtypes") Class clazz) {
 		for (Field field : JpaFieldExtractor.addFields(clazz, prefix, alias)) {
-			availableFields.put(field.getName().toUpperCase(), field);
+			if (importantEnough(field)) {
+				overrideCategory(field);
+				availableFields.put(field.getName().toUpperCase(), field);
+			}
 		}
+	}
+
+	private void overrideCategory(Field field) {
+		if (overrideCategory != null) {
+			field.setCategory(overrideCategory);
+		}
+	}
+
+	private boolean importantEnough(Field field) {
+		boolean importantEnough = includedColumnImportance.ordinal() <= field.getImportance().ordinal();
+		if (importantEnough) {
+			logger.debug("Including " + tableName + "." + field.getName());
+		} else {
+			logger.debug("  Excluding " + tableName + "." + field.getName());
+		}
+		return importantEnough;
 	}
 
 	public boolean isJoinNeeded(Definition definition) {
@@ -190,7 +224,7 @@ public abstract class AbstractTable {
 				if (column.getFieldNameWithoutMethod().equals(field.getName()))
 					return true;
 			}
-			
+
 			for (Filter filter : definition.getFilters()) {
 				if (filter.getFieldName().equals(field.getName()))
 					return true;
@@ -204,7 +238,7 @@ public abstract class AbstractTable {
 
 		return false;
 	}
-	
+
 	public String getJoinSql() {
 		String joinExpression = "";
 
@@ -219,4 +253,28 @@ public abstract class AbstractTable {
 		return joinExpression;
 	}
 
+	public void removeJoin(String prefix) {
+		Iterator<AbstractTable> iterator = getJoins().iterator();
+		while(iterator.hasNext()) {
+			AbstractTable table = iterator.next();
+			if (table.getPrefix().equals(prefix)) {
+				iterator.remove();
+				return;
+			}
+			table.removeJoin(prefix);
+		}
+	}
+
+	public AbstractTable getTable(String prefix) {
+		if (this.getPrefix().equals(prefix)) {
+			return this;
+		}
+		for (AbstractTable table : getJoins()) {
+			AbstractTable foundTable = table.getTable(prefix);
+			if (foundTable != null) {
+				return foundTable;
+			}
+		}
+		return null;
+	}
 }

@@ -12,9 +12,10 @@ public class InvoiceCommissionTable extends AbstractTable {
 		addFields(com.picsauditing.jpa.entities.InvoiceCommission.class);
 	}
 
-	public void addJoins() { 
+	public void addJoins() {
 		UserTable recipient = new UserTable(prefix + "RecipientUser", alias + ".userID");
 		recipient.setOverrideCategory(FieldCategory.Commission);
+		recipient.includeOnlyRequiredColumns();
 		addLeftJoin(recipient);
 	}
 }

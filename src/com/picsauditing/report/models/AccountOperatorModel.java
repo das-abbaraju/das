@@ -10,9 +10,12 @@ public class AccountOperatorModel extends AccountModel {
 		rootTable.removeField("accountType");
 
 		OperatorTable operatorTable = new OperatorTable(rootTable.getPrefix(), rootTable.getAlias());
+		operatorTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(operatorTable);
 
 		parentTable = operatorTable;
+		
+		rootTable.getTable("accountNaics").includeOnlyRequiredColumns();
 	}
 
 }

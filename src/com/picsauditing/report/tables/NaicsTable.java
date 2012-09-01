@@ -2,12 +2,9 @@ package com.picsauditing.report.tables;
 
 public class NaicsTable extends AbstractTable {
 
-	public NaicsTable(String prefix, String alias, String foreignKey) {
-		super("naics", prefix, alias, alias + ".code = " + foreignKey);
-	}
-
 	public NaicsTable(String alias, String foreignKey) {
 		super("naics", alias, alias, alias + ".code = " + foreignKey);
+		includedColumnImportance = FieldImportance.Average;
 	}
 
 	public void addFields() {

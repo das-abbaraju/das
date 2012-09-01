@@ -7,6 +7,7 @@ public class PaymentCommissionModel extends InvoiceCommissionModel {
 		super();
 		
 		PaymentCommissionTable paymentCommissionTable = new PaymentCommissionTable(parentTable.getPrefix(), parentTable.getAlias());
+		paymentCommissionTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(paymentCommissionTable);
 
 		parentTable = paymentCommissionTable;

@@ -17,20 +17,17 @@ public class ContractorTable extends AbstractTable {
 
 		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.AccountInformation).setWidth(80);
 
-		Field contractorName;
-		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName).setCategory(FieldCategory.AccountInformation);
+		Field contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName).setCategory(FieldCategory.AccountInformation);
 		contractorName.setUrl("ContractorView.action?id={" + prefix + "ID}");
 		contractorName.setWidth(300);
 
 		// TODO Remove eventually
-		Field contractorEdit;
-		contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
+		Field contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
 		contractorEdit.setUrl("ContractorEdit.action?id={" + prefix + "ID}");
 		contractorEdit.setWidth(100);
 
 		// TODO Remove eventually
-		Field contractorAudits;
-		contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
+		Field contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
 		contractorAudits.setUrl("ContractorDocuments.action?id={" + prefix + "ID}");
 		contractorAudits.setWidth(100);
 	}

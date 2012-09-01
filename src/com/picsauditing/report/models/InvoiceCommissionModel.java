@@ -7,8 +7,14 @@ public class InvoiceCommissionModel extends InvoiceModel {
 		super();
 		
 		InvoiceCommissionTable invoiceCommissionTable = new InvoiceCommissionTable(parentTable.getPrefix(), parentTable.getAlias());
+		invoiceCommissionTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(invoiceCommissionTable);
 
 		parentTable = invoiceCommissionTable;
+		
+		rootTable.getTable("account").includeRequiredAndAverageColumns();
+		rootTable.removeJoin("accountContact");
+		rootTable.getTable("contractor").includeRequiredAndAverageColumns();
+		rootTable.removeJoin("contractorCustomerService");
 	}
 }

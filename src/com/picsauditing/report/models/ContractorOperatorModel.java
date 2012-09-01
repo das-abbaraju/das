@@ -12,6 +12,7 @@ public class ContractorOperatorModel extends AccountContractorModel {
 		super();
 		
 		ContractorOperatorTable contractorOperatorTable = new ContractorOperatorTable(rootTable.getPrefix(), rootTable.getAlias());
+		contractorOperatorTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(contractorOperatorTable);
 		
 		parentTable = contractorOperatorTable;
