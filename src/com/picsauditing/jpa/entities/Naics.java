@@ -6,6 +6,7 @@ import javax.persistence.Id;
 
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -16,7 +17,7 @@ public class Naics implements java.io.Serializable {
 
 	@Id
 	@Column(nullable = false, length = 6)
-	@ReportField(category = FieldCategory.Classification)
+	@ReportField(category = FieldCategory.Classification, importance = FieldImportance.Required)
 	public String getCode() {
 		return code;
 	}
@@ -25,7 +26,7 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics)
+	@ReportField(category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
 	public float getTrir() {
 		return trir;
 	}
@@ -34,7 +35,7 @@ public class Naics implements java.io.Serializable {
 		this.trir = trir;
 	}
 
-	@ReportField(category = FieldCategory.CompanyStatistics)
+	@ReportField(category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
 	public float getLwcr() {
 		return lwcr;
 	}

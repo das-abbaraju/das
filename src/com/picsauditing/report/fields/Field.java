@@ -16,6 +16,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 
@@ -44,6 +45,7 @@ public class Field implements JSONAware {
 	private String preTranslation;
 	private String postTranslation;
 	private OpPerms requiredPermission;
+	private FieldImportance importance = FieldImportance.Low;
 
 	/**
 	 * Currently autocomplete is only supported via entity annotations
@@ -60,6 +62,7 @@ public class Field implements JSONAware {
 		visible = annotation.visible();
 		filterable = annotation.filterable();
 		sortable = annotation.sortable();
+		importance = annotation.importance();
 	}
 
 	public Field(String name, String databaseColumnName, FilterType filterType) {
@@ -328,7 +331,7 @@ public class Field implements JSONAware {
 	public String getPostTranslation() {
 		return postTranslation;
 	}
-	
+
 	public boolean isVisible() {
 		return visible;
 	}
@@ -352,6 +355,14 @@ public class Field implements JSONAware {
 	public void setSortable(boolean sortable) {
 		this.sortable = sortable;
 	}
+	
+	public FieldImportance getImportance() {
+		return importance;
+	}
+
+	public void setImportance(FieldImportance importance) {
+		this.importance = importance;
+	}
 
 	public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, filterType);
@@ -370,6 +381,12 @@ public class Field implements JSONAware {
 		copiedField.preTranslation = preTranslation;
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;
+		copiedField.importance = importance;
 		return copiedField;
+	}
+
+	@Override
+	public String toString() {
+		return category + ": " + name;
 	}
 }

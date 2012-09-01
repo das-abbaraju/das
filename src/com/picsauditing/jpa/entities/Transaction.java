@@ -19,6 +19,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 
 @Entity
 @Table(name = "invoice")
@@ -43,7 +44,7 @@ public abstract class Transaction extends BaseTable {
 		this.account = account;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Required)
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -52,7 +53,7 @@ public abstract class Transaction extends BaseTable {
 		this.totalAmount = totalAmount;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public BigDecimal getAmountApplied() {
 		return amountApplied;
 	}
@@ -101,7 +102,7 @@ public abstract class Transaction extends BaseTable {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, i18nKeyPrefix = "TransactionStatus")
+	@ReportField(filterType = FilterType.Enum, i18nKeyPrefix = "TransactionStatus", importance = FieldImportance.Average)
 	public TransactionStatus getStatus() {
 		return status;
 	}
@@ -111,7 +112,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.String)
+	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.String, importance = FieldImportance.Required)
 	public Currency getCurrency() {
 		return currency;
 	}

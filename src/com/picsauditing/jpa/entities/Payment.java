@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.braintree.CreditCard;
 
 @Entity
@@ -30,7 +31,7 @@ public class Payment extends Transaction {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum)
+	@ReportField(filterType = FilterType.Enum, importance = FieldImportance.Average)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}

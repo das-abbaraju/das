@@ -10,6 +10,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.AutocompleteType;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 
 @Target(METHOD)
 @Retention(RUNTIME)
@@ -39,4 +40,5 @@ public @interface ReportField {
 
 	OpPerms requiredPermissions() default OpPerms.None;
 
+	FieldImportance importance() default FieldImportance.Low;
 }

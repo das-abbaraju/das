@@ -37,6 +37,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
@@ -151,7 +152,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits)
+	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits, importance = FieldImportance.Required)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -161,6 +162,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits, importance = FieldImportance.Required)
 	public Date getEffectiveDate() {
 		return effectiveDate;
 	}

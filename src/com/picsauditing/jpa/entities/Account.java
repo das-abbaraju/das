@@ -38,6 +38,7 @@ import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.AutocompleteType;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
@@ -120,7 +121,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "name", nullable = false, length = 50)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation)
+	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required)
 	public String getName() {
 		return this.name;
 	}
@@ -144,7 +145,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "dbaName", length = 400)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation)
+	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Average)
 	public String getDbaName() {
 		return dbaName;
 	}
@@ -185,7 +186,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "city", length = 35)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
-	@ReportField(category = FieldCategory.ContactInformation)
+	@ReportField(category = FieldCategory.ContactInformation, importance = FieldImportance.Average)
 	public String getCity() {
 		return this.city;
 	}
@@ -376,7 +377,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.AccountInformation, i18nKeyPrefix = "AccountStatus")
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.AccountInformation, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Average)
 	public AccountStatus getStatus() {
 		return status;
 	}

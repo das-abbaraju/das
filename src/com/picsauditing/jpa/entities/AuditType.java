@@ -27,6 +27,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -115,7 +116,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Transient
-	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits)
+	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits, importance = FieldImportance.Required)
 	public TranslatableString getName() {
 		return this.name;
 	}
@@ -125,7 +126,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.Audits, i18nKeyPrefix = "AuditTypeClass")
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.Audits, i18nKeyPrefix = "AuditTypeClass", importance = FieldImportance.Required)
 	public AuditTypeClass getClassType() {
 		return classType;
 	}
