@@ -25,7 +25,7 @@ public class AccountTable extends AbstractTable {
 
 	public void addJoins() {
 		UserTable primaryContact = new UserTable(prefix + "Contact", alias + ".contactID");
-		primaryContact.setOverrideCategory(FieldCategory.AccountInformation);
+		primaryContact.setOverrideCategory(FieldCategory.ContactInformation);
 		addLeftJoin(primaryContact);
 		
 		NaicsTable naicsStatistics = new NaicsTable(prefix + "Naics", alias + ".naics");
