@@ -184,14 +184,14 @@ public class AuditBuilder {
 	private boolean foundCurrentYearWCB(ContractorAudit audit) {
 		if (Strings.isEmpty(audit.getAuditFor())) { // TODO: remove this once all the WCBs have consistent auditFor
 			return true;
-		} else if (findAllWCBAuditYears(audit.getContractorAccount()).contains(DateBean.getWCBYear())) {
+		} else if (findAllWCBAuditYears(audit.getContractorAccount(), audit).contains(DateBean.getWCBYear())) {
 			return true;
 		}
 		
 		return false;
 	}
 	
-	private List<String> findAllWCBAuditYears(ContractorAccount contractor) {
+	private List<String> findAllWCBAuditYears(ContractorAccount contractor, ContractorAudit wcbAudit) {
 		List<String> years = new ArrayList<String>();
 		List<ContractorAudit> audits = contractor.getAudits();
 		if (CollectionUtils.isEmpty(audits)) {
@@ -199,7 +199,7 @@ public class AuditBuilder {
 		}
 		
 		for (ContractorAudit audit : audits) {
-			if (isAuditWCB(audit)) {
+			if (isMatchingWCBAudit(audit, wcbAudit)) {
 				years.add(audit.getAuditFor());
 			}
 		}
@@ -207,8 +207,11 @@ public class AuditBuilder {
 		return years;
 	}
 
-	private boolean isAuditWCB(ContractorAudit audit) {
-		return audit != null && audit.getAuditType() != null && AuditType.CANADIAN_PROVINCES.contains(audit.getAuditType().getId());
+	private boolean isMatchingWCBAudit(ContractorAudit audit, ContractorAudit wcbAudit) {
+		return audit != null 
+				&& audit.getAuditType() != null 
+				&& AuditType.CANADIAN_PROVINCES.contains(audit.getAuditType().getId())
+				&& (audit.getAuditType().getId() == wcbAudit.getAuditType().getId());
 	}
 	
 	private boolean isValidAudit(ContractorAudit conAudit) {
