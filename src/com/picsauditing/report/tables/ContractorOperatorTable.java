@@ -15,5 +15,7 @@ public class ContractorOperatorTable extends AbstractTable {
 
 	@Override
 	public void addJoins() {
+		AccountTable operator = new AccountTable(prefix + "Operator", alias + ".genID");
+		addLeftJoin(operator);
 	}
 }

@@ -5,7 +5,7 @@
                 var that = this;
                 var processing = false;
                 
-                if ($('#ScheduleAudit__page').length) {
+                if ($('#ScheduleAudit_edit_page').length) {
                     var form = $('.schedule-audit-edit-form');
                     
                     // show expedite warning

@@ -17,6 +17,8 @@ import net.objectlab.kit.datecalc.common.DateCalculator;
 import net.objectlab.kit.datecalc.common.HolidayHandlerType;
 import net.objectlab.kit.datecalc.joda.LocalDateKitCalculatorsFactory;
 
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -719,14 +721,21 @@ public class DateBean {
 			return sunday.getTime();
 	}
 
-	public static boolean dateIsWithinNumberOfBusinessDays(LocalDate selectedDate, int numOfBusinessDays) {
-		DateCalculator<LocalDate> cal = LocalDateKitCalculatorsFactory.getDefaultInstance().getDateCalculator("US",
-				HolidayHandlerType.FORWARD);
+	public static int BusinessDaysBetween(LocalDate startDate, LocalDate endDate) {
+		int calendarDaysBetween = Days.daysBetween(startDate, endDate).getDays();
+		int workDays = 0;
 
-		cal.setStartDate(new LocalDate());
+		if (calendarDaysBetween < 0)
+			return 0;
 
-		LocalDate todayPlusNumOfBusinessDaysFromNow = cal.moveByDays(numOfBusinessDays).getCurrentBusinessDate();
+		do {
+			startDate = startDate.plusDays(1);
+			if (startDate.getDayOfWeek() != DateTimeConstants.SATURDAY
+					&& startDate.getDayOfWeek() != DateTimeConstants.SUNDAY) {
+				workDays++;
+			}
+		} while (startDate.isBefore(endDate));
 
-		return selectedDate.isBefore(todayPlusNumOfBusinessDaysFromNow);
+		return workDays;
 	}
 }
