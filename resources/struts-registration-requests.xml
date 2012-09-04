@@ -60,6 +60,7 @@
 		<action name="RequestNewContractorAccount" class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
 			<result>/struts/contractors/request/request_new_contractor.jsp</result>
 			<result name="input">/struts/contractors/request/request_new_contractor.jsp</result>
+			<result name="email">/struts/contractors/request/email_preview.jsp</result>
 		</action>
 		
 		<action name="DataConversionRequestAccount" class="com.picsauditing.actions.DataConversionRequestAccount">

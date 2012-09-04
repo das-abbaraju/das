@@ -339,7 +339,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	@Transient
 	public void generateHash() {
 		Date now = new Date();
-		setRegistrationHash(Strings.hash("request" + getId() + now.toString()));
+		setRegistrationHash(Strings.hashUrlSafe("request" + getId() + now.toString()));
 	}
 
 	@Deprecated

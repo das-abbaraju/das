@@ -9,6 +9,25 @@
 	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
 	
+	<style type="text/css">
+		#email_preview_modal th
+		{
+			font-weight: bold;
+		}
+		
+		#email_preview_modal th,
+		#email_preview_modal td
+		{
+			padding: 5px;
+		}
+		
+		#email_preview_modal #email_body
+		{
+			background-color: #EEE;
+			border: 1px solid #DDD;
+		}
+	</style>
+	
 	<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js?v=${version}"></script>
 	<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js?v=${version}"></script>
 </head>
@@ -51,7 +70,7 @@
 			</div>
 		</s:if>
 		
-		<s:form action="RequestNewContractorAccount" validate="true">
+		<s:form action="RequestNewContractorAccount" validate="true" id="request_form">
 			<s:hidden name="requestedContractor" />
 			<s:hidden name="requestRelationship" />
 			<s:hidden name="primaryContact" />
@@ -204,11 +223,6 @@
 						</s:if>
 					</li>
 					<li>
-						<a href="#email_preview" class="preview fancybox">
-							<s:text name="RequestNewContractor.PreviewEmail" />
-						</a>
-					</li>
-					<li>
 						<s:textfield
 							cssClass="datepicker"
 							id="regDate"
@@ -232,6 +246,11 @@
 							<s:include value="operator_tags.jsp" />
 						</li>
 					</s:if>
+					<li>
+						<a href="javascript:;" id="email_preview" class="preview">
+							<s:text name="RequestNewContractor.PreviewEmail" />
+						</a>
+					</li>
 				</ol>
 			</fieldset>
 			

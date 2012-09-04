@@ -157,9 +157,9 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testGetEmailPreview() throws Exception {
-		verify(emailBuilder).build();
-	}
+		public void testEmailPreview() throws Exception {
+			verify(emailBuilder).build();
+		}
 
 	@Test
 	public void testGetContractorLetter() throws Exception {

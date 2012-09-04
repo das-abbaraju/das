@@ -7,6 +7,7 @@
                 if (element.length) {
                     element.delegate('#city', 'keyup', this.toggleAddressZip);
                     element.delegate('#country', 'change', this.loadCountrySubdivision);
+                    element.delegate('#email_preview', 'click', this.previewEmail);
                     element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
                     element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
                     
@@ -35,7 +36,7 @@
                 }
             },
             
-            loadCountrySubdivision: function (event) {
+            loadCountrySubdivision: function(event) {
                 var isocode = $(this).val();
                 
                 if (isocode.trim()) {
@@ -55,7 +56,7 @@
                 }
             },
             
-            loadOperatorUsersAndTags: function (event) {
+            loadOperatorUsersAndTags: function(event) {
                 var opID = $(this).val();
                 
                 PICS.ajax({
@@ -79,7 +80,25 @@
                 });
             },
             
-            toggleAddressZip: function (event) {
+            previewEmail: function(event) {
+                var formData = $('#request_form').serialize();
+                
+                PICS.ajax({
+                    url: 'RequestNewContractorAccount!emailPreview.action',
+                    data: formData,
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        var modal = PICS.modal({
+                            width: 800,
+                            title: translate('JS.button.Preview'),
+                            content: data
+                        });
+                        
+                        modal.show();
+                    }
+                });
+            },
+            
+            toggleAddressZip: function(event) {
                 var city = $(this).val();
                 
                 if (city) {
@@ -89,7 +108,7 @@
                 }
             },
             
-            toggleOtherTextfield: function (event) {
+            toggleOtherTextfield: function(event) {
                 if ($(this).val() > 0) {
                     $('#requesting_other').hide();
                 } else {

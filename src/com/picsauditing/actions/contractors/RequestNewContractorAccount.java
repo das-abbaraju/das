@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -42,10 +41,10 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorAccount extends ContractorActionSupport {
-	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
-
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
+	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
@@ -55,9 +54,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 	@Autowired
-	private ContractorRegistrationRequestDAO requestDAO;
-	@Autowired
 	private UserSwitchDAO userSwitchDAO;
+
+	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
 
 	private final int EMAIL_TEMPLATE = 259;
 
@@ -68,10 +67,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private List<OperatorTag> operatorTags;
 	private List<OperatorTag> requestedTags;
 
-	private OperatorTag[] remainingOperatorTags;
-	private OperatorTag[] selectedRequestedTags;
-
 	// Email
+	private EmailQueue email = new EmailQueue();
 	private EmailBuilder emailBuilder = new EmailBuilder();
 
 	@Override
@@ -93,22 +90,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestedContractor.setRequestedBy(requestedBy);
 		requestRelationship.setOperatorAccount(requestedBy);
 
-		setRequiredFieldsAndSaveEntities(newRequest);
-		ContractorRegistrationRequest legacyRequest = saveLegacyRequest(requestedBy);
-
-		if (newRequest) {
-			EmailQueue email = buildEmail();
-			email.setContractorAccount(requestedContractor);
-			emailSender.send(email);
-			requestedContractor.getFirstRegistrationRequest().contactByEmail();
-			requestedContractor.getFirstRegistrationRequest().setLastContactedByAutomatedEmailDate(new Date());
-
-			addContractorLetterAttachmentTo(email);
-			addNote(legacyRequest);
-		}
-
-		setOperatorTags();
-		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
+		saveRequestComponentsAndEmailIfNew(newRequest, requestedBy);
 
 		addActionMessage(getText("RequestNewContractor.SuccessfullySaved"));
 		return setUrlForRedirect("RequestNewContractorAccount.action?requestedContractor="
@@ -118,6 +100,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@SkipValidation
 	public String load() {
 		return SUCCESS;
+	}
+
+	@SkipValidation
+	public String emailPreview() throws Exception {
+		email = buildEmail();
+
+		return "email";
 	}
 
 	public ContractorAccount getRequestedContractor() {
@@ -168,24 +157,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		this.requestedTags = requestedTags;
 	}
 
-	public OperatorTag[] getRemainingOperatorTags() {
-		return remainingOperatorTags;
-	}
-
-	public void setRemainingOperatorTags(OperatorTag[] remainingOperatorTags) {
-		this.remainingOperatorTags = remainingOperatorTags;
-	}
-
-	public OperatorTag[] getSelectedRequestedTags() {
-		return selectedRequestedTags;
-	}
-
-	public void setSelectedRequestedTags(OperatorTag[] selectedRequestedTags) {
-		this.selectedRequestedTags = selectedRequestedTags;
-	}
-
-	public String getEmailPreview() {
-		return null;
+	public EmailQueue getEmail() {
+		return email;
 	}
 
 	public boolean isContactable() {
@@ -278,6 +251,27 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		operatorTags.removeAll(requestedTags);
 	}
 
+	// TODO: Find how to make this transactional so if one part fails the other
+	// components do NOT get merged/persisted
+	private void saveRequestComponentsAndEmailIfNew(boolean newRequest, OperatorAccount requestedBy) throws Exception {
+		setRequiredFieldsAndSaveEntities(newRequest);
+		ContractorRegistrationRequest legacyRequest = saveLegacyRequest(requestedBy);
+
+		if (newRequest) {
+			email = buildEmail();
+			email.setContractorAccount(requestedContractor);
+			emailSender.send(email);
+			requestedContractor.getFirstRegistrationRequest().contactByEmail();
+			requestedContractor.getFirstRegistrationRequest().setLastContactedByAutomatedEmailDate(new Date());
+
+			addContractorLetterAttachmentTo(email);
+			addNote(legacyRequest);
+		}
+
+		setOperatorTags();
+		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
+	}
+
 	private ContractorRegistrationRequest saveLegacyRequest(OperatorAccount requestedBy) {
 		ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
 
@@ -367,14 +361,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestRelationship = (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
 	}
 
-	private EmailQueue buildEmail() throws IOException {
+	private EmailQueue buildEmail() throws Exception {
 		User info = userDAO.find(User.INFO_AT_PICSAUDITING);
 
 		emailBuilder.setTemplate(EMAIL_TEMPLATE);
-		emailBuilder.setToAddresses(requestedContractor.getPrimaryContact().getEmail());
+		emailBuilder.setToAddresses(primaryContact.getEmail());
 		emailBuilder.setFromAddress(info);
 		emailBuilder.addToken("requestedContractor", requestedContractor);
 		emailBuilder.addToken("requestRelationship", requestRelationship);
+		emailBuilder.addToken("primaryContact", primaryContact);
 
 		return emailBuilder.build();
 	}
