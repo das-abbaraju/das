@@ -116,7 +116,6 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Transient
-	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits, importance = FieldImportance.Required)
 	public TranslatableString getName() {
 		return this.name;
 	}

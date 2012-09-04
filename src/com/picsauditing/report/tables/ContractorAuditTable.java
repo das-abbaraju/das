@@ -19,6 +19,7 @@ public class ContractorAuditTable extends AbstractTable {
 		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String).setCategory(FieldCategory.Audits);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
+		auditTypeName.setImportance(FieldImportance.Required);
 		auditTypeName.setWidth(200);
 	}
 
