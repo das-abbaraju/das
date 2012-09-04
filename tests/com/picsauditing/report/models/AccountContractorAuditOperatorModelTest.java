@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
@@ -14,6 +15,7 @@ import com.picsauditing.report.fields.Field;
 
 public class AccountContractorAuditOperatorModelTest {
 	@Test
+	@Ignore
 	public void testAvailableFields() throws Exception {
 		AccountContractorAuditOperatorModel model = new AccountContractorAuditOperatorModel();
 		Permissions permissions = EntityFactory.makePermission();
