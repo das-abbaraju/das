@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.annotations.ReportField;
@@ -119,23 +120,35 @@ public class Field implements JSONAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	public JSONObject renderEnumFieldAsJson(Locale locale) {
+	public JSONObject renderEnumFieldAsJson(Permissions permissions) {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
 
 		for (Object enumValue : fieldClass.getEnumConstants()) {
-			JSONObject enumAsJson = new JSONObject();
-			enumAsJson.put("key", enumValue.toString());
+			String key = enumValue.toString();
+			AccountStatus keyStatus = null;
 
-			String translationKey = fieldClass.getSimpleName().toString() + "." + enumValue.toString();
-			String translatedString = ReportUtil.getText(translationKey, locale);
-
-			if (translatedString == null) {
-				translatedString = enumValue.toString();
+			try {
+				keyStatus = AccountStatus.valueOf(key);
 			}
+			catch (IllegalArgumentException iae) {
+				
+			}
+			
+			if (keyStatus == null || keyStatus.canSee(permissions)) {
+				JSONObject enumAsJson = new JSONObject();
+				enumAsJson.put("key", key);
 
-			enumAsJson.put("value", translatedString);
-			jsonArray.add(enumAsJson);
+				String translationKey = fieldClass.getSimpleName().toString() + "." + key;
+				String translatedString = ReportUtil.getText(translationKey, permissions.getLocale());
+
+				if (translatedString == null) {
+					translatedString = key;
+				}
+
+				enumAsJson.put("value", translatedString);
+				jsonArray.add(enumAsJson);
+			}
 		}
 
 		json.put("result", jsonArray);
