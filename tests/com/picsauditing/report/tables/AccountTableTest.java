@@ -8,7 +8,6 @@ import org.junit.Test;
 
 public class AccountTableTest {
 
-	@Ignore
 	@Test
 	public void testAccountFields() {
 		AccountTable accountTable = new AccountTable();
