@@ -33,12 +33,12 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class ContractorCronTest {
 	
 	@Mock private Database databaseForTesting;
-	@Mock private FeatureToggleChecker featureToggleChecker;
+	@Mock private FeatureToggle featureToggleChecker;
 	@Mock private ContractorAccountDAO contractorDAO;
 
 	ContractorCron contractorCron;
@@ -502,7 +502,7 @@ public class ContractorCronTest {
 
 	@Test
 	public void testCheckLcCor_NoCorAudit() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		ContractorAccount contractor = createContractorForLcCorTest(null, null,
 				false, null);
@@ -512,7 +512,7 @@ public class ContractorCronTest {
 
 	@Test
 	public void testCheckLcCor_CorNoExpiration() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		ContractorAccount contractor = createContractorForLcCorTest(null, null,
 				true, null);
@@ -523,7 +523,7 @@ public class ContractorCronTest {
 	@Ignore
 	@Test
 	public void testCheckLcCor_CorEpirationBeyond4Months() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 121);
@@ -536,7 +536,7 @@ public class ContractorCronTest {
 	@Ignore
 	@Test
 	public void testCheckLcCor_CorWithin4MonthsNoPhase() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 120);
@@ -549,7 +549,7 @@ public class ContractorCronTest {
 	@Ignore
 	@Test
 	public void testCheckLcCor_CorWithin4MonthsNonAuditPhase() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 120);
@@ -561,7 +561,7 @@ public class ContractorCronTest {
 
 	@Test
 	public void testCheckLcCor_CorWithin4MonthsAuditPhase() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 120);
@@ -574,7 +574,7 @@ public class ContractorCronTest {
 	@Ignore
 	@Test
 	public void testCheckLcCor_CorWithin4MonthsDoneBeforeCorExpires() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 120);
@@ -586,7 +586,7 @@ public class ContractorCronTest {
 
 	@Test
 	public void testCheckLcCor_CorWithin4MonthsDoneAfterCorExpires() throws Exception {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+		when(featureToggleChecker.isFeatureEnabled(anyString()))
 				.thenReturn(true);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 120);

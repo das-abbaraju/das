@@ -63,7 +63,7 @@ import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class OpenTasksTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
@@ -101,7 +101,7 @@ public class OpenTasksTest {
 	@Mock private UserAccess userAccess;
 	@Mock private Invoice invoice;
 	@Mock private Database databaseForTesting;
-	@Mock private FeatureToggleChecker featureToggleChecker;
+	@Mock private FeatureToggle featureToggleChecker;
 	
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
@@ -733,7 +733,7 @@ public class OpenTasksTest {
 	}
 
 	private void setUpLcCorNotification(LcCorPhase phase, Date date) {
-		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString())).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
 		
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setLcCorPhase(phase);

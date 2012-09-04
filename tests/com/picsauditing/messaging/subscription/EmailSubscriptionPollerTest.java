@@ -12,7 +12,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import com.picsauditing.messaging.MessageHandler;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 
 
 public class EmailSubscriptionPollerTest {
@@ -21,7 +21,7 @@ public class EmailSubscriptionPollerTest {
 	
 	@Mock private RabbitTemplate amqpTemplate;
 	@Mock private MessageHandler emailSubscriptionHandler;
-	@Mock private FeatureToggleChecker featureToggleChecker;
+	@Mock private FeatureToggle featureToggleChecker;
 	@Mock private Message message;
 	
 	@Before

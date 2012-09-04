@@ -29,7 +29,7 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 
 @SuppressWarnings("serial")
@@ -40,7 +40,7 @@ public class OpenTasks extends TranslationActionSupport {
 	@Autowired
 	protected OperatorTagDAO operatorTagDao;
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 
 	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
 
@@ -293,7 +293,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 	
 	private boolean isLcCorTaskNeeded() {
-		if (!featureToggleChecker.isFeatureEnabledForBetaLevel(AppProperty.LC_COR_TOGGLE))
+		if (!featureToggleChecker.isFeatureEnabled(AppProperty.LC_COR_TOGGLE))
 			return false;
 		if (contractor.getLcCorPhase() != null && !contractor.getLcCorPhase().equals(LcCorPhase.Done)) {
 			if (contractor.getLcCorNotification() != null

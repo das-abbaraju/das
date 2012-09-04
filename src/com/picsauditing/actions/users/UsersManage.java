@@ -943,7 +943,7 @@ public class UsersManage extends PicsActionSupport {
 		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
 			return list;
 
-		if (permissions.hasPermission(OpPerms.AllOperators) || permissions.getGroups().contains(user.getId())) {
+		if (permissions.hasPermission(OpPerms.AllOperators) || permissions.hasGroup(user.getId())) {
 			// I'm an admin or I'm a member of this group
 
 			list = userDAO.findByAccountID(account.getId(), "Yes", "");

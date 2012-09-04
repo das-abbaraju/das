@@ -38,7 +38,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTree;
@@ -70,7 +70,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private ContractorValidator contractorValidator;
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -257,7 +257,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (contractor.getCountry().getIsoCode().equals("CA")
 				&& featureToggleChecker
-						.isFeatureEnabledForBetaLevel(AppProperty.LC_COR_TOGGLE)) {
+						.isFeatureEnabled(AppProperty.LC_COR_TOGGLE)) {
 			contractor.setLcCorPhase(LcCorPhase.RemindMeLater);
 			contractor.setLcCorNotification(new Date());
 			contractorAccountDao.save(contractor);

@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -38,13 +39,12 @@ public class Permissions implements Serializable {
 	private int userID;
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
-	private Set<Integer> groups = new HashSet<Integer>();
+	private Map<Integer, String> groups = new HashMap<Integer, String>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
 	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
-	private Map<String, String> toggles = new HashMap<String, String>();
 	private Set<Integer> linkedClients = new HashSet<Integer>();
 	private Set<Integer> linkedGeneralContractors = new HashSet<Integer>();
 
@@ -119,7 +119,6 @@ public class Permissions implements Serializable {
 			if (userID == 0)
 				throw new Exception("Missing User");
 
-			toggles.clear();
 			loggedIn = true;
 			forcePasswordReset = user.isForcePasswordReset();
 			active = user.isActiveB();
@@ -228,18 +227,15 @@ public class Permissions implements Serializable {
 			}
 
 			for (UserGroup u : user.getGroups()) {
-				if (u.getGroup().isGroup())
-					groups.add(u.getGroup().getId());
+				if (u.getGroup().isGroup()) {
+					groups.put(u.getGroup().getId(), u.getGroup().getName());
+				}
 			}
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
 			throw ex;
 		}
-	}
-
-	public Map<String, String> getToggles() {
-		return toggles;
 	}
 
 	public int getUserId() {
@@ -262,8 +258,12 @@ public class Permissions implements Serializable {
 		this.forcePasswordReset = forcePasswordReset;
 	}
 
-	public Set<Integer> getGroups() {
-		return groups;
+	public Set<Integer> getGroupIds() {
+		return groups.keySet();
+	}
+
+	public Collection<String> getGroupNames() {
+		return groups.values();
 	}
 
 	public String getUsername() {
@@ -419,8 +419,16 @@ public class Permissions implements Serializable {
 		}
 	}
 
+	public boolean belongsToGroups() {
+		return groups != null && groups.size() > 0;
+	}
+
 	public boolean hasGroup(Integer group) {
-		return groups.contains(group);
+		if (groups == null || groups.keySet().isEmpty()) {
+			return false;
+		} else {
+			return groups.keySet().contains(group);
+		}
 	}
 
 	public boolean isContractor() {

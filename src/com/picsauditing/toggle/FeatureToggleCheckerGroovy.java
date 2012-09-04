@@ -1,0 +1,172 @@
+package com.picsauditing.toggle;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.lang.Script;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.User;
+
+public class FeatureToggleCheckerGroovy implements FeatureToggle {
+	private final Logger logger = LoggerFactory.getLogger(FeatureToggleCheckerGroovy.class);
+
+	private String cacheName = "feature_toggle";
+	private String scriptBaseClass = "com.picsauditing.toggle.FeatureToggleExpressions";
+	private CacheManager cacheManager;
+	private Permissions permissions;
+
+	public FeatureToggleCheckerGroovy() {
+	}
+
+	public FeatureToggleCheckerGroovy(Permissions permissions) {
+		this.permissions = permissions;
+	}
+
+	@Autowired
+	private FeatureToggleProvider featureToggleProvider;
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
+
+	public boolean isFeatureEnabled(String toggleName) {
+		String scriptBody = scriptBodyFromProperty(toggleName);
+		if (scriptBody == null) {
+			return false;
+		}
+		
+		Script script = script(toggleName, scriptBody);
+		if (script == null) {
+			return false;
+		}
+		
+		return runScript(script);
+	}
+
+	private Script script(String toggleName, String scriptBody) {
+		Script script = scriptFromCache(toggleName);
+		if (script == null) {
+			try {
+				script = createScript(scriptBody);
+				cacheScript(toggleName, script);
+			} catch (FeatureToggleException e) {
+				logger.error("Error executing toggle {}: {}", toggleName, e.getMessage());
+				return null;
+			}
+		}
+		return script;
+	}
+
+	private boolean runScript(Script script) {
+		try {
+			Object scriptResult = script.run();
+			if (scriptResult instanceof Boolean) {
+				return (Boolean) scriptResult;
+			} else {
+				logger.error("Toggle script returned a non-boolean result; result will be false");
+			}
+		} catch (Exception e) {
+			// any exception should result in false script
+			logger.error("Toggle script threw an exception; result will be false: {}", e.getMessage());
+		}
+		return false;
+	}
+
+	private String scriptBodyFromProperty(String toggleName) {
+		String featureToggleScript = featureToggleProvider.findFeatureToggle(toggleName);
+		if (featureToggleScript == null) {
+			logger.error("Feature Toggle {} not found", toggleName);
+		}
+		return featureToggleScript;
+	}
+
+	private Script createScript(String scriptBody) throws FeatureToggleException {
+		CompilerConfiguration conf = new CompilerConfiguration();
+		conf.setScriptBaseClass("com.picsauditing.toggle.FeatureToggleExpressions");
+		Binding binding = new Binding();
+		binding.setVariable("appPropertyDAO", appPropertyDAO);
+		binding.setVariable("permissions", getPermissions());
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		GroovyShell groovy = new GroovyShell(classLoader, binding, conf);
+		try {
+			return groovy.parse(scriptBody);
+		} catch (CompilationFailedException e) {
+			throw new FeatureToggleException(e.getMessage());
+		}
+	}
+
+	private Script scriptFromCache(String toggleName) {
+		CacheManager cacheManager = cacheManager();
+		Cache cache = cacheManager.getCache("feature_toggle");
+		if (cache != null) {
+			Element element = cache.get(toggleName);
+			if (element != null) {
+				Object object = element.getObjectValue();
+				if (object instanceof Script) {
+					return (Script) object;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void cacheScript(String toggleName, Script script) throws FeatureToggleException {
+		CacheManager cacheManager = cacheManager();
+		Cache cache = cacheManager.getCache(cacheName);
+		if (cache != null) {
+			cache.put(new Element(toggleName, script));
+		} else {
+			throw new FeatureToggleException("cache configuration issue - no cache named " + cacheName);
+		}
+	}
+
+	// this is for injecting a cachemanager during testing
+	private CacheManager cacheManager() {
+		if (cacheManager == null) {
+			return CacheManager.getInstance();
+		} else {
+			return cacheManager;
+		}
+	}
+
+	public String getCacheName() {
+		return cacheName;
+	}
+
+	public void setCacheName(String cacheName) {
+		this.cacheName = cacheName;
+	}
+
+	public String getScriptBaseClass() {
+		return scriptBaseClass;
+	}
+
+	public void setScriptBaseClass(String scriptBaseClass) {
+		this.scriptBaseClass = scriptBaseClass;
+	}
+
+	public Permissions getPermissions() {
+		if (permissions == null) {
+			try {
+				permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+			} catch (Exception e) {
+				logger.warn("permissions cannot be loaded - if the script depends on it, it'll throw an NPE and the feature toggle will be false");
+			}
+		}
+		return permissions;
+	}
+
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
+	}
+
+}

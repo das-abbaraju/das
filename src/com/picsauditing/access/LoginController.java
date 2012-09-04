@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
@@ -24,7 +21,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
@@ -90,7 +86,6 @@ public class LoginController extends PicsActionSupport {
 				user = userDAO.find(adminID);
 
 				permissions.login(user);
-				permissions.getToggles().putAll(getApplicationToggles());
 				LocaleController.setLocaleOfNearestSupported(permissions);
 				if (isLiveEnvironment()) {
 					if (ActionContext.getContext().getSession().get("redirect") != null) {
@@ -167,7 +162,6 @@ public class LoginController extends PicsActionSupport {
 			LOG.info("logging in user");
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
-			permissions.getToggles().putAll(getApplicationToggles());
 
 			user.setLastLogin(new Date());
 			userDAO.save(user);
@@ -190,7 +184,7 @@ public class LoginController extends PicsActionSupport {
 			ActionContext.getContext().getSession().clear();
 		logAttempt();
 
-		if (permissions.getGroups().size() > 0 || permissions.isContractor()) {
+		if (permissions.belongsToGroups() || permissions.isContractor()) {
 			postLogin();
 			return REDIRECT;
 		} else {
@@ -209,7 +203,6 @@ public class LoginController extends PicsActionSupport {
 			boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
 			user = userDAO.find(userID);
 			permissions.login(user);
-			permissions.getToggles().putAll(getApplicationToggles());
 			LocaleController.setLocaleOfNearestSupported(permissions);
 			permissions.setAdminID(adminID);
 			if (translator)
@@ -337,17 +330,6 @@ public class LoginController extends PicsActionSupport {
 
 		// We are now ready to actually do the login (doLogin)
 		return "";
-	}
-
-	private Map<String, String> getApplicationToggles() {
-		List<AppProperty> toggleList = propertyDAO.getPropertyList("WHERE property LIKE 'Toggle.%'");
-		Map<String, String> toggles = new HashMap<String, String>();
-		if (toggleList != null) {
-			for (int i = 0; i < toggleList.size(); i++) {
-				toggles.put(toggleList.get(i).getProperty(), toggleList.get(i).getValue());
-			}
-		}
-		return toggles;
 	}
 
 	/**

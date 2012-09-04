@@ -1,22 +1,26 @@
 package com.picsauditing.access;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
-import java.util.Random;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.User;
 
 public class BetaPoolTest {
+	@Mock
 	private Permissions permissions;
 	
 	@Before
 	public void setUp() throws Exception {
-		permissions = EntityFactory.makePermission();
+		MockitoAnnotations.initMocks(this);
 	}
 	
 	@Test
@@ -32,7 +36,7 @@ public class BetaPoolTest {
 	// if user is a developer, then features meant for anybody will be visible
 	@Test
 	public void testIsUserBetaTester_UserIsGroupDeveloper() throws Exception {
-		permissions.getGroups().add(User.GROUP_DEVELOPER);
+		when(permissions.hasGroup(User.GROUP_DEVELOPER)).thenReturn(true);
 
 		nobodySeesNoneAndEverybodySeesGlobal();
 		
@@ -46,7 +50,7 @@ public class BetaPoolTest {
 	// however, things meant for beta testers and for global will be visible
 	@Test
 	public void testIsUserBetaTester_UserIsGroupStakeHolder() throws Exception {
-		permissions.getGroups().add(User.GROUP_STAKEHOLDER);
+		when(permissions.hasGroup(User.GROUP_STAKEHOLDER)).thenReturn(true);
 
 		nobodySeesNoneAndEverybodySeesGlobal();
 
@@ -59,7 +63,7 @@ public class BetaPoolTest {
 	// stakeholders are not visible
 	@Test
 	public void testIsUserBetaTester_UserIsGroupBetaTest() throws Exception {
-		permissions.getGroups().add(User.GROUP_BETATESTER);
+		when(permissions.hasGroup(User.GROUP_BETATESTER)).thenReturn(true);
 
 		nobodySeesNoneAndEverybodySeesGlobal();
 
