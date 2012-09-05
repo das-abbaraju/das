@@ -27,7 +27,7 @@
 			</a>
 		</pics:permission>
 		<div id="potentialMatches" class="info" style="display: none;"></div>
-		<s:if test="newContractor.contractor != null || (newContractor.status != null && newContractor.status != 'Active')">
+		<s:if test="newContractor.contractor != null && newContractor.status != null && newContractor.status != 'Active'">
 			<div class="info">
 				<s:if test="newContractor.contractor != null">
 					<s:text name="RequestNewContractor.message.Registered">
@@ -305,7 +305,7 @@
 								<pics:autocomplete name="newContractor.contractor" action="ContractorAutocomplete" />
 							</s:if>
 							
-							<s:if test="newContractor.contractor != null">
+							<s:if test="newContractor.contractor != null && newContractor.contractor.status != 'Requested'">
 								<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
 									<s:property value="newContractor.contractor.name" />
 								</a>
