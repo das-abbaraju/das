@@ -10,6 +10,7 @@
                     element.delegate('#email_preview', 'click', this.previewEmail);
                     element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
                     element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
+                    element.delegate('#request_status', 'change', this.toggleStatusFields);
                     
                     $('.datepicker').datepicker({
                         changeMonth : true,
@@ -33,6 +34,7 @@
                     }
                     
                     $('#city').trigger('keyup');
+                    $('#request_status').trigger('change');
                 }
             },
             
@@ -113,6 +115,19 @@
                     $('#requesting_other').hide();
                 } else {
                     $('#requesting_other').show();
+                }
+            },
+            
+            toggleStatusFields: function(event) {
+                var status = $(this).val();
+                
+                $('#hold_date').hide();
+                $('#reason_declined').hide();
+                
+                if (status.indexOf('Unsuccessful') > -1) {
+                    $('#reason_declined').show();
+                } else if (status.indexOf('Hold') > -1) {
+                    $('#hold_date').show();
                 }
             }
         }

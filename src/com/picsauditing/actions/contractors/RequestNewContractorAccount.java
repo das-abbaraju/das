@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailAttachment;
@@ -63,10 +64,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
-
+	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
+	// Tags
 	private List<OperatorTag> operatorTags;
 	private List<OperatorTag> requestedTags;
-
 	// Email
 	private EmailQueue email = new EmailQueue();
 	private EmailBuilder emailBuilder = new EmailBuilder();
@@ -131,6 +132,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	public void setPrimaryContact(User primaryContact) {
 		this.primaryContact = primaryContact;
+	}
+
+	public ContractorRegistrationRequestStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ContractorRegistrationRequestStatus status) {
+		this.status = status;
 	}
 
 	public List<OperatorTag> getOperatorTags() {
@@ -198,24 +207,19 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		if (!permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
 			throw new NoRightsException(getText("global.Operators"));
 		}
-
-		if (permissions.isOperatorCorporate() && requestedContractor.getRequestedBy() != null
-				&& !permissions.getVisibleAccounts().contains(requestedContractor.getRequestedBy().getId())) {
-			throw new NoRightsException(getText("AccountType.Admin"));
-		}
 	}
 
 	private void initializeRequest() {
 		if (requestedContractor.getId() == 0) {
 			requestedContractor.setStatus(AccountStatus.Requested);
 
-			ContractorRegistrationRequest request = new ContractorRegistrationRequest();
-			requestedContractor.getRegistrationRequests().add(request);
-
 			requestedContractor.setRequestedBy(new OperatorAccount());
 
 			requestedContractor.setCountry(new Country());
 			requestedContractor.getCountry().setIsoCode(permissions.getCountry());
+		} else {
+			id = requestedContractor.getId();
+			account = requestedContractor;
 		}
 	}
 
@@ -261,8 +265,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			email = buildEmail();
 			email.setContractorAccount(requestedContractor);
 			emailSender.send(email);
-			requestedContractor.getFirstRegistrationRequest().contactByEmail();
-			requestedContractor.getFirstRegistrationRequest().setLastContactedByAutomatedEmailDate(new Date());
+			requestedContractor.contactByEmail();
+			requestedContractor.setLastContactedByAutomatedEmailDate(new Date());
 
 			addContractorLetterAttachmentTo(email);
 			addNote(legacyRequest);
@@ -273,10 +277,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private ContractorRegistrationRequest saveLegacyRequest(OperatorAccount requestedBy) {
+		List<ContractorRegistrationRequest> requestList = requestDAO.findWhere(ContractorRegistrationRequest.class,
+				"t.conID = " + requestedContractor.getId());
 		ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
 
-		if (requestedContractor.getRegistrationRequests().size() > 0) {
-			legacyRequest = requestedContractor.getFirstRegistrationRequest();
+		if (requestList != null && !requestList.isEmpty()) {
+			legacyRequest = requestList.get(0);
 		}
 
 		legacyRequest.setName(requestedContractor.getName());
@@ -300,10 +306,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		legacyRequest.setAuditColumns(permissions);
 
 		legacyRequest = requestDAO.save(legacyRequest);
-
-		if (requestedContractor.getFirstRegistrationRequest() == null) {
-			requestedContractor.getRegistrationRequests().add(legacyRequest);
-		}
 
 		return legacyRequest;
 	}

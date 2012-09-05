@@ -8,6 +8,8 @@
 	</title>
 	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
 	
 	<style type="text/css">
 		#email_preview_modal th
@@ -246,11 +248,13 @@
 							<s:include value="operator_tags.jsp" />
 						</li>
 					</s:if>
-					<li>
-						<a href="javascript:;" id="email_preview" class="preview">
-							<s:text name="RequestNewContractor.PreviewEmail" />
-						</a>
-					</li>
+					<s:else>
+						<li>
+							<a href="javascript:;" id="email_preview" class="preview">
+								<s:text name="RequestNewContractor.PreviewEmail" />
+							</a>
+						</li>
+					</s:else>
 				</ol>
 			</fieldset>
 			
@@ -260,39 +264,18 @@
 				</h2>
 				
 				<ol>
-					<s:if test="requestedContractor.firstRegistrationRequest.id > 0">
+					<s:if test="requestedContractor.id > 0">
 						<li>
 							<label>
 								<s:text name="RequestNewContractor.label.TimesContacted" />:
 							</label>
-							<s:property value="requestedContractor.firstRegistrationRequest.contactCount" />
-						</li>
-						<li>
-							<label>
-								<s:text name="RequestNewContractor.label.MatchesFound" />:
-							</label>
-							
-							<s:if test="requestedContractor.firstRegistrationRequest.matchCount > 0 && requestedContractor.firstRegistrationRequest.status == 'Active'">
-								<a href="#potentialMatches" id="getMatches">
-									<s:property value="requestedContractor.firstRegistrationRequest.matchCount" />
-								</a>
-							</s:if>
-							<s:else>
-								<s:property value="requestedContractor.firstRegistrationRequest.matchCount" />
-							</s:else>
+							<s:property value="requestedContractor.totalContactCount" />
 						</li>
 						<li>
 							<label>
 								<s:text name="global.Notes" />:
 							</label>
-							<div id="notesDiv">
-								<div id="notesHere">
-									<pre id="addHere"></pre>
-									<s:if test="newContractor.notes.length() > 0">
-										<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
-									</s:if>
-								</div>
-							</div>
+							<s:include value="../../notes/account_notes_embed.jsp" />
 						</li>
 					</s:if>
 					<s:if test="requestedContractor.id == 0">
@@ -305,7 +288,7 @@
 				</ol>
 			</fieldset>
 			
-			<s:if test="requestedContractor.firstRegistrationRequest.id > 0">
+			<s:if test="requestedContractor.id > 0">
 				<fieldset class="form">
 					<h2 class="formLegend">
 						<s:text name="ContractorRegistrationRequest.label.status" />
@@ -321,7 +304,7 @@
 									id="request_status" 
 									list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
 									listValue="getText(i18nKey)"
-									name="requestedContractor.firstRegistrationRequest.status"
+									name="status"
 								/>
 							</li>
 							<li id="hold_date">
