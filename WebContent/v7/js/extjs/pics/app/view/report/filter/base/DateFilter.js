@@ -48,7 +48,6 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
             xtype: 'datefield',
             flex: 2,
             format: 'Y-m-d',
-            maxValue: new Date(),
             name: 'filter_value',
             value: value
         };
