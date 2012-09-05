@@ -17,11 +17,10 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(
-				FieldCategory.ClientSiteMonitoringAnAudit);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.ClientSiteMonitoringAnAudit);
 
 		addField(prefix + "StatusSubstatus", "CONCAT(" + alias + ".status,IFNULL(CONCAT(':'," + alias + ".auditSubStatus),''))",
-				FilterType.String).setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+				FilterType.String, FieldCategory.ClientSiteMonitoringAnAudit);
 
 		addFields(com.picsauditing.jpa.entities.ContractorAuditOperator.class);
 	}

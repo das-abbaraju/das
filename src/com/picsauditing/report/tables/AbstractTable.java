@@ -147,12 +147,18 @@ public abstract class AbstractTable {
 			name = alias + "ID";
 
 		String fullSql = alias + "." + sql;
-		return addField(name, fullSql, filter);
+		return addField(name, fullSql, filter, FieldCategory.General);
 	}
 
 	// Method chaining should only be for a single class
 	protected Field addField(String fieldName, String sql, FilterType filter) {
+		return addField(fieldName, sql, filter, FieldCategory.General);
+	}
+
+	// Method chaining should only be for a single class
+	protected Field addField(String fieldName, String sql, FilterType filter, FieldCategory category) {
 		Field field = new Field(fieldName, sql, filter);
+		field.setCategory(category);
 		overrideCategory(field);
 
 		// We don't want to be case sensitive when matching names

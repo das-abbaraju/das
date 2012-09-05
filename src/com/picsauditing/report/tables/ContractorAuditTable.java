@@ -10,13 +10,13 @@ public class ContractorAuditTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setCategory(FieldCategory.Audits);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date).setCategory(FieldCategory.Audits);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
+		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date, FieldCategory.Audits);
 
 		addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
 
 		Field auditTypeName;
-		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String).setCategory(FieldCategory.Audits);
+		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String, FieldCategory.Audits);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
 		auditTypeName.setImportance(FieldImportance.Required);

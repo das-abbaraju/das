@@ -11,7 +11,7 @@ public class InvoiceTable extends AbstractTable {
 	}
 
 	public void addFields() {
-		addField(prefix + "Currency", alias + ".currency", FilterType.String).setCategory(FieldCategory.Invoicing);
+		addField(prefix + "Currency", alias + ".currency", FilterType.String, FieldCategory.Invoicing);
 
 		addFields(com.picsauditing.jpa.entities.Invoice.class);
 	}
