@@ -21,6 +21,9 @@
 				<th>
                     <s:text name="global.Status" />
                 </th>
+                <th>
+                    <s:text name="global.AuditSubStatus" />
+                </th>
 				<th>
                     <s:text name="global.Date" />
                 </th>
@@ -152,6 +155,26 @@
 									<span class="right"><a href="#" class="edit"></a></span>
 								</s:if>
 							</s:if>
+						</td>
+						
+						<td class="caoStatus<s:if test="!systemEdit"> hoverable</s:if><s:else> systemEdit</s:else>">							
+							<s:if test="isCanEditCao(#currentCao)">
+								<span class="caoEdit left">
+									<s:hidden cssClass="caoID" name="#currentCao.id"/>
+                                    
+									<s:select 
+                                        cssClass="status" 
+                                        list="getAuditSubStatuses()" 
+                                        emptyOption="true" 
+                                        name="caosSave[%{#rowStatus.index}].auditSubStatus" 
+                                        value="#currentCao.auditSubStatus"
+                                    />
+								</span>
+                                
+								<s:if test="!systemEdit">
+									<span class="right"><a href="#" class="edit"></a></span>
+								</s:if>
+							</s:if>							
 						</td>
                         
 						<!-- Date -->

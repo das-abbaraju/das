@@ -58,6 +58,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							AuditStatus newStatus = cao.getStatus();
 							auditSetExpiresDate(toSave, newStatus);
 							toSave.changeStatus(newStatus, permissions);
+							toSave.setAuditSubStatus(cao.getAuditSubStatus());
 
 							updateCaoWorkflow(prevStatus, toSave, null);
 

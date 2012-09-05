@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditSubStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -356,6 +358,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		return validStatuses;
+	}
+	
+	public Collection<AuditSubStatus> getAuditSubStatuses() {
+		return new ArrayList<AuditSubStatus>(Arrays.asList(AuditSubStatus.values()));
 	}
 
 	public boolean isCanEditAudit() {
