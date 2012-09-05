@@ -1,5 +1,6 @@
 package com.picsauditing.access;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,20 @@ public class Menu extends PicsActionSupport {
 	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
 
-	public String execute() throws Exception {
+	public String execute() {
 		loadPermissions();
 
-		List<ReportUser> favoriteReports = reportUserDao.findAllFavorite(permissions.getUserId());
+		List<ReportUser> favoriteReports = new ArrayList<ReportUser>();
 
-		if (favoriteReports.size() > ManageReports.MAX_REPORTS_IN_MENU) {
-			favoriteReports = favoriteReports.subList(0, ManageReports.MAX_REPORTS_IN_MENU);
+		// Don't break if the database schema changes
+		try {
+			favoriteReports = reportUserDao.findAllFavorite(permissions.getUserId());
+
+			if (favoriteReports.size() > ManageReports.MAX_REPORTS_IN_MENU) {
+				favoriteReports = favoriteReports.subList(0, ManageReports.MAX_REPORTS_IN_MENU);
+			}
+		} catch (Exception e) {
+			// No reports in the menu
 		}
 
 		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
