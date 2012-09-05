@@ -300,6 +300,11 @@
 			</result>
 		</action>
 
+		<action name="GetLcCorQuote"
+			class="com.picsauditing.actions.GetLcCorQuote">
+			<result>struts/misc/get_lccor_quote.jsp</result>
+		</action>
+
 		<action name="ConInsureGUARD"
 			class="com.picsauditing.actions.contractors.ConInsureGuard">
 			<param name="auditClass">Policy</param>

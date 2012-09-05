@@ -22,10 +22,12 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -36,6 +38,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.toggle.FeatureToggleChecker;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTree;
@@ -66,6 +69,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private EmailSender emailSender;
 	@Autowired
 	private ContractorValidator contractorValidator;
+	@Autowired
+	private FeatureToggleChecker featureToggleChecker;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -250,6 +255,14 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			}
 		}
 
+		if (contractor.getCountry().getIsoCode().equals("CA")
+				&& featureToggleChecker
+						.isFeatureEnabledForBetaLevel(AppProperty.LC_COR_TOGGLE)) {
+			contractor.setLcCorPhase(LcCorPhase.RemindMeLater);
+			contractor.setLcCorNotification(new Date());
+			contractorAccountDao.save(contractor);
+		}
+		
 		complete = true;
 
 		if (!contractor.getAccountLevel().isBidOnly() && !contractor.isRenew()) {
@@ -269,7 +282,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
+		if (contractor.getLcCorPhase() != null) {
+			ServletActionContext.getResponse().sendRedirect("GetLcCorQuote.action?id=" + contractor.getId());
+		} else {
+			ServletActionContext.getResponse().sendRedirect(getRegistrationStep().getUrl());
+		}
 		return BLANK;
 	}
 
