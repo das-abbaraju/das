@@ -11,6 +11,8 @@ import javax.persistence.Table;
 public class AppProperty implements java.io.Serializable {
 	public static final String LIVECHAT = "PICS.liveChat";
 	public static final String SYSTEM_MESSAGE = "PICS.showSystemMessage";
+	public static final String BETA_LEVEL = "BETA_maxLevel";
+	public static final String LC_COR_TOGGLE = "Toggle.LcCor";
 
 	private String property;
 	private String value;

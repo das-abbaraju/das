@@ -111,6 +111,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private String tradesSub;
 	private int score;
 	private Date tradesUpdated;
+	private LcCorPhase lcCorPhase;
+	private Date lcCorNotification;
 
 	private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
@@ -693,6 +695,24 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setTradesUpdated(Date tradesUpdated) {
 		this.tradesUpdated = tradesUpdated;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public LcCorPhase getLcCorPhase() {
+		return lcCorPhase;
+	}
+
+	public void setLcCorPhase(LcCorPhase lcCorPhase) {
+		this.lcCorPhase = lcCorPhase;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getLcCorNotification() {
+		return lcCorNotification;
+	}
+
+	public void setLcCorNotification(Date lcCorNotification) {
+		this.lcCorNotification = lcCorNotification;
 	}
 
 	/**

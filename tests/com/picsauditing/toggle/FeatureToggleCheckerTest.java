@@ -87,4 +87,21 @@ public class FeatureToggleCheckerTest {
 
 		return appProperty;
 	}
+
+	@Test
+	public void testIsFeatureEnabledForBetaLevel_Yes() {
+		AppProperty betaProperty = new AppProperty();
+		betaProperty.setProperty(AppProperty.BETA_LEVEL);
+		betaProperty.setValue("4");
+
+		AppProperty appProperty = new AppProperty();
+		appProperty.setProperty("test");
+		appProperty.setValue("4");
+
+		when(appPropertyDAO.find(AppProperty.BETA_LEVEL)).thenReturn(betaProperty);
+		when(appPropertyDAO.find("test")).thenReturn(appProperty);
+		
+		boolean featureEnabled = featureToggleChecker.isFeatureEnabledForBetaLevel("test");
+		assertTrue(featureEnabled);
+	}
 }

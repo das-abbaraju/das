@@ -38,4 +38,32 @@ public class FeatureToggleChecker {
 		return false;
 	}
 
+	public boolean isFeatureEnabledForBetaLevel(String appPropertyFeatureName) {
+		try {
+			AppProperty appPropertyFeature = appPropertyDAO.find(appPropertyFeatureName);
+			AppProperty betaLevelProperty = appPropertyDAO.find(AppProperty.BETA_LEVEL);
+
+			if (appPropertyFeature == null) {
+				logger.warn("AppProperty {} not found", appPropertyFeatureName);
+				return false;
+			}
+			if (betaLevelProperty == null) {
+				logger.warn("AppProperty {} not found", AppProperty.BETA_LEVEL);
+				return false;
+			}
+			
+			int featureLevel = Integer.parseInt(appPropertyFeature.getValue());
+			int betaLevel = Integer.parseInt(betaLevelProperty.getValue());
+			
+			if (featureLevel == 0)
+				return false;
+
+			return (betaLevel >= featureLevel);
+		} catch (NumberFormatException numberFormatException) {
+			logger.error(numberFormatException.getMessage(), numberFormatException);
+		}
+		return false;
+		
+	}
+
 }
