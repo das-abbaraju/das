@@ -44,7 +44,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String notes;
 	private ContractorAccount contractor;
 	private String operatorTags;
-	private String registrationHash;
 
 	@Deprecated
 	public String getName() {
@@ -326,20 +325,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	@Deprecated
 	public void setOperatorTags(String operatorTags) {
 		this.operatorTags = operatorTags;
-	}
-
-	public String getRegistrationHash() {
-		return registrationHash;
-	}
-
-	public void setRegistrationHash(String registrationHash) {
-		this.registrationHash = registrationHash;
-	}
-
-	@Transient
-	public void generateHash() {
-		Date now = new Date();
-		setRegistrationHash(Strings.hashUrlSafe("request" + getId() + now.toString()));
 	}
 
 	@Deprecated

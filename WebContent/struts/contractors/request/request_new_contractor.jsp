@@ -302,7 +302,7 @@
 								</label>
 								<s:select 
 									id="request_status" 
-									list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
+									list="applicableStatuses" 
 									listValue="getText(i18nKey)"
 									name="status"
 								/>

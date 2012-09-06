@@ -96,4 +96,9 @@
 			<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
 		</field-validator>
 	</field>
+	
+	<validator type="expression">
+		<param name="expression"><![CDATA[ (status.active || (status.hold && requestedContractor.followUpDate != null) || (status.closedUnsuccessful && requestedContractor.reason != null)) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
+	</validator>
 </validators>

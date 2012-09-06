@@ -3,8 +3,10 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
@@ -64,13 +66,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
-	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 	// Tags
 	private List<OperatorTag> operatorTags;
 	private List<OperatorTag> requestedTags;
 	// Email
 	private EmailQueue email = new EmailQueue();
 	private EmailBuilder emailBuilder = new EmailBuilder();
+	// Legacy
+	private ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
+	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 
 	@Override
 	public String execute() throws Exception {
@@ -134,14 +138,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		this.primaryContact = primaryContact;
 	}
 
-	public ContractorRegistrationRequestStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(ContractorRegistrationRequestStatus status) {
-		this.status = status;
-	}
-
 	public List<OperatorTag> getOperatorTags() {
 		if (operatorTags == null) {
 			loadTags();
@@ -168,6 +164,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	public EmailQueue getEmail() {
 		return email;
+	}
+
+	public ContractorRegistrationRequestStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ContractorRegistrationRequestStatus status) {
+		this.status = status;
 	}
 
 	public boolean isContactable() {
@@ -199,6 +203,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return usersAndSwitchTos;
 	}
 
+	public List<ContractorRegistrationRequestStatus> getApplicableStatuses() {
+		List<ContractorRegistrationRequestStatus> applicableStatuses = new ArrayList<ContractorRegistrationRequestStatus>();
+		applicableStatuses.add(ContractorRegistrationRequestStatus.Active);
+		applicableStatuses.add(ContractorRegistrationRequestStatus.Hold);
+		applicableStatuses.add(ContractorRegistrationRequestStatus.ClosedUnsuccessful);
+
+		return applicableStatuses;
+	}
+
 	public Date getToday() {
 		return new Date();
 	}
@@ -220,6 +233,27 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		} else {
 			id = requestedContractor.getId();
 			account = requestedContractor;
+
+			loadLegacyRequest();
+			setRequestStatus();
+		}
+	}
+
+	private void setRequestStatus() {
+		if (requestedContractor.getStatus().isRequested()) {
+			if (requestedContractor.getFollowUpDate() == null) {
+				status = ContractorRegistrationRequestStatus.Active;
+			} else {
+				status = ContractorRegistrationRequestStatus.Hold;
+			}
+		} else if (requestedContractor.getStatus().isActive()) {
+			if (requestedContractor.getContactCountByPhone() > 0) {
+				status = ContractorRegistrationRequestStatus.ClosedContactedSuccessful;
+			} else {
+				status = ContractorRegistrationRequestStatus.ClosedSuccessful;
+			}
+		} else {
+			status = ContractorRegistrationRequestStatus.ClosedUnsuccessful;
 		}
 	}
 
@@ -259,17 +293,17 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	// components do NOT get merged/persisted
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest, OperatorAccount requestedBy) throws Exception {
 		setRequiredFieldsAndSaveEntities(newRequest);
-		ContractorRegistrationRequest legacyRequest = saveLegacyRequest(requestedBy);
+		saveLegacyRequest(requestedBy);
 
 		if (newRequest) {
 			email = buildEmail();
 			email.setContractorAccount(requestedContractor);
 			emailSender.send(email);
-			requestedContractor.contactByEmail();
+			legacyRequest.contactByEmail();
 			requestedContractor.setLastContactedByAutomatedEmailDate(new Date());
 
 			addContractorLetterAttachmentTo(email);
-			addNote(legacyRequest);
+			addNote("Sent initial contact email.");
 		}
 
 		setOperatorTags();
@@ -277,13 +311,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private ContractorRegistrationRequest saveLegacyRequest(OperatorAccount requestedBy) {
-		List<ContractorRegistrationRequest> requestList = requestDAO.findWhere(ContractorRegistrationRequest.class,
-				"t.conID = " + requestedContractor.getId());
-		ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
-
-		if (requestList != null && !requestList.isEmpty()) {
-			legacyRequest = requestList.get(0);
-		}
+		loadLegacyRequest();
 
 		legacyRequest.setName(requestedContractor.getName());
 		legacyRequest.setContact(requestedContractor.getPrimaryContact().getName());
@@ -302,7 +330,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		legacyRequest.setRequestedByUser(requestRelationship.getRequestedBy());
 		legacyRequest.setRequestedByUserOther(requestRelationship.getRequestedByOther());
 		legacyRequest.setContractor(requestedContractor);
-		legacyRequest.generateHash();
 		legacyRequest.setAuditColumns(permissions);
 
 		legacyRequest = requestDAO.save(legacyRequest);
@@ -310,8 +337,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return legacyRequest;
 	}
 
-	private OperatorForm getContractorLetter() {
-		return null;
+	private void loadLegacyRequest() {
+		List<ContractorRegistrationRequest> requestList = requestDAO.findWhere(ContractorRegistrationRequest.class,
+				"t.contractor.id = " + requestedContractor.getId());
+
+		if (requestList != null && !requestList.isEmpty()) {
+			legacyRequest = requestList.get(0);
+		}
 	}
 
 	private OperatorAccount findOperator() {
@@ -406,9 +438,27 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		}
 	}
 
-	private void addNote(ContractorRegistrationRequest legacyRequest) {
+	private OperatorForm getContractorLetter() {
+		Set<OperatorAccount> processed = new HashSet<OperatorAccount>();
+		OperatorAccount topAccount = requestRelationship.getOperatorAccount().getTopAccount();
+		OperatorAccount currentOperator = requestRelationship.getOperatorAccount();
+
+		while (currentOperator != null && !currentOperator.equals(topAccount) && !processed.contains(currentOperator)) {
+			for (OperatorForm form : currentOperator.getOperatorForms()) {
+				if (form.getFormName().contains("*")) {
+					return form;
+				}
+			}
+
+			processed.add(currentOperator);
+			currentOperator = currentOperator.getParent();
+		}
+
+		return null;
+	}
+
+	private void addNote(String note) {
 		// Save notes to RR note field and a new Note entity
-		String note = "Sent initial contact email.";
 		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
 		addNote(requestedContractor, note);
 	}
