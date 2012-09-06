@@ -235,7 +235,7 @@
 					</li>
 					 <pics:permission perm="SwitchUser">
 						<li>
-							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+							<a class="btn" id="SwitchUser" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 								<s:text name="UsersManage.SwitchToThisUser" />
 							</a>
 						</li>
@@ -243,14 +243,14 @@
 						<s:if test="isBetaEnvironment()">
 							<pics:toggle name="SwitchUserServer">
 								<li>
-									<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
+									<a class="btn" id="SwitchUser" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
 										<s:text name="UsersManage.SwitchToThisUserStable" />
 									</a>
 								</li>
 							</pics:toggle>
 							<pics:toggleElse>
 								<li>
-									<a class="btn" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+									<a class="btn" id="SwitchUser" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 										<s:text name="UsersManage.SwitchToThisUserStable" />
 									</a>
 								</li>
