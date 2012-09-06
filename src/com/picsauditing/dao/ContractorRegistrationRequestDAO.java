@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.util.Strings;
 
@@ -58,10 +59,10 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorRegistrationRequest> findActiveByDate(String whereClause) {
-		String sql = "SELECT * FROM contractor_registration_request c " + "WHERE c.status = 'Active' AND "
-				+ whereClause;
-		Query query = em.createNativeQuery(sql, ContractorRegistrationRequest.class);
+	public List<ContractorAccount> findActiveByDate(String whereClause) {
+		String sql = "SELECT * FROM ContractorAccount c " + "WHERE c.status = 'Requested' AND " + whereClause;
+		Query query = em.createQuery(sql);
+
 		return query.getResultList();
 	}
 

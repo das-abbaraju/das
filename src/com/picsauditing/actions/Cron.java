@@ -87,7 +87,7 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
-	
+
 	@Autowired
 	protected AppPropertyDAO appPropDao;
 	@Autowired
@@ -129,7 +129,7 @@ public class Cron extends PicsActionSupport {
 	private IndexerEngine indexer;
 	@Autowired
 	private EmailBuilder emailBuilder;
-	
+
 	protected static User system = new User(User.SYSTEM);
 
 	protected long startTime = 0L;
@@ -352,17 +352,15 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
-		try{
+		try {
 			startTask("deactivating pending accounts pass 90 days");
 			deactivatePendingAccounts();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		
-		report.append(Strings.NEW_LINE)
-				.append(Strings.NEW_LINE)
-				.append(Strings.NEW_LINE)
+
+		report.append(Strings.NEW_LINE).append(Strings.NEW_LINE).append(Strings.NEW_LINE)
 				.append("Completed Cron Job at: ");
 		report.append(new Date().toString());
 
@@ -436,10 +434,12 @@ public class Cron extends PicsActionSupport {
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
 
 		String where = "a.country IN ('US','CA') AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
-		
+
 		if (!emailExclusionList.isEmpty())
-			where = "u.email NOT IN (" + exclude + ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL)AND ";
-		
+			where = "u.email NOT IN ("
+					+ exclude
+					+ ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
+
 		String whereReminder = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 WEEK)";
 		String whereFinal = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 1 MONTH)";
@@ -529,9 +529,8 @@ public class Cron extends PicsActionSupport {
 				emailQueueDAO.save(email);
 
 				// update the notes
-				stampNote(operator,
-						"Contractor Pending Account expired. Client site was notified at this address: "
-								+ emailBuilder.getSentTo(), NoteCategory.Registration);
+				stampNote(operator, "Contractor Pending Account expired. Client site was notified at this address: "
+						+ emailBuilder.getSentTo(), NoteCategory.Registration);
 			}
 		}
 	}
@@ -550,8 +549,10 @@ public class Cron extends PicsActionSupport {
 		String where = "c.country IN ('US','CA') AND c.conID IS NULL AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 
 		if (!emailExclusionList.isEmpty())
-			where = "c.email NOT IN (" + exclude + ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
-		
+			where = "c.email NOT IN ("
+					+ exclude
+					+ ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
+
 		String whereReminder = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "CASE WHEN DATEDIFF(c.deadline, c.creationDate) < 14 "
 				+ "THEN DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 7 DAY) "
@@ -566,76 +567,81 @@ public class Cron extends PicsActionSupport {
 				+ " - Email has been sent to contractor warning them that this is their last chance to register.\n\n";
 		String finalAndExpirationNote = currentDate + " - Final email sent to Contractor and Client Site.\n\n";
 
-		List<ContractorRegistrationRequest> crrListReminder = contractorRegistrationRequestDAO
-				.findActiveByDate(whereReminder);
+		List<ContractorAccount> crrListReminder = contractorRegistrationRequestDAO.findActiveByDate(whereReminder);
 		runCRREmailBlast(crrListReminder, regReqReminderEmailTemplate, reminderNote);
 
-		List<ContractorRegistrationRequest> crrListLastChance = contractorRegistrationRequestDAO
-				.findActiveByDate(whereLastChance);
+		List<ContractorAccount> crrListLastChance = contractorRegistrationRequestDAO.findActiveByDate(whereLastChance);
 		runCRREmailBlast(crrListLastChance, regReqLastChanceEmailTemplate, lastChanceNote);
 
-		List<ContractorRegistrationRequest> crrListFinal = contractorRegistrationRequestDAO
-				.findActiveByDate(whereFinal);
+		List<ContractorAccount> crrListFinal = contractorRegistrationRequestDAO.findActiveByDate(whereFinal);
 		runCRREmailBlast(crrListFinal, regReqFinalEmailTemplate, finalAndExpirationNote);
 	}
 
-	private void runCRREmailBlast(List<ContractorRegistrationRequest> list, int templateID, String newNote)
-			throws IOException, ParseException {
-		Map<User, List<ContractorRegistrationRequest>> operatorContractors = new HashMap<User, List<ContractorRegistrationRequest>>();
+	private void runCRREmailBlast(List<ContractorAccount> list, int templateID, String newNote) throws IOException,
+			ParseException {
+		Map<User, List<ContractorAccount>> operatorContractors = new HashMap<User, List<ContractorAccount>>();
 
-		for (ContractorRegistrationRequest crr : list) {
-			if (!emailExclusionList.contains(crr.getEmail())) {
+		for (ContractorAccount requestedContractor : list) {
+			if (!emailExclusionList.contains(requestedContractor.getPrimaryContact().getEmail())) {
 
-				if (templateID != pendingFinalEmailTemplate || !duplicationCheck(crr, crr.getName())) {
+				if (templateID != pendingFinalEmailTemplate
+						|| !duplicationCheck(requestedContractor, requestedContractor.getName())) {
+					ContractorOperator contractorOperator = requestedContractor
+							.getContractorOperatorForOperator(requestedContractor.getRequestedBy());
+
 					EmailBuilder emailBuilder = new EmailBuilder();
 
 					emailBuilder.setFromAddress(EmailAddressUtils.PICS_REGISTRATION_EMAIL_ADDRESS);
-					emailBuilder.setToAddresses(crr.getEmail());
+					emailBuilder.setToAddresses(requestedContractor.getPrimaryContact().getEmail());
 					emailBuilder.setTemplate(templateID);
-					emailExclusionList.add(crr.getEmail());
+					emailExclusionList.add(requestedContractor.getPrimaryContact().getEmail());
 
-					emailBuilder.addToken("operator", crr.getRequestedBy());
-					emailBuilder.addToken("contractor", crr);
+					emailBuilder.addToken("operator", requestedContractor.getRequestedBy());
+					emailBuilder.addToken("contractor", requestedContractor);
 
 					Calendar cal = Calendar.getInstance();
-					Date shortDeadline = DateUtils.addDays(crr.getCreationDate(), 14);
+					Date shortDeadline = DateUtils.addDays(requestedContractor.getCreationDate(), 14);
 
-					if (crr.getDeadline().before(shortDeadline)) {
+					if (contractorOperator.getDeadline().before(shortDeadline)) {
 						cal.setTime(shortDeadline);
 					} else {
-						cal.setTime(crr.getDeadline());
+						cal.setTime(contractorOperator.getDeadline());
 					}
 					emailBuilder.addToken("date", cal.getTime());
 
-					User operatorUser = crr.getRequestedByUser();
+					User operatorUser = contractorOperator.getRequestedBy();
 					if (operatorUser == null)
-						operatorUser = new User(crr.getRequestedByUserOther());
+						operatorUser = new User(contractorOperator.getRequestedByOther());
 
 					EmailQueue email = emailBuilder.build();
 					email.setViewableById(Account.EVERYONE);
 					emailQueueDAO.save(email);
 
 					// update the registration request
-					String notes = crr.getNotes();
-					crr.contactByEmail();
-					crr.setLastContactDate(new Date());
-					notes = newNote + notes;
-					crr.setNotes(notes);
-					SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
-					crr.setLastContactedByAutomatedEmailDate(sdf.parse(sdf.format(new Date())));
+					requestedContractor.contactByEmail();
+
+					Note note = new Note(requestedContractor, userDAO.find(User.SYSTEM), newNote);
+					note.setNoteCategory(NoteCategory.Registration);
+					note.setCanContractorView(true);
+					note.setViewableBy(operatorDAO.find(Account.PicsID));
+					noteDAO.save(note);
+
+					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					requestedContractor.setLastContactedByAutomatedEmailDate(sdf.parse(sdf.format(new Date())));
+
 					if (templateID == regReqFinalEmailTemplate) {
 						if (operatorContractors.get(operatorUser) == null)
-							operatorContractors.put(operatorUser, new ArrayList<ContractorRegistrationRequest>());
+							operatorContractors.put(operatorUser, new ArrayList<ContractorAccount>());
 
-						operatorContractors.get(operatorUser).add(crr);
+						operatorContractors.get(operatorUser).add(requestedContractor);
 					}
-					contractorRegistrationRequestDAO.save(crr);
+					contractorRegistrationRequestDAO.save(requestedContractor);
 				}
 			}
 		}
 
 		for (User operatorUser : operatorContractors.keySet()) {
-			List<ContractorRegistrationRequest> contractors = operatorContractors.get(operatorUser);
+			List<ContractorAccount> contractors = operatorContractors.get(operatorUser);
 
 			if (operatorUser != null && operatorUser.getEmail() != null
 					&& !emailExclusionList.contains(operatorUser.getEmail())) {
@@ -653,7 +659,8 @@ public class Cron extends PicsActionSupport {
 				email.setViewableById(Account.EVERYONE);
 				emailQueueDAO.save(email);
 
-				stampNote(operatorUser.getAccount(),
+				stampNote(
+						operatorUser.getAccount(),
 						"Registration Request has expired. Client site was notified at this address: "
 								+ emailBuilder.getSentTo(), NoteCategory.Registration);
 			}
@@ -788,8 +795,8 @@ public class Cron extends PicsActionSupport {
 		email.setLowPriority();
 		email.setViewableById(Account.PicsID);
 		emailQueueDAO.save(email);
-		stampNote(email.getContractorAccount(),
-				"Failed to send Deactivation Email because of no valid email address.", NoteCategory.Billing);
+		stampNote(email.getContractorAccount(), "Failed to send Deactivation Email because of no valid email address.",
+				NoteCategory.Billing);
 	}
 
 	public void addLateFeeToDelinquentInvoices() throws Exception {
@@ -817,7 +824,8 @@ public class Cron extends PicsActionSupport {
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);
-				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
+				lateFeeItem.setDescription("Assessed "
+						+ new SimpleDateFormat(PicsDateFormat.American).format(new Date())
 						+ " due to delinquent payment.");
 
 				// Add Late Fee to Invoice
@@ -1056,7 +1064,8 @@ public class Cron extends PicsActionSupport {
 			}
 		}
 	}
-	private void deactivatePendingAccounts(){
+
+	private void deactivatePendingAccounts() {
 		List<ContractorAccount> deactivateList = contractorAccountDAO.findPendingAccountsToDeactivate();
 
 		Iterator<ContractorAccount> dpaIter = deactivateList.iterator();
@@ -1066,7 +1075,8 @@ public class Cron extends PicsActionSupport {
 
 			contractorAccountDAO.save(dpa);
 
-			stampNote(dpa, "Account has been deactivated, this account has been pending for 90 days without payment.", NoteCategory.Billing);
+			stampNote(dpa, "Account has been deactivated, this account has been pending for 90 days without payment.",
+					NoteCategory.Billing);
 		}
 	}
 }
