@@ -174,15 +174,15 @@ public class GetLcCorQuote extends PicsActionSupport {
 				if (!Strings.isEmpty(partners[index]) || !Strings.isEmpty(employees[index]))
 					body += ": ";
 				if (!Strings.isEmpty(partners[index]))
-					body += partners[index];
+					body += " Partners - " + partners[index];
 				if (!Strings.isEmpty(employees[index]))
-					body += " (" + employees[index] + ")";
+					body += ", Employees - " + employees[index];
 				body += "\n\n";
 			}
 
-			emailSender.send("lccor@picsauditing.com", subject, body);
+			emailSender.send("TechServices@picsauditing.com", subject, body);
 			
-			if (contractor != null) {
+			if (id != 0) {
 				changeLcCorPhase(contractor, LcCorPhase.Done);
 				contractorAccountDao.save(contractor);
 			}
@@ -222,6 +222,9 @@ public class GetLcCorQuote extends PicsActionSupport {
 	private void changeLcCorPhase(ContractorAccount contractor, LcCorPhase phase) {
 		Calendar cal = Calendar.getInstance();
 		boolean isSetToCorExpire = false;
+		
+		if (contractor.getLcCorPhase() == null)
+			return;
 		
 		if (phase.equals(LcCorPhase.RemindMeLater)) {
 			cal.add(Calendar.DATE, 14);

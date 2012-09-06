@@ -6,4 +6,10 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 -- PICS-5193 New LC COR features
+-- insert feature toggle
 insert ignore into app_properties (property, value) values ('ToggleLcCor', 0);
+-- initial selection of canadian contractors
+Update contractor_info ci
+join accounts a on a.id=ci.id
+set ci.lcCorPhase='RemindMeLater', ci.lcCorNotification=CURDATE();
+where a.country='CA' and a.type='Contractor' and a.status='Active';

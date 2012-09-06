@@ -27,6 +27,7 @@
 		<td width="15px"></td>
 		<td style="vertical-align:top; width: 48%">
 		<s:if test="!confirmQuote">
+			<h3><s:text name="GetLcCorQuote.form.title" /></h3>
 			<s:form id="save" method="POST" enctype="multipart/form-data">
 				<s:hidden name="id" />
 				<ol style="list-style-type:none" >
