@@ -219,11 +219,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.countrySubdivision = countrySubdivision;
 	}
 
-	@Transient
-	public String getState() {
-		return StringUtils.substring(countrySubdivision.getIsoCode(), -2);
-	}
-
 	@Column(name = "zip", length = 15)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
 	@ReportField(category = FieldCategory.ContactInformation)

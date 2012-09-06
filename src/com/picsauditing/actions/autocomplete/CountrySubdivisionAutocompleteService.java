@@ -19,8 +19,8 @@ public class CountrySubdivisionAutocompleteService extends AutocompleteService<C
 	protected Collection<CountrySubdivision> getItems(String q) {
 		Collection<CountrySubdivision> result = new HashSet<CountrySubdivision>();
 		if (!Strings.isEmpty(q)) {
-			if (q.length() == 2) {
-				// search both iso and translated fields for the 2 letter
+			if (q.length() == 5) {
+				// search both iso and translated fields for the 5 letter
 				// combinations
 				List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findWhere("isoCode = '" + Strings.escapeQuotes(q) + "'");
 				result.addAll(countrySubdivisionList);
