@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,6 +16,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -23,8 +25,10 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.toggle.FeatureToggleChecker;
 import com.picsauditing.util.LocaleController;
 
 @SuppressWarnings("serial")
@@ -34,6 +38,8 @@ public class OpenTasks extends TranslationActionSupport {
 	protected ContractorAuditDAO contractorAuditDao;
 	@Autowired
 	protected OperatorTagDAO operatorTagDao;
+	@Autowired
+	private FeatureToggleChecker featureToggleChecker;
 
 	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
 
@@ -75,6 +81,8 @@ public class OpenTasks extends TranslationActionSupport {
 			gatherTasksAboutOperatorQualification();
 		}
 
+		gatherTasksAboutMarketing();
+		
 		vopakSpecificOperatorQualificationTag();
 
 		return openTasks;
@@ -272,6 +280,28 @@ public class OpenTasks extends TranslationActionSupport {
 				}
 			}
 		}
+	}
+
+	private void gatherTasksAboutMarketing() {
+		if (isLcCorTaskNeeded()) {
+			openTasks.add(getTextParameterized(
+					"ContractorWidget.message.LcCor."
+							+ contractor.getLcCorPhase().toString(),
+					contractor.getId()));
+		}
+	}
+	
+	private boolean isLcCorTaskNeeded() {
+		if (!featureToggleChecker.isFeatureEnabledForBetaLevel(AppProperty.LC_COR_TOGGLE))
+			return false;
+		if (contractor.getLcCorPhase() != null && !contractor.getLcCorPhase().equals(LcCorPhase.Done)) {
+			if (contractor.getLcCorNotification() != null
+					&& (new Date()).after(contractor.getLcCorNotification())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	@Deprecated

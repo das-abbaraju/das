@@ -1,6 +1,9 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,20 +21,26 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.google.common.collect.Lists;
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.search.Database;
+import com.picsauditing.toggle.FeatureToggleChecker;
 
 public class ContractorCronTest {
 	
 	@Mock private Database databaseForTesting;
-	
+	@Mock private FeatureToggleChecker featureToggleChecker;
+	@Mock private ContractorAccountDAO contractorDAO;
+
 	ContractorCron contractorCron;
 	
 	@AfterClass
@@ -44,6 +53,8 @@ public class ContractorCronTest {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 		contractorCron = new ContractorCron();
+		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
+		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
 	}
 	
 	/**
@@ -489,4 +500,118 @@ public class ContractorCronTest {
 		}
 	}
 
+	@Test
+	public void testCheckLcCor_NoCorAudit() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		ContractorAccount contractor = createContractorForLcCorTest(null, null,
+				false, null);
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == null);
+	}
+
+	@Test
+	public void testCheckLcCor_CorNoExpiration() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		ContractorAccount contractor = createContractorForLcCorTest(null, null,
+				true, null);
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == null);
+	}
+
+	@Ignore
+	@Test
+	public void testCheckLcCor_CorEpirationBeyond4Months() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 121);
+		ContractorAccount contractor = createContractorForLcCorTest(null, null,
+				true, cal.getTime());
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == null);
+	}
+
+	@Ignore
+	@Test
+	public void testCheckLcCor_CorWithin4MonthsNoPhase() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 120);
+		ContractorAccount contractor = createContractorForLcCorTest(null, null,
+				true, cal.getTime());
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == LcCorPhase.RemindMeLaterAudit);
+	}
+
+	@Ignore
+	@Test
+	public void testCheckLcCor_CorWithin4MonthsNonAuditPhase() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 120);
+		ContractorAccount contractor = createContractorForLcCorTest(
+				LcCorPhase.RemindMeLater, null, true, cal.getTime());
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == LcCorPhase.RemindMeLaterAudit);
+	}
+
+	@Test
+	public void testCheckLcCor_CorWithin4MonthsAuditPhase() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 120);
+		ContractorAccount contractor = createContractorForLcCorTest(
+				LcCorPhase.RemindMeLaterAudit, null, true, cal.getTime());
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == LcCorPhase.RemindMeLaterAudit);
+	}
+
+	@Ignore
+	@Test
+	public void testCheckLcCor_CorWithin4MonthsDoneBeforeCorExpires() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 120);
+		ContractorAccount contractor = createContractorForLcCorTest(
+				LcCorPhase.Done, new Date(), true, cal.getTime());
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == LcCorPhase.RemindMeLaterAudit);
+	}
+
+	@Test
+	public void testCheckLcCor_CorWithin4MonthsDoneAfterCorExpires() throws Exception {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString()))
+				.thenReturn(true);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 120);
+		Date corExpires = cal.getTime();
+		cal.add(Calendar.DATE, 1);
+		Date notificationDate = cal.getTime();
+		ContractorAccount contractor = createContractorForLcCorTest(
+				LcCorPhase.Done, notificationDate, true, corExpires);
+		Whitebox.invokeMethod(contractorCron, "checkLcCor", contractor);
+		assertTrue(contractor.getLcCorPhase() == LcCorPhase.Done);
+	}
+
+	private ContractorAccount createContractorForLcCorTest(LcCorPhase phase,
+			Date notificationDate, boolean createCorAudit, Date corEpireDate) {
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		contractor.setLcCorPhase(phase);
+		contractor.setLcCorNotification(notificationDate);
+
+		if (createCorAudit) {
+			ContractorAudit audit = EntityFactory.makeContractorAudit(
+					AuditType.COR, contractor);
+			audit.setExpiresDate(corEpireDate);
+			contractor.getAudits().add(audit);
+		}
+
+		return contractor;
+	}
 }

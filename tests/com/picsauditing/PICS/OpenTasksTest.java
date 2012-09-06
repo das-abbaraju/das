@@ -39,6 +39,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import com.ibm.icu.util.Calendar;
+import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -54,6 +55,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
@@ -61,6 +63,7 @@ import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.search.Database;
+import com.picsauditing.toggle.FeatureToggleChecker;
 
 public class OpenTasksTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
@@ -98,6 +101,7 @@ public class OpenTasksTest {
 	@Mock private UserAccess userAccess;
 	@Mock private Invoice invoice;
 	@Mock private Database databaseForTesting;
+	@Mock private FeatureToggleChecker featureToggleChecker;
 	
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
@@ -128,6 +132,7 @@ public class OpenTasksTest {
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
 		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
+		Whitebox.setInternalState(openTasks, "featureToggleChecker", featureToggleChecker);
 		when(contractor.getLocale()).thenReturn(Locale.ENGLISH);
 	}
 
@@ -690,5 +695,47 @@ public class OpenTasksTest {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DATE, -179);
 		return date.getTime();
+	}
+
+	@Test
+	public void testIsLcCorTaskNeeded_NoPhase()throws Exception {
+		setUpLcCorNotification(null, null);
+		Boolean result = Whitebox.invokeMethod(openTasks, "isLcCorTaskNeeded");
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testIsLcCorTaskNeeded_Later()throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		setUpLcCorNotification(LcCorPhase.RemindMeLater, cal.getTime());
+		Boolean result = Whitebox.invokeMethod(openTasks, "isLcCorTaskNeeded");
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLcCorTaskNeeded_Done()throws Exception {
+		setUpLcCorNotification(LcCorPhase.Done, new Date());
+		Boolean result = Whitebox.invokeMethod(openTasks, "isLcCorTaskNeeded");
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsLcCorTaskNeeded_Yes()throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);
+		setUpLcCorNotification(LcCorPhase.RemindMeLater, cal.getTime());
+		Boolean result = Whitebox.invokeMethod(openTasks, "isLcCorTaskNeeded");
+		assertTrue(result);
+	}
+
+	private void setUpLcCorNotification(LcCorPhase phase, Date date) {
+		when(featureToggleChecker.isFeatureEnabledForBetaLevel(anyString())).thenReturn(true);
+		
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		contractor.setLcCorPhase(phase);
+		contractor.setLcCorNotification(date);
+		
+		Whitebox.setInternalState(openTasks, "contractor", contractor);
 	}
 }

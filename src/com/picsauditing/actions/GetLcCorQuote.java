@@ -226,6 +226,10 @@ public class GetLcCorQuote extends PicsActionSupport {
 		if (phase.equals(LcCorPhase.RemindMeLater)) {
 			cal.add(Calendar.DATE, 14);
 			contractor.setLcCorNotification(cal.getTime());
+			if (contractor.getLcCorPhase().isAuditPhase())
+				contractor.setLcCorPhase(LcCorPhase.RemindMeLaterAudit);
+			else
+				contractor.setLcCorPhase(LcCorPhase.RemindMeLater);
 		} else if (phase.equals(LcCorPhase.NoThanks)) {
 			if (contractor.getLcCorPhase().equals(LcCorPhase.RemindMeLater)) {
 				cal.add(Calendar.MONTH, 3);

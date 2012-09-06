@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
@@ -41,6 +39,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -59,6 +58,7 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -77,6 +77,7 @@ import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggleChecker;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -105,6 +106,8 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private ExceptionService exceptionService;
+	@Autowired
+	private FeatureToggleChecker featureToggleChecker;
 	
 	// this is @Autowired at the setter because we need @Qualifier which does NOT work
 	// on the variable declaration; only on the method (I think this is a Spring bug)
@@ -303,7 +306,48 @@ public class ContractorCron extends PicsActionSupport {
 	private void runAuditBuilder(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
-		auditBuilder.buildAudits(contractor);
+//		auditBuilder.buildAudits(contractor);
+		
+		checkLcCor(contractor);
+	}
+	
+	private void checkLcCor(ContractorAccount contractor) {
+		if (!featureToggleChecker.isFeatureEnabledForBetaLevel(AppProperty.LC_COR_TOGGLE))
+			return;
+		
+		ContractorAudit corAudit = null;
+		for (ContractorAudit audit: contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.COR) {
+				corAudit = audit;
+				break;
+			}
+		}
+		
+		if (corAudit == null)
+			return;
+		
+		boolean isLcCorNotify = false;
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 120);
+		if (corAudit.getExpiresDate() != null && corAudit.getExpiresDate().before(cal.getTime())) {
+			if (contractor.getLcCorPhase() == null) {
+				isLcCorNotify = true;
+			} else if (!contractor.getLcCorPhase().isAuditPhase()) {
+				isLcCorNotify = true;
+			} else if (contractor.getLcCorPhase().equals(LcCorPhase.Done)) {
+				if (contractor.getLcCorNotification() == null) {
+					isLcCorNotify = true;
+				} else if (contractor.getLcCorNotification().before(corAudit.getExpiresDate())) {
+					isLcCorNotify = true;
+				}
+			}
+		}
+		
+		if (isLcCorNotify) {
+			contractor.setLcCorPhase(LcCorPhase.RemindMeLaterAudit);
+			contractor.setLcCorNotification(new Date());
+			contractorDAO.save(contractor);
+		}
 	}
 
 	private void runAuditCategory(ContractorAccount contractor) {
