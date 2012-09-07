@@ -12,6 +12,8 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.io.Files;
 import com.picsauditing.access.NoRightsException;
@@ -240,13 +242,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private void setRequestStatus() {
-		if (requestedContractor.getStatus().isRequested()) {
+		AccountStatus requestedContractorStatus = requestedContractor.getStatus();
+
+		if (requestedContractorStatus.isRequested()) {
 			if (requestedContractor.getFollowUpDate() == null) {
 				status = ContractorRegistrationRequestStatus.Active;
 			} else {
 				status = ContractorRegistrationRequestStatus.Hold;
 			}
-		} else if (requestedContractor.getStatus().isActive()) {
+		} else if (requestedContractorStatus.isActive() || requestedContractorStatus.isPending()) {
 			if (requestedContractor.getContactCountByPhone() > 0) {
 				status = ContractorRegistrationRequestStatus.ClosedContactedSuccessful;
 			} else {
@@ -289,8 +293,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		operatorTags.removeAll(requestedTags);
 	}
 
-	// TODO: Find how to make this transactional so if one part fails the other
-	// components do NOT get merged/persisted
+	@Transactional(rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest, OperatorAccount requestedBy) throws Exception {
 		setRequiredFieldsAndSaveEntities(newRequest);
 		saveLegacyRequest(requestedBy);
@@ -307,6 +310,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		}
 
 		setOperatorTags();
+
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 	}
 
@@ -362,7 +366,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return new OperatorAccount();
 	}
 
-	private void setRequiredFieldsAndSaveEntities(boolean newRequest) {
+	private void setRequiredFieldsAndSaveEntities(boolean newRequest) throws Exception {
 		// NAICS is required for accounts
 		if (newRequest) {
 			requestedContractor.setNaics(new Naics());

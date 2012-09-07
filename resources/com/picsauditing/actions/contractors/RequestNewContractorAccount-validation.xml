@@ -98,7 +98,12 @@
 	</field>
 	
 	<validator type="expression">
-		<param name="expression"><![CDATA[ (status.active || (status.hold && requestedContractor.followUpDate != null) || (status.closedUnsuccessful && requestedContractor.reason != null)) ]]></param>
-		<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
+		<param name="expression"><![CDATA[ !status.hold || (status.hold && requestedContractor.followUpDate != null) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterHoldDate")}</message>
+	</validator>
+	
+	<validator type="expression">
+		<param name="expression"><![CDATA[ !status.closedUnsuccessful || (status.closedUnsuccessful && requestedContractor.reason != null) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterReasonDeclined")}</message>
 	</validator>
 </validators>

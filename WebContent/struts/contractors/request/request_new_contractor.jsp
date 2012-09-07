@@ -313,6 +313,7 @@
 									label="ContractorRegistrationRequest.holdDate"
 									name="requestedContractor.firstRegistrationRequest.holdDate"
 									cssClass="datepicker"
+									required="true"
 									size="10"
 									theme="formhelp"
 								/>
@@ -322,6 +323,7 @@
 									id="reasonForDecline"
 									label="ContractorRegistrationRequest.reasonForDecline"
 									name="requestedContractor.firstRegistrationRequest.reasonForDecline"
+									required="true"
 									theme="formhelp"
 								/>
 								<div class="fieldhelp">
@@ -337,7 +339,7 @@
 								<label>
 									<s:text name="ContractorRegistrationRequest.label.status" />:
 								</label>
-								<s:property value="getText(requestedContractor.firstRegistrationRequest.status.I18nKey)" />
+								<s:text name="%{requestedContractor.firstRegistrationRequest.status.I18nKey}" />
 							</li>
 							
 							<s:if test="status.hold">
