@@ -14,6 +14,7 @@
 		<description>Performs a security check and evaluates the body if the response is true</description>
 		<name>permission</name>
 		<tag-class>com.picsauditing.tags.SecurityCheck</tag-class>
+		<body-content>JSP</body-content>
 		<attribute>
 			<description>The Permission (in OpPerms) to be checked</description>
 			<name>perm</name>
@@ -40,10 +41,10 @@
 		</attribute>
 	</tag>	
 	<tag>
+		<description>if/condition/then/else tag.</description>
 		<name>toggle</name>
-		<tagclass>com.picsauditing.tags.IfTag</tagclass>
-		<info>if/condition/then/else tag.</info>
-		<bodycontent>JSP</bodycontent>
+		<tag-class>com.picsauditing.tags.IfTag</tag-class>
+		<body-content>JSP</body-content>
 		<attribute>
 			<description>name of the toggle</description>
 			<name>name</name>
@@ -53,10 +54,10 @@
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 	<tag>
+		<description>else part of if/condition/then/else tag.</description>
 		<name>toggleElse</name>
-		<tagclass>com.picsauditing.tags.IfElseTag</tagclass>
-		<info>else part of if/condition/then/else tag.</info>
-		<bodycontent>JSP</bodycontent>
+		<tag-class>com.picsauditing.tags.IfElseTag</tag-class>
+		<body-content>JSP</body-content>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 	<tag>
@@ -86,83 +87,83 @@
 	</tag>
 
 	<tag>
-		<name>fieldhelp</name>
 		<description>Add help text to a field on a form</description>
+		<name>fieldhelp</name>
 		<tag-class>com.picsauditing.tags.FieldHelp</tag-class>
+		<body-content>JSP</body-content>
 		<attribute>
-			<name>title</name>
 			<description>The field that this help text relates to. Defaults to "Field Help"</description>
+			<name>title</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<body-content>JSP</body-content>
 	</tag>
 
 	<tag>
-		<name>autocomplete</name>
 		<description>Create an autocomplete control</description>
+		<name>autocomplete</name>
 		<tag-class>com.picsauditing.tags.AutocompleteTag</tag-class>
+		<body-content>JSP</body-content>
 		<attribute>
-			<name>action</name>
 			<description>The action of the autocomplete</description>
+			<name>action</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>name</name>
 			<description>The value to use as the html name parameter. This will also be used to pull the value if it is missing.</description>
+			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>htmlId</name>
 			<description>An override for the id attribute. This will automatically be assigned.</description>
+			<name>htmlId</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>htmlName</name>
 			<description>An override for the html name attribute.</description>
+			<name>htmlName</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>value</name>
 			<description>The name of the struts parameter to pull off the value stack</description>
+			<name>value</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>hiddenValue</name>
 			<description>The value to place in the hidden field as a default (use this in place of "value")</description>
+			<name>hiddenValue</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>textValue</name>
 			<description>The value to place in the text field as a default (use this in place of "value")</description>
+			<name>textValue</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>extraParams</name>
 			<description>The extraParams value that is passed to the autocomplete plugin.</description>
+			<name>extraParams</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>minChars</name>
 			<description>The minChars value that is passed to the autocomplete plugin.</description>
+			<name>minChars</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>cacheLength</name>
 			<description>The cacheLength value that is passed to the autocomplete plugin.</description>
+			<name>cacheLength</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<body-content>JSP</body-content>
 	</tag>
 	
 <!-- 	<function> -->
