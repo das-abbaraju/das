@@ -53,7 +53,7 @@ try {
 report.setCurrentPage(page_num);
 
 
-List<BasicDynaBean> data = report.getPage();
+List<BasicDynaBean> data = report.getPage(false);
 
 %>
 
