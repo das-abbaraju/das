@@ -21,6 +21,7 @@ import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Pagination;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
@@ -44,6 +45,8 @@ public class ManageReports extends PicsActionSupport {
 
 	private List<ReportUser> userReports;
 	private List<ReportUser> userReportsOverflow;
+
+	private Pagination<ReportUser> pagination;
 
 	// URL parameters
 	private int reportId;
@@ -287,6 +290,14 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+
+	public Pagination<ReportUser> getPagination() {
+		return pagination;
+	}
+
+	public void setPagination(Pagination<ReportUser> pagination) {
+		this.pagination = pagination;
 	}
 
 	public String getAlphaSortDirection() {

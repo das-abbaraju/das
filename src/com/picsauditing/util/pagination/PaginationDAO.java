@@ -2,11 +2,10 @@ package com.picsauditing.util.pagination;
 
 import java.util.List;
 
-import com.picsauditing.jpa.entities.BaseTable;
+public interface PaginationDAO<E> {
 
-public interface PaginationDAO {
+	public abstract List<E> getPaginationResults(PaginationParameters parameters);
 
-	public abstract List<? extends BaseTable> getPaginationResults(int offset, int limit);
-
-	public abstract int getPaginationResultCount();
+	public abstract int getPaginationResultCount(PaginationParameters parameters);
+	
 }

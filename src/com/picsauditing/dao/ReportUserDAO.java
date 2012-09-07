@@ -17,15 +17,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.PaginationDAO;
+import com.picsauditing.util.pagination.PaginationParameters;
 
-public class ReportUserDAO extends PicsDAO {
+public class ReportUserDAO extends PicsDAO implements PaginationDAO<ReportUser> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportUserDAO.class);
 
@@ -268,5 +272,40 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addOrderBy("numTimesFavorited DESC");
 
 		return sql;
+	}
+
+	@Override
+	public List<ReportUser> getPaginationResults(PaginationParameters parameters) {
+		ReportPaginationParameters reportParams = (ReportPaginationParameters)parameters;
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+
+		// TODO escape properly
+		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
+
+		try {
+			SelectSQL sql = setupSqlForSearchFilterQuery(reportParams.getUserId());
+
+			sql.addWhere("r.name LIKE " + query +
+					" OR r.description LIKE " + query +
+					" OR u.name LIKE " + query);
+
+			sql.setPageNumber(reportParams.getPageSize(), reportParams.getPage());
+
+			Database db = new Database();
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+			userReports = ReportModel.populateUserReports(results);
+		} catch (SQLException se) {
+			logger.error("SQL Exception in getPaginationResults()", se);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in getPaginationResults()");
+		}
+
+		return userReports;
+	}
+
+	@Override
+	public int getPaginationResultCount(PaginationParameters parameters) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

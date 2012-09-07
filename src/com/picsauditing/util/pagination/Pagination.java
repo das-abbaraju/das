@@ -3,50 +3,41 @@ package com.picsauditing.util.pagination;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.jpa.entities.BaseTable;
+/**
+ * To add pagination to a page:
+ * 
+ * - Have a DAO (possibly a newly created one) implement PaginationDao
+ * - Create a new object that implements PaginationParameters with all the data
+ *   you need for your DAO.
+ * - Add a Pagination object to your controller (action class), as well as a getter/setter.
+ */
+public final class Pagination<E> {
 
-public class Pagination {
-
-	private int page;
-	private int pageSize;
-	private int totalPages = -1;
-	private PaginationDAO dao;
+	private PaginationDAO<E> dao;
+	private PaginationParameters parameters;
 
 	public static final int MAX_NAV_PAGES = 5;
 
-	public Pagination(PaginationDAO dao, int pageSize) {
+	public void Initialize(PaginationParameters parameters, PaginationDAO<E> dao) {
 		this.dao = dao;
-		this.pageSize = pageSize;
+		this.parameters = parameters;
 	}
 
-	// Must be called first
-	public List<? extends BaseTable> getResults(int page) {
-		this.page = page;
-		int offset = (page - 1) * pageSize;
-		return dao.getPaginationResults(offset, pageSize);
-	}
-
-	public int getTotalPages() {
-		int totalResults = dao.getPaginationResultCount();
-		totalPages = totalResults / pageSize;
-		if (totalResults % pageSize != 0) {
-			totalPages += 1;
-		}
-
-		return totalPages;
+	public List<E> getResults() {
+		return dao.getPaginationResults(parameters);
 	}
 
 	// Page numbers for navigation
 	public List<Integer> getPages() {
-		ensureTotalPagesIsSet();
-
 		List<Integer> navPages = new ArrayList<Integer>();
 
 		// MAX_NAV_PAGES total pages, or fewer if fewer pages
-		int start = page - 2;
+		int start = parameters.getPage() - 2;
 		if (start < 1) {
 			start = 1;
 		}
+
+		int totalPages = getTotalPages();
 
 		// Check if we're close to the end
 		while ((start + MAX_NAV_PAGES - 1 > totalPages) && (start > 1)) {
@@ -67,38 +58,34 @@ public class Pagination {
 	}
 
 	public int getPreviousPage() {
-		return page - 1;
+		return parameters.getPage() - 1;
 	}
 
 	public int getNextPage() {
-		return page + 1;
+		return parameters.getPage() + 1;
 	}
 
 	public int getLastPage() {
-		ensureTotalPagesIsSet();
-
-		return totalPages;
+		return getTotalPages();
 	}
 
 	// TODO change this to only show if the first page is not in the nav
 	public boolean hasFirstPage() {
-		if (page != 1)
+		if (parameters.getPage() != 1)
 			return true;
 
 		return false;
 	}
 
 	public boolean hasPreviousPage() {
-		if (page != 1)
+		if (parameters.getPage() != 1)
 			return true;
 
 		return false;
 	}
 
 	public boolean hasNextPage() {
-		ensureTotalPagesIsSet();
-
-		if (page != totalPages)
+		if (parameters.getPage() != getTotalPages())
 			return true;
 
 		return false;
@@ -106,34 +93,27 @@ public class Pagination {
 
 	// TODO change this to only show if the last page is not in the nav
 	public boolean hasLastPage() {
-		ensureTotalPagesIsSet();
-
-		if (page != totalPages)
+		if (parameters.getPage() != getTotalPages())
 			return true;
 
 		return false;
 	}
 
 	public boolean hasPagination() {
-		ensureTotalPagesIsSet();
-
-		if (totalPages == 1)
+		if (getTotalPages() == 1)
 			return false;
 
 		return true;
 	}
 
-	private void ensureTotalPagesIsSet() {
-		if (totalPages == -1) {
-			getTotalPages();
+	public int getTotalPages() {
+		int totalResults = dao.getPaginationResultCount(parameters);
+		int totalPages = totalResults / parameters.getPageSize();
+
+		if (totalResults % parameters.getPageSize() != 0) {
+			totalPages += 1;
 		}
-	}
 
-	public int getPage() {
-		return page;
-	}
-
-	public int getPageSize() {
-		return pageSize;
+		return totalPages;
 	}
 }
