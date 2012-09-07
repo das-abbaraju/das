@@ -15,9 +15,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.velocity.tools.generic.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -25,15 +27,26 @@ import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {
 	
-	public static final String EMPTY_STRING = ""; 
+	public static final String EMPTY_STRING = "";
+	public static final String NEW_LINE = "\n";
+	
+	private static final int NO_STRING_ESCAPE_STRATEGY = 0;
+	private static final int STRING_ESCAPE_STRATEGY = 1;
+	private static final int OBJECT_TO_STRING_ESCAPE_STRATEGY = 2;
 
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
 	
 	public static boolean isEmpty(String value) {
-		if (value == null)
+		if (value == null) {
 			return true;
+		}
+		
 		value = value.trim();
 		return value.length() == 0;
+	}
+	
+	public static boolean isNotEmpty(String value) {
+		return !isEmpty(value);
 	}
 
 	/**
@@ -50,8 +63,8 @@ public class Strings {
 
 		if (value2 != null)
 			return value2.equals(value1);
+		
 		return true;
-
 	}
 
 	public static String[] convertListToArray(List<String> list) {
@@ -61,26 +74,29 @@ public class Strings {
 			array[i] = item;
 			i++;
 		}
+		
 		return array;
 	}
 
 	public static String insertSpaces(String value) {
 		if (value == null)
 			return null;
+		
 		StringBuilder newValue = new StringBuilder();
-
 		for (int i = 0; i < value.length(); i++) {
 			newValue.append(value.charAt(i));
 			newValue.append(" ");
 		}
+		
 		return newValue.toString().trim();
 	}
 
 	// TODO Put the TODOs about method names at the top of the method
 	// TODO rename this method to escapeSingleQuote
 	public static String escapeQuotes(String value) {
-		if (value == null)
-			return "";
+		if (isEmpty(value))
+			return EMPTY_STRING;
+		
 		String singleQuote = "\'";
 		String backSlash = "\\";
 
@@ -92,98 +108,111 @@ public class Strings {
 	}
 
 	public static String implode(int[] array, String delimiter) {
-		if (array == null)
-			return "";
+		if (ArrayUtils.isEmpty(array))
+			return EMPTY_STRING;
+		
 		StringBuffer buffer = new StringBuffer();
 		for (int o : array) {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
+		
 			buffer.append(o);
 		}
+		
 		return buffer.toString();
 	}
 
 	public static String implodeForDB(String[] array, String delimiter) {
-		if (array == null)
-			return EMPTY_STRING;
-		StringBuffer buffer = new StringBuffer();
-		for (String o : array) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append("'");
-			buffer.append(escapeQuotes(o));
-			buffer.append("'");
-		}
-		return buffer.toString();
+		return genericArrayImplode(array, delimiter, STRING_ESCAPE_STRATEGY);
 	}
 
-	public static String implodeForDB(Enum[] array, String delimiter) {
-		if (array == null)
-			return EMPTY_STRING;
-		StringBuffer buffer = new StringBuffer();
-		for (Enum o : array) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append("'");
-			buffer.append(o);
-			buffer.append("'");
-		}
-		return buffer.toString();
-	}
+	public static <E extends Enum<E>> String implodeForDB(Enum<E>[] array, String delimiter) {
+		return genericArrayImplode(array, delimiter, STRING_ESCAPE_STRATEGY);
+	}	
 
 	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
-		if (collection == null)
-			return "";
-		
-		StringBuffer buffer = new StringBuffer();
-		for (Object o : collection) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append("'");
-			buffer.append(escapeQuotes(String.valueOf(o)));
-			buffer.append("'");
-		}
-		return buffer.toString();
+		return genericImplode(collection, ",", OBJECT_TO_STRING_ESCAPE_STRATEGY);
 	}
 
 	public static String implode(Collection<? extends Object> collection) {
-		return implode(collection, ",");
+		return genericImplode(collection, ",", NO_STRING_ESCAPE_STRATEGY);
 	}
 
 	public static String implodeIDs(Collection<? extends BaseTable> collection) {
-		if (collection == null)
-			return "";
-		StringBuffer buffer = new StringBuffer();
-		for (BaseTable o : collection) {
-			if (buffer.length() > 0)
-				buffer.append(",");
-			buffer.append(o.getId());
-		}
-		return buffer.toString();
+		return genericImplode(collection, ",", NO_STRING_ESCAPE_STRATEGY);
 	}
 
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
-		if (collection == null)
-			return "";
-		StringBuffer buffer = new StringBuffer();
-		for (Object o : collection) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append(o);
-		}
-		return buffer.toString();
+		return genericImplode(collection, delimiter, NO_STRING_ESCAPE_STRATEGY);
 	}
 
 	public static String implode(List<String> collection, String delimiter) {
-		if (collection == null)
-			return "";
-		StringBuffer buffer = new StringBuffer();
-		for (Object o : collection) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append(o);
+		return genericImplode(collection, delimiter, NO_STRING_ESCAPE_STRATEGY);
+	}
+	
+	private static <E> String genericArrayImplode(E[] array, String delimiter, int escapeType) {
+		if (ArrayUtils.isEmpty(array)) {
+			return EMPTY_STRING;
 		}
-		return buffer.toString();
+		
+		StringBuilder builder = new StringBuilder();
+		for (E entity : array) {
+			if (builder.length() > 0) {
+				builder.append(delimiter);
+			}
+			
+			appendEntity(builder, entity, escapeType);
+		}
+		
+		return builder.toString();
+	}
+	
+	private static <E> String genericImplode(Collection<E> collection, String delimiter, int escapeType) {
+		if (CollectionUtils.isEmpty(collection)) {
+			return EMPTY_STRING;
+		}
+		
+		StringBuilder builder = new StringBuilder();
+		for (E entity : collection) {
+			if (builder.length() > 0) {
+				builder.append(delimiter);
+			}
+			
+			appendEntity(builder, entity, escapeType);
+		}
+		
+		return builder.toString();
+	}
+	
+	private static <E> void appendEntity(StringBuilder builder, E entity, int escapeType) {
+		switch (escapeType) {
+			case NO_STRING_ESCAPE_STRATEGY:
+				builder.append(entity);
+				break;
+				
+			case STRING_ESCAPE_STRATEGY:
+				performStringEscapeStrategy(builder, entity);
+				break;
+				
+			case OBJECT_TO_STRING_ESCAPE_STRATEGY:
+				builder.append("'").append(escapeQuotes(String.valueOf(entity))).append("'");
+				break;
+				
+			default:
+				throw new RuntimeException("Invalid use of string escaping.");
+		}
+	}
+	
+	private static <E> void performStringEscapeStrategy(StringBuilder stringBuilder, E entity) {
+		stringBuilder.append("'");
+		
+		if (entity instanceof String) {
+			stringBuilder.append(escapeQuotes((String) entity));
+		} else {
+			stringBuilder.append(entity);
+		}
+		
+		stringBuilder.append("'");
 	}
 
 	public static String hash(String seed) {
@@ -320,17 +349,17 @@ public class Strings {
 		 */
 
 		// Remove all quotes
-		name = name.replaceAll("[\\'\\\"]", "");
+		name = name.replaceAll("[\\'\\\"]", EMPTY_STRING);
 		// Take out "the" at the beginning of the sentences, llc & inc (in
 		// multiple variations) at the end of sentences
-		name = name.replaceAll("^THE ", "");
-		name = name.replaceAll(" L ?L ?C$", "");
-		name = name.replaceAll(" I ?N ?C$", "");
+		name = name.replaceAll("^THE ", EMPTY_STRING);
+		name = name.replaceAll(" L ?L ?C$", EMPTY_STRING);
+		name = name.replaceAll(" I ?N ?C$", EMPTY_STRING);
 		// Remove all non-alphanumeric characters
-		name = name.replaceAll("\\W", "");
-		name = name.replaceAll("_", "");
+		name = name.replaceAll("\\W", EMPTY_STRING);
+		name = name.replaceAll("_", EMPTY_STRING);
 		// Change multiple spaces into nothing
-		name = name.replaceAll(" +", "");
+		name = name.replaceAll(" +", EMPTY_STRING);
 		name = name.trim();
 
 
@@ -341,7 +370,7 @@ public class Strings {
 		if (Strings.isEmpty(input))
 			return null;
 
-		return input.replaceAll("<", "").replaceAll(">", "");
+		return input.replaceAll("<", EMPTY_STRING).replaceAll(">", EMPTY_STRING);
 	}
 	@Deprecated
 	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
@@ -359,9 +388,11 @@ public class Strings {
 
 	public static String trim(String input, int maxlength) {
 		if (isEmpty(input))
-			return "";
+			return EMPTY_STRING;
+		
 		if (input.length() <= maxlength)
 			return input;
+		
 		return input.substring(0, maxlength - 3) + "...";
 	}
 	@Deprecated
@@ -428,12 +459,12 @@ public class Strings {
 
 	public static String formatNumber(String number) {
 		// Returns only digits and decimal points
-		number = number.replaceAll("[^\\d\\.]", "");
+		number = number.replaceAll("[^\\d\\.]", EMPTY_STRING);
 		// Make sure that number doesn't have more than one decimal point
 		try {
 			String n1 = number.substring(0, number.indexOf(".") + 1);
 			String n2 = number.substring(number.indexOf(".") + 1, number.length());
-			n2 = n2.replace(".", "");
+			n2 = n2.replace(".", EMPTY_STRING);
 			number = n1 + n2;
 		} catch (Exception e) {
 			logger.error("Error parsing: {}", number);
@@ -447,7 +478,7 @@ public class Strings {
 			return number;
 		}
 
-		number = number.replaceAll("0*$", "");
+		number = number.replaceAll("0*$", EMPTY_STRING);
 		if (number.charAt(number.length() - 1) == '.') {
 			number = number.substring(0, number.length() - 1);
 		}
@@ -496,7 +527,7 @@ public class Strings {
 		if (isEmpty(expression))
 			return null;
 
-		return expression.replace("|", "");
+		return expression.replace("|", EMPTY_STRING);
 	}
 
 	public static Locale parseLocale(String locale) {
@@ -579,7 +610,7 @@ public class Strings {
 	
 	public static String nullToBlank(String value) {
 		if (value == null) {
-			return "";
+			return EMPTY_STRING;
 		}
 		
 		return value;

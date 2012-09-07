@@ -20,7 +20,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -56,7 +55,7 @@ public class EventSubscriptionBuilder {
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
 			builder.setTemplate(templateID);
-			builder.setFromAddress("PICS Customer Service <info@picsauditing.com>");
+			builder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			builder.addToken("contractor", co.getContractorAccount());
 			builder.addToken("operator", co.getOperatorAccount());
 			String seed = "u" + subscription.getUser().getId() + "t" + templateID;
@@ -166,7 +165,7 @@ public class EventSubscriptionBuilder {
 		emailBuilder.addToken("contractor", audit.getContractorAccount());
 		emailBuilder.setToAddresses(audit.getContractorAccount().getActiveUser().getEmail());
 		emailBuilder.setUser(audit.getContractorAccount().getActiveUser());
-		emailBuilder.setFromAddress("audits@picsauditing.com");
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS);
 		try {
 			EmailQueue email = emailBuilder.build();
 			email.setLowPriority();
@@ -191,7 +190,7 @@ public class EventSubscriptionBuilder {
 	private static void sendInvalidContractorAccountEmail(ContractorAudit audit) {
 		try {
 			EmailQueue email = new EmailQueue();
-			email.setToAddresses("audits@picsauditing.com");
+			email.setToAddresses(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS);
 			email.setContractorAccount(audit.getContractorAccount());
 			email.setSubject("Contractor Missing Email Address");
 			email.setBody(audit.getContractorAccount().getName() + " (" + audit.getContractorAccount().getId()
@@ -244,7 +243,7 @@ public class EventSubscriptionBuilder {
 		EmailBuilder email = new EmailBuilder();
 		email.addToken("stats", stats);
 		email.setToAddresses(subscription.getUser().getEmail());
-		email.setFromAddress("info@picsauditing.com");
+		email.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 		email.setTemplate(subscription.getSubscription().getTemplateID());
 		try {
 			EmailQueue q = email.build();

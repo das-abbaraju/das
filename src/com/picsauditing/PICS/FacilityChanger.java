@@ -113,7 +113,7 @@ public class FacilityChanger {
 			emailBuilder.setPermissions(permissions);
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("operator", operator);
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
 			emailQueue.setViewableBy(operator.getTopAccount());
@@ -156,7 +156,7 @@ public class FacilityChanger {
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		emailBuilder.addToken("operator", operator);
-		emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(60);
 		emailQueue.setViewableBy(operator.getTopAccount());
@@ -192,7 +192,7 @@ public class FacilityChanger {
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
 					emailBuilder.addToken("operator", co.getOperatorAccount());
-					emailBuilder.setFromAddress("\"IT\"<errors@picsauditing.com>");
+					emailBuilder.setFromAddress(EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS_WITH_NAME);
 					emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 
 					EmailQueue emailQueue = emailBuilder.build();

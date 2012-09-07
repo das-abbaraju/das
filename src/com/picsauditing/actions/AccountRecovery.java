@@ -81,7 +81,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 		try {
 			emailBuilder.setTemplate(86); // Username Reminder
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("users", matchingUsers);
 			emailBuilder.setToAddresses(email);
 			emailBuilder.addToken("username", matchingUsers.get(0).getName());
@@ -148,7 +148,7 @@ public class AccountRecovery extends PicsActionSupport {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("user", user);
 
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
@@ -172,8 +172,8 @@ public class AccountRecovery extends PicsActionSupport {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
-			emailBuilder.setBccAddresses("\"PICS Marketing\"<marketing@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
+			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			String confirmLink = "http://www.picsorganizer.com/Login.action?username="

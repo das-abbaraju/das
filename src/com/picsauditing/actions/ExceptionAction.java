@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -29,11 +30,11 @@ public class ExceptionAction extends PicsActionSupport {
 	private String exceptionStack;
 	private int priority = 1;
 	private String user_message;
-	private String to_address = "errors@picsauditing.com";
+	private String to_address = EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS;
 	private String from_address;
 	private String user_name;
-	private String user = "info@picsauditing.com";
-	private String password = "PicsS@fety1";
+	private String user = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS;
+	private String password = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD;
 
 	private final Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
 
@@ -192,7 +193,7 @@ public class ExceptionAction extends PicsActionSupport {
 		mail.setSubject("PICS Exception Error"
 				+ (permissions.isLoggedIn() ? " - User ID " + permissions.getUserId() : ""));
 		mail.setBody(email);
-		mail.setToAddresses("errors@picsauditing.com");
+		mail.setToAddresses(EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS);
 
 		if (permissions.isLoggedIn()) {
 			mail.setFromAddress(permissions.getEmail());
@@ -210,7 +211,7 @@ public class ExceptionAction extends PicsActionSupport {
 		} catch (Exception e) {
 			logger.error("PICS Exception Handler ... sending email via SendGrid");
 			GridSender sendMail = new GridSender(user, password);
-			mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
+			mail.setFromAddress(EmailAddressUtils.PICS_EXCEPTION_HANDLER_EMAIL);
 
 			try {
 				sendMail.sendMail(mail);

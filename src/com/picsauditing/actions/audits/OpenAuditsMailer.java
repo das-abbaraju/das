@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
@@ -62,7 +63,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 				emailBuilder.setConAudit(conAudit);
 				EmailQueue email = emailBuilder.build();
 				email.setVeryLowPriority();
-				email.setFromAddress("audits@picsauditing.com");
+				email.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS);
 				email.setViewableById(Account.EVERYONE);
 				emailQueueDAO.save(email);
 

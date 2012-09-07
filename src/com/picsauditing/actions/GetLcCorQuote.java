@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -180,7 +181,7 @@ public class GetLcCorQuote extends PicsActionSupport {
 				body += "\n\n";
 			}
 
-			emailSender.send("TechServices@picsauditing.com", subject, body);
+			emailSender.send(EmailAddressUtils.PICS_TECH_SERVICES, subject, body);
 			
 			if (id != 0) {
 				changeLcCorPhase(contractor, LcCorPhase.Done);

@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 public class ExceptionService {
@@ -87,14 +88,14 @@ public class ExceptionService {
 		mail.setSubject("PICS Exception Error"
 				+ (permissions != null && permissions.isLoggedIn() ? " - User ID " + permissions.getUserId() : ""));
 		mail.setBody(email.toString());
-		mail.setToAddresses("errors@picsauditing.com");
+		mail.setToAddresses(EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS);
 		try {
 			emailSender.send(mail);
 		} catch (Exception e) {
 			Logger logger = LoggerFactory.getLogger(ExceptionService.class);
 			logger.error("PICS Exception Handler ... sending email via SendGrid");
 			GridSender sendMail = new GridSender();
-			mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
+			mail.setFromAddress(EmailAddressUtils.PICS_EXCEPTION_HANDLER_EMAIL);
 			try {
 				sendMail.sendMail(mail);
 			} catch (MessagingException e1) {

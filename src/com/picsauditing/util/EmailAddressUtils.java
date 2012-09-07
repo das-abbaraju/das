@@ -6,6 +6,36 @@ import java.util.Set;
 import com.picsauditing.jpa.entities.Currency;
 
 public class EmailAddressUtils {
+	
+	// TODO: This should be further refactored into a configuration file
+	public static final String PICS_INFO_EMAIL_ADDRESS = "info@picsauditing.com";
+	public static final String PICS_INFO_EMAIL_ADDRESS_WITH_NAME = "PICS Info <" + PICS_INFO_EMAIL_ADDRESS + ">";
+	public static final String PICS_INFO_EMAIL_ADDRESS_PASSWORD = "PicsS@fety1";
+	
+	public static final String PICS_ERROR_EMAIL_ADDRESS = "errors@picsauditing.com";
+	public static final String PICS_ERROR_EMAIL_ADDRESS_WITH_NAME = "\"IT\"<" + PICS_ERROR_EMAIL_ADDRESS + ">";
+	public static final String PICS_EXCEPTION_HANDLER_EMAIL = "\"PICS Exception Handler\"<" + PICS_ERROR_EMAIL_ADDRESS + ">";
+	
+	public static final String PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS = "\"PICS Customer Service\"<" + PICS_INFO_EMAIL_ADDRESS + ">";
+	public static final String PICS_SYSTEM_EMAIL_ADDRESS = "\"PICS System\"<" + PICS_INFO_EMAIL_ADDRESS + ">";
+	public static final String PICS_REGISTRATION_EMAIL_ADDRESS = "Registrations@picsauditing.com";
+	
+	public static final String PICS_MARKETING_EMAIL_ADDRESS = "marketing@picsauditing.com";
+	public static final String PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME = "\"PICS Marketing\"<" + PICS_MARKETING_EMAIL_ADDRESS + ">";
+	
+	public static final String PICS_AUDIT_EMAIL_ADDRESS = "audits@picsauditing.com";
+	public static final String PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME = "\"PICS Auditing\"<" + PICS_AUDIT_EMAIL_ADDRESS + ">";
+	
+	public static final String PICS_IT_TEAM_EMAIL = "\"PICS IT Team\"<it@picsauditing.com>";
+	
+	public static final String MINA_MINA_EMAIL = "Mina Mina <mmina@picsauditing.com>";
+	
+	public static final String PICS_ADMIN_EMAIL = "admin@picsauditing.com";
+	
+	public static final String PICS_FLAG_CHANGE_EMAIL = "flagchanges@picsauditing.com";
+	
+	public static final String PICS_TECH_SERVICES = "TechServices@picsauditing.com";
+	
 	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
 		Set<String> validEmail = new HashSet<String>();
 
@@ -23,14 +53,16 @@ public class EmailAddressUtils {
 		boolean result = false;
 		if (Strings.isEmpty(email) || email.trim().contains(" "))
 			return false;
+				
 		int index = email.indexOf("@");
 		if (index > 0) {
 			int pindex = email.indexOf(".", index);
 			if ((pindex > index + 1) && (email.length() > pindex + 1))
 				result = true;
-		}// if
+		}
+		
 		return result;
-	}// isValidEmail
+	}
 
 	public static String validate(final String email) {
 		String tempEmail = email.trim();
@@ -40,30 +72,16 @@ public class EmailAddressUtils {
 		if (matchFound)
 			return tempEmail;
 		else
-			return "info@picsauditing.com";
+			return PICS_INFO_EMAIL_ADDRESS;
 
 	}
 
-	public static String getBillingEmail(Currency currency){
+	public static String getBillingEmail(Currency currency) {
 		if (currency != null && (currency.isEUR() || currency.isGBP())){
 			return "\"PICS Billing\"<eubilling@picsauditing.com>";
 		} else {
 			return "\"PICS Billing\"<billing@picsauditing.com>";
 		} 
 	}
-	// public static String validate(final String email){
-	// String tempEmail = email.trim();
-	// Pattern p =
-	// Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-	// Pattern p =
-	// Pattern.compile("^((?:(?:(?:[a-zA-Z0-9][\.\-\+_]?)*)[a-zA-Z0-9])+)\@((?:(?:(?:[a-zA-Z0-9][\.\-_]?){0,62})[a-zA-Z0-9])+)\.([a-zA-Z0-9]{2,6})$");
-	// Matcher m = p.matcher(tempEmail);
-	// boolean matchFound = m.matches();
-	//
-	// if(matchFound)
-	// return tempEmail;
-	// else
-	// return "billing@picsauditing.com";
-	//
-	// }
+	
 }

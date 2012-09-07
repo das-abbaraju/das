@@ -332,7 +332,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(159);
-		emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(con.getCurrency()));
 		emailBuilder.addToken("contractor", con);
 		emailBuilder.addToken("currentSafetyRisk", currentRisk);

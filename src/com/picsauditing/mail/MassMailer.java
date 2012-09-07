@@ -35,6 +35,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SelectOption;
 import com.picsauditing.util.Strings;
 
@@ -79,7 +80,7 @@ public class MassMailer extends RequiredLanguagesSupport {
 	private boolean templateAllowsVelocity;
 	private boolean templateHtml;
 	private boolean templateTranslated;
-	private String fromMyAddress = "info@picsauditing.com";
+	private String fromMyAddress = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS;
 	private List<String> fromAddresses = new ArrayList<String>();
 	private boolean editTemplate = false;
 	private boolean fromOtherAction;
@@ -532,9 +533,9 @@ public class MassMailer extends RequiredLanguagesSupport {
 
 	public List<String> getFromAddresses() {
 		if (fromAddresses.isEmpty()) {
-			fromAddresses.add("info@picsauditing.com");
+			fromAddresses.add(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 			if (permissions.isAuditor()) {
-				fromAddresses.add("audits@picsauditing.com");
+				fromAddresses.add(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS);
 			}
 			fromAddresses.add(permissions.getEmail());
 

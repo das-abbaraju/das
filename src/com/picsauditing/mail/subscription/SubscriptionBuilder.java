@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 public abstract class SubscriptionBuilder {
@@ -55,7 +56,7 @@ public abstract class SubscriptionBuilder {
 
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(templateID);
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			// TODO remove this after we update the templates from username to
 			// user.name
 			emailBuilder.addToken("username", user.getName());

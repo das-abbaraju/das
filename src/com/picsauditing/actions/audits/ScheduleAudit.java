@@ -47,6 +47,7 @@ import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -370,7 +371,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					+ DateBean.format(startTime, "MMM dd h:mm a, z")
 					+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
 			email.setToAddresses(Strings.implode(emails));
-			email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+			email.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			email.setViewableById(Account.PicsID);
 			emailSender.send(email);
 		}
@@ -617,11 +618,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&contractorAudit=" + conAudit.getId()
 					+ "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
-			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue email = emailBuilder.build();
 			email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
 			emailSender.send(email);
 		}
+		
 		if (conAudit.getAuditorConfirm() == null) {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setPermissions(permissions);
@@ -633,7 +635,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					+ "&key=" + Strings.hashUrlSafe(seed);
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setUser(conAudit.getAuditor());
-			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue email = emailBuilder.build();
 			email.setViewableById(Account.PicsID);
 			emailSender.send(email);

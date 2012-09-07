@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
 import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 /**
@@ -116,7 +117,7 @@ public class MailCron extends PicsActionSupport {
 			for (EmailQueue email : emails) {
 				email.setStatus(EmailStatus.Error);
 				if (Strings.isEmpty(email.getToAddresses()))
-					email.setToAddresses("errors@picsauditing.com");
+					email.setToAddresses(EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS);
 				emailSender.send(email);
 			}
 		} catch (Exception notMuchWeCanDoButLogIt) {

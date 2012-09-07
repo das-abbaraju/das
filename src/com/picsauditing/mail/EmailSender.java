@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 public class EmailSender {
@@ -24,8 +25,6 @@ public class EmailSender {
 	private EmailQueueDAO emailQueueDAO;
 	@Autowired
 	private FeatureToggleChecker featureToggleChecker;
-	
-	private static String defaultPassword = "PicsS@fety1";
 	
 	// this is @Autowired at the setter because we need @Qualifier which does NOT work
 	// on the variable declaration; only on the method (I think this is a Spring bug)
@@ -53,7 +52,7 @@ public class EmailSender {
 			gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
 		} else {
 			// Use the default info@picsauditing.com address
-			gridSender = new GridSender("info@picsauditing.com", defaultPassword);
+			gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS, EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
 		}
 		gridSender.sendMail(email);
 
@@ -68,6 +67,7 @@ public class EmailSender {
 			logEmailAsSendError(email);
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -105,7 +105,7 @@ public class EmailSender {
 			return;
 		// Check all the addresses
 		if (email.getFromAddress2() == null)
-			email.setFromAddress("info@picsauditing.com");
+			email.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 		if (email.getToAddresses2() == null) {
 			email.setToAddresses(email.getCcAddresses());
 			email.setCcAddresses(null);

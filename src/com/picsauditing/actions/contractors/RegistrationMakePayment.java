@@ -205,7 +205,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 						EmailBuilder emailBuilder = new EmailBuilder();
 						emailBuilder.setTemplate(106);
-						emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+						emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 						emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 						emailBuilder.setPermissions(permissions);
 						emailBuilder.addToken("permissions", permissions);

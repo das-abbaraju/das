@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import com.picsauditing.search.Database;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 public class HTTP500 {
@@ -109,7 +110,8 @@ public class HTTP500 {
 	private void insertEmail() {
 		try {
 			String insertEmailQueue = "INSERT INTO email_queue(status, fromAddress, toAddresses, subject, body, creationDate, createdBy)"
-					+ " VALUES ('Pending', 'info@picsauditing.com', 'errors@picsauditing.com', 'HTTP 500 ERROR', 'At "
+					+ " VALUES ('Pending', '" + EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS + "', '" 
+					+ EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS + "', 'HTTP 500 ERROR', 'At "
 					+ getExceptionDate() + " an HTTP 500 error occurred.\n" + getFullInformation() + "', NOW(), 1)";
 
 			database.executeInsert(insertEmailQueue);

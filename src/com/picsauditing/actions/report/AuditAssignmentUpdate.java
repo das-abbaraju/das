@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -106,7 +107,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=c&contractorAudit="
 						+ contractorAudit.getId() + "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+				emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 				EmailQueue email = emailBuilder.build();
 				if (contractorAudit.getAuditType().getAccount() != null)
 					email.setViewableBy(contractorAudit.getAuditType().getAccount());
@@ -125,7 +126,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				String confirmLink = serverName + "ScheduleAuditUpdate.action?type=a&contractorAudit="
 						+ contractorAudit.getId() + "&key=" + Strings.hashUrlSafe(seed);
 				emailBuilder.addToken("confirmLink", confirmLink);
-				emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+				emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
 				email.setViewableById(Account.PicsID);

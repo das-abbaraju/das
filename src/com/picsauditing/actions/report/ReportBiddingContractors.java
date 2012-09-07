@@ -34,6 +34,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportBiddingContractors extends ReportAccount {
+	
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -74,6 +75,7 @@ public class ReportBiddingContractors extends ReportAccount {
 			sql.addField("gc.waitingOn");
 			sql.addWhere("gc.genID = " + permissions.getAccountId());
 		}
+		
 		sql.addWhere("c.accountLevel = 'BidOnly'");
 
 		PermissionQueryBuilder qb = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.SQL);
@@ -161,8 +163,10 @@ public class ReportBiddingContractors extends ReportAccount {
 				emailBuilder.addToken("permissions", permissions);
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setCriticalPriority();
-				emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <"+EmailAddressUtils.getBillingEmail(contractor.getCurrency())+">"
-						: "PICS Info <info@picsauditing.com>");
+//				emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <"+EmailAddressUtils.getBillingEmail(contractor.getCurrency())+">"
+//						: EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_WITH_NAME);
+				emailQueue.setFromAddress((templateId == 73) ? EmailAddressUtils.getBillingEmail(contractor.getCurrency())
+						: EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_WITH_NAME);
 				emailQueue.setViewableById(permissions.getTopAccountID());
 				emailSender.send(emailQueue);
 				addActionMessage(summary);
@@ -171,7 +175,7 @@ public class ReportBiddingContractors extends ReportAccount {
 			}
 		}
 
-		operatorNotes = "";
+		operatorNotes = Strings.EMPTY_STRING;
 
 		return super.execute();
 	}

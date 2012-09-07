@@ -24,17 +24,17 @@ import javax.mail.internet.MimeMultipart;
 import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 
 public class GridSender extends javax.mail.Authenticator {
+	
 	private String user;
 	private String password;
 	private Session session;
 
-	private static String defaultPassword = "PicsS@fety1";
-	
 	public GridSender() {
-		this("info@picsauditing.com", defaultPassword);
+		this(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS, EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
 	}
 
 	public GridSender(String user, String password) {

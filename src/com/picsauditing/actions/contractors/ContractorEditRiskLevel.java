@@ -182,7 +182,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
 		emailBuilder.clear();
 		emailBuilder.setTemplate(159);
-		emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
 		emailBuilder.addToken("contractor", contractor);
 		emailBuilder.addToken("currentSafetyRisk", currentRisk);

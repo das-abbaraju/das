@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.ClientSiteReferralStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -153,9 +154,9 @@ public class ReferNewClientSite extends PicsActionSupport {
 
 	private EmailBuilder prepareEmailBuilder() {
 		EmailBuilder email = new EmailBuilder();
-		email.setToAddresses("marketing@picsauditing.com");
+		email.setToAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS);
 
-		email.setFromAddress("info@picsauditing.com");
+		email.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 
 		email.setTemplate(CLIENT_SITE_REFERRAL_NOTIFICATION_EMAIL);
 		email.addToken("newClientSite", newClientSite);

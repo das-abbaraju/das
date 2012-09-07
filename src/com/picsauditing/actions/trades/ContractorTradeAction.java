@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
@@ -115,7 +116,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		if (trade.getTrade().getContractorCount() == 0) {
 			EmailQueue emailQueue = new EmailQueue();
 			emailQueue.setSubject("New Trade Selected.");
-			emailQueue.setToAddresses("audits@picsauditing.com");
+			emailQueue.setToAddresses(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS);
 			emailQueue.setBody("Trade: " + trade.getTrade().getId() + "-" + trade.getTrade().getName()
 					+ " Contractor: " + contractor.getId() + "-" + contractor.getName());
 

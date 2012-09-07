@@ -41,6 +41,7 @@ import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.models.audits.CaoSaveModel;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -436,7 +437,7 @@ public class CaoSave extends AuditActionSupport {
 
 		emailBuilder.setPermissions(permissions);
 		if (cao.getAudit().getAuditType().getClassType().isAudit())
-			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 		else
 			emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
 		// One day we may need to store the from and to into the workflow step

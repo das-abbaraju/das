@@ -48,6 +48,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
@@ -572,7 +573,7 @@ public class RequestNewContractor extends AccountActionSupport {
 		EmailBuilder email = new EmailBuilder();
 		email.setToAddresses(newContractor.getEmail());
 
-		email.setFromAddress("info@picsauditing.com");
+		email.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 
 		email.setTemplate(INITIAL_EMAIL);
 		email.addToken("newContractor", newContractor);

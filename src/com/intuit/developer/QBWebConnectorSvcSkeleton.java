@@ -23,6 +23,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -275,7 +276,7 @@ public class QBWebConnectorSvcSkeleton {
 
 				try {
 					EmailQueue email = new EmailQueue();
-					email.setToAddresses("errors@picsauditing.com");
+					email.setToAddresses(EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS);
 					email.setMediumPriority();
 					email.setSubject("QBWebConnector Errors");
 					email.setBody(body.toString());

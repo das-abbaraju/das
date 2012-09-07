@@ -358,7 +358,11 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		report.append("\n\n\nCompleted Cron Job at: ");
+		
+		report.append(Strings.NEW_LINE)
+				.append(Strings.NEW_LINE)
+				.append(Strings.NEW_LINE)
+				.append("Completed Cron Job at: ");
 		report.append(new Date().toString());
 
 		sendEmail();
@@ -404,7 +408,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		if (toAddress == null || toAddress.length() == 0) {
-			toAddress = "admin@picsauditing.com";
+			toAddress = EmailAddressUtils.PICS_ADMIN_EMAIL;
 		}
 
 		try {
@@ -465,7 +469,7 @@ public class Cron extends PicsActionSupport {
 					OperatorAccount requestedByOperator = contractor.getRequestedBy();
 
 					EmailBuilder emailBuilder = new EmailBuilder();
-					emailBuilder.setFromAddress("Registrations@picsauditing.com");
+					emailBuilder.setFromAddress(EmailAddressUtils.PICS_REGISTRATION_EMAIL_ADDRESS);
 					emailBuilder.setPermissions(permissions);
 					emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 					emailBuilder.setTemplate(templateID);
@@ -510,7 +514,7 @@ public class Cron extends PicsActionSupport {
 					&& !emailExclusionList.contains(operator.getPrimaryContact().getEmail())) {
 				EmailBuilder emailBuilder = new EmailBuilder();
 
-				emailBuilder.setFromAddress("Registrations@picsauditing.com");
+				emailBuilder.setFromAddress(EmailAddressUtils.PICS_REGISTRATION_EMAIL_ADDRESS);
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setToAddresses(operator.getPrimaryContact().getEmail());
 				emailExclusionList.add(operator.getPrimaryContact().getEmail());
@@ -584,7 +588,7 @@ public class Cron extends PicsActionSupport {
 				if (templateID != pendingFinalEmailTemplate || !duplicationCheck(crr, crr.getName())) {
 					EmailBuilder emailBuilder = new EmailBuilder();
 
-					emailBuilder.setFromAddress("Registrations@picsauditing.com");
+					emailBuilder.setFromAddress(EmailAddressUtils.PICS_REGISTRATION_EMAIL_ADDRESS);
 					emailBuilder.setToAddresses(crr.getEmail());
 					emailBuilder.setTemplate(templateID);
 					emailExclusionList.add(crr.getEmail());
@@ -636,7 +640,7 @@ public class Cron extends PicsActionSupport {
 					&& !emailExclusionList.contains(operatorUser.getEmail())) {
 				EmailBuilder emailBuilder = new EmailBuilder();
 
-				emailBuilder.setFromAddress("Registrations@picsauditing.com");
+				emailBuilder.setFromAddress(EmailAddressUtils.PICS_REGISTRATION_EMAIL_ADDRESS);
 				emailBuilder.setToAddresses(operatorUser.getEmail());
 				emailExclusionList.add(operatorUser.getEmail());
 
@@ -663,8 +667,8 @@ public class Cron extends PicsActionSupport {
 
 			EmailBuilder emailBuilder = new EmailBuilder();
 
-			emailBuilder.setFromAddress("info@picsauditing.com");
-			emailBuilder.setToAddresses("Registrations@picsauditing.com");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
+			emailBuilder.setToAddresses(EmailAddressUtils.PICS_REGISTRATION_EMAIL_ADDRESS);
 			emailBuilder.addToken("contractor", contractor);
 			emailBuilder.addToken("duplicates", duplicateContractors);
 			emailBuilder.addToken("type", "Pending Account");
@@ -840,7 +844,7 @@ public class Cron extends PicsActionSupport {
 			emailBuilder.setTemplate(70);
 			// No Action Email Notification - Contractor
 			emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
-			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			EmailQueue email = emailBuilder.build();
 			email.setLowPriority();
 			email.setViewableById(Account.EVERYONE);
@@ -883,7 +887,7 @@ public class Cron extends PicsActionSupport {
 		if (CollectionUtils.isEmpty(data))
 			return;
 
-		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
+		sendFlagChangesEmail(EmailAddressUtils.PICS_FLAG_CHANGE_EMAIL, data);
 
 		Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
 		if (MapUtils.isNotEmpty(amMap)) {
@@ -899,7 +903,7 @@ public class Cron extends PicsActionSupport {
 	private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(55);
-		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
+		emailBuilder.setFromAddress(EmailAddressUtils.PICS_SYSTEM_EMAIL_ADDRESS);
 		emailBuilder.addToken("changes", flagChanges);
 		int totalFlagChanges = sumFlagChanges(flagChanges);
 		emailBuilder.addToken("totalFlagChanges", totalFlagChanges);

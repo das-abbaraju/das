@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
 
@@ -103,7 +104,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 					+ " has requested a field audit for " + con.getName());
 			email.setSubject(op.getName() + " requests a field audit");
 			// email.setToAddresses("Auditors <auditors@picsauditing.com>");
-			email.setToAddresses("Mina Mina <mmina@picsauditing.com>");
+			email.setToAddresses(EmailAddressUtils.MINA_MINA_EMAIL);
 
 			try {
 				emailSender.send(email);

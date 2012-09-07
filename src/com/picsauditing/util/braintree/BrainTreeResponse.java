@@ -153,20 +153,8 @@ public abstract class BrainTreeResponse {
 			requestString.append("&amount=").append(payment.getTotalAmount());
 			requestString.append("&currency=").append(payment.getCurrency());
 
-			String processorID = "";
-			switch (payment.getCurrency()) {
-			case CAD:
-				processorID = dao.find("brainTree.processor_id.canada").getValue();
-				break;
-			case GBP:
-				processorID = dao.find("brainTree.processor_id.gbp").getValue();
-				break;
-			case EUR:
-				processorID = dao.find("brainTree.processor_id.eur").getValue();
-				break;
-			default:
-				processorID = dao.find("brainTree.processor_id.us").getValue();
-			}
+			String processorID = determineProcessorID(payment);
+			
 			// if the processorID was somehow empty, BrainTree would default to our primary processor which is USD
 			requestString.append("&processor_id=").append(processorID);
 
@@ -189,6 +177,23 @@ public abstract class BrainTreeResponse {
 
 		private StreamContentProvider getContentProvider() {
 			return contentProvider;
+		}
+		
+		private String determineProcessorID(Payment payment) {
+			switch (payment.getCurrency()) {
+				
+				case CAD:
+					return dao.find("brainTree.processor_id.canada").getValue();
+			
+				case GBP:				
+					return dao.find("brainTree.processor_id.gbp").getValue();
+					
+				case EUR:
+					return dao.find("brainTree.processor_id.eur").getValue();
+					
+				default:
+					return dao.find("brainTree.processor_id.us").getValue();
+			}
 		}
 	}
 
