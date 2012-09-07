@@ -1,16 +1,7 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 
@@ -28,11 +19,9 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.search.Database;
 
@@ -40,8 +29,8 @@ public class RequestNewContractorAccountTest {
 	private RequestNewContractorAccount requestNewContractorAccount;
 	private PicsTestUtil picsTestUtil;
 
-	@Mock
 	private ContractorAccount contractor;
+
 	@Mock
 	private ContractorOperator relationship;
 	@Mock
@@ -62,6 +51,8 @@ public class RequestNewContractorAccountTest {
 		picsTestUtil = new PicsTestUtil();
 		picsTestUtil.autowireEMInjectedDAOs(requestNewContractorAccount, entityManager);
 
+		contractor = EntityFactory.makeContractor();
+
 		Whitebox.setInternalState(requestNewContractorAccount, "emailBuilder", emailBuilder);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
 	}
@@ -70,6 +61,18 @@ public class RequestNewContractorAccountTest {
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
+
+	// If we're logged in as the operator, find the my relationship with
+	// this request
+
+	// If I'm a corporate, find all the relationships this contractor has
+	// with my children and give me a table to add/remove relationships
+
+	// If I'm a PICS employee, find all the relationships and list them in a
+	// table with add/remove abilities
+
+	// load tags
+	// TODO How do we show tags for corporate and PICS users?
 
 	@Test(expected = NoRightsException.class)
 	public void testExecute_Contractor() throws Exception {
@@ -86,6 +89,13 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
+	public void testExecute_OperatorCorporate() throws Exception {
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+
+		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
+	}
+
+	@Test
 	public void testExecute_DefaultStatus() throws Exception {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 
@@ -95,10 +105,9 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testExecute_ExistingStatus() throws Exception {
-		when(permissions.isPicsEmployee()).thenReturn(true);
-
-		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setStatus(AccountStatus.Deactivated);
+
+		when(permissions.isPicsEmployee()).thenReturn(true);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
 
@@ -107,79 +116,36 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testExecute_OperatorNewRequest() throws Exception {
+	public void testExecute_OperatorExistingRequest() throws Exception {
 		OperatorAccount operator = EntityFactory.makeOperator();
+		OperatorAccount otherOperator = EntityFactory.makeOperator();
+
+		contractor.setRequestedBy(otherOperator);
+		contractor.setStatus(AccountStatus.Requested);
 
 		when(entityManager.find(OperatorAccount.class, operator.getId())).thenReturn(operator);
 		when(permissions.getAccountId()).thenReturn(operator.getId());
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 
+		requestNewContractorAccount.setRequestedContractor(contractor);
+
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
 		assertEquals(operator, requestNewContractorAccount.getRequestRelationship().getOperatorAccount());
+		assertEquals(otherOperator, requestNewContractorAccount.getRequestedContractor().getRequestedBy());
 	}
 
-	@Test(expected = NoRightsException.class)
-	public void testExecute_OperatorExistingRequestNotVisibleAccount() throws Exception {
-		ContractorAccount contractor = EntityFactory.makeContractor();
+	@Test
+	public void testExecute_FindOperatorRelationship() throws Exception {
 		OperatorAccount operator = EntityFactory.makeOperator();
-		OperatorAccount anotherOperator = EntityFactory.makeOperator();
-		Set<Integer> visibleAccounts = Collections.emptySet();
+		ContractorOperator contractorOperator = EntityFactory.addContractorOperator(contractor, operator);
 
-		contractor.setRequestedBy(operator);
-
-		when(entityManager.find(OperatorAccount.class, operator.getId())).thenReturn(operator);
-		when(permissions.getAccountId()).thenReturn(anotherOperator.getId());
-		when(permissions.getVisibleAccounts()).thenReturn(visibleAccounts);
+		when(permissions.getAccountId()).thenReturn(operator.getId());
 		when(permissions.isOperator()).thenReturn(true);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
-		requestNewContractorAccount.execute();
-	}
 
-	@Test
-	public void testSave_MissingContractorSpecificFields() throws Exception {
-		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.save());
-		assertTrue(requestNewContractorAccount.hasActionErrors());
-
-		verify(entityManager, never()).merge(any(BaseTable.class));
-		verify(entityManager, never()).persist(any(BaseTable.class));
-	}
-
-	@Test
-	public void testSave_MissingOperatorSpecificFields() throws Exception {
-		// TODO: Set contractor fields here
-		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.save());
-		assertTrue(requestNewContractorAccount.hasActionErrors());
-
-		verify(entityManager, never()).merge(any(BaseTable.class));
-		verify(entityManager, never()).persist(any(BaseTable.class));
-	}
-
-	@Test
-		public void testEmailPreview() throws Exception {
-			verify(emailBuilder).build();
-		}
-
-	@Test
-	public void testGetContractorLetter() throws Exception {
-		assertNull(Whitebox.invokeMethod(requestNewContractorAccount, "getContractorLetter"));
-	}
-
-	@Test
-	public void testGetContractorLetter_OperatorSet() throws Exception {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		OperatorForm form = new OperatorForm();
-		form.setFormName("* Contractor Letter");
-		operator.getOperatorForms().add(form);
-
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		contractor.setRequestedBy(operator);
-
-		requestNewContractorAccount.setRequestedContractor(contractor);
-
-		OperatorForm contractorLetter = Whitebox.invokeMethod(requestNewContractorAccount, "getContractorLetter");
-		assertNotNull(contractorLetter);
-		assertEquals(form, contractorLetter);
+		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
+		assertEquals(contractorOperator, requestNewContractorAccount.getRequestRelationship());
 	}
 }

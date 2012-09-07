@@ -12,7 +12,6 @@ import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.io.Files;
@@ -63,11 +62,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
 
-	private final int EMAIL_TEMPLATE = 259;
+	private final int INITIAL_CONTACT_EMAIL_TEMPLATE = 259;
 
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
+
+	private List<ContractorOperator> visibleRelationships = new ArrayList<ContractorOperator>();
 	// Tags
 	private List<OperatorTag> operatorTags;
 	private List<OperatorTag> requestedTags;
@@ -80,12 +81,20 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		checkPermission();
+		checkPermissions();
 		initializeRequest();
-		setRequestedBy();
-		loadTags();
 
-		primaryContact = requestedContractor.getPrimaryContact();
+		// TODO: Search for new
+		// When searching and adding a requested contractor, add
+		// contractorOperator link to request
+
+		if (permissions.isOperator()) {
+			for (ContractorOperator relationship : requestedContractor.getOperators()) {
+				if (relationship.getOperatorAccount().getId() == permissions.getAccountId()) {
+					requestRelationship = relationship;
+				}
+			}
+		}
 
 		return SUCCESS;
 	}
@@ -93,11 +102,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	public String save() throws Exception {
 		boolean newRequest = requestedContractor.getId() == 0;
 
-		OperatorAccount requestedBy = findOperator();
-		requestedContractor.setRequestedBy(requestedBy);
-		requestRelationship.setOperatorAccount(requestedBy);
-
-		saveRequestComponentsAndEmailIfNew(newRequest, requestedBy);
+		saveRequestComponentsAndEmailIfNew(newRequest);
 
 		addActionMessage(getText("RequestNewContractor.SuccessfullySaved"));
 		return setUrlForRedirect("RequestNewContractorAccount.action?requestedContractor="
@@ -138,6 +143,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	public void setPrimaryContact(User primaryContact) {
 		this.primaryContact = primaryContact;
+	}
+
+	public List<ContractorOperator> getVisibleRelationships() {
+		return visibleRelationships;
 	}
 
 	public List<OperatorTag> getOperatorTags() {
@@ -218,7 +227,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return new Date();
 	}
 
-	private void checkPermission() throws NoRightsException {
+	private void checkPermissions() throws NoRightsException {
 		if (!permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
 			throw new NoRightsException(getText("global.Operators"));
 		}
@@ -235,8 +244,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		} else {
 			id = requestedContractor.getId();
 			account = requestedContractor;
+			primaryContact = requestedContractor.getPrimaryContact();
 
-			loadLegacyRequest();
 			setRequestStatus();
 		}
 	}
@@ -294,9 +303,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	private void saveRequestComponentsAndEmailIfNew(boolean newRequest, OperatorAccount requestedBy) throws Exception {
+	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
 		setRequiredFieldsAndSaveEntities(newRequest);
-		saveLegacyRequest(requestedBy);
+		saveLegacyRequest();
 
 		if (newRequest) {
 			email = buildEmail();
@@ -314,7 +323,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 	}
 
-	private ContractorRegistrationRequest saveLegacyRequest(OperatorAccount requestedBy) {
+	private ContractorRegistrationRequest saveLegacyRequest() {
 		loadLegacyRequest();
 
 		legacyRequest.setName(requestedContractor.getName());
@@ -330,7 +339,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 		legacyRequest.setReasonForRegistration(requestRelationship.getReasonForRegistration());
 		legacyRequest.setDeadline(requestRelationship.getDeadline());
-		legacyRequest.setRequestedBy(requestedBy);
+		legacyRequest.setRequestedBy(findOperator());
 		legacyRequest.setRequestedByUser(requestRelationship.getRequestedBy());
 		legacyRequest.setRequestedByUserOther(requestRelationship.getRequestedByOther());
 		legacyRequest.setContractor(requestedContractor);
@@ -351,14 +360,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private OperatorAccount findOperator() {
-		if (requestRelationship.getOperatorAccount() != null) {
-			return requestRelationship.getOperatorAccount();
-		}
-
-		if (requestedContractor.getRequestedBy() != null) {
-			return requestedContractor.getRequestedBy();
-		}
-
 		if (permissions.isOperator()) {
 			return operatorDAO.find(permissions.getAccountId());
 		}
@@ -402,7 +403,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private EmailQueue buildEmail() throws Exception {
 		User info = userDAO.find(User.INFO_AT_PICSAUDITING);
 
-		emailBuilder.setTemplate(EMAIL_TEMPLATE);
+		emailBuilder.setTemplate(INITIAL_CONTACT_EMAIL_TEMPLATE);
 		emailBuilder.setToAddresses(primaryContact.getEmail());
 		emailBuilder.setFromAddress(info);
 		emailBuilder.addToken("requestedContractor", requestedContractor);
