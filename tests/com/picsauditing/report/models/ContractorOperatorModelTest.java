@@ -1,7 +1,6 @@
 package com.picsauditing.report.models;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import java.util.Map;
 
@@ -20,7 +19,7 @@ public class ContractorOperatorModelTest {
 
 		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
 
-		assertEquals("OK if close to expected because we added a few fields", 70, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 69, availableFields.size());
 	}
 
 }

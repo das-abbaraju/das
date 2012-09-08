@@ -32,7 +32,7 @@ public class AccountContractorModelTest {
 		assertFalse("contractorRequestedByOperatorCity is Low importance", availableFields.containsKey("contractorRequestedByOperatorCity".toUpperCase()));
 		assertTrue("contractorPQFExpiresDate is Required", availableFields.containsKey("contractorPQFExpiresDate".toUpperCase()));
 		
-		assertEquals("OK if close to expected because we added a few fields", 59, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 58, availableFields.size());
 	}
 
 	@Test
@@ -43,6 +43,6 @@ public class AccountContractorModelTest {
 		
 		assertTrue("contractorBalance is Required", availableFields.containsKey("contractorBalance".toUpperCase()));
 		
-		assertEquals("OK if close to expected because we added a few fields", 67, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 66, availableFields.size());
 	}
 }

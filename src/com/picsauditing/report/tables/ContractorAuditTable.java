@@ -1,5 +1,6 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
@@ -11,7 +12,12 @@ public class ContractorAuditTable extends AbstractTable {
 
 	public void addFields() {
 		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date, FieldCategory.Audits);
+		// I'm not sure this field is really that important at all. With
+		// Effective Date, the creationDate just becomes confusing
+		// Field creationDate = addField(prefix + "CreationDate", alias +
+		// ".creationDate", FilterType.Date, FieldCategory.Audits);
+		// creationDate.setImportance(FieldImportance.Low);
+		// creationDate.requirePermission(OpPerms.ManageAudits);
 
 		addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
 

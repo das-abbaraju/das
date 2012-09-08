@@ -13,7 +13,6 @@ import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
-import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;

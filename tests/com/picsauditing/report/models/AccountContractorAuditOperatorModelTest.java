@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
@@ -14,8 +13,8 @@ import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.Field;
 
 public class AccountContractorAuditOperatorModelTest {
+	
 	@Test
-	@Ignore
 	public void testAvailableFields() throws Exception {
 		AccountContractorAuditOperatorModel model = new AccountContractorAuditOperatorModel();
 		Permissions permissions = EntityFactory.makePermission();
@@ -24,7 +23,7 @@ public class AccountContractorAuditOperatorModelTest {
 
 		assertFalse("accountContactName was removed", availableFields.containsKey("accountContactName".toUpperCase()));
 
-		assertEquals("OK if close to expected because we added a few fields", 44, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 42, availableFields.size());
 	}
 
 }
