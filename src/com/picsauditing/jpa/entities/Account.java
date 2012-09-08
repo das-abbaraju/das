@@ -24,7 +24,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -459,7 +458,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.type = type;
 	}
 
-	@ReportField(category = FieldCategory.AccountInformation)
+	@ReportField(category = FieldCategory.AccountInformation, width = 200)
 	public String getReason() {
 		return reason;
 	}
