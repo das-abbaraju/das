@@ -9,6 +9,7 @@ import junit.framework.Assert;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
@@ -88,6 +89,7 @@ public class ReportPivotBuilderTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testRowCountry_ColumnStatusRow_AvgMax() throws Exception {
 		addColumnsCountryStatusScore(PivotCellMethod.Max);
 		

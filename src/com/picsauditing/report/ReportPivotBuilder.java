@@ -12,7 +12,6 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.PivotDimension;
 
 public class ReportPivotBuilder {
 	private List<Column> columnsIn = new ArrayList<Column>();
@@ -116,6 +115,7 @@ public class ReportPivotBuilder {
 		Object max = null;
 		for (Object object : columnValues) {
 			try {
+				// TODO Write this part here
 				if (max == null) {
 					max = object;
 				}
@@ -130,6 +130,7 @@ public class ReportPivotBuilder {
 		Object min = null;
 		for (Object object : columnValues) {
 			try {
+				// TODO Write this part here
 				if (min == null) {
 					min = object;
 				}
