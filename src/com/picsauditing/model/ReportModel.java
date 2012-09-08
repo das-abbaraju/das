@@ -27,9 +27,11 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Pagination;
 
 public class ReportModel {
 
@@ -161,7 +163,7 @@ public class ReportModel {
 		}
 	}
 
-	public List<ReportUser> getUserReportsForSearch(String searchTerm, int userId) {
+	public List<ReportUser> getUserReportsForSearch(String searchTerm, int userId, Pagination<ReportUser> pagination) {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(searchTerm)) {
@@ -169,12 +171,13 @@ public class ReportModel {
 			userReports = reportUserDao.findTenMostFavoritedReports(userId);
 		} else {
 			// Otherwise, search on all public reports and all of the user's reports
-			userReports = reportUserDao.findAllForSearchFilter(userId, searchTerm);
+			ReportPaginationParameters parameters = new ReportPaginationParameters(userId, searchTerm);
+			pagination.Initialize(parameters, reportUserDao);
+			userReports = pagination.getResults();
 		}
 
 		return userReports;
 	}
-
 
 	public List<ReportUser> getUserReportsForMyReports(String sort, String direction, int userId) throws IllegalArgumentException {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();

@@ -18,7 +18,7 @@ public class PaginationTest {
 
 	Pagination<ReportUser> pagination;
 
-	@Mock PaginationDAO<ReportUser> paginationDao;
+	@Mock Paginatable<ReportUser> paginationDao;
 	@Mock PaginationParameters parameters;
 
 	private final int pageSize = 5;
@@ -28,14 +28,20 @@ public class PaginationTest {
 		MockitoAnnotations.initMocks(this);
 
 		pagination = new Pagination<ReportUser>();
+
+		// This step is done automatically by Struts through URL parameters
+		parameters.setPage(1);
 		parameters.setPageSize(pageSize);
+		pagination.setParameters(parameters);
+
+		// This is what your code will call
 		pagination.Initialize(parameters, paginationDao);
 	}
 
 	@Test
 	public void testGetTotalPages_OneLessThanMultipleOfPageSize() {
 		int multiple = 1;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(multiple * pageSize - 1);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(multiple * pageSize - 1);
 
 		int totalPages = pagination.getTotalPages();
 
@@ -45,7 +51,7 @@ public class PaginationTest {
 	@Test
 	public void testGetTotalPages_EqualMultipleOfPageSize() {
 		int multiple = 5;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(multiple * pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(multiple * pageSize);
 
 		int totalPages = pagination.getTotalPages();
 
@@ -55,7 +61,7 @@ public class PaginationTest {
 	@Test
 	public void testGetTotalPages_OneMoreThanMultipleOfPageSize() {
 		int multiple = 3;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(multiple * pageSize + 1);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(multiple * pageSize + 1);
 
 		int totalPages = pagination.getTotalPages();
 
@@ -81,7 +87,7 @@ public class PaginationTest {
 	@Test
 	public void testHasLastPage_FalseIfOnLastPage() {
 		int totalPages = 10;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(totalPages * pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(totalPages * pageSize);
 		parameters.setPage(totalPages);
 		pagination.getResults();
 
@@ -91,7 +97,7 @@ public class PaginationTest {
 	@Test
 	public void testHasLastPage_TrueIfNotOnLastPage() {
 		int totalPages = 10;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(totalPages * pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(totalPages * pageSize);
 		parameters.setPage(totalPages - 1);
 		pagination.getResults();
 
@@ -117,7 +123,7 @@ public class PaginationTest {
 	@Test
 	public void testHasNextPage_FalseIfOnLastPage() {
 		int totalPages = 10;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(totalPages * pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(totalPages * pageSize);
 		parameters.setPage(totalPages);
 		pagination.getResults();
 
@@ -127,7 +133,7 @@ public class PaginationTest {
 	@Test
 	public void testHasNextPage_TrueIfNotOnLastPage() {
 		int totalPages = 10;
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(totalPages * pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(totalPages * pageSize);
 		parameters.setPage(totalPages - 1);
 		pagination.getResults();
 
@@ -136,7 +142,7 @@ public class PaginationTest {
 
 	@Test
 	public void testHasPagination_FalseIfLessThanPageSizeResults() {
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(pageSize - 1);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(pageSize - 1);
 		parameters.setPage(1);
 		pagination.getResults();
 
@@ -145,7 +151,7 @@ public class PaginationTest {
 
 	@Test
 	public void testHasPagination_FalseIfExactlyPageSizeResults() {
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(pageSize);
 		parameters.setPage(1);
 		pagination.getResults();
 
@@ -154,7 +160,7 @@ public class PaginationTest {
 
 	@Test
 	public void testHasPagination_TrueIfMoreThanPageSizeResults() {
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(pageSize + 1);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(pageSize + 1);
 		parameters.setPage(1);
 		pagination.getResults();
 
@@ -162,7 +168,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_OnFirstPageAndMoreThanMaxNavPagesPages() {
+	public void testGetNavPages_OnFirstPageAndMoreThanMaxNavPagesPages() {
 		int totalPages = Pagination.MAX_NAV_PAGES + 1;
 		int page = 1;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -172,7 +178,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_OnlyOnePage() {
+	public void testGetNavPages_OnlyOnePage() {
 		int totalPages = 1;
 		int page = 1;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -182,7 +188,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_TwoPagesOnFirst() {
+	public void testGetNavPages_TwoPagesOnFirst() {
 		int totalPages = 2;
 		int page = 1;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -192,7 +198,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_TwoPagesOnLast() {
+	public void testGetNavPages_TwoPagesOnLast() {
 		int totalPages = 2;
 		int page = 2;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -202,7 +208,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_ThreePagesOnFirst() {
+	public void testGetNavPages_ThreePagesOnFirst() {
 		int totalPages = 3;
 		int page = 1;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -212,7 +218,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_ThreePagesOnSecond() {
+	public void testGetNavPages_ThreePagesOnSecond() {
 		int totalPages = 3;
 		int page = 2;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -222,7 +228,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_ThreePagesOnLast() {
+	public void testGetNavPages_ThreePagesOnLast() {
 		int totalPages = 3;
 		int page = 3;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -232,7 +238,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_FourPagesOnFirst() {
+	public void testGetNavPages_FourPagesOnFirst() {
 		int totalPages = 4;
 		int page = 1;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -242,7 +248,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_FourPagesOnSecond() {
+	public void testGetNavPages_FourPagesOnSecond() {
 		int totalPages = 4;
 		int page = 2;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -252,7 +258,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_FourPagesOnThird() {
+	public void testGetNavPages_FourPagesOnThird() {
 		int totalPages = 4;
 		int page = 3;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -262,7 +268,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_FourPagesOnLast() {
+	public void testGetNavPages_FourPagesOnLast() {
 		int totalPages = 4;
 		int page = 4;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -272,7 +278,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_SixPagesOnThird() {
+	public void testGetNavPages_SixPagesOnThird() {
 		int totalPages = 6;
 		int page = 3;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -282,7 +288,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_SixPagesOnFourth() {
+	public void testGetNavPages_SixPagesOnFourth() {
 		int totalPages = 6;
 		int page = 4;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -292,7 +298,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_RandomOne() {
+	public void testGetNavPages_RandomOne() {
 		int totalPages = 10;
 		int page = 5;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -302,7 +308,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_RandomTwo() {
+	public void testGetNavPages_RandomTwo() {
 		int totalPages = 10;
 		int page = 9;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -312,7 +318,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_RandomThree() {
+	public void testGetNavPages_RandomThree() {
 		int totalPages = 25;
 		int page = 25;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -322,7 +328,7 @@ public class PaginationTest {
 	}
 
 	@Test
-	public void testGetPages_RandomFour() {
+	public void testGetNavPages_RandomFour() {
 		int totalPages = 25;
 		int page = 22;
 		List<Integer> pages = setupAndGetPages(totalPages, page);
@@ -332,10 +338,10 @@ public class PaginationTest {
 	}
 
 	private List<Integer> setupAndGetPages(int totalPages, int page) {
-		when(paginationDao.getPaginationResultCount(parameters)).thenReturn(totalPages * pageSize);
+		when(paginationDao.getPaginationOverallCount(parameters)).thenReturn(totalPages * pageSize);
 		parameters.setPage(page);
 		pagination.getResults();
-		return pagination.getPages();
+		return pagination.getNavPages();
 	}
 
 	private void assertRange(int start, List<Integer> pages) {

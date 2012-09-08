@@ -1,6 +1,6 @@
 package com.picsauditing.util.pagination;
 
-// Subclass this and add whatever parameters you need to send to your DAO to get results.
+// Subclass this and add whatever parameters you need to send to your Paginatable class to get results.
 public class PaginationParameters {
 
 	private int page;

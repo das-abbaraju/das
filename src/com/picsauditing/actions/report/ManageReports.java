@@ -115,7 +115,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String searchList() {
 		try {
-			userReports = reportModel.getUserReportsForSearch(searchTerm, permissions.getUserId());
+			userReports = reportModel.getUserReportsForSearch(searchTerm, permissions.getUserId(), pagination);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
 		}

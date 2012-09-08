@@ -7,6 +7,11 @@ public class ReportPaginationParameters extends PaginationParameters {
 	private String query;
 	private int userId;
 
+	public ReportPaginationParameters(int userId, String query) {
+		this.userId = userId;
+		this.query = query;
+	}
+
 	public String getQuery() {
 		return query;
 	}

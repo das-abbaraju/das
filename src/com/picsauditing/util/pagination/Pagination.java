@@ -5,30 +5,39 @@ import java.util.List;
 
 /**
  * To add pagination to a page:
- * 
- * - Have a DAO (possibly a newly created one) implement PaginationDao
+ *
+ * - Have an object (possibly a DAO) implement Paginatable
  * - Create a new object that implements PaginationParameters with all the data
- *   you need for your DAO.
+ *   you need for your Paginatable object.
  * - Add a Pagination object to your controller (action class), as well as a getter/setter.
+ * - Call it like this: ActionClass.action?pagination.parameters.page=N&pagination.parameters.pageSize=M
  */
 public final class Pagination<E> {
 
-	private PaginationDAO<E> dao;
+	private Paginatable<E> dataProvider;
 	private PaginationParameters parameters;
 
 	public static final int MAX_NAV_PAGES = 5;
 
-	public void Initialize(PaginationParameters parameters, PaginationDAO<E> dao) {
-		this.dao = dao;
-		this.parameters = parameters;
+	public void Initialize(PaginationParameters additionalParameters, Paginatable<E> dataProvider) {
+		// Copy autowired parameters from URL request
+		additionalParameters.setPage(parameters.getPage());
+		additionalParameters.setPageSize(parameters.getPageSize());
+		this.parameters = additionalParameters;
+
+		this.dataProvider = dataProvider;
 	}
 
 	public List<E> getResults() {
-		return dao.getPaginationResults(parameters);
+		return dataProvider.getPaginationResults(parameters);
+	}
+
+	public int getOverallCount() {
+		return dataProvider.getPaginationOverallCount(parameters);
 	}
 
 	// Page numbers for navigation
-	public List<Integer> getPages() {
+	public List<Integer> getNavPages() {
 		List<Integer> navPages = new ArrayList<Integer>();
 
 		// MAX_NAV_PAGES total pages, or fewer if fewer pages
@@ -53,6 +62,14 @@ public final class Pagination<E> {
 		return navPages;
 	}
 
+	public int getPage() {
+		return parameters.getPage();
+	}
+
+	public int getPageSize() {
+		return parameters.getPageSize();
+	}
+
 	public int getFirstPage() {
 		return 1;
 	}
@@ -67,6 +84,17 @@ public final class Pagination<E> {
 
 	public int getLastPage() {
 		return getTotalPages();
+	}
+
+	public int getTotalPages() {
+		int totalResults = dataProvider.getPaginationOverallCount(parameters);
+		int totalPages = totalResults / parameters.getPageSize();
+
+		if (totalResults % parameters.getPageSize() != 0) {
+			totalPages += 1;
+		}
+
+		return totalPages;
 	}
 
 	// TODO change this to only show if the first page is not in the nav
@@ -106,14 +134,11 @@ public final class Pagination<E> {
 		return true;
 	}
 
-	public int getTotalPages() {
-		int totalResults = dao.getPaginationResultCount(parameters);
-		int totalPages = totalResults / parameters.getPageSize();
+	public PaginationParameters getParameters() {
+		return parameters;
+	}
 
-		if (totalResults % parameters.getPageSize() != 0) {
-			totalPages += 1;
-		}
-
-		return totalPages;
+	public void setParameters(PaginationParameters parameters) {
+		this.parameters = parameters;
 	}
 }
