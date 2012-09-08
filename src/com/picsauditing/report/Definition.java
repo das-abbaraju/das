@@ -69,9 +69,9 @@ public class Definition implements JSONable {
 
 	/**
 	 * TODO: There should be a check that this is valid before this gets set.
-	 *
+	 * 
 	 * Should only contain the following characters: 0-9,(,),AND,OR,SPACE
-	 *
+	 * 
 	 * @param filterExpression
 	 */
 	public void setFilterExpression(String filterExpression) {
@@ -80,6 +80,17 @@ public class Definition implements JSONable {
 
 	public JSONObject toJSON(boolean full) {
 		return toJSON();
+	}
+
+	public boolean hasPivotColumns() {
+		for (Column column : columns) {
+			if (column.getPivotDimension() != null) {
+				// TBD We may want to only consider it a valid pivot when it has
+				// all three dimensions
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -129,11 +140,11 @@ public class Definition implements JSONable {
 	}
 
 	// TODO: Rewrite this to either modify this object and return
-	//       nothing, or create a new Definition, merge the one passed
-	//       in to this one and return the new Definition.
+	// nothing, or create a new Definition, merge the one passed
+	// in to this one and return the new Definition.
 	/**
-	 * This merges the definition passed with this Definition instance
-	 * and returns the definition passed in.
+	 * This merges the definition passed with this Definition instance and
+	 * returns the definition passed in.
 	 */
 	public Definition merge(Definition definition) {
 		if (definition == null) {

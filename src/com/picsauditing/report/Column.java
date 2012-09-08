@@ -5,14 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.report.fields.ExtFieldType;
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.PivotCellMethod;
+import com.picsauditing.report.fields.PivotDimension;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.util.Strings;
 
 public class Column extends ReportElement implements JSONable {
 
 	private static final Logger logger = LoggerFactory.getLogger(Column.class);
+	
+	private PivotDimension pivotDimension = null;
+	private PivotCellMethod pivotCellMethod = null;
 	
 	public Column() {
 	}
@@ -53,4 +56,11 @@ public class Column extends ReportElement implements JSONable {
 		super.setFieldName(fieldName.substring(0, locationOfMethod) + METHOD_SEPARATOR + method);
 	}
 	
+	public PivotDimension getPivotDimension() {
+		return pivotDimension;
+	}
+	
+	public PivotCellMethod getPivotCellMethod() {
+		return pivotCellMethod;
+	}
 }
