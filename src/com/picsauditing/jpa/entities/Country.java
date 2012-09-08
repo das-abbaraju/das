@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,6 +32,25 @@ import com.picsauditing.util.Strings;
 public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
 	private static final long serialVersionUID = 6312208192653925848L;
 
+
+	/*
+	 * TODO We hard-coded the following two lists as a stop-gap measure to get
+	 * PICS-6555 going. We considered adding an isEuropeanUnion column to
+	 * ref_country, but that begged the question -- Are there any other country
+	 * affiliations that we might want to know about in the future? -- So, we
+	 * decided that it would be short-sighted to add a European-Union-specific
+	 * column, when down the line we'll really want a 1:M table that shows
+	 * multiple affiliations. So, we're invoking the Rule of Three here, and 
+	 * this is only strike one.
+	 */
+
+	// The 17 Countries in the EuroZone (that have adopted the Euro)
+	private static final String[] EUROZONE = {"AI","BE","CY","DE","EE","ES","FI","FR","GR","IE","IT","LU","MT","NL","PT","SI","SK"};
+	// The 10 additional countries that are in the European Union, but not in the EuroZone (i.e. that have not yet adopted the Euro, or never will)
+	private static final String[] EUROPEAN_UNION_ALSO = {"BG","CZ","DK","GB","GI","HU","IT","LI","LV","PL","RO","SE"};
+
+
+	
 	protected String isoCode;
 	protected TranslatableString name;
 	protected String english;
@@ -250,6 +270,16 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	@Transient
 	public boolean isFrance() {
 		return "FR".equals(isoCode);
+	}
+
+	@Transient
+	public boolean isEuroZone() {
+		return (Arrays.binarySearch(EUROZONE, isoCode)>=0);
+
+	}
+	@Transient
+	public boolean isEuropeanUnion() {
+		return (isEuroZone() || Arrays.binarySearch(EUROPEAN_UNION_ALSO, isoCode)>=0);
 	}
 
 	@Transient

@@ -85,4 +85,22 @@ public class CountryTest {
 		assertFalse(uae.isUK());
 	}
 
+	@Test
+	public void testIsEuropeanUnion() {
+		// Not at all in the EU
+		assertFalse(usa.isEuroZone());
+		assertFalse(usa.isEuropeanUnion());
+		assertFalse(canada.isEuroZone());
+		assertFalse(canada.isEuropeanUnion());
+
+		// In the EuroZone
+		assertTrue(france.isEuroZone());
+		assertTrue(france.isEuropeanUnion());
+
+		// In the EU, but not in the EuroZone
+		assertFalse(uk.isEuroZone());
+		assertTrue(uk.isEuropeanUnion());
+	}
+
+	
 }
