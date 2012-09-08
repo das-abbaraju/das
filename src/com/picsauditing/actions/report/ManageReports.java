@@ -145,7 +145,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() {
 		try {
-			Report report = reportDao.findOne(reportId);
+			Report report = reportDao.find(Report.class, reportId);
 			if (ReportModel.canUserDelete(permissions.getUserId(), report)) {
 				reportModel.removeAndCascade(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
@@ -214,17 +214,9 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	public String columnsToTranslate() {
-		try {
-			List<Report> allReports = reportDao.findAll();
-			// TODO: Get a button/link for debug only
-			ReportUtil.findColumnsToTranslate(allReports);
-		} catch (IOException ioe) {
-			logger.warn("There was a problem finding columns to translate.", ioe);
-		} catch (Exception e) {
-			logger.error("Unexpected exeption finding columns to translate.", e);
-		}
-
+	public String columnsToTranslate() throws Exception {
+		List<Report> allReports = reportDao.findAll(Report.class);
+		ReportUtil.findColumnsToTranslate(allReports);
 		return SUCCESS;
 	}
 
