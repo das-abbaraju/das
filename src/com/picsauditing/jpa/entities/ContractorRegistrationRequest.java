@@ -205,28 +205,34 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.reasonForRegistration = reasonForRegistration;
 	}
 
-	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@Deprecated
+	@Enumerated(EnumType.STRING)
 	public ContractorRegistrationRequestStatus getStatus() {
 		return status;
 	}
 
+	@Deprecated
 	public void setStatus(ContractorRegistrationRequestStatus status) {
 		this.status = status;
 	}
 
+	@Deprecated
 	public String getReasonForDecline() {
 		return reasonForDecline;
 	}
 
+	@Deprecated
 	public void setReasonForDecline(String reasonForDecline) {
 		this.reasonForDecline = reasonForDecline;
 	}
 
+	@Deprecated
 	public Date getHoldDate() {
 		return holdDate;
 	}
 
+	@Deprecated
 	public void setHoldDate(Date holdDate) {
 		this.holdDate = holdDate;
 	}
@@ -253,39 +259,48 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.lastContactDate = lastContactDate;
 	}
 
+	@Deprecated
 	public Date getLastContactedByAutomatedEmailDate() {
 		return lastContactedByAutomatedEmailDate;
 	}
 
+	@Deprecated
 	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
 		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
 	}
 
+	@Deprecated
 	public int getContactCountByEmail() {
 		return contactCountByEmail;
 	}
 
+	@Deprecated
 	public void setContactCountByEmail(int contactCountByEmail) {
 		this.contactCountByEmail = contactCountByEmail;
 	}
 
+	@Deprecated
 	public int getContactCountByPhone() {
 		return contactCountByPhone;
 	}
 
+	@Deprecated
 	public void setContactCountByPhone(int contactCountByPhone) {
 		this.contactCountByPhone = contactCountByPhone;
 	}
 
+	@Deprecated
 	@Transient
 	public int getContactCount() {
 		return contactCountByEmail + contactCountByPhone;
 	}
 
+	@Deprecated
 	public int getMatchCount() {
 		return matchCount;
 	}
 
+	@Deprecated
 	public void setMatchCount(int matchCount) {
 		this.matchCount = matchCount;
 	}
@@ -307,12 +322,14 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 				Strings.isEmpty(getNotes()) ? "" : getNotes()));
 	}
 
-	@ManyToOne
+	@Deprecated
 	@JoinColumn(name = "conID")
+	@ManyToOne
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
 
+	@Deprecated
 	public void setContractor(ContractorAccount con) {
 		this.contractor = con;
 	}
@@ -333,11 +350,13 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		return requestedByUser == null ? getRequestedByUserOther() : requestedByUser.getName();
 	}
 
+	@Deprecated
 	@Transient
 	public void contactByEmail() {
 		contactCountByEmail++;
 	}
 
+	@Deprecated
 	@Transient
 	public void contactByPhone() {
 		contactCountByPhone++;

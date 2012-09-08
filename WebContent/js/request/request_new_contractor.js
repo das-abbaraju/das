@@ -9,7 +9,6 @@
                     element.delegate('#country', 'change', this.loadCountrySubdivision);
                     element.delegate('#email_preview', 'click', this.previewEmail);
                     element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
-                    element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
                     element.delegate('#request_status', 'change', this.toggleStatusFields);
                     
                     $('.datepicker').datepicker({
@@ -27,10 +26,6 @@
                     
                     if (!$('#country_subdivision').html().trim()) {
                         $('#country').trigger('change');
-                    }
-                    
-                    if ($('#user_list').html().trim()) {
-                        $('#requesting_user').trigger('change');
                     }
                     
                     $('#city').trigger('keyup');
@@ -107,14 +102,6 @@
                     $('.address-zip').show();
                 } else {
                     $('.address-zip').hide();
-                }
-            },
-            
-            toggleOtherTextfield: function(event) {
-                if ($(this).val() > 0) {
-                    $('#requesting_other').hide();
-                } else {
-                    $('#requesting_other').show();
                 }
             },
             

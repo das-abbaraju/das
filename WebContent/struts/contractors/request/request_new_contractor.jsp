@@ -204,57 +204,104 @@
 				</h2>
 				
 				<ol>
-					<li>
-						<s:select
-							headerKey="0" 
-							headerValue="RequestNewContractor.header.SelectAnOperator" 
-							id="operator_list"
-							label="ContractorAccount.requestedBy"
-							list="operatorList"
-							listKey="id"
-							listValue="name" 
-							name="requestedContractor.requestedBy"
-							required="true"
-							theme="formhelp"
-							value="%{requestedContractor.requestedBy.id}"
-						/>
-					</li>
-					<li id="user_list">
-						<s:if test="requestedContractor.requestedBy.id > 0">
+					<s:if test="permissions.operator">
+						<li>
+							<label><s:text name="ContractorAccount.requestedBy" /></label>
+							<s:textfield
+								disabled="true"
+								key="id"
+								name="requestRelationship.operatorAccount"
+								required="true"
+							/>
+						</li>
+						<li id="user_list">
 							<s:include value="operator_users.jsp" />
-						</s:if>
-					</li>
-					<li>
-						<s:textfield
-							cssClass="datepicker"
-							id="regDate"
-							name="requestRelationship.deadline"
-							required="true"
-							size="10"
-							theme="formhelp"
-							value="%{requestRelationship.deadline != null ? getTextParameterized('short_dates', requestRelationship.deadline) : ''}"
-						/>
-					</li>
-					<li>
-						<s:textarea
-							id="reasonForRegistration"
-							name="requestRelationship.reasonForRegistration"
-							required="true"
-							theme="formhelp"
-						/>
-					</li>
-					<s:if test="requestedContractor.id > 0">
+						</li>
+						<li>
+							<s:textfield
+								cssClass="datepicker"
+								id="regDate"
+								name="requestRelationship.deadline"
+								required="true"
+								size="10"
+								theme="formhelp"
+								value="%{requestRelationship.deadline != null ? getTextParameterized('short_dates', requestRelationship.deadline) : ''}"
+							/>
+						</li>
+						<li>
+							<s:textarea
+								id="reasonForRegistration"
+								name="requestRelationship.reasonForRegistration"
+								required="true"
+								theme="formhelp"
+							/>
+						</li>
 						<li id="tag_list">
 							<s:include value="operator_tags.jsp" />
 						</li>
 					</s:if>
 					<s:else>
 						<li>
+							<table class="report">
+								<thead>
+									<tr>
+										<th></th>
+										<th>
+											<s:text name="ContractorAccount.requestedBy" />
+										</th>
+										<th>
+											<s:text name="ContractorOperator.requestedBy" />
+										</th>
+										<th>
+											<s:text name="ContractorOperator.deadline" />
+										</th>
+										<th>
+											<s:text name="ContractorOperator.reasonForRegistration" />
+										</th>
+										<th>
+											<s:text name="button.Edit" />
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<s:iterator value="requestedContractor.operators" var="relationship" status="position">
+										<tr>
+											<td>
+												${position.count}
+											</td>
+											<td>
+												<s:url action="FacilitiesEdit" var="operator_edit">
+													<s:param name="id">
+														${relationship.operatorAccount.id}
+													</s:param>
+												</s:url>
+												<a href="${operator_edit}">${relationship.operatorAccount.name}</a>
+											</td>
+											<td>
+												${relationship.requestedByName}
+											</td>
+											<td>
+												<s:date name="#relationship.deadline" format="%{getText('date.short')}" />
+											</td>
+											<td>
+												${relationship.reasonForRegistration}
+											</td>
+											<td>
+												<a href="javascript:;" class="edit"></a>
+											</td>
+										</tr>
+									</s:iterator>
+								</tbody>
+							</table>
+						</li>
+					</s:else>
+					<s:if test="requestedContractor.id == 0">
+						<li>
 							<a href="javascript:;" id="email_preview" class="preview">
 								<s:text name="RequestNewContractor.PreviewEmail" />
 							</a>
 						</li>
-					</s:else>
+					</s:if>
 				</ol>
 			</fieldset>
 			
