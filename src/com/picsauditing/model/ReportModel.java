@@ -2,8 +2,6 @@ package com.picsauditing.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -237,7 +235,7 @@ public class ReportModel {
 			userReport = reportUserDao.findOne(userId, reportId);
 		} catch (NoResultException nre) {
 			// Need to connect user to report first
-			Report report = reportDao.findOne(reportId);
+			Report report = reportDao.find(Report.class, reportId);
 			userReport = connectReportToUser(report, userId);
 		}
 
@@ -343,7 +341,7 @@ public class ReportModel {
 	}
 
 	public void removeAndCascade(int reportId) {
-		Report report = reportDao.findOne(reportId);
+		Report report = reportDao.find(Report.class, reportId);
 		removeAndCascade(report);
 	}
 
@@ -367,7 +365,7 @@ public class ReportModel {
 
 	public boolean isReportPublic(int reportId) {
 		try {
-			Report report = reportDao.findOne(reportId);
+			Report report = reportDao.find(Report.class, reportId);
 			if (report != null && report.isPublic()) {
 				return true;
 			}

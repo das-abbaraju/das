@@ -68,7 +68,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserViewAndCopy_TrueIfPublicReport() {
 		when(report.isPublic()).thenReturn(true);
-		when(reportDao.findOne(REPORT_ID)).thenReturn(report);
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 
 		assertTrue(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
 	}
@@ -76,7 +76,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserViewAndCopy_FalseIfPrivateReportNoAssociationWithUser() {
 		when(report.isPublic()).thenReturn(false);
-		when(reportDao.findOne(REPORT_ID)).thenReturn(report);
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(null);
 
 		assertFalse(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
