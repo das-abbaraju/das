@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
@@ -16,9 +15,9 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.ReportDataConverter;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -26,7 +25,7 @@ public class ReportData extends PicsActionSupport {
 	@Autowired
 	private ReportDAO reportDao;
 
-	private Report report;
+	protected Report report;
 	private int pageNumber = 1;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
@@ -55,13 +54,12 @@ public class ReportData extends PicsActionSupport {
 		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
 		sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
-
 		if (ReportUtil.hasColumns(report)) {
+			ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(), permissions.getLocale());
+			
 			List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
-
-			JSONArray queryResultsAsJson = ReportUtil.convertQueryResultsToJson(queryResults, availableFields,
-					permissions, permissions.getLocale());
+			JSONArray queryResultsAsJson = converter.convertToJson(queryResults);
+			
 			json.put("data", queryResultsAsJson);
 			json.put("success", true);
 		}

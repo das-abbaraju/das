@@ -58,6 +58,7 @@ public class I18nCacheThreadTest implements I18nCacheBuildAware {
 			}
 			
 			private List<BasicDynaBean> createMessages() {
+				// TODO Use the DynaBeanListBuilder
 				List<BasicDynaBean> messages = new ArrayList<BasicDynaBean>();
 				DynaProperty[] properties = new DynaProperty[4];
 				properties[0] = new DynaProperty("msgKey", String.class);

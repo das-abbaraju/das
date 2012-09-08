@@ -9,106 +9,76 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.ReportDataConverter;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.excel.ExcelColumn;
-import com.picsauditing.util.excel.ExcelSheet;
+import com.picsauditing.util.excel.ExcelBuilder;
 
 /**
- * This is a controller. It should delegate business concerns and persistence methods.
+ * This is a controller. It should delegate business concerns and persistence
+ * methods.
  */
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings({ "serial" })
 public class ReportDownload extends PicsActionSupport {
-	// TODO Consider extending ReportData
-	
-	@Autowired
-	private ReportDAO reportDao;
-
-	private Report report;
-	private String fileType = ".xls";
-
 	private static final Logger logger = LoggerFactory.getLogger(ReportDownload.class);
 
+	@Autowired
+	private ReportDAO reportDao;
+	private Report report;
+
 	public String execute() {
-		return null;
-	}
-
-	public String download() {
 		try {
-			ReportModel.validate(report);
-		} catch (ReportValidationException rve) {
-			writeJsonErrorMessage(rve);
-			return JSON;
+			getData();
+			HSSFWorkbook workbook = buildWorkbook();
+			writeFile(report.getName() + ".xls", workbook);
 		} catch (Exception e) {
-			logger.error(e.toString());
-			writeJsonErrorMessage(e);
-			return JSON;
+			e.printStackTrace();
 		}
-
-		try {
-			if (!ReportUtil.hasColumns(report)) {
-				logger.warn("User tried to download a report with no columns as an excel spreadsheet. Should we not allow that?");
-				return SUCCESS;
-			}
-
-			SqlBuilder sqlBuilder = new SqlBuilder();
-			SelectSQL sql = sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
-
-			exportToExcel(report, reportDao.runQuery(sql, json));
-		} catch (SQLException se) {
-			logger.error(se.toString());
-		} catch (IOException ioe) {
-			logger.error(ioe.toString());
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDynamic.report()", e);
-		}
-
 		return SUCCESS;
 	}
 
-	private void exportToExcel(Report report, List<BasicDynaBean> rawData) throws Exception {
-		ExcelSheet excelSheet = new ExcelSheet();
-		excelSheet.setData(rawData);
+	private JSONArray getData() throws ReportValidationException, SQLException {
+		ReportModel.validate(report);
 
-		{
-			SqlBuilder sqlBuilder = new SqlBuilder();
-			SelectSQL sql = sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
-			for (String field : sql.getFields()) {
-				String alias = SelectSQL.getAlias(field);
-				excelSheet.addColumn(new ExcelColumn(alias, alias));
-			}
-		}
+		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
+		// TODO Print parameters
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
-		String filename = report.getName();
-		excelSheet.setName(filename);
+		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
-		HSSFWorkbook workbook = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+		List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
+		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(),
+				permissions.getLocale());
+		return converter.convertForPrinting(queryResults);
+	}
 
-		filename += fileType;
+	private HSSFWorkbook buildWorkbook() {
+		logger.info("Building XLS File");
+		ExcelBuilder builder = new ExcelBuilder();
+		builder.addColumns(report.getDefinition().getColumns());
+		JSONArray reportData = (JSONArray) json.get("data");
+		return builder.buildWorkbook(report.getName(), reportData);
+	}
 
-		// TODO: Change this to use an output stream handler
+	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {
+		logger.info("Streaming XLS File to response");
 		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 		workbook.write(outstream);
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
-	}
-
-	private void writeJsonErrorMessage(Exception e) {
-		json.put("success", false);
-		json.put("error", e.getCause() + " " + e.getMessage());
 	}
 
 	public Report getReport() {
@@ -119,11 +89,4 @@ public class ReportDownload extends PicsActionSupport {
 		this.report = report;
 	}
 
-	public String getFileType() {
-		return fileType;
-	}
-
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
 }

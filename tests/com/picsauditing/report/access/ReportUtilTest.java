@@ -34,7 +34,7 @@ public class ReportUtilTest {
 	public void testTranslateLabel_FieldIsNull() {
 		Field field = null;
 		String translatedText = ReportUtil.translateLabel(field, Locale.ENGLISH);
-
 		assertNull(translatedText);
 	}
+
 }

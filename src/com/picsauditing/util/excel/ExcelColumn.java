@@ -1,5 +1,7 @@
 package com.picsauditing.util.excel;
 
+import com.picsauditing.report.Column;
+
 public class ExcelColumn {
 	private String name;
 	private String columnHeader;
@@ -24,6 +26,13 @@ public class ExcelColumn {
 		this.name = name;
 		this.columnHeader = columnHeader;
 		this.cellType = cellType;
+	}
+
+	public ExcelColumn(Column reportColumn) {
+		this.name = reportColumn.getFieldName();
+		this.columnHeader = reportColumn.getField().getText();
+		this.cellType = ExcelCellType.convert(reportColumn.getField());
+		this.hidden = !reportColumn.getField().isVisible();
 	}
 
 	/**
