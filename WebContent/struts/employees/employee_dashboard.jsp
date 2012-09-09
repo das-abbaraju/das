@@ -63,6 +63,7 @@
 												<th>
 													<s:text name="EmployeeDashboard.Status" />
 												</th>
+												<th><s:text name="EmployeeDashboard.Requirements" /></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -93,6 +94,7 @@
 															<td>
 																${audit_group_year}
 															</td>
+															<td></td>
 															<td></td>
 														</tr>
 													</s:if>
@@ -133,6 +135,11 @@
 																</s:if>
 																<s:text name="%{#status.getI18nKey()}" /><s:if test="!#stat.last">,</s:if>
 															</s:iterator>
+														</s:if>
+													</td>
+													<td>
+														<s:if test="#audit.hasOpenRequirements">
+															<a href="ContractorAuditFileUpload.action?auditID=<s:property value='#audit.id'/>" ><s:text name="EmployeeDashboard.Upload" /></a>
 														</s:if>
 													</td>
 												</tr>

@@ -925,4 +925,14 @@ public class ContractorAudit extends AbstractIndexableTable {
 	public boolean isRemoved() {
 		return false;
 	}
+	
+	@Transient
+	public boolean isHasOpenRequirements() {
+		if (getAuditType().getWorkFlow().isHasRequirements() &&
+				hasCaoStatus(AuditStatus.Submitted)) {
+			return true;
+		}
+		
+		return false;
+	}
 }

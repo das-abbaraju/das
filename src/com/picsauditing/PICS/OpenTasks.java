@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -430,8 +431,14 @@ public class OpenTasks extends TranslationActionSupport {
 					Integer conAuditID = conAudit.getId();
 					String text = "";
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard",
-								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+						Calendar effectiveLabel = Calendar.getInstance();
+						effectiveLabel.setTime(conAudit.getEffectiveDateLabel());
+						text = getTextParameterized(
+								locale,
+								"ContractorWidget.message.OpenRequirementsEmployeeGuard2",
+								contractor.getId(), conAuditID, auditName,
+								showAuditFor, auditFor, conAudit.getAuditType().getId(), 
+								effectiveLabel.get(Calendar.YEAR));
 					} else {
 						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
 								showAuditFor, auditFor);
@@ -491,8 +498,11 @@ public class OpenTasks extends TranslationActionSupport {
 					String text = "";
 
 					if (conAudit.getAuditType().getClassType().isEmployee()) {
-						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard",
-								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor);
+						Calendar effectiveLabel = Calendar.getInstance();
+						effectiveLabel.setTime(conAudit.getEffectiveDateLabel());
+						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirementsEmployeeGuard2",
+								contractor.getId(), conAuditID, auditName, showAuditFor, auditFor, 
+								conAudit.getAuditType().getId(), effectiveLabel.get(Calendar.YEAR));
 					} else {
 						text = getTextParameterized(locale, "ContractorWidget.message.OpenRequirements", conAuditID, auditName,
 								showAuditFor, auditFor);
