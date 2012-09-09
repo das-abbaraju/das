@@ -45,7 +45,7 @@ public class ReportDownload extends PicsActionSupport {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return SUCCESS;
+		return BLANK;
 	}
 
 	private JSONArray getData() throws ReportValidationException, SQLException {

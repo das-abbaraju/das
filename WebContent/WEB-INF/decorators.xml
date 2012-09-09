@@ -22,6 +22,7 @@
 	</decorator>
 	<decorator name="print" page="print.jsp">
 		<pattern>/*!print*.action</pattern>
+		<pattern>/ReportPrint.action</pattern>
 	</decorator>
 	<decorator name="simple" page="simple.jsp">
 		<pattern>/NoteEditor.action</pattern>
