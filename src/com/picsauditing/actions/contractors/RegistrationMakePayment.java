@@ -13,10 +13,6 @@ import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.InvoiceDataEvent;
-import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -38,7 +34,7 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -50,7 +46,6 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {
-	
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
@@ -68,11 +63,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private EmailSender emailSender;
+	private EmailSenderSpring emailSender;
 	@Autowired
 	private ContractorValidator contractorValidator;
-	@Autowired
-	private DataObservable saleCommissionDataObservable;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -110,15 +103,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		this.subHeading = getText(String.format("%s.title", getScope()));
 
-		if (redirectIfNotReadyForThisStep()) {
+		if (redirectIfNotReadyForThisStep())
 			return BLANK;
-		}
 
-		if (!processPayment && generateOrUpdateInvoiceIfNecessary()) {
+		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
 			return BLANK;
-		}
-		
-		notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
 
 		// Email proforma invoice
 		if ("email".equals(button)) {
@@ -204,8 +193,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
 								+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), NoteCategory.Billing,
 								LowMedHigh.High, true, Account.EVERYONE, getUser(), null);
-						
-						notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.PAYMENT));
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -285,8 +272,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private String contractorRiskUrl(String url) {
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly() || contractor
-				.isTransportationServices()))
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly()||contractor.isTransportationServices()))
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
 			url = "RegistrationServiceEvaluation.action?id=" + contractor.getId();
 
@@ -570,7 +556,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	/**
 	 * ****** End BrainTree Setters ******
-	 * 
+	 *
 	 * @throws Exception
 	 */
 
@@ -581,6 +567,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		types.add("Mastercard");
 		types.add("Discover Card");
 		types.add("American Express");
+
+		if (contractor.getNewMembershipAmount().intValue() > 500) {
+			types.add("Check");
+		}
 
 		return types;
 	}
@@ -663,6 +653,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	}
 
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
+		findContractor();
 		billingService.calculateAnnualFees(contractor);
 		invoice = contractor.findLastUnpaidInvoice();
 		if (invoice == null) {
@@ -686,10 +677,5 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		return false;
-	}
-	
-	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
-		saleCommissionDataObservable.setChanged();
-		saleCommissionDataObservable.notifyObservers(dataEvent);
 	}
 }

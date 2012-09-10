@@ -52,10 +52,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.business.NoteFactory;
 
 public class BillingCalculatorSingle {
-	
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
@@ -84,7 +82,7 @@ public class BillingCalculatorSingle {
 	private AuditPercentCalculator auditPercentCalculator;
 
 	private I18nCache i18nCache = I18nCache.getInstance();
-	
+
 	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
@@ -104,12 +102,8 @@ public class BillingCalculatorSingle {
 
 		contractor.setPayingFacilities(payingOperators.size());
 	}
-	
-	public void calculateAnnualFees(ContractorAccount contractor) {
-		calculateAnnualFees(contractor, true);
-	}
 
-	private void calculateAnnualFees(ContractorAccount contractor, boolean persistChanges) {
+	public void calculateAnnualFees(ContractorAccount contractor) {
 		setPayingFacilities(contractor);
 
 		int payingFacilities = contractor.getPayingFacilities();
@@ -144,9 +138,8 @@ public class BillingCalculatorSingle {
 			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
 				hasAuditGUARD = true;
 			if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
+				hasInsureGUARD = true;
 				operatorsRequiringInsureGUARD.addAll(detail.operators);
-				if (!hasInsureGUARD)
-					hasInsureGUARD = qualifiesForInsureGuard(operatorsRequiringInsureGUARD);
 			}
 			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee())
 				hasEmployeeAudits = true;
@@ -247,8 +240,7 @@ public class BillingCalculatorSingle {
 				importConFee.setCurrentLevel(currentLevel);
 				importConFee.setCurrentAmount(contractor.getCountry().getAmount(currentLevel));
 				importConFee.setFeeClass(FeeClass.ImportFee);
-//				invoiceFeeDAO.save(importConFee);
-				saveContractorImportPqfFee(importConFee, persistChanges);
+				invoiceFeeDAO.save(importConFee);
 
 				contractor.getFees().put(FeeClass.ImportFee, importConFee);
 			} else {
@@ -259,30 +251,10 @@ public class BillingCalculatorSingle {
 		}
 
 	}
-	
-	private void saveContractorImportPqfFee(ContractorFee importPqfFee, boolean persistChanges) {
-		if (persistChanges) {
-			invoiceFeeDAO.save(importPqfFee);
-		}
-	}
-
-	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
-				return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
-	}
-
-	private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
-		for (OperatorAccount oa : operators) {
-			int id = oa.getId();
-			if (id == OperatorAccount.OLDCASTLE || id == OperatorAccount.AI || id == OperatorAccount.CINTAS_CANADA)
-				continue;
-			return false;
-		}
-		return true;
-	}
 
 	/**
 	 * This can only be used on invoices which are in Unpaid status to prevent Syncing errors w/ Quickbooks.
-	 *
+	 * 
 	 * @param toUpdate
 	 * @param updateWith
 	 * @param permissions
@@ -294,8 +266,8 @@ public class BillingCalculatorSingle {
 		if (toUpdate.getPayments().size() > 0)
 			throw new Exception("Cannot update Invoices that already have payments applied.");
 
-//		BigDecimal oldTotal = toUpdate.getTotalAmount();
-//		Currency oldCurrency = toUpdate.getCurrency();
+		BigDecimal oldTotal = toUpdate.getTotalAmount();
+		Currency oldCurrency = toUpdate.getCurrency();
 
 		Iterator<InvoiceItem> iterator = toUpdate.getItems().iterator();
 		while (iterator.hasNext()) {
@@ -323,26 +295,17 @@ public class BillingCalculatorSingle {
 
 		invoiceDAO.save(toUpdate);
 
-//		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
-//				+ " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
-//				LowMedHigh.Med, false, Account.PicsID, user);
-		dao.save(NoteFactory.generateNoteForInvoiceUpdate(toUpdate, updateWith, user));
-	}
-	
-	public Invoice createInvoice(ContractorAccount contractor, User user) {
-		return createInvoice(contractor, contractor.getBillingStatus(), user, true);
-	}
-	
-	public Invoice createInvoice(ContractorAccount contractor, String billingStatus, User user) {
-		return createInvoice(contractor, billingStatus, user, true);
-	}
-	
-	public Invoice createInvoiceWithoutSave(ContractorAccount contractor, User user) {
-		return createInvoice(contractor, contractor.getBillingStatus(), user, false);
+		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
+				+ " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
+				LowMedHigh.Med, false, Account.PicsID, user);
 	}
 
-	private Invoice createInvoice(ContractorAccount contractor, String billingStatus, User user, boolean persistChanges) {
-		calculateAnnualFees(contractor, persistChanges);
+	public Invoice createInvoice(ContractorAccount contractor, User user) {
+		return createInvoice(contractor, contractor.getBillingStatus(), user);
+	}
+
+	public Invoice createInvoice(ContractorAccount contractor, String billingStatus, User user) {
+		calculateAnnualFees(contractor);
 
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
 
@@ -364,6 +327,8 @@ public class BillingCalculatorSingle {
 
 		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
 			invoice.setQbSync(true);
+
+		String notes = "";
 
 		// Calculate the due date for the invoice
 		if (billingStatus.equals("Activation")) {
@@ -397,10 +362,10 @@ public class BillingCalculatorSingle {
 			if (item.getInvoiceFee().isMembership())
 				hasMembership = true;
 		}
-
+		
 		if (hasMembership) {
-			invoice.setNotes(getOperatorsString(contractor));		
-		}
+			invoice.setNotes(getOperatorsString(contractor));
+		}		
 
 		for (InvoiceItem item : invoiceItems) {
 			item.setInvoice(invoice);
@@ -419,7 +384,7 @@ public class BillingCalculatorSingle {
 	 * <li>lastUpgradeDate</li>
 	 * <li>paymentExpires</li>
 	 * </ul>
-	 *
+	 * 
 	 * @param contractor
 	 * @return
 	 */
@@ -454,7 +419,7 @@ public class BillingCalculatorSingle {
 
 	/**
 	 * Calculate a prorated amount depending on when the upgrade happens and when the membership expires.
-	 *
+	 * 
 	 * @param contractor
 	 * @param items
 	 * @param upgrades
@@ -654,9 +619,9 @@ public class BillingCalculatorSingle {
 
 		auditBuilder.buildAudits(contractor);
 		auditPercentCalculator.percentCalculateComplete(importAudit);
-//		addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true, Account.EVERYONE,
-//				new User(permissions.getUserId()));
-		dao.save(NoteFactory.generateNoteForImportPQF(contractor, permissions));
+
+		addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true, Account.EVERYONE,
+				new User(permissions.getUserId()));
 	}
 
 	private void activateExpiredImportPQF(List<ContractorAudit> importPQFs) {
@@ -677,35 +642,25 @@ public class BillingCalculatorSingle {
 
 		return false;
 	}
-	
-//	private void clearNewFee(ContractorAccount contractor, FeeClass feeClass) {
-//		contractor.getFees().get(feeClass).setNewLevel(feeDAO.findByNumberOfOperatorsAndClass(feeClass, 0));
-//		contractor.getFees().get(feeClass).setNewAmount(BigDecimal.ZERO);
-//	}
-//
-//	private void setNewFee(ContractorAccount contractor, InvoiceFee fee, BigDecimal amount) {
-//		contractor.getFees().get(fee.getFeeClass()).setNewLevel(fee);
-//		contractor.getFees().get(fee.getFeeClass()).setNewAmount(amount);
-//	}
 
-//	protected Note addNote(Account account, String newNote, NoteCategory noteCategory, LowMedHigh priority,
-//			boolean canContractorView, int viewableBy, User user) {
-//		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
-//	}
-//
-//	protected Note addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
-//			boolean canContractorView, int viewableBy, User user, Employee employee) {
-//		Note note = new Note();
-//		note.setAuditColumns();
-//		note.setAccount(account);
-//		note.setSummary(newNote);
-//		note.setPriority(priority);
-//		note.setNoteCategory(category);
-//		note.setViewableById(viewableBy);
-//		note.setCanContractorView(canContractorView);
-//		note.setStatus(NoteStatus.Closed);
-//		note.setEmployee(employee);
-//		dao.save(note);
-//		return note;
-//	}
+	protected Note addNote(Account account, String newNote, NoteCategory noteCategory, LowMedHigh priority,
+			boolean canContractorView, int viewableBy, User user) {
+		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
+	}
+
+	protected Note addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+			boolean canContractorView, int viewableBy, User user, Employee employee) {
+		Note note = new Note();
+		note.setAuditColumns();
+		note.setAccount(account);
+		note.setSummary(newNote);
+		note.setPriority(priority);
+		note.setNoteCategory(category);
+		note.setViewableById(viewableBy);
+		note.setCanContractorView(canContractorView);
+		note.setStatus(NoteStatus.Closed);
+		note.setEmployee(employee);
+		dao.save(note);
+		return note;
+	}
 }

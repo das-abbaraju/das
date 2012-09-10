@@ -13,9 +13,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.NoteDAO;
@@ -55,8 +52,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private EmailSender emailSender;
 	@Autowired
 	private BrainTreeService paymentService;
-	@Autowired
-	private DataObservable saleCommissionDataObservable;
 
 	private Payment payment;
 	private PaymentMethod method = null;
@@ -136,19 +131,16 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					addActionError("Payments must be greater than zero");
 					return SUCCESS;
 				}
-				
 				if (method.isCreditCard()) {
 					try {
 						if (creditCard == null || creditCard.getCardNumber() == null) {
 							creditCard = paymentService.getCreditCard(id);
 						}
-						
 						paymentService.processPayment(payment, null);
 						payment.setCcNumber(creditCard.getCardNumber());
 
 						addNote("Credit Card transaction completed and emailed the receipt for "
 								+ payment.getCurrency().getSymbol() + payment.getTotalAmount());
-						notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.PAYMENT));
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -174,9 +166,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 											+ contractor.getName() + " (" + contractor.getId() + ")");
 						}
 
-						// TODO: Make this message i18n
-						addActionError("There has been a connection error while processing your payment. Our Billing department has been " +
-								"notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
+						addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
 								+ getText("PicsBillingPhone") + ".");
 
 						// Assuming paid status per Aaron so that he can refund
@@ -221,8 +211,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					if (message != null) {
 						addActionMessage(message);
 					}
-					
-					notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.VOID));
 
 					return setUrlForRedirect("BillingDetail.action?id=" + contractor.getId());
 				} catch (Exception e) {
@@ -230,7 +218,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 			}
-			
 			if (button.startsWith("Refund")) {
 				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("You can't refund negative amounts");
@@ -258,8 +245,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setQbSync(true);
 					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
-					
-					notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.REFUND));
 
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
@@ -312,8 +297,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 								if (txn.getId() == txnID) {
 									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
 											amountApplyMap.get(txnID));
-									
-									notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.PAYMENT));
 
 									// Email Receipt to Contractor
 									try {
@@ -337,8 +320,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 								if (txn.getId() == txnID) {
 									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
 											amountApplyMap.get(txnID));
-									
-									notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.REFUND));
 								}
 							}
 						}
@@ -350,8 +331,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.setQbSync(true);
 			paymentDAO.save(payment);
 
-//			notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
-			
 			if (message != null) {
 				addActionMessage(message);
 			}
@@ -367,11 +346,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		return SUCCESS;
 	}
 
-	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
-		saleCommissionDataObservable.setChanged();
-		saleCommissionDataObservable.notifyObservers(dataEvent);
-	}
-	
 	private Currency getCurrencyOfAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {
 		List<Invoice> appliedInvoices = getAppliedInvoices(contractor, amountApplyMap);
 

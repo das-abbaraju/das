@@ -7,19 +7,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.data.ContractorDataEvent;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.InvoiceDataEvent;
-import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceDAO;
@@ -44,17 +37,16 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.business.NoteFactory;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
-	
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
@@ -70,17 +62,13 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private BrainTreeService paymentService;
 	@Autowired
-	private EmailSender emailSender;
-	@Autowired
-	private DataObservable saleCommissionDataObservable;
+	private EmailSenderSpring emailSender;
 
 	private boolean edit = false;
 	private int newFeeId;
 	private Invoice invoice;
 	private List<InvoiceFee> feeList = null;
 	private String country;
-	
-	private static final Logger logger = LoggerFactory.getLogger(InvoiceDetail.class);
 
 	@Override
 	public void prepare() {
@@ -126,8 +114,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				}
 				updateTotals();
 				invoice.setQbSync(true);
-				
-				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ADD_LINE_ITEM));
 			}
 			if ("changeto".equals(button)) {
 				List<String> removedItemNames = new ArrayList<String>();
@@ -217,9 +203,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				if (!contractor.getStatus().equals(AccountStatus.Deactivated)
 						&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
 					contractor.setStatus(AccountStatus.Deactivated);
-					
-					notifyDataChange(new ContractorDataEvent(contractor, ContractorDataEvent.ContractorEventType.DEACTIVATION));
-					
 					contractor.setRenew(false);
 					if (contractor.getAccountLevel().isBidOnly())
 						contractor.setReason("Bid Only Account");
@@ -241,7 +224,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
 						+ contractor.getCountry().getCurrency().getSymbol() + invoice.getTotalAmount().toString();
 				addNote(noteText, getUser());
-				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.VOID));
 			}
 			if (button.equals("pay")) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -269,8 +251,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), getUser());
-							
-							notifyDataChange(new PaymentDataEvent(payment, PaymentDataEvent.PaymentEventType.PAYMENT));
 
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
@@ -292,17 +272,14 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 								emailQueue.setViewableById(Account.PicsID);
 								emailSender.send(emailQueue);
 							} catch (Exception e) {
-								logger.error("Cannot send email error message or determine credit processing status for " +
-										"contractor {} ({}) for invoice {}", new Object[]{contractor.getName(), contractor.getId(), invoice.getId()});
-//								PicsLogger
-//										.log("Cannot send email error message or determine credit processing status for contractor "
-//												+ contractor.getName()
-//												+ " ("
-//												+ contractor.getId()
-//												+ ") for invoice "
-//												+ invoice.getId());
+								PicsLogger
+										.log("Cannot send email error message or determine credit processing status for contractor "
+												+ contractor.getName()
+												+ " ("
+												+ contractor.getId()
+												+ ") for invoice "
+												+ invoice.getId());
 							}
-							
 							addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling",
 									getText("PicsBillingPhone")));
 
@@ -323,7 +300,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					try {
 						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
 					} catch (Exception theyJustDontGetAnEmail) {
-						logger.error("No invoice receipt sent to contractor with id = {}", contractor.getId());
 					}
 				}
 			}
@@ -358,27 +334,20 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private void addNote(String subject, User u) {
-//		Note note = new Note(invoice.getAccount(), u, subject);
-//		note.setNoteCategory(NoteCategory.Billing);
-//		note.setCanContractorView(true);
-//		note.setViewableById(Account.PicsID);
-//		noteDAO.save(note);
-		noteDAO.save(NoteFactory.generateNoteForBillingDetail(invoice, subject, u));
+		Note note = new Note(invoice.getAccount(), u, subject);
+		note.setNoteCategory(NoteCategory.Billing);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.PicsID);
+		noteDAO.save(note);
 	}
 
 	private void addNote(String subject, String body, User u) {
-//		Note note = new Note(invoice.getAccount(), u, subject);
-//		note.setBody(body);
-//		note.setNoteCategory(NoteCategory.Billing);
-//		note.setCanContractorView(true);
-//		note.setViewableById(Account.PicsID);
-//		noteDAO.save(note);
-		noteDAO.save(NoteFactory.generateNoteForBillingDetail(invoice, subject, body, u));
-	}
-	
-	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
-		saleCommissionDataObservable.setChanged();
-		saleCommissionDataObservable.notifyObservers(dataEvent);
+		Note note = new Note(invoice.getAccount(), u, subject);
+		note.setBody(body);
+		note.setNoteCategory(NoteCategory.Billing);
+		note.setCanContractorView(true);
+		note.setViewableById(Account.PicsID);
+		noteDAO.save(note);
 	}
 
 	private void addInvoiceItem(int feeId) {

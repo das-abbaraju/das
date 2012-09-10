@@ -21,10 +21,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
-import com.picsauditing.PICS.data.ContractorDataEvent;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -88,8 +84,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected BillingCalculatorSingle billingService;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-	@Autowired
-	private DataObservable saleCommissionDataObservable;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -274,11 +268,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
 		}
-		
-		if (contractor.getStatus().isDeactivated()) {
-			// we only care about deactivation, because reactivation can be determine through the contractor's billing status 
-			notifyDataChange(new ContractorDataEvent(contractor, ContractorDataEvent.ContractorEventType.DEACTIVATION));
-		}
 
 		return SUCCESS;
 	}
@@ -315,8 +304,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		contractor.setStatus(AccountStatus.Deleted);
 		contractorAccountDao.save(contractor);
-		
-		notifyDataChange(new ContractorDataEvent(contractor, ContractorDataEvent.ContractorEventType.DEACTIVATION));
 
 		return "ConList";
 	}
@@ -431,9 +418,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
 		}
 		this.subHeading = "Contractor Edit";
-		
-		notifyDataChange(new ContractorDataEvent(contractor, ContractorDataEvent.ContractorEventType.DEACTIVATION));
-		
 		return SUCCESS;
 	}
 
@@ -606,10 +590,5 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setContractorTypeHelpText(String contractorTypeHelpText) {
 		this.contractorTypeHelpText = contractorTypeHelpText;
-	}
-	
-	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
-		saleCommissionDataObservable.setChanged();
-		saleCommissionDataObservable.notifyObservers(dataEvent);
 	}
 }

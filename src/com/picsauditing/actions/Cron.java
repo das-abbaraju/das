@@ -30,10 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.data.ContractorDataEvent;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
@@ -131,9 +127,7 @@ public class Cron extends PicsActionSupport {
 	private IndexerEngine indexer;
 	@Autowired
 	private EmailBuilder emailBuilder;
-	@Autowired
-	private DataObservable saleCommissionDataObservable;
-	
+
 	protected long startTime = 0L;
 	StringBuffer report = null;
 
@@ -292,8 +286,6 @@ public class Cron extends PicsActionSupport {
 				contractor.setAuditColumns(system);
 				contractorAccountDAO.save(contractor);
 
-				notifyDataChange(new ContractorDataEvent(contractor, ContractorDataEvent.ContractorEventType.DEACTIVATION));
-				
 				stampNote(contractor, "Automatically inactivating account based on expired membership",
 						NoteCategory.Billing);
 			}
@@ -371,11 +363,6 @@ public class Cron extends PicsActionSupport {
 		output = "Complete";
 
 		return SUCCESS;
-	}
-	
-	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
-		saleCommissionDataObservable.setChanged();
-		saleCommissionDataObservable.notifyObservers(dataEvent);
 	}
 
 	private void getEmailExclusions() {

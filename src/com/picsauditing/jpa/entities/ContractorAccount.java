@@ -1311,34 +1311,31 @@ public class ContractorAccount extends Account implements JSONable {
 		return countries;
 	}
 
-	@Deprecated
 	@Transient
 	public CreditCard getCreditCard() {
-		BrainTreeService brainTreeService = SpringUtils.getBean("BrainTreeService");
-		return brainTreeService.getCreditCard(this);
-//		CreditCard cc = null;
-//		BrainTreeService paymentService = (BrainTreeService) SpringUtils.getBean("BrainTreeService");
-//
-//		// Accounting for transmission errors which result in
-//		// exceptions being thrown.
-//		boolean transmissionError = true;
-//		int retries = 0, quit = 5;
-//		while (transmissionError && retries < quit) {
-//			try {
-//				cc = paymentService.getCreditCard(getId());
-//				transmissionError = false;
-//			} catch (Exception communicationProblem) {
-//				// a message or packet could have been dropped in transmission
-//				// wait and resume retrying
-//				retries++;
-//				try {
-//					Thread.sleep(150);
-//				} catch (InterruptedException e) {
-//				}
-//			}
-//		}
-//
-//		return cc;
+		CreditCard cc = null;
+		BrainTreeService paymentService = (BrainTreeService) SpringUtils.getBean("BrainTreeService");
+
+		// Accounting for transmission errors which result in
+		// exceptions being thrown.
+		boolean transmissionError = true;
+		int retries = 0, quit = 5;
+		while (transmissionError && retries < quit) {
+			try {
+				cc = paymentService.getCreditCard(getId());
+				transmissionError = false;
+			} catch (Exception communicationProblem) {
+				// a message or packet could have been dropped in transmission
+				// wait and resume retrying
+				retries++;
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		return cc;
 	}
 
 	@Transient
