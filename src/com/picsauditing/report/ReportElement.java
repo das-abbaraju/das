@@ -37,7 +37,7 @@ public class ReportElement implements JSONable {
 		json.put("name", fieldName);
 		if (field == null) {
 			Field fakeField = new Field(fieldName, "", FilterType.String);
-			json.put("field", fakeField);
+			json.put("field", fakeField.toJSONObject());
 		} else {
 			json.put("field", field.toJSONObject());
 		}
@@ -57,6 +57,15 @@ public class ReportElement implements JSONable {
 
 	public String getFieldName() {
 		return Strings.escapeQuotes(fieldName);
+	}
+
+	public void setMethodToFieldName() {
+		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
+		if (startOfMethod >= 0 || method == null)
+			return;
+
+		this.fieldName = fieldName + METHOD_SEPARATOR + method;
+		parseFieldNameMethod();
 	}
 
 	public void setFieldName(String fieldName) {
@@ -159,9 +168,9 @@ public class ReportElement implements JSONable {
 			logger.warn("Failed to find [&1] in availableFields", originalFieldName);
 			return;
 		}
-		field.setName(fieldName);
 
 		setField(field.clone());
+		this.field.setName(fieldName);
 	}
 
 	public String toString() {

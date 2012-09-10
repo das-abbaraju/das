@@ -79,8 +79,8 @@ public class SqlBuilder {
 		for (Column column : columns) {
 			Set<String> dependentFields = new HashSet<String>();
 
-			String fieldName = column.getFieldName();
-
+			column.setMethodToFieldName();
+			
 			column.addFieldCopy(availableFields);
 
 			if (column.getField() == null)
@@ -97,7 +97,7 @@ public class SqlBuilder {
 				sql.addGroupBy(columnSql);
 			}
 
-			sql.addField(columnSql + " AS `" + fieldName + "`");
+			sql.addField(columnSql + " AS `" + column.getFieldName() + "`");
 
 			addDependentFields(dependentFields);
 		}

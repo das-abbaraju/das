@@ -225,18 +225,22 @@ public abstract class AbstractTable {
 			return false;
 
 		for (Field field : getAvailableFields().values()) {
+			String fieldName = field.getName();
 			for (Column column : definition.getColumns()) {
-				if (column.getFieldNameWithoutMethod().equals(field.getName()))
+				String columnName = column.getFieldName();
+				if (columnName.equals(fieldName))
 					return true;
 			}
 
 			for (Filter filter : definition.getFilters()) {
-				if (filter.getFieldName().equals(field.getName()))
+				String filterName = filter.getFieldName();
+				if (filterName.equals(fieldName))
 					return true;
 			}
 
 			for (Sort sort : definition.getSorts()) {
-				if (sort.getFieldName().equals(field.getName()))
+				String sortName = sort.getFieldName();
+				if (sortName.equals(fieldName))
 					return true;
 			}
 		}
