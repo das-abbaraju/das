@@ -518,6 +518,7 @@ public class OpenTasksTest {
 		when(auditType.getWorkFlow()).thenReturn(workflow);
 		when(auditType.getId()).thenReturn(AuditType.CAN_QUAL_PQF); // something not WA_STATE_VERIFICATION
 		when(audit.hasCaoStatus(AuditStatus.Submitted)).thenReturn(true);
+		when(audit.getEffectiveDateLabel()).thenReturn(new Date());
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorSafety);
 	}
 	
@@ -670,6 +671,8 @@ public class OpenTasksTest {
 			.thenReturn(ResubmitPolicy);
 		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard"), eq(Locale.ENGLISH), anyVararg()))
 			.thenReturn(OpenRequirementsEmployeeGuard);
+		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard2"), eq(Locale.ENGLISH), anyVararg()))
+		.thenReturn(OpenRequirementsEmployeeGuard);
 		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirements"), eq(Locale.ENGLISH), anyVararg()))
 			.thenReturn(OpenRequirements);
 
