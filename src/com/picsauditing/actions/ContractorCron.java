@@ -625,6 +625,7 @@ public class ContractorCron extends PicsActionSupport {
 										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
+								dao.save(cao);
 							}
 						}
 					}

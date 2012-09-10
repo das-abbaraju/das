@@ -96,6 +96,11 @@ public class FlagDataCalculator {
 								dataSet.put(key, data);
 							else if (dataSet.get(key).getFlag().isWorseThan(flag))
 								dataSet.put(key, data);
+						} else if (data.getContractor().getAccountLevel().isFull()) {
+							if (dataSet.get(key) == null)
+								dataSet.put(key, data);
+							else if (dataSet.get(key).getFlag().isWorseThan(flag))
+								dataSet.put(key, data);							
 						}
 					}
 				}
