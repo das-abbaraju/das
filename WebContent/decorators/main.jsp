@@ -291,8 +291,8 @@
 					</div>
 					<div id="helpchat" style="float:left;">
 						<pics:toggle name="LiveAgent">
-							<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
-							<img class="liveperson-chat-toggle" src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>
+                            <script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/track.js"></script>
+                            <img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode" />', this);"/>
 						</pics:toggle>
 						<pics:toggleElse>
 							<%  if (liveChatEnabled) { %>
