@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.*;
 
 public class TranslationKeysGenerator {
 
@@ -15,40 +13,77 @@ public class TranslationKeysGenerator {
 	private static final String DOT_NAME = ".name";
 	
 	public Set<String> generateCategoryKeys(AuditCategory category) {
-		Set<String> translationKeys = new HashSet<String>();
+		TranslationKeySet  translationKeys = new TranslationKeySet();
 		
 		generateCategoryKeys(category, translationKeys);
 		
-		return translationKeys;
+		return translationKeys.getTranslationKeySet();
 	}
 	
-	private void generateCategoryKeys(AuditCategory category, Set<String> usedKeys) {
-		usedKeys.add(category.getI18nKey() + DOT_NAME);
+	private void generateCategoryKeys(AuditCategory category, TranslationKeySet translationKeys) {
+		translationKeys.addTranslatableString(category.getName());
 		
 		for (AuditQuestion question: category.getQuestions()) {
-			if (question.isValidQuestion(today)) {
-				usedKeys.add(question.getI18nKey() + DOT_NAME);
-			}
+             generateAuditQuestionTranslationKeys(question, translationKeys);
 		}
 		
 		for (AuditCategory subCategory: category.getSubCategories()) {
-			generateCategoryKeys(subCategory, usedKeys);
+			generateCategoryKeys(subCategory, translationKeys);
 		}
 	}
 
 	public Set<String> generateAuditTypeKeys(AuditType auditType) {
-		Set<String> translationKeys = new HashSet<String>();
-		translationKeys.add(auditType.getI18nKey() + DOT_NAME);
+		TranslationKeySet translationKeys = new TranslationKeySet();
+		translationKeys.addTranslatableString(auditType.getName());
 		
 		for (AuditCategory category: auditType.getCategories()) {
-			translationKeys.add(category.getI18nKey() + DOT_NAME);
+			translationKeys.addTranslatableString(category.getName());
 			for (AuditQuestion question: category.getQuestions()) {
-				if (question.isValidQuestion(today)) {
-					translationKeys.add(question.getI18nKey() + DOT_NAME);
-				}
+                generateAuditQuestionTranslationKeys(question, translationKeys);
 			}
 		}
 		
-		return translationKeys;
+		return translationKeys.getTranslationKeySet();
 	}
+
+    public Set<String> generateAuditQuestionTranslationKeys(AuditQuestion question) {
+        TranslationKeySet translationKeySet = new TranslationKeySet();
+        generateAuditQuestionTranslationKeys(question, translationKeySet);
+        return  translationKeySet.getTranslationKeySet();
+    }
+
+    private void generateAuditQuestionTranslationKeys(AuditQuestion question, TranslationKeySet translationKeys) {
+        if (question.isValidQuestion(today)) {
+            translationKeys.addTranslatableString(question.getName());
+            translationKeys.addTranslatableString(question.getTitle());
+            translationKeys.addTranslatableString(question.getRequirement());
+            translationKeys.addTranslatableString(question.getColumnHeader());
+            translationKeys.addTranslatableString(question.getHelpText());
+        }
+    }
+
+    private class TranslationKeySet {
+        private Set<String> translationKeySet = new HashSet<String>();
+
+        public  TranslationKeySet() {
+            translationKeySet = new HashSet<String>();
+        }
+
+        public void addKey(String translationKey) {
+            translationKeySet.add(translationKey);
+        }
+
+        public void addTranslatableString(TranslatableString translatableString) {
+           String translationKey = translatableString != null ? translatableString.getKey() : null;
+           if (translationKey != null) {
+               translationKeySet.add(translationKey);
+           }
+        }
+
+        public Set<String> getTranslationKeySet() {
+            return translationKeySet;
+        }
+    }
 }
+
+

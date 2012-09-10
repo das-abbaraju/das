@@ -201,7 +201,7 @@ public class EntityFactory {
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
 	 * 
-	 * @param auditTypeID
+	 * @param auditType
 	 * @return
 	 */
 	static public ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
