@@ -140,7 +140,7 @@ public class ContractorAuditDownload extends ContractorAuditController {
 			cell.setCellValue(start.getFullNumber() + " - " + start.getName().toString());
 			cell.setCellStyle(categoryStyle);
 
-			rowNum = fillExcelQuestions(start.getQuestions(), rowNum);
+			rowNum = fillExcelQuestions(start.getEffectiveQuestions(conAudit.getEffectiveDate()), rowNum);
 
 			for (AuditCategory subcat : start.getSubCategories()) {
 				rowNum = fillExcelCategories(viewableCategories, subcat, rowNum);
@@ -151,8 +151,11 @@ public class ContractorAuditDownload extends ContractorAuditController {
 	}
 
 	private int fillExcelQuestions(List<AuditQuestion> questions, int rowNum) {
+
 		for (AuditQuestion question : questions) {
-			if (question.isCurrent()) {
+			if (question.isCurrent() && question.isValidQuestion(conAudit.getValidDate())
+					&& question.isVisibleInAudit(conAudit) && satisfiesRequiredQuestion(question)
+					&& satisfiesVisibleQuestion(question)) {
 				HSSFRow row = sheet.createRow(rowNum++);
 				HSSFCell cell = row.createCell(0);
 				String cellValue = question.getExpandedNumber() + " - " + question.getName().toString();
@@ -188,6 +191,33 @@ public class ContractorAuditDownload extends ContractorAuditController {
 		}
 
 		return rowNum;
+	}
+
+	private boolean satisfiesVisibleQuestion(AuditQuestion question) {
+		boolean satisfiesVisibleQuestionAnswer = true;
+		AuditQuestion visibleQuestion = question.getVisibleQuestion();
+		if (visibleQuestion != null) {
+			AuditData visibleQuestionAuditData = findAnswer(visibleQuestion);
+			if (visibleQuestionAuditData == null
+					|| !visibleQuestionAuditData.getAnswer().equals(question.getVisibleAnswer())) {
+				satisfiesVisibleQuestionAnswer = false;
+			}
+		}
+		return satisfiesVisibleQuestionAnswer;
+	}
+
+	private boolean satisfiesRequiredQuestion(AuditQuestion question) {
+		boolean satisfiesRequiredQuestionAnswer = true;
+		AuditQuestion requiredQuestion = question.getRequiredQuestion();
+		if (requiredQuestion != null) {
+			AuditData requiredQuestionAuditData = findAnswer(requiredQuestion);
+
+			if (requiredQuestionAuditData == null
+					|| !requiredQuestionAuditData.getAnswer().equals(question.getRequiredAnswer())) {
+				satisfiesRequiredQuestionAnswer = false;
+			}
+		}
+		return satisfiesRequiredQuestionAnswer;
 	}
 
 	private void addAnswerCell(AuditQuestion question, HSSFRow row) {
