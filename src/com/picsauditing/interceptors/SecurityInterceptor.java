@@ -20,6 +20,7 @@ public class SecurityInterceptor extends AbstractInterceptor {
 	public String intercept(ActionInvocation invocation) throws Exception {
 
 		if (invocation.getAction() instanceof SecurityAware) {
+			// e.g. PicsActionSupport implements SecurityAware
 			SecurityAware action = (SecurityAware) invocation.getAction();
 			Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
 
