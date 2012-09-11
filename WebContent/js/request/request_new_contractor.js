@@ -5,6 +5,8 @@
                 var element = $('.RequestNewContractorAccount-page');
 
                 if (element.length) {
+                    element.delegate('.contact', 'click', this.showContactModal);
+                    
                     element.delegate('#city', 'keyup', this.toggleAddressZip);
                     element.delegate('#country', 'change', this.loadCountrySubdivision);
                     element.delegate('#email_preview', 'click', this.previewEmail);
@@ -98,6 +100,33 @@
                         modal.show();
                     }
                 });
+            },
+            
+            showContactModal: function(event) {
+                var modal = PICS.modal({
+                    title: translate('JS.RequestNewContractor.label.AddAdditionalNotes'),
+                    content: $('#contact_form').html(),
+                    buttons: [
+                        { html: '<a href="javascript:;" class="btn success">' + translate('JS.button.Accept') + '</a>' }
+                    ]
+                });
+                
+                var element = modal.getElement();
+                
+                element.find('.success').bind('click', function() {
+                    $('#contact_note_field').val(element.find('.contact-note').val());
+                    $('#contact_type_field').val(element.find('.contact-type').val());
+                    
+                    $('#save_request_form').trigger('click');
+                });
+                
+                if ($(this).hasClass('phone')) {
+                    element.find('.contact-type').val('PHONE');
+                } else if ($(this).hasClass('email')) {
+                    element.find('.contact-type').val('EMAIL');
+                }
+                
+                modal.show();
             },
             
             toggleAddressZip: function(event) {

@@ -28,7 +28,9 @@
 	</s:else>
 </li>
 <li id="user_list">
-	<s:include value="operator_users.jsp" />
+	<s:if test="requestRelationship.operatorAccount.id > 0">
+		<s:include value="operator_users.jsp" />
+	</s:if>
 </li>
 <li>
 	<s:textfield

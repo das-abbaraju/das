@@ -92,7 +92,7 @@
 	
 	<field name="requestRelationship.reasonForRegistration">
 		<field-validator type="fieldexpression">
-			<param name="expression"><![CDATA[ requestRelationship.reasonForRegistration.length() > 0 ]]></param>
+			<param name="expression"><![CDATA[ !isStringEmpty(requestRelationship.reasonForRegistration) ]]></param>
 			<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
 		</field-validator>
 	</field>
@@ -103,7 +103,12 @@
 	</validator>
 	
 	<validator type="expression">
-		<param name="expression"><![CDATA[ !status.closedUnsuccessful || (status.closedUnsuccessful && requestedContractor.reason != null) ]]></param>
+		<param name="expression"><![CDATA[ !status.closedUnsuccessful || (status.closedUnsuccessful && !isStringEmpty(requestedContractor.reason)) ]]></param>
 		<message>${getText("RequestNewContractor.error.EnterReasonDeclined")}</message>
+	</validator>
+	
+	<validator type="expression">
+		<param name="expression"><![CDATA[ (contactType != null && !isStringEmpty(contactNote)) || (contactType == null && isStringEmpty(contactNote)) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterAdditionalNotes")}</message>
 	</validator>
 </validators>

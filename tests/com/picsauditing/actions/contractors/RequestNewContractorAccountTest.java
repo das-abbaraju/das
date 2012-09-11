@@ -36,6 +36,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.contractors.RequestNewContractorAccount.RequestContactType;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -248,6 +249,8 @@ public class RequestNewContractorAccountTest {
 		User requestedBy = EntityFactory.makeUser();
 		relationship.setRequestedBy(requestedBy);
 
+		ContractorRegistrationRequest request = Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest");
+
 		contractor.setId(0);
 
 		doAnswer(new Answer<Object>() {
@@ -263,7 +266,8 @@ public class RequestNewContractorAccountTest {
 		when(entityManager.find(OperatorAccount.class, operator.getId())).thenReturn(operator);
 		when(entityManager.find(User.class, info.getId())).thenReturn(info);
 		when(entityManager.find(User.class, requestedBy.getId())).thenReturn(requestedBy);
-		when(entityManager.merge(contractor)).thenReturn(contractor);
+		when(entityManager.merge(any())).thenReturn(contractor, primaryContact, relationship, request, email, request,
+				contractor);
 		when(permissions.getUserId()).thenReturn(requestedBy.getId());
 		when(query.getResultList()).thenReturn(Collections.emptyList());
 		setPermissionsAsOperator(operator);
@@ -484,6 +488,45 @@ public class RequestNewContractorAccountTest {
 		requestNewContractorAccount.getRequestRelationship().setOperatorAccount(operator);
 
 		assertEquals(form, Whitebox.invokeMethod(requestNewContractorAccount, "getContractorLetter"));
+	}
+
+	@Test
+	public void testSaveNoteIfContacted_NoContactType() throws Exception {
+		ContractorRegistrationRequest legacyRequest = Whitebox.getInternalState(requestNewContractorAccount,
+				"legacyRequest");
+
+		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
+
+		assertEquals(0, requestNewContractorAccount.getRequestedContractor().getTotalContactCount());
+		assertEquals(0, legacyRequest.getContactCount());
+
+		verify(entityManager, never()).merge(any(BaseTable.class));
+		verify(entityManager, never()).persist(any(BaseTable.class));
+	}
+
+	@Test
+	public void testSaveNoteIfContacted_ContactTypes() throws Exception {
+		User user = EntityFactory.makeUser();
+
+		when(entityManager.find(User.class, user.getId())).thenReturn(user);
+		when(permissions.getUserId()).thenReturn(user.getId());
+
+		ContractorRegistrationRequest legacyRequest = Whitebox.getInternalState(requestNewContractorAccount,
+				"legacyRequest");
+
+		requestNewContractorAccount.setContactType(RequestContactType.EMAIL);
+
+		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
+
+		assertEquals(1, requestNewContractorAccount.getRequestedContractor().getTotalContactCount());
+		assertEquals(1, legacyRequest.getContactCount());
+
+		requestNewContractorAccount.setContactType(RequestContactType.PHONE);
+
+		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
+
+		assertEquals(2, requestNewContractorAccount.getRequestedContractor().getTotalContactCount());
+		assertEquals(2, legacyRequest.getContactCount());
 	}
 
 	@Test

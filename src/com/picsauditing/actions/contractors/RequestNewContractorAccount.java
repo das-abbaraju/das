@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
@@ -70,6 +71,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private User primaryContact = new User();
 	// Logged in as corporate or PICS user
 	private List<ContractorOperator> visibleRelationships = new ArrayList<ContractorOperator>();
+	// Contacting Information
+	private RequestContactType contactType;
+	private String contactNote;
 	// Tags
 	private List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	private List<OperatorTag> requestedTags = new ArrayList<OperatorTag>();
@@ -79,6 +83,21 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	// Legacy
 	private ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
 	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
+
+	public enum RequestContactType implements Translatable {
+		EMAIL, PHONE;
+
+		@Override
+		public String getI18nKey() {
+			return "RequestNewContractor.button.ContactedBy" + this.toString().substring(0, 1).toUpperCase()
+					+ this.toString().substring(1).toLowerCase();
+		}
+
+		@Override
+		public String getI18nKey(String property) {
+			return getI18nKey() + "." + property;
+		}
+	}
 
 	@Override
 	public String execute() throws Exception {
@@ -90,6 +109,11 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
+	@SkipValidation
+	public String contact() {
+		return "contactModal";
+	}
+
 	public String save() throws Exception {
 		checkPermissions();
 
@@ -97,9 +121,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 		saveRequestComponentsAndEmailIfNew(newRequest);
 
+		int operatorID = requestRelationship.getOperatorAccount().getId();
+
 		addActionMessage(getText("RequestNewContractor.SuccessfullySaved"));
 		return setUrlForRedirect("RequestNewContractorAccount.action?requestedContractor="
-				+ requestedContractor.getId());
+				+ requestedContractor.getId()
+				+ (operatorID > 0 ? "&requestRelationship.operatorAccount=" + operatorID : ""));
 	}
 
 	@SkipValidation
@@ -140,6 +167,22 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	public List<ContractorOperator> getVisibleRelationships() {
 		return visibleRelationships;
+	}
+
+	public RequestContactType getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(RequestContactType contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getContactNote() {
+		return contactNote;
+	}
+
+	public void setContactNote(String contactNote) {
+		this.contactNote = contactNote;
 	}
 
 	public List<OperatorTag> getOperatorTags() {
@@ -237,16 +280,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private void loadRelationships() {
-		if (requestRelationship.getOperatorAccount() == null) {
-			requestRelationship.setOperatorAccount(new OperatorAccount());
-		} else {
-			for (ContractorOperator relationship : requestedContractor.getOperators()) {
-				if (relationship.getOperatorAccount().getId() == requestRelationship.getOperatorAccount().getId()) {
-					requestRelationship = relationship;
-				}
-			}
-		}
-
 		if (permissions.isOperator()) {
 			for (ContractorOperator relationship : requestedContractor.getOperators()) {
 				if (relationship.getOperatorAccount().getId() == permissions.getAccountId()) {
@@ -266,6 +299,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 				}
 			} else {
 				visibleRelationships.addAll(requestedContractor.getOperators());
+			}
+		}
+
+		if (requestRelationship.getOperatorAccount() == null) {
+			requestRelationship.setOperatorAccount(new OperatorAccount());
+		} else {
+			for (ContractorOperator relationship : requestedContractor.getOperators()) {
+				if (relationship.getOperatorAccount().getId() == requestRelationship.getOperatorAccount().getId()) {
+					requestRelationship = relationship;
+				}
 			}
 		}
 	}
@@ -324,14 +367,17 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			email.setContractorAccount(requestedContractor);
 			emailSender.send(email);
 			legacyRequest.contactByEmail();
+			requestedContractor.contactByEmail();
 			requestedContractor.setLastContactedByAutomatedEmailDate(new Date());
 
 			addContractorLetterAttachmentTo(email);
 			addNote("Sent initial contact email.");
 		}
 
+		saveNoteIfContacted();
 		saveOperatorTags();
 
+		legacyRequest = (ContractorRegistrationRequest) dao.save(legacyRequest);
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 	}
 
@@ -361,7 +407,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		primaryContact = (User) dao.save(primaryContact);
 
 		// Flag is required for contractorOperator
-		if (newRequest) {
+		if (requestRelationship.getId() == 0) {
 			requestRelationship.setFlagColor(FlagColor.Clear);
 		}
 
@@ -392,8 +438,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		legacyRequest.setRequestedByUserOther(requestRelationship.getRequestedByOther());
 		legacyRequest.setContractor(requestedContractor);
 		legacyRequest.setAuditColumns(permissions);
-
-		legacyRequest = requestDAO.save(legacyRequest);
 
 		return legacyRequest;
 	}
@@ -475,9 +519,23 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private void addNote(String note) {
 		// Save notes to RR note field and a new Note entity
 		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
-		legacyRequest = (ContractorRegistrationRequest) dao.save(legacyRequest);
 
 		addNote(requestedContractor, note);
+	}
+
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+	private void saveNoteIfContacted() {
+		if (contactType != null) {
+			addNote(getText(contactType.getI18nKey()) + ": " + contactNote);
+
+			if (RequestContactType.EMAIL == contactType) {
+				legacyRequest.contactByEmail();
+				requestedContractor.contactByEmail();
+			} else {
+				legacyRequest.contactByPhone();
+				requestedContractor.contactByPhone();
+			}
+		}
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)

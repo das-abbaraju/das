@@ -77,6 +77,8 @@
 			<s:hidden name="requestedContractor.status" />
 			<s:hidden name="requestRelationship" />
 			<s:hidden name="primaryContact" />
+			<s:hidden name="contactType" id="contact_type_field" />
+			<s:hidden name="contactNote" id="contact_note_field" />
 			
 			<fieldset class="form">
 				<h2 class="formLegend">
@@ -204,8 +206,21 @@
 					<s:text name="RequestNewContractor.header.RequestSummary" />
 				</h2>
 				
+				
 				<ol>
-					<s:if test="visibleRelationships.size > 1">
+					<s:if test="requestedContractor.id > 0 && requestRelationship.operatorAccount.id > 0 && !permissions.operator">
+						<s:url action="RequestNewContractorAccount" var="request_add_operator">
+							<s:param name="requestedContractor">
+								${requestedContractor.id}
+							</s:param>
+						</s:url>
+						<li>
+							<a href="${request_add_operator}" class="add">
+								<s:text name="ContractorFacilities.AddOperator" />
+							</a>
+						</li>
+					</s:if>
+					<s:if test="visibleRelationships.size > 1 || (visibleRelationships.size > 0 && requestRelationship.operatorAccount.id == 0)">
 						<li>
 							<table class="report">
 								<thead>
@@ -261,7 +276,15 @@
 												${relationship.reasonForRegistration}
 											</td>
 											<td class="center">
-												<a href="javascript:;" class="edit"></a>
+												<s:url action="RequestNewContractorAccount" var="edit_operator_request">
+													<s:param name="requestedContractor">
+														${requestedContractor.id}
+													</s:param>
+													<s:param name="requestRelationship.operatorAccount">
+														${relationship.operatorAccount.id}
+													</s:param>
+												</s:url>
+												<a href="${edit_operator_request}" class="edit"></a>
 											</td>
 											<td class="center">
 												<a href="javascript:;" class="remove"></a>
@@ -398,23 +421,49 @@
 			</s:if>
 			
 			<fieldset class="form submit">
-				<s:submit value="%{getText('button.Save')}" method="save" cssClass="picsbutton positive" />
-				
+				<s:submit
+					cssClass="picsbutton positive"
+					id="save_request_form"
+					method="save"
+					value="%{getText('button.Save')}"
+				/>
 				<s:if test="contactable">
 					<input
+						class="picsbutton contact phone"
 						type="button"
-						class="picsbutton"
 						value="<s:text name="RequestNewContractor.button.ContactedByPhone" />"
-						id="phoneContact"
 					/>
 					<input
+						class="picsbutton contact email"
 						type="button"
-						class="picsbutton"
-						value="<s:text name="RequestNewContractor.button.EditEmail" />"
-						id="emailContact"
+						value="<s:text name="RequestNewContractor.button.ContactedByEmail" />"
 					/>
 				</s:if>
 			</fieldset>
 		</s:form>
+	</div>
+	
+	<div id="contact_form" class="hide">
+		<fieldset class="form">
+			<ol>
+				<li>
+					<s:select
+						cssClass="contact-type"
+						headerKey=""
+						headerValue="- %{getText('RequestNewContractor.ContactType')} -"
+						label="RequestNewContractor.ContactType"
+						list="@com.picsauditing.actions.contractors.RequestNewContractorAccount$RequestContactType@values()"
+						listValue="%{getText(i18nKey)}"
+						name="contactType"
+					/>
+				</li>
+				<li>
+					<label>
+						<s:text name="RequestNewContractor.label.AddAdditionalNotes" />
+					</label>
+					<s:textarea cssClass="contact-note" name="contactNote" />
+				</li>
+			</ol>
+		</fieldset>
 	</div>
 </body>
