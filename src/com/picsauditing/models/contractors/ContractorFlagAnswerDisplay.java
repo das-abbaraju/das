@@ -74,10 +74,10 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 					if (fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
 						answer += getText("ContractorFlag.OshaAnswer2");
 						if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
-							answer += (Utilities.getIndustryAverage(true, contractor.getNaics()) * Float.parseFloat(fco
+							answer += (Utilities.getIndustryAverage(true, contractor) * Float.parseFloat(fco
 									.criteriaValue())) / 100;
 						if (fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							answer += (Utilities.getIndustryAverage(false, contractor.getNaics()) * Float.parseFloat(fco
+							answer += (Utilities.getIndustryAverage(false, contractor) * Float.parseFloat(fco
 									.criteriaValue())) / 100;
 						}
 					}
