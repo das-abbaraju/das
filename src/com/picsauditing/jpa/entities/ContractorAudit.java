@@ -935,4 +935,18 @@ public class ContractorAudit extends AbstractIndexableTable {
 		
 		return false;
 	}
+	
+	@Transient
+	public boolean isOkayToChangeCaoStatus(ContractorAuditOperator cao) {
+		if (auditType.isPqf() && cao.getPercentVerified() == 100) {
+			for (AuditData data:getData()) {
+				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF
+						&& data.isUnverified()) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 }

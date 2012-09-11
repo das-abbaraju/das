@@ -404,6 +404,10 @@ public class AuditBuilder {
 		Iterator<ContractorAuditOperator> list = caosToChange.iterator();
 		while (list.hasNext()) {
 			ContractorAuditOperator cao = list.next();
+			if (conAudit.getAuditType().isPqf() && status.isComplete() && 
+					!conAudit.isOkayToChangeCaoStatus(cao)) {
+				continue;
+			}
 			ContractorAuditOperatorWorkflow caow = cao.changeStatus(status, null);
 			if (caow != null) {
 				caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
