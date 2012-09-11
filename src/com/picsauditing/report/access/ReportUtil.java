@@ -105,7 +105,7 @@ public final class ReportUtil {
 			field.setName(column.getFieldName());
 
 			if (column.getMethod() != null) {
-				translateLabel += " " + getText("Report.Suffix." + column.getMethod().toString(), locale);
+				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": " + translateLabel;
 			}
 
 			field.setText(translateLabel);
