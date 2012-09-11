@@ -170,6 +170,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return isBeta;
 	}
 
+	public boolean isQaEnvironment() {
+		return getRequestHost().contains("qa-stable") || getRequestHost().contains("qa-beta");
+	}
 	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
