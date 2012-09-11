@@ -69,9 +69,6 @@
 						<td>
 							<s:text name="ReportNewRequestedContractor.label.Attempts" />
 						</td>
-						<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />">
-							<s:text name="ReportNewRequestedContractor.label.Matches" />
-						</td>
 						<td>
 							<s:text name="ReportNewRequestedContractor.label.InPics" />
 						</td>
@@ -118,9 +115,6 @@
 							</td>
 							<td>
 								${crr.get('contactCount')}
-							</td>
-							<td>
-								${crr.get('matchCount')}
 							</td>
 							<td>
 								<s:if test="get('conID') != null">
