@@ -74,6 +74,7 @@
 		
 		<s:form action="RequestNewContractorAccount" validate="true" id="request_form">
 			<s:hidden name="requestedContractor" />
+			<s:hidden name="requestedContractor.status" />
 			<s:hidden name="requestRelationship" />
 			<s:hidden name="primaryContact" />
 			
@@ -204,43 +205,7 @@
 				</h2>
 				
 				<ol>
-					<s:if test="permissions.operator">
-						<li>
-							<label><s:text name="ContractorAccount.requestedBy" /></label>
-							<s:textfield
-								disabled="true"
-								key="id"
-								name="requestRelationship.operatorAccount"
-								required="true"
-							/>
-						</li>
-						<li id="user_list">
-							<s:include value="operator_users.jsp" />
-						</li>
-						<li>
-							<s:textfield
-								cssClass="datepicker"
-								id="regDate"
-								name="requestRelationship.deadline"
-								required="true"
-								size="10"
-								theme="formhelp"
-								value="%{requestRelationship.deadline != null ? getTextParameterized('short_dates', requestRelationship.deadline) : ''}"
-							/>
-						</li>
-						<li>
-							<s:textarea
-								id="reasonForRegistration"
-								name="requestRelationship.reasonForRegistration"
-								required="true"
-								theme="formhelp"
-							/>
-						</li>
-						<li id="tag_list">
-							<s:include value="operator_tags.jsp" />
-						</li>
-					</s:if>
-					<s:else>
+					<s:if test="visibleRelationships.size > 1">
 						<li>
 							<table class="report">
 								<thead>
@@ -261,11 +226,20 @@
 										<th>
 											<s:text name="button.Edit" />
 										</th>
+										<th>
+											<s:text name="button.Remove" />
+										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<s:iterator value="requestedContractor.operators" var="relationship" status="position">
-										<tr>
+										<s:if test="relationship.operatorAccount.id == requestRelationship.operatorAccount.id">
+											<s:set name="selected_row" value="'highlight'" />
+										</s:if>
+										<s:else>
+											<s:set name="selected_row" value="" />
+										</s:else>
+										<tr class="${selected_row}">
 											<td>
 												${position.count}
 											</td>
@@ -286,15 +260,27 @@
 											<td>
 												${relationship.reasonForRegistration}
 											</td>
-											<td>
+											<td class="center">
 												<a href="javascript:;" class="edit"></a>
+											</td>
+											<td class="center">
+												<a href="javascript:;" class="remove"></a>
 											</td>
 										</tr>
 									</s:iterator>
 								</tbody>
 							</table>
 						</li>
-					</s:else>
+					</s:if>
+					
+					<s:include value="operator_required_fields.jsp" />
+					
+					<s:if test="requestedContractor.id > 0">
+						<li id="tag_list">
+							<s:include value="operator_tags.jsp" />
+						</li>
+					</s:if>
+					
 					<s:if test="requestedContractor.id == 0">
 						<li>
 							<a href="javascript:;" id="email_preview" class="preview">
@@ -358,7 +344,7 @@
 								<s:textfield
 									id="holdDate"
 									label="ContractorRegistrationRequest.holdDate"
-									name="requestedContractor.firstRegistrationRequest.holdDate"
+									name="requestedContractor.followUpDate"
 									cssClass="datepicker"
 									required="true"
 									size="10"
@@ -369,7 +355,7 @@
 								<s:textarea
 									id="reasonForDecline"
 									label="ContractorRegistrationRequest.reasonForDecline"
-									name="requestedContractor.firstRegistrationRequest.reasonForDecline"
+									name="requestedContractor.reason"
 									required="true"
 									theme="formhelp"
 								/>
@@ -386,7 +372,7 @@
 								<label>
 									<s:text name="ContractorRegistrationRequest.label.status" />:
 								</label>
-								<s:text name="%{requestedContractor.firstRegistrationRequest.status.I18nKey}" />
+								<s:text name="%{status.I18nKey}" />
 							</li>
 							
 							<s:if test="status.hold">
@@ -394,7 +380,7 @@
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
 									</label>
-									<s:date name="requestedContractor.firstRegistrationRequest.holdDate" format="%{getText('date.short')}"/>
+									<s:date name="requestedContractor.followUpDate" format="%{getText('date.short')}"/>
 								</li>
 							</s:if>
 							
@@ -403,7 +389,7 @@
 									<label>
 										<s:text name="RequestNewContractor.label.reasonForDecline" />:
 									</label>
-									<s:property value="requestedContractor.firstRegistrationRequest.reasonForDecline" />
+									${requestedContractor.reason}
 								</li>
 							</s:if>
 						</s:else>
@@ -419,12 +405,14 @@
 						type="button"
 						class="picsbutton"
 						value="<s:text name="RequestNewContractor.button.ContactedByPhone" />"
-						id="phoneContact" />
+						id="phoneContact"
+					/>
 					<input
 						type="button"
 						class="picsbutton"
 						value="<s:text name="RequestNewContractor.button.EditEmail" />"
-						id="emailContact" />
+						id="emailContact"
+					/>
 				</s:if>
 			</fieldset>
 		</s:form>

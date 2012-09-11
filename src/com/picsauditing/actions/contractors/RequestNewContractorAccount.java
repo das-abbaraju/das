@@ -237,6 +237,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private void loadRelationships() {
+		if (requestRelationship.getOperatorAccount() == null) {
+			requestRelationship.setOperatorAccount(new OperatorAccount());
+		} else {
+			for (ContractorOperator relationship : requestedContractor.getOperators()) {
+				if (relationship.getOperatorAccount().getId() == requestRelationship.getOperatorAccount().getId()) {
+					requestRelationship = relationship;
+				}
+			}
+		}
+
 		if (permissions.isOperator()) {
 			for (ContractorOperator relationship : requestedContractor.getOperators()) {
 				if (relationship.getOperatorAccount().getId() == permissions.getAccountId()) {
@@ -247,14 +257,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			if (requestRelationship.getOperatorAccount() == null) {
 				requestRelationship.setOperatorAccount(operatorDAO.find(permissions.getAccountId()));
 			}
-		} else if (permissions.isCorporate()) {
-			for (ContractorOperator relationship : requestedContractor.getOperators()) {
-				if (permissions.getOperatorChildren().contains(relationship.getOperatorAccount().getId())) {
-					visibleRelationships.add(relationship);
-				}
-			}
 		} else {
-			visibleRelationships.addAll(requestedContractor.getOperators());
+			if (permissions.isCorporate()) {
+				for (ContractorOperator relationship : requestedContractor.getOperators()) {
+					if (permissions.getOperatorChildren().contains(relationship.getOperatorAccount().getId())) {
+						visibleRelationships.add(relationship);
+					}
+				}
+			} else {
+				visibleRelationships.addAll(requestedContractor.getOperators());
+			}
 		}
 	}
 
@@ -302,9 +314,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return existingViewable;
 	}
 
-	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
-		setRequiredFieldsAndSaveEntities(newRequest);
+		saveRequiredFieldsAndSaveEntities(newRequest);
 		saveLegacyRequest();
 
 		if (newRequest) {
@@ -318,12 +330,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			addNote("Sent initial contact email.");
 		}
 
-		setOperatorTags();
+		saveOperatorTags();
 
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 	}
 
-	private void setRequiredFieldsAndSaveEntities(boolean newRequest) throws Exception {
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+	private void saveRequiredFieldsAndSaveEntities(boolean newRequest) throws Exception {
 		// NAICS is required for accounts
 		if (newRequest) {
 			requestedContractor.setNaics(new Naics());
@@ -357,6 +370,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestRelationship = (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private ContractorRegistrationRequest saveLegacyRequest() {
 		loadLegacyRequest();
 
@@ -408,6 +422,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return emailBuilder.build();
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void addContractorLetterAttachmentTo(EmailQueue email) {
 		OperatorForm contractorLetter = getContractorLetter();
 
@@ -456,13 +471,17 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return null;
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void addNote(String note) {
 		// Save notes to RR note field and a new Note entity
 		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
+		legacyRequest = (ContractorRegistrationRequest) dao.save(legacyRequest);
+
 		addNote(requestedContractor, note);
 	}
 
-	private void setOperatorTags() {
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+	private void saveOperatorTags() {
 		List<ContractorTag> existing = getVisibleExistingTags();
 
 		removeUnneededTags(existing);

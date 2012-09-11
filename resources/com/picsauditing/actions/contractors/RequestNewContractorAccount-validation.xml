@@ -68,7 +68,7 @@
 
 	<field name="requestRelationship.operatorAccount">
 		<field-validator type="fieldexpression">
-			<param name="expression"><![CDATA[ requestedContractor.requestedBy.id > 0 ]]></param>
+			<param name="expression"><![CDATA[ requestRelationship.operatorAccount.id > 0 ]]></param>
 			<message>${getText("RequestNewContractor.error.SelectRequestedByAccount")}</message>
 		</field-validator>
 	</field>
