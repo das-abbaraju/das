@@ -316,6 +316,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql_legacy.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql_legacy.addField("'CRR' AS systemType");
 
+		sql_legacy.addWhere("(con.status NOT IN ('Requested', 'Deactivated') OR con.id IS NULL)");
+
 		sql_legacy.addGroupBy("cr.id");
 
 		return sql_legacy;
