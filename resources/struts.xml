@@ -996,6 +996,10 @@
 		</action>
 
 		<!-- Other Stuff -->
+        <action name="Blah" class="com.picsauditing.actions.dev.ContractorVATMigration">
+            <result type="json" />
+        </action>
+
 		<action name="CacheStatistics" class="com.picsauditing.actions.CacheStatistics">
 			<result>struts/misc/cache_statistics.jsp</result>
 			<result name="CacheElementList">struts/misc/cache_statistics_list.jsp</result>
@@ -1053,6 +1057,11 @@
 			<result name="categories">struts/audits/tester/contractor_simulator_categories.jsp
 			</result>
 		</action>
+
+        <action name="VATCountryAJAX" class="com.picsauditing.actions.VATCountryJSON">
+            <result>/struts/blank.jsp</result>
+        </action>
+
 
 		<!-- Flags -->
 		<action name="ManageFlagCriteria"

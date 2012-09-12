@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.picsauditing.PICS.VATValidator;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,27 +19,6 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.dao.UserLoginLogDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
@@ -60,6 +42,10 @@ public class Registration extends ContractorActionSupport {
 	private EmailSender emailSender;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
+    @Autowired
+    private VATValidator vatValidator;
+    @Autowired
+    private CountryDAO countryDao;
 
 	private User user;
 	private String username;
@@ -274,7 +260,18 @@ public class Registration extends ContractorActionSupport {
 		}
 	}
 
-	public ContractorAccount getContractor() {
+    private void checkVAT() {
+        if (!contractor.getCountry().requiresVAT()) return;
+
+        try {
+            contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
+        } catch (Exception e) {
+            contractor.setVatId(null);
+            addActionError(getText("VAT.Required"));
+        }
+    }
+
+    public ContractorAccount getContractor() {
 		return contractor;
 	}
 
@@ -353,6 +350,18 @@ public class Registration extends ContractorActionSupport {
 				+ indexedContractorName + "'");
 		return !duplicateAccounts.isEmpty();
 	}
+
+    public boolean isValidVAT() {
+        Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
+        if (registrationCountry.requiresVAT()) {
+            try {
+                vatValidator.validated(/*registrationCountry,*/ contractor.getVatId());
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
 		this.countrySubdivision = countrySubdivision;

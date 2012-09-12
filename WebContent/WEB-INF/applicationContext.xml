@@ -126,7 +126,9 @@
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
-
+	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker" scope="prototype"/>
+    <bean id="VATValidator" class="com.picsauditing.PICS.VATValidator" scope="prototype"/>
+	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
 	<bean id="FlagChangesSubscription" class="com.picsauditing.mail.subscription.FlagChangesSubscription" scope="prototype"/>
