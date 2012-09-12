@@ -233,6 +233,11 @@ footer .footer-menu a {
 	float: left;
 }
 
+.registration-form #vat_id
+{
+	display: none;
+}
+
 .registration-form .errors {
 	float: left;
 	margin-left: 10px;

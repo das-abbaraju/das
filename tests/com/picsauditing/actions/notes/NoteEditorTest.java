@@ -2,101 +2,99 @@ package com.picsauditing.actions.notes;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.SpringUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({SpringUtils.class, I18nCache.class})
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "NoteEditorTest-context.xml" })
 public class NoteEditorTest {
 
-	private NoteEditor classUnderTest;
+	private NoteEditor noteEditor;
 	private static final int TEST_ACCOUNT_ID = 5;
 	private static final int TEST_USER_ID = 23;
-	private static Set<Integer> groupSetWithoutISR;
-	private static Set<Integer> groupSetWithISR; //71638
+	private ContractorAccountDAO contractorDAO;
 
-	@Mock ContractorAccountDAO mockDAO;
-	@Mock ContractorAccount mockContractor;
-	@Mock Permissions mockPerm;
-	@Mock Account mockAccount;
-	@Mock I18nCache mockCache;
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private Account account;
+	@Mock
+	private Database databaseForTesting;
 
-	@SuppressWarnings("unchecked")
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+	}
+
 	@Before
-	public void SetUp () {
+	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(SpringUtils.class);
-		PowerMockito.mockStatic(I18nCache.class);
-		PowerMockito.when(I18nCache.getInstance()).thenReturn(mockCache);
-		classUnderTest = new NoteEditor();
-		PowerMockito.when(SpringUtils.getBean(anyString(), any(Class.class)))
-			.thenReturn(mockDAO);
-		when(mockDAO.find(TEST_ACCOUNT_ID)).thenReturn(mockContractor);
-		when(mockPerm.getUserId()).thenReturn(TEST_USER_ID);
-		when(mockAccount.getId()).thenReturn(TEST_ACCOUNT_ID);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
-		groupSetWithISR = new HashSet<Integer>(2);
-		groupSetWithISR.add(71638);
-		groupSetWithISR.add(25235);
+		noteEditor = new NoteEditor();
 
-		groupSetWithoutISR = new HashSet<Integer>(2);
-		groupSetWithoutISR.add(25235);
-		groupSetWithoutISR.add(55555);
+		contractorDAO = SpringUtils.getBean("ContractorAccountDAO", ContractorAccountDAO.class);
+		reset(contractorDAO);
+
+		when(contractorDAO.find(TEST_ACCOUNT_ID)).thenReturn(contractor);
+		when(permissions.getUserId()).thenReturn(TEST_USER_ID);
+		when(account.getId()).thenReturn(TEST_ACCOUNT_ID);
 	}
 
 	@Test
 	public void updateInternalSalesInfo_pass () {
-		when(mockPerm.getGroups()).thenReturn(groupSetWithISR);
-		when(mockAccount.isContractor()).thenReturn(true);
+		when(permissions.hasGroup(User.GROUP_ISR)).thenReturn(true);
+		when(account.isContractor()).thenReturn(true);
 
-		classUnderTest.updateInternalSalesInfo(mockPerm, mockAccount);
+		noteEditor.updateInternalSalesInfo(permissions, account);
 
-		verify(mockContractor).setLastContactedByInsideSales(TEST_USER_ID);
-		verify(mockDAO).find(TEST_ACCOUNT_ID);
-		verify(mockDAO).save(mockContractor);
+		verify(contractor).setLastContactedByInsideSales(TEST_USER_ID);
+		verify(contractorDAO).find(TEST_ACCOUNT_ID);
+		verify(contractorDAO).save(contractor);
 	}
 
 	@Test
 	public void updateInternalSalesInfo_fail1 () {
-		when(mockPerm.getGroups()).thenReturn(groupSetWithoutISR);
+		when(permissions.hasGroup(User.GROUP_ISR)).thenReturn(false);
+		when(account.isContractor()).thenReturn(false);
 
-		classUnderTest.updateInternalSalesInfo(mockPerm, mockAccount);
+		noteEditor.updateInternalSalesInfo(permissions, account);
 
-		verify(mockContractor, never()).setLastContactedByInsideSales(anyInt());
-		verify(mockDAO, never()).find(anyInt());
-		verify(mockDAO, never()).save((ContractorAccount)any());
+		verify(contractor, never()).setLastContactedByInsideSales(anyInt());
+		verify(contractorDAO, never()).find(anyInt());
+		verify(contractorDAO, never()).save((ContractorAccount) any());
 	}
 
 	@Test
 	public void updateInternalSalesInfo_fail2 () {
-		when(mockPerm.getGroups()).thenReturn(groupSetWithISR);
-		when(mockAccount.isContractor()).thenReturn(false);
+		when(permissions.hasGroup(User.GROUP_ISR)).thenReturn(true);
+		when(account.isContractor()).thenReturn(false);
 
-		classUnderTest.updateInternalSalesInfo(mockPerm, mockAccount);
+		noteEditor.updateInternalSalesInfo(permissions, account);
 
-		verify(mockContractor, never()).setLastContactedByInsideSales(anyInt());
-		verify(mockDAO, never()).find(anyInt());
-		verify(mockDAO, never()).save((ContractorAccount)any());
+		verify(contractor, never()).setLastContactedByInsideSales(anyInt());
+		verify(contractorDAO, never()).find(anyInt());
+		verify(contractorDAO, never()).save((ContractorAccount) any());
 	}
 }

@@ -1,9 +1,13 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @SuppressWarnings("serial")
 @Entity
@@ -16,6 +20,7 @@ public class AppProperty implements java.io.Serializable {
 
 	private String property;
 	private String value;
+	private Date ticklerDate;
 
 	@Id
 	@Column(nullable = false)
@@ -34,6 +39,15 @@ public class AppProperty implements java.io.Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getTicklerDate() {
+		return ticklerDate;
+	}
+
+	public void setTicklerDate(Date ticklerDate) {
+		this.ticklerDate = ticklerDate;
 	}
 
 	public boolean valueEquals(Object comparisonValue) throws AppPropertyValueParseException {

@@ -94,12 +94,10 @@
 			// ajax field validation - using jsonValidate intercepter
 			field_validate: function (event) {
 				var element = $(this);
-
 				// parent form
 				var form = element.closest('form');
 				// serialized form including json validator interceptors
 				var data = form.serialize() + '&method%3AcreateAccount="Get Started"' + '&struts.enableJSONValidation=true' + '&struts.validateOnly=true';
-
 				// ajax request to submit form
 				AJAX.request({
 					url: form.attr('action'),
@@ -358,12 +356,17 @@
 	PICS.define('registration.Registration', {
 	    methods: {
 	        init: function () {
-	            $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-	            $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-	            $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
-	        },
+                var company_information = $('.company-information');
 
-	        showBasicModal: function (event) {
+                $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+                $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+                $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
+                company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
+                // Show or hide the vat id field based on the Country default value.
+                company_information.find('#Registration_contractor_country_isoCode').trigger('change');
+            },
+
+            showBasicModal: function (event) {
 	            var element = $(this);
 
 	            PICS.ajax({
@@ -400,7 +403,28 @@
                         modal.show();
                     }
                 });
-	        }
+	        },
+
+	        checkVatRequired: function (event) {
+                var iso_code = $('#Registration_contractor_country_isoCode').val();
+
+                PICS.ajax({
+                    url: 'VATCountryAJAX.action',
+                    data: {
+                        iso_code: iso_code
+                    },
+                    dataType: 'json',
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var vat_element = $('#vat_id');
+
+                        if (data.vat_required) {
+                            vat_element.slideDown(400);
+                        } else {
+                            vat_element.slideUp(400);
+                        }
+                    }
+                });
+            }
 	    }
 	});
 })(jQuery);

@@ -31,6 +31,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
@@ -91,6 +92,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Boolean competitorMembership;
 	private boolean showInDirectory = true;
 	private AccountLevel accountLevel = AccountLevel.Full;
+	private String vatId;
 
 	private Date paymentExpires;
 	private boolean renew = true;
@@ -1680,4 +1682,17 @@ public class ContractorAccount extends Account implements JSONable {
 		tempUser.setId(salesUserID);
 		setLastContactedByInsideSales(tempUser);
 	}
+	
+	@Column(name = "europeanUnionVATnumber", nullable = true)
+	public String getVatId() {
+		return vatId;
+	}
+
+	public void setVatId(String vatId) {
+		this.vatId = vatId;
+	}
+
+    public boolean hasVatId() {
+        return !Strings.isEmpty(vatId);
+    }
 }

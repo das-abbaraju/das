@@ -1,16 +1,15 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.math.NumberUtils;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.BetaPool;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class ContractorBadge extends ContractorActionSupport {
@@ -30,13 +29,12 @@ public class ContractorBadge extends ContractorActionSupport {
 	}
 
 	private String contractorBadgeToggle() {
-		Map<String, String> toggles = permissions.getToggles();
-		BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(NumberUtils.toInt(toggles.get("Toggle.Badge"), 0));
-
-		if (BetaPool.isUserBetaTester(permissions, betaPool))
+		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+		if (featureToggle.isFeatureEnabled("Toggle.Badge")) {
 			return SUCCESS;
-		else
+		} else {
 			return "failed";
+		}
 	}
 
 	public String save() throws Exception {

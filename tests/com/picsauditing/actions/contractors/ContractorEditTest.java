@@ -8,9 +8,12 @@ import static org.mockito.internal.util.reflection.Whitebox.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.collect.Lists;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.*;
@@ -31,8 +34,7 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.util.SpringUtils;
 
-import java.util.Locale;
-import java.util.Vector;
+import java.util.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({I18nCache.class, SpringUtils.class, ServletActionContext.class, AccountStatus.class })
@@ -166,5 +168,153 @@ public class ContractorEditTest {
         when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
         when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(mockPermissions.isContractor()).thenReturn(true);
+    }
+
+    @Test
+    public void testCheckContractorTypes_isNotContractor () {
+        when(mockPermissions.isContractor()).thenReturn(false);
+        when(mockContractor.isContractorTypeRequired(ContractorType.Onsite)).thenReturn(false);
+        when(mockContractor.isContractorTypeRequired(ContractorType.Offsite)).thenReturn(true);
+        when(mockContractor.isContractorTypeRequired(ContractorType.Supplier)).thenReturn(true);
+        when(mockContractor.isContractorTypeRequired(ContractorType.Transportation)).thenReturn(true);
+        classUnderTest.checkContractorTypes();
+        verify(mockContractor).setAccountTypes((List<ContractorType>) any());
+        verify(mockContractor).resetRisksBasedOnTypes();
+    }
+
+    @Test
+    public void testCheckContractor_Types_isContractor() {
+        when(mockPermissions.isContractor()).thenReturn(true);
+        classUnderTest.checkContractorTypes();
+        verify(mockContractor, never()).isContractorTypeRequired((ContractorType) any());
+        verify(mockContractor, never()).setAccountTypes((List<ContractorType>) any());
+        verify(mockContractor, never()).resetRisksBasedOnTypes();
+    }
+
+    @Test
+    public void testConfirmConTypesOK_match () {
+        OperatorAccount testOperator = mock(OperatorAccount.class);
+        Set<ContractorType> testSet = new HashSet<ContractorType>();
+        testSet.add(ContractorType.Offsite);
+        testSet.add(ContractorType.Transportation);
+        when(testOperator.getAccountTypes()).thenReturn(testSet);
+        when(mockContractor.getOperatorAccounts()).thenReturn(Arrays.asList(new OperatorAccount[] {testOperator}));
+        classUnderTest.setConTypes(Arrays.asList(new ContractorType[]{ContractorType.Transportation}));
+
+        classUnderTest.confirmConTypesOK();
+
+        assertFalse(classUnderTest.hasActionErrors());
+    }
+
+    @Test
+    public void testConfirmConTypesOK_problem () {
+        OperatorAccount testOperator = mock(OperatorAccount.class);
+        Set<ContractorType> testSet = new HashSet<ContractorType>();
+        testSet.add(ContractorType.Offsite);
+        testSet.add(ContractorType.Transportation);
+        when(testOperator.getAccountTypes()).thenReturn(testSet);
+        when(mockContractor.getOperatorAccounts()).thenReturn(Arrays.asList(new OperatorAccount[] {testOperator}));
+        classUnderTest.setConTypes(Arrays.asList(new ContractorType[]{ContractorType.Onsite}));
+
+        classUnderTest.confirmConTypesOK();
+
+        assertTrue(classUnderTest.hasActionErrors());
+    }
+
+    @Test
+    public void testCheckListOnlyAcceptability_notListOnly() {
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        classUnderTest.checkListOnlyAcceptability();
+        assertFalse(classUnderTest.hasActionErrors());
+    }
+
+    @Test
+    public void testCheckListOnlyAcceptability_notListOnlyEligible() {
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.ListOnly);
+        when(mockContractor.isListOnlyEligible()).thenReturn(false);
+        when(mockContractor.getNonCorporateOperators()).thenReturn(new ArrayList<ContractorOperator>());
+
+        classUnderTest.checkListOnlyAcceptability();
+
+        assertTrue(classUnderTest.hasActionErrors());
+        assertTrue(classUnderTest.getActionErrors().size() == 1);
+    }
+
+    @Test
+    public void testCheckListOnlyAcceptability_hasOperatorsWhoDontAcceptListOnly () {
+        ContractorOperator mockCO1 = mock(ContractorOperator.class),
+                mockCO2 = mock(ContractorOperator.class);
+        OperatorAccount mockOperator1 = mock(OperatorAccount.class),
+                mockOperator2 = mock(OperatorAccount.class);
+        when(mockCO1.getOperatorAccount()).thenReturn(mockOperator1);
+        when(mockCO2.getOperatorAccount()).thenReturn(mockOperator2);
+        when(mockOperator1.isAcceptsList()).thenReturn(true);
+        when(mockOperator2.isAcceptsList()).thenReturn(false);
+        when(mockOperator2.getName()).thenReturn("Failing Operator");
+
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.ListOnly);
+        when(mockContractor.isListOnlyEligible()).thenReturn(true);
+        when(mockContractor.getNonCorporateOperators()).thenReturn(
+                Arrays.asList(new ContractorOperator[]{mockCO1, mockCO2}));
+
+        classUnderTest.checkListOnlyAcceptability();
+
+        assertTrue(classUnderTest.hasActionErrors());
+        assertTrue(classUnderTest.getActionErrors().size() == 1);
+    }
+
+    @Test
+    public void testRunContractorValidator_newVAT_returnsError() {
+        classUnderTest.setVatId("testVAT");
+        Vector<String> testErrors = new Vector<String>();
+        testErrors.add("foo");
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(testErrors);
+        classUnderTest.runContractorValidator();
+        verify(mockConValidator).validateContractor(mockContractor);
+        assertTrue(classUnderTest.hasActionErrors());
+        verify(mockContractor).setVatId(anyString());
+    }
+
+    @Test
+    public void testRunContractorValidator_newVAT_noErrors() {
+        classUnderTest.setVatId("testVAT");
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
+        classUnderTest.runContractorValidator();
+        verify(mockConValidator).validateContractor(mockContractor);
+        assertFalse(classUnderTest.hasActionErrors());
+        verify(mockContractor).setVatId(anyString());
+    }
+
+    @Test
+    public void testRunContractorValidator_noNewVAT_returnsError() {
+        Vector<String> testErrors = new Vector<String>();
+        testErrors.add("foo");
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(testErrors);
+        classUnderTest.runContractorValidator();
+        verify(mockConValidator).validateContractor(mockContractor);
+        assertTrue(classUnderTest.hasActionErrors());
+        verify(mockContractor, never()).setVatId(anyString());
+    }
+
+    @Test
+    public void testRunContractorValidator_noNewVAT_noErrors() {
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
+        classUnderTest.runContractorValidator();
+        verify(mockConValidator).validateContractor(mockContractor);
+        assertFalse(classUnderTest.hasActionErrors());
+        verify(mockContractor, never()).setVatId(anyString());
+    }
+
+    @Test
+    public void testSave_wrongPerms() throws Exception {
+        when(mockPermissions.isContractor()).thenReturn(false);
+        when(mockPermissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)).thenReturn(false);
+
+        classUnderTest.save();
+
+        verify(basicDAO, never()).save((BaseTable) any());
+        verify(mockContractorAccountDao, never()).save((BaseTable) any());
+        verify(mockUserDao, never()).save((User) any());
+        verify(mockNoteDao, never()).save((Note) any());
     }
 }

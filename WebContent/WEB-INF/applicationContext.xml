@@ -62,6 +62,7 @@
 	<bean id="EmployeeRoleDAO" class="com.picsauditing.dao.EmployeeRoleDAO"/>
 	<bean id="EmployeeSiteDAO" class="com.picsauditing.dao.EmployeeSiteDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
+	<bean id="FeatureToggleProvider" class="com.picsauditing.dao.FeatureToggleDAO"/>
 	<bean id="FileDAO" class="com.picsauditing.dao.FileDAO"/>
 	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
 	<bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO"/>
@@ -126,7 +127,8 @@
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
 	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker" scope="prototype"/>
-
+    <bean id="VATValidator" class="com.picsauditing.PICS.VATValidator" scope="prototype"/>
+	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
 	<bean id="FlagChangesSubscription" class="com.picsauditing.mail.subscription.FlagChangesSubscription" scope="prototype"/>
@@ -164,6 +166,8 @@
 	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
 	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
+
+	<bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

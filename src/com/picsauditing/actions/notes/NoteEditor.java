@@ -139,7 +139,7 @@ public class NoteEditor extends AccountActionSupport {
 	}
 
 	protected void updateInternalSalesInfo(Permissions permissions, Account account) {
-		if (permissions.getGroups().contains(User.GROUP_ISR) && account.isContractor()) {
+		if (permissions.hasGroup(User.GROUP_ISR) && account.isContractor()) {
 			ContractorAccountDAO contractorDAO = SpringUtils.getBean("ContractorAccountDAO", ContractorAccountDAO.class);
 			ContractorAccount ca = contractorDAO.find(account.getId());
 			ca.setLastContactedByInsideSales(permissions.getUserId());

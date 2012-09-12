@@ -14,7 +14,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.messaging.Publisher;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -24,7 +24,7 @@ public class EmailSender {
 	@Autowired
 	private EmailQueueDAO emailQueueDAO;
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 	
 	// this is @Autowired at the setter because we need @Qualifier which does NOT work
 	// on the variable declaration; only on the method (I think this is a Spring bug)

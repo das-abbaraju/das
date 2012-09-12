@@ -1,0 +1,217 @@
+package com.picsauditing.toggle;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.startsWith;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import groovy.lang.Script;
+
+import java.util.Locale;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
+import org.slf4j.Logger;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.User;
+
+public class FeatureToggleCheckerGroovyTest {
+	private FeatureToggleCheckerGroovy featureToggleCheckerGroovy;
+	private AppProperty appPropertyFeature;
+	private String toggleName = "Toggle.Test";
+	private String cacheName;
+
+	@Mock
+	private CacheManager cacheManager;
+	@Mock
+	private Cache cache;
+	@Mock
+	private Script script;
+	@Mock
+	private FeatureToggleProvider featureToggleProvider;
+	@Mock
+	private AppPropertyDAO appPropertyDAO;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private Logger logger;
+
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+
+		featureToggleCheckerGroovy = new FeatureToggleCheckerGroovy(permissions);
+
+		cacheName = featureToggleCheckerGroovy.getCacheName();
+
+		featureToggleCheckerGroovy.setPermissions(permissions);
+
+		Whitebox.setInternalState(featureToggleCheckerGroovy, "featureToggleProvider", featureToggleProvider);
+		Whitebox.setInternalState(featureToggleCheckerGroovy, "appPropertyDAO", appPropertyDAO);
+		Whitebox.setInternalState(featureToggleCheckerGroovy, "logger", logger);
+
+		when(appPropertyDAO.find(toggleName)).thenReturn(appPropertyFeature);
+
+		CacheManager cacheManager = CacheManager.getInstance();
+		Cache cache = cacheManager.getCache(cacheName);
+		cache.removeAll();
+	}
+
+	@Test
+	public void testIsFeatureEnabled_Happy() throws Exception {
+		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn("true");
+		
+		assertTrue(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
+	}
+
+	@Test
+	public void testIsFeatureEnabled_NullScriptResultsInFalseToggle() throws Exception {
+		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(null);
+
+		assertFalse(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
+		verify(logger).error(anyString(), eq(toggleName));
+	}
+
+	@Test
+	public void testIsFeatureEnabled_UnparsableScriptResultsInFalseToggle() throws Exception {
+		String unparseableScript = "$soy!..==sl";
+		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(unparseableScript);
+
+		assertFalse(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
+		verify(logger).error(anyString(), eq(toggleName), anyString());
+	}
+
+	@Test
+	public void testRunScript_NullPermissionsResultsInFalseToggle() throws Exception {
+		featureToggleCheckerGroovy.setPermissions(null);
+
+		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript",
+				"permissions.username.equals('foo')");
+		Boolean result = Whitebox.invokeMethod(featureToggleCheckerGroovy, "runScript", script);
+		assertFalse(result);
+		verify(logger).error(anyString(), anyString());
+	}
+
+	@Test
+	public void testRunScript_NonBooleanScriptResultsInFalseToggle() throws Exception {
+		featureToggleCheckerGroovy.setPermissions(null);
+
+		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript", "2");
+		Boolean result = Whitebox.invokeMethod(featureToggleCheckerGroovy, "runScript", script);
+		assertFalse(result);
+		verify(logger).error(startsWith("Toggle script returned a non-boolean result"));
+	}
+
+	@Test
+	public void testGroovyScript_UserLocale() throws Exception {
+		when(permissions.getLocale()).thenReturn(new Locale("en", "CA"));
+
+		String scriptBody = "permissions.locale.toString() == 'en_CA'";
+		trueScript(scriptBody);
+
+		scriptBody = "permissions.locale.toString() in ['en_CA', 'en_US']";
+		trueScript(scriptBody);
+	}
+
+	@Test
+	public void testGroovyScript_SimpleTrueBoolean() throws Exception {
+		String scriptBody = "true";
+		trueScript(scriptBody);
+	}
+
+	@Test
+	public void testGroovyScript_SimpleFalseBoolean() throws Exception {
+		String scriptBody = "false";
+		falseScript(scriptBody);
+	}
+
+	@Test
+	public void testGroovyScript_VersionOfPicsOrg() throws Exception {
+		String scriptBody = "versionOf('PICSORG') > 4.2";
+		trueScript(scriptBody);
+	}
+
+	@Test
+	public void testGroovyScript_VersionOfBackProcs() throws Exception {
+		when(appPropertyDAO.getProperty("VERSION.BPROC")).thenReturn("1.0");
+		String scriptBody = "versionOf('BPROC') > 0.9";
+		trueScript(scriptBody);
+	}
+
+	@Test
+	public void testGroovyScript_releaseToUserAudienceLevel() throws Exception {
+		when(permissions.hasGroup(User.GROUP_DEVELOPER)).thenReturn(true);
+		trueScript("releaseToUserAudienceLevel(2)");
+		trueScript("releaseToUserAudienceLevel(com.picsauditing.access.BetaPool.Stakeholder)");
+
+		when(permissions.hasGroup(User.GROUP_DEVELOPER)).thenReturn(false);
+		when(permissions.hasGroup(User.GROUP_STAKEHOLDER)).thenReturn(true);
+		falseScript("releaseToUserAudienceLevel(1)");
+		falseScript("import com.picsauditing.access.BetaPool\n releaseToUserAudienceLevel(BetaPool.Developer)");
+	}
+
+	@Test
+	public void testScriptFromCache_NullCacheReturnsNullScript() throws Exception {
+		Whitebox.setInternalState(featureToggleCheckerGroovy, "cacheManager", cacheManager);
+		when(cacheManager.getCache(cacheName)).thenReturn(null);
+
+		assertThat(Whitebox.invokeMethod(featureToggleCheckerGroovy, "scriptFromCache", toggleName), is(equalTo(null)));
+	}
+
+	@Test(expected = FeatureToggleException.class)
+	public void testCacheScript_throwsWhenCacheNotFound() throws Exception {
+		Whitebox.setInternalState(featureToggleCheckerGroovy, "cacheManager", cacheManager);
+		when(cacheManager.getCache(cacheName)).thenReturn(null);
+
+		Whitebox.invokeMethod(featureToggleCheckerGroovy, "cacheScript", toggleName, script);
+	}
+
+	@Test
+	public void testScriptFromCache_NonScriptElementReturnsNull() throws Exception {
+		CacheManager cacheManager = CacheManager.getInstance();
+		Cache cache = cacheManager.getCache(cacheName);
+		cache.put(new Element(toggleName, new Integer(1)));
+
+		assertThat(Whitebox.invokeMethod(featureToggleCheckerGroovy, "scriptFromCache", toggleName), is(equalTo(null)));
+	}
+
+	// Cache.put is final - I don't want to use PowerMock so I'm using a real
+	// Cache
+	@Test
+	public void testCacheScript_HappyPath() throws Exception {
+		Whitebox.invokeMethod(featureToggleCheckerGroovy, "cacheScript", toggleName, script);
+		
+		CacheManager cacheManager = CacheManager.getInstance();
+		Cache cache = cacheManager.getCache(cacheName);
+		Element element = cache.get(toggleName);
+		assertThat((Script) element.getObjectValue(), is(equalTo(script)));
+	}
+
+	private void trueScript(String scriptBody) throws Exception {
+		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript", scriptBody);
+		Object result = script.run();
+		assertTrue((Boolean) result);
+	}
+
+	private void falseScript(String scriptBody) throws Exception {
+		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript", scriptBody);
+		Object result = script.run();
+		assertFalse((Boolean) result);
+	}
+
+}

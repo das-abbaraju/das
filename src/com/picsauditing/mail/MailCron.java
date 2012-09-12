@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -42,7 +42,7 @@ public class MailCron extends PicsActionSupport {
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 
 	private int subscriptionID = 0;
 

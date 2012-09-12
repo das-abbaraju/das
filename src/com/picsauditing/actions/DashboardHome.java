@@ -18,7 +18,7 @@ public class DashboardHome extends PicsActionSupport {
 	}
 
 	private void findDashboard() {
-		Set<Integer> validUserGroups = permissions.getGroups();
+		Set<Integer> validUserGroups = permissions.getGroupIds();
 		validUserGroups.add(permissions.getUserId());
 
 		if (id > 0) {

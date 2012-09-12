@@ -21,14 +21,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class PublisherRabbitMqTest {
 	private PublisherRabbitMq publisherRabbitMq;
 	@Mock
 	private RabbitTemplate amqpTemplate;
 	@Mock
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 	@Mock
 	private Logger logger;
 

@@ -34,6 +34,8 @@ public class ContractorValidator {
 	protected AuditDataDAO auditDataDao;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDao;
+    @Autowired
+    protected VATValidator vatValidator;
 
 	private I18nCache i18nCache = I18nCache.getInstance();
 
@@ -87,6 +89,14 @@ public class ContractorValidator {
 		// Onsite / Offsite / Material Supplier
 		if (contractor.getAccountTypes().isEmpty())
 			errorMessages.addElement(getText("ContractorValidator.error.NoServiceSelection"));
+
+        if (!Strings.isEmpty(contractor.getVatId())) {
+            try {
+                vatValidator.validated(contractor.getVatId());
+            } catch (Exception e) {
+                errorMessages.addElement(getText("ContractorValidator.error.InvalidVAT"));
+            }
+        }
 
 		return errorMessages;
 	}

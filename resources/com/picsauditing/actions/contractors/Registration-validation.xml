@@ -29,4 +29,10 @@
 	       <message>${getText("JS.Validation.CompanyNameAlreadyExists")}</message>
 		</field-validator>
 	</field>
+    <field name="contractor.vatId">
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[validVAT]]></param>
+            <message>${getText("JS.Validation.InvalidVAT")}</message>
+        </field-validator>
+    </field>
 </validators>

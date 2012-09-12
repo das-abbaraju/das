@@ -291,4 +291,5 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 		return invoiceFee.getAmount();
 	}
+
 }
