@@ -261,7 +261,7 @@ public class Registration extends ContractorActionSupport {
 	}
 
     private void checkVAT() {
-        if (!contractor.getCountry().requiresVAT()) return;
+        if (!contractor.getCountry().isEuropeanUnion()) return;
 
         try {
             contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
@@ -353,7 +353,7 @@ public class Registration extends ContractorActionSupport {
 
     public boolean isValidVAT() {
         Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
-        if (registrationCountry.requiresVAT()) {
+        if (registrationCountry.isEuropeanUnion()) {
             try {
                 vatValidator.validated(/*registrationCountry,*/ contractor.getVatId());
             } catch (Exception e) {

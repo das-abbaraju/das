@@ -48,7 +48,7 @@ public class VATValidator {
     private String vatPrefixFor(Country country) {
         if (country.getIsoCode().equalsIgnoreCase(GREECE))
             return "EL";
-        else if (country.requiresVAT())
+        else if (country.isEuropeanUnion())
             return country.getIsoCode().toUpperCase();
         else
             return "EU";

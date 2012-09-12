@@ -102,23 +102,4 @@ public class CountryTest {
 		assertTrue(uk.isEuropeanUnion());
 	}
 
-	
-    @Test
-    public void testReqiresVat_true() {
-        uk.setCurrency(Currency.GBP);
-        assertTrue(uk.requiresVAT());
-    }
-
-    @Test
-    public void testRequiresVat_true_2() {
-        france.setCurrency(Currency.EUR);
-        assertTrue(france.requiresVAT());
-    }
-
-    @Test
-    public void testReqiresVat_false() {
-        usa.setCurrency(Currency.USD);
-        assertFalse(usa.requiresVAT());
-    }
-
 }

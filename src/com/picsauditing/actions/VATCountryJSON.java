@@ -24,7 +24,7 @@ public class VATCountryJSON extends PicsActionSupport{
 
     private boolean vatRequiredby(String iso) {
         if (iso.toUpperCase().equals("GB")) return false;
-        return dao.findbyISO(iso).requiresVAT();
+        return dao.findbyISO(iso).isEuropeanUnion();
     }
 
 }

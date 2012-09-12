@@ -57,7 +57,7 @@ public class VATCountryJSONTest {
     public void testExecute_true() {
         when(mockRequest.getParameter(REQEST_PARAMETER)).thenReturn(TESTING_ISO);
         when(mockDao.findbyISO(TESTING_ISO)).thenReturn(mockCountry);
-        when(mockCountry.requiresVAT()).thenReturn(true);
+        when(mockCountry.isEuropeanUnion()).thenReturn(true);
         assertEquals(RESPONSE, classUnderTest.execute());
         assertEquals(TRUE_JSON, classUnderTest.getJson().toJSONString());
     }
@@ -66,7 +66,7 @@ public class VATCountryJSONTest {
     public void testExecute_false() {
         when(mockRequest.getParameter(REQEST_PARAMETER)).thenReturn(TESTING_ISO);
         when(mockDao.findbyISO(TESTING_ISO)).thenReturn(mockCountry);
-        when(mockCountry.requiresVAT()).thenReturn(false);
+        when(mockCountry.isEuropeanUnion()).thenReturn(false);
         assertEquals(RESPONSE, classUnderTest.execute());
         assertEquals(FALSE_JSON, classUnderTest.getJson().toJSONString());
     }
@@ -75,7 +75,7 @@ public class VATCountryJSONTest {
     public void testExecute_UKisFalse () {
         when(mockRequest.getParameter(REQEST_PARAMETER)).thenReturn(UK_ISO);
         when(mockDao.findbyISO(UK_ISO)).thenReturn(mockCountry);
-        when(mockCountry.requiresVAT()).thenReturn(true);
+        when(mockCountry.isEuropeanUnion()).thenReturn(true);
         assertEquals(RESPONSE, classUnderTest.execute());
         assertEquals(FALSE_JSON, classUnderTest.getJson().toJSONString());
     }
