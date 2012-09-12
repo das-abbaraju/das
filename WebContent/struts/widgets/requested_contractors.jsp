@@ -29,34 +29,51 @@
 		</tr>
 	</s:if>
 	<s:else>
-		<s:iterator value="requestedContractors">
+		<s:iterator value="requestedContractors" var="request">
 			<tr>
 				<td>
-					<s:url action="RequestNewContractor.action" var="request_new_contractor">
-						<s:param name="newContractor">
-							${id}
-						</s:param>
-					</s:url>
+					<s:if test="#request.get('systemType') == 'CRR'">
+						<s:url action="RequestNewContractor" var="request_new_contractor">
+							<s:param name="newContractor">
+								${request.get('id')}
+							</s:param>
+						</s:url>
+					</s:if>
+					<s:else>
+						<s:url action="RequestNewContractorAccount" var="request_new_contractor">
+							<s:param name="requestedContractor">
+								${request.get('id')}
+							</s:param>
+							<s:param name="requestRelationship.operatorAccount">
+								${request.get('RequestedByID')}
+							</s:param>
+						</s:url>
+					</s:else>
 					<a href="${request_new_contractor}">
-						${name}
+						${request.get('name')}
 					</a>
 				</td>
 				<td>
 					<s:if test="permissions.operator">
-						${requestedByUserString}
+						<s:if test="isStringEmpty(#request.get('RequestedByUserOther'))">
+							${request.get('RequestedUser')}
+						</s:if>
+						<s:else>
+							${request.get('RequestedByUserOther')}
+						</s:else>
 					</s:if>
 					<s:else>
-						${requestedBy.name}
+						${request.get('RequestedBy')}
 					</s:else>
 				</td>
 				<td>
 					<nobr>
-						<s:date name="deadline" />
+						<s:date name="get('deadline')" />
 					</nobr>
 				</td>
 				<td class="call">
 					<nobr>
-						<s:date name="lastContactDate" />
+						<s:date name="get('lastContactDate')" />
 					</nobr>
 				</td>
 			</tr>

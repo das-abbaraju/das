@@ -38,7 +38,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		getFilter().setPermissions(permissions);
 
 		buildQuery();
-		addFilterToSQL();
 
 		if (report.getUnionSql().isEmpty()) {
 			run(sql);
@@ -80,27 +79,11 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 	protected void buildQuery() {
 		sql = buildNewQuery();
-		SelectSQL sql_legacy = buildLegacyQuery();
+		SelectSQL legacy = buildLegacyQuery();
 
-		if (filterOn(getFilter().getRequestStatus())) {
-			sql_legacy.addWhere("cr.status = '" + getFilter().getRequestStatus() + "'");
+		addFilterToSQL(legacy);
 
-			if (ContractorRegistrationRequestStatus.Active.toString().equals(getFilter().getRequestStatus())) {
-				sql.addWhere("a.status IN ('Requested', 'Pending') AND c.followupDate IS NULL");
-			} else if (ContractorRegistrationRequestStatus.Hold.toString().equals(getFilter().getRequestStatus())) {
-				sql.addWhere("a.status IN ('Requested', 'Pending') AND c.followupDate IS NOT NULL");
-			} else if (ContractorRegistrationRequestStatus.ClosedSuccessful.toString().equals(
-					getFilter().getRequestStatus())) {
-				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone = 0");
-			} else if (ContractorRegistrationRequestStatus.ClosedContactedSuccessful.toString().equals(
-					getFilter().getRequestStatus())) {
-				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone > 0");
-			} else {
-				sql.addWhere("a.status IN ('Deactivated') AND c.reason IS NOT NULL");
-			}
-		}
-
-		report.getUnionSql().add(sql_legacy);
+		report.getUnionSql().add(legacy);
 
 		if (permissions.isPicsEmployee()) {
 			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
@@ -121,47 +104,90 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				sql.addWhere("requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
 			} else
-				sql.addWhere("WHERE requestedByID = " + permissions.getAccountId());
+				sql.addWhere("requestedByID = " + permissions.getAccountId());
 		}
 
 		orderByDefault = "deadline, name";
 	}
 
-	protected void addFilterToSQL() {
+	protected void addFilterToSQL(SelectSQL legacy) {
 		ReportFilterNewContractor f = getFilter();
 
-		if (filterOn(f.getStartsWith()))
-			report.addFilter(new SelectFilter("startsWith", "name LIKE '?%'", f.getStartsWith()));
+		if (filterOn(f.getStartsWith())) {
+			sql.addWhere("a.name LIKE '" + f.getStartsWith() + "%'");
+			legacy.addWhere("cr.name LIKE '" + f.getStartsWith() + "%'");
+
+			setFiltered(true);
+		}
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
-			report.addFilter(new SelectFilter("accountName", "name LIKE '%?%'", accountName));
+
+			sql.addWhere("a.name LIKE '%" + accountName + "%'");
+			legacy.addWhere("cr.name LIKE '%" + accountName + "%'");
+
+			setFiltered(true);
+		}
+
+		if (filterOn(f.getRequestStatus())) {
+			legacy.addWhere("cr.status = '" + f.getRequestStatus() + "'");
+
+			if (ContractorRegistrationRequestStatus.Active.toString().equals(getFilter().getRequestStatus())) {
+				sql.addWhere("a.status IN ('Requested', 'Pending') AND c.followupDate IS NULL");
+			} else if (ContractorRegistrationRequestStatus.Hold.toString().equals(getFilter().getRequestStatus())) {
+				sql.addWhere("a.status IN ('Requested', 'Pending') AND c.followupDate IS NOT NULL");
+			} else if (ContractorRegistrationRequestStatus.ClosedSuccessful.toString().equals(
+					getFilter().getRequestStatus())) {
+				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone = 0");
+			} else if (ContractorRegistrationRequestStatus.ClosedContactedSuccessful.toString().equals(
+					getFilter().getRequestStatus())) {
+				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone > 0");
+			} else {
+				sql.addWhere("a.status IN ('Deactivated') AND c.reason IS NOT NULL");
+			}
 		}
 
 		String locationList = Strings.implodeForDB(f.getLocation(), ",");
 		if (filterOn(locationList)) {
-			sql.addWhere("countrySubdivision IN (" + locationList + ") OR country IN (" + locationList + ")");
-			sql.addOrderBy("CASE WHEN country IN (" + locationList + ") THEN 1 ELSE 2 END, country");
-			sql.addOrderBy("CASE WHEN countrySubdivision IN (" + locationList
-					+ ") THEN 1 ELSE 2 END, countrySubdivision");
-			sql.addOrderBy("country");
-			sql.addOrderBy("countrySubdivision");
+			sql.addWhere("a.countrySubdivision IN (" + locationList + ") OR a.country IN (" + locationList + ")");
+			sql.addOrderBy("CASE WHEN a.country IN (" + locationList + ") THEN 1 ELSE 2 END, a.country");
+			sql.addOrderBy("CASE WHEN a.countrySubdivision IN (" + locationList
+					+ ") THEN 1 ELSE 2 END, a.countrySubdivision");
+			sql.addOrderBy("a.country");
+			sql.addOrderBy("a.countrySubdivision");
+
+			legacy.addWhere("cr.countrySubdivision IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
+			legacy.addOrderBy("CASE WHEN cr.country IN (" + locationList + ") THEN 1 ELSE 2 END, cr.country");
+			legacy.addOrderBy("CASE WHEN cr.countrySubdivision IN (" + locationList
+					+ ") THEN 1 ELSE 2 END, cr.countrySubdivision");
+			legacy.addOrderBy("cr.country");
+			legacy.addOrderBy("cr.countrySubdivision");
+
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getOperator())) {
 			String list = Strings.implode(f.getOperator(), ",");
-			sql.addWhere("requestedByID IN (" + list + ")");
+
+			sql.addWhere("gc.genID IN (" + list + ")");
+			legacy.addWhere("cr.requestedByID IN (" + list + ")");
+
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getMarketingUsers())) {
-			sql.addWhere("lastContactedByInsideSales IN (" + Strings.implode(f.getMarketingUsers()) + ")");
+			sql.addWhere("c.lastContactedByInsideSales IN (" + Strings.implode(f.getMarketingUsers()) + ")");
+			legacy.addWhere("cr.lastContactedBy IN (" + Strings.implode(f.getMarketingUsers()) + ")");
+
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getFollowUpDate())) {
-			sql.addWhere("deadline IS NULL OR deadline < '" + DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd") + "'");
+			sql.addWhere("c.followupDate IS NULL OR c.followupDate < '"
+					+ DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd") + "'");
+			legacy.addWhere("cr.deadline IS NULL OR cr.deadline < '"
+					+ DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd") + "'");
+
 			setFiltered(true);
 		}
 
@@ -185,11 +211,20 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 					f.getClosedOnDate2(), "M/d/yy")));
 		}
 
-		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
+		if (filterOn(f.getCustomAPI()) && permissions.isAdmin()) {
 			sql.addWhere(f.getCustomAPI());
 
+			legacy.addWhere(f.getCustomAPI());
+
+			setFiltered(true);
+		}
+
 		if (filterOn(f.getExcludeOperators())) {
-			sql.addWhere("requestedByID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
+			sql.addWhere("gc.genID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
+
+			legacy.addWhere("cr.requestedByID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
+
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getOperatorTags())) {
@@ -203,6 +238,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			}
 
 			sql.addWhere(where.toString());
+
+			legacy.addWhere(where.toString());
 		}
 	}
 
@@ -280,7 +317,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 	}
 
-	private SelectSQL buildLegacyQuery() {
+	public static SelectSQL buildLegacyQuery() {
 		SelectSQL sql_legacy = new SelectSQL("contractor_registration_request cr");
 		sql_legacy.addJoin("JOIN accounts op ON op.id = cr.requestedByID");
 		sql_legacy.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
@@ -323,7 +360,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		return sql_legacy;
 	}
 
-	private SelectSQL buildNewQuery() {
+	public static SelectSQL buildNewQuery() {
 		SelectSQL sql_new = new SelectSQL("accounts a");
 		sql_new.addJoin("JOIN contractor_info c ON c.id = a.id");
 		sql_new.addJoin("JOIN generalcontractors gc ON gc.subID = c.id");

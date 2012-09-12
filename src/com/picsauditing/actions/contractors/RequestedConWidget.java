@@ -2,16 +2,17 @@ package com.picsauditing.actions.contractors;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.actions.report.ReportNewRequestedContractor;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RequestedConWidget extends PicsActionSupport {
-	@Autowired
-	private ContractorRegistrationRequestDAO requestDAO;
+	private Database database = new Database();
 
 	public String execute() throws Exception {
 		if (!permissions.isLoggedIn())
@@ -20,7 +21,24 @@ public class RequestedConWidget extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<ContractorRegistrationRequest> getRequestedContractors() {
-		return requestDAO.findByPermissions(permissions);
+	public List<BasicDynaBean> getRequestedContractors() throws Exception {
+		SelectSQL legacy = ReportNewRequestedContractor.buildLegacyQuery();
+		SelectSQL current = ReportNewRequestedContractor.buildNewQuery();
+
+		if (permissions.isOperator()) {
+			legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
+			current.addWhere("gc.genID = " + permissions.getAccountId());
+		} else if (permissions.isCorporate()) {
+			legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")");
+			current.addWhere("gc.genID IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")");
+		}
+
+		legacy.addWhere("cr.status = 'Active'");
+		current.addWhere("a.status = 'Requested' AND c.followupDate IS NULL");
+
+		String sql = String.format("%s \nUNION\n %s ORDER BY deadline, creationDate LIMIT 10", legacy.toString(),
+				current.toString());
+
+		return database.select(sql, false);
 	}
 }
