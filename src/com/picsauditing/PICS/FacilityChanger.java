@@ -17,6 +17,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -168,6 +169,8 @@ public class FacilityChanger {
 			throw new Exception("Please set contractor before calling remove()");
 		if (operator == null || operator.getId() == 0)
 			throw new Exception("Please set operator before calling remove()");
+		if (permissions.isContractor() && !permissions.getAccountStatus().equals(AccountStatus.Pending))
+			throw new Exception("Only pending contractors can remove()");
 
 		// TODO: Start using SearchContractors.Delete instead
 		// permissions.tryPermission(OpPerms.SearchContractors, OpType.Delete);

@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -53,6 +55,24 @@ public class FacilityChangerTest {
 		Whitebox.setInternalState(facilityChanger, "noteDAO", noteDAO);
 		Whitebox.setInternalState(facilityChanger, "auditDataDAO", auditDataDAO);
 		Whitebox.setInternalState(facilityChanger, "accountLevelAdjuster", accountLevelAdjuster);
+	}
+	
+	@Test
+	public void testRemove_LoggedInContractor() {
+		try {
+			facilityChanger.setContractor(EntityFactory.makeContractor());
+			facilityChanger.setOperator(EntityFactory.makeOperator());
+			
+			Permissions permissions = new Permissions();
+			Whitebox.setInternalState(permissions, "accountType", "Contractor");
+			Whitebox.setInternalState(permissions, "accountStatus", AccountStatus.Active);
+			facilityChanger.setPermissions(permissions);
+
+			facilityChanger.remove();
+			fail("No exception thrown when there should have been");
+		} catch (Exception e) {
+			// what we want to happen
+		}
 	}
 
 	@Test
