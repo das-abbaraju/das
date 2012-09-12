@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.util.Strings;
 
