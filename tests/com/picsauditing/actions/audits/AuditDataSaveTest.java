@@ -1,10 +1,18 @@
 package com.picsauditing.actions.audits;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -283,6 +291,21 @@ public class AuditDataSaveTest {
 		
 		assertTrue(returnValue);
 		assertThat(expected, is(equalTo(auditData.getAnswer())));
+	}
+
+	@Test
+	public void testIsInvalidNegativeNumber() throws Exception {
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.setId(AuditQuestion.EMR);
+		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(-1), question);
+		assertTrue(returnValue);
+		
+		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(1), question);
+		assertFalse(returnValue);
+		
+		question.setId(1);
+		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(-1), question);
+		assertFalse(returnValue);
 	}
 
 }

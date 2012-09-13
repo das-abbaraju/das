@@ -661,6 +661,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		String questionType = databaseCopy.getQuestion().getQuestionType();
+		AuditQuestion question = databaseCopy.getQuestion();
 		String answer = auditData.getAnswer();
 
 		if ("ESignature".equals(questionType)) {
@@ -717,6 +718,10 @@ public class AuditDataSave extends AuditActionSupport {
 
 			try {
 				BigDecimal value = new BigDecimal(answer);
+				if (isInvalidNegativeNumber(value, question)){
+					addActionError(getText("Audit.message.InvalidNegativeNumber"));
+					return false;					
+				}
 				auditData.setAnswer(format.format(value));
 			} catch (Exception ignore) {
 				addActionError(getText("Audit.message.InvalidFormat"));
@@ -734,6 +739,15 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
+	}
+
+	private boolean isInvalidNegativeNumber(BigDecimal value,
+			AuditQuestion question) {
+		if (question.getId() == AuditQuestion.EMR && value.floatValue() < 0.0f) {
+			return true;
+		}
+			
+		return false;
 	}
 
 	private boolean setAnswerToDateOrRecordError(AuditData auditData, String answer) {
