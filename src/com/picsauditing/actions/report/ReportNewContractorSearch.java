@@ -46,9 +46,6 @@ import com.picsauditing.util.Strings;
 
 /**
  * Used by operators to search for new contractors
- * 
- * @author Trevor
- * 
  */
 @SuppressWarnings("serial")
 public class ReportNewContractorSearch extends ReportAccount {
@@ -189,10 +186,13 @@ public class ReportNewContractorSearch extends ReportAccount {
 		getFilter().setShowMinorityOwned(true);
 		getFilter().setShowLocation(true);
 		getFilter().setPermissions(permissions);
+		
+		if (!permissions.isOperator())
+			getFilter().setShowFlagStatus(false);
 
 		if (permissions.getCorporateParent().size() > 0)
 			getFilter().setShowInParentCorporation(true);
-
+		
 		if (button == null) {
 			runReport = false;
 			return super.execute();
@@ -313,7 +313,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
 	private void calculateOverallFlags() {
-		if (!permissions.isOperatorCorporate())
+		if (!permissions.isOperator())
 			return;
 
 		if (byConID.size() > 0)
@@ -350,7 +350,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 				byConID.put(contractor.getId(), flagColor);
 			}
 		}
-
 	}
 
 	/**
