@@ -29,7 +29,7 @@ public class PermissionQueryBuilder {
 
 	@Deprecated
 	public String toString() {
-		String whereClause = buildQuery();
+		String whereClause = buildWhereClause();
 
 		if (Strings.isEmpty(whereClause))
 			return "";
@@ -37,7 +37,7 @@ public class PermissionQueryBuilder {
 			return "AND " + whereClause;
 	}
 
-	public String buildQuery() {
+	public String buildWhereClause() {
 		// For Nobody
 		if (permissions == null || !permissions.isLoggedIn())
 			return "1=0";

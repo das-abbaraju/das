@@ -33,7 +33,7 @@ public class AccountModel extends AbstractModel {
 			}
 		}
 
-		return permQuery.buildQuery();
+		return permQuery.buildWhereClause();
 	}
 	
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {

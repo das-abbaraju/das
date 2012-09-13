@@ -37,13 +37,13 @@ public class PermissionQueryBuilderTest {
 	public void testNotLoggedIn() throws Exception {
 		permissions.clear();
 		builder = new PermissionQueryBuilder(permissions);
-		assertEquals("1=0", builder.buildQuery());
+		assertEquals("1=0", builder.buildWhereClause());
 	}
 
 	@Test
 	public void testBlank() throws Exception {
 		builder = new PermissionQueryBuilder(permissions);
-		assertEquals("1=0", builder.buildQuery());
+		assertEquals("1=0", builder.buildWhereClause());
 		assertEquals(PermissionQueryBuilder.SQL, builder.getQueryLanguage());
 	}
 
@@ -62,7 +62,7 @@ public class PermissionQueryBuilderTest {
 
 		builder = new PermissionQueryBuilder(permissions);
 		builder.setQueryLanguage(PermissionQueryBuilder.HQL);
-		assertEquals("contractorAccount.id = " + permissions.getAccountId(), builder.buildQuery());
+		assertEquals("contractorAccount.id = " + permissions.getAccountId(), builder.buildWhereClause());
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class PermissionQueryBuilderTest {
 		builder = new PermissionQueryBuilder(permissions);
 		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
 				+ permissions.getAccountId() + "))";
-		assertEquals(whereClause, builder.buildQuery());
+		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class PermissionQueryBuilderTest {
 		String whereClause = "contractorAccount.status IN ('Active') AND contractorAccount IN ("
 				+ "SELECT t.contractorAccount FROM ContractorOperator t WHERE t.operatorAccount.id IN ("
 				+ permissions.getAccountId() + "))";
-		assertEquals(whereClause, builder.buildQuery());
+		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class PermissionQueryBuilderTest {
 		builder = new PermissionQueryBuilder(permissions);
 		builder.addVisibleStatus(AccountStatus.Pending);
 		builder.addVisibleStatus(AccountStatus.Deactivated);
-		String whereClause = builder.buildQuery();
+		String whereClause = builder.buildWhereClause();
 		assertContains("a.status IN (", whereClause);
 		assertContains("'Active'", whereClause);
 		assertContains("'Pending'", whereClause);
@@ -109,7 +109,7 @@ public class PermissionQueryBuilderTest {
 		permissions.setAccountPerms(operator);
 
 		builder = new PermissionQueryBuilder(permissions);
-		String whereClause = builder.buildQuery();
+		String whereClause = builder.buildWhereClause();
 		assertContains("'Active'", whereClause);
 		assertContains("'Demo'", whereClause);
 	}
@@ -123,7 +123,7 @@ public class PermissionQueryBuilderTest {
 		builder = new PermissionQueryBuilder(permissions);
 
 		String expected = "FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =";
-		assertContains(expected, builder.buildQuery());
+		assertContains(expected, builder.buildWhereClause());
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class PermissionQueryBuilderTest {
 
 		String expected = "SELECT co.contractorAccount FROM ContractorOperator co "
 				+ "WHERE co.operatorAccount IN (SELECT f.operator FROM Facility f WHERE f.corporate.id =";
-		assertContains(expected, builder.buildQuery());
+		assertContains(expected, builder.buildWhereClause());
 	}
 	
 	@Ignore
@@ -150,7 +150,7 @@ public class PermissionQueryBuilderTest {
 		builder = new PermissionQueryBuilder(permissions);
 
 		String expected = "FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =";
-		assertContains(expected, builder.buildQuery());
+		assertContains(expected, builder.buildWhereClause());
 	}
 
 	private void addUserGroup(int groupID) {
