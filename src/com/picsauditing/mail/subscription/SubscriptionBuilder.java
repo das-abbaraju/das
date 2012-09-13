@@ -35,7 +35,7 @@ public abstract class SubscriptionBuilder {
 		EmailQueue queue = buildEmail(subscription, tokens);
 
 		if (queue != null) {
-			if (featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")) {
+			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
 				sender.publishSubscription(queue);
 			} else {
 				sender.sendNow(queue);

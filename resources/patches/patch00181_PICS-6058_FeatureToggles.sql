@@ -1,26 +1,28 @@
 alter table app_properties add column ticklerDate datetime;
 
 select @Badge:=value from app_properties where property = 'Toggle.Badge';
-update app_properties set value = concat('releaseToUserAudienceLevel(',
+replace into app_properties (property, value) values ('Toggle.Badge_v2', concat('releaseToUserAudienceLevel(',
 @Badge,
-')') where property = 'Toggle.Badge';
+')'));
 
 select @DynamicReports:=value from app_properties where property = 'Toggle.DynamicReports';
-update app_properties set value = concat('releaseToUserAudienceLevel(',
+replace into app_properties (property, value) values ('Toggle.DynamicReports_v2', concat('releaseToUserAudienceLevel(',
 @DynamicReports,
-')') where property = 'Toggle.DynamicReports';
+')'));
 
 select @LcCor:=value from app_properties where property = 'Toggle.LcCor';
-update app_properties set value = concat('releaseToApplicationAudienceLevel(',
+replace into app_properties (property, value) values ('Toggle.LcCor_v2', concat('releaseToApplicationAudienceLevel(',
 @LcCor,
-')') where property = 'Toggle.LcCor';
+')'));
 
 select @LiveAgent:=value from app_properties where property = 'Toggle.LiveAgent';
-update app_properties set value = concat('releaseToUserAudienceLevel(',
+replace into app_properties (property, value) values ('Toggle.LiveAgent_v2', concat('releaseToUserAudienceLevel(',
 @LiveAgent,
-')') where property = 'Toggle.LiveAgent';
+')'));
 
 select @SwitchUserServer:=value from app_properties where property = 'Toggle.SwitchUserServer';
-update app_properties set value = concat('releaseToUserAudienceLevel(',
+replace into app_properties (property, value) values ('Toggle.SwitchUserServer_v2', concat('releaseToUserAudienceLevel(',
 @SwitchUserServer,
-')') where property = 'Toggle.SwitchUserServer';
+')'));
+
+delete from app_properties where property like 'Toggle.%_v2' and value is null;

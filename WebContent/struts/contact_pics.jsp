@@ -4,6 +4,7 @@
 <%@ page import="java.util.Locale" %>
 <%@ page import="com.picsauditing.util.URLUtils"%>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%
 	Locale locale = TranslationActionSupport.getLocaleStatic();
 %>
@@ -58,7 +59,7 @@
 							<s:text name="Header.HelpCenter" />
 						</a>
 					</li>
-						<pics:toggle name="LiveAgent">
+						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
 							<li><label><s:text name="Header.Chat" />:</label>
 								<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
 								<img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>

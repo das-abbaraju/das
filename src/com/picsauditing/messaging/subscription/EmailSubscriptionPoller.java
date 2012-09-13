@@ -15,7 +15,7 @@ public class EmailSubscriptionPoller {
 	private final Logger logger = LoggerFactory.getLogger(EmailSubscriptionPoller.class);
 	
 	private RabbitTemplate amqpTemplate;
-	private String featureToggleName = "Toggle.BackgroundProcesses";
+	private String featureToggleName = FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL;
 	private MessageHandler emailSubscriptionHandler;
 
 	@Autowired

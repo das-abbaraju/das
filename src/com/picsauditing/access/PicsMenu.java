@@ -514,7 +514,7 @@ public class PicsMenu {
 			if (permissions.getAccountId() == OperatorAccount.BASF) {
 				FeatureToggle featureToggleChecker = SpringUtils.getBean("FeatureToggle");
 
-				if (featureToggleChecker.isFeatureEnabled("Toggle.BASFDynamicReportsPreview")) {
+				if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BASFDYNAMICREPORTSPREVIEW)) {
 					subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
 					subMenu.addChild(getText("menu.NonApprovedPolicyAnalysis"), "Report.action?report=8", "NonApprovedPolicyAnalysisDRPreview");
 					subMenu.addChild(getText("menu.NonApprovedPolicyAnalysisExpanded"), "Report.action?report=9", "NonApprovedPolicyAnalysisExpandedDRPreview");

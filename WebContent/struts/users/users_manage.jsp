@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <head>
 	<title>
@@ -241,7 +242,7 @@
 						</li>
 						
 						<s:if test="isBetaEnvironment()">
-							<pics:toggle name="SwitchUserServer">
+							<pics:toggle name="<%= FeatureToggle.TOGGLE_SWITCHUSERSERVER %>">
 								<li>
 									<a class="btn" id="SwitchUser" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
 										<s:text name="UsersManage.SwitchToThisUserStable" />
@@ -394,7 +395,7 @@
 									</s:else></li>
 							</s:if>
 							
-							<pics:toggle name="DynamicReports">
+							<pics:toggle name="<%= FeatureToggle.TOGGLE_DYNAMICREPORTS %>">
 								<li>
 									<label> <s:text name="User.useDynamicReport" /></label> 			
 									<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="user.usingDynamicReports" />		 

@@ -12,7 +12,7 @@ public class PublisherRabbitMq implements Publisher {
 	
 	private RabbitTemplate amqpTemplate;
 	private FeatureToggle featureToggleChecker;
-	private String featureToggleName = "Toggle.BackgroundProcesses";
+	private String featureToggleName = FeatureToggle.TOGGLE_BPROC;
 
 	public void setAmqpTemplate(RabbitTemplate amqpTemplate) {
 		this.amqpTemplate = amqpTemplate;

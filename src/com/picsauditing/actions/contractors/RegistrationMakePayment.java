@@ -22,7 +22,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -257,7 +256,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (contractor.getCountry().getIsoCode().equals("CA")
 				&& featureToggleChecker
-						.isFeatureEnabled(AppProperty.LC_COR_TOGGLE)) {
+						.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			contractor.setLcCorPhase(LcCorPhase.RemindMeLater);
 			contractor.setLcCorNotification(new Date());
 			contractorAccountDao.save(contractor);

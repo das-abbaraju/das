@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <head>
 	<title><s:text name="ProfileEdit.title"></s:text></title>
@@ -186,7 +187,7 @@
 									<label><s:text name="global.CreationDate" />:</label>
 									<s:date name="u.creationDate" />
 								</li>
-								<pics:toggle name="DynamicReports">
+								<pics:toggle name="<%= FeatureToggle.TOGGLE_DYNAMICREPORTS %>">
 									<li>
 										<label> <s:text name="User.useDynamicReport" /></label>
 										<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="u.usingDynamicReports" />

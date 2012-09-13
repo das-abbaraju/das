@@ -1,7 +1,8 @@
 package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class ContractorBadgeTest {
 
 	@Test
 	public void testContractorBadgeToggle_Developer() throws Exception{
-		when(featureToggle.isFeatureEnabled("Toggle.Badge")).thenReturn(true);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_BADGE)).thenReturn(true);
 
 		String strutsResult = Whitebox.invokeMethod(contractorBadge, "contractorBadgeToggle");
 
@@ -54,7 +55,7 @@ public class ContractorBadgeTest {
 	
 	@Test
 	public void testContractorBadgeToggle_Stakeholder() throws Exception{
-		when(featureToggle.isFeatureEnabled("Toggle.Badge")).thenReturn(false);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_BADGE)).thenReturn(false);
 
 		String strutsResult = Whitebox.invokeMethod(contractorBadge, "contractorBadgeToggle");
 

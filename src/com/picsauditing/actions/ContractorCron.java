@@ -39,7 +39,6 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -312,7 +311,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 	
 	private void checkLcCor(ContractorAccount contractor) {
-		if (!featureToggleChecker.isFeatureEnabled(AppProperty.LC_COR_TOGGLE))
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return;
 		
 		ContractorAudit corAudit = null;

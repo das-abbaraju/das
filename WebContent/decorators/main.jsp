@@ -23,6 +23,7 @@
 <%@ page import="com.picsauditing.util.URLUtils" %>
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
@@ -290,7 +291,7 @@
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
 					</div>
 					<div id="helpchat" style="float:left;">
-						<pics:toggle name="LiveAgent">
+						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
                             <script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/track.js"></script>
                             <img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode" />', this);"/>
 						</pics:toggle>

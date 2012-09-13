@@ -98,7 +98,7 @@ public class EmailSenderTest {
 		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
 		when(email.getEmailTemplate()).thenReturn(emailTemplate);
 		when(emailTemplate.getId()).thenReturn(notValidDeactivatedEmailId());
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
 
 		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
 
@@ -111,7 +111,7 @@ public class EmailSenderTest {
 		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
 		when(email.getEmailTemplate()).thenReturn(emailTemplate);
 		when(emailTemplate.getId()).thenReturn(notValidDeactivatedEmailId());
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(false);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
 
 		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
 
@@ -124,7 +124,7 @@ public class EmailSenderTest {
 		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Deactivated);
 		when(email.getEmailTemplate()).thenReturn(emailTemplate);
 		when(emailTemplate.getId()).thenReturn(notValidDeactivatedEmailId());
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
 
 		Whitebox.invokeMethod(emailSenderSpring, "publishEnterpriseMessageIfEmailShouldBeSent", email);
 

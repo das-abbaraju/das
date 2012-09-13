@@ -53,7 +53,7 @@ public class MailCron extends PicsActionSupport {
 		/**
 		 * Process Email Subscription
 		 */
-		if (!featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")) {
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
 			AppProperty enableSubscriptions = appPropDAO.find("subscription.enable");
 			if (Boolean.parseBoolean(enableSubscriptions.getValue())) {
 				if (subscriptionID > 0) {
@@ -76,7 +76,7 @@ public class MailCron extends PicsActionSupport {
 			}
 		}
 		
-		if (!featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")) {
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)) {
 			// send email from the email_queue
 			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
 			if (emails.size() == 0) {

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -567,7 +568,7 @@
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
                                         <strong><s:date name="contractor.membershipDate" /></strong>
-                                        <pics:toggle name="Badge">
+                                        <pics:toggle name="<%= FeatureToggle.TOGGLE_BADGE %>">
 	                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
 	                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
 	                                        </a>

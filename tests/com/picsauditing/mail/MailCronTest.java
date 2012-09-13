@@ -77,8 +77,8 @@ public class MailCronTest {
 	
 	@Test
 	public void testExecute_SubscriptionDisnabledQueueDisabledDoesBothSubsandQueue() throws Exception {
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")).thenReturn(false);
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(false);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
 		
 		mailCron.execute();
 		
@@ -88,8 +88,8 @@ public class MailCronTest {
 	
 	@Test
 	public void testExecute_SubscriptionEnabledQueueEnabledDoNothing() throws Exception {
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")).thenReturn(true);
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
 		
 		mailCron.execute();
 		

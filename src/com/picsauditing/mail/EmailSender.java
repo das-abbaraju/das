@@ -138,7 +138,7 @@ public class EmailSender {
 		if (contractorIsDeactivated(email) && !emailTemplateIsValidForDeactivatedContractors(email)) {
 			// this will write to the database NOW, as opposed to on actual sending of the email we're 
 			// only going to do this if the feature is enabled. We'll log now and not publish for sending
-			if (featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")) {
+			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)) {
 				logEmailAsSendError(email);
 			}
 		} else {

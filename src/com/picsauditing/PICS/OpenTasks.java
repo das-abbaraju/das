@@ -17,7 +17,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -293,7 +292,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 	
 	private boolean isLcCorTaskNeeded() {
-		if (!featureToggleChecker.isFeatureEnabled(AppProperty.LC_COR_TOGGLE))
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return false;
 		if (contractor.getLcCorPhase() != null && !contractor.getLcCorPhase().equals(LcCorPhase.Done)) {
 			if (contractor.getLcCorNotification() != null

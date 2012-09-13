@@ -2,6 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 <%@ page import="com.picsauditing.util.URLUtils" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <title><s:property value="contractor.name" /></title>
 
@@ -322,7 +323,7 @@
     							<s:checkbox name="contractor.showInDirectory" theme="formhelp" />
     							<s:if test="contractor.showInDirectory">
     								<br />
-    								<pics:toggle name="Badge">
+    								<pics:toggle name="<%= FeatureToggle.TOGGLE_BADGE %>">
     									<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
     										<s:text name="ContractorView.ClickToViewContractorBadge" />
     									</a>

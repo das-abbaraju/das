@@ -30,7 +30,7 @@ public class ContractorBadge extends ContractorActionSupport {
 
 	private String contractorBadgeToggle() {
 		FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
-		if (featureToggle.isFeatureEnabled("Toggle.Badge")) {
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_BADGE)) {
 			return SUCCESS;
 		} else {
 			return "failed";
