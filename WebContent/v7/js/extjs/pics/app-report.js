@@ -37,7 +37,8 @@ Ext.application({
             ['NotEndsWith', 'does not end with'],
             ['Equals', 'equals'],
             ['NotEquals', 'does not equal'],
-            ['Empty', 'blank']
+            ['Empty', 'blank'],
+            ['NotEmpty', 'not blank']
         ]
     },
 
