@@ -11,7 +11,7 @@ Ext.define('PICS.view.report.filter.FilterOptions', {
     autoScroll: true,
     bodyBorder: false,
     border: 0,
-    collapsed: false,
+    collapsed: true,
     collapsible: true,
     dockedItems: [{
         xtype: 'reportfiltertoolbar',

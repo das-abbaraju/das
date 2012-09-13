@@ -89,9 +89,14 @@ Ext.define('PICS.view.layout.SearchBox', {
     queryMode: 'remote',
     queryParam: 'q',
     valueField: 'q',
-
     store: {
-        fields: [ 'result_type', 'result_id', 'result_name', 'result_at', 'search_type' ],
+        fields: [
+            'result_type',
+            'result_id',
+            'result_name',
+            'result_at',
+            'search_type'
+        ],
         proxy: {
             type: 'ajax',
             url: 'SearchBox!json.action',
