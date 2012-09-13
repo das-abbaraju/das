@@ -27,7 +27,7 @@ import com.picsauditing.util.pagination.Pagination;
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
-	public static final String MY_REPORTS_URL = "ManageReports!myReportsList.action";
+	public static final String LANDING_URL = "ManageReports!favoritesList.action";
 
 	public static final String ALPHA_SORT = "alpha";
 	public static final String DATE_ADDED_SORT = "dateAdded";
@@ -61,7 +61,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String execute() {
 		try {
-			setUrlForRedirect(MY_REPORTS_URL);
+			setUrlForRedirect(LANDING_URL);
 		} catch (IOException ioe) {
 			logger.error("Problem redirecting from default action in ManageReports.", ioe);
 		}
@@ -232,7 +232,7 @@ public class ManageReports extends PicsActionSupport {
 			String referer = getRequest().getHeader("Referer");
 			if (Strings.isEmpty(referer)) {
 				// TODO make this a full URL and add a test for it
-				referer = MY_REPORTS_URL;
+				referer = LANDING_URL;
 			}
 
 			setUrlForRedirect(referer);
@@ -338,6 +338,6 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String getMyReportsUrl() {
-		return MY_REPORTS_URL;
+		return LANDING_URL;
 	}
 }

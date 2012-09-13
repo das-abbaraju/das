@@ -289,7 +289,7 @@ public final class MenuBuilder {
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
-		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.MY_REPORTS_URL, "manage_reports");
+		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();
