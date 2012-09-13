@@ -12,7 +12,7 @@
 	name="requestRelationship.requestedBy"
 	required="true"
 	theme="formhelp"
-	value="%{requestRelationship.requestedBy.id}"
+	value="%{requestRelationship.requestedBy == null ? permissions.userId : requestRelationship.requestedBy.id}"
 />
 
 <s:set var="placeholder_other">

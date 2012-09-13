@@ -70,7 +70,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
 
 	private final Logger logger = LoggerFactory.getLogger(ReportNewContractorSearch.class);
-			
+
 	public ReportNewContractorSearch() {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
@@ -131,13 +131,13 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.country");
 		sql.addField("a.phone");
 		sql.addField("c.score");
-		
+
 		sql.addAudit(AuditType.PQF);
 
 		if (permissions.getAccountStatus().isDemo())
-			sql.addWhere("a.status IN ('Active','Demo')");
+			sql.addWhere("a.status IN ('Active', 'Requested', 'Demo')");
 		else
-			sql.addWhere("a.status = 'Active'");
+			sql.addWhere("a.status IN ('Active', 'Requested')");
 
 		if (!Strings.isEmpty(getOrderBy()))
 			sql.addOrderBy(getOrderBy());
@@ -153,7 +153,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 				}
 
 				getFilter().setFlagStatus(null);
-				
+
 				// Get the data right now for all contractors
 				// this will build up the contractor ids we need
 				run(sql);
@@ -224,7 +224,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
 			addActionMessage(getTextParameterized("NewContractorSearch.ContractorNeedsToApprove", contractor.getName()));
 		} else {
-			addActionMessage(getTextParameterized("NewContractorSearch.message.SuccessfullyAdded", contractor.getId() + "", contractor.getName()));
+			addActionMessage(getTextParameterized("NewContractorSearch.message.SuccessfullyAdded", contractor.getId()
+					+ "", contractor.getName()));
 		}
 
 		// Automatically upgrading Contractor per discussion

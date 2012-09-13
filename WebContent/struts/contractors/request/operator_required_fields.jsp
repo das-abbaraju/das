@@ -2,30 +2,20 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <li>
-	<s:if test="permissions.operator">
-		<label><s:text name="ContractorAccount.requestedBy" /></label>
-		<s:textfield
-			disabled="true"
-			key="id"
-			name="requestRelationship.operatorAccount"
-			required="true"
-		/>
-	</s:if>
-	<s:else>
-		<s:select
-			headerKey="0" 
-			headerValue="RequestNewContractor.header.SelectAnOperator" 
-			id="operator_list"
-			label="ContractorAccount.requestedBy"
-			list="operatorList"
-			listKey="id"
-			listValue="name" 
-			name="requestRelationship.operatorAccount"
-			required="true"
-			theme="formhelp"
-			value="%{requestRelationship.operatorAccount.id}"
-		/>
-	</s:else>
+	<s:select
+		disabled="%{permissions.operator}"
+		headerKey="0" 
+		headerValue="RequestNewContractor.header.SelectAnOperator" 
+		id="operator_list"
+		label="ContractorAccount.requestedBy"
+		list="operatorList"
+		listKey="id"
+		listValue="name" 
+		name="requestRelationship.operatorAccount"
+		required="true"
+		theme="formhelp"
+		value="%{requestRelationship.operatorAccount.id > 0 ? requestRelationship.operatorAccount.id : permissions.accountId}"
+	/>
 </li>
 <li id="user_list">
 	<s:if test="requestRelationship.operatorAccount.id > 0">

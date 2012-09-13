@@ -80,126 +80,127 @@
 			<s:hidden name="contactType" id="contact_type_field" />
 			<s:hidden name="contactNote" id="contact_note_field" />
 			
-			<fieldset class="form">
-				<h2 class="formLegend">
-					<s:text name="RequestNewContractor.header.CompanyInformation" />
-				</h2>
-				
-				<ol>
-					<li>
-						<s:textfield
-							cssClass="checkReq"
-							id="company_name"
-							name="requestedContractor.name"
-							size="35"
-							theme="formhelp"
-							required="true"
-						/>
-						<div id="match_name"></div>
-					</li>
-					<li>
-						<s:textfield
-							cssClass="checkReq"
-							id="contact_name"
-							name="primaryContact.name"
-							theme="formhelp"
-							required="true"
-						/>
-						<div id="match_contact"></div>
-					</li>
-					<li>
-						<s:textfield
-							cssClass="checkReq"
-							name="primaryContact.phone"
-							required="true"
-							size="20"
-							theme="formhelp"
-						/>
-						<div id="match_phone"></div>
-					</li>
-					<li>
-						<s:textfield
-							cssClass="checkReq"
-							id="email"
-							name="primaryContact.email"
-							required="true"
-							size="30"
-							theme="formhelp"
-						/>
-						<div id="match_email"></div>
-					</li>
-					<li>
-						<s:textfield
-							cssClass="checkReq"
-							id="taxID"
-							maxLength="9"
-							name="requestedContractor.taxId"
-							size="9"
-							theme="formhelp"
-						/>
-						<div id="match_tax"></div>
-					</li>
-				</ol>
-			</fieldset>
-			<fieldset class="form">
-				<h2 class="formLegend">
-					<s:text name="global.PrimaryAddress" />
-				</h2>
-				
-				<ol>
-					<li>
-						<s:select
-							id="country"
-							list="countryList"
-							listKey="isoCode" 
-							listValue="name"
-							name="requestedContractor.country"
-							required="true"
-							theme="formhelp"
-							value="%{requestedContractor.country.isoCode}"
-						/>
-					</li>
-					<li id="country_subdivision">
-						<s:if test="requestedContractor.country != null">
+			
+				<fieldset class="form">
+					<h2 class="formLegend">
+						<s:text name="RequestNewContractor.header.CompanyInformation" />
+					</h2>
+					
+					<ol>
+						<li>
+							<s:textfield
+								cssClass="checkReq"
+								id="company_name"
+								name="requestedContractor.name"
+								size="35"
+								theme="formhelp"
+								required="true"
+							/>
+							<div id="match_name"></div>
+						</li>
+						<li>
+							<s:textfield
+								cssClass="checkReq"
+								id="contact_name"
+								name="primaryContact.name"
+								theme="formhelp"
+								required="true"
+							/>
+							<div id="match_contact"></div>
+						</li>
+						<li>
+							<s:textfield
+								cssClass="checkReq"
+								name="primaryContact.phone"
+								required="true"
+								size="20"
+								theme="formhelp"
+							/>
+							<div id="match_phone"></div>
+						</li>
+						<li>
+							<s:textfield
+								cssClass="checkReq"
+								id="email"
+								name="primaryContact.email"
+								required="true"
+								size="30"
+								theme="formhelp"
+							/>
+							<div id="match_email"></div>
+						</li>
+						<li>
+							<s:textfield
+								cssClass="checkReq"
+								id="taxID"
+								maxLength="9"
+								name="requestedContractor.taxId"
+								size="9"
+								theme="formhelp"
+							/>
+							<div id="match_tax"></div>
+						</li>
+					</ol>
+				</fieldset>
+				<fieldset class="form">
+					<h2 class="formLegend">
+						<s:text name="global.PrimaryAddress" />
+					</h2>
+					
+					<ol>
+						<li>
 							<s:select
-								id="countrySubdivision_sel"
-								label="%{requestedContractor.country.isoCode == 'CA' ? 'ContractorAccount.province' : 'ContractorAccount.countrySubdivision'}"
-								list="getCountrySubdivisionList(requestedContractor.country.isoCode)"
-								listKey="isoCode"
-								listValue="simpleName"
-								name="requestedContractor.countrySubdivision"
+								id="country"
+								list="countryList"
+								listKey="isoCode" 
+								listValue="name"
+								name="requestedContractor.country"
 								required="true"
 								theme="formhelp"
-								value="%{requestedContractor.countrySubdivision.isoCode}"
+								value="%{requestedContractor.country.isoCode}"
 							/>
-						</s:if>
-					</li>
-					<li>
-						<s:textfield
-							name="requestedContractor.city"
-							size="20"
-							id="city"
-							theme="formhelp"
-						/>
-					</li>
-					<li class="address-zip">
-						<s:textfield
-							name="requestedContractor.address"
-							size="35"
-							id="address"
-							theme="formhelp"
-						/>
-					</li>
-					<li class="address-zip">
-						<s:textfield
-							name="requestedContractor.zip"
-							size="7"
-							id="zip"
-							theme="formhelp"
-						/>
-					</li>
-				</ol>
-			</fieldset>
+						</li>
+						<li id="country_subdivision">
+							<s:if test="requestedContractor.country != null">
+								<s:select
+									id="countrySubdivision_sel"
+									label="%{requestedContractor.country.isoCode == 'CA' ? 'ContractorAccount.province' : 'ContractorAccount.countrySubdivision'}"
+									list="getCountrySubdivisionList(requestedContractor.country.isoCode)"
+									listKey="isoCode"
+									listValue="simpleName"
+									name="requestedContractor.countrySubdivision"
+									required="true"
+									theme="formhelp"
+									value="%{requestedContractor.countrySubdivision.isoCode}"
+								/>
+							</s:if>
+						</li>
+						<li>
+							<s:textfield
+								name="requestedContractor.city"
+								size="20"
+								id="city"
+								theme="formhelp"
+							/>
+						</li>
+						<li class="address-zip">
+							<s:textfield
+								name="requestedContractor.address"
+								size="35"
+								id="address"
+								theme="formhelp"
+							/>
+						</li>
+						<li class="address-zip">
+							<s:textfield
+								name="requestedContractor.zip"
+								size="7"
+								id="zip"
+								theme="formhelp"
+							/>
+						</li>
+					</ol>
+				</fieldset>
 			
 			<fieldset class="form">
 				<h2 class="formLegend">

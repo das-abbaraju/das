@@ -117,7 +117,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	public String save() throws Exception {
 		checkPermissions();
 
-		boolean newRequest = requestedContractor.getId() == 0;
+		boolean newRequest = requestRelationship.getId() == 0;
 
 		saveRequestComponentsAndEmailIfNew(newRequest);
 
@@ -520,7 +520,11 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		// Save notes to RR note field and a new Note entity
 		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
 
-		addNote(requestedContractor, note);
+		if (permissions.isPicsEmployee()) {
+			addNote(requestedContractor, note);
+		} else {
+			addNote(requestedContractor, note, noteCategory, permissions.getAccountId());
+		}
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
