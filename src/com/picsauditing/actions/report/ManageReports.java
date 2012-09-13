@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
@@ -114,15 +115,18 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String searchList() {
+		userReports = new ArrayList<ReportUser>();
 		try {
 			userReports = reportModel.getUserReportsForSearch(searchTerm, permissions.getUserId(), pagination);
+			if (CollectionUtils.isEmpty(userReports)) {
+				addActionMessage("No Reports found.");
+			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
-		}
-
-		if (CollectionUtils.isEmpty(userReports)) {
-			addActionMessage("No Reports found.");
-			userReports = new ArrayList<ReportUser>();
+			addActionError("Unexpected error occurred while searching for reports.");
+			if (permissions.has(OpPerms.Debug)) {
+				addActionError(e.getMessage());
+			}
 		}
 
 		if (AjaxUtils.isAjax(request())) {
