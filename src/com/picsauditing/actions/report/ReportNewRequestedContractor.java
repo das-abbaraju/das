@@ -107,10 +107,15 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.isCorporate()) {
 				getFilter().setShowOperator(true);
-				sql.addWhere("requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+				sql.addWhere("gc.genID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
 						+ permissions.getAccountId() + ")");
-			} else
-				sql.addWhere("requestedByID = " + permissions.getAccountId());
+
+				legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
+						+ permissions.getAccountId() + ")");
+			} else {
+				sql.addWhere("gc.genID = " + permissions.getAccountId());
+				legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
+			}
 		}
 
 		orderByDefault = "deadline, name";
@@ -149,7 +154,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 					getFilter().getRequestStatus())) {
 				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone > 0");
 			} else {
-				sql.addWhere("a.status IN ('Deactivated') AND c.reason IS NOT NULL");
+				sql.addWhere("a.status IN ('Deactivated') AND a.reason IS NOT NULL");
 			}
 		}
 
