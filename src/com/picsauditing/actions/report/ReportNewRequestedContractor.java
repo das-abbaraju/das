@@ -13,7 +13,6 @@ import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
@@ -87,13 +86,20 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		if (permissions.isPicsEmployee()) {
 			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN user_assignment ua ON ua.country = country AND ua.userID = "
-						+ permissions.getUserId() + "\nWHERE " + "(countrySubdivision = ua.countrySubdivision OR zip "
+				sql.addJoin("JOIN user_assignment ua ON ua.country = a.country AND ua.userID = "
+						+ permissions.getUserId() + " AND (a.countrySubdivision = ua.countrySubdivision OR a.zip "
+						+ "BETWEEN ua.postal_start AND ua.postal_end)");
+
+				legacy.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
+						+ permissions.getUserId() + " AND (cr.countrySubdivision = ua.countrySubdivision OR cr.zip "
 						+ "BETWEEN ua.postal_start AND ua.postal_end)");
 			}
 
 			if (isAmSales() && !getFilter().isViewAll()) {
-				sql.addJoin("JOIN account_user au ON au.accountID = requestedByID AND au.startDate < NOW() "
+				sql.addJoin("JOIN account_user au ON au.accountID = a.requestedByID AND au.startDate < NOW() "
+						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
+
+				legacy.addJoin("JOIN account_user au ON au.accountID = cr.requestedByID AND au.startDate < NOW() "
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 			}
 		}
@@ -388,8 +394,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql_new.addField("requestedUser.name AS RequestedUser");
 		sql_new.addField("gc.requestedByUser AS RequestedByUserOther");
 		sql_new.addField("gc.deadline");
-		sql_new.addField("pics.id AS ContactedByID");
 		sql_new.addField("pics.name AS ContactedBy");
+		sql_new.addField("pics.id AS ContactedByID");
 		sql_new.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
 		sql_new.addField("(c.contactCountByEmail + c.contactCountByPhone) AS contactCount");
 		sql_new.addField("c.expiresOnDate AS closedOnDate");
