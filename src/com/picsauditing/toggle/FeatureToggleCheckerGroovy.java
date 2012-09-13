@@ -39,24 +39,18 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private AppPropertyDAO appPropertyDAO;
 
 	public boolean isFeatureEnabled(String toggleName) {
-		String scriptBody = scriptBodyFromProperty(toggleName);
-		if (scriptBody == null) {
-			return false;
-		}
-		
-		Script script = script(toggleName, scriptBody);
+		Script script = script(toggleName);
 		if (script == null) {
 			return false;
 		}
-		
-		return runScript(script);
+		return runScript(toggleName, script);
 	}
 
-	private Script script(String toggleName, String scriptBody) {
+	private Script script(String toggleName) {
 		Script script = scriptFromCache(toggleName);
 		if (script == null) {
 			try {
-				script = createScript(scriptBody);
+				script = createScript(scriptBodyFromProperty(toggleName));
 				cacheScript(toggleName, script);
 			} catch (FeatureToggleException e) {
 				logger.error("Error executing toggle {}: {}", toggleName, e.getMessage());
@@ -66,7 +60,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		return script;
 	}
 
-	private boolean runScript(Script script) {
+	private boolean runScript(String toggleName, Script script) {
 		try {
 			Object scriptResult = script.run();
 			if (scriptResult instanceof Boolean) {
@@ -77,6 +71,9 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		} catch (Exception e) {
 			// any exception should result in false script
 			logger.error("Toggle script threw an exception; result will be false: {}", e.getMessage());
+			if (permissions == null) {
+				unCacheScript(toggleName);
+			}
 		}
 		return false;
 	}
@@ -92,16 +89,21 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private Script createScript(String scriptBody) throws FeatureToggleException {
 		CompilerConfiguration conf = new CompilerConfiguration();
 		conf.setScriptBaseClass("com.picsauditing.toggle.FeatureToggleExpressions");
-		Binding binding = new Binding();
-		binding.setVariable("appPropertyDAO", appPropertyDAO);
-		binding.setVariable("permissions", getPermissions());
+		Binding binding = binding();
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		GroovyShell groovy = new GroovyShell(classLoader, binding, conf);
 		try {
 			return groovy.parse(scriptBody);
-		} catch (CompilationFailedException e) {
+		} catch (Exception e) {
 			throw new FeatureToggleException(e.getMessage());
 		}
+	}
+
+	private Binding binding() {
+		Binding binding = new Binding();
+		binding.setVariable("appPropertyDAO", appPropertyDAO);
+		binding.setVariable("permissions", getPermissions());
+		return binding;
 	}
 
 	private Script scriptFromCache(String toggleName) {
@@ -112,6 +114,7 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 			if (element != null) {
 				Object object = element.getObjectValue();
 				if (object instanceof Script) {
+					((Script) object).setBinding(binding());
 					return (Script) object;
 				}
 			}
@@ -119,9 +122,21 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		return null;
 	}
 
-	private void cacheScript(String toggleName, Script script) throws FeatureToggleException {
+	private void unCacheScript(String toggleName) {
+		Cache cache = cache();
+		if (cache != null) {
+			cache.remove(toggleName);
+		}
+	}
+
+	private Cache cache() {
 		CacheManager cacheManager = cacheManager();
 		Cache cache = cacheManager.getCache(cacheName);
+		return cache;
+	}
+
+	private void cacheScript(String toggleName, Script script) throws FeatureToggleException {
+		Cache cache = cache();
 		if (cache != null) {
 			cache.put(new Element(toggleName, script));
 		} else {
