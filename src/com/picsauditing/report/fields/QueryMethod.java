@@ -8,9 +8,10 @@ public enum QueryMethod {
 	Max(true),
 	Min(true),
 	
-	Average(true), 
+	Average(true, ExtFieldType.Float),
 	Round(false, ExtFieldType.Int), // Parameter means decimal place
 	Sum(true),
+	StdDev(true, ExtFieldType.Float),
 	
 	Left, // Parameter means number of characters
 	Length,
