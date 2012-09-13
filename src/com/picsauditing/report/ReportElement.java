@@ -134,6 +134,8 @@ public class ReportElement implements JSONable {
 			return "GROUP_CONCAT(" + fieldSql + ")";
 		case Hour:
 			return "HOUR(" + fieldSql + ")";
+		case Length:
+			return "LENGTH(" + fieldSql + ")";
 		case Left:
 			return "LEFT(" + fieldSql + ")";
 		case LowerCase:
@@ -146,6 +148,8 @@ public class ReportElement implements JSONable {
 			return "MONTH(" + fieldSql + ")";
 		case Round:
 			return "ROUND(" + fieldSql + ")";
+		case StdDev:
+			return "STDDEV(" + fieldSql + ")";
 		case Sum:
 			return "SUM(" + fieldSql + ")";
 		case UpperCase:
