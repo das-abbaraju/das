@@ -684,6 +684,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		alertMessages = null;
 	}
 
+	public synchronized void clearMessages() {
+		setActionErrors(null);
+		setAlertMessages(null);
+		setActionMessages(null);
+	}
+	
 	public void setAlertMessages(Collection<String> messages) {
 		alertMessages = messages;
 	}
