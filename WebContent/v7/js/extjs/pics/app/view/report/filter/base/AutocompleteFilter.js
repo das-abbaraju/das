@@ -2,10 +2,6 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilterbaseautocompletefilter'],
 
-    requires: [
-        'Ext.ux.form.BoxSelect'
-    ],
-
     cls: 'autocomplete-filter',
 
     initComponent: function () {
@@ -40,37 +36,6 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             valueField: 'key',
             width: 258
         };
-
-        return Ext.create('Ext.ux.form.BoxSelect', {
-            delimiter: ',',
-            displayField: 'value',
-            forceSelection: true,
-            hideTrigger: true,
-            listeners: {
-                beforequery: function (queryEvent, options) {
-                    //prevent empty queries
-                    if (!queryEvent.query) {
-                        return false;
-                    }
-                },
-                change: function (obj, newval, oldval, options) {
-                    newval = newval.replace(/\s/g,"");
-
-                    record.set('value', newval);
-                }
-            },
-            margin: '0 5 0 0',
-            minChars: 1,
-            mode: 'remote',
-            multiSelect: true,
-            name: 'list_value',
-            queryParam: 'searchQuery',
-            store: store,
-            typeAhead: false,
-            value: value,
-            valueField: 'key',
-            width: 258
-        });
     },
 
     getStoreForAutocomplete: function (record) {

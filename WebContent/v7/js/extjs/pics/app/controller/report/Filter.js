@@ -90,8 +90,7 @@ Ext.define('PICS.controller.report.Filter', {
             #report_filters textfield,\
             #report_filters numberfield,\
             #report_filters datefield,\
-            #report_filters checkbox,\
-            #report_filters comboboxselect\
+            #report_filters checkbox\
             ': {
                 blur: this.onFilterBlur,
                 focus: this.onFilterFocus
