@@ -45,59 +45,54 @@ Ext.define('PICS.model.report.Column', {
         if (!field) {
             Ext.Error.raise('Invalid available field');
         }
-
-        var grid_column = {
-            dataIndex: field.get('name'),
-            menuDisabled: true,
-            sortable: false,
-            text: field.get('text'),
-            width: field.get('width') || 150
+        
+        var type = field.get('type');
+        
+        var config = {
+    		record: this
         };
 
-        switch (field.get('type')) {
-            case 'boolean':
-                grid_column.align = 'center';
-                grid_column.renderer = function (value) {
-                    if (value) {
-                        return '<i class="icon-ok"></i>';
-                    }
-
-                    return '';
-                };
-                grid_column.width = 50;
+        switch (type) {
+        	// <i class="icon-ok"></i>
+        	case 'boolean':
+            	grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
                 break;
-            case 'datetime':
-                // TODO add in datetime display
+            // Y-m-d
             case 'date':
-                grid_column.xtype = 'datecolumn';
-                grid_column.format = 'n/j/Y';
+            	grid_column = Ext.create('PICS.ux.grid.column.Date', config);
 
                 break;
-            case 'float':
-                grid_column.xtype = 'numbercolumn';
-                grid_column.align = 'right';
-                grid_column.width = 75;
-
-                break;
-            case 'number':
-                // TODO add in number display
-            case 'int':
-                grid_column.xtype = 'numbercolumn';
-                grid_column.align = 'right';
-                grid_column.format = '0000';
-                grid_column.width = 75;
-
-                break;
+            // <i class="icon-flag"></i>
             case 'flag':
-                // TODO add in the flag display
-            default:
-                break;
-        }
+            	grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
 
-        if (field.get('url')) {
-            grid_column.xtype = 'linkcolumn';
-            grid_column.url = field.get('url');
+                break;
+            // 1,234.00
+            case 'float':
+            	grid_column = Ext.create('PICS.ux.grid.column.Float', config);
+
+                break;
+            // 1234
+            case 'int':
+            	grid_column = Ext.create('PICS.ux.grid.column.Int', config);
+
+                break;
+             // link
+            case 'link':
+            	grid_column = Ext.create('PICS.ux.grid.column.Link', config);
+            	break;
+            // 1,234
+            case 'number':
+            	grid_column = Ext.create('PICS.ux.grid.column.Number', config);
+
+                break;
+        	// text
+            case 'string':
+            default:
+            	grid_column = Ext.create('PICS.ux.grid.column.Column', config);
+            	
+                break;
         }
 
         return grid_column;
