@@ -12,6 +12,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import groovy.lang.Script;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
 
 import net.sf.ehcache.Cache;
@@ -163,6 +165,24 @@ public class FeatureToggleCheckerGroovyTest {
 		when(permissions.hasGroup(User.GROUP_STAKEHOLDER)).thenReturn(true);
 		falseScript("releaseToUserAudienceLevel(1)");
 		falseScript("import com.picsauditing.access.BetaPool\n releaseToUserAudienceLevel(BetaPool.Developer)");
+	}
+
+	@Test
+	public void testGroovyScript_UserIsMemberOfAny() throws Exception {
+		when(permissions.getGroupNames()).thenReturn(new ArrayList<String>() {
+			{
+				add("test1");
+				add("test2");
+			}
+		});
+		when(permissions.getGroupIds()).thenReturn(new HashSet<Integer>() {
+			{
+				add(1);
+				add(2);
+			}
+		});
+		trueScript("userIsMemberOfAny(['test2'])");
+		trueScript("userIsMemberOfAny(['test2', 'notMember'])");
 	}
 
 	@Test
