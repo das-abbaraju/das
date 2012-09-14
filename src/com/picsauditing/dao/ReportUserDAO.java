@@ -250,7 +250,7 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 
 	@Override
 	public List<ReportUser> getPaginationResults(PaginationParameters parameters) {
-		ReportPaginationParameters reportParams = (ReportPaginationParameters)parameters;
+		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
 		// TODO escape properly
@@ -279,7 +279,7 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 
 	@Override
 	public int getPaginationOverallCount(PaginationParameters parameters) {
-		ReportPaginationParameters reportParams = (ReportPaginationParameters)parameters;
+		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
 
 		// TODO escape properly
 		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";

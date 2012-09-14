@@ -163,15 +163,17 @@ public class ReportModel {
 		}
 	}
 
+	/**
+	 * By default, show the top ten most favorited reports sorted by number of favorites.
+	 * Otherwise, search on all public reports and all of the user's reports.
+	 */
 	public List<ReportUser> getUserReportsForSearch(String searchTerm, int userId, Pagination<ReportUser> pagination) {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
-		if (Strings.isEmpty(searchTerm)) {
-			// By default, show the top ten most favorited reports sorted by number of favorites
+		if (Strings.isEmpty(searchTerm)) {	
 			userReports = reportUserDao.findTenMostFavoritedReports(userId);
 		} else {
-			// Otherwise, search on all public reports and all of the user's reports
-			ReportPaginationParameters parameters = new ReportPaginationParameters(userId, searchTerm);
+			ReportPaginationParameters parameters = new ReportPaginationParameters(userId, searchTerm);		
 			pagination.Initialize(parameters, reportUserDao);
 			userReports = pagination.getResults();
 		}
