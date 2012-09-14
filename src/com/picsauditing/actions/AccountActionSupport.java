@@ -183,24 +183,6 @@ public class AccountActionSupport extends PicsActionSupport {
 	public CountrySubdivisionDAO getCountrySubdivisionDAO() {
 		return countrySubdivisionDAO;
 	}
-	
-	public CountrySubdivision getCountrySubdivision() {
-		CountrySubdivision value = null;
-		Account account = accountDAO.find(id, "Contractor");
-		if (account != null) {
-			value=account.getCountrySubdivision();
-		}
-		return value;
-	}
-
-	public String getCountrySubdivisionString() {
-		String value = "";
-		Account account = accountDAO.find(id, "Contractor");
-		if (account != null) {
-			value=account.getCountrySubdivision().getSimpleName();
-		}
-		return value;
-	}
 
 	public List<Country> getCountryList() {
 		List<Country> countryList = countryDAO.findAll();
