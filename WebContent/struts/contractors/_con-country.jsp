@@ -26,9 +26,9 @@
         listKey="isoCode"
         listValue="simpleName"
         theme="pics"
-        value="countrySubdivisionString"
+        value="countrySubdivision"
     />
-	<s:if test="countrySubdivisionString.length() < 1" >
+	<s:if test="countrySubdivision == null" >
 		<span class="redMain" id="countrySubdivision_req">*</span>
 	</s:if>
 	<pics:fieldhelp title="Country Subdivision">
