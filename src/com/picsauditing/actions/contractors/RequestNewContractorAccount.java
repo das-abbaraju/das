@@ -520,11 +520,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		// Save notes to RR note field and a new Note entity
 		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
 
-		if (permissions.isPicsEmployee()) {
-			addNote(requestedContractor, note);
-		} else {
-			addNote(requestedContractor, note, noteCategory, permissions.getAccountId());
-		}
+		addNote(requestedContractor, note, noteCategory, requestRelationship.getOperatorAccount().getId());
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)

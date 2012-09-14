@@ -76,17 +76,22 @@
 			<s:hidden name="requestedContractor" />
 			<s:hidden name="requestedContractor.status" />
 			<s:hidden name="requestRelationship" />
+			
+			<s:if test="permissions.operator">
+				<s:hidden name="requestRelationship.operatorAccount" value="%{permissions.accountId}" />
+			</s:if>
+			
 			<s:hidden name="primaryContact" />
 			<s:hidden name="contactType" id="contact_type_field" />
 			<s:hidden name="contactNote" id="contact_note_field" />
 			
-			
-				<fieldset class="form">
-					<h2 class="formLegend">
-						<s:text name="RequestNewContractor.header.CompanyInformation" />
-					</h2>
-					
-					<ol>
+			<fieldset class="form">
+				<h2 class="formLegend">
+					<s:text name="RequestNewContractor.header.CompanyInformation" />
+				</h2>
+
+				<ol>
+					<s:if test="requestedContractor == 0 || permissions.picsEmployee">
 						<li>
 							<s:textfield
 								cssClass="checkReq"
@@ -140,14 +145,48 @@
 							/>
 							<div id="match_tax"></div>
 						</li>
-					</ol>
-				</fieldset>
-				<fieldset class="form">
-					<h2 class="formLegend">
-						<s:text name="global.PrimaryAddress" />
-					</h2>
-					
-					<ol>
+					</s:if>
+					<s:else>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.name" />
+							</label>
+							${requestedContractor.name}
+						</li>
+						<li>
+							<label>
+								<s:text name="User.name" />
+							</label>
+							${primaryContact.name}
+						</li>
+						<li>
+							<label>
+								<s:text name="User.phone" />
+							</label>
+							${primaryContact.phone}
+						</li>
+						<li>
+							<label>
+								<s:text name="User.email" />
+							</label>
+							${primaryContact.email}
+						</li>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.taxId" />
+							</label>
+							${requestedContractor.taxId}
+						</li>
+					</s:else>
+				</ol>
+			</fieldset>
+			<fieldset class="form">
+				<h2 class="formLegend">
+					<s:text name="global.PrimaryAddress" />
+				</h2>
+				
+				<ol>
+					<s:if test="requestedContractor == 0 || permissions.picsEmployee">
 						<li>
 							<s:select
 								id="country"
@@ -199,8 +238,41 @@
 								theme="formhelp"
 							/>
 						</li>
-					</ol>
-				</fieldset>
+					</s:if>
+					<s:else>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.country" />
+							</label>
+							${requestedContractor.country.name}
+						</li>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.countrySubdivision" />
+							</label>
+							${requestedContractor.countrySubdivision.simpleName}
+						</li>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.city" />
+							</label>
+							${requestedContractor.city}
+						</li>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.address" />
+							</label>
+							${requestedContractor.address}
+						</li>
+						<li>
+							<label>
+								<s:text name="ContractorAccount.zip" />
+							</label>
+							${requestedContractor.zip}
+						</li>
+					</s:else>
+				</ol>
+			</fieldset>
 			
 			<fieldset class="form">
 				<h2 class="formLegend">
