@@ -953,6 +953,10 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public void syncBalance() {
+		if (this.getStatus().isRequested()) {
+			return;
+		}
+
 		/**
 		 * Roll up the outstanding balance on all transactions
 		 */

@@ -87,13 +87,13 @@ public class BillingCalculatorSingle {
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private InvoiceObserver invoiceObserver;
-	
+
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
 	public void initService() {
 		salesCommissionDataObservable.addObserver(invoiceObserver);
 	}
-	
+
 	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
@@ -112,12 +112,16 @@ public class BillingCalculatorSingle {
 
 		contractor.setPayingFacilities(payingOperators.size());
 	}
-	
+
 	public void calculateAnnualFees(ContractorAccount contractor) {
 		calculateAnnualFees(contractor, true);
 	}
-	
+
 	private void calculateAnnualFees(ContractorAccount contractor, boolean persistChanges) {
+		if (contractor.getStatus().isRequested()) {
+			return;
+		}
+
 		setPayingFacilities(contractor);
 
 		int payingFacilities = contractor.getPayingFacilities();
@@ -266,7 +270,7 @@ public class BillingCalculatorSingle {
 		}
 
 	}
-	
+
 	private void saveContractorImportPqfFee(ContractorFee importPqfFee, boolean persistChanges) {
 		if (persistChanges) {
 			invoiceFeeDAO.save(importPqfFee);
@@ -341,16 +345,17 @@ public class BillingCalculatorSingle {
 	public Invoice createInvoice(ContractorAccount contractor, User user) {
 		return createInvoice(contractor, contractor.getBillingStatus(), user, true);
 	}
-	
+
 	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
 		return createInvoice(contractor, billingStatus, user, true);
 	}
-	
+
 	public Invoice createInvoiceWithoutSave(ContractorAccount contractor, User user) {
 		return createInvoice(contractor, contractor.getBillingStatus(), user, false);
 	}
-	
-	private Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user, boolean persistChanges) {
+
+	private Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user,
+			boolean persistChanges) {
 		calculateAnnualFees(contractor, persistChanges);
 
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
