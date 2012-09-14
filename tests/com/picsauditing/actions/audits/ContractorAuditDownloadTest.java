@@ -96,6 +96,8 @@ public class ContractorAuditDownloadTest {
 	@Mock
 	private HSSFWorkbook workbook;
 	@Mock
+	private AuditQuestion question;
+	@Mock
 	private HttpServletResponse response;
 	@Mock
 	private I18nCache i18nCache;
@@ -214,17 +216,12 @@ public class ContractorAuditDownloadTest {
 		verify(row, never()).createCell(anyInt());
 	}
 
-	@Ignore
 	@Test
 	public void testFillExcelQuestions_QuestionCurrent() throws Exception {
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-
 		List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 		questions.add(question);
 
 		Whitebox.setInternalState(auditDownload, "conAudit", audit);
-		// when(question.isValidQuestion(new Date())).thenReturn(true);
-		// when(question.isVisibleInAudit(audit)).thenReturn(true);
 		Whitebox.invokeMethod(auditDownload, "fillExcelQuestions", questions, 1);
 
 		verify(sheet).createRow(anyInt());
@@ -234,8 +231,8 @@ public class ContractorAuditDownloadTest {
 	@Ignore
 	@Test
 	public void testFillExcelQuestions_QuestionHyperlinkEmptyAnswer() throws Exception {
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		question.setName(EntityFactory.makeTranslatableString("<a href=\"Link\" target=\"Target\">Test</a>"));
+		// AuditQuestion question = EntityFactory.makeAuditQuestion();
+		// question.setName(EntityFactory.makeTranslatableString("<a href=\"Link\" target=\"Target\">Test</a>"));
 
 		AuditData data = EntityFactory.makeAuditData("", question);
 		List<AuditData> datas = new ArrayList<AuditData>();
@@ -309,6 +306,11 @@ public class ContractorAuditDownloadTest {
 		Whitebox.setInternalState(auditDownload, "permissionToViewContractor", permissionToViewContractor);
 		Whitebox.setInternalState(auditDownload, "sheet", sheet);
 		Whitebox.setInternalState(auditDownload, "workbook", workbook);
+
+		long time = (new Date()).getTime();
+		question.setEffectiveDate(new Date(time - (24 * 60 * 60 * 1000L)));
+		question.setExpirationDate(new Date(time + (24 * 60 * 60 * 1000L)));
+
 	}
 
 	private void setExpectedBehavior() throws Exception {
@@ -316,6 +318,12 @@ public class ContractorAuditDownloadTest {
 		when(audit.getContractorAccount()).thenReturn(contractor);
 		when(audit.isVisibleTo(permissions)).thenReturn(true);
 		when(audit.getValidDate()).thenReturn((new SimpleDateFormat("yyyy-MM-dd")).parse("2011-01-01"));
+
+		when(question.isCurrent()).thenReturn(true);
+		when(question.isValidQuestion(audit.getValidDate())).thenReturn(true);
+		when(question.isVisibleInAudit(audit)).thenReturn(true);
+		when(question.getName()).thenReturn(EntityFactory.makeTranslatableString("jUnit Mock Question Name"));
+
 		when(entityManager.find(eq(ContractorAudit.class), anyInt())).thenReturn(audit);
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.getAccountId()).thenReturn(contractor.getId());
@@ -328,9 +336,6 @@ public class ContractorAuditDownloadTest {
 		PowerMockito.doReturn(row).when(sheet).createRow(anyInt());
 		PowerMockito.doReturn(cell).when(row).createCell(anyInt());
 		PowerMockito.doReturn(cell).when(row).createCell(anyInt(), anyInt());
-		// PowerMockito.doReturn(true).when(question).isValidQuestion(new
-		// Date());
-		// PowerMockito.doReturn(true).when(question).isVisibleInAudit(audit);
 	}
 
 	private void verifyDownload() throws Exception {
