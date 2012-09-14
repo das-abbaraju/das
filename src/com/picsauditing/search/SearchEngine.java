@@ -202,7 +202,7 @@ public class SearchEngine {
 		sql.append("\n ) t").append(terms.size());
 
 		if (currPerm != null) {
-			String accountStatuses = "'Active','Pending'";
+			String accountStatuses = "'Requested','Active','Pending'";
 			String userStatuses = "'yes'";
 			if (currPerm.isPicsEmployee() || currPerm.getAccountStatus().isDemo())
 				accountStatuses += ",'Demo'";
@@ -282,7 +282,7 @@ public class SearchEngine {
 			sql.append(limit);
 		}
 
-		logger.info(marker, sql.toString());
+		logger.debug(marker, sql.toString());
 
 		return sql.toString();
 	}
@@ -295,7 +295,7 @@ public class SearchEngine {
 				+ " then 'C' when 'Corporate' then 'CO' when 'Operator' then 'O'"
 				+ "when 'Assessment' then 'AS' end indexType");
 		if (currPerm != null && !currPerm.isAdmin()) {
-			sql.addWhere("a.status IN ('Active','Pending')");
+			sql.addWhere("a.status IN ('Requested','Active','Pending')");
 		}
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
@@ -351,9 +351,9 @@ public class SearchEngine {
 		sql.addWhere("a.type IN ('Operator')");
 
 		if (currPerm != null && (currPerm.isMarketing() || currPerm.getAccountStatus().isDemo())) {
-			sql.addWhere("a.status IN ('Active','Pending','Demo')");
+			sql.addWhere("a.status IN ('Active','Pending', 'Requested','Demo')");
 		} else {
-			sql.addWhere("a.status IN ('Active')");
+			sql.addWhere("a.status IN ('Active','Requested')");
 		}
 
 		return sql.toString();

@@ -91,7 +91,7 @@
 				</h2>
 
 				<ol>
-					<s:if test="requestedContractor == 0 || permissions.picsEmployee">
+					<s:if test="permissions.picsEmployee || requestedContractor.id == 0">
 						<li>
 							<s:textfield
 								cssClass="checkReq"
@@ -186,7 +186,7 @@
 				</h2>
 				
 				<ol>
-					<s:if test="requestedContractor == 0 || permissions.picsEmployee">
+					<s:if test="permissions.picsEmployee || requestedContractor.id == 0">
 						<li>
 							<s:select
 								id="country"
