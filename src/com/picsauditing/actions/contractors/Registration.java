@@ -29,370 +29,394 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
-    private static Logger logger = LoggerFactory.getLogger(Registration.class);
+	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
-    @Autowired
-    private ContractorRegistrationRequestDAO requestDAO;
-    @Autowired
-    private ContractorTagDAO contractorTagDAO;
-    @Autowired
-    private CountrySubdivisionDAO countrySubdivisionDAO;
-    @Autowired
-    private EmailSender emailSender;
-    @Autowired
-    private InvoiceFeeDAO invoiceFeeDAO;
-    @Autowired
-    private OperatorTagDAO operatorTagDAO;
-    @Autowired
-    private UserDAO userDAO;
-    @Autowired
-    private UserLoginLogDAO userLoginLogDAO;
-    @Autowired
-    private VATValidator vatValidator;
-    @Autowired
-    protected PermissionBuilder permissionBuilder;
+	@Autowired
+	private ContractorRegistrationRequestDAO requestDAO;
+	@Autowired
+	private ContractorTagDAO contractorTagDAO;
+	@Autowired
+	private CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	private EmailSender emailSender;
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private OperatorTagDAO operatorTagDAO;
+	@Autowired
+	private UserDAO userDAO;
+	@Autowired
+	private UserLoginLogDAO userLoginLogDAO;
+	@Autowired
+	private VATValidator vatValidator;
+	@Autowired
+	protected PermissionBuilder permissionBuilder;
 
-    private User user;
-    private String username;
-    private String confirmPassword;
-    private int requestID;
-    private CountrySubdivision countrySubdivision;
+	private User user;
+	private String username;
+	private String confirmPassword;
+	private String registrationKey;
+	private int requestID;
+	private CountrySubdivision countrySubdivision;
 
-    @Anonymous
-    @Override
-    public String execute() throws Exception {
-        loadPermissions(false);
-        if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
-            addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
-            return SUCCESS;
-        }
+	@Anonymous
+	@Override
+	public String execute() throws Exception {
+		loadPermissions(false);
+		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
+			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
+			return SUCCESS;
+		}
 
-        if ("request".equalsIgnoreCase(button)) {
-            // check for basic rID...?
-            if (getParameter("rID") > 0)
-                requestID = getParameter("rID");
-            // Check for new requestID
-            if (requestID == 0)
-                requestID = getParameter("requestID");
+		if ("request".equalsIgnoreCase(button)) {
+			// check for basic rID...?
+			if (getParameter("rID") > 0)
+				requestID = getParameter("rID");
+			// Check for new requestID
+			if (requestID == 0)
+				requestID = getParameter("requestID");
 
-            if (requestID > 0) {
-                // Set the session variable
-                ActionContext.getContext().getSession().put("requestID", requestID);
-                ContractorRegistrationRequest crr = requestDAO.find(requestID);
+			if (requestID > 0) {
+				// Set the session variable
+				ActionContext.getContext().getSession().put("requestID", requestID);
+				ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
-                if (crr.getContractor() == null) {
-                    contractor = new ContractorAccount();
-                    contractor.setName(crr.getName());
-                    contractor.setPhone(crr.getPhone());
-                    contractor.setTaxId(crr.getTaxID());
-                    contractor.setAddress(crr.getAddress());
-                    contractor.setCity(crr.getCity());
-                    contractor.setZip(crr.getZip());
-                    contractor.setCountry(crr.getCountry());
-                    if (crr.getCountrySubdivision() != null) {
-                        contractor.setCountrySubdivision(crr.getCountrySubdivision());
-                    } else {
-                        contractor.setCountrySubdivision(null);
-                    }
+				if (crr.getContractor() == null) {
+					contractor = new ContractorAccount();
+					contractor.setName(crr.getName());
+					contractor.setPhone(crr.getPhone());
+					contractor.setTaxId(crr.getTaxID());
+					contractor.setAddress(crr.getAddress());
+					contractor.setCity(crr.getCity());
+					contractor.setZip(crr.getZip());
+					contractor.setCountry(crr.getCountry());
+					if (crr.getCountrySubdivision() != null) {
+						contractor.setCountrySubdivision(crr.getCountrySubdivision());
+					} else {
+						contractor.setCountrySubdivision(null);
+					}
 
-                    contractor.setRequestedBy(crr.getRequestedBy());
-                    contractor.setTaxId(crr.getTaxID());
+					contractor.setRequestedBy(crr.getRequestedBy());
+					contractor.setTaxId(crr.getTaxID());
 
-                    user = new User();
-                    user.setName(crr.getContact());
-                    user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
-                    user.setPhone(crr.getPhone());
-                } else {
-                    addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
-                    return SUCCESS;
-                }
-            }
-        }
+					user = new User();
+					user.setName(crr.getContact());
+					user.setEmail(EmailAddressUtils.validate(crr.getEmail()));
+					user.setPhone(crr.getPhone());
+				} else {
+					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+					return SUCCESS;
+				}
+			}
+		}
 
-        return SUCCESS;
-    }
+		if (!Strings.isEmpty(registrationKey)) {
+			List<ContractorAccount> requestsByHash = contractorAccountDao.findWhere("a.registrationHash = '"
+					+ registrationKey + "'");
 
-    @Anonymous
-    public String createAccount() throws Exception {
-        loadPermissions(false);
-        if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
-            addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
-            return SUCCESS;
-        }
-        permissions = null;
+			if (requestsByHash != null && !requestsByHash.isEmpty()) {
+				if (requestsByHash.get(0).getStatus().isRequested()) {
+					contractor = requestsByHash.get(0);
+					user = contractor.getPrimaryContact();
+				} else {
+					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+				}
+			}
+		}
 
-        setupUserData();
-        setupContractorData();
-        contractorAccountDao.save(contractor);
-        if (user.getEmail().length() > 0)
-            user.setEmail(EmailAddressUtils.validate(user.getEmail()));
-        userDAO.save(user);
+		return SUCCESS;
+	}
 
-        // requires id for user to exist to seed the password properly
-        user.setEncryptedPassword(user.getPassword());
-        userDAO.save(user);
+	@Anonymous
+	public String createAccount() throws Exception {
+		loadPermissions(false);
+		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
+			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
+			return SUCCESS;
+		}
+		permissions = null;
 
-        contractor.setAgreedBy(user);
-        contractor.setPrimaryContact(user);
-        contractorAccountDao.save(contractor);
+		setupUserData();
+		setupContractorData();
+		contractorAccountDao.save(contractor);
+		if (user.getEmail().length() > 0)
+			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
+		userDAO.save(user);
 
-        permissions = logInUser();
-        addClientSessionCookieToResponse();
-        setLoginLog(permissions);
-        // they don't have an account yet so they won't get this as a default
-        permissions.setSessionCookieTimeoutInSeconds(3600);
+		// requires id for user to exist to seed the password properly
+		user.setEncryptedPassword(user.getPassword());
+		userDAO.save(user);
 
-        sendWelcomeEmail();
-        addNote(contractor, "Welcome Email Sent");
+		contractor.setAgreedBy(user);
+		contractor.setPrimaryContact(user);
+		contractorAccountDao.save(contractor);
 
-        if (requestID > 0) {
-            ContractorRegistrationRequest crr = updateRegistrationRequest();
+		permissions = logInUser();
+		addClientSessionCookieToResponse();
+		setLoginLog(permissions);
+		// they don't have an account yet so they won't get this as a default
+		permissions.setSessionCookieTimeoutInSeconds(3600);
 
-            Note note = addNote(contractor, "Requested Contractor Registered");
-            note.setBody("Contractor '" + crr.getName() + "' requested by " + crr.getRequestedBy().getName()
-                    + " has registered.");
+		sendWelcomeEmail();
+		addNote(contractor, "Welcome Email Sent");
 
-            dao.save(note);
-        }
+		if (requestID > 0) {
+			ContractorRegistrationRequest crr = updateRegistrationRequest();
 
-        return setUrlForRedirect(getRegistrationStep().getUrl());
-    }
+			Note note = addNote(contractor, "Requested Contractor Registered");
+			note.setBody("Contractor '" + crr.getName() + "' requested by " + crr.getRequestedBy().getName()
+					+ " has registered.");
 
-    private ContractorRegistrationRequest updateRegistrationRequest() {
-        ContractorRegistrationRequest crr = requestDAO.find(requestID);
+			dao.save(note);
+		}
 
-        crr.setContractor(contractor);
-        crr.setMatchCount(1);
-        crr.setAuditColumns();
-        crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
-                + " - Account created through completing a Registration Request\n\n" + crr.getNotes());
-        crr.setStatus(crr.getContactCountByPhone() > 0 ? ContractorRegistrationRequestStatus.ClosedContactedSuccessful
-                : ContractorRegistrationRequestStatus.ClosedSuccessful);
+		return setUrlForRedirect(getRegistrationStep().getUrl());
+	}
 
-        requestDAO.save(crr);
+	private ContractorRegistrationRequest updateRegistrationRequest() {
+		ContractorRegistrationRequest crr = requestDAO.find(requestID);
 
-        transferRegistrationRequestTags(crr);
+		crr.setContractor(contractor);
+		crr.setMatchCount(1);
+		crr.setAuditColumns();
+		crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
+				+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
+		crr.setStatus(crr.getContactCountByPhone() > 0 ? ContractorRegistrationRequestStatus.ClosedContactedSuccessful
+				: ContractorRegistrationRequestStatus.ClosedSuccessful);
 
-        return crr;
-    }
+		requestDAO.save(crr);
 
-    private void transferRegistrationRequestTags(ContractorRegistrationRequest crr) {
-        if (!Strings.isEmpty(crr.getOperatorTags())) {
-            for (String tagID : crr.getOperatorTags().split(",")) {
-                try {
-                    OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
+		transferRegistrationRequestTags(crr);
 
-                    if (tag.getOperator().getStatus().isActive()) {
-                        ContractorTag contractorTag = new ContractorTag();
-                        contractorTag.setTag(tag);
-                        contractorTag.setContractor(contractor);
-                        contractorTag.setAuditColumns(permissions);
+		return crr;
+	}
 
-                        contractorTagDAO.save(contractorTag);
-                        contractor.getOperatorTags().add(contractorTag);
-                    }
-                } catch (Exception exception) {
-                    logger.error("Error in transferring registration request tag {}\n{}", new Object[]{tagID,
-                            exception});
-                }
-            }
-        }
-    }
+	private void transferRegistrationRequestTags(ContractorRegistrationRequest crr) {
+		if (!Strings.isEmpty(crr.getOperatorTags())) {
+			for (String tagID : crr.getOperatorTags().split(",")) {
+				try {
+					OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
 
-    protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
-        EmailBuilder emailBuilder = new EmailBuilder();
-        emailBuilder.setTemplate(2);
-        emailBuilder.setUser(user);
-        emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-        // TODO move to EncodedKey
-        user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-        String confirmLink = "http://www.picsorganizer.com/Login.action?username="
-                + URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
-        emailBuilder.addToken("confirmLink", confirmLink);
-        emailBuilder.addToken("contactName", user.getName());
-        emailBuilder.addToken("userName", user.getUsername());
+					if (tag.getOperator().getStatus().isActive()) {
+						ContractorTag contractorTag = new ContractorTag();
+						contractorTag.setTag(tag);
+						contractorTag.setContractor(contractor);
+						contractorTag.setAuditColumns(permissions);
 
-        EmailQueue emailQueue = emailBuilder.build();
-        emailQueue.setHtml(true);
-        emailQueue.setVeryHighPriority();
-        emailQueue.setViewableById(Account.EVERYONE);
-        emailSender.send(emailQueue);
-    }
+						contractorTagDAO.save(contractorTag);
+						contractor.getOperatorTags().add(contractorTag);
+					}
+				} catch (Exception exception) {
+					logger.error("Error in transferring registration request tag {}\n{}", new Object[] { tagID,
+							exception });
+				}
+			}
+		}
+	}
 
-    private void setLoginLog(Permissions permissions) {
-        UserLoginLog loginLog = new UserLoginLog();
-        loginLog.setLoginDate(new Date());
-        loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
+	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(2);
+		emailBuilder.setUser(user);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+		// TODO move to EncodedKey
+		user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+		String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+				+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+		emailBuilder.addToken("confirmLink", confirmLink);
+		emailBuilder.addToken("contactName", user.getName());
+		emailBuilder.addToken("userName", user.getUsername());
 
-        String serverName = ServletActionContext.getRequest().getLocalName();
-        try {
-            if (isLiveEnvironment()) {
-                // Need computer name instead of www
-                serverName = InetAddress.getLocalHost().getHostName();
-            }
-        } catch (UnknownHostException justUseRequestServerName) {
-        }
+		EmailQueue emailQueue = emailBuilder.build();
+		emailQueue.setHtml(true);
+		emailQueue.setVeryHighPriority();
+		emailQueue.setViewableById(Account.EVERYONE);
+		emailSender.send(emailQueue);
+	}
 
-        loginLog.setServerAddress(serverName);
+	private void setLoginLog(Permissions permissions) {
+		UserLoginLog loginLog = new UserLoginLog();
+		loginLog.setLoginDate(new Date());
+		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
 
-        loginLog.setSuccessful(permissions.isLoggedIn());
-        loginLog.setUser(user);
-        userLoginLogDAO.save(loginLog);
-    }
+		String serverName = ServletActionContext.getRequest().getLocalName();
+		try {
+			if (isLiveEnvironment()) {
+				// Need computer name instead of www
+				serverName = InetAddress.getLocalHost().getHostName();
+			}
+		} catch (UnknownHostException justUseRequestServerName) {
+		}
 
-    private Permissions logInUser() throws Exception {
-        Permissions permissions = permissionBuilder.login(user);
-        ActionContext.getContext().getSession().put("permissions", permissions);
-        return permissions;
-    }
+		loginLog.setServerAddress(serverName);
 
-    private void setupUserData() {
-        user.setActive(true);
-        user.setAccount(contractor);
-        user.setTimezone(contractor.getTimezone());
-        user.setLocale(ActionContext.getContext().getLocale());
-        user.setAuditColumns(new User(User.CONTRACTOR));
-        user.setIsGroup(YesNo.No);
-        user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
-        user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
-        user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
-        user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
-        user.setLastLogin(new Date());
-    }
+		loginLog.setSuccessful(permissions.isLoggedIn());
+		loginLog.setUser(user);
+		userLoginLogDAO.save(loginLog);
+	}
 
-    protected void setupContractorData() {
-        contractor.setType("Contractor");
-        if (contractor.getName().contains("^^^")) {
-            contractor.setStatus(AccountStatus.Demo);
-            contractor.setName(contractor.getName().replaceAll("^", "").trim());
-        }
+	private Permissions logInUser() throws Exception {
+		Permissions permissions = permissionBuilder.login(user);
+		ActionContext.getContext().getSession().put("permissions", permissions);
+		return permissions;
+	}
 
-        if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
-            if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
-                CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
-                        .toString());
-                contractor.setCountrySubdivision(contractorCountrySubdivision);
-            }
-        } else {
-            contractor.setCountrySubdivision(null);
-        }
+	private void setupUserData() {
+		user.setActive(true);
+		user.setAccount(contractor);
+		user.setTimezone(contractor.getTimezone());
+		user.setLocale(ActionContext.getContext().getLocale());
+		user.setAuditColumns(new User(User.CONTRACTOR));
+		user.setIsGroup(YesNo.No);
+		user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
+		user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
+		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
+		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
+		user.setLastLogin(new Date());
+	}
 
-        contractor.setLocale(ActionContext.getContext().getLocale());
-        contractor.setPhone(user.getPhone());
-        contractor.setPaymentExpires(new Date());
-        contractor.setAuditColumns(new User(User.CONTRACTOR));
-        contractor.setNameIndex();
-        contractor.setQbSync(true);
-        contractor.setNaics(new Naics());
-        contractor.getNaics().setCode("0");
-        contractor.setNaicsValid(false);
-        contractor.setAgreementDate(contractor.getCreationDate());
-        contractor.getUsers().add(user);
+	protected void setupContractorData() {
+		contractor.setType("Contractor");
+		if (contractor.getName().contains("^^^")) {
+			contractor.setStatus(AccountStatus.Demo);
+			contractor.setName(contractor.getName().replaceAll("^", "").trim());
+		}
 
-        // Default their current membership to 0
-        List<FeeClass> feeClasses = Arrays.asList(FeeClass.BidOnly, FeeClass.ListOnly, FeeClass.DocuGUARD,
-                FeeClass.AuditGUARD, FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
-        for (FeeClass feeClass : feeClasses) {
-            ContractorFee newConFee = new ContractorFee();
-            newConFee.setAuditColumns(new User(User.CONTRACTOR));
-            newConFee.setContractor(contractor);
+		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
+			if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
+				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
+						.toString());
+				contractor.setCountrySubdivision(contractorCountrySubdivision);
+			}
+		} else {
+			contractor.setCountrySubdivision(null);
+		}
 
-            InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
-            newConFee.setCurrentLevel(currentFee);
-            newConFee.setNewLevel(currentFee);
-            newConFee.setFeeClass(feeClass);
-            contractor.getFees().put(feeClass, newConFee);
-        }
-    }
+		contractor.setStatus(AccountStatus.Pending);
+		contractor.setLocale(ActionContext.getContext().getLocale());
+		contractor.setPhone(user.getPhone());
+		contractor.setPaymentExpires(new Date());
+		contractor.setAuditColumns(new User(User.CONTRACTOR));
+		contractor.setNameIndex();
+		contractor.setQbSync(true);
+		contractor.setNaics(new Naics());
+		contractor.getNaics().setCode("0");
+		contractor.setNaicsValid(false);
+		contractor.setAgreementDate(contractor.getCreationDate());
+		contractor.getUsers().add(user);
 
-    public ContractorAccount getContractor() {
-        return contractor;
-    }
+		// Default their current membership to 0
+		List<FeeClass> feeClasses = Arrays.asList(FeeClass.BidOnly, FeeClass.ListOnly, FeeClass.DocuGUARD,
+				FeeClass.AuditGUARD, FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
+		for (FeeClass feeClass : feeClasses) {
+			ContractorFee newConFee = new ContractorFee();
+			newConFee.setAuditColumns(new User(User.CONTRACTOR));
+			newConFee.setContractor(contractor);
 
-    public void setContractor(ContractorAccount contractor) {
-        this.contractor = contractor;
-    }
+			InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
+			newConFee.setCurrentLevel(currentFee);
+			newConFee.setNewLevel(currentFee);
+			newConFee.setFeeClass(feeClass);
+			contractor.getFees().put(feeClass, newConFee);
+		}
+	}
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
 
-    @Override
-    public User getUser() {
-        return user;
-    }
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	@Override
+	public User getUser() {
+		return user;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public int getRequestID() {
-        return requestID;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setRequestID(int requestID) {
-        this.requestID = requestID;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    @Override
-    public ContractorRegistrationStep getPreviousRegistrationStep() {
-        return null;
-    }
+	public int getRequestID() {
+		return requestID;
+	}
 
-    @Override
-    public ContractorRegistrationStep getNextRegistrationStep() {
-        return null;
-    }
+	public void setRequestID(int requestID) {
+		this.requestID = requestID;
+	}
 
-    /**
-     * This shouldn't be getting called
-     */
-    @Override
-    public String previousStep() throws Exception {
-        return SUCCESS;
-    }
+	public String getRegistrationKey() {
+		return registrationKey;
+	}
 
-    /**
-     * This shouldn't be getting called either. After the first step of
-     * registration the Contractor account is created and this should redirect
-     * to ConEdit
-     */
-    @Override
-    public String nextStep() throws Exception {
-        return SUCCESS;
-    }
+	public void setRegistrationKey(String registrationKey) {
+		this.registrationKey = registrationKey;
+	}
 
-    public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
-        this.countrySubdivision = countrySubdivision;
-    }
+	@Override
+	public ContractorRegistrationStep getPreviousRegistrationStep() {
+		return null;
+	}
 
-    public CountrySubdivision getCountrySubdivision() {
-        return countrySubdivision;
-    }
+	@Override
+	public ContractorRegistrationStep getNextRegistrationStep() {
+		return null;
+	}
 
-    private void checkVAT() {
-        if (!contractor.getCountry().isEuropeanUnion()) {
-            return;
-        }
+	/**
+	 * This shouldn't be getting called
+	 */
+	@Override
+	public String previousStep() throws Exception {
+		return SUCCESS;
+	}
 
-        try {
-            contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
-        } catch (Exception e) {
-            contractor.setVatId(null);
-            addActionError(getText("VAT.Required"));
-        }
-    }
+	/**
+	 * This shouldn't be getting called either. After the first step of
+	 * registration the Contractor account is created and this should redirect
+	 * to ConEdit
+	 */
+	@Override
+	public String nextStep() throws Exception {
+		return SUCCESS;
+	}
+
+	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
+		this.countrySubdivision = countrySubdivision;
+	}
+
+	public CountrySubdivision getCountrySubdivision() {
+		return countrySubdivision;
+	}
+
+	private void checkVAT() {
+		if (!contractor.getCountry().isEuropeanUnion()) {
+			return;
+		}
+
+		try {
+			contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
+		} catch (Exception e) {
+			contractor.setVatId(null);
+			addActionError(getText("VAT.Required"));
+		}
+	}
 
 }
