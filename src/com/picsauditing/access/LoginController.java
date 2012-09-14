@@ -43,6 +43,9 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
+	// FIXME: there is already an AppPropertyDAO called propertyDAO in
+	// PicsActionSupport; get rid of this one in favor of the one in our
+	// superclass
 	@Autowired
 	protected AppPropertyDAO appPropertyDAO;
 

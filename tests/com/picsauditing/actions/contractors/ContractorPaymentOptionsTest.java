@@ -1,73 +1,76 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.fail;
-
-import java.util.Locale;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
+import com.opensymphony.xwork2.Action;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.util.PermissionToViewContractor;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class})
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class ContractorPaymentOptionsTest extends PicsTest {
-	ContractorPaymentOptions contractorPaymentOptions;
-	ContractorAccount contractor;
-	Permissions permissions;
+public class ContractorPaymentOptionsTest extends PicsActionTest {
+	private ContractorPaymentOptions contractorPaymentOptions;
 	
 	@Mock
-	ActionContext context;
-	
+	private ContractorAccountDAO contractorAccountDao;
+	@Mock
+	private AppPropertyDAO appPropDao;
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private PermissionToViewContractor permissionToViewContractor;
+
 	@Before
 	public void setUp() throws Exception {
-//		MockitoAnnotations.initMocks(this);
-//
-//		PowerMockito.mockStatic(ActionContext.class);
-//		PowerMockito.when(ActionContext.getContext()).thenReturn(context);
-//		PowerMockito.when(context.getName()).thenReturn("Test");
-//		PowerMockito.when(context.get(ActionContext.LOCALE)).thenReturn(Locale.ENGLISH);
-//		
-//		Mockito.when(i18nCache.hasKey("Test.title", null)).thenReturn(Boolean.TRUE);
-//		Mockito.when(i18nCache.hasKey("Test.title", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
-//		Mockito.when(i18nCache.getText("Test.title", Locale.ENGLISH, (Object[])null)).thenReturn("Test");
-//
-//		contractorPaymentOptions = new ContractorPaymentOptions();
-//		
-//		permissions = EntityFactory.makePermission();
-//		PicsTestUtil.forceSetPrivateField(contractorPaymentOptions, "permissions", permissions);
-//		
-//		contractor = EntityFactory.makeContractor();
-//		PicsTestUtil.forceSetPrivateField(contractorPaymentOptions, "contractor", contractor);
-		
+		MockitoAnnotations.initMocks(this);
+		setupMocks();
+		contractorPaymentOptions = new ContractorPaymentOptions();
+		setObjectUnderTestState(contractorPaymentOptions);
+
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(contractorPaymentOptions, this);
+
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(GREATER_THAN_ONE);
+		when(contractorAccountDao.find(anyInt())).thenReturn(contractor);
+		when(permissionToViewContractor.check(anyBoolean())).thenReturn(true);
+		when(appPropDao.find("brainTree.key")).thenReturn(new AppProperty("key", "key"));
+		when(appPropDao.find("brainTree.key_id")).thenReturn(new AppProperty("key_id", "key_id"));
+
+		Whitebox.setInternalState(contractorPaymentOptions, "permissionToViewContractor", permissionToViewContractor);
 	}
 
-//	@Ignore
-//	public void testDifferingExpirationDates() throws Exception{
-//		/*
-//		 * 
-//		 * 		key = appPropDao.find("brainTree.key").getValue();
-//		key_id = appPropDao.find("brainTree.key_id").getValue();
-//
-//*/
-//		Whitebox.invokeMethod(contractorPaymentOptions, "loadCC");
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testChangePaymentToCheck_NoCcOnFile() throws Exception {
+		when(contractor.isCcOnFile()).thenReturn(false);
+
+		String actionResult = contractorPaymentOptions.changePaymentToCheck();
+
+		verify(contractor).setPaymentMethod(PaymentMethod.Check);
+		verify(contractorAccountDao).save(contractor);
+		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
+	}
+
+	@Test
+	public void testChangePaymentToCheck_CcOnFile() throws Exception {
+		when(contractor.isCcOnFile()).thenReturn(true);
+
+		String actionResult = contractorPaymentOptions.changePaymentToCheck();
+
+		verify(contractor).setPaymentMethod(PaymentMethod.Check);
+		verify(contractorAccountDao).save(contractor);
+		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
+	}
 
 }

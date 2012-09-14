@@ -55,8 +55,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
 	private boolean braintreeCommunicationError = false;
-	@Autowired
-	private AppPropertyDAO appPropDao;
 
 	public ContractorPaymentOptions() {
 		this.subHeading = getText(String.format("%s.title", getScope()));
@@ -102,8 +100,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		customer_vault_id = contractor.getIdString();
 
 		// This is a credit card method
-		key = appPropDao.find("brainTree.key").getValue();
-		key_id = appPropDao.find("brainTree.key_id").getValue();
+		key = propertyDAO.find("brainTree.key").getValue();
+		key_id = propertyDAO.find("brainTree.key_id").getValue();
 
 		// A response was received
 		if (response_code != null) {

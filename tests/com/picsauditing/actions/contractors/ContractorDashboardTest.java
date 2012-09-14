@@ -11,12 +11,9 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
@@ -30,20 +27,23 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ContractorDashboardTest {
+	// NOTE: when you need Struts/Spring stuff do not use PowerMockRunner.
+	// Instead, extend PicsActionTest and take a look at any of its other
+	// subclasses (see me for help - Galen)
 
-	ContractorDashboard dashboard;
-	ContractorAccount contractor;
-	OperatorAccount operator;
-	OperatorAccount corporate;
-	ContractorOperator conOp;
-	ContractorOperator conCorp;
-	Permissions permissions;
+	private ContractorDashboard dashboard;
+	private ContractorAccount contractor;
+	private OperatorAccount operator;
+	private OperatorAccount corporate;
+	private ContractorOperator conOp;
+	private ContractorOperator conCorp;
+	private Permissions permissions;
 
-	@Mock private ContractorOperatorDAO contractorOperatorDAO;
-	@Mock private Database databaseForTesting;
+	@Mock
+	private ContractorOperatorDAO contractorOperatorDAO;
+	@Mock
+	private Database databaseForTesting;
 	
 	@AfterClass
 	public static void classTearDown() {

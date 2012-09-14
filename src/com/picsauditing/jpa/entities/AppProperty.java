@@ -21,6 +21,14 @@ public class AppProperty implements java.io.Serializable {
 	private String value;
 	private Date ticklerDate;
 
+	public AppProperty() {
+	}
+
+	public AppProperty(String property, String value) {
+		this.property = property;
+		this.value = value;
+	}
+
 	@Id
 	@Column(nullable = false)
 	public String getProperty() {

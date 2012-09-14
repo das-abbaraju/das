@@ -1,9 +1,11 @@
 package com.picsauditing.actions.contractors;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -17,43 +19,29 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.naming.NoPermissionException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.ResultSetMetaData;
-import com.mysql.jdbc.Statement;
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.DBBean;
 import com.picsauditing.PICS.FacilityChanger;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -63,17 +51,12 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.PermissionToViewContractor;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ContractorFacilities.class, ActionContext.class, DBBean.class, I18nCache.class,
-		SmartFacilitySuggest.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class ContractorFacilitiesTest {
+public class ContractorFacilitiesTest extends PicsActionTest {
 	private ContractorFacilities contractorFacilities;
 
-	@Mock
-	private ActionContext actionContext;
 	@Mock
 	private BillingCalculatorSingle billingCalculatorSingle;
 	@Mock
@@ -81,44 +64,42 @@ public class ContractorFacilitiesTest {
 	@Mock
 	private FacilityChanger facilityChanger;
 	@Mock
-	private I18nCache i18nCache;
-	@Mock
-	private Permissions permissions;
-	@Mock
 	private PermissionToViewContractor permissionToViewContractor;
 	@Mock
 	private Query query;
+	@Mock
+	private Database database;
+
+	@AfterClass
+	public static void tearDown() throws Exception {
+		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", (Database) null);
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		mockStatic(I18nCache.class);
-		mockStatic(SmartFacilitySuggest.class);
-
 		contractorFacilities = new ContractorFacilities();
+		super.setUp(contractorFacilities);
+
+		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", database);
 
 		PicsTestUtil picsTestUtil = new PicsTestUtil();
 		picsTestUtil.autowireEMInjectedDAOs(contractorFacilities, entityManager);
 
 		Whitebox.setInternalState(contractorFacilities, "billingService", billingCalculatorSingle);
 		Whitebox.setInternalState(contractorFacilities, "facilityChanger", facilityChanger);
-		Whitebox.setInternalState(contractorFacilities, "i18nCache", i18nCache);
-		Whitebox.setInternalState(contractorFacilities, "permissions", permissions);
 		Whitebox.setInternalState(contractorFacilities, "permissionToViewContractor", permissionToViewContractor);
+		Whitebox.setInternalState(contractorFacilities, "database", database);
 
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(I18nCache.getInstance()).thenReturn(i18nCache);
-		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("Text");
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissionToViewContractor.check(anyBoolean())).thenReturn(true);
-		when(SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class))).thenReturn(
-				new ArrayList<BasicDynaBean>());
+		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(database.select(anyString(), anyBoolean())).thenReturn(new ArrayList<BasicDynaBean>());
 	}
 
 	@Test
 	public void testExecute() throws Exception {
-		mockActionContext();
 		initializeContractor();
 
 		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
@@ -128,7 +109,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_Admin() throws Exception {
-		mockActionContext();
 		ContractorAccount contractorAccount = initializeContractor();
 
 		when(permissions.isContractor()).thenReturn(false);
@@ -143,8 +123,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_PendingContractor() throws Exception {
-		mockActionContext();
-
 		ContractorAccount contractorAccount = initializeContractor();
 		contractorAccount.setStatus(AccountStatus.Pending);
 
@@ -155,8 +133,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_ContractorWithOneOperator() throws Exception {
-		mockActionContext();
-
 		ContractorAccount contractorAccount = initializeContractor();
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
 		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
@@ -168,8 +144,6 @@ public class ContractorFacilitiesTest {
 
 	@Test(expected = RecordNotFoundException.class)
 	public void testExecute_OperatorWithoutID() throws Exception {
-		mockActionContext();
-
 		when(entityManager.find(eq(ContractorAccount.class), anyInt())).thenReturn(null);
 		when(permissions.isContractor()).thenReturn(false);
 		when(permissions.isOperator()).thenReturn(true);
@@ -179,8 +153,6 @@ public class ContractorFacilitiesTest {
 
 	@Test(expected = NoPermissionException.class)
 	public void testExecute_OperatorWithID() throws Exception {
-		mockActionContext();
-
 		ContractorAccount contractorAccount = EntityFactory.makeContractor();
 
 		when(entityManager.find(ContractorAccount.class, contractorAccount.getId())).thenReturn(contractorAccount);
@@ -193,8 +165,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_RequestWithoutTags() throws Exception {
-		mockActionContext();
-
 		ContractorAccount contractorAccount = mock(ContractorAccount.class);
 		when(contractorAccount.getId()).thenReturn(1);
 
@@ -203,10 +173,8 @@ public class ContractorFacilitiesTest {
 		request.setId(1);
 		request.setRequestedBy(operatorAccount);
 
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("requestID", 1);
+		session.put("requestID", 1);
 
-		when(actionContext.getSession()).thenReturn(map);
 		when(entityManager.find(eq(ContractorAccount.class), anyInt())).thenReturn(contractorAccount);
 		when(entityManager.find(ContractorRegistrationRequest.class, 1)).thenReturn(request);
 		when(permissions.getAccountId()).thenReturn(1);
@@ -221,8 +189,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_RequestWithTags() throws Exception {
-		mockActionContext();
-
 		ContractorAccount contractorAccount = spy(EntityFactory.makeContractor());
 
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
@@ -231,10 +197,8 @@ public class ContractorFacilitiesTest {
 		request.setOperatorTags("1");
 		request.setRequestedBy(operatorAccount);
 
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("requestID", 1);
+		session.put("requestID", 1);
 
-		when(actionContext.getSession()).thenReturn(map);
 		doNothing().when(contractorAccount).syncBalance();
 		when(entityManager.find(eq(ContractorAccount.class), anyInt())).thenReturn(contractorAccount);
 		when(entityManager.find(ContractorRegistrationRequest.class, 1)).thenReturn(request);
@@ -251,7 +215,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_SearchOperatorNameProvided() throws Exception {
-		mockActionContext();
 		initializeContractor();
 
 		contractorFacilities.setOperator(new OperatorAccount());
@@ -268,7 +231,6 @@ public class ContractorFacilitiesTest {
 
 	@Test
 	public void testExecute_SearchCountrySubdivisionProvided() throws Exception {
-		mockActionContext();
 		initializeContractor();
 
 		contractorFacilities.setCountrySubdivision("CountrySubdivision");
@@ -334,42 +296,42 @@ public class ContractorFacilitiesTest {
 	}
 
 	@Test
-	public void testSearch_NonCorporateOperatorsSizeZero() throws Exception {
+	public void testSearch_NonCorporateOperatorsSizeZero_NoDataSetsActionMessageOnly() throws Exception {
+		String testMessage = "Test Message";
 		initializeContractor();
+		when(i18nCache.getText(eq("ContractorFacilities.message.FacilitiesBasedLocation"), eq(Locale.ENGLISH), any()))
+				.thenReturn(testMessage);
 
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		assertEquals("search", contractorFacilities.search());
 
-		verifyStatic();
-		SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class));
+		assertThat(contractorFacilities.getActionMessages(), hasItem(testMessage));
 	}
 
 	@Test
-	public void testSearch_NonCorporateOperatorsSizeZeroWithResult() throws Exception {
+	public void testSearch_NonCorporateOperatorsSizeZero_WithResult() throws Exception {
 		initializeContractor();
 
 		BasicDynaBean basicDynaBean = mock(BasicDynaBean.class);
 		List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 		data.add(basicDynaBean);
 
+		when(basicDynaBean.get("total")).thenReturn(1);
 		when(basicDynaBean.get("onsiteServices")).thenReturn(1);
 		when(basicDynaBean.get("offsiteServices")).thenReturn(0);
 		when(basicDynaBean.get("materialSupplier")).thenReturn(0);
 		when(basicDynaBean.get("opID")).thenReturn(1);
 		when(basicDynaBean.get("name")).thenReturn("Test Operator");
 		when(basicDynaBean.get("status")).thenReturn("Active");
-		when(SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class))).thenReturn(
-				data);
+
+		when(database.select(anyString(), anyBoolean())).thenReturn(data);
 
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		assertEquals("search", contractorFacilities.search());
 		assertFalse(contractorFacilities.getSearchResults().isEmpty());
 		assertEquals("Test Operator", contractorFacilities.getSearchResults().get(0).getName());
-
-		verifyStatic();
-		SmartFacilitySuggest.getFirstFacility(any(ContractorAccount.class), any(Permissions.class));
 	}
 
 	@Test
@@ -378,16 +340,10 @@ public class ContractorFacilitiesTest {
 		OperatorAccount operatorAccount = EntityFactory.makeOperator();
 		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
 
-		when(SmartFacilitySuggest.getSimilarOperators(any(ContractorAccount.class), anyInt())).thenReturn(
-				new ArrayList<BasicDynaBean>());
-
 		contractorFacilities.setOperator(new OperatorAccount());
 
 		assertEquals("search", contractorFacilities.search());
 		assertTrue(contractorFacilities.hasActionMessages());
-
-		verifyStatic();
-		SmartFacilitySuggest.getSimilarOperators(any(ContractorAccount.class), anyInt());
 	}
 
 	@Test
@@ -457,17 +413,6 @@ public class ContractorFacilitiesTest {
 	@Test
 	public void testSearchShowAll() throws Exception {
 		initializeContractor();
-
-		mockStatic(DBBean.class);
-		Connection connection = mock(Connection.class);
-		Statement statement = mock(Statement.class);
-		ResultSet resultSet = mock(ResultSet.class);
-		ResultSetMetaData metaData = mock(ResultSetMetaData.class);
-
-		when(DBBean.getDBConnection()).thenReturn(connection);
-		when(connection.createStatement(anyInt(), anyInt())).thenReturn(statement);
-		when(statement.executeQuery(anyString())).thenReturn(resultSet);
-		when(resultSet.getMetaData()).thenReturn(metaData);
 
 		assertEquals("search", contractorFacilities.searchShowAll());
 
@@ -676,12 +621,6 @@ public class ContractorFacilitiesTest {
 
 		operator.setMaterialSupplier(true);
 		assertEquals(3, contractorFacilities.getTypeCount(operator));
-	}
-
-	private void mockActionContext() {
-		mockStatic(ActionContext.class);
-		when(ActionContext.getContext()).thenReturn(actionContext);
-		when(actionContext.getSession()).thenReturn(new HashMap<String, Object>());
 	}
 
 	private ContractorAccount initializeContractor() {
