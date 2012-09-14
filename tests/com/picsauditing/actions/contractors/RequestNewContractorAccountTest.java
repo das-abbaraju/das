@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -326,10 +327,10 @@ public class RequestNewContractorAccountTest {
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 		assertEquals(otherOperator, requestNewContractorAccount.getRequestedContractor().getRequestedBy());
 
-		verify(emailBuilder, never()).build();
-		verify(emailSender, never()).send(email);
+		verify(emailBuilder).build();
+		verify(emailSender).send(email);
 		// Save the new ContractorOperator object
-		verify(entityManager).persist(any(BaseTable.class));
+		verify(entityManager, atLeastOnce()).persist(any(BaseTable.class));
 		// Merge the existing contractor, user, and request objects
 		verify(entityManager, times(4)).merge(any(BaseTable.class));
 	}
@@ -506,6 +507,10 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testSaveNoteIfContacted_ContactTypes() throws Exception {
+		OperatorAccount operator = EntityFactory.makeOperator();
+
+		ContractorOperator relationship = EntityFactory.addContractorOperator(contractor, operator);
+
 		User user = EntityFactory.makeUser();
 
 		when(entityManager.find(User.class, user.getId())).thenReturn(user);
@@ -515,6 +520,7 @@ public class RequestNewContractorAccountTest {
 				"legacyRequest");
 
 		requestNewContractorAccount.setContactType(RequestContactType.EMAIL);
+		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
 

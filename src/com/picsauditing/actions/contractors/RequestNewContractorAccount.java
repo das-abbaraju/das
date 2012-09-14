@@ -359,7 +359,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
-		saveRequiredFieldsAndSaveEntities(newRequest);
+		saveRequiredFieldsAndSaveEntities();
 		saveLegacyRequest();
 
 		if (newRequest) {
@@ -382,9 +382,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
-	private void saveRequiredFieldsAndSaveEntities(boolean newRequest) throws Exception {
+	private void saveRequiredFieldsAndSaveEntities() throws Exception {
 		// NAICS is required for accounts
-		if (newRequest) {
+		if (requestedContractor.getId() == 0) {
 			requestedContractor.setNaics(new Naics());
 			requestedContractor.getNaics().setCode("0");
 			requestedContractor.setRequestedBy(requestRelationship.getOperatorAccount());
@@ -394,7 +394,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
 
 		// Username and isGroup is required
-		if (newRequest) {
+		if (primaryContact.getId() == 0) {
 			primaryContact.setAccount(requestedContractor);
 			primaryContact.setIsGroup(YesNo.No);
 			primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(), requestedContractor.getId()));
