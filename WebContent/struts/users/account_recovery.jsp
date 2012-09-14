@@ -61,8 +61,11 @@
 						</li>
 						<li>
 							<label><s:text name="AccountRecovery.title.Verification" />:</label>
-							<s:property value="recaptcha.recaptchaHtml" escape="false"/>
+							Please answer the following math challenge:<br>
 							
+							<s:property value="picsCaptcha.picscaptchaHtml" escape="false"/> =
+							<s:textfield id="picsCaptCha_response_field" name="uresponse"/>
+							<s:hidden name="sumValue" value="%{picsCaptcha.sumValue}" />
 							<div class="fieldhelp">
 								<h3><s:text name="AccountRecovery.Verification" /></h3>
 								<p><s:text name="AccountRecovery.Verification.fieldhelp" /></p>

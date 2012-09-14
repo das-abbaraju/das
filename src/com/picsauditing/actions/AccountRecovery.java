@@ -14,7 +14,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -26,27 +25,31 @@ public class AccountRecovery extends PicsActionSupport {
 
 	private String email, username;
 	private User user;
-	private Recaptcha recaptcha;
+	private PicsCaptChaCheck picsCaptcha;
+	private int uresponse;
+	private int sumValue;
 
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
-		recaptcha = new Recaptcha();
-		
+		picsCaptcha = new PicsCaptChaCheck();
+
 		return SUCCESS;
 	}
-	
+
 	@Anonymous
 	public String findName() {
-		if (email.length()>0)
+		if (email.length() > 0)
 			email = email.trim();
 
 		if (email == null || email.equals("")) {
+			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.NoEmail"));
 			return SUCCESS;
 		}
-		
+
 		if (!EmailAddressUtils.isValidEmail(email)) {
+			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.InvalidEmail"));
 			return SUCCESS;
 		}
@@ -54,21 +57,22 @@ public class AccountRecovery extends PicsActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		List<User> matchingUsers = userDAO.findByEmail(email);
-		//if username starts with DELETED, remove from the matchingUsers list.
-		for (int count=0; count< matchingUsers.size(); count++){
+		// if username starts with DELETED, remove from the matchingUsers list.
+		for (int count = 0; count < matchingUsers.size(); count++) {
 			if (matchingUsers.get(count).getUsername().startsWith("DELETE-"))
-				matchingUsers.remove(count);			
+				matchingUsers.remove(count);
 		}
 
 		if (matchingUsers.size() == 0) {
+			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.EmailNotFound"));
 			return SUCCESS;
 		}
 
-		if (recaptcha == null)
-			recaptcha = new Recaptcha();
-		
-		Boolean response = recaptcha.isRecaptchaResponseValid();
+		if (picsCaptcha == null)
+			picsCaptcha = new PicsCaptChaCheck();
+
+		Boolean response = picsCaptcha.isPicsCaptchaResponseValid(uresponse, sumValue);
 		if (response == null) {
 			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
 			return SUCCESS;
@@ -97,18 +101,19 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 		return SUCCESS;
 	}
-	
+
 	@Anonymous
 	public String resetPassword() {
-		if (username == null || username.equals("")||username.startsWith("DELETE-")) {
+		if (username == null || username.equals("") || username.startsWith("DELETE-")) {
+			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.NoUserName"));
 			return SUCCESS;
 		}
 
-		if (recaptcha == null)
-			recaptcha = new Recaptcha();
-		
-		Boolean response = recaptcha.isRecaptchaResponseValid();
+		if (picsCaptcha == null)
+			picsCaptcha = new PicsCaptChaCheck();
+
+		Boolean response = picsCaptcha.isPicsCaptchaResponseValid(uresponse, sumValue);
 		if (response == null) {
 			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
 			return SUCCESS;
@@ -119,16 +124,17 @@ public class AccountRecovery extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		try {			
+		try {
 			user = userDAO.findName(username);
-			//LW if the user has an inactive status, then not allow them to recover the password.
-			if (!user.isActiveB()){
+			// LW if the user has an inactive status, then not allow them to
+			// recover the password.
+			if (!user.isActiveB()) {
 				addActionError(getText("AccountRecovery.error.UserNotActive"));
-				throw new Exception(getText("AccountRecovery.error.UserNotActive"));				
+				throw new Exception(getText("AccountRecovery.error.UserNotActive"));
 			}
-			if (user == null)				
+			if (user == null)
 				throw new Exception(getText("AccountRecovery.error.UserNotFound"));
-			
+
 			// Seeding the time in the reset hash so that each one will be
 			// guaranteed unique
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
@@ -209,11 +215,28 @@ public class AccountRecovery extends PicsActionSupport {
 		this.username = username;
 	}
 
-	public Recaptcha getRecaptcha() {
-		return recaptcha;
+	public PicsCaptChaCheck getPicsCaptcha() {
+		return picsCaptcha;
 	}
 
-	public void setRecaptcha(Recaptcha recaptcha) {
-		this.recaptcha = recaptcha;
+	public void setPicsCaptcha(PicsCaptChaCheck picsCaptcha) {
+		this.picsCaptcha = picsCaptcha;
 	}
+
+	public int getUresponse() {
+		return uresponse;
+	}
+
+	public void setUresponse(int uresponse) {
+		this.uresponse = uresponse;
+	}
+
+	public int getSumValue() {
+		return sumValue;
+	}
+
+	public void setSumValue(int sumValue) {
+		this.sumValue = sumValue;
+	}
+
 }
