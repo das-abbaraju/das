@@ -26,6 +26,8 @@
 	    <td><a href="javascript: changeOrderBy('form1','ca.completedDate DESC');">Submitted</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ISNULL(ca2.expired), ca2.expired');">Previous Audit Expiration</a></td>
 	    <td><a href="javascript: changeOrderBy('form1','cao.status DESC');">Status</a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','pqfCompletionDate ASC, a.name');">PQF Completed</td>
+	    <td align="center"><a href="javascript: changeOrderBy('form1','dateVerified ASC,a.name');">Safety Manual Verified</td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -38,6 +40,8 @@
 			<td><s:date name="[0].get('completedDate')" format="%{getText('date.short')}" /></td>
 			<td><s:date name="[0].get('expired')" format="%{getText('date.short')}" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
+			<td><s:date name="[0].get('pqfCompletionDate')" format="%{getText('date.short')}"/></td>
+			<td><s:date name="[0].get('dateVerified')" format="%{getText('date.short')}"/></td>
 		</tr>
 	</s:iterator>
 </table>
