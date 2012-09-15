@@ -388,6 +388,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			requestedContractor.setNaics(new Naics());
 			requestedContractor.getNaics().setCode("0");
 			requestedContractor.setRequestedBy(requestRelationship.getOperatorAccount());
+			requestedContractor.generateRegistrationHash();
 		}
 
 		requestedContractor.setAuditColumns(permissions);

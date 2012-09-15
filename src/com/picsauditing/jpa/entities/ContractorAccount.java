@@ -1476,6 +1476,12 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
+	public void generateRegistrationHash() {
+		String seed = "request" + this.getId() + "-" + new Date();
+		setRegistrationHash(Strings.hash(seed));
+	}
+
+	@Transient
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
