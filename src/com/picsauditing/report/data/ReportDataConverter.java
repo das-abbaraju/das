@@ -8,10 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.beanutils.DynaProperty;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.report.Column;
@@ -35,28 +32,22 @@ public class ReportDataConverter {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public JSONArray convertToJson(List<BasicDynaBean> queryResults) {
-		JSONArray jsonRows = new JSONArray();
-
-		for (DynaBean row : queryResults) {
-			JSONObject jsonRow = new JSONObject();
-			jsonRows.add(jsonRow);
-
-			for (DynaProperty property : row.getDynaClass().getDynaProperties()) {
-				String fieldName = property.getName();
-				Object value = row.get(fieldName);
-				if (value != null) {
-					Column column = columnMap.get(fieldName.toUpperCase());
-					value = convertValueForJson(column, value);
-					jsonRow.put(fieldName, value);
-				}
+	public JSONArray convertToJson(List<BasicDynaBean> results) {
+		ReportResults reportResults = new ReportResults(columnMap, results);
+		
+		for (ReportRow row : reportResults.getRows()) {
+			for (ReportCell cell : row.getCells()) {
+				Object value = convertValueForJson(cell);
+				cell.setValue(value);
 			}
 		}
-		return jsonRows;
+		return reportResults.toJson();
 	}
 
-	private Object convertValueForJson(Column column, Object value) {
+	private Object convertValueForJson(ReportCell cell) {
+		Column column = cell.getColumn();
+		Object value = cell.getValue();
+		
 		if (column != null) {
 			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
 				int month = Integer.parseInt(value.toString());
