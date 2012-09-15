@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum Currency {
-	USD("USD", "$"), CAD("CAD", "$"), GBP("GBP", "\u00a3"), EUR("EUR", "\u20ac"), SEK("SEK", "\u006b");
+	USD("USD", "$"), CAD("CAD", "$"), GBP("GBP", "\u00a3"), EUR("EUR", "\u20ac"), SEK("SEK", "\u006b"), ZAR("ZAR", "u0052"), NOK("NOK", "u006b");
 
 	private String display;
 	private String symbol;
@@ -36,6 +36,14 @@ public enum Currency {
 
 	public boolean isSEK(){
 		return this.equals(SEK);
+	}
+
+	public boolean isZAR(){
+		return this.equals(ZAR);
+	}
+
+	public boolean isNOK(){
+		return this.equals(NOK);
 	}
 
 	public void setSymbol(String symbol) {
