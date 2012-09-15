@@ -15,9 +15,9 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.ReportDataConverter;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings({ "unchecked", "serial" })

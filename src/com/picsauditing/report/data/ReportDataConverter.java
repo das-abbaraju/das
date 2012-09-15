@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.data;
 
 import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
@@ -14,6 +14,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.report.Column;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.QueryMethod;
 

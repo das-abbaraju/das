@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.data;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,6 +24,9 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.Column;
+import com.picsauditing.report.DynaBeanListBuilder;
+import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.Database;

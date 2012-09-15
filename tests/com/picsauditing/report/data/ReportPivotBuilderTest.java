@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,8 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.Column;
+import com.picsauditing.report.data.ReportPivotBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;
