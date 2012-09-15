@@ -29,8 +29,8 @@ import org.hibernate.annotations.Where;
 
 import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
 

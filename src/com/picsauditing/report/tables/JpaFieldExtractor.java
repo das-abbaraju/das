@@ -7,9 +7,9 @@ import java.util.Set;
 
 import javax.persistence.Column;
 
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
 
 public class JpaFieldExtractor {

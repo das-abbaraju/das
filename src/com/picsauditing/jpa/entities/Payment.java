@@ -13,8 +13,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.braintree.CreditCard;
 

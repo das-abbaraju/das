@@ -16,7 +16,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;

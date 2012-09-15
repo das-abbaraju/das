@@ -17,8 +17,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 

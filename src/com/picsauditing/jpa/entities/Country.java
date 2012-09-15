@@ -23,7 +23,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
 
 @Entity
