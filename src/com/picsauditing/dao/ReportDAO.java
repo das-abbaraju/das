@@ -13,7 +13,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 
 public class ReportDAO extends PicsDAO {
 
@@ -30,9 +29,9 @@ public class ReportDAO extends PicsDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
+	public List<BasicDynaBean> runQuery(String sql, JSONObject json) throws SQLException {
 		Database database = new Database();
-		List<BasicDynaBean> rows = database.select(sql.toString(), true);
+		List<BasicDynaBean> rows = database.select(sql, true);
 		json.put("total", database.getAllRows());
 		return rows;
 	}

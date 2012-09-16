@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +29,18 @@ public class ReportData extends PicsActionSupport {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
 
+	private String debugSQL = "";
+
 	public String execute() {
 		try {
-			getData();
+			ReportModel.validate(report);
+			SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
+			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
+			getData(sql.toString());
 		} catch (ReportValidationException error) {
 			writeJsonError(getText(error.getMessage()));
 		} catch (Exception error) {
-			logger.error("Report:" + report.getId() + " " + error.getMessage());
+			logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
 			if (permissions.has(OpPerms.Debug)) {
 				writeJsonError(error);
 			} else {
@@ -46,31 +50,31 @@ public class ReportData extends PicsActionSupport {
 		return JSON;
 	}
 
-	private void getData() throws ReportValidationException, SQLException {
-		ReportModel.validate(report);
-		
-		// TODO If the query fails, then try to return the SQL in JSON
+	private void getData(String sql) throws ReportValidationException, SQLException {
+		debugSQL = sql;
 
-		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
-		sql.setPageNumber(report.getRowsPerPage(), pageNumber);
-
-		if (ReportUtil.hasColumns(report)) {
-			ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(), permissions.getLocale());
-			
-			List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
-			JSONArray queryResultsAsJson = converter.convertToJson(queryResults);
-			
-			json.put("data", queryResultsAsJson);
-			json.put("success", true);
+		if (!ReportUtil.hasColumns(report)) {
+			// Should this really happen? Maybe we should catch this during Report validation
+			writeJsonError("Report contained no columns");
+			return;
 		}
+		List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
+
+		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(), queryResults);
+		converter.setLocale(permissions.getLocale());
+		converter.convertForExtJS();
+
+		json.put("data", converter.getReportResults().toJson());
+		json.put("success", true);
 	}
 
 	private void writeJsonError(Exception e) {
 		String message = e.getMessage();
-
 		if (message == null) {
 			message = e.toString();
 		}
+
+		json.put("sql", debugSQL);
 
 		writeJsonError(message);
 	}

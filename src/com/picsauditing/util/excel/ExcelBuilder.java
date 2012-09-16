@@ -12,12 +12,13 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.report.Column;
+import com.picsauditing.report.data.ReportCell;
+import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.data.ReportRow;
 
 public class ExcelBuilder {
 	private HSSFWorkbook workbook;
@@ -27,7 +28,7 @@ public class ExcelBuilder {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExcelBuilder.class);
 
-	public HSSFWorkbook buildWorkbook(String name, JSONArray data) {
+	public HSSFWorkbook buildWorkbook(String name, ReportResults data) {
 		workbook = new HSSFWorkbook();
 		sheet = workbook.createSheet();
 		workbook.setSheetName(0, name);
@@ -83,25 +84,25 @@ public class ExcelBuilder {
 		return font;
 	}
 
-	private void buildRows(JSONArray data) {
-		for (int i = 0; i < data.size(); i++) {
-			JSONObject row = (JSONObject) data.get(i);
-			HSSFRow r = sheet.createRow(i + 1);
+	private void buildRows(ReportResults data) {
+		int rowCounter = 1;
+		for (ReportRow row : data.getRows()) {
+			HSSFRow r = sheet.createRow(rowCounter++);
 			buildRow(row, r);
 		}
 	}
 
-	private void buildRow(JSONObject row, HSSFRow r) {
+	private void buildRow(ReportRow row, HSSFRow r) {
 		int columnCount = 0;
 		for (ExcelColumn column : columns) {
-			HSSFCell cell = r.createCell(columnCount);
+			HSSFCell sheetCell = r.createCell(columnCount);
 
 			try {
-				Object dataValue = row.get(column.getName());
-				setCellValue(dataValue, column, cell);
+				ReportCell reportCell = row.getCellByColumn(column.getReportColumn());
+				setCellValue(reportCell.getValue(), column, sheetCell);
 			} catch (Exception e) {
 				logger.error("Failed to build row cell");
-				cell.setCellValue(new HSSFRichTextString("error"));
+				sheetCell.setCellValue(new HSSFRichTextString("error"));
 			}
 			columnCount++;
 		}

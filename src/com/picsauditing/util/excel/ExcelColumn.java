@@ -7,6 +7,7 @@ public class ExcelColumn {
 	private String columnHeader;
 	private boolean hidden = false;
 	private ExcelCellType cellType = ExcelCellType.String;
+	private Column reportColumn;
 
 	public ExcelColumn(String name) {
 		this.name = name;
@@ -29,6 +30,7 @@ public class ExcelColumn {
 	}
 
 	public ExcelColumn(Column reportColumn) {
+		this.reportColumn = reportColumn;
 		this.name = reportColumn.getFieldName();
 		this.columnHeader = reportColumn.getField().getText();
 		this.cellType = ExcelCellType.convert(reportColumn.getField());
@@ -76,4 +78,7 @@ public class ExcelColumn {
 		this.cellType = cellType;
 	}
 
+	public Column getReportColumn() {
+		return reportColumn;
+	}
 }

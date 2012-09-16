@@ -57,7 +57,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.util.PermissionToViewContractor;
 
 @RunWith(PowerMockRunner.class)
@@ -107,8 +106,6 @@ public class ContractorAuditDownloadTest {
 	private PermissionToViewContractor permissionToViewContractor;
 	@Mock
 	private ServletOutputStream outputStream;
-	@Mock
-	private TranslatableString name;
 
 	@Before
 	public void setUp() throws Exception {

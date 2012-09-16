@@ -22,6 +22,7 @@ import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
+import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
 
@@ -37,6 +38,8 @@ public class ReportDownload extends PicsActionSupport {
 	private ReportDAO reportDao;
 	private Report report;
 
+	private ReportResults reportResults;
+
 	public String execute() {
 		try {
 			getData();
@@ -48,7 +51,7 @@ public class ReportDownload extends PicsActionSupport {
 		return BLANK;
 	}
 
-	private JSONArray getData() throws ReportValidationException, SQLException {
+	private void getData() throws ReportValidationException, SQLException {
 		ReportModel.validate(report);
 
 		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
@@ -57,18 +60,19 @@ public class ReportDownload extends PicsActionSupport {
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
-		List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
-		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(),
-				permissions.getLocale());
-		return converter.convertForPrinting(queryResults);
+		List<BasicDynaBean> queryResults = reportDao.runQuery(sql.toString(), json);
+
+		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(), queryResults);
+		converter.setLocale(permissions.getLocale());
+		converter.convertForPrinting();
+		reportResults = converter.getReportResults();
 	}
 
 	private HSSFWorkbook buildWorkbook() {
 		logger.info("Building XLS File");
 		ExcelBuilder builder = new ExcelBuilder();
 		builder.addColumns(report.getDefinition().getColumns());
-		JSONArray reportData = (JSONArray) json.get("data");
-		return builder.buildWorkbook(report.getName(), reportData);
+		return builder.buildWorkbook(report.getName(), reportResults);
 	}
 
 	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {

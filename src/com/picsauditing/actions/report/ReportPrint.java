@@ -39,7 +39,7 @@ public class ReportPrint extends PicsActionSupport {
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
-		data = reportDao.runQuery(sql, json);
+		data = reportDao.runQuery(sql.toString(), json);
 		for (BasicDynaBean row : data) {
 			System.out.println(row.get("contractorID"));
 		}
