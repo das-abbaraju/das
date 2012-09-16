@@ -33,7 +33,7 @@ public class SqlBuilderTest {
 		
 		permissions = EntityFactory.makePermission(user);
 		builder = new SqlBuilder();
-		definition = new Definition();
+		definition = new Definition("");
 	}
 
 	@Test

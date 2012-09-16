@@ -76,8 +76,6 @@ public class ReportElement implements JSONable {
 	private void parseFieldNameMethod() {
 		method = null;
 		originalFieldName = fieldName;
-		if (fieldName == null)
-			return;
 
 		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod < 0)
@@ -108,7 +106,7 @@ public class ReportElement implements JSONable {
 	public boolean isHasAggregateMethod() {
 		if (method == null)
 			return false;
-		
+
 		return method.isAggregate();
 	}
 

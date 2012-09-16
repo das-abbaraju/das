@@ -10,13 +10,10 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
-import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.AbstractTable;
-import com.picsauditing.util.JSONUtilities;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -97,22 +94,10 @@ public class Report extends BaseTable {
 		if (defaultDefinition == null) {
 			defaultDefinition = new Definition(parameters);
 		}
-
-		String filterExpresion = defaultDefinition.getFilterExpression();
-		if (!Strings.isEmpty(filterExpresion)) {
-			obj.put(ReportUtil.FILTER_EXPRESSION, filterExpresion);
-		}
-
-		if (defaultDefinition.getColumns().size() > 0) {
-			obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
-		}
-		if (defaultDefinition.getFilters().size() > 0) {
-			obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
-		}
-		if (defaultDefinition.getSorts().size() > 0) {
-			obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getSorts()));
-		}
-
+		
+		JSONObject jsonDefinition = defaultDefinition.toJSON(true);
+		obj.putAll(jsonDefinition);
+		
 		return obj;
 	}
 
