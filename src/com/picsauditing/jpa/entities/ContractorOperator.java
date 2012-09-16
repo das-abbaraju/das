@@ -387,7 +387,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.requestedBy = requestedBy;
 	}
 
-	@Column(name = "requestedByUser")
+	@Column(name = "requestedByUser", nullable = true)
 	public String getRequestedByOther() {
 		return requestedByOther;
 	}

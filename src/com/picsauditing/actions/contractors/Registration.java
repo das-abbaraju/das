@@ -1,23 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.VATValidator;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.Strings;
-import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -26,6 +8,48 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.VATValidator;
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.PermissionBuilder;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
+import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorFee;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailException;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
@@ -108,18 +132,19 @@ public class Registration extends ContractorActionSupport {
 					return SUCCESS;
 				}
 			}
-		}
 
-		if (!Strings.isEmpty(registrationKey)) {
-			List<ContractorAccount> requestsByHash = contractorAccountDao.findWhere("a.registrationHash = '"
-					+ registrationKey + "'");
+			if (!Strings.isEmpty(registrationKey)) {
+				List<ContractorAccount> requestsByHash = contractorAccountDao.findWhere("a.registrationHash = '"
+						+ registrationKey + "'");
 
-			if (requestsByHash != null && !requestsByHash.isEmpty()) {
-				if (requestsByHash.get(0).getStatus().isRequested()) {
-					contractor = requestsByHash.get(0);
-					user = contractor.getPrimaryContact();
-				} else {
-					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+				if (requestsByHash != null && !requestsByHash.isEmpty()) {
+					if (requestsByHash.get(0).getStatus().isRequested()) {
+						contractor = requestsByHash.get(0);
+						user = contractor.getPrimaryContact();
+						user.setUsername(user.getEmail());
+					} else {
+						addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+					}
 				}
 			}
 		}
@@ -168,6 +193,32 @@ public class Registration extends ContractorActionSupport {
 					+ " has registered.");
 
 			dao.save(note);
+		}
+
+		if (contractor.getStatus().isRequested()) {
+			List<ContractorRegistrationRequest> legacyRequests = requestDAO.findWhere(
+					ContractorRegistrationRequest.class, "t.contractor.id = " + contractor.getId());
+
+			for (ContractorRegistrationRequest request : legacyRequests) {
+				request.addToNotes("Account created through completing a Registration Request", user);
+
+				if (request.getContactCountByPhone() > 0) {
+					request.setStatus(ContractorRegistrationRequestStatus.ClosedContactedSuccessful);
+				} else {
+					request.setStatus(ContractorRegistrationRequestStatus.ClosedSuccessful);
+				}
+
+				request.setAuditColumns(user);
+				requestDAO.save(request);
+			}
+
+			Note note = addNote(contractor, "Requested Contractor Registered");
+			note.setBody("Contractor '" + contractor.getName() + "' requested by "
+					+ contractor.getRequestedBy().getName() + " has registered.");
+			dao.save(note);
+
+			contractor.setStatus(AccountStatus.Pending);
+			contractorAccountDao.save(contractor);
 		}
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
@@ -346,12 +397,12 @@ public class Registration extends ContractorActionSupport {
 		this.user = user;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 
 	public int getRequestID() {
