@@ -12,10 +12,17 @@ import com.picsauditing.report.Column;
 public class ReportRow {
 	private Map<Column, ReportCell> cells = new HashMap<Column, ReportCell>();
 
-	public ReportRow(Map<String, Column> columnMap, BasicDynaBean dynaBean) {
-		for (Column column : columnMap.values()) {
-			Object dynaValue = dynaBean.get(column.getFieldName());
-			cells.put(column, new ReportCell(this, column, dynaValue));
+	public ReportRow(Collection<Column> columns, BasicDynaBean dynaBean) {
+		for (Column column : columns) {
+			Object value = dynaBean.get(column.getFieldName());
+			cells.put(column, new ReportCell(this, column, value));
+		}
+	}
+	
+	public ReportRow(Map<Column, Object> rowData) {
+		for (Column column : rowData.keySet()) {
+			Object value = rowData.get(column);
+			cells.put(column, new ReportCell(this, column, value));
 		}
 	}
 	
@@ -34,6 +41,10 @@ public class ReportRow {
 			}
 		}
 		return jsonRow;
+	}
+
+	public ReportCell getCellByColumn(Column column) {
+		return cells.get(column);
 	}
 
 }

@@ -1,8 +1,8 @@
 package com.picsauditing.report.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
@@ -12,15 +12,30 @@ import com.picsauditing.report.Column;
 public class ReportResults {
 	private List<ReportRow> rows = new ArrayList<ReportRow>();
 
-	public ReportResults(Map<String, Column> columnMap, List<BasicDynaBean> results) {
+	public ReportResults() {
+	}
+
+	public ReportResults(Collection<Column> columns, List<BasicDynaBean> results) {
 		for (BasicDynaBean dynaBean : results) {
-			ReportRow row = new ReportRow(columnMap, dynaBean);
+			ReportRow row = new ReportRow(columns, dynaBean);
 			rows.add(row);
 		}
 	}
 
+	public void addRow(ReportRow row) {
+		rows.add(row);
+	}
+
 	public List<ReportRow> getRows() {
 		return rows;
+	}
+
+	public Collection<ReportCell> getCells() {
+		Collection<ReportCell> cells = new ArrayList<ReportCell>();
+		for (ReportRow row : rows) {
+			cells.addAll(row.getCells());
+		}
+		return cells;
 	}
 
 	@SuppressWarnings("unchecked")

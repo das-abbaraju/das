@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +25,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.DynaBeanListBuilder;
-import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.Database;
@@ -37,7 +35,9 @@ public class ReportDataConverterTest {
 
 	ReportDataConverter converter;
 	List<BasicDynaBean> queryResults;
-	
+
+	private List<Column> columns;
+
 	@AfterClass
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
@@ -47,12 +47,12 @@ public class ReportDataConverterTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-		
+
 		AccountContractorModel model = new AccountContractorModel();
 		Permissions permissions = EntityFactory.makePermission();
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
 		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
-		List<Column> columns = new ArrayList<Column>();
+		columns = new ArrayList<Column>();
 		columns.add(createColumn(availableFields.get("ACCOUNTID")));
 		columns.add(createColumn(availableFields.get("ACCOUNTNAME")));
 		columns.add(createColumn(availableFields.get("ACCOUNTCREATIONDATE")));
@@ -60,10 +60,8 @@ public class ReportDataConverterTest {
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
 		membershipMonth.setFieldName("contractorMembershipDate__Month");
 		columns.add(membershipMonth);
-		converter = new ReportDataConverter(columns, Locale.FRENCH);
-		queryResults = new ArrayList<BasicDynaBean>();
 	}
-	
+
 	private Column createColumn(Field field) {
 		Column column = new Column(field.getName());
 		column.setField(field);
@@ -72,19 +70,20 @@ public class ReportDataConverterTest {
 
 	@Test
 	public void testConvertQueryResultsToJson_Empty() {
-		JSONArray json = converter.convertToJson(queryResults);
+		queryResults = new ArrayList<BasicDynaBean>();
+		JSONArray json = runConverter();
 		assertEquals(0, json.size());
 	}
 
 	@Test
 	public void testConvertQueryResultsToJson_Single() {
 		queryResults = createAccountQueryList(1);
-		
-		JSONArray json = converter.convertToJson(queryResults);
+		JSONArray json = runConverter();
+
 		assertEquals(1, json.size());
-		String expected = "[{\"accountID\":1,\"accountName\":\"Test 1\",\"accountCreationDate\":1234567890," +
-				"\"contractorMembershipDate__Month\":\"janvier\",\"contractorMembershipDate\":1234567890}]";
-		assertEquals(expected , json.toString());
+		String expected = "[{\"accountID\":1,\"accountName\":\"Test 1\",\"accountCreationDate\":1234567890,"
+				+ "\"contractorMembershipDate__Month\":\"janvier\",\"contractorMembershipDate\":1234567890}]";
+		assertEquals(expected, json.toString());
 		System.out.println(json);
 	}
 
@@ -92,7 +91,7 @@ public class ReportDataConverterTest {
 	public void testConvertQueryResultsToJson_Simple() {
 		queryResults = createAccountQueryList(10);
 
-		JSONArray json = converter.convertToJson(queryResults);
+		JSONArray json = runConverter();
 		assertEquals(10, json.size());
 	}
 
@@ -118,5 +117,13 @@ public class ReportDataConverterTest {
 			builder.setValue("contractorMembershipDate__Month", 1);
 		}
 		return builder.getRows();
+	}
+
+	private JSONArray runConverter() {
+		converter = new ReportDataConverter(columns, queryResults);
+		converter.setLocale(Locale.FRENCH);
+		converter.convertForExtJS();
+		JSONArray json = converter.getReportResults().toJson();
+		return json;
 	}
 }
