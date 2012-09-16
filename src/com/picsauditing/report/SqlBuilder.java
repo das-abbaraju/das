@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +19,10 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
-	private Definition definition = new Definition();
+	private Definition definition;
 	private SelectSQL sql;
 	private Map<String, Field> availableFields;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
 	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions)
@@ -44,7 +43,7 @@ public class SqlBuilder {
 		addJoins(model.getRootTable());
 
 		sql.addWhere(model.getWhereClause(permissions, definition.getFilters()));
-		
+
 		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");
 		return sql;
@@ -80,7 +79,7 @@ public class SqlBuilder {
 			Set<String> dependentFields = new HashSet<String>();
 
 			column.setMethodToFieldName();
-			
+
 			column.addFieldCopy(availableFields);
 
 			if (column.getField() == null)
@@ -148,7 +147,7 @@ public class SqlBuilder {
 
 		for (Filter filter : definition.getFilters()) {
 			filter.addFieldCopy(availableFields);
-			
+
 			if (filter.isValid()) {
 				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {
@@ -159,40 +158,12 @@ public class SqlBuilder {
 			}
 		}
 
-		sql.addWhere(createWhereClause(whereFilters));
+		sql.addWhere(FilterExpression.parseWhereClause(definition.getFilterExpression(), whereFilters));
 
 		for (Filter filter : havingFilters) {
 			String filterExp = filter.getSqlForFilter();
 			sql.addHaving(filterExp);
 		}
-	}
-
-	private String createWhereClause(List<Filter> whereFilters) throws ReportValidationException {
-		String where = definition.getFilterExpression();
-		if (where == null || Strings.isEmpty(where)) {
-			where = getDefaultFilterExpression(whereFilters);
-		}
-
-		int whereIndex = 0;
-		for (Filter filter : whereFilters) {
-			String filterExp = filter.getSqlForFilter();
-			where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
-			whereIndex++;
-		}
-
-		if (where.contains("{")) {
-			// TODO Create a new Exception call ReportFilterExpression extends
-			throw new ReportValidationException("DynamicReports.FilterExpressionInvalid");
-		}
-		return where;
-	}
-
-	private String getDefaultFilterExpression(List<Filter> whereFilters) {
-		String where = "";
-		for (int i = 0; i < whereFilters.size(); i++) {
-			where += "{" + i + "} AND ";
-		}
-		return StringUtils.removeEnd(where, " AND ");
 	}
 
 	private void addOrderByClauses(AbstractModel model) {
@@ -206,7 +177,7 @@ public class SqlBuilder {
 
 		for (Sort sort : definition.getSorts()) {
 			sort.addFieldCopy(availableFields);
-			
+
 			String fieldName;
 			Column column = getColumnFromFieldName(sort.getFieldName());
 			if (column == null) {
