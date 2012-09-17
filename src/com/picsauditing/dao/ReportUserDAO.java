@@ -241,8 +241,6 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.favorite = 1");
 		sql.addJoin("JOIN users as u ON r.createdBy = u.id");
 
-		sql.addWhere("r.private = 0 OR r.createdBy = " + userId);
-
 		sql.addOrderBy("numTimesFavorited DESC");
 
 		return sql;
@@ -291,7 +289,6 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 
 			sql.addJoin("JOIN users as u ON r.createdBy = u.id");
 
-			sql.addWhere("r.private = 0 OR r.createdBy = " + reportParams.getUserId());
 			sql.addWhere("r.name LIKE " + query +
 					" OR r.description LIKE " + query +
 					" OR u.name LIKE " + query);
