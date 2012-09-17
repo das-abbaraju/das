@@ -248,10 +248,17 @@
 				AUDIT.question.execute(element, url, data);
 			},
 			save: function(event) {
-				var element = $(this);
-				var form = $('form.qform', element);
-				var url = 'AuditDataSaveAjax.action';
-				var data = form.serializeArray();
+			    var element = $(this),
+			        form = $('form.qform', element),
+			        radio_button = element.find('input:radio'),
+			        url = 'AuditDataSaveAjax.action';
+
+			    var data = form.serializeArray();
+
+			    //Allow save only if an answer has been given for radio button.
+			    if ((radio_button.length > 0) && (!radio_button.is(':checked'))) {
+			        return false;
+			    }
 
 				element.block({
 					message: 'Saving answer...'
@@ -260,17 +267,10 @@
 				AUDIT.question.execute(element, url, data);
 			},
 			verify: function(event) {
-				var element = $(this).parents('div.question:first'),
-				    form = $('form.qform', element),
-				    radio_button = element.find('input:radio');
-
-				//Allow save only if an answer has been given for radio button.
-				if ((radio_button.length > 0) && (!radio_button.is(':checked'))) {
-				    return false;
-				}
-
-				var url = 'AuditDataSaveAjax.action';
-				var data = form.serializeArray();
+			    var element = $(this).parents('div.question:first');
+			    var form = $('form.qform', element);
+			    var url = 'AuditDataSaveAjax.action';
+			    var data = form.serializeArray();
 
 				data.push({
 					name: 'toggleVerify',
