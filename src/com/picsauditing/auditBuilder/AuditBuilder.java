@@ -104,16 +104,24 @@ public class AuditBuilder {
 					}
 
 					if (!found) {
-						auditType = reconnectAuditType(auditType);
-
-						ContractorAudit audit = new ContractorAudit();
-						audit.setContractorAccount(contractor);
-						audit.setAuditType(auditType);
-						audit.setAuditColumns(systemUser);
-						contractor.getAudits().add(audit);
+						auditType = reconnectAuditType(auditType);						
+						ContractorAudit audit = null;
 						if (auditType.isWCB()) {
-							audit.setAuditFor(DateBean.getWCBYear());
+							audit = createNewWCBAudit(contractor, auditType);
+						} else {
+							audit = createNewAudit(contractor, auditType);
 						}
+
+//						ContractorAudit audit = new ContractorAudit();
+//						audit.setContractorAccount(contractor);
+//						audit.setAuditType(auditType);
+//						audit.setAuditColumns(systemUser);
+//						contractor.getAudits().add(audit);
+//						
+//						if (auditType.isWCB()) {
+//							audit.setAuditFor(DateBean.getWCBYear());
+//						}
+						
 						conAuditDao.save(audit);
 					}
 				}
@@ -191,8 +199,8 @@ public class AuditBuilder {
 		return false;
 	}
 	
-	private List<String> findAllWCBAuditYears(ContractorAccount contractor, ContractorAudit wcbAudit) {
-		List<String> years = new ArrayList<String>();
+	private Set<String> findAllWCBAuditYears(ContractorAccount contractor, ContractorAudit wcbAudit) {
+		Set<String> years = new HashSet<String>();
 		List<ContractorAudit> audits = contractor.getAudits();
 		if (CollectionUtils.isEmpty(audits)) {
 			return years;
@@ -205,6 +213,33 @@ public class AuditBuilder {
 		}
 		
 		return years;
+	}
+	
+	private ContractorAudit createNewWCBAudit(ContractorAccount contractor, AuditType auditType) {
+		ContractorAudit audit = createNewAudit(contractor, auditType);
+		audit.setAuditFor(DateBean.getWCBYear());
+		
+		if (DateBean.isGracePeriodForWCB()) {
+			String previousYear = Integer.toString(DateBean.getPreviousWCBYear());
+			Set<String> yearsForAllWCBs = findAllWCBAuditYears(contractor, audit);
+			if (!yearsForAllWCBs.contains(previousYear)) {
+				ContractorAudit previousYearWCB = createNewAudit(contractor, auditType);
+				previousYearWCB.setAuditFor(previousYear);
+				conAuditDao.save(previousYearWCB);
+			}
+		}
+		
+		return audit;
+	}
+	
+	private ContractorAudit createNewAudit(ContractorAccount contractor, AuditType auditType) {
+		ContractorAudit audit = new ContractorAudit();
+		audit.setContractorAccount(contractor);
+		audit.setAuditType(auditType);
+		audit.setAuditColumns(systemUser);
+		contractor.getAudits().add(audit);
+	
+		return audit;		
 	}
 
 	private boolean isMatchingWCBAudit(ContractorAudit audit, ContractorAudit wcbAudit) {
@@ -530,6 +565,7 @@ public class AuditBuilder {
 			if (cao.getStatus().after(AuditStatus.Incomplete) && cao.isVisible())
 				return true;
 		}
+		
 		return false;
 	}
 

@@ -13,14 +13,9 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
-import net.objectlab.kit.datecalc.common.DateCalculator;
-import net.objectlab.kit.datecalc.common.HolidayHandlerType;
-import net.objectlab.kit.datecalc.joda.LocalDateKitCalculatorsFactory;
-
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,9 +109,11 @@ public class DateBean {
 	public static String toDBFormat(String dateString) throws Exception {
 		if (dateString == null)
 			return null;
+		
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		if ("".equals(dateString) || NULL_DATE.equals(dateString))
+		if (Strings.EMPTY_STRING.equals(dateString) || NULL_DATE.equals(dateString))
 			return NULL_DATE_DB;
+		
 		try {
 			java.util.Date tempDate = showFormat.parse(dateString);
 			return toDBFormat(tempDate);
@@ -128,26 +125,31 @@ public class DateBean {
 	public static String toDBFormat(Date fromDate) {
 		if (fromDate == null)
 			return null;
+		
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return DBFormat.format(fromDate);
 	}
 
 	public static String toShowFormat(Object date) throws Exception {
 		if (date == null)
-			return "";
+			return Strings.EMPTY_STRING;
+		
 		if (date instanceof Date)
 			return toShowFormat(date.toString());
+		
 		if (date instanceof String) {
 			return toShowFormat(date.toString());
 		}
-		return "";
+		
+		return Strings.EMPTY_STRING;
 	}
 
 	public static String toShowFormat(String dateString) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
-		if (null == dateString || "0000-00-00".equals(dateString) || "".equals(dateString))
-			return "";
+		if (null == dateString || "0000-00-00".equals(dateString) || Strings.EMPTY_STRING.equals(dateString))
+			return Strings.EMPTY_STRING;
+		
 		String temp = "";
 		try {
 			java.util.Date tempDate = DBFormat.parse(dateString);
@@ -156,15 +158,17 @@ public class DateBean {
 			logger.error("Invalid DB Date format in DateBean.toShowFormat(): failed converting {} to {}", dateString,
 					temp);
 			temp = "";
-		}// catch
+		}
+		
 		return temp;
-	}// toDBFormat
+	}
 
 	public static String format(Date date, String format) {
-		if (format == null || format.equals(""))
+		if (Strings.isEmpty(format))
 			format = "M/d/yy";
+		
 		if (date == null)
-			return "";
+			return Strings.EMPTY_STRING;
 
 		SimpleDateFormat formatter = new SimpleDateFormat(format);
 		return formatter.format(date);
@@ -177,7 +181,7 @@ public class DateBean {
 		return temp;
 	}
 
-	/*
+	/**
 	 * WCB year starts September 1 the next year e.g. Sep.1, 2012 would be 2013
 	 * e.g. Aug 31, 2012 would be 2012
 	 */
@@ -204,6 +208,29 @@ public class DateBean {
 	public static String getWCBYear() {
 		return getWCBYear(null);
 	}
+	
+	public static int getPreviousWCBYear() {
+		if (isGracePeriodForWCB()) {
+			return getCurrentYear();
+		}
+		
+		return getCurrentYear() - 1;
+	}
+	
+	public static boolean isGracePeriodForWCB() {
+		int year = getCurrentYear();
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 1);
+		calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+		calendar.set(Calendar.YEAR, year);
+		
+		Date now = new Date();
+		Date startOfGracePeriod = calendar.getTime();
+		Date endOfGracePeriod = getWCBExpirationDate(Integer.toString(year));
+		
+		return (now.compareTo(startOfGracePeriod) >= 0 && now.compareTo(endOfGracePeriod) <= 0);
+	}	
 
 	/**
 	 * expiration date is December 31st.
@@ -333,7 +360,7 @@ public class DateBean {
 		if (monthInt < 12)
 			return MonthNames[monthInt];
 		else
-			return "";
+			return Strings.EMPTY_STRING;
 	}
 
 	static public ArrayList<Calendar> getNextMonths(int numMonths) {
@@ -368,8 +395,9 @@ public class DateBean {
 
 	public static boolean isAfterToday(String testDateString) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		if ("".equals(testDateString))
+		if (Strings.EMPTY_STRING.equals(testDateString))
 			testDateString = NULL_DATE;
+		
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
 		Date testDate = showFormat.parse(testDateString);
@@ -378,7 +406,7 @@ public class DateBean {
 	}
 
 	public static boolean isNullDate(Date dt) {
-		if (dt == null || dt.toString().equals(""))
+		if (dt == null || Strings.EMPTY_STRING.equals(dt.toString()))
 			return true;
 		else
 			return false;
@@ -667,7 +695,7 @@ public class DateBean {
 	public static String prettyDate(Date dateValue) {
 		long msToUnlock = dateValue.getTime() - new Date().getTime();
 
-		String ago = (msToUnlock < 0) ? " ago" : "";
+		String ago = (msToUnlock < 0) ? " ago" : Strings.EMPTY_STRING;
 		msToUnlock = Math.abs(msToUnlock);
 
 		String period = "";
