@@ -1,3 +1,5 @@
+var testObject;
+
 (function($) {
     PICS.define('contractor.Dashboard', {
         methods : {
@@ -5,6 +7,7 @@
                 var contractor_dashboard = $('.ContractorView-page');
 
                 if (contractor_dashboard.length > 0) {
+                    var that = this;
                     contractor_dashboard.delegate(
                             '#start_watch_link', 'click', {
                                 action : 'Add',
@@ -19,7 +22,7 @@
                     contractor_dashboard.delegate(
                             '#contractor_operator_numbers a.add, #contractor_operator_numbers a.edit',
                             'click',
-                            { callback : this.updateContractorOperatorNumbers },
+                            { callback : this.updateContractorOperatorNumbers, dashboard_class: that },
                             this.openModalForNumbers);
                     contractor_dashboard.delegate(
                             '#contractor_operator_numbers a.remove',
@@ -80,6 +83,7 @@
 
             openModalForNumbers : function(event) {
                 event.preventDefault();
+                var that = event.data.dashboard_class;
 
                 var url = $(this).attr('href');
                 var contractor = $(this).attr('data-contractor');
@@ -102,7 +106,9 @@
                             content : data
                         });
 
-                        $('.contractor-operator-number-modal').delegate(
+                        var contractor_modal =  $('.contractor-operator-number-modal');
+
+                        contractor_modal.delegate(
                             '.negative.closeButton',
                             'click',
                             function(event) {
@@ -111,15 +117,79 @@
                             }
                         );
 
-                        $('.contractor-operator-number-modal').delegate(
+                        contractor_modal.delegate(
                                 '.positive',
                                 'click',
                                 callback
                         );
+
+                        contractor_modal.delegate('#contractor_numbers_client, #contractor_numbers_type', 'change', function (event) {
+                            that.userListParameterCheck.apply(that, [event]);
+                        });
+
+                        //check for saved value
+                        var saved_value = $('#contractor_operator_numbers_form_number');
+
+                        if (saved_value.val() !== '') {
+                            that.userListParameterCheck();
+                        }
                     },
                     complete : function(XMLHttpRequest, textStatus) {
                         var modal = PICS.getClass('modal.Modal');
                         modal.show();
+                    }
+                });
+            },
+
+            convertValueToSelect: function (userlist) {
+                var value = $('#contractor_numbers_value'),
+                    saved_value = value.val();
+
+                value.replaceWith(userlist);
+
+                //grab newly created userList and set saved value
+                if (saved_value !== '') {
+                    $('select#contractor_numbers_value').val(saved_value);
+                }
+            },
+
+            convertValuetoInput: function () {
+                var input = $('<input type="text" id="contractor_numbers_value" name="number.value" />');
+
+                $('#contractor_numbers_value').replaceWith(input);
+            },
+
+            deleteContractorOperatorNumber : function(event) {
+                event.preventDefault();
+
+                if (confirm(translate('JS.ManageContractorOperatorNumber.ConfirmDelete'))) {
+                    var contractor = $(this).attr('data-contractor');
+                    var number = $(this).attr('data-number');
+                    var url = $(this).attr('href');
+
+                    PICS.ajax({
+                        url : url,
+                        data : {
+                            contractor : contractor,
+                            number : number
+                        },
+                        success : function(data, textStatus, XMLHttpRequest) {
+                            $('#contractor_operator_numbers').html(data);
+                        }
+                    });
+                }
+            },
+
+            getUserList: function (client_id) {
+                var that = this;
+
+                PICS.ajax({
+                    url : 'ContractorNumbersOperatorUserListAjax.action',
+                    data : {
+                        opID : client_id
+                    },
+                    success : function(data, textStatus, jqXHR) {
+                        that.convertValueToSelect(data);
                     }
                 });
             },
@@ -162,27 +232,6 @@
                 });
             },
 
-            deleteContractorOperatorNumber : function(event) {
-                event.preventDefault();
-
-                if (confirm(translate('JS.ManageContractorOperatorNumber.ConfirmDelete'))) {
-                    var contractor = $(this).attr('data-contractor');
-                    var number = $(this).attr('data-number');
-                    var url = $(this).attr('href');
-
-                    PICS.ajax({
-                        url : url,
-                        data : {
-                            contractor : contractor,
-                            number : number
-                        },
-                        success : function(data, textStatus, XMLHttpRequest) {
-                            $('#contractor_operator_numbers').html(data);
-                        }
-                    });
-                }
-            },
-
             updateGeneralContractor : function(event) {
                 var contractor = $(this).attr('data-contractor');
                 var operator = $(this).attr('data-operator');
@@ -199,6 +248,20 @@
                         $('#contractor_dashboard #con_pending_gcs').html(data);
                     }
                 });
+            },
+
+            userListParameterCheck: function (event) {
+                var client = $('#contractor_numbers_client'),
+                    type = $('#contractor_numbers_type'),
+                    that = this;
+
+                if ((client.val() !== '') && ((type.val() === 'Buyer') || (type.val() === 'EHS'))) {
+                    that.getUserList(client.val());
+                } else {
+                    if ($('#contractor_numbers_value').is('select')) {
+                        that.convertValuetoInput();
+                    }
+                }
             }
         }
     });

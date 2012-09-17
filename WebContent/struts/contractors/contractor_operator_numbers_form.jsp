@@ -21,6 +21,7 @@
 							headerValue="- %{getText('global.Operator')} -"
 							name="number.operator"
 							value="%{number.operator.id}"
+                            id="contractor_numbers_client"
 						/>
 					</li>
 				</s:if>
@@ -35,13 +36,15 @@
 						listKey="name()"
 						headerKey=""
 						headerValue="- %{getText('ContractorOperatorNumberType')} -"
+                        id="contractor_numbers_type"
 					/>
 				</li>
+                <li id="operator_user_list"></li>
 				<li>
 					<label>
 						<s:text name="ContractorOperatorNumber.value" />
 					</label>
-					<s:textfield name="number.value" />
+					<s:textfield name="number.value" id="contractor_numbers_value" />
 				</li>
 			</ol>
 		</fieldset>
