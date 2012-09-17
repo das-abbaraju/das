@@ -566,6 +566,10 @@
 			class="com.picsauditing.actions.audits.ContractorAuditDownload">
 		</action>
 
+		<action name="AuditTranslationDownload"
+			class="com.picsauditing.actions.audits.AuditTranslationDownload">
+		</action>
+
 		<!-- Track Auditor Payments -->
 
 		<action name="CreateAuditorInvoices"
