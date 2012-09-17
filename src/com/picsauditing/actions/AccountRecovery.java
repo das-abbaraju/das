@@ -25,15 +25,12 @@ public class AccountRecovery extends PicsActionSupport {
 
 	private String email, username;
 	private User user;
-	private PicsCaptChaCheck picsCaptcha;
 	private int uresponse;
 	private int sumValue;
 
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
-		picsCaptcha = new PicsCaptChaCheck();
-
 		return SUCCESS;
 	}
 
@@ -43,13 +40,11 @@ public class AccountRecovery extends PicsActionSupport {
 			email = email.trim();
 
 		if (email == null || email.equals("")) {
-			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.NoEmail"));
 			return SUCCESS;
 		}
 
 		if (!EmailAddressUtils.isValidEmail(email)) {
-			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.InvalidEmail"));
 			return SUCCESS;
 		}
@@ -64,22 +59,7 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 
 		if (matchingUsers.size() == 0) {
-			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.EmailNotFound"));
-			return SUCCESS;
-		}
-
-		if (picsCaptcha == null)
-			picsCaptcha = new PicsCaptChaCheck();
-
-		Boolean response = picsCaptcha.isPicsCaptchaResponseValid(uresponse, sumValue);
-		if (response == null) {
-			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
-			return SUCCESS;
-		}
-
-		if (!response) {
-			addActionError(getText("AccountRecovery.error.ReCaptchaMismatch"));
 			return SUCCESS;
 		}
 
@@ -105,22 +85,7 @@ public class AccountRecovery extends PicsActionSupport {
 	@Anonymous
 	public String resetPassword() {
 		if (username == null || username.equals("") || username.startsWith("DELETE-")) {
-			picsCaptcha = new PicsCaptChaCheck();
 			addActionError(getText("AccountRecovery.error.NoUserName"));
-			return SUCCESS;
-		}
-
-		if (picsCaptcha == null)
-			picsCaptcha = new PicsCaptChaCheck();
-
-		Boolean response = picsCaptcha.isPicsCaptchaResponseValid(uresponse, sumValue);
-		if (response == null) {
-			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
-			return SUCCESS;
-		}
-
-		if (!response) {
-			addActionError(getText("AccountRecovery.error.ReCaptchaMismatch"));
 			return SUCCESS;
 		}
 
@@ -213,14 +178,6 @@ public class AccountRecovery extends PicsActionSupport {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public PicsCaptChaCheck getPicsCaptcha() {
-		return picsCaptcha;
-	}
-
-	public void setPicsCaptcha(PicsCaptChaCheck picsCaptcha) {
-		this.picsCaptcha = picsCaptcha;
 	}
 
 	public int getUresponse() {
