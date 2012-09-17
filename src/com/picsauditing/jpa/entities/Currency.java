@@ -9,7 +9,7 @@ public enum Currency {
     EUR("EUR", "\u20ac"),   //Euros                 (symbol placed either before or after)
     SEK("SEK", "kr"),       //Swedish Krona         (symbol placed after amounts)
     ZAR("ZAR", "R"),        //South African Rand    (symbol placed after amounts)
-    NOK("NOK", "kr"),       //Norwegian Krone       (symbol pnaced after amounts)
+    NOK("NOK", "kr"),       //Norwegian Krone       (symbol placed after amounts)
     DKK("DKK", "kr");       //Danish Krone          (symbol placed after amounts)
 
 	private String display;
