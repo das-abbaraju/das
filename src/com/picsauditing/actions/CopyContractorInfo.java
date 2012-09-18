@@ -3,24 +3,27 @@ package com.picsauditing.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.hql.internal.ast.tree.FromClause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class CopyContractorInfo extends AccountActionSupport {
 	private static Logger logger = LoggerFactory.getLogger(DataConversionRequestAccount.class);
+
+	private boolean deactivateWhenCopied = false;
 
 	private ContractorAccount fromRequestedContractor;
 	private ContractorAccount toContractorAccount;
@@ -32,16 +35,31 @@ public class CopyContractorInfo extends AccountActionSupport {
 			copyNotes();
 			copyTags();
 
-			dao.save(toContractorAccount);
-		} catch (Exception e) {
-			logger.error("Error in contrctor copy", e);
-			addActionError(e.getLocalizedMessage());
+			if (deactivateWhenCopied) {
+				fromRequestedContractor.setStatus(AccountStatus.Deleted);
+				fromRequestedContractor.setName(String.format("%s (DUPLICATE OF #%d)", toContractorAccount.getName(),
+						toContractorAccount.getId()));
+				fromRequestedContractor.setReason("Duplicate/Merged Account");
+				dao.save(fromRequestedContractor);
+			}
 
+			dao.save(toContractorAccount);
+
+			addActionMessage(getTextParameterized("CopyContractorInfo.Success", fromRequestedContractor.getName(),
+					toContractorAccount.getId(), toContractorAccount.getName()));
+		} catch (Exception e) {
+			logger.error("Error in contractor copy", e);
+			addActionError(e.getLocalizedMessage());
+		}
+
+		if (!Strings.isEmpty(url)) {
+			return REDIRECT;
 		}
 
 		return SUCCESS;
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyOperators() {
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
 		operators = fromRequestedContractor.getOperatorAccounts();
@@ -60,6 +78,7 @@ public class CopyContractorInfo extends AccountActionSupport {
 		}
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyUsers() {
 		List<User> users = new ArrayList<User>();
 		users = fromRequestedContractor.getUsers();
@@ -78,6 +97,7 @@ public class CopyContractorInfo extends AccountActionSupport {
 		}
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyNotes() {
 		List<Note> notes = new ArrayList<Note>();
 		notes = noteDao.findWhere(fromRequestedContractor.getId(), "", 1000);
@@ -91,6 +111,7 @@ public class CopyContractorInfo extends AccountActionSupport {
 		}
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyTags() {
 		List<ContractorTag> tags = new ArrayList<ContractorTag>();
 		tags = fromRequestedContractor.getOperatorTags();
@@ -105,6 +126,14 @@ public class CopyContractorInfo extends AccountActionSupport {
 				toContractorAccount.getOperatorTags().add(newTag);
 			}
 		}
+	}
+
+	public boolean isDeactivateWhenCopied() {
+		return deactivateWhenCopied;
+	}
+
+	public void setDeactivateWhenCopied(boolean deactivateWhenCopied) {
+		this.deactivateWhenCopied = deactivateWhenCopied;
 	}
 
 	public ContractorAccount getFromRequestedContractor() {
@@ -123,4 +152,7 @@ public class CopyContractorInfo extends AccountActionSupport {
 		this.toContractorAccount = toContractorAccount;
 	}
 
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

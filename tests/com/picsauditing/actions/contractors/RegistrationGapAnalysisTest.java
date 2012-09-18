@@ -4,15 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
@@ -22,10 +25,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.contractors.RegistrationGapAnalysis.Match;
+import com.picsauditing.actions.contractors.RegistrationGapAnalysis.MatchType;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -34,6 +42,8 @@ public class RegistrationGapAnalysisTest {
 	private RegistrationGapAnalysis registrationGapAnalysis;
 	private static int counter;
 
+	@Mock
+	private BasicDAO dao;
 	@Mock
 	private Database database;
 	@Mock
@@ -47,6 +57,7 @@ public class RegistrationGapAnalysisTest {
 		counter = 1;
 
 		registrationGapAnalysis = new RegistrationGapAnalysis();
+		Whitebox.setInternalState(registrationGapAnalysis, "dao", dao);
 		Whitebox.setInternalState(registrationGapAnalysis, "database", database);
 		Whitebox.setInternalState(registrationGapAnalysis, "permissions", permissions);
 	}
@@ -69,8 +80,34 @@ public class RegistrationGapAnalysisTest {
 	}
 
 	@Test
-	public void testGetPossibleMatches() {
-		assertNotNull(registrationGapAnalysis.getPossibleMatches());
+	public void testDeactivateDuplicate_NoDuplicate() throws Exception {
+		assertFalse(registrationGapAnalysis.hasActionMessages());
+		assertEquals(PicsActionSupport.REDIRECT, registrationGapAnalysis.deactivateDuplicate());
+
+		verify(dao, never()).save(any(BaseTable.class));
+	}
+
+	@Test
+	public void testDeactivateDuplicate_Duplicate() throws Exception {
+		ContractorAccount duplicate = EntityFactory.makeContractor();
+		ContractorAccount original = EntityFactory.makeContractor();
+
+		registrationGapAnalysis.setDuplicate(duplicate);
+		registrationGapAnalysis.setOriginal(original);
+
+		assertEquals(PicsActionSupport.REDIRECT, registrationGapAnalysis.deactivateDuplicate());
+
+		duplicate = Whitebox.getInternalState(registrationGapAnalysis, "duplicate");
+
+		assertTrue(duplicate.getStatus().isDeactivated());
+		assertTrue(duplicate.getName().contains("DUPLICATE"));
+
+		verify(dao).save(any(BaseTable.class));
+	}
+
+	@Test
+	public void testGetMatches() {
+		assertNotNull(registrationGapAnalysis.getMatches());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -101,12 +138,12 @@ public class RegistrationGapAnalysisTest {
 		when(database.select(anyString(), anyBoolean())).thenReturn(recentlyRegisteredList, requestedContractorList);
 
 		Whitebox.invokeMethod(registrationGapAnalysis, "buildPossibleMatches");
-		Map<ContractorAccount, List<ContractorAccount>> possibleMatches = registrationGapAnalysis.getPossibleMatches();
+		Map<ContractorAccount, Set<Match>> matches = registrationGapAnalysis.getMatches();
 
-		assertEquals(1, possibleMatches.keySet().size());
+		assertEquals(1, matches.keySet().size());
 
-		for (ContractorAccount contractor : possibleMatches.keySet()) {
-			assertEquals(1, possibleMatches.get(contractor).size());
+		for (ContractorAccount contractor : matches.keySet()) {
+			assertEquals(1, matches.get(contractor).size());
 		}
 	}
 
@@ -135,62 +172,68 @@ public class RegistrationGapAnalysisTest {
 	}
 
 	@Test
-	public void testIsPartialMatch() throws Exception {
+	public void testGetMatchTypes() throws Exception {
 		ContractorAccount registered = new ContractorAccount();
-		ContractorAccount requested = new ContractorAccount();
-
 		registered.setName("Existing");
 		registered.setAddress("123 Main");
 		registered.setCity("Irvine");
-
-		requested.setName("Requested");
-		requested.setAddress("123 Main");
-		requested.setCity("Irvin");
-
-		assertTrue((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
-
-		registered.setZip("92614");
-
-		requested.setCity("Tustin");
-		requested.setZip("92614-9999");
-
-		assertTrue((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
-
-		registered.setAddress("123 Main");
+		registered.setZip("99999");
 		registered.setTaxId("123456789");
-
-		requested.setAddress("456 Wall");
-		requested.setTaxId("12345678");
-
-		assertTrue((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
-
 		registered.setPrimaryContact(new User());
 		registered.getPrimaryContact().setName("Test");
+		registered.getPrimaryContact().setEmail("test1@test.com");
+		registered.getPrimaryContact().setPhoneIndex("5555555555");
 
+		ContractorAccount requested = new ContractorAccount();
+		requested.setName("Requested");
+		requested.setAddress("123 Main");
+		requested.setCity("Other");
+		requested.setZip("12345");
 		requested.setTaxId("987654321");
 		requested.setPrimaryContact(new User());
-		requested.getPrimaryContact().setName("Tess");
+		requested.getPrimaryContact().setName("User");
+		requested.getPrimaryContact().setEmail("user@test.com");
+		requested.getPrimaryContact().setPhoneIndex("3214567890");
 
-		assertTrue((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
+		Set<MatchType> matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.isEmpty());
 
-		registered.getPrimaryContact().setEmail("test1@test.com");
+		requested.setName("Existing1");
 
-		requested.getPrimaryContact().setName("Jane");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.Name));
+		assertEquals(1, matches.size());
+
+		requested.setCity("Irvin");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.Address));
+		assertEquals(2, matches.size());
+
+		requested.setCity("Other");
+		requested.setZip("99999-0001");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.Address));
+		assertEquals(2, matches.size());
+
+		requested.setTaxId("123456789-0");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.TaxID));
+		assertEquals(3, matches.size());
+
+		requested.getPrimaryContact().setName("Test1");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.Contact));
+		assertEquals(4, matches.size());
+
 		requested.getPrimaryContact().setEmail("test@test.com");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.Email));
+		assertEquals(5, matches.size());
 
-		assertTrue((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
-
-		registered.getPrimaryContact().setPhone("555 555 5555");
-
-		requested.getPrimaryContact().setName("Jane");
-		requested.getPrimaryContact().setEmail("jane@test.com");
-		requested.getPrimaryContact().setPhone("055 555 5555");
-
-		assertTrue((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
-
-		requested.getPrimaryContact().setPhone("123 456 7890");
-
-		assertFalse((Boolean) Whitebox.invokeMethod(registrationGapAnalysis, "isPartialMatch", registered, requested));
+		requested.getPrimaryContact().setPhoneIndex("55555555553456");
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		assertTrue(matches.contains(MatchType.Phone));
+		assertEquals(6, matches.size());
 	}
 
 	private BasicDynaBean mockResult() {

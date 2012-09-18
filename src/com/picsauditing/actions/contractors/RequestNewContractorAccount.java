@@ -405,6 +405,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			requestedContractor.getUsers().add(primaryContact);
 		}
 
+		primaryContact.setPhoneIndex(Strings.stripPhoneNumber(primaryContact.getPhone()));
 		primaryContact = (User) dao.save(primaryContact);
 
 		// Flag is required for contractorOperator

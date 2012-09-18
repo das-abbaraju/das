@@ -70,5 +70,9 @@
 		<action name="RegistrationGapAnalysis" class="com.picsauditing.actions.contractors.RegistrationGapAnalysis">
 			<result>/struts/contractors/request/registration_gap_analysis.jsp</result>
 		</action>
+		
+		<action name="CopyContractorInfo" class="com.picsauditing.actions.CopyContractorInfo">
+			<result>/struts/blank.jsp</result>
+		</action>
 	</package>
 </struts>

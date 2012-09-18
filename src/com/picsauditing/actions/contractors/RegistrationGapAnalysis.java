@@ -1,7 +1,6 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -29,8 +29,9 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 	private Database database = new Database();
 
 	private int daysAgo = 30;
-	private Map<ContractorAccount, List<ContractorAccount>> possibleMatches = new TreeMap<ContractorAccount, List<ContractorAccount>>();
-	private Map<ContractorAccount, List<Match>> matches = new TreeMap<ContractorAccount, List<Match>>();
+	private ContractorAccount duplicate;
+	private ContractorAccount original;
+	private Map<ContractorAccount, Set<Match>> matches = new TreeMap<ContractorAccount, Set<Match>>();
 
 	@Override
 	public String execute() throws Exception {
@@ -43,6 +44,21 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	public String deactivateDuplicate() throws Exception {
+		if (duplicate != null) {
+			duplicate.setName(String.format("%s (DUPLICATE OF #%d)", original.getName(), original.getId()));
+			duplicate.setReason("Duplicate/Merged Account");
+			duplicate.setStatus(AccountStatus.Deactivated);
+			duplicate.setAuditColumns(permissions);
+			dao.save(duplicate);
+
+			addActionMessage(getTextParameterized("RegistrationGapAnalysis.Deactivated", duplicate.getName(),
+					original.getId(), original.getName()));
+		}
+
+		return setUrlForRedirect("RegistrationGapAnalysis.action");
+	}
+
 	public int getDaysAgo() {
 		return daysAgo;
 	}
@@ -51,11 +67,15 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		this.daysAgo = daysAgo;
 	}
 
-	public Map<ContractorAccount, List<ContractorAccount>> getPossibleMatches() {
-		return possibleMatches;
+	public void setDuplicate(ContractorAccount duplicate) {
+		this.duplicate = duplicate;
 	}
 
-	public Map<ContractorAccount, List<Match>> getMatches() {
+	public void setOriginal(ContractorAccount original) {
+		this.original = original;
+	}
+
+	public Map<ContractorAccount, Set<Match>> getMatches() {
 		return matches;
 	}
 
@@ -69,24 +89,12 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 
 		for (ContractorAccount registered : recentlyRegistered) {
 			for (ContractorAccount requested : requestedContractors) {
-				if (isPartialMatch(registered, requested)) {
-					if (possibleMatches.get(registered) == null) {
-						possibleMatches.put(registered, new ArrayList<ContractorAccount>());
-					}
-
-					possibleMatches.get(registered).add(requested);
-				}
-
-				if (possibleMatches.get(registered) != null) {
-					Collections.sort(possibleMatches.get(registered));
-				}
-
 				Set<MatchType> matchesOn = getMatchTypes(registered, requested);
 				if (!matchesOn.isEmpty()) {
 					Match match = new Match(registered, requested, matchesOn);
 
 					if (matches.get(registered) == null) {
-						matches.put(registered, new ArrayList<Match>());
+						matches.put(registered, new TreeSet<Match>());
 					}
 
 					matches.get(registered).add(match);
@@ -170,47 +178,6 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		return contractor;
 	}
 
-	private boolean isPartialMatch(ContractorAccount registered, ContractorAccount requested) {
-		if (StringUtils.getLevenshteinDistance(registered.getName(), requested.getName()) < 2) {
-			return true;
-		}
-
-		if (StringUtils.getLevenshteinDistance(registered.getAddress(), requested.getAddress()) < 2) {
-			if (StringUtils.getLevenshteinDistance(registered.getCity(), requested.getCity()) < 2) {
-				return true;
-			}
-
-			if (registered.getZip().startsWith(requested.getZip())
-					|| requested.getZip().startsWith(registered.getZip())) {
-				return true;
-			}
-		}
-
-		if (registered.getTaxId().startsWith(requested.getTaxId())
-				|| requested.getTaxId().startsWith(registered.getTaxId())) {
-			return true;
-		}
-
-		if (registered.getPrimaryContact() != null) {
-			if (StringUtils.getLevenshteinDistance(registered.getPrimaryContact().getName(), requested
-					.getPrimaryContact().getName()) < 2) {
-				return true;
-			}
-
-			if (StringUtils.getLevenshteinDistance(registered.getPrimaryContact().getEmail(), requested
-					.getPrimaryContact().getEmail()) < 2) {
-				return true;
-			}
-
-			if (StringUtils.getLevenshteinDistance(registered.getPrimaryContact().getPhone(), requested
-					.getPrimaryContact().getPhone()) < 2) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	private Set<MatchType> getMatchTypes(ContractorAccount registered, ContractorAccount requested) {
 		Set<MatchType> matchesOn = new TreeSet<MatchType>();
 
@@ -234,19 +201,22 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 			matchesOn.add(MatchType.TaxID);
 		}
 
-		if (registered.getPrimaryContact() != null) {
-			if (StringUtils.getLevenshteinDistance(registered.getPrimaryContact().getName(), requested
-					.getPrimaryContact().getName()) < 2) {
+		User registeredUser = registered.getPrimaryContact();
+		User requestedUser = requested.getPrimaryContact();
+
+		if (registeredUser != null && requestedUser != null) {
+			if (StringUtils.getLevenshteinDistance(registeredUser.getName(), requestedUser.getName()) < 2) {
 				matchesOn.add(MatchType.Contact);
 			}
 
-			if (StringUtils.getLevenshteinDistance(registered.getPrimaryContact().getEmail(), requested
-					.getPrimaryContact().getEmail()) < 2) {
+			if (StringUtils.getLevenshteinDistance(registeredUser.getEmail(), requestedUser.getEmail()) < 2) {
 				matchesOn.add(MatchType.Email);
 			}
 
-			if (StringUtils.getLevenshteinDistance(registered.getPrimaryContact().getPhone(), requested
-					.getPrimaryContact().getPhone()) < 2) {
+			if (registeredUser.getPhoneIndex() != null
+					&& requestedUser.getPhoneIndex() != null
+					&& (registeredUser.getPhoneIndex().contains(requestedUser.getPhoneIndex()) || requestedUser
+							.getPhoneIndex().contains(registeredUser.getPhoneIndex()))) {
 				matchesOn.add(MatchType.Phone);
 			}
 		}
@@ -277,7 +247,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		}
 	}
 
-	public class Match {
+	public class Match implements Comparable<Match> {
 		private ContractorAccount registered;
 		private ContractorAccount requested;
 		private Set<MatchType> types;
@@ -313,48 +283,9 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 			return matchedOn;
 		}
 
-		public String getMatchingValues(ContractorAccount contractor) {
-			String matchingValues = "";
-
-			for (MatchType type : types) {
-				String data = getDataBy(contractor, type);
-
-				if (data != null) {
-					matchingValues += data + "\n\n";
-				}
-			}
-
-			return matchingValues.trim();
-		}
-
-		private String getDataBy(ContractorAccount contractor, MatchType type) {
-			if (type == MatchType.Name) {
-				return contractor.getName();
-			}
-
-			if (type == MatchType.Address) {
-				return String.format("%s, %s %s", contractor.getAddress(), contractor.getCity(), contractor.getZip());
-			}
-
-			if (type == MatchType.TaxID) {
-				return contractor.getTaxId();
-			}
-
-			if (contractor.getPrimaryContact() != null) {
-				if (type == MatchType.Contact) {
-					return contractor.getPrimaryContact().getName();
-				}
-
-				if (type == MatchType.Email) {
-					return contractor.getPrimaryContact().getEmail();
-				}
-
-				if (type == MatchType.Phone) {
-					return contractor.getPhone();
-				}
-			}
-
-			return null;
+		@Override
+		public int compareTo(Match o) {
+			return requested.compareTo(o.getRequested());
 		}
 	}
 }
