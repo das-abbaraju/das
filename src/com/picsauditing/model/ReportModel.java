@@ -268,16 +268,18 @@ public class ReportModel {
 		if (currentPosition == newPosition || newPosition < 0 || newPosition > numberOfFavorites)
 			return;
 
-		int offsetPosition = -magnitude;
+		int offsetPosition;
 		int topPositionToMove;
 		int bottomPositionToMove;
 
 		if (currentPosition < newPosition) {
 			// Moving down in list, other reports move up
+			offsetPosition = -1;
 			topPositionToMove = currentPosition + 1;
 			bottomPositionToMove = newPosition;
 		} else {
 			// Moving up in list, other reports move down
+			offsetPosition = 1;
 			topPositionToMove = newPosition;
 			bottomPositionToMove = currentPosition - 1;
 		}

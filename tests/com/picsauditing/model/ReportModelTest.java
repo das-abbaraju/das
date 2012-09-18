@@ -84,23 +84,6 @@ public class ReportModelTest {
 	}
 
 	@Test
-	public void canUserViewAndCopy_TrueIfPublicReport() {
-		when(report.isPublic()).thenReturn(true);
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-
-		assertTrue(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
-	}
-
-	@Test
-	public void canUserViewAndCopy_FalseIfPrivateReportNoAssociationWithUser() {
-		when(report.isPublic()).thenReturn(false);
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(null);
-
-		assertFalse(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
-	}
-
-	@Test
 	public void canUserViewAndCopy_TrueIfAssociationWithUser() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(new ReportPermissionUser());
 
@@ -248,7 +231,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testConnectReportUser() {
-		ReportUser reportUser = reportModel.connectReportUser(report, USER_ID);
+		ReportUser reportUser = reportModel.connectReportUser(REPORT_ID, USER_ID);
 
 		verify(reportUserDao).save(reportUser);
 		assertEquals(REPORT_ID, reportUser.getReport().getId());
@@ -258,7 +241,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testConnectReportPermissionUser() {
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(report, USER_ID);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(REPORT_ID, USER_ID, false);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
@@ -268,7 +251,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testConnectReportUserEditable() {
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUserEditable(report, USER_ID);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(REPORT_ID, USER_ID, true);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());

@@ -34,7 +34,6 @@ public class Report extends BaseTable {
 	private String parameters;
 	private int rowsPerPage = 50;
 	
-	private boolean isPrivate;
 	private int numTimesFavorited;
 
 	private Definition definition;
@@ -74,19 +73,6 @@ public class Report extends BaseTable {
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
-	}
-
-	public boolean isPrivate() {
-		return isPrivate;
-	}
-
-	public void setPrivate(boolean isPrivate) {
-		this.isPrivate = isPrivate;
-	}
-
-	@Transient
-	public boolean isPublic() {
-		return !isPrivate;
 	}
 
 	@SuppressWarnings("unchecked")

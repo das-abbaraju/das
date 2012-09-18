@@ -58,13 +58,21 @@ public class ReportUserDAO extends PicsDAO {
 			report.setName(result.get("name").toString());
 			report.setDescription(result.get("description").toString());
 
-			User user = new User(result.get("userName").toString());
-			user.setId(Integer.parseInt(result.get("userId").toString()));
-			report.setCreatedBy(user);
+			Object userName = result.get("userName");
+			Object userID = result.get("userId");
 
+			if (userName != null) {
+				User user = new User(userName.toString());
+				user.setId(Integer.parseInt(userID.toString()));
+			}
+			
 			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
 
-			reportUsers.add(new ReportUser(0, report));
+			ReportUser reportUser = new ReportUser(0, report);
+			Object favorite = result.get("favorite");
+			if (favorite != null)
+				reportUser.setFavorite(Boolean.parseBoolean(favorite.toString()));
+			reportUsers.add(reportUser);
 		}
 
 		return reportUsers;
@@ -128,14 +136,16 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("r.description");
 		sql.addField("u.name as userName");
 		sql.addField("u.id as userId");
+		sql.addField("rpuru.favorite as favorite");
 		sql.addField("count(ru.favorite) as numTimesFavorited");
 
 		sql.addGroupBy("r.id");
 
 		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.favorite = 1");
 		sql.addJoin("LEFT JOIN report_permission_user AS rpu ON r.id = rpu.reportID");
+		sql.addJoin("LEFT JOIN report_user as rpuru ON rpu.userID = rpuru.userID AND r.id = ru.reportID");
 		sql.addJoin("LEFT JOIN users as u ON rpu.userID = u.id");
-		sql.addJoin("LEFT JOIN report_permission_account AS rpu ON r.id = rpa.reportID");
+		sql.addJoin("LEFT JOIN report_permission_account AS rpa ON r.id = rpa.reportID");
 
 		sql.addWhere("rpu.userID = " + userId + " OR rpa.accountID = " + accountId);
 

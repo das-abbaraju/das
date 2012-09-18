@@ -30,6 +30,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private ReportUserDAO reportUserDao;
 
 	private Report report;
+	private boolean editable;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -125,8 +126,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	// TODO: Redo sharing to fit into vision of permission grants. 
 	public String share() {
-		boolean editable = false;
+		editable = false;
 		int userId = -1;
 		String dirtyReportIdParameter = "";
 
@@ -153,7 +155,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String shareEditable() {
-		boolean editable = true;
+		editable = true;
 		int userId = -1;
 		String dirtyReportIdParameter = "";
 
