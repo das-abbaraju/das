@@ -9,7 +9,6 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,12 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.Column;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
-import com.picsauditing.util.excel.ExcelColumn;
 
 /**
  * This is a controller. It should delegate business concerns and persistence

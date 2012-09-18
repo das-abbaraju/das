@@ -72,28 +72,42 @@ public class ReportDataConverterTest {
 	@Test
 	public void testConvertQueryResultsToJson_Empty() {
 		queryResults = new ArrayList<BasicDynaBean>();
-		JSONArray json = runConverter();
+		JSONArray json = runJsonConverter();
 		assertEquals(0, json.size());
 	}
 
 	@Test
 	public void testConvertQueryResultsToJson_Single() {
 		queryResults = createAccountQueryList(1);
-		JSONArray json = runConverter();
+		JSONArray json = runJsonConverter();
 
 		assertEquals(1, json.size());
 		String expected = "[{\"accountID\":1,\"accountName\":\"Test 1\",\"accountCreationDate\":1234567890,"
 				+ "\"contractorMembershipDate__Month\":\"janvier\",\"contractorMembershipDate\":1234567890}]";
 		assertEquals(expected, json.toString());
-		System.out.println(json);
 	}
 
 	@Test
 	public void testConvertQueryResultsToJson_Simple() {
 		queryResults = createAccountQueryList(10);
 
-		JSONArray json = runConverter();
+		JSONArray json = runJsonConverter();
 		assertEquals(10, json.size());
+	}
+
+	@Test
+	public void testConvertQueryResultsToPrinting_Single() {
+		queryResults = createAccountQueryList(1);
+		ReportResults results = runConverterForPrinting();
+
+		assertEquals(1, results.getRows().size());
+		ReportRow row1 = results.getRows().get(0);
+		for (ReportCell cell : row1.getCells()) {
+			String fieldName = cell.getColumn().getFieldName();
+			if ("contractorMembershipDate".equals(fieldName)) {
+				assertEquals(new java.sql.Date(1234567890), cell.getValue());
+			}
+		}
 	}
 
 	private List<BasicDynaBean> createAccountQueryList(int count) {
@@ -122,11 +136,18 @@ public class ReportDataConverterTest {
 		return builder.getRows();
 	}
 
-	private JSONArray runConverter() {
+	private JSONArray runJsonConverter() {
 		converter = new ReportDataConverter(columns, queryResults);
 		converter.setLocale(Locale.FRENCH);
 		converter.convertForExtJS();
 		JSONArray json = converter.getReportResults().toJson();
 		return json;
+	}
+
+	private ReportResults runConverterForPrinting() {
+		converter = new ReportDataConverter(columns, queryResults);
+		converter.setLocale(Locale.FRENCH);
+		converter.convertForPrinting();
+		return converter.getReportResults();
 	}
 }
