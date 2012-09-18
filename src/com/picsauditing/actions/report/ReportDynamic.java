@@ -20,6 +20,9 @@ import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -88,7 +91,8 @@ public class ReportDynamic extends PicsActionSupport {
 	public String report() {
 		try {
 			ReportModel.validate(report);
-
+			json.put("reportID", report.getId());
+			
 			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
@@ -111,11 +115,15 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			ReportModel.validate(report);
-
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
-
+			// ReportModel.validate(report);
+			
+			ModelType modelType = report.getModelType();
 			json.put("modelType", report.getModelType().toString());
+			
+			AbstractModel model = ModelFactory.build(modelType);
+
+			Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+
 			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, permissions.getLocale()));
 			json.put("success", true);
 		} catch (Exception e) {
