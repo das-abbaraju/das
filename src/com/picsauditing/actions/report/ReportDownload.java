@@ -19,12 +19,14 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.Column;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
+import com.picsauditing.util.excel.ExcelColumn;
 
 /**
  * This is a controller. It should delegate business concerns and persistence
@@ -72,7 +74,8 @@ public class ReportDownload extends PicsActionSupport {
 		logger.info("Building XLS File");
 		ExcelBuilder builder = new ExcelBuilder();
 		builder.addColumns(report.getDefinition().getColumns());
-		return builder.buildWorkbook(report.getName(), reportResults);
+		builder.addSheet(report.getName(), reportResults);
+		return builder.getWorkbook();
 	}
 
 	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {

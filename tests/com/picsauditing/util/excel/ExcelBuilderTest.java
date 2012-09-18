@@ -50,15 +50,15 @@ public class ExcelBuilderTest {
 		addColumn("contractorScore");
 		addColumn("contractorBalance");
 		addColumn("contractorPQFExpiresDate");
+		builder.addColumns(columns);
 		
 		addDataRow(AccountStatus.Active, "Irvine");
 		addDataRow(AccountStatus.Active, "Houston");
 		addDataRow(AccountStatus.Pending, "Houston");
 		addDataRow(AccountStatus.Deleted, null);
 		
-		builder.addColumns(columns);
-		HSSFWorkbook workbook = builder.buildWorkbook("Tester", reportResults);
-		HSSFSheet excelSheet = workbook.getSheetAt(0);
+		HSSFSheet excelSheet = builder.addSheet("Tester", reportResults);
+		HSSFWorkbook workbook = builder.getWorkbook();
 
 		// TODO this should probably be broken up into several unit tests that
 		// do each assertion

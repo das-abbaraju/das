@@ -1,6 +1,7 @@
 package com.picsauditing.util.excel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -21,27 +22,35 @@ import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 
 public class ExcelBuilder {
-	private HSSFWorkbook workbook;
-	private HSSFSheet sheet;
+	private HSSFWorkbook workbook = new HSSFWorkbook();;
 	private List<ExcelColumn> columns = new ArrayList<ExcelColumn>();
 	private static short FONT_SIZE = 12;
 
 	private static final Logger logger = LoggerFactory.getLogger(ExcelBuilder.class);
 
-	public HSSFWorkbook buildWorkbook(String name, ReportResults data) {
-		workbook = new HSSFWorkbook();
-		sheet = workbook.createSheet();
-		workbook.setSheetName(0, name);
-
-		setColumnStyles();
-		addColumnHeadings();
-		buildRows(data);
-		autoSizeColumns();
-
+	public HSSFWorkbook getWorkbook() {
 		return workbook;
 	}
+	
+	public HSSFSheet addSheet(String sheetName, ReportResults data) {
+		HSSFSheet sheet = workbook.createSheet();
+		sheetName = sheetName.replace("/", " ");
+		sheetName = sheetName.replace("\\", " ");
+		sheetName = sheetName.replace("?", " ");
+		sheetName = sheetName.replace("*", " ");
+		sheetName = sheetName.replace("[", " ");
+		sheetName = sheetName.replace("]", " ");
+		
+		workbook.setSheetName(workbook.getNumberOfSheets() - 1, sheetName);
 
-	private void setColumnStyles() {
+		setColumnStyles(sheet);
+		addColumnHeadings(sheet);
+		buildRows(sheet, data);
+
+		return sheet;
+	}
+
+	private void setColumnStyles(HSSFSheet sheet) {
 		HSSFFont font = createFont();
 		HSSFDataFormat df = workbook.createDataFormat();
 
@@ -55,7 +64,7 @@ public class ExcelBuilder {
 		}
 	}
 
-	private void addColumnHeadings() {
+	private void addColumnHeadings(HSSFSheet sheet) {
 		HSSFCellStyle headerStyle = createHeaderStyle();
 		HSSFRow row = sheet.createRow(0);
 
@@ -84,7 +93,7 @@ public class ExcelBuilder {
 		return font;
 	}
 
-	private void buildRows(ReportResults data) {
+	private void buildRows(HSSFSheet sheet, ReportResults data) {
 		int rowCounter = 1;
 		for (ReportRow row : data.getRows()) {
 			HSSFRow r = sheet.createRow(rowCounter++);
@@ -129,20 +138,28 @@ public class ExcelBuilder {
 		}
 	}
 
-	private void autoSizeColumns() {
-		int c = 0;
-		for (ExcelColumn column : columns) {
-			sheet.autoSizeColumn((short) c);
-			if (column.isHidden()) {
-				sheet.setColumnHidden(c, true);
+	public void autoSizeColumns() {
+		for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
+			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
+
+			int c = 0;
+			for (ExcelColumn column : columns) {
+				sheet.autoSizeColumn((short) c);
+				if (column.isHidden()) {
+					sheet.setColumnHidden(c, true);
+				}
+				c++;
 			}
-			c++;
 		}
 	}
 
-	public void addColumns(List<Column> reportColumns) {
-		for (Column reportColumn : reportColumns) {
-			columns.add(new ExcelColumn(reportColumn));
+	public List<ExcelColumn> getColumns() {
+		return columns;
+	}
+
+	public void addColumns(Collection<Column> reportColumns) {
+		for (Column column : reportColumns) {
+			columns.add(new ExcelColumn(column));
 		}
 	}
 }
