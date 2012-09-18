@@ -14,8 +14,12 @@ public class ReportRow {
 
 	public ReportRow(Collection<Column> columns, BasicDynaBean dynaBean) {
 		for (Column column : columns) {
-			Object value = dynaBean.get(column.getFieldName());
-			cells.put(column, new ReportCell(this, column, value));
+			if (column.getField() != null) {
+				Object value = dynaBean.get(column.getFieldName());
+				cells.put(column, new ReportCell(this, column, value));
+			} else {
+				cells.put(column, new ReportCell(this, column, null));
+			}
 		}
 	}
 	

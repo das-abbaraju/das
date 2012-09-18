@@ -276,6 +276,9 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public boolean isValid() {
+		if (field == null)
+			return false;
+		
 		if (!operator.isValueUsed())
 			return true;
 

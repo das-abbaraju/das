@@ -10,6 +10,11 @@ import org.junit.Test;
 public class FilterExpressionTest {
 
 	@Test
+	public void testDefault0() throws Exception {
+		assertEquals("", FilterExpression.getDefault(0));
+	}
+
+	@Test
 	public void testDefault1() throws Exception {
 		assertEquals("{1}", FilterExpression.getDefault(1));
 	}

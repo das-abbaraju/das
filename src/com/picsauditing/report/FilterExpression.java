@@ -23,6 +23,9 @@ public class FilterExpression {
 	}
 
 	static public String getDefault(int size) {
+		if (size == 0)
+			return "";
+		
 		String expression = "{1}";
 
 		for (int i = 2; i <= size; i++) {

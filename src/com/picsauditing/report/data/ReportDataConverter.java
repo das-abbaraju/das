@@ -60,6 +60,12 @@ public class ReportDataConverter {
 
 				return valueTranslated;
 			}
+
+			if (column.getField() == null) {
+				// This really shouldn't happen but just in case, this message
+				// is better than an NPE
+				return column.getFieldName() + ": Field not available";
+			}
 			if (column.getField().isTranslated()) {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
