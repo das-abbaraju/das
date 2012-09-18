@@ -60,6 +60,7 @@ public class ReportDataConverterTest {
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
 		membershipMonth.setFieldName("contractorMembershipDate__Month");
 		columns.add(membershipMonth);
+		columns.add(createColumn(availableFields.get("CONTRACTORLASTUPGRADEDATE")));
 	}
 
 	private Column createColumn(Field field) {
@@ -102,6 +103,7 @@ public class ReportDataConverterTest {
 		builder.addProperty("accountCreationDate", Timestamp.class);
 		builder.addProperty("contractorMembershipDate", java.sql.Date.class);
 		builder.addProperty("contractorMembershipDate__Month", Integer.class);
+		builder.addProperty("contractorLastUpgradeDate", java.sql.Date.class);
 		for (int i = 0; i < count; i++) {
 			builder.addRow();
 			long accountID = 1;
@@ -115,6 +117,7 @@ public class ReportDataConverterTest {
 			builder.setValue("accountCreationDate", new Timestamp(currentUnitTime));
 			builder.setValue("contractorMembershipDate", new java.sql.Date(currentUnitTime));
 			builder.setValue("contractorMembershipDate__Month", 1);
+			builder.setValue("contractorLastUpgradeDate", null);
 		}
 		return builder.getRows();
 	}

@@ -37,8 +37,10 @@ public class ReportDataConverter {
 	}
 
 	private Object convertValueForJson(ReportCell cell) {
-		Column column = cell.getColumn();
 		Object value = cell.getValue();
+		if (value == null)
+			return null;
+		Column column = cell.getColumn();
 
 		if (column != null) {
 			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
