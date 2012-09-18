@@ -31,23 +31,28 @@ public class ExcelBuilder {
 	public HSSFWorkbook getWorkbook() {
 		return workbook;
 	}
-	
+
 	public HSSFSheet addSheet(String sheetName, ReportResults data) {
+		sheetName = cleanSheetName(sheetName);
+
 		HSSFSheet sheet = workbook.createSheet();
+		workbook.setSheetName(workbook.getNumberOfSheets() - 1, sheetName);
+
+		setColumnStyles(sheet);
+		addColumnHeadings(sheet);
+		buildRows(sheet, data);
+		autoSizeColumns(sheet);
+		return sheet;
+	}
+
+	static private String cleanSheetName(String sheetName) {
 		sheetName = sheetName.replace("/", " ");
 		sheetName = sheetName.replace("\\", " ");
 		sheetName = sheetName.replace("?", " ");
 		sheetName = sheetName.replace("*", " ");
 		sheetName = sheetName.replace("[", " ");
 		sheetName = sheetName.replace("]", " ");
-		
-		workbook.setSheetName(workbook.getNumberOfSheets() - 1, sheetName);
-
-		setColumnStyles(sheet);
-		addColumnHeadings(sheet);
-		buildRows(sheet, data);
-
-		return sheet;
+		return sheetName;
 	}
 
 	private void setColumnStyles(HSSFSheet sheet) {
@@ -73,6 +78,9 @@ public class ExcelBuilder {
 			HSSFCell c = row.createCell(columnCount);
 			c.setCellValue(new HSSFRichTextString(column.getColumnHeader()));
 			c.setCellStyle(headerStyle);
+			if (column.isHidden()) {
+				sheet.setColumnHidden(columnCount, true);
+			}
 			columnCount++;
 		}
 	}
@@ -138,18 +146,9 @@ public class ExcelBuilder {
 		}
 	}
 
-	public void autoSizeColumns() {
-		for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
-			HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-
-			int c = 0;
-			for (ExcelColumn column : columns) {
-				sheet.autoSizeColumn((short) c);
-				if (column.isHidden()) {
-					sheet.setColumnHidden(c, true);
-				}
-				c++;
-			}
+	private void autoSizeColumns(HSSFSheet sheet) {
+		for (int c = 0; c < columns.size(); c++) {
+			sheet.autoSizeColumn((short) c);
 		}
 	}
 

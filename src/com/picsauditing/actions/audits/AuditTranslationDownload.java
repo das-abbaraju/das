@@ -49,7 +49,6 @@ public class AuditTranslationDownload extends ContractorActionSupport {
 		logger.info("Building XLS File");
 		addReportColumns();
 		addAuditsToSheet();
-		excelBuilder.autoSizeColumns();
 		writeFile("auditTranslations" + ".xls", excelBuilder.getWorkbook());
 		return BLANK;
 	}
