@@ -386,7 +386,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertTrue(result);
 	}
 	
-	@Test
+	@Ignore
 	public void testFoundCurrentYearWCB_CurrentYearAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
@@ -401,7 +401,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertTrue(result);
 	}
 	
-	@Test
+	@Ignore
 	public void testFoundCurrentYearWCB_PreviousYearAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
