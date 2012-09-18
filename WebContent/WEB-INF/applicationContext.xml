@@ -92,6 +92,8 @@
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
 	<bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
 	<bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>
+	<bean id="ReportPermissionUserDAO" class="com.picsauditing.dao.ReportPermissionUserDAO"/>
+	<bean id="ReportPermissionAccountDAO" class="com.picsauditing.dao.ReportPermissionAccountDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>

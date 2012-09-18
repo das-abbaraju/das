@@ -27,7 +27,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
@@ -105,7 +104,8 @@ public final class ReportUtil {
 			field.setName(column.getFieldName());
 
 			if (column.getMethod() != null) {
-				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": " + translateLabel;
+				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": "
+						+ translateLabel;
 			}
 
 			field.setText(translateLabel);
@@ -175,15 +175,6 @@ public final class ReportUtil {
 
 	public static boolean hasColumns(Report report) {
 		return (report.getDefinition().getColumns().size() > 0);
-	}
-
-	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {
-		for (ReportUser userReport : userReports) {
-			if (userReport.getReport().getId() == reportId)
-				return true;
-		}
-
-		return false;
 	}
 
 	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {

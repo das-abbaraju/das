@@ -13,17 +13,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.User;
 
-public class ReportUserDAOTest {
+public class ReportPermissionUserDAOTest {
 
-	private ReportUserDAO reportUserDao;
+	private ReportPermissionUserDAO reportPermissionUserDao;
 
 	@Mock private EntityManager entityManager;
 	@Mock private Report report;
 	@Mock private User user;
-	@Mock private ReportUser reportUser;
+	@Mock private ReportPermissionUser reportPermissionUser;
 
 	private final int REPORT_ID = 37;
 	private final int USER_ID = 5;
@@ -33,8 +33,8 @@ public class ReportUserDAOTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		reportUserDao = new ReportUserDAO();
-		reportUserDao.setEntityManager(entityManager);
+		reportPermissionUserDao = new ReportPermissionUserDAO();
+		reportPermissionUserDao.setEntityManager(entityManager);
 
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(user.getId()).thenReturn(USER_ID);
@@ -52,33 +52,33 @@ public class ReportUserDAOTest {
 
 	@Test
 	public void testSave_PersistIfNew() {
-		when(reportUser.getId()).thenReturn(0);
+		when(reportPermissionUser.getId()).thenReturn(0);
 
-		reportUserDao.save(reportUser);
+		reportPermissionUserDao.save(reportPermissionUser);
 
-		verify(entityManager).persist(reportUser);
+		verify(entityManager).persist(reportPermissionUser);
 	}
 
 	@Test
 	public void testSave_MergeIfExists() {
-		when(reportUser.getId()).thenReturn(REPORT_USER_ID);
+		when(reportPermissionUser.getId()).thenReturn(REPORT_USER_ID);
 
-		reportUserDao.save(reportUser);
+		reportPermissionUserDao.save(reportPermissionUser);
 
-		verify(entityManager).merge(reportUser);
+		verify(entityManager).merge(reportPermissionUser);
 	}
 
 	@Test
 	public void testRemove_CallsEntityManagerRemove() {
-		reportUserDao.remove(reportUser);
+		reportPermissionUserDao.remove(reportPermissionUser);
 
-		verify(entityManager).remove(reportUser);
+		verify(entityManager).remove(reportPermissionUser);
 	}
 
 	@Test
 	public void testRemove_DoesntCallEntityManagerRemoveIfNull() {
-		reportUserDao.remove(null);
+		reportPermissionUserDao.remove(null);
 
-		verify(entityManager, never()).remove(reportUser);
+		verify(entityManager, never()).remove(reportPermissionUser);
 	}
 }

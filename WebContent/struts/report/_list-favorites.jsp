@@ -3,7 +3,7 @@
 
 <s:include value="../_action-messages.jsp" />
 
-<s:if test="userReportsOverflow">
+<s:if test="reportUsersFavoritesOverflow">
     <s:set var="has_overflow_list" value="true" />
 </s:if>
 <s:else>
@@ -11,7 +11,7 @@
 </s:else>
 
 <%-- cannot pass list as a include : param - bypass via setter --%>
-<s:set var="reports" value="userReports" />
+<s:set var="reports" value="reportUserFavorites" />
 <s:include value="/struts/report/_report-list.jsp">
     <s:param name="list_id">report_favorites_list</s:param>
     <s:param name="list_class">report-list</s:param>
@@ -20,14 +20,14 @@
     <s:param name="enable_move_down" value="#has_overflow_list"/>
 </s:include>
 
-<s:if test="userReportsOverflow.size > 0">
+<s:if test="reportUsersFavoritesOverflow.size > 0">
     <div id="report_favorites_list_excluded">
         <h1><s:text name="ManageReports.favorites.NotIncluded" /></h1>
     </div>
 </s:if>
 
 <%-- cannot pass list as a include : param - bypass via setter --%>
-<s:set var="reports" value="userReportsOverflow" />
+<s:set var="reports" value="reportUsersFavoritesOverflow" />
 <s:include value="/struts/report/_report-list.jsp">
     <s:param name="list_id">report_favorites_overflow_list</s:param>
     <s:param name="list_class">report-list</s:param>

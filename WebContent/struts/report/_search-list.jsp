@@ -5,8 +5,7 @@
     <s:include value="../_action-messages.jsp" />
 
     <ul class="report-list">
-        <s:iterator value="userReports" var="user_report">
-            <s:set name="report" value="#user_report.report" />
+        <s:iterator value="reports" var="report">
             <s:set name="report_id" value="#report.id" />
     
             <%-- Url --%>

@@ -291,8 +291,8 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-		for (ReportUser userReport : favoriteReports) {
-			Report report = userReport.getReport();
+		for (ReportUser reportUser : favoriteReports) {
+			Report report = reportUser.getReport();
 			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
 					"report_" + report.getId());
 		}

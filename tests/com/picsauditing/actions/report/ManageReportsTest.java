@@ -1,9 +1,11 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +20,13 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.model.ReportModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.strutsutil.AjaxUtils;
 
@@ -32,8 +34,10 @@ public class ManageReportsTest {
 
 	ManageReports manageReports;
 
+	@Mock private ReportModel reportModel;
 	@Mock private ReportDAO reportDao;
 	@Mock private ReportUserDAO reportUserDao;
+	@Mock private ReportPermissionUserDAO reportPermissionUserDao;
 	@Mock private Permissions permissions;
 	@Mock private I18nCache i18nCache;
 	@Mock private Database databaseForTesting;
@@ -52,8 +56,10 @@ public class ManageReportsTest {
 
 		setUpI18nCacheText();
 
+		Whitebox.setInternalState(manageReports, "reportModel", reportModel);
 		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
 		Whitebox.setInternalState(manageReports, "reportUserDao", reportUserDao);
+		Whitebox.setInternalState(manageReports, "reportPermissionUserDao", reportPermissionUserDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "permissions", permissions);
 		Whitebox.setInternalState(manageReports, "i18nCache", i18nCache);
@@ -61,9 +67,9 @@ public class ManageReportsTest {
 
 	@Test
 	public void testExecute_RedirectsToMyReportsByDefault() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(userReports);
+		List<ReportUser> reportUser = new ArrayList<ReportUser>();
+		reportUser.add(new ReportUser());
+		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUser);
 
 		String result = manageReports.execute();
 
@@ -72,9 +78,9 @@ public class ManageReportsTest {
 
 	@Test
 	public void testFavoritesList_AjaxReturnsExpectedResult() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(userReports);
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+		reportUsers.add(new ReportUser());
+		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
@@ -85,9 +91,9 @@ public class ManageReportsTest {
 
 	@Test
 	public void testFavoritesList_NotAjaxReturnsExpectedResult() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(userReports);
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+		reportUsers.add(new ReportUser());
+		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
@@ -97,20 +103,20 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testFavoritesList_DoesntLeaveUserReportsNull() {
+	public void testFavoritesList_DoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAllFavorite(USER_ID)).thenReturn(null);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.favoritesList();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportUserFavorites"));
 	}
 
 	@Test
 	public void testMyReportsList_AjaxReturnsExpectedResult() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(userReports);
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+		reportUsers.add(new ReportUser());
+		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
@@ -121,9 +127,9 @@ public class ManageReportsTest {
 
 	@Test
 	public void testMyReportsList_NotAjaxReturnsExpectedResult() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(userReports);
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+		reportUsers.add(new ReportUser());
+		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
@@ -133,21 +139,20 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testMyReportsList_DoesntLeaveUserReportsNull() {
+	public void testMyReportsList_DoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.myReportsList();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportPermissionUsers"));
 	}
 
 	@Test
 	public void testSearchList_AjaxReturnsExpectedResult() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(userReports);
-		when(reportDao.findAllPublic()).thenReturn(new ArrayList<Report>());
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+		reportUsers.add(new ReportUser());
+		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
@@ -158,10 +163,9 @@ public class ManageReportsTest {
 
 	@Test
 	public void testSearchList_NotAjaxReturnsExpectedResult() {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-		userReports.add(new ReportUser());
-		when(reportUserDao.findAll(USER_ID)).thenReturn(userReports);
-		when(reportDao.findAllPublic()).thenReturn(new ArrayList<Report>());
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+		reportUsers.add(new ReportUser());
+		when(reportUserDao.findAll(USER_ID)).thenReturn(reportUsers);
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
@@ -171,27 +175,25 @@ public class ManageReportsTest {
 	}
 
 	@Test
-	public void testSearchList_AjaxDoesntLeaveUserReportsNull() {
+	public void testSearchList_AjaxDoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
-		when(reportDao.findAllPublic()).thenReturn(new ArrayList<Report>());
 		when(httpRequest.getHeader(anyString())).thenReturn("XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.searchList();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
 	}
 
 	@Test
-	public void testSearchList_NotAjaxDoesntLeaveUserReportsNull() {
+	public void testSearchList_NotAjaxDoesntLeaveReportUsersNull() {
 		when(reportUserDao.findAll(USER_ID)).thenReturn(null);
-		when(reportDao.findAllPublic()).thenReturn(new ArrayList<Report>());
 		when(httpRequest.getHeader(anyString())).thenReturn("NOT_XmlHttpRequest");
 		Whitebox.setInternalState(manageReports, "requestForTesting", httpRequest);
 
 		manageReports.searchList();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "userReports"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reports"));
 	}
 
 	private void setUpI18nCacheText() {

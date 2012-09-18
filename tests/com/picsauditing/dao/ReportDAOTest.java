@@ -1,21 +1,21 @@
 package com.picsauditing.dao;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.reflection.Whitebox.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.models.ModelType;
-
-import javax.persistence.EntityManager;
 
 public class ReportDAOTest {
 
@@ -49,14 +49,6 @@ public class ReportDAOTest {
 	@Test
 	public void mockReportIsMockedWithReportId() {
 		assertEquals(REPORT_ID, report.getId());
-	}
-
-	@Test
-	public void testSave() throws ReportValidationException {
-		reportDao.save(report, user);
-
-		verify(report).setAuditColumns(user);
-		verify(entityManager).merge(report);
 	}
 
 	@Test

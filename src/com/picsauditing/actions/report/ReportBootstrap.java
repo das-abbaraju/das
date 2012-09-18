@@ -34,7 +34,7 @@ public class ReportBootstrap extends PicsActionSupport {
 				// Don't trust user input!
 				int reportId = Integer.parseInt(dirtyReportIdParameter);
 
-				if (!reportModel.canUserViewAndCopy(permissions.getUserId(), reportId)) {
+				if (!reportModel.canUserViewAndCopy(permissions, reportId)) {
 					String errorMessage = "You do not have permissions to view that report.";
 					ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 				}
