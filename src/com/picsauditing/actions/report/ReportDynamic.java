@@ -15,7 +15,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
@@ -36,7 +35,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String create() {
 		try {
-			Report newReport = reportModel.copy(report, new User(permissions.getUserId()));
+			Report newReport = reportModel.copy(report, permissions);
 			json.put("success", true);
 			json.put("reportID", newReport.getId());
 		} catch (NoRightsException nre) {
@@ -73,8 +72,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 		try {
 			editable = reportModel.canUserEdit(userId, report);
-			ReportUser userReport = reportUserDao.findOne(userId, report.getId());
-			favorite = userReport.isFavorite();
+			ReportUser reportUser = reportUserDao.findOne(userId, report.getId());
+			favorite = reportUser.isFavorite();
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.configuration()", e);
 		}
@@ -89,7 +88,7 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			ReportModel.validate(report);
 
-			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
+			reportModel.updateLastViewedDate(permissions.getUserId(), report);
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
 			sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
@@ -127,6 +126,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String share() {
+		boolean editable = false;
 		int userId = -1;
 		String dirtyReportIdParameter = "";
 
@@ -135,11 +135,11 @@ public class ReportDynamic extends PicsActionSupport {
 			// Don't trust user input!
 			userId = Integer.parseInt(dirtyReportIdParameter);
 
-			if (reportModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
-				reportModel.connectReportToUser(report, userId);
+			if (reportModel.canUserViewAndCopy(permissions, report.getId())) {
+				reportModel.connectReportPermissionUser(report.getId(), userId, editable);
 				json.put("success", true);
 			} else {
-				json.put("success", false);
+				json.put("success", editable);
 			}
 		} catch (NumberFormatException nfe) {
 			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
@@ -153,6 +153,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String shareEditable() {
+		boolean editable = true;
 		int userId = -1;
 		String dirtyReportIdParameter = "";
 
@@ -162,7 +163,7 @@ public class ReportDynamic extends PicsActionSupport {
 			userId = Integer.parseInt(dirtyReportIdParameter);
 
 			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
-				reportModel.connectReportToUserEditable(report, userId);
+				reportModel.connectReportPermissionUser(report.getId(), userId, editable);
 				json.put("success", true);
 			} else {
 				json.put("success", false);
