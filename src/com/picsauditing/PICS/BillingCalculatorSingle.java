@@ -359,7 +359,7 @@ public class BillingCalculatorSingle {
 
 		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
 				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
-			invoice.setDueDate(new Date());
+			invoice.setDueDate(contractor.getPaymentExpires());
 			contractor.setRenew(true);
 		}
 
@@ -503,13 +503,7 @@ public class BillingCalculatorSingle {
 		return upgrades;
 	}
 
-	private Date getRenewalDate(ContractorAccount contractor) {
-		// If I'm upgrading from ListOnly or BidOnly, set renewal date from today for
-		// new full term membership, otherwise use Contractor's Payment Expiration Date
-		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree())
-			return DateBean.addMonths(new Date(), 12);
-
+	protected Date getRenewalDate(ContractorAccount contractor) {
 		return DateBean.addMonths(contractor.getPaymentExpires(), 12);
 	}
 

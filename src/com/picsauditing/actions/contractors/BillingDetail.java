@@ -87,29 +87,7 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setQbSync(true);
 
 			// Calculate the due date for the invoice
-			if (contractor.getBillingStatus().equals("Activation")) {
-				invoice.setDueDate(new Date());
-			} else if (contractor.getBillingStatus().equals("Reactivation")) {
-				invoice.setDueDate(new Date());
-			} else if (contractor.getBillingStatus().equals("Upgrade")) {
-				invoice.setDueDate(DateBean.addDays(new Date(), 7));
-			} else if (contractor.getBillingStatus().startsWith("Renew")) {
-				invoice.setDueDate(contractor.getPaymentExpires());
-			}
-
-			if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-					|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
-				invoice.setDueDate(new Date());
-				contractor.setRenew(true);
-			}
-
-			if (invoice.getDueDate() == null)
-				// For all other statuses like (Current)
-				invoice.setDueDate(DateBean.addDays(new Date(), 30));
-
-			// Make sure the invoice isn't due within 7 days for active accounts
-			if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
-				invoice.setDueDate(DateBean.addDays(new Date(), 7));
+            calculateDueDateFor(invoice);
 
 			// Add the list of operators if this invoice has a membership level
 			// on it
@@ -173,7 +151,36 @@ public class BillingDetail extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public OperatorAccount getRequestedBy() {
+    protected void calculateDueDateFor(Invoice invoice) {
+
+        if (contractor.getBillingStatus().equals("Activation")) {
+            invoice.setDueDate(new Date());
+        } else if (contractor.getBillingStatus().equals("Reactivation")) {
+            invoice.setDueDate(new Date());
+        } else if (contractor.getBillingStatus().equals("Upgrade")) {
+            invoice.setDueDate(DateBean.addDays(new Date(), 7));
+        } else if (contractor.getBillingStatus().startsWith("Renew")) {
+            invoice.setDueDate(contractor.getPaymentExpires());
+        }
+
+        if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
+                || !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
+            invoice.setDueDate(contractor.getPaymentExpires());
+            contractor.setRenew(true);
+        }
+
+        if (invoice.getDueDate() == null)
+            // For all other statuses like (Current)
+            invoice.setDueDate(DateBean.addDays(new Date(), 30));
+
+        // Make sure the invoice isn't due within 7 days for active accounts
+        if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
+
+            invoice.setDueDate(DateBean.addDays(new Date(), 7));
+    }
+
+
+    public OperatorAccount getRequestedBy() {
 		if (contractor.getRequestedBy() != null)
 			requestedBy = opAccountDao.find(contractor.getRequestedBy().getId());
 
