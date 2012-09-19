@@ -168,10 +168,6 @@ public class SqlBuilder {
 
 	private void addOrderByClauses(AbstractModel model) {
 		if (definition.getSorts().isEmpty()) {
-			if (usesGroupBy())
-				return;
-
-			sql.addOrderBy(model.getDefaultSort());
 			return;
 		}
 

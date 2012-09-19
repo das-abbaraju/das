@@ -20,10 +20,9 @@ public abstract class AbstractModel {
 	 * The value for this should always be reset to the current model's table so
 	 * that subclasses can use its as its parent. For example:
 	 * PaymentCommissionTable
-	 * 
 	 */
 	protected AbstractTable parentTable;
-	protected String defaultSort = null;
+
 	/**
 	 * All selectable fields that a user can query/filter/sort from on this
 	 * Model
@@ -32,10 +31,6 @@ public abstract class AbstractModel {
 
 	public AbstractTable getRootTable() {
 		return rootTable;
-	}
-
-	public String getDefaultSort() {
-		return defaultSort;
 	}
 
 	public String getWhereClause(Permissions permissions, List<Filter> filters) {

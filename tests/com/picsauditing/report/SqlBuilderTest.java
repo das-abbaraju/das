@@ -45,12 +45,6 @@ public class SqlBuilderTest {
 	}
 
 	@Test
-	public void testDefaultSort() throws Exception {
-		initializeSql();
-		assertContains("ORDER BY a.name", sql.toString());
-	}
-
-	@Test
 	public void testMultipleColumns() throws Exception {
 		addColumn("accountID");
 		addColumn("accountName");

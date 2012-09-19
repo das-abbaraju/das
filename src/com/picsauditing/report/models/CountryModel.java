@@ -13,8 +13,6 @@ public class CountryModel extends AbstractModel {
 		rootTable.addFields();
 		rootTable.addJoins();
 		
-		defaultSort = rootTable.getAlias() + ".isoCode";
-		
 		parentTable = rootTable;
 	}
 }

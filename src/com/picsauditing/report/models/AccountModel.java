@@ -14,8 +14,6 @@ public class AccountModel extends AbstractModel {
 		rootTable = new AccountTable();
 		rootTable.includeAllColumns();
 		rootTable.addJoins();
-
-		defaultSort = rootTable.getAlias() + ".name";
 		
 		parentTable = rootTable;
 	}
