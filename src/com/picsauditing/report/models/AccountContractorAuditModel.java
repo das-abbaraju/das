@@ -11,9 +11,10 @@ public class AccountContractorAuditModel extends AccountContractorModel {
 		rootTable.addAllFieldsAndJoins(conAuditTable);
 
 		parentTable = conAuditTable;
-		
+
 		rootTable.removeJoin("contractorCustomerService");
 		rootTable.removeJoin("contractorPQF");
+
 		// TODO I think we should remove this join to eliminate confusion
 		// But let's leave it until after we can support joining on GC table
 		// rootTable.removeJoin("contractorRequestedBy");

@@ -13,7 +13,6 @@ public class AccountContractorModel extends AccountModel {
 		ContractorTable contractorTable = new ContractorTable(rootTable.getPrefix(), rootTable.getAlias());
 		contractorTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(contractorTable);
-
 		parentTable = contractorTable;
 	}
 
@@ -23,5 +22,4 @@ public class AccountContractorModel extends AccountModel {
 			accountID.setVisible(false);
 		}
 	}
-
 }
