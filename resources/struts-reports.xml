@@ -18,6 +18,8 @@
 		<action name="ReportPrint" class="com.picsauditing.actions.report.ReportPrint">
 			<result>struts/report/print.jsp</result>
 		</action>
+		<action name="ReportSharing" class="com.picsauditing.actions.report.ReportSharing">
+		</action>
 
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
 			<result name="favorites">struts/report/list-favorites.jsp</result>

@@ -77,7 +77,14 @@ public class ReportModel {
 		return false;
 	}
 
-	public Report copy(Report sourceReport, Permissions permissions) throws NoRightsException,
+	public void setEditPermissions(int userId, int reportId, boolean editable) throws NoResultException, NonUniqueResultException,
+			SQLException, Exception {
+		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(userId, reportId, editable);
+
+		reportPermissionUserDao.save(reportPermissionUser);
+	}
+
+	public Report copy(Permissions permissions, Report sourceReport) throws NoRightsException,
 			ReportValidationException {
 		if (!canUserViewAndCopy(permissions, sourceReport.getId()))
 			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
@@ -98,13 +105,13 @@ public class ReportModel {
 
 		// This is a new report owned by the user, unconditionally give them
 		// edit permission
-		connectReportUser(newReport.getId(), permissions.getUserId());
-		connectReportPermissionUser(newReport.getId(), permissions.getUserId(), editable);
+		connectReportUser(permissions.getUserId(), newReport.getId());
+		connectReportPermissionUser(permissions.getUserId(), newReport.getId(), editable);
 
 		return newReport;
 	}
 
-	public void edit(Report report, Permissions permissions) throws Exception {
+	public void edit(Permissions permissions, Report report) throws Exception {
 		ReportModel.validate(report);
 
 		if (!canUserEdit(permissions.getUserId(), report))
@@ -238,7 +245,7 @@ public class ReportModel {
 
 	public void favoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
 			SQLException, Exception {
-		ReportUser reportUser = connectReportUser(reportId, userId);
+		ReportUser reportUser = connectReportUser(userId, reportId);
 
 		reportUserDao.cascadeFavoriteReportSorting(userId, 1, 1, Integer.MAX_VALUE);
 
@@ -249,7 +256,7 @@ public class ReportModel {
 
 	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
 			SQLException, Exception {
-		ReportUser unfavoritedReportUser = connectReportUser(reportId, userId);
+		ReportUser unfavoritedReportUser = connectReportUser(userId, reportId);
 		int removedSortIndex = unfavoritedReportUser.getSortOrder();
 
 		reportUserDao.cascadeFavoriteReportSorting(userId, -1, removedSortIndex + 1, Integer.MAX_VALUE);
@@ -290,7 +297,7 @@ public class ReportModel {
 		reportUserDao.save(reportUser);
 	}
 
-	public ReportUser connectReportUser(int reportId, int userId) {
+	public ReportUser connectReportUser(int userId, int reportId) {
 		ReportUser reportUser;
 
 		try {
@@ -307,7 +314,7 @@ public class ReportModel {
 		return reportUser;
 	}
 
-	public ReportPermissionUser connectReportPermissionUser(int reportId, int userId, boolean editable) {
+	public ReportPermissionUser connectReportPermissionUser(int userId, int reportId, boolean editable) {
 		ReportPermissionUser reportPermissionUser;
 
 		try {
@@ -325,6 +332,45 @@ public class ReportModel {
 		return reportPermissionUser;
 	}
 
+	public ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId, Permissions permissions) {
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+		} catch (NoResultException nre) {
+			// Need to connect user to report first
+			Report report = reportDao.find(Report.class, reportId);
+			reportPermissionAccount = new ReportPermissionAccount(accountId, report);
+			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
+		}
+
+		reportPermissionUserDao.save(reportPermissionAccount);
+
+		return reportPermissionAccount;
+	}
+
+	public void disconnectReportPermissionUser(int userId, int reportId) {
+		ReportPermissionUser reportPermissionUser;
+
+		try {
+			reportPermissionUser = reportPermissionUserDao.findOne(userId, reportId);
+			reportPermissionUserDao.remove(reportPermissionUser);
+		} catch (NoResultException nre) {
+
+		}
+	}
+
+	public void disconnectReportPermissionAccount(int accountId, int reportId) {
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		} catch (NoResultException nre) {
+
+		}
+	}
+
 	public void removeAndCascade(Report report) {
 		List<ReportUser> reportUsers = reportUserDao.findAllByReportId(report.getId());
 
@@ -337,5 +383,7 @@ public class ReportModel {
 				logger.error("Unable to get favorite count to cascade favorite indices in ReportDAO.removeAndCascade(Report)");
 			}
 		}
+		
+		// TODO: Remove all related RPUs and RPAs
 	}
 }

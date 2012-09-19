@@ -94,7 +94,7 @@
     
                     <ul class="dropdown-menu">
                         <li>
-                            <s:if test="%{@com.picsauditing.model.ReportModel@canUserEdit(permissions.userId, report)}">
+                            <s:if test="%{reportModel.canUserEdit(permissions.userId, report)}">
                                 <a href="${delete_report_url}" class="delete">
                                     <s:text name="ManageReports.myReports.Delete" />
                                 </a>

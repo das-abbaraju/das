@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +29,12 @@ public class ReportDynamic extends PicsActionSupport {
 	private ReportUserDAO reportUserDao;
 
 	private Report report;
-	private boolean editable;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
 	public String create() {
 		try {
-			Report newReport = reportModel.copy(report, permissions);
+			Report newReport = reportModel.copy(permissions, report);
 			json.put("success", true);
 			json.put("reportID", newReport.getId());
 		} catch (NoRightsException nre) {
@@ -52,7 +50,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String edit() {
 		try {
-			reportModel.edit(report, permissions);
+			reportModel.edit(permissions, report);
 			json.put("success", true);
 			json.put("reportID", report.getId());
 		} catch (NoRightsException nre) {
@@ -118,61 +116,6 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, permissions.getLocale()));
 			json.put("success", true);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDynamic.report()", e);
-			writeJsonError(e);
-		}
-
-		return JSON;
-	}
-
-	// TODO: Redo sharing to fit into vision of permission grants. 
-	public String share() {
-		editable = false;
-		int userId = -1;
-		String dirtyReportIdParameter = "";
-
-		try {
-			dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
-			// Don't trust user input!
-			userId = Integer.parseInt(dirtyReportIdParameter);
-
-			if (reportModel.canUserViewAndCopy(permissions, report.getId())) {
-				reportModel.connectReportPermissionUser(report.getId(), userId, editable);
-				json.put("success", true);
-			} else {
-				json.put("success", editable);
-			}
-		} catch (NumberFormatException nfe) {
-			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
-			writeJsonError(nfe);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDynamic.report()", e);
-			writeJsonError(e);
-		}
-
-		return JSON;
-	}
-
-	public String shareEditable() {
-		editable = true;
-		int userId = -1;
-		String dirtyReportIdParameter = "";
-
-		try {
-			dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
-			// Don't trust user input!
-			userId = Integer.parseInt(dirtyReportIdParameter);
-
-			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
-				reportModel.connectReportPermissionUser(report.getId(), userId, editable);
-				json.put("success", true);
-			} else {
-				json.put("success", false);
-			}
-		} catch (NumberFormatException nfe) {
-			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
-			writeJsonError(nfe);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
 			writeJsonError(e);

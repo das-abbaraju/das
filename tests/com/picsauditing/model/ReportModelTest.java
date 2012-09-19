@@ -231,7 +231,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testConnectReportUser() {
-		ReportUser reportUser = reportModel.connectReportUser(REPORT_ID, USER_ID);
+		ReportUser reportUser = reportModel.connectReportUser(USER_ID, REPORT_ID);
 
 		verify(reportUserDao).save(reportUser);
 		assertEquals(REPORT_ID, reportUser.getReport().getId());
@@ -241,7 +241,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testConnectReportPermissionUser() {
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(REPORT_ID, USER_ID, false);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(USER_ID, REPORT_ID, false);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
@@ -251,7 +251,7 @@ public class ReportModelTest {
 
 	@Test
 	public void testConnectReportUserEditable() {
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(REPORT_ID, USER_ID, true);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(USER_ID, REPORT_ID, true);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());

@@ -213,7 +213,7 @@ public class ManageReports extends PicsActionSupport {
 			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
-			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
+			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
 		}
 
 		return redirectToPreviousView();
@@ -305,6 +305,14 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setReports(List<Report> reports) {
 		this.reports = reports;
+	}
+
+	public ReportModel getReportModel() {
+		return reportModel;
+	}
+
+	public void setReportModel(ReportModel reportModel) {
+		this.reportModel = reportModel;
 	}
 
 	public int getReportId() {

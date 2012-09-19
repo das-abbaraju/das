@@ -137,7 +137,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("u.name as userName");
 		sql.addField("u.id as userId");
 		sql.addField("rpuru.favorite as favorite");
-		sql.addField("count(ru.favorite) as numTimesFavorited");
+		sql.addField("COUNT(DISTINCT ru.id) AS numTimesFavorited");
 
 		sql.addGroupBy("r.id");
 
