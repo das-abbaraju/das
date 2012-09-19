@@ -2,10 +2,10 @@ package com.picsauditing.report.tables;
 
 public class ContractorOperatorTable extends AbstractTable {
 
-	public ContractorOperatorTable(String parentPrefix, String parentAlias) {
-		super("generalcontractors", "contractorOperator", "gc", "gc.subID = " + parentAlias + ".id");
-		this.parentPrefix = parentPrefix;
-		this.parentAlias = parentAlias;
+	public ContractorOperatorTable(String parentPrefix, String parentAlias, String alias) {
+		super("generalcontractors", "contractorOperator", alias, alias + ".subID = c.id");
+		// this.parentPrefix = parentPrefix;
+		// this.parentAlias = parentAlias;
 	}
 
 	@Override

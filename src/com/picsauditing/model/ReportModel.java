@@ -103,7 +103,9 @@ public class ReportModel {
 
 	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable, Permissions permissions) {
 		Map<String, Field> availableFields = new HashMap<String, Field>();
-
+		
+		pruneJoins(baseTable, permissions);
+		
 		addAllAvailableFields(availableFields, baseTable);
 
 		Iterator<String> iterator = availableFields.keySet().iterator();
@@ -117,6 +119,19 @@ public class ReportModel {
 		}
 
 		return availableFields;
+	}
+	
+	private static void pruneJoins(AbstractTable table, Permissions permissions) {
+		Iterator<AbstractTable> iterator = table.getJoins().iterator();
+		while(iterator.hasNext()) {
+			AbstractTable childTable = iterator.next();
+			if (childTable.getAlias().equals("myFlag") && !permissions.isOperatorCorporate()) {
+				logger.info("Removing myFlag table because user is NOT a client site " + childTable);
+				iterator.remove();
+			} else {
+				pruneJoins(childTable, permissions);
+			}
+		}
 	}
 
 	private Report copyReportWithoutPermissions(Report sourceReport) {
@@ -136,6 +151,7 @@ public class ReportModel {
 	 * which we've decided to walk recursively.
 	 */
 	private static void addAllAvailableFields(Map<String, Field> availableFields, AbstractTable table) {
+		logger.debug("Adding AvailableFields for " + table);
 		table.addFields();
 		availableFields.putAll(table.getAvailableFields());
 

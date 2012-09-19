@@ -11,7 +11,7 @@ public class ContractorOperatorModel extends AccountContractorModel {
 	public ContractorOperatorModel() {
 		super();
 		
-		ContractorOperatorTable contractorOperatorTable = new ContractorOperatorTable(rootTable.getPrefix(), rootTable.getAlias());
+		ContractorOperatorTable contractorOperatorTable = new ContractorOperatorTable(rootTable.getPrefix(), rootTable.getAlias(), "reportingSite");
 		contractorOperatorTable.includeAllColumns();
 		rootTable.addAllFieldsAndJoins(contractorOperatorTable);
 		
@@ -32,7 +32,7 @@ public class ContractorOperatorModel extends AccountContractorModel {
 				operatorVisibility += "," + Strings.implode(permissions.getOperatorChildren());
 			}
 
-			whereSql += " AND gc.genID IN (" + operatorVisibility + ")";
+			whereSql += " AND reportingSite.genID IN (" + operatorVisibility + ")";
 		}
 		
 		return whereSql;

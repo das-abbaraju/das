@@ -14,7 +14,7 @@ public class AccountModel extends AbstractModel {
 		rootTable = new AccountTable();
 		rootTable.includeAllColumns();
 		rootTable.addJoins();
-		
+
 		parentTable = rootTable;
 	}
 
@@ -31,9 +31,13 @@ public class AccountModel extends AbstractModel {
 			}
 		}
 
-		return permQuery.buildWhereClause();
+		String whereClause = permQuery.buildWhereClause();
+		if (permissions.isOperatorCorporate()) {
+			whereClause += " AND myFlag.genID = " + permissions.getAccountId();
+		}
+		return whereClause;
 	}
-	
+
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
 		for (Filter filter : filters) {
 			if (filter.getFieldName().equals("accountStatus") && filter.isValid()) {

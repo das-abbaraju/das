@@ -32,15 +32,14 @@ public abstract class AbstractTable {
 	protected List<AbstractTable> joinedTables = new ArrayList<AbstractTable>();
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractTable.class);
-	
+
 	public AbstractTable(String tableName, String prefix, String alias, String onClause) {
 		this.tableName = tableName;
+		// Maybe we should just use alias as the prefix and use better aliases
+		// Like use `account` instead of a
 		this.prefix = prefix;
 		this.alias = alias;
 		this.onClause = onClause;
-
-		// We need to wait to add the fields until they tell us how important this table is
-		// addFields();
 	}
 
 	public abstract void addFields();
@@ -183,7 +182,6 @@ public abstract class AbstractTable {
 	public void addAllFieldsAndJoins(AbstractTable table) {
 		joinedTables.add(table);
 		// TODO rename this method to addAllJoinsPlusOneMoreLevel()
-		// table.addFields();
 		table.addJoins();
 	}
 
@@ -264,7 +262,7 @@ public abstract class AbstractTable {
 
 	public void removeJoin(String prefix) {
 		Iterator<AbstractTable> iterator = getJoins().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			AbstractTable table = iterator.next();
 			if (table.getPrefix().equals(prefix)) {
 				iterator.remove();
@@ -285,5 +283,9 @@ public abstract class AbstractTable {
 			}
 		}
 		return null;
+	}
+
+	public String toString() {
+		return getJoinSql();
 	}
 }

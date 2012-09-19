@@ -11,7 +11,8 @@ public class InvoiceModel extends AccountContractorModel {
 		rootTable.addAllFieldsAndJoins(invoiceTable);
 
 		parentTable = invoiceTable;
-		
+
+		rootTable.removeJoin("contractorOperator");
 		rootTable.removeJoin("accountNaics");
 		rootTable.removeJoin("contractorPQF");
 		rootTable.getTable("contractorCustomerService").includeOnlyRequiredColumns();
