@@ -23,7 +23,7 @@ public class AccountContractorAuditOperatorModelTest {
 
 		assertFalse("accountContactName was removed", availableFields.containsKey("accountContactName".toUpperCase()));
 
-		assertEquals("OK if close to expected because we added a few fields", 42, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 50, availableFields.size());
 	}
 
 }

@@ -24,7 +24,7 @@ public class AccountContractorAuditModelTest {
 		assertFalse("contractorPQFExpiresDate was removed",
 				availableFields.containsKey("contractorPQFExpiresDate".toUpperCase()));
 
-		assertEquals("OK if close to expected because we added a few fields", 66, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 74, availableFields.size());
 	}
 
 }
