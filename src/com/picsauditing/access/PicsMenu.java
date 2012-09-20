@@ -168,8 +168,14 @@ public class PicsMenu {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild(getTitle("NewContractorSearch"), url, "NewContractorSearch");
 		}
-		if (permissions.hasPermission(OpPerms.RequestNewContractor))
+
+		if (permissions.hasPermission(OpPerms.RequestNewContractor)) {
 			addChildAction(subMenu, "ReportNewRequestedContractor");
+		}
+
+		if (permissions.isPicsEmployee()) {
+			addChildAction(subMenu, "RegistrationGapAnalysis");
+		}
 
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 			String statusFilter = "";

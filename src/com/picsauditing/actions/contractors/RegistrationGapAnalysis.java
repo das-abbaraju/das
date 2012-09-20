@@ -196,8 +196,10 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 			}
 		}
 
-		if (registered.getTaxId().startsWith(requested.getTaxId())
-				|| requested.getTaxId().startsWith(registered.getTaxId())) {
+		if (!Strings.isEmpty(registered.getTaxId())
+				&& !Strings.isEmpty(requested.getTaxId())
+				&& (registered.getTaxId().startsWith(requested.getTaxId()) || requested.getTaxId().startsWith(
+						registered.getTaxId()))) {
 			matchesOn.add(MatchType.TaxID);
 		}
 

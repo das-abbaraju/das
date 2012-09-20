@@ -29,8 +29,10 @@
 		
 		<br class="clear" />
 		
-		<s:if test="possibleMatches.empty">
-			<s:text name="Filters.paging.NoResultsFound" />
+		<s:if test="matches.isEmpty()">
+			<div class="info">
+				<s:text name="Filters.paging.NoResultsFound" />
+			</div>
 		</s:if>
 		<s:else>
 			<table class="report">
