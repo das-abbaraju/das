@@ -125,7 +125,7 @@ public class ReportModel {
 		Iterator<AbstractTable> iterator = table.getJoins().iterator();
 		while(iterator.hasNext()) {
 			AbstractTable childTable = iterator.next();
-			if (childTable.getAlias().equals("myFlag") && !permissions.isOperatorCorporate()) {
+			if (childTable.getAlias().equals("myFlag") && !permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
 				logger.info("Removing myFlag table because user is NOT a client site " + childTable);
 				iterator.remove();
 			} else {
