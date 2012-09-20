@@ -49,12 +49,12 @@
 							<s:text name="ContractorRegistrationRequest.requestedBy" />
 						</td>
 						<td>
-							<a href="javascript: changeOrderBy('form1','cr.creationDate');">
+							<a href="javascript: changeOrderBy('form1','creationDate');">
 								<s:text name="global.CreationDate" />
 							</a>
 						</td>
 						<td>
-							<a href="javascript: changeOrderBy('form1','cr.deadline');">
+							<a href="javascript: changeOrderBy('form1','deadline');">
 								<s:text name="ContractorRegistrationRequest.deadline" />
 							</a>
 						</td>
@@ -62,7 +62,7 @@
 							<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
 						</td>
 						<td>
-							<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');">
+							<a href="javascript: changeOrderBy('form1','lastContactDate DESC');">
 								<s:text name="ReportNewRequestedContractor.label.On" />
 							</a>
 						</td>
