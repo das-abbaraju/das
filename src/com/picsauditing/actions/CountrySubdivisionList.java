@@ -1,6 +1,8 @@
 package com.picsauditing.actions;
 
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 
 @SuppressWarnings("serial")
 public class CountrySubdivisionList extends AccountActionSupport {
@@ -52,6 +54,16 @@ public class CountrySubdivisionList extends AccountActionSupport {
 	public void setNeedsSuffix(boolean needsSuffix) {
 		this.needsSuffix = needsSuffix;
 	}
+	
+    public CountrySubdivision getAccountCountrySubdivision() {
+        CountrySubdivision value = null;
+        value = new CountrySubdivision(countrySubdivisionString);
+//        Account account = accountDAO.find(id, "Contractor");
+//        if (account != null) {
+//                value=account.getCountrySubdivision();
+//        }
+        return value;
+}
 
 	public String getCountrySubdivisionPrefix() {
 		if (prefix == null)
