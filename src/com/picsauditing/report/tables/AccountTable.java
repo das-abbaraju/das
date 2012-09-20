@@ -1,34 +1,33 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.access.Permissions;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
-public class AccountTable extends AbstractTable {
-
-	public AccountTable() {
-		super("accounts", "account", "a", "");
-	}
-
-	public AccountTable(String prefix, String alias, String foreignKey) {
-		super("accounts", prefix, alias, alias + ".id = " + foreignKey);
-	}
-
-	public AccountTable(String alias, String foreignKey) {
-		super("accounts", alias, alias, alias + ".id = " + foreignKey);
-	}
+public class AccountTable extends ReportTable {
 	
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.AccountID, FieldCategory.AccountInformation);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date, FieldCategory.AccountInformation);
-		
-		addFields(com.picsauditing.jpa.entities.Account.class);
+	public AccountTable(String name) {
+		super("accounts", name);
+		joinToContact();
+		joinToNaics();
 	}
 
-	public void addJoins() {
-		UserTable primaryContact = new UserTable(prefix + "Contact", alias + ".contactID");
-		primaryContact.setOverrideCategory(FieldCategory.ContactInformation);
-		addLeftJoin(primaryContact);
-		
-		NaicsTable naicsStatistics = new NaicsTable(prefix + "Naics", alias + ".naics");
-		addLeftJoin(naicsStatistics);
+	private void joinToContact() {
+		String onClause = name + ".contactID = " + name + "Contact.id";
+		ReportJoin join = new ReportJoin(new UserTable(name + "Contact"), onClause);
+		join.getTable().setOverrideCategory(FieldCategory.ContactInformation);
+		addLeftJoin(join);
+	}
+
+	private void joinToNaics() {
+		String onClause = "naics.code = " + name + ".naics";
+		ReportJoin join = new ReportJoin(new NaicsTable(), onClause);
+		addLeftJoin(join);
+	}
+
+	public void fill(Permissions permissions) {
+		addPrimaryKey(FilterType.AccountID).setCategory(FieldCategory.AccountInformation);
+		addField(new Field(name + "CreationDate", name + ".creationDate", FilterType.Date)).setCategory(FieldCategory.AccountInformation);
+		addFields(com.picsauditing.jpa.entities.Account.class, FieldImportance.Low);
 	}
 }

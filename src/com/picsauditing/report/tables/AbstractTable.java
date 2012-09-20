@@ -139,16 +139,6 @@ public abstract class AbstractTable {
 	}
 
 	// Method chaining should only be for a single class
-	protected Field addField(String sql, FilterType filter) {
-		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);
-		if (sql.equals("id"))
-			name = alias + "ID";
-
-		String fullSql = alias + "." + sql;
-		return addField(name, fullSql, filter, FieldCategory.General);
-	}
-
-	// Method chaining should only be for a single class
 	protected Field addField(String fieldName, String sql, FilterType filter) {
 		return addField(fieldName, sql, filter, FieldCategory.General);
 	}

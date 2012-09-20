@@ -1,25 +1,22 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.ContractorTable;
+import com.picsauditing.report.tables.ReportJoin;
 
-public class AccountContractorModel extends AccountModel {
-	public AccountContractorModel() {
-		super();
-		hideAccountID();
-		rootTable.removeField("accountName");
-		rootTable.removeField("accountType");
-
-		ContractorTable contractorTable = new ContractorTable(rootTable.getPrefix(), rootTable.getAlias());
-		contractorTable.includeAllColumns();
-		rootTable.addAllFieldsAndJoins(contractorTable);
-		parentTable = contractorTable;
-	}
-
-	private void hideAccountID() {
-		Field accountID = rootTable.getAvailableFields().get("accountID");
-		if (accountID != null) {
-			accountID.setVisible(false);
-		}
+public class AccountContractorModel extends AbstractModel {
+	
+	public AccountContractorModel(Permissions permissions) {
+		fromTable = new ContractorTable("contractor");
+		availableFields = fromTable.getAvailableFields(permissions);
+		ReportJoin accountJoin = fromTable.getJoin("account");
+		addJoin(accountJoin, permissions);
+		addJoin(accountJoin.getTable().getJoin("accountContact"), permissions);
+		addJoin(accountJoin.getTable().getJoin("accountNaics"), permissions);
+		
+		// TODO adjust these columns
+		// hideAccountID();
+		// rootTable.removeField("accountName");
+		// rootTable.removeField("accountType");
 	}
 }

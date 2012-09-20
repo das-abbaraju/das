@@ -14,7 +14,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.SqlBuilder;
@@ -23,18 +22,19 @@ import com.picsauditing.search.SelectSQL;
 
 public class AccountContractorModelTest {
 
-	private AccountContractorModel model = new AccountContractorModel();
+	private AccountContractorModel model;
 	private Permissions permissions;
 	private Definition definition;
 
 	@Before
 	public void setup() {
 		permissions = EntityFactory.makePermission();
+		model = new AccountContractorModel(permissions);
 	}
 
 	@Test
 	public void testAvailableFields() throws Exception {
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		Map<String, Field> availableFields = model.getAvailableFields();
 
 		assertFalse("contractorRequestedByOperatorCity is Low importance",
 				availableFields.containsKey("contractorRequestedByOperatorCity".toUpperCase()));
@@ -48,7 +48,7 @@ public class AccountContractorModelTest {
 	public void testAvailableFieldsForAdmin() throws Exception {
 		EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		Map<String, Field> availableFields = model.getAvailableFields();
 
 		assertTrue("contractorBalance is Required", availableFields.containsKey("contractorBalance".toUpperCase()));
 

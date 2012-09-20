@@ -1,20 +1,17 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FilterType;
 
-public class UserTable extends AbstractTable {
+public class UserTable extends ReportTable {
 
-	public UserTable(String alias, String foreignKey) {
-		super("users", alias, alias, alias + ".id = " + foreignKey);
-		includedColumnImportance = FieldImportance.Average;
+	public UserTable(String name) {
+		super("users", name);
 	}
 
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.UserID);
-		addFields(com.picsauditing.jpa.entities.User.class);
-	}
-
-	public void addJoins() {
-		addJoin(new AccountTable(prefix + "Account", alias + ".accountID"));
+	public void fill(Permissions permissions) {
+		addPrimaryKey(FilterType.UserID);
+		addFields(com.picsauditing.jpa.entities.User.class, FieldImportance.Average);
+//		addJoin(new AccountTable(prefix + "Account", alias + ".accountID"));
 	}
 }

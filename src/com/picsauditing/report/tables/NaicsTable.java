@@ -1,16 +1,14 @@
 package com.picsauditing.report.tables;
 
-public class NaicsTable extends AbstractTable {
+import com.picsauditing.access.Permissions;
 
-	public NaicsTable(String alias, String foreignKey) {
-		super("naics", alias, alias, alias + ".code = " + foreignKey);
-		includedColumnImportance = FieldImportance.Average;
+public class NaicsTable extends ReportTable {
+
+	public NaicsTable() {
+		super("naics", "accountNaics");
 	}
 
-	public void addFields() {
-		addFields(com.picsauditing.jpa.entities.Naics.class);
-	}
-
-	public void addJoins() {
+	public void fill(Permissions permissions) {
+		addFields(com.picsauditing.jpa.entities.Naics.class, FieldImportance.Average);
 	}
 }

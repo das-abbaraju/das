@@ -9,15 +9,15 @@ import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 public class AccountModel extends AbstractModel {
-	public AccountModel() {
-		super();
-		rootTable = new AccountTable();
-		rootTable.includeAllColumns();
-		rootTable.addJoins();
 
-		parentTable = rootTable;
+	public AccountModel(Permissions permissions) {
+		fromTable = new AccountTable("account");
+		availableFields = fromTable.getAvailableFields(permissions);
+		addJoin(fromTable.getJoin("accountContact"), permissions);
+		addJoin(fromTable.getJoin("accountNaics"), permissions);
 	}
 
+	// TODO ensure this will work, may need to extract into util class and resuse in different models
 	@Override
 	public String getWhereClause(Permissions permissions, List<Filter> filters) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
@@ -46,5 +46,4 @@ public class AccountModel extends AbstractModel {
 		}
 		return null;
 	}
-
 }
