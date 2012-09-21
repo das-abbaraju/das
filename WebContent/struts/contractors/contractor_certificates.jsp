@@ -12,6 +12,7 @@
 		</thead>
 		<tbody>
 			<s:iterator value="certificates">
+				<s:if test="!expired">
 				<tr>
 					<td>
 						<a href="#" class="add saveCertificate" rel="<s:property value="id"/>"><s:text name="Audit.certificates.Attach" /></a>
@@ -32,6 +33,7 @@
 						</table>
 					</td>
 				</tr>
+				</s:if>
 			</s:iterator>
 		</tbody>
 	</table>
