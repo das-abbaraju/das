@@ -4,5 +4,5 @@
 
 <s:select list="getUsersList(opID)" listKey="name" listValue="name" id="contractor_numbers_value"
     name="number.value" value="%{newContractor.requestedByUser.id}"
-    headerKey="0" headerValue="- %{getText('RequestNewContractor.Other')} -" />
+    headerKey="0" />
     
