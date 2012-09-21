@@ -19,6 +19,11 @@ public abstract class AbstractModel {
 	protected ReportTable fromTable;
 	private Map<String, ReportJoin> joins = new HashMap<String, ReportJoin>();
 	protected Map<String, Field> availableFields;
+	protected Permissions permissions;
+	
+	public AbstractModel(Permissions permissions) {
+		this.permissions = permissions;
+	}
 
 	protected void addJoin(ReportJoin join, Permissions permissions) {
 		if (joins.containsKey(join.getTable().getName())) {
