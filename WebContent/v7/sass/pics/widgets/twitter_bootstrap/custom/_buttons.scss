@@ -86,10 +86,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 @mixin defineButtonSpecificOverrides(
 	$border_color,
-	$text_shadow_color,
-	$text_color) {
+	$text_shadow_color) {
 
-	color: $text_color;
 	border-color: $border_color;
 
 	@if $text_shadow_color != none {
@@ -101,8 +99,10 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 @mixin defineStateSpecificOverrides(
 	$top_gradient_color,
-	$bottom_gradient_color) {
+	$bottom_gradient_color,
+	$text_color) {
 
+	color: $text_color;
 	background: none;
 	@include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
 }
@@ -117,13 +117,13 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 	@include defineButtonSpecificOverrides(
 		$default_border_color,
-		$default_text_shadow_color,
-		$default_text_color
+		$default_text_shadow_color
 	);
 
 	@include defineStateSpecificOverrides(
 		$default_top_gradient_color,
-		$default_bottom_gradient_color
+		$default_bottom_gradient_color,
+		$default_text_color
 	);
 }
 
@@ -131,7 +131,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$default_hover_top_gradient_color,
-		$default_hover_bottom_gradient_color
+		$default_hover_bottom_gradient_color,
+		$default_text_color
 	);
 }
 
@@ -140,7 +141,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$default_active_top_gradient_color,
-		$default_active_bottom_gradient_color
+		$default_active_bottom_gradient_color,
+		$default_text_color
 	);
 }
 
@@ -152,13 +154,13 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineButtonSpecificOverrides(
 		$primary_border_color,
-		$primary_text_shadow_color,
-		$primary_text_color
+		$primary_text_shadow_color
 	);
 
 	@include defineStateSpecificOverrides(
 		$primary_top_gradient_color,
-		$primary_bottom_gradient_color
+		$primary_bottom_gradient_color,
+		$primary_text_color
 	);
 }
 
@@ -166,7 +168,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$primary_hover_top_gradient_color,
-		$primary_hover_bottom_gradient_color
+		$primary_hover_bottom_gradient_color,
+		$primary_text_color
 	);
 }
 
@@ -175,7 +178,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$primary_active_top_gradient_color,
-		$primary_active_bottom_gradient_color
+		$primary_active_bottom_gradient_color,
+		$primary_text_color
 	);
 }
 
@@ -187,13 +191,13 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineButtonSpecificOverrides(
 		$warning_border_color,
-		$warning_text_shadow_color,
-		$warning_text_color
+		$warning_text_shadow_color
 	);
 
 	@include defineStateSpecificOverrides(
 		$warning_top_gradient_color,
-		$warning_bottom_gradient_color
+		$warning_bottom_gradient_color,
+		$warning_text_color
 	);
 }
 
@@ -201,7 +205,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$warning_hover_top_gradient_color,
-		$warning_hover_bottom_gradient_color
+		$warning_hover_bottom_gradient_color,
+		$warning_text_color
 	);
 }
 
@@ -210,7 +215,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$warning_active_top_gradient_color,
-		$warning_active_bottom_gradient_color
+		$warning_active_bottom_gradient_color,
+		$warning_text_color
 	);
 }
 
@@ -222,13 +228,13 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineButtonSpecificOverrides(
 		$info_border_color,
-		$info_text_shadow_color,
-		$info_text_color
+		$info_text_shadow_color
 	);
 
 	@include defineStateSpecificOverrides(
 		$info_top_gradient_color,
-		$info_bottom_gradient_color
+		$info_bottom_gradient_color,
+		$info_text_color
 	);
 }
 
@@ -236,7 +242,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$info_hover_top_gradient_color,
-		$info_hover_bottom_gradient_color
+		$info_hover_bottom_gradient_color,
+		$info_text_color
 	);
 }
 
@@ -245,7 +252,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$info_active_top_gradient_color,
-		$info_active_bottom_gradient_color
+		$info_active_bottom_gradient_color,
+		$info_text_color
 	);
 }
 
@@ -257,13 +265,13 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineButtonSpecificOverrides(
 		$success_border_color,
-		$success_text_shadow_color,
-		$success_text_color
+		$success_text_shadow_color
 	);
 
 	@include defineStateSpecificOverrides(
 		$success_top_gradient_color,
-		$success_bottom_gradient_color
+		$success_bottom_gradient_color,
+		$success_text_color
 	);
 }
 
@@ -271,7 +279,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$success_hover_top_gradient_color,
-		$success_hover_bottom_gradient_color
+		$success_hover_bottom_gradient_color,
+		$success_text_color
 	);
 }
 
@@ -280,7 +289,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$success_active_top_gradient_color,
-		$success_active_bottom_gradient_color
+		$success_active_bottom_gradient_color,
+		$success_text_color
 	);
 }
 
@@ -292,13 +302,13 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineButtonSpecificOverrides(
 		$danger_border_color,
-		$danger_text_shadow_color,
-		$danger_text_color
+		$danger_text_shadow_color
 	);
 
 	@include defineStateSpecificOverrides(
 		$danger_top_gradient_color,
-		$danger_bottom_gradient_color
+		$danger_bottom_gradient_color,
+		$danger_text_color		
 	);
 }
 
@@ -306,7 +316,8 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$danger_hover_top_gradient_color,
-		$danger_hover_bottom_gradient_color
+		$danger_hover_bottom_gradient_color,
+		$danger_text_color
 	);
 }
 
@@ -315,6 +326,7 @@ $danger_active_bottom_gradient_color:	#8c0600;
 {
 	@include defineStateSpecificOverrides(
 		$danger_active_top_gradient_color,
-		$danger_active_bottom_gradient_color
+		$danger_active_bottom_gradient_color,
+		$danger_text_color
 	);
 }
