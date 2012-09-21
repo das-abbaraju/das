@@ -1,13 +1,12 @@
 package com.picsauditing.report.tables;
 
 public class ReportJoin {
-	// private ReportTable fromTable;
+	private ReportTable fromTable; // ????
 	private ReportTable toTable;
-	private String onClause;
+	private String onClause; // This may need improvement like an OnClauseBuilder
 	private boolean required = true;
 
 	public ReportJoin(ReportTable toTable, String onClause) {
-		// this.fromTable = fromTable;
 		this.toTable = toTable;
 		this.onClause = onClause;
 	}
@@ -19,17 +18,21 @@ public class ReportJoin {
 	public ReportTable getTable() {
 		return toTable;
 	}
+	
+	public void setFromTable(ReportTable fromTable) {
+		this.fromTable = fromTable;
+	}
 
 	public boolean isRequired() {
 		return required;
 	}
 
-	public String toString() {
-		return (required ? "JOIN " : "LEFT JOIN ") + toTable.toString() + " ON " + onClause;
+	public boolean requires(ReportJoin join) {
+		System.out.println("comparing " + this + " TO " + join);
+		return false;
 	}
 
-	public boolean requires(ReportJoin join) {
-		// TODO Auto-generated method stub
-		return false;
+	public String toString() {
+		return (required ? "JOIN " : "LEFT JOIN ") + toTable.toString() + " ON " + onClause;
 	}
 }

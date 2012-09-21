@@ -24,21 +24,21 @@ public class ContractorTable extends ReportTable {
 	}
 
 	private void joinToAccount() {
-		String onClause = name + ".id = " + "account.id";
+		String onClause = symanticName + ".id = " + "account.id";
 		ReportJoin join = new ReportJoin(new AccountTable("account"), onClause);
 		addJoin(join);
 	}
 
 	private void joinToCSR() {
-		String onClause = name + ".welcomeAuditor_id = " + name + "CustomerService.id";
-		ReportJoin join = new ReportJoin(new UserTable(name + "CustomerService"), onClause);
+		String onClause = symanticName + ".welcomeAuditor_id = " + symanticName + "CustomerService.id";
+		ReportJoin join = new ReportJoin(new UserTable(symanticName + "CustomerService"), onClause);
 		join.getTable().setOverrideCategory(FieldCategory.CustomerServiceRepresentatives);
 		addLeftJoin(join);
 	}
 
 	private void joinToPQF() {
-		String onClause = name + ".id = " + name + "PQF.conID AND " + name + "PQF.auditTypeID = 1";
-		ReportJoin join = new ReportJoin(new UserTable(name + "CustomerService"), onClause);
+		String onClause = symanticName + ".id = " + symanticName + "PQF.conID AND " + symanticName + "PQF.auditTypeID = 1";
+		ReportJoin join = new ReportJoin(new UserTable(symanticName + "CustomerService"), onClause);
 		join.getTable().setOverrideCategory(FieldCategory.CustomerServiceRepresentatives);
 		addLeftJoin(join);
 
@@ -56,7 +56,7 @@ public class ContractorTable extends ReportTable {
 		conID.setCategory(FieldCategory.AccountInformation);
 		conID.setWidth(80);
 
-		Field contractorName = addField(new Field(name + "Name", name + ".name", FilterType.AccountName));
+		Field contractorName = addField(new Field(symanticName + "Name", symanticName + ".name", FilterType.AccountName));
 		contractorName.setCategory(FieldCategory.AccountInformation);
 		contractorName.setUrl("ContractorView.action?id={accountID}");
 		contractorName.setWidth(300);

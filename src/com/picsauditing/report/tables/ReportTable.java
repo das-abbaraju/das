@@ -12,17 +12,18 @@ import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
 
 public abstract class ReportTable {
-	protected String name;
-	private String sql;
+	protected String symanticName;
+	private String sqlTableName;
 	private Map<String, ReportJoin> joins = new HashMap<String, ReportJoin>();
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	protected FieldCategory overrideCategory;
+	protected Class entity; // Use this for filling fields and getting the sqlTableName from the Entity annotation
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportTable.class);
 
 	public ReportTable(String sql, String name) {
-		this.sql = sql;
-		this.name = name;
+		this.sqlTableName = sql;
+		this.symanticName = name;
 	}
 
 	public void addJoin(ReportJoin join) {
@@ -31,12 +32,12 @@ public abstract class ReportTable {
 
 	public void addLeftJoin(ReportJoin join) {
 		join.setLeftJoin();
-		joins.put(join.getTable().getName(), join);
+		addJoin(join);
 	}
 	abstract public void fill(Permissions permissions);
 	
 	protected void addFields(@SuppressWarnings("rawtypes") Class clazz, FieldImportance minimumImportance) {
-		for (Field field : JpaFieldExtractor.addFields(clazz, name, name)) {
+		for (Field field : JpaFieldExtractor.addFields(clazz, symanticName, symanticName)) {
 			if (importantEnough(field, minimumImportance)) {
 				addField(field);
 			}
@@ -46,19 +47,19 @@ public abstract class ReportTable {
 	private boolean importantEnough(Field field, FieldImportance minimumImportance) {
 		boolean importantEnough = minimumImportance.ordinal() <= field.getImportance().ordinal();
 		if (importantEnough) {
-			logger.debug("Including " + sql + "." + field.getName());
+			logger.debug("Including " + sqlTableName + "." + field.getName());
 		} else {
-			logger.debug("   Excluding " + sql + "." + field.getName());
+			logger.debug("   Excluding " + sqlTableName + "." + field.getName());
 		}
 		return importantEnough;
 	}
 
 	public String getName() {
-		return name;
+		return symanticName;
 	}
 	
 	protected Field addPrimaryKey(FilterType filterType) {
-		Field field = new Field(name + "ID", name + ".id", filterType);
+		Field field = new Field(symanticName + "ID", symanticName + ".id", filterType);
 		return addField(field);
 	}
 	
@@ -79,16 +80,16 @@ public abstract class ReportTable {
 	public void setOverrideCategory(FieldCategory overrideCategory) {
 		this.overrideCategory = overrideCategory;
 	}
-	
-	public String toString() {
-		if (Strings.isEmpty(sql) || name.equals(sql))
-			return name;
-
-		return sql + " AS " + name;
-	}
 
 	public ReportJoin getJoin(String toTableName) {
 		logger.debug("Getting join for " + toTableName + " in " + joins.keySet());
 		return joins.get(toTableName);
+	}
+	
+	public String toString() {
+		if (Strings.isEmpty(sqlTableName) || symanticName.equals(sqlTableName))
+			return symanticName;
+
+		return sqlTableName + " AS " + symanticName;
 	}
 }

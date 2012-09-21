@@ -49,7 +49,7 @@ public class SqlBuilder {
 
 	private void addJoins(AbstractModel model) {
 		for (ReportJoin join : model.getJoins()) {
-			if (model.isJoinNeeded(join.getTable().getName(), definition)) {
+			if (model.isJoinNeeded(join, definition)) {
 				sql.addJoin(join.toString());
 			}
 		}

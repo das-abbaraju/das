@@ -44,15 +44,14 @@ public abstract class AbstractModel {
 		return joins.values();
 	}
 	
-	public boolean isJoinNeeded(String joinName, Definition definition) {
-		ReportJoin join = joins.get(joinName);
+	public boolean isJoinNeeded(ReportJoin join, Definition definition) {
 		if (join.isRequired())
 			return true;
 
-		for (ReportJoin otherJoin : joins.values()) {
-			if (join != otherJoin && otherJoin.requires(join))
-				return true;
-		}
+//		for (ReportJoin otherJoin : joins.values()) {
+//			if (join != otherJoin && otherJoin.requires(join))
+//				return true;
+//		}
 
 		if (definition == null)
 			return false;

@@ -1,6 +1,4 @@
-package com.picsauditing.report.models;
-
-import java.util.List;
+package com.picsauditing.report.models
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -8,15 +6,21 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.util.PermissionQueryBuilder;
 
-public class AccountModel extends AbstractModel {
-
+class AccountModel extends AbstractModel {
+	
 	public AccountModel(Permissions permissions) {
-		fromTable = new AccountTable("account");
-		availableFields = fromTable.getAvailableFields(permissions);
-		addJoin(fromTable.getJoin("accountContact"), permissions);
-		addJoin(fromTable.getJoin("accountNaics"), permissions);
+		fromTable = new AccountTable("account")
+		availableFields = fromTable.getAvailableFields(permissions)
+		addJoin(fromTable.getJoin("accountContact"), permissions)
+		addJoin(fromTable.getJoin("accountNaics"), permissions)
+		
+		table AccountTable.class, "account" {
+			join "accountContact"
+			join "accountNaics"
+		}
+		
 	}
-
+	
 	// TODO ensure this will work, may need to extract into util class and resuse in different models
 	@Override
 	public String getWhereClause(Permissions permissions, List<Filter> filters) {

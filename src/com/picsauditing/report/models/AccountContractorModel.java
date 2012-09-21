@@ -9,6 +9,7 @@ public class AccountContractorModel extends AbstractModel {
 	public AccountContractorModel(Permissions permissions) {
 		fromTable = new ContractorTable("contractor");
 		availableFields = fromTable.getAvailableFields(permissions);
+		
 		ReportJoin accountJoin = fromTable.getJoin("account");
 		addJoin(accountJoin, permissions);
 		addJoin(accountJoin.getTable().getJoin("accountContact"), permissions);
