@@ -23,8 +23,8 @@
 				<td><s:property value="get('task')" /></td>
 				<td><s:property value="get('criteria')" /></td>
 				<td>
-					<s:if test="get('daysFromExpiration') > 0"><s:text name="%{scope}.message.Added"><s:param><s:date name="get('effectiveDate')" format="format="%{getText('struts.date.format')}"" /></s:param></s:text></s:if>
-					<s:else><s:text name="%{scope}.message.Removed"><s:param><s:date name="get('expirationDate')" format="format="%{getText('struts.date.format')}"" /></s:param></s:text></s:else>
+					<s:if test="get('daysFromExpiration') > 0"><s:text name="%{scope}.message.Added"><s:param><s:date name="get('effectiveDate')" format="format="%{@com.picsauditing.util.PicsDateFormat@Iso}"" /></s:param></s:text></s:if>
+					<s:else><s:text name="%{scope}.message.Removed"><s:param><s:date name="get('expirationDate')" format="format="%{@com.picsauditing.util.PicsDateFormat@Iso}"" /></s:param></s:text></s:else>
 				</td>
 			</tr>
 		</s:iterator>
@@ -47,8 +47,8 @@
 				<td><s:property value="get('task')" /></td>
 				<td><s:if test="!permissions.operator"><s:property value="get('opName')" />: </s:if><s:property value="get('name')" /></td>
 				<td>
-					<s:if test="get('daysFromExpiration') > 0"><s:text name="%{scope}.message.Added"><s:param><s:date name="get('effectiveDate')" format="format="%{getText('struts.date.format')}"" /></s:param></s:text></s:if>
-					<s:else><s:text name="%{scope}.message.Removed"><s:param><s:date name="get('expirationDate')" format="format="%{getText('struts.date.format')}"" /></s:param></s:text></s:else>
+					<s:if test="get('daysFromExpiration') > 0"><s:text name="%{scope}.message.Added"><s:param><s:date name="get('effectiveDate')" format="format="%{@com.picsauditing.util.PicsDateFormat@Iso}"" /></s:param></s:text></s:if>
+					<s:else><s:text name="%{scope}.message.Removed"><s:param><s:date name="get('expirationDate')" format="format="%{@com.picsauditing.util.PicsDateFormat@Iso}"" /></s:param></s:text></s:else>
 				</td>
 			</tr>
 		</s:iterator>

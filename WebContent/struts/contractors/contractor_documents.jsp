@@ -96,7 +96,7 @@
 													
 													<s:if test="#audit.auditType.classType.policy">
 														<br />
-														<span style="font-size: 10px"><s:date name="#audit.effectiveDate" format="%{getText('date.MonthAndYear')}" /></span>
+														<span style="font-size: 10px"><s:date name="#audit.effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" /></span>
 													</s:if>
 												</a>
 											</td>
@@ -225,7 +225,7 @@
 											
 											<s:if test="auditType.classType == 'Policy'">
 												<br />
-												<span style="font-size: 10px"><s:date name="effectiveDate" /></span>
+												<span style="font-size: 10px"><s:date name="effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></span>
 											</s:if>
 										</a>
 									</td>

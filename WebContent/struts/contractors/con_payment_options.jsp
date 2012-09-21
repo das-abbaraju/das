@@ -120,7 +120,7 @@
 						<s:if test="contractor.status.activeDemo">
 							<li>
 								<label><s:text name="ContractorPaymentOptions.NextBillingDate"/></label>
-								<s:date name="contractor.paymentExpires" format="%{getText('date.long')}" />
+								<s:date name="contractor.paymentExpires" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</li>
 							<li>
 								<label>

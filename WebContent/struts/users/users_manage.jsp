@@ -299,7 +299,7 @@
 								</label> <s:property value="user.id" /></li>
 								<li><label> <s:text name="UsersManage.DateCreated" />
 								</label> <s:date name="user.creationDate"
-										format="%{getText('date.short')}" /></li>
+										format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></li>
 							</s:if>
 						</s:if>
 

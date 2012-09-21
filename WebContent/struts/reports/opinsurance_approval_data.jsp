@@ -73,7 +73,7 @@
 						</s:iterator>
 					</s:if>
 					
-					<s:date name="get('expiresDate')" format="%{getText('date.short')}" />
+					<s:date name="get('expiresDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 				</td>
 				
 				<s:if test="filter.primaryInformation">

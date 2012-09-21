@@ -19,7 +19,7 @@
 						</s:if>
 					</tr>
 					<tr>
-						<td class="center"><nobr> <s:date name="invoice.creationDate" format="%{getText('date.long')}" /> <s:set
+						<td class="center"><nobr> <s:date name="invoice.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /> <s:set
 							name="o" value="invoice"></s:set> <s:include value="../who.jsp"></s:include> </nobr></td>
 						<s:if test="invoice.id > 0">
 							<td class="center"><s:property value="invoice.id" /></td>
@@ -45,7 +45,7 @@
 					<s:property value="invoice.poNumber" />
 				</td>
 				<td class="center">
-					<s:date name="invoice.dueDate" format="%{getText('date.long')}" />
+					<s:date name="invoice.dueDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 				</td>
 			</tr>
 		</table>

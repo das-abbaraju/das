@@ -22,7 +22,7 @@
 							href="#"
 							onclick="showCertUpload(<s:property value="contractor.id"/>,<s:property value="id"/>,0);return false;"
 							>
-							<span></span><s:date name="creationDate" format="%{getText('date.short')}" /> - <s:property value="description" />
+							<span></span><s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> - <s:property value="description" />
 						</a>
 						<br/>
 						<table class="inner">
@@ -31,7 +31,7 @@
 								<tr>
 									<td style="font-size:10px"><nobr><s:property value="audit.auditType.name"/></nobr></td>
 									<td style="font-size:10px"><nobr><s:property value="operator.name"/></nobr></td>
-									<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="%{getText('date.short')}"/></nobr></td>
+									<td style="font-size:10px"><nobr><s:date name="audit.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></nobr></td>
 								</tr>
 								</s:if>
 							</s:iterator>

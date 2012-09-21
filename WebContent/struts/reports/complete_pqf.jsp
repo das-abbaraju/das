@@ -88,7 +88,7 @@
 							</a>
 						</td>
 						<td class="reportDate">
-							<s:date name="get('createdDate')" format="%{getText('date.short')}" />
+							<s:date name="get('createdDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 						</td>
 						<td align="center">
 							<s:property value="get('percentComplete')" />
@@ -99,7 +99,7 @@
 						<td>
 							<input class="datepicker" size="6" type="text"
 								name="scheduledDate[<s:property value="[0].get('auditID')"/>]"
-								value="<s:property value="getBetterDate( [0].get('scheduledDate'), 'MM/dd/yy')"/>" />
+								value="<s:property value="getBetterDate( [0].get('scheduledDate'), @com.picsauditing.util.PicsDateFormat@American)"/>" />
 						</td>
 					</tr>
 				</s:iterator>

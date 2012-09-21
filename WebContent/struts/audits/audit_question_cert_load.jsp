@@ -4,7 +4,7 @@
 <s:set name="editable" value="mode == 'Edit' || mode == 'Verify'"/>
 <s:set name="cert" value="%{getCertificate(#a)}" />
 <s:if test="#cert != null">
-	<s:date name="#cert.creationDate" format="%{getText('date.short')}" /> - <s:property value="#cert.description" /> <br/>
+	<s:date name="#cert.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> - <s:property value="#cert.description" /> <br/>
 	<a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="#cert.id"/>&button=download"
 		target="_BLANK" class="insurance"><s:text name="button.View" />
 	</a>

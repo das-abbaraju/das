@@ -39,7 +39,7 @@
 						<s:text name="ContractorNotes.Pending" />
 					</s:if>
 					<s:else>
-						<s:date name="sentDate" format="%{getText('date.shorttime')}" />
+						<s:date name="sentDate" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" />
 					</s:else>
 				</td>
 				<td>

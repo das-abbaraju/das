@@ -52,7 +52,7 @@
 				<tr>
 					<td class="right"><s:property value="#stat.count" /></td>
 					<td><a href="EmployeeDetail.action?employee=<s:property value="employee.id" />"><s:property value="employee.lastName" />, <s:property value="employee.firstName" /></a></td>
-					<td><s:date name="expirationDate" format="%{getText('date.short')}" /></td>
+					<td><s:date name="expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 				</tr>
 			</s:iterator>
 		</tbody>

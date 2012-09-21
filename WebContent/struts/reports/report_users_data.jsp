@@ -57,8 +57,8 @@
 			</td>
 			<td><s:property value="get('phone')" /></td>
 			<td><s:property value="get('email')" /></td>
-			<td><s:date name="get('creationDate')" /></td>
-			<td><s:date name="get('lastLogin')" format="%{getText('date.shorttime')}" /></td>
+			<td><s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+			<td><s:date name="get('lastLogin')" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" /></td>
 			<td><s:property value="get('isActive')" /></td>
 			<pics:permission perm="SwitchUser">
 				<td>

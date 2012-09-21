@@ -64,7 +64,7 @@
 					value="#stat.index + report.firstRowNumber" /></td>
 				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 				<td class="reportDate"><s:date name="[0].get('creationDate')"
-					format="%{getText('date.short')}" /></td>
+					format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 				<td>
 					<s:select cssClass="blueMain" list="auditorList" listKey="id"
 						listValue="name" value="%{[0].get('welcomeAuditor_id')}"

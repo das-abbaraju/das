@@ -266,7 +266,7 @@
 				<label>
 					<s:text name="ContractorView.MemberSince" />:
 				</label>
-				<s:date name="contractor.membershipDate" format="%{getText('date.short')}" />
+				<s:date name="contractor.membershipDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 				<br />
 				<a href="BillingDetail.action?id=<s:property value="contractor.id" />">
 					<s:text name="BillingDetail.title" />

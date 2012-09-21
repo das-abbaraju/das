@@ -102,8 +102,8 @@ $(function() {
 													<s:property value="#ar.assessmentTest.qualificationMethod" />
 													<s:property value="#ar.assessmentTest.qualificationType" /> -
 													<s:property value="#ar.assessmentTest.description" />,
-													<s:date name="#ar.effectiveDate" format="%{getText('date.short')}" /> -
-													<s:date name="#ar.expirationDate" format="%{getText('date.short')}" />
+													<s:date name="#ar.effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> -
+													<s:date name="#ar.expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 													<s:if test="!#step.last">
 														<br /><br />
 													</s:if>

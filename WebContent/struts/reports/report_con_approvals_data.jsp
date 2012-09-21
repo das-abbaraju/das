@@ -54,7 +54,7 @@
 					
 					<s:if test="permissions.operator">
 						<td>
-							<s:date name="get('dateAdded')" format="%{getText('date.short')}"/>
+							<s:date name="get('dateAdded')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 						</td>
 						<td>
 							<s:property value="getWorkStatusDesc(get('workStatus'))"/>

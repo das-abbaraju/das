@@ -104,7 +104,7 @@
 						<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-								<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
+								<s:date name="dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> by <s:property value="auditor.name"/>
 							</s:div>
 						</li>
 						<li>
@@ -215,7 +215,7 @@
 							<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 								<label>Verified:</label>
 								<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-									<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
+									<s:date name="dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> by <s:property value="auditor.name"/>
 								</s:div>
 							</li>
 							<li>
@@ -286,7 +286,7 @@
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.getVerifiedDate('OSHA')" format="%{getText('date.short')}" /> by <s:property value="osha.getAuditor('OSHA').name"/>
+								<s:date name="osha.getVerifiedDate('OSHA')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> by <s:property value="osha.getAuditor('OSHA').name"/>
 							</s:div>
 						</li>
 						<li>
@@ -343,7 +343,7 @@
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.getVerifiedDate('UK_HSE')" format="%{getText('date.short')}" /> by <s:property value="osha.getAuditor('UK_HSE').name"/>
+								<s:date name="osha.getVerifiedDate('UK_HSE')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> by <s:property value="osha.getAuditor('UK_HSE').name"/>
 							</s:div>
 						</li>
 						<li>

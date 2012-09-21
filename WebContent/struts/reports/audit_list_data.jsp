@@ -48,8 +48,8 @@
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
-		<td class="center"><s:date name="get('createdDate')" format="%{getText('date.short')}" /></td>
-		<td class="center"><s:date name="get('expiresDate')" format="%{getText('date.short')}" /></td>
+		<td class="center"><s:date name="get('createdDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+		<td class="center"><s:date name="get('expiresDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 	    <s:if test="permissions.picsEmployee">
 			<td><s:property value="get('auditor_name')"/></td>
 		</s:if>

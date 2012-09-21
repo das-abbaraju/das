@@ -39,9 +39,9 @@
 					No
 				</s:else>
 			</td>
-			<td class="right"><s:date name="get('creationDate')" format="%{getText('date.short')}"/></td>
-			<td class="right"><s:date name="get('lastUpgradeDate')" format="%{getText('date.short')}"/></td>
-			<td class="right"><s:date name="get('paymentExpires')" format="%{getText('date.short')}"/></td>
+			<td class="right"><s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+			<td class="right"><s:date name="get('lastUpgradeDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+			<td class="right"><s:date name="get('paymentExpires')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 			<td><s:property value="get('fees')"/></td>
 		</tr>
 	</s:iterator>

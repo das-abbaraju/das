@@ -186,12 +186,12 @@
 								<s:if test='get("forceEnd") != null'>
 								<a 
 									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('forceEnd')" format="%{getText('date.short')}" /> - Click to view details">
+									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('forceEnd')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> - Click to view details" >
 								</s:if>
 								<s:elseif test='get("dataForceEnd") != null'>
 								<a 
 									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('dataForceEnd')" format="%{getText('date.short')}" /> - Click to view details">
+									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('dataForceEnd')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> - Click to view details">
 								</s:elseif>
 								<s:else>
 								<a 

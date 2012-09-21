@@ -13,7 +13,7 @@
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 				<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /></a></td>
-				<td class="center"><s:date name="get('statusChangedDate')" format="%{getText('date.short')}" /></td>
+				<td class="center"><s:date name="get('statusChangedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 			</tr>
 		</s:iterator>
 	</s:if>

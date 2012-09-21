@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:set name="verifiedPercent" value="0" />
 <s:if test="auditData">
-	{"dateVerified" : "<s:date name="auditData.dateVerified" format="%{getText('date.short')}" />", 
+	{"dateVerified" : "<s:date name="auditData.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />", 
 	"who" : "<s:property value="auditData.auditor.name"/>", 
 	"percentVerified" :
 		<s:iterator value="auditData.audit.operators" id="cao">
@@ -13,7 +13,7 @@
 	}
 </s:if>
 <s:elseif test="oshaAudit">
-	{"dateVerified" : "<s:date name="verifiedDate" format="%{getText('date.short')}" />", 
+	{"dateVerified" : "<s:date name="verifiedDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />", 
 	"who" : "<s:property value="auditor.name"/>", 
 	"percentVerified" :
 		<s:iterator value="oshaAudit.caos" id="cao">

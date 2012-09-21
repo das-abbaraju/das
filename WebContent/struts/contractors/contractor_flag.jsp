@@ -176,7 +176,7 @@
 												<s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" />
 											</s:param>
 											<s:param>
-												<s:date name="co.forceOverallFlag.forceEnd" format="%{getText('date.long')}" />
+												<s:date name="co.forceOverallFlag.forceEnd" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 											</s:param>
 											<s:param>
 												<s:property value="co.forceOverallFlag.forcedBy.name" />
@@ -200,7 +200,7 @@
 														<s:property value="#currentOp.forceOverallFlag.forceFlag.smallIcon" escape="false" />
 													</s:param>
 													<s:param>
-														<s:date name="#currentOp.forceOverallFlag.forceEnd" format="%{getText('date.long')}" />
+														<s:date name="#currentOp.forceOverallFlag.forceEnd" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 													</s:param>
 													<s:param>
 														<s:property value="#currentOp.forceOverallFlag.forcedBy.name" />
@@ -233,7 +233,7 @@
 																<s:property value="#flagoverride.forceflag.getSmallIcon()" escape="false" />
 															</s:param>
 															<s:param>
-																<s:date name="#flagoverride.forceEnd" format="%{getText('date.long')}" />
+																<s:date name="#flagoverride.forceEnd" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 															</s:param>
 															<s:param>
 																<s:property value="#flagoverride.updatedBy.name" />
@@ -267,7 +267,7 @@
 																<s:property value="#flagoverride.forceflag.getSmallIcon()" escape="false" />
 															</s:param>
 															<s:param>
-																<s:date name="#flagoverride.forceEnd" format="%{getText('date.long')}" />
+																<s:date name="#flagoverride.forceEnd" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 															</s:param>
 															<s:param>
 																<s:property value="#flagoverride.updatedBy.name" />

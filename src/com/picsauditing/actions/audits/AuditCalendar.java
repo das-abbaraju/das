@@ -13,6 +13,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.util.PicsDateFormat;
 
 @SuppressWarnings("serial")
 public class AuditCalendar extends PicsActionSupport {
@@ -40,7 +41,7 @@ public class AuditCalendar extends PicsActionSupport {
 			JSONObject o = new JSONObject();
 			o.put("id", audit.getId());
 			o.put("title", audit.getContractorAccount().getName() + " (" + audit.getAuditor().getName() + ")");
-			o.put("start", formatDate(audit.getScheduledDate(), getText("date.shorttime")));
+			o.put("start", formatDate(audit.getScheduledDate(), PicsDateFormat.Datetime));
 			o.put("allDay", false);
 			if (!permissions.isOperatorCorporate())
 				o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());

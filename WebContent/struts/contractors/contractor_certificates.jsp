@@ -18,7 +18,7 @@
 						<a href="#" class="add saveCertificate" rel="<s:property value="id"/>"><s:text name="Audit.certificates.Attach" /></a>
 					</td>
 					<td>
-						<a href="#" class="insurance viewCertificate" rel="<s:property value="id"/>"><s:date name="creationDate" format="%{getText('date.short')}" /> - <s:property value="description" /></a>
+						<a href="#" class="insurance viewCertificate" rel="<s:property value="id"/>"><s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /> - <s:property value="description" /></a>
 						<br/>
 						<table class="inner">
 							<s:iterator value="caos">
@@ -26,7 +26,7 @@
 								<tr>
 									<td style="font-size:10px" class="nobr"><s:property value="audit.auditType.name"/></td>
 									<td style="font-size:10px" class="nobr"><s:property value="operator.name"/></td>
-									<td style="font-size:10px" class="nobr"><s:date name="audit.expiresDate" format="%{getText('date.short')}"/></td>
+									<td style="font-size:10px" class="nobr"><s:date name="audit.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 								</tr>
 								</s:if>
 							</s:iterator>

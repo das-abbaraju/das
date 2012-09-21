@@ -11,7 +11,7 @@
 		<s:iterator value="pqfVerifications" status="stat">
 			<tr>
 				<td><a href="VerifyView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
-				<td><s:date name="get('completedDate')" format="%{getText('date.short')}" /></td>
+				<td><s:date name="get('completedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 			</tr>
 		</s:iterator>
 	</s:if>

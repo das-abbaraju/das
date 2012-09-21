@@ -114,7 +114,7 @@
 										<tr>
 											<td class="center">
 												<nobr>
-													<s:date name="invoice.creationDate" format="%{getText('date.long')}" /> 
+													<s:date name="invoice.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 													<s:set name="o" value="invoice" />
 													<s:include value="../who.jsp" />
 												</nobr>
@@ -244,7 +244,7 @@
 										<s:textfield name="invoice.dueDate" size="10" />
 									</s:if>
 									<s:else>
-										<s:date name="invoice.dueDate" format="%{getText('date.long')}" />
+										<s:date name="invoice.dueDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 									</s:else>
 								</td>
 							</tr>
@@ -345,11 +345,11 @@
 										<s:iterator value="invoice.payments">
 											<pics:permission perm="Billing">
 												<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />">
-													<s:date name="payment.creationDate" format="%{getText('date.long')}" />
+													<s:date name="payment.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 												</a>
 											</pics:permission>
 											<pics:permission perm="Billing" negativeCheck="true">
-												<s:date name="payment.creationDate" format="%{getText('date.long')}" />
+												<s:date name="payment.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 											</pics:permission>
 											<br />
 											<span class="small">

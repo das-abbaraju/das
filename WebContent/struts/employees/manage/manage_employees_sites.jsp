@@ -198,7 +198,7 @@
 									</s:if>
 								</td>
 								<td>
-									<s:date name="expirationDate" format="%{getText('date.short')}" />
+									<s:date name="expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 								</td>
 							</tr>
 						</s:if>

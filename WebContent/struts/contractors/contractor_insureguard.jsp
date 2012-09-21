@@ -118,7 +118,7 @@
 							</a>
 						</td>
 						<td>
-							<s:date name="#expiredPolicy.expiresDate" format="%{getText('date.short')}"/>
+							<s:date name="#expiredPolicy.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 						</td>
 					</tr>
 				</s:iterator>
@@ -168,7 +168,7 @@
 											<s:property value="description" />
 										</td>
 										<td class="center">
-											<s:date name="expirationDate" format="%{getText('date.short')}" />
+											<s:date name="expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 										</td>
 										<td class="center">
 											<a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download" target="_BLANK">

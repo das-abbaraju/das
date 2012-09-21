@@ -30,10 +30,10 @@
 			<td align="center"><s:checkbox name="sendMail" cssClass="massCheckable" fieldValue="%{get('id')}" /></td>
 			<td><a target="_BLANK" href="ContractorPaymentOptions.action?id=<s:property value="get('id')"/>"><s:property value="get('name')" /></a></td>
 			<td class="center"><s:property value="get('status')"/></td>
-			<td class="center"><s:date name="get('paymentExpires')" format="%{getText('date.short')}"/></td>
-			<td class="right"><s:date name="get('ccExpiration')" format="%{getText('date.MonthAndYear')}"/></td>
+			<td class="center"><s:date name="get('paymentExpires')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+			<td class="right"><s:date name="get('ccExpiration')" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}"/></td>
 			<td class="right">$<s:property value="get('balance')"/></td>
-			<td class="right"><s:date name="get('lastSent')" format="%{getText('date.shorttime')}" /></td>
+			<td class="right"><s:date name="get('lastSent')" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" /></td>
 		</tr>
 	</s:iterator>
 	</tbody>

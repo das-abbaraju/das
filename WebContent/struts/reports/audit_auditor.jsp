@@ -35,10 +35,10 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
-			<td><s:date name="[0].get('scheduledDate')" format="%{getText('date.short')}" /></td>
-			<td><s:date name="[0].get('assignedDate')" format="%{getText('date.short')}" /></td>
-			<td><s:date name="[0].get('completedDate')" format="%{getText('date.short')}" /></td>
-			<td><s:date name="[0].get('expired')" format="%{getText('date.short')}" /></td>
+			<td><s:date name="[0].get('scheduledDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+			<td><s:date name="[0].get('assignedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+			<td><s:date name="[0].get('completedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+			<td><s:date name="[0].get('expired')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
 			<td><s:date name="[0].get('pqfCompletionDate')" format="%{getText('date.short')}"/></td>
 			<td><s:date name="[0].get('dateVerified')" format="%{getText('date.short')}"/></td>

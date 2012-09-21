@@ -384,7 +384,7 @@ function loadStatus(caoID, addUserNote){
 									<s:iterator value="safetyManualLink.values()">
 										<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK">
 											<s:text name="Audit.message.Uploaded">
-												<s:param><s:date name="updateDate" format="%{getText('date.MonthAndYear')}"/></s:param>
+												<s:param><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}"/></s:param>
 											</s:text>
 										</a>
 									</s:iterator>
@@ -402,7 +402,7 @@ function loadStatus(caoID, addUserNote){
 						<s:if test="conAudit.expiresDate != null">
 							<li>
 								<label><s:text name="Audit.message.Expires" />:</label>
-								<s:date name="conAudit.expiresDate" format="%{getText('date.long')}" />
+								<s:date name="conAudit.expiresDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</li>
 						</s:if>
 						
@@ -442,7 +442,7 @@ function loadStatus(caoID, addUserNote){
 						<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
 							<li>
 								<label><s:text name="Audit.message.Scheduled" />:</label>
-								<s:date name="conAudit.scheduledDate" format="%{getText('date.long')}" />
+								<s:date name="conAudit.scheduledDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 								<s:property value="conAudit.auditLocation" />
 							</li>
 						</s:if>

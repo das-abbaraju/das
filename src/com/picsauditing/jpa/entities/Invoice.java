@@ -17,10 +17,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.velocity.tools.generic.DateTool;
+
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.util.Strings;
+import com.picsauditing.util.PicsDateFormat;
 
 @SuppressWarnings("serial")
 @Entity
@@ -202,6 +204,7 @@ public class Invoice extends Transaction {
 
 	@Transient
 	public String getDueDateF() {
-		return Strings.formatDateShort(getDueDate());
+		DateTool dateTool = new DateTool();
+		return dateTool.format(PicsDateFormat.Iso, getDueDate());
 	}
 }

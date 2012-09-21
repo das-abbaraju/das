@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<h1>Invoice <s:date name="auditList.get(0).paidDate" format="%{getText('date.long')}"/>
+<h1>Invoice <s:date name="auditList.get(0).paidDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}"/>
 	<span class="sub"><s:property value="auditList.get(0).auditor.name"/></span>
 </h1>
 
@@ -21,7 +21,7 @@
 		<td class="center"><s:property value="#stat.index + 1"/></td>
 		<td><a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.name"/></a></td>
 		<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name"/></a></td>
-		<td><s:date name="completedDate" format="MMM d"/></td>
+		<td><s:date name="completedDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndDay}"/></td>
 		<td class="right"><s:property value="contractorAccount.country.currency.symbol" /><s:if test="auditType.id == 2">75</s:if> </td>
 	</tr>
 	</s:iterator>
