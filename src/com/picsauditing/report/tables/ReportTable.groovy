@@ -80,7 +80,8 @@ abstract class ReportTable {
 		System.out.println("This is " + this);
 		ReportForeignKey foreignKey = keys.get(foreignKeyName)
 		if (foreignKey == null) {
-			logger.debug("Getting join for " + foreignKeyName + " in " + keys.keySet());
+			logger.error("Foreign key to " + foreignKeyName + " wasn't available in " + sqlTableName + " - " + keys.keySet());
+			return null;
 		}
 		ReportJoin newJoin = new ReportJoin(toTable: foreignKey.toTable, alias: foreignKey.name)
 		return newJoin

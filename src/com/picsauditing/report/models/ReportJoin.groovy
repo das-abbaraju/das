@@ -14,12 +14,14 @@ public class ReportJoin {
 
 	void join(Closure[] joinNames) {
 		System.out.println("calling join on " + alias + " on this " + this);
-		joinNames.each { toJoin ->
-			toJoin.delegate = toTable
-			System.out.println("  calling to method on " + toTable + " on this " + this);
-			ReportJoin childJoin = toJoin()
-			joins.add(childJoin)
-			System.out.println("join " + toTable + " to " + childJoin)
+		joinNames.each {
+			System.out.println("  getting foreign key on " + toTable);
+			it.delegate = toTable
+			ReportJoin childJoin = it()
+			if (childJoin != null) {
+				joins.add(childJoin)
+				System.out.println("  found join " + toTable + " to " + childJoin)
+			}
 		}
 	}
 	
