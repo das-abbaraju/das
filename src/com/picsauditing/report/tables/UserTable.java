@@ -5,8 +5,8 @@ import com.picsauditing.report.fields.FilterType;
 
 public class UserTable extends ReportTable {
 
-	public UserTable(String name) {
-		super("users", name);
+	public UserTable() {
+		super("users");
 	}
 
 	public void fill(Permissions permissions) {

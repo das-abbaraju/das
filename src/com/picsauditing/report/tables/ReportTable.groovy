@@ -3,39 +3,38 @@ package com.picsauditing.report.tables;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.annotations.ForeignKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.util.Strings;
 
-public abstract class ReportTable {
-	protected String symanticName;
+abstract class ReportTable {
 	private String sqlTableName;
-	private Map<String, ReportJoin> joins = new HashMap<String, ReportJoin>();
+	private Map<String, ReportForeignKey> keys = new HashMap<String, ReportForeignKey>();
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
-	protected FieldCategory overrideCategory;
 	protected Class entity; // Use this for filling fields and getting the sqlTableName from the Entity annotation
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportTable.class);
 
-	public ReportTable(String sql, String name) {
+	public ReportTable(String sql) {
 		this.sqlTableName = sql;
-		this.symanticName = name;
 	}
 
-	public void addJoin(ReportJoin join) {
-		joins.put(join.getTable().getName(), join);
+	void addKey(ReportForeignKey join) {
+		keys.put(join.getName(), join)
 	}
 
-	public void addLeftJoin(ReportJoin join) {
-		join.setLeftJoin();
-		addJoin(join);
+	void addOptionalKey(ReportForeignKey join) {
+		join.setRequired()
+		addKey(join)
 	}
 	abstract public void fill(Permissions permissions);
-	
+
 	protected void addFields(@SuppressWarnings("rawtypes") Class clazz, FieldImportance minimumImportance) {
 		for (Field field : JpaFieldExtractor.addFields(clazz, symanticName, symanticName)) {
 			if (importantEnough(field, minimumImportance)) {
@@ -54,15 +53,15 @@ public abstract class ReportTable {
 		return importantEnough;
 	}
 
-	public String getName() {
-		return symanticName;
-	}
-	
+	//	public String getName() {
+	//		return symanticName;
+	//	}
+
 	protected Field addPrimaryKey(FilterType filterType) {
 		Field field = new Field(symanticName + "ID", symanticName + ".id", filterType);
 		return addField(field);
 	}
-	
+
 	protected Field addField(Field field) {
 		// We don't want to be case sensitive when matching names
 		availableFields.put(field.getName().toUpperCase(), field);
@@ -71,25 +70,27 @@ public abstract class ReportTable {
 		}
 		return field;
 	}
-	
+
 	public Map<String, Field> getAvailableFields(Permissions permissions) {
 		fill(permissions);
 		return availableFields;
 	}
 
-	public void setOverrideCategory(FieldCategory overrideCategory) {
-		this.overrideCategory = overrideCategory;
+	public ReportJoin to(String foreignKeyName) {
+		System.out.println("This is " + this);
+		ReportForeignKey foreignKey = keys.get(foreignKeyName)
+		if (foreignKey == null) {
+			logger.debug("Getting join for " + foreignKeyName + " in " + keys.keySet());
+		}
+		ReportJoin newJoin = new ReportJoin(toTable: foreignKey.toTable, alias: foreignKey.name)
+		return newJoin
 	}
 
-	public ReportJoin getJoin(String toTableName) {
-		logger.debug("Getting join for " + toTableName + " in " + joins.keySet());
-		return joins.get(toTableName);
-	}
-	
 	public String toString() {
-		if (Strings.isEmpty(sqlTableName) || symanticName.equals(sqlTableName))
-			return symanticName;
-
-		return sqlTableName + " AS " + symanticName;
+		//		if (Strings.isEmpty(sqlTableName) || symanticName.equals(sqlTableName))
+		//			return symanticName;
+		//
+		//		return sqlTableName + " AS " + symanticName;
+		sqlTableName;
 	}
 }

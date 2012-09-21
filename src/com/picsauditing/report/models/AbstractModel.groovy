@@ -11,21 +11,33 @@ import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.ReportJoin;
+import com.picsauditing.report.tables.ReportForeignKey;
 import com.picsauditing.report.tables.ReportTable;
 
-public abstract class AbstractModel {
+abstract class AbstractModel {
 
 	protected ReportTable fromTable;
-	private Map<String, ReportJoin> joins = new HashMap<String, ReportJoin>();
+	protected startingJoin;
+	private Map<String, ReportForeignKey> joins = new HashMap<String, ReportForeignKey>();
 	protected Map<String, Field> availableFields;
 	protected Permissions permissions;
-	
+
 	public AbstractModel(Permissions permissions) {
 		this.permissions = permissions;
 	}
 
-	protected void addJoin(ReportJoin join, Permissions permissions) {
+	protected ReportTable join(ReportTable table, Closure cl) {
+		cl.delegate = table
+		ReportForeignKey join = cl()
+		addJoin(join, permissions);
+	}
+
+	protected ReportJoin from(String alias) {
+		System.out.println("Starting table = " + alias);
+		startingJoin = new ReportJoin(toTable: fromTable, alias: alias);
+	}
+
+	protected void addJoin(ReportForeignKey join, Permissions permissions) {
 		if (joins.containsKey(join.getTable().getName())) {
 			System.out.println("Adding join more than once " + join.getTable().getName());
 		}
@@ -45,18 +57,18 @@ public abstract class AbstractModel {
 		return fromTable.toString();
 	}
 
-	public Collection<ReportJoin> getJoins() {
+	public Collection<ReportForeignKey> getJoins() {
 		return joins.values();
 	}
-	
-	public boolean isJoinNeeded(ReportJoin join, Definition definition) {
+
+	public boolean isJoinNeeded(ReportForeignKey join, Definition definition) {
 		if (join.isRequired())
 			return true;
 
-//		for (ReportJoin otherJoin : joins.values()) {
-//			if (join != otherJoin && otherJoin.requires(join))
-//				return true;
-//		}
+		//		for (ReportJoin otherJoin : joins.values()) {
+		//			if (join != otherJoin && otherJoin.requires(join))
+		//				return true;
+		//		}
 
 		if (definition == null)
 			return false;

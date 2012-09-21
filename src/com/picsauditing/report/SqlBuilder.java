@@ -13,7 +13,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.tables.ReportJoin;
+import com.picsauditing.report.tables.ReportForeignKey;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilder {
@@ -48,7 +48,7 @@ public class SqlBuilder {
 	}
 
 	private void addJoins(AbstractModel model) {
-		for (ReportJoin join : model.getJoins()) {
+		for (ReportForeignKey join : model.getJoins()) {
 			if (model.isJoinNeeded(join, definition)) {
 				sql.addJoin(join.toString());
 			}

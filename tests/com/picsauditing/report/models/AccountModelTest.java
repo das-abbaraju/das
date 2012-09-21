@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
@@ -39,6 +40,7 @@ public class AccountModelTest {
 
 
 	@Test
+	@Ignore
 	public void testSql() throws Exception {
 		Definition definition = new Definition("");
 		definition.getColumns().add(new Column("accountCountry"));

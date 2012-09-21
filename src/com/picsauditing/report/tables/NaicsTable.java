@@ -5,7 +5,7 @@ import com.picsauditing.access.Permissions;
 public class NaicsTable extends ReportTable {
 
 	public NaicsTable() {
-		super("naics", "accountNaics");
+		super("naics");
 	}
 
 	public void fill(Permissions permissions) {
