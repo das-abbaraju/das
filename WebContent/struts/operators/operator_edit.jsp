@@ -590,7 +590,7 @@
 	                                    <s:text name="JS.Filters.status.None" />
 	                                </s:else>
 	                            </pics:permission>
-	                            <s:property value="%{getText('date.short')}" />
+	                            <s:property value="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 	                        </li>
 	                        <s:if test ="operator.corporate && permissions.hasGroup(9)" >
 							<li>

@@ -122,7 +122,7 @@
 							$<s:property value="get('totalAmount')- get('amountApplied')"/>
 						</td>
 						<td class="right">
-							<s:date name="get('dueDate')" format="%{getText('date.short')}"/>
+							<s:date name="get('dueDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 						</td>
 						<td>
 							<s:property value="get('status')"/>

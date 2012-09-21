@@ -40,8 +40,8 @@
 			<td><s:date name="[0].get('completedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 			<td><s:date name="[0].get('expired')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
-			<td><s:date name="[0].get('pqfCompletionDate')" format="%{getText('date.short')}"/></td>
-			<td><s:date name="[0].get('dateVerified')" format="%{getText('date.short')}"/></td>
+			<td><s:date name="[0].get('pqfCompletionDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+			<td><s:date name="[0].get('dateVerified')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 		</tr>
 	</s:iterator>
 </table>
