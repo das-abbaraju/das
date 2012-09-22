@@ -24,6 +24,9 @@ public class AccountContractorModel extends AbstractModel {
 					]
 				]
 			],[
+				key: ContractorTable.Flag,
+				required: false
+			],[
 				key: ContractorTable.CustomerService,
 				required: false
 			]

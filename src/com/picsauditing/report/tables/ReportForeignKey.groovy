@@ -5,6 +5,7 @@ public class ReportForeignKey {
 	private ReportTable toTable;
 	private ReportOnClause onClause;
 	private boolean required = true;
+	private FieldImportance minimumImportance = FieldImportance.Low;
 
 	public ReportForeignKey(String name, ReportTable toTable, ReportOnClause onClause) {
 		this.name = name;
@@ -31,6 +32,8 @@ public class ReportForeignKey {
 	public void setRequired() {
 		required = false;
 	}
+	
+	
 
 	public String toString() {
 		return name;

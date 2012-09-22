@@ -1,11 +1,15 @@
 package com.picsauditing.report.models;
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.Permissions
 import com.picsauditing.report.Column
 import com.picsauditing.report.Definition
 import com.picsauditing.report.Filter
 import com.picsauditing.report.Sort
 import com.picsauditing.report.fields.Field
+import com.picsauditing.report.tables.FieldImportance
 import com.picsauditing.report.tables.ReportForeignKey
 import com.picsauditing.report.tables.ReportOnClause
 import com.picsauditing.report.tables.ReportTable
@@ -16,35 +20,30 @@ abstract class AbstractModel {
 	protected Permissions permissions;
 	// protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	
+	private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
+	
 	public AbstractModel(Permissions permissions, ReportTable startingTable) {
 		this.permissions = permissions;
-		startingJoin = parse(startingTable, getJoinSpec())
-		System.out.println("Finished building joins \n" + join);
+		startingJoin = parseSpec(startingTable, getJoinSpec())
+		// availableFields.putAll(fromTable.getAvailableFields(permissions));
+		
+		System.out.println("Finished building joins \n" + startingJoin);
 	}
 	
-	abstract Map getJoinSpec()
-	
-	protected ReportTable join(ReportTable table, Closure cl) {
-		cl.delegate = table
-		ReportForeignKey join = cl()
-		addJoin(join, permissions);
-	}
-
-	protected ReportJoin from(String alias) {
-		System.out.println("Starting table = " + alias);
-		startingJoin = new ReportJoin(toTable: fromTable, alias: alias);
-	}
-
-	protected ReportJoin parse(ReportTable toTable, Map joinDef) {
-		System.out.println("From " + toTable);
+	ReportJoin parseSpec(ReportTable toTable, Map joinDef) {
+		System.out.println("parsingSpec for " + toTable);
 		ReportJoin join = new ReportJoin();
 		join.setToTable(toTable)
-		join.setAlias(joinDef.alias)
-		// availableFields.putAll(fromTable.getAvailableFields(permissions));
+		
+		if (joinDef.alias) {
+			join.setAlias(joinDef.alias)
+		}
+		
 		joinDef.joins.each { childJoinDSL ->
+			println this;
 			ReportForeignKey key = toTable.getKey(childJoinDSL.key)
 			if (key != null) {
-				ReportJoin childJoin = parse(key.getTable(), childJoinDSL)
+				ReportJoin childJoin = parseSpec(key.getTable(), childJoinDSL)
 				if (Strings.isEmpty(childJoin.getAlias())) {
 					childJoin.setAlias(join.getAlias() + key);
 				}
@@ -58,6 +57,8 @@ abstract class AbstractModel {
 		return join
 	}
 	
+	abstract Map getJoinSpec()
+	
 	public Map<String, Field> getAvailableFields() {
 		return availableFields;
 	}
@@ -67,7 +68,7 @@ abstract class AbstractModel {
 	}
 
 	public String getFromClause() {
-		return fromTable.toString();
+		return "FROM " + startingJoin.getTableClause();
 	}
 
 	public Collection<ReportForeignKey> getJoins() {
@@ -109,4 +110,5 @@ abstract class AbstractModel {
 
 		return false;
 	}
+
 }

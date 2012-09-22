@@ -16,13 +16,13 @@ import com.picsauditing.util.Strings;
 abstract class ReportTable {
 	private String sqlTableName;
 	private Map<String, ReportForeignKey> keys = new HashMap<String, ReportForeignKey>();
-	protected Map<String, Field> availableFields = new HashMap<String, Field>();
-	protected Class entity; // Use this for filling fields and getting the sqlTableName from the Entity annotation
+	Collection<Field> fields = new ArrayList<Field>();
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportTable.class);
 
 	public ReportTable(String sql) {
 		this.sqlTableName = sql;
+		System.out.println("Creating " + this);
 	}
 
 	void addKey(ReportForeignKey join) {
@@ -33,45 +33,23 @@ abstract class ReportTable {
 		join.setRequired()
 		addKey(join)
 	}
-	
-	abstract protected void defineFields();
 
-	protected void addFields(@SuppressWarnings("rawtypes") Class clazz, FieldImportance minimumImportance) {
-		for (Field field : JpaFieldExtractor.addFields(clazz, symanticName, symanticName)) {
-			if (importantEnough(field, minimumImportance)) {
-				addField(field);
-			}
+	protected void addFields(Class entity) {
+		for (Field field : JpaFieldExtractor.addFields(entity)) {
+			addField(field);
 		}
-	}
-
-	private boolean importantEnough(Field field, FieldImportance minimumImportance) {
-		boolean importantEnough = minimumImportance.ordinal() <= field.getImportance().ordinal();
-		if (importantEnough) {
-			logger.debug("Including " + sqlTableName + "." + field.getName());
-		} else {
-			logger.debug("   Excluding " + sqlTableName + "." + field.getName());
-		}
-		return importantEnough;
-	}
-
-	//	public String getName() {
-	//		return symanticName;
-	//	}
-
-	protected Field addPrimaryKey(FilterType filterType) {
-		Field field = new Field(symanticName + "ID", symanticName + ".id", filterType);
-		return addField(field);
 	}
 
 	protected Field addField(Field field) {
-		// We don't want to be case sensitive when matching names
-		availableFields.put(field.getName().toUpperCase(), field);
-		if (overrideCategory != null) {
-			field.setCategory(overrideCategory);
-		}
+		fields.add field;
 		return field;
 	}
 
+	protected Field addPrimaryKey(FilterType filterType) {
+		Field field = new Field("ID", "id", filterType);
+		return addField(field);
+	}
+	
 	public ReportForeignKey getKey(String foreignKeyName) {
 		System.out.println("Searching for Key = " + foreignKeyName);
 		ReportForeignKey foreignKey = keys.get(foreignKeyName)
