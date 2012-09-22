@@ -23,6 +23,7 @@ import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
 
@@ -123,8 +124,8 @@ public class ManageImportData extends ReportActionSupport {
 					KS_GetDateRecords ks = new KS_GetDateRecords();
 					ks.setUN(oqsgUser);
 					ks.setPW(oqsgPass);
-					ks.setStartDate(DateBean.format(start, "MM/dd/yyyy"));
-					ks.setEndDate(DateBean.format(end, "MM/dd/yyyy"));
+					ks.setStartDate(DateBean.format(start, PicsDateFormat.American));
+					ks.setEndDate(DateBean.format(end, PicsDateFormat.American));
 					
 					KS_GetDateRecordsResponse ksR = oqsgService.KS_GetDateRecords(ks);
 					all.addAll(Arrays.asList(ksR.getKS_GetDateRecordsResult().getRecord()));
@@ -133,8 +134,8 @@ public class ManageImportData extends ReportActionSupport {
 					T_GetDateRecords t = new T_GetDateRecords();
 					t.setUN(oqsgUser);
 					t.setPW(oqsgPass);
-					t.setStartDate(DateBean.format(start, "MM/dd/yyyy"));
-					t.setEndDate(DateBean.format(end, "MM/dd/yyyy"));
+					t.setStartDate(DateBean.format(start, PicsDateFormat.American));
+					t.setEndDate(DateBean.format(end, PicsDateFormat.American));
 					
 					T_GetDateRecordsResponse tR = oqsgService.T_GetDateRecords(t);
 					all.addAll(Arrays.asList(tR.getT_GetDateRecordsResult().getRecord()));

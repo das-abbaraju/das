@@ -18,6 +18,8 @@ import org.joda.time.LocalDate;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.picsauditing.util.PicsDateFormat;
+
 public class DateBeanTest {
 
 	TimeZone easternTimeZone = TimeZone.getTimeZone("US/Eastern");
@@ -552,7 +554,7 @@ public class DateBeanTest {
 
 	@Test
 	public void testFormatWithNullValue() {
-		assertEquals("", DateBean.format(null, "MM/dd/yyyy"));
+		assertEquals("", DateBean.format(null, PicsDateFormat.Iso));
 	}
 
 	@Test

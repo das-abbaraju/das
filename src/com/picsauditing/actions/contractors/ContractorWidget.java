@@ -18,6 +18,7 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 
@@ -87,7 +88,7 @@ public class ContractorWidget extends ContractorActionSupport {
 			if (contractor.getViewedFacilities() == null) {
 				return true;
 			} else {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+				SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.MonthAndYear);
 				if (!sdf.format(contractor.getViewedFacilities()).equals(sdf.format(new Date()))) {
 					return true;
 				}

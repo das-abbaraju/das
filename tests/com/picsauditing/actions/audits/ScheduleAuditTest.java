@@ -47,6 +47,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.util.PicsDateFormat;
 
 public class ScheduleAuditTest extends PicsActionTest {
 	private ScheduleAudit scheduleAudit;
@@ -140,9 +141,9 @@ public class ScheduleAuditTest extends PicsActionTest {
 		when(permissions.isAdmin()).thenReturn(true);
 		Whitebox.setInternalState(scheduleAudit, "auditor", auditor);
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 		scheduleAudit.setScheduledDateDay(sdf.format(dateScheduledViaUI));
-		sdf.applyPattern("HH:mm a z");
+		sdf.applyPattern(PicsDateFormat.Time12Hour);
 		scheduleAudit.setScheduledDateTime(sdf.format(dateScheduledViaUI));
 
 		when(permissions.getTimezone()).thenReturn(TimeZone.getDefault());
@@ -173,9 +174,9 @@ public class ScheduleAuditTest extends PicsActionTest {
 		originalScheduledTime.set(Calendar.SECOND, 0);
 		Date originalScheduledDate = originalScheduledTime.getTime();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 		scheduleAudit.setScheduledDateDay(sdf.format(dateScheduledViaUI));
-		sdf.applyPattern("HH:mm a z");
+		sdf.applyPattern(PicsDateFormat.Time12Hour);
 		scheduleAudit.setScheduledDateTime(sdf.format(dateScheduledViaUI));
 
 		when(permissions.isAdmin()).thenReturn(true);
@@ -264,9 +265,9 @@ public class ScheduleAuditTest extends PicsActionTest {
 	// simple test to require this
 	// much setup.
 	private void setupForSaveTest(Date dateScheduledViaUI, Date originalScheduledDate) {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 		scheduleAudit.setScheduledDateDay(sdf.format(dateScheduledViaUI));
-		sdf.applyPattern("HH:mm a z");
+		sdf.applyPattern(PicsDateFormat.Time12Hour);
 		scheduleAudit.setScheduledDateTime(sdf.format(dateScheduledViaUI));
 
 		when(permissions.isAdmin()).thenReturn(true);

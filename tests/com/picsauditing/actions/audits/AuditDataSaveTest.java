@@ -50,6 +50,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.PicsDateFormat;
 
 public class AuditDataSaveTest {
 	private AuditDataSave auditDataSave;
@@ -127,15 +128,15 @@ public class AuditDataSaveTest {
 	@Test
 	public void testCheckUniqueCode() throws Exception {
 		Date date;
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
 
-		auditData.setAnswer("01/31/2025");
+		auditData.setAnswer("2025-01-31");
 
 		setupCheckUniqueCode("exipireMonths12");
 		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
 		assertNotNull(audit.getExpiresDate());
 		date = audit.getExpiresDate();
-		assertEquals("01/31/2026", format.format(date));
+		assertEquals("2026-01-31", format.format(date));
 	}
 
 	private void setupCheckUniqueCode(String code) {
@@ -278,13 +279,11 @@ public class AuditDataSaveTest {
 
 	@Test
 	public void testExecute_SetAnswerToDateOrRecordError_DateGoodSetAnswer() throws Exception {
-		String testFormat = "MM-dd-yyyy";
-		String dbFormat = "yyyy-MM-dd";
-		SimpleDateFormat format = new SimpleDateFormat(testFormat);
+		SimpleDateFormat americanFormat = new SimpleDateFormat(PicsDateFormat.American);
 		Date now = new Date();
-		String answer = format.format(now); 
-		format.applyPattern(dbFormat);
-		String expected = format.format(now);
+		String answer = americanFormat.format(now);
+		americanFormat.applyPattern(PicsDateFormat.Iso);
+		String expected = americanFormat.format(now);
 
 		// this seems silly, but it is the behavior of the CUT
 		Boolean returnValue = Whitebox.invokeMethod(auditDataSave, "setAnswerToDateOrRecordError", auditData, answer);

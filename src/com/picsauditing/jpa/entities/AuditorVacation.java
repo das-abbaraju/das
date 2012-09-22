@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -114,8 +115,8 @@ public class AuditorVacation extends BaseTable {
 
 	@Override
 	public String toString() {
-		return "\"" + getDescriptionClean() + "\" " + DateBean.format(startDate, "MM/dd/yyyy hh:mm a") + " "
-				+ DateBean.format(endDate, "MM/dd/yyyy hh:mm a");
+		return "\"" + getDescriptionClean() + "\" " + DateBean.format(startDate, PicsDateFormat.Datetime12Hour) + " "
+				+ DateBean.format(endDate, PicsDateFormat.Datetime12Hour);
 	}
 
 }
