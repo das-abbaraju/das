@@ -8,9 +8,6 @@ public class UserTable extends AbstractTable {
 
 	public UserTable() {
 		super("users");
-	}
-
-	public void addFields() {
 		addFields(User.class);
 	}
 

@@ -9,7 +9,7 @@ import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 class AccountModel extends AbstractModel {
-	static def map = [
+	static def joinSpec = [
 		alias: "Account",
 		joins: [
 			[

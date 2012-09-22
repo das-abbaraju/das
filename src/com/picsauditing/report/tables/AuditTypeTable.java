@@ -13,5 +13,4 @@ public class AuditTypeTable extends AbstractTable {
 
 	public void addJoins() {
 	}
-
 }

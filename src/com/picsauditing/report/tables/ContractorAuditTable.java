@@ -40,7 +40,4 @@ public class ContractorAuditTable extends AbstractTable {
 //		closingAuditor.setOverrideCategory(FieldCategory.Auditors);
 //		closingAuditor.includeOnlyRequiredColumns();
 	}
-
-	public void addFields() {
-	}
 }
