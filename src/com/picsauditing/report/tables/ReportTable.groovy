@@ -33,7 +33,8 @@ abstract class ReportTable {
 		join.setRequired()
 		addKey(join)
 	}
-	abstract public void fill(Permissions permissions);
+	
+	abstract protected void defineFields();
 
 	protected void addFields(@SuppressWarnings("rawtypes") Class clazz, FieldImportance minimumImportance) {
 		for (Field field : JpaFieldExtractor.addFields(clazz, symanticName, symanticName)) {
@@ -71,27 +72,17 @@ abstract class ReportTable {
 		return field;
 	}
 
-	public Map<String, Field> getAvailableFields(Permissions permissions) {
-		fill(permissions);
-		return availableFields;
-	}
-
-	public ReportJoin to(String foreignKeyName) {
-		System.out.println("This is " + this);
+	public ReportForeignKey getKey(String foreignKeyName) {
+		System.out.println("Searching for Key = " + foreignKeyName);
 		ReportForeignKey foreignKey = keys.get(foreignKeyName)
 		if (foreignKey == null) {
 			logger.error("Foreign key to " + foreignKeyName + " wasn't available in " + sqlTableName + " - " + keys.keySet());
 			return null;
 		}
-		ReportJoin newJoin = new ReportJoin(toTable: foreignKey.toTable, alias: foreignKey.name)
-		return newJoin
+		return foreignKey
 	}
 
 	public String toString() {
-		//		if (Strings.isEmpty(sqlTableName) || symanticName.equals(sqlTableName))
-		//			return symanticName;
-		//
-		//		return sqlTableName + " AS " + symanticName;
 		sqlTableName;
 	}
 }

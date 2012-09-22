@@ -1,22 +1,16 @@
 package com.picsauditing.report.tables;
 
-public class ContractorOperatorTable extends AbstractTable {
+public class ContractorOperatorTable extends ReportTable {
+	public static final String Operator = "Operator";
 
-	public ContractorOperatorTable(String parentPrefix, String parentAlias, String alias) {
-		super("generalcontractors", "contractorOperator", alias, alias + ".subID = c.id");
-		// this.parentPrefix = parentPrefix;
-		// this.parentAlias = parentAlias;
+	public ContractorOperatorTable() {
+		super("generalcontractors");
+		addOptionalKey(new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("genID")));
+		// operator.setOverrideCategory(FieldCategory.ReportingClientSite);
 	}
 
-	@Override
-	public void addFields() {
-		addFields(com.picsauditing.jpa.entities.ContractorOperator.class);
+	protected void defineFields() {
+		// addFields(com.picsauditing.jpa.entities.ContractorOperator.class);
 	}
 
-	@Override
-	public void addJoins() {
-		AccountTable operator = new AccountTable(prefix + "Operator", alias + ".genID");
-		operator.setOverrideCategory(FieldCategory.ReportingClientSite);
-		addLeftJoin(operator);
-	}
 }

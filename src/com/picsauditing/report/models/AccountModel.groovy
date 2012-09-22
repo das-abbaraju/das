@@ -1,5 +1,7 @@
 package com.picsauditing.report.models
 
+import java.util.Map;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.Filter;
@@ -7,23 +9,23 @@ import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 class AccountModel extends AbstractModel {
+	static def map = [
+		alias: "Account",
+		joins: [
+			[
+				key: "Contact"
+			],[
+				key: "Naics"
+			]
+		]
+	]
+
+	public Map getJoinSpec() {
+		return joinSpec;
+	}
 
 	public AccountModel(Permissions permissions) {
-		super(permissions)
-		fromTable = new AccountTable()
-
-		// from "Account" join ( "Contact" join ("Trevor"), "Naics")
-
-		from "Account" join ( {to("Contact")}, {to("Naics")}
-		)
-
-		//		to "contact" alias "accountContact"	join {
-		//			to "contact" alias "accountContact"
-		//			to "naics" alias "accountNaics"
-		//		}
-		//		to "naics" alias "accountNaics"
-
-		// availableFields = fromTable.getAvailableFields(permissions)
+		super(permissions, new AccountTable())
 	}
 
 	// TODO ensure this will work, may need to extract into util class and resuse in different models

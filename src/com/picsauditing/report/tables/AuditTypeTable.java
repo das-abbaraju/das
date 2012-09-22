@@ -1,27 +1,18 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FilterType;
 
-public class AuditTypeTable extends AbstractTable {
+public class AuditTypeTable extends ReportTable {
 
 	public AuditTypeTable() {
-		super("audit_type", "auditType", "atype", "atype.id = ca.auditTypeID");
+		super("audit_type");
 	}
 
-	public AuditTypeTable(String prefix, String alias, String foreignKey) {
-		super("audit_type", prefix, alias, alias + ".id = " + foreignKey);
+	public void fill(Permissions permissions) {
+		// addField(prefix + "ID", alias + ".id", FilterType.Integer,
+		// FieldCategory.Audits);
+		// addFields(com.picsauditing.jpa.entities.AuditType.class);
 	}
 
-	public AuditTypeTable(String alias, String foreignKey) {
-		super("audit_type", alias, alias, alias + ".id = " + foreignKey);
-	}
-
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
-
-		addFields(com.picsauditing.jpa.entities.AuditType.class);
-	}
-
-	public void addJoins() {
-	}
 }

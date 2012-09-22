@@ -1,31 +1,29 @@
 package com.picsauditing.report.models;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Column;
-import com.picsauditing.report.Definition;
-import com.picsauditing.report.Filter;
-import com.picsauditing.report.Sort;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.ReportForeignKey;
-import com.picsauditing.report.tables.ReportTable;
+import com.picsauditing.access.Permissions
+import com.picsauditing.report.Column
+import com.picsauditing.report.Definition
+import com.picsauditing.report.Filter
+import com.picsauditing.report.Sort
+import com.picsauditing.report.fields.Field
+import com.picsauditing.report.tables.ReportForeignKey
+import com.picsauditing.report.tables.ReportOnClause
+import com.picsauditing.report.tables.ReportTable
+import com.picsauditing.util.Strings
 
 abstract class AbstractModel {
-
-	protected ReportTable fromTable;
-	protected startingJoin;
-	private Map<String, ReportForeignKey> joins = new HashMap<String, ReportForeignKey>();
-	protected Map<String, Field> availableFields;
+	protected ReportJoin startingJoin;
 	protected Permissions permissions;
-
-	public AbstractModel(Permissions permissions) {
+	// protected Map<String, Field> availableFields = new HashMap<String, Field>();
+	
+	public AbstractModel(Permissions permissions, ReportTable startingTable) {
 		this.permissions = permissions;
+		startingJoin = parse(startingTable, getJoinSpec())
+		System.out.println("Finished building joins \n" + join);
 	}
-
+	
+	abstract Map getJoinSpec()
+	
 	protected ReportTable join(ReportTable table, Closure cl) {
 		cl.delegate = table
 		ReportForeignKey join = cl()
@@ -37,14 +35,29 @@ abstract class AbstractModel {
 		startingJoin = new ReportJoin(toTable: fromTable, alias: alias);
 	}
 
-	protected void addJoin(ReportForeignKey join, Permissions permissions) {
-		if (joins.containsKey(join.getTable().getName())) {
-			System.out.println("Adding join more than once " + join.getTable().getName());
+	protected ReportJoin parse(ReportTable toTable, Map joinDef) {
+		System.out.println("From " + toTable);
+		ReportJoin join = new ReportJoin();
+		join.setToTable(toTable)
+		join.setAlias(joinDef.alias)
+		// availableFields.putAll(fromTable.getAvailableFields(permissions));
+		joinDef.joins.each { childJoinDSL ->
+			ReportForeignKey key = toTable.getKey(childJoinDSL.key)
+			if (key != null) {
+				ReportJoin childJoin = parse(key.getTable(), childJoinDSL)
+				if (Strings.isEmpty(childJoin.getAlias())) {
+					childJoin.setAlias(join.getAlias() + key);
+				}
+				ReportOnClause onClause = key.getOnClause()
+				String onClauseSql = onClause.toSql(join.getAlias(), childJoin.getAlias(), permissions)
+				childJoin.setOnClause(onClauseSql)
+				join.getJoins().add(childJoin)
+			}
 		}
-		joins.put(join.getTable().getName(), join);
-		availableFields.putAll(join.getTable().getAvailableFields(permissions));
+		
+		return join
 	}
-
+	
 	public Map<String, Field> getAvailableFields() {
 		return availableFields;
 	}
