@@ -1,13 +1,8 @@
 package com.picsauditing.report.models;
 
-import java.util.Map;
-
 import com.picsauditing.access.Permissions
 import com.picsauditing.report.tables.ContractorTable
-import com.picsauditing.report.tables.ReportForeignKey
-import com.picsauditing.report.tables.ReportOnClause
-import com.picsauditing.report.tables.AbstractTable
-import com.picsauditing.util.Strings;
+import com.picsauditing.report.tables.FieldCategory
 
 public class AccountContractorModel extends AbstractModel {
 	static Map joinSpec = [
@@ -18,7 +13,8 @@ public class AccountContractorModel extends AbstractModel {
 				alias: "Account",
 				joins: [
 					[
-						key: "Contact"
+						key: "Contact",
+						category: FieldCategory.ContactInformation
 					],[
 						key: "Naics"
 					]

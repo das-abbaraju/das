@@ -41,7 +41,7 @@ public class AccountContractorModelTest {
 		assertTrue("contractorPQFExpiresDate is Required",
 				availableFields.containsKey("contractorPQFExpiresDate".toUpperCase()));
 
-		assertEquals("OK if close to expected because we added a few fields", 66, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 56, availableFields.size());
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class AccountContractorModelTest {
 
 		assertTrue("contractorBalance is Required", availableFields.containsKey("contractorBalance".toUpperCase()));
 
-		assertEquals("OK if close to expected because we added a few fields", 74, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 64, availableFields.size());
 	}
 
 	@Test
@@ -62,9 +62,12 @@ public class AccountContractorModelTest {
 		definition.getColumns().add(new Column("contractorOperatorFlagColor"));
 
 		permissions = EntityFactory.makePermission(EntityFactory.makeUser(OperatorAccount.class));
+		model = new AccountContractorModel(permissions);
 
 		SelectSQL sql = new SqlBuilder().initializeSql(model, definition, permissions);
 		String sqlResult = sql.toString();
-		assertContains("generalcontractors AS myFlag ON myFlag.subID = c.id", sqlResult);
+		String expected = "JOIN generalcontractors AS ContractorFlag ON Contractor.id = ContractorFlag.subID AND ContractorFlag.genID = "
+				+ permissions.getAccountId();
+		assertContains(expected, sqlResult);
 	}
 }

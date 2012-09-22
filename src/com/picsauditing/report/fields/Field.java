@@ -44,7 +44,7 @@ public class Field implements JSONAware {
 	private boolean sortable = true;
 	private String preTranslation;
 	private String postTranslation;
-	private OpPerms requiredPermission;
+	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
 
 	/**
