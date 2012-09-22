@@ -22,18 +22,19 @@ abstract class AbstractTable {
 
 	public AbstractTable(String sql) {
 		this.sqlTableName = sql;
-		System.out.println("Creating " + this);
+		logger.debug("Creating " + this);
 	}
 
-	public abstract void addJoins();
+	protected abstract void addJoins();
 	
-	void addKey(ReportForeignKey join) {
+	ReportForeignKey addKey(ReportForeignKey join) {
 		keys.put(join.getName(), join)
+		return join;
 	}
 
-	void addOptionalKey(ReportForeignKey join) {
+	ReportForeignKey addOptionalKey(ReportForeignKey join) {
 		join.setRequired()
-		addKey(join)
+		return addKey(join)
 	}
 
 	protected void addFields(Class entity) {
@@ -49,7 +50,17 @@ abstract class AbstractTable {
 
 	protected Field addPrimaryKey(FilterType filterType) {
 		Field field = new Field("ID", "id", filterType);
+		field.setImportance(FieldImportance.Required)
 		return addField(field);
+	}
+	
+	public Field getField(String fieldName) {
+		for (Field field : fields) {
+			if (field.name.equalsIgnoreCase(fieldName)) {
+				return field;
+			}
+		}
+		return null;
 	}
 	
 	public ReportForeignKey getKey(String foreignKeyName) {

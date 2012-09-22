@@ -13,7 +13,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.tables.ReportForeignKey;
+import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilder {
@@ -30,7 +30,7 @@ public class SqlBuilder {
 
 		sql = new SelectSQL();
 
-		sql.setFromTable(model.getFromClause());
+		sql.setFromTable(model.getStartingJoin().getTableClause());
 
 		availableFields = model.getAvailableFields();
 
@@ -38,7 +38,7 @@ public class SqlBuilder {
 		addRuntimeFilters(permissions);
 		addOrderByClauses(model);
 
-		addJoins(model);
+		addJoins(model.getStartingJoin());
 
 		sql.addWhere(model.getWhereClause(permissions, definition.getFilters()));
 
@@ -47,10 +47,11 @@ public class SqlBuilder {
 		return sql;
 	}
 
-	private void addJoins(AbstractModel model) {
-		for (ReportForeignKey join : model.getJoins()) {
-			if (model.isJoinNeeded(join, definition)) {
-				sql.addJoin(join.toString());
+	private void addJoins(ReportJoin parentJoin) {
+		for (ReportJoin join : parentJoin.getJoins()) {
+			if (join.isNeeded(definition)) {
+				sql.addJoin(join.toJoinClause());
+				addJoins(join);
 			}
 		}
 	}

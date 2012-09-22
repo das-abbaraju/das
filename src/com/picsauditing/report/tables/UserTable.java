@@ -8,11 +8,12 @@ public class UserTable extends AbstractTable {
 
 	public UserTable() {
 		super("users");
+		
+		addPrimaryKey(FilterType.UserID);
 		addFields(User.class);
 	}
 
-	public void addJoins() {
-		addPrimaryKey(FilterType.UserID);
+	protected void addJoins() {
 		addOptionalKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
 	}
 }
