@@ -3,7 +3,7 @@ package com.picsauditing.report.tables;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
 
-public class ContractorTable extends ReportTable {
+public class ContractorTable extends AbstractTable {
 
 	public static final String Account = "Account";
 	public static final String CustomerService = "CustomerService";

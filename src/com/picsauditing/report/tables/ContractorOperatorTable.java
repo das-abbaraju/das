@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorOperator;
 
-public class ContractorOperatorTable extends ReportTable {
+public class ContractorOperatorTable extends AbstractTable {
 	public static final String Operator = "Operator";
 
 	public ContractorOperatorTable() {

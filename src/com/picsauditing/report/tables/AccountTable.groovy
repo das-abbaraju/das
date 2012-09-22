@@ -5,7 +5,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.report.fields.Field
 import com.picsauditing.report.fields.FilterType
 
-public class AccountTable extends ReportTable {
+public class AccountTable extends AbstractTable {
 	public static final String Contact = "Contact";
 	public static final String Naics = "Naics";
 

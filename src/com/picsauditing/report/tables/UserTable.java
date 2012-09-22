@@ -3,7 +3,7 @@ package com.picsauditing.report.tables;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.FilterType;
 
-public class UserTable extends ReportTable {
+public class UserTable extends AbstractTable {
 	public static final String Account = "Account";
 
 	public UserTable() {

@@ -6,7 +6,7 @@ import com.picsauditing.access.Permissions
 import com.picsauditing.report.tables.ContractorTable
 import com.picsauditing.report.tables.ReportForeignKey
 import com.picsauditing.report.tables.ReportOnClause
-import com.picsauditing.report.tables.ReportTable
+import com.picsauditing.report.tables.AbstractTable
 import com.picsauditing.util.Strings;
 
 public class AccountContractorModel extends AbstractModel {

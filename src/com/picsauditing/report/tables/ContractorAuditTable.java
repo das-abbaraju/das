@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorAudit;
 
-public class ContractorAuditTable extends ReportTable {
+public class ContractorAuditTable extends AbstractTable {
 	
 	public static final String Type = "Type";
 	public static final String Auditor = "Auditor";

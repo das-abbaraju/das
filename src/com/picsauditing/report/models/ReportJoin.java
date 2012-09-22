@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.ReportTable;
+import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
 
 public class ReportJoin {
 	private String alias = "";
-	private ReportTable toTable;
+	private AbstractTable toTable;
 	private List<ReportJoin> joins = new ArrayList<ReportJoin>();
 	private String onClause;
 	private boolean required = true;
@@ -40,11 +40,11 @@ public class ReportJoin {
 		this.alias = alias;
 	}
 
-	public ReportTable getToTable() {
+	public AbstractTable getToTable() {
 		return toTable;
 	}
 
-	public void setToTable(ReportTable toTable) {
+	public void setToTable(AbstractTable toTable) {
 		this.toTable = toTable;
 	}
 

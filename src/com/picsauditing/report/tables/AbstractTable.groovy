@@ -13,14 +13,14 @@ import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.util.Strings;
 
-abstract class ReportTable {
+abstract class AbstractTable {
 	private String sqlTableName;
 	private Map<String, ReportForeignKey> keys = null;
 	Collection<Field> fields = new ArrayList<Field>();
 
-	private static final Logger logger = LoggerFactory.getLogger(ReportTable.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractTable.class);
 
-	public ReportTable(String sql) {
+	public AbstractTable(String sql) {
 		this.sqlTableName = sql;
 		System.out.println("Creating " + this);
 	}

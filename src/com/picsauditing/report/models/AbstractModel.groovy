@@ -12,7 +12,7 @@ import com.picsauditing.report.fields.Field
 import com.picsauditing.report.tables.FieldImportance
 import com.picsauditing.report.tables.ReportForeignKey
 import com.picsauditing.report.tables.ReportOnClause
-import com.picsauditing.report.tables.ReportTable
+import com.picsauditing.report.tables.AbstractTable
 import com.picsauditing.util.Strings
 
 abstract class AbstractModel {
@@ -21,13 +21,13 @@ abstract class AbstractModel {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 	
-	public AbstractModel(Permissions permissions, ReportTable startingTable) {
+	public AbstractModel(Permissions permissions, AbstractTable startingTable) {
 		this.permissions = permissions;
 		startingJoin = parseSpec(startingTable, getJoinSpec())
 		System.out.println("Finished building joins \n" + startingJoin);
 	}
 	
-	ReportJoin parseSpec(ReportTable toTable, Map joinDef) {
+	ReportJoin parseSpec(AbstractTable toTable, Map joinDef) {
 		System.out.println("parsingSpec for " + toTable);
 		ReportJoin join = new ReportJoin();
 		join.setToTable(toTable)

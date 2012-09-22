@@ -2,12 +2,12 @@ package com.picsauditing.report.tables;
 
 public class ReportForeignKey {
 	private String name;
-	private ReportTable toTable;
+	private AbstractTable toTable;
 	private ReportOnClause onClause;
 	private boolean required = true;
 	private FieldImportance minimumImportance = FieldImportance.Low;
 
-	public ReportForeignKey(String name, ReportTable toTable, ReportOnClause onClause) {
+	public ReportForeignKey(String name, AbstractTable toTable, ReportOnClause onClause) {
 		this.name = name;
 		this.toTable = toTable;
 		this.onClause = onClause;
@@ -17,7 +17,7 @@ public class ReportForeignKey {
 		return name;
 	}
 
-	public ReportTable getTable() {
+	public AbstractTable getTable() {
 		return toTable;
 	}
 
