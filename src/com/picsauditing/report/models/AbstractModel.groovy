@@ -18,15 +18,12 @@ import com.picsauditing.util.Strings
 abstract class AbstractModel {
 	protected ReportJoin startingJoin;
 	protected Permissions permissions;
-	// protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	
 	private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 	
 	public AbstractModel(Permissions permissions, ReportTable startingTable) {
 		this.permissions = permissions;
 		startingJoin = parseSpec(startingTable, getJoinSpec())
-		// availableFields.putAll(fromTable.getAvailableFields(permissions));
-		
 		System.out.println("Finished building joins \n" + startingJoin);
 	}
 	
@@ -60,7 +57,11 @@ abstract class AbstractModel {
 	abstract Map getJoinSpec()
 	
 	public Map<String, Field> getAvailableFields() {
-		return availableFields;
+		Map<String, Field> fields = new HashMap<String, Field>();
+		for (Field field : startingJoin.getFields()) {
+			fields.put(field.getName(), field)
+		}
+		return fields;
 	}
 
 	public String getWhereClause(Permissions permissions, List<Filter> filters) {

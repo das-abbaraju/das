@@ -1,6 +1,7 @@
 package com.picsauditing.report.models;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class ReportJoin {
 	private FieldImportance minimumImportance = FieldImportance.Low;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportJoin.class);
-	
+
 	private boolean importantEnough(Field field) {
 		boolean importantEnough = minimumImportance.ordinal() <= field.getImportance().ordinal();
 		if (importantEnough) {
@@ -66,16 +67,32 @@ public class ReportJoin {
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
-	
+
+	public Collection<Field> getFields() {
+		Collection<Field> fields = new ArrayList<Field>();
+		for (Field field : toTable.getFields()) {
+			if (importantEnough(field)) {
+				Field fieldCopy = field.clone();
+				fields.add(fieldCopy);
+			}
+		}
+
+		for (ReportJoin join : joins) {
+			fields.addAll(join.getFields());
+		}
+
+		return fields;
+	}
+
 	public String getTableClause() {
 		if (!Strings.isEmpty(alias) && !alias.equals(toTable.toString()))
 			return toTable + " AS " + alias;
-		
+
 		return toTable.toString();
 	}
 
 	public String toString() {
-		String value = (required ? "" : "LEFT ")+ "JOIN " + getTableClause();
+		String value = (required ? "" : "LEFT ") + "JOIN " + getTableClause();
 
 		value += " ON " + onClause;
 		for (ReportJoin join : joins) {

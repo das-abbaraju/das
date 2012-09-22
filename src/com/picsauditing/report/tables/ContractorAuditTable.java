@@ -1,9 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class ContractorAuditTable extends ReportTable {
 	
@@ -13,6 +10,26 @@ public class ContractorAuditTable extends ReportTable {
 
 	public ContractorAuditTable() {
 		super("contractor_audit");
+		addFields(ContractorAudit.class);
+		
+		// addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
+		// I'm not sure this field is really that important at all. With
+		// Effective Date, the creationDate just becomes confusing
+		// Field creationDate = addField(prefix + "CreationDate", alias +
+		// ".creationDate", FilterType.Date, FieldCategory.Audits);
+		// creationDate.setImportance(FieldImportance.Low);
+		// creationDate.requirePermission(OpPerms.ManageAudits);
+
+
+//		Field auditTypeName;
+//		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String, FieldCategory.Audits);
+//		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
+//		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
+//		auditTypeName.setImportance(FieldImportance.Required);
+//		auditTypeName.setWidth(200);
+	}
+
+	public void addJoins() {
 		addOptionalKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")));
 //		auditType.includeRequiredAndAverageColumns();
 		addOptionalKey(new ReportForeignKey(Auditor, new UserTable(), new ReportOnClause("auditorID")));
@@ -24,22 +41,6 @@ public class ContractorAuditTable extends ReportTable {
 //		closingAuditor.includeOnlyRequiredColumns();
 	}
 
-	protected void defineFields() {
-		// addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
-		// I'm not sure this field is really that important at all. With
-		// Effective Date, the creationDate just becomes confusing
-		// Field creationDate = addField(prefix + "CreationDate", alias +
-		// ".creationDate", FilterType.Date, FieldCategory.Audits);
-		// creationDate.setImportance(FieldImportance.Low);
-		// creationDate.requirePermission(OpPerms.ManageAudits);
-
-		// addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
-
-//		Field auditTypeName;
-//		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String, FieldCategory.Audits);
-//		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
-//		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
-//		auditTypeName.setImportance(FieldImportance.Required);
-//		auditTypeName.setWidth(200);
+	public void addFields() {
 	}
 }

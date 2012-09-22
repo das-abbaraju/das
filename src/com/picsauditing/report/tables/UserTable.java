@@ -8,8 +8,14 @@ public class UserTable extends ReportTable {
 
 	public UserTable() {
 		super("users");
-		addPrimaryKey(FilterType.UserID);
+	}
+
+	public void addFields() {
 		addFields(User.class);
+	}
+
+	public void addJoins() {
+		addPrimaryKey(FilterType.UserID);
 		addOptionalKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
 	}
 }

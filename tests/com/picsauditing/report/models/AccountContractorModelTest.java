@@ -63,8 +63,7 @@ public class AccountContractorModelTest {
 
 		permissions = EntityFactory.makePermission(EntityFactory.makeUser(OperatorAccount.class));
 
-		AbstractModel contractorModel = ModelFactory.build(ModelType.Contractors);
-		SelectSQL sql = new SqlBuilder().initializeSql(contractorModel, definition, permissions);
+		SelectSQL sql = new SqlBuilder().initializeSql(model, definition, permissions);
 		String sqlResult = sql.toString();
 		assertContains("generalcontractors AS myFlag ON myFlag.subID = c.id", sqlResult);
 	}

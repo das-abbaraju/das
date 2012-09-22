@@ -24,11 +24,11 @@ public class AccountContractorModel extends AbstractModel {
 					]
 				]
 			],[
-				key: ContractorTable.Flag,
-				required: false
+				key: ContractorTable.PQF
 			],[
-				key: ContractorTable.CustomerService,
-				required: false
+				key: ContractorTable.Flag
+			],[
+				key: ContractorTable.CustomerService
 			]
 		]
 	]

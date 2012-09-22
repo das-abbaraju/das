@@ -11,10 +11,14 @@ public class AccountTable extends ReportTable {
 
 	AccountTable() {
 		super("accounts");
-		addOptionalKey(new ReportForeignKey(Contact, new UserTable(), new ReportOnClause("contactID")));
-		addOptionalKey(new ReportForeignKey(Naics, new NaicsTable(), new ReportOnClause("naics", "code")));
+		
 		// addPrimaryKey(FilterType.AccountID).setCategory(FieldCategory.AccountInformation);
 		addFields(Account.class);
 		// addField(new Field("CreationDate", "creationDate", FilterType.Date)).setCategory(FieldCategory.AccountInformation);
+	}
+	
+	public void addJoins() {
+		addOptionalKey(new ReportForeignKey(Contact, new UserTable(), new ReportOnClause("contactID")));
+		addOptionalKey(new ReportForeignKey(Naics, new NaicsTable(), new ReportOnClause("naics", "code")));
 	}
 }

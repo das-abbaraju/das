@@ -1,6 +1,7 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.access.Permissions
+import com.picsauditing.jpa.entities.ContractorAccount;
+
 
 public class ContractorTable extends ReportTable {
 
@@ -12,20 +13,23 @@ public class ContractorTable extends ReportTable {
 
 	ContractorTable() {
 		super("contractor_info");
+		addFields(ContractorAccount.class);
+	}
+
+	public void addJoins() {
 		addKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id")));
 		addKey(new ReportForeignKey(CustomerService, new UserTable(), new ReportOnClause("welcomeAuditor_id")));
 		// FieldCategory.CustomerServiceRepresentatives
 		addKey(new ReportForeignKey(PQF, new ContractorAuditTable(), new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 1")));
-		
+
 		addKey(new ReportForeignKey(Flag, new ContractorOperatorTable(), new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
 		// contractorOperator.includeAllColumns();
-		
+
 		addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(), new ReportOnClause("requestedByID")));
 		// requestedByOperator.setOverrideCategory(FieldCategory.RequestingClientSite);
 	}
-
-	protected void defineFields() {
-		// addFields(com.picsauditing.jpa.entities.ContractorAccount.class,
+	
+	public void addFields() {
 		// FieldImportance.Low);
 		//
 		// Field conID = addPrimaryKey(FilterType.Integer);
@@ -38,17 +42,17 @@ public class ContractorTable extends ReportTable {
 		// contractorName.setUrl("ContractorView.action?id={accountID}");
 		// contractorName.setWidth(300);
 
-			// TODO Remove these fields eventually
-			// Field contractorEdit = addField(prefix + "Edit", "'Edit'",
-			// FilterType.String);
-			// contractorEdit.setUrl("ContractorEdit.action?id={" + prefix +
-			// "ID}");
-			// contractorEdit.setWidth(100);
-			//
-			// Field contractorAudits = addField(prefix + "Audits", "'Audits'",
-			// FilterType.String);
-			// contractorAudits.setUrl("ContractorDocuments.action?id={" +
-			// prefix + "ID}");
-			// contractorAudits.setWidth(100);
+		// TODO Remove these fields eventually
+		// Field contractorEdit = addField(prefix + "Edit", "'Edit'",
+		// FilterType.String);
+		// contractorEdit.setUrl("ContractorEdit.action?id={" + prefix +
+		// "ID}");
+		// contractorEdit.setWidth(100);
+		//
+		// Field contractorAudits = addField(prefix + "Audits", "'Audits'",
+		// FilterType.String);
+		// contractorAudits.setUrl("ContractorDocuments.action?id={" +
+		// prefix + "ID}");
+		// contractorAudits.setWidth(100);
 	}
 }

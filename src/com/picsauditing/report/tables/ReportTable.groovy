@@ -15,7 +15,7 @@ import com.picsauditing.util.Strings;
 
 abstract class ReportTable {
 	private String sqlTableName;
-	private Map<String, ReportForeignKey> keys = new HashMap<String, ReportForeignKey>();
+	private Map<String, ReportForeignKey> keys = null;
 	Collection<Field> fields = new ArrayList<Field>();
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportTable.class);
@@ -25,6 +25,8 @@ abstract class ReportTable {
 		System.out.println("Creating " + this);
 	}
 
+	public abstract void addJoins();
+	
 	void addKey(ReportForeignKey join) {
 		keys.put(join.getName(), join)
 	}
@@ -51,6 +53,10 @@ abstract class ReportTable {
 	}
 	
 	public ReportForeignKey getKey(String foreignKeyName) {
+		if (keys == null) {
+			keys = new HashMap<String, ReportForeignKey>()
+			addJoins()
+		}
 		System.out.println("Searching for Key = " + foreignKeyName);
 		ReportForeignKey foreignKey = keys.get(foreignKeyName)
 		if (foreignKey == null) {
