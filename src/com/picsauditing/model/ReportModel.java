@@ -3,10 +3,7 @@ package com.picsauditing.model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -28,8 +25,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.ReportPaginationParameters;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -101,39 +96,6 @@ public class ReportModel {
 		reportDao.save(report, new User(permissions.getUserId()));
 	}
 
-	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable, Permissions permissions) {
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-		
-		pruneJoins(baseTable, permissions);
-		
-		addAllAvailableFields(availableFields, baseTable);
-
-		Iterator<String> iterator = availableFields.keySet().iterator();
-		while(iterator.hasNext()) {
-			String fieldName = iterator.next();
-			Field field = availableFields.get(fieldName);
-
-			if (!field.canUserSeeQueryField(permissions)) {
-				iterator.remove();
-			}
-		}
-
-		return availableFields;
-	}
-	
-	private static void pruneJoins(AbstractTable table, Permissions permissions) {
-		Iterator<AbstractTable> iterator = table.getJoins().iterator();
-		while(iterator.hasNext()) {
-			AbstractTable childTable = iterator.next();
-			if (childTable.getAlias().equals("myFlag") && !permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
-				logger.info("Removing myFlag table because user is NOT a client site " + childTable);
-				iterator.remove();
-			} else {
-				pruneJoins(childTable, permissions);
-			}
-		}
-	}
-
 	private Report copyReportWithoutPermissions(Report sourceReport) {
 		Report newReport = new Report();
 
@@ -143,21 +105,6 @@ public class ReportModel {
 		newReport.setParameters(sourceReport.getParameters());
 
 		return newReport;
-	}
-
-	/**
-	 * This method is recursively building the available fields. It works like this
-	 * because the set of tables that comprise available fields for a model is a tree,
-	 * which we've decided to walk recursively.
-	 */
-	private static void addAllAvailableFields(Map<String, Field> availableFields, AbstractTable table) {
-		logger.debug("Adding AvailableFields for " + table);
-		table.addFields();
-		availableFields.putAll(table.getAvailableFields());
-
-		for (AbstractTable joinTable : table.getJoins()) {
-			addAllAvailableFields(availableFields, joinTable);
-		}
 	}
 
 	/**

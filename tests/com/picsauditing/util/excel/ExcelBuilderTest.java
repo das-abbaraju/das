@@ -17,7 +17,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
@@ -36,10 +35,10 @@ public class ExcelBuilderTest {
 	@Test
 	public void testBuild() throws Exception {
 		{
-			AbstractModel table = ModelFactory.build(ModelType.Contractors);
 			Permissions permissions = EntityFactory.makePermission();
+			AbstractModel table = ModelFactory.build(ModelType.Contractors, permissions);
 			EntityFactory.addUserPermission(permissions, OpPerms.Billing);
-			availableFields = ReportModel.buildAvailableFields(table.getRootTable(), permissions);
+			availableFields = table.getAvailableFields();
 		}
 
 		reportResults = new ReportResults();

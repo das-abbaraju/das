@@ -20,15 +20,12 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 
-public class AccountContractorModelTest {
-
+public class AccountContractorModelTest extends ModelTest {
 	private AccountContractorModel model;
-	private Permissions permissions;
-	private Definition definition;
 
 	@Before
 	public void setup() {
-		permissions = EntityFactory.makePermission();
+		super.setup();
 		model = new AccountContractorModel(permissions);
 	}
 
@@ -57,7 +54,6 @@ public class AccountContractorModelTest {
 
 	@Test
 	public void testSqlForOperator() throws Exception {
-		definition = new Definition("");
 		definition.getColumns().add(new Column("accountCountry"));
 		definition.getColumns().add(new Column("contractorOperatorFlagColor"));
 

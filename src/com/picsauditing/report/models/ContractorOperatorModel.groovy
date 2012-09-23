@@ -1,21 +1,30 @@
 package com.picsauditing.report.models;
 
-import java.util.List;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.report.Filter;
-import com.picsauditing.report.tables.ContractorOperatorTable;
-import com.picsauditing.util.Strings;
+import com.picsauditing.access.Permissions
+import com.picsauditing.report.Filter
+import com.picsauditing.report.tables.ContractorOperatorTable
+import com.picsauditing.report.tables.FieldCategory
+import com.picsauditing.util.Strings
 
-public class ContractorOperatorModel extends AccountContractorModel {
+public class ContractorOperatorModel extends AbstractModel {
+	static def joinSpec = [
+		alias: "ReportingSite",
+		joins: [
+			[
+				key: "Contact",
+				category: FieldCategory.ContactInformation
+			],[
+				key: "Naics"
+			]
+		]
+	]
 
-	public ContractorOperatorModel() {
-		super();
-		
-		ContractorOperatorTable contractorOperatorTable = new ContractorOperatorTable(rootTable.getPrefix(), rootTable.getAlias(), "reportingSite");
-		contractorOperatorTable.includeAllColumns();
-		rootTable.addAllFieldsAndJoins(contractorOperatorTable);
-		
-		parentTable = contractorOperatorTable;
+	public Map getJoinSpec() {
+		return joinSpec;
+	}
+
+	public ContractorOperatorModel(Permissions permissions) {
+		super(permissions, new ContractorOperatorTable())
 	}
 
 

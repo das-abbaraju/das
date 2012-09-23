@@ -23,6 +23,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -96,7 +97,7 @@ public class ReportDynamic extends PicsActionSupport {
 			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
-			sqlBuilder.initializeSql(report.getModel(), report.getDefinition(), permissions);
+			sqlBuilder.initializeSql(report, permissions);
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
@@ -120,9 +121,9 @@ public class ReportDynamic extends PicsActionSupport {
 			ModelType modelType = report.getModelType();
 			json.put("modelType", report.getModelType().toString());
 			
-			AbstractModel model = ModelFactory.build(modelType);
+			AbstractModel model = ModelFactory.build(modelType, permissions);
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+			Map<String, Field> availableFields = model.getAvailableFields();
 
 			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, permissions.getLocale()));
 			json.put("success", true);
@@ -194,7 +195,7 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("You need to pass a fieldName to get the translated field values.");
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
+			Map<String, Field> availableFields = ModelFactory.build(report.getModelType(), permissions).getAvailableFields();
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)

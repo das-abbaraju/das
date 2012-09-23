@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
+import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
 
@@ -22,6 +24,11 @@ public class SqlBuilder {
 	private Map<String, Field> availableFields;
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
+
+	public SelectSQL initializeSql(Report report, Permissions permissions) throws ReportValidationException {
+		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
+		return initializeSql(model, report.getDefinition(), permissions);
+	}
 
 	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions)
 			throws ReportValidationException {

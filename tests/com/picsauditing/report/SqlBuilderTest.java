@@ -61,7 +61,7 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testJoins() throws Exception {
-		sql = builder.initializeSql(new AccountContractorModel(), definition, permissions);
+		sql = builder.initializeSql(new AccountContractorModel(permissions), definition, permissions);
 
 		String expected = "JOIN contractor_info AS c ON a.id = c.id AND a.type = 'Contractor'";
 		assertContains(expected, sql.toString());
@@ -198,7 +198,7 @@ public class SqlBuilderTest {
 	}
 
 	private void initializeSql() throws ReportValidationException {
-		sql = builder.initializeSql(new AccountModel(), definition, permissions);
+		sql = builder.initializeSql(new AccountModel(permissions), definition, permissions);
 	}
 
 }

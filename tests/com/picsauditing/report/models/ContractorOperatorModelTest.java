@@ -2,23 +2,21 @@ package com.picsauditing.report.models;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Map;
-
+import org.junit.Before;
 import org.junit.Test;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.fields.Field;
+public class ContractorOperatorModelTest extends ModelTest {
+	private ContractorOperatorModel model;
 
-public class ContractorOperatorModelTest {
+	@Before
+	public void setup() {
+		super.setup();
+		model = new ContractorOperatorModel(permissions);
+	}
+
 	@Test
 	public void testAvailableFields() throws Exception {
-		ContractorOperatorModel model = new ContractorOperatorModel();
-		Permissions permissions = EntityFactory.makePermission();
-
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
-
+		availableFields = model.getAvailableFields();
 		assertEquals("OK if close to expected because we added a few fields", 69, availableFields.size());
 	}
 

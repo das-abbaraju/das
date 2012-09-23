@@ -53,7 +53,7 @@ public class ReportDownload extends PicsActionSupport {
 	private void getData() throws ReportValidationException, SQLException {
 		ReportModel.validate(report);
 
-		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
+		SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
 		// TODO Print parameters
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 

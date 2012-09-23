@@ -22,7 +22,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.DynaBeanListBuilder;
 import com.picsauditing.report.fields.Field;
@@ -48,10 +47,10 @@ public class ReportDataConverterTest {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
 
-		AccountContractorModel model = new AccountContractorModel();
 		Permissions permissions = EntityFactory.makePermission();
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		AccountContractorModel model = new AccountContractorModel(permissions);
+		Map<String, Field> availableFields = model.getAvailableFields();
 		columns = new ArrayList<Column>();
 		columns.add(createColumn(availableFields.get("ACCOUNTID")));
 		columns.add(createColumn(availableFields.get("ACCOUNTNAME")));

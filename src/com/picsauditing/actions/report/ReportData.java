@@ -34,7 +34,7 @@ public class ReportData extends PicsActionSupport {
 	public String execute() {
 		try {
 			ReportModel.validate(report);
-			SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
+			SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 			getData(sql.toString());
 		} catch (ReportValidationException error) {
@@ -54,7 +54,8 @@ public class ReportData extends PicsActionSupport {
 		debugSQL = sql;
 
 		if (!ReportUtil.hasColumns(report)) {
-			// Should this really happen? Maybe we should catch this during Report validation
+			// Should this really happen? Maybe we should catch this during
+			// Report validation
 			writeJsonError("Report contained no columns");
 			return;
 		}

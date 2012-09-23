@@ -28,7 +28,6 @@ import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -36,7 +35,7 @@ import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryMethod;
-import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.report.models.ModelFactory;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -105,7 +104,8 @@ public final class ReportUtil {
 			field.setName(column.getFieldName());
 
 			if (column.getMethod() != null) {
-				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": " + translateLabel;
+				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": "
+						+ translateLabel;
 			}
 
 			field.setText(translateLabel);
@@ -278,11 +278,8 @@ public final class ReportUtil {
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
 			QueryMethod[] methods, Locale locale) {
 		for (Report report : reports) {
-			AbstractTable table = report.getTable();
-			if (table == null)
-				continue;
-
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(table, createSuperUserPermissions());
+			Map<String, Field> availableFields = ModelFactory
+					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();

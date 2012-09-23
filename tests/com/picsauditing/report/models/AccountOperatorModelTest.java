@@ -8,19 +8,18 @@ import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.Field;
 
 public class AccountOperatorModelTest {
 
 	@Test
 	public void testAvailableFields() throws Exception {
-		AccountOperatorModel model = new AccountOperatorModel();
 		Permissions permissions = EntityFactory.makePermission();
+		AccountOperatorModel model = new AccountOperatorModel(permissions);
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		Map<String, Field> availableFields = model.getAvailableFields();
 
-		assertEquals("OK if close to expected because we added a few fields", 39, availableFields.size());
+		assertEquals("OK if close to expected because we added a few fields", 32, availableFields.size());
 	}
 
 }

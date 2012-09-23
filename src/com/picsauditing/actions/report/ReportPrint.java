@@ -32,7 +32,7 @@ public class ReportPrint extends PicsActionSupport {
 	public String execute() throws Exception {
 		ReportModel.validate(report);
 
-		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
+		SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
 		sql.setLimit(10);
 		// TODO Print parameters
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());

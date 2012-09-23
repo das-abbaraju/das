@@ -4,22 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-
+import org.junit.Before;
 import org.junit.Test;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.fields.Field;
+public class PaymentCommissionModelTest extends ModelTest {
+	private PaymentCommissionModel model;
 
-public class PaymentCommissionModelTest {
+	@Before
+	public void setup() {
+		super.setup();
+		model = new PaymentCommissionModel(permissions);
+	}
+
 	@Test
 	public void testAvailableFields() throws Exception {
-		PaymentCommissionModel model = new PaymentCommissionModel();
-		Permissions permissions = EntityFactory.makePermission();
-
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		availableFields = model.getAvailableFields();
 
 		assertFalse("accountFax is Low importance", availableFields.containsKey("accountFax".toUpperCase()));
 		assertTrue("invoiceCommissionRecipientUserName is required",

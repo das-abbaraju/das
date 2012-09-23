@@ -1,8 +1,6 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
 
 public class OperatorTable extends AbstractTable {
 	public static final String Account = "Account";

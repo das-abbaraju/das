@@ -10,10 +10,7 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
-import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.tables.AbstractTable;
 
 @SuppressWarnings("serial")
 @Entity
@@ -121,20 +118,6 @@ public class Report extends BaseTable {
 
 	public void setRowsPerPage(int rowsPerPage) {
 		this.rowsPerPage = rowsPerPage;
-	}
-
-	@Transient
-	public AbstractModel getModel() {
-		return ModelFactory.build(modelType);
-	}
-
-	@Transient
-	public AbstractTable getTable() {
-		if (getModel() != null) {
-			return getModel().getRootTable();
-		}
-
-		return null;
 	}
 
 	@Transient
