@@ -2,20 +2,20 @@ package com.picsauditing.report.tables;
 
 public class InvoiceCommissionTable extends AbstractTable {
 
-	public InvoiceCommissionTable(String parentPrefix, String parentAlias) {
-		super("invoice_commission", "invoiceCommission", "invcom", parentAlias + ".id = invcom.invoiceID");
-		this.parentPrefix = parentPrefix;
-		this.parentAlias = parentAlias;
-	}
+	public static final String Invoice = "Invoice";
+	public static final String User = "User";
 
-	public void addFields() {
+	public InvoiceCommissionTable() {
+		super("invoice_commission");
+		// , "invoiceCommission", "invcom", parentAlias +
+		// ".id = invcom.invoiceID"
 		addFields(com.picsauditing.jpa.entities.InvoiceCommission.class);
 	}
 
-	public void addJoins() {
-		UserTable recipient = new UserTable(prefix + "RecipientUser", alias + ".userID");
-		recipient.setOverrideCategory(FieldCategory.Commission);
-		recipient.includeOnlyRequiredColumns();
-		addLeftJoin(recipient);
+	protected void addJoins() {
+		addKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("invoiceID")));
+		addOptionalKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("userID"))).setMinimumImportance(
+				FieldImportance.Required);
+		// FieldCategory.Commission
 	}
 }

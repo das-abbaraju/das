@@ -1,10 +1,11 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.tables.InvoiceTable;
+import com.picsauditing.access.Permissions
+import com.picsauditing.report.tables.InvoiceTable
 
-public class InvoiceModel extends AccountContractorModel {
-	public InvoiceModel() {
-		super();
+public class InvoiceModel extends AbstractModel {
+	public InvoiceModel(Permissions permissions) {
+		super(permissions, new InvoiceTable())
 
 		InvoiceTable invoiceTable = new InvoiceTable(parentTable.getPrefix(), parentTable.getAlias());
 		invoiceTable.includeAllColumns();

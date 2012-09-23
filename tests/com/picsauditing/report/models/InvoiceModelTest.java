@@ -15,10 +15,10 @@ import com.picsauditing.report.fields.Field;
 public class InvoiceModelTest {
 	@Test
 	public void testAvailableFields() throws Exception {
-		InvoiceModel model = new InvoiceModel();
 		Permissions permissions = EntityFactory.makePermission();
+		InvoiceModel model = new InvoiceModel(permissions);
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		Map<String, Field> availableFields = model.getAvailableFields();
 
 		assertEquals("OK if close to expected because we added a few fields", 53, availableFields.size());
 	}

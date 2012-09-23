@@ -1,21 +1,22 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.jpa.entities.Invoice;
 
 public class InvoiceTable extends AbstractTable {
 
-	public InvoiceTable(String parentPrefix, String parentAlias) {
-		super("invoice", "invoice", "i", parentAlias + ".id = i.accountID AND i.tableType = 'I'");
-		this.parentPrefix = parentPrefix;
-		this.parentAlias = parentAlias;
+	public static final String Account = "Account";
+
+	public InvoiceTable() {
+		super("invoice");
+		addFields(Invoice.class);
+
+		// addField(prefix + "Currency", alias + ".currency", FilterType.String,
+		// FieldCategory.Invoicing);
+		// TODO Figure out how to pass this into the where clause
+		// ReportOnClause.FromAlias + ".tableType = 'I'
 	}
 
-	public void addFields() {
-		addField(prefix + "Currency", alias + ".currency", FilterType.String, FieldCategory.Invoicing);
-
-		addFields(com.picsauditing.jpa.entities.Invoice.class);
-	}
-
-	public void addJoins() {
+	protected void addJoins() {
+		addKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
 	}
 }
