@@ -22,7 +22,8 @@ public class ReportJoin {
 	private AbstractTable toTable;
 	private List<ReportJoin> joins = new ArrayList<ReportJoin>();
 	private String onClause;
-	// We may want to consider three options (always included (JOIN), included only when used (JOIN) and LEFT JOIN
+	// We may want to consider three options (always included (JOIN), included
+	// only when used (JOIN) and LEFT JOIN
 	private boolean required;
 	private FieldImportance minimumImportance = FieldImportance.Low;
 	private FieldCategory category = null;
@@ -83,18 +84,23 @@ public class ReportJoin {
 		this.category = categoryOverride;
 	}
 
+	public void setMinimumImportance(FieldImportance minimumImportance) {
+		this.minimumImportance = minimumImportance;
+	}
+
 	public Collection<Field> getFields() {
 		logger.debug("Getting fields for " + alias + " with Importance >= " + minimumImportance);
 		Collection<Field> fields = new ArrayList<Field>();
 		for (Field field : toTable.getFields()) {
 			if (importantEnough(field)) {
 				Field fieldCopy = field.clone();
-				
+
 				// Update the alias
-				// TODO This is scary, we should find a better way to update this
+				// TODO This is scary, we should find a better way to update
+				// this
 				fieldCopy.setName(alias + fieldCopy.getName());
 				fieldCopy.setDatabaseColumnName(alias + "." + fieldCopy.getDatabaseColumnName());
-				
+
 				if (category != null) {
 					fieldCopy.setCategory(category);
 				}
@@ -143,10 +149,18 @@ public class ReportJoin {
 	}
 
 	public String getTableClause() {
-		if (!Strings.isEmpty(alias) && !alias.equals(toTable.toString()))
-			return toTable + " AS " + alias;
+		if (isAliasDifferent())
+			return toTable.toString() + " AS " + alias;
 
 		return toTable.toString();
+	}
+
+	private boolean isAliasDifferent() {
+		if (Strings.isEmpty(alias))
+			return false;
+		if (alias.equals(toTable.toString()))
+			return false;
+		return true;
 	}
 
 	public String toJoinClause() {

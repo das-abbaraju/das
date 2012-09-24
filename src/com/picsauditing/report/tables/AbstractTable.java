@@ -1,19 +1,17 @@
 package com.picsauditing.report.tables;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hibernate.annotations.ForeignKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.models.ReportJoin;
-import com.picsauditing.util.Strings;
 
-abstract class AbstractTable {
+public abstract class AbstractTable {
 	private String sqlTableName;
 	private Map<String, ReportForeignKey> keys = null;
 	Collection<Field> fields = new ArrayList<Field>();
@@ -26,17 +24,18 @@ abstract class AbstractTable {
 	}
 
 	protected abstract void addJoins();
-	
+
 	ReportForeignKey addKey(ReportForeignKey join) {
-		keys.put(join.getName(), join)
+		keys.put(join.getName(), join);
 		return join;
 	}
 
 	ReportForeignKey addOptionalKey(ReportForeignKey join) {
-		join.setRequired()
-		return addKey(join)
+		join.setRequired();
+		return addKey(join);
 	}
 
+	@SuppressWarnings("rawtypes")
 	protected void addFields(Class entity) {
 		for (Field field : JpaFieldExtractor.addFields(entity)) {
 			addField(field);
@@ -44,40 +43,45 @@ abstract class AbstractTable {
 	}
 
 	protected Field addField(Field field) {
-		fields.add field;
+		fields.add(field);
 		return field;
 	}
 
 	protected Field addPrimaryKey(FilterType filterType) {
 		Field field = new Field("ID", "id", filterType);
-		field.setImportance(FieldImportance.Required)
+		field.setImportance(FieldImportance.Required);
 		return addField(field);
 	}
-	
+
 	public Field getField(String fieldName) {
 		for (Field field : fields) {
-			if (field.name.equalsIgnoreCase(fieldName)) {
+			if (field.getName().equalsIgnoreCase(fieldName)) {
 				return field;
 			}
 		}
 		return null;
 	}
-	
+
 	public ReportForeignKey getKey(String foreignKeyName) {
 		if (keys == null) {
-			keys = new HashMap<String, ReportForeignKey>()
-			addJoins()
+			keys = new HashMap<String, ReportForeignKey>();
+			addJoins();
 		}
 		System.out.println("Searching for Key = " + foreignKeyName);
-		ReportForeignKey foreignKey = keys.get(foreignKeyName)
+		ReportForeignKey foreignKey = keys.get(foreignKeyName);
 		if (foreignKey == null) {
-			logger.error("Foreign key to " + foreignKeyName + " wasn't available in " + sqlTableName + " - " + keys.keySet());
+			logger.error("Foreign key to " + foreignKeyName + " wasn't available in " + sqlTableName + " - "
+					+ keys.keySet());
 			return null;
 		}
-		return foreignKey
+		return foreignKey;
+	}
+
+	public Collection<Field> getFields() {
+		return fields;
 	}
 
 	public String toString() {
-		sqlTableName;
+		return sqlTableName;
 	}
 }

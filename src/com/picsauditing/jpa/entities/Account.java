@@ -120,7 +120,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "name", nullable = false, length = 50)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required)
+	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required, width = 200)
 	public String getName() {
 		return this.name;
 	}

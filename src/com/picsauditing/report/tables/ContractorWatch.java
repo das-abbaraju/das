@@ -1,11 +1,14 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
+
 public class ContractorWatch extends AbstractTable {
 	public ContractorWatch() {
 		super("contractor_watch");
-		// addFields(Invoice.class);
-		// addField(prefix + "UserID", alias + ".userID", FilterType.UserID,
-		// FieldCategory.AccountInformation);
+		// 2 problems
+		// WHERE (id > 0) = true => WHERE (id > 0)
+		addField(new Field("watch", "id > 0", FilterType.Boolean));
 	}
 
 	protected void addJoins() {

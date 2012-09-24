@@ -4,6 +4,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 
 public class ContractorAuditTable extends AbstractTable {
 	
+	public static final String Contractor = "Contractor";
 	public static final String Type = "Type";
 	public static final String Auditor = "Auditor";
 	public static final String ClosingAuditor = "ClosingAuditor";
@@ -30,6 +31,7 @@ public class ContractorAuditTable extends AbstractTable {
 	}
 
 	public void addJoins() {
+		addKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
 		addOptionalKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")));
 //		auditType.includeRequiredAndAverageColumns();
 		addOptionalKey(new ReportForeignKey(Auditor, new UserTable(), new ReportOnClause("auditorID")));
