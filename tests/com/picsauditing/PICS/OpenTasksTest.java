@@ -77,6 +77,7 @@ public class OpenTasksTest {
 	private final String OpenInvoiceReminder = "You have an invoice due ";
 	private final String UpdatePaymentMethod = "Please update your payment method";
 	private final String FixPolicyIssues = "Please fix issues with your Policy";
+	private final String FixWcbIssues = "Please fix issues with your {1}{2,choice,0#|1# for {3}}";
 	private final String UploadAndSubmitPolicy = "Please upload and submit your Policy";
 	private final String ResubmitPolicy = "Please review and resubmit your Policy";
 	private final String OpenRequirementsEmployeeGuard = "You have open requirements for employee";
@@ -500,6 +501,20 @@ public class OpenTasksTest {
 	}
 
 	@Test
+	public void testGetOpenTasks_OpenRequirementsWcb() throws Exception {
+		setUpAuditTask();
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+		when(auditType.getId()).thenReturn(143);
+		when(auditType.isWCB()).thenReturn(true); 
+		when(userAccess.getViewFlag()).thenReturn(Boolean.TRUE);
+		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorInsurance);
+		
+		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
+		
+		assertThat(openTaskList, hasItem(startsWith("Please fix issues")));
+	}
+
+	@Test
 	public void testGetOpenTasks_OpenRequirementsNotEmployeeGuard() throws Exception {
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something not Policy and not Employee
 		setUpOpenRequirements();
@@ -675,6 +690,8 @@ public class OpenTasksTest {
 		.thenReturn(OpenRequirementsEmployeeGuard);
 		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirements"), eq(Locale.ENGLISH), anyVararg()))
 			.thenReturn(OpenRequirements);
+		when(i18nCache.getText(eq("ContractorWidget.message.UploadAndSubmitWCB"), eq(Locale.ENGLISH), anyVararg()))
+		.thenReturn(FixWcbIssues);
 
 		when(i18nCache.getText(eq("AuditName"), eq(Locale.ENGLISH), anyVararg()))
 			.thenReturn("Audit Name");

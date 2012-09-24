@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
@@ -396,19 +397,29 @@ public class OpenTasks extends TranslationActionSupport {
 		boolean addedOpenTask = false;
 		openReq = false;
 		String auditName = getText(conAudit.getAuditType().getI18nKey("name"));
-		Object showAuditFor = (conAudit.getAuditFor() != null && !conAudit.getAuditFor().isEmpty()) ? 1 : 0;
 		String auditFor = conAudit.getAuditFor();
+		Object showAuditFor = (!Strings.isEmpty(auditFor)) ? 1 : 0;
 
 		if (conAudit.getAuditType().getClassType().isPolicy()) {
 			if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()
 					|| (conAudit.isVisibleTo(permissions) && permissions.isOperatorCorporate())) {
 				if (conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
+					if (conAudit.getAuditType().isWCB()) {
+						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixWCBIssues", conAudit.getId(),
+								auditName, showAuditFor, auditFor));						
+					} else {
+						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.FixPolicyIssues", conAudit.getId(),
 							auditName, showAuditFor, auditFor));
+					}
 					addedOpenTask = true;
 				} else {
-					openTasks.add(getTextParameterized(locale, "ContractorWidget.message.UploadAndSubmitPolicy",
+					if (conAudit.getAuditType().isWCB()) {
+						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.UploadAndSubmitWCB",
+								conAudit.getId(), auditName, showAuditFor, auditFor));						
+					} else {
+						openTasks.add(getTextParameterized(locale, "ContractorWidget.message.UploadAndSubmitPolicy",
 							conAudit.getId(), auditName, showAuditFor, auditFor));
+					}
 					addedOpenTask = true;
 				}
 			}
