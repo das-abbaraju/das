@@ -220,17 +220,21 @@ public class Registration extends ContractorActionSupport {
 		user.setLastLogin(new Date());
 	}
 
-	private void setupContractorData() {
+	protected void setupContractorData() {
 		contractor.setType("Contractor");
 		if (contractor.getName().contains("^^^")) {
 			contractor.setStatus(AccountStatus.Demo);
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
 
-		if (countrySubdivision != null && !countrySubdivision.equals(contractor.getCountrySubdivision())){
-			CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
-			contractor.setCountrySubdivision(contractorCountrySubdivision);
-		}
+        if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
+            if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
+                CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
+                contractor.setCountrySubdivision(contractorCountrySubdivision);
+            }
+        } else {
+            contractor.setCountrySubdivision(null);
+        }
 
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
