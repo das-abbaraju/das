@@ -216,6 +216,7 @@
 							name="newContractor.reasonForRegistration"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 					</li>
 					<li id="loadTagsList">
 						<label>
