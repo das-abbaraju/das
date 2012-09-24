@@ -492,6 +492,21 @@
     									</p>
     								</div>
     							</li>
+    							
+    							
+    							<li>
+									<label>TRANSLATE THIS - CSR Assignment</label>
+    								<s:if "contractor.dontReassign">
+    									<s:set var="default" value="contractor.auditor" />
+    								</s:if>
+    								<s:select list="csrList" name="contractor.auditor" value="#default"/>
+    							</li>
+    						</ol>
+    					</fieldset>
+
+
+    					<fieldset class="form submit">
+    						<ol>
     							<li>
     								<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
     							</li>

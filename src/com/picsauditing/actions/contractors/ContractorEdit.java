@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +52,10 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.ReportFilterContractor;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
@@ -78,8 +79,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected BillingCalculatorSingle billingService;
 	@Autowired
 	protected CountrySubdivisionDAO countrySubdivisionDAO;
-//    @Autowired
-//    protected AuditBuilder auditBuilder;
+	// @Autowired
+	// protected AuditBuilder auditBuilder;
 
 	private File logo = null;
 	private String logoFileName = null;
@@ -87,7 +88,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String brochureFileName = null;
 	private CountrySubdivision countrySubdivision;
 	private Country country;
-    private String vatId;
+	private String vatId;
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected int contactID;
@@ -157,7 +158,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		findContractor();
 		// Billing CountrySubdivision gets set to an empty string
-		if (contractor.getBillingCountrySubdivision() != null && Strings.isEmpty(contractor.getBillingCountrySubdivision().getIsoCode()))
+		if (contractor.getBillingCountrySubdivision() != null
+				&& Strings.isEmpty(contractor.getBillingCountrySubdivision().getIsoCode()))
 			contractor.setBillingCountrySubdivision(null);
 	}
 
@@ -166,17 +168,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
 
-			if (logo != null) handleLogo(ftpDir);
-			if (brochure != null) handleBrochure(ftpDir);
-		    checkContractorTypes();
-            checkListOnlyAcceptability();
-            handleLocationChange();
-            runContractorValidator();
+			if (logo != null)
+				handleLogo(ftpDir);
+			if (brochure != null)
+				handleBrochure(ftpDir);
+			checkContractorTypes();
+			checkListOnlyAcceptability();
+			handleLocationChange();
+			runContractorValidator();
 
-            if (this.hasActionErrors()) return SUCCESS;
+			if (this.hasActionErrors())
+				return SUCCESS;
 
-            addNoteWhenStatusChange();
-            //auditBuilder.buildAudits(contractor);
+			addNoteWhenStatusChange();
+			// auditBuilder.buildAudits(contractor);
 			contractor.setQbSync(true);
 			contractor.incrementRecalculation();
 			contractor.setNameIndex();
@@ -194,109 +199,111 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-    protected void checkListOnlyAcceptability() {
-        if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
-            // Now check if they have a product risk level
-            if (!contractor.isListOnlyEligible()) {
-                addActionError(getText("ContractorEdit.error.ListOnlyRequirements"));
-            }
+	protected void checkListOnlyAcceptability() {
+		if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
+			// Now check if they have a product risk level
+			if (!contractor.isListOnlyEligible()) {
+				addActionError(getText("ContractorEdit.error.ListOnlyRequirements"));
+			}
 
-            List<String> nonListOnlyOperators = new ArrayList<String>();
-            for (ContractorOperator co : contractor.getNonCorporateOperators()) {
-                if (!co.getOperatorAccount().isAcceptsList())
-                    nonListOnlyOperators.add(co.getOperatorAccount().getName());
-            }
+			List<String> nonListOnlyOperators = new ArrayList<String>();
+			for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+				if (!co.getOperatorAccount().isAcceptsList())
+					nonListOnlyOperators.add(co.getOperatorAccount().getName());
+			}
 
-            if (!nonListOnlyOperators.isEmpty())
-                addActionError(this.getTextParameterized("ContractorEdit.error.OperatorsDoneAcceptList",
-                     Strings.implode(nonListOnlyOperators)));
-        }
-    }
+			if (!nonListOnlyOperators.isEmpty())
+				addActionError(this.getTextParameterized("ContractorEdit.error.OperatorsDoneAcceptList",
+						Strings.implode(nonListOnlyOperators)));
+		}
+	}
 
-    protected void runContractorValidator() {
-        if (vatId != null) contractor.setVatId(vatId);
-        for (String error : contractorValidator.validateContractor(contractor)) {
-            addActionError(error);
-        }
-    }
+	protected void runContractorValidator() {
+		if (vatId != null)
+			contractor.setVatId(vatId);
+		for (String error : contractorValidator.validateContractor(contractor)) {
+			addActionError(error);
+		}
+	}
 
-    protected void checkContractorTypes() {
-        if (!permissions.isContractor()) {
-            processContractorTypes();
-            confirmConTypesOK();
-        }
-    }
+	protected void checkContractorTypes() {
+		if (!permissions.isContractor()) {
+			processContractorTypes();
+			confirmConTypesOK();
+		}
+	}
 
-    protected void handleBrochure(String ftpDir) throws Exception {
-        String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
-        String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
+	protected void handleBrochure(String ftpDir) throws Exception {
+		String extension = brochureFileName.substring(brochureFileName.lastIndexOf(".") + 1);
+		String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
 
-        if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-            addActionError(getText("ContractorEdit.error.BrochureFormat"));
-            return;
-        }
-        String fileName = "brochure_" + contractor.getId();
-        FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
-        contractor.setBrochureFile(extension);
-    }
+		if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+			addActionError(getText("ContractorEdit.error.BrochureFormat"));
+			return;
+		}
+		String fileName = "brochure_" + contractor.getId();
+		FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
+		contractor.setBrochureFile(extension);
+	}
 
-    protected void handleLogo(String ftpDir) throws Exception {
-        String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
-        String[] validExtensions = { "jpg", "gif", "png" };
+	protected void handleLogo(String ftpDir) throws Exception {
+		String extension = logoFileName.substring(logoFileName.lastIndexOf(".") + 1);
+		String[] validExtensions = { "jpg", "gif", "png" };
 
-        if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-            addActionError(getText("ContractorEdit.error.LogoFormat"));
-            return;
-        }
-        String fileName = "logo_" + contractor.getId();
-        FileUtils.moveFile(logo, ftpDir, "/logos/", fileName, extension, true);
-        contractor.setLogoFile(fileName + "." + extension);
-    }
+		if (!FileUtils.checkFileExtension(extension, validExtensions)) {
+			addActionError(getText("ContractorEdit.error.LogoFormat"));
+			return;
+		}
+		String fileName = "logo_" + contractor.getId();
+		FileUtils.moveFile(logo, ftpDir, "/logos/", fileName, extension, true);
+		contractor.setLogoFile(fileName + "." + extension);
+	}
 
-    private void processContractorTypes() {
-        // account for disabled checkboxes not coming though
-        // but only if populated/presented
-        for (ContractorType type : ContractorType.values()) {
-            if (contractor.isContractorTypeRequired(type))
-                conTypes.add(type);
-        }
+	private void processContractorTypes() {
+		// account for disabled checkboxes not coming though
+		// but only if populated/presented
+		for (ContractorType type : ContractorType.values()) {
+			if (contractor.isContractorTypeRequired(type))
+				conTypes.add(type);
+		}
 
-        contractor.setAccountTypes(conTypes);
-        contractor.resetRisksBasedOnTypes();
-    }
+		contractor.setAccountTypes(conTypes);
+		contractor.resetRisksBasedOnTypes();
+	}
 
-    void handleLocationChange() {
-        boolean countryHasChanged = country != null && !country.equals(contractor.getCountry());
+	void handleLocationChange() {
+		boolean countryHasChanged = country != null && !country.equals(contractor.getCountry());
 
-        if (countryHasChanged) {
-            contractor.setCountry(country);
-        }
+		if (countryHasChanged) {
+			contractor.setCountry(country);
+		}
 
-        if (!contractor.getCountry().isHasCountrySubdivisions()){
-            contractor.setCountrySubdivision(null);
-            countrySubdivision = null;
-        }
+		if (!contractor.getCountry().isHasCountrySubdivisions()) {
+			contractor.setCountrySubdivision(null);
+			countrySubdivision = null;
+		}
 
-        boolean subdivisionHasChanged = (countrySubdivision != null) && (!countrySubdivision.equals(contractor.getCountrySubdivision()));
+		boolean subdivisionHasChanged = (countrySubdivision != null)
+				&& (!countrySubdivision.equals(contractor.getCountrySubdivision()));
 
-        if (subdivisionHasChanged) {
-                contractor.setCountrySubdivision(countrySubdivisionDAO.find(countrySubdivision.toString()));
-        }
+		if (subdivisionHasChanged) {
+			contractor.setCountrySubdivision(countrySubdivisionDAO.find(countrySubdivision.toString()));
+		}
 
-        if (countryHasChanged || subdivisionHasChanged) {
-            contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
-            stampContractorNoteAboutOfficeLocationChange();
-        }
-    }
+		if (countryHasChanged || subdivisionHasChanged) {
+			contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
+			stampContractorNoteAboutOfficeLocationChange();
+		}
+	}
 
-    private void addNoteWhenStatusChange() {
+	private void addNoteWhenStatusChange() {
 		request = ServletActionContext.getRequest();
-		if (request.getParameter("currentStatus")!=null){
-//            System.out.print(request.getParameter("CurrentStatus"));
-//            System.out.print(contractor.getStatus().toString());
+		if (request.getParameter("currentStatus") != null) {
+			// System.out.print(request.getParameter("CurrentStatus"));
+			// System.out.print(contractor.getStatus().toString());
 			if (!request.getParameter("currentStatus").equals(contractor.getStatus().toString())) {
-//				System.out.print("Should have made a note.");
-                this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
+				// System.out.print("Should have made a note.");
+				this.addNote(contractor, "Account Status changed from" + request.getParameter("currentStatus") + " to "
 						+ contractor.getStatus().toString());
 			}
 		}
@@ -309,7 +316,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
 		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
 			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
-				getText(countrySubdivision.getI18nKey())));
+					getText(countrySubdivision.getI18nKey())));
 		}
 		pqfOfficeLocationChange.setId(0);
 		pqfOfficeLocationChange.setCanContractorView(true);
@@ -611,7 +618,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		this.contractorTypeHelpText = contractorTypeHelpText;
 	}
 
-    public void setVatId(String vatId) {
-        this.vatId = vatId;
-    }
+	public void setVatId(String vatId) {
+		this.vatId = vatId;
+	}
+
+	public List<User> getCsrList() {
+		return userDAO.findWhere("u.isActive = 'Yes' and u.accountID = 1100 and u.assignmentCapacity > 0");
+	}
 }

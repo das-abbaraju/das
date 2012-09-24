@@ -448,8 +448,28 @@
 					</ol>
 				</fieldset>
 
-				<fieldset class="form submit">
 
+<s:if test="true">				
+	<fieldset class="form">
+		<h2 class="formLegend">
+			TRANSLATE THIS - CSR DETAILS
+		</h2>
+		<ol>
+			<li>
+				<label>TRANSLATE THIS - Languages</label>
+			</li>
+			<li>
+				<label>TRANSLATE THIS - Assignment Capacity</label>
+				<s:textfield name="user.assignmentCapacity" size="3" theme="form" />%
+			</li>
+		</ol>
+	</fieldset>
+</s:if>
+
+
+
+
+				<fieldset class="form submit">
 					<s:if test="user.activeB">
 						<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 						<pics:permission perm="EditUsers" type="Edit">							

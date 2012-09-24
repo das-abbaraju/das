@@ -9,7 +9,9 @@ import java.util.TimeZone;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -98,6 +100,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Locale locale = Locale.ENGLISH;
 	private String department;
 	private boolean usingDynamicReports;
+	private int assignmentCapacity;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -107,6 +110,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
 	private List<Report> reports = new ArrayList<Report>();
+	private List<Locale> spokenLanguages = new ArrayList<Locale>();
 
 	@Transient
 	public boolean isSuperUser() {
@@ -401,6 +405,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return result;
 	}
 
+	public int getAssignmentCapacity() {
+		return assignmentCapacity;
+	}
+
+	public void setAssignmentCapacity(int assignmentCapacity) {
+		this.assignmentCapacity = assignmentCapacity;
+	}
+
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
 	public List<UserGroup> getGroups() {
 		return groups;
@@ -464,6 +476,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.reports = reports;
 	}
 
+	@ElementCollection()
+	@CollectionTable(name = "user_language", joinColumns = @JoinColumn(name = "userID"))
+	@Column(name = "locale")
+	public List<Locale> getSpokenLanguages() {
+		return spokenLanguages;
+	}
+
+	public void setSpokenLanguages(List<Locale> spokenLanguages) {
+		this.spokenLanguages = spokenLanguages;
+	}
+
 	@Transient
 	public EmailSubscription getEmailSubscription(Subscription subscription) {
 		for (EmailSubscription emailSub : subscriptions) {
@@ -511,7 +534,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * This is a total HACK!! But we can add it to the DB later or something
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -589,13 +612,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 *
+	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of
-	 *            user.permissions)
+	 *            The new set of permission for this user (transient version of user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user
-	 *            or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
@@ -711,7 +732,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * Grants all allowable permission types for this OpPerm
-	 *
+	 * 
 	 * @param opPerm
 	 * @param grantorID
 	 *            who is granting the permission
@@ -781,9 +802,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * In UsersManage, another user (non-group) is inserted into this user's
-	 * groups for shadowing
-	 *
+	 * In UsersManage, another user (non-group) is inserted into this user's groups for shadowing
+	 * 
 	 * @return shadowed user or null
 	 */
 	@Transient
@@ -808,9 +828,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * Enables subscription if disabled or creates subscription if it does not
-	 * exist.
-	 *
+	 * Enables subscription if disabled or creates subscription if it does not exist.
+	 * 
 	 * @param subscription
 	 * @return
 	 */
