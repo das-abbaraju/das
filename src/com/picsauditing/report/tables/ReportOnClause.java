@@ -4,6 +4,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 
 public class ReportOnClause {
+	public static final String VisibleAccountIDs = "{CURRENT_VISIBLE_ACCOUNTIDS}";
 	public static final String AccountID = "{CURRENT_ACCOUNTID}";
 	public static final String UserID = "{CURRENT_USERID}";
 	public static final String FromAlias = "{FROM_ALIAS}";
@@ -32,6 +33,7 @@ public class ReportOnClause {
 		String onClause = fromAlias + "." + fromKey + " = " + toAlias + "." + toKey;
 		if (Strings.isNotEmpty(extraClauses))
 			onClause += " AND " + extraClauses;
+		onClause = onClause.replace(VisibleAccountIDs, Strings.implodeForDB(permissions.getVisibleAccounts(), ","));
 		onClause = onClause.replace(AccountID, permissions.getAccountIdString());
 		onClause = onClause.replace(UserID, permissions.getUserIdString());
 		onClause = onClause.replace(FromAlias, fromAlias);

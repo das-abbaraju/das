@@ -10,6 +10,7 @@ public class ContractorTable extends AbstractTable {
 	public static final String Flag = "Flag";
 	public static final String RequestedBy = "RequestedBy";
 	public static final String Watch = "Watch";
+	public static final String Tag = "Tag"; 
 
 	public ContractorTable() {
 		super("contractor_info");
@@ -38,5 +39,7 @@ public class ContractorTable extends AbstractTable {
 		
 		addKey(new ReportForeignKey(Watch, new ContractorWatch(), new ReportOnClause(
 				"id", "conID", ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID)));
+		addKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause(
+				"id", "conID", ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
 	}
 }
