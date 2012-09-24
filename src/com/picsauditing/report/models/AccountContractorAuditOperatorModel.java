@@ -1,33 +1,35 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.access.Permissions
-import com.picsauditing.report.Filter
-import com.picsauditing.report.tables.ContractorAuditOperatorTable
-import com.picsauditing.report.tables.FieldCategory
-import com.picsauditing.util.Strings
+import java.util.List;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.report.Filter;
+import com.picsauditing.report.tables.ContractorAuditOperatorTable;
+import com.picsauditing.report.tables.ContractorAuditTable;
+import com.picsauditing.report.tables.ContractorTable;
+import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.util.Strings;
 
 public class AccountContractorAuditOperatorModel extends AbstractModel {
-	static def joinSpec = [
-		alias: "Account",
-		joins: [
-			[
-				key: "Contact",
-				category: FieldCategory.ContactInformation
-			],[
-				key: "Naics"
-			]
-		]
-	]
-//	rootTable.getTable("account").includeRequiredAndAverageColumns();
-//	rootTable.getTable("contractor").includeRequiredAndAverageColumns();
-//	rootTable.removeJoin("accountContact");
-
-	public Map getJoinSpec() {
-		return joinSpec;
-	}
+	// rootTable.removeJoin("accountContact");
 
 	public AccountContractorAuditOperatorModel(Permissions permissions) {
-		super(permissions, new ContractorAuditOperatorTable())
+		super(permissions, new ContractorAuditOperatorTable());
+	}
+
+	public ModelSpec getJoinSpec() {
+		ModelSpec spec = new ModelSpec(null, "CAO");
+		spec.join(ContractorAuditOperatorTable.Operator);
+		{
+			ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
+			conAudit.join(ContractorAuditTable.Type);
+			{
+				ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
+				contractor.minimumImportance = FieldImportance.Average;
+				contractor.join(ContractorTable.Account).minimumImportance = FieldImportance.Average;
+			}
+		}
+		return spec;
 	}
 
 	@Override

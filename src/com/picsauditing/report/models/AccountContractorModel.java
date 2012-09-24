@@ -9,7 +9,6 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.ContractorAuditTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -21,22 +20,22 @@ public class AccountContractorModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec account = new ModelSpec(null, "Account");
-		account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
-		account.join(AccountTable.Naics);
+		ModelSpec spec = new ModelSpec(null, "Account");
+		spec.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+		spec.join(AccountTable.Naics);
 		{
-			ModelSpec contractor = account.join(ContractorAuditTable.Contractor);
+			ModelSpec contractor = spec.join(AccountTable.Contractor);
 			contractor.join(ContractorTable.PQF);
 			contractor.join(ContractorTable.Flag);
 			contractor.join(ContractorTable.CustomerService);
 		}
-		return account;
+		return spec;
 	}
 
-	// TODO ensure this will work, may need to extract into util class and
-	// resuse in different models
 	@Override
 	public String getWhereClause(Permissions permissions, List<Filter> filters) {
+		// TODO ensure this will work, may need to extract into util class and
+		// resuse in different models
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		Filter accountStatusFilter = getValidAccountStatusFilter(filters);
 		if (accountStatusFilter != null) {

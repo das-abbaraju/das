@@ -25,13 +25,23 @@ public abstract class AbstractTable {
 
 	protected abstract void addJoins();
 
-	ReportForeignKey addKey(ReportForeignKey join) {
+	public ReportForeignKey addKey(ReportForeignKey join) {
 		keys.put(join.getName(), join);
 		return join;
 	}
 
-	ReportForeignKey addOptionalKey(ReportForeignKey join) {
-		join.setRequired();
+	public ReportForeignKey addRequiredKey(ReportForeignKey join) {
+		join.setJoinType(JoinType.RequiredJoin);
+		return addKey(join);
+	}
+
+	public ReportForeignKey addJoinKey(ReportForeignKey join) {
+		join.setJoinType(JoinType.RequiredJoin);
+		return addKey(join);
+	}
+
+	public ReportForeignKey addOptionalKey(ReportForeignKey join) {
+		join.setJoinType(JoinType.LeftJoin);
 		return addKey(join);
 	}
 

@@ -5,7 +5,7 @@ public class ReportForeignKey {
 	private AbstractTable table;
 	private ReportOnClause onClause;
 	private FieldCategory category;
-	private boolean required = true;
+	private JoinType joinType = JoinType.LeftJoin;
 	private FieldImportance minimumImportance = FieldImportance.Low;
 
 	public ReportForeignKey(String name, AbstractTable toTable, ReportOnClause onClause) {
@@ -34,12 +34,20 @@ public class ReportForeignKey {
 		this.category = category;
 	}
 
-	public boolean isRequired() {
-		return required;
+	public JoinType getJoinType() {
+		return joinType;
+	}
+	
+	public void setJoinType(JoinType joinType) {
+		this.joinType = joinType;
 	}
 
-	public void setRequired(boolean required) {
-		this.required = required;
+	public void setLeftJoin() {
+		this.joinType = JoinType.LeftJoin;
+	}
+
+	public void setRequiredJoin() {
+		this.joinType = JoinType.RequiredJoin;
 	}
 
 	public FieldImportance getMinimumImportance() {

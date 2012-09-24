@@ -13,7 +13,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.ReportForeignKey;
 import com.picsauditing.report.tables.ReportOnClause;
-import com.picsauditing.util.Strings;
 
 public abstract class AbstractModel {
 	ReportJoin startingJoin;
@@ -55,7 +54,7 @@ public abstract class AbstractModel {
 	private ReportJoin appendToJoin(String fromAlias, ModelSpec childSpec, ReportForeignKey key) {
 		ReportJoin childJoin = parseSpec(key.getTable(), childSpec);
 
-		childJoin.setRequired(key.isRequired());
+		childJoin.setJoinType(key.getJoinType());
 		childJoin.setAlias(childSpec.alias);
 
 		ReportOnClause onClause = key.getOnClause();

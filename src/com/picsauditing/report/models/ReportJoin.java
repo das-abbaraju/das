@@ -15,6 +15,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.JoinType;
 import com.picsauditing.util.Strings;
 
 public class ReportJoin {
@@ -22,11 +23,9 @@ public class ReportJoin {
 	private AbstractTable toTable;
 	private List<ReportJoin> joins = new ArrayList<ReportJoin>();
 	private String onClause;
-	// We may want to consider three options (always included (JOIN), included
-	// only when used (JOIN) and LEFT JOIN
-	private boolean required;
 	private FieldImportance minimumImportance = FieldImportance.Low;
 	private FieldCategory category = null;
+	private JoinType joinType;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportJoin.class);
 
@@ -68,14 +67,6 @@ public class ReportJoin {
 		this.onClause = onClause;
 	}
 
-	public boolean isRequired() {
-		return required;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
-
 	public FieldCategory getCategory() {
 		return category;
 	}
@@ -86,6 +77,14 @@ public class ReportJoin {
 
 	public void setMinimumImportance(FieldImportance minimumImportance) {
 		this.minimumImportance = minimumImportance;
+	}
+
+	public JoinType getJoinType() {
+		return joinType;
+	}
+
+	public void setJoinType(JoinType joinType) {
+		this.joinType = joinType;
 	}
 
 	public Collection<Field> getFields() {
@@ -117,7 +116,7 @@ public class ReportJoin {
 
 	public boolean isNeeded(Definition definition) {
 		logger.debug("Is " + alias + " required?");
-		if (isRequired())
+		if (joinType == JoinType.RequiredJoin)
 			return true;
 
 		if (definition == null)
@@ -164,7 +163,7 @@ public class ReportJoin {
 	}
 
 	public String toJoinClause() {
-		String value = (required ? "" : "LEFT ") + "JOIN " + getTableClause();
+		String value = (joinType == JoinType.LeftJoin ? "LEFT " : "") + "JOIN " + getTableClause();
 		return value + " ON " + onClause;
 	}
 
