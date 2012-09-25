@@ -639,10 +639,16 @@ p.subtitle {
       float: right;
       height: 30px;
       padding: 0px 5px; }
-    /* line 122, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      /* line 121, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      .ManageReports-page .report-list .options:hover {
+        background: #eaeaea; }
+    /* line 127, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options.open {
       background: #ccc; }
-    /* line 127, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      /* line 131, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      .ManageReports-page .report-list .options.open:hover {
+        background: #ccc; }
+    /* line 137, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options .dropdown-toggle {
       color: #999;
       -webkit-border-radius: 0px;
@@ -653,11 +659,12 @@ p.subtitle {
       -webkit-box-shadow: none;
       -moz-box-shadow: none;
       box-shadow: none;
-      line-height: 30px; }
-  /* line 136, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      line-height: 30px;
+      text-decoration: none; }
+  /* line 147, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .lt-ie8 .report-list {
     display: inline; }
-  /* line 141, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 152, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .pagination {
     margin-bottom: 30px; }
 
