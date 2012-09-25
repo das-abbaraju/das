@@ -9,16 +9,44 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.picsauditing.PICS.VATValidator;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
+import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorFee;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.InvoiceFee;
+import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
@@ -27,25 +55,30 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
+	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
-	@Autowired
-	private UserDAO userDAO;
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
-	private UserLoginLogDAO userLoginLogDAO;
+	private ContractorTagDAO contractorTagDAO;
 	@Autowired
-	private InvoiceFeeDAO invoiceFeeDAO;
+	private CountryDAO countryDao;
+	@Autowired
+	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
-	protected CountrySubdivisionDAO countrySubdivisionDAO;
-    @Autowired
-    private VATValidator vatValidator;
-    @Autowired
-    private CountryDAO countryDao;
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private OperatorTagDAO operatorTagDAO;
+	@Autowired
+	private UserDAO userDAO;
+	@Autowired
+	private UserLoginLogDAO userLoginLogDAO;
+	@Autowired
+	private VATValidator vatValidator;
 
 	private User user;
 	private String username;
@@ -84,7 +117,7 @@ public class Registration extends ContractorActionSupport {
 					contractor.setCity(crr.getCity());
 					contractor.setZip(crr.getZip());
 					contractor.setCountry(crr.getCountry());
-					if (crr.getCountrySubdivision() != null){
+					if (crr.getCountrySubdivision() != null) {
 						contractor.setCountrySubdivision(crr.getCountrySubdivision());
 					} else {
 						contractor.setCountrySubdivision(null);
@@ -119,7 +152,7 @@ public class Registration extends ContractorActionSupport {
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
-		if (user.getEmail().length()>0)
+		if (user.getEmail().length() > 0)
 			user.setEmail(EmailAddressUtils.validate(user.getEmail()));
 		userDAO.save(user);
 
@@ -143,6 +176,7 @@ public class Registration extends ContractorActionSupport {
 			Note note = addNote(contractor, "Requested Contractor Registered");
 			note.setBody("Contractor '" + crr.getName() + "' requested by " + crr.getRequestedBy().getName()
 					+ " has registered.");
+
 			dao.save(note);
 		}
 
@@ -151,13 +185,43 @@ public class Registration extends ContractorActionSupport {
 
 	private ContractorRegistrationRequest updateRegistrationRequest() {
 		ContractorRegistrationRequest crr = requestDAO.find(requestID);
+
 		crr.setContractor(contractor);
 		crr.setMatchCount(1);
 		crr.setAuditColumns();
 		crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
 				+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
+		crr.setStatus(crr.getContactCountByPhone() > 0 ? ContractorRegistrationRequestStatus.ClosedContactedSuccessful
+				: ContractorRegistrationRequestStatus.ClosedSuccessful);
+
 		requestDAO.save(crr);
+
+		transferRegistrationRequestTags(crr);
+
 		return crr;
+	}
+
+	private void transferRegistrationRequestTags(ContractorRegistrationRequest crr) {
+		if (!Strings.isEmpty(crr.getOperatorTags())) {
+			for (String tagID : crr.getOperatorTags().split(",")) {
+				try {
+					OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
+
+					if (tag.getOperator().getStatus().isActive()) {
+						ContractorTag contractorTag = new ContractorTag();
+						contractorTag.setTag(tag);
+						contractorTag.setContractor(contractor);
+						contractorTag.setAuditColumns(permissions);
+
+						contractorTagDAO.save(contractorTag);
+						contractor.getOperatorTags().add(contractorTag);
+					}
+				} catch (Exception exception) {
+					logger.error("Error in transferring registration request tag {}\n{}", new Object[] { tagID,
+							exception });
+				}
+			}
+		}
 	}
 
 	private void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
@@ -227,14 +291,15 @@ public class Registration extends ContractorActionSupport {
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
 
-        if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
-            if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
-                CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
-                contractor.setCountrySubdivision(contractorCountrySubdivision);
-            }
-        } else {
-            contractor.setCountrySubdivision(null);
-        }
+		if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
+			if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
+				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
+						.toString());
+				contractor.setCountrySubdivision(contractorCountrySubdivision);
+			}
+		} else {
+			contractor.setCountrySubdivision(null);
+		}
 
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
@@ -264,18 +329,19 @@ public class Registration extends ContractorActionSupport {
 		}
 	}
 
-    private void checkVAT() {
-        if (!contractor.getCountry().isEuropeanUnion()) return;
+	private void checkVAT() {
+		if (!contractor.getCountry().isEuropeanUnion())
+			return;
 
-        try {
-            contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
-        } catch (Exception e) {
-            contractor.setVatId(null);
-            addActionError(getText("VAT.Required"));
-        }
-    }
+		try {
+			contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
+		} catch (Exception e) {
+			contractor.setVatId(null);
+			addActionError(getText("VAT.Required"));
+		}
+	}
 
-    public ContractorAccount getContractor() {
+	public ContractorAccount getContractor() {
 		return contractor;
 	}
 
@@ -355,17 +421,17 @@ public class Registration extends ContractorActionSupport {
 		return !duplicateAccounts.isEmpty();
 	}
 
-    public boolean isValidVAT() {
-        Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
-        if (registrationCountry.isEuropeanUnion()) {
-            try {
-                vatValidator.validated(/*registrationCountry,*/ contractor.getVatId());
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        return true;
-    }
+	public boolean isValidVAT() {
+		Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
+		if (registrationCountry.isEuropeanUnion()) {
+			try {
+				vatValidator.validated(/* registrationCountry, */contractor.getVatId());
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
 		this.countrySubdivision = countrySubdivision;
