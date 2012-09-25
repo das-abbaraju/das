@@ -4,10 +4,8 @@
         <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/PicsStyleGuide*.action</pattern>
     </decorator>
-	<decorator name="extjs" page="ext.jsp">
+	<decorator name="dynamic-report" page="dynamic-report.jsp">
 		<pattern>/Report.action</pattern>
-		<pattern>/Dashboard.action</pattern>
-		<pattern>/Trevor.action</pattern>
 	</decorator>
 	<decorator name="main" page="main.jsp">
 		<pattern>/*.jsp</pattern>
