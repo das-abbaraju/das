@@ -2,8 +2,6 @@ package com.picsauditing.report.models;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
@@ -12,10 +10,8 @@ import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.Definition;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
@@ -31,24 +27,28 @@ public class AccountContractorModelTest extends ModelTest {
 
 	@Test
 	public void testAvailableFields() throws Exception {
-		Map<String, Field> availableFields = model.getAvailableFields();
+		availableFields = model.getAvailableFields();
 
-		assertFalse("contractorRequestedByOperatorCity is Low importance",
-				availableFields.containsKey("contractorRequestedByOperatorCity".toUpperCase()));
-		assertTrue("contractorPQFExpiresDate is Required",
-				availableFields.containsKey("contractorPQFExpiresDate".toUpperCase()));
-
-		assertEquals("OK if close to expected because we added a few fields", 56, availableFields.size());
+		fieldsThatShouldNotBeIncluded.add("ContractorRequestedByOperatorCity");
+		fieldsThatShouldBeIncluded.add("contractorPQFExpiresDate");
+		fieldsThatShouldBeIncluded.add("ContractorProductRisk");
+		fieldsThatShouldBeIncluded.add("AccountFax");
+		fieldsThatShouldBeIncluded.add("AccountContactEmail");
+		fieldsThatShouldNotBeIncluded.add("AccountContactLastLogin");
+		fieldsThatShouldBeIncluded.add("AccountNaicsTrir");
+		fieldsThatShouldBeIncluded.add("ContractorCustomerServiceFax");
+		fieldsThatShouldNotBeIncluded.add("ContractorCustomerServiceLastLogin");
+		checkFields();
 	}
 
 	@Test
 	public void testAvailableFieldsForAdmin() throws Exception {
 		EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
-		Map<String, Field> availableFields = model.getAvailableFields();
+		availableFields = model.getAvailableFields();
 
-		assertTrue("contractorBalance is Required", availableFields.containsKey("contractorBalance".toUpperCase()));
-
+		fieldsThatShouldBeIncluded.add("contractorBalance");
+		checkFields();
 		assertEquals("OK if close to expected because we added a few fields", 64, availableFields.size());
 	}
 

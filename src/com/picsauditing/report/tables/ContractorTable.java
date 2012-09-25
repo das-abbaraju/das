@@ -18,28 +18,30 @@ public class ContractorTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id")));
-		ReportForeignKey csrKey = addKey(new ReportForeignKey(CustomerService, new UserTable(), new ReportOnClause(
+		addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id")));
+
+		ReportForeignKey flagKey = addRequiredKey(new ReportForeignKey(Flag, new ContractorOperatorTable(), new ReportOnClause(
+				"id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
+		flagKey.setMinimumImportance(FieldImportance.Low);
+
+		ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CustomerService, new UserTable(), new ReportOnClause(
 				"welcomeAuditor_id")));
 		csrKey.setMinimumImportance(FieldImportance.Average);
 		csrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 
-		ReportForeignKey pqfKey = addKey(new ReportForeignKey(PQF, new ContractorAuditTable(), new ReportOnClause("id",
+		ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(), new ReportOnClause("id",
 				"conID", ReportOnClause.ToAlias + ".auditTypeID = 1")));
 		pqfKey.setMinimumImportance(FieldImportance.Required);
-
-		ReportForeignKey flagKey = addKey(new ReportForeignKey(Flag, new ContractorOperatorTable(), new ReportOnClause(
-				"id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
-		flagKey.setMinimumImportance(FieldImportance.Low);
 
 		ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
 				new ReportOnClause("requestedByID")));
 		requestedBy.setMinimumImportance(FieldImportance.Required);
 		requestedBy.setCategory(FieldCategory.RequestingClientSite);
 		
-		addKey(new ReportForeignKey(Watch, new ContractorWatch(), new ReportOnClause(
+		addOptionalKey(new ReportForeignKey(Watch, new ContractorWatch(), new ReportOnClause(
 				"id", "conID", ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID)));
-		addKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause(
+		
+		addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause(
 				"id", "conID", ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
 	}
 }

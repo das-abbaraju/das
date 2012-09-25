@@ -20,16 +20,19 @@ public class AccountContractorModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "Account");
-		spec.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
-		spec.join(AccountTable.Naics);
+		ModelSpec contractor = new ModelSpec(null, "Contractor");
 		{
-			ModelSpec contractor = spec.join(AccountTable.Contractor);
-			contractor.join(ContractorTable.PQF);
-			contractor.join(ContractorTable.Flag);
-			contractor.join(ContractorTable.CustomerService);
+			ModelSpec account = contractor.join(ContractorTable.Account);
+			account.alias = "Account";
+			account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+			account.join(AccountTable.Naics);
 		}
-		return spec;
+		contractor.join(ContractorTable.PQF);
+		if (permissions.isOperatorCorporate()) {
+			contractor.join(ContractorTable.Flag);
+		}
+		contractor.join(ContractorTable.CustomerService);
+		return contractor;
 	}
 
 	@Override
@@ -76,9 +79,8 @@ public class AccountContractorModel extends AbstractModel {
 			fields.put(contractorAudits.getName().toUpperCase(), contractorAudits);
 		}
 
-		Field accountName = fields.get("accountName".toUpperCase());
+		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
-		fields.remove("accountType".toUpperCase());
 		return fields;
 	}
 }

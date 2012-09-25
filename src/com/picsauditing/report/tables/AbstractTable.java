@@ -25,7 +25,7 @@ public abstract class AbstractTable {
 
 	protected abstract void addJoins();
 
-	public ReportForeignKey addKey(ReportForeignKey join) {
+	private ReportForeignKey addKey(ReportForeignKey join) {
 		keys.put(join.getName(), join);
 		return join;
 	}

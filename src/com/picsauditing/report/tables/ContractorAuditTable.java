@@ -1,6 +1,8 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 
 public class ContractorAuditTable extends AbstractTable {
 	
@@ -13,26 +15,19 @@ public class ContractorAuditTable extends AbstractTable {
 		super("contractor_audit");
 		addFields(ContractorAudit.class);
 		
-		// addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
-		// I'm not sure this field is really that important at all. With
-		// Effective Date, the creationDate just becomes confusing
-		// Field creationDate = addField(prefix + "CreationDate", alias +
-		// ".creationDate", FilterType.Date, FieldCategory.Audits);
-		// creationDate.setImportance(FieldImportance.Low);
-		// creationDate.requirePermission(OpPerms.ManageAudits);
-
-
-//		Field auditTypeName;
-//		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String, FieldCategory.Audits);
-//		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
-//		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
-//		auditTypeName.setImportance(FieldImportance.Required);
-//		auditTypeName.setWidth(200);
+		Field auditTypeName;
+		auditTypeName = new Field("Name", "auditTypeID", FilterType.String);
+		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
+		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
+		auditTypeName.setImportance(FieldImportance.Required);
+		auditTypeName.setCategory(FieldCategory.Audits);
+		auditTypeName.setWidth(200);
+		addField(auditTypeName);
 	}
 
 	public void addJoins() {
-		addKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
-		addOptionalKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")));
+		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
+		addJoinKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")));
 //		auditType.includeRequiredAndAverageColumns();
 		addOptionalKey(new ReportForeignKey(Auditor, new UserTable(), new ReportOnClause("auditorID")));
 //		auditor.setOverrideCategory(FieldCategory.Auditors);

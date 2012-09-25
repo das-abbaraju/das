@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<title>${report.name}</title>
+<title>${reportName}</title>
 
 <div id="loading_page">
     <h1><s:text name="LoadingPage.title" /></h1>

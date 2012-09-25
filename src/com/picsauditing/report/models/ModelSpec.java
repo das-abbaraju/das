@@ -20,6 +20,7 @@ public class ModelSpec {
 
 	public ModelSpec join(String key) {
 		ModelSpec join = new ModelSpec(key, this.alias + key);
+		joins.add(join);
 		return join;
 	}
 

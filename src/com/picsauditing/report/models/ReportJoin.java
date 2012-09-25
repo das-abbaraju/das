@@ -16,6 +16,7 @@ import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.JoinType;
+import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.Strings;
 
 public class ReportJoin {
@@ -99,6 +100,9 @@ public class ReportJoin {
 				// this
 				fieldCopy.setName(alias + fieldCopy.getName());
 				fieldCopy.setDatabaseColumnName(alias + "." + fieldCopy.getDatabaseColumnName());
+				if (fieldCopy.getUrl() != null && fieldCopy.getUrl().contains(ReportOnClause.ToAlias)) {
+					fieldCopy.setUrl(fieldCopy.getUrl().replace(ReportOnClause.ToAlias, alias));
+				}
 
 				if (category != null) {
 					fieldCopy.setCategory(category);

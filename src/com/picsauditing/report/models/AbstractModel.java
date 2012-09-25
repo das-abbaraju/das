@@ -22,17 +22,19 @@ public abstract class AbstractModel {
 
 	public AbstractModel(Permissions permissions, AbstractTable startingTable) {
 		this.permissions = permissions;
-		startingJoin = parseSpec(startingTable, getJoinSpec());
+		ModelSpec joinSpec = getJoinSpec();
+		startingJoin = parseSpec(startingTable, joinSpec);
 		logger.info("Finished building joins \n" + startingJoin);
 	}
 
-	ReportJoin parseSpec(AbstractTable toTable, ModelSpec modelSpec) {
+	private ReportJoin parseSpec(AbstractTable toTable, ModelSpec modelSpec) {
 		if (modelSpec == null) {
 			throw new RuntimeException("getJoinSpec() is null on model " + this);
 		}
 		logger.info("parsingSpec for " + toTable);
 		ReportJoin join = new ReportJoin();
 		join.setToTable(toTable);
+		join.setAlias(modelSpec.alias);
 
 		for (ModelSpec childSpec : modelSpec.joins) {
 			ReportForeignKey key = getKey(toTable, childSpec.key);
@@ -89,6 +91,7 @@ public abstract class AbstractModel {
 		Map<String, Field> fields = new HashMap<String, Field>();
 		for (Field field : startingJoin.getFields()) {
 			if (field.canUserSeeQueryField(permissions)) {
+				logger.debug(field.getName().toUpperCase() + " was added to the available fields.");
 				fields.put(field.getName().toUpperCase(), field);
 			}
 		}
