@@ -36,6 +36,9 @@ public abstract class AbstractModel {
 		join.setToTable(toTable);
 		join.setAlias(modelSpec.alias);
 
+		if (modelSpec.category != null)
+			join.setCategory(modelSpec.category);
+
 		for (ModelSpec childSpec : modelSpec.joins) {
 			ReportForeignKey key = getKey(toTable, childSpec.key);
 			ReportJoin childJoin = appendToJoin(join.getAlias(), childSpec, key);

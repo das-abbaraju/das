@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Filter;
+import com.picsauditing.report.ReportElement;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
@@ -27,6 +28,7 @@ import com.picsauditing.report.models.AbstractModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -86,7 +88,7 @@ public class ReportDynamic extends PicsActionSupport {
 			logger.error("Unexpected exception in ReportDynamic.configuration()", e);
 		}
 
-		json.put("editable", editable);
+		json.put("editable", editable || permissions.isDeveloperEnvironment());
 		json.put("favorite", favorite);
 
 		return JSON;
@@ -95,34 +97,28 @@ public class ReportDynamic extends PicsActionSupport {
 	public String report() {
 		try {
 			ReportModel.validate(report);
-
+			
 			{
-				for (Column column : report.getDefinition().getColumns()) {
-					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
-						column.setFieldName("AccountName");
-					if (column.getFieldName().equalsIgnoreCase("OperatorName"))
-						column.setFieldName("AccountName");
-				}
-				for (Sort column : report.getDefinition().getSorts()) {
-					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
-						column.setFieldName("AccountName");
-					if (column.getFieldName().equalsIgnoreCase("OperatorName"))
-						column.setFieldName("AccountName");
-				}
-				for (Filter column : report.getDefinition().getFilters()) {
-					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
-						column.setFieldName("AccountName");
-					if (column.getFieldName().equalsIgnoreCase("OperatorName"))
-						column.setFieldName("AccountName");
+				List<ReportElement> reportElements = new ArrayList<ReportElement>();
+				reportElements.addAll(report.getDefinition().getColumns());
+				reportElements.addAll(report.getDefinition().getSorts());
+				reportElements.addAll(report.getDefinition().getFilters());
+
+				for (ReportElement reportElement : reportElements) {
+					if (reportElement.getFieldName().equalsIgnoreCase("ContractorName"))
+						reportElement.setFieldName("AccountName");
+					if (reportElement.getFieldName().equalsIgnoreCase("OperatorName"))
+						reportElement.setFieldName("AccountName");
 				}
 			}
 
+			System.out.println("Report first pass: " + JSONUtilities.prettyPrint(report.toJSONString()));
 			json.put("reportID", report.getId());
 
 			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
-			sqlBuilder.initializeSql(report, permissions);
+			System.out.println("SQL first pass: " + sqlBuilder.initializeSql(report, permissions).toString());
 
 			ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 

@@ -27,6 +27,7 @@ public class Report extends BaseTable {
 	private int numTimesFavorited;
 
 	private Definition definition;
+	private String sql;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -109,6 +110,15 @@ public class Report extends BaseTable {
 
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
+	}
+
+	@Transient
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
 	}
 
 	@Transient

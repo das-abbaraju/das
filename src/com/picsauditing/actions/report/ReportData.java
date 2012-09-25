@@ -18,6 +18,7 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.JSONUtilities;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportData extends PicsActionSupport {
@@ -32,6 +33,8 @@ public class ReportData extends PicsActionSupport {
 	private String debugSQL = "";
 
 	public String execute() {
+		
+		System.out.println("Data pass: " + JSONUtilities.prettyPrint(report.toJSONString()));
 		try {
 			ReportModel.validate(report);
 			SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);

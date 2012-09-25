@@ -7,6 +7,7 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.tables.ContractorAuditOperatorTable;
 import com.picsauditing.report.tables.ContractorAuditTable;
 import com.picsauditing.report.tables.ContractorTable;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
@@ -18,15 +19,28 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "CAO");
-		spec.join(ContractorAuditOperatorTable.Operator);
+		ModelSpec spec = new ModelSpec(null, "AuditOperator");
+		spec.category = FieldCategory.Audits;
+		
+		ModelSpec operatorAccount = spec.join(ContractorAuditOperatorTable.Operator);
+		operatorAccount.alias = "AuditOperatorAccount";
+		operatorAccount.category = FieldCategory.ClientSiteMonitoringAnAudit;
 		{
 			ModelSpec conAudit = spec.join(ContractorAuditOperatorTable.Audit);
+			conAudit.alias = "Audit";
+			conAudit.category = FieldCategory.Audits;
 			conAudit.join(ContractorAuditTable.Type);
+			conAudit.join(ContractorAuditTable.Auditor);
+			conAudit.join(ContractorAuditTable.ClosingAuditor);
 			{
 				ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
+				contractor.alias = "Contractor";
 				contractor.minimumImportance = FieldImportance.Average;
-				contractor.join(ContractorTable.Account).minimumImportance = FieldImportance.Average;
+				contractor.category = FieldCategory.AccountInformation;
+				ModelSpec account = contractor.join(ContractorTable.Account);
+				account.alias = "Account";
+				account.minimumImportance = FieldImportance.Average;
+				account.category = FieldCategory.AccountInformation;
 			}
 		}
 		return spec;

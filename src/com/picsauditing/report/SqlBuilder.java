@@ -40,6 +40,8 @@ public class SqlBuilder {
 		sql.setFromTable(model.getStartingJoin().getTableClause());
 
 		availableFields = model.getAvailableFields();
+		
+		System.out.println("Available Fields: " + availableFields.toString());
 
 		addFieldsAndGroupBy(definition.getColumns());
 		addRuntimeFilters(permissions);

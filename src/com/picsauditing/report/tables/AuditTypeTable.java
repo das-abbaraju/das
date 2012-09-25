@@ -7,7 +7,7 @@ public class AuditTypeTable extends AbstractTable {
 
 	public AuditTypeTable() {
 		super("audit_type");
-		addPrimaryKey(FilterType.Integer);
+		addPrimaryKey(FilterType.Integer).setCategory(FieldCategory.Audits);
 		addFields(AuditType.class);
 	}
 

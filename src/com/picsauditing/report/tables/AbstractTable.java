@@ -77,7 +77,7 @@ public abstract class AbstractTable {
 			keys = new HashMap<String, ReportForeignKey>();
 			addJoins();
 		}
-		System.out.println("Searching for Key = " + foreignKeyName);
+
 		ReportForeignKey foreignKey = keys.get(foreignKeyName);
 		if (foreignKey == null) {
 			logger.error("Foreign key to " + foreignKeyName + " wasn't available in " + sqlTableName + " - "

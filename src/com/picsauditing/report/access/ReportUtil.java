@@ -98,6 +98,7 @@ public final class ReportUtil {
 
 			if (field == null) {
 				field = new Field(column.getFieldNameWithoutMethod(), "", FilterType.String);
+				column.setField(field);
 			}
 			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
@@ -147,8 +148,9 @@ public final class ReportUtil {
 			translatedText = getText("Report." + field.getName(), locale);
 		}
 
-		if (Strings.isEmpty(translatedText))
+		if (Strings.isEmpty(translatedText)) {
 			return field.getName();
+		}
 		
 		return translatedText;
 	}

@@ -1,6 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class ContractorAuditOperatorTable extends AbstractTable {
@@ -9,22 +10,24 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 
 	public ContractorAuditOperatorTable() {
 		super("contractor_audit_operator");
+		addPrimaryKey(FilterType.Integer);
 
 		// , "auditOperator", "cao", "cao.auditID = ca.id AND cao.visible = 1"
 
 		// FieldCategory.ClientSiteMonitoringAnAudit
-		addPrimaryKey(FilterType.Integer);
 
-		// addField(prefix + "StatusSubstatus", "CONCAT(" + alias +
-		// ".status,IFNULL(CONCAT(':'," + alias + ".auditSubStatus),''))",
-		// FilterType.String, FieldCategory.ClientSiteMonitoringAnAudit);
+		Field statusSubstatus = new Field("StatusSubstatus", "CONCAT(" + ReportOnClause.ToAlias
+				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FilterType.String);
+		addField(statusSubstatus);
 
 		addFields(ContractorAuditOperator.class);
 	}
 
 	protected void addJoins() {
 		addOptionalKey(new ReportForeignKey(Audit, new ContractorAuditTable(), new ReportOnClause("auditID")));
-		addOptionalKey(new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID")));
-		// FieldCategory.ClientSiteMonitoringAnAudit
+		ReportForeignKey operatorKey = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
+		operatorKey.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+		operatorKey.setMinimumImportance(FieldImportance.Required);
+		addOptionalKey(operatorKey);
 	}
 }
