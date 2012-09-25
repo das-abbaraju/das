@@ -5,7 +5,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class ContractorAuditTable extends AbstractTable {
-	
+
 	public static final String Contractor = "Contractor";
 	public static final String Type = "Type";
 	public static final String Auditor = "Auditor";
@@ -14,7 +14,8 @@ public class ContractorAuditTable extends AbstractTable {
 	public ContractorAuditTable() {
 		super("contractor_audit");
 		addFields(ContractorAudit.class);
-		
+		addPrimaryKey(FilterType.Integer);
+
 		Field auditTypeName;
 		auditTypeName = new Field("Name", "auditTypeID", FilterType.String);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
@@ -27,14 +28,20 @@ public class ContractorAuditTable extends AbstractTable {
 
 	public void addJoins() {
 		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
-		addJoinKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")));
-//		auditType.includeRequiredAndAverageColumns();
-		addOptionalKey(new ReportForeignKey(Auditor, new UserTable(), new ReportOnClause("auditorID")));
-//		auditor.setOverrideCategory(FieldCategory.Auditors);
-//		auditor.includeOnlyRequiredColumns();
-		
-		addOptionalKey(new ReportForeignKey(ClosingAuditor, new UserTable(), new ReportOnClause("closingAuditorID")));
-//		closingAuditor.setOverrideCategory(FieldCategory.Auditors);
-//		closingAuditor.includeOnlyRequiredColumns();
+		addJoinKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")))
+				.setMinimumImportance(FieldImportance.Average);
+		{
+			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(Auditor, new UserTable(),
+					new ReportOnClause("auditorID")));
+			auditorKey.setMinimumImportance(FieldImportance.Required);
+			auditorKey.setCategory(FieldCategory.Auditors);
+		}
+
+		{
+			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(ClosingAuditor, new UserTable(),
+					new ReportOnClause("closingAuditorID")));
+			auditorKey.setMinimumImportance(FieldImportance.Required);
+			auditorKey.setCategory(FieldCategory.Auditors);
+		}
 	}
 }

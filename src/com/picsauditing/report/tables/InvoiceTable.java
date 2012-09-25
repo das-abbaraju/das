@@ -12,12 +12,9 @@ public class InvoiceTable extends AbstractTable {
 
 		// addField(prefix + "Currency", alias + ".currency", FilterType.String,
 		// FieldCategory.Invoicing);
-		// TODO Move this to Models
-		// ReportOnClause.FromAlias + ".tableType = 'I'
-		// super("invoice", "payment", "p", "i.tableType = 'P'");
 	}
 
 	protected void addJoins() {
-		addKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
+		addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
 	}
 }

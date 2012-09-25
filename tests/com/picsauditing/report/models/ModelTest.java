@@ -19,16 +19,16 @@ abstract public class ModelTest {
 	protected Permissions permissions;
 	protected Definition definition;
 	protected Map<String, Field> availableFields;
-	protected Set<String> fieldsThatShouldBeIncluded;
-	protected Set<String> fieldsThatShouldNotBeIncluded;
+	protected Set<String> includedFields;
+	protected Set<String> excludedFields;
 
 	@Before
 	protected void setup() {
 		permissions = EntityFactory.makePermission();
 		definition = new Definition("");
 		availableFields = new HashMap<String, Field>();
-		fieldsThatShouldBeIncluded = new HashSet<String>();
-		fieldsThatShouldNotBeIncluded = new HashSet<String>();
+		includedFields = new HashSet<String>();
+		excludedFields = new HashSet<String>();
 	}
 
 	protected void checkFields() {
@@ -36,11 +36,11 @@ abstract public class ModelTest {
 			System.out.println(field.getName());
 		}
 		
-		for (String fieldName : fieldsThatShouldBeIncluded) {
+		for (String fieldName : includedFields) {
 			assertTrue(fieldName + " was missing from availableFields",
 					availableFields.containsKey(fieldName.toUpperCase()));
 		}
-		for (String fieldName : fieldsThatShouldNotBeIncluded) {
+		for (String fieldName : excludedFields) {
 			assertFalse(fieldName + " was present in availableFields",
 					availableFields.containsKey(fieldName.toUpperCase()));
 		}

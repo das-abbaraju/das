@@ -9,22 +9,11 @@ public class OperatorTable extends AbstractTable {
 		super("operators");
 		addFields(OperatorAccount.class);
 
-		// addField(prefix + "ID", alias + ".id", FilterType.Integer,
-		// FieldCategory.ClientSitePreferences).setWidth(80);
-		// addField(prefix + "IsCorporate", alias + ".isCorporate",
-		// FilterType.Integer,
-		// FieldCategory.ClientSitePreferences).setWidth(80);
-		//
-		// Field operatorName;
-		// operatorName = addField(prefix + "Name", "a.name",
-		// FilterType.AccountName, FieldCategory.ClientSitePreferences);
 		// operatorName.setUrl("FacilitiesEdit.action?operator={" + prefix +
-		// "ID}");
-		// operatorName.setWidth(300);
 	}
 
 	public void addJoins() {
-		addKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id", "id")));
-		// type IN ('Operator','Corporate')
+		addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id", "id",
+				ReportOnClause.ToAlias + ".type IN ('Operator','Corporate')")));
 	}
 }

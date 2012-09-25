@@ -15,8 +15,8 @@ public class ContractorOperatorTable extends AbstractTable {
 	public void addJoins() {
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("genID"));
 		operator.setCategory(FieldCategory.ReportingClientSite);
-		addKey(operator);
+		addRequiredKey(operator);
 		
-		addKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("subID")));
+		addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("subID")));
 	}
 }

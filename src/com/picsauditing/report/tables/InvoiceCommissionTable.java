@@ -13,7 +13,7 @@ public class InvoiceCommissionTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("invoiceID")));
+		addRequiredKey(new ReportForeignKey(Invoice, new InvoiceTable(), new ReportOnClause("invoiceID")));
 		addOptionalKey(new ReportForeignKey(User, new UserTable(), new ReportOnClause("userID"))).setMinimumImportance(
 				FieldImportance.Required);
 		// FieldCategory.Commission

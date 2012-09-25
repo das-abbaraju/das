@@ -111,6 +111,9 @@ public class ReportElement implements JSONable {
 	}
 
 	public String getSql() {
+		if (field == null) {
+			throw new RuntimeException(fieldName + " is missing from available fields");
+		}
 		String fieldSql = field.getDatabaseColumnName();
 		if (method == null)
 			return fieldSql;
