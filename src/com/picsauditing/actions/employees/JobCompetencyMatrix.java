@@ -80,6 +80,14 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		this.audit = audit;
 	}
 
+	public List<OperatorCompetency> getCompetencies() {
+		return competencies;
+	}
+
+	public JobCompetency getJobCompetency(JobRole role, OperatorCompetency comp) {
+		return map.get(role, comp);
+	}
+
 	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
 		// need to check if forward entries are all null to not include in list
 		for (JobRole role : roles) {
@@ -89,14 +97,6 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		}
 
 		return null;
-	}
-
-	public List<OperatorCompetency> getCompetencies() {
-		return competencies;
-	}
-
-	public JobCompetency getJobCompetency(JobRole role, OperatorCompetency comp) {
-		return map.get(role, comp);
 	}
 
 	private void loadRolesAndCompetencies() {
