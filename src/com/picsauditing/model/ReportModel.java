@@ -13,8 +13,6 @@ import javax.persistence.NonUniqueResultException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -46,8 +44,6 @@ public class ReportModel {
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
-
-	private final Logger logger = LoggerFactory.getLogger(ReportModel.class);
 
 	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
 		try {
@@ -344,7 +340,7 @@ public class ReportModel {
 			reportPermissionAccount.setAuditColumns(new User(permissions.getUserId()));
 		}
 
-		reportPermissionUserDao.save(reportPermissionAccount);
+		reportPermissionAccountDao.save(reportPermissionAccount);
 
 		return reportPermissionAccount;
 	}
@@ -372,18 +368,14 @@ public class ReportModel {
 	}
 
 	public void removeAndCascade(Report report) {
-		List<ReportUser> reportUsers = reportUserDao.findAllByReportId(report.getId());
-
-		for (ReportUser reportUser : reportUsers) {
-			int userId = reportUser.getUser().getId();
-
-			try {
-				unfavoriteReport(userId, report.getId());
-			} catch (Exception e) {
-				logger.error("Unable to get favorite count to cascade favorite indices in ReportDAO.removeAndCascade(Report)");
-			}
+		List<ReportPermissionUser> reportPermissionUsers = reportPermissionUserDao.findAllByReportId(report.getId());
+		for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
+			reportPermissionUserDao.remove(reportPermissionUser);
 		}
 		
-		// TODO: Remove all related RPUs and RPAs
+		List<ReportPermissionAccount> reportPermissionAccounts = reportPermissionAccountDao.findAllByReportId(report.getId());
+		for (ReportPermissionAccount reportPermissionAccount : reportPermissionAccounts) {
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		}
 	}
 }
