@@ -82,6 +82,10 @@ Ext.override(Ext.menu.Menu, {
 Ext.define('PICS.view.layout.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutmenu'],
+    
+    requires: [
+        'PICS.view.layout.SearchBox'
+    ],
 
     border: 0,
     enableOverflow: true,
@@ -90,7 +94,7 @@ Ext.define('PICS.view.layout.Menu', {
     padding: 0,
 
     autoLoad: {
-        url: 'Menu.action',
+        url: '/Menu.action',
 
         renderer: function (loader, response, active) {
             var toolbar = loader.getTarget();
@@ -189,7 +193,7 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         dashboard_menu.height = 50;
-        dashboard_menu.icon = 'v7/img/logo.svg';
+        dashboard_menu.icon = '/v7/img/logo.svg';
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
     },

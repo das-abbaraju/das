@@ -23,7 +23,7 @@ Ext.define('PICS.store.report.AvailableFields', {
         var request_parameters = Ext.Object.fromQueryString(document.location.search);
         var report_id = request_parameters.report;
 
-        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + report_id;
+        this.proxy.url = '/ReportDynamic!availableFields.action?report=' + report_id;
 
         this.callParent(arguments);
         

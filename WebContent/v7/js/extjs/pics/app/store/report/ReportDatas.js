@@ -36,7 +36,7 @@ Ext.define('PICS.store.report.ReportDatas', {
         },
         timeout: 10000,
         type: 'ajax',
-        url: 'ReportData.action'
+        url: '/ReportData.action'
     },
 
     reload: function () {
