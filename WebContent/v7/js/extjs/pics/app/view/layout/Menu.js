@@ -117,6 +117,9 @@ Ext.define('PICS.view.layout.Menu', {
             toolbar.add(menu_items);
 
             toolbar.styleOverflowMenu();
+
+            // Remove the loading indicator
+            toolbar.setLoading(false);
         }
     },
 
