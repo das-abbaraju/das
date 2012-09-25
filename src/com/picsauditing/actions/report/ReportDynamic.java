@@ -100,13 +100,19 @@ public class ReportDynamic extends PicsActionSupport {
 				for (Column column : report.getDefinition().getColumns()) {
 					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
 						column.setFieldName("AccountName");
+					if (column.getFieldName().equalsIgnoreCase("OperatorName"))
+						column.setFieldName("AccountName");
 				}
 				for (Sort column : report.getDefinition().getSorts()) {
 					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
 						column.setFieldName("AccountName");
+					if (column.getFieldName().equalsIgnoreCase("OperatorName"))
+						column.setFieldName("AccountName");
 				}
 				for (Filter column : report.getDefinition().getFilters()) {
 					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
+						column.setFieldName("AccountName");
+					if (column.getFieldName().equalsIgnoreCase("OperatorName"))
 						column.setFieldName("AccountName");
 				}
 			}

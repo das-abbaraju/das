@@ -120,7 +120,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "name", nullable = false, length = 50)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required, width = 200)
+	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required, width = 250)
 	public String getName() {
 		return this.name;
 	}
@@ -197,7 +197,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
-	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country)
+	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country, width = 150)
 	public Country getCountry() {
 		return country;
 	}
