@@ -20,7 +20,8 @@ public class ContractorOperatorModel extends AbstractModel {
 
 		{
 			ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
-			contractor.join(ContractorTable.Account);
+			contractor.alias = "Contractor";
+			contractor.join(ContractorTable.Account).alias = "Account";
 		}
 
 		return spec;

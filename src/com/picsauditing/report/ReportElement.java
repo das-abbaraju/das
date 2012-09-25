@@ -170,7 +170,7 @@ public class ReportElement implements JSONable {
 		Field field = availableFields.get(originalFieldName.toUpperCase());
 
 		if (field == null) {
-			logger.warn("Failed to find [&1] in availableFields", originalFieldName);
+			logger.warn("Failed to find " + originalFieldName + " in availableFields");
 			return;
 		}
 

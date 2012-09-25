@@ -36,6 +36,7 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.util.Strings;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -146,6 +147,9 @@ public final class ReportUtil {
 			translatedText = getText("Report." + field.getName(), locale);
 		}
 
+		if (Strings.isEmpty(translatedText))
+			return field.getName();
+		
 		return translatedText;
 	}
 

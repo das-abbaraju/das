@@ -17,6 +17,9 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.Column;
+import com.picsauditing.report.Filter;
+import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.Field;
@@ -92,8 +95,24 @@ public class ReportDynamic extends PicsActionSupport {
 	public String report() {
 		try {
 			ReportModel.validate(report);
+
+			{
+				for (Column column : report.getDefinition().getColumns()) {
+					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
+						column.setFieldName("AccountName");
+				}
+				for (Sort column : report.getDefinition().getSorts()) {
+					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
+						column.setFieldName("AccountName");
+				}
+				for (Filter column : report.getDefinition().getFilters()) {
+					if (column.getFieldName().equalsIgnoreCase("ContractorName"))
+						column.setFieldName("AccountName");
+				}
+			}
+
 			json.put("reportID", report.getId());
-			
+
 			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
@@ -117,10 +136,10 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			// ReportModel.validate(report);
-			
+
 			ModelType modelType = report.getModelType();
 			json.put("modelType", report.getModelType().toString());
-			
+
 			AbstractModel model = ModelFactory.build(modelType, permissions);
 
 			Map<String, Field> availableFields = model.getAvailableFields();
@@ -195,7 +214,8 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("You need to pass a fieldName to get the translated field values.");
 
-			Map<String, Field> availableFields = ModelFactory.build(report.getModelType(), permissions).getAvailableFields();
+			Map<String, Field> availableFields = ModelFactory.build(report.getModelType(), permissions)
+					.getAvailableFields();
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)

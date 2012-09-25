@@ -154,8 +154,11 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public String getSql() {
-		if (fieldName.equals("accountName")) {
-			field.setDatabaseColumnName("a.nameIndex");
+		if (fieldName.equalsIgnoreCase("accountName")) {
+			field.setDatabaseColumnName("nameIndex");
+		}
+		if (fieldName.equalsIgnoreCase("contractorName")) {
+			field.setDatabaseColumnName("nameIndex");
 		}
 
 		return super.getSql();
