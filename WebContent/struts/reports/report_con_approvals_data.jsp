@@ -57,7 +57,7 @@
 							<s:date name="get('dateAdded')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 						</td>
 						<td>
-							<s:property value="getWorkStatusDesc(get('workStatus'))"/>
+							<s:property value="get('workStatus')"/>
 						</td>
 					</s:if>
 				</tr>
