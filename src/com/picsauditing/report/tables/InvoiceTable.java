@@ -18,6 +18,8 @@ public class InvoiceTable extends AbstractTable {
 	}
 
 	protected void addJoins() {
-		addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID")));
+		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID"));
+		addRequiredKey(accountJoin);
+		accountJoin.setMinimumImportance(FieldImportance.Required);
 	}
 }

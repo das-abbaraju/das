@@ -2,6 +2,7 @@ package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.AccountTable;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
 import com.picsauditing.report.tables.InvoiceTable;
 import com.picsauditing.report.tables.PaymentCommissionTable;
@@ -23,9 +24,11 @@ public class PaymentCommissionModel extends AbstractModel {
 				{
 					ModelSpec account = invoice.join(InvoiceTable.Account);
 					account.alias = "Account";
-					ModelSpec contractor = account.join(AccountTable.Contractor);
-					contractor.alias = "Contractor";
 					account.join(AccountTable.Contact);
+					// ModelSpec contractor =
+					// account.join(AccountTable.Contractor);
+					// contractor.alias = "Contractor";
+					// contractor.minimumImportance = FieldImportance.Average;
 				}
 			}
 			ModelSpec recipientUser = invoiceCommission.join(InvoiceCommissionTable.User);

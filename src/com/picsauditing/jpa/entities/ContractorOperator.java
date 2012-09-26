@@ -28,6 +28,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -105,7 +106,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	 * @return P=Pending, Y=Yes, N=No
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus)
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, importance = FieldImportance.Average)
 	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
@@ -297,7 +298,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "flag", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "FlagColor")
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
@@ -316,7 +317,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "waitingOn", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "WaitingOn")
+	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "WaitingOn", importance = FieldImportance.Average)
 	public WaitingOn getWaitingOn() {
 		return waitingOn;
 	}

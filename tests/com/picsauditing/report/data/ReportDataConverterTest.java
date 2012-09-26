@@ -57,7 +57,7 @@ public class ReportDataConverterTest {
 		columns.add(createColumn(availableFields.get("ACCOUNTCREATIONDATE")));
 		columns.add(createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE")));
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
-		membershipMonth.setFieldName("contractorMembershipDate__Month");
+		membershipMonth.setFieldName("ContractorMembershipDate__Month");
 		columns.add(membershipMonth);
 		columns.add(createColumn(availableFields.get("CONTRACTORLASTUPGRADEDATE")));
 	}
@@ -81,8 +81,8 @@ public class ReportDataConverterTest {
 		JSONArray json = runJsonConverter();
 
 		assertEquals(1, json.size());
-		String expected = "[{\"accountID\":1,\"accountName\":\"Test 1\",\"accountCreationDate\":1234567890,"
-				+ "\"contractorMembershipDate__Month\":\"janvier\",\"contractorMembershipDate\":1234567890}]";
+		String expected = "[{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":1234567890,"
+				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorMembershipDate\":1234567890}]";
 		assertEquals(expected, json.toString());
 	}
 
@@ -103,7 +103,7 @@ public class ReportDataConverterTest {
 		ReportRow row1 = results.getRows().get(0);
 		for (ReportCell cell : row1.getCells()) {
 			String fieldName = cell.getColumn().getFieldName();
-			if ("contractorMembershipDate".equals(fieldName)) {
+			if ("ContractorMembershipDate".equals(fieldName)) {
 				assertEquals(new java.sql.Date(1234567890), cell.getValue());
 			}
 		}
@@ -111,12 +111,12 @@ public class ReportDataConverterTest {
 
 	private List<BasicDynaBean> createAccountQueryList(int count) {
 		DynaBeanListBuilder builder = new DynaBeanListBuilder("account");
-		builder.addProperty("accountID", Long.class);
-		builder.addProperty("accountName", String.class);
-		builder.addProperty("accountCreationDate", Timestamp.class);
-		builder.addProperty("contractorMembershipDate", java.sql.Date.class);
-		builder.addProperty("contractorMembershipDate__Month", Integer.class);
-		builder.addProperty("contractorLastUpgradeDate", java.sql.Date.class);
+		builder.addProperty("AccountID", Long.class);
+		builder.addProperty("AccountName", String.class);
+		builder.addProperty("AccountCreationDate", Timestamp.class);
+		builder.addProperty("ContractorMembershipDate", java.sql.Date.class);
+		builder.addProperty("ContractorMembershipDate__Month", Integer.class);
+		builder.addProperty("ContractorLastUpgradeDate", java.sql.Date.class);
 		for (int i = 0; i < count; i++) {
 			builder.addRow();
 			long accountID = 1;
@@ -125,12 +125,12 @@ public class ReportDataConverterTest {
 				accountID = Math.round(Math.random() * 1000);
 				currentUnitTime = new Date().getTime();
 			}
-			builder.setValue("accountID", accountID);
-			builder.setValue("accountName", "Test " + accountID);
-			builder.setValue("accountCreationDate", new Timestamp(currentUnitTime));
-			builder.setValue("contractorMembershipDate", new java.sql.Date(currentUnitTime));
-			builder.setValue("contractorMembershipDate__Month", 1);
-			builder.setValue("contractorLastUpgradeDate", null);
+			builder.setValue("AccountID", accountID);
+			builder.setValue("AccountName", "Test " + accountID);
+			builder.setValue("AccountCreationDate", new Timestamp(currentUnitTime));
+			builder.setValue("ContractorMembershipDate", new java.sql.Date(currentUnitTime));
+			builder.setValue("ContractorMembershipDate__Month", 1);
+			builder.setValue("ContractorLastUpgradeDate", null);
 		}
 		return builder.getRows();
 	}

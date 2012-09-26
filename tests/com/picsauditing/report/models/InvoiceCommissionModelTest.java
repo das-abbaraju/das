@@ -20,11 +20,8 @@ public class InvoiceCommissionModelTest extends ModelTest {
 	public void testAvailableFields() throws Exception {
 		availableFields = model.getAvailableFields();
 
-		assertFalse("accountFax is Low importance", availableFields.containsKey("accountFax".toUpperCase()));
-		assertTrue("invoiceCommissionRecipientUserName is required",
-				availableFields.containsKey("invoiceCommissionRecipientUserName".toUpperCase()));
-
-		assertEquals("OK if close to expected because we added a few fields", 20, availableFields.size());
+		excludedFields.add("AccountFax");
+		includedFields.add("InvoiceCommissionRecipientUserName");
 	}
 
 }

@@ -8,6 +8,7 @@ import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 public class ContractorOperatorModel extends AbstractModel {
@@ -23,11 +24,11 @@ public class ContractorOperatorModel extends AbstractModel {
 		{
 			ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
 			contractor.alias = "Contractor";
+			contractor.minimumImportance = FieldImportance.Average;
 			{
 				ModelSpec account = contractor.join(ContractorTable.Account);
 				account.alias = "Account";
-				account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
-				account.join(AccountTable.Naics);
+				account.minimumImportance = FieldImportance.Average;
 			}
 		}
 

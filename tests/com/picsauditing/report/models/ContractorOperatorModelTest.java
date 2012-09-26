@@ -1,7 +1,5 @@
 package com.picsauditing.report.models;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +15,18 @@ public class ContractorOperatorModelTest extends ModelTest {
 	@Test
 	public void testAvailableFields() throws Exception {
 		availableFields = model.getAvailableFields();
-		assertEquals("OK if close to expected because we added a few fields", 69, availableFields.size());
+
+		includedFields.add("ContractorOperatorOperatorID");
+		includedFields.add("ContractorOperatorOperatorName");
+		includedFields.add("ContractorOperatorForceFlag");
+		includedFields.add("AccountStatus");
+		includedFields.add("AccountID");
+		includedFields.add("AccountName");
+
+		excludedFields.add("AccountCountry");
+		excludedFields.add("ContractorScore");
+		excludedFields.add("ContractorOperatorOperatorStatus");
+		checkFields();
 	}
 
 }

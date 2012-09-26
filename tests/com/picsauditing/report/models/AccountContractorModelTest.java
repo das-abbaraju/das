@@ -47,11 +47,11 @@ public class AccountContractorModelTest extends ModelTest {
 	public void testAvailableFieldsForAdmin() throws Exception {
 		EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
 		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+		model = new AccountContractorModel(permissions);
 		availableFields = model.getAvailableFields();
 
 		includedFields.add("ContractorBalance");
 		checkFields();
-		// assertEquals("OK if close to expected because we added a few fields", 64, availableFields.size());
 	}
 
 	@Test

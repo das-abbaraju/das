@@ -99,7 +99,7 @@ public class SqlBuilderTest {
 
 		initializeSql();
 
-		assertContains("(YEAR(Account.CreationDate) > 2010)", sql.toString());
+		assertContains("(YEAR(Account.creationDate) > 2010)", sql.toString());
 		assertAllFiltersHaveFields();
 	}
 

@@ -150,12 +150,12 @@ public final class ReportUtil {
 
 		if (field != null) {
 			translatedText = getText("Report." + field.getName(), locale);
+
+			if (Strings.isEmpty(translatedText)) {
+				return field.getName();
+			}
 		}
 
-		if (Strings.isEmpty(translatedText)) {
-			return field.getName();
-		}
-		
 		return translatedText;
 	}
 

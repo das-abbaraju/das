@@ -19,10 +19,16 @@ public class AccountContractorAuditModelTest extends ModelTest {
 	public void testAvailableFields() throws Exception {
 		availableFields = model.getAvailableFields();
 
-		assertFalse("contractorPQFExpiresDate was removed",
-				availableFields.containsKey("contractorPQFExpiresDate".toUpperCase()));
+		excludedFields.add("ContractorPQFExpiresDate");
+		excludedFields.add("ContractorOperatorFlagColor");
 
-		assertEquals("OK if close to expected because we added a few fields", 74, availableFields.size());
+		includedFields.add("AuditID");
+		includedFields.add("AuditEffectiveDate");
+		includedFields.add("AuditAuditorName");
+		includedFields.add("AuditClosingAuditorName");
+		includedFields.add("AccountDbaName");
+
+		checkFields();
 	}
 
 }
