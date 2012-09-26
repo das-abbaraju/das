@@ -113,7 +113,12 @@ public class OshaDisplay {
 				}
 			}
 
-			if (rateType.isHasIndustryAverage()) {
+			List<OshaDisplayRow> hurdleRateRows = new ArrayList<OshaDisplayRow>();
+			if (rateType != OshaRateType.Fatalities) {
+				hurdleRateRows = generateHurdleRates(rateType, oshaType);
+			}
+			
+			if (rateType.isHasIndustryAverage() && hurdleRateRows.size() > 0) {
 				String industryAverage = getIndustryAverage(oshaType, rateType);
 				rateRow.addCell(industryAverage);
 			} else {
@@ -121,9 +126,8 @@ public class OshaDisplay {
 			}
 
 			rows.add(rateRow);
-			if (rateType != OshaRateType.Fatalities) {
-				rows.addAll(generateHurdleRates(rateType, oshaType));
-			}
+			
+			rows.addAll(hurdleRateRows);
 		}
 
 		return rows;
@@ -155,7 +159,7 @@ public class OshaDisplay {
 		}
 		return null;
 	}
-
+	
 	private List<OshaDisplayRow> generateHurdleRates(
 			OshaRateType oshaRateType, OshaType oshaType) {
 		List<OshaDisplayRow> hurdleRateRows = new ArrayList<OshaDisplayRow>();
