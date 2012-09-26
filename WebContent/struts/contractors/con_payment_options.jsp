@@ -296,7 +296,7 @@
 					
 					<li>
 						<label><s:text name="BillingDetail.Info.PaymentMethod" /></label>
-						<s:property value="contractor.paymentMethod.description"/><br/>
+						<s:text name="%{contractor.paymentMethod.i18nKey}" />
 					</li>
 					
 					<s:if test="contractor.status.active || permissions.admin">

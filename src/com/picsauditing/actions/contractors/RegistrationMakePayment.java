@@ -22,6 +22,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -255,13 +256,12 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		if (contractor.getCountry().getIsoCode().equals("CA")
-				&& featureToggleChecker
-						.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
+				&& featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			contractor.setLcCorPhase(LcCorPhase.RemindMeLater);
 			contractor.setLcCorNotification(new Date());
 			contractorAccountDao.save(contractor);
 		}
-		
+
 		complete = true;
 
 		if (!contractor.getAccountLevel().isBidOnly() && !contractor.isRenew()) {
@@ -680,7 +680,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return true;
 		}
 
-		Invoice newInvoice = billingService.createInvoice(contractor, "Activation", getUser());
+		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());

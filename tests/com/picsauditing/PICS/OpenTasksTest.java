@@ -49,6 +49,7 @@ import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -82,28 +83,44 @@ public class OpenTasksTest {
 	private final String ResubmitPolicy = "Please review and resubmit your Policy";
 	private final String OpenRequirementsEmployeeGuard = "You have open requirements for employee";
 	private final String OpenRequirements = "You have open requirements";
-	
+
 	private final BigDecimal OUTSTANDING_BALANCE = new BigDecimal(100.00);
-	
+
 	private OpenTasks openTasks;
 
-	@Mock private Account account;
-	@Mock private AuditType auditType;
-	@Mock private ContractorAccount contractor;
-	@Mock private ContractorAudit audit;
-	@Mock protected ContractorAuditDAO contractorAuditDao;
-	@Mock private OperatorTagDAO operatorTagDao;
-	@Mock private ContractorAuditOperator cao;
-	@Mock private User user;
-	@Mock private Permissions permissions;
-	@Mock private OperatorAccount operator;
-	@Mock private Workflow workFlow;
-	@Mock private I18nCache i18nCache;
-	@Mock private UserAccess userAccess;
-	@Mock private Invoice invoice;
-	@Mock private Database databaseForTesting;
-	@Mock private FeatureToggle featureToggleChecker;
-	
+	@Mock
+	private Account account;
+	@Mock
+	private AuditType auditType;
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private ContractorAudit audit;
+	@Mock
+	protected ContractorAuditDAO contractorAuditDao;
+	@Mock
+	private OperatorTagDAO operatorTagDao;
+	@Mock
+	private ContractorAuditOperator cao;
+	@Mock
+	private User user;
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private OperatorAccount operator;
+	@Mock
+	private Workflow workFlow;
+	@Mock
+	private I18nCache i18nCache;
+	@Mock
+	private UserAccess userAccess;
+	@Mock
+	private Invoice invoice;
+	@Mock
+	private Database databaseForTesting;
+	@Mock
+	private FeatureToggle featureToggleChecker;
+
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
 	private ArrayList<String> openTaskList;
@@ -112,23 +129,23 @@ public class OpenTasksTest {
 	private List<ContractorAudit> contractorAudits;
 	private List<Invoice> invoices;
 	private List<ContractorAuditOperator> caos;
-	
+
 	@AfterClass
 	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database)null);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-		
+
 		openTasks = new OpenTasks(); // class under test
 
-		setUpCollections(); // MUST be before mocks 
+		setUpCollections(); // MUST be before mocks
 		setUpMocks();
 		setUpI18nCacheText();
-		
+
 		Whitebox.setInternalState(openTasks, "i18nCache", i18nCache);
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
@@ -141,7 +158,7 @@ public class OpenTasksTest {
 		openTaskList = new ArrayList<String>();
 		userPermissions = new HashSet<UserAccess>();
 		userPermissions.add(userAccess);
-		contractorAudits =  new ArrayList<ContractorAudit>();
+		contractorAudits = new ArrayList<ContractorAudit>();
 		contractorAudits.add(audit);
 		invoices = new ArrayList<Invoice>();
 		invoices.add(invoice);
@@ -179,6 +196,7 @@ public class OpenTasksTest {
 		when(contractor.getBalance()).thenReturn(BigDecimal.ZERO);
 		when(contractor.getAudits()).thenReturn(contractorAudits);
 		when(contractor.getInvoices()).thenReturn(invoices);
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Current);
 	}
 
 	private void setUpMockInvoice() {
@@ -186,37 +204,37 @@ public class OpenTasksTest {
 		when(invoice.getDueDate()).thenReturn(new Date());
 		when(invoice.getCurrency()).thenReturn(Currency.USD);
 	}
-	
+
 	private void setUpMockAudit() {
 		when(audit.getAuditType()).thenReturn(auditType);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoTradesSelected() throws Exception {
 		noTrades();
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(NoTradesSelected));
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_TradesNeedUpdating() throws Exception {
-		oneTrade();	
+		oneTrade();
 		when(contractor.isNeedsTradesUpdated()).thenReturn(true);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(NeedsTradesUpdated));
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_IfOperatorThenWillNotGatherRelationshipTasks() throws Exception {
 		when(operator.getCanSeeInsurance()).thenReturn(YesNo.No);
 		when(user.getAccount()).thenReturn(operator);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		verify(contractor, never()).isAgreementInEffect();
 	}
 
@@ -225,9 +243,9 @@ public class OpenTasksTest {
 		when(operator.getCanSeeInsurance()).thenReturn(YesNo.No);
 		when(operator.getType()).thenReturn("Corporate");
 		when(user.getAccount()).thenReturn(operator);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		verify(contractor, never()).isAgreementInEffect();
 	}
 
@@ -251,33 +269,33 @@ public class OpenTasksTest {
 
 	private void validateMustApproveUpdatedAgreement() {
 		when(contractor.isAgreementInEffect()).thenReturn(false);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(UpdatedAgreement));
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoNeedToApproveUpdatedAgreement_AgreementInEffect() throws Exception {
 		when(contractor.isAgreementInEffect()).thenReturn(true);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, not(hasItem(UpdatedAgreement)));
 
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_RequiresTwoUsers_IsContractorAdmin() throws Exception {
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorAdmin);
-		
+
 		validateRequiresTwoUsers();
 	}
 
 	@Test
 	public void testGetOpenTasks_RequiresTwoUsers_UserIsAdmin() throws Exception {
 		when(account.isAdmin()).thenReturn(true);
-		
+
 		validateRequiresTwoUsers();
 	}
 
@@ -290,178 +308,178 @@ public class OpenTasksTest {
 		when(contractor.getCreationDate()).thenReturn(date179DaysAgo());
 
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(RequiresTwoUsers));
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_BidOnlyUpgrade() throws Exception {
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorAdmin);
 		when(contractor.isAgreementInEffect()).thenReturn(true);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
 		when(contractor.getPaymentExpires()).thenReturn(new Date());
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(BidOnlyUpdgrade));
 	}
 
-	
 	@Test
 	public void testGetOpenTasks_NoPqfTasksBecauseNoAudits() throws Exception {
 		when(contractor.getAudits()).thenReturn(new ArrayList<ContractorAudit>());
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, not(hasItem(ImportAndSubmitPQF)));
 		Boolean hasImportPQF = Whitebox.getInternalState(openTasks, "hasImportPQF");
 		assertFalse(hasImportPQF);
 		Boolean importPQFComplete = Whitebox.getInternalState(openTasks, "importPQFComplete");
 		assertFalse(importPQFComplete);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoPqfTasksBecauseNoVisibleAudits() throws Exception {
-		when(audit.isVisibleTo((Permissions)any())).thenReturn(false);
-		
+		when(audit.isVisibleTo((Permissions) any())).thenReturn(false);
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, not(hasItem(ImportAndSubmitPQF)));
 		Boolean hasImportPQF = Whitebox.getInternalState(openTasks, "hasImportPQF");
 		assertFalse(hasImportPQF);
 		Boolean importPQFComplete = Whitebox.getInternalState(openTasks, "importPQFComplete");
 		assertFalse(importPQFComplete);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoPqfTasksBecauseNoImportPQFAudit() throws Exception {
-		when(audit.isVisibleTo((Permissions)any())).thenReturn(true);
+		when(audit.isVisibleTo((Permissions) any())).thenReturn(true);
 		when(audit.getAuditType()).thenReturn(auditType);
-		when(auditType.getId()).thenReturn(AuditType.IEC_AUDIT); // anything but AuditType.IMPORT_PQF
-		
+		when(auditType.getId()).thenReturn(AuditType.IEC_AUDIT); // anything but
+																	// AuditType.IMPORT_PQF
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, not(hasItem(ImportAndSubmitPQF)));
 		Boolean hasImportPQF = Whitebox.getInternalState(openTasks, "hasImportPQF");
 		assertFalse(hasImportPQF);
 		Boolean importPQFComplete = Whitebox.getInternalState(openTasks, "importPQFComplete");
 		assertFalse(importPQFComplete);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoPqfTasksBecauseAuditIsExpired() throws Exception {
-		when(audit.isVisibleTo((Permissions)any())).thenReturn(true);
+		when(audit.isVisibleTo((Permissions) any())).thenReturn(true);
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(audit.isExpired()).thenReturn(true);
 		when(auditType.getId()).thenReturn(AuditType.IMPORT_PQF);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, not(hasItem(ImportAndSubmitPQF)));
 		Boolean hasImportPQF = Whitebox.getInternalState(openTasks, "hasImportPQF");
 		assertFalse(hasImportPQF);
 		Boolean importPQFComplete = Whitebox.getInternalState(openTasks, "importPQFComplete");
 		assertFalse(importPQFComplete);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoPqfTasksBecauseNotBeforeSubmittedButInternalFlagsSetToTrue() throws Exception {
-		when(audit.isVisibleTo((Permissions)any())).thenReturn(true);
+		when(audit.isVisibleTo((Permissions) any())).thenReturn(true);
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(audit.isExpired()).thenReturn(false);
 		when(audit.hasCaoStatusBefore(AuditStatus.Submitted)).thenReturn(false);
 		when(audit.hasCaoStatus(AuditStatus.Complete)).thenReturn(true);
 		when(auditType.getId()).thenReturn(AuditType.IMPORT_PQF);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, not(hasItem(ImportAndSubmitPQF)));
 		Boolean hasImportPQF = Whitebox.getInternalState(openTasks, "hasImportPQF");
 		assertTrue(hasImportPQF);
 		Boolean importPQFComplete = Whitebox.getInternalState(openTasks, "importPQFComplete");
 		assertTrue(importPQFComplete);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_HasPqfTask() throws Exception {
-		when(audit.isVisibleTo((Permissions)any())).thenReturn(true);
+		when(audit.isVisibleTo((Permissions) any())).thenReturn(true);
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(audit.isExpired()).thenReturn(false);
 		when(audit.hasCaoStatusBefore(AuditStatus.Submitted)).thenReturn(true);
 		when(audit.hasCaoStatus(AuditStatus.Complete)).thenReturn(true);
 		when(auditType.getId()).thenReturn(AuditType.IMPORT_PQF);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(ImportAndSubmitPQF));
 		Boolean hasImportPQF = Whitebox.getInternalState(openTasks, "hasImportPQF");
 		assertTrue(hasImportPQF);
 		Boolean importPQFComplete = Whitebox.getInternalState(openTasks, "importPQFComplete");
 		assertTrue(importPQFComplete);
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_NoBillingTasksBecauseNoPerm() throws Exception {
 		openTasks.getOpenTasks(contractor, user);
-		
+
 		verify(contractor, never()).getBillingStatus();
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_GenerateInvoiceBillingTasksBecauseBillingStatusIsUpgrade() throws Exception {
-		when(contractor.getBillingStatus()).thenReturn("Upgrade");
-		
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Upgrade);
+
 		verifyGenerateInvoice();
 	}
 
-
 	@Test
 	public void testGetOpenTasks_GenerateInvoiceBillingTasksBecauseBillingStatusIsRenewal() throws Exception {
-		when(contractor.getBillingStatus()).thenReturn("Renewal");
-		
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
+
 		verifyGenerateInvoice();
 	}
 
 	private void verifyGenerateInvoice() {
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
 		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(GenerateInvoice));
 	}
-	
+
 	@Test
-	public void testGetOpenTasks_OpenInvoiceReminderBillingTasksBecauseOutstandingBalanceAndUnpaidInvoice() throws Exception {
-		when(contractor.getBillingStatus()).thenReturn("Renewal");
+	public void testGetOpenTasks_OpenInvoiceReminderBillingTasksBecauseOutstandingBalanceAndUnpaidInvoice()
+			throws Exception {
+		when(contractor.getBillingStatus()).thenReturn(BillingStatus.Renewal);
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
 		when(contractor.getBalance()).thenReturn(OUTSTANDING_BALANCE);
 		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(OpenInvoiceReminder));
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_UpdatePaymentMethod() throws Exception {
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorBilling);
 		when(contractor.isPaymentMethodStatusValid()).thenReturn(false);
 		when(contractor.isMustPayB()).thenReturn(true);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(UpdatePaymentMethod));
-		
+
 	}
 
 	@Test
 	public void testGetOpenTasks_FixPolicyIssues() throws Exception {
 		when(audit.hasCaoStatus(AuditStatus.Incomplete)).thenReturn(true);
 		setUpPolicyAuditTask();
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(FixPolicyIssues));
 	}
 
@@ -469,34 +487,36 @@ public class OpenTasksTest {
 	public void testGetOpenTasks_UploadAndSubmitPolicy() throws Exception {
 		when(audit.hasCaoStatus(AuditStatus.Incomplete)).thenReturn(false);
 		setUpPolicyAuditTask();
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(UploadAndSubmitPolicy));
 	}
 
 	@Test
 	public void testGetOpenTasks_ResubmitPolicy() throws Exception {
 		setUpAuditTask();
-		
+
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorSafety);
-		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something not Policy
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something
+																			// not
+																			// Policy
 		when(auditType.isRenewable()).thenReturn(true);
 		when(auditType.isCanContractorEdit()).thenReturn(true);
 		when(audit.isAboutToExpire()).thenReturn(true);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(ResubmitPolicy));
 	}
-	
+
 	@Test
 	public void testGetOpenTasks_OpenRequirementsEmployeeGuard() throws Exception {
-		when(auditType.getClassType()).thenReturn(AuditTypeClass.Employee); 
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Employee);
 		setUpOpenRequirements();
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(startsWith(OpenRequirementsEmployeeGuard)));
 	}
 
@@ -505,62 +525,68 @@ public class OpenTasksTest {
 		setUpAuditTask();
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
 		when(auditType.getId()).thenReturn(143);
-		when(auditType.isWCB()).thenReturn(true); 
+		when(auditType.isWCB()).thenReturn(true);
 		when(userAccess.getViewFlag()).thenReturn(Boolean.TRUE);
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorInsurance);
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(startsWith("Please fix issues")));
 	}
 
 	@Test
 	public void testGetOpenTasks_OpenRequirementsNotEmployeeGuard() throws Exception {
-		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something not Policy and not Employee
+		when(auditType.getClassType()).thenReturn(AuditTypeClass.Audit); // something
+																			// not
+																			// Policy
+																			// and
+																			// not
+																			// Employee
 		setUpOpenRequirements();
-		
+
 		List<String> openTaskList = openTasks.getOpenTasks(contractor, user);
-		
+
 		assertThat(openTaskList, hasItem(startsWith(OpenRequirements)));
 	}
-	
+
 	private void setUpOpenRequirements() {
 		setUpAuditTask();
-		
+
 		when(auditType.isRenewable()).thenReturn(false);
 		Workflow workflow = mock(Workflow.class);
 		when(workflow.isHasRequirements()).thenReturn(true);
 		when(auditType.getWorkFlow()).thenReturn(workflow);
-		when(auditType.getId()).thenReturn(AuditType.CAN_QUAL_PQF); // something not WA_STATE_VERIFICATION
+		when(auditType.getId()).thenReturn(AuditType.CAN_QUAL_PQF); // something
+																	// not
+																	// WA_STATE_VERIFICATION
 		when(audit.hasCaoStatus(AuditStatus.Submitted)).thenReturn(true);
 		when(audit.getEffectiveDateLabel()).thenReturn(new Date());
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorSafety);
 	}
-	
+
 	private void setUpAuditTask() {
 		when(auditType.getI18nKey(anyString())).thenReturn("AuditName");
-		when(audit.isVisibleTo((Permissions)any())).thenReturn(true);
+		when(audit.isVisibleTo((Permissions) any())).thenReturn(true);
 		when(auditType.isCanContractorView()).thenReturn(true);
 		when(audit.isExpired()).thenReturn(false);
 		when(cao.getStatus()).thenReturn(AuditStatus.Incomplete);
 		when(cao.isVisible()).thenReturn(true);
 		when(audit.getOperators()).thenReturn(caos);
 	}
-	
+
 	private void setUpPolicyAuditTask() {
 		setUpAuditTask();
-		
+
 		when(userAccess.getOpPerm()).thenReturn(OpPerms.ContractorInsurance);
 		when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
 	}
 
-	
 	@Test(expected = NullPointerException.class)
 	public void testIsOpenTaskNeeded() throws Exception {
 		when(audit.getOperators()).thenReturn(null);
 		Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
 	}
-	
+
 	@Test
 	public void testIsOpenTaskNeeded_PendingManualAudit() throws Exception {
 		when(cao.isVisible()).thenReturn(true);
@@ -572,45 +598,46 @@ public class OpenTasksTest {
 		when(workFlow.getId()).thenReturn(Workflow.MANUAL_AUDIT_WORKFLOW);
 		when(account.isAdmin()).thenReturn(false);
 		when(user.getAccount()).thenReturn(account);
-		when(permissions.hasPermission((OpPerms)Matchers.argThat(instanceOf(OpPerms.class))))
-				.then(buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
-	
+		when(permissions.hasPermission((OpPerms) Matchers.argThat(instanceOf(OpPerms.class)))).then(
+				buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
+
 		Boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
-		
+
 		assertTrue(result);
 	}
 
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesMissing() throws Exception {
-		noTrades();	
-		
-		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");	
-		
+		noTrades();
+
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");
+
 		assertEquals("You must have at least 1 Trade selected.", openTaskList.get(0));
 	}
 
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesSuppliedButNeedsUpdate() throws Exception {
-		oneTrade();	
+		oneTrade();
 		when(contractor.isNeedsTradesUpdated()).thenReturn(true);
-	
-		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");	
-	
+
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");
+
 		assertEquals("Please review your provided services.", openTaskList.get(0));
 	}
 
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesSuppliedAndUpToDate() throws Exception {
-		oneTrade();	
+		oneTrade();
 		when(contractor.isNeedsTradesUpdated()).thenReturn(false);
 
-		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");	
-		
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");
+
 		assertThat(openTaskList.isEmpty(), is(true));
-	}	
-	
+	}
+
 	/*
-	 * PICS-4748 Antea-Specific Audit -- Contractor is seeing an outstanding task for Antea when there is actually nothing left to do.
+	 * PICS-4748 Antea-Specific Audit -- Contractor is seeing an outstanding
+	 * task for Antea when there is actually nothing left to do.
 	 */
 	@Test
 	public void testIsOpenTaskNeeded_SubmittedAnteaSpecificAudit() throws Exception {
@@ -623,11 +650,11 @@ public class OpenTasksTest {
 		when(audit.getAuditType()).thenReturn(auditType);
 		when(account.isAdmin()).thenReturn(false);
 		when(user.getAccount()).thenReturn(account);
-		when(permissions.hasPermission((OpPerms)Matchers.argThat(instanceOf(OpPerms.class))))
-				.then(buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
-	
+		when(permissions.hasPermission((OpPerms) Matchers.argThat(instanceOf(OpPerms.class)))).then(
+				buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
+
 		Boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
-		
+
 		assertFalse(result);
 	}
 
@@ -637,7 +664,7 @@ public class OpenTasksTest {
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");
 	}
-	
+
 	private Answer<Boolean> buildAnswerForSpecificPermission(final OpPerms permission) {
 		return new Answer<Boolean>() {
 
@@ -649,68 +676,67 @@ public class OpenTasksTest {
 						return (permission == (OpPerms) argument);
 					}
 				}
-					
+
 				return false;
 			}
-			
+
 		};
 	}
-	
+
 	private void setUpI18nCacheText() {
-		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH)))
-			.thenReturn(true);
-		
-		when(i18nCache.getText(eq("ContractorWidget.message.NoTradesSelected"), eq(Locale.ENGLISH), any()))
-			.thenReturn(NoTradesSelected);
+		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
+
+		when(i18nCache.getText(eq("ContractorWidget.message.NoTradesSelected"), eq(Locale.ENGLISH), any())).thenReturn(
+				NoTradesSelected);
 		when(i18nCache.getText(eq("ContractorWidget.message.NeedsTradesUpdated"), eq(Locale.ENGLISH), any()))
-			.thenReturn(NeedsTradesUpdated);
-		when(i18nCache.getText(eq("ContractorWidget.message.UpdatedAgreement"), eq(Locale.ENGLISH), any()))
-			.thenReturn(UpdatedAgreement);
-		when(i18nCache.getText(eq("ContractorWidget.message.RequiresTwoUsers"), eq(Locale.ENGLISH), any()))
-			.thenReturn(RequiresTwoUsers);
+				.thenReturn(NeedsTradesUpdated);
+		when(i18nCache.getText(eq("ContractorWidget.message.UpdatedAgreement"), eq(Locale.ENGLISH), any())).thenReturn(
+				UpdatedAgreement);
+		when(i18nCache.getText(eq("ContractorWidget.message.RequiresTwoUsers"), eq(Locale.ENGLISH), any())).thenReturn(
+				RequiresTwoUsers);
 		when(i18nCache.getText(eq("ContractorWidget.message.ImportAndSubmitPQF"), eq(Locale.ENGLISH), any()))
-			.thenReturn(ImportAndSubmitPQF);
+				.thenReturn(ImportAndSubmitPQF);
 		when(i18nCache.getText(eq("ContractorWidget.message.BidOnlyUpdgrade"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(BidOnlyUpdgrade);
+				.thenReturn(BidOnlyUpdgrade);
 		when(i18nCache.getText(eq("ContractorWidget.message.GenerateInvoice"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(GenerateInvoice);
+				.thenReturn(GenerateInvoice);
 		when(i18nCache.getText(eq("ContractorWidget.message.OpenInvoiceReminder"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(OpenInvoiceReminder);
+				.thenReturn(OpenInvoiceReminder);
 		when(i18nCache.getText(eq("ContractorWidget.message.UpdatePaymentMethod"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(UpdatePaymentMethod);
+				.thenReturn(UpdatePaymentMethod);
 		when(i18nCache.getText(eq("ContractorWidget.message.FixPolicyIssues"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(FixPolicyIssues);
+				.thenReturn(FixPolicyIssues);
 		when(i18nCache.getText(eq("ContractorWidget.message.UploadAndSubmitPolicy"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(UploadAndSubmitPolicy);
+				.thenReturn(UploadAndSubmitPolicy);
 		when(i18nCache.getText(eq("ContractorWidget.message.ResubmitPolicy"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(ResubmitPolicy);
-		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(OpenRequirementsEmployeeGuard);
-		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard2"), eq(Locale.ENGLISH), anyVararg()))
-		.thenReturn(OpenRequirementsEmployeeGuard);
+				.thenReturn(ResubmitPolicy);
+		when(
+				i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(OpenRequirementsEmployeeGuard);
+		when(
+				i18nCache.getText(eq("ContractorWidget.message.OpenRequirementsEmployeeGuard2"), eq(Locale.ENGLISH),
+						anyVararg())).thenReturn(OpenRequirementsEmployeeGuard);
 		when(i18nCache.getText(eq("ContractorWidget.message.OpenRequirements"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn(OpenRequirements);
+				.thenReturn(OpenRequirements);
 		when(i18nCache.getText(eq("ContractorWidget.message.UploadAndSubmitWCB"), eq(Locale.ENGLISH), anyVararg()))
-		.thenReturn(FixWcbIssues);
+				.thenReturn(FixWcbIssues);
 
-		when(i18nCache.getText(eq("AuditName"), eq(Locale.ENGLISH), anyVararg()))
-			.thenReturn("Audit Name");
-
+		when(i18nCache.getText(eq("AuditName"), eq(Locale.ENGLISH), anyVararg())).thenReturn("Audit Name");
 
 	}
-	
+
 	private void noTrades() {
 		Set<ContractorTrade> noTrades = new HashSet<ContractorTrade>();
 		when(contractor.getTrades()).thenReturn(noTrades);
 	}
-	
+
 	private void oneTrade() {
 		Set<ContractorTrade> trades = new HashSet<ContractorTrade>();
 		ContractorTrade trade = mock(ContractorTrade.class);
 		trades.add(trade);
 		when(contractor.getTrades()).thenReturn(trades);
 	}
-	
+
 	private Date date179DaysAgo() {
 		Calendar date = Calendar.getInstance();
 		date.add(Calendar.DATE, -179);
@@ -718,14 +744,14 @@ public class OpenTasksTest {
 	}
 
 	@Test
-	public void testIsLcCorTaskNeeded_NoPhase()throws Exception {
+	public void testIsLcCorTaskNeeded_NoPhase() throws Exception {
 		setUpLcCorNotification(null, null);
 		Boolean result = Whitebox.invokeMethod(openTasks, "isLcCorTaskNeeded");
 		assertFalse(result);
 	}
-	
+
 	@Test
-	public void testIsLcCorTaskNeeded_Later()throws Exception {
+	public void testIsLcCorTaskNeeded_Later() throws Exception {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 1);
 		setUpLcCorNotification(LcCorPhase.RemindMeLater, cal.getTime());
@@ -734,14 +760,14 @@ public class OpenTasksTest {
 	}
 
 	@Test
-	public void testIsLcCorTaskNeeded_Done()throws Exception {
+	public void testIsLcCorTaskNeeded_Done() throws Exception {
 		setUpLcCorNotification(LcCorPhase.Done, new Date());
 		Boolean result = Whitebox.invokeMethod(openTasks, "isLcCorTaskNeeded");
 		assertFalse(result);
 	}
 
 	@Test
-	public void testIsLcCorTaskNeeded_Yes()throws Exception {
+	public void testIsLcCorTaskNeeded_Yes() throws Exception {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, -1);
 		setUpLcCorNotification(LcCorPhase.RemindMeLater, cal.getTime());
@@ -751,11 +777,11 @@ public class OpenTasksTest {
 
 	private void setUpLcCorNotification(LcCorPhase phase, Date date) {
 		when(featureToggleChecker.isFeatureEnabled(anyString())).thenReturn(true);
-		
+
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setLcCorPhase(phase);
 		contractor.setLcCorNotification(date);
-		
+
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 	}
 }

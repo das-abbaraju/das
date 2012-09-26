@@ -164,7 +164,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * Only includes the Active/Pending/Demo operator accounts, not corporate
 	 * accounts or Deleted/Deactivated Operators
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -451,7 +451,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Set to true if we have a credit card on file
-	 *
+	 * 
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing)
@@ -483,7 +483,8 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean isCcExpired() {
 		if (ccExpiration == null) {
-			// Because this is new, some haven't been loaded yet. Assume it's fine for now
+			// Because this is new, some haven't been loaded yet. Assume it's
+			// fine for now
 			// TODO remove this section once we load all the dates
 			return true;
 		}
@@ -510,7 +511,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * The Payment methods are Credit Card and Check
-	 *
+	 * 
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
@@ -526,7 +527,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the contractor was invoiced for their most recent
 	 * activation/reactivation fee
-	 *
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -554,7 +555,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another
 	 * "period's" membership fee. This should NEVER be null.
-	 *
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -571,7 +572,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * Used to determine if we need to calculate the flagColor, audits and
 	 * billing
-	 *
+	 * 
 	 * @return
 	 */
 	public int getNeedsRecalculation() {
@@ -595,7 +596,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Sets the date and time when the calculator ran
-	 *
+	 * 
 	 * @return
 	 */
 	public Date getLastRecalculation() {
@@ -676,33 +677,33 @@ public class ContractorAccount extends Account implements JSONable {
 	public String getTradesSelf() {
 		return tradesSelf;
 	}
-    
-    @Transient
-    public ContractorTrade getTopTrade() {
-            ContractorTrade topTrade = null;
-            for (ContractorTrade trade:getTradesSorted()) {
-                    if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
-                            topTrade = trade;
-                    }
-            }
-            
-            return topTrade;
-    }
-    
-    @Transient
-    public String getTopTradesNaicsCode() {
-            Trade trade = getTopTrade().getTrade();
-            while (trade != null) {
-                    for (TradeAlternate alternate:trade.getAlternates()) {
-                            if ("NAICS".equals(alternate.getCategory())) {
-                                    return alternate.getName();
-                            }
-                    }
-                    trade = trade.getParent();
-            }
-            
-            return "0";
-    }
+
+	@Transient
+	public ContractorTrade getTopTrade() {
+		ContractorTrade topTrade = null;
+		for (ContractorTrade trade : getTradesSorted()) {
+			if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
+				topTrade = trade;
+			}
+		}
+
+		return topTrade;
+	}
+
+	@Transient
+	public String getTopTradesNaicsCode() {
+		Trade trade = getTopTrade().getTrade();
+		while (trade != null) {
+			for (TradeAlternate alternate : trade.getAlternates()) {
+				if ("NAICS".equals(alternate.getCategory())) {
+					return alternate.getName();
+				}
+			}
+			trade = trade.getParent();
+		}
+
+		return "0";
+	}
 
 	public void setTradesSelf(String tradesSelf) {
 		this.tradesSelf = tradesSelf;
@@ -746,7 +747,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * All contractors should update their trades every 6 months
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -796,7 +797,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Uses the OshaVisitor to gather all the data
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -838,9 +839,12 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 
-		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
-		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
-		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo, annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
+		completeAnnualUpdates.put(MultiYearScope.LastYearOnly,
+				annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
+		completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo,
+				annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
+		completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo,
+				annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
 
 		return completeAnnualUpdates;
 	}
@@ -870,7 +874,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The last day someone added a facility to this contractor. This is used to
 	 * prorate upgrade amounts
-	 *
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -998,8 +1002,8 @@ public class ContractorAccount extends Account implements JSONable {
 										FeeClass.InsureGUARD, this.getPayingFacilities());
 								setCurrentFee(newInsureGUARDFee, getCountry().getAmount(newInsureGUARDFee));
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(), getCountry().getAmount(
-										invoiceItem.getInvoiceFee()));
+								setCurrentFee(invoiceItem.getInvoiceFee(),
+										getCountry().getAmount(invoiceItem.getInvoiceFee()));
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -1150,7 +1154,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel();
 	 * con.getFees().getDocuGUARD().getNewLevel();
-	 *
+	 * 
 	 * @return
 	 */
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
@@ -1213,7 +1217,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return a list of invoices sorted by creationDate DESC
 	 */
 	@Transient
@@ -1247,28 +1251,30 @@ public class ContractorAccount extends Account implements JSONable {
 	 * in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * <b>Past Due</b> Inovice is open and not paid by due date
-	 *
+	 * 
 	 * @return A String of the current Billing Status
 	 */
 	@Transient
-	public String getBillingStatus() {
+	public BillingStatus getBillingStatus() {
 		// If contractor is Free, Deleted, or Demo, give a pass on billing
-		if (!isMustPayB() || this.getPayingFacilities() == 0 || status.isDemo() || status.isDeleted())
-			return "Current";
+		if (!isMustPayB() || this.getPayingFacilities() == 0 || status.isDemo() || status.isDeleted()) {
+			return BillingStatus.Current;
+		}
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
 		if ((status.isPending() || status.isActive()) && getAccountLevel().isFull() && membershipDate == null) {
-			return "Activation";
+			return BillingStatus.Activation;
 		}
 
 		if (status.isDeactivated() || daysUntilRenewal < -90) {
 			// this contractor is not active or their membership expired more
 			// than 90 days ago
-			if (!renew)
-				return "Membership Canceled";
-			else
-				return "Reactivation";
+			if (!renew) {
+				return BillingStatus.Cancelled;
+			} else {
+				return BillingStatus.Reactivation;
+			}
 		}
 
 		// if any non-bid or list membership level differs, amount is an upgrade
@@ -1285,21 +1291,26 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		if (upgrade) {
-			if (currentListOrBidOnly)
-				return "Renewal";
-			else
-				return "Upgrade";
+			if (currentListOrBidOnly) {
+				return BillingStatus.Renewal;
+			} else {
+				return BillingStatus.Upgrade;
+			}
 		}
 
-		if (daysUntilRenewal < 0)
-			return "Renewal Overdue";
-		if (daysUntilRenewal < 45)
-			return "Renewal";
+		if (daysUntilRenewal < 0) {
+			return BillingStatus.RenewalOverdue;
+		}
 
-		if (hasPastDueInvoice())
-			return "Past Due";
+		if (daysUntilRenewal < 45) {
+			return BillingStatus.Renewal;
+		}
 
-		return "Current";
+		if (hasPastDueInvoice()) {
+			return BillingStatus.PastDue;
+		}
+
+		return BillingStatus.Current;
 	}
 
 	@Transient
@@ -1682,7 +1693,7 @@ public class ContractorAccount extends Account implements JSONable {
 		tempUser.setId(salesUserID);
 		setLastContactedByInsideSales(tempUser);
 	}
-	
+
 	@Column(name = "europeanUnionVATnumber", nullable = true)
 	public String getVatId() {
 		return vatId;
@@ -1692,7 +1703,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.vatId = vatId;
 	}
 
-    public boolean hasVatId() {
-        return !Strings.isEmpty(vatId);
-    }
+	public boolean hasVatId() {
+		return !Strings.isEmpty(vatId);
+	}
 }
