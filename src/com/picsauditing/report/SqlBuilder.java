@@ -41,8 +41,6 @@ public class SqlBuilder {
 
 		availableFields = model.getAvailableFields();
 		
-		System.out.println("Available Fields: " + availableFields.toString());
-
 		addFieldsAndGroupBy(definition.getColumns());
 		addRuntimeFilters(permissions);
 		addOrderByClauses(model);

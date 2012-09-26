@@ -39,6 +39,7 @@ td.fail {
 <table id="reports">
 	<thead>
 	<tr>
+		<th>Model Type</th>
 		<th>Report</th>
 		<th>Drill Down</th>
 		<th>Result</th>
@@ -46,6 +47,7 @@ td.fail {
 	</thead>
 	<s:iterator value="reports">
 		<tr id="reports-row-<s:property value="id" />">
+			<td><s:property value="modelType" /></td>
 			<td><a href="Report.action?report=<s:property value="id" />"><s:property value="name" /></a></td>
 			<td><a href="ReportTester.action?reportID=<s:property value="id" />">Expand</a></td>
 			<td class="results waiting"><s:property value="id" /></td>

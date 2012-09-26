@@ -31,7 +31,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import com.picsauditing.util.Strings;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
@@ -47,7 +46,9 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
@@ -414,7 +415,8 @@ public class ContractorAccount extends Account implements JSONable {
 	 * grant "free" lifetime accounts to certain contractors. Yes or No
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE "
+			+ ReportOnClause.ToAlias + ".mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
 	public String getMustPay() {
 		return this.mustPay;
 	}

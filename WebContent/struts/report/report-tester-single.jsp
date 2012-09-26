@@ -4,11 +4,12 @@
 <s:include value="/struts/layout/_page-header.jsp">
     <s:param name="title">Report Tester</s:param>
 </s:include>
+<a href="ReportTester.action">Back to Report Tester Home</a>
 
-<h3><s:property value="report.name"/></h3>
+<h3><a href="Report.action?report=<s:property value="report.id" />"><s:property value="report.name"/></a></h3>
 
 <form> 
-	<textarea rows="20" cols="60">
+	<textarea rows="15" cols="100">
 		<s:property value="report.sql"/> 
 	</textarea>
 </form>

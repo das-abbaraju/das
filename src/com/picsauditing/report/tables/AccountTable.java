@@ -1,6 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class AccountTable extends AbstractTable {
@@ -11,11 +12,12 @@ public class AccountTable extends AbstractTable {
 
 	public AccountTable() {
 		super("accounts");
-
 		addPrimaryKey(FilterType.AccountID).setCategory(FieldCategory.AccountInformation);
 		addFields(Account.class);
-		// addField(new Field("CreationDate", "creationDate",
-		// FilterType.Date)).setCategory(FieldCategory.AccountInformation);
+
+		Field creationDate = new Field("CreationDate", "creationDate", FilterType.Date);
+		creationDate.setImportance(FieldImportance.Low);
+		addField(creationDate).setCategory(FieldCategory.AccountInformation);
 	}
 
 	protected void addJoins() {

@@ -99,7 +99,10 @@ public class ReportJoin {
 				// TODO This is scary, we should find a better way to update
 				// this
 				fieldCopy.setName(alias + fieldCopy.getName());
-				fieldCopy.setDatabaseColumnName(alias + "." + fieldCopy.getDatabaseColumnName());
+				if (fieldCopy.getDatabaseColumnName().contains(ReportOnClause.ToAlias))
+					fieldCopy.setDatabaseColumnName(fieldCopy.getDatabaseColumnName().replace(ReportOnClause.ToAlias, alias));
+				else
+					fieldCopy.setDatabaseColumnName(alias + "." + fieldCopy.getDatabaseColumnName());
 				if (fieldCopy.getUrl() != null && fieldCopy.getUrl().contains(ReportOnClause.ToAlias)) {
 					fieldCopy.setUrl(fieldCopy.getUrl().replace(ReportOnClause.ToAlias, alias));
 				}
@@ -129,19 +132,19 @@ public class ReportJoin {
 		for (Field field : getFields()) {
 			String fieldName = field.getName();
 			for (Column column : definition.getColumns()) {
-				String columnName = column.getFieldName();
+				String columnName = column.getFieldNameWithoutMethod();
 				if (columnName.equalsIgnoreCase(fieldName))
 					return true;
 			}
 
 			for (Filter filter : definition.getFilters()) {
-				String filterName = filter.getFieldName();
+				String filterName = filter.getFieldNameWithoutMethod();
 				if (filterName.equalsIgnoreCase(fieldName))
 					return true;
 			}
 
 			for (Sort sort : definition.getSorts()) {
-				String sortName = sort.getFieldName();
+				String sortName = sort.getFieldNameWithoutMethod();
 				if (sortName.equalsIgnoreCase(fieldName))
 					return true;
 			}

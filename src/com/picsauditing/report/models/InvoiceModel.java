@@ -16,7 +16,9 @@ public class InvoiceModel extends AbstractModel {
 		ModelSpec spec = new ModelSpec(null, "Invoice");
 		{
 			ModelSpec account = spec.join(InvoiceTable.Account);
-			account.join(AccountTable.Contractor);
+			account.alias = "Account";
+			ModelSpec contractor = account.join(AccountTable.Contractor);
+			contractor.alias = "Contractor";
 			account.join(AccountTable.Contact);
 		}
 		return spec;

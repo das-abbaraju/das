@@ -12,8 +12,6 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 public class AccountContractorAuditOperatorModel extends AbstractModel {
-	// rootTable.removeJoin("accountContact");
-
 	public AccountContractorAuditOperatorModel(Permissions permissions) {
 		super(permissions, new ContractorAuditOperatorTable());
 	}
@@ -48,7 +46,7 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 
 	@Override
 	public String getWhereClause(Permissions permissions, List<Filter> filters) {
-		String where = super.getWhereClause(permissions, filters);
+		String where = "AuditOperator.visible = 1";
 
 		if (permissions.isOperatorCorporate()) {
 			// TODO: This looks like it can be further improved. Find a way to

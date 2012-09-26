@@ -29,6 +29,14 @@ public class ReportOnClause {
 		this.extraClauses = extraClauses;
 	}
 
+	public String getExtraClauses() {
+		return extraClauses;
+	}
+
+	public void setExtraClauses(String extraClauses) {
+		this.extraClauses = extraClauses;
+	}
+
 	public String toSql(String fromAlias, String toAlias, Permissions permissions) {
 		String onClause = fromAlias + "." + fromKey + " = " + toAlias + "." + toKey;
 		if (Strings.isNotEmpty(extraClauses))

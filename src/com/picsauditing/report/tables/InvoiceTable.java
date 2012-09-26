@@ -1,6 +1,8 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 
 public class InvoiceTable extends AbstractTable {
 
@@ -10,8 +12,9 @@ public class InvoiceTable extends AbstractTable {
 		super("invoice");
 		addFields(Invoice.class);
 
-		// addField(prefix + "Currency", alias + ".currency", FilterType.String,
-		// FieldCategory.Invoicing);
+		Field currency = new Field("Currency", "currency", FilterType.String);
+		currency.setCategory(FieldCategory.Invoicing);
+		addField(currency);
 	}
 
 	protected void addJoins() {

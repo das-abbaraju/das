@@ -122,8 +122,10 @@ public final class ReportUtil {
 		for (Filter filter : definition.getFilters()) {
 			Field field = filter.getField();
 			if (field != null) {
+				field.setName(filter.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
+				field.setName(filter.getFieldName());
 			}
 		}
 	}
@@ -135,8 +137,10 @@ public final class ReportUtil {
 		for (Sort sort : definition.getSorts()) {
 			Field field = sort.getField();
 			if (field != null) {
+				field.setName(sort.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
+				field.setName(sort.getFieldName());
 			}
 		}
 	}

@@ -8,8 +8,6 @@ public class OperatorTable extends AbstractTable {
 	public OperatorTable() {
 		super("operators");
 		addFields(OperatorAccount.class);
-
-		// operatorName.setUrl("FacilitiesEdit.action?operator={" + prefix +
 	}
 
 	public void addJoins() {

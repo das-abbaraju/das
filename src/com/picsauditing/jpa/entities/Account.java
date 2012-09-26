@@ -38,6 +38,7 @@ import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
@@ -238,7 +239,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Transient
-	@ReportField(category = FieldCategory.ContactInformation, sql = "CONCAT({ALIAS}.city, {ALIAS}.countrySubdivision)", filterable = false)
+	@ReportField(category = FieldCategory.ContactInformation, sql = "CONCAT(" + ReportOnClause.ToAlias + ".city, "
+			+ ReportOnClause.ToAlias + ".countrySubdivision)", filterable = false)
 	public String getFullAddress() {
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
@@ -347,7 +349,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * North American Industry Classification System
 	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
-	 *
+	 * 
 	 * @return
 	 */
 	@ManyToOne(optional = false)
@@ -383,7 +385,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into
 	 * QuickBooks
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -396,7 +398,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
-	 *
+	 * 
 	 * @return
 	 */
 	public String getQbListID() {
@@ -446,7 +448,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Contractor, Operator, Admin, Corporate
-	 *
+	 * 
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
@@ -482,7 +484,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Operator Qualification regulation, and if Contractor,
 	 * do they work for an operator who does too?
-	 *
+	 * 
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
@@ -541,7 +543,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Competency Reviews, and if Contractor, do they work
 	 * for an operator who does too?
-	 *
+	 * 
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
@@ -571,7 +573,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * The date HSAN accredited the Training Provider to provide training
 	 * services. If HSAN training providers use a lot more custom fields then
 	 * we'll create a new table for this and other fields.
-	 *
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -610,7 +612,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			if (!employee.isActive())
 				continue;
 
-			// We need to check the status also because I found a user with a status of "Deleted" with active=true
+			// We need to check the status also because I found a user with a
+			// status of "Deleted" with active=true
 			if (!employee.getStatus().equals(UserStatus.Active))
 				continue;
 
@@ -660,7 +663,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Is Operator or Corporate
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient

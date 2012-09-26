@@ -1,17 +1,23 @@
 package com.picsauditing.report.tables;
 
+
 public class PaymentCommissionTable extends AbstractTable {
 
+	public static final String Commission = "Commission";
+	public static final String Payment = "Payment";
+	
 	public PaymentCommissionTable() {
 		super("payment_commission");
 		addFields(com.picsauditing.jpa.entities.PaymentCommission.class);
 	}
 
 	public void addJoins() {
-		// PaymentTable payment = new PaymentTable(prefix + "Payment", alias +
-		// ".paymentID");
-		// payment.includeRequiredAndAverageColumns();
-		// payment.setOverrideCategory(FieldCategory.Commission);
-		// addLeftJoin(payment);
+		ReportForeignKey commissionKey = new ReportForeignKey(Commission, new InvoiceCommissionTable(), new ReportOnClause("commissionID"));
+		commissionKey.setCategory(FieldCategory.Commission);
+		addRequiredKey(commissionKey);
+		
+		ReportForeignKey paymentKey = new ReportForeignKey(Payment, new PaymentTable(), new ReportOnClause("paymentID"));
+		paymentKey.setCategory(FieldCategory.Commission);
+		addOptionalKey(paymentKey);
 	}
 }

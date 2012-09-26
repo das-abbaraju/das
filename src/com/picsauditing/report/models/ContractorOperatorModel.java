@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.Filter;
+import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.ContractorTable;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 
 public class ContractorOperatorModel extends AbstractModel {
@@ -15,13 +17,18 @@ public class ContractorOperatorModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "ReportingSite");
+		ModelSpec spec = new ModelSpec(null, "ContractorOperator");
 		spec.join(ContractorOperatorTable.Operator);
 
 		{
 			ModelSpec contractor = spec.join(ContractorOperatorTable.Contractor);
 			contractor.alias = "Contractor";
-			contractor.join(ContractorTable.Account).alias = "Account";
+			{
+				ModelSpec account = contractor.join(ContractorTable.Account);
+				account.alias = "Account";
+				account.join(AccountTable.Contact).category = FieldCategory.ContactInformation;
+				account.join(AccountTable.Naics);
+			}
 		}
 
 		return spec;
