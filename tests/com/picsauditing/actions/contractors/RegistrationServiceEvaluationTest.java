@@ -83,4 +83,20 @@ public class RegistrationServiceEvaluationTest extends PicsTest{
 		assertEquals("High", contractor.getProductRisk().toString());
 	}
 
+	@Test
+	public void testNextStep_TransportationServices() throws Exception  {
+		contractor.setTransportationRisk(LowMedHigh.None);
+		List<ContractorType> serviceTypes = new ArrayList<ContractorType>();
+		serviceTypes.add(ContractorType.Transportation);
+		contractor.setAccountTypes(serviceTypes);
+		
+//		Map<Integer, AuditData> answerMap = new HashMap<Integer, AuditData>();
+//		answerMap.put(7679, EntityFactory.makeAuditData("High", 7679));
+		
+		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
+//		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "answerMap", answerMap);
+		
+		Whitebox.invokeMethod(serviceEvaluation, "calculateRiskLevels");
+		assertEquals("Low", contractor.getTransportationRisk().toString());
+	}
 }

@@ -335,6 +335,12 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				contractor.setProductRisk(conProduct);
 			}
 		}
+		
+		if (contractor.isTransportationServices()) {
+			contractor.setTransportationRisk(LowMedHigh.Low);
+		} else {
+			contractor.setTransportationRisk(LowMedHigh.None);
+		}
 
 		contractor.setAuditColumns(permissions);
 		contractorAccountDao.save(contractor);
