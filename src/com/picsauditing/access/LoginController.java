@@ -43,6 +43,9 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
+	// FIXME: there is already an AppPropertyDAO called propertyDAO in
+	// PicsActionSupport; get rid of this one in favor of the one in our
+	// superclass
 	@Autowired
 	protected AppPropertyDAO appPropertyDAO;
 
@@ -217,7 +220,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Method to log in via an ajax overlay
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -227,21 +230,16 @@ public class LoginController extends PicsActionSupport {
 		if (!AjaxUtils.isAjax(getRequest()))
 			return BLANK;
 
-		String result = execute();
+		execute();
 
-		if ("success".equals(result)) {
-			json = new JSONObject();
-			json.put("loggedIn", permissions.isLoggedIn());
-			return JSON;
-		}
-
-		return BLANK;
+		json = new JSONObject();
+		json.put("loggedIn", permissions.isLoggedIn());
+		return JSON;
 	}
-
 
 	/**
 	 * Result for when the user is not logged in during an ajax request.
-	 * 
+	 *
 	 * @return
 	 */
 	@Anonymous
@@ -253,7 +251,7 @@ public class LoginController extends PicsActionSupport {
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */

@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.data;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.report.Column;
+import com.picsauditing.report.ReportPivotDefinition;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 

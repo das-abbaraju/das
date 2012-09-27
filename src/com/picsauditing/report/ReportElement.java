@@ -76,8 +76,6 @@ public class ReportElement implements JSONable {
 	private void parseFieldNameMethod() {
 		method = null;
 		originalFieldName = fieldName;
-		if (fieldName == null)
-			return;
 
 		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod < 0)
@@ -108,11 +106,14 @@ public class ReportElement implements JSONable {
 	public boolean isHasAggregateMethod() {
 		if (method == null)
 			return false;
-		
+
 		return method.isAggregate();
 	}
 
 	public String getSql() {
+		if (field == null) {
+			throw new RuntimeException(fieldName + " is missing from available fields");
+		}
 		String fieldSql = field.getDatabaseColumnName();
 		if (method == null)
 			return fieldSql;
@@ -169,7 +170,7 @@ public class ReportElement implements JSONable {
 		Field field = availableFields.get(originalFieldName.toUpperCase());
 
 		if (field == null) {
-			logger.warn("Failed to find [&1] in availableFields", originalFieldName);
+			logger.warn("Failed to find " + originalFieldName + " in availableFields");
 			return;
 		}
 

@@ -150,13 +150,14 @@ public class FeatureToggleExpressionsTest {
 
 	@Test
 	public void testUserIsMemberOf_NullUserGroupIsFalse() throws Exception {
-		assertFalse(featureToggleExpressions.userIsMemberOf(null));
+		assertFalse(featureToggleExpressions.userIsMemberOf((String) null));
+		assertFalse(featureToggleExpressions.userIsMemberOf((Integer) null));
 	}
 
 	@Test
 	public void testUserIsMemberOf_NullPermissionsIsFalse() throws Exception {
 		when(binding.getVariable("permissions")).thenReturn(null);
-		assertFalse(featureToggleExpressions.userIsMemberOf(null));
+		assertFalse(featureToggleExpressions.userIsMemberOf((String) null));
 	}
 
 	@Test
@@ -165,6 +166,14 @@ public class FeatureToggleExpressionsTest {
 		permissions.login(currentUser);
 
 		assertTrue(featureToggleExpressions.userIsMemberOf("test1"));
+	}
+
+	@Test
+	public void testUserIsmemberOf_ById_UserIsReturnsTrue() throws Exception {
+		addUserGroup(1, "test1");
+		permissions.login(currentUser);
+
+		assertTrue(featureToggleExpressions.userIsMemberOf(1));
 	}
 
 	@Test
@@ -181,6 +190,34 @@ public class FeatureToggleExpressionsTest {
 
 		List<String> groups = new ArrayList<String>();
 		groups.add("no");
+		groups.add("test2");
+		groups.add("nope");
+
+		assertTrue(featureToggleExpressions.userIsMemberOfAny(groups));
+	}
+
+	@Test
+	public void testUserIsmemberOfAny_ByInt_UserIsReturnsTrue() throws Exception {
+		addUserGroup(1, "test1");
+		addUserGroup(2, "test2");
+		permissions.login(currentUser);
+
+		List<Integer> groups = new ArrayList<Integer>();
+		groups.add(1);
+		groups.add(10);
+		groups.add(11);
+
+		assertTrue(featureToggleExpressions.userIsMemberOfAny(groups));
+	}
+
+	@Test
+	public void testUserIsmemberOfAny_MixedCollection_UserIsReturnsTrue() throws Exception {
+		addUserGroup(1, "test1");
+		addUserGroup(2, "test2");
+		permissions.login(currentUser);
+
+		List<Object> groups = new ArrayList<Object>();
+		groups.add(1);
 		groups.add("test2");
 		groups.add("nope");
 
@@ -224,6 +261,40 @@ public class FeatureToggleExpressionsTest {
 		groups.add("test1");
 		groups.add("test2");
 		groups.add("test3");
+
+		assertTrue(featureToggleExpressions.userIsMemberOfAll(groups));
+	}
+
+	@Test
+	public void testUserIsmemberOfAll_ByInt_UserIsReturnsTrue() throws Exception {
+		addUserGroup(1, "test1");
+		addUserGroup(2, "test2");
+		addUserGroup(3, "test3");
+		addUserGroup(4, "test4");
+		addUserGroup(5, "test5");
+		permissions.login(currentUser);
+
+		List<Integer> groups = new ArrayList<Integer>();
+		groups.add(1);
+		groups.add(2);
+		groups.add(3);
+
+		assertTrue(featureToggleExpressions.userIsMemberOfAll(groups));
+	}
+
+	@Test
+	public void testUserIsmemberOfAll_MixedCollection_UserIsReturnsTrue() throws Exception {
+		addUserGroup(1, "test1");
+		addUserGroup(2, "test2");
+		addUserGroup(3, "test3");
+		addUserGroup(4, "test4");
+		addUserGroup(5, "test5");
+		permissions.login(currentUser);
+
+		List<Object> groups = new ArrayList<Object>();
+		groups.add(1);
+		groups.add("test2");
+		groups.add(3);
 
 		assertTrue(featureToggleExpressions.userIsMemberOfAll(groups));
 	}

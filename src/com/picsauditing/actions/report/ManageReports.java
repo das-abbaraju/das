@@ -25,6 +25,7 @@ import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
+import com.picsauditing.util.pagination.PaginationParameters;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
@@ -348,6 +349,11 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public Pagination<Report> getPagination() {
+		if (pagination == null) {
+			pagination = new Pagination<Report>();
+			pagination.setParameters(new PaginationParameters());
+		}
+		
 		return pagination;
 	}
 

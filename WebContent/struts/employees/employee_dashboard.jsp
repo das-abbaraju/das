@@ -124,7 +124,7 @@
 													</td>
 													<td>
 														<s:if test="#audit.effectiveDate !=null">
-															<s:date name="#audit.effectiveDate" format="%{getText('date.short')}" />
+															<s:date name="#audit.effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 														</s:if>
 													</td>
 													<td>

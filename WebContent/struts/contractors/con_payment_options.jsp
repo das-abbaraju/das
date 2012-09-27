@@ -120,7 +120,7 @@
 						<s:if test="contractor.status.activeDemo">
 							<li>
 								<label><s:text name="ContractorPaymentOptions.NextBillingDate"/></label>
-								<s:date name="contractor.paymentExpires" format="%{getText('date.long')}" />
+								<s:date name="contractor.paymentExpires" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</li>
 							<li>
 								<label>
@@ -296,7 +296,7 @@
 					
 					<li>
 						<label><s:text name="BillingDetail.Info.PaymentMethod" /></label>
-						<s:property value="contractor.paymentMethod.description"/><br/>
+						<s:text name="%{contractor.paymentMethod.i18nKey}" />
 					</li>
 					
 					<s:if test="contractor.status.active || permissions.admin">

@@ -73,7 +73,7 @@
 									</li>
 									<li>
 										<label>Date:</label>
-										<s:date name="payment.creationDate" format="%{getText('date.short')}" />
+										<s:date name="payment.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 									</li>
 									<li>
 										<label>Amount:</label>
@@ -100,7 +100,7 @@
 								<ol>
 									<li>
 										<label>Method:</label>
-										<s:property value="payment.paymentMethod.description" />
+										<s:text name="%{payment.paymentMethod.i18nKey}" />
 									</li>
 									
 									<s:if test="payment.paymentMethod.check">
@@ -153,7 +153,7 @@
 									</li>
 									<li>
 										<label>Date:</label>
-										<s:date name="new java.util.Date()" format="%{getText('date.short')}" />
+										<s:date name="new java.util.Date()" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 									</li>
 									<li>
 										<label>Payment Amount:</label>
@@ -243,7 +243,7 @@
 								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />"><s:property value="invoice.id" /></a>
 							</td>
 							<td>
-								<s:date name="invoice.creationDate" format="%{getText('date.short')}" />
+								<s:date name="invoice.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
 							<td>
 								<s:property value="invoice.totalAmount" />
@@ -268,7 +268,7 @@
 								<a href=""><s:property value="refund.id" /></a>
 							</td>
 							<td>
-								<s:date name="refund.creationDate" format="%{getText('date.short')}" />
+								<s:date name="refund.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
 							<td>
 								<s:property value="refund.totalAmount" />
@@ -320,7 +320,7 @@
 									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><span class="invoiceID"><s:property value="id" /></span></a>
 								</td>
 								<td class="center">
-									<s:date name="creationDate" format="%{getText('date.short')}" />
+									<s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 								</td>
 								<td class="right">
 									<s:property value="totalAmount" /> <s:property value="payment.currency"/>
@@ -385,7 +385,7 @@
 					<ol>
 						<li>
 							<label>Refund Method:</label>
-							<s:property value="payment.paymentMethod.description"/>
+							<s:text name="%{payment.paymentMethod.i18nKey}" />
 						</li>
 						<li>
 							<label>Amount:</label>

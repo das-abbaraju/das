@@ -16,7 +16,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
@@ -45,7 +44,7 @@ public class Field implements JSONAware {
 	private boolean sortable = true;
 	private String preTranslation;
 	private String postTranslation;
-	private OpPerms requiredPermission;
+	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
 
 	/**

@@ -34,7 +34,7 @@
 				</li>
 				<li>
 					<label><s:text name="ScheduleAudit.label.AuditDate" />:</label>
-					<s:date name="availabilitySelected.startDate" format="EEEE, %{getText('date.long')}" />
+					<s:date name="availabilitySelected.startDate" format="EEEE, %{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 				</li>
 				<li>
 					<label><s:text name="ScheduleAudit.label.AuditTime" />:</label>
@@ -85,7 +85,7 @@
 					<li>
                         <s:checkbox name="confirmed" />
 						<s:text name="ScheduleAudit.message.ConfirmMessage">
-							<s:param><s:date name="lastCancellationTime" format="MM%{getText('date.longtime')}" /></s:param>
+							<s:param><s:date name="lastCancellationTime" format="%{@com.picsauditing.util.PicsDateFormat@Datetime12Hour}" /></s:param>
 							<s:param value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" />
                             <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 						</s:text>

@@ -22,6 +22,13 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 				+ "AND (ca2.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Complete')) ");
 		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
 
+		sql.addJoin("LEFT JOIN contractor_audit pqf ON pqf.conID = ca.conID AND pqf.audittypeID = 1 ");
+		sql.addJoin("LEFT JOIN contractor_audit_operator pqfCao ON pqf.id = pqfCao.auditID AND pqfCao.status = 'Complete' AND pqfCao.visible = 1 ");
+		sql.addJoin("LEFT JOIN pqfdata manual ON manual.auditID = pqf.id AND manual.questionID = 1331 ");
+
+		sql.addField("MAX(pqfCao.updateDate) AS pqfCompletionDate");
+		sql.addField("manual.dateVerified");
+
 		if (getFilter().isAuditorType())
 			sql.addWhere("ca.auditorID=" + permissions.getUserId());
 		else

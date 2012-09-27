@@ -10,6 +10,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -37,7 +38,7 @@ public class ReportContractorLicenses extends ReportContractorAuditOperator {
 		orderByDefault = "a.name";
 		
 		if (getFilter().isConExpiredLic()) {
-			sql.addWhere("q755.answer < '" + DateBean.format(new Date(), "yyyy-MM-dd") + "'");
+			sql.addWhere("q755.answer < '" + DateBean.format(new Date(), PicsDateFormat.Iso) + "'");
 		}
 		if (getFilter().getValidLicense().equals("Valid"))
 			sql.addWhere("q401.dateVerified IS NOT NULL");

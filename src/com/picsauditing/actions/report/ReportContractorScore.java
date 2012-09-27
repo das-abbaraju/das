@@ -6,6 +6,7 @@ import java.util.Date;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.ReportFilterContractorScore;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -104,7 +105,7 @@ public class ReportContractorScore extends ReportAccount {
 
 	@Override
 	public Date parseDate(String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 
 		try {
 			return sdf.parse(date);

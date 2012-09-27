@@ -348,8 +348,8 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		if (cmp != 0)
 			return cmp;
-
-		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+		
+		return getFullNumber().compareTo(other.getFullNumber());
 	}
 
 	@Override

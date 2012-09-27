@@ -96,10 +96,10 @@ function loadStage(stageID) {
 			<h2 class="formLegend">Import by Date</h2>
 			<ol>
 				<li><label>Start:</label>
-					<input type="text" name="start" class="datepicker" value="<s:date name="start" format="%{getText('date.short')}" />" />
+					<input type="text" name="start" class="datepicker" value="<s:date name="start" format="%{@com.picsauditing.util.PicsDateFormat@American}" />" />
 				</li>
 				<li><label>End:</label>
-					<input type="text" name="end" class="datepicker" value="<s:date name="end" format="%{getText('date.short')}" />" />
+					<input type="text" name="end" class="datepicker" value="<s:date name="end" format="%{@com.picsauditing.util.PicsDateFormat@American}" />" />
 				</li>
 			</ol>
 		</fieldset>

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -155,8 +154,8 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public String getSql() {
-		if (fieldName.equals("accountName")) {
-			field.setDatabaseColumnName("a.nameIndex");
+		if (fieldName.equalsIgnoreCase("accountName")) {
+			field.setDatabaseColumnName("Account.nameIndex");
 		}
 
 		return super.getSql();
@@ -277,6 +276,9 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public boolean isValid() {
+		if (field == null)
+			return false;
+		
 		if (!operator.isValueUsed())
 			return true;
 

@@ -22,6 +22,7 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.ReportFilterAudit;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
@@ -177,32 +178,32 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (filterOn(f.getCreatedDate1())) {
 			report.addFilter(new SelectFilterDate("createdDate1", "ca.creationDate >= '?'", DateBean.format(f
-					.getCreatedDate1(), "M/d/yy")));
+					.getCreatedDate1(), PicsDateFormat.AmericanShort)));
 		}
 
 		if (filterOn(f.getCreatedDate2())) {
 			report.addFilter(new SelectFilterDate("createdDate2", "ca.creationDate < '?'", DateBean.format(f
-					.getCreatedDate2(), "M/d/yy")));
+					.getCreatedDate2(), PicsDateFormat.AmericanShort)));
 		}
 
 		if (filterOn(f.getStatusChangedDate1())) {
 			report.addFilter(new SelectFilterDate("statusChangedDate1", "cao.statusChangedDate >= '?'", DateBean
-					.format(f.getStatusChangedDate1(), "M/d/yy")));
+					.format(f.getStatusChangedDate1(), PicsDateFormat.AmericanShort)));
 		}
 
 		if (filterOn(f.getStatusChangedDate2())) {
 			report.addFilter(new SelectFilterDate("statusChangedDate2", "cao.statusChangedDate < '?'", DateBean.format(
-					f.getStatusChangedDate2(), "M/d/yy")));
+					f.getStatusChangedDate2(), PicsDateFormat.AmericanShort)));
 		}
 		
 		if (filterOn(f.getExpiredDate1())) {
 			report.addFilter(new SelectFilterDate("expiredDate1", "ca.expiresDate >= '?'", DateBean.format(f
-					.getExpiredDate1(), "M/d/yy")));
+					.getExpiredDate1(), PicsDateFormat.AmericanShort)));
 		}
 
 		if (filterOn(f.getExpiredDate2())) {
 			report.addFilter(new SelectFilterDate("expiredDate2", "ca.expiresDate < '?'", DateBean.format(f
-					.getExpiredDate2(), "M/d/yy")));
+					.getExpiredDate2(), PicsDateFormat.AmericanShort)));
 		}
 	}
 
@@ -212,7 +213,7 @@ public class ReportContractorAudits extends ReportAccount {
 			SimpleDateFormat sdf = new SimpleDateFormat(format);
 			Date d = new Date(sdf.parse(value).getTime());
 
-			response = new SimpleDateFormat("MM/dd/yy").format(d);
+			response = new SimpleDateFormat(PicsDateFormat.Iso).format(d);
 		} catch (Exception e) {
 		}
 
@@ -225,8 +226,7 @@ public class ReportContractorAudits extends ReportAccount {
 			SimpleDateFormat sdf = new SimpleDateFormat(format);
 			Date d = new Date(sdf.parse(value).getTime());
 
-			response = new SimpleDateFormat("hh:mm a").format(d);
-
+			response = new SimpleDateFormat(PicsDateFormat.Time12Hour).format(d);
 		} catch (Exception e) {
 		}
 

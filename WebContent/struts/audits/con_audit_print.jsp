@@ -16,7 +16,7 @@
 			for <s:property value="conAudit.auditFor"/>
 		</s:if>
 		<s:elseif test="!conAudit.auditType.pqf">
-			- <s:date name="conAudit.effectiveDateLabel" format="%{getText('date.MonthAndYear')}" />
+			- <s:date name="conAudit.effectiveDateLabel" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" />
 		</s:elseif>
 		
 		<a class="print" href="#" onclick="window.print(); return false;"><img src="images/print_icon.gif" /><s:text name="global.print"/></a>

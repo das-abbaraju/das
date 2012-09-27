@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -7,16 +8,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "job_role")
-public class JobRole extends BaseTable {
+public class JobRole extends BaseTable implements Comparable<JobRole> {
 
 	private Account account;
 	private String name;
 	private boolean active = true;
-	private List<JobCompetency> jobCompetencies;
+	private List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false, updatable = false)
@@ -48,8 +50,18 @@ public class JobRole extends BaseTable {
 	public List<JobCompetency> getJobCompetencies() {
 		return jobCompetencies;
 	}
-	
+
 	public void setJobCompetencies(List<JobCompetency> jobCompetencies) {
 		this.jobCompetencies = jobCompetencies;
+	}
+
+	@Override
+	@Transient
+	public int compareTo(JobRole o) {
+		if (!this.account.equals(o.getAccount())) {
+			return this.getName().compareTo(o.getName());
+		} else {
+			return this.account.compareTo(o.getAccount());
+		}
 	}
 }

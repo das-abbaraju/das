@@ -48,6 +48,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -56,7 +57,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	// TODO Move this to a common location
 	static final public String GOOGLE_API_KEY = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
-	static final public String DATE_FORMAT = "yyyyMMddHHmm";
 
 	private TimeZone selectedTimeZone = TimeZone.getTimeZone("CST");
 
@@ -536,7 +536,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	public void setTimeSelected(String dateString) throws ParseException {
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
-		df.applyPattern(DATE_FORMAT);
+		df.applyPattern(PicsDateFormat.ScheduleAudit);
 		this.timeSelected = df.parse(dateString);
 	}
 

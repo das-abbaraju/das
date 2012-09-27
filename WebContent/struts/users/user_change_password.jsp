@@ -26,12 +26,12 @@
 					<s:hidden id="u" name="u" value="%{u.id}" />
 					<s:hidden name="user" value="%{user.id}" />
 					<li>
-						<s:password name="passwordc" label="global.CurrentPassword" theme="form" />
+						<s:password name="passwordc" label="global.CurrentPassword" theme="form" autocomplete="off" />
 					</li>
 					
 				</s:else>
 				<li>
-					<s:password name="password1" label="global.Password.new" theme="form" />
+					<s:password name="password1" label="global.Password.new" theme="form" autocomplete="off" />
 					<pics:fieldhelp title="Password Requirement">
 						<p>
 							<s:text name="global.Password.fieldhelp" />
@@ -39,7 +39,7 @@
 					</pics:fieldhelp>
 				</li>
 				<li>
-					<s:password name="password2" label="ProfileEdit.ConfirmPassword" theme="form" />
+					<s:password name="password2" label="ProfileEdit.ConfirmPassword" theme="form" autocomplete="off" />
 					<pics:fieldhelp title="Password Requirement">
 						<p>
 							<s:text name="global.ConfirmPassword.fieldhelp" />

@@ -29,8 +29,8 @@ import org.json.simple.JSONValue;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

@@ -1,63 +1,79 @@
 package com.picsauditing.actions.contractors;
 
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.reflection.Whitebox.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
-import com.google.common.collect.Lists;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.ContractorValidator;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
-import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
-import org.apache.struts2.ServletActionContext;
-import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.util.SpringUtils;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PICS.ContractorValidator;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 
-import java.util.*;
+public class ContractorEditTest extends PicsActionTest {
+	private ContractorEdit classUnderTest;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({I18nCache.class, SpringUtils.class, ServletActionContext.class, AccountStatus.class })
-public class ContractorEditTest {
-	ContractorEdit classUnderTest;
-
-	@Mock private ContractorAccount mockContractor;
-	@Mock private Country mockCountry;
-	@Mock private CountrySubdivision countrySubdivision;
-	@Mock private CountrySubdivisionDAO countrySubdivisionDAO;
-	@Mock private Note note;
-	@Mock private BasicDAO basicDAO;
-	@Mock private HttpServletRequest mockRequest;
-	@Mock private AccountStatus accountStatus;
-//    @Mock private AuditBuilder mockAuditBuilder;
-    @Mock private ContractorAccountDAO mockContractorAccountDao;
-    @Mock private ContractorValidator mockConValidator;
-    @Mock private Permissions mockPermissions;
-    @Mock private User mockUser;
-	@Mock private UserDAO mockUserDao;
-    @Mock private ServletContext mockServletContext;
-    @Mock private I18nCache mockCache;
-    @Mock private NoteDAO mockNoteDao;
+	@Mock
+	private ContractorAccount mockContractor;
+	@Mock
+	private Country mockCountry;
+	@Mock
+	private CountrySubdivision countrySubdivision;
+	@Mock
+	private CountrySubdivisionDAO countrySubdivisionDAO;
+	@Mock
+	private Note note;
+	@Mock
+	private BasicDAO basicDAO;
+	@Mock
+	private ContractorAccountDAO mockContractorAccountDao;
+	@Mock
+	private ContractorValidator mockConValidator;
+	@Mock
+	private User mockUser;
+	@Mock
+	private UserDAO mockUserDao;
+	@Mock
+	private ServletContext mockServletContext;
+	@Mock
+	private NoteDAO mockNoteDao;
 
     //Recreating Test Class --BLatner
     private final static int TESTING_CONTACT_ID = 555;
@@ -65,29 +81,23 @@ public class ContractorEditTest {
     private final static int NON_MATHCHING_ID = 23456;
 
     @Before
-    public void setup() {
+	public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        PowerMockito.mockStatic(ServletActionContext.class);
-        when(ServletActionContext.getRequest()).thenReturn(mockRequest);
-        when(ServletActionContext.getServletContext()).thenReturn(mockServletContext);
-        PowerMockito.mockStatic(I18nCache.class);
-        when(I18nCache.getInstance()).thenReturn(mockCache);
-
         classUnderTest = new ContractorEdit();
+		super.setUp(classUnderTest);
+
         classUnderTest.setContractor(mockContractor);
-//        classUnderTest.auditBuilder = mockAuditBuilder;
         classUnderTest.contractorAccountDao = mockContractorAccountDao;
         classUnderTest.contractorValidator = mockConValidator;
         classUnderTest.userDAO = mockUserDao;
         setInternalState(classUnderTest, "noteDao", mockNoteDao);
-        setInternalState(classUnderTest, "permissions", mockPermissions);
 
 	    when(mockContractor.getCountry()).thenReturn(mockCountry);
         when(mockContractor.getId()).thenReturn(TESTING_ACCOUNT_ID);
 
-        when(mockCache.hasKey(anyString(), any(Locale.class))).thenReturn(true);
-        when(mockCache.getText(anyString(), any(Locale.class))).thenReturn("foo");
-        when(mockCache.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
+		when(i18nCache.hasKey(anyString(), any(Locale.class))).thenReturn(true);
+		when(i18nCache.getText(anyString(), any(Locale.class))).thenReturn("foo");
+		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("foo");
     }
 
     /**
@@ -132,7 +142,7 @@ public class ContractorEditTest {
     public void testSave_DoNotAddNote_NullCurrentStatus() throws Exception {
         classUnderTest.setContactID(0);
         save_justGetThroughTheMethod();
-        when(mockRequest.getParameter(anyString())).thenReturn(null);
+		when(request.getParameter(anyString())).thenReturn(null);
 
         classUnderTest.save();
 
@@ -143,7 +153,7 @@ public class ContractorEditTest {
     public void testSave_AddNote_StatusChanged() throws Exception {
         classUnderTest.setContactID(0);
         save_justGetThroughTheMethod();
-        when(mockRequest.getParameter(anyString())).thenReturn(AccountStatus.Deactivated.toString());
+		when(request.getParameter(anyString())).thenReturn(AccountStatus.Deactivated.toString());
         when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 
         classUnderTest.save();
@@ -155,7 +165,7 @@ public class ContractorEditTest {
     public void testSave_DoNotAddNote_NoStatusChange() throws Exception {
         classUnderTest.setContactID(0);
         save_justGetThroughTheMethod();
-        when(mockRequest.getParameter(anyString())).thenReturn(AccountStatus.Active.toString());
+		when(request.getParameter(anyString())).thenReturn(AccountStatus.Active.toString());
         when(mockContractor.getStatus()).thenReturn(AccountStatus.Active);
 
         classUnderTest.save();
@@ -167,12 +177,12 @@ public class ContractorEditTest {
     private void save_justGetThroughTheMethod() {
         when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
         when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
-        when(mockPermissions.isContractor()).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(true);
     }
 
     @Test
     public void testCheckContractorTypes_isNotContractor () {
-        when(mockPermissions.isContractor()).thenReturn(false);
+		when(permissions.isContractor()).thenReturn(false);
         when(mockContractor.isContractorTypeRequired(ContractorType.Onsite)).thenReturn(false);
         when(mockContractor.isContractorTypeRequired(ContractorType.Offsite)).thenReturn(true);
         when(mockContractor.isContractorTypeRequired(ContractorType.Supplier)).thenReturn(true);
@@ -184,7 +194,7 @@ public class ContractorEditTest {
 
     @Test
     public void testCheckContractor_Types_isContractor() {
-        when(mockPermissions.isContractor()).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(true);
         classUnderTest.checkContractorTypes();
         verify(mockContractor, never()).isContractorTypeRequired((ContractorType) any());
         verify(mockContractor, never()).setAccountTypes((List<ContractorType>) any());
@@ -307,8 +317,8 @@ public class ContractorEditTest {
 
     @Test
     public void testSave_wrongPerms() throws Exception {
-        when(mockPermissions.isContractor()).thenReturn(false);
-        when(mockPermissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)).thenReturn(false);
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)).thenReturn(false);
 
         classUnderTest.save();
 

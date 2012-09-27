@@ -38,7 +38,7 @@
 				</td>
 			</s:if>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /></a></td>
-			<td><s:date name="get('statusChangedDate')" format="%{getText('date.short')}"/></td>
+			<td><s:date name="get('statusChangedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>&policy=true" target="VERIFY" class="preview" title="<s:text name="button.View" />"></a></td>
 		</tr>

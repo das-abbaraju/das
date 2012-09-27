@@ -33,7 +33,7 @@
 			</td>
 			<td><s:property value="get('id')"/></td>
 			<td><s:property value="get('province')"/></td>
-			<td><s:date name="get('creationDate')" format="%{getText('date.short')}"/></td>
+			<td><s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 		</tr>
 	</s:iterator>
 </table>

@@ -83,11 +83,11 @@
 															 <s:property value="#cao.audit.auditFor" />
 														</s:if>
 														<s:elseif test="!#cao.audit.auditType.classType.isPqf()">
-															 '<s:date name="#cao.audit.effectiveDateLabel" format="yy" />
+															 '<s:date name="#cao.audit.effectiveDateLabel" format="%{@com.picsauditing.util.PicsDateFormat@TwoDigitYear}" />
 														</s:elseif>
 														<s:else>
 															 <s:property value="#cao.audit.auditFor" />
-															 '<s:date name="#cao.audit.effectiveDateLabel" format="%{getText('date.TwoDigitYear')}" />
+															 '<s:date name="#cao.audit.effectiveDateLabel" format="%{@com.picsauditing.util.PicsDateFormat@TwoDigitYear}" />
 														</s:else>
 													</a>
 												</s:param>
@@ -141,7 +141,7 @@
 												<s:text name="ContractorFlag.ForceFlagTo" />
 												<s:property value="#flagoverride.forceFlag.smallIcon" escape="false" />
 												<s:text name="ContractorFlag.Until" />
-												<s:date name="#flagoverride.forceEnd" format="%{getText('date.long')}" />
+												<s:date name="#flagoverride.forceEnd" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 												<s:url var="contractor_notes" action="ContractorNotes">
 													<s:param name="id" value="%{contractor.id}" />
 													<s:param name="filter.userID" value="%{#flagoverride.updatedBy.id}" />

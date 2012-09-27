@@ -113,7 +113,7 @@
     						</li>
     						<li>
     							<label><s:text name="ContractorEdit.Details.DateCreated"/>:</label>
-    							<s:date name="contractor.creationDate" format="%{getText('date.long')}" />
+    							<s:date name="contractor.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
     						</li>
     					</ol>
     				</fieldset>
@@ -422,7 +422,7 @@
     							</li>
     							<li>
     								<label>Upgrade Date:</label>
-    								<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="%{getText('date.short')}" />" />
+    								<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="%{@com.picsauditing.util.PicsDateFormat@American}" />" />
     							</li>
     							<li>
     								<label>Contractor Type:</label>

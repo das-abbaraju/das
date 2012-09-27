@@ -295,7 +295,7 @@ Ext.define('PICS.controller.report.Filter', {
         var formatted = formula.replace(/[{}]/g, '');
 
         formatted = formatted.replace(/\d+/g, function(val) {
-            return parseInt(val) + 1;
+            return parseInt(val);
         });
 
         return formatted;
@@ -361,7 +361,7 @@ Ext.define('PICS.controller.report.Filter', {
                 }
 
                 // Convert from counting number to index
-                var indexNum = new Number(token) - 1;
+                var indexNum = new Number(token);
                 filter_formula += '{' + indexNum + '}';
             } else {
                 return false;

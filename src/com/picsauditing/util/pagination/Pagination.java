@@ -12,7 +12,7 @@ import java.util.List;
  * - Add a Pagination object to your controller (action class), as well as a getter/setter.
  * - Call it like this: ActionClass.action?pagination.parameters.page=N&pagination.parameters.pageSize=M
  */
-public final class Pagination<E> {
+public class Pagination<E> {
 
 	private Paginatable<E> dataProvider;
 	private PaginationParameters parameters;

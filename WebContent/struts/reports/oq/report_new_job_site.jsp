@@ -148,7 +148,7 @@ $(function() {
 					<tr>
 						<td><s:property value="#d.get('operatorName')" /></td>
 						<td><s:property value="#d.get('name')" /></td>
-						<td><s:date name="#d.get('projectStart')" format="%{getText('date.short')}" /></td>
+						<td><s:date name="#d.get('projectStart')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 						<td><s:property value="getAddress(#d)" /></td>
 						<td class="center">
 							<a href="ReportNewProjects!add.action?id=<s:property value="contractor.id" />&jobSite=<s:property value="#d.get('id')" />" class="add"></a>
@@ -183,7 +183,7 @@ $(function() {
 								<tr id="jobSite_<s:property value="id" />">
 									<td><s:property value="operator.name" /></td>
 									<td><s:property value="name" /></td>
-									<td><s:date name="projectStart" format="%{getText('date.short')}" /></td>
+									<td><s:date name="projectStart" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 									<td><s:property value="location" /></td>
 									<td class="center"><a href="#" class="preview"></a></td>
 									<td class="center"><a href="ReportNewProjects!remove.action?jobSite=<s:property value="id" />" class="remove"></a></td>

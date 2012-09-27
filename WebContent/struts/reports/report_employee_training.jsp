@@ -61,10 +61,10 @@
 							<s:property value="training" />
 						</td>
 						<td>
-							<s:date name="completed" format="%{getText('date.short')}" />
+							<s:date name="completed" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 						</td>
 						<td>
-							<s:date name="expiration" format="%{getText('date.short')}" />
+							<s:date name="expiration" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 						</td>
 						<td class="center">
 							<s:if test="complete">

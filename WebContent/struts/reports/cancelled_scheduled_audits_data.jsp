@@ -24,7 +24,7 @@
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
 			<td><s:property value="get('auditor_name')"/></td>
-			<td><s:date name="get('scheduledDate')" format="%{getText('date.longtime')}" /></td>
+			<td><s:date name="get('scheduledDate')" format="%{@com.picsauditing.util.PicsDateFormat@Datetime12Hour}" /></td>
 			<td><s:property value="get('auditLocation')" />
 			</td>
 		</tr>

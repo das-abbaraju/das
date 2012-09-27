@@ -10,7 +10,7 @@ function placeholder() {
 $(function() {
 	var ROOT_NODE = 5; /* Trade.TOP_ID */
 	var oldform = $('#trade-view').html();
-	
+
 	if (typeof(loadTradeCallback) == "undefined") {
 		loadTradeCallback = $.noop;
 	}
@@ -24,10 +24,10 @@ $(function() {
 	}
 
 	$('#trade-nav').tabs();
-	
+
 	/**
 	 * jsTree configuration
-	 * 
+	 *
 	 * http://www.jstree.com/documentation/core#configuration
 	 */
 	$.extend(true, $.jstree.defaults, {
@@ -78,10 +78,10 @@ $(function() {
 			}
 		}
 	});
-	
+
 	/**
 	 * jsTree
-	 * 
+	 *
 	 * http://www.jstree.com/documentation/json_data
 	 */
 	search_tree = $('#search-tree').jstree({
@@ -93,15 +93,15 @@ $(function() {
 					if (node.attr) {
 						return 'TradeTaxonomy!json.action';
 					}
-					
+
 					return 'TradeTaxonomy!searchJson.action';
 				},
 				data: function(node) {
 					result = $('#suggest').serializeArray();
-					
+
 					if (node.attr) {
 						result.push({
-							name: 'trade', 
+							name: 'trade',
 							value: node.attr('id')
 						});
 					} else {
@@ -109,7 +109,7 @@ $(function() {
 							name: 'trade', value: ROOT_NODE
 						});
 					}
-					
+
 					return result;
 				},
 				success: function(json) {
@@ -122,7 +122,7 @@ $(function() {
 			}
 		}
 	});
-	
+
 	browse_tree = $('#browse-tree').jstree();
 
 	$('#search-tab').delegate('input.searchType', 'click', function(e) {
@@ -145,71 +145,88 @@ $(function() {
 	/**
 	 * Search Trades List
 	 */
-	$('div.searchType-list #suggest').live('submit', function(event) {
-		event.preventDefault();
-		
-		var q = $('input[name="q"]', this).val();
-		
-		// clear search list
-		$('#search-list').empty();
-		
-		// must have at least one character to be searched
-		if ($.trim(q).length > 0) {
-			$('#search-list').html('<div class="load-area">');
-			
-			$.post('TradeAutocomplete!json.action', $(this).serializeArray(), function(json) {
-				if (json.result) {
-					if (json.result.length > 0) {
-						var ul = $('<ul>');
-						
-						$.each(json.result, function(i, trade) {
-							var linkText = trade.name;
-							
-							$.each(q.split(' '), function(i, term) {
-								if ($.trim(term).length > 0) {
-									var regex = new RegExp("("+term+")", "ig")
-									linkText = linkText.replace(regex,"<strong>$1</strong>");
-								}
-							});
+    $('div.searchType-list #suggest').live('submit', function(event) {
+        var input = $(this).find('input[name="q"]'),
+            search_list = $('#search-list'),
+            search_terms = input.val();
 
-							var li = $('<li>').append(
-								$('<a>', { "href":ajaxUrl+trade.id, "class":"trade "+trade.type }).html(linkText)
-							);
-							
-							ul.append(li);
-						});
-						
-						$('#search-list').html(ul);
-					} else {
-						$('#search-list').msg('alert', translate('JS.TradeTaxonomy.NoMatch'), true);
-					}
-				}
-			}, 'json')
-		}
-		
-		$(this).parent().addClass('clean-list');
-	});
+        event.preventDefault();
+
+        // clear search list
+        search_list.empty();
+
+        // must have at least one character to be searched
+        if ($.trim(search_terms).length > 0) {
+
+            //split by search term
+            search_terms = search_terms.split(' ');
+
+            //loading icon
+            search_list.html('<div class="load-area"></div>');
+
+            PICS.ajax({
+                url: 'TradeAutocomplete!json.action',
+                data: $(this).serializeArray(),
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    if (data.result.length > 0) {
+                        var trade_list = '<ul>';
+
+                        //loop over each trade
+                        $.each(data.result, function(i, trade) {
+                            if (trade.name && trade.type){
+                                var linkText = trade.name;
+
+                                //add strong tag around search terms
+                                $.each(search_terms, function(j, term) {
+                                    var regex = new RegExp('(' + term + ')', 'ig');
+
+                                    linkText = linkText.replace(regex, '<strong>$1</strong>');
+                                });
+
+                                //add to result list
+                                trade_list += '<li><a href="TradeTaxonomy!tradeAjax.action?trade=' + trade.id +'" class="trade ' + trade.type + '">' + linkText + '</a></li>';
+                            } else {
+                                if (console.log) {
+                                    console.log(trade);
+                                    console.log("Trade id " + trade.id + " has no name or type");
+                                }
+                            }
+                        });
+
+                        trade_list += '</ul>';
+
+                        search_list.html(trade_list);
+                    } else {
+                        search_list.msg('alert', translate('JS.TradeTaxonomy.NoMatch'), true);
+                    }
+                }
+            });
+        }
+
+        $(this).parent().addClass('clean-list');
+    });
 
 	/**
 	 * Search Trades Tree
 	 */
 	$('div.searchType-tree #suggest').live('submit', function(event) {
 		event.preventDefault();
-		
+
 		var q = $('input[name="q"]', this).val();
-		
+
 		// clear search list
 		$('#search-list').empty();
-		
+
 		// must have at least one character to be searched
 		if ($.trim(q).length > 0) {
 			search_tree.children('ul').addClass('load-area');
 		}
-				
+
 		search_tree.jstree('close_all');
-		
+
 		search_tree.jstree('refresh');
-		
+
 		$(this).parent().addClass('clean-tree');
 	});
 
@@ -224,18 +241,18 @@ $(function() {
 			}
 		});
 	}
-	
+
 	if (!window.TRADES) {
 		TRADES = {};
 	}
-	
+
 	TRADES._config = {
 		load_area: {
 			min: 200,
 			max: 700
 		}
 	};
-	
+
 	// select trade from search / browse
 	TRADES.select_trade = {
 		init: function() {
@@ -246,40 +263,41 @@ $(function() {
 			 */
 			$('#search-list, #trade-view').delegate('a.trade', 'click', function(event) {
 				event.preventDefault();
-				
+
+				console.log('click')
 				var element = $('#trade-view');
 				var url = $(this).attr('href');
-				
+
 				TRADES.select_trade.events.select_trade(element, url);
 			});
-			
+
 			/**
 			 * Search Tree Trade Link
 			 * Browse Tree Trade Link
 			 */
 			$('#trade-nav').delegate('.jstree a', 'click', function(event) {
 				event.preventDefault();
-				
+
 				var element = $('#trade-view');
 				var url = ajaxUrl + $(this).parent().attr('id');
-				
+
 				TRADES.select_trade.events.select_trade(element, url);
 			});
 		},
-		
+
 		events: {
 			select_trade: function(element, url) {
 				var element_height = element.height();
-				
+
 				element.css({
 					height: element_height > TRADES._config.load_area.max || element_height < TRADES._config.load_area.min ? TRADES._config.load_area.max : element_height
 				});
-				
+
 				element.html('<div class="load-area">');
-				
+
 				element.load(url, function() {
 					loadTradeCallback();
-					
+
 					element.css({
 						height: ''
 					});
@@ -287,7 +305,7 @@ $(function() {
 			}
 		}
 	};
-	
+
 	TRADES.select_trade.init();
 
 	// trade taxonomy add top level trade
@@ -295,27 +313,27 @@ $(function() {
 		init: function() {
 			$('a.add.trade').live('click', function(event) {
 				event.preventDefault();
-				
+
 				var element = $('#trade-view');
 				var url = 'TradeTaxonomy!tradeAjax.action';
-				
+
 				TRADES.add_trade.events.add_trade(element, url);
 			});
 		},
-		
+
 		events: {
 			add_trade: function(element, url) {
 				var element_height = element.height();
-				
+
 				element.css({
 					height: element_height > TRADES._config.load_area.max || element_height < TRADES._config.load_area.min ? TRADES._config.load_area.max : element_height
 				});
-				
+
 				element.html('<div class="load-area">');
-				
+
 				element.load(url, function() {
 					loadTradeCallback();
-					
+
 					element.css({
 						height: ''
 					});
@@ -323,6 +341,6 @@ $(function() {
 			}
 		}
 	};
-	
+
 	TRADES.add_trade.init();
 });

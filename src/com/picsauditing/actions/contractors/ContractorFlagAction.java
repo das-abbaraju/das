@@ -51,6 +51,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.contractors.ContractorFlagAnswerDisplay;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
@@ -218,7 +219,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
 		if (overrideAll == true) {
 			ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
 					permissions.getAccountId());
@@ -282,7 +283,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		flagOverride.setAuditColumns(new User(permissions.getUserId()));
 		flagDataOverrideDAO.save(flagOverride);
 
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
 		String noteText = "Forced the flag from " + flagData.getFlag() + " to " + forceFlag + " for criteria "
 				+ flagData.getCriteria().getLabel() + " for " + co.getOperatorAccount().getName() + " until "
 				+ format.format(forceEnd);

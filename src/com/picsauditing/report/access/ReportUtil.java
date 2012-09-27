@@ -27,7 +27,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -35,7 +34,8 @@ import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryMethod;
-import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.util.Strings;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -97,6 +97,7 @@ public final class ReportUtil {
 
 			if (field == null) {
 				field = new Field(column.getFieldNameWithoutMethod(), "", FilterType.String);
+				column.setField(field);
 			}
 			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
@@ -120,8 +121,10 @@ public final class ReportUtil {
 		for (Filter filter : definition.getFilters()) {
 			Field field = filter.getField();
 			if (field != null) {
+				field.setName(filter.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
+				field.setName(filter.getFieldName());
 			}
 		}
 	}
@@ -133,8 +136,10 @@ public final class ReportUtil {
 		for (Sort sort : definition.getSorts()) {
 			Field field = sort.getField();
 			if (field != null) {
+				field.setName(sort.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
+				field.setName(sort.getFieldName());
 			}
 		}
 	}
@@ -144,6 +149,10 @@ public final class ReportUtil {
 
 		if (field != null) {
 			translatedText = getText("Report." + field.getName(), locale);
+
+			if (Strings.isEmpty(translatedText)) {
+				return field.getName();
+			}
 		}
 
 		return translatedText;
@@ -269,11 +278,8 @@ public final class ReportUtil {
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
 			QueryMethod[] methods, Locale locale) {
 		for (Report report : reports) {
-			AbstractTable table = report.getTable();
-			if (table == null)
-				continue;
-
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(table, createSuperUserPermissions());
+			Map<String, Field> availableFields = ModelFactory
+					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();

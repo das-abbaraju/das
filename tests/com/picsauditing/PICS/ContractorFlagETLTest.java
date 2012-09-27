@@ -76,6 +76,12 @@ public class ContractorFlagETLTest {
 	@Mock
 	private ContractorAudit audit;
 	@Mock
+	private ContractorAudit audit1;
+	@Mock
+	private ContractorAudit audit2;
+	@Mock
+	private ContractorAudit audit3;
+	@Mock
 	private AuditData auditData;
 
 	@Before
@@ -544,5 +550,39 @@ public class ContractorFlagETLTest {
 
 		when(auditQuestion.getCategory()).thenReturn(auditCategory);
 		PowerMockito.doReturn(categories).when(spy, "getApplicableCategories", auditQuestion, contractor);
+	}
+
+	@Test
+	public void testGetApplicableCategories_MultipleAudits() throws Exception{
+		when(auditQuestion.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
+		
+		when(audit1.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
+		when(audit2.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.PQF));
+		when(audit3.getAuditType()).thenReturn(EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
+		
+		List<ContractorAudit> list = new ArrayList<ContractorAudit>();
+		list.add(audit1);
+		list.add(audit2);
+		list.add(audit3);
+		when(contractor.getAudits()).thenReturn(list);
+		
+		AuditCategory cat = null;
+		Set<AuditCategory> visibleCategories = null;
+		
+		cat = EntityFactory.makeAuditCategory();
+		visibleCategories = new HashSet<AuditCategory>();
+		visibleCategories.add(auditCategory);
+		when(audit1.getVisibleCategories()).thenReturn(visibleCategories);
+		cat = EntityFactory.makeAuditCategory();
+		visibleCategories = new HashSet<AuditCategory>();
+		visibleCategories.add(auditCategory);
+		when(audit2.getVisibleCategories()).thenReturn(visibleCategories);
+		cat = EntityFactory.makeAuditCategory();
+		visibleCategories = new HashSet<AuditCategory>();
+		visibleCategories.add(auditCategory);
+		when(audit3.getVisibleCategories()).thenReturn(visibleCategories);
+		
+		Set<AuditCategory> applicableCats = Whitebox.invokeMethod(contractorFlagETL, "getApplicableCategories", auditQuestion, contractor);
+		assertTrue(applicableCats.size()==2);
 	}
 }

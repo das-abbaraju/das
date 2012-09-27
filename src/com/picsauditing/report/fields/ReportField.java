@@ -1,4 +1,4 @@
-package com.picsauditing.report.annotations;
+package com.picsauditing.report.fields;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -7,8 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.report.fields.AutocompleteType;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 

@@ -216,6 +216,7 @@
 							name="newContractor.reasonForRegistration"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 					</li>
 					<li id="loadTagsList">
 						<label>
@@ -388,7 +389,7 @@
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
 									</label>
-									<s:date name="newContractor.holdDate" format="%{getText('date.short')}"/>
+									<s:date name="newContractor.holdDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 								</li>
 							</s:if>
 							

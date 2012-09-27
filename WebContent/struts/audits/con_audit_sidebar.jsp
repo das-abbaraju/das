@@ -57,7 +57,7 @@
 				<s:text name="Audit.button.PrintRequirements" />
 			</a>
 		</li>
-		
+
 		<s:if test="permissions.auditor">
 			<li>
 				<a class="edit2" href="Audit.action?auditID=<s:property value="auditID"/>#onlyReq=true&mode=Edit">
@@ -115,6 +115,14 @@
 			<s:text name="Audit.DownloadToExcel" />
 		</a>
 	</li>
+
+    <s:if test="permissions.admin">
+    <li>
+         <a class="excel" href="AuditTranslationDownload.action?contractor=<s:property value="contractor.id" />">
+             <s:text name="Audit.button.AuditTranslationDownload" />
+         </a>
+    </li>
+    </s:if>
 </ul>
 
 <div <s:if test="categories.keySet().size == 1"> style="display: none;"</s:if>>

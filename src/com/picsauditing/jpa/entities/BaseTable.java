@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 

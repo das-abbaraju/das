@@ -5,6 +5,7 @@ import groovy.lang.Script;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.Permissions;
@@ -54,27 +55,23 @@ public abstract class FeatureToggleExpressions extends Script {
 		return false;
 	}
 
-	public boolean userIsMemberOfAny(List<String> userGroups) {
-		if (userGroups == null || userGroups.isEmpty()) {
+	public boolean userIsMemberOf(Integer userGroup) {
+		if (userGroup == null) {
 			return false;
 		}
-
 		Permissions permissions = permissions();
 		if (permissions == null) {
 			return false;
 		}
-		Collection<String> groups = permissions.getGroupNames();
-		for (String userGroup : userGroups) {
-			for (String group : groups) {
-				if (userGroup.equalsIgnoreCase(group)) {
-					return true;
-				}
+		for (Integer group : permissions.getGroupIds()) {
+			if (userGroup.equals(group)) {
+				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean userIsMemberOfAll(List<String> userGroups) {
+	public <E> boolean userIsMemberOfAny(List<E> userGroups) {
 		if (userGroups == null || userGroups.isEmpty()) {
 			return false;
 		}
@@ -83,10 +80,33 @@ public abstract class FeatureToggleExpressions extends Script {
 		if (permissions == null) {
 			return false;
 		}
-		Collection<String> groups = permissions.getGroupNames();
+		Collection<String> groupNames = permissions.getGroupNames();
+		Set<Integer> groupIds = permissions.getGroupIds();
+		for (Object userGroup : userGroups) {
+			if (userGroup instanceof String && groupNames.contains(userGroup)) {
+				return true;
+			} else if (userGroup instanceof Integer && groupIds.contains(userGroup)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-		for (String userGroup : userGroups) {
-			if (!groups.contains(userGroup)) {
+	public <E> boolean userIsMemberOfAll(List<E> userGroups) {
+		if (userGroups == null || userGroups.isEmpty()) {
+			return false;
+		}
+
+		Permissions permissions = permissions();
+		if (permissions == null) {
+			return false;
+		}
+		Collection<String> groupNames = permissions.getGroupNames();
+		Set<Integer> groupIds = permissions.getGroupIds();
+		for (Object userGroup : userGroups) {
+			if (userGroup instanceof String && !groupNames.contains(userGroup)) {
+				return false;
+			} else if (userGroup instanceof Integer && !groupIds.contains(userGroup)) {
 				return false;
 			}
 		}

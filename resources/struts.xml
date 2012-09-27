@@ -37,7 +37,7 @@
 			<interceptor name="validation"
 				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
 			<interceptor name="jsonValidation"
-				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
+				class="org.apache.struts2.json.JSONValidationInterceptor" />
 			<interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor" />
 
 			<interceptor-stack name="picsStack">
@@ -146,10 +146,6 @@
 
 		<action name="RefundPolicy" class="com.picsauditing.actions.PicsPolicy">
 			<result>refund_policy.jsp</result>
-		</action>
-
-		<action name="RecaptchaAjax" class="com.picsauditing.actions.Recaptcha">
-			<result>struts/misc/recaptcha_ajax.jsp</result>
 		</action>
 
 		<action name="PageLogger" class="com.picsauditing.actions.PageLogger">
@@ -568,6 +564,10 @@
 
 		<action name="AuditDownload"
 			class="com.picsauditing.actions.audits.ContractorAuditDownload">
+		</action>
+
+		<action name="AuditTranslationDownload"
+			class="com.picsauditing.actions.audits.AuditTranslationDownload">
 		</action>
 
 		<!-- Track Auditor Payments -->

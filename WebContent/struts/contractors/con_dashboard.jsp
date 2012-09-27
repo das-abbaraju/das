@@ -412,7 +412,7 @@
 		    															<s:property value="auditFor"/>
 		    														</s:if>
 		    														<s:else>
-		    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
+		    															<s:date name="effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" />
 		    														</s:else>
 		    													</a>
 	    													</option>
@@ -431,7 +431,7 @@
 	    															<s:property value="auditFor"/>
 	    														</s:if>
 	    														<s:else>
-	    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
+	    															<s:date name="effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" />
 	    														</s:else>
 	    													</a>
     													</li>
@@ -658,7 +658,7 @@
     										<s:property value="contractor.city" />
     									</span>,
     									<span class="region">
-    										<s:property value="contractor.state" />
+    										<s:property value="contractor.countrySubdivision.simpleName" />
     									</span>
     									<span class="postal-code">
     										<s:property value="contractor.zip" />

@@ -299,7 +299,7 @@
 								</label> <s:property value="user.id" /></li>
 								<li><label> <s:text name="UsersManage.DateCreated" />
 								</label> <s:date name="user.creationDate"
-										format="%{getText('date.short')}" /></li>
+										format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></li>
 							</s:if>
 						</s:if>
 
@@ -395,7 +395,7 @@
 									</s:else></li>
 							</s:if>
 							
-							<pics:toggle name="<%= FeatureToggle.TOGGLE_DYNAMICREPORTS %>">
+							<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
 								<li>
 									<label> <s:text name="User.useDynamicReport" /></label> 			
 									<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="user.usingDynamicReports" />		 

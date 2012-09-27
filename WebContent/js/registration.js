@@ -41,7 +41,7 @@
 				var country_select = $('.contractor-country') || $(this);
 				var country_string = country_select.val();
 
-				AJAX.request({
+				PICS.ajax({
 					url: 'CountrySubdivisionListAjax!registration.action',
 					data: {
 						countryString: country_string,
@@ -51,10 +51,11 @@
 						var countrySubdivision_element = $('.registration-form li.countrySubdivision');
 						var zip_element = $('.registration-form li.zip');
 
+						countrySubdivision_element.html(data);
+
 						if ($.trim(data) == '') {
 							countrySubdivision_element.slideUp(400);
 						} else {
-							countrySubdivision_element.html(data);
 							countrySubdivision_element.slideDown(400);
 						}
 
@@ -93,69 +94,57 @@
 		events: {
 			// ajax field validation - using jsonValidate intercepter
 			field_validate: function (event) {
-				var element = $(this);
-				// parent form
-				var form = element.closest('form');
-				// serialized form including json validator interceptors
-				var data = form.serialize() + '&method%3AcreateAccount="Get Started"' + '&struts.enableJSONValidation=true' + '&struts.validateOnly=true';
-				// ajax request to submit form
-				AJAX.request({
-					url: form.attr('action'),
-					data: data,
-					complete: function (XMLHttpRequest, textStatus) {
-						// obtain errors - field errors returned in the json request
-						var errors = StrutsUtils.getValidationErrors(XMLHttpRequest.responseText);
+			    var element = $(this),
+			        form = element.closest('form'),
+			        data = form.serialize() + '&method%3AcreateAccount="Get Started"' + '&struts.enableJSONValidation=true' + '&struts.validateOnly=true'; // serialized form including json validator interceptors
 
-						// obtain any errors that are currently attached to the field
-						var error_element = element.siblings('.errors');
+			    function displayFieldErrors(form_errors) {
+			        var error_element = element.siblings('.errors'),
+			            field_name = element.attr('name'),
+			            field_errors = form_errors[field_name];
 
-						if (errors.fieldErrors != undefined) {
-							var field_errors = errors.fieldErrors[element.attr('name')];
+			        if (field_errors) {
+			            var html = '<ul class="errors">';
 
-							// if there are errors - add them to the dom
-							if (field_errors != undefined) {
-								var html = '<ul class="errors">';
+			            $.each(field_errors, function (i, value) {
+			                html += '<li>' + value + '</li>';
 
-								$.each(field_errors, function (i, value) {
-									html += '<li>' + value + '</li>';
-								})
+			                if ((element.attr('id') === 'Registration_contractor_name') && (value === translate('JS.Validation.CompanyNameAlreadyExists'))) {
+			                    $('.contractor-name-duplicate').show();
+			                }
+			            });
 
-								html += '</ul>';
+			            html += '</ul>';
 
-								if (error_element.length) {
-									error_element.replaceWith(html);
-								} else {
-									element.after(html);
-								}
+			            //add errors to DOM
+			            if (error_element.length) {
+			                error_element.replaceWith(html);
+			            } else {
+			                element.after(html);
+			            }
+			        } else {
+			            //remove errors from DOM
+			            if (error_element.length) {
+			                error_element.remove();
 
-								var is_legal_name_field = element.attr('id') == 'Registration_contractor_name';
+			                if (element.attr('id') === 'Registration_contractor_name') {
+			                    $('.contractor-name-duplicate').hide();
+			                }
+			            }
+			        }
+			    }
 
-								// conditions show hide duplicate contractor name message
-								$.each(field_errors, function (i, value) {
-								    if (is_legal_name_field && value == translate('JS.Validation.CompanyNameAlreadyExists')) {
-								        $('.contractor-name-duplicate').show();
-								    } else if (is_legal_name_field) {
-								        $('.contractor-name-duplicate').hide();
-								    }
-								});
-
-							// clear out any errors upon correct field validation
-							} else {
-								if (error_element.length) {
-									error_element.remove();
-
-									// conditions hide duplicate contractor name message
-                                    if (element.attr('id') == 'Registration_contractor_name') {
-                                        $('.contractor-name-duplicate').hide();
-                                    }
-								}
-							}
-						} else {
-							// clear out any errors upon correct field validation
-							error_element.remove();
-						}
-					}
-				});
+			    //send validation request
+			    PICS.ajax({
+			        url: form.attr('action'),
+			        data: data,
+			        dataType: 'json',
+			        success: function (data, textStatus, XMLHttpRequest) {
+			            if (data.fieldErrors) {
+			                displayFieldErrors(data.fieldErrors);
+			            }
+			        }
+			    });
 			}
 		}
 	};
@@ -428,7 +417,3 @@
 	    }
 	});
 })(jQuery);
-
-
-
-

@@ -62,7 +62,7 @@ function showRules() {
 				</a>
 			</td>
 			<td><s:property value="updatedBy.name" /></td>
-			<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+			<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 		</tr>
 	</s:iterator>
 </table>
@@ -104,7 +104,7 @@ function showRules() {
 			</td>
 			<td><s:property value="flag" /></td>
 			<td><s:property value="updatedBy.name" /></td>
-			<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+			<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 		</tr>
 	</s:iterator>
 </table>
@@ -130,7 +130,7 @@ function showRules() {
 	<td><s:property value="classType"/></td>
 	<td><a title="<s:property value="name"/>" href="ManageAuditType.action?id=<s:property value="id"/>"><s:property value="name"/></a></td>
 	<td><s:property value="updatedBy.name" /></td>
-	<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+	<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 </tr>
 </s:iterator>
 </table>
@@ -154,7 +154,7 @@ function showRules() {
 	<td><a title="<s:property value="auditType.name"/>" href="ManageAuditType.action?id=<s:property value="auditType.id"/>"><s:property value="auditType.name"/></a></td>
 	<td><s:property value="numRequired"/> / <s:property value="numQuestions"/></td>
 	<td><s:property value="updatedBy.name" /></td>
-	<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+	<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 </tr>
 </s:iterator>
 </table>
@@ -184,7 +184,7 @@ function showRules() {
 	<td><a title="<s:property value="requiredQuestion.name"/>" href="ManageQuestion.action?id=<s:property value="requiredQuestion.id"/>"><s:property value="requiredQuestion.name"/></a></td>
 	<td><a title="<s:property value="visibleQuestion.name"/>" href="ManageQuestion.action?id=<s:property value="visibleQuestion.id"/>"><s:property value="visibleQuestion.name"/></a></td>
 	<td><s:property value="updatedBy.name" /></td>
-	<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+	<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 </tr>
 </s:iterator>
 </table>
@@ -204,7 +204,7 @@ function showRules() {
 <tr>
 	<td><a title="<s:property value="name"/>" href="ManageAuditWorkFlow.action?id=<s:property value="id"/>"><s:property value="name"/></a></td>
 	<td><s:property value="updatedBy.name" /></td>
-	<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+	<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 </tr>
 </s:iterator>
 </table>
@@ -232,7 +232,7 @@ function showRules() {
 	<td><s:property value="noteRequired" /></td>
 	<td><s:property value="emailTemplate.templateName" /></td>
 	<td><s:property value="updatedBy.name" /></td>
-	<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+	<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 </tr>
 </s:iterator>
 </table>
@@ -256,7 +256,7 @@ function showRules() {
 	<td><s:property value="locale" /></td>
 	<td><s:property value="value" /></td>
 	<td><s:property value="updatedBy.name" /></td>
-	<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
+	<td><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 </tr>
 </s:iterator>
 </table>

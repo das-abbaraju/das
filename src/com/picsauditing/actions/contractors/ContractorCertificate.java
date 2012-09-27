@@ -13,6 +13,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.picsauditing.util.PicsDateFormat;
 
 @SuppressWarnings("serial")
 public class ContractorCertificate extends ContractorActionSupport {
@@ -30,9 +31,9 @@ public class ContractorCertificate extends ContractorActionSupport {
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 		PdfStamper writer = new PdfStamper(reader, outstream);
 
-		SimpleDateFormat dateGeneratedFormat = new SimpleDateFormat("MMMM d, yyyy");
+		SimpleDateFormat dateGeneratedFormat = new SimpleDateFormat(PicsDateFormat.IsoLongMonth);
 		String dateGenerated = dateGeneratedFormat.format(new Date());
-		SimpleDateFormat dateMemberSinceFormat = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat dateMemberSinceFormat = new SimpleDateFormat(PicsDateFormat.Iso);
 		String dateMemberSince = dateMemberSinceFormat.format((contractor.getMembershipDate() == null) ? new Date()
 				: contractor.getMembershipDate());
 

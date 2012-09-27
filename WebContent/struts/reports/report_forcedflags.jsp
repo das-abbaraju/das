@@ -69,8 +69,8 @@
 			<td class="center"><s:text name="%{get('fLabel')}" /></td>
 			<td class="center"><s:text name="%{get('flagActive')}" /></td>
 			<td title="<s:property value="get('forcedByAccount')"/>"><s:property value="get('forcedBy')"/></td>
-			<td><s:date name="get('forceBegin')" format="%{getText('date.long')}" /></td>
-			<td><s:date name="get('forceend')" format="%{getText('date.long')}" /></td>
+			<td><s:date name="get('forceBegin')" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /></td>
+			<td><s:date name="get('forceend')" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /></td>
 			<td>
 				<s:if test="get('forcedById') != null">
 					<a href="ContractorNotes.action?id=<s:property value="get('id')"/>&filter.userID=<s:property value="get('forcedById')"/>&filter.category=Flags&filter.keyword=Forced">

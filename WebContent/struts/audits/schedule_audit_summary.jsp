@@ -24,11 +24,11 @@
         <ol>
         	<li>
                 <label><s:text name="ScheduleAudit.label.AuditDate" />:</label>
-                <s:date name="conAudit.scheduledDate" format="%{getText('date.long')}" />
+                <s:date name="conAudit.scheduledDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
             </li>
         	<li>
                 <label><s:text name="ScheduleAudit.label.AuditTime" />:</label>
-                <s:date name="conAudit.scheduledDate" format="h:mm a z" />
+                <s:date name="conAudit.scheduledDate" format="%{@com.picsauditing.util.PicsDateFormat@Time12Hour}" />
             </li>
         
         	<s:if test="conAudit.conductedOnsite">

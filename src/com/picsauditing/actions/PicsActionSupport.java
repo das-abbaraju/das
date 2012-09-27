@@ -47,6 +47,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
 import com.picsauditing.util.LocaleController;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -383,7 +384,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String maskDateFormat(Date date) {
 		try {
-			DateFormat dateFormat = new SimpleDateFormat(getText("date.short"));
+			DateFormat dateFormat = new SimpleDateFormat(PicsDateFormat.American);
 			return dateFormat.format(date);
 		} catch (Exception e) {
 			return null;
@@ -431,13 +432,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public Date parseDate(String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(getText("date.short"));
+		SimpleDateFormat americanFormat = new SimpleDateFormat(PicsDateFormat.American);
 
 		try {
-			return sdf.parse(date);
+			return americanFormat.parse(date);
 		} catch (Exception e) {
-			return new Date();
+			logger.warn("Problem parsing date for American format: '{}'", date);
 		}
+
+		try {
+			SimpleDateFormat isoFormat = new SimpleDateFormat(PicsDateFormat.Iso);
+			return isoFormat.parse(date);
+		} catch (Exception e) {
+			logger.warn("Problem parsing date for ISO format: '{}'", date);
+		}
+
+		return new Date();
 	}
 
 	public String getQueryString() {
@@ -689,7 +699,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		setAlertMessages(null);
 		setActionMessages(null);
 	}
-	
+
 	public void setAlertMessages(Collection<String> messages) {
 		alertMessages = messages;
 	}

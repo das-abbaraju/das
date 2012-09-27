@@ -59,15 +59,6 @@
 							<a class="showUser showPointer"><s:text name="AccountRecovery.ForgotName" /></a>
 							<a class="showEmail showPointer"><s:text name="AccountRecovery.ForgotPassword" /></a>
 						</li>
-						<li>
-							<label><s:text name="AccountRecovery.title.Verification" />:</label>
-							<s:property value="recaptcha.recaptchaHtml" escape="false"/>
-							
-							<div class="fieldhelp">
-								<h3><s:text name="AccountRecovery.Verification" /></h3>
-								<p><s:text name="AccountRecovery.Verification.fieldhelp" /></p>
-							</div>
-						</li>
 					</ol>
 				</fieldset>
 				

@@ -67,6 +67,8 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private ContractorType type = null;
 	public Boolean competitorAnswer;
 
+	private Database database; // for injecting for unit tests
+
 	public ContractorFacilities() {
 		this.noteCategory = NoteCategory.OperatorChanges;
 		this.currentStep = ContractorRegistrationStep.Clients;
@@ -257,11 +259,19 @@ public class ContractorFacilities extends ContractorActionSupport {
 		return "search";
 	}
 
+	// for injecting for unit tests
+	private Database database() {
+		if (database == null) {
+			return new Database();
+		}
+		return database;
+	}
+
 	public String searchShowAll() throws Exception {
 		findContractor();
 
 		searchResults = new ArrayList<OperatorAccount>();
-		Database db = new Database();
+		Database db = database();
 
 		SelectSQL showAll = new SelectSQL("accounts a");
 		showAll.addField("a.id opID");

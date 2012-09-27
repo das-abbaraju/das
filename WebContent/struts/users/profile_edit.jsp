@@ -187,7 +187,7 @@
 									<label><s:text name="global.CreationDate" />:</label>
 									<s:date name="u.creationDate" />
 								</li>
-								<pics:toggle name="<%= FeatureToggle.TOGGLE_DYNAMICREPORTS %>">
+								<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
 									<li>
 										<label> <s:text name="User.useDynamicReport" /></label>
 										<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="u.usingDynamicReports" />

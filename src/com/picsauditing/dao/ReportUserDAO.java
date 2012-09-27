@@ -146,9 +146,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN report_user as rpuru ON rpu.userID = rpuru.userID AND r.id = ru.reportID");
 		sql.addJoin("LEFT JOIN users as u ON rpu.userID = u.id");
 		sql.addJoin("LEFT JOIN report_permission_account AS rpa ON r.id = rpa.reportID");
-
 		sql.addWhere("rpu.userID = " + userId + " OR rpa.accountID = " + accountId);
-
 		sql.addOrderBy("numTimesFavorited DESC");
 
 		return sql;

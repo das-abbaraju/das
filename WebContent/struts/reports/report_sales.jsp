@@ -127,7 +127,7 @@
 		<tr>
 			<td><s:property value="get('userName')" /></td>
 			<td><a href="FacilitiesEdit.action?operator=<s:property value="get('accountID')"/>&type=<s:property value="get('type')"/>"><s:property value="get('accountName')" /></a></td>
-			<td class="center"><s:date name="get('creationDate')" format="%{getText('date.MonthAndDay')}"/></td>
+			<td class="center"><s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndDay}"/></td>
 			<td><s:property value="@com.picsauditing.actions.users.UserAccountRole@getDesc(get('role'))"/></td>
 			<td class="right"><s:property value="get('ownerPercent')" />%</td>
 			<td><s:if test="get('doContractorsPay').toString() == 'Yes'">
@@ -136,8 +136,8 @@
 				<s:else>Free</s:else>
 				<s:if test="get('audited') == null">Non-Audited</s:if>
 			</td>
-			<td class="center"><s:date name="get('startDate')" format="%{getText('date.MonthAndYear')}"/></td>
-			<td class="center"><s:date name="get('endDate')" format="%{getText('date.MonthAndYear')}"/></td>
+			<td class="center"><s:date name="get('startDate')" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}"/></td>
+			<td class="center"><s:date name="get('endDate')" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}"/></td>
 			<td class="right">
 				<s:if test="get('regisLastMonth') > 0">
 					<s:if test="get('ownerPercent') < 100" >

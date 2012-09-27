@@ -1,21 +1,25 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class InvoiceTable extends AbstractTable {
 
-	public InvoiceTable(String parentPrefix, String parentAlias) {
-		super("invoice", "invoice", "i", parentAlias + ".id = i.accountID AND i.tableType = 'I'");
-		this.parentPrefix = parentPrefix;
-		this.parentAlias = parentAlias;
+	public static final String Account = "Account";
+
+	public InvoiceTable() {
+		super("invoice");
+		addFields(Invoice.class);
+
+		Field currency = new Field("Currency", "currency", FilterType.String);
+		currency.setCategory(FieldCategory.Invoicing);
+		addField(currency);
 	}
 
-	public void addFields() {
-		addField(prefix + "Currency", alias + ".currency", FilterType.String, FieldCategory.Invoicing);
-
-		addFields(com.picsauditing.jpa.entities.Invoice.class);
-	}
-
-	public void addJoins() {
+	protected void addJoins() {
+		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID"));
+		addRequiredKey(accountJoin);
+		accountJoin.setMinimumImportance(FieldImportance.Required);
 	}
 }

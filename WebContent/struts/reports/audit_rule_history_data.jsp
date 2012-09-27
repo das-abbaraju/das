@@ -24,7 +24,7 @@
 					<td><s:property value="get('rType')"/></td>
 					<td><s:property value="get('id')"/></td>
 					<td><s:property value="get('status')"/></td>
-					<td><s:date name="get('sDate')" format="%{getText('date.shorttime')}" /></td>
+					<td><s:date name="get('sDate')" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" /></td>
 					<td><s:property value="get('who')"/></td>
 					<td><a class="go" href="<s:property value="get('rType')"/>Editor.action?id=<s:property value="get('id')"/>">Go</a></td>
 				</tr>

@@ -3,6 +3,7 @@
         <pattern>/Manage*Reports*.action</pattern>
         <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/PicsStyleGuide*.action</pattern>
+        <pattern>/ReportTester.action</pattern>
     </decorator>
 	<decorator name="dynamic-report" page="dynamic-report.jsp">
 		<pattern>/Report.action</pattern>

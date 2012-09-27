@@ -61,7 +61,7 @@
 				</div>
 
 				<div class="date">
-					<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{getText('struts.date.format')}" />
+					<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 				</div>
 				
 				<div class="ip">
@@ -99,7 +99,7 @@
 	<s:if test="#a.verified && !#q.hasRequirement">
 		<span class="verified">
 			<s:text name="Audit.message.AnswerVerifiedOn">
-				<s:param><s:date name="#a.dateVerified" format="%{getText('struts.date.format')}" /></s:param>
+				<s:param><s:date name="#a.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></s:param>
 			</s:text>
 		</span>
 	</s:if>
@@ -124,7 +124,7 @@
 				<span class="verified-answer">
 					<img src="images/okCheck.gif" />
 					<s:text name="Audit.message.ClosedOn">
-						<s:param><s:date name="#a.dateVerified" format="%{getText('struts.date.format')}" /></s:param>
+						<s:param><s:date name="#a.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></s:param>
 					</s:text>
 				</span>
 			</s:elseif>

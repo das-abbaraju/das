@@ -25,9 +25,9 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportPermissionUserDAO.class);
 
-	public List<BasicDynaBean> runQuery(SelectSQL sql, JSONObject json) throws SQLException {
+	public List<BasicDynaBean> runQuery(String sql, JSONObject json) throws SQLException {
 		Database database = new Database();
-		List<BasicDynaBean> rows = database.select(sql.toString(), true);
+		List<BasicDynaBean> rows = database.select(sql, true);
 		json.put("total", database.getAllRows());
 		return rows;
 	}

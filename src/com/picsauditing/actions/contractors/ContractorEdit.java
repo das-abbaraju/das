@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -272,7 +270,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
             contractor.setCountry(country);
         }
 
-        if (!contractor.getCountry().isHasCountrySubdivisions()){
+        if (!contractor.getCountry().hasCountrySubdivisions()){
             contractor.setCountrySubdivision(null);
             countrySubdivision = null;
         }
@@ -307,7 +305,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
+		if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
 			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
 				getText(countrySubdivision.getI18nKey())));
 		}

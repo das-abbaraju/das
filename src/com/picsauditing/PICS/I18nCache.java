@@ -91,7 +91,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private String findAnyLocale(String key) {
-		Map<String, String> locales = cache.row(key);
+		Map<String, String> locales = cache.row(key.toUpperCase());
 		if (locales == null)
 			return null;
 
@@ -106,7 +106,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private boolean hasKey(String key, String locale) {
-		return cache.contains(key, locale);
+		return cache.contains(key.toUpperCase(), locale);
 	}
 
 	public boolean hasKey(String key, Locale locale) {
@@ -114,13 +114,13 @@ public class I18nCache implements Serializable {
 	}
 
 	public Map<String, String> getText(String key) {
-		return cache.row(key);
+		return cache.row(key.toUpperCase());
 	}
 
 	private String getText(String key, String locale) {
 		updateCacheUsed(key);
 
-		String value = cache.get(key, locale);
+		String value = cache.get(key.toUpperCase(), locale);
 
 		value = getTranslationFallback(key, value, locale);
 
@@ -197,7 +197,7 @@ public class I18nCache implements Serializable {
 
 			for (BasicDynaBean message : messages) {
 				String key = String.valueOf(message.get("msgKey"));
-				newCache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+				newCache.put(key.toUpperCase(), String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
 				Date lastUsed = (Date) message.get("lastUsed");
 				newCacheUsage.put(key, lastUsed);
 			}
@@ -282,7 +282,7 @@ public class I18nCache implements Serializable {
 			logger.error("Translation key '" + key + "' has no translation whatsoever.");
 		} else {
 			// If a foreign translation was invalid, check the English translation
-			String englishValue = cache.get(key, DEFAULT_LANGUAGE);
+			String englishValue = cache.get(key.toUpperCase(), DEFAULT_LANGUAGE);
 
 			if (isValidTranslation(englishValue)) {
 				fallbackTranslation = englishValue;
@@ -331,7 +331,7 @@ public class I18nCache implements Serializable {
 				String sql = String.format("DELETE FROM app_translation WHERE msgKey = '%s' AND locale = '%s'", key,
 						translationFromCache.getLocale());
 				db.executeUpdate(sql);
-				cache.remove(newTranslation.getKey(), newTranslation.getLocale());
+				cache.remove(newTranslation.getKey().toUpperCase(), newTranslation.getLocale());
 				iterator.remove();
 			} else if (translationFromCache.isModified()) {
 				db.executeUpdate(buildUpdateStatement(newTranslation));
@@ -355,7 +355,7 @@ public class I18nCache implements Serializable {
 			return;
 
 		for (String key : keys) {
-			cache.row(key).clear();
+			cache.row(key.toUpperCase()).clear();
 		}
 
 		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
@@ -426,7 +426,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private void updateCacheWithTranslation(AppTranslation newTranslation) {
-		cache.put(newTranslation.getKey(), newTranslation.getLocale(), newTranslation.getValue());
+		cache.put(newTranslation.getKey().toUpperCase(), newTranslation.getLocale(), newTranslation.getValue());
 	}
 
 	private void insertUpdateRequiredLanguages(List<String> requiredLanguages, String key, String source)
