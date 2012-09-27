@@ -1,5 +1,3 @@
-var testObject;
-
 (function($) {
     PICS.define('contractor.Dashboard', {
         methods : {
