@@ -47,8 +47,10 @@ public class OperatorTagDAO extends PicsDAO {
 				"			 OR" +
 				"			 t.operator IN (SELECT f1.corporate FROM Facility f1, Facility f2 WHERE f2.corporate.id = f1.operator.id AND f2.operator.id = :opID)" + 
 				"))";
+		
 		if (active)
 			hql += " AND t.active = 1";
+		
 		hql += " ORDER BY tag";
 		Query query = em.createQuery(hql);
 		query.setParameter("opID", opID);

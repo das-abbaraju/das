@@ -12,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -133,7 +132,7 @@ public class Utilities {
 	//       purpose utility.
 	public static float getIndustryAverage(boolean lwcr, ContractorAccount contractor) {
         float answer = 0f;
-        ContractorTrade trade = contractor.getTopTrade();
+//        ContractorTrade trade = contractor.getTopTrade();
         
         if (!lwcr) {
 // TODO swap this for below               answer = trade.getTrade().getNaicsTRIRI();
