@@ -61,6 +61,7 @@ public class ReportUser extends BaseTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "lastOpened")
 	public Date getLastViewedDate() {
 		return lastViewedDate;
 	}
@@ -77,7 +78,7 @@ public class ReportUser extends BaseTable {
 		this.viewCount = viewCount;
 	}
 
-	@Column(nullable = false)
+	@Column(name = "favoriteSortIndex", nullable = false)
 	public int getSortOrder() {
 		return sortOrder;
 	}
