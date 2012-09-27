@@ -3,12 +3,12 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="ReportCsrAssignmentStats.title" /></title>
+<title>CSR Assignment Stats</title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1><s:text name="ReportCsrAssignmentStats.title" /></h1>
-<table>
+<h1>CSR Assignment Stats</h1>
+<table class="report">
 	<thead>
 		<tr>
 			<td>CSR ID</td>
@@ -20,14 +20,14 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:iterator id="csrList" value="csrList">
+		<s:iterator value="data" var="csr">
 			<tr>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td><a href="UsersManage.action?account=1100&user=<s:property value="get('csrId')"/>" ><s:property value="get('csrId')"/></a></td>
+				<td><a href="UsersManage.action?account=1100&user=<s:property value="get('csrId')"/>" ><s:property value="get('csrName')"/></a></td>
+				<td><s:property value="get('numActive')"/></td>
+				<td><s:property value="get('numRequested')"/></td>
+				<td><s:property value="get('numWithAuditGuard')"/></td>
+				<td><s:property value="get('numWithInsureGuard')"/></td>
 			</tr>
 		</s:iterator>
 	</tbody>

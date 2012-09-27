@@ -569,7 +569,11 @@
 			<param name="download">true</param>
 			<result>struts/blank.jsp</result>
 		</action>
-
+		
+		<action name="ReportCsrAssignmentStats" 
+			class="com.picsauditing.actions.report.ReportCsrAssignmentStats">
+			<result>struts/reports/report_csr_assignment_stats.jsp</result>
+		</action>
 
 		<!-- Exceptions -->
 		<action name="ReportExceptions" class="com.picsauditing.actions.report.ReportExceptions">
