@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
+
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils"%>
+
 <%
 	// Usage: <s:include value="../jquery.jsp" />
 	// Use to include jQuery, jQuery UI, and Gritter (for notifications)
@@ -13,7 +16,7 @@
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css?v=${version}" media="screen">
 
 <% if (!TranslationActionSupport.getLocaleStatic().getLanguage().equals("en")) { %>
-<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= TranslationActionSupport.getLocaleStatic().getLanguage() %>.js?v=${version}"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= StringEscapeUtils.escapeHtml4(TranslationActionSupport.getLocaleStatic().getLanguage()) %>.js?v=${version}"></script>
 <% } %>
 
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js?v=${version}"></script>

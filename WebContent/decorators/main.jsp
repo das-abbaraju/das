@@ -24,6 +24,9 @@
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils"%>
+
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
@@ -270,7 +273,7 @@
 							"&amp;imageUrl=" +
 							protocol +
 							"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
-							locale.getDisplayLanguage() +
+							StringEscapeUtils.escapeHtml4(locale.getDisplayLanguage()) +
 							"/General/3a";
 
 						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
