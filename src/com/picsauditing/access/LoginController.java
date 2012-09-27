@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -106,6 +107,7 @@ public class LoginController extends PicsActionSupport {
 			}
 
 			ActionContext.getContext().getSession().clear();
+			invalidateSession();
 			// ServletActionContext.getRequest().getSession().invalidate();
 			// ServletActionContext.getRequest().getSession().removeAttribute("permissions");
 
@@ -194,6 +196,13 @@ public class LoginController extends PicsActionSupport {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
 
 			return super.setUrlForRedirect("Login.action?button=logout");
+		}
+	}
+
+	private void invalidateSession(){
+		HttpSession session = ServletActionContext.getRequest().getSession(false);
+		if (session!=null){
+			session.invalidate();
 		}
 	}
 
