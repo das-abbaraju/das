@@ -718,15 +718,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		alertMessages = messages;
 	}
 
-	protected void setClientSessionCookie() {
-		Cookie cookie = new Cookie("PICS_ORG_SESSION", permissions.getUserIdString());
-		cookie.setMaxAge(24 * 60 * 60);
-		if (!isLocalhostEnvironment()) {
-			cookie.setDomain("picsorganizer.com");
-		}
-		ServletActionContext.getResponse().addCookie(cookie);
-	}
-
 	private int getClientSessionUserID() {
 		Cookie sessionCookie = getClientSessionCookie();
 		if (sessionCookie == null)

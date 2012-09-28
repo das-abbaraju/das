@@ -62,6 +62,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
+		Whitebox.setInternalState(loginController, "permissionsForTest", permissions);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
@@ -201,15 +202,23 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
-
 		String actionResult = loginController.execute();
-
-		verify(permissions).clear();
 		verify(permissions).login(user);
 		verify(user).setLastLogin((Date) any());
 		verify(userDAO).save(user);
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
 		assertThat(session.keySet(), hasItem("permissions"));
+	}
+
+	@Test
+	public void testPasswordIsIncorrect_Locked() {
+		when(user.getFailedAttempts()).thenReturn(8);
+		when(user.getUsername()).thenReturn("test");
+	}
+
+	@Test
+	public void testClearPicsOrgCookie() throws Exception {
+
 	}
 
 	private void normalLoginSetup() {
@@ -219,9 +228,12 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userDAO.findName("test")).thenReturn(user);
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
 		when(user.isEncryptedPasswordEqual("test password")).thenReturn(true);
+		when(user.getId()).thenReturn(941);
 		when(permissions.belongsToGroups()).thenReturn(true);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAccountName()).thenReturn("test account");
 		when(permissions.hasPermission(OpPerms.Dashboard)).thenReturn(true);
+		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 	}
+
 }

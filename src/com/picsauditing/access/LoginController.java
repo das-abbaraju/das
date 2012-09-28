@@ -44,6 +44,8 @@ public class LoginController extends PicsActionSupport {
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
 
+	//for inject mock permission cause
+	private Permissions permissionsForTest;
 	private User user;
 	private String email;
 	private String username;
@@ -121,7 +123,7 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		invalidateSession();
-
+		clearPicsOrgCookie();
 		return SUCCESS;
 	}
 
@@ -139,6 +141,12 @@ public class LoginController extends PicsActionSupport {
 		if (session != null) {
 			session.invalidate();
 		}
+	}
+
+	private void clearPicsOrgCookie(){
+		Cookie cookie = new Cookie("PICS_ORG_SESSION",  "");
+		cookie.setMaxAge(0);
+		getResponse().addCookie(cookie);
 	}
 
 	public String switchTo() throws Exception {
@@ -186,6 +194,13 @@ public class LoginController extends PicsActionSupport {
 		ActionContext.getContext().getSession().put("permissions", permissions);
 	}
 
+	private Permissions permission(){
+		if (permissionsForTest == null){
+			permissionsForTest = new Permissions();
+		}
+		return permissionsForTest;
+	}
+
 	public String login() throws Exception {
 		logger.info("Normal login, via the actual Login.action page");
 
@@ -194,7 +209,7 @@ public class LoginController extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		permissions = new Permissions();
+		permissions = permission();
 		String error = canLogin();
 		if (error.length() > 0) {
 			logAttempt();
@@ -212,7 +227,8 @@ public class LoginController extends PicsActionSupport {
 		permissions.login(user);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
-		setClientSessionCookie();
+		//set PICS_ORG_SESSION cookie
+		setClientSessionCookie("cookie content");
 
 		user.unlockLogin();
 		user.setLastLogin(new Date());
@@ -229,42 +245,41 @@ public class LoginController extends PicsActionSupport {
 		}
 	}
 
-	private String canLogin() throws Exception {
-		// TODO: Move this into User-validation.xml and use struts 2 for this
-		// validation
-		if (Strings.isEmpty(username))
-			return getText("User.username.error.Empty");
-		else if (username.length() < 3)
-			return getText("User.username.error.Short");
-		else if (username.length() > 100)
-			return getText("User.username.error.Long");
-		else if (username.contains(" "))
-			return getText("User.username.error.Space");
-		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
-			return getText("User.username.error.Special");
+	protected void setClientSessionCookie(String cookieContent) {
+		Cookie cookie = new Cookie("PICS_ORG_SESSION", cookieContent);
+		cookie.setMaxAge(24 * 60 * 60);
+		if (!isLocalhostEnvironment()) {
+			cookie.setDomain("picsorganizer.com");
+		}
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
 
+	private String canLogin() throws Exception {
 		try {
 			user = userDAO.findName(username);
 		} catch (NoResultException e) {
 			user = null;
 		}
 
-		if (user == null)
-			return getText("Login.NoAccountExistsWithUsername");
-
+		if (user == null){
+			return getText("Login.Failed");
+		}
 		if (Strings.isEmpty(key)) {
 			// After this point we should always have a user
-
-			if (user.getAccount().isOperatorCorporate())
-				if (!user.getAccount().getStatus().isActiveDemo())
+			if (!user.isEncryptedPasswordEqual(password)) {
+				return passwordIsIncorrect();
+			}
+			if (user.getAccount().isOperatorCorporate()) {
+				if (!user.getAccount().getStatus().isActiveDemo()) {
 					return getTextParameterized("Login.NoLongerActive", user.getAccount().getName());
-
-			if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted())
+				}
+			}
+			if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted()) {
 				return getTextParameterized("Login.AccountDeleted", user.getAccount().getName());
-
-			if (user.getIsActive() != YesNo.Yes)
+			}
+			if (user.getIsActive() != YesNo.Yes) {
 				return getTextParameterized("Login.AccountNotActive", user.getAccount().getName());
-
+			}
 			if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
 				Date now = new Date();
 				long diff = user.getLockUntil().getTime() - now.getTime();
@@ -272,32 +287,28 @@ public class LoginController extends PicsActionSupport {
 
 				return getTextParameterized("Login.TooManyFailedAttempts", minutes);
 			}
-
-			if (Strings.isEmpty(password)) {
-				return getText("Login.MustEnterPassword");
-			}
-
-			if (!user.isEncryptedPasswordEqual(password)) {
-				user.setFailedAttempts(user.getFailedAttempts() + 1);
-				// TODO parameterize this 7 here
-				if (user.getFailedAttempts() > 7) {
-					// Lock this user out for 1 hour
-					Calendar calendar = Calendar.getInstance();
-					calendar.add(Calendar.HOUR, 1);
-					user.setFailedAttempts(0);
-					user.setLockUntil(calendar.getTime());
-					return getTextParameterized("Login.PasswordIncorrectAccountLocked", user.getUsername());
-				}
-
-				return getTextParameterized("Login.PasswordIncorrectAttemptsRemaining", (8 - user.getFailedAttempts()),
-						user.getUsername());
-			}
 		} else {
 			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
 				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
 			}
 		}
 		return "";
+	}
+
+	private String passwordIsIncorrect() {
+		user.setFailedAttempts(user.getFailedAttempts() + 1);
+		// TODO parameterize this 7 here
+		if (user.getFailedAttempts() > 7) {
+			// Lock this user out for 1 hour
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.HOUR, 1);
+			user.setFailedAttempts(0);
+			user.setLockUntil(calendar.getTime());
+			return getTextParameterized("Login.PasswordIncorrectAccountLocked", user.getUsername());
+		}
+		//TODO, do we really need to tell them how many tries they have left.
+		return getTextParameterized("Login.PasswordIncorrectAttemptsRemaining", (8 - user.getFailedAttempts()),
+				user.getUsername());
 	}
 
 	private String setRedirectUrlPostLogin() throws Exception {
@@ -308,11 +319,11 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		redirectURL = getRedirectUrl();
-		
+
 		if (Strings.isNotEmpty(redirectURL)) {
 			return setUrlForRedirect(redirectURL);
 		}
-		
+
 		throw new Exception(getText("Login.NoPermissionsOrDefaultPage"));
 	}
 
@@ -356,7 +367,7 @@ public class LoginController extends PicsActionSupport {
 
 	private void setBetaTestingCookie() {
 		boolean userBetaTester = isUserBetaTester();
-		Cookie cookie = new Cookie("USE_BETA", userBetaTester  + "");
+		Cookie cookie = new Cookie("USE_BETA", userBetaTester + "");
 		if (userBetaTester) {
 			cookie.setMaxAge(365 * 24 * 60 * 60);
 		} else {
@@ -373,7 +384,7 @@ public class LoginController extends PicsActionSupport {
 		boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
 		return userBetaTester;
 	}
-	
+
 	private void logAttempt() throws Exception {
 		if (user == null)
 			return;
