@@ -194,7 +194,7 @@ public class LoginController extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		permissions.clear();
+		permissions = new Permissions();
 		String error = canLogin();
 		if (error.length() > 0) {
 			logAttempt();
@@ -212,6 +212,7 @@ public class LoginController extends PicsActionSupport {
 		permissions.login(user);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
+		setClientSessionCookie();
 
 		user.unlockLogin();
 		user.setLastLogin(new Date());
