@@ -494,17 +494,42 @@
     							</li>
     							
     							
-    							<li>
-									<label>TRANSLATE THIS - CSR Assignment</label>
-    								<s:if "contractor.dontReassign">
-    									<s:set var="default" value="contractor.auditor" />
-    								</s:if>
-    								<s:select list="csrList" name="contractor.auditor" value="#default"/>
-    							</li>
     						</ol>
     					</fieldset>
-
-
+    					
+    					
+    					
+    					
+    					
+						<fieldset class="form">
+    						<h2 class="formLegend">Specific Assignment</h2>
+							<ol>
+    							<li>
+									<label>CSR Assignment</label>
+									<s:if test="contractor.dontReassign">
+									    <s:set var="default" value="contractor.auditor.id" />
+    								</s:if>
+    								<s:else>
+    									<s:set var="default" value="0" />
+    								</s:else>
+    								<s:select 
+    									name="csrId"
+    									list="csrList" 
+    									listKey = "id" 
+    									listValue = "name" 
+    									multiple = "false"
+    									headerKey = "0" 
+    									headerValue = "AUTO ASSIGNED"
+    									value = "%{(contractor.dontReassign)?contractor.auditor.id:0}"
+									/>
+    							</li>
+    						</ol>
+						</fieldset>
+						
+						
+						
+						
+						
     					<fieldset class="form submit">
     						<ol>
     							<li>

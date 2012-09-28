@@ -89,6 +89,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private CountrySubdivision countrySubdivision;
 	private Country country;
 	private String vatId;
+	private int csrId;
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected int contactID;
@@ -190,6 +191,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setPrimaryContact(userDAO.find(contactID));
 			}
 			// contractor.setNeedsIndexing(true);
+
+			if (csrId == 0) {
+				contractor.setDontReassign(false);
+			} else {
+				contractor.setAuditor(userDAO.find(csrId));
+				contractor.setDontReassign(true);
+			}
 
 			contractorAccountDao.save(contractor);
 
@@ -623,6 +631,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public List<User> getCsrList() {
-		return userDAO.findWhere("u.isActive = 'Yes' and u.accountID = 1100 and u.assignmentCapacity > 0");
+		return userDAO.findWhere("u.isActive = 'Yes' and u.account.id = 1100 and u.assignmentCapacity > 0");
+	}
+
+	public int getCsrId() {
+		return csrId;
+	}
+
+	public void setCsrId(int csrId) {
+		this.csrId = csrId;
 	}
 }
