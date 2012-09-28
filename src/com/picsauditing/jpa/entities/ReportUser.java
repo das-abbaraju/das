@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,7 +31,7 @@ public class ReportUser extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "userID", nullable = false)
+	@JoinColumn(name = "userID", nullable = false, updatable = false)
 	public User getUser() {
 		return user;
 	}
@@ -42,7 +41,7 @@ public class ReportUser extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "reportID", nullable = false)
+	@JoinColumn(name = "reportID", nullable = false, updatable = false)
 	public Report getReport() {
 		return report;
 	}
@@ -51,7 +50,6 @@ public class ReportUser extends BaseTable {
 		this.report = report;
 	}
 
-	@Column(name = "favorite", nullable = false)
 	public boolean isFavorite() {
 		return favorite;
 	}
@@ -61,7 +59,6 @@ public class ReportUser extends BaseTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "lastOpened")
 	public Date getLastViewedDate() {
 		return lastViewedDate;
 	}
@@ -78,7 +75,6 @@ public class ReportUser extends BaseTable {
 		this.viewCount = viewCount;
 	}
 
-	@Column(name = "favoriteSortIndex", nullable = false)
 	public int getSortOrder() {
 		return sortOrder;
 	}
