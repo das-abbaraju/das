@@ -1,4 +1,4 @@
-package com.picsauditing.model.general;
+package com.picsauditing.security;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

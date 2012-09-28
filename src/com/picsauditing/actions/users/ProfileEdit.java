@@ -23,7 +23,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.model.general.EncodedKey;
+import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
