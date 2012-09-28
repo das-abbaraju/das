@@ -1,4 +1,4 @@
-package com.picsauditing.autopatches;
+package com.picsauditing.util.sql;
 
 import com.tacitknowledge.util.migration.MigrationTaskSupport;
 

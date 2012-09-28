@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -113,6 +114,16 @@ public class ProfileEdit extends PicsActionSupport {
 		 * as we would be stuck in a request for the previous locale.
 		 */
 		return this.setUrlForRedirect("ProfileEdit.action?success");
+	}
+
+	@SuppressWarnings("unchecked")
+	public String generateApiKey() {
+		String apiKey = EncodedKey.randomApiKey();
+		User u = getUser();
+		u.setApiKey(apiKey);
+		json.put("ApiKey", apiKey);
+		userDAO.save(u);
+		return JSON;
 	}
 
 	public String department() {

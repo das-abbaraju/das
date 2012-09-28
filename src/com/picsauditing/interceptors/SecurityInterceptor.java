@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.picsauditing.access.AjaxNotLoggedInException;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.Api;
 import com.picsauditing.access.NotLoggedInException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.access.SecurityAware;
@@ -24,13 +25,19 @@ public class SecurityInterceptor extends AbstractInterceptor {
 			SecurityAware action = (SecurityAware) invocation.getAction();
 			Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
 
-			boolean anonymous = method.isAnnotationPresent(Anonymous.class);
-			if (!action.isLoggedIn(anonymous)) {
-
-				if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+			boolean apiCall = method.isAnnotationPresent(Api.class);
+			if (apiCall) {
+				if (!action.isApiUser()) {
 					throw new AjaxNotLoggedInException();
-				} else {
-					throw new NotLoggedInException();
+				}
+			} else {
+				boolean anonymousAllowed = method.isAnnotationPresent(Anonymous.class);
+				if (!action.isLoggedIn(anonymousAllowed)) {
+					if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+						throw new AjaxNotLoggedInException();
+					} else {
+						throw new NotLoggedInException();
+					}
 				}
 			}
 

@@ -1126,6 +1126,12 @@
 		<action name="OptionGroupTagit" class="com.picsauditing.actions.tagit.OptionGroupTagit">
 		</action>
 
+		<!-- REST API Actions -->
+		<action name="RestApiContractorList" class="com.picsauditing.actions.rest.api.ContractorList">
+		</action>
+
+
+
 		<!-- Remember to Categorize your new Struts pages -->
 
 		<action name="FileIndexingEngine"
