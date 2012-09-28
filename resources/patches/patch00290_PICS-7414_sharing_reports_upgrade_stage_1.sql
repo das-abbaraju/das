@@ -1,5 +1,5 @@
 /* Create table in target */
-CREATE TABLE `report_permission_account`(
+CREATE TABLE IF NOT EXISTS `report_permission_account`(
 	`id` int(11) NOT NULL  auto_increment , 
 	`createdBy` int(11) NULL  , 
 	`updatedBy` int(11) NULL  , 
@@ -15,7 +15,7 @@ CREATE TABLE `report_permission_account`(
 
 
 /* Create table in target */
-CREATE TABLE `report_permission_user`(
+CREATE TABLE IF NOT EXISTS `report_permission_user`(
 	`id` int(11) NOT NULL  auto_increment , 
 	`createdBy` int(11) NULL  , 
 	`updatedBy` int(11) NULL  , 
