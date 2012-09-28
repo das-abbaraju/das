@@ -203,23 +203,27 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 
 		if (filterOn(f.getCreationDate1())) {
-			report.addFilter(new SelectFilterDate("creationDate1", "creationDate >= '?'", DateBean.format(
-					f.getCreationDate1(), "M/d/yy")));
+			sql.addWhere(String.format("a.creationDate >= '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+			legacy.addWhere(String.format("cr.creationDate >= '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getCreationDate2())) {
-			report.addFilter(new SelectFilterDate("creationDate2", "creationDate < '?'", DateBean.format(
-					f.getCreationDate2(), "M/d/yy")));
+			sql.addWhere(String.format("a.creationDate < '%s'", DateBean.toDBFormat(f.getCreationDate2())));
+			legacy.addWhere(String.format("cr.creationDate < '%s'", DateBean.toDBFormat(f.getCreationDate2())));
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getClosedOnDate1())) {
-			report.addFilter(new SelectFilterDate("closedOnDate1", "closedOnDate >= '?'", DateBean.format(
-					f.getClosedOnDate1(), "M/d/yy")));
+			sql.addWhere(String.format("c.expiresOnDate >= '%s'", DateBean.toDBFormat(f.getClosedOnDate1())));
+			legacy.addWhere(String.format("cr.closedOnDate >= '%s'", DateBean.toDBFormat(f.getClosedOnDate1())));
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getClosedOnDate2())) {
-			report.addFilter(new SelectFilterDate("closedOnDate2", "closedOnDate < '?'", DateBean.format(
-					f.getClosedOnDate2(), "M/d/yy")));
+			sql.addWhere(String.format("c.expiresOnDate < '%s'", DateBean.toDBFormat(f.getClosedOnDate2())));
+			legacy.addWhere(String.format("cr.closedOnDate < '%s'", DateBean.toDBFormat(f.getClosedOnDate2())));
+			setFiltered(true);
 		}
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin()) {
