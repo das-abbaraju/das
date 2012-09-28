@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.LocaleController;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -139,6 +140,7 @@ public class Permissions implements Serializable {
 			setTimeZone(user);
 
 			setAccountPerms(user);
+			LocaleController.setLocaleOfNearestSupported(this);
 
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all

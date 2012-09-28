@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -246,24 +247,37 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			permissions = new Permissions();
 		}
 
-		if (autoLogin && !permissions.isLoggedIn()) {
+		if (permissions.isLoggedIn()) {
+			return;
+		}
 
+		int clientSessionUserID = getClientSessionUserID();
+		if (clientSessionUserID > 0) {
+			logger.info("Session timed out but HMAC cookie says the user {} is still logged in.", clientSessionUserID);
+			login(clientSessionUserID);
+			return;
+		}
+
+		if (autoLogin) {
 			String autoLoginID = System.getProperty("pics.autoLogin");
-
-			if (autoLoginID != null && autoLoginID.length() != 0) {
-				try {
-					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
-							autoLoginID);
-					UserDAO userDAO = SpringUtils.getBean("UserDAO");
-					User user = userDAO.find(Integer.parseInt(autoLoginID));
-
-					permissions.login(user);
-					LocaleController.setLocaleOfNearestSupported(permissions);
-					ActionContext.getContext().getSession().put("permissions", permissions);
-				} catch (Exception e) {
-					logger.error("Problem autologging in.  Id supplied was: {}", autoLoginID);
-				}
+			if (Strings.isNotEmpty(autoLoginID)) {
+				logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
+						autoLoginID);
+				login(Integer.parseInt(autoLoginID));
 			}
+		}
+	}
+
+	private void login(int userID) {
+		try {
+			UserDAO userDAO = SpringUtils.getBean("UserDAO");
+			User user = userDAO.find(userID);
+
+			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
+			ActionContext.getContext().getSession().put("permissions", permissions);
+		} catch (Exception e) {
+			logger.error("Problem autologging in.  Id supplied was: {}", userID);
 		}
 	}
 
@@ -702,6 +716,33 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public void setAlertMessages(Collection<String> messages) {
 		alertMessages = messages;
+	}
+
+	protected void setClientSessionCookie() {
+		Cookie cookie = new Cookie("PICS_ORG_SESSION", permissions.getUserIdString());
+		cookie.setMaxAge(24 * 60 * 60);
+		if (!isLocalhostEnvironment()) {
+			cookie.setDomain("picsorganizer.com");
+		}
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+	private int getClientSessionUserID() {
+		Cookie sessionCookie = getClientSessionCookie();
+		if (sessionCookie == null)
+			return 0;
+
+		return Integer.parseInt(sessionCookie.getValue());
+	}
+
+	private Cookie getClientSessionCookie() {
+		Cookie[] cookies = getRequest().getCookies();
+		for (Cookie cookie : cookies) {
+			if ("PICS_ORG_SESSION".equals(cookie.getName())) {
+				return cookie;
+			}
+		}
+		return null;
 	}
 
 	/**

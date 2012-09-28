@@ -34,7 +34,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private UserDAO userDAO;
 	@Mock
-	protected AppPropertyDAO appPropertyDAO;
+	protected AppPropertyDAO propertyDAO;
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
 	@Mock
@@ -61,7 +61,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
-		Whitebox.setInternalState(loginController, "appPropertyDAO", appPropertyDAO);
+		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
@@ -94,7 +94,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_logoutNotAdminCookiesDisabled() throws Exception {
 		String testMessage = "Test Message";
-		loginController.setButton("logout");
+		loginController.setButton("login");
 		when(i18nCache.getText(eq("Login.CookiesAreDisabled"), eq(Locale.ENGLISH), any())).thenReturn(testMessage);
 		when(request.getCookies()).thenReturn(null);
 
@@ -109,7 +109,6 @@ public class LoginControllerTest extends PicsActionTest {
 	// As a user who has switched to another user
 	// Given user wishes to logout as the switched to user
 	// When user clicks on logout button
-	// Then the system clears permissions
 	// And does not clear session
 	// And logs in the original user
 	// And redirects
@@ -122,7 +121,6 @@ public class LoginControllerTest extends PicsActionTest {
 		String actionResult = loginController.execute();
 
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
-		verify(permissions).clear();
 		verify(permissions).login(user);
 	}
 

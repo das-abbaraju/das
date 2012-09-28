@@ -338,6 +338,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public void setFailedAttempts(int failedAttempts) {
 		this.failedAttempts = failedAttempts;
 	}
+	
+	public void unlockLogin() {
+		setFailedAttempts(0);
+		setLockUntil(null);
+	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getLockUntil() {
