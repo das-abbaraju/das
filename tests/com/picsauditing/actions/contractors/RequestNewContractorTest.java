@@ -11,6 +11,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -39,9 +40,11 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.Facility;
@@ -255,11 +258,6 @@ public class RequestNewContractorTest {
 		verify(entityManager, never()).merge(any(ContractorRegistrationRequest.class));
 		verify(entityManager).persist(any(ContractorRegistrationRequest.class));
 		verify(requestNewContractor).runGapAnalysis(any(ContractorRegistrationRequest.class));
-	}
-
-	@Test
-	public void testLoadTags() {
-		assertEquals(PicsActionSupport.SUCCESS, requestNewContractor.loadTags());
 	}
 
 	@Test
@@ -503,7 +501,6 @@ public class RequestNewContractorTest {
 
 		requestNewContractor = spy(requestNewContractor);
 		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
-		doNothing().when(requestNewContractor).sendEmail();
 
 		requestNewContractor.setNewContractor(registrationRequest);
 
@@ -511,6 +508,72 @@ public class RequestNewContractorTest {
 		assertFalse(requestNewContractor.hasActionErrors());
 		assertTrue(requestNewContractor.hasActionMessages());
 
+		verify(entityManager).merge(any(ContractorRegistrationRequest.class));
+	}
+
+	@Test
+	public void testSave_TransferNewTagsToContractorAccount() throws Exception {
+		ContractorAccount contractor = mock(ContractorAccount.class);
+		OperatorAccount operator = mock(OperatorAccount.class);
+		OperatorTag tag = mock(OperatorTag.class);
+
+		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+		operators.add(operator);
+
+		when(contractor.getOperatorAccounts()).thenReturn(operators);
+		when(entityManager.find(OperatorTag.class, 1)).thenReturn(tag);
+		when(registrationRequest.getContractor()).thenReturn(contractor);
+		when(registrationRequest.getId()).thenReturn(1);
+		when(registrationRequest.getOperatorTags()).thenReturn("1");
+		when(tag.getId()).thenReturn(1);
+		when(tag.getOperator()).thenReturn(operator);
+
+		filledContactFields();
+		filledOperatorSpecificFields();
+
+		requestNewContractor = spy(requestNewContractor);
+		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
+
+		requestNewContractor.setNewContractor(registrationRequest);
+
+		assertEquals(PicsActionSupport.SUCCESS, requestNewContractor.save());
+		assertFalse(requestNewContractor.hasActionErrors());
+		assertTrue(requestNewContractor.hasActionMessages());
+
+		verify(entityManager).persist(any(BaseTable.class));
+		verify(entityManager).merge(any(ContractorRegistrationRequest.class));
+	}
+
+	@Test
+	public void testSave_DoNotAddExistingTags() throws Exception {
+		ContractorAccount contractor = mock(ContractorAccount.class);
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		OperatorTag tag = mock(OperatorTag.class);
+
+		List<ContractorTag> tags = new ArrayList<ContractorTag>();
+		tags.add(contractorTag);
+
+		when(contractorTag.getTag()).thenReturn(tag);
+		when(contractor.getOperatorTags()).thenReturn(tags);
+		when(entityManager.find(OperatorTag.class, 1)).thenReturn(tag);
+		when(registrationRequest.getContractor()).thenReturn(contractor);
+		when(registrationRequest.getId()).thenReturn(1);
+		when(registrationRequest.getOperatorTags()).thenReturn("1");
+		when(tag.getId()).thenReturn(1);
+
+		filledContactFields();
+		filledOperatorSpecificFields();
+
+		requestNewContractor = spy(requestNewContractor);
+		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
+
+		requestNewContractor.setNewContractor(registrationRequest);
+
+		assertEquals(PicsActionSupport.SUCCESS, requestNewContractor.save());
+		assertFalse(requestNewContractor.hasActionErrors());
+		assertTrue(requestNewContractor.hasActionMessages());
+
+		verify(entityManager, never()).persist(any(BaseTable.class));
 		verify(entityManager).merge(any(ContractorRegistrationRequest.class));
 	}
 
