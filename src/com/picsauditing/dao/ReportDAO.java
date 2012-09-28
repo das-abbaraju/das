@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,27 +35,19 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
 	@Override
 	public List<Report> getPaginationResults(PaginationParameters parameters) {
-		ReportPaginationParameters reportParams = (ReportPaginationParameters)parameters;
 		List<Report> reports = new ArrayList<Report>();
-
-		// TODO escape properly
-		String terms = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
-
 		try {
-			SelectSQL sql = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getUserId(), reportParams.getAccountId());
+			SelectSQL sql = buildQueryForSearch(parameters);
+			sql.setPageNumber(parameters.getPageSize(), parameters.getPage());
 
-			sql.addWhere("r.name LIKE " + terms +
-					" OR r.description LIKE " + terms +
-					" OR u.name LIKE " + terms);
-
-			sql.setPageNumber(reportParams.getPageSize(), reportParams.getPage());
-
-			Query query = em.createNativeQuery(sql.toString(), ReportUser.class);
-
-			List<ReportUser> reportUsers = query.getResultList();
-
-			for (ReportUser reportUser : reportUsers) {
-				reports.add(reportUser.getReport());
+			Database db = new Database();
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+			
+			for (BasicDynaBean bean : results) {
+				int id = 0;
+				if ((id = NumberUtils.toInt(bean.get("id").toString(), 0)) != 0) {
+					reports.add(this.find(Report.class, id));
+				}
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in getPaginationResults()");
@@ -65,36 +58,32 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 
 	@Override
 	public int getPaginationOverallCount(PaginationParameters parameters) {
-		ReportPaginationParameters reportParams = (ReportPaginationParameters)parameters;
-
-		// TODO escape properly
-		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
-
 		try {
-			SelectSQL sql = new SelectSQL("report r");
-
+			SelectSQL sql = buildQueryForSearch(parameters);
 			sql.addField("count(r.id) AS count");
-
-			sql.addJoin("JOIN users as u ON r.createdBy = u.id");
-
-			sql.addWhere("r.private = 0 OR r.createdBy = " + reportParams.getUserId());
-			sql.addWhere("r.name LIKE " + query +
-					" OR r.description LIKE " + query +
-					" OR u.name LIKE " + query);
 
 			Database db = new Database();
 			List<BasicDynaBean> results = db.select(sql.toString(), false);
-			String countStr = results.get(0).get("count").toString();
-
-			return Integer.parseInt(countStr);
-		} catch (SQLException se) {
-			logger.error("SQL Exception in getPaginationOverallCount()", se);
-		} catch (NumberFormatException nfe) {
-			logger.error("Number Format Exception in getPaginationOverallCount()", nfe);
+			
+			return results.size();
 		} catch (Exception e) {
 			logger.error("Unexpected exception in getPaginationOverallCount()", e);
 		}
 
 		return -1;
+	}
+	
+	private SelectSQL buildQueryForSearch(PaginationParameters parameters) {
+		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
+		
+		// TODO escape properly
+		String query = "\'%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\'";
+		
+		SelectSQL selectSQL = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getUserId(), reportParams.getAccountId());
+		selectSQL.addWhere("r.name LIKE " + query +
+				" OR r.description LIKE " + query +
+				" OR u.name LIKE " + query);
+		
+		return selectSQL;
 	}
 }

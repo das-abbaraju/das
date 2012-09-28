@@ -124,7 +124,7 @@ public class ManageReports extends PicsActionSupport {
 	public String searchList() {
 		reports = new ArrayList<Report>();
 		try {
-			reports = reportModel.getReportsForSearch(searchTerm, permissions, pagination);
+			reports = reportModel.getReportsForSearch(searchTerm, permissions, getPagination());
 			if (CollectionUtils.isEmpty(reports)) {
 				addActionMessage("No Reports found.");
 			}
