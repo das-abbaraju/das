@@ -76,7 +76,6 @@
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" href="css/print.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css?v=${version}">
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=${version}" />

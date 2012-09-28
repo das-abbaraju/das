@@ -264,7 +264,6 @@ $(function() {
 			$('#search-list, #trade-view').delegate('a.trade', 'click', function(event) {
 				event.preventDefault();
 
-				console.log('click')
 				var element = $('#trade-view');
 				var url = $(this).attr('href');
 
