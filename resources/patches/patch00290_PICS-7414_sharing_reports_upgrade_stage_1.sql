@@ -1,4 +1,3 @@
-/* Create table in target */
 CREATE TABLE IF NOT EXISTS `report_permission_account`(
 	`id` int(11) NOT NULL  auto_increment , 
 	`createdBy` int(11) NULL  , 
@@ -13,8 +12,6 @@ CREATE TABLE IF NOT EXISTS `report_permission_account`(
 	KEY `user_report_user`(`accountID`) 
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-
-/* Create table in target */
 CREATE TABLE IF NOT EXISTS `report_permission_user`(
 	`id` int(11) NOT NULL  auto_increment , 
 	`createdBy` int(11) NULL  , 
@@ -30,8 +27,6 @@ CREATE TABLE IF NOT EXISTS `report_permission_user`(
 	KEY `user_report_user`(`userID`) 
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-
-/* Alter table in target */
 ALTER TABLE `report_user` 
 	CHANGE `reportID` `reportID` int(11)   NOT NULL after `updateDate`, 
 	CHANGE `userID` `userID` int(11)   NOT NULL after `reportID`, 
@@ -43,11 +38,8 @@ ALTER TABLE `report_user`
 	CHANGE `favoriteSortIndex` `favoriteSortIndex` int(11)   NOT NULL DEFAULT '100' after `sortOrder`, 
 	ADD COLUMN `viewCount` int(11)   NOT NULL DEFAULT '0' after `favoriteSortIndex`, COMMENT='';
 
-/* Create Trigger in target */
-
 DELIMITER $$
 CREATE
-    /*!50017 DEFINER = 'tallred'@'%' */
     TRIGGER `report_user_6_24_insert` BEFORE INSERT ON `report_user` 
     FOR EACH ROW BEGIN
 	IF NEW.sortOrder > -1 THEN
@@ -73,12 +65,8 @@ CREATE
 $$
 DELIMITER ;
 
-
-/* Create Trigger in target */
-
 DELIMITER $$
 CREATE
-    /*!50017 DEFINER = 'tallred'@'%' */
     TRIGGER `report_user_6_24_update` BEFORE UPDATE ON `report_user` 
     FOR EACH ROW BEGIN
 	IF NEW.sortOrder > -1 && NEW.sortOrder != OLD.sortOrder THEN
@@ -103,8 +91,6 @@ CREATE
     END;
 $$
 DELIMITER ;
-
-/* Alter ForeignKey(s)in target */
 
 ALTER TABLE `report_user`
 ADD CONSTRAINT `FK_report_user_user` 
