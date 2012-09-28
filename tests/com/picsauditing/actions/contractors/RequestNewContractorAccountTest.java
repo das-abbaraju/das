@@ -5,14 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -87,6 +83,9 @@ public class RequestNewContractorAccountTest {
 		picsTestUtil.autowireEMInjectedDAOs(requestNewContractorAccount, entityManager);
 
 		contractor = EntityFactory.makeContractor();
+
+		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(query.getResultList()).thenReturn(Collections.emptyList());
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailBuilder", emailBuilder);
 		Whitebox.setInternalState(requestNewContractorAccount, "emailSender", emailSender);
@@ -597,6 +596,61 @@ public class RequestNewContractorAccountTest {
 		assertEquals(tag, requestNewContractorAccount.getRequestedContractor().getOperatorTags().get(0).getTag());
 
 		verify(entityManager).persist(any(ContractorTag.class));
+	}
+
+	@Test
+	public void testUpdateAccounWithLegacyChanges() throws Exception {
+		contractor = mock(ContractorAccount.class);
+		OperatorAccount operator = mock(OperatorAccount.class);
+		User user = mock(User.class);
+		ContractorRegistrationRequest request = mock(ContractorRegistrationRequest.class);
+
+		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
+		contractorOperators.add(relationship);
+
+		when(contractor.getId()).thenReturn(1);
+		when(contractor.getOperators()).thenReturn(contractorOperators);
+		when(relationship.getId()).thenReturn(1);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
+		when(request.getId()).thenReturn(1);
+		when(request.getRequestedBy()).thenReturn(operator);
+		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(true);
+		when(user.getId()).thenReturn(1);
+
+		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setRequestRelationship(relationship);
+		Whitebox.setInternalState(requestNewContractorAccount, "legacyRequest", request);
+		Whitebox.setInternalState(requestNewContractorAccount, "primaryContact", user);
+
+		Whitebox.invokeMethod(requestNewContractorAccount, "updateAccountWithLegacyChanges");
+
+		verify(entityManager, times(3)).merge(any(BaseTable.class));
+	}
+
+	@Test
+	public void testUpdateAccounWithLegacyChanges_NotUpdated() throws Exception {
+		ContractorRegistrationRequest request = mock(ContractorRegistrationRequest.class);
+
+		when(request.getId()).thenReturn(1);
+		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(false);
+
+		Whitebox.setInternalState(requestNewContractorAccount, "legacyRequest", request);
+		Whitebox.invokeMethod(requestNewContractorAccount, "updateAccountWithLegacyChanges");
+
+		verify(entityManager, never()).merge(any(BaseTable.class));
+	}
+
+	@Test
+	public void testUpdateAccounWithLegacyChanges_NewLegacyRequest() throws Exception {
+		ContractorRegistrationRequest request = mock(ContractorRegistrationRequest.class);
+
+		when(request.getId()).thenReturn(0);
+		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(true);
+
+		Whitebox.setInternalState(requestNewContractorAccount, "legacyRequest", request);
+		Whitebox.invokeMethod(requestNewContractorAccount, "updateAccountWithLegacyChanges");
+
+		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
 
 	private OperatorForm createOperatorForm(OperatorAccount operator) {

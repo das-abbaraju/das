@@ -361,4 +361,31 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void contactByPhone() {
 		contactCountByPhone++;
 	}
+
+	@Transient
+	public boolean isCreatedUpdatedAfter(ContractorAccount contractor) {
+		if (contractor != null) {
+			if (this.getUpdateDate() != null) {
+				if (contractor.getUpdateDate() != null) {
+					return this.getUpdateDate().after(contractor.getUpdateDate());
+				}
+
+				if (contractor.getCreationDate() != null) {
+					return this.getUpdateDate().after(contractor.getCreationDate());
+				}
+			}
+
+			if (this.getCreationDate() != null) {
+				if (contractor.getUpdateDate() != null) {
+					return this.getCreationDate().after(contractor.getUpdateDate());
+				}
+
+				if (contractor.getCreationDate() != null) {
+					return this.getCreationDate().after(contractor.getCreationDate());
+				}
+			}
+		}
+
+		return false;
+	}
 }

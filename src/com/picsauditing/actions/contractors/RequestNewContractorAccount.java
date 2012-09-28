@@ -102,8 +102,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Override
 	public String execute() throws Exception {
 		checkPermissions();
-		initializeRequest();
 		loadRelationships();
+		initializeRequest();
 		loadTags();
 
 		return SUCCESS;
@@ -276,6 +276,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			primaryContact = requestedContractor.getPrimaryContact();
 
 			setRequestStatus();
+			// Check changes to old request
+			loadLegacyRequest();
+			updateAccountWithLegacyChanges();
 		}
 	}
 
@@ -589,6 +592,37 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			contractorTagDAO.save(tag);
 
 			requestedContractor.getOperatorTags().add(tag);
+		}
+	}
+
+	private void updateAccountWithLegacyChanges() {
+		if (legacyRequest.getId() > 0 && legacyRequest.isCreatedUpdatedAfter(requestedContractor)) {
+			requestedContractor.setName(legacyRequest.getName());
+			requestedContractor.setTaxId(legacyRequest.getTaxID());
+			requestedContractor.setAddress(legacyRequest.getAddress());
+			requestedContractor.setCity(legacyRequest.getCity());
+			requestedContractor.setZip(legacyRequest.getZip());
+			requestedContractor.setCountry(legacyRequest.getCountry());
+			requestedContractor.setCountrySubdivision(legacyRequest.getCountrySubdivision());
+			requestedContractor.setRequestedBy(legacyRequest.getRequestedBy());
+			requestedContractor.setAuditColumns(permissions);
+			contractorAccountDao.save(requestedContractor);
+
+			primaryContact.setName(legacyRequest.getContact());
+			primaryContact.setPhone(legacyRequest.getPhone());
+			primaryContact.setEmail(legacyRequest.getEmail());
+			primaryContact.setAuditColumns(permissions);
+			userDAO.save(primaryContact);
+
+			for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
+				if (legacyRequest.getRequestedBy().equals(contractorOperator.getOperatorAccount())) {
+					contractorOperator.setDeadline(legacyRequest.getDeadline());
+					contractorOperator.setRequestedBy(legacyRequest.getRequestedByUser());
+					contractorOperator.setRequestedByOther(legacyRequest.getRequestedByUserOther());
+					contractorOperator.setAuditColumns(permissions);
+					contractorOperatorDAO.save(contractorOperator);
+				}
+			}
 		}
 	}
 }
