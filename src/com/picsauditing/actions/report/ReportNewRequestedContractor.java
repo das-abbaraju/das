@@ -161,18 +161,12 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		String locationList = Strings.implodeForDB(f.getLocation(), ",");
 		if (filterOn(locationList)) {
 			sql.addWhere("a.countrySubdivision IN (" + locationList + ") OR a.country IN (" + locationList + ")");
-			sql.addOrderBy("CASE WHEN a.country IN (" + locationList + ") THEN 1 ELSE 2 END, a.country");
-			sql.addOrderBy("CASE WHEN a.countrySubdivision IN (" + locationList
-					+ ") THEN 1 ELSE 2 END, a.countrySubdivision");
-			sql.addOrderBy("a.country");
-			sql.addOrderBy("a.countrySubdivision");
+			sql.addOrderBy("CASE WHEN country IN (" + locationList + ") THEN 1 ELSE 2 END");
+			sql.addOrderBy("CASE WHEN countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END");
+			sql.addOrderBy("country");
+			sql.addOrderBy("countrySubdivision");
 
 			legacy.addWhere("cr.countrySubdivision IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
-			legacy.addOrderBy("CASE WHEN cr.country IN (" + locationList + ") THEN 1 ELSE 2 END, cr.country");
-			legacy.addOrderBy("CASE WHEN cr.countrySubdivision IN (" + locationList
-					+ ") THEN 1 ELSE 2 END, cr.countrySubdivision");
-			legacy.addOrderBy("cr.country");
-			legacy.addOrderBy("cr.countrySubdivision");
 
 			setFiltered(true);
 		}
