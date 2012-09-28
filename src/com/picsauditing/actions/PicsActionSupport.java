@@ -721,6 +721,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected void setClientSessionCookie() {
 		Cookie cookie = new Cookie("PICS_ORG_SESSION", permissions.getUserIdString());
 		cookie.setMaxAge(24 * 60 * 60);
+		if (!isLocalhostEnvironment()) {
+			cookie.setDomain("picsorganizer.com");
+		}
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
 
