@@ -237,18 +237,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 
 		if (filterOn(f.getOperatorTags())) {
-			StringBuilder where = new StringBuilder();
-
-			for (int i = 0; i < f.getOperatorTags().length; i++) {
-				if (i > 0)
-					where.append(" OR ");
-
-				where.append("(FIND_IN_SET(" + f.getOperatorTags()[i] + ", operatorTags) > 0)");
-			}
-
-			sql.addWhere(where.toString());
-
-			legacy.addWhere(where.toString());
+			sql.addWhere(String.format("ot.id IN (%s)", Strings.implode(f.getOperatorTags())));
+			legacy.addWhere(String.format("ot.id IN (%s)", Strings.implode(f.getOperatorTags())));
+			setFiltered(true);
 		}
 	}
 
