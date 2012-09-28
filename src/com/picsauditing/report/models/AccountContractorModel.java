@@ -34,6 +34,7 @@ public class AccountContractorModel extends AbstractModel {
 			contractor.join(ContractorTable.Flag);
 		}
 		contractor.join(ContractorTable.CustomerService);
+		contractor.join(ContractorTable.Watch);
 		return contractor;
 	}
 
