@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +47,7 @@ import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.model.general.EncodedKey;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
@@ -186,7 +187,7 @@ public class UsersManage extends PicsActionSupport {
 		// a user
 		if (user.getId() < 0) {
 			// We want to save a new user
-			final String randomPassword = Long.toString(new Random().nextLong());
+			final String randomPassword = EncodedKey.randomPassword(); 
 			user.setEncryptedPassword(randomPassword);
 			user.setForcePasswordReset(true);
 		}
