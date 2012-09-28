@@ -311,9 +311,11 @@
 				var services = $('.services-list input[type=checkbox]');
 				var service_safety_evaluation = $('.service-safety-evaluation');
 				var product_safety_evaluation = $('.product-safety-evaluation');
+                var business_interruption_evaluation = $('.business_interruption_evaluation');
 
 				var service_safety_evaluation_display = false;
 				var product_safety_evaluation_display = false;
+                var business_interruption_evaluation_display = false;
 
 				$.each(services, function (key, value) {
 					var element = $(value);
@@ -322,8 +324,13 @@
 
 					if ($.inArray(element_id, ['onSite', 'offSite']) != -1 && is_checked) {
 						service_safety_evaluation_display = true;
-					} else if($.inArray(element_id, ['materialSupplier', 'transportation']) != -1 && is_checked) {
+					} 
+					if($.inArray(element_id, ['materialSupplier']) != -1 && is_checked) {
 						product_safety_evaluation_display = true;
+						business_interruption_evaluation_display = true;
+					} 
+					if($.inArray(element_id, ['transportation']) != -1 && is_checked) {
+					    product_safety_evaluation_display = true;
 					}
 				});
 
@@ -338,6 +345,12 @@
 				} else {
 					product_safety_evaluation.slideUp(400);
 				}
+				
+                if (business_interruption_evaluation_display) {
+                    business_interruption_evaluation.slideDown(400);
+                } else {
+                    business_interruption_evaluation.slideUp(400);
+                }
 			}
 		}
 	};
