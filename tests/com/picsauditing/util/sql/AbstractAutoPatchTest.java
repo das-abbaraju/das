@@ -1,9 +1,11 @@
-package com.picsauditing.autopatches;
+package com.picsauditing.util.sql;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.picsauditing.util.sql.AbstractAutoPatch;
 
 public class AbstractAutoPatchTest {
 
