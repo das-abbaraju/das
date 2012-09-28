@@ -294,7 +294,7 @@ public final class ReportUtil {
 		}
 
 		for (QueryMethod queryMethod : methods) {
-			String fieldSuffixKey = "Report.Suffix." + queryMethod.name();
+			String fieldSuffixKey = "Report.Function." + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
 	}
