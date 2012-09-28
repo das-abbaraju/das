@@ -102,9 +102,7 @@ public class ReportModel {
 		return newReport;
 	}
 
-	public void edit(Permissions permissions, Report report) throws Exception {
-		ReportModel.validate(report);
-
+	public void edit(Report report, Permissions permissions) throws Exception {
 		if (!canUserEdit(permissions.getUserId(), report))
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 

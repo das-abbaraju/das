@@ -93,7 +93,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             url: 'ManageReports!unfavorite.action?reportId=' + report_id
         });
     },
-
+    
     onReportModalCancelClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal();
 

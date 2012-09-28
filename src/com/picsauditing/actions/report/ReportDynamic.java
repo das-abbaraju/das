@@ -56,7 +56,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String edit() {
 		try {
-			reportModel.edit(permissions, report);
+			reportModel.edit(report, permissions);
 			json.put("success", true);
 			json.put("reportID", report.getId());
 		} catch (NoRightsException nre) {

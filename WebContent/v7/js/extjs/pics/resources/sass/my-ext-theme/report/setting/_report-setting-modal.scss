@@ -169,6 +169,54 @@
 	}
 }
 
+#report_settings_modal-body
+{
+	.icon-edit
+	{
+		color: #ccc;
+	}
+
+    .selected
+	{
+	   color: #A84D10;
+	}
+
+	strong
+	{
+		font-weight: bold;
+	}
+}
+
+#share_no_permission
+{
+	p
+	{
+		color: #333;
+		font-size: 13px;
+		margin: 0px auto;
+		text-align: center;
+		width: 90%;
+	}
+	
+	strong
+	{
+		font-weight: bold;
+	}
+	
+	.permission-info
+	{
+		font-weight: bold;
+		margin-bottom: 15px;
+		margin-top: 25px;
+	}
+	
+	.duplicate-info
+	{
+		color: #666;
+		margin-bottom: 20px;
+	}
+}
+
 /***
  * Tabs
  */
