@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,19 +72,18 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String configuration() {
-		int userId = permissions.getUserId();
-		boolean editable = false, favorite = false;
+		json.put("favorite", false);
+		json.put("editable", false);
 
 		try {
-			editable = reportModel.canUserEdit(userId, report);
-			ReportUser reportUser = reportUserDao.findOne(userId, report.getId());
-			favorite = reportUser.isFavorite();
+			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), report.getId());
+			json.put("editable", reportModel.canUserEdit(permissions.getUserId(), report));
+			json.put("favorite", reportUser.isFavorite());
+		} catch (NoResultException e) {
+			logger.info("No ReportUser entry for " + permissions.getUserId() + " AND " + report.getId());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.configuration()", e);
 		}
-
-		json.put("editable", editable || permissions.isDeveloperEnvironment());
-		json.put("favorite", favorite);
 
 		return JSON;
 	}
@@ -90,7 +91,8 @@ public class ReportDynamic extends PicsActionSupport {
 	public String report() {
 		try {
 			ReportModel.validate(report);
-
+			configuration();
+			
 			reportModel.updateLastViewedDate(permissions.getUserId(), report);
 			{
 				List<ReportElement> reportElements = new ArrayList<ReportElement>();
