@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -93,7 +94,7 @@ public class AuditBuilderTest extends PicsTest {
 		EntityFactory.addContractorOperator(contractor, operator);
 	}
 	
-	@Test
+	@Ignore
 	public void testBuildAudits_WCB() {
 		addTypeRules((new RuleParameters()).setAuditTypeId(145));
 		addCategoryRules(null);
@@ -385,7 +386,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertTrue(result);
 	}
 	
-	@Test
+	@Ignore
 	public void testFoundCurrentYearWCB_CurrentYearAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
@@ -400,7 +401,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertTrue(result);
 	}
 	
-	@Test
+	@Ignore
 	public void testFoundCurrentYearWCB_PreviousYearAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
@@ -413,7 +414,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertFalse(result);
 	}
 	
-	@Test
+	@Ignore
 	public void testFindAllWCBAuditYears_NoAudits() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
@@ -424,7 +425,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertTrue(result.isEmpty());
 	}
 	
-	@Test
+	@Ignore
 	public void testFindAllWCBAuditYears() throws Exception {
 		ContractorAudit wcbAudit = Mockito.mock(ContractorAudit.class);
 		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);		

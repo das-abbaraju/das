@@ -7,7 +7,7 @@
 -- -----------------------------------------------------------------------------------------------
 -- PICS-5193 New LC COR features
 -- insert feature toggle
-insert ignore into app_properties (property, value) values ('ToggleLcCor', 0);
+insert ignore into app_properties (property, value) values ('Toggle.LcCor', 0);
 -- initial selection of canadian contractors
 Update contractor_info ci
 join accounts a on a.id=ci.id

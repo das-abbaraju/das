@@ -49,8 +49,8 @@
 			<td><s:property value="get('caoAccountName')" /></td>
 		</pics:permission>
 		<td><s:property value="get('caowStatus')"/></td>
-		<td class="center"><s:date name="get('statusChangedDate')" format="%{getText('date.short')}" /></td>
-		<td class="center"><s:date name="get('expiresDate')" format="%{getText('date.short')}" /></td>
+		<td class="center"><s:date name="get('statusChangedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+		<td class="center"><s:date name="get('expiresDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 	    <s:if test="permissions.picsEmployee">
 			<td><s:property value="get('auditor_name')"/></td>
 		</s:if>

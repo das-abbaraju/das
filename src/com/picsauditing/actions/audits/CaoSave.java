@@ -346,8 +346,9 @@ public class CaoSave extends AuditActionSupport {
 		// contractor_audit_operator_workflow table or the note table, but NOT BOTH.
 		updateCaoWorkflow(prevStatus, cao, note);
 		
-		if (newStatus.isSubmittedResubmitted() && cao.getAudit().getAuditType().isPqf()
-				&& cao.getPercentVerified() == 100) {
+		caoSaveModel.updatePqfOnSubmittedResubmitter(cao.getAudit(), newStatus);
+		
+		if (newStatus.isSubmittedResubmitted() && cao.getAudit().isOkayToChangeCaoStatus(cao)) {
 			ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Complete, permissions);
 			if (caow != null) {
 				caow.setNotes("Auto completed based previously completed verification");

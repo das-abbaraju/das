@@ -29,9 +29,9 @@ function getDetail(auditorID, paidDate) {
 	</tr>
 	</thead>
 	<s:iterator value="list">
-	<tr class="clickable" onclick="getDetail(<s:property value="get('auditor').id"/>,'<s:date name="get('paidDate')" format="yyyy-MM-dd"/>')">
+	<tr class="clickable" onclick="getDetail(<s:property value="get('auditor').id"/>,'<s:date name="get('paidDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>')">
 		<td>
-			<s:date name="get('paidDate')" format="%{getText('date.short')}"/>
+			<s:date name="get('paidDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 		</td>
 		<td>
 			<s:property value="get('auditor').name"/>

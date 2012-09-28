@@ -96,6 +96,11 @@ public class FlagDataCalculator {
 								dataSet.put(key, data);
 							else if (dataSet.get(key).getFlag().isWorseThan(flag))
 								dataSet.put(key, data);
+						} else if (data.getContractor().getAccountLevel().isFull()) {
+							if (dataSet.get(key) == null)
+								dataSet.put(key, data);
+							else if (dataSet.get(key).getFlag().isWorseThan(flag))
+								dataSet.put(key, data);							
 						}
 					}
 				}
@@ -289,12 +294,12 @@ public class FlagDataCalculator {
 							return answer2 > con.getWeightedIndustryAverage() * hurdle2 / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-							return answer2 > (Utilities
-									.getIndustryAverage(true, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
+							return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor()) 
+									* hurdle2) / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()
-									.getNaics()) * hurdle2) / 100;
+							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()) 
+									* hurdle2) / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
 							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor().getNaics()) * hurdle2) / 100;

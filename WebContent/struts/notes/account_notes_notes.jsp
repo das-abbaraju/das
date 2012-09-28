@@ -84,7 +84,7 @@
 			<tr>
 				<td class="center">
 					<nobr>
-						<s:date name="creationDate" format="%{getText('date.shorttime')}" />
+						<s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" />
 					</nobr><br />
 					
 					<nobr>
@@ -137,7 +137,7 @@
 					<s:if test="updateDate != null && updateDate.after(creationDate)">
 						<br /><s:text name="ContractorNotes.EditedBy">
 							<s:param><s:property value="updatedBy.name" /></s:param>
-							<s:param><s:date name="updateDate" format="%{getText('date.shorttime')}" /></s:param>
+							<s:param><s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" /></s:param>
 						</s:text>
 					</s:if>
 				</td>

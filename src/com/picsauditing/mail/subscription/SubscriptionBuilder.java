@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -28,14 +28,14 @@ public abstract class SubscriptionBuilder {
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 
 	public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException {
 		Map<String, Object> tokens = process(subscription);
 		EmailQueue queue = buildEmail(subscription, tokens);
 
 		if (queue != null) {
-			if (featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")) {
+			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)) {
 				sender.publishSubscription(queue);
 			} else {
 				sender.sendNow(queue);

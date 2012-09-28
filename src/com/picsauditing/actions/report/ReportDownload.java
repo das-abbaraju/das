@@ -9,7 +9,6 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,10 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.ReportDataConverter;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
+import com.picsauditing.report.data.ReportDataConverter;
+import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
 
@@ -37,6 +37,8 @@ public class ReportDownload extends PicsActionSupport {
 	private ReportDAO reportDao;
 	private Report report;
 
+	private ReportResults reportResults;
+
 	public String execute() {
 		try {
 			getData();
@@ -48,27 +50,29 @@ public class ReportDownload extends PicsActionSupport {
 		return BLANK;
 	}
 
-	private JSONArray getData() throws ReportValidationException, SQLException {
+	private void getData() throws ReportValidationException, SQLException {
 		ReportModel.validate(report);
 
-		SelectSQL sql = new SqlBuilder().initializeSql(report.getModel(), report.getDefinition(), permissions);
+		SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
 		// TODO Print parameters
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
-		List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
-		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(),
-				permissions.getLocale());
-		return converter.convertForPrinting(queryResults);
+		List<BasicDynaBean> queryResults = reportDao.runQuery(sql.toString(), json);
+
+		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(), queryResults);
+		converter.setLocale(permissions.getLocale());
+		converter.convertForPrinting();
+		reportResults = converter.getReportResults();
 	}
 
 	private HSSFWorkbook buildWorkbook() {
 		logger.info("Building XLS File");
 		ExcelBuilder builder = new ExcelBuilder();
 		builder.addColumns(report.getDefinition().getColumns());
-		JSONArray reportData = (JSONArray) json.get("data");
-		return builder.buildWorkbook(report.getName(), reportData);
+		builder.addSheet(report.getName(), reportResults);
+		return builder.getWorkbook();
 	}
 
 	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {

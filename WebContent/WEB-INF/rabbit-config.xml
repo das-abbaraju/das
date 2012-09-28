@@ -50,14 +50,14 @@
 	<template message-converter="messageConverter" id="FlagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
 		<beans:property name="amqpTemplate" ref="FlagChangeTemplate" />
-		<beans:property name="featureToggleChecker" ref="FeatureToggleChecker" />
+		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.FlagChanges" />
 	</beans:bean>
 
 	<template message-converter="messageConverter" id="EmailQueueTemplate" connection-factory="connectionFactory" exchange="email-queue-exchange"/>
 	<beans:bean id="EmailQueuePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
 		<beans:property name="amqpTemplate" ref="EmailQueueTemplate" />
-		<beans:property name="featureToggleChecker" ref="FeatureToggleChecker" />
+		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.EmailQueue" />
 	</beans:bean>
 

@@ -72,8 +72,8 @@
 			</s:else>
 			</td>
 			<s:if test="permissions.admin">
-				<td><s:date name="get('creationDate')" format="%{getText('date.short')}"/></td>
-				<td><s:date name="get('paymentExpires')" format="%{getText('date.short')}"/></td>
+				<td><s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+				<td><s:date name="get('paymentExpires')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 				<td><s:property value="reasons.get(get('reason'))" /></td>
 				<td>
 					<s:if test="get('safetyRisk') != null">

@@ -1,6 +1,8 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +11,9 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
@@ -237,6 +238,39 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 
 		// Criterias don't match, return nothing
 		assertNull(getSingle());
+	}
+	
+	@Test
+	public void testInsuranceCriteria() {
+		FlagDataCalculator calculator =setupInsuranceCriteria();
+		List<FlagData> list = calculator.calculate();
+		assertTrue(list.size() == 1);
+		assertTrue(list.get(0).getFlag().equals(FlagColor.Red));
+	}
+	
+	private FlagDataCalculator setupInsuranceCriteria() {
+		FlagCriteria fc = EntityFactory.makeFlagCriteriaAuditQuestion();
+		fc.setInsurance(true);
+		fc.setCategory("Insurance Criteria");
+		fc.setComparison("<");
+		fc.setDataType("number");
+		fc.setAllowCustomValue(true);
+		fc.setDefaultValue("10");
+		fc.setOptionCode(FlagCriteriaOptionCode.ExcessEachOccurrence);
+		fc.setRequiredStatus(AuditStatus.Submitted);
+		
+		FlagCriteriaContractor fcc = EntityFactory.makeFlagCriteriaContractor("5");
+		fcc.setContractor(contractor);
+		fcc.setCriteria(fc);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		FlagCriteriaOperator fco = EntityFactory.makeFlagCriteriaOperator("10");
+		fco.setOperator(operator);
+		fco.setCriteria(fc);
+		
+		calculator = new FlagDataCalculator(fcc, fco);
+		
+		return calculator;
 	}
 
 	// TODO get these tests to pass...need to get Bamboo running now so I'm skipping this for now

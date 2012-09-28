@@ -88,7 +88,7 @@
                     <s:property value="updatedBy2.name" />
                 </td>
     			<td>
-                    <s:date name="updateDate2" format="%{getText('date.short')}"/>
+                    <s:date name="updateDate2" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
                 </td>
     		</tr>
     	</s:iterator>

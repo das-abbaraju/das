@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -411,7 +412,7 @@
 		    															<s:property value="auditFor"/>
 		    														</s:if>
 		    														<s:else>
-		    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
+		    															<s:date name="effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" />
 		    														</s:else>
 		    													</a>
 	    													</option>
@@ -430,7 +431,7 @@
 	    															<s:property value="auditFor"/>
 	    														</s:if>
 	    														<s:else>
-	    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
+	    															<s:date name="effectiveDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" />
 	    														</s:else>
 	    													</a>
     													</li>
@@ -567,7 +568,7 @@
     								<p>
     									<s:text name="ContractorView.MemberSince" />:
                                         <strong><s:date name="contractor.membershipDate" /></strong>
-                                        <pics:toggle name="Badge">
+                                        <pics:toggle name="<%= FeatureToggle.TOGGLE_BADGE %>">
 	                                        <a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
 	                                            <s:text name="ContractorView.ClickToViewContractorBadge" />
 	                                        </a>
@@ -657,7 +658,7 @@
     										<s:property value="contractor.city" />
     									</span>,
     									<span class="region">
-    										<s:property value="contractor.state" />
+    										<s:property value="contractor.countrySubdivision.simpleName" />
     									</span>
     									<span class="postal-code">
     										<s:property value="contractor.zip" />

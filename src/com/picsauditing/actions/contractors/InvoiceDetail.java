@@ -22,6 +22,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -199,9 +200,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				// Automatically deactivating account based on expired
 				// membership
-				String status = contractor.getBillingStatus();
+				BillingStatus status = contractor.getBillingStatus();
 				if (!contractor.getStatus().equals(AccountStatus.Deactivated)
-						&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
+						&& (status.isRenewalOverdue() || status.isReactivation())) {
 					contractor.setStatus(AccountStatus.Deactivated);
 					contractor.setRenew(false);
 					if (contractor.getAccountLevel().isBidOnly())

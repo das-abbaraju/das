@@ -3,6 +3,9 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 <%@ page import="java.util.Locale" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils"%>
+
 <head>
 	<title><s:text name="AccountRecovery.title" /></title>
 	
@@ -59,15 +62,6 @@
 							<a class="showUser showPointer"><s:text name="AccountRecovery.ForgotName" /></a>
 							<a class="showEmail showPointer"><s:text name="AccountRecovery.ForgotPassword" /></a>
 						</li>
-						<li>
-							<label><s:text name="AccountRecovery.title.Verification" />:</label>
-							<s:property value="recaptcha.recaptchaHtml" escape="false"/>
-							
-							<div class="fieldhelp">
-								<h3><s:text name="AccountRecovery.Verification" /></h3>
-								<p><s:text name="AccountRecovery.Verification.fieldhelp" /></p>
-							</div>
-						</li>
 					</ol>
 				</fieldset>
 				
@@ -81,6 +75,6 @@
 		<s:include value="../actionMessages.jsp"></s:include>
 	</div>
 	<script type="text/javascript">
-		RecaptchaState.lang = '<%=TranslationActionSupport.getLocaleStatic().getLanguage()%>';
+		RecaptchaState.lang = '<%= StringEscapeUtils.escapeHtml4(TranslationActionSupport.getLocaleStatic().getLanguage()) %>';
 	</script>
 </body>

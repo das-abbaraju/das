@@ -74,7 +74,7 @@ Ext.define('PICS.model.report.Report', {
         return Ext.encode(report);
     },
 
-    toQueryString: function () {
+    toRequestParams: function () {
         var report = {};
 
         report.report = this.get('id');
@@ -83,6 +83,6 @@ Ext.define('PICS.model.report.Report', {
         report['report.parameters'] = this.toJson();
         report['report.rowsPerPage'] = this.get('rowsPerPage');
 
-        return Ext.Object.toQueryString(report);
+        return report;
     }
 });

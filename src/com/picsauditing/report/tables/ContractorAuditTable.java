@@ -1,49 +1,55 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class ContractorAuditTable extends AbstractTable {
 
-	public ContractorAuditTable(String prefix, String alias, String toForeignKey, String fromForeignKey) {
-		super("contractor_audit", prefix, alias, alias + "." + toForeignKey + " = " + fromForeignKey);
-	}
+	public static final String Contractor = "Contractor";
+	public static final String Type = "Type";
+	public static final String Auditor = "Auditor";
+	public static final String ClosingAuditor = "ClosingAuditor";
 
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.Audits);
-		// I'm not sure this field is really that important at all. With
-		// Effective Date, the creationDate just becomes confusing
-		// Field creationDate = addField(prefix + "CreationDate", alias +
-		// ".creationDate", FilterType.Date, FieldCategory.Audits);
-		// creationDate.setImportance(FieldImportance.Low);
-		// creationDate.requirePermission(OpPerms.ManageAudits);
-
-		addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
+	public ContractorAuditTable() {
+		super("contractor_audit");
+		addFields(ContractorAudit.class);
+		addPrimaryKey(FilterType.Integer);
 
 		Field auditTypeName;
-		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String, FieldCategory.Audits);
+		auditTypeName = new Field("Name", "auditTypeID", FilterType.String);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
-		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
+		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
 		auditTypeName.setImportance(FieldImportance.Required);
+		auditTypeName.setCategory(FieldCategory.Audits);
 		auditTypeName.setWidth(200);
+		addField(auditTypeName);
 	}
 
 	public void addJoins() {
-		AuditTypeTable auditType = new AuditTypeTable(prefix + "Type", alias + ".auditTypeID");
-		auditType.includeRequiredAndAverageColumns();
-		addLeftJoin(auditType);
+		{
+			ReportForeignKey contractorJoin = new ReportForeignKey(Contractor, new ContractorTable(),
+					new ReportOnClause("conID"));
+			// contractorJoin.setMinimumImportance(FieldImportance.Average);
+			// We may not need this either if the Entity Fields are set correctly
+			// contractorJoin.setCategory(FieldCategory.AccountInformation);
+			addJoinKey(contractorJoin);
+		}
+		
+		addJoinKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")))
+				.setMinimumImportance(FieldImportance.Average);
+		{
+			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(Auditor, new UserTable(),
+					new ReportOnClause("auditorID")));
+			auditorKey.setMinimumImportance(FieldImportance.Required);
+			auditorKey.setCategory(FieldCategory.Auditors);
+		}
 
-		UserTable auditor = new UserTable(prefix + "Auditor", alias + ".auditorID");
-		auditor.setOverrideCategory(FieldCategory.Auditors);
-		auditor.includeOnlyRequiredColumns();
-		addLeftJoin(auditor);
-
-		UserTable closingAuditor = new UserTable(prefix + "ClosingAuditor", alias + ".closingAuditorID");
-		closingAuditor.setOverrideCategory(FieldCategory.Auditors);
-		closingAuditor.includeOnlyRequiredColumns();
-		addLeftJoin(closingAuditor);
-
-		// TODO: Add auditDataTable
+		{
+			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(ClosingAuditor, new UserTable(),
+					new ReportOnClause("closingAuditorID")));
+			auditorKey.setMinimumImportance(FieldImportance.Required);
+			auditorKey.setCategory(FieldCategory.Auditors);
+		}
 	}
 }

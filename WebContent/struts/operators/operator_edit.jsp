@@ -420,7 +420,7 @@
 								<label>
 									<s:text name="FacilitiesEdit.AccountSince" />:
 								</label>
-								<s:date name="operator.creationDate" format="MM%{getText('date.MonthAndYear')}" />
+								<s:date name="operator.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@MonthAndYear}" />
 							</li>
 						</s:if>
 					</ol>
@@ -584,13 +584,13 @@
 	                            </pics:permission>
 	                            <pics:permission negativeCheck="true" perm="UserRolePicsOperator">
 	                                <s:if test="operator.discountExpiration">
-	                                    <s:date name="operator.discountExpiration" format="%{getText('date.short')}" />
+	                                    <s:date name="operator.discountExpiration" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 	                                </s:if>
 	                                <s:else>
 	                                    <s:text name="JS.Filters.status.None" />
 	                                </s:else>
 	                            </pics:permission>
-	                            <s:property value="%{getText('date.short')}" />
+	                            <s:property value="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 	                        </li>
 	                        <s:if test ="operator.corporate && permissions.hasGroup(9)" >
 							<li>
@@ -689,7 +689,7 @@
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, getText('date.short'))}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, @com.picsauditing.util.PicsDateFormat@Iso)}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield
@@ -697,7 +697,7 @@
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, getText('date.short'))}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, @com.picsauditing.util.PicsDateFormat@Iso)}"
 																	/>
 																</nobr>
 															</td>
@@ -801,14 +801,14 @@
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, getText('date.short'))}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, @com.picsauditing.util.PicsDateFormat@Iso)}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield cssClass="blueMain datepicker"
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, getText('date.short'))}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, @com.picsauditing.util.PicsDateFormat@Iso)}"
 																	/>
 																</nobr>
 															</td>
@@ -870,10 +870,10 @@
 																	<s:property value="ownerPercent" />%
 																</td>
 																<td>
-																	<s:date name="startDate" format="%{getText('date.short')}" />
+																	<s:date name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 																</td>
 																<td>
-																	<s:date name="endDate" format="%{getText('date.short')}" />
+																	<s:date name="endDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 																</td>
 															</tr>
 														</s:iterator>

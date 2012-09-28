@@ -39,7 +39,9 @@
 				<td align="center"><a href="javascript: changeOrderBy('form1','assignedDate DESC');">Assigned</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','scheduledDate DESC,a.name');">Scheduled</a></td>
 				<td align="center"><a href="javascript: changeOrderBy('form1','auditLocation,a.name');">Location</a></td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','pqfCompletionDate ASC, a.name');">PQF Completed</td>
 				<td>Safety Manual</td>
+				<td align="center"><a href="javascript: changeOrderBy('form1','dateVerified ASC,a.name');">Safety Manual Verified</td>
 				<td></td>
 				<s:if test="showContact">
 					<td><s:text name="global.ContactPrimary" /></td>
@@ -68,9 +70,9 @@
 				</td>
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
-					format="%{getText('date.short')}" /></td>
+					format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 				<td class="reportDate"><s:date name="[0].get('current_expiresDate')"
-					format="%{getText('date.short')}" /></td>
+					format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 				<td><nobr>
 				<s:if test="[0].get('hasAuditor')">
 					<s:select onchange="saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="safetyList" listKey="id"
@@ -89,11 +91,12 @@
 					</nobr>
 				</td>
 				<td>
-				<s:date name="[0].get('scheduledDate')" format="%{getText('date.shorttime')}"/>
+				<s:date name="[0].get('scheduledDate')" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}"/>
 				</td>
 				<td>
 				<s:property value="[0].get('auditLocation')"/>
 				</td>
+				<td><s:date name="[0].get('pqfCompletionDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 				<td><s:if test="get('manswer') != null">
 					<nobr>Size:<s:property value="getFileSize(get('mid').toString())"/></nobr><br/>
 						<s:if test="get('mcomment') != null && get('mcomment').toString().length() > 0">
@@ -101,6 +104,7 @@
 						</s:if>
 					</s:if>
 				</td>
+				<td><s:date name="[0].get('dateVerified')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 				<td>
 					<s:if test="[0].get('isScheduled')">
 						<a href="ScheduleAudit.action?auditID=<s:property value="get('auditID')"/>" target="scheduleAudit">Schedule</a>

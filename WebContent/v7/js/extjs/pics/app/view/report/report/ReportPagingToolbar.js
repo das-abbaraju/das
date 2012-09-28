@@ -44,7 +44,6 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
 
         return [{
             cls: 'refresh',
-            handler: me.doRefresh,
             height: 22,
             itemId: 'refresh',
             overflowText: me.refreshText,

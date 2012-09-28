@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -88,7 +89,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 			dao.save(contractorAudit);
 
 		if (contractorAudit.getAssignedDate() != null) {
-			output = new SimpleDateFormat("MM/dd/yy hh:mm a").format(contractorAudit.getAssignedDate());
+			output = new SimpleDateFormat(PicsDateFormat.Datetime12Hour).format(contractorAudit.getAssignedDate());
 		}
 
 		String name = getRequestURL();

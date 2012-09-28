@@ -183,7 +183,7 @@
                                 <s:text name="global.NA" />
                             </s:if>
 							<s:else>
-								<s:date name="statusChangedDate" format="%{getText('date.long')}" />
+								<s:date name="statusChangedDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 							</s:else>
 						</td>
                         

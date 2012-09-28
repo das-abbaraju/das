@@ -20,11 +20,11 @@
             </p>
         </s:if>
 
-        <h4><s:date name="key" format="EE, MMM d" /></h4>
+        <h4><s:date name="key" format="%{@com.picsauditing.util.PicsDateFormat@IsoWeekday}" /></h4>
         <div class="cal_times">
             <s:iterator value="value" var="auditorAvailability">
                 <a href="ScheduleAudit!selectTime.action?auditID=<s:property value="conAudit.id"/>&selectedTimeZone=<s:property value="selectedTimeZone" />&timeSelected=<s:date 
-                    name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"<s:if test="isNeedsExpediteFee(startDate)"> class="expedite"</s:if> data-date="<s:date name="startDate" format="yyyy-MM-dd" />">
+                    name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@ScheduleAudit}" />"<s:if test="isNeedsExpediteFee(startDate)"> class="expedite"</s:if> data-date="<s:date name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />">
                     <s:text name="ScheduleAudit.link.DateSelector2">
                         <s:param value="%{#auditorAvailability.getTimeZoneStartDate(getSelectedTimeZone())}" />
                         <s:param value="%{#auditorAvailability.getTimeZoneEndDate(getSelectedTimeZone())}" />
@@ -45,7 +45,7 @@
 
 <s:if test="availableSet.latest != null">
     <script type="text/javascript">
-		startDate = '<s:date name="availableSet.latest" format="%{getText('date.short')}" />';
+		startDate = '<s:date name="availableSet.latest" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />';
 		<s:if test="availableSet.days.size() > 0">
 			$('#show_next').removeAttr("disabled");
 		</s:if>

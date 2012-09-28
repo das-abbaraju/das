@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:include value="../_action-messages.jsp" />
+
 <s:if test="userReportsOverflow">
     <s:set var="has_overflow_list" value="true" />
 </s:if>

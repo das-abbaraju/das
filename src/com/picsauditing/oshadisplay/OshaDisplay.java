@@ -113,7 +113,12 @@ public class OshaDisplay {
 				}
 			}
 
-			if (rateType.isHasIndustryAverage()) {
+			List<OshaDisplayRow> hurdleRateRows = new ArrayList<OshaDisplayRow>();
+			if (rateType != OshaRateType.Fatalities) {
+				hurdleRateRows = generateHurdleRates(rateType, oshaType);
+			}
+			
+			if (rateType.isHasIndustryAverage() && hurdleRateRows.size() > 0) {
 				String industryAverage = getIndustryAverage(oshaType, rateType);
 				rateRow.addCell(industryAverage);
 			} else {
@@ -121,9 +126,8 @@ public class OshaDisplay {
 			}
 
 			rows.add(rateRow);
-			if (rateType != OshaRateType.Fatalities) {
-				rows.addAll(generateHurdleRates(rateType, oshaType));
-			}
+			
+			rows.addAll(hurdleRateRows);
 		}
 
 		return rows;
@@ -142,20 +146,20 @@ public class OshaDisplay {
 	
 	private String getIndustryAverage(OshaType oshaType, OshaRateType rateType) {
 		if (rateType == OshaRateType.LwcrAbsolute) {
-			return String.valueOf(Utilities.getIndustryAverage(true, contractor.getNaics()));
+			return String.valueOf(Utilities.getIndustryAverage(true, contractor));
 		} else if (rateType == OshaRateType.TrirAbsolute || rateType == OshaRateType.TrirNaics) {
 			if (oshaType != OshaType.OSHA && oshaType != OshaType.MSHA) {
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 			}
 			if (contractor.getNaics() == null || Strings.isEmpty(contractor.getNaics().getCode()) )
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
-			return String.valueOf(Utilities.getIndustryAverage(false, contractor.getNaics()));
+			return String.valueOf(Utilities.getIndustryAverage(false, contractor));
 		} else if (rateType == OshaRateType.TrirWIA) {
 			return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 		}
 		return null;
 	}
-
+	
 	private List<OshaDisplayRow> generateHurdleRates(
 			OshaRateType oshaRateType, OshaType oshaType) {
 		List<OshaDisplayRow> hurdleRateRows = new ArrayList<OshaDisplayRow>();

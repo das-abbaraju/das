@@ -80,6 +80,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.IndexerEngine;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.business.OperatorUtil;
 import com.picsauditing.util.log.PicsLogger;
@@ -499,7 +500,7 @@ public class Cron extends PicsActionSupport {
 
 						operatorContractors.get(requestedByOperator).add(contractor);
 					}
-					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 					contractor.setLastContactedByAutomatedEmailDate(sdf.parse(sdf.format(new Date())));
 					contractorAccountDAO.save(contractor);
 				}
@@ -536,7 +537,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void sendEmailContractorRegistrationRequest() throws Exception {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 
 		int[] pendingEmailTemplates = { pendingFinalEmailTemplate, pendingLastChanceEmailTemplate,
 				pendingReminderEmailTemplate };
@@ -620,7 +621,7 @@ public class Cron extends PicsActionSupport {
 					crr.setLastContactDate(new Date());
 					notes = newNote + notes;
 					crr.setNotes(notes);
-					SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+					SimpleDateFormat sdf = new SimpleDateFormat(PicsDateFormat.American);
 					crr.setLastContactedByAutomatedEmailDate(sdf.parse(sdf.format(new Date())));
 					if (templateID == regReqFinalEmailTemplate) {
 						if (operatorContractors.get(operatorUser) == null)
@@ -816,7 +817,7 @@ public class Cron extends PicsActionSupport {
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);
-				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
+				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat(PicsDateFormat.American).format(new Date())
 						+ " due to delinquent payment.");
 
 				// Add Late Fee to Invoice

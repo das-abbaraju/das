@@ -24,8 +24,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 

@@ -1,34 +1,31 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class AccountTable extends AbstractTable {
+	public static final String Operator = "Operator";
+	public static final String Contractor = "Contractor";
+	public static final String Contact = "Contact";
+	public static final String Naics = "Naics";
 
 	public AccountTable() {
-		super("accounts", "account", "a", "");
+		super("accounts");
+		addPrimaryKey(FilterType.AccountID).setCategory(FieldCategory.AccountInformation);
+		addFields(Account.class);
+
+		Field creationDate = new Field("CreationDate", "creationDate", FilterType.Date);
+		creationDate.setImportance(FieldImportance.Low);
+		addField(creationDate).setCategory(FieldCategory.AccountInformation);
 	}
 
-	public AccountTable(String prefix, String alias, String foreignKey) {
-		super("accounts", prefix, alias, alias + ".id = " + foreignKey);
-	}
-
-	public AccountTable(String alias, String foreignKey) {
-		super("accounts", alias, alias, alias + ".id = " + foreignKey);
-	}
-	
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.AccountID, FieldCategory.AccountInformation);
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date, FieldCategory.AccountInformation);
-		
-		addFields(com.picsauditing.jpa.entities.Account.class);
-	}
-
-	public void addJoins() {
-		UserTable primaryContact = new UserTable(prefix + "Contact", alias + ".contactID");
-		primaryContact.setOverrideCategory(FieldCategory.ContactInformation);
-		addLeftJoin(primaryContact);
-		
-		NaicsTable naicsStatistics = new NaicsTable(prefix + "Naics", alias + ".naics");
-		addLeftJoin(naicsStatistics);
+	protected void addJoins() {
+		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("id")));
+		addJoinKey(new ReportForeignKey(Operator, new OperatorTable(), new ReportOnClause("id")));
+		addOptionalKey(new ReportForeignKey(Contact, new UserTable(), new ReportOnClause("contactID")))
+				.setMinimumImportance(FieldImportance.Average);
+		addOptionalKey(new ReportForeignKey(Naics, new NaicsTable(), new ReportOnClause("naics", "code")))
+				.setMinimumImportance(FieldImportance.Average);
 	}
 }

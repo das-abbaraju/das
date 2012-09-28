@@ -34,8 +34,8 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Location;
@@ -933,6 +933,20 @@ public class ContractorAudit extends AbstractIndexableTable {
 			return true;
 		}
 		
+		return false;
+	}
+	
+	@Transient
+	public boolean isOkayToChangeCaoStatus(ContractorAuditOperator cao) {
+		if (auditType.isPqf() && cao.getPercentVerified() == 100) {
+			for (AuditData data:getData()) {
+				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF
+						&& data.isUnverified()) {
+					return false;
+				}
+			}
+			return true;
+		}
 		return false;
 	}
 }

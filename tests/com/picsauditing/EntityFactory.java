@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -200,7 +201,7 @@ public class EntityFactory {
 	/**
 	 * make an Active conAudit for the given contractor of the given typeID
 	 * 
-	 * @param auditTypeID
+	 * @param auditType
 	 * @return
 	 */
 	static public ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
@@ -443,6 +444,18 @@ public class EntityFactory {
 		flagCriteriaContractor.setCriteria(makeFlagCriteria());
 
 		return flagCriteriaContractor;
+	}
+	
+	public static FlagCriteriaOperator makeFlagCriteriaOperator(String hurdle) {
+		FlagCriteriaOperator flagCriterisOperator = new FlagCriteriaOperator();
+		flagCriterisOperator.setId(counter++);
+		flagCriterisOperator.setCriteria(makeFlagCriteria());
+		flagCriterisOperator.setFlag(FlagColor.Red);
+		flagCriterisOperator.setOperator(makeOperator());
+		flagCriterisOperator.setHurdle(hurdle);
+		
+		
+		return flagCriterisOperator;
 	}
 	
 	public static void addUserPermission(Permissions permissions, OpPerms opPerm) {

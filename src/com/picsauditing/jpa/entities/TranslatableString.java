@@ -179,9 +179,11 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 	}
 
 	public String getLocale(Locale defaultLocale) {
-		Locale locale;
+		Locale locale = defaultLocale;
 		try {
-			locale = ActionContext.getContext().getLocale();
+			if (locale == null) {
+				locale = ActionContext.getContext().getLocale();
+			}
 		} catch (Exception e) {
 			if (defaultLocale != null) {
 				locale = defaultLocale;

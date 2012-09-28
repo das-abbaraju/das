@@ -259,7 +259,7 @@ function deleteRule(element,ruleID) {
 							<s:property value="createdBy.name"/>
 						</td>
 						<td>
-							<s:date name="creationDate" format="%{getText('date.short')}"/>
+							<s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 						</td>
 					</s:if>
 					
@@ -268,7 +268,7 @@ function deleteRule(element,ruleID) {
 							<s:property value="updatedBy.name"/>
 						</td>
 						<td>
-							<s:date name="updateDate" format="%{getText('date.short')}"/>
+							<s:date name="updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/>
 						</td>
 					</s:if>
 					

@@ -218,6 +218,50 @@
 			
 		</div>
 		
+		<%-- business interruption evaluation display toggle --%>
+		<s:if test="contractor.materialSupplier">
+			<s:set var="business_interruption_evaluation_display" value="" /> 
+		</s:if>
+		<s:else>
+			<s:set var="business_interruption_evaluation_display" value="'display: none;'" />
+		</s:else>
+		
+		<div class="business_interruption_evaluation" style="${business_interruption_evaluation_display}">
+		
+			<div class="separator"></div>
+			
+			<section>
+				<h1><s:text name="RegistrationServiceEvaluation.BusinessInterruption" /></h1>
+				
+				<ul>
+					<s:iterator value="infoQuestions" var="question">
+						<s:if test="#question.category.id == 1682 && #question.questionType=='MultipleChoice'">
+							<li class="audit-question" data-audit-id="${conAudit.id}" data-question-id="${question.id}">
+								<label><s:property value="#question.name" /></label>
+							
+								<s:if test="#question.option.uniqueCode == 'YesNo'">
+									<s:set var="radio_class" value="'inline'" />
+								</s:if>
+								<s:else>
+									<s:set var="radio_class" value="" />
+								</s:else>
+								
+								<s:radio 
+									list="#question.option.values"
+									listKey="uniqueCode" 
+									listValue="name" 
+									name="answerMap[%{#question.id}].answer"
+									value="answerMap[#question.id].answer"
+									cssClass="%{#radio_class}" 
+								/>
+							</li>
+						</s:if>
+					</s:iterator>
+				</ul>
+			</section>
+			
+		</div>
+		
 		<ul>
 			<li class="actions">
 				<s:submit 

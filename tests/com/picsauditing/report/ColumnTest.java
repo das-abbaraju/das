@@ -15,18 +15,9 @@ public class ColumnTest {
 	private JSONObject jsonObj = new JSONObject();
 
 	@Test
-	public void testEmpty() {
-		column.fromJSON(jsonObj);
-
-		String expected = "\"name\":null";
-		assertContains(expected, column.toJSON(true).toJSONString());
-		assertContains("field", column.toJSON(true).toJSONString());
-	}
-
-	@Test
 	public void testNameOnly() {
 		jsonObj.put("name", "AccountName");
-		column.fromJSON(jsonObj);
+		column = new Column(jsonObj);
 		assertEquals("AccountName", column.getFieldName());
 
 		String expected = "\"name\":\"AccountName\"";
@@ -35,22 +26,23 @@ public class ColumnTest {
 
 	@Test
 	public void testMethod() {
-		jsonObj.put("name", "AccountNameUpperCase");
-		jsonObj.put("method", "UpperCase");
-		column.fromJSON(jsonObj);
+		jsonObj.put("name", "AccountName__UpperCase");
+		column = new Column(jsonObj);
 		assertEquals(QueryMethod.UpperCase, column.getMethod());
 
-		String expected = "\"name\":\"AccountNameUpperCase\"";
+		String expected = "\"method\":\"UpperCase\"";
 		assertContains(expected, column.toJSON(true).toJSONString());
 	}
 
 	@Test
-	public void testOldSchoolColumnName() throws Exception {
-		column.setFieldName("FacilityCountCount");
-		column.setMethod(QueryMethod.Count);
-		assertEquals("FacilityCount__Count", column.getFieldName());
-		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
-		assertEquals(QueryMethod.Count, column.getMethod());
+	public void testBadMethodName() throws Exception {
+		try {
+			jsonObj.put("name", "AccountName__BadMethodThatDoesNotExist");
+			column = new Column(jsonObj);
+		} catch (Exception weWantToThrowException) {
+			return;
+		}
+		throw new Exception("There is no QueryMethod called BadMethodThatDoesNotExist");
 	}
 
 	@Test
@@ -58,7 +50,7 @@ public class ColumnTest {
 		column.setFieldName("AccountName");
 		assertEquals("AccountName", column.getFieldName());
 	}
-	
+
 	@Test
 	public void testGetFieldNameWithoutMethod() {
 		column.setFieldName("FacilityCount__Count");
@@ -66,13 +58,13 @@ public class ColumnTest {
 		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
 		assertEquals(QueryMethod.Count, column.getMethod());
 	}
-	
+
 	@Test
 	public void testToJsonWithNonAutoMethod() {
 		column.setFieldName("FacilityCount__Count");
 		JSONObject json = column.toJSON(true);
-		Column column2 = new Column();
-		column2.fromJSON(json);
+		Column column2 = new Column(json);
 		assertEquals(column.getFieldName(), column2.getFieldName());
 	}
+
 }

@@ -19,6 +19,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
@@ -87,29 +88,7 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setQbSync(true);
 
 			// Calculate the due date for the invoice
-			if (contractor.getBillingStatus().equals("Activation")) {
-				invoice.setDueDate(new Date());
-			} else if (contractor.getBillingStatus().equals("Reactivation")) {
-				invoice.setDueDate(new Date());
-			} else if (contractor.getBillingStatus().equals("Upgrade")) {
-				invoice.setDueDate(DateBean.addDays(new Date(), 7));
-			} else if (contractor.getBillingStatus().startsWith("Renew")) {
-				invoice.setDueDate(contractor.getPaymentExpires());
-			}
-
-			if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-					|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
-				invoice.setDueDate(new Date());
-				contractor.setRenew(true);
-			}
-
-			if (invoice.getDueDate() == null)
-				// For all other statuses like (Current)
-				invoice.setDueDate(DateBean.addDays(new Date(), 30));
-
-			// Make sure the invoice isn't due within 7 days for active accounts
-			if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
-				invoice.setDueDate(DateBean.addDays(new Date(), 7));
+			calculateDueDateFor(invoice);
 
 			// Add the list of operators if this invoice has a membership level
 			// on it
@@ -118,10 +97,10 @@ public class BillingDetail extends ContractorActionSupport {
 				if (item.getInvoiceFee().isMembership())
 					hasMembership = true;
 			}
-			
+
 			if (hasMembership) {
 				invoice.setNotes(billingService.getOperatorsString(contractor));
-			}			
+			}
 
 			contractor.getInvoices().add(invoice);
 
@@ -150,9 +129,9 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		// Automatically deactivating account based on expired membership
-		String status = contractor.getBillingStatus();
+		BillingStatus status = contractor.getBillingStatus();
 		if (!contractor.getStatus().equals(AccountStatus.Deactivated)
-				&& ("Renewal Overdue".equals(status) || "Reactivation".equals(status))) {
+				&& (status.isRenewalOverdue() || status.isReactivation())) {
 			contractor.setStatus(AccountStatus.Deactivated);
 			contractor.setRenew(false);
 			if (contractor.getAccountLevel().isBidOnly())
@@ -171,6 +150,34 @@ public class BillingDetail extends ContractorActionSupport {
 
 		this.subHeading = "Billing Detail";
 		return SUCCESS;
+	}
+
+	protected void calculateDueDateFor(Invoice invoice) {
+
+		if (contractor.getBillingStatus().isActivation()) {
+			invoice.setDueDate(new Date());
+		} else if (contractor.getBillingStatus().isReactivation()) {
+			invoice.setDueDate(new Date());
+		} else if (contractor.getBillingStatus().isUpgrade()) {
+			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		} else if (contractor.getBillingStatus().isRenewal() || contractor.getBillingStatus().isRenewalOverdue()) {
+			invoice.setDueDate(contractor.getPaymentExpires());
+		}
+
+		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
+				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
+			invoice.setDueDate(contractor.getPaymentExpires());
+			contractor.setRenew(true);
+		}
+
+		if (invoice.getDueDate() == null)
+			// For all other statuses like (Current)
+			invoice.setDueDate(DateBean.addDays(new Date(), 30));
+
+		// Make sure the invoice isn't due within 7 days for active accounts
+		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
+
+			invoice.setDueDate(DateBean.addDays(new Date(), 7));
 	}
 
 	public OperatorAccount getRequestedBy() {

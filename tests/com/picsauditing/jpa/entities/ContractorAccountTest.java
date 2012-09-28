@@ -185,4 +185,25 @@ public class ContractorAccountTest {
 		assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
 
 	}
+
+    @Test
+    public void testHasVatId_null() {
+        ContractorAccount testAccount = new ContractorAccount();
+        testAccount.setVatId(null);
+        assertFalse(testAccount.hasVatId());
+    }
+
+    @Test
+    public void testHasVatId_emptyString() {
+        ContractorAccount testAccount = new ContractorAccount();
+        testAccount.setVatId("");
+        assertFalse(testAccount.hasVatId());
+    }
+
+    @Test
+    public void testHasVatId_pass() {
+        ContractorAccount testaAccount = new ContractorAccount();
+        testaAccount.setVatId("foo");
+        assertTrue(testaAccount.hasVatId());
+    }
 }

@@ -2,8 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page import="com.picsauditing.report.access.ReportUtil" %>
 
-<s:include value="../actionMessages.jsp" />
-
 <s:include value="/struts/layout/_page-header.jsp">
     <s:param name="title"><s:text name="ManageReports.title" /></s:param>
     <s:param name="subtitle"><s:text name="ManageReports.subtitle" /></s:param>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <%--
 http://solutions.liveperson.com/tagGen/gallery/General3-Blue-fr.asp
@@ -14,7 +15,7 @@ Locales:
 - Portuguese
 - Spanish
 --%>
-<pics:toggle name="LiveAgent">
+<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
 	<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
 	<img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>
 </pics:toggle>

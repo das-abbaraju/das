@@ -12,6 +12,7 @@ public enum FilterType {
 	UserID(ExtFieldType.Int),
 	DaysAgo(ExtFieldType.Int),
 	LowMedHigh,
+	TagID,
 	Enum,
 	Autocomplete,
 	List;

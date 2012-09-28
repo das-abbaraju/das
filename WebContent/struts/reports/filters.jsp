@@ -248,7 +248,7 @@
 				<br />
 				<span class="clearLink q_box select">
 					<s:textfield
-						rel="Location"
+						rel="'Location'"
 						name="filter.location"
 						cssClass="tokenAuto" />
 					<a href="#" class="clearLink">
@@ -280,7 +280,7 @@
 				<br />
 				<span class="clearLink q_box select">
 					<s:textfield
-						rel="Trade/true"
+						rel="'Trade/true'"
 						name="filter.trade"
 						cssClass="tokenAuto" />
 					<a href="#" class="clearLink">
@@ -495,7 +495,7 @@
 				<br />
 				<span class="clearLink q_box select">
 					<s:textfield
-						rel="Contractors"
+						rel="'Contractors'"
 						name="filter.contractor"
 						cssClass="tokenAuto" />
 					<a href="#" class="clearLink">
@@ -527,7 +527,7 @@
 					<br />
 					<span class="clearLink q_box select">
 						<s:textfield
-							rel="Operator"
+							rel="'Operator'"
 							name="filter.operator"
 							cssClass="tokenAuto" />
 						<a href="#" class="clearLink">
@@ -555,7 +555,7 @@
 				<br />
 				<span class="clearLink q_box select">
 					<s:textfield
-						rel="Operator"
+						rel="'Operator'"
 						name="filter.excludeOperators"
 						cssClass="tokenAuto" />
 					<a href="#" class="clearLink">
@@ -582,7 +582,7 @@
 				<br />
 				<span class="clearLink q_box select">
 					<s:textfield
-						rel="GeneralContractor"
+						rel="'GeneralContractor'"
 						name="filter.generalContractor"
 						cssClass="tokenAuto" />
 					<a href="#" class="clearLink">
@@ -685,7 +685,7 @@
 				<br />
 				<span class="clearLink q_box select">
 					<s:textfield
-						rel="Operator"
+						rel="'Operator'"
 						name="filter.caoOperator"
 						cssClass="tokenAuto" />
 					<a href="#" class="clearLink">

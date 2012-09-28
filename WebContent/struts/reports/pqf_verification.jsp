@@ -26,7 +26,7 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="VerifyView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 			<td><s:property value="get('csr_name')"/></td>
-			<td><s:date name="get('statusChangedDate')" format="%{getText('date.short')}" /></td>
+			<td><s:date name="get('statusChangedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 		</tr>
 	</s:iterator>	
 </table>

@@ -14,13 +14,13 @@
 
 	<context:property-placeholder location="classpath:amqp_connection.properties"/>
 	<import resource="rabbit-config.xml"/>
-	
+
 	<task:annotation-driven scheduler="myScheduler"/>
 	<task:scheduler id="myScheduler" pool-size="10"/>
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 	<bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
-	
+
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
 	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
 	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
@@ -62,6 +62,7 @@
 	<bean id="EmployeeRoleDAO" class="com.picsauditing.dao.EmployeeRoleDAO"/>
 	<bean id="EmployeeSiteDAO" class="com.picsauditing.dao.EmployeeSiteDAO"/>
 	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
+	<bean id="FeatureToggleProvider" class="com.picsauditing.dao.FeatureToggleDAO"/>
 	<bean id="FileDAO" class="com.picsauditing.dao.FileDAO"/>
 	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
 	<bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO"/>
@@ -108,7 +109,7 @@
 	<bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
 	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
 	<bean id="CorruptionPerceptionIndexMap" class="com.picsauditing.util.CorruptionPerceptionIndexMap"/>
-	
+
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle"/>
 	<bean id="BrainTreeService" class="com.picsauditing.util.braintree.BrainTreeService"/>
@@ -125,7 +126,7 @@
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
-	<bean id="FeatureToggleChecker" class="com.picsauditing.toggle.FeatureToggleChecker" scope="prototype"/>
+    <bean id="VATValidator" class="com.picsauditing.PICS.VATValidator" scope="prototype"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
 	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" scope="prototype"/>
@@ -138,10 +139,10 @@
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
 	<bean id="CancelledScheduledAudits" class="com.picsauditing.mail.subscription.CancelledScheduledAuditsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
-	
+
 	<bean id="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium" scope="prototype" />
 	<bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype" />
-	
+
 	<!-- Beans for service layers -->
 	<bean id="FacilitiesEditModel" class="com.picsauditing.models.operators.FacilitiesEditModel"/>
 	<bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
@@ -165,6 +166,8 @@
 	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 
+	<bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
+
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
@@ -185,7 +188,7 @@
     </bean>
 
 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-          <property name="jndiName" value="java:comp/env/jdbc/pics" />   
+          <property name="jndiName" value="java:comp/env/jdbc/pics" />
           <property name="resourceRef" value="false" />
           <property name="defaultObject" value="dummy"></property>
  	</bean>
@@ -195,7 +198,11 @@
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- The 'proxy-target-class="true"' is to correctly autowire classes that implement interfaces.
+	e.g ReportUserDAO. All it means is that Spring will inject the concrete class instead of an
+	auto-proxied object that only implements the interface. -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
     <!-- the transactional advice (i.e. what 'happens'; see the <aop:advisor/> bean below) -->
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 	    <!-- the transactional semantics... -->

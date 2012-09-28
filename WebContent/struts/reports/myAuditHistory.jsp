@@ -28,8 +28,8 @@
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><s:property value="[0].get('name')"/></td>
 		<td><s:text name="%{[0].get('atype.name')}" /></td>
-		<td class="center"><s:date name="[0].get('completedDate')" format="%{getText('date.short')}" /></td>
-		<td class="center"><s:date name="[0].get('closedDate')" format="%{getText('date.short')}" /></td>
+		<td class="center"><s:date name="[0].get('completedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+		<td class="center"><s:date name="[0].get('closedDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 	</tr>
 	</s:iterator>
 </table>

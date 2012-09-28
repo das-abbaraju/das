@@ -54,10 +54,11 @@ Ext.define('PICS.controller.report.Report', {
     createReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!create.action?' + report.toQueryString();
+            url = 'ReportDynamic!create.action';
 
         Ext.Ajax.request({
             url: url,
+            params: report.toRequestParams(),
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 
@@ -79,10 +80,11 @@ Ext.define('PICS.controller.report.Report', {
     saveReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!edit.action?' + report.toQueryString();
+            url = 'ReportDynamic!edit.action';
 
         Ext.Ajax.request({
             url: url,
+            params: report.toRequestParams(),
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 

@@ -37,7 +37,7 @@ public class ReportElement implements JSONable {
 		json.put("name", fieldName);
 		if (field == null) {
 			Field fakeField = new Field(fieldName, "", FilterType.String);
-			json.put("field", fakeField);
+			json.put("field", fakeField.toJSONObject());
 		} else {
 			json.put("field", field.toJSONObject());
 		}
@@ -59,6 +59,15 @@ public class ReportElement implements JSONable {
 		return Strings.escapeQuotes(fieldName);
 	}
 
+	public void setMethodToFieldName() {
+		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
+		if (startOfMethod >= 0 || method == null)
+			return;
+
+		this.fieldName = fieldName + METHOD_SEPARATOR + method;
+		parseFieldNameMethod();
+	}
+
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 		parseFieldNameMethod();
@@ -67,8 +76,6 @@ public class ReportElement implements JSONable {
 	private void parseFieldNameMethod() {
 		method = null;
 		originalFieldName = fieldName;
-		if (fieldName == null)
-			return;
 
 		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod < 0)
@@ -99,11 +106,14 @@ public class ReportElement implements JSONable {
 	public boolean isHasAggregateMethod() {
 		if (method == null)
 			return false;
-		
+
 		return method.isAggregate();
 	}
 
 	public String getSql() {
+		if (field == null) {
+			throw new RuntimeException(fieldName + " is missing from available fields");
+		}
 		String fieldSql = field.getDatabaseColumnName();
 		if (method == null)
 			return fieldSql;
@@ -125,6 +135,8 @@ public class ReportElement implements JSONable {
 			return "GROUP_CONCAT(" + fieldSql + ")";
 		case Hour:
 			return "HOUR(" + fieldSql + ")";
+		case Length:
+			return "LENGTH(" + fieldSql + ")";
 		case Left:
 			return "LEFT(" + fieldSql + ")";
 		case LowerCase:
@@ -137,6 +149,8 @@ public class ReportElement implements JSONable {
 			return "MONTH(" + fieldSql + ")";
 		case Round:
 			return "ROUND(" + fieldSql + ")";
+		case StdDev:
+			return "STDDEV(" + fieldSql + ")";
 		case Sum:
 			return "SUM(" + fieldSql + ")";
 		case UpperCase:
@@ -156,12 +170,12 @@ public class ReportElement implements JSONable {
 		Field field = availableFields.get(originalFieldName.toUpperCase());
 
 		if (field == null) {
-			logger.warn("Failed to find [&1] in availableFields", originalFieldName);
+			logger.warn("Failed to find " + originalFieldName + " in availableFields");
 			return;
 		}
-		field.setName(fieldName);
 
 		setField(field.clone());
+		this.field.setName(fieldName);
 	}
 
 	public String toString() {

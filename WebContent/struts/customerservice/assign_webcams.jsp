@@ -72,7 +72,7 @@ function changeState(state) {
 		<tr class="clickable" onclick="location.href='?audit.id=<s:property value="id"/>'">
 			<td><a href="?audit.id=<s:property value="id"/>"><s:property value="id"/></a></td>
 			<td><s:property value="contractorAccount.name" /></td>
-			<td><s:date name="scheduledDate" format="%{getText('date.shorttime')}"/></td>
+			<td><s:date name="scheduledDate" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}"/></td>
 			<td class="center"><s:if test="contractorAccount.webcam != null"><img src="images/icon_webcam.png"/></s:if></td>
 		</tr>
 	</s:iterator>

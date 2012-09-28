@@ -87,8 +87,10 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Date'">
-			<s:textfield name="auditData.answer" value="%{#a.getAnswerInDate(getText('date.short'))}" cssClass="date text"/>
-			<span style="font-style: italic; font-size: 12px;"><s:text name="date.short" /></span>
+			<s:textfield name="auditData.answer" value="%{#a.getAnswerInDate(@com.picsauditing.util.PicsDateFormat@Iso)}" cssClass="date text"/>
+			<span style="font-style: italic; font-size: 12px;">
+                <s:label value="%{@com.picsauditing.util.PicsDateFormat@Iso}"></s:label>
+            </span>
 		</s:if>
 		
 		<s:if test="#q.questionType == 'License'">
@@ -165,7 +167,7 @@
 						</div>
 
 						<div class="date">
-							<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{getText('struts.date.format')}" />
+							<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 						</div>
 						
 						<div class="ip">
@@ -193,13 +195,13 @@
 		<s:if test="#a.verified && !#q.hasRequirement">
 			<s:if test="permissions.picsEmployee">
     			<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
-    				Verified on <s:date name="#a.dateVerified" format="%{getText('date.long')}" /> by <s:property value="#a.auditor.name" />
+    				Verified on <s:date name="#a.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /> by <s:property value="#a.auditor.name" />
     			</div>
             </s:if>
 			<s:else>
 				<span class="verified">
 					<s:text name="Audit.message.AnswerVerifiedOn">
-						<s:param><s:date name="#a.dateVerified" format="%{getText('date.long')}" /></s:param>
+						<s:param><s:date name="#a.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /></s:param>
 					</s:text>
 				</span>	
 			</s:else>
@@ -220,7 +222,7 @@
 					<span class="verified-answer">
 						<img src="images/okCheck.gif" />
 						<s:text name="Audit.message.ClosedOn">
-							<s:param><s:date name="#a.dateVerified" format="%{getText('date.long')}" /></s:param>
+							<s:param><s:date name="#a.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /></s:param>
 						</s:text>
 					</span>
 				</s:elseif>
@@ -249,7 +251,7 @@
 		<input class="verify" id="verifyButton_<s:property value="#q.id"/>" type="submit" value="<s:property value="#attr.verifyText"/>" />
 	
 		<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
-			Verified on <s:date name="#a.dateVerified" format="%{getText('date.long')}" /> by <s:property value="#a.auditor.name" />
+			Verified on <s:date name="#a.dateVerified" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" /> by <s:property value="#a.auditor.name" />
 		</div>
 	</s:if>
 </div>

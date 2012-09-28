@@ -54,7 +54,7 @@
 				</td>
 			</s:if>
 			<td class="center">
-				<s:date name="creationDate" format="%{getText('date.long')}" />
+				<s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@IsoLongMonth}" />
 			</td>
 		</tr>
 	</s:iterator>

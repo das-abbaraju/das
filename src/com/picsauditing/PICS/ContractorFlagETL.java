@@ -111,7 +111,7 @@ public class ContractorFlagETL {
 		Set<AuditCategory> applicableCategories = new TreeSet<AuditCategory>();
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == question.getAuditType().getId()) {
-				applicableCategories = audit.getVisibleCategories();
+				applicableCategories.addAll(audit.getVisibleCategories());
 			}
 		}
 

@@ -4,6 +4,10 @@
 <%@ page import="java.util.Locale" %>
 <%@ page import="com.picsauditing.util.URLUtils"%>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils"%>
+
 <%
 	Locale locale = TranslationActionSupport.getLocaleStatic();
 %>
@@ -58,7 +62,7 @@
 							<s:text name="Header.HelpCenter" />
 						</a>
 					</li>
-						<pics:toggle name="LiveAgent">
+						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
 							<li><label><s:text name="Header.Chat" />:</label>
 								<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
 								<img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>
@@ -69,9 +73,9 @@
 								<li>
 									<label><s:text name="Header.Chat" />:</label>
 									<a id="_lpChatBtn"
-										href="<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a" 
+										href="<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= StringEscapeUtils.escapeHtml4(locale.getDisplayLanguage()) %>/General/3a"
 										target='chat90511184'
-										onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+										onClick="lpButtonCTTUrl = '<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= StringEscapeUtils.escapeHtml4(locale.getDisplayLanguage()) %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
 										<span><s:text name="Header.Chat" /></span>
 									</a>
 								</li>

@@ -23,6 +23,10 @@
 <%@ page import="com.picsauditing.util.URLUtils" %>
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils"%>
+
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
@@ -269,7 +273,7 @@
 							"&amp;imageUrl=" +
 							protocol +
 							"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
-							locale.getDisplayLanguage() +
+							StringEscapeUtils.escapeHtml4(locale.getDisplayLanguage()) +
 							"/General/3a";
 
 						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
@@ -290,9 +294,9 @@
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
 					</div>
 					<div id="helpchat" style="float:left;">
-						<pics:toggle name="LiveAgent">
-							<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
-							<img class="liveperson-chat-toggle" src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>
+						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
+                            <script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/track.js"></script>
+                            <img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode" />', this);"/>
 						</pics:toggle>
 						<pics:toggleElse>
 							<%  if (liveChatEnabled) { %>

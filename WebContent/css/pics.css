@@ -1602,3 +1602,7 @@ div.blockDialog {
 .ui-datepicker {
 	z-index: 12000 !important;
 }
+
+/* line 4, ../sass/pics/contractor-edit/_contractor-edit.scss */
+.ContractorEdit-page #vat_wrapper {
+  display: none; }

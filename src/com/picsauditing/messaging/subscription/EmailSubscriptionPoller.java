@@ -9,17 +9,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.picsauditing.messaging.MessageHandler;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class EmailSubscriptionPoller {
 	private final Logger logger = LoggerFactory.getLogger(EmailSubscriptionPoller.class);
 	
 	private RabbitTemplate amqpTemplate;
-	private String featureToggleName = "Toggle.BackgroundProcesses";
+	private String featureToggleName = FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL;
 	private MessageHandler emailSubscriptionHandler;
 
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 	
 	@Autowired
 	@Qualifier("EmailSubscriptionHandler")
@@ -33,7 +33,7 @@ public class EmailSubscriptionPoller {
 		this.amqpTemplate = amqpTemplate;
 	}
 
-	public void setFeatureToggleChecker(FeatureToggleChecker featureToggleChecker) {
+	public void setFeatureToggleChecker(FeatureToggle featureToggleChecker) {
 		this.featureToggleChecker = featureToggleChecker;
 	}
 	
@@ -41,7 +41,7 @@ public class EmailSubscriptionPoller {
 		this.featureToggleName = featureToggleName;
 	}
 
-	@Scheduled(fixedDelay=30000)
+	@Scheduled(fixedDelay = 600000)
 	public void pollForMessage() {
 		if (featureToggleChecker.isFeatureEnabled(featureToggleName)) {
 			String inhibitSubscriptionsOnThisServer = System.getProperty("pics.activate_subscription_cron");

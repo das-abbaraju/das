@@ -41,10 +41,13 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 			sql.addWhere("atype.isScheduled=1 OR atype.hasAuditor=1");
 		}
 		sql.addJoin("LEFT JOIN contractor_audit pqf ON pqf.conID = ca.conID AND pqf.audittypeID = 1");
+		sql.addJoin("LEFT JOIN contractor_audit_operator pqfCao ON pqf.id = pqfCao.auditID AND pqfCao.status = 'Complete' AND pqfCao.visible = 1");
 		sql.addJoin("LEFT JOIN pqfdata manual ON manual.auditID = pqf.id AND manual.questionID = 1331");
+		sql.addField("max(pqfCao.`updateDate`) as pqfCompletionDate");
 		sql.addField("manual.answer AS manswer");
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
+		sql.addField("manual.dateVerified");
 		sql.addWhere("manual.dateVerified IS NOT NULL");
 		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 		if (getFilter().isNotRenewingContractors())

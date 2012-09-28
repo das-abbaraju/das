@@ -1,8 +1,8 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,6 +60,8 @@ public class AuditBuilder {
 	HashSet<ContractorAuditOperator> caosToMoveToResubmit = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToSubmit = new HashSet<ContractorAuditOperator>();
 	
+	private Set<String> yearsForAllWCBs;
+	
 	public void buildAudits(ContractorAccount contractor) {
 		typeRuleCache.initialize(auditDecisionTableDAO);
 		categoryRuleCache.initialize(auditDecisionTableDAO);
@@ -104,17 +106,13 @@ public class AuditBuilder {
 					}
 
 					if (!found) {
-						auditType = reconnectAuditType(auditType);
-
-						ContractorAudit audit = new ContractorAudit();
-						audit.setContractorAccount(contractor);
-						audit.setAuditType(auditType);
-						audit.setAuditColumns(systemUser);
-						contractor.getAudits().add(audit);
+						auditType = reconnectAuditType(auditType);						
 						if (auditType.isWCB()) {
-							audit.setAuditFor(DateBean.getWCBYear());
+							createWCBAudits(contractor, auditType);
+						} else {
+							ContractorAudit audit = createNewAudit(contractor, auditType);
+							conAuditDao.save(audit);
 						}
-						conAuditDao.save(audit);
 					}
 				}
 			}
@@ -184,34 +182,83 @@ public class AuditBuilder {
 	private boolean foundCurrentYearWCB(ContractorAudit audit) {
 		if (Strings.isEmpty(audit.getAuditFor())) { // TODO: remove this once all the WCBs have consistent auditFor
 			return true;
-		} else if (findAllWCBAuditYears(audit.getContractorAccount(), audit).contains(DateBean.getWCBYear())) {
-			return true;
-		}
+		} 
 		
-		return false;
+		buildSetOfAllWCBYears(audit.getContractorAccount(), audit.getAuditType());
+		if (DateBean.isGracePeriodForWCB()) {
+			return hasAllWCBsForGracePeriod(audit);
+		} 
+		
+		return yearsForAllWCBs.contains(DateBean.getWCBYear());
 	}
 	
-	private List<String> findAllWCBAuditYears(ContractorAccount contractor, ContractorAudit wcbAudit) {
-		List<String> years = new ArrayList<String>();
+	private void buildSetOfAllWCBYears(ContractorAccount contractor, AuditType wcbAuditType) {
 		List<ContractorAudit> audits = contractor.getAudits();
 		if (CollectionUtils.isEmpty(audits)) {
-			return years;
+			yearsForAllWCBs = Collections.unmodifiableSet(new HashSet<String>());
 		}
 		
+		Set<String> years = new HashSet<String>(); 
 		for (ContractorAudit audit : audits) {
-			if (isMatchingWCBAudit(audit, wcbAudit)) {
+			if (isMatchingWCBAudit(audit, wcbAuditType)) {
 				years.add(audit.getAuditFor());
 			}
 		}
 		
+		yearsForAllWCBs = Collections.unmodifiableSet(years);
+	}
+	
+	private boolean hasAllWCBsForGracePeriod(ContractorAudit audit) {
+		String previousYear = Integer.toString(DateBean.getPreviousWCBYear());
+		String currentWCBYear = DateBean.getWCBYear();
+		return yearsForAllWCBs.contains(previousYear) && yearsForAllWCBs.contains(currentWCBYear);
+	}
+	
+	private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
+		buildSetOfAllWCBYears(contractor, auditType);
+		Set<String> yearsForWCBs = getAllYearsForNewWCB();
+		if (CollectionUtils.isEmpty(yearsForWCBs)) {
+			return;
+		}
+		
+		for (String year : yearsForWCBs) {
+			ContractorAudit audit = createNewAudit(contractor, auditType);
+			audit.setAuditFor(year);
+			conAuditDao.save(audit);
+		}
+	}
+	
+	private Set<String> getAllYearsForNewWCB() {
+		Set<String> years = new HashSet<String>();
+		
+		String previousYear = Integer.toString(DateBean.getPreviousWCBYear());
+		if (!yearsForAllWCBs.contains(previousYear) && DateBean.isGracePeriodForWCB()) {
+			years.add(previousYear);
+		}
+		
+		String currentWCBYear = DateBean.getWCBYear();
+		if (!yearsForAllWCBs.contains(currentWCBYear)) {
+			years.add(currentWCBYear);
+		}		
+		
 		return years;
 	}
+	
+	private ContractorAudit createNewAudit(ContractorAccount contractor, AuditType auditType) {
+		ContractorAudit audit = new ContractorAudit();
+		audit.setContractorAccount(contractor);
+		audit.setAuditType(auditType);
+		audit.setAuditColumns(systemUser);
+		contractor.getAudits().add(audit);
+	
+		return audit;		
+	}
 
-	private boolean isMatchingWCBAudit(ContractorAudit audit, ContractorAudit wcbAudit) {
+	private boolean isMatchingWCBAudit(ContractorAudit audit, AuditType wcbAuditType) {
 		return audit != null 
 				&& audit.getAuditType() != null 
 				&& AuditType.CANADIAN_PROVINCES.contains(audit.getAuditType().getId())
-				&& (audit.getAuditType().getId() == wcbAudit.getAuditType().getId());
+				&& (audit.getAuditType().getId() == wcbAuditType.getId());
 	}
 	
 	private boolean isValidAudit(ContractorAudit conAudit) {
@@ -404,6 +451,10 @@ public class AuditBuilder {
 		Iterator<ContractorAuditOperator> list = caosToChange.iterator();
 		while (list.hasNext()) {
 			ContractorAuditOperator cao = list.next();
+			if (conAudit.getAuditType().isPqf() && status.isComplete() && 
+					!conAudit.isOkayToChangeCaoStatus(cao)) {
+				continue;
+			}
 			ContractorAuditOperatorWorkflow caow = cao.changeStatus(status, null);
 			if (caow != null) {
 				caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
@@ -526,6 +577,7 @@ public class AuditBuilder {
 			if (cao.getStatus().after(AuditStatus.Incomplete) && cao.isVisible())
 				return true;
 		}
+		
 		return false;
 	}
 

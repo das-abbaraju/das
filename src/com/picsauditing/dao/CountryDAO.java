@@ -34,4 +34,8 @@ public class CountryDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Country WHERE " + where);
 		return query.getResultList();
 	}
+
+    public Country findbyISO(String iso) {
+        return (Country) em.createQuery("FROM Country c WHERE c.isoCode = '" + iso + "'").getSingleResult();
+    }
 }

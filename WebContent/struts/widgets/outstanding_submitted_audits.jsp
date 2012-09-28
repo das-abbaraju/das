@@ -20,7 +20,7 @@
 					name="%{get('atype.name')}" /></a></td>
 				<td class="right"><s:property value="get('percentComplete')" />%</td>
 				<td class="center"><s:date name="get('statusChangedDate')"
-					format="%{getText('date.short')}" /></td>
+					format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 			</tr>
 		</s:iterator>
 	</s:if>

@@ -48,6 +48,11 @@ public class AuditDataDAO extends PicsDAO {
 		query.setParameter(1, questionID);
 		return query.getResultList();
 	}
+	
+	public List<AuditData> findByQuestionIDs(List<Integer> questionIDs) {
+		String queryString = "FROM AuditData d WHERE d.question.id IN (" + Strings.implode(questionIDs, ", ") + ")";
+		return em.createQuery(queryString).getResultList();
+	}
 
 	public List<AuditData> findDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("FROM AuditData d "

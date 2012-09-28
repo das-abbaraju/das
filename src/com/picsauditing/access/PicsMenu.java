@@ -10,7 +10,7 @@ import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -511,15 +511,14 @@ public class PicsMenu {
 
 		// Temporary inclusion for Dynamic Reports preview for BASF users
 		try {
-			if (permissions.getAccountId() == OperatorAccount.BASF) {
-				FeatureToggleChecker featureToggleChecker = SpringUtils.getBean("FeatureToggleChecker");
-
-				if (featureToggleChecker.isFeatureEnabled("Toggle.BASFDynamicReportsPreview")) {
-					subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
-					subMenu.addChild(getText("menu.NonApprovedPolicyAnalysis"), "Report.action?report=8", "NonApprovedPolicyAnalysisDRPreview");
-					subMenu.addChild(getText("menu.NonApprovedPolicyAnalysisExpanded"), "Report.action?report=9", "NonApprovedPolicyAnalysisExpandedDRPreview");
-					subMenu.addChild("Contractor Statuses", "Report.action?report=68", "ContractorStatusesDRPreview");
-				}
+			FeatureToggle featureToggleChecker = SpringUtils.getBean("FeatureToggle");
+			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+				subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
+				subMenu.addChild(getText("menu.NonApprovedPolicyAnalysis"), "Report.action?report=8",
+						"NonApprovedPolicyAnalysisDRPreview");
+				subMenu.addChild(getText("menu.NonApprovedPolicyAnalysisExpanded"), "Report.action?report=9",
+						"NonApprovedPolicyAnalysisExpandedDRPreview");
+				subMenu.addChild("Contractor Statuses", "Report.action?report=68", "ContractorStatusesDRPreview");
 			}
 		} catch (Exception e) {
 			// This is a temporary preview, we don't care

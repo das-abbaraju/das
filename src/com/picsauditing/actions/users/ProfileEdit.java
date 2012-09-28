@@ -13,7 +13,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
@@ -30,22 +29,18 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ProfileEdit extends PicsActionSupport {
 	@Autowired
-	protected UserDAO dao;
+	private UserDAO dao;
 	@Autowired
-	protected ContractorAccountDAO accountDao;
+	private UserSwitchDAO userSwitchDao;
 	@Autowired
-	protected UserSwitchDAO userSwitchDao;
+	private EmailSubscriptionDAO emailSubscriptionDAO;
 	@Autowired
-	protected EmailSubscriptionDAO emailSubscriptionDAO;
-	@Autowired
-	protected UserLoginLogDAO loginLogDao;
-	@Autowired
-	protected UserDAO userDAO;
+	private UserLoginLogDAO loginLogDao;
 
-	protected User u;
+	private User u;
 
-	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
-	protected String url;
+	private List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
+	private String url;
 
 	private boolean goEmailSub = false;
 	private boolean usingDynamicReports=false;

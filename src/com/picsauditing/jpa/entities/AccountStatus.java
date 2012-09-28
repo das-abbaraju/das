@@ -6,7 +6,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 
 public enum AccountStatus implements Translatable {
-	Active, Pending, Demo, Deleted, Deactivated;
+	Active, Pending, Requested, Demo, Deleted, Deactivated;
 
 	public boolean isActive() {
 		return this.equals(Active);

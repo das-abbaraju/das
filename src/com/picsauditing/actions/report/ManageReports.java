@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
@@ -21,11 +22,13 @@ import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Pagination;
+import com.picsauditing.util.pagination.PaginationParameters;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
-	public static final String MY_REPORTS_URL = "ManageReports!myReportsList.action";
+	public static final String LANDING_URL = "ManageReports!favoritesList.action";
 
 	public static final String ALPHA_SORT = "alpha";
 	public static final String DATE_ADDED_SORT = "dateAdded";
@@ -45,6 +48,8 @@ public class ManageReports extends PicsActionSupport {
 	private List<ReportUser> userReports;
 	private List<ReportUser> userReportsOverflow;
 
+	private Pagination<ReportUser> pagination;
+
 	// URL parameters
 	private int reportId;
 	private String searchTerm;
@@ -57,7 +62,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String execute() {
 		try {
-			setUrlForRedirect(MY_REPORTS_URL);
+			setUrlForRedirect(LANDING_URL);
 		} catch (IOException ioe) {
 			logger.error("Problem redirecting from default action in ManageReports.", ioe);
 		}
@@ -111,15 +116,18 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String searchList() {
+		userReports = new ArrayList<ReportUser>();
 		try {
-			userReports = reportModel.getUserReportsForSearch(searchTerm, permissions.getUserId());
+			userReports = reportModel.getUserReportsForSearch(searchTerm, permissions.getUserId(), getPagination());
+			if (CollectionUtils.isEmpty(userReports)) {
+				addActionMessage("No Reports found.");
+			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
-		}
-
-		if (CollectionUtils.isEmpty(userReports)) {
-			addActionMessage("No Reports found.");
-			userReports = new ArrayList<ReportUser>();
+			addActionError("Unexpected error occurred while searching for reports.");
+			if (permissions.has(OpPerms.Debug)) {
+				addActionError(e.getMessage());
+			}
 		}
 
 		if (AjaxUtils.isAjax(request())) {
@@ -225,7 +233,7 @@ public class ManageReports extends PicsActionSupport {
 			String referer = getRequest().getHeader("Referer");
 			if (Strings.isEmpty(referer)) {
 				// TODO make this a full URL and add a test for it
-				referer = MY_REPORTS_URL;
+				referer = LANDING_URL;
 			}
 
 			setUrlForRedirect(referer);
@@ -289,6 +297,19 @@ public class ManageReports extends PicsActionSupport {
 		this.direction = direction;
 	}
 
+	public Pagination<ReportUser> getPagination() {
+		if (pagination == null) {
+			pagination = new Pagination<ReportUser>();
+			pagination.setParameters(new PaginationParameters());
+		}
+		
+		return pagination;
+	}
+
+	public void setPagination(Pagination<ReportUser> pagination) {
+		this.pagination = pagination;
+	}
+
 	public String getAlphaSortDirection() {
 		if (!ALPHA_SORT.equals(sort) || DESC.equals(direction))
 			return ASC;
@@ -323,6 +344,6 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String getMyReportsUrl() {
-		return MY_REPORTS_URL;
+		return LANDING_URL;
 	}
 }

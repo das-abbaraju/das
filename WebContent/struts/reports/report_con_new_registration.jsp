@@ -125,7 +125,7 @@
 								</td>
 								<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
 									<td>
-										<s:date name="get('closedOnDate')" format="%{getText('date.short')}" />
+										<s:date name="get('closedOnDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 									</td>
 								</s:if>
 								<td>

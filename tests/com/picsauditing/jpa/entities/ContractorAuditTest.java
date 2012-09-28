@@ -306,4 +306,36 @@ public class ContractorAuditTest {
 		assertTrue(visibleCategories.contains(parent));
 		assertTrue(visibleCategories.contains(child));
 	}
+
+	@Test
+	public void testIsOkayToChangeCaoStatus() {
+		AuditType auditType = EntityFactory.makeAuditType(AuditType.PQF);
+		ContractorAuditOperator cao = EntityFactory.makeContractorAuditOperator(contractorAudit);
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		AuditData data = EntityFactory.makeAuditData("Yes", question);
+		
+		contractorAudit.setAuditType(auditType);
+		contractorAudit.getData().add(data);
+		
+		cao.setPercentVerified(100);
+		question.setId(AuditQuestion.MANUAL_PQF);
+		data.setVerified(true);
+		assertTrue(contractorAudit.isOkayToChangeCaoStatus(cao));
+		
+		cao.setPercentVerified(100);
+		question.setId(AuditQuestion.MANUAL_PQF);
+		data.setVerified(false);
+		assertFalse(contractorAudit.isOkayToChangeCaoStatus(cao));
+
+		cao.setPercentVerified(100);
+		question.setId(21);
+		data.setVerified(true);
+		assertTrue(contractorAudit.isOkayToChangeCaoStatus(cao));
+
+		cao.setPercentVerified(99);
+		question.setId(AuditQuestion.MANUAL_PQF);
+		data.setVerified(true);
+		assertFalse(contractorAudit.isOkayToChangeCaoStatus(cao));
+
+	}
 }

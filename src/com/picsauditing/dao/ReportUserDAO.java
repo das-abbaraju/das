@@ -21,11 +21,14 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
+import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Paginatable;
+import com.picsauditing.util.pagination.PaginationParameters;
 
-public class ReportUserDAO extends PicsDAO {
+public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportUserDAO.class);
 
@@ -167,31 +170,6 @@ public class ReportUserDAO extends PicsDAO {
 		return findWhere(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findAllForSearchFilter(int userId, String dirtyQuery) {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-
-		// TODO escape properly
-		String query = "\"%" + Strings.escapeQuotes(dirtyQuery) + "%\"";
-
-		try {
-			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
-
-			sql.addWhere("r.name LIKE " + query +
-					" OR r.description LIKE " + query +
-					" OR u.name LIKE " + query);
-
-			Database db = new Database();
-			List<BasicDynaBean> results = db.select(sql.toString(), false);
-			userReports = ReportModel.populateUserReports(results);
-		} catch (SQLException se) {
-			logger.warn("SQL Exception in findReportsForSearchFilter()", se);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in findReportsForSearchfilter()");
-		}
-
-		return userReports;
-	}
-
 	public List<ReportUser> findAllByReportId(int reportId) {
 		String query = "t.report.id = " + reportId;
 		return findWhere(ReportUser.class, query);
@@ -263,10 +241,71 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.favorite = 1");
 		sql.addJoin("JOIN users as u ON r.createdBy = u.id");
 
-		sql.addWhere("r.private = 0 OR r.createdBy = " + userId);
-
 		sql.addOrderBy("numTimesFavorited DESC");
 
 		return sql;
+	}
+
+	@Override
+	public List<ReportUser> getPaginationResults(PaginationParameters parameters) {
+		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
+		List<ReportUser> userReports = new ArrayList<ReportUser>();
+
+		// TODO escape properly
+		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
+
+		try {
+			SelectSQL sql = setupSqlForSearchFilterQuery(reportParams.getUserId());
+
+			sql.addWhere("r.name LIKE " + query +
+					" OR r.description LIKE " + query +
+					" OR u.name LIKE " + query);
+
+			sql.setPageNumber(reportParams.getPageSize(), reportParams.getPage());
+
+			Database db = new Database();
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+			userReports = ReportModel.populateUserReports(results);
+		} catch (SQLException se) {
+			logger.error("SQL Exception in getPaginationResults()", se);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in getPaginationResults()");
+		}
+
+		return userReports;
+	}
+
+	@Override
+	public int getPaginationOverallCount(PaginationParameters parameters) {
+		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
+
+		// TODO escape properly
+		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
+
+		try {
+			SelectSQL sql = new SelectSQL("report r");
+
+			sql.addField("count(r.id) AS count");
+
+			sql.addJoin("JOIN users as u ON r.createdBy = u.id");
+
+			sql.addWhere("r.name LIKE " + query +
+					" OR r.description LIKE " + query +
+					" OR u.name LIKE " + query);
+
+			Database db = new Database();
+			List<BasicDynaBean> results = db.select(sql.toString(), false);
+			String countStr = results.get(0).get("count").toString();
+
+			return Integer.parseInt(countStr);
+		} catch (SQLException se) {
+			logger.error("SQL Exception in getPaginationOverallCount()", se);
+		} catch (NumberFormatException nfe) {
+			logger.error("Number Format Exception in getPaginationOverallCount()", nfe);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in getPaginationOverallCount()", e);
+		}
+
+		return -1;
 	}
 }

@@ -15,10 +15,15 @@ Ext.define('PICS.store.report.ReportDatas', {
     fields: [],
     pageSize: 50,
     proxy: {
+        actionMethods: {
+            create: 'POST',
+            read: 'POST',
+            update: 'POST',
+            destroy: 'POST'
+        },
         listeners: {
             exception: function (proxy, response, operation, eOpts) {
             	console.log(proxy, response, operation, eOpts);
-
                 if (operation.success == false) {
                 	Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
                 }
@@ -30,7 +35,8 @@ Ext.define('PICS.store.report.ReportDatas', {
             type: 'json'
         },
         timeout: 10000,
-        type: 'ajax'
+        type: 'ajax',
+        url: 'ReportData.action'
     },
 
     reload: function () {
@@ -59,7 +65,8 @@ Ext.define('PICS.store.report.ReportDatas', {
             Ext.Error.raise('Invalid report record');
         }
 
-        this.proxy.url = 'ReportData.action?' + report.toQueryString();
+        //set initial request parameters, values get overwritten by params object on later requests
+        this.proxy.extraParams = report.toRequestParams();
     },
 
     configureReportDataModel: function (report) {

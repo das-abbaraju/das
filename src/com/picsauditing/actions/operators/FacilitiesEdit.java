@@ -23,7 +23,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
@@ -703,7 +702,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
 		}
 
-		if (operator.getCountry().isHasCountrySubdivisions()
+		if (operator.getCountry().hasCountrySubdivisions()
 				&& (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
 			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
 		}

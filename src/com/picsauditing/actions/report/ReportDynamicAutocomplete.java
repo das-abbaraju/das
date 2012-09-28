@@ -11,6 +11,7 @@ import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -19,7 +20,7 @@ public class ReportDynamicAutocomplete extends PicsActionSupport {
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
-    // TODO: why does this require a report?
+	// TODO: why does this require a report?
 	private Report report;
 
 	private String fieldName = "";
@@ -34,7 +35,8 @@ public class ReportDynamicAutocomplete extends PicsActionSupport {
 
 			ReportModel.validate(report);
 
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(report.getTable(), permissions);
+			Map<String, Field> availableFields = ModelFactory.build(report.getModelType(), permissions)
+					.getAvailableFields();
 			Field field = availableFields.get(fieldName.toUpperCase());
 
 			if (field == null)

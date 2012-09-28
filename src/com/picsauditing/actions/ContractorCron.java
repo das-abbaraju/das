@@ -39,7 +39,6 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -77,7 +76,7 @@ import com.picsauditing.messaging.Publisher;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -107,7 +106,7 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ExceptionService exceptionService;
 	@Autowired
-	private FeatureToggleChecker featureToggleChecker;
+	private FeatureToggle featureToggleChecker;
 	
 	// this is @Autowired at the setter because we need @Qualifier which does NOT work
 	// on the variable declaration; only on the method (I think this is a Spring bug)
@@ -312,7 +311,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 	
 	private void checkLcCor(ContractorAccount contractor) {
-		if (!featureToggleChecker.isFeatureEnabledForBetaLevel(AppProperty.LC_COR_TOGGLE))
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return;
 		
 		ContractorAudit corAudit = null;
@@ -625,6 +624,7 @@ public class ContractorCron extends PicsActionSupport {
 										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
+								dao.save(cao);
 							}
 						}
 					}

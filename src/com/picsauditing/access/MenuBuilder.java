@@ -227,6 +227,8 @@ public final class MenuBuilder {
 
 		devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
 
+		devMenu.addChild("Report Tester", "ReportTester.action", "report_tester");
+
 		devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
 
 	}
@@ -289,7 +291,7 @@ public final class MenuBuilder {
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
-		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.MY_REPORTS_URL, "manage_reports");
+		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
 		for (ReportUser userReport : favoriteReports) {
 			Report report = userReport.getReport();

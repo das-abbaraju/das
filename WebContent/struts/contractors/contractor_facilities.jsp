@@ -97,7 +97,7 @@
 										id="search_location"
 										list="getCountrySubdivisionList('US|CA')"
 										listKey="isoCode"
-										listValue="english"
+										listValue="isoCode"
 										name="countrySubdivision" />
 								</nobr>
 							</div>

@@ -27,7 +27,7 @@
 		<s:iterator value="notes">
 			<tr class="clickable" onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','view', '<s:property value="noteCategory"/>')">
 				<td class="center">
-					<nobr><s:date name="creationDate" format="%{getText('date.shorttime')}" /></nobr>
+					<nobr><s:date name="creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Datetime}" /></nobr>
 					<br />
 					<nobr><s:property value="createdBy.name" /></nobr>
 					<nobr>

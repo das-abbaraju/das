@@ -212,7 +212,11 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
 			catIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
-		if (contractor.isMaterialSupplier())
+		if (contractor.isMaterialSupplier()) {
+			catIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+			catIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
+		}
+		if (contractor.isTransportationServices())
 			catIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
 
 		ca = getContractorPQF(catIds);
@@ -334,6 +338,12 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			} else {
 				contractor.setProductRisk(conProduct);
 			}
+		}
+		
+		if (contractor.isTransportationServices()) {
+			contractor.setTransportationRisk(LowMedHigh.Low);
+		} else {
+			contractor.setTransportationRisk(LowMedHigh.None);
 		}
 
 		contractor.setAuditColumns(permissions);

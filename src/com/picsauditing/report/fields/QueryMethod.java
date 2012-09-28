@@ -8,16 +8,17 @@ public enum QueryMethod {
 	Max(true),
 	Min(true),
 	
-	Average(true), 
+	Average(true, ExtFieldType.Float),
 	Round(false, ExtFieldType.Int), // Parameter means decimal place
 	Sum(true),
+	StdDev(true, ExtFieldType.Float),
 	
 	Left, // Parameter means number of characters
 	Length,
 	LowerCase,
 	UpperCase,
 	
-	Month(false, ExtFieldType.Int), // January TODO translate the 1 into January
+	Month(false, ExtFieldType.String), // January TODO translate the 1 into January
 	Year(false, ExtFieldType.Int), // 2012
 	YearMonth(false, ExtFieldType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
 	WeekDay(false, ExtFieldType.Int), // Monday TODO translate the 1

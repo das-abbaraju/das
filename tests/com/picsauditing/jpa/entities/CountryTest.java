@@ -102,5 +102,4 @@ public class CountryTest {
 		assertTrue(uk.isEuropeanUnion());
 	}
 
-	
 }

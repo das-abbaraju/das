@@ -1,29 +1,19 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FilterType;
 
 public class PaymentTable extends AbstractTable {
-
 	public PaymentTable() {
-		super("invoice", "payment", "p", "i.tableType = 'P'");
-	}
-
-	public PaymentTable(String prefix, String alias, String foreignKey) {
-		super("invoice", prefix, alias, alias + ".id = " + foreignKey);
-	}
-
-	public PaymentTable(String alias, String foreignKey) {
-		super("invoice", alias, alias, alias + ".id = " + foreignKey);
+		super("invoice");
+		addFields(Payment.class);
 		
-	}
-	
-	public void addFields() {
-		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
-
-		addFields(com.picsauditing.jpa.entities.Payment.class);
+		Field creationDate = new Field("CreationDate", "creationDate", FilterType.Date);
+		creationDate.setImportance(FieldImportance.Required);
+		addField(creationDate);
 	}
 
-	public void addJoins() {
-		addLeftJoin(new ContractorTable(prefix + "Account", alias + ".accountID"));
+	protected void addJoins() {
 	}
 }

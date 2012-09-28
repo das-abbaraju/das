@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,13 +15,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.velocity.tools.generic.DateTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {
@@ -139,7 +135,19 @@ public class Strings {
 	}
 
 	public static String implodeIDs(Collection<? extends BaseTable> collection) {
-		return genericImplode(collection, ",", NO_STRING_ESCAPE_STRATEGY);
+		if (collection == null)
+			return "";
+
+		StringBuffer buffer = new StringBuffer();
+		for (BaseTable o : collection) {
+			if (buffer.length() > 0) {
+				buffer.append(",");
+			}
+
+			buffer.append(o.getId());
+		}
+
+		return buffer.toString();
 	}
 
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
@@ -584,20 +592,6 @@ public class Strings {
 	public static boolean isSimilarTo(String m, String n) {
 		return (editDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(), n.length())) - .25) ? true
 				: false;
-	}
-
-	public static String formatDateLong(Date d) {
-		I18nCache cache = I18nCache.getInstance();
-		Locale locale = TranslationActionSupport.getLocaleStatic();
-		String format = cache.getText("date.long", locale);
-		return new DateTool().format(format, d);
-	}
-
-	public static String formatDateShort(Date d) {
-		I18nCache cache = I18nCache.getInstance();
-		Locale locale = TranslationActionSupport.getLocaleStatic();
-		String format = cache.getText("date.short", locale);
-		return new DateTool().format(format, d);
 	}
 
 	public static String capitalize(String uncapitalized) {

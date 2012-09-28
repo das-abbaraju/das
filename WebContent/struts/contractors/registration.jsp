@@ -115,6 +115,8 @@
 	</aside>
 	
 	<s:form cssClass="registration-form" theme="pics" method="POST">
+		<s:hidden name="requestID" />
+	
 		<div class="company-information">
 			<section>
 				<h1>
@@ -170,6 +172,9 @@
 					</li>
 					<li class="zip" style="${zip_display}">
 						<s:textfield name="contractor.zip" />
+					</li>
+					<li id="vat_id">
+						<s:textfield name="contractor.vatId" />
 					</li>
 				</ul>
 			</section>

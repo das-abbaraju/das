@@ -435,7 +435,8 @@ public class AuditPercentCalculator {
 			ContractorAuditOperator caoWithStatus = null;
 			if (cao.getStatus().isPending()) {
 				if (conAudit.getAuditType().isPqf() && percentComplete == 100) {
-					caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
+					if (percentVerified == 100)
+						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Complete);
 					if (caoWithStatus == null)
 						caoWithStatus = findCaoWithStatus(conAudit, AuditStatus.Submitted);
 					if (caoWithStatus == null)

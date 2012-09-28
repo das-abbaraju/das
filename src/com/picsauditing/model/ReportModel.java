@@ -3,10 +3,7 @@ package com.picsauditing.model;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -27,9 +24,9 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Pagination;
 
 public class ReportModel {
 
@@ -93,28 +90,10 @@ public class ReportModel {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
-		if (!canUserEdit(permissions.getUserId(), report))
+		if (!canUserEdit(permissions.getUserId(), report) && !permissions.isDeveloperEnvironment())
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
 		reportDao.save(report, new User(permissions.getUserId()));
-	}
-
-	public static Map<String, Field> buildAvailableFields(AbstractTable baseTable, Permissions permissions) {
-		Map<String, Field> availableFields = new HashMap<String, Field>();
-
-		addAllAvailableFields(availableFields, baseTable);
-
-		Iterator<String> iterator = availableFields.keySet().iterator();
-		while(iterator.hasNext()) {
-			String fieldName = iterator.next();
-			Field field = availableFields.get(fieldName);
-
-			if (!field.canUserSeeQueryField(permissions)) {
-				iterator.remove();
-			}
-		}
-
-		return availableFields;
 	}
 
 	private Report copyReportWithoutPermissions(Report sourceReport) {
@@ -126,20 +105,6 @@ public class ReportModel {
 		newReport.setParameters(sourceReport.getParameters());
 
 		return newReport;
-	}
-
-	/**
-	 * This method is recursively building the available fields. It works like this
-	 * because the set of tables that comprise available fields for a model is a tree,
-	 * which we've decided to walk recursively.
-	 */
-	private static void addAllAvailableFields(Map<String, Field> availableFields, AbstractTable table) {
-		table.addFields();
-		availableFields.putAll(table.getAvailableFields());
-
-		for (AbstractTable joinTable : table.getJoins()) {
-			addAllAvailableFields(availableFields, joinTable);
-		}
 	}
 
 	/**
@@ -161,20 +126,23 @@ public class ReportModel {
 		}
 	}
 
-	public List<ReportUser> getUserReportsForSearch(String searchTerm, int userId) {
+	/**
+	 * By default, show the top ten most favorited reports sorted by number of favorites.
+	 * Otherwise, search on all public reports and all of the user's reports.
+	 */
+	public List<ReportUser> getUserReportsForSearch(String searchTerm, int userId, Pagination<ReportUser> pagination) {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();
 
-		if (Strings.isEmpty(searchTerm)) {
-			// By default, show the top ten most favorited reports sorted by number of favorites
+		if (Strings.isEmpty(searchTerm)) {	
 			userReports = reportUserDao.findTenMostFavoritedReports(userId);
 		} else {
-			// Otherwise, search on all public reports and all of the user's reports
-			userReports = reportUserDao.findAllForSearchFilter(userId, searchTerm);
+			ReportPaginationParameters parameters = new ReportPaginationParameters(userId, searchTerm);		
+			pagination.Initialize(parameters, reportUserDao);
+			userReports = pagination.getResults();
 		}
 
 		return userReports;
 	}
-
 
 	public List<ReportUser> getUserReportsForMyReports(String sort, String direction, int userId) throws IllegalArgumentException {
 		List<ReportUser> userReports = new ArrayList<ReportUser>();

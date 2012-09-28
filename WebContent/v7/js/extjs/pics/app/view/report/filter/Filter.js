@@ -9,8 +9,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         'PICS.view.report.filter.base.FloatFilter',
         'PICS.view.report.filter.base.IntegerFilter',
         'PICS.view.report.filter.base.ListFilter',
-        'PICS.view.report.filter.base.StringFilter',
-        'Ext.ux.form.BoxSelect'
+        'PICS.view.report.filter.base.StringFilter'
     ],
 
     bodyCls: 'filter-body',

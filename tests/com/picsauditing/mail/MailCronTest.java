@@ -1,8 +1,9 @@
 package com.picsauditing.mail;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
 import com.picsauditing.search.Database;
-import com.picsauditing.toggle.FeatureToggleChecker;
+import com.picsauditing.toggle.FeatureToggle;
 
 
 public class MailCronTest {
@@ -38,7 +39,7 @@ public class MailCronTest {
 	@Mock private EmailSubscription emailSubscription;
 	@Mock private EmailSender emailSender;
 	@Mock private EmailQueue email;
-	@Mock private FeatureToggleChecker featureToggleChecker;
+	@Mock private FeatureToggle featureToggleChecker;
 	@Mock private AppPropertyDAO appPropDAO;
 	@Mock private EmailSubscriptionDAO subscriptionDAO;
 	@Mock private EmailQueueDAO emailQueueDAO;
@@ -76,8 +77,8 @@ public class MailCronTest {
 	
 	@Test
 	public void testExecute_SubscriptionDisnabledQueueDisabledDoesBothSubsandQueue() throws Exception {
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")).thenReturn(false);
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(false);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(false);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(false);
 		
 		mailCron.execute();
 		
@@ -87,8 +88,8 @@ public class MailCronTest {
 	
 	@Test
 	public void testExecute_SubscriptionEnabledQueueEnabledDoNothing() throws Exception {
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.SubscriptionEmail")).thenReturn(true);
-		when(featureToggleChecker.isFeatureEnabled("Toggle.BackgroundProcesses.EmailQueue")).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_SUBSCRIPTIONEMAIL)).thenReturn(true);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_BPROC_EMAILQUEUE)).thenReturn(true);
 		
 		mailCron.execute();
 		

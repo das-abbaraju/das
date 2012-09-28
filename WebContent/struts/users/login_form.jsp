@@ -7,7 +7,6 @@
 
 <div class="loginForm">
 	<s:form id="login">
-	<!-- grab the switchToUser parameters if its passed to this page when switch servers.-->				
 		<s:if test="switchToUser>0">					
 			<s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
 		</s:if>
@@ -20,7 +19,7 @@
 			</li>
 			<li>
 				<label><s:text name="global.Password" />:</label>
-				<s:password name="password" cssClass="login" tabindex="2" />
+				<s:password name="password" cssClass="login" tabindex="2" autocomplete="off" />
 			</li>
 		</ol>
 		</fieldset>

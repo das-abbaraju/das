@@ -62,7 +62,7 @@
                 <ol>
                     <li>
                         <label><s:text name="ScheduleAudit.label.AuditDate" />:</label>
-                        <input type="text" name="scheduledDateDay" id="scheduledDateDay" data-date="<s:date name="conAudit.scheduledDate" format="%{getText('date.short')}" />" value="<s:date name="conAudit.scheduledDate" format="%{getText('date.short')}" />" />
+                        <input type="text" name="scheduledDateDay" id="scheduledDateDay" data-date="<s:date name="conAudit.scheduledDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />" value="<s:date name="conAudit.scheduledDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />" />
                         <s:date name="conAudit.scheduledDate" nice="true" />
                     </li>
                     

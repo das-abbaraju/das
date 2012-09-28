@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
@@ -254,7 +255,7 @@ public class BillingCalculatorSingle {
 	}
 
 	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
-				return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
+		return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
 	}
 
 	private boolean IGisExemptedFor(Set<OperatorAccount> operators) {
@@ -270,8 +271,9 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * This can only be used on invoices which are in Unpaid status to prevent Syncing errors w/ Quickbooks.
-	 *
+	 * This can only be used on invoices which are in Unpaid status to prevent
+	 * Syncing errors w/ Quickbooks.
+	 * 
 	 * @param toUpdate
 	 * @param updateWith
 	 * @param permissions
@@ -321,7 +323,7 @@ public class BillingCalculatorSingle {
 		return createInvoice(contractor, contractor.getBillingStatus(), user);
 	}
 
-	public Invoice createInvoice(ContractorAccount contractor, String billingStatus, User user) {
+	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
 		calculateAnnualFees(contractor);
 
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
@@ -342,34 +344,36 @@ public class BillingCalculatorSingle {
 		invoice.setTotalAmount(invoiceTotal);
 		invoice.setAuditColumns(new User(User.SYSTEM));
 
-		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
+		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 			invoice.setQbSync(true);
-
+		}
 
 		// Calculate the due date for the invoice
-		if (billingStatus.equals("Activation")) {
+		if (billingStatus.isActivation()) {
 			invoice.setDueDate(new Date());
-		} else if (billingStatus.equals("Reactivation")) {
+		} else if (billingStatus.isReactivation()) {
 			invoice.setDueDate(new Date());
-		} else if (billingStatus.equals("Upgrade")) {
+		} else if (billingStatus.isUpgrade()) {
 			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		} else if (billingStatus.startsWith("Renew")) {
+		} else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
 			invoice.setDueDate(contractor.getPaymentExpires());
 		}
 
 		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
 				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
-			invoice.setDueDate(new Date());
+			invoice.setDueDate(contractor.getPaymentExpires());
 			contractor.setRenew(true);
 		}
 
-		if (invoice.getDueDate() == null)
+		if (invoice.getDueDate() == null) {
 			// For all other statuses like (Current)
 			invoice.setDueDate(DateBean.addDays(new Date(), 30));
+		}
 
 		// Make sure the invoice isn't due within 7 days for active accounts
-		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
+		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7) {
 			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		}
 
 		// Add the list of operators if this invoice has a membership level
 		// on it
@@ -393,14 +397,15 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Create a list of fees that this contractor should be charged for. The following contractor fields are used:
+	 * Create a list of fees that this contractor should be charged for. The
+	 * following contractor fields are used:
 	 * <ul>
 	 * <li>membershipDate</li>
 	 * <li>billingStatus</li>
 	 * <li>lastUpgradeDate</li>
 	 * <li>paymentExpires</li>
 	 * </ul>
-	 *
+	 * 
 	 * @param contractor
 	 * @return
 	 */
@@ -409,7 +414,7 @@ public class BillingCalculatorSingle {
 		return createInvoiceItems(contractor, contractor.getBillingStatus(), user);
 	}
 
-	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, String billingStatus, User user) {
+	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, BillingStatus billingStatus, User user) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current"))
@@ -417,12 +422,11 @@ public class BillingCalculatorSingle {
 
 		addActivationFeeIfApplies(contractor, billingStatus, items);
 
-		if ("Activation".equals(billingStatus) || "Reactivation".equals(billingStatus)
-				|| "Membership Canceled".equals(billingStatus)) {
+		if (billingStatus.isActivation() || billingStatus.isReactivation() || billingStatus.isCancelled()) {
 			addYearlyItems(items, contractor, DateBean.addMonths(new Date(), 12), billingStatus);
-		} else if (billingStatus.startsWith("Renew")) {
+		} else if (billingStatus.isRenewal() || billingStatus.isRenewalOverdue()) {
 			addYearlyItems(items, contractor, getRenewalDate(contractor), billingStatus);
-		} else if ("Upgrade".equals(billingStatus)) {
+		} else if (billingStatus.isUpgrade()) {
 			List<ContractorFee> upgrades = getUpgradedFees(contractor);
 
 			if (!upgrades.isEmpty()) {
@@ -434,8 +438,9 @@ public class BillingCalculatorSingle {
 	}
 
 	/**
-	 * Calculate a prorated amount depending on when the upgrade happens and when the membership expires.
-	 *
+	 * Calculate a prorated amount depending on when the upgrade happens and
+	 * when the membership expires.
+	 * 
 	 * @param contractor
 	 * @param items
 	 * @param upgrades
@@ -503,19 +508,15 @@ public class BillingCalculatorSingle {
 		return upgrades;
 	}
 
-	private Date getRenewalDate(ContractorAccount contractor) {
-		// If I'm upgrading from ListOnly or BidOnly, set renewal date from today for
-		// new full term membership, otherwise use Contractor's Payment Expiration Date
-		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
-				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree())
-			return DateBean.addMonths(new Date(), 12);
-
+	protected Date getRenewalDate(ContractorAccount contractor) {
 		return DateBean.addMonths(contractor.getPaymentExpires(), 12);
 	}
 
-	private void addYearlyItems(List<InvoiceItem> items, ContractorAccount contractor, Date paymentExpires, String billingStatus) {
+	private void addYearlyItems(List<InvoiceItem> items, ContractorAccount contractor, Date paymentExpires,
+			BillingStatus billingStatus) {
 		for (FeeClass feeClass : contractor.getFees().keySet())
-			if (!contractor.getFees().get(feeClass).getNewLevel().isFree() && (feeClass.isMembership() || !billingStatus.startsWith("Renew"))) {
+			if (!contractor.getFees().get(feeClass).getNewLevel().isFree()
+					&& (feeClass.isMembership() || (!billingStatus.isRenewal() && !billingStatus.isRenewalOverdue()))) {
 				InvoiceItem newItem = new InvoiceItem(contractor.getFees().get(feeClass).getNewLevel(), contractor
 						.getFees().get(feeClass).getNewAmount(), feeClass.isPaymentExpiresNeeded() ? paymentExpires
 						: null);
@@ -523,10 +524,11 @@ public class BillingCalculatorSingle {
 			}
 	}
 
-	private void addActivationFeeIfApplies(ContractorAccount contractor, String billingStatus, List<InvoiceItem> items) {
+	private void addActivationFeeIfApplies(ContractorAccount contractor, BillingStatus billingStatus,
+			List<InvoiceItem> items) {
 		// Activations / Reactivations do not apply to bid only contractors
 		if (contractor.getAccountLevel().isFull()) {
-			if (contractor.getMembershipDate() == null || billingStatus.equals("Activation")) {
+			if (contractor.getMembershipDate() == null || billingStatus.isActivation()) {
 				// This contractor has never paid their activation fee, make
 				// them now this applies regardless if this is a new reg or
 				// renewal
@@ -536,9 +538,9 @@ public class BillingCalculatorSingle {
 				// Activate effective today
 				items.add(new InvoiceItem(fee, activationAmount, new Date()));
 				// For Reactivation Fee and Reactivating Membership
-			} else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
-				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
-						.getPayingFacilities());
+			} else if (billingStatus.isReactivation() || billingStatus.isCancelled()) {
+				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
+						contractor.getPayingFacilities());
 				// Reactivate effective today
 				items.add(new InvoiceItem(fee, contractor.getCountry().getAmount(fee), new Date()));
 			}

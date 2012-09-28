@@ -41,7 +41,7 @@
 				var country_select = $('.contractor-country') || $(this);
 				var country_string = country_select.val();
 
-				AJAX.request({
+				PICS.ajax({
 					url: 'CountrySubdivisionListAjax!registration.action',
 					data: {
 						countryString: country_string,
@@ -51,10 +51,11 @@
 						var countrySubdivision_element = $('.registration-form li.countrySubdivision');
 						var zip_element = $('.registration-form li.zip');
 
+						countrySubdivision_element.html(data);
+
 						if ($.trim(data) == '') {
 							countrySubdivision_element.slideUp(400);
 						} else {
-							countrySubdivision_element.html(data);
 							countrySubdivision_element.slideDown(400);
 						}
 
@@ -93,71 +94,57 @@
 		events: {
 			// ajax field validation - using jsonValidate intercepter
 			field_validate: function (event) {
-				var element = $(this);
+			    var element = $(this),
+			        form = element.closest('form'),
+			        data = form.serialize() + '&method%3AcreateAccount="Get Started"' + '&struts.enableJSONValidation=true' + '&struts.validateOnly=true'; // serialized form including json validator interceptors
 
-				// parent form
-				var form = element.closest('form');
-				// serialized form including json validator interceptors
-				var data = form.serialize() + '&method%3AcreateAccount="Get Started"' + '&struts.enableJSONValidation=true' + '&struts.validateOnly=true';
+			    function displayFieldErrors(form_errors) {
+			        var error_element = element.siblings('.errors'),
+			            field_name = element.attr('name'),
+			            field_errors = form_errors[field_name];
 
-				// ajax request to submit form
-				AJAX.request({
-					url: form.attr('action'),
-					data: data,
-					complete: function (XMLHttpRequest, textStatus) {
-						// obtain errors - field errors returned in the json request
-						var errors = StrutsUtils.getValidationErrors(XMLHttpRequest.responseText);
+			        if (field_errors) {
+			            var html = '<ul class="errors">';
 
-						// obtain any errors that are currently attached to the field
-						var error_element = element.siblings('.errors');
+			            $.each(field_errors, function (i, value) {
+			                html += '<li>' + value + '</li>';
 
-						if (errors.fieldErrors != undefined) {
-							var field_errors = errors.fieldErrors[element.attr('name')];
+			                if ((element.attr('id') === 'Registration_contractor_name') && (value === translate('JS.Validation.CompanyNameAlreadyExists'))) {
+			                    $('.contractor-name-duplicate').show();
+			                }
+			            });
 
-							// if there are errors - add them to the dom
-							if (field_errors != undefined) {
-								var html = '<ul class="errors">';
+			            html += '</ul>';
 
-								$.each(field_errors, function (i, value) {
-									html += '<li>' + value + '</li>';
-								})
+			            //add errors to DOM
+			            if (error_element.length) {
+			                error_element.replaceWith(html);
+			            } else {
+			                element.after(html);
+			            }
+			        } else {
+			            //remove errors from DOM
+			            if (error_element.length) {
+			                error_element.remove();
 
-								html += '</ul>';
+			                if (element.attr('id') === 'Registration_contractor_name') {
+			                    $('.contractor-name-duplicate').hide();
+			                }
+			            }
+			        }
+			    }
 
-								if (error_element.length) {
-									error_element.replaceWith(html);
-								} else {
-									element.after(html);
-								}
-
-								var is_legal_name_field = element.attr('id') == 'Registration_contractor_name';
-
-								// conditions show hide duplicate contractor name message
-								$.each(field_errors, function (i, value) {
-								    if (is_legal_name_field && value == translate('JS.Validation.CompanyNameAlreadyExists')) {
-								        $('.contractor-name-duplicate').show();
-								    } else if (is_legal_name_field) {
-								        $('.contractor-name-duplicate').hide();
-								    }
-								});
-
-							// clear out any errors upon correct field validation
-							} else {
-								if (error_element.length) {
-									error_element.remove();
-
-									// conditions hide duplicate contractor name message
-                                    if (element.attr('id') == 'Registration_contractor_name') {
-                                        $('.contractor-name-duplicate').hide();
-                                    }
-								}
-							}
-						} else {
-							// clear out any errors upon correct field validation
-							error_element.remove();
-						}
-					}
-				});
+			    //send validation request
+			    PICS.ajax({
+			        url: form.attr('action'),
+			        data: data,
+			        dataType: 'json',
+			        success: function (data, textStatus, XMLHttpRequest) {
+			            if (data.fieldErrors) {
+			                displayFieldErrors(data.fieldErrors);
+			            }
+			        }
+			    });
 			}
 		}
 	};
@@ -324,9 +311,11 @@
 				var services = $('.services-list input[type=checkbox]');
 				var service_safety_evaluation = $('.service-safety-evaluation');
 				var product_safety_evaluation = $('.product-safety-evaluation');
+                var business_interruption_evaluation = $('.business_interruption_evaluation');
 
 				var service_safety_evaluation_display = false;
 				var product_safety_evaluation_display = false;
+                var business_interruption_evaluation_display = false;
 
 				$.each(services, function (key, value) {
 					var element = $(value);
@@ -335,8 +324,13 @@
 
 					if ($.inArray(element_id, ['onSite', 'offSite']) != -1 && is_checked) {
 						service_safety_evaluation_display = true;
-					} else if($.inArray(element_id, ['materialSupplier', 'transportation']) != -1 && is_checked) {
+					} 
+					if($.inArray(element_id, ['materialSupplier']) != -1 && is_checked) {
 						product_safety_evaluation_display = true;
+						business_interruption_evaluation_display = true;
+					} 
+					if($.inArray(element_id, ['transportation']) != -1 && is_checked) {
+					    product_safety_evaluation_display = true;
 					}
 				});
 
@@ -351,6 +345,12 @@
 				} else {
 					product_safety_evaluation.slideUp(400);
 				}
+				
+                if (business_interruption_evaluation_display) {
+                    business_interruption_evaluation.slideDown(400);
+                } else {
+                    business_interruption_evaluation.slideUp(400);
+                }
 			}
 		}
 	};
@@ -358,12 +358,17 @@
 	PICS.define('registration.Registration', {
 	    methods: {
 	        init: function () {
-	            $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-	            $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
-	            $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
-	        },
+                var company_information = $('.company-information');
 
-	        showBasicModal: function (event) {
+                $('.Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+                $('.RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+                $('.RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
+                company_information.delegate('#Registration_contractor_country_isoCode', 'change', this.checkVatRequired);
+                // Show or hide the vat id field based on the Country default value.
+                company_information.find('#Registration_contractor_country_isoCode').trigger('change');
+            },
+
+            showBasicModal: function (event) {
 	            var element = $(this);
 
 	            PICS.ajax({
@@ -400,11 +405,28 @@
                         modal.show();
                     }
                 });
-	        }
+	        },
+
+	        checkVatRequired: function (event) {
+                var iso_code = $('#Registration_contractor_country_isoCode').val();
+
+                PICS.ajax({
+                    url: 'VATCountryAJAX.action',
+                    data: {
+                        iso_code: iso_code
+                    },
+                    dataType: 'json',
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var vat_element = $('#vat_id');
+
+                        if (data.vat_required) {
+                            vat_element.slideDown(400);
+                        } else {
+                            vat_element.slideUp(400);
+                        }
+                    }
+                });
+            }
 	    }
 	});
 })(jQuery);
-
-
-
-

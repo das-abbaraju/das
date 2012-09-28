@@ -53,7 +53,7 @@ public class ArchivedAccounts extends ReportAccount {
 		qb.addVisibleStatus(AccountStatus.Deactivated);
 		qb.addVisibleStatus(AccountStatus.Pending);
 		qb.setWorkingFacilities(false);
-		sql.addWhere("1 " + qb.toString());
+		sql.addWhere(qb.buildWhereClause());
 
 		getFilter().setShowStatus(false);
 		getFilter().setShowFlagStatus(false);

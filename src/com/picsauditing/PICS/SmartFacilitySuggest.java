@@ -16,6 +16,15 @@ import com.picsauditing.util.Strings;
 
 public class SmartFacilitySuggest {
 	static private int minimumSampleSize = 50;
+	private static Database database;
+
+	// this is for injecting a mock db for testing
+	private static Database database() {
+		if (database == null) {
+			return new Database();
+		}
+		return database;
+	}
 
 	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, Permissions permissions)
 			throws Exception, SQLException {
@@ -31,7 +40,7 @@ public class SmartFacilitySuggest {
 
 	private static List<BasicDynaBean> createBaseQuery(ContractorAccount contractor, Permissions permissions,
 			int zipLength, boolean recentlyAdded) throws SQLException {
-		Database db = new Database();
+		Database db = database();
 
 		SelectSQL sql = new SelectSQL("accounts o");
 		sql.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
@@ -121,7 +130,7 @@ public class SmartFacilitySuggest {
 		if (limit > 0)
 			sql.setLimit(limit);
 
-		Database db = new Database();
+		Database db = database();
 		return db.select(sql.toString(), false);
 	}
 

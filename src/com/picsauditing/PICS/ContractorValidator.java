@@ -34,6 +34,8 @@ public class ContractorValidator {
 	protected AuditDataDAO auditDataDao;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDao;
+    @Autowired
+    protected VATValidator vatValidator;
 
 	private I18nCache i18nCache = I18nCache.getInstance();
 
@@ -72,7 +74,7 @@ public class ContractorValidator {
 			errorMessages.addElement(getText("ContractorValidator.error.NoAdCity"));
 		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoCountry"));
-		if (contractor.getCountry() != null && contractor.getCountry().isHasCountrySubdivisions()) {
+		if (contractor.getCountry() != null && contractor.getCountry().hasCountrySubdivisions()) {
 			if (contractor.getCountrySubdivision() == null || Strings.isEmpty(contractor.getCountrySubdivision().getIsoCode())) {
 				errorMessages.addElement(getText("ContractorValidator.error.NoCountrySubdivision"));
 			}
@@ -87,6 +89,14 @@ public class ContractorValidator {
 		// Onsite / Offsite / Material Supplier
 		if (contractor.getAccountTypes().isEmpty())
 			errorMessages.addElement(getText("ContractorValidator.error.NoServiceSelection"));
+
+        if (!Strings.isEmpty(contractor.getVatId())) {
+            try {
+                vatValidator.validated(contractor.getVatId());
+            } catch (Exception e) {
+                errorMessages.addElement(getText("ContractorValidator.error.InvalidVAT"));
+            }
+        }
 
 		return errorMessages;
 	}
