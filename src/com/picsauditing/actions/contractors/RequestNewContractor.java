@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
@@ -258,6 +259,8 @@ public class RequestNewContractor extends AccountActionSupport {
 		} else {
 			newContractor.setHoldDate(null);
 		}
+
+		transferTagsToContractor();
 
 		if (newContractor.getId() == 0) {
 			newContractor.setStatus(ContractorRegistrationRequestStatus.Active);
@@ -679,5 +682,40 @@ public class RequestNewContractor extends AccountActionSupport {
 		} catch (Exception e) {
 			LOG.error("Unable to open file: /files/{}", filename);
 		}
+	}
+
+	private void transferTagsToContractor() {
+		if (newContractor.getContractor() != null && !Strings.isEmpty(newContractor.getOperatorTags())) {
+			for (String tagID : newContractor.getOperatorTags().split(",")) {
+				try {
+					OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
+
+					if (!contractorHasTag(tag)
+							&& newContractor.getContractor().getOperatorAccounts().contains(tag.getOperator())) {
+						ContractorTag contractorTag = new ContractorTag();
+						contractorTag.setContractor(newContractor.getContractor());
+						contractorTag.setTag(tag);
+						contractorTag.setAuditColumns(permissions);
+
+						dao.save(contractorTag);
+					}
+				} catch (Exception exception) {
+					LOG.error("Error with transfering tag {} from request {} to contractor {}\n{}", new Object[] {
+							tagID, newContractor.getId(), newContractor.getContractor().getId(), exception });
+				}
+			}
+		}
+	}
+
+	private boolean contractorHasTag(OperatorTag tag) {
+		if (newContractor.getContractor() != null) {
+			for (ContractorTag contractorTag : newContractor.getContractor().getOperatorTags()) {
+				if (contractorTag.getTag().equals(tag)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

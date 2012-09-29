@@ -1,17 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="!isLiveEnvironment()">
+<s:if test="!isLiveEnvironment() || isQaEnvironment()">
     <s:set var="environment" value="" />
     <s:set var="is_localhost" value="" />
     <s:set var="is_alpha" value="" />
     <s:set var="is_config" value="" />
     <s:set var="is_beta" value="" />
     
-    <s:if test="isLocalhostEnvironment()">
+    <s:if test="isQaEnvironment()">
+        <s:set var="environment" value="%{'QA'}" />
+    </s:if>
+    <s:elseif test="isLocalhostEnvironment()">
         <s:set var="environment" value="%{'localhost'}" />
         <s:set var="is_localhost" value="%{'active'}" />
-    </s:if>
+    </s:elseif>
     <s:elseif test="isAlphaEnvironment()">
         <s:set var="environment" value="%{'alpha'}" />
         <s:set var="is_alpha" value="%{'active'}" />

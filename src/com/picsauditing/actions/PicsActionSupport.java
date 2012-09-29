@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -171,6 +172,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return isBeta;
 	}
 
+	public boolean isQaEnvironment() {
+		return getRequestHost().contains("qa-stable") || getRequestHost().contains("qa-beta");
+	}
 	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
@@ -343,14 +347,51 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public User getUser(int userId) {
-		UserDAO dao = SpringUtils.getBean("UserDAO");
 		try {
-			User user = dao.find(userId);
+			User user = userDAO.find(userId);
 			return user;
 		} catch (Exception e) {
 			logger.error("Error finding user: {}", e.getMessage());
 			return null;
 		}
+	}
+	protected String apiKey;
+
+
+	public boolean isApiUser()  {
+		if (apiKey == null) {
+			return false;
+		}
+		System.out.println("api key query param = "+apiKey);
+		User user = getUser();
+		
+		if (user != null && apiKey.equals(user.getApiKey())) {
+			// the user with this API key is already logged in
+			return true;
+		}
+		user = userDAO.findByApiKey(apiKey);
+		
+		// Log in as that user
+		Permissions permissions = null;
+		if (ActionContext.getContext().getSession() == null) {
+			addActionError("Failed to get session");
+		} else {
+			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		}
+
+		if (permissions == null) {
+			permissions = new Permissions();
+		}
+		try {
+			permissions.login(user);
+			this.user = user;
+		} catch (Exception e) {
+			return false;
+		}
+		LocaleController.setLocaleOfNearestSupported(permissions);
+		ActionContext.getContext().getSession().put("permissions", permissions);
+		return true;
+	
 	}
 
 	public Account getAccount() {
@@ -519,9 +560,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new TreeSet<User>();
-			UserDAO dao = SpringUtils.getBean("UserDAO");
-			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
-			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
+			auditorList.addAll(userDAO.findByGroup(User.GROUP_AUDITOR));
+			auditorList.addAll(userDAO.findByGroup(User.GROUP_CSR));
 		}
 		return auditorList;
 	}
@@ -529,8 +569,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
-			UserDAO dao = SpringUtils.getBean("UserDAO");
-			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));
+			safetyList.addAll(userDAO.findByGroup(User.GROUP_SAFETY));
 		}
 		return safetyList;
 	}

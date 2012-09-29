@@ -227,7 +227,6 @@ public class Permissions implements Serializable {
 				conProfileEdit.setEditFlag(true);
 				permissions.add(conProfileEdit);
 			}
-
 			for (UserGroup u : user.getGroups()) {
 				if (u.getGroup().isGroup()) {
 					groups.put(u.getGroup().getId(), u.getGroup().getName());
@@ -466,6 +465,10 @@ public class Permissions implements Serializable {
 		return seesAllContractors();
 	}
 
+	public boolean isRestApi(){
+		return hasPermission(OpPerms.RestApi);
+	}
+
 	public boolean seesAllContractors() {
 		return hasPermission(OpPerms.AllContractors);
 	}
@@ -478,14 +481,17 @@ public class Permissions implements Serializable {
 	 * @return
 	 */
 	public boolean isAuditor() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(11);
 	}
 
 	public boolean isMarketing() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(10801);
 	}
 
 	public boolean isIndependentAuditor() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(11265);
 	}
 
@@ -494,6 +500,7 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isSecurity() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(68908);
 	}
 

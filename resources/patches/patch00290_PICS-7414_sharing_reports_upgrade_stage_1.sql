@@ -1,4 +1,3 @@
-/* Create table in target */
 CREATE TABLE IF NOT EXISTS `report_permission_account`(
 	`id` int(11) NOT NULL  auto_increment , 
 	`createdBy` int(11) NULL  , 
@@ -13,8 +12,6 @@ CREATE TABLE IF NOT EXISTS `report_permission_account`(
 	KEY `user_report_user`(`accountID`) 
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-
-/* Create table in target */
 CREATE TABLE IF NOT EXISTS `report_permission_user`(
 	`id` int(11) NOT NULL  auto_increment , 
 	`createdBy` int(11) NULL  , 
@@ -30,8 +27,6 @@ CREATE TABLE IF NOT EXISTS `report_permission_user`(
 	KEY `user_report_user`(`userID`) 
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-
-/* Alter table in target */
 ALTER TABLE `report_user` 
 	CHANGE `reportID` `reportID` int(11)   NOT NULL after `updateDate`, 
 	CHANGE `userID` `userID` int(11)   NOT NULL after `reportID`, 
@@ -42,69 +37,6 @@ ALTER TABLE `report_user`
 	ADD COLUMN `sortOrder` int(11)   NOT NULL DEFAULT '100' after `favorite`, 
 	CHANGE `favoriteSortIndex` `favoriteSortIndex` int(11)   NOT NULL DEFAULT '100' after `sortOrder`, 
 	ADD COLUMN `viewCount` int(11)   NOT NULL DEFAULT '0' after `favoriteSortIndex`, COMMENT='';
-
-/* Create Trigger in target */
-
-DELIMITER $$
-CREATE
-    /*!50017 DEFINER = 'tallred'@'%' */
-    TRIGGER `report_user_6_24_insert` BEFORE INSERT ON `report_user` 
-    FOR EACH ROW BEGIN
-	IF NEW.sortOrder > -1 THEN
-		SET NEW.favoriteSortIndex = NEW.sortOrder;
-	ELSE
-		IF NEW.favoriteSortIndex > -1 THEN
-			SET NEW.sortOrder = NEW.favoriteSortIndex;
-		END IF;
-	END IF;
-	IF NEW.lastViewedDate IS NOT NULL THEN
-		SET NEW.lastOpened = NEW.lastViewedDate;
-	ELSE
-		IF NEW.lastOpened IS NOT NULL THEN
-			SET NEW.lastViewedDate = NEW.lastOpened;
-		END IF;
-	END IF;
-	IF NEW.editable >= 0 THEN
-		INSERT INTO report_permission_user (reportID, userID, creationDate, updateDate, createdBy, updatedBy, editable)
-		VALUES (NEW.reportID, NEW.userID, NEW.creationDate, NEW.updateDate, NEW.createdBy, NEW.updatedBy, NEW.editable)
-		ON DUPLICATE KEY UPDATE editable = NEW.editable;
-	END IF;
-    END;
-$$
-DELIMITER ;
-
-
-/* Create Trigger in target */
-
-DELIMITER $$
-CREATE
-    /*!50017 DEFINER = 'tallred'@'%' */
-    TRIGGER `report_user_6_24_update` BEFORE UPDATE ON `report_user` 
-    FOR EACH ROW BEGIN
-	IF NEW.sortOrder > -1 && NEW.sortOrder != OLD.sortOrder THEN
-		SET NEW.favoriteSortIndex = NEW.sortOrder;
-	ELSE
-		IF NEW.favoriteSortIndex > -1 && NEW.favoriteSortIndex != OLD.favoriteSortIndex THEN
-			SET NEW.sortOrder = NEW.favoriteSortIndex;
-		END IF;
-	END IF;
-	IF NEW.lastViewedDate IS NOT NULL && NEW.lastViewedDate > OLD.lastViewedDate THEN
-		SET NEW.lastOpened = NEW.lastViewedDate;
-	ELSE
-		IF NEW.lastOpened IS NOT NULL && NEW.lastOpened > OLD.lastOpened THEN
-			SET NEW.lastViewedDate = NEW.lastOpened;
-		END IF;
-	END IF;
-	IF NEW.editable >= 0 THEN
-		INSERT INTO report_permission_user (reportID, userID, creationDate, updateDate, createdBy, updatedBy, editable)
-		VALUES (OLD.reportID, OLD.userID, OLD.creationDate, NEW.updateDate, OLD.createdBy, NEW.updatedBy, NEW.editable)
-		ON DUPLICATE KEY UPDATE editable = NEW.editable;
-	END IF;
-    END;
-$$
-DELIMITER ;
-
-/* Alter ForeignKey(s)in target */
 
 ALTER TABLE `report_user`
 ADD CONSTRAINT `FK_report_user_user` 

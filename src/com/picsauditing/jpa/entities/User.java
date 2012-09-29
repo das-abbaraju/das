@@ -97,6 +97,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private TimeZone timezone = null;
 	private Locale locale = Locale.ENGLISH;
 	private String department;
+	private String apiKey;
 	private boolean usingDynamicReports;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
@@ -870,4 +871,18 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public boolean isRemoved() {
 		return (isActive == YesNo.No || username.startsWith("DELETE-"));
 	}
+
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
+	@Transient
+	public boolean isApi() {
+		return (this.apiKey != null) && hasPermission(OpPerms.RestApi, OpType.View);
+	}
+
 }

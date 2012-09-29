@@ -152,4 +152,18 @@ public class UserDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
+
+	public User findByApiKey(String apiKey) {
+		if (apiKey == null) {
+			return null;
+		}
+
+		try {
+			Query query = em.createQuery("SELECT u FROM User u WHERE apiKey = ?");
+			query.setParameter(1, apiKey);
+			return (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
 }

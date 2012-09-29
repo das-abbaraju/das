@@ -38,7 +38,7 @@ public class ReportData extends PicsActionSupport {
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 			getData(sql.toString());
 		} catch (ReportValidationException error) {
-			writeJsonError(getText(error.getMessage()));
+			writeJsonError(error.getMessage());
 		} catch (Exception error) {
 			logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
 			if (permissions.has(OpPerms.Debug)) {
