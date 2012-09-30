@@ -826,7 +826,7 @@
 		<dependency>
 			<groupId>com.tacitknowledge</groupId>
 			<artifactId>autopatch</artifactId>
-			<version>1.4.1-PICS-3</version>
+			<version>1.4.3-PICS-4</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>commons-logging</artifactId>
