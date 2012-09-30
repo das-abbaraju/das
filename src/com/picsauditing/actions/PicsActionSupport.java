@@ -347,7 +347,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (apiKey == null) {
 			return false;
 		}
-		System.out.println("api key query param = "+apiKey);
 		User user = getUser();
 		
 		if (user != null && apiKey.equals(user.getApiKey())) {

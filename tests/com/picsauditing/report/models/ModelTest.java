@@ -32,9 +32,9 @@ abstract public class ModelTest {
 	}
 
 	protected void checkFields() {
-		for (Field field : availableFields.values()) {
-			System.out.println(field.getName());
-		}
+//		for (Field field : availableFields.values()) {
+//			System.out.println(field.getName());
+//		}
 		
 		for (String fieldName : includedFields) {
 			assertTrue(fieldName + " was missing from availableFields",
