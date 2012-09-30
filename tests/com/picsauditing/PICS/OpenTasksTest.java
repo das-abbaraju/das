@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;

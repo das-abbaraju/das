@@ -339,7 +339,7 @@
 								<li><s:select
 										list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 										name="user.locale"
-										listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))"
+										listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 										theme="form" /></li>
 							</s:if>
 

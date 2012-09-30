@@ -14,7 +14,7 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import com.picsauditing.PICS.I18nCache;
 

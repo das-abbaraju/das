@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;

@@ -1,6 +1,6 @@
 package com.picsauditing.util.chart;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 abstract public class AbstractElement {
 
