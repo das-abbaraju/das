@@ -26,7 +26,10 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
 
@@ -36,13 +39,15 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
-
 	private static final int ONE_SECOND = 1;
+	private static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
+	@Autowired
+	private FeatureToggle featureToggleChecker;
 
 	//for inject mock permission cause
 	private Permissions permissionsForTest;
@@ -144,8 +149,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private void clearPicsOrgCookie(){
-		Cookie cookie = new Cookie("PICS_ORG_SESSION",  "");
-		cookie.setMaxAge(0);
+		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
+		cookie.setMaxAge(-1);
+		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		getResponse().addCookie(cookie);
 	}
 
@@ -227,8 +233,10 @@ public class LoginController extends PicsActionSupport {
 		permissions.login(user);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
-		//set PICS_ORG_SESSION cookie
-		setClientSessionCookie("cookie content");
+		
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			addClientSessionCookieToResponse();
+		}
 
 		user.unlockLogin();
 		user.setLastLogin(new Date());
@@ -245,13 +253,20 @@ public class LoginController extends PicsActionSupport {
 		}
 	}
 
-	protected void setClientSessionCookie(String cookieContent) {
-		Cookie cookie = new Cookie("PICS_ORG_SESSION", cookieContent);
-		cookie.setMaxAge(24 * 60 * 60);
-		if (!isLocalhostEnvironment()) {
-			cookie.setDomain("picsorganizer.com");
-		}
+	private void addClientSessionCookieToResponse() {
+		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent());
+		cookie.setMaxAge(TWENTY_FOUR_HOURS);
+		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		ServletActionContext.getResponse().addCookie(cookie);
+	}
+	
+	private String sessionCookieContent() {
+		SessionCookie sessionCookie = new SessionCookie();
+		Date now = new Date();
+		sessionCookie.setUserID(user.getId());
+		sessionCookie.setCookieCreationTime(now);
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
 	}
 
 	private String canLogin() throws Exception {

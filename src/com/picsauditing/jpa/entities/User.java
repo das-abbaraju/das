@@ -39,6 +39,7 @@ import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
+import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
@@ -707,12 +708,12 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public boolean isEncryptedPasswordEqual(String query) {
-		return password != null && password.endsWith(Strings.hash(query + this.getId()));
+		return password != null && password.endsWith(EncodedMessage.hash(query + this.getId()));
 	}
 
 	@Transient
 	public void setEncryptedPassword(String unencryptedPassword) {
-		this.setPassword(Strings.hash(unencryptedPassword + this.getId()));
+		this.setPassword(EncodedMessage.hash(unencryptedPassword + this.getId()));
 	}
 
 	/**

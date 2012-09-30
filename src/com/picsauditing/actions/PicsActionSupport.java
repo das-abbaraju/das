@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -47,6 +46,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.PicsDateFormat;
@@ -257,7 +258,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		int clientSessionUserID = getClientSessionUserID();
 		if (clientSessionUserID > 0) {
-			logger.info("Session timed out but HMAC cookie says the user {} is still logged in.", clientSessionUserID);
+			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
 			login(clientSessionUserID);
 			return;
 		}
@@ -758,18 +759,25 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	private int getClientSessionUserID() {
-		Cookie sessionCookie = getClientSessionCookie();
-		if (sessionCookie == null)
+		String sessionCookieValue = clientSessionCookieValue();
+		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			cookie.setMaxAge(-1);
+			ServletActionContext.getResponse().addCookie(cookie);
 			return 0;
-
-		return Integer.parseInt(sessionCookie.getValue());
+		}
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+		return sessionCookie.getUserID();
 	}
 
-	private Cookie getClientSessionCookie() {
+	private String clientSessionCookieValue() {
 		Cookie[] cookies = getRequest().getCookies();
-		for (Cookie cookie : cookies) {
-			if ("PICS_ORG_SESSION".equals(cookie.getName())) {
-				return cookie;
+		if (cookies != null && cookies.length > 0) {
+			for (Cookie cookie : cookies) {
+				if (SessionSecurity.SESSION_COOKIE_NAME.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
 			}
 		}
 		return null;

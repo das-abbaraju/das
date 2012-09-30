@@ -1,8 +1,5 @@
 package com.picsauditing.util;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.security.EncodedMessage;
 
 public class Strings {
 	
@@ -223,37 +221,12 @@ public class Strings {
 		stringBuilder.append("'");
 	}
 
-	public static String hash(String seed) {
-		MessageDigest digest = null;
-		try {
-			digest = MessageDigest.getInstance("SHA-1");
-		} catch (NoSuchAlgorithmException e) {
-			return e.getMessage();
-		}
-		digest.update(seed.getBytes());
-		byte[] hashed = digest.digest();
-		BigInteger number = new BigInteger(1, hashed);
-		// String value = Base64.encodeBytes(hashed);
-		return number.toString(16);
-	}
-
-	public static String md5(String seed) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] messageDigest = md.digest(seed.getBytes());
-			BigInteger number = new BigInteger(1, messageDigest);
-			return number.toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			return e.getMessage();
-		}
-	}
-
 	/**
 	 * @param seed
 	 * @return
 	 */
 	public static String hashUrlSafe(String seed) {
-		String value = Strings.hash(seed);
+		String value = EncodedMessage.hash(seed);
 		value = value.replace("+", "_");
 		return value;
 	}

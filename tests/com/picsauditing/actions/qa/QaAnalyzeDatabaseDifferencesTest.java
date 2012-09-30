@@ -8,8 +8,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,27 +32,38 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ActionContext.class, SpringUtils.class})
+@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class })
 @PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class QaAnalyzeDatabaseDifferencesTest extends PicsTest {
 	private QaAnalyzeDatabaseDifferences analyzeQaDiffLive;
 	
-	@Mock Permissions permissions;
-	@Mock FlagAnalyzer flagAnalyzer;
-	@Mock AuditAnalyzer auditAnalyzer;
-	
+	@Mock
+	private Permissions permissions;
+	@Mock
+	private FlagAnalyzer flagAnalyzer;
+	@Mock
+	private AuditAnalyzer auditAnalyzer;
+	@Mock
+	private HttpServletRequest request;
+	@Mock
+	private HttpServletResponse response;
+
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		
 		MockitoAnnotations.initMocks(this);
 		
+		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 		when(permissions.isAdmin()).thenReturn(true);
 		Map<String, Object> session = new HashMap<String, Object>();
 		session.put("permissions", permissions);
 		
 		ActionContext actionContext = mock(ActionContext.class);
 		when(actionContext.getSession()).thenReturn(session);
+		PowerMockito.mockStatic(ServletActionContext.class);
+		when(ServletActionContext.getRequest()).thenReturn(request);
+		when(ServletActionContext.getResponse()).thenReturn(response);
 		
 		PowerMockito.mockStatic(ActionContext.class);
 		when(ActionContext.getContext()).thenReturn(actionContext);

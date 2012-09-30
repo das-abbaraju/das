@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Query;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
@@ -41,21 +43,24 @@ import com.picsauditing.mock.SearchEngineMockPolicy;
 import com.picsauditing.strutsutil.AjaxUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class, SmartFacilitySuggest.class })
+@PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class, SmartFacilitySuggest.class,
+		ServletActionContext.class })
 @MockPolicy(SearchEngineMockPolicy.class)
 @PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class RegistrationAddClientSiteTest extends PicsTest {
 	RegistrationAddClientSite registrationAddClientSite;
 	ContractorAccount contractor;
 
-	List<OperatorAccount> results;
+	private List<OperatorAccount> results;
 
 	@Mock
-	Query query;
+	private Query query;
 	@Mock
-	HttpServletRequest request;
+	private HttpServletRequest request;
 	@Mock
-	Permissions permissions;
+	private Permissions permissions;
+	@Mock
+	private HttpServletResponse response;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,10 +74,13 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 		PowerMockito.mockStatic(ActionContext.class);
 		PowerMockito.mockStatic(AjaxUtils.class);
 		PowerMockito.mockStatic(SmartFacilitySuggest.class);
+		PowerMockito.mockStatic(ServletActionContext.class);
 
 		when(actionContext.getSession()).thenReturn(session);
 		when(ActionContext.getContext()).thenReturn(actionContext);
+		when(request.getCookies()).thenReturn(null);
 		when(ServletActionContext.getRequest()).thenReturn(request);
+		when(ServletActionContext.getResponse()).thenReturn(response);
 
 		registrationAddClientSite = PowerMockito.spy(new RegistrationAddClientSite());
 		autowireEMInjectedDAOs(registrationAddClientSite);

@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
@@ -39,14 +40,16 @@ import com.picsauditing.util.SpringUtils;
 		PicsOrganizerVersion.class })
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class PicsActionSupportTest {
-	PicsActionSupport picsActionSupport;
+	private PicsActionSupport picsActionSupport;
 
 	@Mock
 	private EntityManager em;
 	@Mock
-	HttpServletRequest request;
+	private HttpServletRequest request;
 	@Mock
-	PicsOrganizerVersion picOrgVersion;
+	private HttpServletResponse response;
+	@Mock
+	private PicsOrganizerVersion picOrgVersion;
 
 	@Before
 	public void setUp() throws Exception {
@@ -64,6 +67,7 @@ public class PicsActionSupportTest {
 
 		PowerMockito.mockStatic(ServletActionContext.class);
 		when(ServletActionContext.getRequest()).thenReturn(request);
+		when(ServletActionContext.getResponse()).thenReturn(response);
 
 		PowerMockito.mockStatic(PicsOrganizerVersion.class);
 
