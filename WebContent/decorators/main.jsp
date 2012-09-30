@@ -214,7 +214,7 @@
                                     <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
                                 <% } %>
                             </span>
-                        | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
+                        | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %> | <a href="Login.action?button=switchBack">SwitchBack</a>
                         <% } else { %>
                             <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
                         <% } %>

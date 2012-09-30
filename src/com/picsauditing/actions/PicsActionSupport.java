@@ -413,8 +413,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public Permissions getPermissions() {
 		try {
-			if (permissions == null)
+			if (permissions == null) {
 				loadPermissions();
+			}
 			return permissions;
 		} catch (Exception e) {
 			return new Permissions();
@@ -758,17 +759,37 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		alertMessages = messages;
 	}
 
-	private int getClientSessionUserID() {
+	protected int getClientSessionOriginalUserID() {
 		String sessionCookieValue = clientSessionCookieValue();
 		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
-			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
-			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-			cookie.setMaxAge(-1);
-			ServletActionContext.getResponse().addCookie(cookie);
+			clearPicsOrgCookie();
 			return 0;
 		}
 		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
 		return sessionCookie.getUserID();
+	}
+
+	private int getClientSessionUserID() {
+		String sessionCookieValue = clientSessionCookieValue();
+		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			clearPicsOrgCookie();
+			return 0;
+		}
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+		if (sessionCookie.getData("switchTo") == null) {
+			return sessionCookie.getUserID();
+		} else {
+			int switchToUserId = (Integer) sessionCookie.getData("switchTo");
+			permissions.setAdminID(switchToUserId);
+			return switchToUserId;
+		}
+	}
+
+	protected void clearPicsOrgCookie() {
+		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
+		cookie.setMaxAge(-1);
+		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		ServletActionContext.getResponse().addCookie(cookie);
 	}
 
 	private String clientSessionCookieValue() {

@@ -2,6 +2,7 @@ package com.picsauditing.security;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.HashMap;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -13,7 +14,7 @@ public class SessionCookie {
 
 	private int userID;
 	private Date cookieCreationTime;
-	private Map<String, Object> embeddedData;
+	private Map<String, Object> embeddedData = new HashMap<String, Object>();
 	private String validationHash;
 
 	public int getUserID() {
@@ -45,6 +46,12 @@ public class SessionCookie {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public void putData(String dataKey, Object data) {
+		if (embeddedData != null) {
+			embeddedData.put(dataKey, data);
 		}
 	}
 

@@ -65,21 +65,18 @@ public class LoginController extends PicsActionSupport {
 	public String execute() throws Exception {
 		if (button == null) {
 			return SUCCESS;
-		}
-
-		if ("confirm".equals(button)) {
+		} else if ("confirm".equals(button)) {
 			return confirm();
-		}
-
-		if ("logout".equals(button)) {
+		} else if ("logout".equals(button)) {
 			return logout();
+		} else if ("switchBack".equalsIgnoreCase(button)) {
+			return switchBack();
+		} else { // normal login
+			if (switchToUser > 0) {
+				return switchTo();
+			}
+			return login();
 		}
-
-		if (switchToUser > 0) {
-			return switchTo();
-		}
-
-		return login();
 	}
 
 	/**
@@ -121,22 +118,32 @@ public class LoginController extends PicsActionSupport {
 
 	public String logout() throws Exception {
 		loadPermissions(false);
-
-		if (permissions.getAdminID() > 0) {
-			switchToUser = permissions.getAdminID();
-			return switchBack();
-		}
-
 		invalidateSession();
 		clearPicsOrgCookie();
 		return SUCCESS;
 	}
 
 	private String switchBack() throws Exception {
-		user = userDAO.find(switchToUser);
-		permissions.login(user);
-		LocaleController.setLocaleOfNearestSupported(permissions);
+		loadPermissions(false);
+		determineSwitchToUserId();
+		if (switchToUser > 0) {
+			user = userDAO.find(switchToUser);
+			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
+			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+				addClientSessionCookieToResponse();
+			}
+			permissions.setAdminID(0);
+		}
 		return setRedirectUrlPostLogin();
+	}
+
+	private void determineSwitchToUserId() {
+		if (permissions.getAdminID() > 0) {
+			switchToUser = permissions.getAdminID();
+		} else {
+			switchToUser = getClientSessionOriginalUserID();
+		}
 	}
 
 	private void invalidateSession() {
@@ -148,14 +155,10 @@ public class LoginController extends PicsActionSupport {
 		}
 	}
 
-	private void clearPicsOrgCookie(){
-		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
-		cookie.setMaxAge(-1);
-		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-		getResponse().addCookie(cookie);
-	}
-
 	public String switchTo() throws Exception {
+		loadPermissions(false);
+		// add cookie before the switch so the original user id stays correct
+		addClientSessionCookieToResponse();
 		if (permissions.getUserId() == switchToUser) {
 			// Switch back to myself
 			user = getUser();
@@ -263,8 +266,11 @@ public class LoginController extends PicsActionSupport {
 	private String sessionCookieContent() {
 		SessionCookie sessionCookie = new SessionCookie();
 		Date now = new Date();
-		sessionCookie.setUserID(user.getId());
+		sessionCookie.setUserID(permissions.getUserId());
 		sessionCookie.setCookieCreationTime(now);
+		if (switchToUser > 0) {
+			sessionCookie.putData("switchTo", switchToUser);
+		}
 		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
 		return sessionCookie.toString();
 	}
