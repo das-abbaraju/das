@@ -439,32 +439,32 @@
 							<s:hidden name="user.isActive" value="Yes" />
 						</s:else>
 
-						<li><s:if
-								test="user.id == 0 && (permissions.picsEmployee || permissions.operatorCorporate)">
+						<li>
+							<s:if test="user.id == 0 && (permissions.picsEmployee || permissions.operatorCorporate)">
 								<div class="alert">
 									<s:text name="UsersManage.AssignUserToGroupReminder" />
 								</div>
-							</s:if></li>
+							</s:if>
+						</li>
+
+
+
+<s:if test="true">				
+	<li>
+		<label>TRANSLATE THIS - Languages</label>
+	</li>
+	<li>
+		<label>TRANSLATE THIS - Assignment Capacity</label>
+		<s:textfield name="user.assignmentCapacity" size="3" />%
+	</li>
+</s:if>
+
+
+
 					</ol>
 				</fieldset>
 
 
-<s:if test="true">				
-	<fieldset class="form">
-		<h2 class="formLegend">
-			TRANSLATE THIS - CSR DETAILS
-		</h2>
-		<ol>
-			<li>
-				<label>TRANSLATE THIS - Languages</label>
-			</li>
-			<li>
-				<label>TRANSLATE THIS - Assignment Capacity</label>
-				<s:textfield name="user.assignmentCapacity" size="3" theme="form" />%
-			</li>
-		</ol>
-	</fieldset>
-</s:if>
 
 
 
