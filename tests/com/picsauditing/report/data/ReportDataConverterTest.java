@@ -58,6 +58,7 @@ public class ReportDataConverterTest {
 		columns.add(createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE")));
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
 		membershipMonth.setFieldName("ContractorMembershipDate__Month");
+		membershipMonth.getField().setUrl("Test.action?id={AccountZip}");
 		columns.add(membershipMonth);
 		columns.add(createColumn(availableFields.get("CONTRACTORLASTUPGRADEDATE")));
 	}
@@ -82,7 +83,7 @@ public class ReportDataConverterTest {
 
 		assertEquals(1, json.size());
 		String expected = "[{\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":1234567890,"
-				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorMembershipDate\":1234567890}]";
+				+ "\"ContractorMembershipDate__Month\":\"janvier\",\"AccountZip\":\"92614\",\"ContractorMembershipDate\":1234567890}]";
 		assertEquals(expected, json.toString());
 	}
 
@@ -117,6 +118,8 @@ public class ReportDataConverterTest {
 		builder.addProperty("ContractorMembershipDate", java.sql.Date.class);
 		builder.addProperty("ContractorMembershipDate__Month", Integer.class);
 		builder.addProperty("ContractorLastUpgradeDate", java.sql.Date.class);
+		builder.addProperty("AccountZip", String.class);
+		
 		for (int i = 0; i < count; i++) {
 			builder.addRow();
 			long accountID = 1;
@@ -131,6 +134,7 @@ public class ReportDataConverterTest {
 			builder.setValue("ContractorMembershipDate", new java.sql.Date(currentUnitTime));
 			builder.setValue("ContractorMembershipDate__Month", 1);
 			builder.setValue("ContractorLastUpgradeDate", null);
+			builder.setValue("AccountZip", "92614");
 		}
 		return builder.getRows();
 	}

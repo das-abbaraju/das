@@ -68,16 +68,20 @@ public class ReportDataConverter {
 				// is better than an NPE
 				return column.getFieldName() + ": Field not available";
 			}
+			
 			if (column.getField().isTranslated()) {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
+			
 			if (column.getField().getType() == ExtFieldType.Int) {
 				return value;
 			}
+			
 			if (column.getField().getType() == ExtFieldType.Float) {
 				return value;
 			}
+			
 			if (column.getField().getType() == ExtFieldType.Boolean) {
 				return value;
 			}
