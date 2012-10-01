@@ -147,6 +147,7 @@ public class ContractorAuditDownloadTest {
 		verifyDownload();
 	}
 
+	@Ignore
 	@Test
 	public void testFillExcelCategories_NoViewableCategories() throws Exception {
 		Integer rowNum = Whitebox.invokeMethod(auditDownload, "fillExcelCategories", Collections.emptySet(),
@@ -157,6 +158,7 @@ public class ContractorAuditDownloadTest {
 		verify(row, never()).createCell(anyInt(), anyInt());
 	}
 
+	@Ignore
 	@Test
 	public void testFillExcelCategories_ViewableCategory() throws Exception {
 		AuditCategory category = EntityFactory.makeAuditCategory();
@@ -171,6 +173,7 @@ public class ContractorAuditDownloadTest {
 		verify(row).createCell(anyInt(), anyInt());
 	}
 
+	@Ignore
 	@Test
 	public void testFillExcelCategories_ViewableCategoryWithSubcat() throws Exception {
 		AuditCategory category = EntityFactory.makeAuditCategory();
