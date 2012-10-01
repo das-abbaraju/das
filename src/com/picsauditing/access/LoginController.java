@@ -49,7 +49,7 @@ public class LoginController extends PicsActionSupport {
 	@Autowired
 	private FeatureToggle featureToggleChecker;
 
-	//for inject mock permission cause
+	// used to inject mock permissions for testing
 	private Permissions permissionsForTest;
 	private User user;
 	private String email;
@@ -327,9 +327,7 @@ public class LoginController extends PicsActionSupport {
 			user.setLockUntil(calendar.getTime());
 			return getTextParameterized("Login.PasswordIncorrectAccountLocked", user.getUsername());
 		}
-		//TODO, do we really need to tell them how many tries they have left.
-		return getTextParameterized("Login.PasswordIncorrectAttemptsRemaining", (8 - user.getFailedAttempts()),
-				user.getUsername());
+		return getText("Login.Failed");
 	}
 
 	private String setRedirectUrlPostLogin() throws Exception {
