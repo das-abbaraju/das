@@ -8,16 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
 public class OperatorTagAutocompleteService extends AbstractAutocompleteService<OperatorTag> {
 
-	@Autowired
-	private OperatorAccountDAO operatorDAO;
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 
@@ -27,14 +23,12 @@ public class OperatorTagAutocompleteService extends AbstractAutocompleteService<
 			return Collections.emptyList();
 		}
 
-		List<OperatorAccount> operators = operatorDAO.findWhere(OperatorAccount.class,
-				" t.name LIKE '%" + Strings.escapeQuotes(search) + "%'");		
-		if (CollectionUtils.isEmpty(operators)) {
+		List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, " t.tag LIKE '%" + Strings.escapeQuotes(search) + "%'");		
+		if (CollectionUtils.isEmpty(tags)) {
 			return Collections.emptyList();
 		}
 		
-		// TODO: This is just temporary to get this all working for DR, so we will just return the first Operator
-		return operatorTagDAO.findByOperator(operators.get(0).getId(), true);
+		return tags;
 	}
 
 	@Override
