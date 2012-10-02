@@ -76,7 +76,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-	private boolean usingDynamicReports=false;
+	private boolean usingDynamicReports = false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 
@@ -223,76 +223,16 @@ public class UsersManage extends PicsActionSupport {
 		}
 		// a contractor
 		if (user.getAccount().isContractor()) {
-			Set<OpPerms> userPerms = new HashSet<OpPerms>();
-			userPerms = new HashSet<OpPerms>();
-			for (UserAccess ua : user.getOwnedPermissions()) {
-				userPerms.add(ua.getOpPerm());
-			}
+			Set<OpPerms> userPerms = getUserPerms();
 
-			if (!userPerms.contains(OpPerms.ContractorAdmin)) {
-				if (conAdmin) {
-					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
-						addActionError(getTextParameterized("UsersManage.1-3AdminUsers",
-								OpPerms.ContractorAdmin.getDescription()));
-						return SUCCESS;
-					}
-					user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
-				}
-			} else {
-				if (!conAdmin) {
-					// We need both now to remove data from the useraccess
-					// database
-					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() > 1) {
-						removeUserAccess(OpPerms.ContractorAdmin);
-					} else {
-						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-								OpPerms.ContractorAdmin.getDescription()));
-					}
+			if (!userPerms.contains(OpPerms.ContractorAdmin) && conAdmin) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
+					addActionError(getTextParameterized("UsersManage.1-3AdminUsers",
+							OpPerms.ContractorAdmin.getDescription()));
+					return SUCCESS;
 				}
 			}
-
-			if (!userPerms.contains(OpPerms.ContractorBilling)) {
-				if (conBilling)
-					user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
-			} else {
-				if (!conBilling) {
-					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
-						removeUserAccess(OpPerms.ContractorBilling);
-					} else {
-						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-								OpPerms.ContractorBilling.getDescription()));
-					}
-
-				}
-			}
-
-			if (!userPerms.contains(OpPerms.ContractorSafety)) {
-				if (conSafety)
-					user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
-			} else {
-				if (!conSafety) {
-					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() > 1) {
-						removeUserAccess(OpPerms.ContractorSafety);
-					} else {
-						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-								OpPerms.ContractorSafety.getDescription()));
-					}
-				}
-			}
-
-			if (!userPerms.contains(OpPerms.ContractorInsurance)) {
-				if (conInsurance)
-					user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
-			} else {
-				if (!conInsurance) {
-					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() > 1) {
-						removeUserAccess(OpPerms.ContractorInsurance);
-					} else {
-						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
-								OpPerms.ContractorInsurance.getDescription()));
-					}
-				}
-			}
+			udpateUserRoles();
 
 			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
 				addActionError(getText("UsersManage.AddPermissionToUser"));
@@ -300,30 +240,8 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		// CSR shadowing
-		List<UserGroup> removeUserGroups = new ArrayList<UserGroup>();
-		if (shadowID == 0 || (user.getShadowedUser() != null && user.getShadowedUser().getId() != shadowID)) {
-			// Remove all non-groups from this user's groups
-			Iterator<UserGroup> iterator = user.getGroups().iterator();
-			while (iterator.hasNext()) {
-				UserGroup ug = iterator.next();
-				if (!ug.getGroup().isGroup()) {
-					removeUserGroups.add(ug);
-					iterator.remove();
-				}
-			}
-		}
+		updateShadowCSR();
 
-		if (shadowID > 0 && shadowID != user.getId()) {
-			User shadow = userDAO.find(shadowID);
-
-			UserGroup ug = new UserGroup();
-			ug.setUser(user);
-			ug.setGroup(shadow);
-			ug.setAuditColumns(permissions);
-			userGroupDAO.save(ug);
-		}
-		
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(sendActivationEmail(user, permissions));
@@ -351,10 +269,6 @@ public class UsersManage extends PicsActionSupport {
 			for (UserAccess userAccess : accessToBeRemoved) {
 				userAccessDAO.remove(userAccess);
 			}
-
-			for (UserGroup ug : removeUserGroups) {
-				userGroupDAO.remove(ug);
-			}
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
@@ -362,6 +276,99 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	private Set<OpPerms> getUserPerms() {
+		Set<OpPerms> userPerms = new HashSet<OpPerms>();
+		userPerms = new HashSet<OpPerms>();
+		for (UserAccess ua : user.getOwnedPermissions()) {
+			userPerms.add(ua.getOpPerm());
+		}
+		return userPerms;
+	}
+
+	private void udpateUserRoles() {
+		Set<OpPerms> userPerms = getUserPerms();
+
+		if (!userPerms.contains(OpPerms.ContractorAdmin) && conAdmin) {
+			user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
+		} else if (userPerms.contains(OpPerms.ContractorAdmin) && !conAdmin) {
+			removeUserRole(OpPerms.ContractorAdmin);
+		}
+
+		if (!userPerms.contains(OpPerms.ContractorBilling) && conBilling) {
+			user.addOwnedPermissions(OpPerms.ContractorBilling, permissions.getUserId());
+		} else if (userPerms.contains(OpPerms.ContractorBilling) && !conBilling) {
+			removeUserRole(OpPerms.ContractorBilling);
+		}
+
+		if (!userPerms.contains(OpPerms.ContractorSafety) && conSafety) {
+			user.addOwnedPermissions(OpPerms.ContractorSafety, permissions.getUserId());
+		} else if (userPerms.contains(OpPerms.ContractorSafety) && !conSafety) {
+			removeUserRole(OpPerms.ContractorSafety);
+		}
+
+		if (!userPerms.contains(OpPerms.ContractorInsurance) && conInsurance) {
+			user.addOwnedPermissions(OpPerms.ContractorInsurance, permissions.getUserId());
+		} else if (userPerms.contains(OpPerms.ContractorInsurance) && !conInsurance) {
+			removeUserRole(OpPerms.ContractorInsurance);
+		}
+	}
+
+	private void removeUserRole(OpPerms role) {
+		if (((ContractorAccount) account).getUsersByRole(role).size() > 1) {
+			removeUserAccess(role);
+		} else {
+			addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission", role.getDescription()));
+		}
+	}
+
+	private void updateShadowCSR() {
+		if (shadowID == 0) {
+			removeNonGroupUserGroups();
+		} else {
+			if (shadowID == user.getId()) {
+				addActionError("Cannot Shadow Yourself");
+			} else {
+				// shadowID selected
+				if (user.getShadowedUser() == null) {
+					// new shadow
+					addShadowUserGroup();
+				} else {
+					// existing shadow
+					if (shadowID != user.getShadowedUser().getId()) {
+						removeNonGroupUserGroups();
+						addShadowUserGroup();
+					}
+				}
+			}
+		}
+	}
+
+	private void addShadowUserGroup() {
+		User shadow = userDAO.find(shadowID);
+
+		UserGroup ug = new UserGroup();
+		ug.setUser(user);
+		ug.setGroup(shadow);
+		ug.setAuditColumns(permissions);
+		userGroupDAO.save(ug);
+	}
+
+	private void removeNonGroupUserGroups() {
+		List<UserGroup> removeUserGroups = new ArrayList<UserGroup>();
+		Iterator<UserGroup> iterator = user.getGroups().iterator();
+		while (iterator.hasNext()) {
+			UserGroup ug = iterator.next();
+			if (!ug.getGroup().isGroup()) {
+				removeUserGroups.add(ug);
+				iterator.remove();
+			}
+		}
+
+		for (UserGroup ug : removeUserGroups) {
+			userGroupDAO.remove(ug);
+		}
 	}
 
 	public String unlock() throws Exception {
@@ -386,7 +393,8 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getAccount().getUsers().size() == 1) {
 			addActionMessage(getText("UsersManage.CannotMoveUser"));
 
-			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user="
+					+ user.getId());
 		}
 
 		// accounts are different so we are moving to a new account
@@ -435,11 +443,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 		// is a contractor
 		if (user.getAccount().isContractor()) {
-			Set<OpPerms> userPerms = new HashSet<OpPerms>();
-			userPerms = new HashSet<OpPerms>();
-			for (UserAccess ua : user.getOwnedPermissions()) {
-				userPerms.add(ua.getOpPerm());
-			}
+			Set<OpPerms> userPerms = getUserPerms();
 
 			if (userPerms.contains(OpPerms.ContractorAdmin)) {
 				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() < 2) {
@@ -614,16 +618,10 @@ public class UsersManage extends PicsActionSupport {
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
 
-		// Users only after this point
-		User temp = new User(user, true);
-		userDAO.refresh(user);
-
-		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
-		if (hasduplicate)
+		boolean hasduplicate = userDAO.duplicateUsername(user.getUsername().trim(), user.getId());
+		if (hasduplicate) {
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
-
-		if (isSaveAction)
-			user = new User(temp, true);
+		}
 
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
@@ -642,7 +640,7 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
 			addActionError(getText("UsersManage.EnterValidEmail"));
 
-		if (user.getId() > 0) {
+		if (user.getId() > 0 && account.isContractor()) {
 			// Could not find an OpPerms type for the Primary User, so just
 			// using ContractorAccounts
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
@@ -1069,7 +1067,7 @@ public class UsersManage extends PicsActionSupport {
 	public void setNewUser(boolean newUser) {
 		this.newUser = newUser;
 	}
-	
+
 	public boolean isUsingDynamicReports() {
 		return usingDynamicReports;
 	}
@@ -1077,7 +1075,7 @@ public class UsersManage extends PicsActionSupport {
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
 	}
-	
+
 	public void removeUserAccess(OpPerms perm) {
 		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
 		while (permissions.hasNext()) {
@@ -1163,5 +1161,5 @@ public class UsersManage extends PicsActionSupport {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
-	
+
 }
