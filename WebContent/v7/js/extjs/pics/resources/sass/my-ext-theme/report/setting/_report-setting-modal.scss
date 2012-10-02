@@ -169,21 +169,29 @@
 	}
 }
 
-#report_settings_modal-body
+#report_share
 {
-	.icon-edit
-	{
-		color: #ccc;
-	}
-
-    .selected
-	{
-	   color: #A84D10;
-	}
-
 	strong
 	{
 		font-weight: bold;
+	}
+	
+	.selected-account
+	{
+		border: 1px solid #ccc;
+		@include border-radius(5px);
+		background-color: #f1f1f2;
+	}
+
+	.icon-edit
+	{
+		color: #ccc;
+		font-size: 22px;
+	}
+
+	.icon-edit.selected
+	{
+		color: #35c13d;
 	}
 }
 

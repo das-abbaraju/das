@@ -1,13 +1,16 @@
-Ext.define('PICS.view.report.settings.Share', {
+Ext.define('PICS.view.report.settings.share.ShareSettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingsshare'],
+
+    requires: [
+        'PICS.view.report.settings.share.ShareSearchBox'
+    ],
 
     border: 0,
     id: 'report_share',
     // custom config
     modal_title: 'Share Report',
     title: '<i class="icon-share icon-large"></i>Share',
-    
     initComponent: function () {
         this.callParent(arguments);
 
@@ -18,9 +21,6 @@ Ext.define('PICS.view.report.settings.Share', {
         } else {
             this.generateNonEditableSettings();
         }
-
-        this.addEvents('allow');
-        this.addEvents('disallow');
     },
 
     listeners: {
@@ -39,7 +39,30 @@ Ext.define('PICS.view.report.settings.Share', {
     },
 
     generateEditableSettings: function () {
-        this.addDocked({
+        this.add({
+            xtype: 'sharesearchbox',
+            width: 310,
+            margin: 10
+        },{
+            xtype: 'component',
+            margin: 10,
+            width: 310,
+            height: 50,
+            padding: 6,
+            border: 1,
+            baseCls: 'selected-account',
+            html: '<p><strong class="selected-account-name"></strong></p><p class="selected-account-at"></p>'
+        },{
+            xtype: 'displayfield',
+            fieldLabel: '<a href="javascript:;" class="edit"><i class="icon-edit"></i></a>',
+            labelWidth: 0,
+            margin: 20,
+            labelAlign: 'right',
+            labelSeparator: '',
+            value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
+        });
+
+        this.add({
             xtype: 'toolbar',
             defaults: {
                 margin: '0 0 0 5'
@@ -63,17 +86,8 @@ Ext.define('PICS.view.report.settings.Share', {
             ui: 'footer'
         });
 
-        this.add({
-            xtype: 'sharesearchbox'
-        },{
-            xtype: 'displayfield',
-            fieldLabel: '<a href="javascript:;" class="edit"><i class="icon-edit"></i></a>',
-            labelAlign: 'right',
-            labelSeparator: '',
-            value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
-        });
-
         this.layout = 'auto';
+        this.id = 'report_share'
     },
     
     generateNonEditableSettings: function () {
@@ -93,8 +107,5 @@ Ext.define('PICS.view.report.settings.Share', {
         } else {
             edit_icon.addCls('selected');
         }
-    },
-
-    onShareClick: function (event, target) {
     }
 });

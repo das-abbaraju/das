@@ -65,14 +65,47 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsettingsprint button[action=print]':  {
                 click: this.onReportModalPrintClick
+            },
+            
+            'reportsettingsmodal reportsettingsshare sharesearchbox': {
+                select: this.onReportModalSeachboxSelect,
+                specialkey: this.onReportModalSearchboxSpecialKey
             }
         });
 
         this.application.on({
             showsettingsmodal: this.showSettingsModal,
-            scope: this
+            scope: this,
         });
     },
+
+   showMoreResults: function (e, t, eOpts) {
+       var cmp = Ext.ComponentQuery.query('searchbox')[0];
+       var term = cmp.inputEl.getValue();
+
+       cmp.search(term);
+   },
+   
+   onReportModalSeachboxSelect: function (combo, records, eOpts) {
+       var post = records[0];
+
+       if (post) {
+           var name = escape(post.get('result_name'));
+           var at = escape(post.get('result_at'));
+
+           var el = this.get('.selected-account-name');
+           el.html = name;
+       }
+   },
+
+   onReportModalSearchboxSpecialKey: function (base, e, eOpts) {
+       if (e.getKey() === e.ENTER) {
+           var term = base.getValue();
+           this.search(term);
+       } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
+           base.collapse();
+       }
+   },
 
    onReportFavorite: function () {
         var store = this.getReportReportsStore(),
@@ -191,7 +224,13 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         modal.setTitle(title);
     },
+    
+    search: function (term) {
+        document.location = '/SearchBox.action?button=search&searchTerm=' + escape(term);
 
+        return false;
+    },
+    
     showSettingsModal: function (action) {
         var modal = Ext.create('PICS.view.report.settings.SettingsModal');
 
