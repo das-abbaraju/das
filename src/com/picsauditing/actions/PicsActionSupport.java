@@ -796,6 +796,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
 	 */
 	public boolean sessionCookieIsValidAndNotExpired() {
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			return true;
+		}
 		String sessionCookieValue = clientSessionCookieValue();
 		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			return false;
