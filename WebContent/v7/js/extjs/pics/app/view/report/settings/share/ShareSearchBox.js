@@ -11,25 +11,9 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
     hideTrigger: true,
     labelSeparator: '',
     labelWidth: 15,
-    listeners: {
-        afterrender: function (cmp, eOpts) {
-            this.mon(this.el,'click', cmp.search, this, {
-                delegate: '.more-results'
-            });                
-        }
-    },
     
     listConfig: {
         cls: 'site-menu-search-list',
-        /*
-        listeners: {
-            afterrender: function (cmp, eOpts) {
-                this.mon(this.el,'click', cmp.search, this, {
-                    delegate: '.more-results'
-                });
-            }
-        },
-        */
         loadingText: 'Searching...',
         maxHeight: 700,
         minWidth: 300,
@@ -49,27 +33,35 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
                             '</div>',
                         '</div>',
                     '</li>',
-                    '<tpl if="xindex == xcount">',
-                        '<li>',
-                            '<div class="search-item">',
-                                '<a href="#" class="more-results">',
-                                    'More Results...',
-                                '</a>',
-                            '</div>',
-                        '</li>',
-                    '</tpl>',
                 '</tpl>',
             '</ul>'
         ),
     },
 
+    // TO DO: Move this out to the controller.
+    listeners: {
+        select: function (combo, records, eOpts) {
+            var post = records[0];
+
+            if (post) {
+                var account = {
+                                name: post.get('result_name'),
+                                at: post.get('result_at')
+                              };
+
+                var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
+                cmp.update(account);
+            }
+        }
+    },
+    
     minChars: 1,
     name: 'search_term',
     pickerAlign: 'br',
     pickerOffset: [-305, 2],
     queryMode: 'remote',
     queryParam: 'q',
-    valueField: 'q',
+
     store: {
         fields: [
             'result_type',
@@ -87,5 +79,7 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
             }
         }
     },
-    width: 325 
+    
+    valueField: 'q',
+    width: 325
 });

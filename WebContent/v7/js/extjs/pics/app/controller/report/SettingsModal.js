@@ -90,15 +90,18 @@ Ext.define('PICS.controller.report.SettingsModal', {
        var post = records[0];
 
        if (post) {
-           var name = escape(post.get('result_name'));
-           var at = escape(post.get('result_at'));
+           var account = {
+                           name: post.get('result_name'),
+                           at: post.get('result_at')
+                         };
 
-           var el = this.get('.selected-account-name');
-           el.html = name;
+           var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
+           cmp.update(account);
        }
    },
-
+   
    onReportModalSearchboxSpecialKey: function (base, e, eOpts) {
+       console.log('specialkey');
        if (e.getKey() === e.ENTER) {
            var term = base.getValue();
            this.search(term);
@@ -223,12 +226,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
             title = cmp.getActiveTab().modal_title;
 
         modal.setTitle(title);
-    },
-    
-    search: function (term) {
-        document.location = '/SearchBox.action?button=search&searchTerm=' + escape(term);
-
-        return false;
     },
     
     showSettingsModal: function (action) {

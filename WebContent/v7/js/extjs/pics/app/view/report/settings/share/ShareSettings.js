@@ -11,6 +11,7 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
     // custom config
     modal_title: 'Share Report',
     title: '<i class="icon-share icon-large"></i>Share',
+    
     initComponent: function () {
         this.callParent(arguments);
 
@@ -31,9 +32,6 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
                 this.mon(this.el,'click', this.onAllowEditClick, this, {
                     delegate: '.icon-edit'
                 });
-                this.mon(this.el,'click', this.onAllowEditClick, this, {
-                    delegate: '.share-button'
-                });
             }
         }
     },
@@ -51,10 +49,18 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
             padding: 6,
             border: 1,
             baseCls: 'selected-account',
-            html: '<p><strong class="selected-account-name"></strong></p><p class="selected-account-at"></p>'
+            tpl: Ext.create('Ext.XTemplate',
+                            '<p>',
+                                '<strong class="selected-account-name">{name}</strong>',
+                            '</p>',
+                            '<p class="selected-account-at">',
+                                '{at}',
+                            '</p>'
+                           ),
+            id: 'selected_account'
         },{
             xtype: 'displayfield',
-            fieldLabel: '<a href="javascript:;" class="edit"><i class="icon-edit"></i></a>',
+            fieldLabel: '<i class="icon-edit"></i>',
             labelWidth: 0,
             margin: 20,
             labelAlign: 'right',
@@ -98,7 +104,7 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
 
         this.id = 'share_no_permission';
     },
-
+    
     onAllowEditClick: function (event, target) {
         var edit_icon = Ext.fly(target);
         
@@ -107,5 +113,11 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
         } else {
             edit_icon.addCls('selected');
         }
+    },
+
+    update: function (account) {
+        var c = this.down('#selected_account');
+        c.update(account);
+        this.callParent([account]);
     }
 });
