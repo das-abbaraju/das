@@ -108,6 +108,16 @@ public class LoginController extends PicsActionSupport {
 		return "overlay";
 	}
 
+	/**
+	 * Result when user changes language on login page.
+	 */
+	@Anonymous
+	// TODO Change login modal to this form as well
+	public String loginform() {
+		setRedirect(true);
+		return "loginform";
+	}
+
 	public String confirm() {
 		try {
 			user = userDAO.findName(username);
