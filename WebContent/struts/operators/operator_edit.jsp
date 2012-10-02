@@ -425,7 +425,19 @@
 						</s:if>
 					</ol>
 				</fieldset>
-				
+				<fieldset class="form">
+					<h2 class="formLegend">
+						<s:text name="FacilitiesEdit.Security" />
+					</h2>
+					<ol>
+						<li>
+							<s:textfield name="operator.sessionTimeout" theme="formhelp" />
+						</li>
+						<li>
+							<s:textfield name="operator.rememberMeTime" theme="formhelp" />
+						</li>
+					</ol>
+				</fieldset>
 				<s:if test="permissions.admin">
 					<fieldset class="form">
 						<h2 class="formLegend">Configuration</h2>

@@ -57,8 +57,10 @@ public class LoginController extends PicsActionSupport {
 	private String password;
 	private String key;
 	private int switchToUser;
+	private boolean rememberMe;
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	private static final int MAX_FAILED_ATTEMPTS = 6;
 
 	@Anonymous
 	@Override
@@ -203,8 +205,8 @@ public class LoginController extends PicsActionSupport {
 		ActionContext.getContext().getSession().put("permissions", permissions);
 	}
 
-	private Permissions permission(){
-		if (permissionsForTest == null){
+	private Permissions permission() {
+		if (permissionsForTest == null) {
 			permissionsForTest = new Permissions();
 		}
 		return permissionsForTest;
@@ -236,8 +238,8 @@ public class LoginController extends PicsActionSupport {
 		permissions.login(user);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
-		
-		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE) && rememberMe) {
 			addClientSessionCookieToResponse();
 		}
 
@@ -262,7 +264,7 @@ public class LoginController extends PicsActionSupport {
 		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
-	
+
 	private String sessionCookieContent() {
 		SessionCookie sessionCookie = new SessionCookie();
 		Date now = new Date();
@@ -282,44 +284,46 @@ public class LoginController extends PicsActionSupport {
 			user = null;
 		}
 
-		if (user == null){
-			return getText("Login.Failed");
+		if (user == null) {
+			return getText("Login.PasswordIncorrect");
 		}
-		if (Strings.isEmpty(key)) {
-			// After this point we should always have a user
-			if (!user.isEncryptedPasswordEqual(password)) {
-				return passwordIsIncorrect();
-			}
-			if (user.getAccount().isOperatorCorporate()) {
-				if (!user.getAccount().getStatus().isActiveDemo()) {
-					return getTextParameterized("Login.NoLongerActive", user.getAccount().getName());
-				}
-			}
-			if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted()) {
-				return getTextParameterized("Login.AccountDeleted", user.getAccount().getName());
-			}
-			if (user.getIsActive() != YesNo.Yes) {
-				return getTextParameterized("Login.AccountNotActive", user.getAccount().getName());
-			}
-			if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
-				Date now = new Date();
-				long diff = user.getLockUntil().getTime() - now.getTime();
-				int minutes = (int) (diff / (1000 * 60));
-
-				return getTextParameterized("Login.TooManyFailedAttempts", minutes);
-			}
-		} else {
+		if (Strings.isNotEmpty(key)) {
 			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
 				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
 			}
 		}
+		if (user.isLocked()) {
+			return getTextParameterized("Login.TooManyFailedAttempts");
+		}
+		if (!user.isEncryptedPasswordEqual(password)) {
+			return passwordIsIncorrect();
+		}
+
+		if (!isUserActive()) {
+			return getTextParameterized("Login.AccountNotActive");
+		}
+
 		return "";
+	}
+
+	private boolean isUserActive() {
+		if (user.getAccount().isOperatorCorporate()) {
+			if (!user.getAccount().getStatus().isActiveDemo()) {
+				return false;
+			}
+		}
+		if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted()) {
+			return false;
+		}
+		if (user.getIsActive() != YesNo.Yes) {
+			return false;
+		}
+		return true;
 	}
 
 	private String passwordIsIncorrect() {
 		user.setFailedAttempts(user.getFailedAttempts() + 1);
-		// TODO parameterize this 7 here
-		if (user.getFailedAttempts() > 7) {
+		if (user.getFailedAttempts() > MAX_FAILED_ATTEMPTS) {
 			// Lock this user out for 1 hour
 			Calendar calendar = Calendar.getInstance();
 			calendar.add(Calendar.HOUR, 1);
@@ -327,7 +331,7 @@ public class LoginController extends PicsActionSupport {
 			user.setLockUntil(calendar.getTime());
 			return getTextParameterized("Login.PasswordIncorrectAccountLocked", user.getUsername());
 		}
-		return getText("Login.Failed");
+		return getText("Login.PasswordIncorrect");
 	}
 
 	private String setRedirectUrlPostLogin() throws Exception {
@@ -486,5 +490,13 @@ public class LoginController extends PicsActionSupport {
 		if (redirect) {
 			addActionMessage(getText("Login.Redirect"));
 		}
+	}
+
+	public boolean isRememberMe() {
+		return rememberMe;
+	}
+
+	public void setRememberMe(boolean rememberMe) {
+		this.rememberMe = rememberMe;
 	}
 }

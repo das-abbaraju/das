@@ -100,6 +100,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected TimeZone timezone;
 	protected boolean autoApproveRelationships = true;
 	protected boolean generalContractor = false;
+	private Integer sessionTimeout = 60;
+	private Integer rememberMeTime;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -965,4 +967,27 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public boolean isRemoved() {
 		return (status == AccountStatus.Deactivated || status == AccountStatus.Deleted);
 	}
+
+	/**
+	 * 	In minutes
+	 */
+	public int getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(Integer sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
+	}
+
+	/**
+	 * In days
+	 */
+	public Integer getRememberMeTime() {
+		return rememberMeTime;
+	}
+
+	public void setRememberMeTime(Integer rememberMeTime) {
+		this.rememberMeTime = rememberMeTime;
+	}
+
 }
