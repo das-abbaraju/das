@@ -774,7 +774,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return (sessionCookie == null) ? 0 : sessionCookie.getUserID();
 	}
 
-	private int getClientSessionUserID() {
+	protected int getClientSessionUserID() {
 		SessionCookie sessionCookie = validSessionCookie();
 		if (sessionCookie == null) {
 			return 0;
@@ -788,7 +788,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
-	private boolean isRememberMe() {
+	protected boolean isRememberMeSetInCookie() {
 		SessionCookie sessionCookie = validSessionCookie();
 		if (sessionCookie == null) {
 			return false;
@@ -817,7 +817,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		String sessionCookieValue = clientSessionCookieValue();
 		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			return false;
-		} else if (isRememberMe()) {
+		} else if (isRememberMeSetInCookie()) {
 			return true;
 		} else {
 			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
@@ -891,7 +891,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
 			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent(sessionCookie));
 			int maxAge = SESSION_COOKIE_AGE;
-			if (permissions != null && isRememberMe()) {
+			if (permissions != null && isRememberMeSetInCookie()) {
 				maxAge = permissions.getRememberMeTimeInSeconds();
 			}
 			cookie.setMaxAge(maxAge);

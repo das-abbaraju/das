@@ -63,7 +63,12 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-			return SUCCESS;
+			if (sessionCookieIsValidAndNotExpired()) {
+				switchToUser = getClientSessionUserID();
+				return switchTo();
+			} else {
+				return SUCCESS;
+			}
 		} else if ("confirm".equals(button)) {
 			return confirm();
 		} else if ("logout".equals(button)) {
@@ -248,7 +253,7 @@ public class LoginController extends PicsActionSupport {
 		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
 			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent());
 			int maxAge = SESSION_COOKIE_AGE;
-			if (permissions != null && rememberMe) {
+			if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
 				maxAge = permissions.getRememberMeTimeInSeconds();
 			}
 			cookie.setMaxAge(maxAge);
