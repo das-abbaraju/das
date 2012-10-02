@@ -39,7 +39,7 @@ public class ContractorTable extends AbstractTable {
 		requestedBy.setMinimumImportance(FieldImportance.Required);
 		requestedBy.setCategory(FieldCategory.RequestingClientSite);
 
-		addOptionalKey(new ReportForeignKey(Watch, new ContractorWatch(), new ReportOnClause("id", "conID",
+		addOptionalKey(new ReportForeignKey(Watch, new ContractorWatchTable(), new ReportOnClause("id", "conID",
 				ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID)));
 
 		addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",

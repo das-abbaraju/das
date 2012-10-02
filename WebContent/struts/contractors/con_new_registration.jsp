@@ -418,42 +418,6 @@
 		
 		<div style="display: none" id="load"></div>
 		
-		<s:if test="formsViewable && forms.size() > 0">
-			<div id="hidden">
-				<div id="operatorForms">
-					<table class="report">
-						<thead>
-							<tr>
-								<th colspan="2">
-									<s:text name="ManageForms.title" />
-								</th>
-								<th>
-									<s:text name="global.Facility" />
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							<s:iterator value="forms" status="stat">
-								<tr>
-									<td class="right">
-										<s:property value="#stat.index + 1" />
-									</td>
-									<td>
-										<a href="#" data-formname="<s:property value="formName" />" data-file="<s:property value="file" />" class="addForm">
-											<s:property value="formName" />
-										</a>
-									</td>
-									<td>
-										<s:property value="account.name" />
-									</td>
-								</tr>
-							</s:iterator>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</s:if>
-		
 		<div class="blockMsg" id="phoneSubmit">
 			<s:form>
 				<h3>

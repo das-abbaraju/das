@@ -12,7 +12,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 import com.picsauditing.util.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 

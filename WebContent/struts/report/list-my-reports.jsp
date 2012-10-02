@@ -21,16 +21,16 @@
     <s:param name="direction">${dateAddedSortDirection}</s:param>
 </s:url>
 
-<s:url action="ManageReports" method="myReportsList" var="last_opened_sort_url">
-    <s:param name="sort">${lastOpenedSort}</s:param>
-    <s:param name="direction">${lastOpenedSortDirection}</s:param>
+<s:url action="ManageReports" method="myReportsList" var="last_viewed_sort_url">
+    <s:param name="sort">${lastViewedSort}</s:param>
+    <s:param name="direction">${lastViewedSortDirection}</s:param>
 </s:url>
 
 <div id="my_reports_filter">
     <div class="btn-group">
         <a href="${alpha_sort_url}" class="btn"><s:text name="ManageReports.myReports.alphabetical" /></a>
         <a href="${date_added_sort_url}" class="btn"><s:text name="ManageReports.myReports.dateAdded" /></a>
-        <a href="${last_opened_sort_url}" class="btn"><s:text name="ManageReports.myReports.lastOpened" /></a>
+        <a href="${last_viewed_sort_url}" class="btn"><s:text name="ManageReports.myReports.lastViewed" /></a>
     </div>
 </div>
 

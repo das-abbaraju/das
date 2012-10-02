@@ -59,7 +59,7 @@ Ext.define('PICS.model.report.Column', {
                 grid_column.align = 'center';
                 grid_column.renderer = function (value) {
                     if (value) {
-                        return '<img src="images/tick.png" width="16" height="16" />';
+                        return '<i class="icon-ok"></i>';
                     }
 
                     return '';

@@ -22,9 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -435,10 +435,10 @@ public class Cron extends PicsActionSupport {
 	private void sendEmailPendingAccounts() throws Exception {
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
 
-		String where = "a.country IN ('US','CA') AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
+		String where = "a.country IN ('US','CA') AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 		
 		if (!emailExclusionList.isEmpty())
-			where = "u.email NOT IN (" + exclude + ") AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
+			where = "u.email NOT IN (" + exclude + ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL)AND ";
 		
 		String whereReminder = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 WEEK)";

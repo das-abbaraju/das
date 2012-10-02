@@ -1,4 +1,4 @@
-Ext.define('Ext.ux.util.FilterMultipleColumn', {
+Ext.define('PICS.ux.util.FilterMultipleColumn', {
     extend: 'Ext.util.Filter',
     
     createFilterFn: function () {

@@ -17,7 +17,8 @@ public class ResetSelenium extends PicsActionSupport {
 	private List<Integer> accountsSelectedForDeletion;
 	private List<Integer> usersSelectedForDeletion;
 	private List<Integer> employeesSelectedForDeletion;
-	@Autowired private SeleniumDAO SD;
+	@Autowired
+	private SeleniumDAO seleniumDao;
 
 	@Anonymous
 	public String execute() {
@@ -29,29 +30,33 @@ public class ResetSelenium extends PicsActionSupport {
 	public String delete() throws Exception {
 		establishAccountsAvailableForDeletion();
 
-		if (null != userSpecifiedAccount)
+		if (null != userSpecifiedAccount) {
 			deleteSingleAccount(userSpecifiedAccount);
-		else
+		} else {
 			performMultipleDeletion();
+		}
 
 		return setUrlForRedirect("ResetSelenium.action");
 	}
 
 	@Anonymous
 	public String deleteAll() throws Exception {
-		SD.delete(SD.availableTestingReferences());
+		seleniumDao.delete(seleniumDao.availableTestingReferences());
 		return setUrlForRedirect("ResetSelenium.action");
 	}
 
 	private void performMultipleDeletion() throws Exception {
 		List<SeleniumDeletable> deletables = new ArrayList<SeleniumDeletable>();
-		for (SeleniumDeletable deletable : accountsInDB)
+		for (SeleniumDeletable deletable : accountsInDB) {
 			if ((deletable.IDisIn(accountsSelectedForDeletion) && deletable.isAnAccount())
 					|| (deletable.IDisIn(employeesSelectedForDeletion) && deletable.isAnEmployee())
-					|| (deletable.IDisIn(usersSelectedForDeletion) && deletable.isUser()))
+					|| (deletable.IDisIn(usersSelectedForDeletion) && deletable.isUser())) {
 				deletables.add(deletable);
-
-		if (!deletables.isEmpty()) SD.delete(deletables);
+			}
+		}
+		if (!deletables.isEmpty()) {
+			seleniumDao.delete(deletables);
+		}
 	}
 
 	private void deleteSingleAccount(String name) throws Exception {
@@ -59,14 +64,15 @@ public class ResetSelenium extends PicsActionSupport {
 			if (account.getName().equalsIgnoreCase(name)) {
 				List<SeleniumDeletable> deleteMe = new ArrayList<SeleniumDeletable>();
 				deleteMe.add(account);
-				SD.delete(deleteMe);
+				seleniumDao.delete(deleteMe);
 				return;
 			}
 	}
 
 	private void establishAccountsAvailableForDeletion() {
-		if (null == accountsInDB || accountsInDB.isEmpty())
-			accountsInDB = SD.availableTestingReferences();
+		if (null == accountsInDB || accountsInDB.isEmpty()) {
+			accountsInDB = seleniumDao.availableTestingReferences();
+		}
 	}
 
 	public List<SeleniumDeletable> getDBAccounts() {
@@ -89,7 +95,7 @@ public class ResetSelenium extends PicsActionSupport {
 		userSpecifiedAccount = account;
 	}
 	
-	private void setSeleniumDAO(SeleniumDAO SD) {
-		this.SD = SD;
+	private void setSeleniumDAO(SeleniumDAO seleniumDao) {
+		this.seleniumDao = seleniumDao;
 	}
 }

@@ -19,8 +19,7 @@ import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -57,7 +56,6 @@ import com.picsauditing.util.URLUtils;
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
-
 	protected static Boolean CONFIG = null;
 
 	public static final String PLAIN_TEXT = "plain-text";
@@ -174,6 +172,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public boolean isQaEnvironment() {
 		return getRequestHost().contains("qa-stable") || getRequestHost().contains("qa-beta");
 	}
+
 	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
@@ -340,21 +339,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return null;
 		}
 	}
+
 	protected String apiKey;
 
-
-	public boolean isApiUser()  {
+	public boolean isApiUser() {
 		if (apiKey == null) {
 			return false;
 		}
 		User user = getUser();
-		
+
 		if (user != null && apiKey.equals(user.getApiKey())) {
 			// the user with this API key is already logged in
 			return true;
 		}
 		user = userDAO.findByApiKey(apiKey);
-		
+
 		// Log in as that user
 		Permissions permissions = null;
 		if (ActionContext.getContext().getSession() == null) {
@@ -375,7 +374,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 		return true;
-	
+
 	}
 
 	public Account getAccount() {
@@ -579,7 +578,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 
-		ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		try {
+			ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		} catch (Exception exception) {
+			// Most likely thrown during testing
+			Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
+			logger.error("Error getting ftp dir", exception);
+		}
+
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
@@ -26,6 +26,8 @@ import com.picsauditing.util.Strings;
  */
 public class Field implements JSONAware {
 
+	private static final Pattern FIELD_VARIABLE_PATTERN = Pattern.compile("\\{(\\w+)\\}");
+	
 	private FieldCategory category = FieldCategory.General;
 	private FilterType filterType = FilterType.String;
 	private String name;
@@ -93,10 +95,13 @@ public class Field implements JSONAware {
 
 		if (width > 0)
 			json.put("width", width);
+		
 		if (visible)
 			json.put("visible", visible);
+		
 		if (filterable)
 			json.put("filterable", filterable);
+		
 		if (sortable)
 			json.put("sortable", sortable);
 
@@ -198,8 +203,7 @@ public class Field implements JSONAware {
 	public Set<String> getDependentFields() {
 		Set<String> dependent = new HashSet<String>();
 		if (!Strings.isEmpty(url)) {
-			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}");
-			Matcher urlFieldMatcher = fieldVariablePattern.matcher(url);
+			Matcher urlFieldMatcher = FIELD_VARIABLE_PATTERN.matcher(url);
 
 			while (urlFieldMatcher.find()) {
 				dependent.add(urlFieldMatcher.group(1));

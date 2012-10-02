@@ -1,28 +1,37 @@
 package com.picsauditing.model;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.reflection.Whitebox.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.picsauditing.EntityFactory;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportPermissionAccountDAO;
+import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportPermissionAccount;
+import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -30,21 +39,28 @@ public class ReportModelTest {
 
 	private ReportModel reportModel;
 
-	@Mock private ReportDAO reportDao;
-	@Mock private ReportUserDAO reportUserDao;
-	@Mock private User user;
-	@Mock private Report report;
-	@Mock private ReportUser userReport;
-	@Mock private BasicDynaBean dynaBean;
+	@Mock
+	private ReportDAO reportDao;
+	@Mock
+	private ReportUserDAO reportUserDao;
+	@Mock
+	private ReportPermissionUserDAO reportPermissionUserDao;
+	@Mock
+	private ReportPermissionAccountDAO reportPermissionAccountDao;
+	@Mock
+	private User user;
+	@Mock
+	private Account account;
+	@Mock
+	private Report report;
+	@Mock
+	private ReportPermissionUser reportPermissionUser;
 
-	private Pagination<ReportUser> pagination;
+	private Pagination<Report> pagination;
 
-	private final int REPORT_ID = 37;
-	private final String REPORT_NAME = "My Report";
-	private final String REPORT_DESCRIPTION = "This is a report";
+	private final int REPORT_ID = 29;
 	private final int USER_ID = 23;
-	private final String USER_NAME = "User Name";
-	private final int NUM_TIMES_FAVORITED = 10;
+	private final int ACCOUNT_ID = 23;
 
 	@Before
 	public void setUp() throws Exception {
@@ -53,9 +69,12 @@ public class ReportModelTest {
 
 		setInternalState(reportModel, "reportDao", reportDao);
 		setInternalState(reportModel, "reportUserDao", reportUserDao);
+		setInternalState(reportModel, "reportPermissionUserDao", reportPermissionUserDao);
+		setInternalState(reportModel, "reportPermissionAccountDao", reportPermissionAccountDao);
 
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
+		when(account.getId()).thenReturn(ACCOUNT_ID);
 	}
 
 	@Test
@@ -69,72 +88,41 @@ public class ReportModelTest {
 	}
 
 	@Test
-	public void canUserViewAndCopy_TrueIfPublicReport() {
-		when(report.isPublic()).thenReturn(true);
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-
-		assertTrue(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
-	}
-
-	@Test
-	public void canUserViewAndCopy_FalseIfPrivateReportNoAssociationWithUser() {
-		when(report.isPublic()).thenReturn(false);
-		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(null);
-
-		assertFalse(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
-	}
-
-	@Test
 	public void canUserViewAndCopy_TrueIfAssociationWithUser() {
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(new ReportUser());
+		when(reportPermissionUserDao.findOne(0, REPORT_ID)).thenReturn(new ReportPermissionUser());
 
-		assertTrue(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
+		Permissions makePermission = EntityFactory.makePermission(new User(USER_ID));
+		assertTrue(reportModel.canUserViewAndCopy(makePermission, REPORT_ID));
 	}
 
 	@Test
 	public void canUserViewAndCopy_FalseIfNoResultException() {
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 
-		assertFalse(reportModel.canUserViewAndCopy(USER_ID, REPORT_ID));
+		assertFalse(reportModel.canUserViewAndCopy(EntityFactory.makePermission(), REPORT_ID));
 	}
 
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 
 		assertFalse(reportModel.canUserEdit(USER_ID, report));
 	}
 
 	@Test
 	public void canUserEdit_FalseIfNoEditPermission() {
-		when(userReport.isEditable()).thenReturn(false);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(userReport);
+		when(reportPermissionUser.isEditable()).thenReturn(false);
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
 		assertFalse(reportModel.canUserEdit(USER_ID, report));
 	}
 
 	@Test
 	public void canUserEdit_TrueIfEditPermission() {
-		when(userReport.isEditable()).thenReturn(true);
-		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(userReport);
+		when(reportPermissionUser.isEditable()).thenReturn(true);
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
 		assertTrue(reportModel.canUserEdit(USER_ID, report));
-	}
-
-	@Test
-	public void canUserDelete_FalseIfNotCreatedByUser() {
-		User otherUser = mock(User.class);
-		when(report.getCreatedBy()).thenReturn(otherUser);
-
-		assertFalse(ReportModel.canUserDelete(USER_ID, report));
-	}
-
-	@Test
-	public void canUserDelete_TrueIfCreatedByUser() {
-		when(report.getCreatedBy()).thenReturn(user);
-
-		assertTrue(ReportModel.canUserDelete(USER_ID, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -171,65 +159,68 @@ public class ReportModelTest {
 	}
 
 	@Test
-	public void testGetUserReportsForSearch_NullSearchTermCallsTopTenFavorites() {
-		List<ReportUser> userReports = reportModel.getUserReportsForSearch(null, 0, pagination);
+	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
+		List<Report> reports = reportModel.getReportsForSearch(null, EntityFactory.makePermission(), pagination);
 
-		assertNotNull(userReports);
-		verify(reportUserDao).findTenMostFavoritedReports(anyInt());
+		assertNotNull(reports);
+		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyInt());
 	}
 
 	@Test
-	public void testGetUserReportsForSearch_BlankSearchTermCallsTopTenFavorites() {
-		List<ReportUser> userReports = reportModel.getUserReportsForSearch("", 0, pagination);
+	public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
+		List<Report> reports = reportModel.getReportsForSearch("", EntityFactory.makePermission(), pagination);
 
-		assertNotNull(userReports);
-		verify(reportUserDao).findTenMostFavoritedReports(anyInt());
+		assertNotNull(reports);
+		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyInt());
 	}
 
 	// TODO add new tests for paging
-//	@Test
-//	public void testGetUserReportsForSearch_ValidSearchTermCallsFindReportsForSearchFilter() {
-//		List<ReportUser> userReports = reportModel.getUserReportsForSearch("SEARCH_TERM", 0);
-//
-//		assertNotNull(userReports);
-//		verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
-//	}
+	// @Test
+	// public void
+	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
+	// {
+	// List<ReportUser> reportUsers =
+	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	//
+	// assertNotNull(reportUsers);
+	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
+	// }
 
-	@Test
-	public void testPopulateUserReports_NoResultsReturnsEmptyList() {
-		List<BasicDynaBean> emptyResults = new ArrayList<BasicDynaBean>();
+	// TODO add new tests for paging
+	// @Test
+	// public void
+	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
+	// {
+	// List<ReportUser> reportUsers =
+	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	//
+	// assertNotNull(reportUsers);
+	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
+	// }
 
-		List<ReportUser> userReports = ReportModel.populateUserReports(emptyResults);
+	// TODO add new tests for paging
+	// @Test
+	// public void
+	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
+	// {
+	// List<ReportUser> reportUsers =
+	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	//
+	// assertNotNull(reportUsers);
+	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
+	// }
 
-		assertNotNull(userReports);
-		assertEquals(0, userReports.size());
-	}
-
-	@Test
-	public void testPopulateUserReports_ResultsPopulateCorrectly() {
-		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
-		when(dynaBean.get("id")).thenReturn(REPORT_ID);
-		when(dynaBean.get("name")).thenReturn(REPORT_NAME);
-		when(dynaBean.get("description")).thenReturn(REPORT_DESCRIPTION);
-		when(dynaBean.get("userId")).thenReturn(USER_ID);
-		when(dynaBean.get("userName")).thenReturn(USER_NAME);
-		when(dynaBean.get("numTimesFavorited")).thenReturn(NUM_TIMES_FAVORITED);
-		results.add(dynaBean);
-
-		List<ReportUser> userReports = ReportModel.populateUserReports(results);
-		ReportUser userReport = userReports.get(0);
-		Report report = userReport.getReport();
-		User user = report.getCreatedBy();
-
-		assertNotNull(userReports);
-		assertEquals(1, userReports.size());
-		assertEquals(REPORT_ID, report.getId());
-		assertEquals(REPORT_NAME, report.getName());
-		assertEquals(REPORT_DESCRIPTION, report.getDescription());
-		assertEquals(USER_ID, user.getId());
-		assertEquals(USER_NAME, user.getName());
-		assertEquals(NUM_TIMES_FAVORITED, report.getNumTimesFavorited());
-	}
+	// TODO add new tests for paging
+	// @Test
+	// public void
+	// testGetReportUsersForSearch_ValidSearchTermCallsFindReportsForSearchFilter()
+	// {
+	// List<ReportUser> reportUsers =
+	// reportModel.getReportUsersForSearch("SEARCH_TERM", 0);
+	//
+	// assertNotNull(reportUsers);
+	// verify(reportUserDao).findAllForSearchFilter(anyInt(), anyString());
+	// }
 
 	@Ignore
 	@Test
@@ -244,24 +235,49 @@ public class ReportModelTest {
 	}
 
 	@Test
-	public void testConnectReportToUser() {
-		ReportUser userReport = reportModel.connectReportToUser(report, USER_ID);
+	public void testConnectReportUser() {
+		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
+		ReportUser reportUser = reportModel.connectReportUser(USER_ID, REPORT_ID);
 
-		verify(reportUserDao).save(userReport);
-		assertEquals(REPORT_ID, userReport.getReport().getId());
-		assertEquals(USER_ID, userReport.getUser().getId());
-		assertFalse(userReport.isEditable());
-		assertFalse(userReport.isFavorite());
+		verify(reportUserDao).save(reportUser);
+		assertEquals(REPORT_ID, reportUser.getReport().getId());
+		assertEquals(USER_ID, reportUser.getUser().getId());
+		assertFalse(reportUser.isFavorite());
 	}
 
 	@Test
-	public void testConnectReportToUserEditable() {
-		ReportUser userReport = reportModel.connectReportToUserEditable(report, USER_ID);
+	public void testConnectReportPermissionUser() {
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(USER_ID, REPORT_ID, false);
 
-		verify(reportUserDao).save(userReport);
-		assertEquals(REPORT_ID, userReport.getReport().getId());
-		assertEquals(USER_ID, userReport.getUser().getId());
-		assertTrue(userReport.isEditable());
-		assertFalse(userReport.isFavorite());
+		verify(reportPermissionUserDao).save(reportPermissionUser);
+		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
+		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
+		assertFalse(reportPermissionUser.isEditable());
+	}
+
+	@Test
+	public void testConnectReportPermissionUserEditable() {
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(USER_ID, REPORT_ID, true);
+
+		verify(reportPermissionUserDao).save(reportPermissionUser);
+		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
+		assertEquals(USER_ID, reportPermissionUser.getUser().getId());
+		assertTrue(reportPermissionUser.isEditable());
+	}
+
+	@Test
+	public void testConnectReportPermissionAccount() {
+		when(reportPermissionAccountDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
+		ReportPermissionAccount reportPermissionAccount = reportModel.connectReportPermissionAccount(ACCOUNT_ID, REPORT_ID, EntityFactory.makePermission());
+
+		verify(reportPermissionAccountDao).save(reportPermissionAccount);
+		assertEquals(REPORT_ID, reportPermissionAccount.getReport().getId());
+		assertEquals(ACCOUNT_ID, reportPermissionAccount.getAccount().getId());
 	}
 }

@@ -126,7 +126,7 @@ public class ReportDynamicTest {
 	@Test
 	@Ignore
 	public void testExecute_NullReportUserDoesNotHavePermissionToViewAndCopy() throws Exception {
-		when(reportModel.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
+		when(reportModel.canUserViewAndCopy(permissions, anyInt())).thenReturn(false);
 		reportDynamic.setReport(null);
 
 		String strutsResult = reportDynamic.execute();

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
+import com.picsauditing.actions.autocomplete.ReportFilterAutocompleterFactory;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.fields.Field;
@@ -18,7 +18,7 @@ import com.picsauditing.util.Strings;
 public class ReportDynamicAutocomplete extends PicsActionSupport {
 
 	@Autowired
-	private ReportFilterAutocompleter reportFilterAutocompleter;
+	private ReportFilterAutocompleterFactory reportFilterAutocompleter;
 
 	// TODO: why does this require a report?
 	private Report report;

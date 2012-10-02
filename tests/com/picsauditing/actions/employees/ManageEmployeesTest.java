@@ -15,38 +15,28 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.employees.ManageEmployees.EmployeeMissingTasks;
+import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
@@ -68,47 +58,29 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.UserStatus;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ManageEmployees.class, ActionContext.class, I18nCache.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class ManageEmployeesTest {
+public class ManageEmployeesTest extends PicsActionTest {
 	private ManageEmployees manageEmployees;
 
 	@Mock
-	private ActionContext actionContext;
-	@Mock
 	private EmployeeDAO employeeDAO;
-	@Mock
-	private EntityManager entityManager;
-	@Mock
-	private I18nCache i18nCache;
 	@Mock
 	private JobSiteTaskDAO jobSiteTaskDAO;
 	@Mock
-	private Permissions permissions;
+	private AccountDAO accountDAO;
+	@Mock
+	private NoteDAO noteDao;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-
 		manageEmployees = new ManageEmployees();
+		super.setUp(manageEmployees);
 
-		PicsTestUtil picsTestUtil = new PicsTestUtil();
-		picsTestUtil.autowireEMInjectedDAOs(manageEmployees, entityManager);
-
-		Whitebox.setInternalState(manageEmployees, "employeeDAO", employeeDAO);
-		Whitebox.setInternalState(manageEmployees, "i18nCache", i18nCache);
-		Whitebox.setInternalState(manageEmployees, "permissions", permissions);
-
-		when(I18nCache.getInstance()).thenReturn(i18nCache);
-		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("Text");
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(manageEmployees, this);
 	}
 
 	@Test(expected = NoRightsException.class)
 	public void testPrepare_ContractorWithoutAdminPermission() throws Exception {
-		PowerMockito.mockStatic(ActionContext.class);
-
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.hasPermission(OpPerms.ContractorAdmin)).thenReturn(false);
 
@@ -173,17 +145,10 @@ public class ManageEmployeesTest {
 
 	@Test
 	public void testFindAccount_ID() {
-		PowerMockito.mockStatic(ActionContext.class);
-
-		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("id", new String[] { "123" });
-
 		Account account = new Account();
 		account.setId(123);
-
-		when(ActionContext.getContext()).thenReturn(actionContext);
-		when(actionContext.getParameters()).thenReturn(parameters);
-		when(entityManager.find(Account.class, 123)).thenReturn(account);
+		when(accountDAO.find(123)).thenReturn(account);
 
 		manageEmployees.findAccount();
 
@@ -196,7 +161,8 @@ public class ManageEmployeesTest {
 		account.setId(123);
 
 		when(permissions.getAccountId()).thenReturn(123);
-		when(entityManager.find(Account.class, 123)).thenReturn(account);
+		when(permissions.getAccountType()).thenReturn("Test AccountType");
+		when(accountDAO.find(123, "Test AccountType")).thenReturn(account);
 
 		assertEquals(account, manageEmployees.getAccount());
 	}
@@ -254,7 +220,7 @@ public class ManageEmployeesTest {
 		employee.setId(0);
 
 		saveCommonBehaviors(employee);
-		verify(entityManager).persist(any(Note.class));
+		verify(noteDao).save(any(Note.class));
 	}
 
 	@Test

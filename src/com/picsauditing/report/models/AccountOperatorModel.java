@@ -1,10 +1,10 @@
 package com.picsauditing.report.models;
 
+
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.FieldCategory;
 
@@ -16,7 +16,9 @@ public class AccountOperatorModel extends AbstractModel {
 
 	public ModelSpec getJoinSpec() {
 		ModelSpec spec = new ModelSpec(null, "Account");
-		spec.join(AccountTable.Operator).category = FieldCategory.ReportingClientSite;
+		ModelSpec operator = spec.join(AccountTable.Operator);
+		operator.category = FieldCategory.ReportingClientSite;
+		operator.alias = "Operator";
 		spec.join(AccountTable.Naics);
 		return spec;
 	}

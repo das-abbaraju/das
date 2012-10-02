@@ -27,7 +27,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -187,15 +186,6 @@ public final class ReportUtil {
 		return (report.getDefinition().getColumns().size() > 0);
 	}
 
-	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {
-		for (ReportUser userReport : userReports) {
-			if (userReport.getReport().getId() == reportId)
-				return true;
-		}
-
-		return false;
-	}
-
 	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
@@ -304,7 +294,7 @@ public final class ReportUtil {
 		}
 
 		for (QueryMethod queryMethod : methods) {
-			String fieldSuffixKey = "Report.Suffix." + queryMethod.name();
+			String fieldSuffixKey = "Report.Function." + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
 	}

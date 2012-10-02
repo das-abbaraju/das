@@ -182,7 +182,7 @@
 								<s:if test="u.account.demo || u.account.admin || i18nReady">
 									<li><s:select name="u.locale"
 											list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-											listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))"
+											listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 											theme="form" /></li>
 								</s:if>
 

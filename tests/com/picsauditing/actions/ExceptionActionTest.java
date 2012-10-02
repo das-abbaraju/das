@@ -12,69 +12,39 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
-import java.util.Enumeration;
-
-import javax.mail.Transport;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
 import com.ibm.icu.util.Calendar;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ExceptionAction.class, I18nCache.class, ServletActionContext.class, Transport.class })
-@PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
-public class ExceptionActionTest {
+public class ExceptionActionTest extends PicsActionTest {
 	private ExceptionAction exceptionAction;
 
 	@Mock
 	private BasicDAO dao;
 	@Mock
 	private EmailSender emailSender;
-	@SuppressWarnings("rawtypes")
-	@Mock
-	private Enumeration enumeration;
 	@Mock
 	private Exception exception;
 	@Mock
-	private I18nCache i18nCache;
-	@Mock
 	private Logger logger;
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private HttpSession session;
-	@Mock
-	private Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-		PowerMockito.mockStatic(ServletActionContext.class);
 
 		exceptionAction = new ExceptionAction();
+		super.setUp(exceptionAction);
 
 		Whitebox.setInternalState(exceptionAction, "dao", dao);
 		Whitebox.setInternalState(exceptionAction, "emailSender", emailSender);
@@ -83,22 +53,26 @@ public class ExceptionActionTest {
 
 		exceptionAction.setException(exception);
 
-		when(I18nCache.getInstance()).thenReturn(i18nCache);
-		when(ServletActionContext.getRequest()).thenReturn(request);
-		when(request.getSession()).thenReturn(session);
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.HOUR, -3);
+		when(httpSession.getCreationTime()).thenReturn(calendar.getTimeInMillis());
 	}
 
 	@Test
 	public void testExecute_Exception() {
-		doThrow(new IllegalArgumentException()).when(dao).save(any(BaseTable.class));
+		doThrow(new IllegalArgumentException()).when(emailSender).send(any(EmailQueue.class));
 
 		assertEquals("Exception", exceptionAction.execute());
+		verify(logger, atLeastOnce()).error(anyString());
 	}
 
 	@Test
 	public void testExecute_SessionLessThanASecond() {
-		Date now = new Date();
-		when(session.getCreationTime()).thenReturn(now.getTime());
+		// move it forward a minute since we can't be sure this test will take <
+		// 1 second
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, 1);
+		when(httpSession.getCreationTime()).thenReturn(calendar.getTimeInMillis());
 
 		assertEquals(PicsActionSupport.REDIRECT, exceptionAction.execute());
 		assertEquals("//www.picsorganizer.com/", exceptionAction.getUrl());
@@ -108,13 +82,8 @@ public class ExceptionActionTest {
 
 	@Test
 	public void testExecute_SessionLongerThanASecondLoggedInAdmin() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR, -3);
-
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAdminID()).thenReturn(1);
-		when(request.getHeaderNames()).thenReturn(enumeration);
-		when(session.getCreationTime()).thenReturn(calendar.getTimeInMillis());
 
 		assertEquals("Exception", exceptionAction.execute());
 
@@ -136,12 +105,7 @@ public class ExceptionActionTest {
 
 	@Test
 	public void testExecute_SessionLongerThanASecondLoggedInNonAdmin() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR, -3);
-
 		when(permissions.isLoggedIn()).thenReturn(true);
-		when(request.getHeaderNames()).thenReturn(enumeration);
-		when(session.getCreationTime()).thenReturn(calendar.getTimeInMillis());
 
 		assertEquals("Exception", exceptionAction.execute());
 
@@ -162,11 +126,6 @@ public class ExceptionActionTest {
 
 	@Test
 	public void testExecute_SessionLongerThanASecondNotLoggedIn() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR, -3);
-		when(session.getCreationTime()).thenReturn(calendar.getTimeInMillis());
-		when(request.getHeaderNames()).thenReturn(enumeration);
-
 		assertEquals("Exception", exceptionAction.execute());
 
 		verify(dao).save(any(ErrorLog.class));
@@ -188,7 +147,6 @@ public class ExceptionActionTest {
 	public void testSendExceptionEmail_LoggedInAdminNoExceptionsEmptyUserMessageEmptyExceptionStack() {
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAdminID()).thenReturn(1);
-		when(request.getHeaderNames()).thenReturn(enumeration);
 
 		assertEquals("Submitted", exceptionAction.sendExceptionEmail());
 
@@ -210,7 +168,6 @@ public class ExceptionActionTest {
 	@Test
 	public void testSendExceptionEmail_LoggedInNotAdminNoExceptionsUserMessageExceptionStack() {
 		when(permissions.isLoggedIn()).thenReturn(true);
-		when(request.getHeaderNames()).thenReturn(enumeration);
 
 		exceptionAction.setUser_message("User Message");
 		exceptionAction.setExceptionStack("Exception Stack");
@@ -233,29 +190,7 @@ public class ExceptionActionTest {
 	}
 
 	@Test
-	public void testSendExceptionEmail_LoggedInNotAdminException() {
-		when(ServletActionContext.getRequest()).thenThrow(new ClassCastException());
-
-		assertEquals("Exception", exceptionAction.sendExceptionEmail());
-
-		verify(permissions, never()).getName();
-		verify(permissions, never()).getUsername();
-		verify(permissions, never()).getAccountId();
-		verify(permissions, never()).getAdminID();
-		verify(permissions, never()).getAccountType();
-		verify(permissions, never()).getUserId();
-		verify(permissions, never()).getEmail();
-		verify(request, never()).getLocalName();
-		verify(request, never()).getRemoteAddr();
-		verify(request, never()).getHeaderNames();
-		verify(emailSender, never()).send(any(EmailQueue.class));
-		verify(logger, never()).error(anyString());
-	}
-
-	@Test
 	public void testSendExceptionEmail_NotLoggedIn() {
-		when(request.getHeaderNames()).thenReturn(enumeration);
-
 		assertEquals("Submitted", exceptionAction.sendExceptionEmail());
 
 		verify(permissions, never()).getName();
@@ -276,10 +211,9 @@ public class ExceptionActionTest {
 	@Test
 	public void testSendExceptionEmail_NotLoggedInExceptionBeforeMailing() throws Exception {
 		GridSender gridSender = mock(GridSender.class);
-		when(request.getHeaderNames()).thenReturn(enumeration);
+		Whitebox.setInternalState(exceptionAction, "gridSenderForTesting", gridSender);
 
 		doThrow(new IllegalArgumentException()).when(emailSender).send(any(EmailQueue.class));
-		PowerMockito.whenNew(GridSender.class).withArguments(anyString(), anyString()).thenReturn(gridSender);
 
 		assertEquals("Submitted", exceptionAction.sendExceptionEmail());
 

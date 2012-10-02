@@ -2,6 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -81,9 +82,8 @@ public class ContractorAuditDownload extends ContractorAuditController {
 			operators.addAll(conAudit.getContractorAccount().getOperatorAccounts());
 		}
 
-		Set<AuditCategory> requiredCategories = builder.calculate(conAudit, operators);
-		for (AuditCategory category : conAudit.getAuditType().getTopCategories()) {
-			rowNum = fillExcelCategories(requiredCategories, category, rowNum);
+		for (CategoryNode node : getCategoryNodes()) {
+			rowNum = fillExcelCategoryNode(node, rowNum);
 		}
 
 		setColumnSize();
@@ -133,20 +133,17 @@ public class ContractorAuditDownload extends ContractorAuditController {
 		hyperlinkStyle.setFont(hyperlinkFont);
 	}
 
-	private int fillExcelCategories(Set<AuditCategory> viewableCategories, AuditCategory start, int rowNum) {
-		if (viewableCategories.contains(start)) {
-			HSSFRow row = sheet.createRow(rowNum++);
-			HSSFCell cell = row.createCell(0, HSSFCell.CELL_TYPE_STRING);
-			cell.setCellValue(start.getFullNumber() + " - " + start.getName().toString());
-			cell.setCellStyle(categoryStyle);
+	private int fillExcelCategoryNode(CategoryNode node, int rowNum) {
+		HSSFRow row = sheet.createRow(rowNum++);
+		HSSFCell cell = row.createCell(0, HSSFCell.CELL_TYPE_STRING);
+		cell.setCellValue(node.category.getFullNumber() + " - " + node.category.getName().toString());
+		cell.setCellStyle(categoryStyle);
 
-			rowNum = fillExcelQuestions(start.getEffectiveQuestions(conAudit.getEffectiveDate()), rowNum);
+		rowNum = fillExcelQuestions(node.category.getEffectiveQuestions(conAudit.getEffectiveDate()), rowNum);
 
-			for (AuditCategory subcat : start.getSubCategories()) {
-				rowNum = fillExcelCategories(viewableCategories, subcat, rowNum);
-			}
+		for (CategoryNode subcat : node.subCategories) {
+			rowNum = fillExcelCategoryNode(subcat, rowNum);
 		}
-
 		return rowNum;
 	}
 

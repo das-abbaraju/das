@@ -1,6 +1,10 @@
 Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseautocompletefilter'],
+    alias: 'widget.reportfilterbaseautocompletefilter',
+    
+    requires: [
+        'Ext.form.field.ComboBox'
+    ],
 
     cls: 'autocomplete-filter',
 

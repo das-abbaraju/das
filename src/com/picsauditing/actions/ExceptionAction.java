@@ -35,6 +35,7 @@ public class ExceptionAction extends PicsActionSupport {
 	private String user_name;
 	private String user = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS;
 	private String password = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD;
+	private GridSender gridSenderForTesting;
 
 	private final Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
 
@@ -57,6 +58,7 @@ public class ExceptionAction extends PicsActionSupport {
 				sendEmail(email);
 			}
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
 
 		return "Exception";
@@ -210,7 +212,7 @@ public class ExceptionAction extends PicsActionSupport {
 			emailSender.send(mail);
 		} catch (Exception e) {
 			logger.error("PICS Exception Handler ... sending email via SendGrid");
-			GridSender sendMail = new GridSender(user, password);
+			GridSender sendMail = gridSender();
 			mail.setFromAddress(EmailAddressUtils.PICS_EXCEPTION_HANDLER_EMAIL);
 
 			try {
@@ -221,6 +223,13 @@ public class ExceptionAction extends PicsActionSupport {
 
 			logger.error(mail.getBody());
 		}
+	}
+
+	private GridSender gridSender() {
+		if (gridSenderForTesting == null) {
+			return new GridSender(user, password);
+		}
+		return gridSenderForTesting;
 	}
 
 	private boolean isSessionLessThanOneSecondOld() {
