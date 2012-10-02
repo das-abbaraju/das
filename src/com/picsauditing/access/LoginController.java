@@ -253,7 +253,9 @@ public class LoginController extends PicsActionSupport {
 				maxAge = permissions.getRememberMeTimeInSeconds();
 			}
 			cookie.setMaxAge(maxAge);
-			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			if (!isLocalhostEnvironment()) {
+				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			}
 			ServletActionContext.getResponse().addCookie(cookie);
 		}
 	}
