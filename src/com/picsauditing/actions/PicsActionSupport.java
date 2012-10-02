@@ -144,6 +144,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> auditorList;
 	private Set<User> safetyList;
 
+	private boolean rememberMe = false;
+
 	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
 
 	@Deprecated
@@ -183,6 +185,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public boolean isQaEnvironment() {
 		return getRequestHost().contains("qa-stable") || getRequestHost().contains("qa-beta");
 	}
+
 	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
@@ -363,22 +366,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return null;
 		}
 	}
+
 	protected String apiKey;
 
-
-	public boolean isApiUser()  {
+	public boolean isApiUser() {
 		if (apiKey == null) {
 			return false;
 		}
-		System.out.println("api key query param = "+apiKey);
+		System.out.println("api key query param = " + apiKey);
 		User user = getUser();
-		
+
 		if (user != null && apiKey.equals(user.getApiKey())) {
 			// the user with this API key is already logged in
 			return true;
 		}
 		user = userDAO.findByApiKey(apiKey);
-		
+
 		// Log in as that user
 		Permissions permissions = null;
 		if (ActionContext.getContext().getSession() == null) {
@@ -399,7 +402,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 		return true;
-	
+
 	}
 
 	public Account getAccount() {
@@ -785,6 +788,18 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
+	private boolean isRememberMe() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
+			return false;
+		}
+		if (sessionCookie.getData("rememberMe") == null || !(Boolean)sessionCookie.getData("rememberMe")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	/*
 	 * If the cookie is not valid (tampered with or the server key is the wrong
 	 * one) then return false If the cookie is valid and the user is being
@@ -802,7 +817,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		String sessionCookieValue = clientSessionCookieValue();
 		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			return false;
-		} else if (permissions.getRememberMeUserChoice()) {
+		} else if (isRememberMe()) {
 			return true;
 		} else {
 			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
@@ -835,6 +850,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		setUrlForRedirect("Login.action");
 		return REDIRECT;
 	}
+
 	public String logout() throws Exception {
 		if (permissions != null) {
 			permissions.clear();
@@ -875,7 +891,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
 			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent(sessionCookie));
 			int maxAge = SESSION_COOKIE_AGE;
-			if (permissions != null && permissions.getRememberMeUserChoice()) {
+			if (permissions != null && isRememberMe()) {
 				maxAge = permissions.getRememberMeTimeInSeconds();
 			}
 			cookie.setMaxAge(maxAge);

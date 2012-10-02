@@ -73,7 +73,6 @@ public class Permissions implements Serializable {
 	private AccountStatus accountStatus = AccountStatus.Pending;
 	private long sessionCookieTimeoutInSeconds;
 	private int rememberMeTimeInSeconds;
-	private boolean rememberMeUserChoice;
 
 	private int shadowedUserID;
 	private String shadowedUserName;
@@ -333,14 +332,6 @@ public class Permissions implements Serializable {
 
 	public int getRememberMeTimeInSeconds() {
 		return rememberMeTimeInSeconds;
-	}
-
-	public boolean getRememberMeUserChoice() {
-		return rememberMeUserChoice;
-	}
-
-	public void setRememberMeUserChoice(boolean rememberMeUserChoice) {
-		this.rememberMeUserChoice = rememberMeUserChoice;
 	}
 
 	/**

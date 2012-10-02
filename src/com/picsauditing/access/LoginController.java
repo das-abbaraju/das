@@ -54,7 +54,7 @@ public class LoginController extends PicsActionSupport {
 	private String password;
 	private String key;
 	private int switchToUser;
-	private boolean rememberMe;
+	private boolean rememberMe = false;
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	private static final int MAX_FAILED_ATTEMPTS = 6;
@@ -224,7 +224,6 @@ public class LoginController extends PicsActionSupport {
 
 		logger.debug("logging in user");
 		permissions.login(user);
-		permissions.setRememberMeUserChoice(rememberMe);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
@@ -268,6 +267,7 @@ public class LoginController extends PicsActionSupport {
 		if (switchToUser > 0) {
 			sessionCookie.putData("switchTo", switchToUser);
 		}
+		sessionCookie.putData("rememberMe", rememberMe);
 		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
 		return sessionCookie.toString();
 	}
