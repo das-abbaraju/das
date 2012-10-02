@@ -36,6 +36,7 @@ import com.picsauditing.util.LocaleController;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -3120292424348289561L;
+	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 
 	private int userID;
 	private boolean loggedIn = false;
@@ -70,6 +71,9 @@ public class Permissions implements Serializable {
 	private boolean generalContractor = false;
 	private boolean gcFree = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
+	private long sessionCookieTimeoutInSeconds;
+	private int rememberMeTimeInSeconds;
+	private boolean rememberMeUserChoice;
 
 	private int shadowedUserID;
 	private String shadowedUserName;
@@ -111,6 +115,8 @@ public class Permissions implements Serializable {
 		operatorChildren.clear();
 		linkedClients.clear();
 		linkedGeneralContractors.clear();
+		sessionCookieTimeoutInSeconds = 0;
+		rememberMeTimeInSeconds = 0;
 	}
 
 	public void login(User user) throws Exception {
@@ -163,6 +169,8 @@ public class Permissions implements Serializable {
 			requiresOQ = user.getAccount().isRequiresOQ();
 			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 			generalContractor = user.getAccount().isGeneralContractor();
+			sessionCookieTimeoutInSeconds = user.getAccount().getSessionTimeout() * 60;
+			rememberMeTimeInSeconds = user.getAccount().getRememberMeTimeInDays() * TWENTY_FOUR_HOURS;
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
@@ -317,6 +325,22 @@ public class Permissions implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public long getSessionCookieTimeoutInSeconds() {
+		return sessionCookieTimeoutInSeconds;
+	}
+
+	public int getRememberMeTimeInSeconds() {
+		return rememberMeTimeInSeconds;
+	}
+
+	public boolean getRememberMeUserChoice() {
+		return rememberMeUserChoice;
+	}
+
+	public void setRememberMeUserChoice(boolean rememberMeUserChoice) {
+		this.rememberMeUserChoice = rememberMeUserChoice;
 	}
 
 	/**

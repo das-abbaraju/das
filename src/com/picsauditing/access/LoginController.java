@@ -40,14 +40,11 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
 	private static final int ONE_SECOND = 1;
-	private static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
-	@Autowired
-	private FeatureToggle featureToggleChecker;
 
 	// used to inject mock permissions for testing
 	private Permissions permissionsForTest;
@@ -119,7 +116,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	public String logout() throws Exception {
-		loadPermissions(false);
+		loadPermissions(false); // FIXME: (maybe) why are we loading permissions
+								// only to clear them and invalidate a session?
+		permissions.clear();
 		invalidateSession();
 		clearPicsOrgCookie();
 		return SUCCESS;
@@ -132,9 +131,7 @@ public class LoginController extends PicsActionSupport {
 			user = userDAO.find(switchToUser);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
-			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-				addClientSessionCookieToResponse();
-			}
+			addClientSessionCookieToResponse();
 			permissions.setAdminID(0);
 		}
 		return setRedirectUrlPostLogin();
@@ -145,15 +142,6 @@ public class LoginController extends PicsActionSupport {
 			switchToUser = permissions.getAdminID();
 		} else {
 			switchToUser = getClientSessionOriginalUserID();
-		}
-	}
-
-	private void invalidateSession() {
-		permissions.clear();
-		ActionContext.getContext().getSession().clear();
-		HttpSession session = ServletActionContext.getRequest().getSession(false);
-		if (session != null) {
-			session.invalidate();
 		}
 	}
 
@@ -236,12 +224,11 @@ public class LoginController extends PicsActionSupport {
 
 		logger.debug("logging in user");
 		permissions.login(user);
+		permissions.setRememberMeUserChoice(rememberMe);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
-		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE) && rememberMe) {
-			addClientSessionCookieToResponse();
-		}
+		addClientSessionCookieToResponse();
 
 		user.unlockLogin();
 		user.setLastLogin(new Date());
@@ -259,10 +246,16 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private void addClientSessionCookieToResponse() {
-		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent());
-		cookie.setMaxAge(TWENTY_FOUR_HOURS);
-		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-		ServletActionContext.getResponse().addCookie(cookie);
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent());
+			int maxAge = SESSION_COOKIE_AGE;
+			if (permissions != null && rememberMe) {
+				maxAge = permissions.getRememberMeTimeInSeconds();
+			}
+			cookie.setMaxAge(maxAge);
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			ServletActionContext.getResponse().addCookie(cookie);
+		}
 	}
 
 	private String sessionCookieContent() {

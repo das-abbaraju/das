@@ -37,6 +37,10 @@ public class SessionCookie {
 		return embeddedData;
 	}
 
+	public void setEmbeddedData(Map<String, Object> embeddedData) {
+		this.embeddedData = embeddedData;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void setEmbeddedData(String embeddedJsonData) {
 		try {

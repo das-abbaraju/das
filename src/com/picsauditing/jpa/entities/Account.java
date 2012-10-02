@@ -100,8 +100,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected TimeZone timezone;
 	protected boolean autoApproveRelationships = true;
 	protected boolean generalContractor = false;
-	private Integer sessionTimeout = 60;
-	private Integer rememberMeTime;
+	private int sessionTimeout;
+	private int rememberMeTime;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -975,18 +975,16 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		return sessionTimeout;
 	}
 
-	public void setSessionTimeout(Integer sessionTimeout) {
+	public void setSessionTimeout(int sessionTimeout) {
 		this.sessionTimeout = sessionTimeout;
 	}
 
-	/**
-	 * In days
-	 */
-	public Integer getRememberMeTime() {
+	@Column(name = "rememberMeTime")
+	public int getRememberMeTimeInDays() {
 		return rememberMeTime;
 	}
 
-	public void setRememberMeTime(Integer rememberMeTime) {
+	public void setRememberMeTimeInDays(int rememberMeTime) {
 		this.rememberMeTime = rememberMeTime;
 	}
 

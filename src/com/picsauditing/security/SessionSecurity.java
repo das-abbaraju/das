@@ -18,6 +18,7 @@ public class SessionSecurity {
 
 	private static final Logger logger = LoggerFactory.getLogger(SessionSecurity.class);
 	private static String secretKeyspec;
+	private static String suggestedSecretKeyspec;
 	private static SecretKey serverSecretKey;
 
 	public static SecretKey serverSecretKey() {
@@ -26,7 +27,11 @@ public class SessionSecurity {
 		}
 		String secretKeyspec = serverKeySpec();
 		if (secretKeyspec == null) {
-			logger.error("server is missing a secret key specification");
+			if (suggestedSecretKeyspec == null) {
+				suggestedSecretKeyspec = EncodedKey.newServerSecretKey();
+			}
+			logger.error("server is missing a secret key specification. Here's a suggestion: {}",
+					suggestedSecretKeyspec);
 			return null;
 		}
 		byte[] keyspec = Base64.decode(secretKeyspec);

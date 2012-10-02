@@ -18,6 +18,7 @@ import java.util.TreeSet;
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.math.NumberUtils;
@@ -49,6 +50,7 @@ import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.PicsOrganizerVersion;
@@ -60,6 +62,9 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
 
+	protected static final int DELETE_COOKIE_AGE = 0;
+	protected static final int SESSION_COOKIE_AGE = -1;
+	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
 
 	public static final String PLAIN_TEXT = "plain-text";
@@ -78,6 +83,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected AppPropertyDAO propertyDAO;
 	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
+	protected FeatureToggle featureToggleChecker;
 
 	protected Collection<String> alertMessages;
 
@@ -760,22 +767,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected int getClientSessionOriginalUserID() {
-		String sessionCookieValue = clientSessionCookieValue();
-		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
-			clearPicsOrgCookie();
-			return 0;
-		}
-		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
-		return sessionCookie.getUserID();
+		SessionCookie sessionCookie = validSessionCookie();
+		return (sessionCookie == null) ? 0 : sessionCookie.getUserID();
 	}
 
 	private int getClientSessionUserID() {
-		String sessionCookieValue = clientSessionCookieValue();
-		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
-			clearPicsOrgCookie();
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
 			return 0;
 		}
-		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
 		if (sessionCookie.getData("switchTo") == null) {
 			return sessionCookie.getUserID();
 		} else {
@@ -785,9 +785,73 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
+	/*
+	 * If the cookie is not valid (tampered with or the server key is the wrong
+	 * one) then return false If the cookie is valid and the user is being
+	 * persistently remembered then return true If the cookie is valid and the
+	 * user is not being persistently remembered then check to see if the cookie
+	 * session (in the cookie itself) is expired
+	 * 
+	 * @see
+	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
+	 */
+	public boolean sessionCookieIsValidAndNotExpired() {
+		String sessionCookieValue = clientSessionCookieValue();
+		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			return false;
+		} else if (permissions.getRememberMeUserChoice()) {
+			return true;
+		} else {
+			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+			long nowInSeconds = new Date().getTime() / 1000;
+			long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+			return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
+					.getSessionCookieTimeoutInSeconds());
+		}
+	}
+
+	private SessionCookie validSessionCookie() {
+		String sessionCookieValue = clientSessionCookieValue();
+		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			clearPicsOrgCookie();
+			return null;
+		}
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+		return sessionCookie;
+	}
+
+	public void updateClientSessionCookieExpiresTime() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie != null) {
+			addClientSessionCookieToResponse(sessionCookie);
+		}
+	}
+
+	public String logoutAndRedirectToLogin() throws Exception {
+		logout();
+		setUrlForRedirect("Login.action");
+		return REDIRECT;
+	}
+	public String logout() throws Exception {
+		if (permissions != null) {
+			permissions.clear();
+		}
+		invalidateSession();
+		clearPicsOrgCookie();
+		return SUCCESS;
+	}
+
+	public void invalidateSession() {
+		ActionContext.getContext().getSession().clear();
+		HttpSession session = ServletActionContext.getRequest().getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+	}
+
 	protected void clearPicsOrgCookie() {
 		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
-		cookie.setMaxAge(-1);
+		cookie.setMaxAge(DELETE_COOKIE_AGE);
 		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
@@ -802,6 +866,28 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			}
 		}
 		return null;
+	}
+
+	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent(sessionCookie));
+			int maxAge = SESSION_COOKIE_AGE;
+			if (permissions != null && permissions.getRememberMeUserChoice()) {
+				maxAge = permissions.getRememberMeTimeInSeconds();
+			}
+			cookie.setMaxAge(maxAge);
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			ServletActionContext.getResponse().addCookie(cookie);
+		}
+	}
+
+	private String sessionCookieContent(SessionCookie sessionCookie) {
+		Date now = new Date();
+		sessionCookie.setUserID(sessionCookie.getUserID());
+		sessionCookie.setCookieCreationTime(now);
+		sessionCookie.setEmbeddedData(sessionCookie.getEmbeddedData());
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
 	}
 
 	/**

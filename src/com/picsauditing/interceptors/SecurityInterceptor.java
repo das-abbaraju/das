@@ -4,11 +4,14 @@ import java.lang.reflect.Method;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.picsauditing.access.AjaxNotLoggedInException;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Api;
+import com.picsauditing.access.LoginController;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.NotLoggedInException;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.access.SecurityAware;
@@ -19,7 +22,16 @@ public class SecurityInterceptor extends AbstractInterceptor {
 
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
+		checkMethodLevelSecurity(invocation);
+		String securityResult = checkSessionCookieForValidityAndExpiration(invocation);
+		if (!Action.SUCCESS.equals(securityResult)) {
+			return securityResult;
+		}
+		return invocation.invoke();
+	}
 
+	private void checkMethodLevelSecurity(ActionInvocation invocation) throws NoSuchMethodException,
+			AjaxNotLoggedInException, NotLoggedInException, NoRightsException {
 		if (invocation.getAction() instanceof SecurityAware) {
 			// e.g. PicsActionSupport implements SecurityAware
 			SecurityAware action = (SecurityAware) invocation.getAction();
@@ -49,7 +61,21 @@ public class SecurityInterceptor extends AbstractInterceptor {
 			}
 
 		}
+	}
 
-		return invocation.invoke();
+	private String checkSessionCookieForValidityAndExpiration(ActionInvocation invocation) throws Exception {
+		String result = Action.SUCCESS;
+		if (invocation.getAction() instanceof SecurityAware && !(invocation.getAction() instanceof LoginController)) {
+			SecurityAware action = (SecurityAware) invocation.getAction();
+			Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
+			if (!method.isAnnotationPresent(Anonymous.class)) {
+				if (action.sessionCookieIsValidAndNotExpired()) {
+					action.updateClientSessionCookieExpiresTime();
+				} else {
+					result = action.logoutAndRedirectToLogin();
+				}
+			}
+		}
+		return result;
 	}
 }
