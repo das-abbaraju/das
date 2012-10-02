@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.OshaVisitable;
 import com.picsauditing.PICS.OshaVisitor;
 import com.picsauditing.util.Strings;
@@ -32,6 +35,8 @@ public class OshaAudit implements OshaVisitable {
 			Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL, 
 					CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
 
+	private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
+
 	public static boolean isSafetyStatisticsCategory(int categoryId) {
 		for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {
 			if (categoryId == safetyStatisticsCategory)
@@ -42,19 +47,30 @@ public class OshaAudit implements OshaVisitable {
 	}
 	
 	public static OshaType convertCategoryToOshaType(int catId) {
-		if (catId == CAT_ID_OSHA) {
-			return OshaType.OSHA;
+		OshaType type = OshaType.OSHA;
+
+		switch (catId) {
+			case CAT_ID_OSHA:
+			case CAT_ID_OSHA_ADDITIONAL:
+				type = OshaType.OSHA;
+				break;
+			case CAT_ID_MSHA:
+				type = OshaType.MSHA;
+				break;
+			case CAT_ID_COHS:
+				type = OshaType.COHS;
+				break;
+			case CAT_ID_UK_HSE:
+				type = OshaType.UK_HSE;
+				break;
+			case CAT_ID_FRANCE_NRIS:
+				type = OshaType.FRANCE_NRIS;
+				break;
+			default:
+				logger.warn("Unrecognized OSHA category: {}. Using 'OSHA' as default type.", catId);
 		}
-		
-		if (catId == CAT_ID_COHS) {
-			return OshaType.COHS;
-		}
-		
-		if (catId == CAT_ID_UK_HSE) {
-			return OshaType.UK_HSE;
-		}
-		
-		return null;
+
+		return type;
 	}
 
 	private ContractorAudit contractorAudit;
