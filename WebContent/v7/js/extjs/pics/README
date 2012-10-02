@@ -1,0 +1,98 @@
+Dynamic Reports
+===============
+
+Dynamic reports is a ExtJS 4 application that interacts with the backend
+via 3 methods.
+
+- !report
+- !availableFields
+- !data
+
+
+/*
+ * File Structure
+ */
+
+App
+---
+
+Contains application files structured using ExtJS 4 application
+architecture
+
+More Information:
+ - http://docs.sencha.com/ext-js/4-1/#!/guide/application_architecture
+
+Extjs
+-----
+
+Contains library files + source code + custom build files.
+
+Resources
+---------
+
+Contains CSS, Images, SASS, default themes that will be used by the
+application.
+
+
+/*
+ * Application Structure
+ */
+
+Application is broken up into 5 parts.
+
+- Model
+- Store
+- Controller
+- View
+- Ux (Plugins)
+
+More information:
+ - http://docs.sencha.com/ext-js/4-1/#!/guide/mvc_pt1
+ - http://docs.sencha.com/ext-js/4-1/#!/guide/mvc_pt2
+ - http://docs.sencha.com/ext-js/4-1/#!/guide/mvc_pt3
+
+
+/*
+ * Styles
+ */
+ 
+ - All CSS is compiled from SASS/Compass.
+ - All CSS is written from resources/sass/my-ext-theme*
+ - All CSS is generated into resources/css/
+
+Manage the build by executing the following commands (must install ruby client +
+navigate to the directory):
+ - compass compile my-ext-theme.scss
+ - compass compile --output-style compressed my-ext-theme.min.scss
+ 
+More information (Important to note utils.rb bug):
+ - http://docs.sencha.com/ext-js/4-1/#!/guide/theming
+
+/*
+ * Page analyzer
+ */
+
+ - Located in app/page-analyzer/page-analyzer.html
+
+More information:
+ - http://www.sencha.com/blog/optimizing-ext-js-4-1-based-applications/
+
+
+/*
+ * Build + Deploy
+ */
+ 
+ - JSBuilder3 is used to build javascript
+ - Sencha SDK is used to access the build
+ - Generated JS files are written to extjs/
+ - Manage builder test file - index.html
+ - Manage the production test file - prod.html
+ 
+Manage the build by executing the following commands (must install sdk + 
+navigate to directory):
+ - sencha create jsb -a index.html -p app.jsb3
+ - sencha build -p app.jsb3 -d . -v
+
+ More information:
+ - http://www.akawebdesign.com/2011/11/17/sencha-sdk-tools-jsbuilder/
+ - http://deaneturner.com/blog/2011/11/12/using-jsbuilder3/

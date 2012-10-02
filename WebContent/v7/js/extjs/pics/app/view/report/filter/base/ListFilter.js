@@ -1,6 +1,10 @@
 Ext.define('PICS.view.report.filter.base.ListFilter', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaselistfilter'],
+    alias: 'widget.reportfilterbaselistfilter',
+    
+    requires: [
+        'Ext.form.field.ComboBox'
+    ],
 
     initComponent: function () {
         this.callParent(arguments);

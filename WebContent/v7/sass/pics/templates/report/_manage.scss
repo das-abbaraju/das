@@ -116,11 +116,21 @@
 			float: right;
 			height: 30px;
 			padding: 0px 5px;
+
+			&:hover
+			{
+				background: #eaeaea;
+			}
 		}
 		
 		.options.open
 		{
 			background: #ccc;
+
+			&:hover
+			{
+				background: #ccc;
+			}
 		}
 		
 		.options .dropdown-toggle
@@ -129,6 +139,7 @@
 			@include border-radius(0px);
 			@include box-shadow(none);
 			line-height: 30px;
+			text-decoration: none;
 		}
 	}
 	

@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <%-- cannot pass list as a include : param - bypass via setter --%>
-<s:set var="reports" value="userReports" />
+<s:set var="reports" value="reportPermissionUsers" />
 <s:include value="/struts/report/_report-list.jsp">
     <s:param name="list_id">report_my_reports_list</s:param>
     <s:param name="list_class">report-list</s:param>

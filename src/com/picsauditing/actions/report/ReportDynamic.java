@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.struts2.ServletActionContext;
+import javax.persistence.NoResultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.ReportElement;
 import com.picsauditing.report.SqlBuilder;
@@ -40,7 +40,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String create() {
 		try {
-			Report newReport = reportModel.copy(report, new User(permissions.getUserId()));
+			Report newReport = reportModel.copy(permissions, report);
 			json.put("success", true);
 			json.put("reportID", newReport.getId());
 		} catch (NoRightsException nre) {
@@ -56,7 +56,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String edit() {
 		try {
-			reportModel.edit(report, permissions);
+			reportModel.edit(permissions, report);
 			json.put("success", true);
 			json.put("reportID", report.getId());
 		} catch (NoRightsException nre) {
@@ -72,19 +72,18 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String configuration() {
-		int userId = permissions.getUserId();
-		boolean editable = false, favorite = false;
+		json.put("favorite", false);
+		json.put("editable", false);
 
 		try {
-			editable = reportModel.canUserEdit(userId, report);
-			ReportUser userReport = reportUserDao.findOne(userId, report.getId());
-			favorite = userReport.isFavorite();
+			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), report.getId());
+			json.put("editable", reportModel.canUserEdit(permissions.getUserId(), report));
+			json.put("favorite", reportUser.isFavorite());
+		} catch (NoResultException e) {
+			logger.info("No ReportUser entry for " + permissions.getUserId() + " AND " + report.getId());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.configuration()", e);
 		}
-
-		json.put("editable", editable || permissions.isDeveloperEnvironment());
-		json.put("favorite", favorite);
 
 		return JSON;
 	}
@@ -92,7 +91,9 @@ public class ReportDynamic extends PicsActionSupport {
 	public String report() {
 		try {
 			ReportModel.validate(report);
-
+			configuration();
+			
+			reportModel.updateLastViewedDate(permissions.getUserId(), report);
 			{
 				List<ReportElement> reportElements = new ArrayList<ReportElement>();
 				reportElements.addAll(report.getDefinition().getColumns());
@@ -116,8 +117,6 @@ public class ReportDynamic extends PicsActionSupport {
 			}
 
 			json.put("reportID", report.getId());
-
-			reportUserDao.updateLastOpened(permissions.getUserId(), report.getId());
 
 			SqlBuilder sqlBuilder = new SqlBuilder();
 			sqlBuilder.initializeSql(report, permissions);
@@ -150,58 +149,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 			json.put("fields", ReportUtil.translateAndJsonify(availableFields, permissions, permissions.getLocale()));
 			json.put("success", true);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDynamic.report()", e);
-			writeJsonError(e);
-		}
-
-		return JSON;
-	}
-
-	public String share() {
-		int userId = -1;
-		String dirtyReportIdParameter = "";
-
-		try {
-			dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
-			// Don't trust user input!
-			userId = Integer.parseInt(dirtyReportIdParameter);
-
-			if (reportModel.canUserViewAndCopy(permissions.getUserId(), report.getId())) {
-				reportModel.connectReportToUser(report, userId);
-				json.put("success", true);
-			} else {
-				json.put("success", false);
-			}
-		} catch (NumberFormatException nfe) {
-			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
-			writeJsonError(nfe);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDynamic.report()", e);
-			writeJsonError(e);
-		}
-
-		return JSON;
-	}
-
-	public String shareEditable() {
-		int userId = -1;
-		String dirtyReportIdParameter = "";
-
-		try {
-			dirtyReportIdParameter = ServletActionContext.getRequest().getParameter("userId");
-			// Don't trust user input!
-			userId = Integer.parseInt(dirtyReportIdParameter);
-
-			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
-				reportModel.connectReportToUserEditable(report, userId);
-				json.put("success", true);
-			} else {
-				json.put("success", false);
-			}
-		} catch (NumberFormatException nfe) {
-			logger.error("Bad url parameter(" + dirtyReportIdParameter + ") passed to ReportDynamic.report()", nfe);
-			writeJsonError(nfe);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ReportDynamic.report()", e);
 			writeJsonError(e);

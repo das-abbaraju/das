@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,23 +16,22 @@ public class ReportUser extends BaseTable {
 
 	private User user;
 	private Report report;
-	private boolean editable;
 	private boolean favorite;
-	private Date lastOpened;
-	private int favoriteSortIndex;
+	private Date lastViewedDate;
+	private int viewCount;
+	private int sortOrder;
 
 	public ReportUser() {
 	}
 
 	public ReportUser(int userId, Report report) {
-		this.user = new User(userId);
 		this.report = report;
-		this.editable = false;
+		this.user = new User(userId);
 		this.favorite = false;
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "userID", nullable = false)
+	@JoinColumn(name = "userID", nullable = false, updatable = false)
 	public User getUser() {
 		return user;
 	}
@@ -43,7 +41,7 @@ public class ReportUser extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "reportID", nullable = false)
+	@JoinColumn(name = "reportID", nullable = false, updatable = false)
 	public Report getReport() {
 		return report;
 	}
@@ -52,16 +50,6 @@ public class ReportUser extends BaseTable {
 		this.report = report;
 	}
 
-	@Column(name = "editable", nullable = false)
-	public boolean isEditable() {
-		return editable;
-	}
-
-	public void setEditable(boolean editable) {
-		this.editable = editable;
-	}
-
-	@Column(name = "favorite", nullable = false)
 	public boolean isFavorite() {
 		return favorite;
 	}
@@ -71,20 +59,27 @@ public class ReportUser extends BaseTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	public Date getLastOpened() {
-		return lastOpened;
+	public Date getLastViewedDate() {
+		return lastViewedDate;
 	}
 
-	public void setLastOpened(Date lastOpened) {
-		this.lastOpened = lastOpened;
+	public void setLastViewedDate(Date lastViewedDate) {
+		this.lastViewedDate = lastViewedDate;
 	}
 
-	@Column(nullable = false)
-	public int getFavoriteSortIndex() {
-		return favoriteSortIndex;
+	public int getViewCount() {
+		return viewCount;
 	}
 
-	public void setFavoriteSortIndex(int favoriteSortIndex) {
-		this.favoriteSortIndex = favoriteSortIndex;
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+
+	public int getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 }

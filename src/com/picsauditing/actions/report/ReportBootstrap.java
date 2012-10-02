@@ -29,7 +29,9 @@ public class ReportBootstrap extends PicsActionSupport {
 
 		// No matter what junk we get in the url, redirect
 		try {
-			if (!reportModel.canUserViewAndCopy(permissions.getUserId(), report)) {
+			// TODO: Should we have an error in the JSON Returned on the data call and the front-end display
+			//       an error to the user?
+			if (!reportModel.canUserViewAndCopy(permissions, report)) {
 				String errorMessage = "You do not have permissions to view that report.";
 				ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 			}

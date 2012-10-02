@@ -35,6 +35,7 @@ public class ReportResults {
 		for (ReportRow row : rows) {
 			cells.addAll(row.getCells());
 		}
+		
 		return cells;
 	}
 
@@ -44,6 +45,7 @@ public class ReportResults {
 		for (ReportRow row : rows) {
 			jsonRows.add(row.toJson());
 		}
+		
 		return jsonRows;
 	}
 }
