@@ -474,7 +474,7 @@ public class RequestNewContractor extends AccountActionSupport {
 		if (Strings.isEmpty(newContractor.getPhone()))
 			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
 
-		if (Strings.isEmpty(newContractor.getEmail()) || EmailAddressUtils.isValidEmail(newContractor.getEmail()))
+		if (Strings.isEmpty(newContractor.getEmail()) || !EmailAddressUtils.isValidEmail(newContractor.getEmail()))
 			addActionError(getText("RequestNewContractor.error.FillValidEmail"));
 	}
 
