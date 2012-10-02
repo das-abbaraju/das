@@ -14,15 +14,10 @@ section.login-form .well
     text-align: left;
 }
 
-.lt-ie8 #Login__page #login_form
+.lt-ie8 #Login__page #login_form,
 {
-    display: inline;
-}
-
-.login-form .form-actions
-{
-    background: none;
-    border: none;
+    display:inline;
+    width: 304px;
 }
 
 .login-form h2
@@ -31,6 +26,11 @@ section.login-form .well
     height: 78px;
     margin: 0px auto 50px auto;
     width: 287px;
+}
+
+.login-form .alert
+{
+    width: 225px;
 }
 
 .login-form fieldset

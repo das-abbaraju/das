@@ -14,6 +14,8 @@
 
     <h2></h2>
 
+    <s:include value="../../_action-messages.jsp" />
+
     <input id="login_modal_title" type="hidden" value="<s:text name="Login.h1" />" />
 
     <fieldset>

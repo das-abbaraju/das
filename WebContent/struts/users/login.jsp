@@ -5,7 +5,6 @@
 <meta name="help" content="Logging_In">
 
 <section class="login-form">
-    <s:include value="../_action-messages.jsp" />
     <s:include value="login/_login-form.jsp"/>
 </section>
 

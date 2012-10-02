@@ -176,11 +176,12 @@ li.rssRow:last-of-type {
 /* article preview */
 /* line 88, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/newsfeed/_newsfeed.scss */
 .rssRow p {
+  clear: both;
   color: #999;
   font-size: 13px;
   text-align: left; }
 
-/* line 101, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/newsfeed/_newsfeed.scss */
+/* line 102, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/newsfeed/_newsfeed.scss */
 .rssRow .rssMedia {
   padding: 0.5em;
   font-size: 12px; }
@@ -454,19 +455,19 @@ section.login-form .well {
 
 /* line 18, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .lt-ie8 #Login__page #login_form {
-  display: inline; }
+  display: inline;
+  width: 304px; }
 
-/* line 23, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-.login-form .form-actions {
-  background: none;
-  border: none; }
-
-/* line 29, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 24, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .login-form h2 {
   background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
   height: 78px;
   margin: 0px auto 50px auto;
   width: 287px; }
+
+/* line 32, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+.login-form .alert {
+  width: 225px; }
 
 /* line 37, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .login-form fieldset {
@@ -673,4 +674,5 @@ section.login-form .well {
 
 /* line 14, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
 .lt-ie8 #Login__page #newsfeed {
-  display: inline; }
+  display: inline;
+  width: 600px; }
