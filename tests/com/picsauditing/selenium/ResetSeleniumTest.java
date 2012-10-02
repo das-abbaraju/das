@@ -3,39 +3,39 @@ package com.picsauditing.selenium;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.util.reflection.Whitebox.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.Action;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.selenium.SeleniumDeletable;
 
 import static com.picsauditing.actions.PicsActionSupport.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ResetSelenium.class, I18nCache.class})
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class ResetSeleniumTest {
+public class ResetSeleniumTest extends PicsActionTest {
 	
-	ResetSelenium classUnderTest;
-	List<SeleniumDeletable> testList;
-	SeleniumDAO SeleniumDAO;
+	private ResetSelenium classUnderTest;
+	private List<SeleniumDeletable> testList;
+
+	@Mock
+	private SeleniumDAO seleniumDAO;
 	
 	@SuppressWarnings({ "serial", "unchecked" })
 	@Before
 	public void setup() throws Exception {
-		PowerMockito.mockStatic(I18nCache.class);
 		MockitoAnnotations.initMocks(this);
+		classUnderTest = new ResetSelenium();
+		super.setUp(classUnderTest);
 		
 		testList = new ArrayList<SeleniumDeletable>();
 		
@@ -56,18 +56,8 @@ public class ResetSeleniumTest {
 			setName("Lewey");
 			setType("Duck");
 		}}));
-		//Be careful here: If inject this list, modify it, and then call a function
-		//that returns the list again, your changes will persist!
-		
-		//PowerMockito.mockStatic(SeleniumDAO.class);
-		//PowerMockito.doNothing().when(SeleniumDAO.class, "delete", any());
-		//PowerMockito.doReturn(testList).when(SeleniumDAO.class, "AvailableTestingAccounts");
-		classUnderTest = PowerMockito.spy(new ResetSelenium());
-		SeleniumDAO = mock(SeleniumDAO.class);
-		setInternalState(classUnderTest, "SD", SeleniumDAO);
-		doReturn("blank").when(classUnderTest).setUrlForRedirect(anyString());
-		doNothing().when(SeleniumDAO).delete((List<SeleniumDeletable>) any());
-		when(SeleniumDAO.availableTestingReferences()).thenReturn(testList);
+		Whitebox.setInternalState(classUnderTest, "seleniumDao", seleniumDAO);
+		when(seleniumDAO.availableTestingReferences()).thenReturn(testList);
 	}
 	
 	@Test
@@ -88,14 +78,12 @@ public class ResetSeleniumTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void delete_singleWrongInput() throws Exception {
-		setInternalState(classUnderTest, "userSpecifiedAccount", "foo");
+		classUnderTest.setDeleteAccount("foo");
+
 		String result = classUnderTest.delete();
 		
-		assertEquals(BLANK, result);
-		PowerMockito.verifyPrivate(classUnderTest).invoke("deleteSingleAccount", anyString());
-		PowerMockito.verifyPrivate(classUnderTest, never()).invoke("performMultipleDeletion");
-		verify(SeleniumDAO, never()).delete((List<SeleniumDeletable>) any());
-		
+		assertEquals(REDIRECT, result);
+		verify(seleniumDAO, never()).delete((List<SeleniumDeletable>) any());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -104,13 +92,19 @@ public class ResetSeleniumTest {
 		classUnderTest.setDeleteAccount("Huey");
 		String result = classUnderTest.delete();
 		
-		assertEquals(BLANK, result);
-		PowerMockito.verifyPrivate(classUnderTest).invoke("deleteSingleAccount", anyString());
-		PowerMockito.verifyPrivate(classUnderTest, never()).invoke("performMultipleDeletion");
+		assertEquals(REDIRECT, result);
 		
-		verify(SeleniumDAO).delete((List<SeleniumDeletable>) any());
-		//PowerMockito.verifyStatic();
-		//SeleniumDAO.delete((List<SeleniumDeletable>)any());
+		ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
+		verify(seleniumDAO).delete(argument.capture());
+		List accounts = (List) argument.getValue();
+		boolean found = false;
+		for (Object account : accounts) {
+			if ("Huey".equals(((SeleniumDeletable) account).getName())) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -126,11 +120,9 @@ public class ResetSeleniumTest {
 		
 		String result = classUnderTest.delete();
 		
-		assertEquals(BLANK, result);
-		PowerMockito.verifyPrivate(classUnderTest).invoke("performMultipleDeletion");
-		PowerMockito.verifyPrivate(classUnderTest, never()).invoke("deleteSingleAccount", anyString());
+		assertEquals(REDIRECT, result);
 		
-		verify(SeleniumDAO, never()).delete((List<SeleniumDeletable>) any());
+		verify(seleniumDAO, never()).delete((List<SeleniumDeletable>) any());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -145,11 +137,21 @@ public class ResetSeleniumTest {
 		
 		String result = classUnderTest.delete();
 		
-		assertEquals(BLANK, result);
-		PowerMockito.verifyPrivate(classUnderTest).invoke("performMultipleDeletion");
-		PowerMockito.verifyPrivate(classUnderTest, never()).invoke("deleteSingleAccount", anyString());
+		assertEquals(REDIRECT, result);
 		
-		verify(SeleniumDAO).delete((List<SeleniumDeletable>) any());
+		List<Integer> accountIDs = populateDeletedAccounts();
+		assertThat(accountIDs, hasItem(0));
+		assertThat(accountIDs, hasItem(11111));
+	}
+
+	private List<Integer> populateDeletedAccounts() throws Exception {
+		ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
+		verify(seleniumDAO).delete(argument.capture());
+		List<Integer> accountIDs = new ArrayList<Integer>();
+		for (Object account : (List) argument.getValue()) {
+			accountIDs.add(((SeleniumDeletable) account).getID());
+		}
+		return accountIDs;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -165,11 +167,11 @@ public class ResetSeleniumTest {
 		
 		String result = classUnderTest.delete();
 		
-		assertEquals(BLANK, result);
-		PowerMockito.verifyPrivate(classUnderTest).invoke("performMultipleDeletion");
-		PowerMockito.verifyPrivate(classUnderTest, never()).invoke("deleteSingleAccount", anyString());
-		
-		verify(SeleniumDAO).delete((List<SeleniumDeletable>) any());
+		assertEquals(REDIRECT, result);
+		List<Integer> accountIDs = populateDeletedAccounts();
+		assertThat(accountIDs, hasItem(0));
+		assertThat(accountIDs, hasItem(22222));
+		assertThat(accountIDs, not(hasItem(99999)));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -177,22 +179,18 @@ public class ResetSeleniumTest {
 	public void delete_nullInput () throws Exception {
 		String result = classUnderTest.delete();
 		
-		assertEquals(BLANK, result);
-		PowerMockito.verifyPrivate(classUnderTest).invoke("performMultipleDeletion");
-		verify(SeleniumDAO, never()).delete((List<SeleniumDeletable>) any());
-		PowerMockito.verifyPrivate(classUnderTest, never()).invoke("deleteSingleAccount", anyString());
+		assertEquals(REDIRECT, result);
+		verify(seleniumDAO, never()).delete((List<SeleniumDeletable>) any());
 	}	
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void deleteAll () throws Exception {
+	public void deleteAll() throws Exception {
 		String result = classUnderTest.deleteAll();
 		
-		assertEquals(BLANK, result);
-		//PowerMockito.verifyPrivate(classUnderTest).invoke("performMultipleDeletion");
-		//PowerMockito.verifyPrivate(classUnderTest, never()).invoke("deleteSingleAccount", anyString());
-		verify(SeleniumDAO).availableTestingReferences();
-		verify(SeleniumDAO).delete((List<SeleniumDeletable>) any());
+		assertEquals(REDIRECT, result);
+		verify(seleniumDAO).availableTestingReferences();
+		verify(seleniumDAO).delete((List<SeleniumDeletable>) any());
 	}
 
 }

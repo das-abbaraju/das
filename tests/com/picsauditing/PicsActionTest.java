@@ -62,6 +62,7 @@ public class PicsActionTest {
 	@AfterClass
 	public static void classTearDown() throws Exception {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
 		ActionContext.setContext(null);
 	}
 
@@ -102,5 +103,6 @@ public class PicsActionTest {
 		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
 		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 		when(servletContext.getInitParameter("FTP_DIR")).thenReturn("/tmp/ftp_dir");
+		session.put("permissions", permissions);
 	}
 }

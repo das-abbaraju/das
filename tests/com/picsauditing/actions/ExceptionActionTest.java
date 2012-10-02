@@ -12,32 +12,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
-import java.util.Enumeration;
-
-import javax.mail.Transport;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
 import com.ibm.icu.util.Calendar;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSender;
@@ -50,8 +34,6 @@ public class ExceptionActionTest extends PicsActionTest {
 	private BasicDAO dao;
 	@Mock
 	private EmailSender emailSender;
-	@SuppressWarnings("rawtypes")
-
 	@Mock
 	private Exception exception;
 	@Mock
