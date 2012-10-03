@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('PICS.Login', {
+    PICS.define('Login.LoginController', {
         methods: {
             init: function () {
                 var that = this;
@@ -15,17 +15,19 @@
                     }
                 });*/
 
-                $('body').delegate('.login-form select', 'change', that.setLanguage);
+                $('body').delegate('#login_form select', 'change', this.setLanguage);
             },
 
-            setLanguage: function (event) {
+            setLanguage: function () {
                 var language = this.value;
 
                 PICS.ajax({
                     url: "Login!loginform.action",
-                    data: "request_locale=" + language,
+                    data: {
+                        request_locale: language
+                    },
                     success: function(data, textStatus, jqXHR) {
-                        $('section.login-form').html(data);
+                        $('#login_form').html(data);
                         $('#supported_locales').val(language);
 
                         //TODO update login modal content as well
@@ -37,10 +39,10 @@
                         $('.modal-login-form .modal-header h3').html(title.val());
                         */
 
-                        //Update rss feed
-                        var newsfeed = PICS.getClass('Login.Newsfeed');
+                        //Update RSS feed
+                        var newsfeed = PICS.getClass('Login.NewsfeedController');
                         if (newsfeed) {
-                            newsfeed.loadRssFeed(language);
+                            newsfeed.loadRssFeed();
                         }
                     }
                 });

@@ -4,9 +4,9 @@
 <title><s:text name="global.Login" /></title>
 <meta name="help" content="Logging_In">
 
-<section class="login-form">
+<div id="user_login">
     <s:include value="login/_login-form.jsp"/>
-</section>
+</div>
 
 <a id="registration_link" href="Registration.action">Are you a contractor not registered with PICS yet?</a>
 

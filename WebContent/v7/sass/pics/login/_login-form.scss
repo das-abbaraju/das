@@ -1,17 +1,26 @@
 #Login__page {
     background: #454545;
     text-align: center;
-}
 
-section.login-form .well
-{
-    background: #F1F1F2;
-    color: #666;
-    display: inline-block;
-    font-size: 13px;
-    margin-top: 100px;
-    padding: 40px;
-    text-align: left;
+    .well
+    {
+        background: #F1F1F2;
+        color: #666;
+        display: inline-block;
+        font-size: 13px;
+        margin-top: 100px;
+        padding: 40px;
+        text-align: left;
+    }
+    a#registration_link
+    {
+        color: #CCC;
+        text-decoration: none;
+    }
+    #registration_link:hover
+    {
+        color: #73BBE8;
+    }
 }
 
 .lt-ie8 #Login__page #login_form,
@@ -20,105 +29,106 @@ section.login-form .well
     width: 304px;
 }
 
-.login-form h2
-{
-    background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
-    height: 78px;
-    margin: 0px auto 50px auto;
-    width: 287px;
-}
+#login_form{
+    h2
+    {
+        background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
+        height: 78px;
+        margin: 0px auto 50px auto;
+        width: 287px;
+    }
 
-.login-form .alert
-{
-    width: 225px;
-}
+    .alert
+    {
+        width: 225px;
+    }
 
-.login-form fieldset
-{
-    padding-right: 40px;
-}
+    fieldset
+    {
+        padding-right: 40px;
+    }
 
-.login-form .form-horizontal .controls
-{
-    margin-left: 0px;
-}
+    .form-horizontal .controls
+    {
+        margin-left: 0px;
+    }
 
-.login-form .form-horizontal .control-label
-{
-    width: auto;
-}
+    .form-horizontal .control-label
+    {
+        width: auto;
+    }
 
-.login-form .form-horizontal #update_language
-{
-    margin-bottom: 9px;
-}
+    .form-horizontal #update_language
+    {
+        margin-bottom: 9px;
+    }
 
-.login-form .form-horizontal #update_language .control-label
-{
-    padding-right: 10px;
-}
+    .form-horizontal #update_language .control-label
+    {
+        padding-right: 10px;
+    }
 
-.login-form .icon-globe
-{
-    color: #666;
-    font-size: 20px;
-    text-align: right;
-    vertical-align: middle;
-}
+    .icon-globe
+    {
+        color: #666;
+        font-size: 20px;
+        text-align: right;
+        vertical-align: middle;
+    }
 
-.login-form #user_fields
-{
-    margin-left: 26px;
-}
+    #user_fields
+    {
+        margin-left: 26px;
+    }
 
-.login-form #user_fields .password
-{
-    margin-bottom: 2px;
-}
+    #user_fields .password
+    {
+        margin-bottom: 2px;
+    }
 
-.login-form #forgotPassword
-{
-    margin-bottom: 5px;
-    text-align: right;
-}
+    #forgotPassword
+    {
+        margin-bottom: 5px;
+        text-align: right;
+    }
 
-.login-form #forgotPassword a
-{
-    color: #666;
-    font-size: 11px;
-    text-decoration: none;
-}
+    #forgotPassword a
+    {
+        color: #666;
+        font-size: 11px;
+        text-decoration: none;
+    }
 
-.login-form #forgotPassword a:hover
-{
-    color: #226396;
-}
+    #forgotPassword a:hover
+    {
+        color: #226396;
+    }
 
-.login-form #remember_me
-{
-    margin: 0px 0px 10px 26px;
-}
+    #remember_me
+    {
+        margin: 0px 0px 10px 26px;
+    }
 
-.login-form #remember_me label
-{
-    display: inline-block;
-    padding-left: 5px;
-}
+    #remember_me label
+    {
+        display: inline-block;
+        padding-left: 5px;
+    }
 
-.login-form .form-actions
-{
-    background: none;
-    border: none;    
-    margin: 0px;
-    padding: 0px;
-    text-align: right;
-}
+    .form-actions
+    {
+        background: none;
+        border: none;
+        margin: 0px;
+        padding: 0px;
+        text-align: right;
+    }
 
-.login-form #cancel_btn
-{
-    display: none;
+    #cancel_btn
+    {
+        display: none;
+    }
 }
-
 /*** Login Modal Styling ***/
 
 .modal-login-form
@@ -251,15 +261,4 @@ section.login-form .well
 .modal-login-form .modal-footer
 {
     display: none;
-}
-
-#Login__page a#registration_link
-{
-    color: #CCC;
-    text-decoration: none;
-}
-
-#Login__page #registration_link:hover
-{
-    color: #73BBE8;
 }

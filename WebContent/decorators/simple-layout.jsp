@@ -12,14 +12,14 @@
     <head>
         <meta charset="utf-8">
 
-        <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-            More info: h5bp.com/i/378 -->
+        <%-- Use the .htaccess and remove these lines to avoid edge case issues.
+            More info: h5bp.com/i/378 --%>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
         <title>PICS - <decorator:title default="PICS" /></title>
         <meta name="description" content="">
 
-        <!-- Mobile viewport optimized: h5bp.com/viewport -->
+        <%-- Mobile viewport optimized: h5bp.com/viewport --%>
         <meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap.css?v=${version}" />
@@ -32,29 +32,26 @@
 
         <decorator:head />
 
-        <!-- All JavaScript at the bottom, except this Modernizr build.
+        <%-- All JavaScript at the bottom, except this Modernizr build.
         Modernizr enables HTML5 elements & feature detects for optimal performance.
-        Create your own custom Modernizr build: www.modernizr.com/download/ -->
+        Create your own custom Modernizr build: www.modernizr.com/download/ --%>
         <script src="v7/js/libs/modernizr-2.5.3.min.js"></script>
     </head>
     <body id="${actionName}_${methodName}_page" class="${actionName}-page page">
 
         <decorator:body />        
 
-        <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+        <%-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline --%>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="v7/js/libs/jquery-1.7.1.min.js"><\/script>')</script>
-        <script type="text/javascript" src="js/jquery/jquery.form.js?v=${version}"></script>
-        <script type="text/javascript" src="v7/js/libs/jquery.zrssfeed.js"></script>
         
         <%-- libs --%>
         <script type="text/javascript" src="v7/js/libs/bootstrap.js"></script>
-        <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
+        <script type="text/javascript" src="v7/js/libs/jquery.zrssfeed.js"></script>
 
         <%-- custom --%>
         <script type="text/javascript" src="v7/js/pics/core/core.js"></script>
-        <script type="text/javascript" src="v7/js/pics/widgets/modal.js"></script>
-        <script type="text/javascript" src="v7/js/pics/login/login-form.js"></script>
-        <script type="text/javascript" src="v7/js/pics/login/newsfeed.js"></script>
+        <script type="text/javascript" src="v7/js/pics/login/login-controller.js"></script>
+        <script type="text/javascript" src="v7/js/pics/login/newsfeed-controller.js"></script>
     </body>
 </html>

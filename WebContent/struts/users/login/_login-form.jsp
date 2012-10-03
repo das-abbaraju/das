@@ -7,16 +7,14 @@
 <s:form cssClass="form-login well" action="%{#loginform}" name="login_form" id="login_form">
     <input type="hidden" name="button" value="Login" />
     
-<!-- grab the switchToUser parameters if its passed to this page when switch servers.-->             
-    <s:if test="switchToUser>0">                    
+<%-- grab the switchToUser parameters if its passed to this page when switch servers.--%>
+    <s:if test="switchToUser > 0">
         <s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
     </s:if>
 
-    <h2></h2>
+    <h2 data-attr="<s:text name="Login.h1" />"></h2>
 
     <s:include value="../../_action-messages.jsp" />
-
-    <input id="login_modal_title" type="hidden" value="<s:text name="Login.h1" />" />
 
     <fieldset>
         <s:if test="configEnvironment || i18nReady">
