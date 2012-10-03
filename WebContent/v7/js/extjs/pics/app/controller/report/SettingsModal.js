@@ -226,13 +226,16 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var record = records[0];
 
         if (record) {
-            var account = {
+            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0],
+                account = {
                             name: record.get('result_name'),
                             at: record.get('result_at'),
                           };
-
-            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
+            
+            // Save the id of the selected record for use after share button is clicked.
             cmp.record_id = record.index;
+            
+            // Show the selection.
             cmp.update(account);
         }
     },
@@ -273,6 +276,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 if (result.error) {
                     Ext.Msg.alert('Status', result.error);
                 } else {
+                    
+                    var alert_message = Ext.getCmp('alert_message');
+                    if (alert_message) {
+                        alert_message.destroy();
+                    }
+
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
                         html: 'with the selected account.',
