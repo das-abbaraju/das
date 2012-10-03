@@ -228,6 +228,11 @@
 						</a>
 					</li>
 					<li>
+						<a class="btn" href="UsersManage!reSendActivationEmail.action?user=<s:property value="user.id"/>"  id="users_manage_resendActivation">
+							<s:text name="button.activation" />
+						</a>
+					</li>
+					<li>
 						<s:if test="hasProfileEdit">
 							<a class="btn" href="UsersManage!emailPassword.action?user=<s:property value="user.id"/>">
 								<s:text name="UsersManage.SendResetPasswordEmail" />
