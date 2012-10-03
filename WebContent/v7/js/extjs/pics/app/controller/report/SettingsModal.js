@@ -261,11 +261,28 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var report_id = this.getReportId();
 
         // Construct the URL and send the request.
+        var that = this;
         Ext.Ajax.request({
             url: 'ReportSharing!share.action?'
                 + 'report=' + report_id
                 + '&' + account_type + 'Id=' + account_id
-                + '&editable=' + editable
+                + '&editable=' + editable,
+            success: function (result, tat) {
+                var result = Ext.decode(result.responseText);
+
+                if (result.error) {
+                    Ext.Msg.alert('Status', result.error);
+                } else {
+                    var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+                        cls: 'alert alert-success',
+                        html: 'with the selected account.',
+                        title: 'Report Shared',
+                    });
+
+                    alert_message.show();
+                    that.getReportSettingsModal().close();
+                }
+            }
         });
     },
     
