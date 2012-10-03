@@ -15,6 +15,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -476,7 +477,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.reports = reports;
 	}
 
-	@ElementCollection()
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "user_language", joinColumns = @JoinColumn(name = "userID"))
 	@Column(name = "locale")
 	public List<Locale> getSpokenLanguages() {
@@ -614,9 +615,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of user.permissions)
+	 *            The new set of permission for this user (transient version of
+	 *            user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user
+	 *            or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
@@ -802,7 +805,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * In UsersManage, another user (non-group) is inserted into this user's groups for shadowing
+	 * In UsersManage, another user (non-group) is inserted into this user's
+	 * groups for shadowing
 	 * 
 	 * @return shadowed user or null
 	 */
@@ -828,7 +832,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * Enables subscription if disabled or creates subscription if it does not exist.
+	 * Enables subscription if disabled or creates subscription if it does not
+	 * exist.
 	 * 
 	 * @param subscription
 	 * @return
@@ -883,5 +888,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public boolean isRemoved() {
 		return (isActive == YesNo.No || username.startsWith("DELETE-"));
+	}
+
+	@Transient
+	public boolean hasGroup(int id) {
+		for (UserGroup group : groups) {
+			if (group.getGroup().getId() == id) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

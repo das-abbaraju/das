@@ -3,12 +3,14 @@ package com.picsauditing.actions.users;
 import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
@@ -79,6 +81,8 @@ public class UsersManage extends PicsActionSupport {
 	private boolean usingDynamicReports = false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
+	private Locale selectedLanguage;
+	private Locale removeLanguage;
 
 	@Autowired
 	private AccountDAO accountDAO;
@@ -101,6 +105,7 @@ public class UsersManage extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		startup();
+
 		if ("department".equalsIgnoreCase(button))
 			return "department";
 
@@ -1162,4 +1167,62 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	public Locale getSelectedLanguage() {
+		return selectedLanguage;
+	}
+
+	public void setSelectedLanguage(Locale selectedLanguage) {
+		this.selectedLanguage = selectedLanguage;
+	}
+
+	public Locale[] getSortedLocales() {
+		Locale[] locales = Locale.getAvailableLocales();
+		Comparator<Locale> localeComparator = new Comparator<Locale>() {
+			public int compare(Locale locale1, Locale locale2) {
+				return locale1.getDisplayName().compareTo(locale2.getDisplayName());
+			}
+		};
+		Arrays.sort(locales, localeComparator);
+
+		return locales;
+	}
+
+	public List<Locale> getSortedSpokenLanguages() {
+		List<Locale> languages = user.getSpokenLanguages();
+		Comparator<Locale> localeComparator = new Comparator<Locale>() {
+			public int compare(Locale locale1, Locale locale2) {
+				return locale1.getDisplayName().compareTo(locale2.getDisplayName());
+			}
+		};
+		Collections.sort(languages, localeComparator);
+		return languages;
+	}
+
+	public Locale getRemoveLanguage() {
+		return removeLanguage;
+	}
+
+	public void setRemoveLanguage(Locale removeLanguage) {
+		this.removeLanguage = removeLanguage;
+	}
+
+	public String addLanguage() {
+		user.getSpokenLanguages().add(selectedLanguage);
+		userDAO.save(user);
+		return SUCCESS;
+	}
+
+	public String removeLanguage() throws Exception {
+		startup();
+		Iterator<Locale> iterator = user.getSpokenLanguages().iterator();
+		while (iterator.hasNext()) {
+			Locale locale = iterator.next();
+			if (locale.toString().equals(removeLanguage.toString())) {
+				iterator.remove();
+			}
+		}
+
+		userDAO.save(user);
+		return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+	}
 }

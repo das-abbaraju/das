@@ -447,27 +447,47 @@
 							</s:if>
 						</li>
 
-
-
-<s:if test="true">				
-	<li>
-		<label>TRANSLATE THIS - Languages</label>
-	</li>
-	<li>
-		<label>TRANSLATE THIS - Assignment Capacity</label>
-		<s:textfield name="user.assignmentCapacity" size="3" />%
-	</li>
-</s:if>
-
-
+						<s:if test="%{user.hasGroup(959)}">				
+							<li>
+								<label>Languages Spoken</label>
+								<table class="report">
+									<thead>
+										<th>language</th>
+										<th>remove</th>
+									</thead>
+									<tbody>
+										<s:iterator value="getSortedSpokenLanguages()" var="language">
+											<tr>
+												<td><s:property value="%{#language.displayName}" /></td>
+												<td>
+													<a href="UsersManage!removeLanguage.action?user=<s:property value='user.id' />&removeLanguage=<s:property value='%{#language}' />" class="remove"> TRANSLATE THIS - Remove </a>
+												</td>
+											</tr>
+										</s:iterator>
+										<tr>
+											<td colspan="2">
+												<s:select 
+													id="selectedLanguage"
+													name="selectedLanguage"
+													list="getSortedLocales()" 
+													listValue="getDisplayName()"
+													headerKey=""
+													headerValue="Select Language" 
+												/>
+												<s:submit method="addLanguage" value="Add" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</li>
+							<li>
+								<label>TRANSLATE THIS - Assignment Capacity</label>
+								<s:textfield name="user.assignmentCapacity" size="3" />%
+							</li>
+						</s:if>
 
 					</ol>
 				</fieldset>
-
-
-
-
-
 
 				<fieldset class="form submit">
 					<s:if test="user.activeB">
@@ -552,14 +572,16 @@
 									<td>
 										<s:property value="browser" />
 									</td>
-									<td><s:if test="admin.id > 0">
+									<td>
+										<s:if test="admin.id > 0">
 											<s:text name="Login.LoginBy">
 												<s:param value="%{admin.name}" />
 												<s:param value="%{admin.account.name}" />
 											</s:text>
 										</s:if> <s:if test="successful == 'N'">
 											<s:text name="ProfileEdit.message.IncorrectPasswordAttempt" />
-										</s:if></td>
+										</s:if>
+									</td>
 								</tr>
 							</s:iterator>
 						</tbody>
