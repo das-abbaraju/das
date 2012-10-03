@@ -25,6 +25,7 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.report.ReportNewReqConImport.RegistrationRequestColumn;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -135,7 +136,8 @@ public class ReportNewReqConImportTest {
 		when(cell.getNumericCellValue()).thenReturn(numericCellValue);
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(numericCellValue, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, 0));
+		assertEquals(numericCellValue,
+				Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, RegistrationRequestColumn.Phone));
 	}
 
 	@Test
@@ -147,7 +149,8 @@ public class ReportNewReqConImportTest {
 		when(richText.toString()).thenReturn("CountrySubdivision");
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(countrySubdivision, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, 7));
+		assertEquals(countrySubdivision, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row,
+				RegistrationRequestColumn.CountrySubdivision));
 	}
 
 	@Test
@@ -159,7 +162,8 @@ public class ReportNewReqConImportTest {
 		when(richText.toString()).thenReturn("Country");
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(country, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, 9));
+		assertEquals(country,
+				Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, RegistrationRequestColumn.Country));
 	}
 
 	@Test
@@ -169,7 +173,8 @@ public class ReportNewReqConImportTest {
 		when(entityManager.find(OperatorAccount.class, 1)).thenReturn(operator);
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(operator, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, 10));
+		assertEquals(operator,
+				Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, RegistrationRequestColumn.RequestedBy));
 	}
 
 	@Test
@@ -179,7 +184,8 @@ public class ReportNewReqConImportTest {
 		when(entityManager.find(User.class, 1)).thenReturn(user);
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(user, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, 12));
+		assertEquals(user, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row,
+				RegistrationRequestColumn.RequestedByUser));
 	}
 
 	@Test
@@ -192,6 +198,7 @@ public class ReportNewReqConImportTest {
 		when(richText.getString()).thenReturn(now.toString());
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(now, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, 14));
+		assertEquals(now,
+				Whitebox.invokeMethod(reportNewReqConImport, "getValue", row, RegistrationRequestColumn.Deadline));
 	}
 }
