@@ -43,12 +43,12 @@ public class ReportDynamicAutocomplete extends PicsActionSupport {
 				throw new Exception("Available field undefined");
 
 			if (field.getFilterType().isEnum()) {
-				json = field.renderEnumFieldAsJson(permissions);
+				json = field.renderEnumStringFieldAsJson(permissions);
 			} else if (field.getFilterType().isAutocomplete()) {
 				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
 						searchQuery, permissions);
 			} else if (field.getFilterType().isLowMedHigh()) {
-				json = field.renderLowMedHighFieldAsJson(permissions.getLocale());
+				json = field.renderEnumOrdinalFieldAsJSON(permissions);
 			} else {
 				throw new Exception(field.getFilterType() + " not supported by list function.");
 			}

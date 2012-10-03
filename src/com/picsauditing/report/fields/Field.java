@@ -1,7 +1,6 @@
 package com.picsauditing.report.fields;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,10 +13,10 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 /**
@@ -124,35 +123,30 @@ public class Field implements JSONAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	public JSONObject renderEnumFieldAsJson(Permissions permissions) {
+	public JSONObject renderEnumStringFieldAsJson(Permissions permissions) {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
 
 		for (Object enumValue : fieldClass.getEnumConstants()) {
-			String key = enumValue.toString();
-			AccountStatus keyStatus = null;
-
-			try {
-				keyStatus = AccountStatus.valueOf(key);
+			if (!hasPermissionsForEnum((Enum<?>) enumValue, permissions)) {
+				continue;
 			}
-			catch (IllegalArgumentException iae) {
-				
-			}
-			
-			if (keyStatus == null || keyStatus.canSee(permissions)) {
-				JSONObject enumAsJson = new JSONObject();
-				enumAsJson.put("key", key);
 
-				String translationKey = fieldClass.getSimpleName().toString() + "." + key;
-				String translatedString = ReportUtil.getText(translationKey, permissions.getLocale());
+			String key = ((Enum<?>) enumValue).toString();
 
-				if (translatedString == null) {
-					translatedString = key;
-				}
+			JSONObject enumAsJson = new JSONObject();
+			enumAsJson.put("key", key);
 
+			if (enumValue instanceof Translatable) {
+				String translatedString = ReportUtil.getText(((Translatable) enumValue).getI18nKey(),
+						permissions.getLocale());
 				enumAsJson.put("value", translatedString);
-				jsonArray.add(enumAsJson);
+			} else {
+				enumAsJson.put("value", key);
 			}
+
+			jsonArray.add(enumAsJson);
+			
 		}
 
 		json.put("result", jsonArray);
@@ -161,25 +155,40 @@ public class Field implements JSONAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	public JSONObject renderLowMedHighFieldAsJson(Locale locale) {
+	public JSONObject renderEnumOrdinalFieldAsJSON(Permissions permissions) {
+		if (!fieldClass.isEnum()) {
+			throw new RuntimeException("You cannot render non-Enum fields with this method.");
+		}
+		
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
 
-		for (Integer key : LowMedHigh.getMap().keySet()) {
+		for (Object enumValue : fieldClass.getEnumConstants()) {
 			JSONObject enumAsJson = new JSONObject();
-			enumAsJson.put("key", key.toString());
-
-			LowMedHigh value = LowMedHigh.getMap().get(key);
-			String translationKey = fieldClass.getSimpleName().toString() + "." + value.toString();
-			String translatedString = ReportUtil.getText(translationKey, locale);
-
-			enumAsJson.put("value", translatedString);
+			enumAsJson.put("key", ((Enum<?>) enumValue).ordinal());
+			
+			if (enumValue instanceof Translatable) {
+				String translatedString = ReportUtil.getText(((Translatable) enumValue).getI18nKey(), 
+						permissions.getLocale());
+				enumAsJson.put("value", translatedString);				
+			} else {
+				enumAsJson.put("value", ((Enum<?>) enumValue).toString());
+			}
+			
 			jsonArray.add(enumAsJson);
 		}
 
 		json.put("result", jsonArray);
 
 		return json;
+	}
+	
+	private boolean hasPermissionsForEnum(Enum<?> enumValue, Permissions permissions) {
+		if (fieldClass.equals(AccountStatus.class)) {
+			return ((AccountStatus) enumValue).canSee(permissions);
+		}
+		
+		return true;
 	}
 
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
