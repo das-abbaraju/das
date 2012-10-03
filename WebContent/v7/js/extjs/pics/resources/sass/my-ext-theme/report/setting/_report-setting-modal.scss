@@ -181,8 +181,13 @@
 		border: 1px solid #ccc;
 		@include border-radius(5px);
 		background-color: #f1f1f2;
+		
+		.selected-account-id
+		{
+			display: none;
+		}
 	}
-
+	
 	.icon-edit
 	{
 		color: #ccc;

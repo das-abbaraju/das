@@ -46,7 +46,8 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
             if (post) {
                 var account = {
                                 name: post.get('result_name'),
-                                at: post.get('result_at')
+                                at: post.get('result_at'),
+                                id: post.get('result_id')
                               };
 
                 var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];

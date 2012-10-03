@@ -37,6 +37,30 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
     },
 
     generateEditableSettings: function () {
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '0 0 0 5'
+            },
+            dock: 'bottom',
+            items: [{
+                action: 'cancel',
+                cls: 'cancel default',
+                height: 28,
+                text: 'Cancel'
+            }, {
+                action: 'share',
+                cls: 'primary',
+                formBind: true,
+                height: 28,
+                text: 'Share'
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });
+        
         this.add({
             xtype: 'sharesearchbox',
             width: 310,
@@ -55,6 +79,9 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
                             '</p>',
                             '<p class="selected-account-at">',
                                 '{at}',
+                            '</p>',
+                             '<p class="selected-account-id">',
+                                '{id}',
                             '</p>'
                            ),
             id: 'selected_account'
@@ -66,30 +93,6 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
             labelAlign: 'right',
             labelSeparator: '',
             value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
-        });
-
-        this.add({
-            xtype: 'toolbar',
-            defaults: {
-                margin: '0 0 0 5'
-            },
-            dock: 'bottom',
-            items: [{
-                action: 'cancel',
-                cls: 'cancel default',
-                height: 28,
-                text: 'Cancel'
-            }, {
-                action: 'edit',
-                cls: 'share primary disabled',
-                formBind: true,
-                height: 28,
-                text: 'Share'
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
         });
 
         this.layout = 'auto';

@@ -68,8 +68,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
             
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
-                select: this.onReportModalSeachboxSelect,
                 specialkey: this.onReportModalSearchboxSpecialKey
+            },
+            
+            'reportsettingsmodal reportsettingsshare button[action=share]': {
+                click: this.onReportModalShareClick
             }
         });
 
@@ -85,23 +88,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
        cmp.search(term);
    },
-   
-   onReportModalSeachboxSelect: function (combo, records, eOpts) {
-       var post = records[0];
 
-       if (post) {
-           var account = {
-                           name: post.get('result_name'),
-                           at: post.get('result_at')
-                         };
-
-           var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
-           cmp.update(account);
-       }
-   },
-   
    onReportModalSearchboxSpecialKey: function (base, e, eOpts) {
-       console.log('specialkey');
        if (e.getKey() === e.ENTER) {
            var term = base.getValue();
            this.search(term);
@@ -110,11 +98,16 @@ Ext.define('PICS.controller.report.SettingsModal', {
        }
    },
 
-   onReportFavorite: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            report_id = report.get('id');
+   getReportId: function () {
+       var store = this.getReportReportsStore(),
+           report = store.first();
 
+       return report.get('id');
+   },
+   
+   onReportFavorite: function () {
+       var report_id = this.getReportId();
+       
         Ext.Ajax.request({
             url: 'ManageReports!favorite.action?reportId=' + report_id
         });
@@ -226,6 +219,34 @@ Ext.define('PICS.controller.report.SettingsModal', {
             title = cmp.getActiveTab().modal_title;
 
         modal.setTitle(title);
+    },
+
+    onReportModalShareClick: function (cmp, e, eOpts) {
+            var report_id = this.getReportId();
+
+            // Get the share component and it's top-level dom element.
+            var cmp =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0],
+                el = cmp.getEl();
+
+            // Get the account id.
+            var account_id = el.down('.selected-account-id').dom.innerHTML;
+            
+            // Get the allow value.
+            var allow_edit = el.down('.icon-edit.selected') ? true : false;
+
+            var url = 'ManageReports!share.action?'
+                + 'reportId=' + report_id
+                + '&account_id=' + account_id
+                + '&allow_edit=' + allow_edit
+
+            console.log(url);
+return;            
+            Ext.Ajax.request({
+                url: 'ManageReports!share.action?'
+                    + 'reportId=' + report_id
+                    + '&account_id=' + account_id
+                    + '&allow_edit=' + allow_edit
+            });
     },
     
     showSettingsModal: function (action) {

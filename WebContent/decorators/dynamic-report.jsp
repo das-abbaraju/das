@@ -5,6 +5,7 @@
 <s:set var="app_dir">v7/js/extjs/pics</s:set>
 <s:set var="css_dir">v7/js/extjs/pics/resources/css</s:set>
 <s:set var="extjs_dir">v7/js/extjs/pics/extjs</s:set>
+
 <s:set var="is_development_mode" value="false" />
 
 <!DOCTYPE html>
