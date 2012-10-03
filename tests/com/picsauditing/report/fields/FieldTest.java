@@ -2,7 +2,6 @@ package com.picsauditing.report.fields;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +30,7 @@ public class FieldTest {
 
 	@Before
 	public void setUp() {
-		field = new Field(null, null, null);
+		field = new Field("");
 	}
 
 	@Test
@@ -43,11 +42,8 @@ public class FieldTest {
 	public void testToJsonObject_WriteNoFieldsIfNotPresent() {
 		JSONObject json = field.toJSONObject();
 
-		assertNull(json.get("name"));
 		assertNull(json.get("url"));
 		assertNull(json.get("text"));
-		assertNull(json.get("type"));
-		assertNull(json.get("filterType"));
 	}
 
 	@Test
@@ -55,12 +51,6 @@ public class FieldTest {
 		JSONObject json = field.toJSONObject();
 
 		assertEquals(200, json.get("width"));
-	}
-
-	@Test
-	public void testToJsonObject_HiddenIfCreatedWithNameEndsInId() {
-		field = new Field(name + "id", null, null);
-		assertFalse(field.isVisible());
 	}
 
 	@Test
@@ -76,8 +66,8 @@ public class FieldTest {
 
 	@Test
 	public void testToJsonObject_WriteAllFieldsIfPresent() {
-		FilterType filterType = FilterType.Date;
-		field = new Field(name, null, filterType);
+		FieldType type = FieldType.Date;
+		field = new Field(name, null, type);
 		field.setText(text);
 		field.setWidth(width);
 		field.setUrl(url);
@@ -89,24 +79,16 @@ public class FieldTest {
 		assertEquals(width, json.get("width"));
 		assertEquals(url, json.get("url"));
 		assertEquals(text, json.get("text"));
-		assertEquals(filterType.getFieldType().toString().toLowerCase(), json.get("type"));
-		assertEquals(filterType.toString(), json.get("filterType"));
-	}
-
-	@Test
-	public void testToJsonObject_NoTypeIfAuto() {
-		JSONObject json = field.toJSONObject();
-
-		assertNull(json.get("type"));
+		assertEquals(type.getDisplayType().toString().toLowerCase(), json.get("type"));
+		assertEquals(type.getFilterType().toString(), json.get("filterType"));
 	}
 
 	@Test
 	public void testToJsonObject_TypeIfNotAuto() {
-		field = new Field(null, null, FilterType.Integer);
+		field = new Field("IntegerField", null, FieldType.Integer);
 
 		JSONObject json = field.toJSONObject();
-
-		assertNotNull(json.get("type"));
+		assertEquals("integer", json.get("type"));
 	}
 
 	@Test
@@ -156,7 +138,7 @@ public class FieldTest {
 
 	@Test
 	public void testGetDependentFields_UrlSingle() {
-		field = new Field("contractorName", "a.name", FilterType.AccountName);
+		field = new Field("contractorName", "a.name", FieldType.String);
 		field.setUrl("Test.action?id={accountID}");
 
 		Set<String> dependentFields = field.getDependentFields();
@@ -167,7 +149,7 @@ public class FieldTest {
 
 	@Test
 	public void testGetDependentFields_UrlDouble() {
-		field = new Field("contractorName", "a.name", FilterType.AccountName);
+		field = new Field("contractorName", "a.name", FieldType.String);
 		field.setUrl("Test.action?id={accountID}&name={reportName}");
 
 		Set<String> dependentFields = field.getDependentFields();

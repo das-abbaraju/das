@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
 
 import com.picsauditing.report.Filter;
@@ -55,7 +55,7 @@ public class FilterTest {
 	@Test
 	public void testFilterEmpty() throws ReportValidationException {
 		filter.setFieldName("FieldName");
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
 		filter.setOperator(QueryFilterOperator.Empty);
 
 		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
@@ -64,7 +64,7 @@ public class FilterTest {
 	@Test
 	public void testFilterWithValue() throws ReportValidationException {
 		filter.setFieldName("FieldName");
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
 		filter.getValues().add("Trevor's");
 
 		assertEquals("fieldName = 'Trevor\\'s'", filter.getSqlForFilter());

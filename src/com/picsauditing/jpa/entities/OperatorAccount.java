@@ -29,7 +29,7 @@ import org.hibernate.annotations.Where;
 
 import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
@@ -192,7 +192,7 @@ public class OperatorAccount extends Account {
 		this.oshaType = oshaType;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Boolean)
 	public boolean isPrimaryCorporate() {
 		return primaryCorporate;
 	}
@@ -201,7 +201,7 @@ public class OperatorAccount extends Account {
 		this.primaryCorporate = primaryCorporate;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Boolean)
 	public boolean isAutoApproveInsurance() {
 		return autoApproveInsurance;
 	}
@@ -275,7 +275,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Date)
 	public Date getDiscountExpiration() {
 		return discountExpiration;
 	}

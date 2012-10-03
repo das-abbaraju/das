@@ -19,7 +19,7 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
@@ -69,7 +69,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.ClientSiteMonitoringAnAudit, i18nKeyPrefix = "AuditStatus")
+	@ReportField(type = FieldType.AuditStatus, category = FieldCategory.ClientSiteMonitoringAnAudit)
 	public AuditStatus getStatus() {
 		return status;
 	}
@@ -167,7 +167,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.flag = flag;
 	}
 
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.Date, category = FieldCategory.ClientSiteMonitoringAnAudit)
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
@@ -176,7 +176,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.statusChangedDate = statusChangedDate;
 	}
 
-	@ReportField(filterType = FilterType.Integer, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.ClientSiteMonitoringAnAudit)
 	public int getPercentComplete() {
 		return percentComplete;
 	}
@@ -223,7 +223,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	}
 	
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.ClientSiteMonitoringAnAudit, i18nKeyPrefix = "AuditSubStatus")
+	@ReportField(type = FieldType.AuditSubStatus, category = FieldCategory.ClientSiteMonitoringAnAudit)
 	public AuditSubStatus getAuditSubStatus() {
 		return auditSubStatus;
 	}

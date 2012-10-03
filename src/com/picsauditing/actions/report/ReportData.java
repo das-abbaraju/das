@@ -32,17 +32,21 @@ public class ReportData extends PicsActionSupport {
 	private String debugSQL = "";
 
 	public String execute() {
+		SelectSQL sql = null;
 		try {
 			ReportModel.validate(report);
-			SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
+			sql = new SqlBuilder().initializeSql(report, permissions);
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 			getData(sql.toString());
 		} catch (ReportValidationException error) {
 			writeJsonError(error.getMessage());
 		} catch (Exception error) {
 			logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
-			if (permissions.has(OpPerms.Debug)) {
+			if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
 				writeJsonError(error);
+				if (sql != null) {
+					json.put("sql", sql.toString());
+				}
 			} else {
 				writeJsonError("Invalid Query");
 			}

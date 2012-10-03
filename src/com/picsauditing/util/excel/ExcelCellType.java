@@ -29,13 +29,10 @@ public enum ExcelCellType {
 	}
 
 	public static ExcelCellType convert(Field field) {
-		if (field.getType() == null)
-			return String;
-
 		switch (field.getType()) {
 		case Date:
 			return Date;
-		case Int:
+		case Integer:
 			return Integer;
 		case Float:
 			return Double;

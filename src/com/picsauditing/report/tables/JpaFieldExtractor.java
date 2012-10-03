@@ -27,7 +27,6 @@ public class JpaFieldExtractor {
 			field.setFieldClass(method.getReturnType());
 			String fieldName = stripGetFromMethodName(method.getName());
 			field.setName(fieldName);
-			field.setType(fieldAnnotation.filterType().getFieldType());
 			fields.add(field);
 
 			if (!Strings.isEmpty(fieldAnnotation.sql())) {

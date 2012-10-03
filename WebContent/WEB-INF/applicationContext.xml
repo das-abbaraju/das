@@ -166,7 +166,6 @@
 	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
 	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
 	<bean id="ReportModel" class="com.picsauditing.model.ReportModel" />
-	<bean id="ReportFilterAutocompleterFactory" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleterFactory" />
 	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 

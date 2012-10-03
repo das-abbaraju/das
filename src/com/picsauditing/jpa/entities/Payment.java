@@ -13,11 +13,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.braintree.CreditCard;
 
+@SuppressWarnings("serial")
 @Entity
 @DiscriminatorValue(value = "P")
 public class Payment extends Transaction {
@@ -31,7 +32,7 @@ public class Payment extends Transaction {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.PaymentMethod, importance = FieldImportance.Average)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
@@ -40,7 +41,7 @@ public class Payment extends Transaction {
 		this.paymentMethod = paymentMethod;
 	}
 
-	@ReportField(filterType = FilterType.String)
+	@ReportField(type = FieldType.String)
 	public String getCheckNumber() {
 		return checkNumber;
 	}
@@ -49,7 +50,7 @@ public class Payment extends Transaction {
 		this.checkNumber = checkNumber;
 	}
 
-	@ReportField(filterType = FilterType.String)
+	@ReportField(type = FieldType.String)
 	public String getTransactionID() {
 		return transactionID;
 	}
@@ -59,7 +60,7 @@ public class Payment extends Transaction {
 	}
 
 	@Column(name = "ccNumber")
-	@ReportField(filterType = FilterType.String)
+	@ReportField(type = FieldType.String)
 	public String getCcNumber() {
 		return ccNumber;
 	}

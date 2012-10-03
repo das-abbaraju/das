@@ -13,7 +13,6 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             Ext.Error.raise('Invalid filter record');
         }
 
-        // TODO: shouldn't the server do this?
         this.record.set('operator', 'In');
 
         var list = this.createList(this.record);
@@ -39,8 +38,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
     },
 
     getStoreForList: function (record) {
-        var url = Ext.Object.fromQueryString(document.location.search);
-        var name = record.get('name');
+        var fieldType = record.getAvailableField().get('fieldType');
 
         return {
             fields: [{
@@ -52,8 +50,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                // TODO: why does this require a report number
-                url: 'ReportAutocomplete.action?report=' + url.report + '&fieldName=' + name,
+                url: 'ReportAutocomplete.action?fieldType=' + fieldType,
                 reader: {
                     root: 'result',
                     type: 'json'

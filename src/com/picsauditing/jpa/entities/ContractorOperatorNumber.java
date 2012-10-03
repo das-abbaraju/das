@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
@@ -45,7 +46,7 @@ public class ContractorOperatorNumber extends BaseTable {
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.AccountInformation, filterType = FilterType.Enum)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.ContractorOperatorNumberType)
 	public ContractorOperatorNumberType getType() {
 		return type;
 	}
@@ -55,7 +56,7 @@ public class ContractorOperatorNumber extends BaseTable {
 	}
 
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.AccountInformation, filterType = FilterType.String)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.String)
 	public String getValue() {
 		return value;
 	}
