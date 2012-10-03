@@ -72,13 +72,14 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
 	private static final int INITIAL_EMAIL = 83;
-	private CountrySubdivision countrySubdivision;
+
+	private Workbook workbook;
 
 	public String save() throws Exception {
 		String extension = null;
 		if (file != null && file.length() > 0) {
 			extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-			if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
+			if (!extension.toLowerCase().startsWith("xls")) {
 				file = null;
 				addActionError(getText("ReportNewReqConImport.MustBeExcel"));
 				return SUCCESS;
@@ -127,16 +128,17 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
 	private void importData(File file) {
 		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
-		Workbook wb = null;
 
 		try {
-			wb = WorkbookFactory.create(new FileInputStream(file));
+			if (workbook == null) {
+				workbook = WorkbookFactory.create(new FileInputStream(file));
+			}
 
-			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-				Sheet sheet = wb.getSheetAt(i);
+			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				Sheet sheet = workbook.getSheetAt(i);
 				for (Row row : sheet) {
 					if (skipHeaderRow(row)) {
 						continue;
@@ -166,7 +168,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				crr.contactByEmail();
 				crrDAO.save(crr);
 
-				if (crr.getRequestedBy().getId() != 23325){
+				if (crr.getRequestedBy().getId() != 23325) {
 					prependToRequestNotes(notes, crr);
 					sendEmail(crr);
 				}
@@ -175,7 +177,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));
 		}
 	}
-	
+
 	private boolean skipHeaderRow(Row row) {
 		Cell cell = row.getCell(0);
 		if (cell != null) {
@@ -187,7 +189,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -316,8 +318,10 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		crr.setAddress(importedAddress);
 		crr.setCity(importedCity);
-		if ((importedCountrySubdivision != null && !importedCountrySubdivision.equals(crr.getCountrySubdivision())) || (crr.getCountrySubdivision() == null && importedCountrySubdivision!=null)){
-			CountrySubdivision importedCountrySubdivisionObj = countrySubdivisionDAO.find(importedCountrySubdivision.toString());
+		if ((importedCountrySubdivision != null && !importedCountrySubdivision.equals(crr.getCountrySubdivision()))
+				|| (crr.getCountrySubdivision() == null && importedCountrySubdivision != null)) {
+			CountrySubdivision importedCountrySubdivisionObj = countrySubdivisionDAO.find(importedCountrySubdivision
+					.toString());
 			crr.setCountrySubdivision(importedCountrySubdivisionObj);
 		}
 
@@ -423,33 +427,35 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		return results.size();
 	}
 
-	private Object getValue(Row row, int cell) {
-		Object value = null;
-
-		if (row.getCell(cell) != null) {
-			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
-				value = row.getCell(cell).getNumericCellValue();
-			else
-				value = row.getCell(cell).getRichStringCellValue().getString();
-
-			if (cell == 7 && !Strings.isEmpty(value.toString()))
-				value = countrySubdivisionDAO.find(value.toString());
-			if (cell == 9 && !Strings.isEmpty(value.toString()))
-				value = countryDAO.find(value.toString());
-			if (cell == 10 && !Strings.isEmpty(value.toString()))
-				value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
-			if (cell == 12 && !Strings.isEmpty(value.toString()))
-				value = userDAO.find((int) Double.parseDouble(value.toString()));
-			if (cell == 14 && !Strings.isEmpty(value.toString()))
-				value = row.getCell(cell).getDateCellValue();
-
-			if (isDebugging())
-				logger.debug("{}:{}", cell, value);
-
-			if (value != null && value.toString() == "")
-				value = null;
+	private Object getValue(Row row, int cellIndex) {
+		Cell cell = row.getCell(cellIndex);
+		if (cell != null) {
+			try {
+				switch (cellIndex) {
+				case 7:
+					return countrySubdivisionDAO.find(cell.getRichStringCellValue().getString());
+				case 9:
+					return countryDAO.find(cell.getRichStringCellValue().getString());
+				case 10:
+					return accountDAO.find((int) cell.getNumericCellValue(), "Operator");
+				case 12:
+					return userDAO.find((int) cell.getNumericCellValue());
+				case 14:
+					return cell.getDateCellValue();
+				default:
+					if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+						return cell.getNumericCellValue();
+					} else {
+						return cell.getRichStringCellValue().getString();
+					}
+				}
+			} catch (Exception exception) {
+				logger.error("Exception trying to parse cell {} in row {} from file {}\n{}", new Object[] { cellIndex,
+						row.getRowNum(), fileFileName, exception });
+				addActionError(String.format("Could not parse cell %d in row %d", cellIndex, row.getRowNum()));
+			}
 		}
 
-		return value;
+		return null;
 	}
 }
