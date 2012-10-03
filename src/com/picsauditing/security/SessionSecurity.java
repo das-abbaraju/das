@@ -30,8 +30,11 @@ public class SessionSecurity {
 			if (suggestedSecretKeyspec == null) {
 				suggestedSecretKeyspec = EncodedKey.newServerSecretKey();
 			}
-			logger.error("server is missing a secret key specification. Here's a suggestion: {}",
+			logger.error("Server is missing a secret key specification. Here's a suggestion: {}",
 					suggestedSecretKeyspec);
+			System.out.println("Server is missing a secret key specification. Here's a suggestion: "
+					+ suggestedSecretKeyspec);
+			System.exit(-1);
 			return null;
 		}
 		byte[] keyspec = Base64.decode(secretKeyspec);
