@@ -3,11 +3,14 @@ package com.picsauditing.toggle;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
-import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private final Logger logger = LoggerFactory.getLogger(FeatureToggleCheckerGroovy.class);
@@ -25,6 +28,12 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 	private String scriptBaseClass = "com.picsauditing.toggle.FeatureToggleExpressions";
 	private CacheManager cacheManager;
 	private Permissions permissions;
+	private Map<String, Object> dynamicToggleVariables = new HashMap<String, Object>();
+
+	@Autowired
+	private FeatureToggleProvider featureToggleProvider;
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
 
 	public FeatureToggleCheckerGroovy() {
 	}
@@ -33,17 +42,24 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		this.permissions = permissions;
 	}
 
-	@Autowired
-	private FeatureToggleProvider featureToggleProvider;
-	@Autowired
-	private AppPropertyDAO appPropertyDAO;
-
 	public boolean isFeatureEnabled(String toggleName) {
 		Script script = script(toggleName);
 		if (script == null) {
 			return false;
 		}
 		return runScript(toggleName, script);
+	}
+
+	public void addToggleVariable(String name, Object value) {
+		if (Strings.isEmpty(name)) {
+			logger.error("A dynamic toggle variable must have a name");
+			return;
+		}
+		if (value == null) {
+			dynamicToggleVariables.remove(name);
+		} else {
+			dynamicToggleVariables.put(name, value);
+		}
 	}
 
 	private Script script(String toggleName) {
@@ -103,6 +119,9 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		Binding binding = new Binding();
 		binding.setVariable("appPropertyDAO", appPropertyDAO);
 		binding.setVariable("permissions", getPermissions());
+		for (String key : dynamicToggleVariables.keySet()) {
+			binding.setVariable(key, dynamicToggleVariables.get(key));
+		}
 		return binding;
 	}
 
