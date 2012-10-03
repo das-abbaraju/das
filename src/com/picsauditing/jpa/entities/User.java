@@ -32,7 +32,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.IndexOverrideWeight;
@@ -192,7 +192,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Column(name = "email", length = 100)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
-	@ReportField(filterType = FilterType.String, width = 150, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.String, width = 150, importance = FieldImportance.Average)
 	public String getEmail() {
 		return email;
 	}
@@ -212,7 +212,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Column(name = "name", length = 255, nullable = false)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.String, width = 150, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.String, width = 150, importance = FieldImportance.Required)
 	public String getName() {
 		return name;
 	}
@@ -223,7 +223,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Boolean)
+	@ReportField(type = FieldType.Boolean)
 	public YesNo getIsActive() {
 		return isActive;
 	}
@@ -242,7 +242,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.DateTime)
+	@ReportField(type = FieldType.DateTime)
 	public Date getLastLogin() {
 		return lastLogin;
 	}
@@ -355,7 +355,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Column(name = "phone", length = 50)
-	@ReportField(filterType = FilterType.String, width = 125, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.String, width = 125, importance = FieldImportance.Average)
 	public String getPhone() {
 		return phone;
 	}
@@ -375,7 +375,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Column(length = 15)
-	@ReportField(filterType = FilterType.String, width = 125, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.String, width = 125, importance = FieldImportance.Average)
 	public String getFax() {
 		return fax;
 	}

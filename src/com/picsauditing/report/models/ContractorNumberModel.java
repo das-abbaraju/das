@@ -49,7 +49,7 @@ public class ContractorNumberModel extends AbstractModel {
 		if (accountStatusFilter != null) {
 			for (String filterValue : accountStatusFilter.getValues()) {
 				AccountStatus filterStatus = AccountStatus.valueOf(filterValue);
-				if (filterStatus.canSee(permissions)) {
+				if (filterStatus.isVisibleTo(permissions)) {
 					statuses.add(filterStatus);
 				}
 			}

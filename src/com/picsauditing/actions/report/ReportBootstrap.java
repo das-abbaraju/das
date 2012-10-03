@@ -1,7 +1,5 @@
 package com.picsauditing.actions.report;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -17,31 +15,19 @@ public class ReportBootstrap extends PicsActionSupport {
 	private String name;
 	private int report;
 
-	private static final Logger logger = LoggerFactory.getLogger(ReportBootstrap.class);
-
 	public String execute() {
-		String status = SUCCESS;
-
 		if (report == 0) {
 			name = "Missing report ID parameter";
 			return SUCCESS;
 		}
 
-		// No matter what junk we get in the url, redirect
-		try {
-			// TODO: Should we have an error in the JSON Returned on the data call and the front-end display
-			//       an error to the user?
-			if (!reportModel.canUserViewAndCopy(permissions, report)) {
-				String errorMessage = "You do not have permissions to view that report.";
-				ActionContext.getContext().getSession().put("errorMessage", errorMessage);
-			}
-			name = "Loading Report " + report + " ...";
-		} catch (Exception e) {
-			// Probably a null pointer
-			logger.error(e.toString());
+		if (!reportModel.canUserViewAndCopy(permissions, report)) {
+			String errorMessage = "You do not have permissions to view that report.";
+			ActionContext.getContext().getSession().put("errorMessage", errorMessage);
 		}
+		name = "Loading Report " + report + " ...";
 
-		return status;
+		return SUCCESS;
 	}
 
 	public String getReportName() {

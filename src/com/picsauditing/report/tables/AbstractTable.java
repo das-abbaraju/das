@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 
 public abstract class AbstractTable {
 	private String sqlTableName;
@@ -57,8 +57,12 @@ public abstract class AbstractTable {
 		return field;
 	}
 
-	protected Field addPrimaryKey(FilterType filterType) {
-		Field field = new Field("ID", "id", filterType);
+	protected Field addPrimaryKey() {
+		return addPrimaryKey(FieldType.Integer);
+	}
+
+	protected Field addPrimaryKey(FieldType type) {
+		Field field = new Field("ID", "id", type);
 		field.setImportance(FieldImportance.Required);
 		return addField(field);
 	}

@@ -28,7 +28,11 @@ public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_COHS = 2086; // Canada
 	public static final int CAT_ID_UK_HSE = 2092; // U.K.
 	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
-
+	
+	public static final int CAT_ID_OSHA_PARENT = 1153;
+	public static final int CAT_ID_COHS_PARENT = 1155;
+	public static final int CAT_ID_UK_HSE_PARENT = 1690;
+	
 	// Arrays can have their contents modified during runtime, so make this an unmodifiable set. Since it is only
 	// loaded once, there is no runtime performance hit.
 	public static final Set<Integer> SAFETY_STATISTICS_CATEGORY_IDS = 
@@ -47,11 +51,10 @@ public class OshaAudit implements OshaVisitable {
 	}
 	
 	public static OshaType convertCategoryToOshaType(int catId) {
-		OshaType type = OshaType.OSHA;
+		OshaType type = null;
 
 		switch (catId) {
 			case CAT_ID_OSHA:
-			case CAT_ID_OSHA_ADDITIONAL:
 				type = OshaType.OSHA;
 				break;
 			case CAT_ID_MSHA:
@@ -76,13 +79,33 @@ public class OshaAudit implements OshaVisitable {
 	private ContractorAudit contractorAudit;
 
 	private Map<OshaType, SafetyStatistics> safetyStatisticsMap;
+	private Map<OshaType, Boolean> dispaySafetyStatisticsMap;
 
 	public OshaAudit(ContractorAudit contractorAudit) {
 		assert (contractorAudit.getAuditType().isAnnualAddendum());
 
 		this.contractorAudit = contractorAudit;
+		dispaySafetyStatisticsMap = new HashMap<OshaType, Boolean>();
+		initializeDispaySafetyStatistics();
 		safetyStatisticsMap = new HashMap<OshaType, SafetyStatistics>();
 		initializeStatistics();
+	}
+
+	private void initializeDispaySafetyStatistics() {
+		dispaySafetyStatisticsMap.put(OshaType.OSHA, false);
+		dispaySafetyStatisticsMap.put(OshaType.COHS, false);
+		dispaySafetyStatisticsMap.put(OshaType.UK_HSE, false);
+		for (AuditCatData category : getCategories()) {
+			if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
+				dispaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
+			}
+			if (category.getCategory().getId() == CAT_ID_COHS_PARENT) {
+				dispaySafetyStatisticsMap.put(OshaType.COHS, category.isApplies());
+			}
+			if (category.getCategory().getId() == CAT_ID_UK_HSE_PARENT) {
+				dispaySafetyStatisticsMap.put(OshaType.UK_HSE, category.isApplies());
+			}
+		}
 	}
 
 	public String getAuditFor() {
@@ -110,13 +133,19 @@ public class OshaAudit implements OshaVisitable {
 		int year = new Integer(contractorAudit.getAuditFor());
 		for (AuditCatData category : getCategories()) {
 			OshaType oshaType = convertCategoryToOshaType(category.getCategory().getId());
-			if (oshaType != null && category.isApplies()) {
-				if (oshaType == OshaType.OSHA) {
-					safetyStatistics = new OshaStatistics(year, contractorAudit.getData());
-				} else if (oshaType == OshaType.COHS) {
-					safetyStatistics = new CohsStatistics(year, contractorAudit.getData());
-				} else if (oshaType == OshaType.UK_HSE) {
-					safetyStatistics = new UkStatistics(year, contractorAudit.getData());
+			if (oshaType != null) {
+				if (dispaySafetyStatisticsMap.get(oshaType) != null
+						&& dispaySafetyStatisticsMap.get(oshaType).equals(true)) {
+					if (oshaType == OshaType.OSHA) {
+						safetyStatistics = new OshaStatistics(year,
+								contractorAudit.getData(), category.isApplies());
+					} else if (oshaType == OshaType.COHS) {
+						safetyStatistics = new CohsStatistics(year,
+								contractorAudit.getData(), category.isApplies());
+					} else if (oshaType == OshaType.UK_HSE) {
+						safetyStatistics = new UkStatistics(year,
+								contractorAudit.getData(), category.isApplies());
+					}
 				}
 
 				if (safetyStatistics != null) {

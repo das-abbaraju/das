@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 
 public class ContractorAuditOperatorTable extends AbstractTable {
 	public static final String Audit = "Audit";
@@ -10,10 +10,10 @@ public class ContractorAuditOperatorTable extends AbstractTable {
 
 	public ContractorAuditOperatorTable() {
 		super("contractor_audit_operator");
-		addPrimaryKey(FilterType.Integer);
+		addPrimaryKey();
 
 		Field statusSubstatus = new Field("StatusSubstatus", "CONCAT(" + ReportOnClause.ToAlias
-				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FilterType.String);
+				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FieldType.String);
 		addField(statusSubstatus);
 
 		addFields(ContractorAuditOperator.class);

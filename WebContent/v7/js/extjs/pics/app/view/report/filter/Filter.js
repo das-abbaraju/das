@@ -145,51 +145,28 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     getFilterClassByType: function (type) {
         var cls;
-
+        
         switch (type) {
-            // TODO: this is retarded the backend architecture is invalid
             case 'AccountID':
-                cls = 'PICS.view.report.filter.base.AccountIDFilter';
-                break;
-            case 'AccountName':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
             case 'Autocomplete':
-                cls = 'PICS.view.report.filter.base.AutocompleteFilter';
-                break;
             case 'Boolean':
-                cls = 'PICS.view.report.filter.base.BooleanFilter';
-                break;
             case 'Date':
+            case 'Float':
+            case 'Integer':
+            case 'String':
+            case 'UserID':
+                cls = 'PICS.view.report.filter.base.' + type + 'Filter';
+                break;
+            case 'ShortList':
+                // TODO Rename ListFilter to ShortListFilter
+                cls = 'PICS.view.report.filter.base.ListFilter';
+                break;
+            case 'DateTime':
+                // TODO add in a DateTime filter type
                 cls = 'PICS.view.report.filter.base.DateFilter';
                 break;
-            case 'DaysAgo':
-                // Add new filter for days ago for Steps to Green report
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'Enum':
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'Float':
-                cls = 'PICS.view.report.filter.base.FloatFilter';
-                break;
-            case 'Integer':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'LowMedHigh':
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'Number':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'String':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
-            case 'UserID':
-                cls = 'PICS.view.report.filter.base.UserIDFilter';
-                break;
             default:
-                cls = null;
+                cls = 'PICS.view.report.filter.base.StringFilter';
                 break;
         }
 

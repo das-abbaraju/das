@@ -11,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.report.Column;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
 
 public class ReportRow {
@@ -64,7 +63,7 @@ public class ReportRow {
 			if (!containsColumnWithFieldName(fieldName)) {
 				Object value = dynaBean.get(fieldName);
 				Column newColumn = new Column(fieldName);
-				newColumn.setField(new Field(fieldName, fieldName, FilterType.String));
+				newColumn.setField(new Field(fieldName));
 				
 				cells.put(newColumn, new ReportCell(this, newColumn, value));
 			}

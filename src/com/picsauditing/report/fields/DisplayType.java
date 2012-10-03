@@ -3,11 +3,8 @@ package com.picsauditing.report.fields;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * reference http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Field
- */
-public enum ExtFieldType {
-	Auto, String, Int, Float, Boolean, Date;
+public enum DisplayType {
+	String, Integer, Float, Number, Boolean, Date, DateTime, Flag;
 
 	public List<QueryMethod> getFunctions() {
 		List<QueryMethod> list = new ArrayList<QueryMethod>();
@@ -20,12 +17,6 @@ public enum ExtFieldType {
 	}
 
 	private boolean isCanUseFunction(QueryMethod function) {
-		if (this == Auto) {
-			// We might want to treat this as a string but I'm not sure.
-			// For now, I'm going to say that no functions are allowed.
-			return false;
-		}
-
 		if (isFunctionValidForAllTypes(function)) {
 			return true;
 		}
@@ -43,7 +34,7 @@ public enum ExtFieldType {
 		}
 
 		if (isNumericOnlyFunction(function)) {
-			return (this == Int || this == Float);
+			return (this == Integer || this == Float);
 		}
 
 		return false;

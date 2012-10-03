@@ -43,7 +43,7 @@ import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.ReportOnClause;
@@ -71,7 +71,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private CountrySubdivision billingCountrySubdivision;
 	private Country billingCountry;
 	private String billingZip;
-	private String ccEmail;
 	private Date membershipDate;
 	private int payingFacilities;
 	private User auditor;
@@ -220,7 +219,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "taxID", length = 100)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer, requiredPermissions = OpPerms.AllContractors)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, requiredPermissions = OpPerms.AllContractors)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -317,7 +316,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "safetyRisk", nullable = false)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.LowMedHigh)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -327,7 +326,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Date)
 	public Date getSafetyRiskVerified() {
 		return safetyRiskVerified;
 	}
@@ -337,7 +336,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "productRisk", nullable = false)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.LowMedHigh)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
 	}
@@ -347,7 +346,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Date)
 	public Date getProductRiskVerified() {
 		return productRiskVerified;
 	}
@@ -357,7 +356,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "transportationRisk", nullable = false)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.LowMedHigh)
 	public LowMedHigh getTransportationRisk() {
 		return transportationRisk;
 	}
@@ -367,7 +366,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Date)
 	public Date getTransportationRiskVerified() {
 		return transportationRiskVerified;
 	}
@@ -415,7 +414,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * grant "free" lifetime accounts to certain contractors. Yes or No
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE "
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE "
 			+ ReportOnClause.ToAlias + ".mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
 	public String getMustPay() {
 		return this.mustPay;
@@ -431,7 +430,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Column(name = "payingFacilities", nullable = false)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, requiredPermissions = OpPerms.Billing)
 	public int getPayingFacilities() {
 		return this.payingFacilities;
 	}
@@ -456,7 +455,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * 
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.Billing)
 	public boolean isCcOnFile() {
 		return ccOnFile;
 	}
@@ -465,7 +464,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.ccOnFile = ccOnFile;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Date, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date, requiredPermissions = OpPerms.Billing)
 	public Date getCcExpiration() {
 		return ccExpiration;
 	}
@@ -517,7 +516,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.String, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.String, requiredPermissions = OpPerms.Billing)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}
@@ -533,7 +532,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.AccountInformation, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date)
 	public Date getMembershipDate() {
 		return this.membershipDate;
 	}
@@ -562,7 +561,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	@ReportField(category = FieldCategory.AccountInformation, filterType = FilterType.Date, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.AccountInformation, type = FieldType.Date, requiredPermissions = OpPerms.Billing)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}
@@ -763,7 +762,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return daysAgo.after(tradesUpdated);
 	}
 
-	@ReportField(filterType = FilterType.Integer, category = FieldCategory.CompanyStatistics)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.CompanyStatistics)
 	public int getScore() {
 		return score;
 	}
@@ -864,7 +863,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, requiredPermissions = OpPerms.AllContractors)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.AllContractors)
 	public boolean isRenew() {
 		return renew;
 	}
@@ -880,7 +879,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Date, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Date, requiredPermissions = OpPerms.Billing)
 	public Date getLastUpgradeDate() {
 		return lastUpgradeDate;
 	}
@@ -889,7 +888,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.lastUpgradeDate = lastUpgradeDate;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Integer, requiredPermissions = OpPerms.Billing)
 	public BigDecimal getBalance() {
 		return balance;
 	}
@@ -1407,7 +1406,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}
@@ -1433,7 +1432,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Enum, requiredPermissions = OpPerms.AllContractors)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.AccountLevel, requiredPermissions = OpPerms.AllContractors)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
 	}

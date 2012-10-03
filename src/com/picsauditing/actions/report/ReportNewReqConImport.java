@@ -2,11 +2,9 @@ package com.picsauditing.actions.report;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,63 +20,53 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
-import com.picsauditing.dao.EmailAttachmentDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.EmailAttachment;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportNewReqConImport extends PicsActionSupport {
+	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
+
 	@Autowired
 	private ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
-	private CountrySubdivisionDAO countrySubdivisionDAO;
-	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
-	private AccountDAO accountDAO;
+	private CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	private OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
 	private UserDAO userDAO;
-	@Autowired
-	protected EmailAttachmentDAO attachmentDAO;
-	@Autowired
-	protected EmailSender emailSender;
 
 	private File file;
 	private String fileContentType = null;
 	private String fileFileName = null;
 	private String fileName = null;
 
-	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
-	private static final int INITIAL_EMAIL = 83;
-	private CountrySubdivision countrySubdivision;
+	private Workbook workbook;
 
 	public String save() throws Exception {
 		String extension = null;
 		if (file != null && file.length() > 0) {
 			extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-			if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
+
+			if (!extension.toLowerCase().startsWith("xls")) {
 				file = null;
 				addActionError(getText("ReportNewReqConImport.MustBeExcel"));
 				return SUCCESS;
@@ -127,30 +115,31 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
-	private void importData(File file) {
+
+	private void importData(File file) throws Exception {
 		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
-		Workbook wb = null;
 
 		try {
-			wb = WorkbookFactory.create(new FileInputStream(file));
+			if (workbook == null) {
+				workbook = WorkbookFactory.create(new FileInputStream(file));
+			}
 
-			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
-				Sheet sheet = wb.getSheetAt(i);
+			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				Sheet sheet = workbook.getSheetAt(i);
 				for (Row row : sheet) {
 					if (skipHeaderRow(row)) {
 						continue;
 					}
 
 					// skip empty row: Assuming that no company name = empty row
-					if (getValue(row, 0) == null)
+					if (getValue(row, RegistrationRequestColumn.Name) == null) {
 						continue;
+					}
 
-					ContractorRegistrationRequest crr = createdRegistrationRequest(row);
+					ContractorRegistrationRequest request = createdRegistrationRequest(row);
+					checkRequestForErrors(row.getRowNum(), request);
 
-					checkRequestForErrors(row.getRowNum(), crr);
-
-					requests.add(crr);
+					requests.add(request);
 				}
 			}
 		} catch (Exception e) {
@@ -166,16 +155,16 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				crr.contactByEmail();
 				crrDAO.save(crr);
 
-				if (crr.getRequestedBy().getId() != 23325){
+				if (crr.getRequestedBy().getId() != 23325) {
 					prependToRequestNotes(notes, crr);
-					sendEmail(crr);
+					emailHelper.sendInitialEmail(crr, getFtpDir());
 				}
 			}
 
 			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));
 		}
 	}
-	
+
 	private boolean skipHeaderRow(Row row) {
 		Cell cell = row.getCell(0);
 		if (cell != null) {
@@ -187,195 +176,88 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
-	private void prependToRequestNotes(String note, ContractorRegistrationRequest newContractor) {
-		if (newContractor != null && note != null)
-			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note
-					+ (newContractor.getNotes() != null ? "\n\n" + newContractor.getNotes() : ""));
-	}
-
-	public OperatorForm getForm(ContractorRegistrationRequest newContractor) {
-		if (newContractor != null && newContractor.getRequestedBy() != null) {
-			List<OperatorAccount> hierarchy = new ArrayList<OperatorAccount>();
-			hierarchy.add(newContractor.getRequestedBy());
-
-			List<Facility> corpFac = new ArrayList<Facility>(newContractor.getRequestedBy().getCorporateFacilities());
-			Collections.reverse(corpFac);
-
-			for (Facility f : corpFac) {
-				if (!f.getCorporate().equals(newContractor.getRequestedBy().getTopAccount())
-						&& !Account.PICS_CORPORATE.contains(f.getCorporate().getId()))
-					hierarchy.add(f.getCorporate());
-			}
-
-			if (!newContractor.getRequestedBy().getTopAccount().equals(newContractor.getRequestedBy())
-					&& !Account.PICS_CORPORATE.contains(newContractor.getRequestedBy().getTopAccount().getId()))
-				hierarchy.add(newContractor.getRequestedBy().getTopAccount());
-
-			for (OperatorAccount o : hierarchy) {
-				for (OperatorForm form : o.getOperatorForms()) {
-					if (form.getFormName().contains("*"))
-						return form;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	private void sendEmail(ContractorRegistrationRequest newContractor) {
-		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
-			EmailBuilder emailBuilder = prepareEmailBuilder(newContractor);
-			try {
-				EmailQueue q = emailBuilder.build();
-				emailSender.send(q);
-				OperatorForm form = getForm(newContractor);
-				if (form != null)
-					addAttachments(q, form);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private EmailBuilder prepareEmailBuilder(ContractorRegistrationRequest newContractor) {
-		EmailBuilder email = new EmailBuilder();
-		email.setToAddresses(newContractor.getEmail());
-
-		email.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
-		email.setTemplate(INITIAL_EMAIL);
-		email.addToken("newContractor", newContractor);
-		return email;
-	}
-
-	private void addAttachments(EmailQueue emailQueue, OperatorForm form) {
-		String filename = FileUtils.thousandize(form.getId()) + form.getFile();
-
-		try {
-			EmailAttachment attachment = new EmailAttachment();
-
-			File file = new File(getFtpDir() + "/files/" + filename);
-
-			byte[] bytes = new byte[(int) file.length()];
-			FileInputStream fis = new FileInputStream(file);
-			fis.read(bytes);
-
-			attachment.setFileName(getFtpDir() + "/files/" + filename);
-			attachment.setContent(bytes);
-			attachment.setFileSize((int) file.length());
-			attachment.setEmailQueue(emailQueue);
-			attachmentDAO.save(attachment);
-		} catch (Exception e) {
-			LOG.error("Unable to open file: /files/{}", filename);
+	private void prependToRequestNotes(String note, ContractorRegistrationRequest request) {
+		if (request != null && note != null) {
+			String stamp = String.format("%s - %s - %s", maskDateFormat(new Date()), permissions.getName(), note);
+			request.setNotes(stamp + (request.getNotes() != null ? "\n\n" + request.getNotes() : ""));
 		}
 	}
 
 	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
-		ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
+		ContractorRegistrationRequest request = new ContractorRegistrationRequest();
+		// Strings
+		request.setName(getString(row, RegistrationRequestColumn.Name));
+		request.setContact(getString(row, RegistrationRequestColumn.Contact));
+		request.setPhone(getString(row, RegistrationRequestColumn.Phone));
+		request.setEmail(getString(row, RegistrationRequestColumn.Email));
+		request.setTaxID(getString(row, RegistrationRequestColumn.TaxID));
+		request.setAddress(getString(row, RegistrationRequestColumn.Address));
+		request.setCity(getString(row, RegistrationRequestColumn.City));
+		request.setZip(getString(row, RegistrationRequestColumn.Zip));
+		request.setRequestedByUserOther(getString(row, RegistrationRequestColumn.RequestedByOther));
+		request.setOperatorTags(getString(row, RegistrationRequestColumn.Tags));
+		request.setReasonForRegistration(getString(row, RegistrationRequestColumn.ReasonForRegistration));
+		// Notes
+		prependToRequestNotes(getString(row, RegistrationRequestColumn.Notes), request);
+		// Other objects
+		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
+		request.setCountry((Country) getValue(row, RegistrationRequestColumn.Country));
+		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
+		request.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
+		// Country Subdivision
+		String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
 
-		String importedName = (String) getValue(row, 0);
-		String importedContact = (String) getValue(row, 1);
-		Object phoneValue = getValue(row, 2);
-		String importedEmail = (String) getValue(row, 3);
-		Object taxIDValue = getValue(row, 4);
-		String importedAddress = (String) getValue(row, 5);
-		String importedCity = (String) getValue(row, 6);
-		CountrySubdivision importedCountrySubdivision = (CountrySubdivision) getValue(row, 7);
-		Object zipValue = getValue(row, 8);
-		Country importedCountry = (Country) getValue(row, 9);
-		OperatorAccount importedRequestedBy = (OperatorAccount) getValue(row, 10);
-		Object tagValue = getValue(row, 11);
-		User importedRequestedByUser = (User) getValue(row, 12);
-		String importedRequestedByUserOther = (String) getValue(row, 13);
-		Date importedDeadline = (Date) getValue(row, 14);
-		String importedNotes = (String) getValue(row, 15);
-
-		crr.setName(importedName);
-		crr.setContact(importedContact);
-		if (phoneValue != null) {
-			if (phoneValue instanceof Double) {
-				BigDecimal phoneValueDec = new BigDecimal((Double) phoneValue);
-				crr.setPhone(phoneValueDec.toString());
-			} else {
-				crr.setPhone(phoneValue.toString());
+		if (!subdivision.contains("-")) {
+			if (request.getCountry() != null) {
+				subdivision = request.getCountry().getIsoCode() + "-" + subdivision;
 			}
+
+			request.setCountrySubdivision(countrySubdivisionDAO.find(subdivision));
 		}
+		// Defaults
+		request.setAuditColumns(permissions);
+		request.setStatus(ContractorRegistrationRequestStatus.Active);
 
-		crr.setEmail(importedEmail.trim());
-		if (taxIDValue != null) {
-			if (taxIDValue instanceof Double) {
-				BigDecimal taxIDValueDec = new BigDecimal((Double) taxIDValue);
-				crr.setTaxID(taxIDValueDec.toString());
-			} else {
-				crr.setTaxID(taxIDValue.toString());
-			}
-		}
-
-		crr.setAddress(importedAddress);
-		crr.setCity(importedCity);
-		if ((importedCountrySubdivision != null && !importedCountrySubdivision.equals(crr.getCountrySubdivision())) || (crr.getCountrySubdivision() == null && importedCountrySubdivision!=null)){
-			CountrySubdivision importedCountrySubdivisionObj = countrySubdivisionDAO.find(importedCountrySubdivision.toString());
-			crr.setCountrySubdivision(importedCountrySubdivisionObj);
-		}
-
-		if (zipValue != null) {
-			if (zipValue instanceof Double) {
-				BigDecimal zipValueDec = new BigDecimal((Double) zipValue);
-				crr.setZip(zipValueDec.toString());
-			} else {
-				crr.setZip(zipValue.toString());
-			}
-		}
-
-		crr.setCountry(importedCountry);
-		crr.setRequestedBy(importedRequestedBy);
-		if (tagValue != null) {
-			if (tagValue instanceof Double) {
-				BigDecimal tagValueDec = new BigDecimal((Double) tagValue);
-				crr.setOperatorTags(tagValueDec.toString());
-			} else {
-				crr.setOperatorTags(tagValue.toString());
-			}
-		}
-
-		crr.setRequestedByUser(importedRequestedByUser);
-		crr.setRequestedByUserOther(importedRequestedByUserOther);
-		crr.setDeadline(importedDeadline);
-		crr.setNotes(importedNotes);
-
-		crr.setAuditColumns(permissions);
-		crr.setStatus(ContractorRegistrationRequestStatus.Active);
-		return crr;
+		return request;
 	}
 
 	private void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
-		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
+		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther())) {
 			crr.setRequestedByUserOther(null);
+		}
 
 		if (Strings.isEmpty(crr.getContact()) || crr.getCountrySubdivision() == null || crr.getCountry() == null
-				|| crr.getRequestedBy() == null)
+				|| crr.getRequestedBy() == null || Strings.isEmpty(crr.getReasonForRegistration())) {
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
+		}
 
-		if (Strings.isEmpty(crr.getEmail()))
+		if (Strings.isEmpty(crr.getEmail()) || Strings.isEmpty(crr.getPhone())) {
 			addActionError(getTextParameterized("ReportNewReqConImport.ContactInformationRequired", (j + 1)));
+		}
 
-		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
+		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null) {
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequestedByUser", (j + 1)));
+		}
 
-		if (crr.getDeadline() == null)
+		if (crr.getDeadline() == null) {
 			crr.setDeadline(DateBean.addMonths(new Date(), 2));
+		}
 
-		if (!Strings.isEmpty(crr.getNotes()))
-			crr.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + crr.getNotes());
-
-		if (crr.getContact().length() > 30)
+		if (crr.getContact().length() > 30) {
+			String oldContact = crr.getContact();
 			crr.setContact(crr.getContact().substring(0, 30));
+			prependToRequestNotes("Contact name truncated from " + oldContact, crr);
+		}
 
-		if (crr.getPhone().length() > 20)
+		if (crr.getPhone().length() > 20) {
+			String oldPhone = crr.getPhone();
 			crr.setPhone(crr.getPhone().substring(0, 20));
+			prependToRequestNotes("Phone number truncated from " + oldPhone, crr);
+		}
 	}
 
 	private int findGap(ContractorRegistrationRequest newContractor) {
@@ -423,33 +305,55 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		return results.size();
 	}
 
-	private Object getValue(Row row, int cell) {
-		Object value = null;
-
-		if (row.getCell(cell) != null) {
-			if (row.getCell(cell).getCellType() == Cell.CELL_TYPE_NUMERIC)
-				value = row.getCell(cell).getNumericCellValue();
-			else
-				value = row.getCell(cell).getRichStringCellValue().getString();
-
-			if (cell == 7 && !Strings.isEmpty(value.toString()))
-				value = countrySubdivisionDAO.find(value.toString());
-			if (cell == 9 && !Strings.isEmpty(value.toString()))
-				value = countryDAO.find(value.toString());
-			if (cell == 10 && !Strings.isEmpty(value.toString()))
-				value = accountDAO.find((int) Double.parseDouble(value.toString()), "Operator");
-			if (cell == 12 && !Strings.isEmpty(value.toString()))
-				value = userDAO.find((int) Double.parseDouble(value.toString()));
-			if (cell == 14 && !Strings.isEmpty(value.toString()))
-				value = row.getCell(cell).getDateCellValue();
-
-			if (isDebugging())
-				logger.debug("{}:{}", cell, value);
-
-			if (value != null && value.toString() == "")
-				value = null;
+	private Object getValue(Row row, RegistrationRequestColumn column) {
+		Cell cell = row.getCell(column.ordinal());
+		if (cell != null) {
+			try {
+				switch (column) {
+				case Country:
+					return countryDAO.find(cell.getRichStringCellValue().getString());
+				case RequestedBy:
+					return operatorAccountDAO.find((int) cell.getNumericCellValue());
+				case RequestedByUser:
+					return userDAO.find((int) cell.getNumericCellValue());
+				case Deadline:
+					return cell.getDateCellValue();
+				default:
+					if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+						return cell.getNumericCellValue();
+					} else {
+						return cell.getRichStringCellValue().getString();
+					}
+				}
+			} catch (Exception exception) {
+				logger.error("Exception trying to parse cell {} in row {} from file {}\n{}",
+						new Object[] { column.ordinal(), row.getRowNum(), fileFileName, exception });
+				addActionError(String.format("Could not parse cell %d in row %d as %s", column, row.getRowNum(),
+						column.toString()));
+			}
 		}
 
-		return value;
+		return null;
+	}
+
+	private String getString(Row row, RegistrationRequestColumn column) {
+		Object value = getValue(row, column);
+
+		if (value != null) {
+			if (value instanceof Double) {
+				BigDecimal valueDecimal = new BigDecimal((Double) value);
+				return valueDecimal.toString();
+			}
+
+			if (!Strings.isEmpty(value.toString())) {
+				return value.toString().trim();
+			}
+		}
+
+		return null;
+	}
+
+	protected enum RegistrationRequestColumn {
+		Name, Contact, Phone, Email, TaxID, Address, City, CountrySubdivision, Zip, Country, RequestedBy, Tags, RequestedByUser, RequestedByOther, Deadline, ReasonForRegistration, Notes
 	}
 }

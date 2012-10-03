@@ -1,14 +1,14 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 
 public class UserTable extends AbstractTable {
 	public static final String Account = "Account";
 
 	public UserTable() {
 		super("users");
-		addPrimaryKey(FilterType.UserID);
+		addPrimaryKey(FieldType.UserID);
 		addFields(User.class);
 	}
 

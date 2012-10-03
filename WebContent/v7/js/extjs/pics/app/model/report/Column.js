@@ -67,8 +67,9 @@ Ext.define('PICS.model.report.Column', {
                 grid_column.width = 50;
 
                 break;
-            case 'date':
             case 'datetime':
+                // TODO add in datetime display
+            case 'date':
                 grid_column.xtype = 'datecolumn';
                 grid_column.format = 'n/j/Y';
 
@@ -79,6 +80,8 @@ Ext.define('PICS.model.report.Column', {
                 grid_column.width = 75;
 
                 break;
+            case 'number':
+                // TODO add in number display
             case 'int':
                 grid_column.xtype = 'numbercolumn';
                 grid_column.align = 'right';
@@ -86,6 +89,8 @@ Ext.define('PICS.model.report.Column', {
                 grid_column.width = 75;
 
                 break;
+            case 'flag':
+                // TODO add in the flag display
             default:
                 break;
         }
@@ -93,10 +98,6 @@ Ext.define('PICS.model.report.Column', {
         if (field.get('url')) {
             grid_column.xtype = 'linkcolumn';
             grid_column.url = field.get('url');
-        }
-
-        if (field.get('renderer')) {
-            grid_column.renderer = field.get('renderer');
         }
 
         return grid_column;

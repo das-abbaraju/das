@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.util.Strings;
 
@@ -36,7 +36,7 @@ public class ReportElement implements JSONable {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
 		if (field == null) {
-			Field fakeField = new Field(fieldName, "", FilterType.String);
+			Field fakeField = new Field(fieldName, "", FieldType.String);
 			json.put("field", fakeField.toJSONObject());
 		} else {
 			json.put("field", field.toJSONObject());
