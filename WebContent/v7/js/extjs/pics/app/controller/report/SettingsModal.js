@@ -246,6 +246,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         // Get the record id.
         var record_id = reportsettingsshare.record_id
+
+        // Abort if no account has been selected.
+        if (typeof record_id == 'undefined') {
+            return;
+        }
         
         // Get the record.
         var combo =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare sharesearchbox')[0],

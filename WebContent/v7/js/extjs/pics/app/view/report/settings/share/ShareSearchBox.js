@@ -4,7 +4,7 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
 
     autoScroll: false,
     autoSelect: false,
-    cls: 'site-menu-search',
+    cls: 'share-searchbox',
     displayField: 'name',
     emptyText: 'Search Users and Groups',
     fieldLabel: '<i class="icon-search icon-large"></i>',

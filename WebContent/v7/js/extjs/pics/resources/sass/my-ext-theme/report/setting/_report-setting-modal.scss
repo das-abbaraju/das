@@ -187,7 +187,7 @@
 			display: none;
 		}
 	}
-	
+
 	.icon-edit
 	{
 		color: #ccc;
@@ -199,6 +199,109 @@
 	{
 		color: #35c13d;
 	}
+
+	.share-searchbox
+	{
+		label
+		{
+			line-height: 14px;
+			padding: 7px 0px 0px !important;
+		}
+		
+		.icon-search
+		{
+			color: $site_menu_search_icon_search_text_color;
+			font-size: 14px;
+			@include text-shadow(0px -1px 0px $site_menu_search_icon_search_text_shadow_color);
+		}
+		
+		.x-form-text
+		{
+		    @include border-radius(15px);
+		    height: 25px !important;
+		    padding: 0px 7px;
+		}
+	}
+
+	.share-searchbox-list
+	{
+		border: 1px solid $site_menu_search_list_border_color;
+		@include border-radius(5px);
+		
+		li:first-child
+		{
+			@include border-top-left-radius(4px);
+			@include border-top-right-radius(4px);
+		}
+		
+		li:last-child
+		{
+			@include border-bottom-left-radius(4px);
+			@include border-bottom-right-radius(4px);
+		}
+		
+		.even
+		{
+		    background: $site_menu_search_item_even_background_color;
+		}
+		
+		.x-boundlist-item
+		{
+			border: 1px solid transparent;
+		}
+		
+		.x-boundlist-item-over
+		{
+			background: $site_menu_search_item_background_color;
+			@include background-image(linear-gradient($site_menu_search_item_gradient_color_top, $site_menu_search_item_gradient_color_bottom));
+			border: 0px;
+			border-bottom: 1px solid $site_menu_search_item_border_color_bottom;
+			border-top: 1px solid $site_menu_search_item_border_color_top;
+			color: $site_menu_search_item_text_color;
+		}
+		
+		.search-item
+		{
+		    line-height: 15px;
+		    overflow: hidden;
+		    padding: 5px 15px;
+		
+		    div
+		    {
+		        clear: both;
+		    }
+		
+		    em
+		    {
+		        font-weight: bold;
+		    }
+		
+		    .name,
+		    .company
+		    {
+		        float: left;
+		        width: 175px;
+		    }
+		
+		    .id
+		    {
+		        float: right;
+		    }
+		
+		    .type
+		    {
+		        float: right;
+		        font-style: italic;
+		    }
+		}
+		
+		.more-results
+		{
+			color: $site_menu_search_more_results_text_color;
+			font-weight: bold;
+		}
+}
+	
 }
 
 #share_no_permission

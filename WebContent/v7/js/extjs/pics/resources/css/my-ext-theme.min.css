@@ -8972,23 +8972,110 @@ textarea.x-form-invalid-field {
 /* line 199, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share .icon-edit.selected {
   color: #35c13d; }
+/* line 206, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_share .share-searchbox label {
+  line-height: 14px;
+  padding: 7px 0px 0px !important; }
+/* line 212, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_share .share-searchbox .icon-search {
+  color: #cccccc;
+  font-size: 14px;
+  text-shadow: 0px -1px 0px #bcbcbc; }
+/* line 219, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_share .share-searchbox .x-form-text {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  height: 25px !important;
+  padding: 0px 7px; }
+/* line 227, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_share .share-searchbox-list {
+  border: 1px solid #a7a7a7;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px; }
+  /* line 232, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list li:first-child {
+    -moz-border-radius-topleft: 4px;
+    -webkit-border-top-left-radius: 4px;
+    border-top-left-radius: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-top-right-radius: 4px;
+    border-top-right-radius: 4px; }
+  /* line 238, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list li:last-child {
+    -moz-border-radius-bottomleft: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    -moz-border-radius-bottomright: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    border-bottom-right-radius: 4px; }
+  /* line 244, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list .even {
+    background: #f1f1f2; }
+  /* line 249, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list .x-boundlist-item {
+    border: 1px solid transparent; }
+  /* line 254, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list .x-boundlist-item-over {
+    background: #a84d10;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
+    background-image: -webkit-linear-gradient(#c66603, #a84d10);
+    background-image: -moz-linear-gradient(#c66603, #a84d10);
+    background-image: -o-linear-gradient(#c66603, #a84d10);
+    background-image: linear-gradient(#c66603, #a84d10);
+    border: 0px;
+    border-bottom: 1px solid #a84d10;
+    border-top: 1px solid #c66603;
+    color: white; }
+  /* line 264, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list .search-item {
+    line-height: 15px;
+    overflow: hidden;
+    padding: 5px 15px; }
+    /* line 270, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    #report_share .share-searchbox-list .search-item div {
+      clear: both; }
+    /* line 275, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    #report_share .share-searchbox-list .search-item em {
+      font-weight: bold; }
+    /* line 281, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    #report_share .share-searchbox-list .search-item .name,
+    #report_share .share-searchbox-list .search-item .company {
+      float: left;
+      width: 175px; }
+    /* line 287, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    #report_share .share-searchbox-list .search-item .id {
+      float: right; }
+    /* line 292, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    #report_share .share-searchbox-list .search-item .type {
+      float: right;
+      font-style: italic; }
+  /* line 299, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  #report_share .share-searchbox-list .more-results {
+    color: #333333;
+    font-weight: bold; }
 
-/* line 207, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 310, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #share_no_permission p {
   color: #333;
   font-size: 13px;
   margin: 0px auto;
   text-align: center;
   width: 90%; }
-/* line 216, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 319, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #share_no_permission strong {
   font-weight: bold; }
-/* line 221, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 324, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #share_no_permission .permission-info {
   font-weight: bold;
   margin-bottom: 15px;
   margin-top: 25px; }
-/* line 228, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 331, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #share_no_permission .duplicate-info {
   color: #666;
   margin-bottom: 20px; }
@@ -8996,47 +9083,47 @@ textarea.x-form-invalid-field {
 /***
  * Tabs
  */
-/* line 239, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 342, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar {
   background: #454545; }
 
-/* line 244, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 347, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab {
   border: 0px;
   border-right: 1px solid #333333;
   border-top: 1px solid #333333;
   padding: 5px; }
 
-/* line 252, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 355, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab button {
   background: #454545;
   border: 0px;
   cursor: pointer;
   padding: 0px; }
 
-/* line 260, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 363, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab span {
   color: #cccccc; }
 
-/* line 265, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 368, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-over span {
   color: #ffffff; }
 
-/* line 270, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 373, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active {
   background: #eaeaea;
   border-top: 0px; }
 
-/* line 276, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 379, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active button {
   background: #eaeaea;
   cursor: auto; }
 
-/* line 282, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 385, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-active span {
   color: #666666; }
 
-/* line 287, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+/* line 390, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_settings_tabbar .x-tab button i.icon-large {
   display: block;
   font-size: 17px; }
