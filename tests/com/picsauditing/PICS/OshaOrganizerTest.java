@@ -54,6 +54,10 @@ public class OshaOrganizerTest {
 		for (ContractorAudit audit : audits) {
 			audit.setCategories(new ArrayList<AuditCatData>());
 			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_OSHA_PARENT));
+			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_UK_HSE_PARENT));
+			audit.getCategories().add(
 					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_OSHA));
 			audit.getCategories()
 					.add(
@@ -92,6 +96,10 @@ public class OshaOrganizerTest {
 		int trir = 2;
 		for (ContractorAudit audit : audits) {
 			audit.setCategories(new ArrayList<AuditCatData>());
+			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_OSHA_PARENT));
+			audit.getCategories().add(
+					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_UK_HSE_PARENT));
 			audit.getCategories().add(
 					EntityFactory.addCategories(audit, OshaAudit.CAT_ID_OSHA));
 			audit.getCategories()
