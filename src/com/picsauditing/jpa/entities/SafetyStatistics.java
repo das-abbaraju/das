@@ -66,6 +66,12 @@ public abstract class SafetyStatistics {
 	public void setVerified(boolean verified) {
 		this.verified = verified;
 	}
+	
+	public AuditData makeZeroAnswerData(int id) {
+		AuditData data = new AuditData();
+		data.setAnswer("0");
+		return data;
+	}
 
 	abstract public List<AuditData> getQuestionsToVerify();
 		
