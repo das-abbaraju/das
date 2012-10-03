@@ -212,10 +212,12 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
 
 		if (!subdivision.contains("-")) {
-			subdivision = request.getCountry().getIsoCode() + "-" + subdivision;
-		}
+			if (request.getCountry() != null) {
+				subdivision = request.getCountry().getIsoCode() + "-" + subdivision;
+			}
 
-		request.setCountrySubdivision(countrySubdivisionDAO.find(subdivision));
+			request.setCountrySubdivision(countrySubdivisionDAO.find(subdivision));
+		}
 		// Defaults
 		request.setAuditColumns(permissions);
 		request.setStatus(ContractorRegistrationRequestStatus.Active);

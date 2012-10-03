@@ -144,12 +144,11 @@ public class ReportNewReqConImportTest {
 	public void testGetValue_CountrySubdivision() throws Exception {
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getRichStringCellValue()).thenReturn(richText);
-		when(entityManager.find(CountrySubdivision.class, "CountrySubdivision")).thenReturn(countrySubdivision);
-		when(richText.getString()).thenReturn("CountrySubdivision");
-		when(richText.toString()).thenReturn("CountrySubdivision");
+		when(richText.getString()).thenReturn("Country-Subdivision");
+		when(richText.toString()).thenReturn("Country-Subdivision");
 		when(row.getCell(anyInt())).thenReturn(cell);
 
-		assertEquals(countrySubdivision, Whitebox.invokeMethod(reportNewReqConImport, "getValue", row,
+		assertEquals("Country-Subdivision", Whitebox.invokeMethod(reportNewReqConImport, "getValue", row,
 				RegistrationRequestColumn.CountrySubdivision));
 	}
 
