@@ -16,6 +16,9 @@ values('OperatorAccount.sessionTimeout', 'en', 'Session Timeout', 1, CURDATE(), 
 insert ignore into app_translation (msgkey, locale, msgValue, createdBy, creationDate, qualityRating, applicable)
 values('FacilitiesEdit.Security', 'en', 'Security', 1, CURDATE(), 2, 1);
 
+insert ignore into app_translation (msgkey, locale, msgValue, createdBy, creationDate, qualityRating, applicable)
+values('Login.NoPermissionToRememberMe', 'en', 'You clicked remember-me but your account does not allow this setting. Your credentials will be removed when your browser is restarted.', 1, CURDATE(), 2, 1);
+
 update ignore app_translation 
 set msgValue = 'This account is locked because of too many failed attempts' 
 where msgKey = 'Login.TooManyFailedAttempts' and locale='en' 

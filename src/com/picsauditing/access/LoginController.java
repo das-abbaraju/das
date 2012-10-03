@@ -256,6 +256,9 @@ public class LoginController extends PicsActionSupport {
 			if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
 				maxAge = permissions.getRememberMeTimeInSeconds();
 			}
+			if (rememberMe && maxAge < 0){
+				addActionMessage(getText("Login.NoPermissionToRememberMe"));
+			}
 			cookie.setMaxAge(maxAge);
 			if (!isLocalhostEnvironment()) {
 				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
