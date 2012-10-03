@@ -8,7 +8,7 @@
     <s:include value="login/_login-form.jsp"/>
 </div>
 
-<a id="registration_link" href="Registration.action">Are you a contractor not registered with PICS yet?</a>
+<a id="registration_link" href="Registration.action"><s:text name="Login.Register" /></a>
 
 <div id="newsfeed_wrapper">
     <div id="newsfeed"></div>

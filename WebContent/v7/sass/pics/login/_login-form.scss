@@ -1,4 +1,5 @@
-#Login__page {
+#Login__page
+{
     background: #454545;
     text-align: center;
 
@@ -12,24 +13,27 @@
         padding: 40px;
         text-align: left;
     }
-    a#registration_link
+
+    #registration_link
     {
         color: #CCC;
         text-decoration: none;
     }
+
     #registration_link:hover
     {
         color: #73BBE8;
     }
 }
 
-.lt-ie8 #Login__page #login_form,
+.lt-ie8 #Login__page #login_form
 {
     display:inline;
     width: 304px;
 }
 
-#login_form{
+#login_form
+{
     h2
     {
         background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
@@ -129,6 +133,7 @@
         display: none;
     }
 }
+
 /*** Login Modal Styling ***/
 
 .modal-login-form

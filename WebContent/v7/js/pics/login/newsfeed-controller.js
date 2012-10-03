@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('Login.NewsfeedController', {
+    PICS.define('login.NewsfeedController', {
         methods: {
             init: function () {
                 if ($('.Login-page').length) {

@@ -1,4 +1,5 @@
-#Login__page {
+#Login__page
+{
     #newsfeed_wrapper
     {
         margin-bottom: 48px;
@@ -50,7 +51,10 @@
         list-style: none;
     }
 
-    .rssBody ul, .rssRow, .rssRow h4, .rssRow p
+    .rssBody ul,
+    .rssRow,
+    .rssRow h4,
+    .rssRow p
     {
         margin: 0px;
         padding: 0px;
@@ -62,7 +66,7 @@
         border-bottom: 1px solid #373737;
     }
 
-    li.rssRow:last-of-type
+    .rssRow:last-of-type
     {
         border-bottom-style: none;
     }

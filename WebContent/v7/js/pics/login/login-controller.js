@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('Login.LoginController', {
+    PICS.define('login.LoginController', {
         methods: {
             init: function () {
                 var that = this;
