@@ -60,7 +60,7 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
             },
             ui: 'footer'
         });
-        
+
         this.add({
             xtype: 'sharesearchbox',
             width: 310,

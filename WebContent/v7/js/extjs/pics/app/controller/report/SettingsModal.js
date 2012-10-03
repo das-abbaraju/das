@@ -68,6 +68,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
             
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
+                select: this.onReportModalShareAccountSelect,
                 specialkey: this.onReportModalSearchboxSpecialKey
             },
             
@@ -221,32 +222,51 @@ Ext.define('PICS.controller.report.SettingsModal', {
         modal.setTitle(title);
     },
 
+    onReportModalShareAccountSelect: function (combo, records, eOpts) {
+        var record = records[0];
+
+        if (record) {
+            var account = {
+                            name: record.get('result_name'),
+                            at: record.get('result_at'),
+                          };
+
+            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
+            cmp.record_id = record.index;
+            cmp.update(account);
+        }
+    },
+    
     onReportModalShareClick: function (cmp, e, eOpts) {
-            var report_id = this.getReportId();
+        // Get the share component.
+        var reportsettingsshare =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
 
-            // Get the share component and it's top-level dom element.
-            var cmp =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0],
-                el = cmp.getEl();
+        // Get the record id.
+        var record_id = reportsettingsshare.record_id
+        
+        // Get the record.
+        var combo =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare sharesearchbox')[0],
+            combo_store = combo.getStore(),
+            record = combo_store.getAt(record_id);
 
-            // Get the account id.
-            var account_id = el.down('.selected-account-id').dom.innerHTML;
-            
-            // Get the allow value.
-            var allow_edit = el.down('.icon-edit.selected') ? true : false;
+        // Get the relevant record data.
+        var account_id = record.raw.result_id,
+            account_type = record.raw.search_type;
 
-            var url = 'ManageReports!share.action?'
-                + 'reportId=' + report_id
-                + '&account_id=' + account_id
-                + '&allow_edit=' + allow_edit
+        // Get the editable value.
+        var el = reportsettingsshare.getEl(),
+            editable = el.down('.icon-edit.selected') ? true : false;
 
-            console.log(url);
-return;            
-            Ext.Ajax.request({
-                url: 'ManageReports!share.action?'
-                    + 'reportId=' + report_id
-                    + '&account_id=' + account_id
-                    + '&allow_edit=' + allow_edit
-            });
+        // Get the report id.
+        var report_id = this.getReportId();
+
+        // Construct the URL and send the request.
+        Ext.Ajax.request({
+            url: 'ReportSharing!share.action?'
+                + 'report=' + report_id
+                + '&' + account_type + 'Id=' + account_id
+                + '&editable=' + editable
+        });
     },
     
     showSettingsModal: function (action) {

@@ -38,24 +38,6 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
         ),
     },
 
-    // TO DO: Move this out to the controller.
-    listeners: {
-        select: function (combo, records, eOpts) {
-            var post = records[0];
-
-            if (post) {
-                var account = {
-                                name: post.get('result_name'),
-                                at: post.get('result_at'),
-                                id: post.get('result_id')
-                              };
-
-                var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
-                cmp.update(account);
-            }
-        }
-    },
-    
     minChars: 1,
     name: 'search_term',
     pickerAlign: 'br',
@@ -80,7 +62,7 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
             }
         }
     },
-    
+
     valueField: 'q',
     width: 325
 });
