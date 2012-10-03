@@ -270,7 +270,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 + 'report=' + report_id
                 + '&' + account_type + 'Id=' + account_id
                 + '&editable=' + editable,
-            success: function (result, tat) {
+            success: function (result) {
                 var result = Ext.decode(result.responseText);
 
                 if (result.error) {

@@ -62,13 +62,9 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
         });
 
         this.add({
-            xtype: 'sharesearchbox',
-            width: 310,
-            margin: 10
+            xtype: 'sharesearchbox'
         },{
             xtype: 'component',
-            margin: 10,
-            width: 310,
             height: 50,
             padding: 6,
             border: 1,
@@ -89,13 +85,13 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
             xtype: 'displayfield',
             fieldLabel: '<i class="icon-edit"></i>',
             labelWidth: 0,
-            margin: 20,
             labelAlign: 'right',
             labelSeparator: '',
             value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
         });
 
-        this.layout = 'auto';
+        this.margin = '0 10 0 10';
+        this.layout = 'form';
         this.id = 'report_share'
     },
     
@@ -121,6 +117,5 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
     update: function (account) {
         var c = this.down('#selected_account');
         c.update(account);
-        this.callParent([account]);
     }
 });
