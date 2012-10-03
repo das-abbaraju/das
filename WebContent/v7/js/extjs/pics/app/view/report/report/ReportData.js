@@ -3,7 +3,6 @@ Ext.define('PICS.view.report.report.ReportData', {
     alias: ['widget.reportdata'],
 
     requires: [
-        'PICS.view.report.LinkColumn',
         'PICS.view.report.report.ReportPagingToolbar'
     ],
 

@@ -40,7 +40,9 @@ Ext.define('PICS.model.report.Column', {
     },
 
     toGridColumn: function () {
-        var field = this.getAvailableField();
+        var field = this.getAvailableField(),
+            url = field.get('url'),
+            grid_column;
 
         if (!field) {
             Ext.Error.raise('Invalid available field');
@@ -78,10 +80,6 @@ Ext.define('PICS.model.report.Column', {
             	grid_column = Ext.create('PICS.ux.grid.column.Int', config);
 
                 break;
-             // link
-            case 'link':
-            	grid_column = Ext.create('PICS.ux.grid.column.Link', config);
-            	break;
             // 1,234
             case 'number':
             	grid_column = Ext.create('PICS.ux.grid.column.Number', config);
@@ -94,7 +92,7 @@ Ext.define('PICS.model.report.Column', {
             	
                 break;
         }
-
+        
         return grid_column;
     }
 });

@@ -44,5 +44,45 @@ Ext.define('PICS.ux.grid.column.Flag', {
 		}
 		
 		return icon;
-	}
+	},
+	
+	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        var grid = view.ownerCt,
+            column = grid.columns[colIndex],
+            col_record = column.record,
+            field = col_record.getAvailableField(),
+            url = field.get('url'),
+            icon;
+        
+        switch (value) {
+            case 'green':
+                icon = '<i class="icon-flag" class="green"></i>';
+                
+                break;
+            case 'red':
+                icon = '<i class="icon-flag" class="red"></i>';
+                
+                break;
+            case 'yellow':
+                icon = '<i class="icon-flag" class="yellow"></i>';
+                
+                break;
+            default:
+                break;
+        }
+        
+        if (url) {
+            var href = column.getHref(url, record);
+            
+            return '<a href="' + href + '" target="_blank">' + icon + '</a>';
+        }
+        
+        return icon;
+    },
+    
+    getHref: function (url, record) {
+        return url.replace(/\{(.*?)\}/g, function (match, p1) {
+            return record.raw[p1];
+        });
+    }
 });

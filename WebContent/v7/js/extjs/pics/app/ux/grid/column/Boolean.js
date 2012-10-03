@@ -27,7 +27,26 @@ Ext.define('PICS.ux.grid.column.Boolean', {
         this.width = width;
 	},
 	
-	renderer: function (value) {
-		return value ? '<i class="icon-ok"></i>' : '';
-	}
+	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+        var grid = view.ownerCt,
+            column = grid.columns[colIndex],
+            col_record = column.record,
+            field = col_record.getAvailableField(),
+            url = field.get('url'),
+            icon = value ? '<i class="icon-ok"></i>' : '';
+        
+        if (url) {
+            var href = column.getHref(url, record);
+            
+            return '<a href="' + href + '" target="_blank">' + icon + '</a>';
+        }
+        
+        return icon;
+    },
+    
+    getHref: function (url, record) {
+        return url.replace(/\{(.*?)\}/g, function (match, p1) {
+            return record.raw[p1];
+        });
+    }
 });
