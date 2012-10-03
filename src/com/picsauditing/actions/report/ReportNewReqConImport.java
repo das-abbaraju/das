@@ -30,7 +30,6 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -181,10 +180,11 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		return false;
 	}
 
-	private void prependToRequestNotes(String note, ContractorRegistrationRequest newContractor) {
-		if (newContractor != null && note != null)
-			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note
-					+ (newContractor.getNotes() != null ? "\n\n" + newContractor.getNotes() : ""));
+	private void prependToRequestNotes(String note, ContractorRegistrationRequest request) {
+		if (request != null && note != null) {
+			String stamp = String.format("%s - %s - %s", maskDateFormat(new Date()), permissions.getName(), note);
+			request.setNotes(stamp + (request.getNotes() != null ? "\n\n" + request.getNotes() : ""));
+		}
 	}
 
 	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
@@ -199,14 +199,23 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		request.setCity(getString(row, RegistrationRequestColumn.City));
 		request.setZip(getString(row, RegistrationRequestColumn.Zip));
 		request.setRequestedByUserOther(getString(row, RegistrationRequestColumn.RequestedByOther));
-		request.setNotes(getString(row, RegistrationRequestColumn.Notes));
 		request.setOperatorTags(getString(row, RegistrationRequestColumn.Tags));
+		request.setReasonForRegistration(getString(row, RegistrationRequestColumn.ReasonForRegistration));
+		// Notes
+		prependToRequestNotes(getString(row, RegistrationRequestColumn.Notes), request);
 		// Other objects
 		request.setRequestedBy((OperatorAccount) getValue(row, RegistrationRequestColumn.RequestedBy));
-		request.setCountrySubdivision((CountrySubdivision) getValue(row, RegistrationRequestColumn.CountrySubdivision));
 		request.setCountry((Country) getValue(row, RegistrationRequestColumn.Country));
 		request.setRequestedByUser((User) getValue(row, RegistrationRequestColumn.RequestedByUser));
 		request.setDeadline((Date) getValue(row, RegistrationRequestColumn.Deadline));
+		// Country Subdivision
+		String subdivision = getString(row, RegistrationRequestColumn.CountrySubdivision);
+
+		if (!subdivision.contains("-")) {
+			subdivision = request.getCountry().getIsoCode() + "-" + subdivision;
+		}
+
+		request.setCountrySubdivision(countrySubdivisionDAO.find(subdivision));
 		// Defaults
 		request.setAuditColumns(permissions);
 		request.setStatus(ContractorRegistrationRequestStatus.Active);
@@ -215,30 +224,38 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	}
 
 	private void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
-		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
+		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther())) {
 			crr.setRequestedByUserOther(null);
+		}
 
 		if (Strings.isEmpty(crr.getContact()) || crr.getCountrySubdivision() == null || crr.getCountry() == null
-				|| crr.getRequestedBy() == null)
+				|| crr.getRequestedBy() == null || Strings.isEmpty(crr.getReasonForRegistration())) {
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
+		}
 
-		if (Strings.isEmpty(crr.getEmail()))
+		if (Strings.isEmpty(crr.getEmail()) || Strings.isEmpty(crr.getPhone())) {
 			addActionError(getTextParameterized("ReportNewReqConImport.ContactInformationRequired", (j + 1)));
+		}
 
-		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
+		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null) {
 			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequestedByUser", (j + 1)));
+		}
 
-		if (crr.getDeadline() == null)
+		if (crr.getDeadline() == null) {
 			crr.setDeadline(DateBean.addMonths(new Date(), 2));
+		}
 
-		if (!Strings.isEmpty(crr.getNotes()))
-			crr.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + crr.getNotes());
-
-		if (crr.getContact().length() > 30)
+		if (crr.getContact().length() > 30) {
+			String oldContact = crr.getContact();
 			crr.setContact(crr.getContact().substring(0, 30));
+			prependToRequestNotes("Contact name truncated from " + oldContact, crr);
+		}
 
-		if (crr.getPhone().length() > 20)
+		if (crr.getPhone().length() > 20) {
+			String oldPhone = crr.getPhone();
 			crr.setPhone(crr.getPhone().substring(0, 20));
+			prependToRequestNotes("Phone number truncated from " + oldPhone, crr);
+		}
 	}
 
 	private int findGap(ContractorRegistrationRequest newContractor) {
@@ -291,8 +308,6 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		if (cell != null) {
 			try {
 				switch (column) {
-				case CountrySubdivision:
-					return countrySubdivisionDAO.find(cell.getRichStringCellValue().getString());
 				case Country:
 					return countryDAO.find(cell.getRichStringCellValue().getString());
 				case RequestedBy:
@@ -328,13 +343,15 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				return valueDecimal.toString();
 			}
 
-			return value.toString();
+			if (!Strings.isEmpty(value.toString())) {
+				return value.toString().trim();
+			}
 		}
 
 		return null;
 	}
 
 	protected enum RegistrationRequestColumn {
-		Name, Contact, Phone, Email, TaxID, Address, City, CountrySubdivision, Zip, Country, RequestedBy, Tags, RequestedByUser, RequestedByOther, Deadline, Notes
+		Name, Contact, Phone, Email, TaxID, Address, City, CountrySubdivision, Zip, Country, RequestedBy, Tags, RequestedByUser, RequestedByOther, Deadline, ReasonForRegistration, Notes
 	}
 }
