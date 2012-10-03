@@ -14,7 +14,8 @@ insert ignore into useraccess (`userId`,`accessType`,`viewFlag`,`grantFlag`,`las
 	values ((select id from `users` where `name` = "PICS API Approver"),"RestApi",0,1,now(),1);
 	
 -- This line makes Trevor Allred (tallred, #941) a member of the PICS API Approver group.	
-insert ignore into usergroup (userID,groupID) values (941,(select id from `users` where `name` = "PICS API Approver"));	
+insert ignore into usergroup (userID,groupID,`createdBy`, `updatedBy`, `creationDate`, `updateDate`) 
+	values (941,(select id from `users` where `name` = "PICS API Approver"),'63932','63932',now(),now());	
 	
 -- This line gives the "TXI Corporate Admin" group the right to grant the RestApi flag to other users/groups.	
 insert ignore into useraccess (`userId`,`accessType`,`viewFlag`,`grantFlag`,`lastUpdate`,`grantedByID`) 
