@@ -16,11 +16,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -44,7 +45,7 @@ public abstract class Transaction extends BaseTable {
 		this.account = account;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Required)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Required)
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
@@ -53,7 +54,7 @@ public abstract class Transaction extends BaseTable {
 		this.totalAmount = totalAmount;
 	}
 
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Float, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public BigDecimal getAmountApplied() {
 		return amountApplied;
 	}
@@ -102,7 +103,7 @@ public abstract class Transaction extends BaseTable {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, i18nKeyPrefix = "TransactionStatus", importance = FieldImportance.Average)
+	@ReportField(type = FieldType.TransactionStatus, importance = FieldImportance.Average)
 	public TransactionStatus getStatus() {
 		return status;
 	}
@@ -112,7 +113,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.String, importance = FieldImportance.Required)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Currency, importance = FieldImportance.Required)
 	public Currency getCurrency() {
 		return currency;
 	}

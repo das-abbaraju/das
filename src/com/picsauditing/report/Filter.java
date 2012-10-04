@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -17,8 +17,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.report.fields.ExtFieldType;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
@@ -194,17 +193,17 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	private String buildFilterSingleValue() {
-		ExtFieldType fieldType = getActualFieldTypeForFilter();
+		DisplayType fieldType = getActualFieldTypeForFilter();
 
 		String filterValue = getValues().get(0);
 
-		if (fieldType.equals(ExtFieldType.Date)) {
+		if (fieldType.equals(DisplayType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(filterValue);
 			String dateValue = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
 			return "'" + dateValue + "'";
 		}
 
-		if (fieldType.equals(ExtFieldType.Boolean)) {
+		if (fieldType.equals(DisplayType.Boolean)) {
 			if (filterValue.equals("1"))
 				return true + "";
 			if (filterValue.equalsIgnoreCase("true"))
@@ -216,20 +215,18 @@ public class Filter extends ReportElement implements JSONable {
 			return false + "";
 		}
 
-		if (fieldType.equals(ExtFieldType.Float)) {
+		if (fieldType.equals(DisplayType.Float)) {
 			return Float.parseFloat(filterValue) + "";
 		}
 
-		if (fieldType.equals(ExtFieldType.Int)) {
+		if (fieldType.equals(DisplayType.Integer)) {
 			filterValue = Integer.parseInt(filterValue) + "";
-
-			if (field.getFilterType() == FilterType.DaysAgo) {
-				return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
-			}
+			// Make sure we incorporate the filter strategy when using function dates
+			// return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
 			return filterValue;
 		}
 
-		if (fieldType.equals(ExtFieldType.String)) {
+		if (fieldType.equals(DisplayType.String)) {
 			filterValue = Strings.escapeQuotes(filterValue);
 
 			switch (operator) {
@@ -253,23 +250,16 @@ public class Filter extends ReportElement implements JSONable {
 		throw new RuntimeException(fieldType + " has no filter caluculation defined yet");
 	}
 
-	private ExtFieldType getActualFieldTypeForFilter() {
-		ExtFieldType fieldType = field.getType();
+	private DisplayType getActualFieldTypeForFilter() {
+		DisplayType fieldType = field.getType().getDisplayType();
 		if (hasMethodWithDifferentFieldType()) {
-			fieldType = method.getType();
+			fieldType = method.getDisplayType();
 		}
-
-		if (fieldType == ExtFieldType.Auto) {
-			fieldType = ExtFieldType.String;
-		}
-		field.setType(fieldType);
 		return fieldType;
 	}
 
 	private boolean hasMethodWithDifferentFieldType() {
-		if (method == null || method.getType() == null)
-			return false;
-		if (method.isTypeAuto())
+		if (method == null || method.getDisplayType() == null)
 			return false;
 
 		return true;
@@ -301,16 +291,6 @@ public class Filter extends ReportElement implements JSONable {
 			values.clear();
 			values.add(permissions.getUserIdString());
 		}
-	}
-
-	public boolean isHasTranslations() {
-		if (field != null) {
-			FilterType filterType = field.getFilterType();
-
-			return filterType.isAutocomplete() || filterType.isEnum();
-		}
-
-		return false;
 	}
 
 	public String toString() {

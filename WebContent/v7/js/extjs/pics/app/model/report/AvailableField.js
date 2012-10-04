@@ -6,6 +6,10 @@ Ext.define('PICS.model.report.AvailableField', {
 	    name: 'category',
 	    type: 'string'
     }, {
+        // field type used to know the autocomplete or short list name
+        name: 'fieldType',
+        type: 'string'
+    }, {
         // filter type used to display filter configuration aka drop down, autocomplete, string search, etc.
         name: 'filterType',
         type: 'string'

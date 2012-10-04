@@ -2,32 +2,32 @@ package com.picsauditing.report.fields;
 
 public enum QueryMethod {
 	// None,
-	Count(true, ExtFieldType.Int),
-	CountDistinct(true, ExtFieldType.Int),
-	GroupConcat(true, ExtFieldType.String), 
+	Count(true, DisplayType.Integer),
+	CountDistinct(true, DisplayType.Integer),
+	GroupConcat(true, DisplayType.String),
 	Max(true),
 	Min(true),
 	
-	Average(true, ExtFieldType.Float),
-	Round(false, ExtFieldType.Int), // Parameter means decimal place
+	Average(true, DisplayType.Float),
+	Round(false, DisplayType.Integer), // Parameter means decimal place
 	Sum(true),
-	StdDev(true, ExtFieldType.Float),
+	StdDev(true, DisplayType.Float),
 	
 	Left, // Parameter means number of characters
 	Length,
 	LowerCase,
 	UpperCase,
 	
-	Month(false, ExtFieldType.String), // January TODO translate the 1 into January
-	Year(false, ExtFieldType.Int), // 2012
-	YearMonth(false, ExtFieldType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
-	WeekDay(false, ExtFieldType.Int), // Monday TODO translate the 1
-	Hour(false, ExtFieldType.Int), // 23 
+	Month(false, DisplayType.String), // January TODO translate the 1 into January
+	Year(false, DisplayType.Integer), // 2012
+	YearMonth(false, DisplayType.String), // 2012-01 or we can use 2012-Jan IF we can solve the sorting problem
+	WeekDay(false, DisplayType.Integer), // Monday TODO translate the 1
+	Hour(false, DisplayType.Integer), // 23 
 	Date // 2012-01-31
 	;
 
 	private boolean aggregate;
-	private ExtFieldType type = ExtFieldType.Auto;
+	private DisplayType displayType = null;
 
 	private QueryMethod() {
 	}
@@ -36,13 +36,13 @@ public enum QueryMethod {
 		this.aggregate = aggregate;
 	}
 
-	private QueryMethod(boolean aggregate, ExtFieldType type) {
+	private QueryMethod(boolean aggregate, DisplayType type) {
 		this.aggregate = aggregate;
-		this.type = type;
+		this.displayType = type;
 	}
 
-	public ExtFieldType getType() {
-		return type;
+	public DisplayType getDisplayType() {
+		return displayType;
 	}
 
 	public boolean isAggregate() {
@@ -57,9 +57,5 @@ public enum QueryMethod {
 			return true;
 		}
 		return false;
-	}
-
-	public boolean isTypeAuto() {
-		return this.type == ExtFieldType.Auto;
 	}
 }

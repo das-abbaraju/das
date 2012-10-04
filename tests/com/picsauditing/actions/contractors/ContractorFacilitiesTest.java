@@ -1,6 +1,6 @@
 package com.picsauditing.actions.contractors;
 
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -180,7 +180,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		when(permissions.getAccountId()).thenReturn(1);
 
 		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
-		assertTrue(actionContext.getSession().isEmpty());
+		assertTrue(actionContext.getSession().get("requestID") == null);
 
 		verify(contractorAccount).syncBalance();
 		verify(entityManager, times(2)).merge(any(ContractorAccount.class));
@@ -205,7 +205,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		when(permissions.getAccountId()).thenReturn(1);
 
 		assertEquals(PicsActionSupport.SUCCESS, contractorFacilities.execute());
-		assertTrue(actionContext.getSession().isEmpty());
+		assertTrue(actionContext.getSession().get("requestID") == null);
 		assertFalse(contractorAccount.getOperatorTags().isEmpty());
 
 		verify(contractorAccount).syncBalance();

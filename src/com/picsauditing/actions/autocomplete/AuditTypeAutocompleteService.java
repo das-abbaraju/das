@@ -4,20 +4,29 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.util.Strings;
 
-public final class AuditTypeAutocompleteService extends AutocompleteService<AuditType> {
+public final class AuditTypeAutocompleteService extends AbstractAutocompleteService<AuditType> {
+	
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 
 	@Override
-	protected Collection<AuditType> getItems(String q) {
-		if (isSearchDigit(q))
-			return auditTypeDAO.findWhere("t.id LIKE '" + q + "%'");
-		else
-			return auditTypeDAO.findByTranslatableField(AuditType.class, "name", Utilities.escapeHTML(q) + "%");
+	protected Collection<AuditType> getItems(String search, Permissions permissions) {
+		return auditTypeDAO.findByTranslatableField(AuditType.class, "name", Strings.escapeQuotes(search) + "%");
+	}
+
+	@Override
+	protected Object getKey(AuditType auditType) {
+		return auditType.getId();
+	}
+
+	@Override
+	protected Object getValue(AuditType auditType, Permissions permissions) {
+		return auditType.getName().toString(permissions.getLocale());
 	}
 
 }

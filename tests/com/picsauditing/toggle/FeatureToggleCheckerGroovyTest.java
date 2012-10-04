@@ -8,12 +8,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.startsWith;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 import net.sf.ehcache.Cache;
@@ -30,7 +30,9 @@ import org.slf4j.Logger;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class FeatureToggleCheckerGroovyTest {
 	private FeatureToggleCheckerGroovy featureToggleCheckerGroovy;
@@ -72,6 +74,42 @@ public class FeatureToggleCheckerGroovyTest {
 		CacheManager cacheManager = CacheManager.getInstance();
 		Cache cache = cacheManager.getCache(cacheName);
 		cache.removeAll();
+	}
+
+	@Test
+	public void testScriptWithDynamicVariable_True() throws Exception {
+		boolean result = dynamicContractorScript(1, 22107);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testScriptWithDynamicVariable_False() throws Exception {
+		boolean result = dynamicContractorScript(1, 2);
+		assertFalse(result);
+	}
+
+	private boolean dynamicContractorScript(int opId1, int opId2) {
+		String scriptBody =
+				"return contractor.operatorAccounts.find {it.id == 22107} != null";
+
+		ContractorAccount contractor = mock(ContractorAccount.class);
+		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+		// OperatorAccount op1 = mock(OperatorAccount.class);
+		// when(op1.getId()).thenReturn(opId1);
+		OperatorAccount op1 = new OperatorAccount();
+		op1.setId(opId1);
+		operators.add(op1);
+		// OperatorAccount op2 = mock(OperatorAccount.class);
+		// when(op2.getId()).thenReturn(opId2);
+		OperatorAccount op2 = new OperatorAccount();
+		op2.setId(opId2);
+		operators.add(op2);
+
+		when(contractor.getOperatorAccounts()).thenReturn(operators);
+		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(scriptBody);
+
+		featureToggleCheckerGroovy.addToggleVariable("contractor", contractor);
+		return featureToggleCheckerGroovy.isFeatureEnabled(toggleName);
 	}
 
 	@Test

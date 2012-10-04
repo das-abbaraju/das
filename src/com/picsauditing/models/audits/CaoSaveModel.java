@@ -41,21 +41,23 @@ public class CaoSaveModel {
 
 	public String addAuditDataComment(AuditData auditData) {
 		String comment = "";
+
 		if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
-			String commentHeader = null;
+			String commentHeader = "";
 			int categoryId = auditData.getQuestion().getCategory().getId();
+
 			if (categoryId == AuditCategory.EMR) {
 				commentHeader = "EMR : ";
 			} else if (OshaAudit.isSafetyStatisticsCategory(categoryId)) {
-				OshaType oshaType = OshaAudit
-						.convertCategoryToOshaType(categoryId);
-				commentHeader = i18nCache.getText(oshaType.getI18nKey(),
-						Locale.ENGLISH) + " : ";
+				OshaType oshaType = OshaAudit.convertCategoryToOshaType(categoryId);
+				commentHeader = i18nCache.getText(oshaType.getI18nKey(), Locale.ENGLISH) + " : ";
 			} else {
 				commentHeader = "Comment : ";
 			}
+
 			comment += commentHeader + auditData.getComment() + "\n";
 		}
+
 		return comment;
 	}
 	

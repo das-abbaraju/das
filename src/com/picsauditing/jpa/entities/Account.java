@@ -33,8 +33,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.report.fields.AutocompleteType;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
@@ -123,7 +122,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "name", nullable = false, length = 50)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required, width = 250)
+	@ReportField(category = FieldCategory.AccountInformation, importance = FieldImportance.Required, width = 250)
 	public String getName() {
 		return this.name;
 	}
@@ -147,7 +146,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "dbaName", length = 400)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Average)
+	@ReportField(category = FieldCategory.AccountInformation, importance = FieldImportance.Average)
 	public String getDbaName() {
 		return dbaName;
 	}
@@ -200,7 +199,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
-	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country, width = 150)
+	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, type = FieldType.Country, width = 150)
 	public Country getCountry() {
 		return country;
 	}
@@ -212,7 +211,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "countrySubdivision")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.ContactInformation, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Subdivision)
+	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.ContactInformation, type = FieldType.CountrySubdivision)
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
 	}
@@ -375,7 +374,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.AccountInformation, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Average)
+	@ReportField(type = FieldType.AccountStatus, category = FieldCategory.AccountInformation, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Average)
 	public AccountStatus getStatus() {
 		return status;
 	}
@@ -489,7 +488,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * 
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isRequiresOQ() {
 		return requiresOQ;
 	}
@@ -506,7 +505,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.needsIndexing = needsIndex;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isOnsiteServices() {
 		return onsiteServices;
 	}
@@ -515,7 +514,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.onsiteServices = onsiteServices;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isOffsiteServices() {
 		return offsiteServices;
 	}
@@ -524,7 +523,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.offsiteServices = offsiteServices;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isMaterialSupplier() {
 		return materialSupplier;
 	}
@@ -533,7 +532,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.materialSupplier = materialSupplier;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isTransportationServices() {
 		return transportationServices;
 	}
@@ -548,7 +547,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * 
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isRequiresCompetencyReview() {
 		return requiresCompetencyReview;
 	}

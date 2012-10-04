@@ -9,7 +9,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldCategory;
@@ -34,6 +34,8 @@ public class AccountContractorModel extends AbstractModel {
 			contractor.join(ContractorTable.Flag);
 		}
 		contractor.join(ContractorTable.CustomerService);
+		contractor.join(ContractorTable.Watch).category = FieldCategory.AccountInformation;
+		contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
 		return contractor;
 	}
 
@@ -44,7 +46,7 @@ public class AccountContractorModel extends AbstractModel {
 		if (accountStatusFilter != null) {
 			for (String filterValue : accountStatusFilter.getValues()) {
 				AccountStatus filterStatus = AccountStatus.valueOf(filterValue);
-				if (filterStatus.canSee(permissions)) {
+				if (filterStatus.isVisibleTo(permissions)) {
 					statuses.add(filterStatus);
 				}
 			}
@@ -78,14 +80,14 @@ public class AccountContractorModel extends AbstractModel {
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
 		{
-			Field contractorEdit = new Field("ContractorEdit", "'Edit'", FilterType.String);
+			Field contractorEdit = new Field("ContractorEdit", "'Edit'", FieldType.String);
 			contractorEdit.setUrl("ContractorEdit.action?id={AccountID}");
 			contractorEdit.setWidth(70);
 			fields.put(contractorEdit.getName().toUpperCase(), contractorEdit);
 		}
 
 		{
-			Field contractorAudits = new Field("ContractorAudits", "'Audits'", FilterType.String);
+			Field contractorAudits = new Field("ContractorAudits", "'Audits'", FieldType.String);
 			contractorAudits.setUrl("ContractorDocuments.action?id={AccountID}");
 			contractorAudits.setWidth(70);
 			fields.put(contractorAudits.getName().toUpperCase(), contractorAudits);

@@ -46,6 +46,8 @@ public class OshaAuditTest {
 		auditCategories.add(setupMockAuditCatData(contractorAudit, OshaAudit.CAT_ID_OSHA));
 		auditCategories.add(setupMockAuditCatData(contractorAudit,  CAT_ID_SOMETHING_OTHER_THAN_OSHA));
 		auditCategories.add(setupMockAuditCatData(contractorAudit, OshaAudit.CAT_ID_UK_HSE));
+		auditCategories.add(setupMockAuditCatData(contractorAudit, OshaAudit.CAT_ID_OSHA_PARENT));
+		auditCategories.add(setupMockAuditCatData(contractorAudit,  OshaAudit.CAT_ID_UK_HSE_PARENT));
 		
 		contractorAudit.setCategories(auditCategories);
 

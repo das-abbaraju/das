@@ -16,7 +16,7 @@
 			</li>
 			<li>
 				<label><s:text name="global.Password" />:</label>
-				<s:password name="password" cssClass="login" tabindex="2" autocomplete="off" />
+				<s:password name="password" cssClass="login" tabindex="2" />
 			</li>
 			<li>
 				<label><s:text name="Login.RememberMe" />:</label>

@@ -2,7 +2,7 @@ package com.picsauditing.util;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;

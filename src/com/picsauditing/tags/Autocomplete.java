@@ -1,5 +1,6 @@
 package com.picsauditing.tags;
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
+
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -71,11 +72,11 @@ public class Autocomplete extends Component {
 					Autocompleteable b = (Autocompleteable) stack.findValue(searchWith);
 					if (b != null) {
 
-						hiddenValue = escapeHtml(b.getAutocompleteResult());
-						textValue = escapeHtml(b.getAutocompleteValue());
+						hiddenValue = escapeHtml4(b.getAutocompleteResult());
+						textValue = escapeHtml4(b.getAutocompleteValue());
 					}
 				} catch (ClassCastException e) {
-					hiddenValue = textValue = escapeHtml((String) stack.findValue(searchWith));
+					hiddenValue = textValue = escapeHtml4((String) stack.findValue(searchWith));
 				}
 			}
 

@@ -1,13 +1,12 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.report.fields.FilterType;
 
 public class AuditTypeTable extends AbstractTable {
 
 	public AuditTypeTable() {
 		super("audit_type");
-		addPrimaryKey(FilterType.Integer).setCategory(FieldCategory.Audits);
+		addPrimaryKey().setCategory(FieldCategory.Audits);
 		addFields(AuditType.class);
 	}
 

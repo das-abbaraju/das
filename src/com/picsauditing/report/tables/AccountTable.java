@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 
 public class AccountTable extends AbstractTable {
 	public static final String Operator = "Operator";
@@ -12,10 +12,10 @@ public class AccountTable extends AbstractTable {
 
 	public AccountTable() {
 		super("accounts");
-		addPrimaryKey(FilterType.AccountID).setCategory(FieldCategory.AccountInformation);
+		addPrimaryKey(FieldType.AccountID).setCategory(FieldCategory.AccountInformation);
 		addFields(Account.class);
 
-		Field creationDate = new Field("CreationDate", "creationDate", FilterType.Date);
+		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
 		creationDate.setImportance(FieldImportance.Low);
 		addField(creationDate).setCategory(FieldCategory.AccountInformation);
 	}

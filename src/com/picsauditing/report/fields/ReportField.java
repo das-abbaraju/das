@@ -14,10 +14,8 @@ import com.picsauditing.report.tables.FieldImportance;
 @Retention(RUNTIME)
 public @interface ReportField {
 
-	FilterType filterType() default FilterType.String;
-
-	AutocompleteType autocomplete() default AutocompleteType.None;
-
+	FieldType type() default FieldType.String;
+	
 	int width() default 100;
 
 	boolean visible() default true;

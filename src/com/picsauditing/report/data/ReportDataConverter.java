@@ -10,7 +10,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.fields.ExtFieldType;
+import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.QueryMethod;
 
 public class ReportDataConverter {
@@ -68,17 +68,22 @@ public class ReportDataConverter {
 				// is better than an NPE
 				return column.getFieldName() + ": Field not available";
 			}
+			
 			if (column.getField().isTranslated()) {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
-			if (column.getField().getType() == ExtFieldType.Int) {
+			
+			DisplayType displayType = column.getField().getType().getDisplayType();
+			if (displayType == DisplayType.Integer) {
 				return value;
 			}
-			if (column.getField().getType() == ExtFieldType.Float) {
+			
+			if (displayType == DisplayType.Float) {
 				return value;
 			}
-			if (column.getField().getType() == ExtFieldType.Boolean) {
+			
+			if (displayType == DisplayType.Boolean) {
 				return value;
 			}
 		}
@@ -133,7 +138,7 @@ public class ReportDataConverter {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
-			if (column.getField().getType() == ExtFieldType.Boolean) {
+			if (column.getField().getType().getDisplayType() == DisplayType.Boolean) {
 				return value;
 			}
 		}

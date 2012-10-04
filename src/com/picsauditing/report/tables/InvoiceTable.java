@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 
 public class InvoiceTable extends AbstractTable {
 
@@ -12,7 +12,7 @@ public class InvoiceTable extends AbstractTable {
 		super("invoice");
 		addFields(Invoice.class);
 
-		Field currency = new Field("Currency", "currency", FilterType.String);
+		Field currency = new Field("Currency", "currency", FieldType.String);
 		currency.setCategory(FieldCategory.Invoicing);
 		addField(currency);
 	}

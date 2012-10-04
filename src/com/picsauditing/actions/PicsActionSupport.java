@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -373,7 +373,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (apiKey == null) {
 			return false;
 		}
-		System.out.println("api key query param = " + apiKey);
 		User user = getUser();
 
 		if (user != null && apiKey.equals(user.getApiKey())) {
@@ -607,7 +606,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 
-		ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		try {
+			ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		} catch (Exception exception) {
+			// Most likely thrown during testing
+			Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
+			logger.error("Error getting ftp dir", exception);
+		}
+
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 

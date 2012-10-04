@@ -77,7 +77,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-	private boolean usingDynamicReports=false;
+	private boolean usingDynamicReports = false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 
@@ -187,7 +187,7 @@ public class UsersManage extends PicsActionSupport {
 		// a user
 		if (user.getId() < 0) {
 			// We want to save a new user
-			final String randomPassword = EncodedKey.randomPassword(); 
+			final String randomPassword = EncodedKey.randomPassword();
 			user.setEncryptedPassword(randomPassword);
 			user.setForcePasswordReset(true);
 		}
@@ -324,7 +324,7 @@ public class UsersManage extends PicsActionSupport {
 			ug.setAuditColumns(permissions);
 			userGroupDAO.save(ug);
 		}
-		
+
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(sendActivationEmail(user, permissions));
@@ -387,7 +387,8 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getAccount().getUsers().size() == 1) {
 			addActionMessage(getText("UsersManage.CannotMoveUser"));
 
-			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+			return setUrlForRedirect("UsersManage.action?account=" + user.getAccount().getId() + "&user="
+					+ user.getId());
 		}
 
 		// accounts are different so we are moving to a new account
@@ -1070,7 +1071,7 @@ public class UsersManage extends PicsActionSupport {
 	public void setNewUser(boolean newUser) {
 		this.newUser = newUser;
 	}
-	
+
 	public boolean isUsingDynamicReports() {
 		return usingDynamicReports;
 	}
@@ -1078,7 +1079,7 @@ public class UsersManage extends PicsActionSupport {
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
 	}
-	
+
 	public void removeUserAccess(OpPerms perm) {
 		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
 		while (permissions.hasNext()) {
@@ -1139,6 +1140,11 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	public String reSendActivationEmail() throws Exception {
+		addActionMessage(sendActivationEmail(user, permissions));
+		return SUCCESS;
+	}
+
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -1164,5 +1170,5 @@ public class UsersManage extends PicsActionSupport {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
-	
+
 }

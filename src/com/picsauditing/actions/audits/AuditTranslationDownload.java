@@ -29,7 +29,7 @@ import com.picsauditing.report.Column;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.report.data.ReportRow;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.util.excel.ExcelBuilder;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -64,7 +64,7 @@ public class AuditTranslationDownload extends ContractorActionSupport {
 
 	private void addReportColumn(String fieldName, String columnLabel) {
 		Column reportColumn = new Column(fieldName);
-		reportColumn.setField(new Field(fieldName, "", FilterType.String));
+		reportColumn.setField(new Field(fieldName, "", FieldType.String));
 		reportColumn.getField().setText(columnLabel);
 		reportColumns.put(reportColumn.getFieldName(), reportColumn);
 		excelBuilder.getColumns().add(new ExcelColumn(reportColumn));

@@ -13,6 +13,9 @@ public interface FeatureToggle {
 	String TOGGLE_BPROC_EMAILQUEUE = "Toggle.BackgroundProcesses.EmailQueue";
 	String TOGGLE_BPROC = "Toggle.BackgroundProcesses";
 	String TOGGLE_SESSION_COOKIE = "Toggle.SessionCookie";
+        String TOGGLE_CONTRACTOR_CAMPAIGN = "Toggle.ContractorCampaign";
 
 	boolean isFeatureEnabled(String toggleName);
+
+	void addToggleVariable(String name, Object value);
 }

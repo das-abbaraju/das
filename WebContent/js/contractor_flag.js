@@ -21,7 +21,9 @@
                         arrows: true,
                         cluetipClass: 'jtip',
                         local: true,
-                        clickThrough: false
+                        clickThrough: false,
+                        sticky: true,
+                        closeText : "<img src='images/cross.png' width='16' height='16'>"
                     });
                     
                     element.find("#tabs").tabs();

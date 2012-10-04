@@ -1,9 +1,14 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -23,10 +28,10 @@ public class Report extends BaseTable {
 	private String parameters;
 	private int rowsPerPage = 50;
 	
-	private boolean isPrivate;
 	private int numTimesFavorited;
 
 	private Definition definition;
+	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 	private String sql;
 
 	@Enumerated(EnumType.STRING)
@@ -64,19 +69,6 @@ public class Report extends BaseTable {
 		this.parameters = parameters;
 	}
 
-	public boolean isPrivate() {
-		return isPrivate;
-	}
-
-	public void setPrivate(boolean isPrivate) {
-		this.isPrivate = isPrivate;
-	}
-
-	@Transient
-	public boolean isPublic() {
-		return !isPrivate;
-	}
-
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
@@ -110,6 +102,15 @@ public class Report extends BaseTable {
 
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
+	}
+
+	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
+	public List<ReportUser> getReportUsers() {
+		return reportUsers;
+	}
+
+	public void setReportUsers(List<ReportUser> reportUsers) {
+		this.reportUsers = reportUsers;
 	}
 
 	@Transient

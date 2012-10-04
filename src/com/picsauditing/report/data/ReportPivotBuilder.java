@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Column;
 import com.picsauditing.report.ReportPivotDefinition;
-import com.picsauditing.report.fields.ExtFieldType;
+import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.Field;
 
 public class ReportPivotBuilder {
@@ -58,18 +58,19 @@ public class ReportPivotBuilder {
 				List<Object> columnValues = getRow(rowValue).get(colValue);
 				Object valueObject = null;
 				
+				DisplayType displayType = pivotField.getType().getDisplayType();
 				switch (definition.getCell().getPivotCellMethod()) {
 				case Average:
-					valueObject = sum(columnValues, pivotField.getType()) / count(columnValues);
+					valueObject = sum(columnValues, displayType) / count(columnValues);
 					break;
 				case Min:
-					valueObject = min(columnValues, pivotField.getType());
+					valueObject = min(columnValues, displayType);
 					break;
 				case Max:
-					valueObject = max(columnValues, pivotField.getType());
+					valueObject = max(columnValues, displayType);
 					break;
 				case Sum:
-					valueObject = sum(columnValues, pivotField.getType());
+					valueObject = sum(columnValues, displayType);
 					break;
 				default:
 					valueObject = count(columnValues);
@@ -113,7 +114,7 @@ public class ReportPivotBuilder {
 		return newColumn;
 	}
 
-	private Object max(List<Object> columnValues, ExtFieldType type) {
+	private Object max(List<Object> columnValues, DisplayType type) {
 		Object max = null;
 		for (Object object : columnValues) {
 			try {
@@ -128,7 +129,7 @@ public class ReportPivotBuilder {
 		return max;
 	}
 
-	private Object min(List<Object> columnValues, ExtFieldType type) {
+	private Object min(List<Object> columnValues, DisplayType type) {
 		Object min = null;
 		for (Object object : columnValues) {
 			try {
@@ -147,7 +148,7 @@ public class ReportPivotBuilder {
 		return columnValues.size();
 	}
 
-	private double sum(List<Object> columnValues, ExtFieldType extFieldType) {
+	private double sum(List<Object> columnValues, DisplayType extFieldType) {
 		
 		double sum = 0;
 		for (Object object : columnValues) {

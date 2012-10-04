@@ -195,7 +195,7 @@ function caoDetailsClueTips(caoID){
 					resolveFlags(
 						<s:property value="get('flagDetail')" escape="false"/>,
 						<s:property value="get('baselineFlagDetail')" escape="false"/>,
-						'<s:property value="@org.apache.commons.lang.StringEscapeUtils@escapeJavaScript(get('name'))"/> Documents',
+						'<s:property value="@org.apache.commons.lang3.StringEscapeUtils@escapeEcmaScript(get('name'))"/> Documents',
 						'<s:property value="#gcID"/>',
 						'<s:property value="get('id')"/>',
 						'<s:property value="get('opId')"/>'

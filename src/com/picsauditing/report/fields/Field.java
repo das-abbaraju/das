@@ -1,44 +1,34 @@
 package com.picsauditing.report.fields;
 
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
-/**
- * This is based largely on the Grid Column API from Sencha
- * http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
- */
 public class Field implements JSONAware {
 
-	private FieldCategory category = FieldCategory.General;
-	private FilterType filterType = FilterType.String;
+	private static final Pattern FIELD_VARIABLE_PATTERN = Pattern.compile("\\{(\\w+)\\}");
+	
+	private FieldType type = FieldType.String;
 	private String name;
+	private FieldCategory category = FieldCategory.General;
 	private String text;
 	private String suffix;
-	private ExtFieldType type = ExtFieldType.Auto;
 	private String url;
 	private int width = 200;
 	private String help;
 
 	private Class<?> fieldClass;
 	private String databaseColumnName;
-	private AutocompleteType autocompleteType = AutocompleteType.None;
 	private boolean visible = true;
 	private boolean filterable = true;
 	private boolean sortable = true;
@@ -47,42 +37,38 @@ public class Field implements JSONAware {
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
 
-	/**
-	 * Currently autocomplete is only supported via entity annotations
-	 */
 	public Field(ReportField annotation) {
-		filterType = annotation.filterType();
-		autocompleteType = annotation.autocomplete();
+		type = annotation.type();
 		width = annotation.width();
 		url = annotation.url();
-		preTranslation = annotation.i18nKeyPrefix();
-		postTranslation = annotation.i18nKeySuffix();
 		category = annotation.category();
 		requiredPermission = annotation.requiredPermissions();
 		visible = annotation.visible();
 		filterable = annotation.filterable();
 		sortable = annotation.sortable();
 		importance = annotation.importance();
+		
+		preTranslation = annotation.i18nKeyPrefix();
+		postTranslation = annotation.i18nKeySuffix();
+		if (type.getFilterType() == FilterType.ShortList && Strings.isEmpty(preTranslation)) {
+			preTranslation = type.toString();
+		}
 	}
 
-	public Field(String name, String databaseColumnName, FilterType filterType) {
-		this(name, databaseColumnName, filterType, false);
+	public Field(String name) {
+		this.name = name;
+		this.databaseColumnName = name;
 	}
 
-	public Field(String name, String databaseColumnName, FilterType filterType, boolean isDefault) {
+	public Field(String name, String databaseColumnName, FieldType type) {
 		this.name = name;
 		this.databaseColumnName = databaseColumnName;
-		this.filterType = filterType;
-
-		if (filterType != null) {
-			this.type = this.filterType.getFieldType();
+		if (type == null) {
+			throw new RuntimeException("type is required when creating Fields");
 		}
-
-		if (StringUtils.endsWithIgnoreCase(name, "id")) {
-			visible = false;
-		}
+		this.type = type;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSONObject() {
 		// TODO Move this to SimpleColumn.js toGridColumn
@@ -93,88 +79,32 @@ public class Field implements JSONAware {
 
 		if (width > 0)
 			json.put("width", width);
+		
 		if (visible)
 			json.put("visible", visible);
+		
 		if (filterable)
 			json.put("filterable", filterable);
+		
 		if (sortable)
 			json.put("sortable", sortable);
 
 		if (!Strings.isEmpty(url))
 			json.put("url", url);
 
-		if (filterType != null) {
-			json.put("filterType", filterType.toString());
-
-			if (!filterType.equals(ExtFieldType.Auto)) {
-				json.put("type", type.toString().toLowerCase());
-			}
-		}
+		// TODO these will change when we refactor the "handshake"
+		json.put("fieldType", type.toString());
+		json.put("filterType", type.getFilterType().toString());
+		// TODO convert List to ShortList in JavaScript
+		// TODO convert type to displayType in JavaScript
+		json.put("displayType", type.toString().toLowerCase());
+		json.put("type", type.toString().toLowerCase());
 
 		return json;
 	}
 
 	public String toJSONString() {
 		return toJSONObject().toJSONString();
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONObject renderEnumFieldAsJson(Permissions permissions) {
-		JSONArray jsonArray = new JSONArray();
-		JSONObject json = new JSONObject();
-
-		for (Object enumValue : fieldClass.getEnumConstants()) {
-			String key = enumValue.toString();
-			AccountStatus keyStatus = null;
-
-			try {
-				keyStatus = AccountStatus.valueOf(key);
-			}
-			catch (IllegalArgumentException iae) {
-				
-			}
-			
-			if (keyStatus == null || keyStatus.canSee(permissions)) {
-				JSONObject enumAsJson = new JSONObject();
-				enumAsJson.put("key", key);
-
-				String translationKey = fieldClass.getSimpleName().toString() + "." + key;
-				String translatedString = ReportUtil.getText(translationKey, permissions.getLocale());
-
-				if (translatedString == null) {
-					translatedString = key;
-				}
-
-				enumAsJson.put("value", translatedString);
-				jsonArray.add(enumAsJson);
-			}
-		}
-
-		json.put("result", jsonArray);
-
-		return json;
-	}
-
-	@SuppressWarnings("unchecked")
-	public JSONObject renderLowMedHighFieldAsJson(Locale locale) {
-		JSONArray jsonArray = new JSONArray();
-		JSONObject json = new JSONObject();
-
-		for (Integer key : LowMedHigh.getMap().keySet()) {
-			JSONObject enumAsJson = new JSONObject();
-			enumAsJson.put("key", key.toString());
-
-			LowMedHigh value = LowMedHigh.getMap().get(key);
-			String translationKey = fieldClass.getSimpleName().toString() + "." + value.toString();
-			String translatedString = ReportUtil.getText(translationKey, locale);
-
-			enumAsJson.put("value", translatedString);
-			jsonArray.add(enumAsJson);
-		}
-
-		json.put("result", jsonArray);
-
-		return json;
 	}
 
 	public Field setTranslationPrefixAndSuffix(String prefix, String suffix) {
@@ -198,8 +128,7 @@ public class Field implements JSONAware {
 	public Set<String> getDependentFields() {
 		Set<String> dependent = new HashSet<String>();
 		if (!Strings.isEmpty(url)) {
-			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}");
-			Matcher urlFieldMatcher = fieldVariablePattern.matcher(url);
+			Matcher urlFieldMatcher = FIELD_VARIABLE_PATTERN.matcher(url);
 
 			while (urlFieldMatcher.find()) {
 				dependent.add(urlFieldMatcher.group(1));
@@ -216,6 +145,10 @@ public class Field implements JSONAware {
 		return true;
 	}
 
+	public FieldType getType() {
+		return type;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -248,18 +181,6 @@ public class Field implements JSONAware {
 		this.databaseColumnName = databaseColumnName;
 	}
 
-	public void setFilterType(FilterType filterType) {
-		this.filterType = filterType;
-	}
-
-	public void setAutocompleteType(AutocompleteType autocompleteType) {
-		this.autocompleteType = autocompleteType;
-	}
-
-	public AutocompleteType getAutocompleteType() {
-		return autocompleteType;
-	}
-
 	public int getWidth() {
 		return width;
 	}
@@ -274,18 +195,6 @@ public class Field implements JSONAware {
 
 	public void setHelp(String help) {
 		this.help = help;
-	}
-
-	public ExtFieldType getType() {
-		return type;
-	}
-
-	public FilterType getFilterType() {
-		return filterType;
-	}
-
-	public void setType(ExtFieldType type) {
-		this.type = type;
 	}
 
 	public String getUrl() {
@@ -377,16 +286,14 @@ public class Field implements JSONAware {
 	}
 
 	public Field clone() {
-		Field copiedField = new Field(name, databaseColumnName, filterType);
+		Field copiedField = new Field(name, databaseColumnName, type);
 		copiedField.category = category;
 		copiedField.text = text;
 		copiedField.suffix = suffix;
-		copiedField.type = type;
 		copiedField.url = url;
 		copiedField.width = width;
 		copiedField.help = help;
 		copiedField.fieldClass = fieldClass;
-		copiedField.autocompleteType = autocompleteType;
 		copiedField.visible = visible;
 		copiedField.filterable = filterable;
 		copiedField.sortable = sortable;
