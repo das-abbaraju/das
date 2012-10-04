@@ -40,7 +40,7 @@
                         */
 
                         //Update RSS feed
-                        var newsfeed = PICS.getClass('Login.NewsfeedController');
+                        var newsfeed = PICS.getClass('login.NewsfeedController');
                         if (newsfeed) {
                             newsfeed.loadRssFeed();
                         }

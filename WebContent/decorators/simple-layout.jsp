@@ -23,7 +23,6 @@
         <meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/bootstrap.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" media="screen" href="v7/css/bootstrap-custom.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="v7/css/libs/font-awesome.css?v=${version}" />
 
         <%-- custom --%>
