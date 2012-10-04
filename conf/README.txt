@@ -3,6 +3,8 @@
 // Then restart Tomcat
 	-XX:MaxPermSize=256m
 	-Dpics.debug=1
+	// This is for the session cookie
+	-Dsk="9KuRXTx0cnuZefrt0EIfXd1MFqKvMY9x7OSub0B1EGLpR69b1Z+sdB7p6PT3Sy5rhl6qXKYyINdPJoHMWCqBNQ=="
 	-Dpics.autoLogin=941
 	
 // Replace this from your Servers / Tomcat / server.xml
