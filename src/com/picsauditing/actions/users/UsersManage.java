@@ -1092,12 +1092,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String emailPassword() throws Exception {
-
-		// Seeding the time in the reset hash so that each one will be
-		// guaranteed unique
-		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
-		userDAO.save(user);
-
+		setUserResetHash();
 		addActionMessage(sendRecoveryEmail(user));
 		return SUCCESS;
 	}
@@ -1141,8 +1136,16 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String reSendActivationEmail() throws Exception {
+		setUserResetHash();
 		addActionMessage(sendActivationEmail(user, permissions));
 		return SUCCESS;
+	}
+
+	private void setUserResetHash(){
+		// Seeding the time in the reset hash so that each one will be
+		// guaranteed unique
+		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
+		userDAO.save(user);
 	}
 
 	public String sendActivationEmail(User user, Permissions permission) {
