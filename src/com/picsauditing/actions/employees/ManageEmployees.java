@@ -421,6 +421,11 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		super.addNote(employee.getAccount(), newNote, noteCategory, priority, true, Account.EVERYONE, user, employee);
 	}
 
+	protected void addNote(String newNote, int viewableBy) {
+		User user = new User(permissions.getUserId());
+		super.addNote(employee.getAccount(), newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, employee);
+	}
+
 	private void checkPermissions() throws NoRightsException {
 		if (permissions.isContractor()) {
 			if (!permissions.hasPermission(OpPerms.ContractorAdmin)

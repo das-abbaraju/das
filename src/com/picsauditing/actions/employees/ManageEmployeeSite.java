@@ -50,7 +50,7 @@ public class ManageEmployeeSite extends ManageEmployees {
 				note += "Client site " + operator.getName();
 			}
 
-			addNote(note);
+			addNote(note, operator.getId());
 		}
 
 		return SUCCESS;

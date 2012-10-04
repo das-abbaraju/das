@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -140,7 +141,8 @@ public class NoteEditor extends AccountActionSupport {
 
 	protected void updateInternalSalesInfo(Permissions permissions, Account account) {
 		if (permissions.hasGroup(User.GROUP_ISR) && account.isContractor()) {
-			ContractorAccountDAO contractorDAO = SpringUtils.getBean("ContractorAccountDAO", ContractorAccountDAO.class);
+			ContractorAccountDAO contractorDAO = SpringUtils
+					.getBean("ContractorAccountDAO", ContractorAccountDAO.class);
 			ContractorAccount ca = contractorDAO.find(account.getId());
 			ca.setLastContactedByInsideSales(permissions.getUserId());
 			contractorDAO.save(ca);
@@ -184,8 +186,16 @@ public class NoteEditor extends AccountActionSupport {
 	// ///////////////////////////
 
 	public List<Account> getFacilities() {
-		List<Account> facilities = accountDAO.findNoteRestrictionOperators(permissions);
-		return facilities;
+		return new Grepper<Account>() {
+			@Override
+			public boolean check(Account t) {
+				if (permissions.isOperatorCorporate()) {
+					return !Account.PICS_CORPORATE.contains(t.getId());
+				}
+
+				return true;
+			}
+		}.grep(accountDAO.findNoteRestrictionOperators(permissions));
 	}
 
 	public ReportFilterNote getFilter() {

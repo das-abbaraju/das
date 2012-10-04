@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -31,6 +33,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class NoteDAO extends PicsDAO {
 	private final Logger logger = LoggerFactory.getLogger(NoteDAO.class);
+
 	@Transactional(propagation = Propagation.NESTED)
 	public Note save(Note o) {
 		if (o.getId() == 0) {
@@ -126,8 +129,12 @@ public class NoteDAO extends PicsDAO {
 			String whereForWorkflow, Date earliestDate, Date latestDate) {
 
 		String permWhere = "";
-		if (permissions.isOperator() || permissions.isCorporate())
-			permWhere += "AND (w.cao.operator.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			Set<Integer> corporateUmbrellaWithoutPICS = new HashSet<Integer>(permissions.getVisibleAccounts());
+			corporateUmbrellaWithoutPICS.removeAll(Account.PICS_CORPORATE);
+
+			permWhere += "AND (w.cao.operator.id IN (" + Strings.implode(corporateUmbrellaWithoutPICS) + "))";
+		}
 
 		Query query = em
 				.createQuery("FROM ContractorAuditOperatorWorkflow w JOIN FETCH w.cao c JOIN FETCH c.audit a WHERE a.contractorAccount.id = :accountID "
