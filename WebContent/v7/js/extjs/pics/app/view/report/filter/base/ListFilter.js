@@ -38,7 +38,8 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
     },
 
     getStoreForList: function (record) {
-        var fieldType = record.getAvailableField().get('fieldType');
+        var field = record.getAvailableField(),
+            field_type = field.get('fieldType');
 
         return {
             fields: [{
@@ -50,7 +51,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                url: 'ReportAutocomplete.action?fieldType=' + fieldType,
+                url: 'ReportAutocomplete.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'

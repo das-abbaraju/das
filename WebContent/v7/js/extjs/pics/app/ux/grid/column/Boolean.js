@@ -2,8 +2,6 @@ Ext.define('PICS.ux.grid.column.Boolean', {
 	extend: 'Ext.grid.column.Action',
 	
 	align: 'center',
-	menuDisabled: true,
-    sortable: false,
 	
 	constructor: function () {
 		this.callParent(arguments);

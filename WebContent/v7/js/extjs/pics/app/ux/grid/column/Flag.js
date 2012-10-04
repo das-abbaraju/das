@@ -1,6 +1,8 @@
 Ext.define('PICS.ux.grid.column.Flag', {
 	extend: 'Ext.grid.column.Action',
 	
+	align: 'center',
+	
 	constructor: function () {
 		this.callParent(arguments);
 
@@ -21,29 +23,6 @@ Ext.define('PICS.ux.grid.column.Flag', {
         this.dataIndex = name;
         this.text = text;
         this.width = width;
-	},
-	
-	renderer: function (value) {
-		var icon; 
-			
-		switch (value) {
-			case 'green':
-				icon = '<i class="icon-flag" class="green"></i>';
-				
-				break;
-			case 'red':
-				icon = '<i class="icon-flag" class="red"></i>';
-				
-				break;
-			case 'yellow':
-				icon = '<i class="icon-flag" class="yellow"></i>';
-				
-				break;
-			default:
-				break;
-		}
-		
-		return icon;
 	},
 	
 	renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
