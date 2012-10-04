@@ -826,6 +826,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		} else if (isRememberMeSetInCookie()) {
 			return true;
 		} else {
+			loadPermissions();
 			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
 			long nowInSeconds = new Date().getTime() / 1000;
 			long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
@@ -851,19 +852,18 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
-	public String logoutAndRedirectToLogin() throws Exception {
-		logout();
-		setUrlForRedirect("Login.action");
-		return REDIRECT;
-	}
-
-	public String logout() throws Exception {
+	public String clearPermissionsSessionAndCookie() throws Exception {
 		if (permissions != null) {
 			permissions.clear();
 		}
-		invalidateSession();
+		ActionContext.getContext().getSession().clear();
 		clearPicsOrgCookie();
 		return SUCCESS;
+	}
+
+	public String logout() throws Exception {
+		invalidateSession();
+		return clearPermissionsSessionAndCookie();
 	}
 
 	public void invalidateSession() {

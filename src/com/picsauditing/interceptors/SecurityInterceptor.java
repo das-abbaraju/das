@@ -22,11 +22,8 @@ public class SecurityInterceptor extends AbstractInterceptor {
 
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
+		maintainSessionCookieForValidityAndExpiration(invocation);
 		checkMethodLevelSecurity(invocation);
-		String securityResult = checkSessionCookieForValidityAndExpiration(invocation);
-		if (!Action.SUCCESS.equals(securityResult)) {
-			return securityResult;
-		}
 		return invocation.invoke();
 	}
 
@@ -63,8 +60,7 @@ public class SecurityInterceptor extends AbstractInterceptor {
 		}
 	}
 
-	private String checkSessionCookieForValidityAndExpiration(ActionInvocation invocation) throws Exception {
-		String result = Action.SUCCESS;
+	private void maintainSessionCookieForValidityAndExpiration(ActionInvocation invocation) throws Exception {
 		if (invocation.getAction() instanceof SecurityAware && !(invocation.getAction() instanceof LoginController)) {
 			SecurityAware action = (SecurityAware) invocation.getAction();
 			Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
@@ -72,10 +68,9 @@ public class SecurityInterceptor extends AbstractInterceptor {
 				if (action.sessionCookieIsValidAndNotExpired()) {
 					action.updateClientSessionCookieExpiresTime();
 				} else {
-					result = action.logoutAndRedirectToLogin();
+					action.clearPermissionsSessionAndCookie();
 				}
 			}
 		}
-		return result;
 	}
 }

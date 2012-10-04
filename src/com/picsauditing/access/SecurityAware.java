@@ -19,5 +19,5 @@ public interface SecurityAware {
 
 	void updateClientSessionCookieExpiresTime();
 
-	String logoutAndRedirectToLogin() throws Exception;
+	String clearPermissionsSessionAndCookie() throws Exception;
 }
