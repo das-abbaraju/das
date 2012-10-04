@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.CountrySubdivision;
@@ -48,12 +49,12 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 	}
 
 	@Override
-	protected Object getAutocompleteItem(CountrySubdivision subdivision) {
+	protected Object getKey(CountrySubdivision subdivision) {
 		return subdivision.getAutocompleteItem();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(CountrySubdivision subdivision) {
-		return subdivision.getAutocompleteValue();
+	protected Object getValue(CountrySubdivision subdivision, Permissions permissions) {
+		return I18nCache.getInstance().getText(subdivision.getI18nKey(), permissions.getLocale());
 	}
 }

@@ -34,7 +34,7 @@ public class ReportDynamicAutocomplete extends PicsActionSupport {
 			return JSON;
 		}
 	}
-
+	
 	private void writeJsonErrorMessage(Exception e) {
 		json.put("success", false);
 		json.put("error", e.getCause() + " " + e.getMessage());

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.Country;
@@ -64,12 +65,12 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 	}
 
 	@Override
-	protected Object getAutocompleteItem(Country country) {
-		return country.getAutocompleteItem();
+	protected Object getKey(Country country) {
+		return country.getIsoCode();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(Country country) {
-		return country.getAutocompleteValue();
+	protected Object getValue(Country country, Permissions permissions) {
+		return I18nCache.getInstance().getText(country.getI18nKey(), permissions.getLocale());
 	}
 }

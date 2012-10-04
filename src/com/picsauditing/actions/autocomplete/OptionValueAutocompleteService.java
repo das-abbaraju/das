@@ -11,12 +11,13 @@ import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.jpa.entities.Autocompleteable;
 import com.picsauditing.util.Strings;
 
+// TODO: Find out if this is even working properly
 public class OptionValueAutocompleteService extends AbstractAutocompleteService<Autocompleteable> {
 	
 	@Autowired
 	protected AuditOptionValueDAO valueDAO;
 
-	// TODO: Find out how this is really supposed to work
+	
 	@Override
 	protected Collection<Autocompleteable> getItems(String search, Permissions permissions) {
 		if (Strings.isEmpty(search)) {
@@ -29,12 +30,12 @@ public class OptionValueAutocompleteService extends AbstractAutocompleteService<
 	}
 
 	@Override
-	protected Object getAutocompleteItem(Autocompleteable item) {
+	protected Object getKey(Autocompleteable item) {
 		return item.getAutocompleteItem();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(Autocompleteable item) {
+	protected Object getValue(Autocompleteable item, Permissions permissions) {
 		return item.getAutocompleteValue(); 	
 	}
 }

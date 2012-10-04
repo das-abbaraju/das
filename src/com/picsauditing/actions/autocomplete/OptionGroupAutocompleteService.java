@@ -25,12 +25,12 @@ public class OptionGroupAutocompleteService extends AbstractAutocompleteService<
 	}
 
 	@Override
-	protected Object getAutocompleteItem(AuditOptionGroup optionGroup) {
-		return optionGroup.getAutocompleteValue();
+	protected Object getKey(AuditOptionGroup optionGroup) {
+		return optionGroup.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(AuditOptionGroup optionGroup) {
-		return optionGroup.getAutocompleteItem();
+	protected Object getValue(AuditOptionGroup optionGroup, Permissions permissions) {
+		return optionGroup.getName();
 	}
 }

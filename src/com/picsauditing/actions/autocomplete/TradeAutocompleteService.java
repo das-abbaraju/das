@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.Trade;
@@ -25,12 +26,12 @@ public final class TradeAutocompleteService extends AbstractAutocompleteService<
 	}
 
 	@Override
-	protected Object getAutocompleteItem(Trade trade) {
-		return trade.getAutocompleteItem();
+	protected Object getKey(Trade trade) {
+		return trade.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(Trade trade) {
-		return trade.getAutocompleteValue();
+	protected Object getValue(Trade trade, Permissions permissions) {
+		return I18nCache.getInstance().getText(trade.getI18nKey(), permissions.getLocale());
 	}
 }

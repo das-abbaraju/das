@@ -32,12 +32,12 @@ public class OperatorTagAutocompleteService extends AbstractAutocompleteService<
 	}
 
 	@Override
-	protected Object getAutocompleteItem(OperatorTag operatorTag) {
-		return operatorTag.getAutocompleteItem();
+	protected Object getKey(OperatorTag operatorTag) {
+		return operatorTag.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(OperatorTag operatorTag) {
-		return operatorTag.getAutocompleteValue();
+	protected Object getValue(OperatorTag operatorTag, Permissions permissions) {
+		return operatorTag.getTag();
 	}
 }

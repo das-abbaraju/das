@@ -20,13 +20,13 @@ public final class AuditTypeAutocompleteService extends AbstractAutocompleteServ
 	}
 
 	@Override
-	protected Object getAutocompleteItem(AuditType auditType) {
-		return auditType.getAutocompleteItem();
+	protected Object getKey(AuditType auditType) {
+		return auditType.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(AuditType auditType) {
-		return auditType.getAutocompleteValue();
+	protected Object getValue(AuditType auditType, Permissions permissions) {
+		return auditType.getName().toString(permissions.getLocale());
 	}
 
 }

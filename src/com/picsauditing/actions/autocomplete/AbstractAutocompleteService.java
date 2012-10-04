@@ -15,7 +15,7 @@ public abstract class AbstractAutocompleteService<T> {
 
 		JSONArray result = new JSONArray();
 		for (T item : getItems(search, permissions)) {
-			result.add(formatTokenJson(item));
+			result.add(formatTokenJson(item, permissions));
 		}
 
 		json.put("result", result);
@@ -24,17 +24,24 @@ public abstract class AbstractAutocompleteService<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONObject formatTokenJson(T item) {
+	private JSONObject formatTokenJson(T item, Permissions permissions) {
 		JSONObject o = new JSONObject();
-		o.put("key", getAutocompleteItem(item));
-		o.put("value", getAutocompleteValue(item));
+		o.put("key", getKey(item));
+		o.put("value", getValue(item, permissions));
 		
 		return o;
 	}
 
 	protected abstract Collection<T> getItems(String search, Permissions permissions);
 
-	protected abstract Object getAutocompleteItem(T item);
+	protected abstract Object getKey(T item);
 
-	protected abstract Object getAutocompleteValue(T item);
+	/**
+	 * This is the value that will be displayed in the drop-down of the auto-complete
+	 * 
+	 * @param item
+	 * @param permissions
+	 * @return
+	 */
+	protected abstract Object getValue(T item, Permissions permissions);
 }

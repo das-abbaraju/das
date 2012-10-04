@@ -46,12 +46,12 @@ public final class OperatorAutocompleteService extends AbstractAutocompleteServi
 	}
 
 	@Override
-	protected Object getAutocompleteItem(OperatorAccount clientSite) {
-		return clientSite.getAutocompleteItem();
+	protected Object getKey(OperatorAccount clientSite) {
+		return clientSite.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(OperatorAccount clientSite) {
-		return clientSite.getAutocompleteValue();
+	protected Object getValue(OperatorAccount clientSite, Permissions permissions) {
+		return clientSite.getName();
 	}
 }

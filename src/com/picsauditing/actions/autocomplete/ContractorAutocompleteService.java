@@ -25,13 +25,13 @@ public class ContractorAutocompleteService extends AbstractAutocompleteService<C
 	}
 
 	@Override
-	protected Object getAutocompleteItem(ContractorAccount account) {
-		return account.getAutocompleteItem();
+	protected Object getKey(ContractorAccount account) {
+		return account.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(ContractorAccount account) {
-		return account.getAutocompleteValue();
+	protected Object getValue(ContractorAccount account, Permissions permissions) {
+		return account.getName();
 	}
 
 }
