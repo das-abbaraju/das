@@ -460,7 +460,7 @@
 											<tr>
 												<td><s:property value="%{#language.displayName}" /></td>
 												<td>
-													<a href="UsersManage!removeLanguage.action?user=<s:property value='user.id' />&removeLanguage=<s:property value='%{#language}' />" class="remove"> TRANSLATE THIS - Remove </a>
+													<a href="UsersManage!removeLanguage.action?user=<s:property value='user.id' />&removeLanguage=<s:property value='%{#language}' />" class="remove"> Remove </a>
 												</td>
 											</tr>
 										</s:iterator>

@@ -332,19 +332,12 @@ public class UsersManage extends PicsActionSupport {
 		if (shadowID == 0) {
 			removeNonGroupUserGroups();
 		} else {
-			if (shadowID == user.getId()) {
-				addActionError("Cannot Shadow Yourself");
+			if (user.getShadowedUser() == null) {
+				addShadowUserGroup();
 			} else {
-				// shadowID selected
-				if (user.getShadowedUser() == null) {
-					// new shadow
+				if (shadowID != user.getShadowedUser().getId()) {
+					removeNonGroupUserGroups();
 					addShadowUserGroup();
-				} else {
-					// existing shadow
-					if (shadowID != user.getShadowedUser().getId()) {
-						removeNonGroupUserGroups();
-						addShadowUserGroup();
-					}
 				}
 			}
 		}
