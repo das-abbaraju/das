@@ -55,6 +55,7 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
                 height: 28,
                 text: 'Share'
             }],
+            margin: '5 0 0 0',
             layout: {
                 pack: 'end'
             },
@@ -68,6 +69,7 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
             height: 50,
             padding: 6,
             border: 1,
+            margin: '10 0 5 0',
             baseCls: 'selected-account',
             tpl: Ext.create('Ext.XTemplate',
                             '<p>',
@@ -85,7 +87,6 @@ Ext.define('PICS.view.report.settings.share.ShareSettings', {
             xtype: 'displayfield',
             fieldLabel: '<i class="icon-edit"></i>',
             labelWidth: 0,
-            labelAlign: 'right',
             labelSeparator: '',
             value: '<p><strong>Allow</strong><br />user to edit, share, and delete report.</p>'
         });

@@ -187,19 +187,25 @@
 			display: none;
 		}
 	}
-
+	
 	.icon-edit
 	{
 		color: #ccc;
 		font-size: 22px;
 		cursor: pointer;
+		margin-left: 10px;
 	}
-
+	
 	.icon-edit.selected
 	{
 		color: #35c13d;
 	}
 
+	p
+	{
+		margin-left: 10px;
+	}
+	
 	.share-searchbox
 	{
 		label
