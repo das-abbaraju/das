@@ -12,6 +12,7 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 public class AccountContractorAuditOperatorModel extends AbstractModel {
+	private static final String AUDIT_OPERATOR = "AuditOperator";
 	private static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
 	public AccountContractorAuditOperatorModel(Permissions permissions) {
@@ -19,7 +20,7 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "AuditOperator");
+		ModelSpec spec = new ModelSpec(null, AUDIT_OPERATOR);
 		// Let's try to set the categories on the entity fields
 		// spec.category = FieldCategory.Audits;
 
@@ -69,7 +70,9 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 			if (permissions.isCorporate())
 				opIDs = Strings.implode(permissions.getOperatorChildren());
 
-			where += "\n AND cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
+			where += "\n AND " +
+					AUDIT_OPERATOR +
+					".id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
 					+ "))";
 		}
 

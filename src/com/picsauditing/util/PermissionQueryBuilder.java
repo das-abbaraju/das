@@ -120,7 +120,7 @@ public class PermissionQueryBuilder {
 		} else {
 			where += ".genID";
 		}
-		
+
 		where += " IN (" + getOperatorIDs() + ")";
 
 		if (showOnlyApprovedContractors())
