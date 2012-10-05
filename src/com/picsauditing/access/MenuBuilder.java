@@ -315,6 +315,9 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.EditProfile)) {
 			userMenu.addChild(getText("Account"), "ProfileEdit.action", "profile_edit");
 		}
+		if (permissions.getAdminID() > 0) {
+			userMenu.addChild("Switch Back", "Login.action?button=switchBack", "switch_back");
+		}
 
 		userMenu.addChild(getText("Header.Logout"), "Login.action?button=logout", "logout");
 	}
