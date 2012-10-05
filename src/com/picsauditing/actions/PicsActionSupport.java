@@ -144,8 +144,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> auditorList;
 	private Set<User> safetyList;
 
-	private boolean rememberMe = false;
-
 	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
 
 	@Deprecated
@@ -894,16 +892,52 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
+		String sessionCookieContent = sessionCookieContent(sessionCookie);
+		int maxAge = SESSION_COOKIE_AGE;
+		if (permissions != null && isRememberMeSetInCookie()) {
+			maxAge = permissions.getRememberMeTimeInSeconds();
+		}
+		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
+	}
+
+	protected void addClientSessionCookieToResponse() {
+		addClientSessionCookieToResponse(false, 0);
+	}
+
+	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
+		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
+		int maxAge = SESSION_COOKIE_AGE;
+		if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
+			maxAge = permissions.getRememberMeTimeInSeconds();
+		}
+		if (rememberMe && maxAge < 0) {
+			addActionMessage(getText("Login.NoPermissionToRememberMe"));
+		}
+		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
+	}
+
+	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
 		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent(sessionCookie));
-			int maxAge = SESSION_COOKIE_AGE;
-			if (permissions != null && isRememberMeSetInCookie()) {
-				maxAge = permissions.getRememberMeTimeInSeconds();
-			}
+			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent);
 			cookie.setMaxAge(maxAge);
-			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			if (!isLocalhostEnvironment()) {
+				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			}
 			ServletActionContext.getResponse().addCookie(cookie);
 		}
+	}
+
+	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
+		SessionCookie sessionCookie = new SessionCookie();
+		Date now = new Date();
+		sessionCookie.setUserID(permissions.getUserId());
+		sessionCookie.setCookieCreationTime(now);
+		if (switchToUser > 0) {
+			sessionCookie.putData("switchTo", switchToUser);
+		}
+		sessionCookie.putData("rememberMe", rememberMe);
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
 	}
 
 	private String sessionCookieContent(SessionCookie sessionCookie) {

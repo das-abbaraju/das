@@ -653,6 +653,10 @@ public class Permissions implements Serializable {
 		return linkedGeneralContractors;
 	}
 
+	public void setSessionCookieTimeoutInSeconds(int seconds) {
+		this.sessionCookieTimeoutInSeconds = seconds;
+	}
+
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (hasPermission(OpPerms.AuditRuleAdmin))
 			return true;

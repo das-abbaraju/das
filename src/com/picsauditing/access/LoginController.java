@@ -145,7 +145,7 @@ public class LoginController extends PicsActionSupport {
 			user = userDAO.find(switchToUser);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
-			addClientSessionCookieToResponse();
+			addClientSessionCookieToResponse(rememberMe, switchToUser);
 			permissions.setAdminID(0);
 		}
 		return setRedirectUrlPostLogin();
@@ -162,7 +162,7 @@ public class LoginController extends PicsActionSupport {
 	public String switchTo() throws Exception {
 		loadPermissions(false);
 		// add cookie before the switch so the original user id stays correct
-		addClientSessionCookieToResponse();
+		addClientSessionCookieToResponse(rememberMe, switchToUser);
 		if (permissions.getUserId() == switchToUser) {
 			// Switch back to myself
 			user = getUser();
@@ -241,7 +241,7 @@ public class LoginController extends PicsActionSupport {
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
-		addClientSessionCookieToResponse();
+		addClientSessionCookieToResponse(rememberMe, switchToUser);
 
 		user.unlockLogin();
 		user.setLastLogin(new Date());
@@ -256,37 +256,6 @@ public class LoginController extends PicsActionSupport {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
 			return super.setUrlForRedirect("Login.action?button=logout");
 		}
-	}
-
-	private void addClientSessionCookieToResponse() {
-		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent());
-			int maxAge = SESSION_COOKIE_AGE;
-			if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
-				maxAge = permissions.getRememberMeTimeInSeconds();
-			}
-			if (rememberMe && maxAge < 0){
-				addActionMessage(getText("Login.NoPermissionToRememberMe"));
-			}
-			cookie.setMaxAge(maxAge);
-			if (!isLocalhostEnvironment()) {
-				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-			}
-			ServletActionContext.getResponse().addCookie(cookie);
-		}
-	}
-
-	private String sessionCookieContent() {
-		SessionCookie sessionCookie = new SessionCookie();
-		Date now = new Date();
-		sessionCookie.setUserID(permissions.getUserId());
-		sessionCookie.setCookieCreationTime(now);
-		if (switchToUser > 0) {
-			sessionCookie.putData("switchTo", switchToUser);
-		}
-		sessionCookie.putData("rememberMe", rememberMe);
-		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
-		return sessionCookie.toString();
 	}
 
 	private String canLogin() throws Exception {
