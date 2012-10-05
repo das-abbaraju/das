@@ -114,7 +114,6 @@ public class LoginController extends PicsActionSupport {
 	@Anonymous
 	// TODO Change login modal to this form as well
 	public String loginform() {
-		setRedirect(true);
 		return "loginform";
 	}
 
