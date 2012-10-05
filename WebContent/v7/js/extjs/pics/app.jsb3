@@ -1180,6 +1180,11 @@
                     "path": "extjs/src/grid/"
                 },
                 {
+                    "clsName": "PICS.view.report.report.ReportData",
+                    "name": "ReportData.js",
+                    "path": "app/view/report/report/"
+                },
+                {
                     "clsName": "PICS.view.report.available-field.AvailableFieldList",
                     "name": "AvailableFieldList.js",
                     "path": "app/view/report/available-field/"
@@ -1218,6 +1223,11 @@
                     "clsName": "PICS.view.layout.Header",
                     "name": "Header.js",
                     "path": "app/view/layout/"
+                },
+                {
+                    "clsName": "PICS.view.report.Viewport",
+                    "name": "Viewport.js",
+                    "path": "app/view/report/"
                 },
                 {
                     "clsName": "PICS.view.report.filter.base.AutocompleteFilter",
@@ -1278,21 +1288,6 @@
                     "clsName": "Ext.grid.column.Number",
                     "name": "Number.js",
                     "path": "extjs/src/grid/column/"
-                },
-                {
-                    "clsName": "PICS.view.report.LinkColumn",
-                    "name": "LinkColumn.js",
-                    "path": "app/view/report/"
-                },
-                {
-                    "clsName": "PICS.view.report.report.ReportData",
-                    "name": "ReportData.js",
-                    "path": "app/view/report/report/"
-                },
-                {
-                    "clsName": "PICS.view.report.Viewport",
-                    "name": "Viewport.js",
-                    "path": "app/view/report/"
                 },
                 {
                     "clsName": "PICS.model.report.AvailableField",
