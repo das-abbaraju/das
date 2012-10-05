@@ -34,6 +34,27 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '2 2 0 0'
+            },
+            dock: 'top',
+            items: [{
+                xtype: 'button',
+                action: 'remove-filter',
+                cls: 'remove-filter',
+                height: 16,
+                text: '<i class="icon-remove-sign"></i>',
+                tooltip: 'Remove',
+                width: 16
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });
+
         var filter_number = this.createFilterNumber(this.index);
         var filter_content = this.createFilterContent(this.record);
 
@@ -99,14 +120,6 @@ Ext.define('PICS.view.report.filter.Filter', {
                 value: text
             }, {
                 xtype: 'tbfill'
-            }, {
-                xtype: 'button',
-                action: 'remove-filter',
-                cls: 'remove-filter',
-                height: 16,
-                text: '<i class="icon-remove-sign"></i>',
-                tooltip: 'Remove',
-                width: 16
             }],
             layout: {
                 type: 'hbox',

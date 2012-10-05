@@ -34,6 +34,11 @@ $report_filter_remove_filter_text_color: #ac030c;
 		border-top: 1px solid $report_filter_border_color_top;
 	}
 	
+	.filter-content
+	{
+		top: -9px !important;
+	}
+
 	.filter-number
 	{
 		display: none;
