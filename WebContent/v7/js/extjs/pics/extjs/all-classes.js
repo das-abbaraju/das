@@ -86958,6 +86958,78 @@ Ext.define('Ext.grid.Panel', {
      * @param {Object[]} columns (Optional) An array of column configs
      */
 });
+Ext.define('PICS.view.report.report.ReportData', {
+    extend: 'Ext.grid.Panel',
+    alias: ['widget.reportdata'],
+
+    requires: [
+        'PICS.view.report.report.ReportPagingToolbar'
+    ],
+
+    store: 'report.ReportDatas',
+
+    border: 0,
+    // column configuration must be specified - will be overridden dynamically
+    columns: [{
+        xtype: 'rownumberer'
+    }],
+    dockedItems: [{
+        xtype: 'reportpagingtoolbar',
+        dock: 'top'
+    }],
+    id: 'report_data',
+    listeners: {
+        reconfigure: function (cmp) {
+            cmp.columns[0].setHeight(23);
+        }
+    },
+    margin: '0 30 0 0',
+    rowLines: false,
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        this.headerCt.on('headerclick', function (header, column, event, html) {
+            if (column.xtype == 'rownumberer') {
+                return false;
+            };
+
+            header.showMenuBy(column.el.dom, column);
+        }, this);
+
+        this.headerCt.on('menucreate', function (header, column, event, html) {
+            var menu = header.getMenu();
+
+            this.createHeaderMenu(menu);
+        }, this);
+    },
+
+    createHeaderMenu: function (menu) {
+        menu.removeAll();
+
+        // simulate header menu to be plain (menu is already created at this point)
+        menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
+        menu.name = 'report_data_header_menu';
+
+        menu.add({
+            name: 'sort_asc',
+            text: 'Sort Ascending'
+        }, {
+            name: 'sort_desc',
+            text: 'Sort Descending'
+        }, {
+            xtype: 'menuseparator'
+        }, {
+            name: 'function',
+            text: 'Functions...'
+        }, {
+            xtype: 'menuseparator'
+        }, {
+            name: 'remove_column',
+            text: 'Remove'
+        });
+    }
+});
 Ext.define('PICS.view.report.available-field.AvailableFieldList', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportavailablefieldlist'],
@@ -89287,6 +89359,38 @@ Ext.define('PICS.view.layout.Header', {
         xtype: 'layoutmenu'
     }]
 });
+Ext.define('PICS.view.report.Viewport', {
+    extend: 'Ext.container.Viewport',
+
+    requires: [
+        'PICS.view.layout.Header',
+        'PICS.view.report.report.ReportData',
+        'PICS.view.report.filter.FilterOptions',
+        'PICS.view.report.header.ReportHeader'
+    ],
+
+    items: [{
+    	xtype: 'layoutheader',
+        region: 'north'
+    }, {
+        region: 'center',
+
+        border: 0,
+        id: 'content',
+        items: [{
+        	xtype: 'reportheader',
+            region: 'north'
+        }, {
+            xtype: 'reportfilteroptions',
+            region: 'west'
+        }, {
+        	xtype: 'reportdata',
+            region: 'center'
+        }],
+        layout: 'border'
+    }],
+    layout: 'border'
+});
 Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.reportfilterbaseautocompletefilter',
@@ -89304,7 +89408,6 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             Ext.Error.raise('Invalid filter record');
         }
 
-        // TODO: why the hell is this here
         this.record.set('operator', 'In');
 
         var autocomplete = this.createAutocomplete(this.record);
@@ -89332,8 +89435,8 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     },
 
     getStoreForAutocomplete: function (record) {
-        var url = Ext.Object.fromQueryString(document.location.search);
-        var name = record.get('name');
+        var field = record.getAvailableField(),
+            field_type = field.get('fieldType');
 
         return {
             fields: [{
@@ -89345,8 +89448,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                // TODO: why does this require a report number
-                url: 'ReportAutocomplete.action?report=' + url.report + '&fieldName=' + name,
+                url: 'ReportAutocomplete.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'
@@ -89370,7 +89472,6 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             Ext.Error.raise('Invalid filter record');
         }
 
-        // TODO: shouldn't the server do this?
         this.record.set('operator', 'In');
 
         var list = this.createList(this.record);
@@ -89396,8 +89497,8 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
     },
 
     getStoreForList: function (record) {
-        var url = Ext.Object.fromQueryString(document.location.search);
-        var name = record.get('name');
+        var field = record.getAvailableField(),
+            field_type = field.get('fieldType');
 
         return {
             fields: [{
@@ -89409,8 +89510,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                // TODO: why does this require a report number
-                url: 'ReportAutocomplete.action?report=' + url.report + '&fieldName=' + name,
+                url: 'ReportAutocomplete.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'
@@ -89566,51 +89666,28 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     getFilterClassByType: function (type) {
         var cls;
-
+        
         switch (type) {
-            // TODO: this is retarded the backend architecture is invalid
             case 'AccountID':
-                cls = 'PICS.view.report.filter.base.AccountIDFilter';
-                break;
-            case 'AccountName':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
             case 'Autocomplete':
-                cls = 'PICS.view.report.filter.base.AutocompleteFilter';
-                break;
             case 'Boolean':
-                cls = 'PICS.view.report.filter.base.BooleanFilter';
-                break;
             case 'Date':
+            case 'Float':
+            case 'Integer':
+            case 'String':
+            case 'UserID':
+                cls = 'PICS.view.report.filter.base.' + type + 'Filter';
+                break;
+            case 'ShortList':
+                // TODO Rename ListFilter to ShortListFilter
+                cls = 'PICS.view.report.filter.base.ListFilter';
+                break;
+            case 'DateTime':
+                // TODO add in a DateTime filter type
                 cls = 'PICS.view.report.filter.base.DateFilter';
                 break;
-            case 'DaysAgo':
-                // Add new filter for days ago for Steps to Green report
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'Enum':
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'Float':
-                cls = 'PICS.view.report.filter.base.FloatFilter';
-                break;
-            case 'Integer':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'LowMedHigh':
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'Number':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'String':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
-            case 'UserID':
-                cls = 'PICS.view.report.filter.base.UserIDFilter';
-                break;
             default:
-                cls = null;
+                cls = 'PICS.view.report.filter.base.StringFilter';
                 break;
         }
 
@@ -92363,142 +92440,6 @@ Ext.define('Ext.grid.column.Number', {
         return Ext.util.Format.number(value, this.format);
     }
 });
-Ext.define('PICS.view.report.LinkColumn', {
-    extend: 'Ext.grid.column.Column',
-    alias: ['widget.linkcolumn'],
-
-    /**
-     * Example: Page.action?id={accountID}&report.name={reportName}
-     */
-    url: '',
-
-    constructor: function(cfg) {
-        this.callParent(arguments);
-        var defaultURL = this.url,
-        	params = this.urlParams;
-        
-        params = defaultURL.match(/{(\w+)}/);
-        
-        this.renderer = function(value, metaData, record) {
-        	var url = defaultURL;
-        	
-            Ext.Array.forEach(params, function(fieldName) {
-            	var field = record.raw[fieldName];
-            	
-            	if (field) {
-            		url = url.replace("{" + fieldName + "}", field);
-            	}
-            });
-            
-            return "<a href='" + url + "'>" + value + "</a>";
-        };
-    }
-});
-Ext.define('PICS.view.report.report.ReportData', {
-    extend: 'Ext.grid.Panel',
-    alias: ['widget.reportdata'],
-
-    requires: [
-        'PICS.view.report.LinkColumn',
-        'PICS.view.report.report.ReportPagingToolbar'
-    ],
-
-    store: 'report.ReportDatas',
-
-    border: 0,
-    // column configuration must be specified - will be overridden dynamically
-    columns: [{
-        xtype: 'rownumberer'
-    }],
-    dockedItems: [{
-        xtype: 'reportpagingtoolbar',
-        dock: 'top'
-    }],
-    id: 'report_data',
-    listeners: {
-        reconfigure: function (cmp) {
-            cmp.columns[0].setHeight(23);
-        }
-    },
-    margin: '0 30 0 0',
-    rowLines: false,
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        this.headerCt.on('headerclick', function (header, column, event, html) {
-            if (column.xtype == 'rownumberer') {
-                return false;
-            };
-
-            header.showMenuBy(column.el.dom, column);
-        }, this);
-
-        this.headerCt.on('menucreate', function (header, column, event, html) {
-            var menu = header.getMenu();
-
-            this.createHeaderMenu(menu);
-        }, this);
-    },
-
-    createHeaderMenu: function (menu) {
-        menu.removeAll();
-
-        // simulate header menu to be plain (menu is already created at this point)
-        menu.addCls(Ext.baseCSSPrefix + 'menu-plain');
-        menu.name = 'report_data_header_menu';
-
-        menu.add({
-            name: 'sort_asc',
-            text: 'Sort Ascending'
-        }, {
-            name: 'sort_desc',
-            text: 'Sort Descending'
-        }, {
-            xtype: 'menuseparator'
-        }, {
-            name: 'function',
-            text: 'Functions...'
-        }, {
-            xtype: 'menuseparator'
-        }, {
-            name: 'remove_column',
-            text: 'Remove'
-        });
-    }
-});
-Ext.define('PICS.view.report.Viewport', {
-    extend: 'Ext.container.Viewport',
-
-    requires: [
-        'PICS.view.layout.Header',
-        'PICS.view.report.report.ReportData',
-        'PICS.view.report.filter.FilterOptions',
-        'PICS.view.report.header.ReportHeader'
-    ],
-
-    items: [{
-    	xtype: 'layoutheader',
-        region: 'north'
-    }, {
-        region: 'center',
-
-        border: 0,
-        id: 'content',
-        items: [{
-        	xtype: 'reportheader',
-            region: 'north'
-        }, {
-            xtype: 'reportfilteroptions',
-            region: 'west'
-        }, {
-        	xtype: 'reportdata',
-            region: 'center'
-        }],
-        layout: 'border'
-    }],
-    layout: 'border'
-});
 Ext.define('PICS.model.report.AvailableField', {
 	extend: 'Ext.data.Model',
 
@@ -92506,6 +92447,10 @@ Ext.define('PICS.model.report.AvailableField', {
 	    // field category (categorizes fields in available field modal - column, filter picker)
 	    name: 'category',
 	    type: 'string'
+    }, {
+        // field type used to know the autocomplete or short list name
+        name: 'fieldType',
+        type: 'string'
     }, {
         // filter type used to display filter configuration aka drop down, autocomplete, string search, etc.
         name: 'filterType',
@@ -92966,65 +92911,61 @@ Ext.define('PICS.model.report.Column', {
     },
 
     toGridColumn: function () {
-        var field = this.getAvailableField();
+        var field = this.getAvailableField(),
+            url = field.get('url'),
+            grid_column;
 
         if (!field) {
             Ext.Error.raise('Invalid available field');
         }
-
-        var grid_column = {
-            dataIndex: field.get('name'),
+        
+        var type = field.get('type');
+        
+        var config = {
             menuDisabled: true,
-            sortable: false,
-            text: field.get('text'),
-            width: field.get('width') || 150
+            record: this,
+            sortable: false
         };
 
-        switch (field.get('type')) {
-            case 'boolean':
-                grid_column.align = 'center';
-                grid_column.renderer = function (value) {
-                    if (value) {
-                        return '<i class="icon-ok"></i>';
-                    }
-
-                    return '';
-                };
-                grid_column.width = 50;
+        switch (type) {
+        	// <i class="icon-ok"></i>
+        	case 'boolean':
+            	grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
                 break;
+            // Y-m-d
             case 'date':
-            case 'datetime':
-                grid_column.xtype = 'datecolumn';
-                grid_column.format = 'n/j/Y';
+            	grid_column = Ext.create('PICS.ux.grid.column.Date', config);
 
                 break;
+            // <i class="icon-flag"></i>
+            case 'flag':
+            	grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
+
+                break;
+            // 1,234.00
             case 'float':
-                grid_column.xtype = 'numbercolumn';
-                grid_column.align = 'right';
-                grid_column.width = 75;
+            	grid_column = Ext.create('PICS.ux.grid.column.Float', config);
 
                 break;
-            case 'int':
-                grid_column.xtype = 'numbercolumn';
-                grid_column.align = 'right';
-                grid_column.format = '0000';
-                grid_column.width = 75;
+            // 1234
+            case 'integer':
+            	grid_column = Ext.create('PICS.ux.grid.column.Int', config);
 
                 break;
+            // 1,234
+            case 'number':
+            	grid_column = Ext.create('PICS.ux.grid.column.Number', config);
+
+                break;
+        	// text
+            case 'string':
             default:
+            	grid_column = Ext.create('PICS.ux.grid.column.Column', config);
+            	
                 break;
         }
-
-        if (field.get('url')) {
-            grid_column.xtype = 'linkcolumn';
-            grid_column.url = field.get('url');
-        }
-
-        if (field.get('renderer')) {
-            grid_column.renderer = field.get('renderer');
-        }
-
+        
         return grid_column;
     }
 });
