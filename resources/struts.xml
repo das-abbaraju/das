@@ -1169,6 +1169,9 @@
 			<result name="forms">/struts/style_guide/forms.jsp</result>
 			<result name="pills">/struts/style_guide/pills.jsp</result>
 		</action>
+		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
+			<result>struts/users/login.jsp</result>
+		</action>
 	</package>
 
 	<!-- Registration -->

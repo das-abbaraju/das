@@ -467,6 +467,7 @@
 					</s:if>
 					<s:if test="!user.activeB">
 						<s:submit method="activate" cssClass="picsbutton positive" value="%{getText('button.Activate')}" />
+						<s:submit method="addToExclusionList" cssClass="picsbutton positive" value="%{getText('button.addToExclusionList')}" />
 						<pics:permission perm="EditUsers" type="Delete">							
 							<s:if test="user.id > 0">
 								<s:submit method="delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText('UsersManage.confirm.Delete')}');" />

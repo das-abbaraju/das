@@ -31,6 +31,7 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -95,6 +96,8 @@ public class UsersManage extends PicsActionSupport {
 	protected AppPropertyDAO appPropertyDAO;
 	@Autowired
 	private EmailSender emailSender;
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -325,6 +328,8 @@ public class UsersManage extends PicsActionSupport {
 			userGroupDAO.save(ug);
 		}
 
+		removeFromExclusionList();
+
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(sendActivationEmail(user, permissions));
@@ -503,6 +508,9 @@ public class UsersManage extends PicsActionSupport {
 
 		user.setActive(true);
 		userDAO.save(user);
+
+		removeFromExclusionList();
+
 		addActionMessage(getTextParameterized("UsersManage.UserActivated", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
 
@@ -1141,7 +1149,7 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void setUserResetHash(){
+	private void setUserResetHash() {
 		// Seeding the time in the reset hash so that each one will be
 		// guaranteed unique
 		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
@@ -1174,4 +1182,12 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	public String addToExclusionList() throws Exception {
+		emailQueueDAO.addEmailAddressExclusions(user.getEmail(), permissions.getUserId());
+		return SUCCESS;
+	}
+
+	private void removeFromExclusionList() throws SQLException {
+		emailQueueDAO.removeEmailAddressExclusions(user.getEmail());
+	}
 }
