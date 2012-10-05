@@ -26,7 +26,7 @@ import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.strutsutil.AjaxUtils;
 

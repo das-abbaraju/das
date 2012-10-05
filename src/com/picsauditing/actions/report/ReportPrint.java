@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.search.SelectSQL;

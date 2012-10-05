@@ -10,12 +10,12 @@ import com.picsauditing.access.Permissions;
 public abstract class AbstractAutocompleteService<T> {
 
 	@SuppressWarnings("unchecked")
-	public final JSONObject tokenJson(String search, Permissions permissions) {
+	public final JSONObject getJson(String search, Permissions permissions) {
 		JSONObject json = new JSONObject();
 
 		JSONArray result = new JSONArray();
 		for (T item : getItems(search, permissions)) {
-			result.add(formatTokenJson(item, permissions));
+			result.add(formatJson(item, permissions));
 		}
 
 		json.put("result", result);
@@ -24,7 +24,7 @@ public abstract class AbstractAutocompleteService<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JSONObject formatTokenJson(T item, Permissions permissions) {
+	private JSONObject formatJson(T item, Permissions permissions) {
 		JSONObject o = new JSONObject();
 		o.put("key", getKey(item));
 		o.put("value", getValue(item, permissions));

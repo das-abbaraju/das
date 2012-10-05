@@ -13,8 +13,6 @@
 		</action>
 		<action name="ReportDownload" class="com.picsauditing.actions.report.ReportDownload">
 		</action>
-		<action name="ReportAutocomplete" class="com.picsauditing.actions.report.ReportDynamicAutocomplete">
-		</action>
 		<action name="ReportPrint" class="com.picsauditing.actions.report.ReportPrint">
 			<result>struts/report/print.jsp</result>
 		</action>

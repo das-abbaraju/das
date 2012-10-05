@@ -1,4 +1,4 @@
-package com.picsauditing.model;
+package com.picsauditing.model.report;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportSharing extends PicsActionSupport {

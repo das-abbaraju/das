@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 
 @SuppressWarnings("serial")
 public class ReportBootstrap extends PicsActionSupport {

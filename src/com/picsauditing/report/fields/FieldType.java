@@ -80,8 +80,19 @@ public enum FieldType {
 		this.displayType = displayType;
 	}
 
+	/**
+	 * The Bean Name in the Spring Configuration must match the Enum, otherwise
+	 * the bean will not be found.
+	 * 
+	 * @return Reusable instance of an AutocompleteService.
+	 * @throws RuntimeException if this FieldType is not a FilterType.Autocomplete
+	 */
 	public AbstractAutocompleteService<?> getAutocompleteService() {
-		return (AbstractAutocompleteService<?>) SpringUtils.getBean(this.toString() + "AutocompleteService");
+		if (this.filterType != FilterType.Autocomplete) {
+			throw new RuntimeException("This FieldType is not an Autocomplete.");
+		}
+		
+		return SpringUtils.getBean(this.toString() + "AutocompleteService");
 	}
 
 	public FilterType getFilterType() {

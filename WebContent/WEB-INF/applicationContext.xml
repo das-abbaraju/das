@@ -40,6 +40,7 @@
 	<bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO"/>
 	<bean id="AuditRejectionCodeDAO" class="com.picsauditing.dao.AuditRejectionCodeDAO"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
+	<bean id="AutocompleteDAO" class="com.picsauditing.dao.AutocompleteDAO"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
 	<bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
@@ -158,6 +159,7 @@
 	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
 	<bean id="AuditQuestionAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />
 	<bean id="AuditTypeAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService" />
+	<bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete" />
 	<bean id="ContractorAutocompleteService" class=" com.picsauditing.actions.autocomplete.ContractorAutocompleteService" />
 	<bean id="CountryAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountryAutocompleteService" />
 	<bean id="LocationAutocompleteService" class=" com.picsauditing.actions.autocomplete.LocationAutocompleteService" />
@@ -165,7 +167,7 @@
 	<bean id="OperatorTagAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
 	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
 	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
-	<bean id="ReportModel" class="com.picsauditing.model.ReportModel" />
+	<bean id="ReportModel" class="com.picsauditing.model.report.ReportModel" />
 	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 

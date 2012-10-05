@@ -1,4 +1,4 @@
-package com.picsauditing.model;
+package com.picsauditing.model.report;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.pagination.Pagination;
 
