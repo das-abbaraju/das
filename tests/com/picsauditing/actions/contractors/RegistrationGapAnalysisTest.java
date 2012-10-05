@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -236,6 +237,15 @@ public class RegistrationGapAnalysisTest {
 		assertEquals(6, matches.size());
 	}
 
+	@Test
+	public void testLevenshteinDistance_Examples() throws Exception {
+		assertEquals(1, StringUtils.getLevenshteinDistance("Glyn","Glen"));
+		assertEquals(2, StringUtils.getLevenshteinDistance("Glyn","Glenn"));
+		assertEquals(2, StringUtils.getLevenshteinDistance("Joe Glyn","Jo Glen")); 
+		// This is beyond our threshold
+		assertEquals(3, StringUtils.getLevenshteinDistance("Joe Glyn","Jo Glenn"));
+	}
+	
 	private BasicDynaBean mockResult() {
 		BasicDynaBean result = mock(BasicDynaBean.class);
 

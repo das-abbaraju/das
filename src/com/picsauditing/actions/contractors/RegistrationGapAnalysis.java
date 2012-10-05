@@ -26,6 +26,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RegistrationGapAnalysis extends PicsActionSupport {
+	// Up to two character changes in a string are allowed (e.g. "Jo Glyn" and "Joe Glen")
+	private static final int LEVENSHTEIN_DISTANCE_THRESHOLD = 2; 
+
 	private Database database = new Database();
 
 	private int daysAgo = 30;
@@ -178,24 +181,27 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		return contractor;
 	}
 
+	// TODO Rename to compareRegisteredWithRequest
 	private Set<MatchType> getMatchTypes(ContractorAccount registered, ContractorAccount requested) {
 		Set<MatchType> matchesOn = new TreeSet<MatchType>();
 
-		if (StringUtils.getLevenshteinDistance(registered.getName(), requested.getName()) < 2) {
+		if (StringUtils.getLevenshteinDistance(registered.getName(), requested.getName()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
 			matchesOn.add(MatchType.Name);
 		}
 
-		if (StringUtils.getLevenshteinDistance(registered.getAddress(), requested.getAddress()) < 2) {
-			if (StringUtils.getLevenshteinDistance(registered.getCity(), requested.getCity()) < 2) {
+		if (StringUtils.getLevenshteinDistance(registered.getAddress(), requested.getAddress()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
+			if (StringUtils.getLevenshteinDistance(registered.getCity(), requested.getCity()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
 				matchesOn.add(MatchType.Address);
 			}
 
+			// TODO utility: StringUtils.bothNonBlanksAndOneBeginsWithTheOther
 			if (registered.getZip().startsWith(requested.getZip())
 					|| requested.getZip().startsWith(registered.getZip())) {
 				matchesOn.add(MatchType.Address);
 			}
 		}
 
+		// TODO utility: StringUtils.bothNonBlanksAndOneBeginsWithTheOther
 		if (!Strings.isEmpty(registered.getTaxId())
 				&& !Strings.isEmpty(requested.getTaxId())
 				&& (registered.getTaxId().startsWith(requested.getTaxId()) || requested.getTaxId().startsWith(
@@ -207,14 +213,15 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		User requestedUser = requested.getPrimaryContact();
 
 		if (registeredUser != null && requestedUser != null) {
-			if (StringUtils.getLevenshteinDistance(registeredUser.getName(), requestedUser.getName()) < 2) {
+			if (StringUtils.getLevenshteinDistance(registeredUser.getName(), requestedUser.getName()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
 				matchesOn.add(MatchType.Contact);
 			}
 
-			if (StringUtils.getLevenshteinDistance(registeredUser.getEmail(), requestedUser.getEmail()) < 2) {
+			if (StringUtils.getLevenshteinDistance(registeredUser.getEmail(), requestedUser.getEmail()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
 				matchesOn.add(MatchType.Email);
 			}
 
+			// TODO utility: StringUtils.bothNonBlanksAndOneBeginsWithTheOther
 			if (registeredUser.getPhoneIndex() != null
 					&& requestedUser.getPhoneIndex() != null
 					&& (registeredUser.getPhoneIndex().contains(requestedUser.getPhoneIndex()) || requestedUser

@@ -453,6 +453,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 					"t.contractor.id = " + requestedContractor.getId());
 
 			if (requestList != null && !requestList.isEmpty()) {
+				// TODO find the one that corresponds to the appropriate operator  
 				legacyRequest = requestList.get(0);
 			}
 		}

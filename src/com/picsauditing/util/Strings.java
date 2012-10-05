@@ -266,6 +266,7 @@ public class Strings {
 		return newValue;
 	}
 
+	// TODO Why just the variations on the letter I?  What about all of the other diacriticals?
 	public static String stripNonStandardCharacters(String input) {
 		input = input.replace('ì', '"');
 		input = input.replace('î', '"');

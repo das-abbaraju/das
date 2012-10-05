@@ -61,7 +61,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	// Registration Requests
 	private User requestedBy;
 	private String requestedByOther;
-	private Date deadline;
+	private Date deadline; // TODO Rename as registrationDeadline
 	private String reasonForRegistration;
 
 	@ManyToOne
