@@ -1,5 +1,9 @@
 package com.picsauditing.PICS;
 
+import static org.mockito.Mockito.*;
+
+import java.util.Locale;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -8,62 +12,45 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.search.Database;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ MainPage.class, I18nCache.class, TranslationActionSupport.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class MainPageTest {
 	private MainPage mainPage;
 
 	private final String SYSTEM_MESSAGE_KEY = "SYSTEM.message.en";
 
 	@Mock
-	HttpServletRequest request;
+	protected HttpServletRequest request;
 	@Mock
-	HttpSession session;
+	protected HttpSession session;
 	@Mock
-	Database database;
+	private Permissions permissions;
 	@Mock
-	BasicDynaBean basicDynaBean;
+	private BasicDynaBean basicDynaBean;
 	@Spy
-	AppPropertyDAO appPropertyDAO = new AppPropertyDAO();
-	@Mock
-	I18nCache i18nCache;
+	private AppPropertyDAO appPropertyDAO = new AppPropertyDAO();
 
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-		PowerMockito.mockStatic(TranslationActionSupport.class);
-
 		mainPage = new MainPage(request, session);
 
-		PicsTestUtil.forceSetPrivateField(mainPage, "appPropertyDAO", appPropertyDAO);
-		PicsTestUtil.forceSetPrivateField(mainPage, "database", database);
+		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
+		Mockito.when(session.getAttribute("permissions")).thenReturn(permissions);
+
+		Whitebox.setInternalState(mainPage, "appPropertyDAO", appPropertyDAO);
 	}
 
 	@Test
 	public void testPermissionsLoadedFromSession() throws Exception {
-		Permissions permissions = EntityFactory.makePermission();
-		Mockito.when(session.getAttribute("permissions")).thenReturn(permissions);
-
 		Assert.assertEquals(permissions, mainPage.getPermissions());
 	}
 

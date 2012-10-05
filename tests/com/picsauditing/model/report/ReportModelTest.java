@@ -90,9 +90,12 @@ public class ReportModelTest {
 
 	@Test
 	public void canUserViewAndCopy_TrueIfAssociationWithUser() {
-		when(reportPermissionUserDao.findOne(0, REPORT_ID)).thenReturn(new ReportPermissionUser());
-
-		Permissions makePermission = EntityFactory.makePermission(new User(USER_ID));
+		// use make user so that it has an account
+		User user = EntityFactory.makeUser();
+		user.setId(USER_ID);
+		when(reportPermissionUserDao.findOne(user.getId(), REPORT_ID)).thenReturn(
+				new ReportPermissionUser());
+		Permissions makePermission = EntityFactory.makePermission(user);
 		assertTrue(reportModel.canUserViewAndCopy(makePermission, REPORT_ID));
 	}
 
