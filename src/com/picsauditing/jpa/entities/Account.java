@@ -789,10 +789,21 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
 				.append(this.name).append('|');
-		if (this.city != null)
+
+		if (this.city != null) {
 			sb.append(this.city);
-		if (this.countrySubdivision != null)
-			sb.append(", ").append(this.countrySubdivision).append("\n");
+		}
+
+		if (this.countrySubdivision != null) {
+			if (this.city != null) {
+				sb.append(", ");
+			}
+
+			sb.append(this.countrySubdivision);
+		}
+
+		sb.append("|").append(this.status.toString()).append('|');
+
 		return sb.toString();
 	}
 
@@ -968,7 +979,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * 	In minutes
+	 * In minutes
 	 */
 	public int getSessionTimeout() {
 		return sessionTimeout;
