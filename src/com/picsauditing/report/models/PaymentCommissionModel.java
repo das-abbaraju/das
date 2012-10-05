@@ -2,7 +2,6 @@ package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
 import com.picsauditing.report.tables.InvoiceTable;
 import com.picsauditing.report.tables.PaymentCommissionTable;

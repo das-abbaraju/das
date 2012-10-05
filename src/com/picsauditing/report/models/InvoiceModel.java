@@ -28,7 +28,7 @@ public class InvoiceModel extends AbstractModel {
 	}
 
 	@Override
-	public String getWhereClause(Permissions permissions, List<Filter> filters) {
+	public String getWhereClause(List<Filter> filters) {
 		return "Invoice.tableType = 'I'";
 	}
 }

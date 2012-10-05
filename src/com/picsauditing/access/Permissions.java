@@ -283,7 +283,7 @@ public class Permissions implements Serializable {
 	}
 
 	public String getAccountIdString() {
-		return Integer.toString(accountID);
+		return Integer.toString(getAccountId());
 	}
 
 	public int getTopAccountID() {
