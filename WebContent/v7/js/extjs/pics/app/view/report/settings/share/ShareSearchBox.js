@@ -43,7 +43,7 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
     pickerAlign: 'br',
     pickerOffset: [-305, 2],
     queryMode: 'remote',
-    queryParam: 'q',
+    queryParam: 'searchQuery',
 
     store: {
         fields: [
@@ -59,10 +59,13 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
             reader: {
                 root: 'results',
                 type: 'json',
-            }
+            },
+            pageParam: false,
+            startParam: false,
+            limitParam: false
         }
     },
 
-    valueField: 'q',
+    valueField: 'searchQuery',
     width: 325
 });
