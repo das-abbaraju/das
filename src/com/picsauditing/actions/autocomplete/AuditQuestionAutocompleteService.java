@@ -27,7 +27,7 @@ public final class AuditQuestionAutocompleteService extends AbstractAutocomplete
 
 	@Override
 	protected Object getValue(AuditQuestion question, Permissions permissions) {
-		return I18nCache.getInstance().getText(question.getI18nKey(), permissions.getLocale());
+		return I18nCache.getInstance().getText(question.getI18nKey() + ".name", permissions.getLocale());
 	}
 
 }
