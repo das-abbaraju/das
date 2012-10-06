@@ -28,6 +28,6 @@ public class AuditCategoryAutocompleteService extends AbstractAutocompleteServic
 
 	@Override
 	protected Object getValue(AuditCategory auditCategory, Permissions permissions) {
-		return I18nCache.getInstance().getText(auditCategory.getI18nKey(), permissions.getLocale());
+		return I18nCache.getInstance().getText(auditCategory.getI18nKey() + ".name", permissions.getLocale());
 	}
 }
