@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.model.general.Autocomplete;
+import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.fields.FieldType;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -32,11 +33,11 @@ public class Autocompleter extends PicsActionSupport {
 					break;
 				
 				case ShortList:
-					json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
+					json = ReportUtil.renderEnumFieldAsJson(fieldType, permissions);
 					break;
 					
 				default:
-					throw new Exception(fieldType + " not supported by list function.");
+					throw new Exception(fieldType + " not supported for autocomplete.");
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in Autocompleter.", e);
