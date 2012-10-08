@@ -12,12 +12,19 @@ Ext.define('PICS.view.report.settings.ExportSettings', {
         text: '<i class="icon-home icon-large"></i>To Dashboard'
     }],*/
     items: [{
-        cls: 'coming-soon',
-        html: new Ext.Template([
-            '<i class="icon-wrench icon-large"></i>',
-            '<p>Coming Soon</p>'
-        ])
+        xtype: 'button',
+        action: 'export',
+        text : 'Export',
+        cls: 'primary export',
+        id: 'export-button',
+        tooltip: 'Export this report to Excel',
+        margin: '100 0 0 0'
     }],
+
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    },
     // custom config
     modal_title: 'Export Report',
     title: '<i class="icon-eject icon-large"></i>Export'

@@ -57,6 +57,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal #report_settings_tabbar tab': {
                 click: this.onReportModalTabClick
+            },
+
+            'reportsettingsmodal reportsettingsexport button[action=export]':  {
+                click: this.onReportModalExportClick
+            },
+
+            'reportsettingsmodal reportsettingsprint button[action=print]':  {
+                click: this.onReportModalPrintClick
             }
         });
 
@@ -159,6 +167,22 @@ Ext.define('PICS.controller.report.SettingsModal', {
             title = cmp.card.modal_title;
 
         modal.setTitle(title);
+    },
+
+    onReportModalExportClick: function (cmp, e, eOpts) {
+        var store = this.getReportReportsStore(),
+            report = store.first();
+
+        //TODO: Change this to a post and include parameters.
+        window.open('ReportDownload.action?report=' + report.get('id'));
+    },
+
+    onReportModalPrintClick: function (cmp, e, eOpts) {
+        var store = this.getReportReportsStore(),
+            report = store.first();
+
+        //TODO: Change this to a post and include parameters.
+        window.open('ReportPrint.action?report=' + report.get('id'));
     },
 
     onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
