@@ -22,8 +22,18 @@ public class OperatorTagAutocompleteService extends AbstractAutocompleteService<
 		if (Strings.isEmpty(search)) {
 			return Collections.emptyList();
 		}
+		
+		String operatorIDs = permissions.getAccountIdString();
 
-		List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, " t.tag LIKE '%" + Strings.escapeQuotes(search) + "%'");		
+		if (permissions.isOperator())
+			operatorIDs += "," + Strings.implode(permissions.getCorporateParent());
+
+		String permissionsQuery = "AND opID IN (" + operatorIDs + ")";
+
+		if (permissions.isPicsEmployee()) 
+			permissionsQuery = "";
+		
+		List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, " t.tag LIKE '%" + Strings.escapeQuotes(search) + "%' " + permissionsQuery);		
 		if (CollectionUtils.isEmpty(tags)) {
 			return Collections.emptyList();
 		}
