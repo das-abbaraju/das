@@ -15,13 +15,18 @@ Ext.application({
     ],
     
     constants: {
+        DATESTORE: [
+            ['LessThan', 'before'],
+            ['GreaterThan', 'after'],
+            ['Empty', 'is empty']
+        ],
         NUMBERSTORE: [
             ['Equals', '='],
             ['GreaterThan', '>'],
             ['LessThan', '<'],
             ['GreaterThanOrEquals', '>='],
             ['LessThanOrEquals', '<='],
-            ['Empty', 'blank']
+            ['Empty', 'is empty']
         ],
         TEXTSTORE: [
             ['Contains', 'contains'],
@@ -32,8 +37,8 @@ Ext.application({
             ['NotEndsWith', 'does not end with'],
             ['Equals', 'equals'],
             ['NotEquals', 'does not equal'],
-            ['Empty', 'blank'],
-            ['NotEmpty', 'not blank']
+            ['Empty', 'is empty'],
+            ['NotEmpty', 'is not empty']
         ]
     },
     

@@ -76,7 +76,7 @@ Ext.define('PICS.controller.report.Filter', {
             // save filter formula expression
             'reportfilterformula textfield[name=filter_formula]': {
                 blur: this.onFilterFormulaBlur,
-                specialkey: this.onFilterFormulaInputEnter
+                specialkey: this.onFilterFormulaInputSpecialKey
             },
 
             // hide filter formula
@@ -110,12 +110,18 @@ Ext.define('PICS.controller.report.Filter', {
                 select: this.onFilterValueSelect
             },
 
-            // saving edits to filter store + refresh
-            '#report_filters [name=filter_value]': {
-                blur: this.onFilterValueInputBlur,
-                specialkey: this.onFilterValueInputEnter
+            // saving edits to date filter store + refresh
+            '#report_filters datefield[name=filter_value]': {
+                blur: this.onFilterValueDateBlur,
+                specialkey: this.onFilterValueDateSpecialKey
             },
-
+            
+            // saving edits to non-date filter store + refresh
+            '#report_filters [name=filter_value]:not(datefield)': {
+                blur: this.onFilterValueInputBlur,
+                specialkey: this.onFilterValueInputSpecialKey
+            },
+            
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
                 change: this.onFilterValueSelect
@@ -305,7 +311,7 @@ Ext.define('PICS.controller.report.Filter', {
         this.saveFilterFormula();
     },
 
-    onFilterFormulaInputEnter: function (cmp, event) {
+    onFilterFormulaInputSpecialKey: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
@@ -422,8 +428,17 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     onFilterOperatorSelect: function (cmp, records, eOpts) {
-        var filter = this.findParentFilter(cmp);
+        var filter = this.findParentFilter(cmp),
+            filter_value = cmp.next('textfield, inputfield, numberfield');
+        
         filter.record.set('operator', cmp.getSubmitValue());
+        
+        if (cmp.getSubmitValue() == 'Empty') {
+            filter_value.setValue('');
+            filter_value.disable();
+        } else {
+            filter_value.enable();
+        }
 
         if (filter.record.get('value') != '') {
             this.application.fireEvent('refreshreport');
@@ -446,12 +461,26 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
+    onFilterValueDateBlur: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp);
+        filter.record.set('value', cmp.getValue());
+    },
+
+    onFilterValueDateSpecialKey: function (cmp, event) {
+        if (event.getKey() == event.ENTER) {
+            var filter = this.findParentFilter(cmp);
+            filter.record.set('value', cmp.getValue());
+
+            this.application.fireEvent('refreshreport');
+        }
+    },
+    
     onFilterValueInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('value', cmp.getSubmitValue());
     },
 
-    onFilterValueInputEnter: function (cmp, event) {
+    onFilterValueInputSpecialKey: function (cmp, event) {
         if (event.getKey() == event.ENTER) {
             var filter = this.findParentFilter(cmp);
             filter.record.set('value', cmp.getSubmitValue());
