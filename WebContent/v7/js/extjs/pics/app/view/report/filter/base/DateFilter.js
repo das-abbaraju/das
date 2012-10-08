@@ -2,6 +2,10 @@ Ext.define('PICS.view.report.filter.base.DateFilter', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilterbasedatefilter'],
 
+    requires: [
+        'Ext.form.field.Date'
+    ],
+    
     border: 0,
     layout: 'hbox',
 
