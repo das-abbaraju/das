@@ -518,21 +518,8 @@ Ext.define('PICS.controller.report.Filter', {
                 view_height = filter_options.body.dom.clientHeight;
 
             if (scroll_bar_height > view_height) {
-                    // Identify the position of the right edge of the visible view area.
-                    var scroll_bar_width = Ext.getScrollBarWidth(),
-                        view_element = filter_options.getEl(),
-                        view_left = view_element.getLeft(),
-                        view_width = view_element.getWidth(),
-                        visible_view_width = view_width - scroll_bar_width,
-                        visible_view_right = view_left + visible_view_width;
-
-                    // Identify the intended difference between the right edge of the view and of the remove button.
-                    var original_remove_filter_left_position = parseInt(remove_filter_elements[0].style.left),
-                        view_right = view_left + view_width,
-                        intended_right_differential = view_right - original_remove_filter_left_position;
-
                     // Calculate the new remove left position based on these values.
-                    var new_remove_filter_left_position = visible_view_right - intended_right_differential;
+                    var new_remove_filter_left_position = remove_filter_elements[0].style.left - Ext.getScrollBarWidth;
 
                     // Assign the new left position to all of the remove buttons.
                     for (var i = 0; i < remove_filter_elements.length; i++) {
@@ -540,6 +527,8 @@ Ext.define('PICS.controller.report.Filter', {
                     }
 
             } else {
+
+                var original_remove_filter_left_position = parseInt(remove_filter_elements[0].style.left);
 
                 // Assign the original left position to all of the remove buttons.
                 for (var i = 0; i < remove_filter_elements.length; i++) {

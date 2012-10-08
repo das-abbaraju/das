@@ -5,7 +5,7 @@ Ext.Loader.setConfig({
 Ext.application({
     name: 'PICS',
     appFolder: '/v7/js/extjs/pics/app',
-    
+
     requires: [
         'PICS.view.report.Viewport',
         'Ext.layout.container.Border',
