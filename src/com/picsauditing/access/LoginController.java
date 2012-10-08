@@ -8,7 +8,6 @@ import java.util.Date;
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -26,8 +25,6 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.security.SessionCookie;
-import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
@@ -63,10 +60,11 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-			if (sessionCookieIsValidAndNotExpired()) {
-				switchToUser = getClientSessionUserID();
-				if (switchToUser > 0)
+			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+				if (sessionCookieIsValidAndNotExpired()) {
+					switchToUser = getClientSessionUserID();
 					return switchTo();
+				}
 			}
 			return SUCCESS;
 		} else if ("confirm".equals(button)) {

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <%-- URL --%>
 <s:url action="Login.action" var="loginform" />
@@ -41,10 +43,12 @@
             <a href="AccountRecovery.action" tabindex="3"><s:text name="Login.Forgot" /></a>
         </div>
         
-        <div id="remember_me">
-            <s:checkbox name="rememberMe" value="false"></s:checkbox>
-            <label for="rememberMe"><s:text name="Login.RememberMe" /></label>
-        </div>
+        <pics:toggle name="<%= FeatureToggle.TOGGLE_SESSION_COOKIE %>">
+	        <div id="remember_me">
+	            <s:checkbox name="rememberMe" value="false"></s:checkbox>
+	            <label for="rememberMe"><s:text name="Login.RememberMe" /></label>
+	        </div>
+        </pics:toggle>
         
         <div class="form-actions">
             <button id="cancel_btn" type="button" class="btn" name="cancel"><s:text name="button.Cancel" /></button>
