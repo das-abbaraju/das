@@ -291,7 +291,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	@Transient
 	public String getRegistrationLink() {
-		return "http://www.picsorganizer.com/Registration.action?button=" + "request&requestID=" + getId();
+		return "https://www.picsorganizer.com/Registration.action?button=request&requestID=" + getId();
 	}
 
 	public Date getLastContactedByAutomatedEmailDate() {
