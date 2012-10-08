@@ -99,8 +99,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected TimeZone timezone;
 	protected boolean autoApproveRelationships = true;
 	protected boolean generalContractor = false;
-	private int sessionTimeout;
-	private int rememberMeTime;
+	private int sessionTimeout = 60;
+	private int rememberMeTime = -1;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
