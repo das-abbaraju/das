@@ -547,10 +547,10 @@ public class Cron extends PicsActionSupport {
 		emailExclusionList.addAll(emailsAlreadySentToPending);
 
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
-		String where = "c.country IN ('US','CA') AND c.conID IS NULL AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
+		String where = "c.country IN ('US','CA') AND c.conID IS NULL AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 
 		if (!emailExclusionList.isEmpty())
-			where = "c.email NOT IN (" + exclude + ") AND c.lastContactedByAutomatedEmailDate != CURDATE() AND ";
+			where = "c.email NOT IN (" + exclude + ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 		
 		String whereReminder = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "CASE WHEN DATEDIFF(c.deadline, c.creationDate) < 14 "
