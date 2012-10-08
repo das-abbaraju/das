@@ -17,10 +17,9 @@ public class PermissionQueryBuilder {
 	protected String contractorOperatorAlias = ""; // aka contractorOperator
 	protected Permissions permissions;
 
-	private boolean showPendingDeactivated = false;
 	private boolean workingFacilities = true;
 
-	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();;
+	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();
 
 	public PermissionQueryBuilder(Permissions permissions) {
 		this(permissions, SQL);
@@ -62,7 +61,7 @@ public class PermissionQueryBuilder {
 		if (!permissions.isOperatorCorporate())
 			contractorOperatorAlias = "";
 
-		String subSQL = "";
+		String subSQL;
 		query += " AND ";
 
 		if (!Strings.isEmpty(contractorOperatorAlias) && permissions.isOperator())
@@ -154,21 +153,15 @@ public class PermissionQueryBuilder {
 	}
 
 	private String buildStatusFilter() {
-		defaultVisibleStatuses();
+		// TODO we shouldn't always add these, make the user add these when they want
+		// if (visibleStatuses.isEmpty()) {}
+		addDefaultStatuses();
 		String statusList = Strings.implodeForDB(visibleStatuses, ",");
 		return accountAlias + ".status IN (" + statusList + ")";
 	}
 
-	private void defaultVisibleStatuses() {
-		if (visibleStatuses.isEmpty()) {
-			if (showPendingDeactivated) {
-				visibleStatuses.add(AccountStatus.Pending);
-				visibleStatuses.add(AccountStatus.Deactivated);
-			}
-		}
-
+	public void addDefaultStatuses() {
 		visibleStatuses.add(AccountStatus.Active);
-
 		if (permissions.getAccountStatus().isDemo())
 			visibleStatuses.add(AccountStatus.Demo);
 	}
