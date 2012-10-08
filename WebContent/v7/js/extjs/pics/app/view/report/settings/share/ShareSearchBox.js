@@ -46,6 +46,7 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
     queryParam: 'searchQuery',
 
     store: {
+        autoLoad: false,
         fields: [
             'result_type',
             'result_id',
@@ -55,7 +56,7 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
         ],
         proxy: {
             type: 'ajax',
-            url: 'SearchBox!json.action',
+            url: '',
             reader: {
                 root: 'results',
                 type: 'json',
@@ -65,7 +66,6 @@ Ext.define('PICS.view.settings.share.ShareSearchBox', {
             limitParam: false
         }
     },
-
     valueField: 'searchQuery',
-    width: 325
+    width: 325    
 });

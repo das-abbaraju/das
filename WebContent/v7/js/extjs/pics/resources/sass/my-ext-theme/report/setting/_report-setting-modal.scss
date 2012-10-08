@@ -178,9 +178,9 @@
 	
 	.selected-account
 	{
+		background-color: #f1f1f2;
 		border: 1px solid #ccc;
 		@include border-radius(5px);
-		background-color: #f1f1f2;
 		
 		.selected-account-id
 		{
@@ -191,8 +191,8 @@
 	.icon-edit
 	{
 		color: #ccc;
-		font-size: 22px;
 		cursor: pointer;
+		font-size: 22px;
 		margin-left: 10px;
 	}
 	

@@ -68,10 +68,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
             
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
-                select: this.onReportModalShareAccountSelect,
-                specialkey: this.onReportModalSearchboxSpecialKey
+                beforerender: this.onReportModalShareSearchboxRender,
+                select: this.onReportModalShareSearchboxSelect,
+                specialkey: this.onReportModalShareSearchboxSpecialKey
             },
-            
+
             'reportsettingsmodal reportsettingsshare button[action=share]': {
                 click: this.onReportModalShareClick
             }
@@ -88,15 +89,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
        var term = cmp.inputEl.getValue();
 
        cmp.search(term);
-   },
-
-   onReportModalSearchboxSpecialKey: function (base, e, eOpts) {
-       if (e.getKey() === e.ENTER) {
-           var term = base.getValue();
-           this.search(term);
-       } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
-           base.collapse();
-       }
    },
 
    getReportId: function () {
@@ -196,7 +188,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var modal = this.getReportSettingsModal(),
             title = cmp.card.modal_title;
 
-        modal.setTitle(title);
+        modal.setTitle(title);        
     },
 
     onReportModalExportClick: function (cmp, e, eOpts) {
@@ -221,8 +213,29 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         modal.setTitle(title);
     },
+    
+    showSettingsModal: function (action) {
+        var modal = Ext.create('PICS.view.report.settings.SettingsModal');
 
-    onReportModalShareAccountSelect: function (combo, records, eOpts) {
+        if (action == 'edit') {
+            this.getReportSettingsTabs().setActiveTab(0);
+        } else if (action == 'copy') {
+            this.getReportSettingsTabs().setActiveTab(1);
+        }
+
+        modal.show();
+    },
+    
+    /**
+     * Share
+     */
+
+    onReportModalShareSearchboxRender: function (cmp, eOpts) {
+        cmp.store.getProxy().url = 'ReportAutocomplete!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        cmp.store.load();
+    },
+
+    onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
         var record = records[0];
 
         if (record) {
@@ -239,7 +252,16 @@ Ext.define('PICS.controller.report.SettingsModal', {
             cmp.update(account);
         }
     },
-    
+
+    onReportModalShareSearchboxSpecialKey: function (base, e, eOpts) {
+        if (e.getKey() === e.ENTER) {
+            var term = base.getValue();
+            this.search(term);
+        } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
+            base.collapse();
+        }
+    },
+
     onReportModalShareClick: function (cmp, e, eOpts) {
         // Get the share component.
         var reportsettingsshare =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
@@ -299,16 +321,4 @@ Ext.define('PICS.controller.report.SettingsModal', {
             }
         });
     },
-    
-    showSettingsModal: function (action) {
-        var modal = Ext.create('PICS.view.report.settings.SettingsModal');
-
-        if (action == 'edit') {
-            this.getReportSettingsTabs().setActiveTab(0);
-        } else if (action == 'copy') {
-            this.getReportSettingsTabs().setActiveTab(1);
-        }
-
-        modal.show();
-    }
 });
