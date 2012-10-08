@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.dao.BaseTableDAO;
 import com.picsauditing.dao.PicsDAO;
 
 public class PicsTestUtil {
@@ -35,7 +36,7 @@ public class PicsTestUtil {
 			Annotation annotation = annotations[j];
 			if (annotation instanceof Mock) {
 				Class<T> classOfField = (Class<T>) field.getType();
-				if (PicsDAO.class.isAssignableFrom(classOfField)) {
+				if (PicsDAO.class.isAssignableFrom(classOfField) || BaseTableDAO.class.isAssignableFrom(classOfField)) {
 					String fieldNameToSet = fieldNameOfAutowiredFieldOfClass(classOfField, classOfToObject);
 					field.setAccessible(true);
 					Object fieldValue = field.get(toTakeMockDaosFrom);

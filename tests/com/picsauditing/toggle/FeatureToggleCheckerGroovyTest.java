@@ -80,6 +80,10 @@ public class FeatureToggleCheckerGroovyTest {
 	public void testScriptWithDynamicVariable_True() throws Exception {
 		boolean result = dynamicContractorScript(1, 22107);
 		assertTrue(result);
+		result = dynamicContractorScript(22107, 222);
+		assertTrue(result);
+		result = dynamicContractorScript(1, 222);
+		assertTrue(result);
 	}
 
 	@Test
@@ -90,7 +94,7 @@ public class FeatureToggleCheckerGroovyTest {
 
 	private boolean dynamicContractorScript(int opId1, int opId2) {
 		String scriptBody =
-				"return contractor.operatorAccounts.find {it.id == 22107} != null";
+				"return contractor.operatorAccounts.find {it.id in [22107, 222] } != null";
 
 		ContractorAccount contractor = mock(ContractorAccount.class);
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
