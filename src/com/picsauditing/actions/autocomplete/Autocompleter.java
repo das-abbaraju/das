@@ -48,8 +48,6 @@ public class Autocompleter extends PicsActionSupport {
 	
 	public String reportSharingAutocomplete() {
 		try {
-			// TODO: the front-end needs to change the parameter name to "searchQuery"
-//			String searchQuery = getRequest().getParameter("q");
 			int reportId = NumberUtils.toInt(getRequest().getParameter("reportId"));
 			if (reportId <= 0) {
 				throw new Exception("Invalid reportId parameter.");

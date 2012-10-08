@@ -35,12 +35,12 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 			result.addAll(countrySubdivisionList);
 
 			countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(CountrySubdivision.class, "%"
-					+ Strings.escapeQuotes(search) + "%");
+					+ Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
 
 			result.addAll(countrySubdivisionList);
 		} else { // any more or less characters, then search only through translations
 			List<CountrySubdivision> countrySubdivisionList = countrySubdivisionDAO.findByTranslatableField(
-					CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%");
+					CountrySubdivision.class, "%" + Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
 
 			result.addAll(countrySubdivisionList);
 		}
@@ -50,7 +50,7 @@ public class CountrySubdivisionAutocompleteService extends AbstractAutocompleteS
 
 	@Override
 	protected Object getKey(CountrySubdivision subdivision) {
-		return subdivision.getAutocompleteItem();
+		return subdivision.getIsoCode();
 	}
 
 	@Override

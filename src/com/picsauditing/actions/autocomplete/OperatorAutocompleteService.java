@@ -23,7 +23,7 @@ public final class OperatorAutocompleteService extends AbstractAutocompleteServi
 		boolean showCorporates = !permissions.isGeneralContractor();
 
 		return dao.findWhere(showCorporates, "a.name LIKE '%" + Strings.escapeQuotes(search) + "%'"
-				+ buildCorporatePermissions(permissions), permissions);
+				+ buildCorporatePermissions(permissions), permissions, RESULT_SET_LIMIT);
 	}
 
 	private boolean noPermissionsToSearch(Permissions permissions) {

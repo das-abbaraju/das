@@ -46,10 +46,11 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 		if (queryContainsIsoCodes(search)) {
 			// no need to escape string because it will fail Regex check
 			result.addAll(countryDAO.findWhere("isoCode IN ('" + search + "')"));
-			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + search + "%"));
+			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + search + "%", 
+					RESULT_SET_LIMIT));
 		} else {
 			result.addAll(countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(search)
-					+ "%"));
+					+ "%", RESULT_SET_LIMIT));
 		}
 
 		return result;

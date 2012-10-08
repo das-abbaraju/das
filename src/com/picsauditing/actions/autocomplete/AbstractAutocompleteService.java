@@ -8,6 +8,12 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.Permissions;
 
 public abstract class AbstractAutocompleteService<T> {
+	
+	/**
+	 * This is the limit of the total number of records that can be returned at one time
+	 * from the auto-complete.
+	 */
+	protected static final int RESULT_SET_LIMIT = 10;
 
 	@SuppressWarnings("unchecked")
 	public final JSONObject getJson(String search, Permissions permissions) {

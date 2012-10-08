@@ -17,8 +17,8 @@ public class AuditCategoryAutocompleteService extends AbstractAutocompleteServic
 
 	@Override
 	protected Collection<AuditCategory> getItems(String search, Permissions permissions) {
-		return auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name", "%" + Strings.escapeQuotes(search)
-				+ "%");
+		return auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name", 
+				"%" + Strings.escapeQuotes(search) + "%", RESULT_SET_LIMIT);
 	}
 
 	@Override

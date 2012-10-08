@@ -21,7 +21,7 @@ public class OptionGroupAutocompleteService extends AbstractAutocompleteService<
 			return Collections.emptyList();
 		}
 
-		return auditQuestionOptionDAO.findOptionTypeWhere("o.name LIKE '%" + search + "%'");
+		return auditQuestionOptionDAO.findOptionTypeWhere("o.name LIKE '%" + search + "%'", RESULT_SET_LIMIT);
 	}
 
 	@Override

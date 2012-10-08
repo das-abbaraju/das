@@ -33,6 +33,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
+	
 	private final Logger logger = LoggerFactory.getLogger(ContractorAccountDAO.class);
 
 	public void remove(ContractorAccount row, String ftpDir) {
@@ -56,15 +57,25 @@ public class ContractorAccountDAO extends PicsDAO {
 		logger.debug("ContractorAccountDAO.findAll() found {} contractors ids in {} ms", list.size(), elapsed);
 		return list;
 	}
-
+	
 	public List<ContractorAccount> findWhere(String where) {
+		return findWhere(where, NO_LIMIT);
+	}
+
+	public List<ContractorAccount> findWhere(String where, int limit) {
 		if (where == null)
 			where = "";
-		if (where.length() > 0)
+		
+		if (where.length() > NO_LIMIT)
 			where = "WHERE " + where;
+		
 		Query query = em.createQuery("SELECT a from ContractorAccount a " + where + " ORDER BY a.name");
+		if (limit > 0) {
+			query.setMaxResults(limit);
+		}
+		
 		return query.getResultList();
-	}
+	}	
 
 	public List<ContractorAccount> findWhere(String where, Object... params) {
 		if (where == null)

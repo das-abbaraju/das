@@ -19,7 +19,7 @@ public final class TradeAutocompleteService extends AbstractAutocompleteService<
 	@Override
 	protected Collection<Trade> getItems(String search, Permissions permissions) {
 		if (!Strings.isEmpty(search)) {
-			return tradeDAO.findByIndexValue(search, 20);
+			return tradeDAO.findByIndexValue(search, RESULT_SET_LIMIT);
 		}
 
 		return Collections.emptyList();
@@ -32,6 +32,6 @@ public final class TradeAutocompleteService extends AbstractAutocompleteService<
 
 	@Override
 	protected Object getValue(Trade trade, Permissions permissions) {
-		return I18nCache.getInstance().getText(trade.getI18nKey(), permissions.getLocale());
+		return I18nCache.getInstance().getText(trade.getI18nKey() + ".name", permissions.getLocale());
 	}
 }
