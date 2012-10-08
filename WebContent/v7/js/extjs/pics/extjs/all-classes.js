@@ -71419,8 +71419,9 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
         return {
             xtype: 'checkbox',
             boxLabel: 'True',
-            inputValue: null,
+            inputValue: true,
             name: 'filter_value',
+            uncheckedValue: false,
             value: value
         };
     }
@@ -80346,7 +80347,7 @@ Ext.define('PICS.store.report.ReportDatas', {
             exception: function (proxy, response, operation, eOpts) {
             	console.log(proxy, response, operation, eOpts);
                 if (operation.success == false) {
-                	Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
                 }
             }
         },
@@ -80355,7 +80356,7 @@ Ext.define('PICS.store.report.ReportDatas', {
             root: 'data',
             type: 'json'
         },
-        timeout: 10000,
+        timeout: 60000,
         type: 'ajax',
         url: '/ReportData.action'
     },
@@ -95947,7 +95948,8 @@ Ext.define('PICS.ux.grid.column.Date', {
             column = grid.columns[colIndex],
             col_record = column.record,
             field = col_record.getAvailableField(),
-            url = field.get('url');
+            url = field.get('url'),
+            value = Ext.Date.format(value, column.format);
         
         if (url) {
             var href = column.getHref(url, record);
@@ -96000,19 +96002,21 @@ Ext.define('PICS.ux.grid.column.Flag', {
             icon;
         
         switch (value) {
-            case 'green':
-                icon = '<i class="icon-flag" class="green"></i>';
+            case 'Green':
+                icon = '<i class="icon-flag green"></i>';
                 
                 break;
-            case 'red':
-                icon = '<i class="icon-flag" class="red"></i>';
+            case 'Red':
+                icon = '<i class="icon-flag red"></i>';
                 
                 break;
-            case 'yellow':
-                icon = '<i class="icon-flag" class="yellow"></i>';
+            case 'Yellow':
+            case 'Amber':
+                icon = '<i class="icon-flag amber"></i>';
                 
                 break;
             default:
+                icon = '<i class="icon-flag clear"></i>';
                 break;
         }
         
@@ -96111,8 +96115,8 @@ Ext.define('PICS.model.report.Column', {
 
                 break;
             // <i class="icon-flag"></i>
-            case 'flag':
-                grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
+            case 'flagcolor':
+            	grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
 
                 break;
             // 1,234.00
@@ -96923,7 +96927,7 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
 
     onAvailableFieldAdd: function (cmp, event, eOpts) {
         var modal = this.getAvailableFieldModal(),
-            list = this.getAvailableFieldList()
+            list = this.getAvailableFieldList(),
             search_box = this.getAvailableFieldSearchBox(),
             type = modal.type;
 
@@ -96949,7 +96953,7 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             search_box = this.getAvailableFieldSearchBox();
 
         store.clearFilter();
-        store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
+        store.filter(Ext.create('PICS.ux.util.FilterMultipleColumn', {
             anyMatch: true,
             property: [
                 'category',
@@ -98016,20 +98020,42 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
             'reportsettingsmodal reportsettingsprint button[action=print]':  {
                 click: this.onReportModalPrintClick
+            },
+            
+            'reportsettingsmodal reportsettingsshare sharesearchbox': {
+                beforerender: this.onReportModalShareSearchboxRender,
+                select: this.onReportModalShareSearchboxSelect,
+                specialkey: this.onReportModalShareSearchboxSpecialKey
+            },
+
+            'reportsettingsmodal reportsettingsshare button[action=share]': {
+                click: this.onReportModalShareClick
             }
         });
 
         this.application.on({
             showsettingsmodal: this.showSettingsModal,
-            scope: this
+            scope: this,
         });
     },
 
-   onReportFavorite: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            report_id = report.get('id');
+   showMoreResults: function (e, t, eOpts) {
+       var cmp = Ext.ComponentQuery.query('searchbox')[0];
+       var term = cmp.inputEl.getValue();
 
+       cmp.search(term);
+   },
+
+   getReportId: function () {
+       var store = this.getReportReportsStore(),
+           report = store.first();
+
+       return report.get('id');
+   },
+   
+   onReportFavorite: function () {
+       var report_id = this.getReportId();
+       
         Ext.Ajax.request({
             url: 'ManageReports!favorite.action?reportId=' + report_id
         });
@@ -98044,7 +98070,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             url: 'ManageReports!unfavorite.action?reportId=' + report_id
         });
     },
-
+    
     onReportModalCancelClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal();
 
@@ -98117,7 +98143,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var modal = this.getReportSettingsModal(),
             title = cmp.card.modal_title;
 
-        modal.setTitle(title);
+        modal.setTitle(title);        
     },
 
     onReportModalExportClick: function (cmp, e, eOpts) {
@@ -98142,7 +98168,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         modal.setTitle(title);
     },
-
+    
     showSettingsModal: function (action) {
         var modal = Ext.create('PICS.view.report.settings.SettingsModal');
 
@@ -98153,7 +98179,103 @@ Ext.define('PICS.controller.report.SettingsModal', {
         }
 
         modal.show();
-    }
+    },
+    
+    /**
+     * Share
+     */
+
+    onReportModalShareSearchboxRender: function (cmp, eOpts) {
+        cmp.store.getProxy().url = 'ReportAutocomplete!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        cmp.store.load();
+    },
+
+    onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
+        var record = records[0];
+
+        if (record) {
+            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0],
+                account = {
+                            name: record.get('result_name'),
+                            at: record.get('result_at'),
+                          };
+            
+            // Save the id of the selected record for use after share button is clicked.
+            cmp.record_id = record.index;
+            
+            // Show the selection.
+            cmp.update(account);
+        }
+    },
+
+    onReportModalShareSearchboxSpecialKey: function (base, e, eOpts) {
+        if (e.getKey() === e.ENTER) {
+            var term = base.getValue();
+            this.search(term);
+        } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
+            base.collapse();
+        }
+    },
+
+    onReportModalShareClick: function (cmp, e, eOpts) {
+        // Get the share component.
+        var reportsettingsshare =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
+
+        // Get the record id.
+        var record_id = reportsettingsshare.record_id
+
+        // Abort if no account has been selected.
+        if (typeof record_id == 'undefined') {
+            return;
+        }
+        
+        // Get the record.
+        var combo =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare sharesearchbox')[0],
+            combo_store = combo.getStore(),
+            record = combo_store.getAt(record_id);
+
+        // Get the relevant record data.
+        var account_id = record.raw.result_id,
+            account_type = record.raw.search_type;
+
+        // Get the editable value.
+        var el = reportsettingsshare.getEl(),
+            editable = el.down('.icon-edit.selected') ? true : false;
+
+        // Get the report id.
+        var report_id = this.getReportId();
+
+        // Construct the URL and send the request.
+        var that = this;
+        Ext.Ajax.request({
+            url: 'ReportSharing!share.action?'
+                + 'report=' + report_id
+                + '&' + account_type + 'Id=' + account_id
+                + '&editable=' + editable,
+            success: function (result) {
+                var result = Ext.decode(result.responseText);
+
+                if (result.error) {
+                    Ext.Msg.alert('Status', result.error);
+                } else {
+                    
+                    var alert_message = Ext.getCmp('alert_message');
+                    if (alert_message) {
+                        alert_message.destroy();
+                    }
+
+                    var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+                        cls: 'alert alert-success',
+                        html: 'with the selected account.',
+                        title: 'Report Shared',
+                    });
+
+                    alert_message.show();
+                    that.getReportSettingsModal().close();
+                }
+            }
+        });
+    },
 });
 /**
  * Private utility class for Ext.Splitter.
