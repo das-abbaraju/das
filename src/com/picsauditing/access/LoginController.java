@@ -65,10 +65,10 @@ public class LoginController extends PicsActionSupport {
 		if (button == null) {
 			if (sessionCookieIsValidAndNotExpired()) {
 				switchToUser = getClientSessionUserID();
-				return switchTo();
-			} else {
-				return SUCCESS;
+				if (switchToUser > 0)
+					return switchTo();
 			}
+			return SUCCESS;
 		} else if ("confirm".equals(button)) {
 			return confirm();
 		} else if ("logout".equals(button)) {
@@ -461,6 +461,7 @@ public class LoginController extends PicsActionSupport {
 
 	@Override
 	public String setUrlForRedirect(String url) throws IOException {
+		// TODO we need to sanitize this string or we'll allow a hacker to redirect to any URL
 		if (!AjaxUtils.isAjax(getRequest())) {
 			return super.setUrlForRedirect(url);
 		}
