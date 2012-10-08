@@ -2,7 +2,6 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
 
 public class ContractorAuditTable extends AbstractTable {
 
@@ -14,16 +13,8 @@ public class ContractorAuditTable extends AbstractTable {
 	public ContractorAuditTable() {
 		super("contractor_audit");
 		addFields(ContractorAudit.class);
-		addPrimaryKey();
-
-		Field auditTypeName;
-		auditTypeName = new Field("Name", "auditTypeID", FieldType.String);
-		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
-		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
-		auditTypeName.setImportance(FieldImportance.Required);
-		auditTypeName.setCategory(FieldCategory.Audits);
-		auditTypeName.setWidth(200);
-		addField(auditTypeName);
+		Field id = addPrimaryKey();
+		id.setCategory(FieldCategory.Audits);
 	}
 
 	public void addJoins() {

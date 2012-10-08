@@ -7,7 +7,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldCategory;
@@ -67,19 +66,6 @@ public class AccountContractorModel extends AbstractModel {
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
-		{
-			Field contractorEdit = new Field("ContractorEdit", "'Edit'", FieldType.String);
-			contractorEdit.setUrl("ContractorEdit.action?id={AccountID}");
-			contractorEdit.setWidth(70);
-			fields.put(contractorEdit.getName().toUpperCase(), contractorEdit);
-		}
-
-		{
-			Field contractorAudits = new Field("ContractorAudits", "'Audits'", FieldType.String);
-			contractorAudits.setUrl("ContractorDocuments.action?id={AccountID}");
-			contractorAudits.setWidth(70);
-			fields.put(contractorAudits.getName().toUpperCase(), contractorAudits);
-		}
 
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
