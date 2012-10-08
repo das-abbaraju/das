@@ -129,9 +129,9 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	private void initializeStatistics() {
-		SafetyStatistics safetyStatistics = null;
 		int year = new Integer(contractorAudit.getAuditFor());
 		for (AuditCatData category : getCategories()) {
+			SafetyStatistics safetyStatistics = null;
 			OshaType oshaType = convertCategoryToOshaType(category.getCategory().getId());
 			if (oshaType != null) {
 				if (dispaySafetyStatisticsMap.get(oshaType) != null
