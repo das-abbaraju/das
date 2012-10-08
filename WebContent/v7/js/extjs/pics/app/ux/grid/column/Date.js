@@ -30,7 +30,8 @@ Ext.define('PICS.ux.grid.column.Date', {
             column = grid.columns[colIndex],
             col_record = column.record,
             field = col_record.getAvailableField(),
-            url = field.get('url');
+            url = field.get('url'),
+            value = Ext.Date.format(value, column.format);
         
         if (url) {
             var href = column.getHref(url, record);
