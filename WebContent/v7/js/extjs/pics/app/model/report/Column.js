@@ -78,8 +78,8 @@ Ext.define('PICS.model.report.Column', {
 
                 break;
             // <i class="icon-flag"></i>
-            case 'flag':
-                grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
+            case 'flagcolor':
+            	grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
 
                 break;
             // 1,234.00

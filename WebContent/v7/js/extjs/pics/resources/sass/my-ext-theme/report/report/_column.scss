@@ -7,22 +7,19 @@
 			color: #;
 		}
 		
-		.icon-flag
+		.icon-flag.green
 		{
-			.green
-			{
-				color: #;
-			}
-			
-			.red
-			{
-				color: #;
-			}
-			
-			.yellow
-			{
-				color: #;
-			}
+			color: #229322;
+		}
+		
+		.icon-flag.red
+		{
+			color: #AC030C;
+		}
+		
+		.icon-flag.amber
+		{
+			color: #F1A300;
 		}
 	}
 }

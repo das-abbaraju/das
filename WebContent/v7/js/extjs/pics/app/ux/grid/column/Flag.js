@@ -34,19 +34,21 @@ Ext.define('PICS.ux.grid.column.Flag', {
             icon;
         
         switch (value) {
-            case 'green':
-                icon = '<i class="icon-flag" class="green"></i>';
+            case 'Green':
+                icon = '<i class="icon-flag green"></i>';
                 
                 break;
-            case 'red':
-                icon = '<i class="icon-flag" class="red"></i>';
+            case 'Red':
+                icon = '<i class="icon-flag red"></i>';
                 
                 break;
-            case 'yellow':
-                icon = '<i class="icon-flag" class="yellow"></i>';
+            case 'Yellow':
+            case 'Amber':
+                icon = '<i class="icon-flag amber"></i>';
                 
                 break;
             default:
+                icon = '<i class="icon-flag clear"></i>';
                 break;
         }
         
