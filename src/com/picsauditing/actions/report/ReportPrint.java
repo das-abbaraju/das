@@ -31,18 +31,16 @@ public class ReportPrint extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		ReportModel.validate(report);
-
+		
 		SelectSQL sql = new SqlBuilder().initializeSql(report, permissions);
-		sql.setLimit(10);
+		sql.setLimit(report.getRowsPerPage());
 		// TODO Print parameters
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
 		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
 
 		data = reportDao.runQuery(sql.toString(), json);
-		for (BasicDynaBean row : data) {
-			System.out.println(row.get("contractorID"));
-		}
+
 		return SUCCESS;
 	}
 
