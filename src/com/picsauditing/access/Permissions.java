@@ -693,4 +693,8 @@ public class Permissions implements Serializable {
 
 		permissions.add(ua);
 	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
 }

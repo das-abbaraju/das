@@ -101,6 +101,8 @@ public class ReportDynamic extends PicsActionSupport {
 				reportElements.addAll(report.getDefinition().getFilters());
 
 				for (ReportElement reportElement : reportElements) {
+					if (reportElement.getFieldName().equalsIgnoreCase("AuditName"))
+						reportElement.setFieldName("AuditTypeName");
 					if (reportElement.getFieldName().equalsIgnoreCase("ContractorID"))
 						reportElement.setFieldName("AccountID");
 					if (reportElement.getFieldName().equalsIgnoreCase("OperatorID"))

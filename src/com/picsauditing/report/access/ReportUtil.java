@@ -309,6 +309,7 @@ public final class ReportUtil {
 			userAccess.setOpPerm(opPerm);
 			permissions.getPermissions().add(userAccess);
 		}
+		permissions.setAccountType("Corporate");
 		return permissions;
 	}
 
