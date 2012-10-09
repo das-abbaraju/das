@@ -2,80 +2,35 @@ package com.picsauditing.actions;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.PicsOrganizerVersion;
-import com.picsauditing.util.SpringUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, I18nCache.class,
-		PicsOrganizerVersion.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class PicsActionSupportTest {
+public class PicsActionSupportTest extends PicsActionTest {
 	private PicsActionSupport picsActionSupport;
 
 	@Mock
-	private EntityManager em;
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private HttpServletResponse response;
-	@Mock
-	private PicsOrganizerVersion picOrgVersion;
+	private AppPropertyDAO propertyDAO;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-
-		Map<String, Object> session = new HashMap<String, Object>();
-		session.put("permissions", new Permissions());
-
-		ActionContext actionContext = mock(ActionContext.class);
-		when(actionContext.getSession()).thenReturn(session);
-
-		PowerMockito.mockStatic(ActionContext.class);
-		when(ActionContext.getContext()).thenReturn(actionContext);
-
-		PowerMockito.mockStatic(ServletActionContext.class);
-		when(ServletActionContext.getRequest()).thenReturn(request);
-		when(ServletActionContext.getResponse()).thenReturn(response);
-
-		PowerMockito.mockStatic(PicsOrganizerVersion.class);
-
 		picsActionSupport = new PicsActionSupport();
+		super.setUp(picsActionSupport);
 
-		AppPropertyDAO propertyDAO = new AppPropertyDAO();
-		propertyDAO.setEntityManager(em);
-		picsActionSupport.propertyDAO = propertyDAO;
+		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
 	}
 
 	@Test
@@ -100,16 +55,11 @@ public class PicsActionSupportTest {
 
 	@Test
 	public void testIsConfigEnvironmentFalse() throws Exception {
-		AppProperty appPropertyFalse = new AppProperty();
-		appPropertyFalse.setProperty("PICS.config");
-		appPropertyFalse.setValue("0");
-		AppProperty appPropertyTrue = new AppProperty();
-		appPropertyTrue.setProperty("PICS.config");
-		appPropertyTrue.setValue("1");
-		when(em.find(AppProperty.class, "PICS.config")).thenReturn(appPropertyFalse).thenReturn(appPropertyTrue);
+		// return false then true and make sure it stays false
+		when(propertyDAO.getProperty("PICS.config")).thenReturn("0").thenReturn("1");
+
 		assertFalse("Config should be false", picsActionSupport.isConfigEnvironment());
 		assertFalse("Config should still be false (static variable)", picsActionSupport.isConfigEnvironment());
-		verify(em, times(1)).find(AppProperty.class, "PICS.config");
 	}
 
 	@Test
@@ -124,7 +74,8 @@ public class PicsActionSupportTest {
 	public void testIsBetaEnvironment_UrlContainsWithNoBeta() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
 		assertTrue("url does not have beta", picsActionSupport.isBetaEnvironment());
 	}
@@ -133,7 +84,8 @@ public class PicsActionSupportTest {
 	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckVersionYes() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
 		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
 	}
@@ -142,7 +94,8 @@ public class PicsActionSupportTest {
 	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckVersionNo() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(false);
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("200000");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
 		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
 	}
@@ -159,7 +112,8 @@ public class PicsActionSupportTest {
 	public void testIsLiveEnvironment_UrlContainsWithNoStable() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
 		assertFalse("url does not have stable", picsActionSupport.isLiveEnvironment());
 	}
@@ -168,16 +122,18 @@ public class PicsActionSupportTest {
 	public void testIsLiveEnvironment_UrlContainsWithNoStableCheckVersionNo() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
-		assertFalse("has beta cookie, its not stable", picsActionSupport.isLiveEnvironment());
+		assertFalse(picsActionSupport.isLiveEnvironment());
 	}
 
 	@Test
 	public void testIsLiveEnvironment_UrlContainsWithNoStableCheckVersionYes() throws Exception {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(false);
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("200000");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
 		assertTrue("has no beta cookie, its stable", picsActionSupport.isLiveEnvironment());
 	}
