@@ -223,7 +223,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
             this.getReportSettingsTabs().setActiveTab(1);
         }
 
-        modal.show();
+        modal.show(false, function () {
+            // Close the modal when the user clicks outside of it.
+            Ext.get(Ext.query('.x-mask:last')).on('click', function () {
+                modal.close();
+            });
+        });
     },
     
     /**
@@ -324,5 +329,5 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 }
             }
         });
-    },
+    }
 });
