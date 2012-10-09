@@ -21,4 +21,4 @@ values('Login.NoPermissionToRememberMe', 'en', 'You clicked remember-me but your
 
 update ignore app_translation 
 set msgValue = 'This account is locked because of too many failed attempts' 
-where msgKey = 'Login.TooManyFailedAttempts' and locale='en' 
+where msgKey = 'Login.TooManyFailedAttempts' and locale='en';
