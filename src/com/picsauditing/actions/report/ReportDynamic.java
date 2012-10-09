@@ -28,7 +28,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
-
+	
 	@Autowired
 	private ReportModel reportModel;
 	@Autowired
@@ -77,7 +77,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 		try {
 			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), report.getId());
-			json.put("editable", reportModel.canUserEdit(permissions.getUserId(), report));
+			json.put("editable", reportModel.canUserEdit(permissions, report));
 			json.put("favorite", reportUser.isFavorite());
 		} catch (NoResultException e) {
 			logger.info("No ReportUser entry for " + permissions.getUserId() + " AND " + report.getId());

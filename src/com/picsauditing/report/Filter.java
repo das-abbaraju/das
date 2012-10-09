@@ -94,7 +94,7 @@ public class Filter extends ReportElement implements JSONable {
 
 			logger.warn("Still using filter.value instead of filter.values");
 
-			if (value.contains(",")) {
+			if (value.contains(", ")) {
 				logger.warn("Old style filter value found with commas separating multiple values. Until we phase out the old code, we need this for backwards compatibility");
 				String[] valueSplit = value.split(", ");
 				if (valueSplit.length == 1 && value.contains(","))

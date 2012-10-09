@@ -25,11 +25,14 @@ import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Pagination;
 
 public class ReportModel {
+
+	private static final int REPORT_DEVELOPER_GROUP = 77375;
 
 	@Autowired
 	private ReportDAO reportDao;
@@ -57,10 +60,18 @@ public class ReportModel {
 		return false;
 	}
 
-	public boolean canUserEdit(int userId, Report report) {
+	public boolean canUserEdit(Permissions permissions, Report report) {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(userId, report.getId());
-			return reportPermissionUser.isEditable();
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions.getUserId(),
+					report.getId());
+			if (reportPermissionUser.isEditable())
+				return true;
+
+			if (permissions.getAdminID() > 0) {
+				String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + permissions.getAdminID();
+				reportDao.findOne(UserGroup.class, where);
+				return true;
+			}
 		} catch (NoResultException e) {
 			// We don't care. The user can't edit.
 		}
@@ -68,8 +79,8 @@ public class ReportModel {
 		return false;
 	}
 
-	public void setEditPermissions(int userId, int reportId, boolean editable) throws NoResultException, NonUniqueResultException,
-			SQLException, Exception {
+	public void setEditPermissions(int userId, int reportId, boolean editable) throws NoResultException,
+			NonUniqueResultException, SQLException, Exception {
 		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(userId, reportId, editable);
 
 		reportPermissionUserDao.save(reportPermissionUser);
@@ -91,7 +102,7 @@ public class ReportModel {
 		reportDao.refresh(sourceReport);
 
 		ReportModel.validate(newReport);
-		newReport.setAuditColumns(new User(permissions.getUserId()));
+		newReport.setAuditColumns(permissions);
 		reportDao.save(newReport);
 
 		// This is a new report owned by the user, unconditionally give them
@@ -103,10 +114,10 @@ public class ReportModel {
 	}
 
 	public void edit(Report report, Permissions permissions) throws Exception {
-		if (!canUserEdit(permissions.getUserId(), report))
+		if (!canUserEdit(permissions, report))
 			throw new NoRightsException("User " + permissions.getUserId() + " cannot edit report " + report.getId());
 
-		report.setAuditColumns(new User(permissions.getUserId()));
+		report.setAuditColumns(permissions);
 		reportDao.save(report);
 	}
 
@@ -331,8 +342,9 @@ public class ReportModel {
 		for (ReportPermissionUser reportPermissionUser : reportPermissionUsers) {
 			reportPermissionUserDao.remove(reportPermissionUser);
 		}
-		
-		List<ReportPermissionAccount> reportPermissionAccounts = reportPermissionAccountDao.findAllByReportId(report.getId());
+
+		List<ReportPermissionAccount> reportPermissionAccounts = reportPermissionAccountDao.findAllByReportId(report
+				.getId());
 		for (ReportPermissionAccount reportPermissionAccount : reportPermissionAccounts) {
 			reportPermissionAccountDao.remove(reportPermissionAccount);
 		}
