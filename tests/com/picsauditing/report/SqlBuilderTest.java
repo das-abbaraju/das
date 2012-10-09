@@ -55,7 +55,7 @@ public class SqlBuilderTest {
 		assertEquals(3, sql.getFields().size());
 
 		assertContains("Account.id AS `AccountID`", sql.toString());
-		assertContains("Account.name AS `AccountName`", sql.toString());
+		assertContains(" AS `AccountName`", sql.toString());
 		assertContains("Account.status AS `AccountStatus`", sql.toString());
 	}
 
@@ -151,15 +151,16 @@ public class SqlBuilderTest {
 	@Test
 	public void testHaving() throws Exception {
 		addColumn("AccountStatus");
-		addColumn("AccountName__Count");
+		addColumn("AccountLegalName__Count");
 
-		addFilter("AccountName__Count", QueryFilterOperator.GreaterThan, "5");
-		addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
+		addFilter("AccountLegalName__Count", QueryFilterOperator.GreaterThan, "5");
+		addFilter("AccountLegalName", QueryFilterOperator.BeginsWith, "A");
 
 		initializeSql();
 
 		assertContains("HAVING (COUNT(Account.name) > 5)", sql.toString());
-		assertContains("WHERE ((Account.nameIndex LIKE 'A%'))", sql.toString());
+		// Michael Test this for nameIndex
+		assertContains("WHERE ((Account.name LIKE 'A%'))", sql.toString());
 		assertContains("GROUP BY Account.status", sql.toString());
 	}
 

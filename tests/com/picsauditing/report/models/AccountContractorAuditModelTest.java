@@ -1,8 +1,5 @@
 package com.picsauditing.report.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +23,7 @@ public class AccountContractorAuditModelTest extends ModelTest {
 		includedFields.add("AuditEffectiveDate");
 		includedFields.add("AuditAuditorName");
 		includedFields.add("AuditClosingAuditorName");
-		includedFields.add("AccountDbaName");
+		includedFields.add("AccountLegalName");
 
 		checkFields();
 	}
