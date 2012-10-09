@@ -146,7 +146,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "dbaName", length = 400)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(category = FieldCategory.AccountInformation, importance = FieldImportance.Average, width = 250)
 	public String getDbaName() {
 		return dbaName;
 	}

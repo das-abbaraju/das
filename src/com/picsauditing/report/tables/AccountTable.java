@@ -15,11 +15,15 @@ public class AccountTable extends AbstractTable {
 		addPrimaryKey(FieldType.AccountID).setCategory(FieldCategory.AccountInformation);
 		addFields(Account.class);
 
-		Field accountDBAName = getField("DBAName".toUpperCase());
-		accountDBAName.setDatabaseColumnName("CASE WHEN " + ReportOnClause.ToAlias + ".dbaName IS NULL OR dbaName = '' " +
-				"THEN " + ReportOnClause.ToAlias + ".name " +
-				"ELSE " + ReportOnClause.ToAlias + ".dbaName END");
-		accountDBAName.setUrl("ContractorView.action?id={AccountID}");
+		Field accountName = getField("Name".toUpperCase());
+		accountName.setDatabaseColumnName("CASE WHEN " + ReportOnClause.ToAlias + ".dbaName IS NULL OR "
+				+ ReportOnClause.ToAlias + ".dbaName = '' " + "THEN " + ReportOnClause.ToAlias + ".name " + "ELSE "
+				+ ReportOnClause.ToAlias + ".dbaName END");
+		accountName.setUrl("ContractorView.action?id={AccountID}");
+
+		Field accountLegalName = new Field("LegalName", "name", FieldType.String);
+		accountLegalName.setImportance(FieldImportance.Average);
+		addField(accountLegalName).setCategory(FieldCategory.AccountInformation);
 
 		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
 		creationDate.setImportance(FieldImportance.Low);
