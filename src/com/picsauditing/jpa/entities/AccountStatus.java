@@ -7,7 +7,7 @@ import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 
 public enum AccountStatus implements Translatable, PermissionAware {
-	Active, Pending, Requested, Demo, Deleted, Deactivated;
+	Active, Pending, Requested, Demo, Deleted, Deactivated, Declined;
 
 	public boolean isRequested() {
 		return this.equals(Requested);
@@ -39,6 +39,10 @@ public enum AccountStatus implements Translatable, PermissionAware {
 
 	public boolean isActiveDemo() {
 		return this.equals(Active) || this.equals(Demo);
+	}
+
+	public boolean isDeclined() {
+		return this.equals(Declined);
 	}
 
 	@Transient

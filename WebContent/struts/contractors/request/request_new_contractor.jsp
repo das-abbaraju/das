@@ -377,13 +377,11 @@
 						</li>
 					</s:if>
 					
-					<s:if test="requestedContractor.id == 0">
-						<li>
-							<a href="javascript:;" id="email_preview" class="preview">
-								<s:text name="RequestNewContractor.PreviewEmail" />
-							</a>
-						</li>
-					</s:if>
+					<li>
+						<a href="javascript:;" id="email_preview" class="preview">
+							<s:text name="RequestNewContractor.PreviewEmail" />
+						</a>
+					</li>
 				</ol>
 			</fieldset>
 			

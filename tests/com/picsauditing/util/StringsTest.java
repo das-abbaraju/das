@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-public class StringsTest  {
+public class StringsTest {
 
 	@Test
 	public void testInsertSpaceNull() {
@@ -266,4 +265,20 @@ public class StringsTest  {
 		assertEquals(" This is a test ", Strings.nullToBlank(" This is a test "));
 	}
 
+	@Test
+	public void testBothNonBlanksAndOneBeginsWithTheOther() {
+		assertTrue(Strings.bothNonBlanksAndOneBeginsWithTheOther("Starts", "Starts With"));
+		assertTrue(Strings.bothNonBlanksAndOneBeginsWithTheOther("Starts with", "Starts"));
+		assertFalse(Strings.bothNonBlanksAndOneBeginsWithTheOther(null, "Starts with"));
+		assertFalse(Strings.bothNonBlanksAndOneBeginsWithTheOther("", null));
+		assertFalse(Strings.bothNonBlanksAndOneBeginsWithTheOther("", "Starts with"));
+	}
+
+	@Test
+	public void testStripNonAlphaNumericCharacters() {
+		assertEquals("ABC", Strings.stripNonAlphaNumericCharacters("A-B C"));
+		assertEquals("A1b2", Strings.stripNonAlphaNumericCharacters("A1,b-\"2\""));
+		assertEquals("FR7QKSpgKId4", Strings.stripNonAlphaNumericCharacters("FR7Q*KS$pg*@KId4"));
+		assertEquals(Strings.EMPTY_STRING, Strings.stripNonAlphaNumericCharacters("!@#$%^&*()"));
+	}
 }

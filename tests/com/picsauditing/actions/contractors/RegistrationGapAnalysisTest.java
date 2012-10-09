@@ -100,7 +100,7 @@ public class RegistrationGapAnalysisTest {
 
 		duplicate = Whitebox.getInternalState(registrationGapAnalysis, "duplicate");
 
-		assertTrue(duplicate.getStatus().isDeactivated());
+		assertTrue(duplicate.getStatus().isDeleted());
 		assertTrue(duplicate.getName().contains("DUPLICATE"));
 
 		verify(dao).save(any(BaseTable.class));
@@ -173,7 +173,7 @@ public class RegistrationGapAnalysisTest {
 	}
 
 	@Test
-	public void testGetMatchTypes() throws Exception {
+	public void testCompareRegisteredWithRequested() throws Exception {
 		ContractorAccount registered = new ContractorAccount();
 		registered.setName("Existing");
 		registered.setAddress("123 Main");
@@ -196,56 +196,64 @@ public class RegistrationGapAnalysisTest {
 		requested.getPrimaryContact().setEmail("user@test.com");
 		requested.getPrimaryContact().setPhoneIndex("3214567890");
 
-		Set<MatchType> matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		Set<MatchType> matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested",
+				registered, requested);
 		assertTrue(matches.isEmpty());
 
 		requested.setName("Existing1");
 
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.Name));
 		assertEquals(1, matches.size());
 
 		requested.setCity("Irvin");
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.Address));
 		assertEquals(2, matches.size());
 
 		requested.setCity("Other");
 		requested.setZip("99999-0001");
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.Address));
 		assertEquals(2, matches.size());
 
 		requested.setTaxId("123456789-0");
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.TaxID));
 		assertEquals(3, matches.size());
 
 		requested.getPrimaryContact().setName("Test1");
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.Contact));
 		assertEquals(4, matches.size());
 
 		requested.getPrimaryContact().setEmail("test@test.com");
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.Email));
 		assertEquals(5, matches.size());
 
 		requested.getPrimaryContact().setPhoneIndex("55555555553456");
-		matches = Whitebox.invokeMethod(registrationGapAnalysis, "getMatchTypes", registered, requested);
+		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
+				requested);
 		assertTrue(matches.contains(MatchType.Phone));
 		assertEquals(6, matches.size());
 	}
 
 	@Test
 	public void testLevenshteinDistance_Examples() throws Exception {
-		assertEquals(1, StringUtils.getLevenshteinDistance("Glyn","Glen"));
-		assertEquals(2, StringUtils.getLevenshteinDistance("Glyn","Glenn"));
-		assertEquals(2, StringUtils.getLevenshteinDistance("Joe Glyn","Jo Glen")); 
+		assertEquals(1, StringUtils.getLevenshteinDistance("Glyn", "Glen"));
+		assertEquals(2, StringUtils.getLevenshteinDistance("Glyn", "Glenn"));
+		assertEquals(2, StringUtils.getLevenshteinDistance("Joe Glyn", "Jo Glen"));
 		// This is beyond our threshold
-		assertEquals(3, StringUtils.getLevenshteinDistance("Joe Glyn","Jo Glenn"));
+		assertEquals(3, StringUtils.getLevenshteinDistance("Joe Glyn", "Jo Glenn"));
 	}
-	
+
 	private BasicDynaBean mockResult() {
 		BasicDynaBean result = mock(BasicDynaBean.class);
 

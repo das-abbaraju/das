@@ -401,7 +401,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		if (primaryContact.getId() == 0) {
 			primaryContact.setAccount(requestedContractor);
 			primaryContact.setIsGroup(YesNo.No);
-			primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(), requestedContractor.getId()));
+
+			boolean usernameIsAlreadyTaken = userDAO.duplicateUsername(primaryContact.getEmail(), 0);
+			if (usernameIsAlreadyTaken) {
+				primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(),
+						requestedContractor.getId()));
+			} else {
+				primaryContact.setUsername(primaryContact.getEmail());
+			}
+
 			primaryContact.setAuditColumns(permissions);
 
 			requestedContractor.setPrimaryContact(primaryContact);
@@ -449,12 +457,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	private void loadLegacyRequest() {
 		if (requestedContractor.getId() > 0) {
-			List<ContractorRegistrationRequest> requestList = requestDAO.findWhere(ContractorRegistrationRequest.class,
+			List<ContractorRegistrationRequest> requests = requestDAO.findWhere(ContractorRegistrationRequest.class,
 					"t.contractor.id = " + requestedContractor.getId());
 
-			if (requestList != null && !requestList.isEmpty()) {
-				// TODO find the one that corresponds to the appropriate operator  
-				legacyRequest = requestList.get(0);
+			if (requests != null && !requests.isEmpty()) {
+				for (ContractorRegistrationRequest request : requests) {
+					if (request.getRequestedBy().equals(requestRelationship.getOperatorAccount())) {
+						legacyRequest = request;
+					}
+				}
 			}
 		}
 	}

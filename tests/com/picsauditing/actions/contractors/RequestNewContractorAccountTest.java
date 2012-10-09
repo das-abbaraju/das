@@ -4,11 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -27,7 +33,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
@@ -42,6 +47,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -54,10 +60,12 @@ public class RequestNewContractorAccountTest {
 	private RequestNewContractorAccount requestNewContractorAccount;
 	private PicsTestUtil picsTestUtil;
 
+	@Mock
 	private ContractorAccount contractor;
-
 	@Mock
 	private ContractorOperator relationship;
+	@Mock
+	private ContractorRegistrationRequest request;
 	@Mock
 	private Database database;
 	@Mock
@@ -69,9 +77,13 @@ public class RequestNewContractorAccountTest {
 	@Mock
 	private EntityManager entityManager;
 	@Mock
+	private OperatorAccount operator;
+	@Mock
 	private Permissions permissions;
 	@Mock
 	private Query query;
+	@Mock
+	private User user;
 
 	@Before
 	public void setUp() throws Exception {
@@ -82,10 +94,11 @@ public class RequestNewContractorAccountTest {
 		picsTestUtil = new PicsTestUtil();
 		picsTestUtil.autowireEMInjectedDAOs(requestNewContractorAccount, entityManager);
 
-		contractor = EntityFactory.makeContractor();
-
+		when(contractor.getId()).thenReturn(1);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Requested);
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(Collections.emptyList());
+		when(relationship.getOperatorAccount()).thenReturn(operator);
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailBuilder", emailBuilder);
 		Whitebox.setInternalState(requestNewContractorAccount, "emailSender", emailSender);
@@ -96,9 +109,6 @@ public class RequestNewContractorAccountTest {
 	public static void classTearDown() {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
-
-	// load tags
-	// TODO How do we show tags for corporate and PICS users?
 
 	@Test(expected = NoRightsException.class)
 	public void testExecute_Contractor() throws Exception {
@@ -131,8 +141,7 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testExecute_ExistingStatus() throws Exception {
-		contractor.setStatus(AccountStatus.Deactivated);
-
+		when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
 		when(permissions.isPicsEmployee()).thenReturn(true);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
@@ -143,16 +152,10 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testExecute_ExistingRequestedByOtherOperator() throws Exception {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		OperatorAccount otherOperator = EntityFactory.makeOperator();
+		OperatorAccount otherOperator = mock(OperatorAccount.class);
 
-		contractor.setRequestedBy(otherOperator);
-		contractor.setStatus(AccountStatus.Requested);
-
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(entityManager.find(OperatorAccount.class, operator.getId())).thenReturn(operator);
-		when(query.getResultList()).thenReturn(Collections.emptyList());
-		setPermissionsAsOperator(operator);
+		setPermissionsAsOperator();
+		when(contractor.getRequestedBy()).thenReturn(otherOperator);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
 
@@ -165,43 +168,50 @@ public class RequestNewContractorAccountTest {
 	// this request
 	@Test
 	public void testExecute_FindOperatorRelationship() throws Exception {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		OperatorAccount otherOperator = EntityFactory.makeOperator();
-		ContractorOperator contractorOperator = EntityFactory.addContractorOperator(contractor, operator);
-		EntityFactory.addContractorOperator(contractor, otherOperator);
+		List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+		operators.add(relationship);
 
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(Collections.emptyList());
-		setPermissionsAsOperator(operator);
+		setPermissionsAsOperator();
+		when(contractor.getOperators()).thenReturn(operators);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
-		assertEquals(contractorOperator, requestNewContractorAccount.getRequestRelationship());
+		assertEquals(relationship, requestNewContractorAccount.getRequestRelationship());
 	}
 
 	// If I'm a corporate, find all the relationships this contractor has
 	// with my children and give me a table to add/remove relationships
 	@Test
 	public void testExecute_FindCorporateRelationships() throws Exception {
-		OperatorAccount corporate = EntityFactory.makeOperator();
-		OperatorAccount child1 = EntityFactory.makeOperator();
-		OperatorAccount child2 = EntityFactory.makeOperator();
-		OperatorAccount otherOperator = EntityFactory.makeOperator();
-		EntityFactory.makeFacility(child1, corporate);
-		EntityFactory.makeFacility(child2, corporate);
+		OperatorAccount corporate = mock(OperatorAccount.class);
+		OperatorAccount child1 = mock(OperatorAccount.class);
+		OperatorAccount child2 = mock(OperatorAccount.class);
+		OperatorAccount otherOperator = mock(OperatorAccount.class);
 
 		Set<Integer> operatorChildren = new HashSet<Integer>();
-		operatorChildren.add(child1.getId());
-		operatorChildren.add(child2.getId());
+		operatorChildren.add(2);
+		operatorChildren.add(3);
 
+		ContractorOperator link1 = mock(ContractorOperator.class);
+		ContractorOperator link2 = mock(ContractorOperator.class);
+		ContractorOperator linkOther = mock(ContractorOperator.class);
+
+		List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+		operators.add(link1);
+		operators.add(link2);
+		operators.add(linkOther);
+
+		when(contractor.getOperators()).thenReturn(operators);
+		when(corporate.getId()).thenReturn(1);
+		when(child1.getId()).thenReturn(2);
+		when(child2.getId()).thenReturn(3);
+		when(link1.getOperatorAccount()).thenReturn(child1);
+		when(link2.getOperatorAccount()).thenReturn(child2);
+		when(linkOther.getOperatorAccount()).thenReturn(otherOperator);
+		when(otherOperator.getId()).thenReturn(4);
+		when(permissions.getAccountId()).thenReturn(1);
 		when(permissions.getOperatorChildren()).thenReturn(operatorChildren);
-
-		ContractorOperator link1 = EntityFactory.addContractorOperator(contractor, child1);
-		ContractorOperator link2 = EntityFactory.addContractorOperator(contractor, child2);
-		ContractorOperator link3 = EntityFactory.addContractorOperator(contractor, otherOperator);
-
-		when(permissions.getAccountId()).thenReturn(corporate.getId());
 		when(permissions.isCorporate()).thenReturn(true);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 
@@ -210,19 +220,26 @@ public class RequestNewContractorAccountTest {
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
 		assertTrue(requestNewContractorAccount.getVisibleRelationships().contains(link1));
 		assertTrue(requestNewContractorAccount.getVisibleRelationships().contains(link2));
-		assertFalse(requestNewContractorAccount.getVisibleRelationships().contains(link3));
+		assertFalse(requestNewContractorAccount.getVisibleRelationships().contains(linkOther));
 	}
 
 	// If I'm a PICS employee, find all the relationships and list them in a
 	// table with add/remove abilities
 	@Test
 	public void testExecute_FindAllRelationships() throws Exception {
-		OperatorAccount operator1 = EntityFactory.makeOperator();
-		OperatorAccount operator2 = EntityFactory.makeOperator();
+		OperatorAccount operator1 = mock(OperatorAccount.class);
+		OperatorAccount operator2 = mock(OperatorAccount.class);
 
-		ContractorOperator link1 = EntityFactory.addContractorOperator(contractor, operator1);
-		ContractorOperator link2 = EntityFactory.addContractorOperator(contractor, operator2);
+		ContractorOperator link1 = mock(ContractorOperator.class);
+		ContractorOperator link2 = mock(ContractorOperator.class);
 
+		List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+		operators.add(link1);
+		operators.add(link2);
+
+		when(contractor.getOperators()).thenReturn(operators);
+		when(link1.getOperatorAccount()).thenReturn(operator1);
+		when(link2.getOperatorAccount()).thenReturn(operator2);
 		when(permissions.isPicsEmployee()).thenReturn(true);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
@@ -236,102 +253,82 @@ public class RequestNewContractorAccountTest {
 	// should be set as the requesting operator. ALL entities should be new.
 	@Test
 	public void testSave_NewRequestOperator() throws Exception {
-		User info = EntityFactory.makeUser();
-		info.setId(User.INFO_AT_PICSAUDITING);
+		User loggedIn = mock(User.class);
 
-		User primaryContact = requestNewContractorAccount.getPrimaryContact();
-		primaryContact.setEmail("test@test.com");
-
-		OperatorAccount operator = EntityFactory.makeOperator();
-		ContractorOperator relationship = requestNewContractorAccount.getRequestRelationship();
-		relationship.setOperatorAccount(operator);
-
-		User requestedBy = EntityFactory.makeUser();
-		relationship.setRequestedBy(requestedBy);
-
-		ContractorRegistrationRequest request = Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest");
-
-		contractor.setId(0);
-
-		doAnswer(new Answer<Object>() {
-			public Object answer(InvocationOnMock invocation) {
+		doAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
-				((BaseTable) args[0]).setId(1);
-				return null;
+				return args[0];
 			}
 		}).when(entityManager).persist(any(BaseTable.class));
 
+		setPermissionsAsOperator();
+		when(contractor.getId()).thenReturn(0);
+		when(contractor.getNaics()).thenReturn(mock(Naics.class));
+		when(contractor.getPrimaryContact()).thenReturn(user);
 		when(emailBuilder.build()).thenReturn(email);
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(entityManager.find(OperatorAccount.class, operator.getId())).thenReturn(operator);
-		when(entityManager.find(User.class, info.getId())).thenReturn(info);
-		when(entityManager.find(User.class, requestedBy.getId())).thenReturn(requestedBy);
-		when(entityManager.merge(any())).thenReturn(contractor, primaryContact, relationship, request, email, request,
-				contractor);
-		when(permissions.getUserId()).thenReturn(requestedBy.getId());
-		when(query.getResultList()).thenReturn(Collections.emptyList());
-		setPermissionsAsOperator(operator);
+		when(entityManager.find(eq(User.class), anyInt())).thenReturn(loggedIn);
+		when(loggedIn.getId()).thenReturn(1);
+		when(loggedIn.getName()).thenReturn("Logged in user");
+		when(permissions.getUserId()).thenReturn(1);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
+		when(user.getEmail()).thenReturn("test@test.com");
 
-		requestNewContractorAccount.setPrimaryContact(primaryContact);
+		requestNewContractorAccount.setPrimaryContact(user);
 		requestNewContractorAccount.setRequestedContractor(contractor);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
-		assertEquals(operator, requestNewContractorAccount.getRequestedContractor().getRequestedBy());
 
-		verify(emailBuilder).build();
-		verify(emailSender).send(email);
-		verify(entityManager, times(5)).persist(any(BaseTable.class));
-		verify(entityManager).merge(any(BaseTable.class));
+		verify(contractor).generateRegistrationHash();
+		verify(emailSender).send(any(EmailQueue.class));
+		verify(entityManager, times(6)).persist(any(BaseTable.class));
+		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
 
-	// If I save a new request send the request an email. If I'm an operator I
-	// should be set as the requesting operator. ALL entities should be new.
+	// As another requesting operator, another request email should be sent out
+	// because this is a different request. A new legacy request should also be
+	// created.
 	@Test
 	public void testSave_ExistingRequestOperator() throws Exception {
-		User info = EntityFactory.makeUser();
-		info.setId(User.INFO_AT_PICSAUDITING);
+		OperatorAccount otherOperator = mock(OperatorAccount.class);
 
-		User primaryContact = EntityFactory.makeUser();
-		primaryContact.setEmail("test@test.com");
-		contractor.setPrimaryContact(primaryContact);
-
-		OperatorAccount operator = EntityFactory.makeOperator();
-		ContractorOperator relationship = requestNewContractorAccount.getRequestRelationship();
+		relationship = requestNewContractorAccount.getRequestRelationship();
 		relationship.setOperatorAccount(operator);
 
-		User requestedBy = EntityFactory.makeUser();
-		relationship.setRequestedBy(requestedBy);
+		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
+		requests.add(request);
 
-		OperatorAccount otherOperator = EntityFactory.makeOperator();
-		contractor.setRequestedBy(otherOperator);
+		doAnswer(new Answer() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return args[0];
+			}
+		}).when(entityManager).persist(any(BaseTable.class));
 
-		ContractorRegistrationRequest request = Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest");
-		request.setId(1);
-
+		setPermissionsAsOperator();
+		when(contractor.getPrimaryContact()).thenReturn(user);
 		when(emailBuilder.build()).thenReturn(email);
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(entityManager.find(OperatorAccount.class, operator.getId())).thenReturn(operator);
-		when(entityManager.find(User.class, info.getId())).thenReturn(info);
-		when(entityManager.find(User.class, requestedBy.getId())).thenReturn(requestedBy);
-		when(entityManager.merge(any(BaseTable.class))).thenReturn(contractor, primaryContact, request, contractor);
-		when(permissions.getUserId()).thenReturn(requestedBy.getId());
-		when(query.getResultList()).thenReturn(Collections.emptyList());
-		setPermissionsAsOperator(operator);
+		when(entityManager.find(eq(User.class), anyInt())).thenReturn(user);
+		when(entityManager.merge(any(BaseTable.class))).thenReturn(contractor, user, contractor);
+		when(permissions.getUserId()).thenReturn(1);
+		when(query.getResultList()).thenReturn(requests);
+		when(request.getRequestedBy()).thenReturn(otherOperator);
+		when(user.getId()).thenReturn(1);
 
-		requestNewContractorAccount.setPrimaryContact(primaryContact);
+		requestNewContractorAccount.setPrimaryContact(user);
 		requestNewContractorAccount.setRequestedContractor(contractor);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
-		assertEquals(otherOperator, requestNewContractorAccount.getRequestedContractor().getRequestedBy());
 
-		verify(emailBuilder).build();
-		verify(emailSender).send(email);
-		// Save the new ContractorOperator object
-		verify(entityManager, atLeastOnce()).persist(any(BaseTable.class));
-		// Merge the existing contractor, user, and request objects
-		verify(entityManager, times(4)).merge(any(BaseTable.class));
+		verify(emailSender).send(any(EmailQueue.class));
+		// Contractor, user and request already exist
+		verify(entityManager, times(3)).merge(any(BaseTable.class));
+		// New contractorOperator, note and email
+		verify(entityManager, times(3)).persist(any(BaseTable.class));
 	}
 
 	@Test
@@ -347,30 +344,29 @@ public class RequestNewContractorAccountTest {
 		// Missing primary user
 		assertFalse(requestNewContractorAccount.isContactable());
 
-		User primaryContact = EntityFactory.makeUser();
-		contractor.setPrimaryContact(primaryContact);
+		when(contractor.getPrimaryContact()).thenReturn(user);
 		// Missing phone number
 		assertFalse(requestNewContractorAccount.isContactable());
 
-		primaryContact.setPhone("Phoe");
+		when(user.getPhone()).thenReturn("Phone");
 		assertTrue(requestNewContractorAccount.isContactable());
 	}
 
 	@Test
 	public void testGetOperatorUsers() {
 		List<User> opUserList1 = new ArrayList<User>();
-		User opUser1 = EntityFactory.makeUser();
+		User opUser1 = mock(User.class);
 		opUserList1.add(opUser1);
 
 		List<User> opUserList2 = new ArrayList<User>();
-		User opUser2 = EntityFactory.makeUser();
+		User opUser2 = mock(User.class);
 		opUserList2.add(opUser2);
-
-		OperatorAccount operator = EntityFactory.makeOperator();
-		requestNewContractorAccount.getRequestRelationship().setOperatorAccount(operator);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(opUserList1, opUserList2);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
+
+		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		assertTrue(requestNewContractorAccount.getOperatorUsers().containsAll(opUserList1));
 		assertTrue(requestNewContractorAccount.getOperatorUsers().containsAll(opUserList2));
@@ -392,51 +388,50 @@ public class RequestNewContractorAccountTest {
 		requestNewContractorAccount.setRequestedContractor(contractor);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
+		assertEquals(ContractorRegistrationRequestStatus.Active, requestNewContractorAccount.getStatus());
+
+		when(contractor.getFollowUpDate()).thenReturn(new Date());
+		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
+		assertEquals(ContractorRegistrationRequestStatus.Hold, requestNewContractorAccount.getStatus());
+
+		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
 		assertEquals(ContractorRegistrationRequestStatus.ClosedSuccessful, requestNewContractorAccount.getStatus());
 
-		contractor.contactByPhone();
-		contractor.setStatus(AccountStatus.Pending);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
+		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
+		assertEquals(ContractorRegistrationRequestStatus.ClosedUnsuccessful, requestNewContractorAccount.getStatus());
+
+		when(contractor.getContactCountByPhone()).thenReturn(1);
+		when(contractor.getTotalContactCount()).thenReturn(1);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
 		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
 		assertEquals(ContractorRegistrationRequestStatus.ClosedContactedSuccessful,
 				requestNewContractorAccount.getStatus());
 
-		contractor.setStatus(AccountStatus.Requested);
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.Active, requestNewContractorAccount.getStatus());
-
-		contractor.setFollowUpDate(new Date());
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.Hold, requestNewContractorAccount.getStatus());
-
-		contractor.setStatus(AccountStatus.Deactivated);
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.ClosedUnsuccessful, requestNewContractorAccount.getStatus());
-
-		contractor.setStatus(AccountStatus.Deleted);
+		when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
 		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
 		assertEquals(ContractorRegistrationRequestStatus.ClosedUnsuccessful, requestNewContractorAccount.getStatus());
 	}
 
 	@Test
 	public void testLoadTags() throws Exception {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		setPermissionsAsOperator(operator);
-
-		OperatorTag tag = new OperatorTag();
-		tag.setOperator(operator);
-		tag.setTag("Tag");
-
+		OperatorTag tag = mock(OperatorTag.class);
 		List<OperatorTag> tags = new ArrayList<OperatorTag>();
 		tags.add(tag);
 
-		ContractorTag contractorTag = new ContractorTag();
-		contractorTag.setContractor(contractor);
-		contractorTag.setTag(tag);
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		List<ContractorTag> contractorTags = new ArrayList<ContractorTag>();
+		contractorTags.add(contractorTag);
 
-		contractor.getOperatorTags().add(contractorTag);
-
+		setPermissionsAsOperator();
+		when(contractor.getOperatorTags()).thenReturn(contractorTags);
+		when(contractorTag.getContractor()).thenReturn(contractor);
+		when(contractorTag.getTag()).thenReturn(tag);
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(tags);
+		when(tag.getOperator()).thenReturn(operator);
+		when(tag.getTag()).thenReturn("Tag");
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
 
@@ -448,15 +443,19 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testLoadLegacyRequest() throws Exception {
-		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
 		ContractorRegistrationRequest request = new ContractorRegistrationRequest();
 		request.setId(1);
+		request.setRequestedBy(operator);
+
+		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
 		requests.add(request);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(requests);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "loadLegacyRequest");
 		assertEquals(request, Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest"));
@@ -477,15 +476,18 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testGetContractorLetter_FormOnCorporate() throws Exception {
-		OperatorAccount corporate = EntityFactory.makeOperator();
-		OperatorForm form = createOperatorForm(corporate);
+		OperatorAccount corporate = mock(OperatorAccount.class);
+		List<OperatorForm> corporateForms = createOperatorFormList();
+		OperatorForm form = corporateForms.get(0);
 
-		OperatorAccount operator = EntityFactory.makeOperator();
-		OperatorForm otherForm = createOperatorForm(operator);
-		otherForm.setFormName("Form");
-		operator.setParent(corporate);
+		List<OperatorForm> operatorForms = createOperatorFormList();
 
-		requestNewContractorAccount.getRequestRelationship().setOperatorAccount(operator);
+		when(corporate.getOperatorForms()).thenReturn(corporateForms);
+		when(operator.getParent()).thenReturn(corporate);
+		when(operatorForms.get(0).getFormName()).thenReturn("Form");
+		when(relationship.getOperatorAccount()).thenReturn(operator);
+
+		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		assertEquals(form, Whitebox.invokeMethod(requestNewContractorAccount, "getContractorLetter"));
 	}
@@ -506,14 +508,9 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testSaveNoteIfContacted_ContactTypes() throws Exception {
-		OperatorAccount operator = EntityFactory.makeOperator();
-
-		ContractorOperator relationship = EntityFactory.addContractorOperator(contractor, operator);
-
-		User user = EntityFactory.makeUser();
-
-		when(entityManager.find(User.class, user.getId())).thenReturn(user);
-		when(permissions.getUserId()).thenReturn(user.getId());
+		when(entityManager.find(eq(User.class), anyInt())).thenReturn(user);
+		when(permissions.getUserId()).thenReturn(1);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
 
 		ContractorRegistrationRequest legacyRequest = Whitebox.getInternalState(requestNewContractorAccount,
 				"legacyRequest");
@@ -600,15 +597,9 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testUpdateAccounWithLegacyChanges() throws Exception {
-		contractor = mock(ContractorAccount.class);
-		OperatorAccount operator = mock(OperatorAccount.class);
-		User user = mock(User.class);
-		ContractorRegistrationRequest request = mock(ContractorRegistrationRequest.class);
-
 		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 		contractorOperators.add(relationship);
 
-		when(contractor.getId()).thenReturn(1);
 		when(contractor.getOperators()).thenReturn(contractorOperators);
 		when(relationship.getId()).thenReturn(1);
 		when(relationship.getOperatorAccount()).thenReturn(operator);
@@ -653,16 +644,21 @@ public class RequestNewContractorAccountTest {
 		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
 
-	private OperatorForm createOperatorForm(OperatorAccount operator) {
-		OperatorForm form = new OperatorForm();
-		form.setFormName("*");
-		operator.getOperatorForms().add(form);
+	private List<OperatorForm> createOperatorFormList() {
+		List<OperatorForm> forms = new ArrayList<OperatorForm>();
 
-		return form;
+		OperatorForm form = mock(OperatorForm.class);
+		when(form.getFormName()).thenReturn("*");
+
+		forms.add(form);
+
+		return forms;
 	}
 
-	private void setPermissionsAsOperator(OperatorAccount operator) {
-		when(permissions.getAccountId()).thenReturn(operator.getId());
+	private void setPermissionsAsOperator() {
+		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
+		when(operator.getId()).thenReturn(1);
+		when(permissions.getAccountId()).thenReturn(1);
 		when(permissions.isOperator()).thenReturn(true);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 	}

@@ -46,7 +46,7 @@ public class Strings {
 	/**
 	 * Are two strings equal to each other. One or both can be null. If both are
 	 * null, then return true.
-	 *
+	 * 
 	 * @param value1
 	 * @param value2
 	 * @return
@@ -192,20 +192,20 @@ public class Strings {
 
 	private static <E> void appendEntity(StringBuilder builder, E entity, int escapeType) {
 		switch (escapeType) {
-			case NO_STRING_ESCAPE_STRATEGY:
-				builder.append(entity);
-				break;
+		case NO_STRING_ESCAPE_STRATEGY:
+			builder.append(entity);
+			break;
 
-			case STRING_ESCAPE_STRATEGY:
-				performStringEscapeStrategy(builder, entity);
-				break;
+		case STRING_ESCAPE_STRATEGY:
+			performStringEscapeStrategy(builder, entity);
+			break;
 
-			case OBJECT_TO_STRING_ESCAPE_STRATEGY:
-				builder.append("'").append(escapeQuotes(String.valueOf(entity))).append("'");
-				break;
+		case OBJECT_TO_STRING_ESCAPE_STRATEGY:
+			builder.append("'").append(escapeQuotes(String.valueOf(entity))).append("'");
+			break;
 
-			default:
-				throw new RuntimeException("Invalid use of string escaping.");
+		default:
+			throw new RuntimeException("Invalid use of string escaping.");
 		}
 	}
 
@@ -223,8 +223,7 @@ public class Strings {
 
 	/**
 	 * @param seed
-	 * @return
-	 * TODO move to EncodedKey
+	 * @return TODO move to EncodedKey
 	 */
 	public static String hashUrlSafe(String seed) {
 		String value = EncodedMessage.hash(seed);
@@ -238,7 +237,7 @@ public class Strings {
 	 * 11883 returns 11883<br />
 	 * 11883.4 returns 11883<br />
 	 * Foobar returns 0
-	 *
+	 * 
 	 * @param query
 	 * @return
 	 */
@@ -266,7 +265,8 @@ public class Strings {
 		return newValue;
 	}
 
-	// TODO Why just the variations on the letter I?  What about all of the other diacriticals?
+	// TODO Why just the variations on the letter I? What about all of the other
+	// diacriticals?
 	public static String stripNonStandardCharacters(String input) {
 		input = input.replace('ì', '"');
 		input = input.replace('î', '"');
@@ -318,15 +318,15 @@ public class Strings {
 
 		/*
 		 * Old code for reference
-		 *
+		 * 
 		 * String expression = "[A-Z0-9]+"; Pattern pattern =
 		 * Pattern.compile(expression, Pattern.CANON_EQ); Matcher matcher =
 		 * pattern.matcher(name);
-		 *
+		 * 
 		 * StringBuffer buf = new StringBuffer(); boolean found = false; while
 		 * ((found = matcher.find())) { System.out.println(matcher.group());
 		 * buf.append(matcher.group()); }
-		 *
+		 * 
 		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return
 		 * buf.toString();
 		 */
@@ -345,7 +345,6 @@ public class Strings {
 		name = name.replaceAll(" +", EMPTY_STRING);
 		name = name.trim();
 
-
 		return name;
 	}
 
@@ -355,6 +354,7 @@ public class Strings {
 
 		return input.replaceAll("<", EMPTY_STRING).replaceAll(">", EMPTY_STRING);
 	}
+
 	@Deprecated
 	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
 		Set<String> validEmail = new HashSet<String>();
@@ -378,6 +378,7 @@ public class Strings {
 
 		return input.substring(0, maxlength - 3) + "...";
 	}
+
 	@Deprecated
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
@@ -477,7 +478,7 @@ public class Strings {
 
 	/**
 	 * Is countries contained in the expression
-	 *
+	 * 
 	 * @param expression
 	 *            like !|CA|FR|
 	 * @param countries
@@ -534,7 +535,7 @@ public class Strings {
 	/**
 	 * For computing the number of character differences between two strings
 	 * Levenshtein Distance If needed, can be optimized
-	 *
+	 * 
 	 * @param m
 	 * @param n
 	 * @return
@@ -585,7 +586,29 @@ public class Strings {
 		return value;
 	}
 
-    public static boolean isMixedCase(String value) {
-        return (!value.equals(value.toUpperCase()) && !value.equals(value.toLowerCase()));
-    }
+	public static boolean isMixedCase(String value) {
+		return (!value.equals(value.toUpperCase()) && !value.equals(value.toLowerCase()));
+	}
+
+	public static boolean bothNonBlanksAndOneBeginsWithTheOther(String first, String second) {
+		if (!isEmpty(first) && !isEmpty(second)) {
+			if (first.startsWith(second)) {
+				return true;
+			}
+
+			if (second.startsWith(first)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static String stripNonAlphaNumericCharacters(String toStrip) {
+		if (!Strings.isEmpty(toStrip)) {
+			return toStrip.replaceAll("[^A-Za-z0-9]", "");
+		}
+
+		return EMPTY_STRING;
+	}
 }

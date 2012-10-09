@@ -26,8 +26,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RegistrationGapAnalysis extends PicsActionSupport {
-	// Up to two character changes in a string are allowed (e.g. "Jo Glyn" and "Joe Glen")
-	private static final int LEVENSHTEIN_DISTANCE_THRESHOLD = 2; 
+	// Up to two character changes in a string are allowed (e.g. "Jo Glyn" and
+	// "Joe Glen")
+	private static final int LEVENSHTEIN_DISTANCE_THRESHOLD = 2;
 
 	private Database database = new Database();
 
@@ -51,7 +52,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		if (duplicate != null) {
 			duplicate.setName(String.format("%s (DUPLICATE OF #%d)", original.getName(), original.getId()));
 			duplicate.setReason("Duplicate/Merged Account");
-			duplicate.setStatus(AccountStatus.Deactivated);
+			duplicate.setStatus(AccountStatus.Deleted);
 			duplicate.setAuditColumns(permissions);
 			dao.save(duplicate);
 
@@ -92,7 +93,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 
 		for (ContractorAccount registered : recentlyRegistered) {
 			for (ContractorAccount requested : requestedContractors) {
-				Set<MatchType> matchesOn = getMatchTypes(registered, requested);
+				Set<MatchType> matchesOn = compareRegisteredWithRequested(registered, requested);
 				if (!matchesOn.isEmpty()) {
 					Match match = new Match(registered, requested, matchesOn);
 
@@ -181,8 +182,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		return contractor;
 	}
 
-	// TODO Rename to compareRegisteredWithRequest
-	private Set<MatchType> getMatchTypes(ContractorAccount registered, ContractorAccount requested) {
+	private Set<MatchType> compareRegisteredWithRequested(ContractorAccount registered, ContractorAccount requested) {
 		Set<MatchType> matchesOn = new TreeSet<MatchType>();
 
 		if (StringUtils.getLevenshteinDistance(registered.getName(), requested.getName()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
@@ -194,18 +194,12 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 				matchesOn.add(MatchType.Address);
 			}
 
-			// TODO utility: StringUtils.bothNonBlanksAndOneBeginsWithTheOther
-			if (registered.getZip().startsWith(requested.getZip())
-					|| requested.getZip().startsWith(registered.getZip())) {
+			if (strippedStartsWith(registered.getZip(), requested.getZip())) {
 				matchesOn.add(MatchType.Address);
 			}
 		}
 
-		// TODO utility: StringUtils.bothNonBlanksAndOneBeginsWithTheOther
-		if (!Strings.isEmpty(registered.getTaxId())
-				&& !Strings.isEmpty(requested.getTaxId())
-				&& (registered.getTaxId().startsWith(requested.getTaxId()) || requested.getTaxId().startsWith(
-						registered.getTaxId()))) {
+		if (strippedStartsWith(registered.getTaxId(), requested.getTaxId())) {
 			matchesOn.add(MatchType.TaxID);
 		}
 
@@ -221,11 +215,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 				matchesOn.add(MatchType.Email);
 			}
 
-			// TODO utility: StringUtils.bothNonBlanksAndOneBeginsWithTheOther
-			if (registeredUser.getPhoneIndex() != null
-					&& requestedUser.getPhoneIndex() != null
-					&& (registeredUser.getPhoneIndex().contains(requestedUser.getPhoneIndex()) || requestedUser
-							.getPhoneIndex().contains(registeredUser.getPhoneIndex()))) {
+			if (strippedStartsWith(registeredUser.getPhoneIndex(), requestedUser.getPhoneIndex())) {
 				matchesOn.add(MatchType.Phone);
 			}
 		}
@@ -239,6 +229,13 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		}
 
 		return Strings.EMPTY_STRING;
+	}
+
+	private boolean strippedStartsWith(String first, String second) {
+		String firstStripped = Strings.stripNonAlphaNumericCharacters(first);
+		String secondStripped = Strings.stripNonAlphaNumericCharacters(second);
+
+		return Strings.bothNonBlanksAndOneBeginsWithTheOther(firstStripped, secondStripped);
 	}
 
 	public enum MatchType {
