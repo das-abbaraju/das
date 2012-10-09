@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
@@ -169,7 +171,7 @@ public class Registration extends ContractorActionSupport {
 		setLoginLog(permissions);
 		// they don't have an account yet so they won't get this as a default
 		permissions.setSessionCookieTimeoutInSeconds(3600);
-		
+
 		sendWelcomeEmail();
 		addNote(contractor, "Welcome Email Sent");
 
@@ -442,5 +444,23 @@ public class Registration extends ContractorActionSupport {
 
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
+	}
+
+	public String getChatUrl() {
+		String protocol = getRequest().getProtocol();
+		String language = TranslationActionSupport.getLocaleStatic().getDisplayLanguage();
+
+		if (language.matches(".*[" + Strings.DANGEROUS_HTML_CHARACTERS + "].*")) {
+			language = Locale.ENGLISH.getDisplayLanguage();
+		}
+
+		String chatUrl = protocol + "://server.iad.liveperson.net/hc/90511184/" +
+	    "?cmd=file" +
+	    "&amp;file=visitorWantsToChat" +
+	    "&amp;site=90511184" +
+	    "&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
+	    "&amp;referrer=";
+
+		return chatUrl;
 	}
 }

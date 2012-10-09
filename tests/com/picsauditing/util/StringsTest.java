@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -59,6 +60,38 @@ public class StringsTest  {
 		assertEquals(0, Strings.extractAccountID("123412341234123412341"));
 		assertEquals(0, Strings.extractAccountID("Bob's Cranes"));
 		assertEquals(0, Strings.extractAccountID("1 Micro"));
+	}
+
+	@Test
+	public void testSanitizeLocale_defaultsToEnglishIfEmpty() {
+		assertEquals(Locale.ENGLISH.toString(), Strings.sanitizeRequestLocale(""));
+	}
+
+	@Test
+	public void testSanitizeLocale_defaultsToEnglishIfContainsDangerousCharacters() {
+		assertEquals(Locale.ENGLISH.toString(), Strings.sanitizeRequestLocale(Strings.DANGEROUS_HTML_CHARACTERS));
+	}
+
+	@Test
+	public void testSanitizeUserInput_removesDangerousCharacters() {
+		String unsanitizedInput = "<>a%b&c;_\"1'2+3()";
+		String sanitizedInput = Strings.sanitizeUserInput(unsanitizedInput);
+
+		assertEquals("abc_123", sanitizedInput);
+	}
+
+	@Test
+	public void testContainsDangerousHtmlCharacters_falseIfNoDangerousCharacters() {
+		String safeString = "Superman_Construction LTD.";
+
+		assertFalse(Strings.containsDangerousHtmlCharacters(safeString));
+	}
+
+	@Test
+	public void testContainsDangerousHtmlCharacters_trueIfDangerousCharacters() {
+		String maliciousString = "\" onmouseover=\"alert('YOUVE BEEN HACKED!');\"";
+
+		assertTrue(Strings.containsDangerousHtmlCharacters(maliciousString));
 	}
 
 	@Test
@@ -256,7 +289,7 @@ public class StringsTest  {
 		assertEquals("ab" + backSlash + singleQuote + backSlash + singleQuote,
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
-	
+
 	@Test
 	public void nullToBlank() {
 		assertEquals("", Strings.nullToBlank(null));
@@ -264,5 +297,5 @@ public class StringsTest  {
 		assertEquals("  ", Strings.nullToBlank("  "));
 		assertEquals(" This is a test ", Strings.nullToBlank(" This is a test "));
 	}
-	
+
 }
