@@ -55,7 +55,7 @@ public class ReportData extends PicsActionSupport {
 	}
 
 	private void getData(String sql) throws ReportValidationException, SQLException {
-		debugSQL = sql;
+		debugSQL = sql.replace("\n", " ").replace("  ", " ");
 
 		if (!ReportUtil.hasColumns(report)) {
 			// Should this really happen? Maybe we should catch this during
@@ -69,6 +69,10 @@ public class ReportData extends PicsActionSupport {
 		converter.setLocale(permissions.getLocale());
 		converter.convertForExtJS();
 
+		if (permissions.isAdmin() || permissions.getAdminID() > 0) {
+			json.put("sql", debugSQL);
+		}
+
 		json.put("data", converter.getReportResults().toJson());
 		json.put("success", true);
 	}
@@ -78,8 +82,6 @@ public class ReportData extends PicsActionSupport {
 		if (message == null) {
 			message = e.toString();
 		}
-
-		json.put("sql", debugSQL);
 
 		writeJsonError(message);
 	}

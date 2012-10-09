@@ -8,6 +8,7 @@ import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.util.Strings;
 
 public class ContractorOperatorModel extends AbstractModel {
 
@@ -38,9 +39,23 @@ public class ContractorOperatorModel extends AbstractModel {
 
 	@Override
 	public String getWhereClause(List<Filter> filters) {
-		super.getWhereClause(filters);
-		permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
-
-		return permissionQueryBuilder.buildWhereClause();
+		// TODO This should be eventually moved into PQB
+		if (permissions.isAdmin()) {
+			return "";
+		}
+		
+		if (permissions.isContractor()) {
+			return CONTRACTOR_OPERATOR + ".subID = " + permissions.getAccountId();
+		}
+		
+		if (permissions.isOperator()) {
+			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID = " + permissions.getAccountId();
+		}
+		
+		if (permissions.isCorporate()) {
+			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren(), ",") + ")";
+		}
+		
+		return "1 = 0";
 	}
 }

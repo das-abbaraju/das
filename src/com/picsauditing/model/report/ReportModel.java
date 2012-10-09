@@ -152,8 +152,6 @@ public class ReportModel {
 				reports.add(reportUser.getReport());
 			}
 		} else {
-			// Otherwise, search on all public reports and all of the user's
-			// reports
 			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions.getUserId(),
 					permissions.getAccountId(), searchTerm);
 			pagination.Initialize(parameters, reportDao);
