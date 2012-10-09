@@ -18,7 +18,6 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
         this.record.set('operator', 'In');
 
         var autocomplete = this.createAutocomplete(this.record);
-
         this.add(autocomplete);
     },
 
@@ -31,6 +30,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             displayField: 'value',
             editable: true,
             hideTrigger: true,
+            minChars: 2,
             multiSelect: false,
             name: 'filter_value',
             queryParam: 'searchQuery',
