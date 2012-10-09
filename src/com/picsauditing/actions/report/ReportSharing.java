@@ -21,26 +21,24 @@ public class ReportSharing extends PicsActionSupport {
 
 	public String share() {
 		boolean editable = false;
-		int userId = -1;
-		int accountId = -1;
+		int id = -1;
+		String type = "";
 		String dirtyParameter = "";
 
 		try {
-			dirtyParameter = ServletActionContext.getRequest().getParameter("userId");
-			if (dirtyParameter != null)
-				userId = Integer.parseInt(dirtyParameter);
-			else {
-				dirtyParameter = ServletActionContext.getRequest().getParameter("accountId");
-				accountId = Integer.parseInt(dirtyParameter);
-			}
-			
-			if (reportModel.canUserEdit(permissions.getUserId(), report) && userId != permissions.getUserId()) {
-				if (userId != -1)
-					reportModel.connectReportPermissionUser(userId, report.getId(), editable);
+			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
+			id = Integer.parseInt(dirtyParameter);
+
+			type = ServletActionContext.getRequest().getParameter("type");
+
+			editable = Boolean.parseBoolean(ServletActionContext.getRequest().getParameter("editable"));
+
+			if (type != null && reportModel.canUserEdit(permissions.getUserId(), report)
+					&& id != permissions.getUserId()) {
+				if (type.equalsIgnoreCase("user"))
+					reportModel.connectReportPermissionUser(id, report.getId(), editable);
 				else
-				{
-					reportModel.connectReportPermissionAccount(accountId, report.getId(), permissions);
-				}
+					reportModel.connectReportPermissionAccount(id, report.getId(), permissions);
 				json.put("success", true);
 			} else {
 				json.put("success", false);
@@ -57,25 +55,19 @@ public class ReportSharing extends PicsActionSupport {
 	}
 
 	public String unshare() {
-		int userId = -1;
-		int accountId = -1;
+		int id = -1;
+		String type = "";
 		String dirtyParameter = "";
 
 		try {
-			dirtyParameter = ServletActionContext.getRequest().getParameter("userId");
-			if (dirtyParameter != null)
-				userId = Integer.parseInt(dirtyParameter);
-			else {
-				dirtyParameter = ServletActionContext.getRequest().getParameter("accountId");
-				accountId = Integer.parseInt(dirtyParameter);
-			}
-			
-			if (reportModel.canUserEdit(permissions.getUserId(), report) && userId != permissions.getUserId()) {
-				if (userId != -1)
-					reportModel.disconnectReportPermissionUser(userId, report.getId());
-				else
-				{
-					reportModel.disconnectReportPermissionAccount(accountId, report.getId());
+			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
+			id = Integer.parseInt(dirtyParameter);
+
+			if (reportModel.canUserEdit(permissions.getUserId(), report) && id != permissions.getUserId()) {
+				if (type.equalsIgnoreCase("user"))
+					reportModel.disconnectReportPermissionUser(id, report.getId());
+				else {
+					reportModel.disconnectReportPermissionAccount(id, report.getId());
 				}
 				json.put("success", true);
 			} else {
@@ -93,19 +85,19 @@ public class ReportSharing extends PicsActionSupport {
 	}
 
 	public String editPermissions() {
-		int userId = -1;
+		int id = -1;
 		boolean editable = false;
 		String dirtyParameter = "";
 
 		try {
-			dirtyParameter = ServletActionContext.getRequest().getParameter("userId");
-			userId = Integer.parseInt(dirtyParameter);
-			
+			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
+			id = Integer.parseInt(dirtyParameter);
+
 			dirtyParameter = ServletActionContext.getRequest().getParameter("editable");
 			editable = Boolean.parseBoolean(dirtyParameter);
-		
+
 			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
-				reportModel.setEditPermissions(userId, report.getId(), editable);
+				reportModel.setEditPermissions(id, report.getId(), editable);
 				json.put("success", true);
 			} else {
 				json.put("success", false);
