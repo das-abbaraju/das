@@ -7,9 +7,11 @@ import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
+import com.picsauditing.report.models.ModelType;
 
 import com.picsauditing.report.Filter;
 
@@ -68,5 +70,37 @@ public class FilterTest {
 		filter.getValues().add("Trevor's");
 
 		assertEquals("fieldName = 'Trevor\\'s'", filter.getSqlForFilter());
+	}
+
+	@Test
+	public void testFilterFromJson__CommaSpaceSeparatedValues() throws ReportValidationException {
+		JSONObject json = new JSONObject();
+		json.put("name", "AccountStatus");
+		json.put("operator", "In");
+		json.put("value", "Active, Pending, Requested, Deactivated");
+
+		filter.setFieldName("AccountStatus");
+		filter.setOperator(QueryFilterOperator.In);
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.AccountStatus));
+		
+		filter.fromJSON(json);
+
+		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
+	}
+
+	@Test
+	public void testFilterFromJson__CommaSeparatedValues() throws ReportValidationException {
+		JSONObject json = new JSONObject();
+		json.put("name", "AccountStatus");
+		json.put("operator", "In");
+		json.put("value","Active,Pending,Requested,Deactivated");
+
+		filter.setFieldName("AccountStatus");
+		filter.setOperator(QueryFilterOperator.In);
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.AccountStatus));
+		
+		filter.fromJSON(json);
+
+		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
 	}
 }
