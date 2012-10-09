@@ -111,7 +111,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore();
+        var store = this.getReportAvailableFieldsByCategoryStore(),
+            that = this;
 
         store.clearFilter();
         store.sort();
@@ -121,6 +122,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             type: type
         });
 
-        modal.show();
+        modal.show(false, function () {
+            that.application.fireEvent('setonxmaskclick', modal);
+        });
     }
 });

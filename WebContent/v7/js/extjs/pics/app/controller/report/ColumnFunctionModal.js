@@ -41,9 +41,12 @@ Ext.define('PICS.controller.report.ColumnFunctionModal', {
     // show the column function modal , but attach the specific column store - column your modifying
     showColumnFunctionModal: function (column) {
         var modal = Ext.create('PICS.view.report.column-function.ColumnFunctionModal', {
-            column: column
-        });
+                column: column
+            }),
+            that = this;
 
-        modal.show();
+        modal.show(false, function () {
+            that.application.fireEvent('setonxmaskclick', modal);
+        });
     }
 });
