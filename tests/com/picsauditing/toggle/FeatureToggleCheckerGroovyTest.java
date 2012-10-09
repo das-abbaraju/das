@@ -21,6 +21,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -76,6 +77,7 @@ public class FeatureToggleCheckerGroovyTest {
 		cache.removeAll();
 	}
 
+	@Ignore("too slow to run every time")
 	@Test
 	public void testScriptWithDynamicVariable_True() throws Exception {
 		boolean result = dynamicContractorScript(1, 22107);
@@ -86,6 +88,7 @@ public class FeatureToggleCheckerGroovyTest {
 		assertTrue(result);
 	}
 
+	@Ignore("too slow to run every time")
 	@Test
 	public void testScriptWithDynamicVariable_False() throws Exception {
 		boolean result = dynamicContractorScript(1, 2);
