@@ -7,14 +7,18 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
-import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
 public class AutocompleteDAO {
+	
+	@Autowired
+	private OperatorAccountDAO operatorAccountDAO;
 	
 	private static final int LIMIT_AMOUNT = 10;
 	
@@ -27,21 +31,19 @@ public class AutocompleteDAO {
 	}
 	
 	private List<BasicDynaBean> findUsersToShareWith(int reportId, String searchTerm, Permissions permissions) throws SQLException {
-		PermissionQueryBuilder permissionQueryBuilder = new PermissionQueryBuilder(permissions);
-		
 		StringBuilder query = new StringBuilder();
 		query.append("SELECT u.name AS 'result_name', ");
 		query.append("IF(u.isGroup = 'Yes', 'Group', 'User') AS 'result_type', ");
 		query.append("u.id AS 'result_id', ");
-		query.append("a.name as 'result_at', ");
+		query.append("a.name AS 'result_at', ");
 		query.append("'user' AS 'search_type' ");
 		query.append("FROM users u ");
 		query.append("JOIN accounts a ON a.id = u.accountID ");
 		query.append("WHERE u.name LIKE '%").append(searchTerm).append("%' ");
 		
-		String permissionQuery = permissionQueryBuilder.buildWhereClause();
-		if (Strings.isNotEmpty(permissionQuery)) {
-			query.append("AND ").append(permissionQueryBuilder.buildWhereClause());
+		List<OperatorAccount> childOperators = findAllChildOperators(permissions);
+		if (CollectionUtils.isNotEmpty(childOperators)) {
+			query.append("AND a.id IN (").append(Strings.implodeIDs(childOperators)).append(") ");
 		}
 		
 		query.append("LIMIT ").append(LIMIT_AMOUNT);
@@ -50,25 +52,31 @@ public class AutocompleteDAO {
 	}
 	
 	private List<BasicDynaBean> findAccountsToShareWith(int reportId, String searchTerm, Permissions permissions) throws SQLException {
-		PermissionQueryBuilder permissionQueryBuilder = new PermissionQueryBuilder(permissions);
-		
 		StringBuilder query = new StringBuilder();
-		query.append("select a.id as 'result_id', ");
-		query.append("a.name as 'result_name', ");
-		query.append("a.type as 'result_type', ");
-		query.append("'account' as 'search_type', ");
+		query.append("SELECT a.id AS 'result_id', ");
+		query.append("a.name AS 'result_name', ");
+		query.append("a.type AS 'result_type', ");
+		query.append("'account' AS 'search_type', ");
 		query.append("CONCAT(a.city, ', ', a.countrySubdivision) AS 'result_at' ");
 		query.append("FROM accounts a ");
-		query.append("WHERE a.name like '%").append(searchTerm).append("%' ");
+		query.append("WHERE a.name LIKE '%").append(searchTerm).append("%' ");
 		
-		String permissionQuery = permissionQueryBuilder.buildWhereClause();
-		if (Strings.isNotEmpty(permissionQuery)) {
-			query.append("AND ").append(permissionQueryBuilder.buildWhereClause());
+		List<OperatorAccount> childOperators = findAllChildOperators(permissions);
+		if (CollectionUtils.isNotEmpty(childOperators)) {
+			query.append("AND a.id IN (").append(Strings.implodeIDs(childOperators)).append(") ");
 		}
 		
 		query.append("LIMIT ").append(LIMIT_AMOUNT);
 		
 		return database.select(query.toString(), false);
+	}
+	
+	private List<OperatorAccount> findAllChildOperators(Permissions permissions) {
+		try {
+			return operatorAccountDAO.findWhere(true, null, permissions, LIMIT_AMOUNT);
+		} catch (Exception e) {
+			return Collections.emptyList();
+		}
 	}
 	
 	private List<BasicDynaBean> mergeResults(List<BasicDynaBean> users, List<BasicDynaBean> accounts) {
