@@ -27,8 +27,7 @@ public class Filter extends ReportElement implements JSONable {
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
-	private List<String> values = new ArrayList<String>();
-	private String value = "";
+	List<String> values = new ArrayList<String>();
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
