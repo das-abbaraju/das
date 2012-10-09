@@ -91763,7 +91763,6 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
         this.record.set('operator', 'In');
 
         var autocomplete = this.createAutocomplete(this.record);
-
         this.add(autocomplete);
     },
 
@@ -91776,6 +91775,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             displayField: 'value',
             editable: true,
             hideTrigger: true,
+            minChars: 2,
             multiSelect: false,
             name: 'filter_value',
             queryParam: 'searchQuery',
@@ -98035,7 +98035,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         this.application.on({
             showsettingsmodal: this.showSettingsModal,
-            scope: this,
+            scope: this
         });
     },
 
@@ -98194,11 +98194,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var record = records[0];
 
         if (record) {
-            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0],
-                account = {
-                            name: record.get('result_name'),
-                            at: record.get('result_at'),
-                          };
+            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
+            var account = {
+                name: record.get('result_name'),
+                at: record.get('result_at')
+            };
             
             // Save the id of the selected record for use after share button is clicked.
             cmp.record_id = record.index;
@@ -98222,7 +98222,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var reportsettingsshare =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
 
         // Get the record id.
-        var record_id = reportsettingsshare.record_id
+        var record_id = reportsettingsshare.record_id;
 
         // Abort if no account has been selected.
         if (typeof record_id == 'undefined') {
@@ -98248,18 +98248,21 @@ Ext.define('PICS.controller.report.SettingsModal', {
         // Construct the URL and send the request.
         var that = this;
         Ext.Ajax.request({
-            url: 'ReportSharing!share.action?'
-                + 'report=' + report_id
-                + '&' + account_type + 'Id=' + account_id
-                + '&editable=' + editable,
+            url: 'ReportSharing!share.action',
+            params: {
+                report: report_id,
+                id: account_id,
+                type: account_type,
+                editable: editable
+            },
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 
                 if (result.error) {
                     Ext.Msg.alert('Status', result.error);
                 } else {
-                    
                     var alert_message = Ext.getCmp('alert_message');
+                    
                     if (alert_message) {
                         alert_message.destroy();
                     }
@@ -98267,10 +98270,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
                         html: 'with the selected account.',
-                        title: 'Report Shared',
+                        title: 'Report Shared'
                     });
 
                     alert_message.show();
+                    
                     that.getReportSettingsModal().close();
                 }
             }
