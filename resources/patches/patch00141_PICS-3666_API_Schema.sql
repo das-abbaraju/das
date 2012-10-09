@@ -15,5 +15,5 @@ alter table `usergroup`
 	change `groupID` `groupID` int(11) NOT NULL,
 	change `creationDate` `creationDate` datetime NULL, 
 	change `createdBy` `createdBy` int(11) NULL,
-	add constraint `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`),
-	add constraint `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`);
+	add constraint `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+	add constraint `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`) ON DELETE CASCADE;

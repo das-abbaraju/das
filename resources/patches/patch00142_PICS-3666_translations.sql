@@ -3,7 +3,8 @@ insert ignore into app_translation (`msgKey`,`locale`,`msgValue`,`createdBy`,`up
 	("ProfileEdit.label.ApiKey","en","API Key",47739,47739,now(),now(),2,1),
 	("ProfileEdit.button.GenerateApiKey","en","Generate API Key",47739,47739,now(),now(),2,1),
 	("ProfileEdit.alert.ExistingApiKeyWarning","en","Are you sure?  Changing the API key will require changing all of the API calls that rely on this API key.",47739,47739,now(),now(),2,1),
-	("OpPerms.RestApi.description","en","REST API",47739,47739,now(),now(),2,1);
+	("OpPerms.RestApi.description","en","REST API",47739,47739,now(),now(),2,1),
+	("OpPerms.RestApi.helpText","en","Allows for machine-to-machine interfacing via certain API calls.",47739,47739,now(),now(),2,1);
 
 -- This line creates a user group called PICS API Approver
 insert ignore into `users` (`username`, `isGroup`, `name`, `isActive`, `accountID`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`,`timezone`, `forcePasswordReset`, `needsIndexing`, `locale`) 
