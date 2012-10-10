@@ -2,36 +2,46 @@ package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AccountContractorModel;
-import com.picsauditing.report.models.AccountModel;
+import com.picsauditing.report.models.AccountsModel;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilderTest {
 
 	private SqlBuilder builder;
+	@Mock
 	private Permissions permissions;
 	private Definition definition;
 	private SelectSQL sql;
 
+	private final int USER_ID = 123;
+	private final int ACCOUNT_ID = 1100;
+
 	@Before
 	public void setUp() throws Exception {
-		User user = new User(123);
-		user.setAccount(new Account());
-		user.getAccount().setId(1100);
+		MockitoAnnotations.initMocks(this);
 
-		permissions = EntityFactory.makePermission(user);
+		when(permissions.getAccountIdString()).thenReturn("" + ACCOUNT_ID);
+		when(permissions.getVisibleAccounts()).thenReturn(new HashSet<Integer>());
+		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
+		when(permissions.getUserId()).thenReturn(USER_ID);
+
 		builder = new SqlBuilder();
 		definition = new Definition("");
 	}
@@ -123,8 +133,8 @@ public class SqlBuilderTest {
 	public void testInvalidFilters() throws Exception {
 		Column column = addColumn("AccountName");
 		addFilter(column.getFieldName(), QueryFilterOperator.BeginsWith, null);
-		EntityFactory.addUserPermission(permissions, OpPerms.AllOperators);
-
+		when(permissions.has(OpPerms.AllOperators)).thenReturn(true);
+		
 		initializeSql();
 
 		assertAllFiltersHaveFields();
@@ -201,7 +211,7 @@ public class SqlBuilderTest {
 	}
 
 	private void initializeSql() throws ReportValidationException {
-		sql = builder.initializeSql(new AccountModel(permissions), definition, permissions);
+		sql = builder.initializeSql(new AccountsModel(permissions), definition, permissions);
 	}
 
 }
