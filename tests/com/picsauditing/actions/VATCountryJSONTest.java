@@ -1,25 +1,17 @@
 package com.picsauditing.actions;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.Country;
-import org.apache.struts2.ServletActionContext;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.jpa.entities.Country;
 
 public class VATCountryJSONTest extends PicsActionTest {
 	private VATCountryJSON vATCountryJSON;

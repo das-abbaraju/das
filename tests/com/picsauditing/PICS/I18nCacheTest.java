@@ -1,32 +1,23 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
-import com.picsauditing.search.Database;
 
 public class I18nCacheTest extends PicsActionTest {
 	private I18nCache i18nCacheToTest;

@@ -1,27 +1,22 @@
 package com.picsauditing.interceptors;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.*;
-import org.junit.runner.RunWith;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ReportActionSupport;
 
 public class ReportUsageInterceptorTest extends PicsActionTest {
