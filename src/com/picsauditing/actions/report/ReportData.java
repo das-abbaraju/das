@@ -128,7 +128,8 @@ public class ReportData extends PicsActionSupport {
 
 	public String extjs() throws Exception {
 		data();
-		report();
+		if (this.pageNumber == 1)
+			report();
 		return JSON;
 	}
 
@@ -162,7 +163,6 @@ public class ReportData extends PicsActionSupport {
 
 	public String print() throws Exception {
 		initialize();
-		sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 		runQuery();
 		converter.convertForPrinting();
 

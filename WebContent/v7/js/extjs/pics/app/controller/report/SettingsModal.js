@@ -236,7 +236,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
      */
 
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
-        cmp.store.getProxy().url = 'ReportAutocomplete!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + this.getReportId();
         cmp.store.load();
     },
 
