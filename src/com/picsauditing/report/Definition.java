@@ -75,6 +75,9 @@ public class Definition implements JSONable {
 	}
 
 	public void fromJSON(JSONObject json) {
+		if (json == null) {
+			return;
+		}
 		String filterExpressionFromJson = (String) json.get(FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson))
 			this.filterExpression = filterExpressionFromJson;

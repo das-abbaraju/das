@@ -79,7 +79,7 @@ public class ReportModelTest {
 		when(account.getId()).thenReturn(ACCOUNT_ID);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 	}
-
+	
 	@Test
 	public void mockUserIsMockedWithUserId() {
 		assertEquals(USER_ID, user.getId());
@@ -151,6 +151,15 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
+		
+		ReportModel.validate(report);
+	}
+
+	@Test(expected = ReportValidationException.class)
+	public void testValidate_MissingColumns() throws ReportValidationException {
+		Report report = new Report();
+		report.setModelType(ModelType.Accounts);
+		report.setParameters("{}");
 
 		ReportModel.validate(report);
 	}
@@ -159,7 +168,7 @@ public class ReportModelTest {
 	public void testValidate_ValidReportParameters() throws ReportValidationException {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
-		report.setParameters("{}");
+		report.setParameters("{\"columns\":[{\"name\":\"AccountName\"}]}");
 
 		ReportModel.validate(report);
 	}

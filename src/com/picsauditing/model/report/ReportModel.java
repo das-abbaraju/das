@@ -86,7 +86,7 @@ public class ReportModel {
 		reportPermissionUserDao.save(reportPermissionUser);
 	}
 
-	public Report copy(Permissions permissions, Report sourceReport) throws NoRightsException,
+	public Report copy(Report sourceReport, Permissions permissions) throws NoRightsException,
 			ReportValidationException {
 		if (!canUserViewAndCopy(permissions, sourceReport.getId()))
 			throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
@@ -143,6 +143,9 @@ public class ReportModel {
 
 		if (report.getModelType() == null)
 			throw new ReportValidationException("Report " + report.getId() + " is missing its base", report);
+
+		if (report.getDefinition().getColumns().size() == 0)
+			throw new ReportValidationException("Report contained no columns");
 
 		try {
 			new JSONParser().parse(report.getParameters());

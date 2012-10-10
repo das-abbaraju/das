@@ -185,10 +185,6 @@ public final class ReportUtil {
 		return translatedText;
 	}
 
-	public static boolean hasColumns(Report report) {
-		return (report.getDefinition().getColumns().size() > 0);
-	}
-
 	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
