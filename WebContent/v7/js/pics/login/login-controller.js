@@ -2,20 +2,25 @@
     PICS.define('login.LoginController', {
         methods: {
             init: function () {
-                var that = this;
+                if ($('.Login-page').length) {
 
-                //TODO load login modal
-                /*this.isLoaded = 0;
-                $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
-                    if (jqXHR.status == 401) {
-                        if (!that.isLoaded) {
-                            that.showLoginModal(ajaxSettings);
-                            that.isLoaded++;
+                    $('#username').focus();
+
+                    $('#login_wrapper').delegate('select', 'change', this.setLanguage);
+
+                    //TODO load login modal
+                    /*this.isLoaded = 0;
+                    $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+                        if (jqXHR.status == 401) {
+                            if (!that.isLoaded) {
+                                that.showLoginModal(ajaxSettings);
+                                that.isLoaded++;
+                            }
                         }
-                    }
-                });*/
+                    });*/
 
-                $('body').delegate('#login_form select', 'change', this.setLanguage);
+
+                }
             },
 
             setLanguage: function () {
@@ -27,8 +32,11 @@
                         request_locale: language
                     },
                     success: function(data, textStatus, jqXHR) {
-                        $('#login_form').html(data);
+                        $('#login_wrapper').html(data);
                         $('#supported_locales').val(language);
+
+                        //Update RSS feed
+                        $('#newsfeed_wrapper').trigger('updatefeed');
 
                         //TODO update login modal content as well
                         /*$('section.login-form, .modal-login-form .modal-body').html(response);
@@ -38,17 +46,11 @@
 
                         $('.modal-login-form .modal-header h3').html(title.val());
                         */
-
-                        //Update RSS feed
-                        var newsfeed = PICS.getClass('login.NewsfeedController');
-                        if (newsfeed) {
-                            newsfeed.loadRssFeed();
-                        }
                     }
                 });
-            },
+            }
 
-            showLoginModal: function (originalSettings) {
+            /*showLoginModal: function (originalSettings) {
                 var me = this;
 
                 PICS.ajax({
@@ -72,7 +74,7 @@
                         $('.modal-login-form').delegate('#supported_locales', 'change', me.setLanguage)
 
 
-                        /*var form = login_modal.find('form#Login');
+                        var form = login_modal.find('form#Login');
 
                         form.ajaxForm({
                             url: 'Login!ajax.action',
@@ -95,10 +97,10 @@
                                     $('#username').focus();
                                 }
                             }
-                        });*/
+                        });
                     }
                 });
-            }
+            }*/
         }
     });
 })(jQuery);

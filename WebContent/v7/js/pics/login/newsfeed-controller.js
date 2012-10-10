@@ -4,8 +4,12 @@
             init: function () {
                 if ($('.Login-page').length) {
                     this.loadRssFeed();
-                }
+                    var that = this;
 
+                    $('#newsfeed_wrapper').on('updatefeed', function (event) {
+                        that.loadRssFeed.apply(that);
+                    });
+                }
             },
 
             loadRssFeed: function() {
@@ -21,12 +25,44 @@
             },
 
             getFeedUrl: function (locale) {
-                var locale = $('#current_locale');
+                var locales = {
+                        de: 'de',
+                        en: '',
+                        en_AU: '',
+                        en_CA: 'ca',
+                        en_GB: 'uk',
+                        en_US: '',
+                        en_ZA: 'za',
+                        es: 'es',
+                        es_ES: 'es',
+                        es_MX: 'es',
+                        fi: '',
+                        fr: 'fr',
+                        fr_CA: 'fr',
+                        fr_FR: 'fr',
+                        nl: '',
+                        no: '',
+                        pt: '',
+                        sv: '',
+                        zh: '',
+                        zh_CN: '',
+                        zh_TW: ''
+                },
+                current_locale = $('#current_locale'),
+                current_locale = current_locale.val(),
+                feed_source = '';
 
-                locale = locale.val();
-                locale = (locale == 'en') ? '' : locale + '/';
+                for (var key in locales) {
+                    if (key == current_locale){
+                        feed_source = locales[key];
+                    }
+                }
 
-                return 'http://www.picsauditing.com/' + locale + 'feed/' + '?cat=6,9,10,11';
+                if (feed_source !== '') {
+                    feed_source += '/'
+                }
+
+                return 'http://www.picsauditing.com/' + feed_source + 'feed/?cat=6,9,10,11';
             }
         }
     });
