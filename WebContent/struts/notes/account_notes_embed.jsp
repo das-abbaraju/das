@@ -44,14 +44,9 @@
 				<td>
 					${note_item.noteCategory}:
 					${note_item.summary}
-					<s:if test="body != null">
+					<s:if test="!isStringEmpty(#note_item.body)">
 						<br />
-						<s:if test="body.length() > 150">
-							${note_item.bodyHtml.substring(0,150)}
-						</s:if>
-						<s:else>
-							${note_item.bodyHtml}
-						</s:else>
+						${note_item.getBodyHtml(150)}
 					</s:if>
 					<s:if test="attachment != null">
 						<br /><br />
