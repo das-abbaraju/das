@@ -55,7 +55,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                url: 'ReportAutocomplete.action?fieldType=' + field_type,
+                url: 'Autocompleter.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'

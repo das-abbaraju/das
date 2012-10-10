@@ -85,7 +85,7 @@ Ext.define('PICS.controller.report.Report', {
     saveReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!edit.action';
+            url = 'ReportDynamic!save.action';
 
         Ext.Ajax.request({
             url: url,

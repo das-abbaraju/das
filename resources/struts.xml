@@ -964,8 +964,8 @@
 		<action name="{type:\w+}Autocomplete"
 			class="com.picsauditing.actions.autocomplete.{1}Autocomplete" method="autocomplete">
 		</action>
-		
-		<action name="ReportAutocomplete" class="com.picsauditing.actions.autocomplete.Autocompleter" />
+
+		<action name="Autocompleter" class="com.picsauditing.actions.autocomplete.Autocompleter" />
 
 		<!-- Ajax Snippets -->
 		<action name="ContractorSelectAjax" class="com.picsauditing.actions.report.ReportAccount">
