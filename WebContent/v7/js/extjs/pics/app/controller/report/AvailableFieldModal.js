@@ -122,8 +122,6 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             type: type
         });
 
-        modal.show(false, function () {
-            that.application.fireEvent('setonxmaskclick', modal);
-        });
+        modal.show();
     }
 });

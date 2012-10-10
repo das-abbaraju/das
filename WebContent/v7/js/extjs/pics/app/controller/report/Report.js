@@ -37,11 +37,6 @@ Ext.define('PICS.controller.report.Report', {
             savereport: this.saveReport,
             scope: this
         });
-
-        this.application.on({
-            setonxmaskclick: this.setOnXmaskClick,
-            scope: this
-        });
     },
 
     onReportDataBeforeRender: function (cmp, eOpts) {
@@ -115,12 +110,5 @@ Ext.define('PICS.controller.report.Report', {
 
     setPageTitle: function(title) {
         Ext.query('title')[0].innerHTML = 'PICS - ' + title;
-    },
-
-    setOnXmaskClick: function (modal) {
-        // Close the modal when the user clicks outside of it.
-        Ext.get(Ext.query('.x-mask:last')).on('click', function () {
-            modal.close();
-        });
     }
 });

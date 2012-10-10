@@ -224,9 +224,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             this.getReportSettingsTabs().setActiveTab(1);
         }
 
-        modal.show(false, function () {
-            that.application.fireEvent('setonxmaskclick', modal);
-        });
+        modal.show();
     },
     
     /**
