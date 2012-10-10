@@ -196,7 +196,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report = store.first();
 
         //TODO: Change this to a post and include parameters.
-        window.open('ReportDownload.action?report=' + report.get('id'));
+        window.open('ReportData!download.action?report=' + report.get('id'));
     },
 
     onReportModalPrintClick: function (cmp, e, eOpts) {
@@ -204,7 +204,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report = store.first();
 
         //TODO: Change this to a post and include parameters.
-        window.open('ReportPrint.action?report=' + report.get('id'));
+        window.open('ReportData!print.action?report=' + report.get('id'));
     },
 
     onReportSettingsTabsBeforeRender: function (cmp, eOpts) {

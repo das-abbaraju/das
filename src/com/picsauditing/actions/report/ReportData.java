@@ -1,9 +1,16 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,69 +19,192 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.report.ReportModel;
+import com.picsauditing.report.ReportElement;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
+import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.excel.ExcelBuilder;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportData extends PicsActionSupport {
+	private static final String PRINT = "print";
+	
 	@Autowired
 	private ReportDAO reportDao;
+	@Autowired
+	private ReportModel reportModel;
+	@Autowired
+	private ReportUserDAO reportUserDao;
 
-	protected Report report;
+	private Report report;
+
+	private String debugSQL = "";
+	private SelectSQL sql = null;
+	private ReportDataConverter converter;
+
 	private int pageNumber = 1;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
 
-	private String debugSQL = "";
+	private String initialize() throws Exception {
+		logger.debug("initializing report " + report.getId());
+		ReportModel.validate(report);
+		reportModel.updateLastViewedDate(permissions.getUserId(), report);
+		sql = new SqlBuilder().initializeSql(report, permissions);
+		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
-	public String execute() {
-		SelectSQL sql = null;
+		ReportUtil.addTranslatedLabelsToReportParameters(report.getDefinition(), permissions.getLocale());
+
+		// Not sure if we need this anymore
+		json.put("reportID", report.getId());
+		return SUCCESS;
+	}
+
+	public String report() {
 		try {
-			ReportModel.validate(report);
-			sql = new SqlBuilder().initializeSql(report, permissions);
+			initialize();
+			upgradeFields();
+			configuration();
+
+			json.put("report", report.toJSON(true));
+			json.put("success", true);
+		} catch (ReportValidationException rve) {
+			logger.warn("Invalid report in ReportDynamic.report()", rve);
+			writeJsonError(rve);
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.report()", e);
+			writeJsonError(e);
+		}
+
+		return JSON;
+	}
+
+	private void upgradeFields() {
+		List<ReportElement> reportElements = new ArrayList<ReportElement>();
+		reportElements.addAll(report.getDefinition().getColumns());
+		reportElements.addAll(report.getDefinition().getSorts());
+		reportElements.addAll(report.getDefinition().getFilters());
+
+		for (ReportElement reportElement : reportElements) {
+			if (reportElement.getFieldName().equalsIgnoreCase("AuditName"))
+				reportElement.setFieldName("AuditTypeName");
+			if (reportElement.getFieldName().equalsIgnoreCase("ContractorID"))
+				reportElement.setFieldName("AccountID");
+			if (reportElement.getFieldName().equalsIgnoreCase("OperatorID"))
+				reportElement.setFieldName("AccountID");
+			if (reportElement.getFieldName().equalsIgnoreCase("ContractorName"))
+				reportElement.setFieldName("AccountName");
+			if (reportElement.getFieldName().equalsIgnoreCase("OperatorName"))
+				reportElement.setFieldName("AccountName");
+			if (reportElement.getFieldName().equalsIgnoreCase("ContractorRequestedByOperatorReason"))
+				reportElement.setFieldName("AccountReason");
+			if (reportElement.getFieldName().toUpperCase().startsWith("ContractorID".toUpperCase()))
+				reportElement.setFieldName(reportElement.getFieldName().replace("contractorID", "AccountID"));
+		}
+	}
+
+	public String configuration() {
+		json.put("favorite", false);
+		json.put("editable", false);
+
+		try {
+			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), report.getId());
+			json.put("editable", reportModel.canUserEdit(permissions, report));
+			json.put("favorite", reportUser.isFavorite());
+		} catch (NoResultException e) {
+			logger.info("No ReportUser entry for " + permissions.getUserId() + " AND " + report.getId());
+		} catch (Exception e) {
+			logger.error("Unexpected exception in ReportDynamic.configuration()", e);
+		}
+
+		return JSON;
+	}
+
+	public String extjs() throws Exception {
+		data();
+		report();
+		return JSON;
+	}
+
+	public String data() throws Exception {
+		try {
+			initialize();
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
-			getData(sql.toString());
+			runQuery();
+
+			converter.convertForExtJS();
+			json.put("data", converter.getReportResults().toJson());
+
+			if (permissions.isAdmin() || permissions.getAdminID() > 0) {
+				json.put("sql", debugSQL);
+			}
+			json.put("success", true);
 		} catch (ReportValidationException error) {
 			writeJsonError(error.getMessage());
 		} catch (Exception error) {
 			logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
 			if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
 				writeJsonError(error);
-				if (sql != null) {
-					json.put("sql", sql.toString());
-				}
+				json.put("sql", debugSQL);
 			} else {
 				writeJsonError("Invalid Query");
 			}
 		}
+
 		return JSON;
 	}
 
-	private void getData(String sql) throws ReportValidationException, SQLException {
-		debugSQL = sql.replace("\n", " ").replace("  ", " ");
+	public String print() throws Exception {
+		initialize();
+		sql.setPageNumber(report.getRowsPerPage(), pageNumber);
+		runQuery();
+		converter.convertForPrinting();
 
-		if (!ReportUtil.hasColumns(report)) {
-			// Should this really happen? Maybe we should catch this during
-			// Report validation
-			writeJsonError("Report contained no columns");
-			return;
+		return PRINT;
+	}
+
+	public String download() {
+		try {
+			initialize();
+			converter.convertForPrinting();
+			HSSFWorkbook workbook = buildWorkbook();
+			writeFile(report.getName() + ".xls", workbook);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		List<BasicDynaBean> queryResults = reportDao.runQuery(sql, json);
+		return BLANK;
+	}
 
-		ReportDataConverter converter = new ReportDataConverter(report.getDefinition().getColumns(), queryResults);
+	private HSSFWorkbook buildWorkbook() {
+		logger.info("Building XLS File");
+		ExcelBuilder builder = new ExcelBuilder();
+		builder.addColumns(report.getDefinition().getColumns());
+		builder.addSheet(report.getName(), converter.getReportResults());
+		return builder.getWorkbook();
+	}
+
+	private void writeFile(String filename, HSSFWorkbook workbook) throws IOException {
+		logger.info("Streaming XLS File to response");
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		workbook.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+	}
+
+	private void runQuery() throws SQLException {
+		debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
+
+		List<BasicDynaBean> queryResults = reportDao.runQuery(debugSQL, json);
+		converter = new ReportDataConverter(report.getDefinition().getColumns(), queryResults);
 		converter.setLocale(permissions.getLocale());
-		converter.convertForExtJS();
-
-		if (permissions.isAdmin() || permissions.getAdminID() > 0) {
-			json.put("sql", debugSQL);
-		}
-
-		json.put("data", converter.getReportResults().toJson());
-		json.put("success", true);
 	}
 
 	private void writeJsonError(Exception e) {
@@ -97,6 +227,10 @@ public class ReportData extends PicsActionSupport {
 
 	public void setReport(Report report) {
 		this.report = report;
+	}
+
+	public ReportResults getResults() {
+		return converter.getReportResults();
 	}
 
 	public void setPage(int page) {

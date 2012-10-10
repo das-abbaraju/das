@@ -69,7 +69,7 @@ Ext.application({
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({
-           url: '/ReportDynamic!configuration.action?report=' + url.report,
+           url: '/ReportData!configuration.action?report=' + url.report,
            success: function (result) {
                var result = Ext.decode(result.responseText);
 
