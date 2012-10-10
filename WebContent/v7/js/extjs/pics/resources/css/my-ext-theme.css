@@ -8706,12 +8706,15 @@ textarea.x-form-invalid-field {
 #report_data .x-grid-cell-inner .icon-ok {
   color: #666666; }
 /* line 14, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-column.scss */
+#report_data .x-grid-cell-inner .icon-flag.clear {
+  color: #CCC; }
+/* line 19, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-column.scss */
 #report_data .x-grid-cell-inner .icon-flag.green {
   color: #229322; }
-/* line 19, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-column.scss */
+/* line 24, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-column.scss */
 #report_data .x-grid-cell-inner .icon-flag.red {
   color: #AC030C; }
-/* line 24, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-column.scss */
+/* line 29, C:/Users/chinoki/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-column.scss */
 #report_data .x-grid-cell-inner .icon-flag.amber {
   color: #F1A300; }
 
