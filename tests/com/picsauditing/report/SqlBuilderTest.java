@@ -53,7 +53,6 @@ public class SqlBuilderTest {
 		assertContains("FROM accounts AS Account", sql.toString());
 	}
 
-	@Ignore
 	@Test
 	public void testMultipleColumns() throws Exception {
 		addColumn("AccountID");
@@ -65,7 +64,7 @@ public class SqlBuilderTest {
 		assertEquals(3, sql.getFields().size());
 
 		assertContains("Account.id AS `AccountID`", sql.toString());
-		assertContains("CASE WHEN Account.dbaName IS NULL OR Account.dbaName = '' THEN Account.name ELSE Account.dbaName END AS `AccountName`", sql.toString());
+		assertContains("CASE WHEN TRIM(Account.dbaName) IS NULL THEN TRIM(Account.name) WHEN TRIM(Account.dbaName) = '' THEN TRIM(Account.name) ELSE TRIM(Account.dbaName) END AS `AccountName`", sql.toString());
 		assertContains("Account.status AS `AccountStatus`", sql.toString());
 	}
 
@@ -158,7 +157,6 @@ public class SqlBuilderTest {
 		assertContains("GROUP BY Account.status", sql.toString());
 	}
 
-	@Ignore
 	@Test
 	public void testHaving() throws Exception {
 		addColumn("AccountStatus");
@@ -169,7 +167,7 @@ public class SqlBuilderTest {
 
 		initializeSql();
 
-		assertContains("HAVING (COUNT(CASE WHEN Account.dbaName IS NULL OR Account.dbaName = '' THEN Account.name ELSE Account.dbaName END) > 5)", sql.toString());
+		assertContains("HAVING (COUNT(CASE WHEN TRIM(Account.dbaName) IS NULL THEN TRIM(Account.name) WHEN TRIM(Account.dbaName) = '' THEN TRIM(Account.name) ELSE TRIM(Account.dbaName) END) > 5)", sql.toString());
 		assertContains("WHERE ((Account.nameIndex LIKE 'A%'))", sql.toString());
 		assertContains("GROUP BY Account.status", sql.toString());
 	}
