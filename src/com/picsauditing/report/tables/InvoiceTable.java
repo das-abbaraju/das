@@ -11,14 +11,18 @@ public class InvoiceTable extends AbstractTable {
 	public InvoiceTable() {
 		super("invoice");
 		addFields(Invoice.class);
+		addCurrency();
+	}
 
+	private void addCurrency() {
 		Field currency = new Field("Currency", "currency", FieldType.String);
 		currency.setCategory(FieldCategory.Invoicing);
 		addField(currency);
 	}
 
 	protected void addJoins() {
-		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID"));
+		ReportForeignKey accountJoin = new ReportForeignKey(Account, new AccountTable(),
+				new ReportOnClause("accountID"));
 		addRequiredKey(accountJoin);
 		accountJoin.setMinimumImportance(FieldImportance.Required);
 	}
