@@ -1,20 +1,15 @@
 package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.json.simple.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.models.ModelType;
-
-import com.picsauditing.report.Filter;
 
 @SuppressWarnings("unchecked")
 public class FilterTest {
@@ -89,7 +84,6 @@ public class FilterTest {
 		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
 	}
 
-	@Ignore
 	@Test
 	public void testFilterFromJson__CommaSeparatedValues() throws ReportValidationException {
 		JSONObject json = new JSONObject();
@@ -103,6 +97,6 @@ public class FilterTest {
 		
 		filter.fromJSON(json);
 
-		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
+		assertEquals("[Active,Pending,Requested,Deactivated]", filter.getValues().toString());
 	}
 }

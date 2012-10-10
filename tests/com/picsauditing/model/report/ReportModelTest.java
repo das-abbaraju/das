@@ -32,7 +32,6 @@ import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -56,6 +55,8 @@ public class ReportModelTest {
 	private Report report;
 	@Mock
 	private ReportPermissionUser reportPermissionUser;
+	@Mock
+	private Permissions permissions;
 
 	private Pagination<Report> pagination;
 
@@ -76,6 +77,7 @@ public class ReportModelTest {
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(account.getId()).thenReturn(ACCOUNT_ID);
+		when(permissions.getUserId()).thenReturn(USER_ID);
 	}
 
 	@Test
@@ -106,30 +108,27 @@ public class ReportModelTest {
 		assertFalse(reportModel.canUserViewAndCopy(EntityFactory.makePermission(), REPORT_ID));
 	}
 
-	@Ignore("Ignored because signatured of canUserEdit() changed.")
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 
-//		assertFalse(reportModel.canUserEdit(USER_ID, report));
+		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
 
-	@Ignore("Ignored because signatured of canUserEdit() changed.")
 	@Test
 	public void canUserEdit_FalseIfNoEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(false);
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-//		assertFalse(reportModel.canUserEdit(USER_ID, report));
+		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
 
-	@Ignore("Ignored because signatured of canUserEdit() changed.")
 	@Test
 	public void canUserEdit_TrueIfEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-//		assertTrue(reportModel.canUserEdit(USER_ID, report));
+		assertTrue(reportModel.canUserEdit(permissions, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
