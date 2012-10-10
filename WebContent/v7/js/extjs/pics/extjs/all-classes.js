@@ -80358,7 +80358,7 @@ Ext.define('PICS.store.report.ReportDatas', {
         },
         timeout: 60000,
         type: 'ajax',
-        url: '/ReportData.action'
+        url: '/ReportData!extjs.action'
     },
 
     reload: function () {
@@ -96847,7 +96847,7 @@ Ext.define('PICS.store.report.Reports', {
         var request_parameters = Ext.Object.fromQueryString(document.location.search);
         var report_id = request_parameters.report;
 
-        this.proxy.url = '/ReportDynamic!report.action?report=' + report_id;
+        this.proxy.url = '/ReportData!report.action?report=' + report_id;
 
         this.callParent(arguments);
     }
@@ -98151,7 +98151,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report = store.first();
 
         //TODO: Change this to a post and include parameters.
-        window.open('ReportDownload.action?report=' + report.get('id'));
+        window.open('ReportData!download.action?report=' + report.get('id'));
     },
 
     onReportModalPrintClick: function (cmp, e, eOpts) {
@@ -98159,7 +98159,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report = store.first();
 
         //TODO: Change this to a post and include parameters.
-        window.open('ReportPrint.action?report=' + report.get('id'));
+        window.open('ReportData!print.action?report=' + report.get('id'));
     },
 
     onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
@@ -98178,7 +98178,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
             this.getReportSettingsTabs().setActiveTab(1);
         }
 
-        modal.show();
+        modal.show(false, function () {
+            // Close the modal when the user clicks outside of it.
+            Ext.get(Ext.query('.x-mask:last')).on('click', function () {
+                modal.close();
+            });
+        });
     },
     
     /**
@@ -98279,7 +98284,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 }
             }
         });
-    },
+    }
 });
 /**
  * Private utility class for Ext.Splitter.
