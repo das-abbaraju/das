@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -52,6 +53,7 @@ public class SqlBuilderTest {
 		assertContains("FROM accounts AS Account", sql.toString());
 	}
 
+	@Ignore
 	@Test
 	public void testMultipleColumns() throws Exception {
 		addColumn("AccountID");
@@ -156,6 +158,7 @@ public class SqlBuilderTest {
 		assertContains("GROUP BY Account.status", sql.toString());
 	}
 
+	@Ignore
 	@Test
 	public void testHaving() throws Exception {
 		addColumn("AccountStatus");
