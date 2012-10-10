@@ -830,11 +830,6 @@
                     "path": "app/ux/util/"
                 },
                 {
-                    "clsName": "PICS.view.report.column-function.ColumnFunctionModal",
-                    "name": "ColumnFunctionModal.js",
-                    "path": "app/view/report/column-function/"
-                },
-                {
                     "clsName": "PICS.view.report.filter.FilterToolbar",
                     "name": "FilterToolbar.js",
                     "path": "app/view/report/filter/"
@@ -875,6 +870,11 @@
                     "path": "extjs/src/grid/"
                 },
                 {
+                    "clsName": "PICS.view.report.ReportModal",
+                    "name": "ReportModal.js",
+                    "path": "app/view/report/"
+                },
+                {
                     "clsName": "Ext.grid.feature.Feature",
                     "name": "Feature.js",
                     "path": "extjs/src/grid/feature/"
@@ -890,11 +890,6 @@
                     "path": "extjs/src/layout/container/"
                 },
                 {
-                    "clsName": "PICS.controller.report.ColumnFunctionModal",
-                    "name": "ColumnFunctionModal.js",
-                    "path": "app/controller/report/"
-                },
-                {
                     "clsName": "PICS.view.report.filter.FilterOptions",
                     "name": "FilterOptions.js",
                     "path": "app/view/report/filter/"
@@ -903,6 +898,16 @@
                     "clsName": "PICS.view.report.header.ReportHeader",
                     "name": "ReportHeader.js",
                     "path": "app/view/report/header/"
+                },
+                {
+                    "clsName": "PICS.view.report.column-function.ColumnFunctionModal",
+                    "name": "ColumnFunctionModal.js",
+                    "path": "app/view/report/column-function/"
+                },
+                {
+                    "clsName": "PICS.controller.report.ColumnFunctionModal",
+                    "name": "ColumnFunctionModal.js",
+                    "path": "app/controller/report/"
                 },
                 {
                     "clsName": "Ext.selection.Model",
