@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AutocompleteDAO;
+import com.picsauditing.util.Strings;
 
 /**
  * Any custom autocomplete logic outside the simple key-value pairs will be placed here.
@@ -30,11 +31,11 @@ public class Autocomplete {
 		JSONArray resultRecords = new JSONArray();
 		for (BasicDynaBean bean : searchResults) {
 			JSONObject record = new JSONObject();
-			record.put("result_type", bean.get("result_type"));
-			record.put("result_name", bean.get("result_name"));
-			record.put("result_id", bean.get("result_id"));
-			record.put("search_type", bean.get("search_type"));
-			record.put("result_at", bean.get("result_at"));
+			record.put("result_type", bean.get("resultCategory"));
+			record.put("result_name", bean.get("name"));
+			record.put("result_id", bean.get("id"));
+			record.put("search_type", bean.get("type"));
+			record.put("result_at", Strings.nullToBlank(bean.get("location").toString()));
 			resultRecords.add(record);
 		}
 		

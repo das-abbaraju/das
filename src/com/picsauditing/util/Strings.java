@@ -23,7 +23,7 @@ import com.picsauditing.security.EncodedMessage;
 public class Strings {
 
 	public static final String EMPTY_STRING = "";
-	public static final String NEW_LINE = "\n";
+	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	private static final int NO_STRING_ESCAPE_STRATEGY = 0;
 	private static final int STRING_ESCAPE_STRATEGY = 1;
