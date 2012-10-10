@@ -151,4 +151,16 @@ public class ReportUserDAO extends PicsDAO {
 
 		return sql;
 	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void resetSortOrder(int userId) throws SQLException {
+		String sql = "UPDATE report_user t, (SELECT @row := 0) r " +
+				"SET sortOrder = @row := @row + 1 " +
+				"WHERE favorite = 1 " +
+				"AND userID = " + userId;
+
+		Database db = new Database();
+		db.executeUpdate(sql);
+	}
+
 }
