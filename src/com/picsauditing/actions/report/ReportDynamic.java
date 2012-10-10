@@ -18,6 +18,7 @@ import com.picsauditing.report.models.ModelType;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
+	
 	@Autowired
 	private ReportModel reportModel;
 	private Report report;
@@ -32,7 +33,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return save(false);
 	}
 
-	public String save(boolean copy) {
+	private String save(boolean copy) {
 		try {
 			if (copy)
 				report = reportModel.copy(report, permissions);
