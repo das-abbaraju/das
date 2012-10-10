@@ -38,7 +38,7 @@ p.subtitle {
 /*
  * Overrides for Default Buttons
  */
-/* line 114, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 113, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn {
   border-width: 1px;
   border-style: solid;
@@ -51,8 +51,6 @@ p.subtitle {
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$top_gradient_color, endColorstr=$bottom_gradient_color, GradientType=0);
   font-size: 14px;
   line-height: 20px;
   *margin-left: 0.3em;
@@ -65,9 +63,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
   background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
   background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc); }
+  background-image: linear-gradient(#f1f1f2, #dcdcdc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=#dcdcdc); }
 
-/* line 130, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 129, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn:hover {
   color: #333333;
   background: none;
@@ -75,9 +74,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
   background-image: -moz-linear-gradient(#f7f7f8, #ececec);
   background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec); }
+  background-image: linear-gradient(#f7f7f8, #ececec);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f7f7f8, endColorstr=#ececec); }
 
-/* line 140, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 139, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn.active,
 .btn:active {
   color: #333333;
@@ -86,12 +86,13 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd); }
+  background-image: linear-gradient(#dcdcdc, #cdcdcd);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#dcdcdc, endColorstr=#cdcdcd); }
 
 /*
  * Overrides for Primary Buttons
  */
-/* line 153, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 152, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-primary {
   border-color: #226396;
   text-shadow: 0px -1px 1px #226396;
@@ -101,9 +102,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#73bbe8, #226396);
   background-image: -moz-linear-gradient(#73bbe8, #226396);
   background-image: -o-linear-gradient(#73bbe8, #226396);
-  background-image: linear-gradient(#73bbe8, #226396); }
+  background-image: linear-gradient(#73bbe8, #226396);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73bbe8, endColorstr=#226396); }
 
-/* line 167, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 166, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-primary:hover {
   color: white;
   background: none;
@@ -111,9 +113,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
   background-image: -moz-linear-gradient(#60c9f3, #396cc9);
   background-image: -o-linear-gradient(#60c9f3, #396cc9);
-  background-image: linear-gradient(#60c9f3, #396cc9); }
+  background-image: linear-gradient(#60c9f3, #396cc9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#60c9f3, endColorstr=#396cc9); }
 
-/* line 177, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 176, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-primary.active,
 .btn-primary:active {
   color: white;
@@ -122,12 +125,13 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#336f9c, #09366f);
   background-image: -moz-linear-gradient(#336f9c, #09366f);
   background-image: -o-linear-gradient(#336f9c, #09366f);
-  background-image: linear-gradient(#336f9c, #09366f); }
+  background-image: linear-gradient(#336f9c, #09366f);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#336f9c, endColorstr=#09366f); }
 
 /*
  * Overrides for Warning Buttons
  */
-/* line 190, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 189, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-warning {
   border-color: #e67e1c;
   text-shadow: 0px -1px 1px #e67e1c;
@@ -137,9 +141,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
   background-image: -moz-linear-gradient(#fcc033, #e67e1c);
   background-image: -o-linear-gradient(#fcc033, #e67e1c);
-  background-image: linear-gradient(#fcc033, #e67e1c); }
+  background-image: linear-gradient(#fcc033, #e67e1c);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcc033, endColorstr=#e67e1c); }
 
-/* line 204, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 203, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-warning:hover {
   color: white;
   background: none;
@@ -147,9 +152,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#fcd100, #f1a300);
   background-image: -moz-linear-gradient(#fcd100, #f1a300);
   background-image: -o-linear-gradient(#fcd100, #f1a300);
-  background-image: linear-gradient(#fcd100, #f1a300); }
+  background-image: linear-gradient(#fcd100, #f1a300);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcd100, endColorstr=#f1a300); }
 
-/* line 214, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 213, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-warning.active,
 .btn-warning:active {
   color: white;
@@ -158,12 +164,13 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#ea9000, #d66000);
   background-image: -moz-linear-gradient(#ea9000, #d66000);
   background-image: -o-linear-gradient(#ea9000, #d66000);
-  background-image: linear-gradient(#ea9000, #d66000); }
+  background-image: linear-gradient(#ea9000, #d66000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ea9000, endColorstr=#d66000); }
 
 /*
  * Overrides for Info Buttons
  */
-/* line 227, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 226, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-info {
   border-color: #6ca6f6;
   text-shadow: 0px -1px 1px #6ca6f6;
@@ -173,9 +180,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
   background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
   background-image: -o-linear-gradient(#70cfff, #6ca6f6);
-  background-image: linear-gradient(#70cfff, #6ca6f6); }
+  background-image: linear-gradient(#70cfff, #6ca6f6);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#70cfff, endColorstr=#6ca6f6); }
 
-/* line 241, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 240, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-info:hover {
   color: white;
   background: none;
@@ -183,9 +191,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
   background-image: -moz-linear-gradient(#73ddff, #73d0f6);
   background-image: -o-linear-gradient(#73ddff, #73d0f6);
-  background-image: linear-gradient(#73ddff, #73d0f6); }
+  background-image: linear-gradient(#73ddff, #73d0f6);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73ddff, endColorstr=#73d0f6); }
 
-/* line 251, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 250, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-info.active,
 .btn-info:active {
   color: white;
@@ -194,12 +203,13 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
   background-image: -moz-linear-gradient(#55a9ff, #5599fc);
   background-image: -o-linear-gradient(#55a9ff, #5599fc);
-  background-image: linear-gradient(#55a9ff, #5599fc); }
+  background-image: linear-gradient(#55a9ff, #5599fc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#55a9ff, endColorstr=#5599fc); }
 
 /*
  * Overrides for Success Buttons
  */
-/* line 264, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 263, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-success {
   border-color: #229322;
   text-shadow: 0px -1px 1px #229322;
@@ -209,9 +219,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#33c033, #229322);
   background-image: -moz-linear-gradient(#33c033, #229322);
   background-image: -o-linear-gradient(#33c033, #229322);
-  background-image: linear-gradient(#33c033, #229322); }
+  background-image: linear-gradient(#33c033, #229322);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33c033, endColorstr=#229322); }
 
-/* line 278, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 277, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-success:hover {
   color: white;
   background: none;
@@ -219,9 +230,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#33d000, #25b000);
   background-image: -moz-linear-gradient(#33d000, #25b000);
   background-image: -o-linear-gradient(#33d000, #25b000);
-  background-image: linear-gradient(#33d000, #25b000); }
+  background-image: linear-gradient(#33d000, #25b000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33d000, endColorstr=#25b000); }
 
-/* line 288, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 287, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-success.active,
 .btn-success:active {
   color: white;
@@ -230,12 +242,13 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#299600, #1c7600);
   background-image: -moz-linear-gradient(#299600, #1c7600);
   background-image: -o-linear-gradient(#299600, #1c7600);
-  background-image: linear-gradient(#299600, #1c7600); }
+  background-image: linear-gradient(#299600, #1c7600);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#299600, endColorstr=#1c7600); }
 
 /*
  * Overrides for Danger Buttons
  */
-/* line 301, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 300, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-danger {
   border-color: #ac030c;
   text-shadow: 0px -1px 1px #ac030c;
@@ -245,9 +258,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#f6303c, #ac030c);
   background-image: -moz-linear-gradient(#f6303c, #ac030c);
   background-image: -o-linear-gradient(#f6303c, #ac030c);
-  background-image: linear-gradient(#f6303c, #ac030c); }
+  background-image: linear-gradient(#f6303c, #ac030c);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6303c, endColorstr=#ac030c); }
 
-/* line 315, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 314, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-danger:hover {
   color: white;
   background: none;
@@ -255,9 +269,10 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#f92626, #d00900);
   background-image: -moz-linear-gradient(#f92626, #d00900);
   background-image: -o-linear-gradient(#f92626, #d00900);
-  background-image: linear-gradient(#f92626, #d00900); }
+  background-image: linear-gradient(#f92626, #d00900);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f92626, endColorstr=#d00900); }
 
-/* line 325, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 324, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-danger.active,
 .btn-danger:active {
   color: white;
@@ -266,7 +281,8 @@ p.subtitle {
   background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
   background-image: -moz-linear-gradient(#c60c0c, #8c0600);
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
-  background-image: linear-gradient(#c60c0c, #8c0600); }
+  background-image: linear-gradient(#c60c0c, #8c0600);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#c60c0c, endColorstr=#8c0600); }
 
 /* Other Button Properties */
 /* line 3, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */

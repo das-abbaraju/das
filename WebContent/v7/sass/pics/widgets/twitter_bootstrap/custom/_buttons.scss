@@ -75,8 +75,6 @@ $danger_active_bottom_gradient_color:	#8c0600;
 	@include border-radius($universal_border_radius);
 	@include box-shadow($universal_box_shadow);
 	cursor: $universal_cursor;
-	filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=$top_gradient_color, endColorstr=$bottom_gradient_color, GradientType=0);
 	font-size: $universal_font_size;
 	line-height: $universal_line-height;
 	*margin-left: $universal_margin_left_ie6;
@@ -104,6 +102,7 @@ $danger_active_bottom_gradient_color:	#8c0600;
 	color: $text_color;
 	background: none;
 	@include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$top_gradient_color}, endColorstr=#{$bottom_gradient_color});
 }
 
 /*
