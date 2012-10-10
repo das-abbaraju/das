@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +27,6 @@ public class Strings {
 	private static final int NO_STRING_ESCAPE_STRATEGY = 0;
 	private static final int STRING_ESCAPE_STRATEGY = 1;
 	private static final int OBJECT_TO_STRING_ESCAPE_STRATEGY = 2;
-
-	public static final String DANGEROUS_HTML_CHARACTERS = "<>\"'%;)(&+";
 
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
 
@@ -298,30 +295,6 @@ public class Strings {
 		}
 
 		return buffer.toString();
-	}
-
-	public static String sanitizeRequestLocale(String userSpecifiedLocale) {
-		String validLocale = Locale.ENGLISH.toString();
-
-		if (StringUtils.isNotEmpty(userSpecifiedLocale) && !containsDangerousHtmlCharacters(userSpecifiedLocale)) {
-			validLocale = userSpecifiedLocale;
-		}
-
-		return validLocale;
-	}
-
-	public static String sanitizeUserInput(String unsanitizedString) {
-		if (unsanitizedString == null)
-			return "";
-
-		return unsanitizedString.replaceAll("[" + DANGEROUS_HTML_CHARACTERS + "]", "");
-	}
-
-	public static boolean containsDangerousHtmlCharacters(String unsanitizedString) {
-		if (unsanitizedString == null)
-			return false;
-
-		return unsanitizedString.matches(".*[" + DANGEROUS_HTML_CHARACTERS + "].*");
 	}
 
 	public static Map<String, String> mapParams(String params) {

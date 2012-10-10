@@ -7,10 +7,12 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -973,6 +975,26 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 
 		return helpUrl;
+	}
+
+	public String getChatUrl() {
+		String protocol = getRequest().getProtocol();
+		Locale locale = TranslationActionSupport.getLocaleStatic();
+
+		// We're using a whitelist strategy because we don't want to pass junk downstream
+		String language = Locale.ENGLISH.getDisplayLanguage();
+		if (LocaleController.isLocaleValid(locale)) {
+			language = locale.getDisplayLanguage();
+		}
+
+		String chatUrl = protocol + "://server.iad.liveperson.net/hc/90511184/" +
+	    "?cmd=file" +
+	    "&amp;file=visitorWantsToChat" +
+	    "&amp;site=90511184" +
+	    "&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
+	    "&amp;referrer=";
+
+		return chatUrl;
 	}
 
 	public String getActionName() {

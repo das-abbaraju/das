@@ -1,5 +1,7 @@
 package com.picsauditing.util;
 
+import static org.junit.Assert.*;
+
 import java.util.Locale;
 
 import org.junit.Assert;
@@ -12,7 +14,7 @@ public class LocaleControllerTest {
 
 	@Test
 	public void testKoreanFallbackToEnglish() throws Exception {
-		Assert.assertEquals(Locale.ENGLISH, LocaleController.getNearestSupportedLocale(Locale.KOREAN));
+		assertEquals(Locale.ENGLISH, LocaleController.getNearestSupportedLocale(Locale.KOREAN));
 	}
 
 	@Test
@@ -20,11 +22,27 @@ public class LocaleControllerTest {
 		Permissions permissions = EntityFactory.makePermission();
 		permissions.setLocale(Locale.CANADA_FRENCH);
 		LocaleController.setLocaleOfNearestSupported(permissions);
-		Assert.assertEquals(Locale.CANADA_FRENCH, permissions.getLocale());
+
+		assertEquals(Locale.CANADA_FRENCH, permissions.getLocale());
 	}
 
 	@Test
 	public void testUSEnglish() throws Exception {
-		Assert.assertEquals(Locale.US, LocaleController.getNearestSupportedLocale(Locale.US));
+		assertEquals(Locale.US, LocaleController.getNearestSupportedLocale(Locale.US));
+	}
+
+	@Test
+	public void testgetValidLocale_sameLocaleIfValid() {
+		assertEquals(Locale.FRENCH, LocaleController.getValidLocale(new Locale("fr")));
+	}
+
+	@Test
+	public void testgetValidLocale_defaultsToEnglishIfEmpty() {
+		assertEquals(Locale.ENGLISH, LocaleController.getValidLocale(new Locale("")));
+	}
+
+	@Test
+	public void testSanitizeLocale_defaultsToEnglishIfInvalidLocale() {
+		assertEquals(Locale.ENGLISH, LocaleController.getValidLocale(new Locale("NOT_A_VALID_LOCALE")));
 	}
 }

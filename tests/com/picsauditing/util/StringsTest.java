@@ -63,38 +63,6 @@ public class StringsTest  {
 	}
 
 	@Test
-	public void testSanitizeLocale_defaultsToEnglishIfEmpty() {
-		assertEquals(Locale.ENGLISH.toString(), Strings.sanitizeRequestLocale(""));
-	}
-
-	@Test
-	public void testSanitizeLocale_defaultsToEnglishIfContainsDangerousCharacters() {
-		assertEquals(Locale.ENGLISH.toString(), Strings.sanitizeRequestLocale(Strings.DANGEROUS_HTML_CHARACTERS));
-	}
-
-	@Test
-	public void testSanitizeUserInput_removesDangerousCharacters() {
-		String unsanitizedInput = "<>a%b&c;_\"1'2+3()";
-		String sanitizedInput = Strings.sanitizeUserInput(unsanitizedInput);
-
-		assertEquals("abc_123", sanitizedInput);
-	}
-
-	@Test
-	public void testContainsDangerousHtmlCharacters_falseIfNoDangerousCharacters() {
-		String safeString = "Superman_Construction LTD.";
-
-		assertFalse(Strings.containsDangerousHtmlCharacters(safeString));
-	}
-
-	@Test
-	public void testContainsDangerousHtmlCharacters_trueIfDangerousCharacters() {
-		String maliciousString = "\" onmouseover=\"alert('YOUVE BEEN HACKED!');\"";
-
-		assertTrue(Strings.containsDangerousHtmlCharacters(maliciousString));
-	}
-
-	@Test
 	public void testMapParams() {
 		String url = "response=3&responsetext=Invalid Customer Vault Id REFID:101460773&authcode=&transactionid=0&avsresponse=&cvvresponse=&orderid=123&type=sale&response_code=300&customer_vault_id=0";
 		Map<String, String> map = Strings.mapParams(url);
