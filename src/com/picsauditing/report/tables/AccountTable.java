@@ -18,17 +18,14 @@ public class AccountTable extends AbstractTable {
 
 		Field accountName = getField("NAME");
 		{
-			String dbaName = ReportOnClause.ToAlias + ".dbaName";
-			String aName = ReportOnClause.ToAlias + ".name";
+			String dbaName = "TRIM(" + ReportOnClause.ToAlias + ".dbaName)";
+			String aName = "TRIM(" + ReportOnClause.ToAlias + ".name)";
 			SelectCase sCase = new SelectCase();
 			sCase.addCondition(dbaName + " IS NULL", aName);
 			sCase.addCondition(dbaName + " = ''", aName);
 			sCase.setElse(dbaName);
 			accountName.setDatabaseColumnName(sCase.toString());
 		}
-		// TODO Change the URL depending on the model
-		// Maybe we should pass in the URL when we create the table ??
-		accountName.setUrl("ContractorView.action?id={AccountID}");
 
 		Field accountLegalName = new Field("LegalName", "name", FieldType.String);
 		accountLegalName.setImportance(FieldImportance.Average);

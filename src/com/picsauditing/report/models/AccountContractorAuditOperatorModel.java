@@ -1,9 +1,11 @@
 package com.picsauditing.report.models;
 
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.Filter;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.ContractorAuditOperatorTable;
 import com.picsauditing.report.tables.ContractorAuditTable;
 import com.picsauditing.report.tables.ContractorTable;
@@ -61,7 +63,12 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 		super.getWhereClause(filters);
 		permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
 
-		String where = permissionQueryBuilder.buildWhereClause() + " AND AuditOperator.visible = 1";
+		String where = permissionQueryBuilder.buildWhereClause();
+		
+		if (!where.isEmpty())
+			where += " AND ";
+		
+		where += "AuditOperator.visible = 1";
 
 		if (permissions.isOperatorCorporate()) {
 			// TODO: This looks like it can be further improved. Find a way to
@@ -77,5 +84,13 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 		}
 
 		return where;
+	}
+
+	@Override
+	public Map<String, Field> getAvailableFields() {
+		Map<String, Field> fields = super.getAvailableFields();
+		Field accountName = fields.get("AccountName".toUpperCase());
+		accountName.setUrl("ContractorView.action?id={AccountID}");
+		return fields;
 	}
 }

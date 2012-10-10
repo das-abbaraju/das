@@ -1,10 +1,12 @@
 package com.picsauditing.report.models;
 
 import java.util.List;
+import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.Filter;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldCategory;
@@ -59,5 +61,13 @@ public class AccountContractorModel extends AbstractModel {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public Map<String, Field> getAvailableFields() {
+		Map<String, Field> fields = super.getAvailableFields();
+		Field accountName = fields.get("AccountName".toUpperCase());
+		accountName.setUrl("ContractorView.action?id={AccountID}");
+		return fields;
 	}
 }
