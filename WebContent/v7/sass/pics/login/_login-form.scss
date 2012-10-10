@@ -9,7 +9,7 @@
         color: #666;
         display: inline-block;
         font-size: 13px;
-        margin-top: 100px;
+        margin-top: 50px;
         padding: 40px;
         text-align: left;
     }
@@ -34,11 +34,13 @@
 
 #login_form
 {
-    h2
+    @include box-shadow(#131313 0px 2px 8px);
+
+    h1
     {
         background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
         height: 78px;
-        margin: 0px auto 50px auto;
+        margin: 0px auto 30px auto;
         width: 287px;
     }
 
@@ -52,30 +54,11 @@
         padding-right: 40px;
     }
 
-    .form-horizontal .controls
-    {
-        margin-left: 0px;
-    }
-
-    .form-horizontal .control-label
-    {
-        width: auto;
-    }
-
-    .form-horizontal #update_language
-    {
-        margin-bottom: 9px;
-    }
-
-    .form-horizontal #update_language .control-label
-    {
-        padding-right: 10px;
-    }
-
     .icon-globe
     {
         color: #666;
         font-size: 20px;
+        margin-right: 5px;
         text-align: right;
         vertical-align: middle;
     }
@@ -83,6 +66,11 @@
     #user_fields
     {
         margin-left: 26px;
+    }
+
+    #user_fields label
+    {
+        margin-top: 10px;
     }
 
     #user_fields .password
@@ -113,10 +101,9 @@
         margin: 0px 0px 10px 26px;
     }
 
-    #remember_me label
+    #remember_me .checkbox input[type="checkbox"]
     {
-        display: inline-block;
-        padding-left: 5px;
+        margin-right: 6px;
     }
 
     .form-actions

@@ -6,19 +6,19 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
+/* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
 .page-header {
   border: 0px;
   margin: 18px 0px;
   padding: 0px; }
 
-/* line 9, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
+/* line 9, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
 h1.title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal; }
 
-/* line 16, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
+/* line 16, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/core/_core.scss */
 p.subtitle {
   color: #808285;
   font-size: 14px;
@@ -27,18 +27,18 @@ p.subtitle {
   margin: 0px; }
 
 @media (max-width: 767px) {
-  /* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
+  /* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
   body {
     padding: 0px; }
 
-  /* line 6, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
+  /* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/layout/_layout.scss */
   .container-fluid {
     padding-right: 20px;
     padding-left: 20px; } }
 /*
  * Overrides for Default Buttons
  */
-/* line 113, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 113, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn {
   border-width: 1px;
   border-style: solid;
@@ -66,7 +66,7 @@ p.subtitle {
   background-image: linear-gradient(#f1f1f2, #dcdcdc);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=#dcdcdc); }
 
-/* line 129, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 129, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn:hover {
   color: #333333;
   background: none;
@@ -77,7 +77,7 @@ p.subtitle {
   background-image: linear-gradient(#f7f7f8, #ececec);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f7f7f8, endColorstr=#ececec); }
 
-/* line 139, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 139, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn.active,
 .btn:active {
   color: #333333;
@@ -92,7 +92,7 @@ p.subtitle {
 /*
  * Overrides for Primary Buttons
  */
-/* line 152, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 152, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-primary {
   border-color: #226396;
   text-shadow: 0px -1px 1px #226396;
@@ -105,7 +105,7 @@ p.subtitle {
   background-image: linear-gradient(#73bbe8, #226396);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73bbe8, endColorstr=#226396); }
 
-/* line 166, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 166, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-primary:hover {
   color: white;
   background: none;
@@ -116,7 +116,7 @@ p.subtitle {
   background-image: linear-gradient(#60c9f3, #396cc9);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#60c9f3, endColorstr=#396cc9); }
 
-/* line 176, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 176, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-primary.active,
 .btn-primary:active {
   color: white;
@@ -131,7 +131,7 @@ p.subtitle {
 /*
  * Overrides for Warning Buttons
  */
-/* line 189, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 189, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-warning {
   border-color: #e67e1c;
   text-shadow: 0px -1px 1px #e67e1c;
@@ -144,7 +144,7 @@ p.subtitle {
   background-image: linear-gradient(#fcc033, #e67e1c);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcc033, endColorstr=#e67e1c); }
 
-/* line 203, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 203, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-warning:hover {
   color: white;
   background: none;
@@ -155,7 +155,7 @@ p.subtitle {
   background-image: linear-gradient(#fcd100, #f1a300);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcd100, endColorstr=#f1a300); }
 
-/* line 213, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 213, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-warning.active,
 .btn-warning:active {
   color: white;
@@ -170,7 +170,7 @@ p.subtitle {
 /*
  * Overrides for Info Buttons
  */
-/* line 226, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 226, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-info {
   border-color: #6ca6f6;
   text-shadow: 0px -1px 1px #6ca6f6;
@@ -183,7 +183,7 @@ p.subtitle {
   background-image: linear-gradient(#70cfff, #6ca6f6);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#70cfff, endColorstr=#6ca6f6); }
 
-/* line 240, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 240, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-info:hover {
   color: white;
   background: none;
@@ -194,7 +194,7 @@ p.subtitle {
   background-image: linear-gradient(#73ddff, #73d0f6);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73ddff, endColorstr=#73d0f6); }
 
-/* line 250, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 250, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-info.active,
 .btn-info:active {
   color: white;
@@ -209,7 +209,7 @@ p.subtitle {
 /*
  * Overrides for Success Buttons
  */
-/* line 263, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 263, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-success {
   border-color: #229322;
   text-shadow: 0px -1px 1px #229322;
@@ -222,7 +222,7 @@ p.subtitle {
   background-image: linear-gradient(#33c033, #229322);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33c033, endColorstr=#229322); }
 
-/* line 277, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 277, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-success:hover {
   color: white;
   background: none;
@@ -233,7 +233,7 @@ p.subtitle {
   background-image: linear-gradient(#33d000, #25b000);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33d000, endColorstr=#25b000); }
 
-/* line 287, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 287, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-success.active,
 .btn-success:active {
   color: white;
@@ -248,7 +248,7 @@ p.subtitle {
 /*
  * Overrides for Danger Buttons
  */
-/* line 300, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 300, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-danger {
   border-color: #ac030c;
   text-shadow: 0px -1px 1px #ac030c;
@@ -261,7 +261,7 @@ p.subtitle {
   background-image: linear-gradient(#f6303c, #ac030c);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6303c, endColorstr=#ac030c); }
 
-/* line 314, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 314, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-danger:hover {
   color: white;
   background: none;
@@ -272,7 +272,7 @@ p.subtitle {
   background-image: linear-gradient(#f92626, #d00900);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f92626, endColorstr=#d00900); }
 
-/* line 324, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 324, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
 .btn-danger.active,
 .btn-danger:active {
   color: white;
@@ -285,17 +285,17 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#c60c0c, endColorstr=#8c0600); }
 
 /* Other Button Properties */
-/* line 3, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 3, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn:first-child {
   *margin-left: 0; }
 
-/* line 7, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 7, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn:focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
-/* line 13, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 13, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn.disabled, .btn[disabled] {
   cursor: default;
   background-image: none;
@@ -306,7 +306,7 @@ p.subtitle {
   -moz-box-shadow: none;
   box-shadow: none; }
 
-/* line 24, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 24, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-large {
   padding: 9px 14px;
   font-size: 15px;
@@ -315,46 +315,46 @@ p.subtitle {
   -moz-border-radius: 5px;
   border-radius: 5px; }
 
-/* line 33, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 33, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-large .icon {
   margin-top: 1px; }
 
-/* line 37, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 37, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-small {
   padding: 5px 9px;
   font-size: 11px;
   line-height: 16px; }
 
-/* line 43, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 43, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-small .icon {
   margin-top: -1px; }
 
-/* line 48, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 48, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-primary.disabled,
 .btn-primary[disabled] {
   background-color: #226396; }
 
-/* line 53, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 53, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-danger.disabled,
 .btn-danger[disabled] {
   background-color: #ac030c; }
 
-/* line 55, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 55, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-danger:active, .btn-danger.active {
   background-color: #942a25 \9; }
 
-/* line 60, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 60, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-success.disabled,
 .btn-success[disabled] {
   background-color: #229322; }
 
-/* line 65, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 65, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-info.disabled,
 .btn-info[disabled] {
   background-color: #6ca6f6; }
 
 /* Label Overrides */
-/* line 71, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 71, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .label {
   padding: 2px 4px 2px;
   font-size: 9px;
@@ -366,24 +366,24 @@ p.subtitle {
   -moz-border-radius: 3px;
   border-radius: 3px; }
 
-/* line 83, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 83, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .label-important {
   background-color: #229322; }
 
-/* line 87, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 87, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .label-warning {
   background-color: #e67e1c; }
 
-/* line 91, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 91, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .label-success {
   background-color: #ac030c; }
 
-/* line 95, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 95, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .label-info {
   background-color: #226396; }
 
 /* Alert Overrides */
-/* line 101, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 101, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert {
   padding: 8px 36px 8px 16px;
   margin-bottom: 18px;
@@ -394,66 +394,66 @@ p.subtitle {
   -moz-border-radius: 4px;
   border-radius: 4px; }
 
-/* line 112, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 112, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert, .alert-heading {
   color: #e67e1c; }
 
-/* line 116, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 116, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert .close {
   position: relative;
   top: -2px;
   right: -21px;
   line-height: 18px; }
 
-/* line 123, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 123, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-success {
   background-color: #acf5ac;
   border-color: #229322; }
 
-/* line 128, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 128, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-success, .alert-success .alert-heading {
   color: #229322; }
 
-/* line 132, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 132, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-danger, .alert-error {
   background-color: #ffc6c9;
   border-color: #ff969c; }
 
-/* line 140, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 140, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-danger,
 .alert-error,
 .alert-danger .alert-heading,
 .alert-error .alert-heading {
   color: #ac030c; }
 
-/* line 144, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 144, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-info {
   background-color: #c3f0f9;
   border-color: #226396; }
 
-/* line 149, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 149, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-info, .alert-info .alert-heading {
   color: #226396; }
 
-/* line 153, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 153, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-block {
   padding-top: 14px;
   padding-bottom: 14px; }
 
-/* line 158, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 158, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-block > p, .alert-block > ul {
   margin-bottom: 0; }
 
-/* line 162, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 162, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .alert-block p + p {
   margin-top: 5px; }
 
-/* line 167, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
+/* line 167, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
 .btn-warning.disabled,
 .btn-warning[disabled] {
   background-color: #e67e1c; }
 
-/* line 4, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_dropdown.scss */
+/* line 4, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_dropdown.scss */
 .dropdown-menu li > a:hover,
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
@@ -464,13 +464,13 @@ p.subtitle {
   background-image: -o-linear-gradient(#c66603, #a84d10);
   background-image: linear-gradient(#c66603, #a84d10); }
 
-/* line 3, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_pagination.scss */
+/* line 3, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_pagination.scss */
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
   line-height: 28px;
   width: auto; }
 
-/* line 9, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_pagination.scss */
+/* line 9, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_pagination.scss */
 .pagination a {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
@@ -479,16 +479,16 @@ p.subtitle {
   background-image: linear-gradient(#f1f1f2, #dcdcdc);
   color: #333; }
 
-/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
 .nav-tabs {
   border-color: #ccc; }
 
-/* line 7, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 7, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
 .nav-tabs > li {
   margin-left: 5px;
   margin-right: 5px; }
 
-/* line 13, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 13, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
 .nav-tabs > li > a {
   background: #eaeaea;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #eaeaea));
@@ -502,7 +502,7 @@ p.subtitle {
   padding-bottom: 13px;
   padding-top: 13px; }
 
-/* line 24, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 24, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
 .nav-tabs > li > a:hover {
   background: #f1f1f2;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
@@ -512,7 +512,7 @@ p.subtitle {
   background-image: linear-gradient(#ffffff, #f1f1f2);
   border-color: #ccc #ccc #ccc; }
 
-/* line 32, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 32, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/widgets/twitter_bootstrap/_tabs.scss */
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover {
   background: #fff;
@@ -529,25 +529,25 @@ p.subtitle {
  * @author: Carey Hinoki
  * @date: 2012-07-10
  */
-/* line 6, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
 .ManageAppProperty-page #app_property_list .name {
   width: 20%; }
-/* line 11, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 11, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
 .ManageAppProperty-page #app_property_list .value {
   width: 70%; }
-/* line 16, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 16, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
 .ManageAppProperty-page #app_property_list .actions {
   width: 10%; }
-/* line 21, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 21, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
 .ManageAppProperty-page #app_property_list .value p {
   width: 400px;
   word-wrap: break-word; }
-/* line 31, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 31, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
 .ManageAppProperty-page #app_property_edit_form .form-actions,
 .ManageAppProperty-page #app_property_create_form .form-actions {
   text-align: right;
   width: 220px; }
-/* line 37, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
+/* line 37, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/app_property/_app_property.scss */
 .ManageAppProperty-page #app_property_edit_form .form-actions .btn,
 .ManageAppProperty-page #app_property_create_form .form-actions .btn {
   margin-left: 10px; }
@@ -555,7 +555,7 @@ p.subtitle {
 /*
  * Manage Report Controller
  */
-/* line 6, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+/* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
 .ManageReports-page {
   /*
    * Menu
@@ -575,22 +575,22 @@ p.subtitle {
   {
   	display: inline;
   }*/ }
-  /* line 11, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 11, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu_container {
     border-bottom: 1px solid #CCC;
     margin: 0px auto 20px;
     text-align: center;
     width: 60%; }
-  /* line 19, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 19, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page #manage_report_menu {
     display: inline-block;
     bottom: -5px;
     margin: 0px;
     position: relative; }
-  /* line 27, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 27, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .lt-ie8 #manage_report_menu {
     display: inline; }
-  /* line 36, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 36, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page h3 {
     color: #999;
     font-size: 14px;
@@ -599,13 +599,13 @@ p.subtitle {
     line-height: 18px;
     margin-bottom: 35px;
     text-align: center; }
-  /* line 51, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 51, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .report-list {
     list-style: none;
     margin: 0px auto 20px;
     text-align: left;
     width: 60%; }
-    /* line 58, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 58, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .report {
       background: #f1f1f2;
       border: 1px solid #ccc;
@@ -615,56 +615,56 @@ p.subtitle {
       -o-border-radius: 3px;
       border-radius: 3px;
       margin-bottom: 2px; }
-    /* line 66, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 66, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .favorite {
       line-height: normal;
       float: left;
       margin: 8px 5px 0px;
       text-decoration: none; }
-    /* line 74, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 74, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .icon-star {
       color: #ccc;
       font-size: 12px; }
-    /* line 80, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 80, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .icon-star.selected {
       color: #a84d10; }
-    /* line 85, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 85, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .summary {
       float: left;
       margin-right: 10px; }
-    /* line 91, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 91, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .name {
       color: #333;
       float: left;
       font-size: 13px;
       line-height: 30px;
       margin: 0px 10px 0px 0px; }
-    /* line 100, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 100, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .created-by {
       color: #999;
       font-size: 10px;
       font-style: italic;
       line-height: 30px;
       white-space: nowrap; }
-    /* line 109, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 109, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .description {
       max-width: 400px; }
-    /* line 114, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 114, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options {
       border-left: 1px solid #ccc;
       float: right;
       height: 30px;
       padding: 0px 5px; }
-      /* line 121, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      /* line 121, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
       .ManageReports-page .report-list .options:hover {
         background: #eaeaea; }
-    /* line 127, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 127, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options.open {
       background: #ccc; }
-      /* line 131, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+      /* line 131, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
       .ManageReports-page .report-list .options.open:hover {
         background: #ccc; }
-    /* line 137, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+    /* line 137, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
     .ManageReports-page .report-list .options .dropdown-toggle {
       color: #999;
       -webkit-border-radius: 0px;
@@ -677,47 +677,47 @@ p.subtitle {
       box-shadow: none;
       line-height: 30px;
       text-decoration: none; }
-  /* line 147, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 147, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .lt-ie8 .report-list {
     display: inline; }
-  /* line 152, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
+  /* line 152, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_manage.scss */
   .ManageReports-page .pagination {
     margin-bottom: 30px; }
 
 /*
  * My Reports
  */
-/* line 8, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-my-reports.scss */
+/* line 8, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-my-reports.scss */
 #ManageReports_myReportsList_page #my_reports_filter {
   margin: 0px 0px 20px;
   text-align: center; }
-/* line 14, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-my-reports.scss */
+/* line 14, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-my-reports.scss */
 #ManageReports_myReportsList_page #my_reports_filter .btn-group {
   display: inline-block; }
-/* line 19, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-my-reports.scss */
+/* line 19, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-my-reports.scss */
 #ManageReports_myReportsList_page .lt-ie8 #my_reports_filter .btn-group {
   display: inline; }
 
 /*
  * Favorites
  */
-/* line 6, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
+/* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
 #ManageReports_favoritesList_page {
  	/*
 	 * Excluded Reports
 	 */ }
-  /* line 12, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
+  /* line 12, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
   #ManageReports_favoritesList_page #report_favorites_list_excluded {
     margin: 0px auto;
     width: 60%; }
-    /* line 17, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
+    /* line 17, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
     #ManageReports_favoritesList_page #report_favorites_list_excluded h1 {
       border-bottom: 1px solid #ccc;
       color: #999;
       font-size: 18px;
       margin-bottom: 30px;
       text-align: left; }
-    /* line 26, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
+    /* line 26, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_list-favorites.scss */
     #ManageReports_favoritesList_page #report_favorites_list_excluded p {
       color: #999;
       font-size: 12px;
@@ -726,26 +726,26 @@ p.subtitle {
 /*
  * Search
  */
-/* line 6, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+/* line 6, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
 #ManageReports_searchList_page {
   /*
    * Search box
    */ }
-  /* line 12, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 12, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page #report_search {
     margin: 30px 0px 0px;
     text-align: center; }
-  /* line 18, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 18, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page #report_search_form {
     display: inline-block;
     margin: 0px 0px 35px; }
-    /* line 23, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+    /* line 23, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
     #ManageReports_searchList_page #report_search_form .icon-search {
       color: #666;
       position: relative;
       right: 2px;
       top: 8px; }
-    /* line 31, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+    /* line 31, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
     #ManageReports_searchList_page #report_search_form input {
       background: #f1f1f2;
       color: #999;
@@ -755,137 +755,133 @@ p.subtitle {
       -ms-border-radius: 20px;
       -o-border-radius: 20px;
       border-radius: 20px; }
-  /* line 40, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 40, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page .lt-ie8 #report_search_form {
     display: inline; }
-  /* line 47, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 47, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page .report-list .report {
     padding: 0px 20px; }
-  /* line 52, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 52, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page .report-list .summary {
     padding-top: 7px; }
-  /* line 58, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 58, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page .report-list .name,
   #ManageReports_searchList_page .report-list .created-by {
     line-height: 18px; }
-  /* line 63, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
+  /* line 63, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/templates/report/_search.scss */
   #ManageReports_searchList_page .report-list .number-favorites {
     color: #a84d10;
     font-size: 12px;
     float: right;
     margin: 18px 0px; }
 
-/* line 4, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/contractor-edit/_contractor-edit.scss */
+/* line 4, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/contractor-edit/_contractor-edit.scss */
 .ContractorEdit-page #vat_wrapper {
   display: none; }
 
-/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 #Login__page {
   background: #454545;
   text-align: center; }
-  /* line 7, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  /* line 7, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
   #Login__page .well {
     background: #F1F1F2;
     color: #666;
     display: inline-block;
     font-size: 13px;
-    margin-top: 100px;
+    margin-top: 50px;
     padding: 40px;
     text-align: left; }
-  /* line 18, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  /* line 18, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
   #Login__page #registration_link {
     color: #CCC;
     text-decoration: none; }
-  /* line 24, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  /* line 24, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
   #Login__page #registration_link:hover {
     color: #73BBE8; }
 
-/* line 30, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 30, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .lt-ie8 #Login__page #login_form {
   display: inline;
   width: 304px; }
 
-/* line 38, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form h2 {
-  background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
-  height: 78px;
-  margin: 0px auto 50px auto;
-  width: 287px; }
-/* line 46, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .alert {
-  width: 225px; }
-/* line 51, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form fieldset {
-  padding-right: 40px; }
-/* line 56, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .form-horizontal .controls {
-  margin-left: 0px; }
-/* line 61, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .form-horizontal .control-label {
-  width: auto; }
-/* line 66, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .form-horizontal #update_language {
-  margin-bottom: 9px; }
-/* line 71, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .form-horizontal #update_language .control-label {
-  padding-right: 10px; }
-/* line 76, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .icon-globe {
-  color: #666;
-  font-size: 20px;
-  text-align: right;
-  vertical-align: middle; }
-/* line 84, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #user_fields {
-  margin-left: 26px; }
-/* line 89, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #user_fields .password {
-  margin-bottom: 2px; }
-/* line 94, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #forgotPassword {
-  margin-bottom: 5px;
-  text-align: right; }
-/* line 100, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #forgotPassword a {
-  color: #666;
-  font-size: 11px;
-  text-decoration: none; }
-/* line 107, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #forgotPassword a:hover {
-  color: #226396; }
-/* line 112, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #remember_me {
-  margin: 0px 0px 10px 26px; }
-/* line 117, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #remember_me label {
-  display: inline-block;
-  padding-left: 5px; }
-/* line 123, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form .form-actions {
-  background: none;
-  border: none;
-  margin: 0px;
-  padding: 0px;
-  text-align: right; }
-/* line 132, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
-#login_form #cancel_btn {
-  display: none; }
+/* line 36, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+#login_form {
+  -webkit-box-shadow: #131313 0px 2px 8px;
+  -moz-box-shadow: #131313 0px 2px 8px;
+  box-shadow: #131313 0px 2px 8px; }
+  /* line 40, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form h1 {
+    background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
+    height: 78px;
+    margin: 0px auto 30px auto;
+    width: 287px; }
+  /* line 48, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form .alert {
+    width: 225px; }
+  /* line 53, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form fieldset {
+    padding-right: 40px; }
+  /* line 58, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form .icon-globe {
+    color: #666;
+    font-size: 20px;
+    margin-right: 5px;
+    text-align: right;
+    vertical-align: middle; }
+  /* line 67, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #user_fields {
+    margin-left: 26px; }
+  /* line 72, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #user_fields label {
+    margin-top: 10px; }
+  /* line 77, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #user_fields .password {
+    margin-bottom: 2px; }
+  /* line 82, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #forgotPassword {
+    margin-bottom: 5px;
+    text-align: right; }
+  /* line 88, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #forgotPassword a {
+    color: #666;
+    font-size: 11px;
+    text-decoration: none; }
+  /* line 95, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #forgotPassword a:hover {
+    color: #226396; }
+  /* line 100, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #remember_me {
+    margin: 0px 0px 10px 26px; }
+  /* line 105, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #remember_me .checkbox input[type="checkbox"] {
+    margin-right: 6px; }
+  /* line 110, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form .form-actions {
+    background: none;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    text-align: right; }
+  /* line 119, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+  #login_form #cancel_btn {
+    display: none; }
 
 /*** Login Modal Styling ***/
-/* line 140, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 127, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form {
   left: 55%; }
 
-/* line 145, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 132, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form h2 {
   display: none; }
 
-/* line 150, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 137, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form > .modal-header {
   background-color: #454545;
   text-align: left; }
 
-/* line 156, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 143, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form > .modal-header > h3 {
   color: #FFF;
   font-size: 18px;
@@ -895,7 +891,7 @@ p.subtitle {
   margin-bottom: 0px;
   text-align: left; }
 
-/* line 167, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 154, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form > .modal-header > .close {
   color: #666;
   cursor: pointer;
@@ -904,11 +900,11 @@ p.subtitle {
   opacity: 1;
   text-shadow: none; }
 
-/* line 177, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 164, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form > .modal-header > .close:hover {
   color: #999; }
 
-/* line 182, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 169, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .modal-body {
   background: #EAEAEA;
   color: #666;
@@ -916,59 +912,59 @@ p.subtitle {
   text-align: left;
   padding: 10px 15px 0px 15px; }
 
-/* line 191, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 178, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .well {
   background: none;
   border: none;
   box-shadow: none;
   padding: 0px; }
 
-/* line 199, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 186, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .control-group {
   padding-right: 25px; }
 
-/* line 204, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 191, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form #control_password {
   margin-bottom: 0px; }
 
-/* line 209, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 196, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .control-label {
   width: 100px; }
 
-/* line 214, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 201, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .controls {
   margin-left: 109px; }
 
-/* line 219, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 206, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .icon-globe {
   color: #666;
   font-size: 20px;
   text-align: right;
   vertical-align: middle; }
 
-/* line 229, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 216, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form select,
 .modal-login-form input[type="text"],
 .modal-login-form input[type="password"] {
   width: 200px; }
 
-/* line 234, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 221, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form #forgotPassword {
   margin: 10px 0px 5px 0px;
   padding: 0px 25px;
   text-align: right; }
 
-/* line 241, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 228, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form #forgotPassword a {
   color: #666;
   font-size: 12px;
   text-decoration: none; }
 
-/* line 248, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 235, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form #forgotPassword a:hover {
   color: #226396; }
 
-/* line 253, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 240, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .form-actions {
   background: none;
   border: none;
@@ -976,52 +972,52 @@ p.subtitle {
   padding: 0px;
   text-align: right; }
 
-/* line 262, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 249, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .btn-primary {
   margin-left: 6px; }
 
-/* line 267, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
+/* line 254, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_login-form.scss */
 .modal-login-form .modal-footer {
   display: none; }
 
-/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+/* line 2, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
 #Login__page {
   /* article title */
   /* article preview */ }
-  /* line 4, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 4, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page #newsfeed_wrapper {
     margin-bottom: 48px;
     margin-top: 96px; }
-  /* line 10, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 10, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page #newsfeed {
     display: inline-block;
     float: none; }
-  /* line 16, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 16, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssFeed {
     margin-left: 5px;
     float: left; }
-  /* line 22, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 22, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssFeed a {
     text-decoration: none; }
-  /* line 27, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 27, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssFeed a:hover {
     text-decoration: underline; }
-  /* line 32, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 32, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssHeader {
     padding: 0.2em 0;
     font-size: 20px;
     color: #6BA3C6;
     text-align: center; }
-  /* line 40, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 40, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssHeader a {
     color: #73BBE8; }
-  /* line 45, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 45, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssHeader a:hover {
     color: #73BBE8; }
-  /* line 50, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 50, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssBody ul {
     list-style: none; }
-  /* line 58, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 58, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssBody ul,
   #Login__page .rssRow,
   #Login__page .rssRow h4,
@@ -1029,43 +1025,43 @@ p.subtitle {
     margin: 0px;
     padding: 0px;
     line-height: 16px; }
-  /* line 64, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 64, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow {
     padding: 10px;
     border-bottom: 1px solid #373737; }
-  /* line 70, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 70, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow:last-of-type {
     border-bottom-style: none; }
-  /* line 74, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 74, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow .title-date-wrapper {
     width: 100%; }
-  /* line 78, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 78, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow h4 {
     float: left; }
-  /* line 83, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 83, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow h4 a {
     color: #CCC;
     font-size: 14px; }
-  /* line 89, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 89, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow div .pub-date {
     font-size: 10px;
     font-style: italic; }
-  /* line 95, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 95, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow div {
     color: #CCC;
     float: right; }
-  /* line 101, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 101, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow p {
     clear: both;
     color: #999;
     font-size: 13px;
     text-align: left; }
-  /* line 109, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+  /* line 109, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
   #Login__page .rssRow .rssMedia {
     padding: 0.5em;
     font-size: 12px; }
 
-/* line 116, C:/Users/JRoos/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
+/* line 116, C:/Users/JBrownell/git/PICSORG/WebContent/v7/sass/pics/login/_newsfeed.scss */
 .lt-ie8 #Login__page #newsfeed {
   display: inline;
   width: 600px; }
