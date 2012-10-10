@@ -8,54 +8,59 @@
 <%-- URL --%>
 <s:url action="Login.action" var="loginform" />
 
-<s:form cssClass="form-login well" action="%{#loginform}" name="login_form" id="login_form">
-    <input type="hidden" name="button" value="Login" />
-    
-<%-- grab the switchToUser parameters if its passed to this page when switch servers.--%>
-    <s:if test="switchToUser > 0">
-        <s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
-    </s:if>
+<div id="user_login">
+    <s:form cssClass="form-login well" action="%{#loginform}" name="login_form" id="login_form">
+        <input type="hidden" name="button" value="Login" />
 
-    <h2 data-attr="<s:text name="Login.h1" />"></h2>
-
-    <s:include value="../../_action-messages.jsp" />
-
-    <fieldset>
-        <s:if test="configEnvironment || i18nReady">
-            <% String currentLanguage = LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage(); %>
-            <input id="current_locale" type="hidden" value="<%= currentLanguage %>" />
+    <%-- grab the switchToUser parameters if its passed to this page when switch servers.--%>
+        <s:if test="switchToUser > 0">
+            <s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
         </s:if>
-        
-        <div class="form-horizontal">
-            <div class="control-group" id="update_language">
-                <label class="control-label" for="supported_locales"><i class="icon-globe"></i></label>
-                <div class="controls">
-                    <s:include value="_supported-locales-list.jsp" />
-                </div>
-            </div>
-        </div>
-        
-        <div id="user_fields">        
-            <label for="username"><s:text name="global.Username" /></label>
-            <s:textfield id="username" name="username" cssClass="" tabindex="1" />                
-            <label for="password"><s:text name="global.Password" /></label>
-            <s:password name="password" tabindex="2" cssClass="password" />                    
-        </div>
 
-        <div id="forgotPassword">
-            <a href="AccountRecovery.action" tabindex="3"><s:text name="Login.Forgot" /></a>
-        </div>
-        
-        <pics:toggle name="<%= FeatureToggle.TOGGLE_SESSION_COOKIE %>">
-	        <div id="remember_me">
-	            <s:checkbox name="rememberMe" value="false"></s:checkbox>
-	            <label for="rememberMe"><s:text name="Login.RememberMe" /></label>
-	        </div>
-        </pics:toggle>
-        
-        <div class="form-actions">
-            <button id="cancel_btn" type="button" class="btn" name="cancel"><s:text name="button.Cancel" /></button>
-            <button type="submit" class="btn btn-primary"><s:text name="global.Login" /></button>
-        </div>
-    </fieldset>
-</s:form>
+        <h1></h1>
+
+        <s:include value="../../_action-messages.jsp" />
+
+        <fieldset>
+            <s:if test="configEnvironment || i18nReady">
+                <input id="current_locale" type="hidden" value="<s:text name="locale" />" />
+            </s:if>
+
+            <div class="form-inline">
+                <label for="supported_locales">
+                    <i class="icon-globe"></i>
+                    <s:include value="_supported-locales-list.jsp" />
+                </label>
+            </div>
+
+            <s:include value="login/_login-form-fields.jsp"/>
+
+            <div id="user_fields">
+                <label for="username"><s:text name="global.Username" /></label>
+                <s:textfield id="username" name="username" cssClass="" tabindex="2" />
+                <label for="password"><s:text name="global.Password" /></label>
+                <s:password name="password" tabindex="3" cssClass="password" />
+            </div>
+
+            <div id="forgotPassword">
+                <a href="AccountRecovery.action" tabindex="4"><s:text name="Login.Forgot" /></a>
+            </div>
+
+            <pics:toggle name="<%= FeatureToggle.TOGGLE_SESSION_COOKIE %>">
+                <div class="form-inline" id="remember_me">
+                    <label class="checkbox">
+                        <s:checkbox name="rememberMe" value="false" tabindex="5"></s:checkbox>
+                        <s:text name="Login.RememberMe" />
+                    </label>
+                </div>
+            </pics:toggle>
+
+            <div class="form-actions">
+                <button id="cancel_btn" type="button" class="btn" name="cancel"><s:text name="button.Cancel" /></button>
+                <button type="submit" class="btn btn-primary" tabindex="6"><s:text name="global.Login" /></button>
+            </div>
+        </fieldset>
+    </s:form>
+</div>
+
+<a id="registration_link" href="Registration.action"><s:text name="Login.Register" /></a>

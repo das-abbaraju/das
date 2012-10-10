@@ -9,6 +9,7 @@
         listValue="%{@com.picsauditing.util.Strings@capitalize(getDisplayLanguage(language))}"
         id="supported_locales"
         name="request_locale"
+        tabindex="1"
         value="locale"
     />
 </s:if>
