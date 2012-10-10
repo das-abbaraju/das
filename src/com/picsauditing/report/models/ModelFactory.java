@@ -16,7 +16,7 @@ public class ModelFactory {
 		// We could make them the same and use reflection
 
 		if (type.equals(ModelType.Accounts))
-			return new AccountModel(permissions);
+			return new AccountsModel(permissions);
 		if (type.equals(ModelType.Contractors))
 			return new AccountContractorModel(permissions);
 		if (type.equals(ModelType.ContractorAudits))

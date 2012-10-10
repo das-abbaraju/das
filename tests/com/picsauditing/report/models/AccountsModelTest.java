@@ -12,13 +12,13 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.SelectSQL;
 
-public class AccountModelTest extends ModelTest {
-	private AccountModel model;
+public class AccountsModelTest extends ModelTest {
+	private AccountsModel model;
 
 	@Before
 	public void setup() {
 		super.setup();
-		model = new AccountModel(permissions);
+		model = new AccountsModel(permissions);
 	}
 
 	@Test
