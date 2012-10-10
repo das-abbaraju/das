@@ -45,9 +45,9 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	 */
 
 	// The 17 Countries in the EuroZone (that have adopted the Euro)
-	private static final String[] EUROZONE = {"AI","BE","CY","DE","EE","ES","FI","FR","GR","IE","IT","LU","MT","NL","PT","SI","SK"};
+	private static final String[] EUROZONE = {"AT","BE","CY","DE","EE","ES","FI","FR","GR","IE","IT","LU","MT","NL","PT","SI","SK"};
 	// The 10 additional countries that are in the European Union, but not in the EuroZone (i.e. that have not yet adopted the Euro, or never will)
-	private static final String[] EUROPEAN_UNION_ALSO = {"BG","CZ","DK","GB","GI","HU","IT","LI","LV","PL","RO","SE"};
+	private static final String[] EUROPEAN_UNION_ALSO = {"BG","CZ","DK","GB","GI","HU","IT","LT","LV","PL","RO","SE"};
 
 
 	
