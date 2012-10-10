@@ -38,8 +38,11 @@
 							<s:param name="button">
 								search
 							</s:param>
+							<s:param name="searchTerm">
+								${searchTerm}<s:if test="!isStringEmpty(#sug)"> ${sug.replace(' ', '-')}</s:if>
+							</s:param>
 						</s:url>
-						<a href="${additional_search_terms}&searchTerm=${searchTerm}<s:if test="!isStringEmpty(#sug)">+${sug.replace(' ', '-')}</s:if>">
+						<a href="${additional_search_terms}">
 							${sug.toLowerCase()}
 						</a> 
 					</s:iterator>
