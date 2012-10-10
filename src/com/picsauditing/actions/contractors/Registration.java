@@ -164,8 +164,11 @@ public class Registration extends ContractorActionSupport {
 		contractor.setPrimaryContact(user);
 		contractorAccountDao.save(contractor);
 
-		Permissions permissions = logInUser();
+		permissions = logInUser();
+		addClientSessionCookieToResponse();
 		setLoginLog(permissions);
+		// they don't have an account yet so they won't get this as a default
+		permissions.setSessionCookieTimeoutInSeconds(3600);
 
 		sendWelcomeEmail();
 		addNote(contractor, "Welcome Email Sent");

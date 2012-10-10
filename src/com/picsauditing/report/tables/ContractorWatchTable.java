@@ -8,7 +8,7 @@ public class ContractorWatchTable extends AbstractTable {
 		super("contractor_watch");
 		// 2 problems
 		// WHERE (id > 0) = true => WHERE (id > 0)
-		addField(new Field("watch", "id > 0", FieldType.Boolean));
+		addField(new Field("watch", "id IS NOT NULL", FieldType.Boolean));
 	}
 
 	protected void addJoins() {

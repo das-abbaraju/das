@@ -22,8 +22,19 @@ public class OperatorTagAutocompleteService extends AbstractAutocompleteService<
 		if (Strings.isEmpty(search)) {
 			return Collections.emptyList();
 		}
+		
+		String operatorIDs = permissions.getAccountIdString();
 
-		List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, " t.tag LIKE '%" + Strings.escapeQuotes(search) + "%'");		
+		if (permissions.isOperator())
+			operatorIDs += "," + Strings.implode(permissions.getCorporateParent());
+
+		String permissionsQuery = "AND opID IN (" + operatorIDs + ")";
+
+		if (permissions.isPicsEmployee()) 
+			permissionsQuery = "";
+		
+		List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, " t.tag LIKE '%" + 
+				Strings.escapeQuotes(search) + "%' " + permissionsQuery, RESULT_SET_LIMIT);
 		if (CollectionUtils.isEmpty(tags)) {
 			return Collections.emptyList();
 		}
@@ -32,12 +43,12 @@ public class OperatorTagAutocompleteService extends AbstractAutocompleteService<
 	}
 
 	@Override
-	protected Object getAutocompleteItem(OperatorTag operatorTag) {
-		return operatorTag.getAutocompleteItem();
+	protected Object getKey(OperatorTag operatorTag) {
+		return operatorTag.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(OperatorTag operatorTag) {
-		return operatorTag.getAutocompleteValue();
+	protected Object getValue(OperatorTag operatorTag, Permissions permissions) {
+		return operatorTag.getTag();
 	}
 }

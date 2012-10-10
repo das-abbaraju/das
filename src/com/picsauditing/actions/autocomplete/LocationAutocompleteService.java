@@ -15,6 +15,9 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.util.Strings;
 
+/**
+ * TODO: Find out if this class is even working correctly.
+ */
 public class LocationAutocompleteService extends AbstractAutocompleteService<Autocompleteable> {
 	
 	private static final int ISO_COUNTRY_CODE_LENGTH = 2;
@@ -59,12 +62,12 @@ public class LocationAutocompleteService extends AbstractAutocompleteService<Aut
 	}
 
 	@Override
-	protected Object getAutocompleteItem(Autocompleteable item) {
+	protected Object getKey(Autocompleteable item) {
 		return item.getAutocompleteItem();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(Autocompleteable item) {
+	protected Object getValue(Autocompleteable item, Permissions permissions) {
 		return item.getAutocompleteValue();
 	}
 }

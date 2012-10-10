@@ -61,7 +61,7 @@ public class CountryAutocompleteServiceTest {
 		List<Country> fakeList2 = Arrays.asList(new Country("BC"), new Country("BD"));
 		
 		when(countryDAO.findWhere(anyString())).thenReturn(fakeList1);
-		when(countryDAO.findByTranslatableField(same(Country.class), anyString())).thenReturn(fakeList2);
+		when(countryDAO.findByTranslatableField(same(Country.class), anyString(), anyInt())).thenReturn(fakeList2);
 				
 		Collection<Country> results = service.getItems("TE,ST", null);
 		

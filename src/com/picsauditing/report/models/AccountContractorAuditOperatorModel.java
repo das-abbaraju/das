@@ -12,12 +12,15 @@ import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 public class AccountContractorAuditOperatorModel extends AbstractModel {
+	private static final String AUDIT_OPERATOR = "AuditOperator";
+	private static final String CONTRACTOR_OPERATOR = "ContractorOperator";
+
 	public AccountContractorAuditOperatorModel(Permissions permissions) {
 		super(permissions, new ContractorAuditOperatorTable());
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "AuditOperator");
+		ModelSpec spec = new ModelSpec(null, AUDIT_OPERATOR);
 		// Let's try to set the categories on the entity fields
 		// spec.category = FieldCategory.Audits;
 
@@ -38,13 +41,13 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 				contractor.minimumImportance = FieldImportance.Average;
 				contractor.category = FieldCategory.AccountInformation;
 				ModelSpec account = contractor.join(ContractorTable.Account);
-				account.alias = "Account";
+				account.alias = AbstractModel.ACCOUNT;
 				account.minimumImportance = FieldImportance.Average;
 				account.category = FieldCategory.AccountInformation;
-				
+
 				if (permissions.isOperatorCorporate()) {
 					ModelSpec flag = contractor.join(ContractorTable.Flag);
-					flag.alias = "ContractorOperator";
+					flag.alias = CONTRACTOR_OPERATOR;
 					flag.minimumImportance = FieldImportance.Average;
 					flag.category = FieldCategory.AccountInformation;
 				}
@@ -54,8 +57,11 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 	}
 
 	@Override
-	public String getWhereClause(Permissions permissions, List<Filter> filters) {
-		String where = "AuditOperator.visible = 1";
+	public String getWhereClause(List<Filter> filters) {
+		super.getWhereClause(filters);
+		permissionQueryBuilder.setContractorOperatorAlias(CONTRACTOR_OPERATOR);
+
+		String where = permissionQueryBuilder.buildWhereClause() + " AND AuditOperator.visible = 1";
 
 		if (permissions.isOperatorCorporate()) {
 			// TODO: This looks like it can be further improved. Find a way to
@@ -64,7 +70,9 @@ public class AccountContractorAuditOperatorModel extends AbstractModel {
 			if (permissions.isCorporate())
 				opIDs = Strings.implode(permissions.getOperatorChildren());
 
-			where += "\n AND cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
+			where += "\n AND " +
+					AUDIT_OPERATOR +
+					".id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN (" + opIDs
 					+ "))";
 		}
 

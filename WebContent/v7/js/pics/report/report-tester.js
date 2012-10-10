@@ -16,7 +16,7 @@ PICS.define('report.Tester', {
             });
             $('#reports td.results').each(function(index) {
                 var reportID = $(this).text();
-                $.getJSON("ReportDynamic!report.action", {"report": reportID}, function(data) {
+                $.getJSON("ReportData!report.action", {"report": reportID}, function(data) {
                     var resultTD = $('#reports-row-' + data.reportID + ' td.results');
                     resultTD.removeClass("waiting");
                     if (data.success) {

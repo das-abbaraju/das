@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -54,6 +56,8 @@ public class AuditBuilder {
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
+	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
+	
 	private User systemUser = new User(User.SYSTEM);
 	
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
@@ -533,8 +537,12 @@ public class AuditBuilder {
 					// subcategories when adding it to the AuditCatData
 					categoryApplies = areAllParentsApplicable(categoriesNeeded, catData.getCategory());
 				}
-				if (categoryApplies != catData.isApplies())
+				if (categoryApplies != catData.isApplies()) {
 					catData.setAuditColumns(systemUser);
+					if (catData.getCategory().getId() == 443 && !categoryApplies) {
+						logger.warn("Safety Manual category no longer applicable for audit (" + conAudit.getId() + ")");
+					}
+				}
 				catData.setApplies(categoryApplies);
 			}
 			// Where are we saving the catData??

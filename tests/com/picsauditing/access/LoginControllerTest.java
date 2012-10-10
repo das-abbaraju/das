@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.*;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.servlet.http.Cookie;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
 public class LoginControllerTest extends PicsActionTest {
@@ -34,7 +36,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private UserDAO userDAO;
 	@Mock
-	protected AppPropertyDAO appPropertyDAO;
+	protected AppPropertyDAO propertyDAO;
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
 	@Mock
@@ -47,6 +49,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private Account switchAccount;
 	@Mock
 	private ApplicationContext applicationContext;
+	@Mock
+	private FeatureToggle featureToggleChecker;
 
 	@AfterClass
 	public static void tearDown() throws Exception {
@@ -55,13 +59,18 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Before
 	public void setUp() throws Exception {
+		System.setProperty("sk",
+				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
+
 		MockitoAnnotations.initMocks(this);
 		loginController = new LoginController();
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
-		Whitebox.setInternalState(loginController, "appPropertyDAO", appPropertyDAO);
+		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
+		Whitebox.setInternalState(loginController, "permissionsForTest", permissions);
+		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
@@ -94,7 +103,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_logoutNotAdminCookiesDisabled() throws Exception {
 		String testMessage = "Test Message";
-		loginController.setButton("logout");
+		loginController.setButton("login");
 		when(i18nCache.getText(eq("Login.CookiesAreDisabled"), eq(Locale.ENGLISH), any())).thenReturn(testMessage);
 		when(request.getCookies()).thenReturn(null);
 
@@ -109,10 +118,8 @@ public class LoginControllerTest extends PicsActionTest {
 	// As a user who has switched to another user
 	// Given user wishes to logout as the switched to user
 	// When user clicks on logout button
-	// Then the system clears permissions
 	// And does not clear session
-	// And logs in the original user
-	// And redirects
+	// Then the system logs out everybody
 	@Test
 	public void testExecute_logoutUserWhoHasSwitchedToAnotherUser() throws Exception {
 		loginController.setButton("logout");
@@ -121,9 +128,9 @@ public class LoginControllerTest extends PicsActionTest {
 
 		String actionResult = loginController.execute();
 
-		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
+		assertThat(actionResult, is(equalTo(PicsActionSupport.SUCCESS)));
 		verify(permissions).clear();
-		verify(permissions).login(user);
+		verify(response).addCookie((Cookie) any());
 	}
 
 	// As a user responding to the confirmation email
@@ -203,15 +210,23 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
-
 		String actionResult = loginController.execute();
-
-		verify(permissions).clear();
 		verify(permissions).login(user);
 		verify(user).setLastLogin((Date) any());
 		verify(userDAO).save(user);
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
 		assertThat(session.keySet(), hasItem("permissions"));
+	}
+
+	@Test
+	public void testPasswordIsIncorrect_Locked() {
+		when(user.getFailedAttempts()).thenReturn(8);
+		when(user.getUsername()).thenReturn("test");
+	}
+
+	@Test
+	public void testClearPicsOrgCookie() throws Exception {
+
 	}
 
 	private void normalLoginSetup() {
@@ -221,9 +236,12 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userDAO.findName("test")).thenReturn(user);
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
 		when(user.isEncryptedPasswordEqual("test password")).thenReturn(true);
+		when(user.getId()).thenReturn(941);
 		when(permissions.belongsToGroups()).thenReturn(true);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAccountName()).thenReturn("test account");
 		when(permissions.hasPermission(OpPerms.Dashboard)).thenReturn(true);
+		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 	}
+
 }

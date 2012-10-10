@@ -21,17 +21,17 @@ public class ContractorAutocompleteService extends AbstractAutocompleteService<C
 			return Collections.emptyList();
 		}
 
-		return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotes(search) + "%'");
+		return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotes(search) + "%'", RESULT_SET_LIMIT);
 	}
 
 	@Override
-	protected Object getAutocompleteItem(ContractorAccount account) {
-		return account.getAutocompleteItem();
+	protected Object getKey(ContractorAccount account) {
+		return account.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(ContractorAccount account) {
-		return account.getAutocompleteValue();
+	protected Object getValue(ContractorAccount account, Permissions permissions) {
+		return account.getName();
 	}
 
 }

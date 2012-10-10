@@ -28,9 +28,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-//@RunWith(PowerMockRunner.class)
-//@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class FlagDataCalculatorTest { // extends PicsTest {
+public class FlagDataCalculatorTest {
 
 	private FlagDataCalculator calculator;
 	private FlagCriteriaContractor fcCon;

@@ -55,11 +55,15 @@ Ext.define('PICS.model.report.Report', {
 
             store.each(function (record) {
                 var item = {};
-
+                
                 record.fields.each(function (field) {
-                    item[field.name] = record.get(field.name);
+                    // block to prevent extraneous id from being inject into request parameters
+                    // ???
+                    if (record.get(field.name)) {
+                        item[field.name] = record.get(field.name);
+                    }
                 });
-
+                
                 data.push(item);
             });
 

@@ -4,8 +4,8 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.FieldCategory;
 
-public class AccountModel extends AbstractModel {
-	public AccountModel(Permissions permissions) {
+public class AccountsModel extends AbstractModel {
+	public AccountsModel(Permissions permissions) {
 		super(permissions, new AccountTable());
 	}
 

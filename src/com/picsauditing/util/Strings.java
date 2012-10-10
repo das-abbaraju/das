@@ -1,8 +1,5 @@
 package com.picsauditing.util;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,27 +17,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.jpa.entities.BaseTable;
+import com.picsauditing.security.EncodedMessage;
 
 public class Strings {
-	
+
 	public static final String EMPTY_STRING = "";
-	public static final String NEW_LINE = "\n";
-	
+	public static final String NEW_LINE = System.getProperty("line.separator");
+
 	private static final int NO_STRING_ESCAPE_STRATEGY = 0;
 	private static final int STRING_ESCAPE_STRATEGY = 1;
 	private static final int OBJECT_TO_STRING_ESCAPE_STRATEGY = 2;
 
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
-	
+
 	public static boolean isEmpty(String value) {
 		if (value == null) {
 			return true;
 		}
-		
+
 		value = value.trim();
 		return value.length() == 0;
 	}
-	
+
 	public static boolean isNotEmpty(String value) {
 		return !isEmpty(value);
 	}
@@ -48,7 +46,7 @@ public class Strings {
 	/**
 	 * Are two strings equal to each other. One or both can be null. If both are
 	 * null, then return true.
-	 * 
+	 *
 	 * @param value1
 	 * @param value2
 	 * @return
@@ -59,7 +57,7 @@ public class Strings {
 
 		if (value2 != null)
 			return value2.equals(value1);
-		
+
 		return true;
 	}
 
@@ -70,20 +68,20 @@ public class Strings {
 			array[i] = item;
 			i++;
 		}
-		
+
 		return array;
 	}
 
 	public static String insertSpaces(String value) {
 		if (value == null)
 			return null;
-		
+
 		StringBuilder newValue = new StringBuilder();
 		for (int i = 0; i < value.length(); i++) {
 			newValue.append(value.charAt(i));
 			newValue.append(" ");
 		}
-		
+
 		return newValue.toString().trim();
 	}
 
@@ -92,7 +90,7 @@ public class Strings {
 	public static String escapeQuotes(String value) {
 		if (isEmpty(value))
 			return EMPTY_STRING;
-		
+
 		String singleQuote = "\'";
 		String backSlash = "\\";
 
@@ -106,15 +104,15 @@ public class Strings {
 	public static String implode(int[] array, String delimiter) {
 		if (ArrayUtils.isEmpty(array))
 			return EMPTY_STRING;
-		
+
 		StringBuffer buffer = new StringBuffer();
 		for (int o : array) {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
-		
+
 			buffer.append(o);
 		}
-		
+
 		return buffer.toString();
 	}
 
@@ -124,7 +122,7 @@ public class Strings {
 
 	public static <E extends Enum<E>> String implodeForDB(Enum<E>[] array, String delimiter) {
 		return genericArrayImplode(array, delimiter, STRING_ESCAPE_STRATEGY);
-	}	
+	}
 
 	public static String implodeForDB(Collection<? extends Object> collection, String delimiter) {
 		return genericImplode(collection, ",", OBJECT_TO_STRING_ESCAPE_STRATEGY);
@@ -157,95 +155,70 @@ public class Strings {
 	public static String implode(List<String> collection, String delimiter) {
 		return genericImplode(collection, delimiter, NO_STRING_ESCAPE_STRATEGY);
 	}
-	
+
 	private static <E> String genericArrayImplode(E[] array, String delimiter, int escapeType) {
 		if (ArrayUtils.isEmpty(array)) {
 			return EMPTY_STRING;
 		}
-		
+
 		StringBuilder builder = new StringBuilder();
 		for (E entity : array) {
 			if (builder.length() > 0) {
 				builder.append(delimiter);
 			}
-			
+
 			appendEntity(builder, entity, escapeType);
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	private static <E> String genericImplode(Collection<E> collection, String delimiter, int escapeType) {
 		if (CollectionUtils.isEmpty(collection)) {
 			return EMPTY_STRING;
 		}
-		
+
 		StringBuilder builder = new StringBuilder();
 		for (E entity : collection) {
 			if (builder.length() > 0) {
 				builder.append(delimiter);
 			}
-			
+
 			appendEntity(builder, entity, escapeType);
 		}
-		
+
 		return builder.toString();
 	}
-	
+
 	private static <E> void appendEntity(StringBuilder builder, E entity, int escapeType) {
 		switch (escapeType) {
 			case NO_STRING_ESCAPE_STRATEGY:
 				builder.append(entity);
 				break;
-				
+
 			case STRING_ESCAPE_STRATEGY:
 				performStringEscapeStrategy(builder, entity);
 				break;
-				
+
 			case OBJECT_TO_STRING_ESCAPE_STRATEGY:
 				builder.append("'").append(escapeQuotes(String.valueOf(entity))).append("'");
 				break;
-				
+
 			default:
 				throw new RuntimeException("Invalid use of string escaping.");
 		}
 	}
-	
+
 	private static <E> void performStringEscapeStrategy(StringBuilder stringBuilder, E entity) {
 		stringBuilder.append("'");
-		
+
 		if (entity instanceof String) {
 			stringBuilder.append(escapeQuotes((String) entity));
 		} else {
 			stringBuilder.append(entity);
 		}
-		
+
 		stringBuilder.append("'");
-	}
-
-	public static String hash(String seed) {
-		MessageDigest digest = null;
-		try {
-			digest = MessageDigest.getInstance("SHA-1");
-		} catch (NoSuchAlgorithmException e) {
-			return e.getMessage();
-		}
-		digest.update(seed.getBytes());
-		byte[] hashed = digest.digest();
-		BigInteger number = new BigInteger(1, hashed);
-		// String value = Base64.encodeBytes(hashed);
-		return number.toString(16);
-	}
-
-	public static String md5(String seed) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] messageDigest = md.digest(seed.getBytes());
-			BigInteger number = new BigInteger(1, messageDigest);
-			return number.toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			return e.getMessage();
-		}
 	}
 
 	/**
@@ -253,7 +226,7 @@ public class Strings {
 	 * @return
 	 */
 	public static String hashUrlSafe(String seed) {
-		String value = Strings.hash(seed);
+		String value = EncodedMessage.hash(seed);
 		value = value.replace("+", "_");
 		return value;
 	}
@@ -264,7 +237,7 @@ public class Strings {
 	 * 11883 returns 11883<br />
 	 * 11883.4 returns 11883<br />
 	 * Foobar returns 0
-	 * 
+	 *
 	 * @param query
 	 * @return
 	 */
@@ -343,15 +316,15 @@ public class Strings {
 
 		/*
 		 * Old code for reference
-		 * 
+		 *
 		 * String expression = "[A-Z0-9]+"; Pattern pattern =
 		 * Pattern.compile(expression, Pattern.CANON_EQ); Matcher matcher =
 		 * pattern.matcher(name);
-		 * 
+		 *
 		 * StringBuffer buf = new StringBuffer(); boolean found = false; while
 		 * ((found = matcher.find())) { System.out.println(matcher.group());
 		 * buf.append(matcher.group()); }
-		 * 
+		 *
 		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return
 		 * buf.toString();
 		 */
@@ -397,10 +370,10 @@ public class Strings {
 	public static String trim(String input, int maxlength) {
 		if (isEmpty(input))
 			return EMPTY_STRING;
-		
+
 		if (input.length() <= maxlength)
 			return input;
-		
+
 		return input.substring(0, maxlength - 3) + "...";
 	}
 	@Deprecated
@@ -502,7 +475,7 @@ public class Strings {
 
 	/**
 	 * Is countries contained in the expression
-	 * 
+	 *
 	 * @param expression
 	 *            like !|CA|FR|
 	 * @param countries
@@ -559,7 +532,7 @@ public class Strings {
 	/**
 	 * For computing the number of character differences between two strings
 	 * Levenshtein Distance If needed, can be optimized
-	 * 
+	 *
 	 * @param m
 	 * @param n
 	 * @return
@@ -601,12 +574,12 @@ public class Strings {
 
 		return null;
 	}
-	
+
 	public static String nullToBlank(String value) {
 		if (value == null) {
 			return EMPTY_STRING;
 		}
-		
+
 		return value;
 	}
 }

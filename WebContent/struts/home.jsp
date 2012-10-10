@@ -27,6 +27,7 @@
     </script>
 </head>
 <body>
+<s:include value="actionMessages.jsp" />
     <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
         <s:if test="permissions.contractor">
         	<s:include value="contractors/conHeader.jsp" />

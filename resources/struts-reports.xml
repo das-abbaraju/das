@@ -10,13 +10,7 @@
 		<action name="ReportDynamic" class="com.picsauditing.actions.report.ReportDynamic">
 		</action>
 		<action name="ReportData" class="com.picsauditing.actions.report.ReportData">
-		</action>
-		<action name="ReportDownload" class="com.picsauditing.actions.report.ReportDownload">
-		</action>
-		<action name="ReportAutocomplete" class="com.picsauditing.actions.report.ReportDynamicAutocomplete">
-		</action>
-		<action name="ReportPrint" class="com.picsauditing.actions.report.ReportPrint">
-			<result>struts/report/print.jsp</result>
+			<result name="print">struts/report/print.jsp</result>
 		</action>
 		<action name="ReportSharing" class="com.picsauditing.actions.report.ReportSharing">
 		</action>

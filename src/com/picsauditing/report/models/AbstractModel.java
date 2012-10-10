@@ -13,10 +13,14 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AbstractTable;
 import com.picsauditing.report.tables.ReportForeignKey;
 import com.picsauditing.report.tables.ReportOnClause;
+import com.picsauditing.util.PermissionQueryBuilder;
 
 public abstract class AbstractModel {
+	public static final String ACCOUNT = "Account";
+	
 	ReportJoin startingJoin;
 	protected Permissions permissions;
+	protected PermissionQueryBuilder permissionQueryBuilder;
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractModel.class);
 
@@ -101,7 +105,10 @@ public abstract class AbstractModel {
 		return fields;
 	}
 
-	public String getWhereClause(Permissions permissions, List<Filter> filters) {
+	public String getWhereClause(List<Filter> filters) {
+		permissionQueryBuilder = new PermissionQueryBuilder(permissions);
+		permissionQueryBuilder.setAccountAlias(ACCOUNT);
+
 		return "";
 	}
 }

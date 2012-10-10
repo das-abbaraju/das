@@ -90,7 +90,11 @@ More information:
  
 Manage the build by executing the following commands (must install sdk + 
 navigate to directory):
+ - From cmd, navigate to /v7/js/extjs/pics
+ - comment out the following line -> appFolder: '/v7/js/extjs/pics/app',
+   from this file /v7/js/extjs/pics/app.js
  - sencha create jsb -a index.html -p app.jsb3
+ - revert the change above to /v7/js/extjs/pics/app.js
  - sencha build -p app.jsb3 -d . -v
 
  More information:

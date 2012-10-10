@@ -7,18 +7,19 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.ContractorTable;
-import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 public class ContractorOperatorModel extends AbstractModel {
+
+	public static final String CONTRACTOR_OPERATOR = "ContractorOperator";
 
 	public ContractorOperatorModel(Permissions permissions) {
 		super(permissions, new ContractorOperatorTable());
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "ContractorOperator");
+		ModelSpec spec = new ModelSpec(null, CONTRACTOR_OPERATOR);
 		spec.join(ContractorOperatorTable.Operator);
 
 		{
@@ -29,6 +30,7 @@ public class ContractorOperatorModel extends AbstractModel {
 				ModelSpec account = contractor.join(ContractorTable.Account);
 				account.alias = "Account";
 				account.minimumImportance = FieldImportance.Average;
+				account.join(AccountTable.Contact);
 			}
 		}
 
@@ -36,24 +38,24 @@ public class ContractorOperatorModel extends AbstractModel {
 	}
 
 	@Override
-	public String getWhereClause(Permissions permissions, List<Filter> filters) {
-		String whereSql = super.getWhereClause(permissions, filters);
-		if (permissions.isOperatorCorporate()) {
-			String operatorVisibility = getOperatorsThisPersonCanSee(permissions);
-			whereSql += " AND ReportingSite.genID IN (" + operatorVisibility + ")";
+	public String getWhereClause(List<Filter> filters) {
+		// TODO This should be eventually moved into PQB
+		if (permissions.isAdmin()) {
+			return "";
 		}
-
-		return whereSql;
-	}
-
-	private String getOperatorsThisPersonCanSee(Permissions permissions) {
-		String operatorVisibility = permissions.getAccountIdString();
-
-		if (permissions.isGeneralContractor()) {
-			operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
-		} else if (permissions.isCorporate()) {
-			operatorVisibility += "," + Strings.implode(permissions.getOperatorChildren());
+		
+		if (permissions.isContractor()) {
+			return CONTRACTOR_OPERATOR + ".subID = " + permissions.getAccountId();
 		}
-		return operatorVisibility;
+		
+		if (permissions.isOperator()) {
+			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID = " + permissions.getAccountId();
+		}
+		
+		if (permissions.isCorporate()) {
+			return CONTRACTOR_OPERATOR + ".workStatus = 'Y' AND " + CONTRACTOR_OPERATOR + ".genID IN (" + Strings.implodeForDB(permissions.getOperatorChildren(), ",") + ")";
+		}
+		
+		return "1 = 0";
 	}
 }

@@ -47,7 +47,7 @@ public class SqlBuilder {
 
 		addJoins(model.getStartingJoin());
 
-		sql.addWhere(model.getWhereClause(permissions, definition.getFilters()));
+		sql.addWhere(model.getWhereClause(definition.getFilters()));
 
 		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");

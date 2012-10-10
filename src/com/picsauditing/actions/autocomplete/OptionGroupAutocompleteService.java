@@ -21,16 +21,16 @@ public class OptionGroupAutocompleteService extends AbstractAutocompleteService<
 			return Collections.emptyList();
 		}
 
-		return auditQuestionOptionDAO.findOptionTypeWhere("o.name LIKE '%" + search + "%'");
+		return auditQuestionOptionDAO.findOptionTypeWhere("o.name LIKE '%" + search + "%'", RESULT_SET_LIMIT);
 	}
 
 	@Override
-	protected Object getAutocompleteItem(AuditOptionGroup optionGroup) {
-		return optionGroup.getAutocompleteValue();
+	protected Object getKey(AuditOptionGroup optionGroup) {
+		return optionGroup.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(AuditOptionGroup optionGroup) {
-		return optionGroup.getAutocompleteItem();
+	protected Object getValue(AuditOptionGroup optionGroup, Permissions permissions) {
+		return optionGroup.getName();
 	}
 }

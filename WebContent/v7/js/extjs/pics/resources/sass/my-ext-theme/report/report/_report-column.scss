@@ -9,5 +9,20 @@ $report_data_column_boolean_text_color: #666;
 		{
 			color: $report_data_column_boolean_text_color;
 		}
+		
+		.icon-flag.green
+		{
+			color: #229322;
+		}
+		
+		.icon-flag.red
+		{
+			color: #AC030C;
+		}
+		
+		.icon-flag.amber
+		{
+			color: #F1A300;
+		}
 	}
 }

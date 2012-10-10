@@ -156,8 +156,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		this.resetActiveAudits();
 
 		// enforcing workflow steps before completing registration
-		String url = "";
-		url = contractorRiskUrl(url);
+		String url = contractorRiskUrl();
 
 		if (!url.isEmpty()) {
 			ServletActionContext.getResponse().sendRedirect(url);
@@ -289,9 +288,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		return BLANK;
 	}
 
-	private String contractorRiskUrl(String url) {
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly() || contractor
-				.isTransportationServices()))
+	private String contractorRiskUrl() {
+		String url = "";
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk())
+				&& !(contractor.isMaterialSupplierOnly() || contractor.isTransportationServices()))
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
 			url = "RegistrationServiceEvaluation.action?id=" + contractor.getId();
 

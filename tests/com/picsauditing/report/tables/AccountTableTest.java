@@ -10,11 +10,13 @@ public class AccountTableTest {
 	@Test
 	public void testAccountFields() {
 		AccountTable accountTable = new AccountTable();
-		assertEquals("name", accountTable.getField("Name").getDatabaseColumnName());
+		assertEquals("CASE WHEN {TO_ALIAS}.dbaName IS NULL THEN {TO_ALIAS}.name "
+				+ "WHEN {TO_ALIAS}.dbaName = '' THEN {TO_ALIAS}.name ELSE {TO_ALIAS}.dbaName END", accountTable
+				.getField("Name").getDatabaseColumnName());
 		assertEquals("Name", accountTable.getField("Name").getName());
 		assertTrue(accountTable.getFields().size() > 10);
 	}
-	
+
 	@Test
 	public void testAccountJoins() {
 		AccountTable accountTable = new AccountTable();

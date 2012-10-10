@@ -15,4 +15,9 @@ public interface SecurityAware {
 	
 	boolean isApiUser();
 
+	boolean sessionCookieIsValidAndNotExpired();
+
+	void updateClientSessionCookieExpiresTime();
+
+	String clearPermissionsSessionAndCookie() throws Exception;
 }

@@ -1,8 +1,18 @@
 Ext.define('PICS.model.report.Column', {
-	extend: 'Ext.data.Model',
+    extend: 'Ext.data.Model',
+    
+    requires: [
+        'PICS.ux.grid.column.Boolean',
+        'PICS.ux.grid.column.Date',
+        'PICS.ux.grid.column.Flag',
+        'PICS.ux.grid.column.Float',
+        'PICS.ux.grid.column.Int',
+        'PICS.ux.grid.column.Number',
+        'PICS.ux.grid.column.Column'
+    ],
 
-	// http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
-	associations: [{
+    // http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
+    associations: [{
         type: 'hasOne',
         model: 'PICS.model.report.AvailableField',
         associationKey: 'field',
@@ -40,66 +50,61 @@ Ext.define('PICS.model.report.Column', {
     },
 
     toGridColumn: function () {
-        var field = this.getAvailableField();
+        var field = this.getAvailableField(),
+            url = field.get('url'),
+            grid_column;
 
         if (!field) {
             Ext.Error.raise('Invalid available field');
         }
-
-        var grid_column = {
-            dataIndex: field.get('name'),
+        
+        var type = field.get('type');
+        
+        var config = {
             menuDisabled: true,
-            sortable: false,
-            text: field.get('text'),
-            width: field.get('width') || 150
+            record: this,
+            sortable: false
         };
 
-        switch (field.get('type')) {
+        switch (type) {
+            // <i class="icon-ok"></i>
             case 'boolean':
-                grid_column.align = 'center';
-                grid_column.renderer = function (value) {
-                    if (value) {
-                        return '<i class="icon-ok"></i>';
-                    }
-
-                    return '';
-                };
-                grid_column.width = 50;
+                grid_column = Ext.create('PICS.ux.grid.column.Boolean', config);
 
                 break;
-            case 'datetime':
-                // TODO add in datetime display
+            // Y-m-d
             case 'date':
-                grid_column.xtype = 'datecolumn';
-                grid_column.format = 'n/j/Y';
+                grid_column = Ext.create('PICS.ux.grid.column.Date', config);
 
                 break;
+            // <i class="icon-flag"></i>
+            case 'flagcolor':
+            	grid_column = Ext.create('PICS.ux.grid.column.Flag', config);
+
+                break;
+            // 1,234.00
             case 'float':
-                grid_column.xtype = 'numbercolumn';
-                grid_column.align = 'right';
-                grid_column.width = 75;
+                grid_column = Ext.create('PICS.ux.grid.column.Float', config);
 
                 break;
+            // 1234
+            case 'integer':
+                grid_column = Ext.create('PICS.ux.grid.column.Int', config);
+
+                break;
+            // 1,234
             case 'number':
-                // TODO add in number display
-            case 'int':
-                grid_column.xtype = 'numbercolumn';
-                grid_column.align = 'right';
-                grid_column.format = '0000';
-                grid_column.width = 75;
+                grid_column = Ext.create('PICS.ux.grid.column.Number', config);
 
                 break;
-            case 'flag':
-                // TODO add in the flag display
+            // text
+            case 'string':
             default:
+                grid_column = Ext.create('PICS.ux.grid.column.Column', config);
+                
                 break;
         }
-
-        if (field.get('url')) {
-            grid_column.xtype = 'linkcolumn';
-            grid_column.url = field.get('url');
-        }
-
+        
         return grid_column;
     }
 });

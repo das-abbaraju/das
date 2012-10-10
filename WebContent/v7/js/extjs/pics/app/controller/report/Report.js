@@ -72,9 +72,14 @@ Ext.define('PICS.controller.report.Report', {
     },
 
     refreshReport: function () {
-        var store = this.getReportReportDatasStore();
-
-        store.reload();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_name = report.get('name'),
+            report_data_store = this.getReportReportDatasStore();
+        
+        this.setPageTitle(report_name);
+        
+        report_data_store.reload();
     },
 
     saveReport: function () {
@@ -101,5 +106,9 @@ Ext.define('PICS.controller.report.Report', {
                 }
             }
         });
+    },
+    
+    setPageTitle: function(title) {
+        Ext.query('title')[0].innerHTML = 'PICS - ' + title;
     }
 });

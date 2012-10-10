@@ -44,7 +44,7 @@ public class Filter extends ReportElement implements JSONable {
 			if (values.size() == 1) {
 				json.put("value", values.get(0));
 			} else {
-				json.put("value", StringUtils.join(values, ","));
+				json.put("value", StringUtils.join(values, ", "));
 			}
 		}
 		return json;
@@ -84,7 +84,7 @@ public class Filter extends ReportElement implements JSONable {
 
 		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
 			for (Object value : valuesJsonArray) {
-				this.values.add(value.toString());
+				this.values.add(value.toString().trim());
 			}
 		} else {
 			String value = (String) json.get("value");
@@ -96,7 +96,9 @@ public class Filter extends ReportElement implements JSONable {
 
 			if (value.contains(",")) {
 				logger.warn("Old style filter value found with commas separating multiple values. Until we phase out the old code, we need this for backwards compatibility");
-				String[] valueSplit = value.split(",");
+				String[] valueSplit = value.split(", ");
+				if (valueSplit.length == 1 && value.contains(","))
+					valueSplit = value.split(",");
 				this.values.addAll(Arrays.asList(valueSplit));
 			} else {
 				this.values.add(value);

@@ -16,17 +16,18 @@ public final class AuditTypeAutocompleteService extends AbstractAutocompleteServ
 
 	@Override
 	protected Collection<AuditType> getItems(String search, Permissions permissions) {
-		return auditTypeDAO.findByTranslatableField(AuditType.class, "name", Strings.escapeQuotes(search) + "%");
+		return auditTypeDAO.findByTranslatableField(AuditType.class, "", "name", 
+				Strings.escapeQuotes(search) + "%", permissions.getLocale(), RESULT_SET_LIMIT);
 	}
 
 	@Override
-	protected Object getAutocompleteItem(AuditType auditType) {
-		return auditType.getAutocompleteItem();
+	protected Object getKey(AuditType auditType) {
+		return auditType.getId();
 	}
 
 	@Override
-	protected Object getAutocompleteValue(AuditType auditType) {
-		return auditType.getAutocompleteValue();
+	protected Object getValue(AuditType auditType, Permissions permissions) {
+		return auditType.getName().toString(permissions.getLocale());
 	}
 
 }

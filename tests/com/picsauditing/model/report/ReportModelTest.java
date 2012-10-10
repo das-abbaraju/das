@@ -1,4 +1,4 @@
-package com.picsauditing.model;
+package com.picsauditing.model.report;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,6 +55,8 @@ public class ReportModelTest {
 	private Report report;
 	@Mock
 	private ReportPermissionUser reportPermissionUser;
+	@Mock
+	private Permissions permissions;
 
 	private Pagination<Report> pagination;
 
@@ -75,8 +77,9 @@ public class ReportModelTest {
 		when(user.getId()).thenReturn(USER_ID);
 		when(report.getId()).thenReturn(REPORT_ID);
 		when(account.getId()).thenReturn(ACCOUNT_ID);
+		when(permissions.getUserId()).thenReturn(USER_ID);
 	}
-
+	
 	@Test
 	public void mockUserIsMockedWithUserId() {
 		assertEquals(USER_ID, user.getId());
@@ -89,9 +92,12 @@ public class ReportModelTest {
 
 	@Test
 	public void canUserViewAndCopy_TrueIfAssociationWithUser() {
-		when(reportPermissionUserDao.findOne(0, REPORT_ID)).thenReturn(new ReportPermissionUser());
-
-		Permissions makePermission = EntityFactory.makePermission(new User(USER_ID));
+		// use make user so that it has an account
+		User user = EntityFactory.makeUser();
+		user.setId(USER_ID);
+		when(reportPermissionUserDao.findOne(user.getId(), REPORT_ID)).thenReturn(
+				new ReportPermissionUser());
+		Permissions makePermission = EntityFactory.makePermission(user);
 		assertTrue(reportModel.canUserViewAndCopy(makePermission, REPORT_ID));
 	}
 
@@ -106,7 +112,7 @@ public class ReportModelTest {
 	public void canUserEdit_FalseIfNoResultException() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 
-		assertFalse(reportModel.canUserEdit(USER_ID, report));
+		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
 
 	@Test
@@ -114,7 +120,7 @@ public class ReportModelTest {
 		when(reportPermissionUser.isEditable()).thenReturn(false);
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		assertFalse(reportModel.canUserEdit(USER_ID, report));
+		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
 
 	@Test
@@ -122,7 +128,7 @@ public class ReportModelTest {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
 
-		assertTrue(reportModel.canUserEdit(USER_ID, report));
+		assertTrue(reportModel.canUserEdit(permissions, report));
 	}
 
 	@Test(expected = ReportValidationException.class)
@@ -145,6 +151,15 @@ public class ReportModelTest {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
 		report.setParameters("NOT_A_REPORT");
+		
+		ReportModel.validate(report);
+	}
+
+	@Test(expected = ReportValidationException.class)
+	public void testValidate_MissingColumns() throws ReportValidationException {
+		Report report = new Report();
+		report.setModelType(ModelType.Accounts);
+		report.setParameters("{}");
 
 		ReportModel.validate(report);
 	}
@@ -153,7 +168,7 @@ public class ReportModelTest {
 	public void testValidate_ValidReportParameters() throws ReportValidationException {
 		Report report = new Report();
 		report.setModelType(ModelType.Accounts);
-		report.setParameters("{}");
+		report.setParameters("{\"columns\":[{\"name\":\"AccountName\"}]}");
 
 		ReportModel.validate(report);
 	}

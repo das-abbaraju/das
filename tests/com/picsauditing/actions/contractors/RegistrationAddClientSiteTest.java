@@ -5,85 +5,71 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.ServletActionContext;
+import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.Ignore;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.MockPolicy;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mock.SearchEngineMockPolicy;
-import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SearchEngine;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class, SmartFacilitySuggest.class })
-@MockPolicy(SearchEngineMockPolicy.class)
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class RegistrationAddClientSiteTest extends PicsTest {
-	RegistrationAddClientSite registrationAddClientSite;
-	ContractorAccount contractor;
-
-	List<OperatorAccount> results;
+public class RegistrationAddClientSiteTest extends PicsActionTest {
+	private RegistrationAddClientSite registrationAddClientSite;
+	private List<OperatorAccount> results;
 
 	@Mock
-	Query query;
+	private ContractorAccount contractor;
 	@Mock
-	HttpServletRequest request;
+	private Country country;
 	@Mock
-	Permissions permissions;
+	private Database smartFacilityDatabase;
+	@Mock
+	private SearchEngine searchEngine;
+	@Mock
+	private OperatorAccountDAO operatorDao;
+	@Mock
+	private ContractorAccountDAO contractorAccountDao;
 
+	@AfterClass
+	public static void classTearDown() throws Exception {
+		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", (Database) null);
+		PicsActionTest.classTearDown();
+	}
+	
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		super.setUp();
+		registrationAddClientSite = new RegistrationAddClientSite();
+		super.setUp(registrationAddClientSite);
 		
-		Map<String, Object> session = new HashMap<String, Object>();
-		session.put("permissions", permissions);
+		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", smartFacilityDatabase);
+		Whitebox.setInternalState(registrationAddClientSite, "searchEngineForTesting", searchEngine);
 
-		ActionContext actionContext = mock(ActionContext.class);
-		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.mockStatic(AjaxUtils.class);
-		PowerMockito.mockStatic(SmartFacilitySuggest.class);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(registrationAddClientSite, this);
 
-		when(actionContext.getSession()).thenReturn(session);
-		when(ActionContext.getContext()).thenReturn(actionContext);
-		when(ServletActionContext.getRequest()).thenReturn(request);
-
-		registrationAddClientSite = PowerMockito.spy(new RegistrationAddClientSite());
-		autowireEMInjectedDAOs(registrationAddClientSite);
-
-		contractor = EntityFactory.makeContractor();
-
+		when(contractor.getId()).thenReturn(11233);
+		when(contractor.getZip()).thenReturn("12345");
 		when(permissions.isContractor()).thenReturn(true);
-		when(permissions.getAccountId()).thenReturn(contractor.getId());
+		when(permissions.getAccountId()).thenReturn(11233);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
-		when(em.find(ContractorAccount.class, contractor.getId())).thenReturn(contractor);
-		PowerMockito.doReturn(true).when(registrationAddClientSite, "checkPermissionToView");
+		when(contractorAccountDao.find(11233)).thenReturn(contractor);
+		when(contractor.getCountry()).thenReturn(country);
+		when(country.getIsoCode()).thenReturn("US");
 
 		results = new ArrayList<OperatorAccount>();
 		for (int i = 0; i < 3; i++) {
@@ -93,73 +79,53 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 
 	@Test
 	public void testEmptySearchValue() throws Exception {
-		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
-
 		registrationAddClientSite.setSearchValue(null);
 		registrationAddClientSite.search();
 
-		PowerMockito.verifyPrivate(registrationAddClientSite, times(1)).invoke("loadSearchResults");
+		verify(operatorDao).findWhere(eq(false), startsWith("a.id IN ("));
 	}
 
 	@Test
-	public void testNotEmptySearchValue() throws Exception {
-		List<OperatorAccount> subList = results.subList(0, 1);
-
-		when(em.createNativeQuery(anyString(), eq(OperatorAccount.class))).thenReturn(query);
-		when(query.getResultList()).thenReturn(subList);
-
+	public void testNotEmptySearchValue_NotGlob() throws Exception {
 		registrationAddClientSite.setSearchValue("Hello World");
 		registrationAddClientSite.search();
 
-		PowerMockito.verifyPrivate(registrationAddClientSite, never()).invoke("loadSearchResults");
-
-		assertEquals(subList, registrationAddClientSite.getSearchResults());
+		verify(operatorDao).nativeClientSiteSearch(anyString());
 	}
 
 	@Test
-	public void testSearchForOperators() throws Exception {
-		// for testing not empty search value
-		when(em.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(results);
-
+	public void testSearchForOperators_WithGlob() throws Exception {
 		registrationAddClientSite.setSearchValue("*");
 		registrationAddClientSite.search();
 
-		assertEquals(results, registrationAddClientSite.getSearchResults());
+		verify(operatorDao).findWhere(false, null, permissions);
 	}
 
 	@Test
 	public void testReturnAjax() throws Exception {
-		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(true);
-		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
+		when(request.getHeader("X-Requested-With")).thenReturn("XMLHttpRequest");
 		assertEquals("ClientSiteList", registrationAddClientSite.search());
 	}
 
 	@Test
-	public void testReturnSuccess() throws Exception {
-		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(false);
-		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
+	public void testReturnSuccess_WhenNotAjax() throws Exception {
 		assertEquals(ActionSupport.SUCCESS, registrationAddClientSite.search());
 	}
 
 	@Test
 	public void testRemoveExistingOperatorsFromSearch() throws Exception {
-		List<OperatorAccount> searchResults = results.subList(0, 1);
-
-		for (OperatorAccount operator : results) {
-			EntityFactory.addContractorOperator(contractor, operator);
-		}
-
-		when(em.createNativeQuery(anyString(), eq(OperatorAccount.class))).thenReturn(query);
-		when(query.getResultList()).thenReturn(searchResults);
+		when(operatorDao.nativeClientSiteSearch(anyString())).thenReturn(results);
+		List<OperatorAccount> operatorAccounts = new ArrayList<OperatorAccount>();
+		operatorAccounts.addAll(results);
+		when(contractor.getOperatorAccounts()).thenReturn(operatorAccounts);
 
 		registrationAddClientSite.setSearchValue("Hello World");
 		registrationAddClientSite.search();
 
-		// registrationAddClientSite.getSearchResults() this calls loadSearchResults
-		List<OperatorAccount> results = Whitebox.getInternalState(registrationAddClientSite, "searchResults"); 
-		
-		assertEquals(new ArrayList<OperatorAccount>(), results);
-		PowerMockito.verifyPrivate(registrationAddClientSite, never()).invoke("loadSearchResults");
+		// registrationAddClientSite.getSearchResults() this calls
+		// loadSearchResults
+		List<OperatorAccount> results = Whitebox.getInternalState(registrationAddClientSite, "searchResults");
+
+		assertTrue(results.isEmpty());
 	}
 }

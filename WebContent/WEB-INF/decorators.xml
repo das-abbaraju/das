@@ -58,4 +58,7 @@
 		<pattern>/AuditFileUpload.action</pattern>
 		<pattern>/*External.action</pattern>
 	</decorator>
+    <decorator name="simpleLayout" page="simple-layout.jsp">
+        <pattern>/Login.action</pattern>
+    </decorator>
 </decorators>

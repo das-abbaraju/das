@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.LocaleController;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -35,6 +36,7 @@ import com.picsauditing.strutsutil.AjaxUtils;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -3120292424348289561L;
+	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 
 	private int userID;
 	private boolean loggedIn = false;
@@ -69,6 +71,8 @@ public class Permissions implements Serializable {
 	private boolean generalContractor = false;
 	private boolean gcFree = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
+	private long sessionCookieTimeoutInSeconds;
+	private int rememberMeTimeInSeconds;
 
 	private int shadowedUserID;
 	private String shadowedUserName;
@@ -110,6 +114,8 @@ public class Permissions implements Serializable {
 		operatorChildren.clear();
 		linkedClients.clear();
 		linkedGeneralContractors.clear();
+		sessionCookieTimeoutInSeconds = 0;
+		rememberMeTimeInSeconds = 0;
 	}
 
 	public void login(User user) throws Exception {
@@ -139,6 +145,7 @@ public class Permissions implements Serializable {
 			setTimeZone(user);
 
 			setAccountPerms(user);
+			LocaleController.setLocaleOfNearestSupported(this);
 
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
@@ -161,6 +168,8 @@ public class Permissions implements Serializable {
 			requiresOQ = user.getAccount().isRequiresOQ();
 			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 			generalContractor = user.getAccount().isGeneralContractor();
+			sessionCookieTimeoutInSeconds = user.getAccount().getSessionTimeout() * 60;
+			rememberMeTimeInSeconds = user.getAccount().getRememberMeTimeInDays() * TWENTY_FOUR_HOURS;
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
@@ -274,7 +283,7 @@ public class Permissions implements Serializable {
 	}
 
 	public String getAccountIdString() {
-		return Integer.toString(accountID);
+		return Integer.toString(getAccountId());
 	}
 
 	public int getTopAccountID() {
@@ -315,6 +324,14 @@ public class Permissions implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public long getSessionCookieTimeoutInSeconds() {
+		return sessionCookieTimeoutInSeconds;
+	}
+
+	public int getRememberMeTimeInSeconds() {
+		return rememberMeTimeInSeconds;
 	}
 
 	/**
@@ -636,6 +653,10 @@ public class Permissions implements Serializable {
 		return linkedGeneralContractors;
 	}
 
+	public void setSessionCookieTimeoutInSeconds(int seconds) {
+		this.sessionCookieTimeoutInSeconds = seconds;
+	}
+
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
@@ -671,5 +692,9 @@ public class Permissions implements Serializable {
 		ua.setDeleteFlag(true);
 
 		permissions.add(ua);
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
 	}
 }

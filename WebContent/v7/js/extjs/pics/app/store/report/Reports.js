@@ -22,7 +22,7 @@ Ext.define('PICS.store.report.Reports', {
         var request_parameters = Ext.Object.fromQueryString(document.location.search);
         var report_id = request_parameters.report;
 
-        this.proxy.url = '/ReportDynamic!report.action?report=' + report_id;
+        this.proxy.url = '/ReportData!report.action?report=' + report_id;
 
         this.callParent(arguments);
     }

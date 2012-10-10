@@ -15,13 +15,18 @@ Ext.application({
     ],
     
     constants: {
+        DATESTORE: [
+            ['LessThan', 'before'],
+            ['GreaterThan', 'after'],
+            ['Empty', 'is empty']
+        ],
         NUMBERSTORE: [
             ['Equals', '='],
             ['GreaterThan', '>'],
             ['LessThan', '<'],
             ['GreaterThanOrEquals', '>='],
             ['LessThanOrEquals', '<='],
-            ['Empty', 'blank']
+            ['Empty', 'is empty']
         ],
         TEXTSTORE: [
             ['Contains', 'contains'],
@@ -32,8 +37,8 @@ Ext.application({
             ['NotEndsWith', 'does not end with'],
             ['Equals', 'equals'],
             ['NotEquals', 'does not equal'],
-            ['Empty', 'blank'],
-            ['NotEmpty', 'not blank']
+            ['Empty', 'is empty'],
+            ['NotEmpty', 'is not empty']
         ]
     },
     
@@ -64,7 +69,7 @@ Ext.application({
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({
-           url: '/ReportDynamic!configuration.action?report=' + url.report,
+           url: '/ReportData!configuration.action?report=' + url.report,
            success: function (result) {
                var result = Ext.decode(result.responseText);
 

@@ -1,0 +1,269 @@
+#Login__page
+{
+    background: #454545;
+    text-align: center;
+
+    .well
+    {
+        background: #F1F1F2;
+        color: #666;
+        display: inline-block;
+        font-size: 13px;
+        margin-top: 100px;
+        padding: 40px;
+        text-align: left;
+    }
+
+    #registration_link
+    {
+        color: #CCC;
+        text-decoration: none;
+    }
+
+    #registration_link:hover
+    {
+        color: #73BBE8;
+    }
+}
+
+.lt-ie8 #Login__page #login_form
+{
+    display:inline;
+    width: 304px;
+}
+
+#login_form
+{
+    h2
+    {
+        background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
+        height: 78px;
+        margin: 0px auto 50px auto;
+        width: 287px;
+    }
+
+    .alert
+    {
+        width: 225px;
+    }
+
+    fieldset
+    {
+        padding-right: 40px;
+    }
+
+    .form-horizontal .controls
+    {
+        margin-left: 0px;
+    }
+
+    .form-horizontal .control-label
+    {
+        width: auto;
+    }
+
+    .form-horizontal #update_language
+    {
+        margin-bottom: 9px;
+    }
+
+    .form-horizontal #update_language .control-label
+    {
+        padding-right: 10px;
+    }
+
+    .icon-globe
+    {
+        color: #666;
+        font-size: 20px;
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    #user_fields
+    {
+        margin-left: 26px;
+    }
+
+    #user_fields .password
+    {
+        margin-bottom: 2px;
+    }
+
+    #forgotPassword
+    {
+        margin-bottom: 5px;
+        text-align: right;
+    }
+
+    #forgotPassword a
+    {
+        color: #666;
+        font-size: 11px;
+        text-decoration: none;
+    }
+
+    #forgotPassword a:hover
+    {
+        color: #226396;
+    }
+
+    #remember_me
+    {
+        margin: 0px 0px 10px 26px;
+    }
+
+    #remember_me label
+    {
+        display: inline-block;
+        padding-left: 5px;
+    }
+
+    .form-actions
+    {
+        background: none;
+        border: none;
+        margin: 0px;
+        padding: 0px;
+        text-align: right;
+    }
+
+    #cancel_btn
+    {
+        display: none;
+    }
+}
+
+/*** Login Modal Styling ***/
+
+.modal-login-form
+{
+    left: 55%;
+}
+
+.modal-login-form h2
+{
+    display: none;
+}
+
+.modal-login-form > .modal-header
+{
+    background-color: #454545;
+    text-align: left;
+}
+
+.modal-login-form > .modal-header > h3
+{
+    color: #FFF;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 27px;
+    margin-bottom: 0px;
+    text-align: left;
+}
+
+.modal-login-form > .modal-header > .close
+{
+    color: #666;
+    cursor: pointer;
+    filter: alpha(opacity=100);
+    font-size: 20px;
+    opacity: 1;
+    text-shadow: none;
+}
+
+.modal-login-form > .modal-header > .close:hover
+{
+    color: #999;
+}
+
+.modal-login-form .modal-body
+{
+    background: #EAEAEA;
+    color: #666;
+    font-size: 13px;
+    text-align: left;
+    padding: 10px 15px 0px 15px; 
+}
+
+.modal-login-form .well
+{
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0px;
+}
+
+.modal-login-form .control-group
+{
+   padding-right: 25px;
+}
+
+.modal-login-form #control_password
+{
+    margin-bottom: 0px;
+}
+
+.modal-login-form .control-label
+{
+    width: 100px;
+}
+
+.modal-login-form .controls
+{
+    margin-left: 109px;
+}
+
+.modal-login-form .icon-globe
+{
+    color: #666;
+    font-size: 20px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+.modal-login-form select,
+.modal-login-form input[type="text"],
+.modal-login-form input[type="password"]
+{
+    width: 200px;
+}
+
+.modal-login-form #forgotPassword
+{
+    margin: 10px 0px 5px 0px;
+    padding: 0px 25px;    
+    text-align: right;
+}
+
+.modal-login-form #forgotPassword a
+{
+    color: #666;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.modal-login-form #forgotPassword a:hover
+{
+    color: #226396;
+}
+
+.modal-login-form .form-actions
+{
+    background: none;
+    border: none;    
+    margin: 0px;
+    padding: 0px;
+    text-align: right;
+}
+
+.modal-login-form .btn-primary
+{
+    margin-left: 6px;
+}
+
+.modal-login-form .modal-footer
+{
+    display: none;
+}

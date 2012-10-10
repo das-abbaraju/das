@@ -7,16 +7,20 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -45,7 +49,10 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.PicsOrganizerVersion;
@@ -56,6 +63,10 @@ import com.picsauditing.util.URLUtils;
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
+
+	protected static final int DELETE_COOKIE_AGE = 0;
+	protected static final int SESSION_COOKIE_AGE = -1;
+	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
 
 	public static final String PLAIN_TEXT = "plain-text";
@@ -74,6 +85,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected AppPropertyDAO propertyDAO;
 	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
+	protected FeatureToggle featureToggleChecker;
 
 	protected Collection<String> alertMessages;
 
@@ -198,7 +211,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isLocalhostEnvironment() {
-		Boolean isLocalhost = getRequestHost().contains(":8080");
+		Boolean isLocalhost = getRequestHost().contains("localhost");
 
 		return isLocalhost;
 	}
@@ -249,23 +262,37 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			permissions = new Permissions();
 		}
 
-		if (autoLogin && !permissions.isLoggedIn()) {
+		if (permissions.isLoggedIn()) {
+			return;
+		}
 
+		int clientSessionUserID = getClientSessionUserID();
+		if (clientSessionUserID > 0) {
+			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
+			login(clientSessionUserID);
+			return;
+		}
+
+		if (autoLogin) {
 			String autoLoginID = System.getProperty("pics.autoLogin");
-
-			if (autoLoginID != null && autoLoginID.length() != 0) {
-				try {
-					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
-							autoLoginID);
-					User user = userDAO.find(Integer.parseInt(autoLoginID));
-
-					permissions.login(user);
-					LocaleController.setLocaleOfNearestSupported(permissions);
-					ActionContext.getContext().getSession().put("permissions", permissions);
-				} catch (Exception e) {
-					logger.error("Problem autologging in.  Id supplied was: {}", autoLoginID);
-				}
+			if (Strings.isNotEmpty(autoLoginID)) {
+				logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
+						autoLoginID);
+				login(Integer.parseInt(autoLoginID));
 			}
+		}
+	}
+
+	private void login(int userID) {
+		try {
+			UserDAO userDAO = SpringUtils.getBean("UserDAO");
+			User user = userDAO.find(userID);
+
+			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
+			ActionContext.getContext().getSession().put("permissions", permissions);
+		} catch (Exception e) {
+			logger.error("Problem autologging in.  Id supplied was: {}", userID);
 		}
 	}
 
@@ -395,8 +422,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public Permissions getPermissions() {
 		try {
-			if (permissions == null)
+			if (permissions == null) {
 				loadPermissions();
+			}
 			return permissions;
 		} catch (Exception e) {
 			return new Permissions();
@@ -747,6 +775,182 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		alertMessages = messages;
 	}
 
+	protected int getClientSessionOriginalUserID() {
+		SessionCookie sessionCookie = validSessionCookie();
+		return (sessionCookie == null) ? 0 : sessionCookie.getUserID();
+	}
+
+	protected int getClientSessionUserID() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
+			return 0;
+		}
+		if (sessionCookie.getData("switchTo") == null) {
+			return sessionCookie.getUserID();
+		} else {
+			int switchToUserId = (Integer) sessionCookie.getData("switchTo");
+			permissions.setAdminID(switchToUserId);
+			return switchToUserId;
+		}
+	}
+
+	protected boolean isRememberMeSetInCookie() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
+			return false;
+		}
+		if (sessionCookie.getData("rememberMe") == null || !(Boolean)sessionCookie.getData("rememberMe")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/*
+	 * If the cookie is not valid (tampered with or the server key is the wrong
+	 * one) then return false If the cookie is valid and the user is being
+	 * persistently remembered then return true If the cookie is valid and the
+	 * user is not being persistently remembered then check to see if the cookie
+	 * session (in the cookie itself) is expired
+	 * 
+	 * @see
+	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
+	 */
+	public boolean sessionCookieIsValidAndNotExpired() {
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			return true;
+		}
+		String sessionCookieValue = clientSessionCookieValue();
+		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			return false;
+		} else if (isRememberMeSetInCookie()) {
+			return true;
+		} else {
+			loadPermissions();
+			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+			long nowInSeconds = new Date().getTime() / 1000;
+			long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+			return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
+					.getSessionCookieTimeoutInSeconds());
+		}
+	}
+
+	private SessionCookie validSessionCookie() {
+		String sessionCookieValue = clientSessionCookieValue();
+		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			clearPicsOrgCookie();
+			return null;
+		}
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+		return sessionCookie;
+	}
+
+	public void updateClientSessionCookieExpiresTime() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie != null) {
+			addClientSessionCookieToResponse(sessionCookie);
+		}
+	}
+
+	public String clearPermissionsSessionAndCookie() throws Exception {
+		if (permissions != null) {
+			permissions.clear();
+		}
+		ActionContext.getContext().getSession().clear();
+		clearPicsOrgCookie();
+		return SUCCESS;
+	}
+
+	public String logout() throws Exception {
+		invalidateSession();
+		return clearPermissionsSessionAndCookie();
+	}
+
+	public void invalidateSession() {
+		ActionContext.getContext().getSession().clear();
+		HttpSession session = ServletActionContext.getRequest().getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+	}
+
+	protected void clearPicsOrgCookie() {
+		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
+		cookie.setMaxAge(DELETE_COOKIE_AGE);
+		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+	private String clientSessionCookieValue() {
+		Cookie[] cookies = getRequest().getCookies();
+		if (cookies != null && cookies.length > 0) {
+			for (Cookie cookie : cookies) {
+				if (SessionSecurity.SESSION_COOKIE_NAME.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
+	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
+		String sessionCookieContent = sessionCookieContent(sessionCookie);
+		int maxAge = SESSION_COOKIE_AGE;
+		if (permissions != null && isRememberMeSetInCookie()) {
+			maxAge = permissions.getRememberMeTimeInSeconds();
+		}
+		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
+	}
+
+	protected void addClientSessionCookieToResponse() {
+		addClientSessionCookieToResponse(false, 0);
+	}
+
+	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
+		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
+		int maxAge = SESSION_COOKIE_AGE;
+		if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
+			maxAge = permissions.getRememberMeTimeInSeconds();
+		}
+		if (rememberMe && maxAge < 0) {
+			addActionMessage(getText("Login.NoPermissionToRememberMe"));
+		}
+		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
+	}
+
+	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent);
+			cookie.setMaxAge(maxAge);
+			if (!isLocalhostEnvironment()) {
+				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			}
+			ServletActionContext.getResponse().addCookie(cookie);
+		}
+	}
+
+	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
+		SessionCookie sessionCookie = new SessionCookie();
+		Date now = new Date();
+		sessionCookie.setUserID(permissions.getUserId());
+		sessionCookie.setCookieCreationTime(now);
+		if (switchToUser > 0) {
+			sessionCookie.putData("switchTo", switchToUser);
+		}
+		sessionCookie.putData("rememberMe", rememberMe);
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
+	}
+
+	private String sessionCookieContent(SessionCookie sessionCookie) {
+		Date now = new Date();
+		sessionCookie.setUserID(sessionCookie.getUserID());
+		sessionCookie.setCookieCreationTime(now);
+		sessionCookie.setEmbeddedData(sessionCookie.getEmbeddedData());
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
+	}
+
 	/**
 	 * @return the i18n text to use for this page's title
 	 */
@@ -771,6 +975,26 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 
 		return helpUrl;
+	}
+
+	public String getChatUrl() {
+		String protocol = getRequest().getProtocol();
+		Locale locale = TranslationActionSupport.getLocaleStatic();
+
+		// We're using a whitelist strategy because we don't want to pass junk downstream
+		String language = Locale.ENGLISH.getDisplayLanguage();
+		if (LocaleController.isLocaleValid(locale)) {
+			language = locale.getDisplayLanguage();
+		}
+
+		String chatUrl = protocol + "://server.iad.liveperson.net/hc/90511184/" +
+	    "?cmd=file" +
+	    "&amp;file=visitorWantsToChat" +
+	    "&amp;site=90511184" +
+	    "&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
+	    "&amp;referrer=";
+
+		return chatUrl;
 	}
 
 	public String getActionName() {

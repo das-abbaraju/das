@@ -35,17 +35,7 @@
 	<s:set var="countrySubdivision_label_display" value="%{getText('global.CountrySubdivision')}" />
 </s:else>
 
-<s:set name="chat_url" value="%{protocol +
-    '://server.iad.liveperson.net/hc/90511184/' + 
-    '?cmd=file' + 
-    '&amp;file=visitorWantsToChat' +
-    '&amp;site=90511184' + 
-    '&amp;imageUrl=' +
-    protocol +
-    '://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/' +
-    localeStatic.displayLanguage +
-    '/General/3a' +
-    '&amp;referrer='}" />
+<s:set name="chat_url" value="%{chatUrl}"></s:set>
 
 <s:if test="hasActionErrors()">
 	<s:actionerror cssClass="action-error alert-message error" />

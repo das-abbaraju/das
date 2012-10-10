@@ -12,6 +12,7 @@ import com.picsauditing.jpa.entities.AuditOptionValue;
 
 @SuppressWarnings("unchecked")
 public class AuditOptionValueDAO extends PicsDAO {
+	
 	@Transactional(propagation = Propagation.NESTED)
 	public AuditOptionValue save(AuditOptionValue o) {
 		if (o.getId() == 0) {
@@ -37,8 +38,12 @@ public class AuditOptionValueDAO extends PicsDAO {
 		query.setParameter(1, id);
 		return (AuditOptionGroup) query.getSingleResult();
 	}
-
+	
 	public List<AuditOptionGroup> findOptionTypeWhere(String where) {
+		return findOptionTypeWhere(where, NO_LIMIT);
+	}
+
+	public List<AuditOptionGroup> findOptionTypeWhere(String where, int limit) {
 		if (where != null && !where.isEmpty())
 			where = " WHERE " + where;
 		else
@@ -46,6 +51,10 @@ public class AuditOptionValueDAO extends PicsDAO {
 
 		Query query = em.createQuery("SELECT o FROM AuditOptionGroup o" + where);
 		// TODO Add sort here
+		if (limit > NO_LIMIT) {
+			query.setMaxResults(limit);
+		}
+				
 		return query.getResultList();
 	}
 	

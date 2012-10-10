@@ -20,7 +20,7 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -178,7 +178,7 @@ public class ManageReports extends PicsActionSupport {
 	public String deleteReport() {
 		try {
 			Report report = reportDao.find(Report.class, reportId);
-			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
+			if (reportModel.canUserEdit(permissions, report)) {
 				reportModel.removeAndCascade(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {

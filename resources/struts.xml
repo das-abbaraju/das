@@ -123,6 +123,7 @@
 			<result>struts/users/login.jsp</result>
 			<result name="forgot">struts/users/account_recovery.jsp</result>
 			<result name="overlay">/struts/users/login_form.jsp</result>
+            <result name="loginform">/struts/users/login/_login-form.jsp</result>
 		</action>
 		<action name="ChangePassword" class="com.picsauditing.actions.users.ChangePassword">
 			<result>struts/users/password.jsp</result>
@@ -958,10 +959,13 @@
 			</result>
 		</action>
 
+		<!-- These action classes are in the process of being deprecated. Please use the ReportAutocomplete below. -->
 		<!-- Autocomplete Ajax -->
 		<action name="{type:\w+}Autocomplete"
 			class="com.picsauditing.actions.autocomplete.{1}Autocomplete" method="autocomplete">
 		</action>
+		
+		<action name="ReportAutocomplete" class="com.picsauditing.actions.autocomplete.Autocompleter" />
 
 		<!-- Ajax Snippets -->
 		<action name="ContractorSelectAjax" class="com.picsauditing.actions.report.ReportAccount">
@@ -1167,6 +1171,9 @@
 			<result name="buttons">/struts/style_guide/buttons.jsp</result>
 			<result name="forms">/struts/style_guide/forms.jsp</result>
 			<result name="pills">/struts/style_guide/pills.jsp</result>
+		</action>
+		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
+			<result>struts/users/login.jsp</result>
 		</action>
 	</package>
 
