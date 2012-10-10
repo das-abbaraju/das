@@ -70,33 +70,24 @@ public class FilterTest {
 
 	@Test
 	public void testFilterFromJson__CommaSpaceSeparatedValues() throws ReportValidationException {
-		JSONObject json = new JSONObject();
-		json.put("name", "AccountStatus");
-		json.put("operator", "In");
-		json.put("value", "Active, Pending, Requested, Deactivated");
-
-		filter.setFieldName("AccountStatus");
-		filter.setOperator(QueryFilterOperator.In);
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.AccountStatus));
-		
-		filter.fromJSON(json);
+		createAccountStatusJson();
 
 		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
+		assertEquals(4, filter.getValues().size());
 	}
 
 	@Test
 	public void testFilterFromJson__CommaSeparatedValues() throws ReportValidationException {
+		createAccountStatusJson();
+
+		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
+		assertEquals(4, filter.getValues().size());
+	}
+	
+	private void createAccountStatusJson() {
 		JSONObject json = new JSONObject();
 		json.put("name", "AccountStatus");
-		json.put("operator", "In");
-		json.put("value","Active,Pending,Requested,Deactivated");
-
-		filter.setFieldName("AccountStatus");
-		filter.setOperator(QueryFilterOperator.In);
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.AccountStatus));
-		
+		json.put("value", "Active, Pending, Requested, Deactivated");
 		filter.fromJSON(json);
-
-		assertEquals("[Active,Pending,Requested,Deactivated]", filter.getValues().toString());
 	}
 }
