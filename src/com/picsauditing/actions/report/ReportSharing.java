@@ -33,7 +33,7 @@ public class ReportSharing extends PicsActionSupport {
 
 			editable = Boolean.parseBoolean(ServletActionContext.getRequest().getParameter("editable"));
 
-			if (type != null && reportModel.canUserEdit(permissions.getUserId(), report)
+			if (type != null && reportModel.canUserEdit(permissions, report)
 					&& id != permissions.getUserId()) {
 				if (type.equalsIgnoreCase("user"))
 					reportModel.connectReportPermissionUser(id, report.getId(), editable);
@@ -63,7 +63,7 @@ public class ReportSharing extends PicsActionSupport {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("id");
 			id = Integer.parseInt(dirtyParameter);
 
-			if (reportModel.canUserEdit(permissions.getUserId(), report) && id != permissions.getUserId()) {
+			if (reportModel.canUserEdit(permissions, report) && id != permissions.getUserId()) {
 				if (type.equalsIgnoreCase("user"))
 					reportModel.disconnectReportPermissionUser(id, report.getId());
 				else {
@@ -96,7 +96,7 @@ public class ReportSharing extends PicsActionSupport {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("editable");
 			editable = Boolean.parseBoolean(dirtyParameter);
 
-			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
+			if (reportModel.canUserEdit(permissions, report)) {
 				reportModel.setEditPermissions(id, report.getId(), editable);
 				json.put("success", true);
 			} else {

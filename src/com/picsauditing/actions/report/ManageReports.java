@@ -178,7 +178,7 @@ public class ManageReports extends PicsActionSupport {
 	public String deleteReport() {
 		try {
 			Report report = reportDao.find(Report.class, reportId);
-			if (reportModel.canUserEdit(permissions.getUserId(), report)) {
+			if (reportModel.canUserEdit(permissions, report)) {
 				reportModel.removeAndCascade(report);
 				addActionMessage(getText("ManageReports.message.ReportDeleted"));
 			} else {
