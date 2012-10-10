@@ -462,14 +462,20 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     onFilterValueDateBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getValue());
+        var filter = this.findParentFilter(cmp),
+            date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+        
+        console.log(date);
+        
+        filter.record.set('value', date);
     },
 
     onFilterValueDateSpecialKey: function (cmp, event) {
         if (event.getKey() == event.ENTER) {
-            var filter = this.findParentFilter(cmp);
-            filter.record.set('value', cmp.getValue());
+            var filter = this.findParentFilter(cmp),
+                date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+            
+            filter.record.set('value', date);
 
             this.application.fireEvent('refreshreport');
         }
