@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +12,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.EntityFactory;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
@@ -65,7 +63,7 @@ public class SqlBuilderTest {
 		assertEquals(3, sql.getFields().size());
 
 		assertContains("Account.id AS `AccountID`", sql.toString());
-		assertContains(" AS `AccountName`", sql.toString());
+		assertContains("CASE WHEN Account.dbaName IS NULL OR Account.dbaName = '' THEN Account.name ELSE Account.dbaName END AS `AccountName`", sql.toString());
 		assertContains("Account.status AS `AccountStatus`", sql.toString());
 	}
 
@@ -161,16 +159,15 @@ public class SqlBuilderTest {
 	@Test
 	public void testHaving() throws Exception {
 		addColumn("AccountStatus");
-		addColumn("AccountLegalName__Count");
+		addColumn("AccountName__Count");
 
-		addFilter("AccountLegalName__Count", QueryFilterOperator.GreaterThan, "5");
-		addFilter("AccountLegalName", QueryFilterOperator.BeginsWith, "A");
+		addFilter("AccountName__Count", QueryFilterOperator.GreaterThan, "5");
+		addFilter("AccountName", QueryFilterOperator.BeginsWith, "A");
 
 		initializeSql();
 
-		assertContains("HAVING (COUNT(Account.name) > 5)", sql.toString());
-		// Michael Test this for nameIndex
-		assertContains("WHERE ((Account.name LIKE 'A%'))", sql.toString());
+		assertContains("HAVING (COUNT(CASE WHEN Account.dbaName IS NULL OR Account.dbaName = '' THEN Account.name ELSE Account.dbaName END) > 5)", sql.toString());
+		assertContains("WHERE ((Account.nameIndex LIKE 'A%'))", sql.toString());
 		assertContains("GROUP BY Account.status", sql.toString());
 	}
 
