@@ -175,6 +175,8 @@ Ext.define('PICS.controller.report.Filter', {
         if (filter_offset) {
             filter_footer.setPosition(0, filter_offset);
         }
+
+        this.positionRemoveButtons();
     },
 
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
@@ -211,7 +213,6 @@ Ext.define('PICS.controller.report.Filter', {
         var filter_options = this.getFilterOptions();
 
         filter_options.expand();
-        this.adjustFilterRemovePositionToScrollBar();
     },
     
     onFilterRender: function (cmp, eOpts) {
@@ -407,7 +408,7 @@ Ext.define('PICS.controller.report.Filter', {
         // add new filters
         filter_options.add(filters);
 
-        this.adjustFilterRemovePositionToScrollBar();
+        this.positionRemoveButtons();
     },
 
     /**
@@ -509,30 +510,22 @@ Ext.define('PICS.controller.report.Filter', {
      * MISC
      */
 
-    adjustFilterRemovePositionToScrollBar: function () {
+    positionRemoveButtons: function () {
         var remove_filter_elements = Ext.select('.remove-filter').elements;
 
         if (remove_filter_elements.length) {
             var filter_options = this.getFilterOptions(),
-                scroll_bar_height = filter_options.body.dom.scrollHeight,
-                view_height = filter_options.body.dom.clientHeight;
+                scrollbar_width = Ext.getScrollbarSize().width,
+                scrollbar_left = filter_options.width - scrollbar_width,
+                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
+                button_left = parseInt(remove_filter_elements[0].style.left),
+                button_obscured = button_left + 1 >= scrollbar_left ? true : false;
 
-            if (scroll_bar_height > view_height) {
-                    // Calculate the new remove left position based on these values.
-                    var new_remove_filter_left_position = remove_filter_elements[0].style.left - Ext.getScrollBarWidth;
+           if (scrollbar_visible && button_obscured) {
+                button_left = button_left - scrollbar_width;
 
-                    // Assign the new left position to all of the remove buttons.
-                    for (var i = 0; i < remove_filter_elements.length; i++) {
-                        remove_filter_elements[i].style.left = new_remove_filter_left_position + 'px';
-                    }
-
-            } else {
-
-                var original_remove_filter_left_position = parseInt(remove_filter_elements[0].style.left);
-
-                // Assign the original left position to all of the remove buttons.
                 for (var i = 0; i < remove_filter_elements.length; i++) {
-                    remove_filter_elements[i].style.left = original_remove_filter_left_position + 'px';
+                    remove_filter_elements[i].style.left = button_left + 'px';
                 }
             }
         }
