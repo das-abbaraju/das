@@ -1,12 +1,9 @@
 package com.picsauditing.actions;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.Enumeration;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
@@ -30,7 +27,6 @@ public class ExceptionAction extends PicsActionSupport {
 	private String exceptionStack;
 	private int priority = 1;
 	private String user_message;
-	private String to_address = EmailAddressUtils.PICS_ERROR_EMAIL_ADDRESS;
 	private String from_address;
 	private String user_name;
 	private String user = EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS;
@@ -47,16 +43,8 @@ public class ExceptionAction extends PicsActionSupport {
 
 			tryToSaveExceptionToDatabase();
 
-			if (isSessionLessThanOneSecondOld()) {
-				tryRedirectToHome();
-
-				if (!Strings.isEmpty(url)) {
-					return REDIRECT;
-				}
-			} else {
-				String email = buildEmail(false);
-				sendEmail(email);
-			}
+			String email = buildEmail(false);
+			sendEmail(email);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -230,21 +218,6 @@ public class ExceptionAction extends PicsActionSupport {
 			return new GridSender(user, password);
 		}
 		return gridSenderForTesting;
-	}
-
-	private boolean isSessionLessThanOneSecondOld() {
-		HttpSession session = ServletActionContext.getRequest().getSession();
-		Date currentTime = new Date();
-		return (currentTime.getTime() - session.getCreationTime()) < 1000;
-	}
-
-	private void tryRedirectToHome() {
-		// TODO Research this and see if it's still necessary
-		try {
-			setUrlForRedirect("//www.picsorganizer.com/");
-		} catch (IOException doNothing) {
-			doNothing.printStackTrace();
-		}
 	}
 
 	private String createExceptionMessage() {

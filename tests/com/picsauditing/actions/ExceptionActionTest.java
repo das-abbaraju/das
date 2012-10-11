@@ -67,20 +67,6 @@ public class ExceptionActionTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testExecute_SessionLessThanASecond() {
-		// move it forward a minute since we can't be sure this test will take <
-		// 1 second
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, 1);
-		when(httpSession.getCreationTime()).thenReturn(calendar.getTimeInMillis());
-
-		assertEquals(PicsActionSupport.REDIRECT, exceptionAction.execute());
-		assertEquals("//www.picsorganizer.com/", exceptionAction.getUrl());
-
-		verify(dao).save(any(ErrorLog.class));
-	}
-
-	@Test
 	public void testExecute_SessionLongerThanASecondLoggedInAdmin() {
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAdminID()).thenReturn(1);
