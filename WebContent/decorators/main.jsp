@@ -25,6 +25,7 @@
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+<%@ page import="com.picsauditing.security.SessionSecurity" %>
 
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
@@ -35,6 +36,7 @@
 	String protocol = mainPage.isPageSecure() ? "https" : "http";
 	Permissions permissions = mainPage.getPermissions();
 
+	boolean switchToUserIsSet = SessionSecurity.switchToUserIsSet(request);
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
 	boolean useDynamicReports = false;
@@ -216,9 +218,9 @@
                         | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a>
                         | <a href="http://www.picsauditing.com">PICS</a>
                         | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
-                        <s:if test= "permissions.adminID > 0">
+                        <% if (switchToUserIsSet) { %>
                         	| <a href="Login.action?button=switchBack">SwitchBack</a>
-                        </s:if>
+                        <% } %>
                         <% } else { %>
                             <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span>
                             | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a>

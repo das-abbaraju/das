@@ -1,10 +1,11 @@
 package com.picsauditing.security;
 
 import java.util.Date;
-import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,4 +94,28 @@ public class SessionSecurity {
 		}
 		return sessionCookie;
 	}
+
+	public static boolean switchToUserIsSet(HttpServletRequest request) {
+		String sessionCookieValue = clientSessionCookieValue(request);
+		if (sessionCookieValue != null && SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+			if (sessionCookie != null && sessionCookie.getData("switchTo") != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static String clientSessionCookieValue(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null && cookies.length > 0) {
+			for (Cookie cookie : cookies) {
+				if (SessionSecurity.SESSION_COOKIE_NAME.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
 }

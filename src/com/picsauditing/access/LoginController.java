@@ -138,24 +138,25 @@ public class LoginController extends PicsActionSupport {
 
 	private String switchBack() throws Exception {
 		loadPermissions(false);
-		determineSwitchToUserId();
-		if (switchToUser > 0) {
-			user = userDAO.find(switchToUser);
+		switchToUser = 0;
+		int originalUser = getClientSessionOriginalUserID();
+		if (originalUser > 0) {
+			user = userDAO.find(originalUser);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
-			addClientSessionCookieToResponse(rememberMe, switchToUser);
+			addClientSessionCookieToResponse(rememberMe, 0);
 			permissions.setAdminID(0);
 		}
 		return setRedirectUrlPostLogin();
 	}
 
-	private void determineSwitchToUserId() {
-		if (permissions.getAdminID() > 0) {
-			switchToUser = permissions.getAdminID();
-		} else {
-			switchToUser = getClientSessionOriginalUserID();
-		}
-	}
+	// private void determineSwitchToUserId() {
+	// if (permissions.getAdminID() > 0) {
+	// switchToUser = permissions.getAdminID();
+	// } else {
+	// switchToUser = getClientSessionOriginalUserID();
+	// }
+	// }
 
 	public String switchTo() throws Exception {
 		loadPermissions(false);

@@ -882,18 +882,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	private String clientSessionCookieValue() {
-		Cookie[] cookies = getRequest().getCookies();
-		if (cookies != null && cookies.length > 0) {
-			for (Cookie cookie : cookies) {
-				if (SessionSecurity.SESSION_COOKIE_NAME.equals(cookie.getName())) {
-					return cookie.getValue();
-				}
-			}
-		}
-		return null;
+		return SessionSecurity.clientSessionCookieValue(getRequest());
 	}
 
 	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
+		loadPermissions(false);
 		String sessionCookieContent = sessionCookieContent(sessionCookie);
 		int maxAge = SESSION_COOKIE_AGE;
 		if (permissions != null && isRememberMeSetInCookie()) {
