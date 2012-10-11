@@ -23,14 +23,9 @@ public final class AuditTypeAutocompleteService extends AbstractAutocompleteServ
 			permissionWhere += "t.canOperatorView = 1 AND t.id IN ("
 					+ Strings.implode(permissions.getVisibleAuditTypes()) + ")";
 
-		List<AuditType> permittedAuditTypes = auditTypeDAO.findByTranslatableField(AuditType.class, permissionWhere, "name",
-				"%", permissions.getLocale(), RESULT_SET_LIMIT);
-		System.out.println(permittedAuditTypes);
-
 		String value = "%" + Strings.escapeQuotes(search) + "%";
 		List<AuditType> auditTypes = auditTypeDAO.findByTranslatableField(AuditType.class, permissionWhere, "name",
 				value, permissions.getLocale(), RESULT_SET_LIMIT);
-		System.out.println(auditTypes);
 		return auditTypes;
 	}
 
