@@ -7,7 +7,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -906,7 +905,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
 		if (rememberMe && maxAge < 0) {
-			addActionMessage(getText("Login.NoPermissionToRememberMe"));
+			addAlertMessage(getText("Login.NoPermissionToRememberMe"));
 		}
 		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
 	}
