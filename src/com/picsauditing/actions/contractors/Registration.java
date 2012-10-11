@@ -232,6 +232,7 @@ public class Registration extends ContractorActionSupport {
 		emailBuilder.setTemplate(2);
 		emailBuilder.setUser(user);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+		// TODO move to EncodedKey
 		user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 		String confirmLink = "http://www.picsorganizer.com/Login.action?username="
 				+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";

@@ -224,6 +224,7 @@ public class Strings {
 	/**
 	 * @param seed
 	 * @return
+	 * TODO move to EncodedKey
 	 */
 	public static String hashUrlSafe(String seed) {
 		String value = EncodedMessage.hash(seed);
