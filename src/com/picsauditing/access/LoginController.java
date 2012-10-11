@@ -280,7 +280,7 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		if (!isUserActive()) {
-			return getTextParameterized("Login.AccountNotActive");
+			return getTextParameterized("Login.AccountNotActive", user.getUsername());
 		}
 
 		return "";
