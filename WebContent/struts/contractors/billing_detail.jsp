@@ -387,7 +387,7 @@
 										<s:if test="!(permissions.contractor && status.void)">
 											<s:set name="url" value="''" />
 											<s:if test="class.simpleName == 'Invoice'">
-												<s:set name="url" value="'InvoiceDetail.action?id=' + id" />
+												<s:set name="url" value="'InvoiceDetail.action?invoice.id=' + id" />
 											</s:if>
 											<s:elseif test="class.simpleName == 'Payment'">
 												<pics:permission perm="Billing">
