@@ -20,11 +20,11 @@
 		
         <s:if test="#is_development_mode == true">
             <script type="text/javascript" src="${extjs_dir}/ext-debug.js"></script>
-            <script type="text/javascript" src="${app_dir}/app.js"></script>
+            <script type="text/javascript" src="${app_dir}/app.js?v=${version}"></script>
         </s:if>
         <s:else>
-            <script type="text/javascript" src="${extjs_dir}/ext.js"></script>
-            <script type="text/javascript" src="${extjs_dir}/app-all.js"></script>
+            <script type="text/javascript" src="${extjs_dir}/ext.js?v=${version}"></script>
+            <script type="text/javascript" src="${extjs_dir}/app-all.js?v=${version}"></script>
         </s:else>
         
         <s:if test="#is_development_mode == true">
