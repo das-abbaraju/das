@@ -28,6 +28,7 @@ import com.picsauditing.search.Database;
 
 @SuppressWarnings("serial")
 public class ContractorList extends PicsActionSupport implements ParameterAware {
+	private static final boolean USE_DYNAMIC_REPORTS = true;
 	private static final Logger logger = LoggerFactory.getLogger(ContractorList.class);
 	// private Report report;
 	//
@@ -55,25 +56,20 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 	@Override
 	@Api
 	public String execute() {
-		// Map<String, Object> params =
-		// ActionContext.getContext().getParameters();
-		// for (String paramName : params.keySet()) {
-		// System.out.println(paramName+" = "+params.get(paramName));
-		// }
-		// System.out.println();
-		// try {
-		// // report = reportDao.find(Report.class, 1);
-		// return setUrlForRedirect("ReportData.action?report=1");
-		// }
-		// catch (IOException e) {
-		// return "";
-		// }
-
-		try {
-			json = bruteForce();
-			return JSON;
-		} catch (SQLException e) {
-			return "";
+		if (USE_DYNAMIC_REPORTS) {
+			try {
+				// report = reportDao.find(Report.class, 1);
+				return setUrlForRedirect("ReportData.action?report=10");
+			} catch (IOException e) {
+				return "";
+			}
+		} else {
+			try {
+				json = bruteForce();
+				return JSON;
+			} catch (SQLException e) {
+				return "";
+			}
 		}
 	}
 
@@ -116,11 +112,10 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 				+ " join contractor_info c on a.id = c.id"
 				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?"
 				+ " left join contractor_operator_number con on c.id = con.conID and con.opID = gc.genID";
-		String sqlCount = "select count(a.id)"
-				+ " from accounts a"
+		String sqlCount = "select count(a.id)" 
+				+ " from accounts a" 
 				+ " join contractor_info c on a.id = c.id"
 				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?";
-
 
 		JSONObject output = new JSONObject();
 
@@ -128,8 +123,6 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 		output.put("total", recordCount);
 
 		JSONArray results = new JSONArray();
-		System.out.println("user: "+getUser());
-		System.out.println("account: "+getUser().getAccount());
 		List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, new Object[] { getUser().getAccount().getId() });
 		for (Map<String, Object> row : rows) {
 
@@ -163,8 +156,6 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 			results.add(data);
 		}
 		output.put("data", results);
-
-		System.out.println(output.toJSONString());
 		return output;
 	}
 }

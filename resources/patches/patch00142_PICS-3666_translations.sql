@@ -1,5 +1,6 @@
 insert ignore into app_translation (`msgKey`,`locale`,`msgValue`,`createdBy`,`updatedBy`,`creationDate`,`updateDate`,`qualityRating`,`applicable`)
 	values 
+	("ContractorOperatorNumberType.Oracle","en","Oracle",47739,47739,now(),now(),2,1),
 	("ProfileEdit.label.ApiKey","en","API Key",47739,47739,now(),now(),2,1),
 	("ProfileEdit.button.GenerateApiKey","en","Generate API Key",47739,47739,now(),now(),2,1),
 	("ProfileEdit.alert.ExistingApiKeyWarning","en","Are you sure?  Changing the API key will require changing all of the API calls that rely on this API key.",47739,47739,now(),now(),2,1),
