@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Query;
-
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
@@ -13,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -46,7 +43,9 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 			for (BasicDynaBean bean : results) {
 				int id = 0;
 				if ((id = NumberUtils.toInt(bean.get("id").toString(), 0)) != 0) {
-					reports.add(this.find(Report.class, id));
+					Report report = this.find(Report.class, id);
+					report.setNumTimesFavorited(NumberUtils.toInt(bean.get("numTimesFavorited").toString(), 0));
+					reports.add(report);
 				}
 			}
 		} catch (Exception e) {
