@@ -23,7 +23,8 @@
 
         <fieldset>
             <s:if test="configEnvironment || i18nReady">
-                <input id="current_locale" type="hidden" value="<s:text name="locale" />" />
+                <% String currentLanguage = LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage(); %>
+                <input id="current_locale" type="hidden" value="<%= currentLanguage %>" />
             </s:if>
 
             <div class="form-inline">
