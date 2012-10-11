@@ -26,37 +26,32 @@
 
             getFeedUrl: function (locale) {
                 var locales = {
-                        de: 'de',
-                        en: '',
-                        en_AU: '',
-                        en_CA: 'ca',
-                        en_GB: 'uk',
-                        en_US: '',
-                        en_ZA: 'za',
-                        es: 'es',
-                        es_ES: 'es',
-                        es_MX: 'es',
-                        fi: '',
-                        fr: 'fr',
-                        fr_CA: 'fr',
-                        fr_FR: 'fr',
-                        nl: '',
-                        no: '',
-                        pt: '',
-                        sv: '',
-                        zh: '',
-                        zh_CN: '',
-                        zh_TW: ''
-                },
-                current_locale = $('#current_locale'),
-                current_locale = current_locale.val(),
-                feed_source = '';
+                    de: 'de',
+                    en: '',
+                    en_AU: '',
+                    en_CA: 'ca',
+                    en_GB: 'uk',
+                    en_US: '',
+                    en_ZA: 'za',
+                    es: 'es',
+                    es_ES: 'es',
+                    es_MX: 'es',
+                    fi: '',
+                    fr: 'fr',
+                    fr_CA: 'fr',
+                    fr_FR: 'fr',
+                    nl: '',
+                    no: '',
+                    pt: '',
+                    sv: '',
+                    zh: '',
+                    zh_CN: '',
+                    zh_TW: ''
+                };
 
-                for (var key in locales) {
-                    if (key == current_locale){
-                        feed_source = locales[key];
-                    }
-                }
+                var current_locale = $('#current_locale'),
+                    current_locale = current_locale.val(),
+                    feed_source = locales[current_locale] || '';
 
                 if (feed_source !== '') {
                     feed_source += '/'
