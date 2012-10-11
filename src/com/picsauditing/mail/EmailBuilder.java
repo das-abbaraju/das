@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -23,8 +25,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Token;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
@@ -47,6 +49,7 @@ public class EmailBuilder {
 	private int conID;
 
 	private VelocityAdaptor velocityAdaptor;
+	private TranslationActionSupport translationActionSupport;
 
 	private Permissions permissions;
 
@@ -63,7 +66,7 @@ public class EmailBuilder {
 	}
 
 	public void clearAll() {
-		//tokens = new HashMap<String, Object>();
+		// tokens = new HashMap<String, Object>();
 
 		fromAddress = null;
 		password = null;
@@ -131,6 +134,15 @@ public class EmailBuilder {
 
 		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity());
 		body = velocityAdaptor.merge(body, tokens);
+
+		if (!body.contains("SubscriptionFooter")) {
+			if (email.isHtml()) {
+				body = body + getHTMLFooter(email.getToAddresses());
+			} else {
+				body = body + getFooter(email.getToAddresses());
+			}
+		}
+
 		email.setBody(body);
 
 		if (debug) {
@@ -139,6 +151,29 @@ public class EmailBuilder {
 			logger.debug(email.getBody());
 		}
 		return email;
+	}
+
+	private String getHost() {
+		PicsActionSupport picsActionSupport = new PicsActionSupport();
+		return picsActionSupport.getRequestHost();
+
+	}
+
+	private String getHTMLFooter(String email) {
+		translationActionSupport = new TranslationActionSupport();
+		return translationActionSupport.getText("EmailTemplate.footer.frontHTML") + " " + email + ", "
+				+ translationActionSupport.getText("EmailTemplate.footer.middle")
+				+ " <a href='/EmailOptOut.action?email=" + email + "'>" + getHost() + "/EmailOptOut.action?email="
+				+ email + "</a>.  " + translationActionSupport.getText("EmailTemplate.footer.back") + ".";
+	}
+
+	private String getFooter(String email) {
+		translationActionSupport = new TranslationActionSupport();
+		return translationActionSupport.getText("EmailTemplate.footer.frontNonHTML") + " " + email + ", "
+				+ translationActionSupport.getText("EmailTemplate.footer.middle") + " " + getHost()
+				+ "/EmailOptOut.action?email=" + email + ".  "
+				+ translationActionSupport.getText("EmailTemplate.footer.back") + ".";
+
 	}
 
 	// Custom token setters here
