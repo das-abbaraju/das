@@ -236,6 +236,8 @@ public class ReportModel {
 	}
 
 	public void moveReportUser(int userId, int reportId, int magnitude) throws Exception {
+		reportUserDao.resetSortOrder(userId);
+
 		ReportUser reportUser = reportUserDao.findOne(userId, reportId);
 		int numberOfFavorites = reportUserDao.getFavoriteCount(userId);
 		int currentPosition = reportUser.getSortOrder();

@@ -66468,80 +66468,6 @@ Ext.define('PICS.ux.util.FilterMultipleColumn', {
         };
     }
 });
-Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
-    extend: 'Ext.window.Window',
-    alias: 'widget.reportcolumnfunctionmodal',
-
-    border: 0,
-    closeAction: 'destroy',
-    draggable: false,
-    dockedItems: [{
-        xtype: 'toolbar',
-        border: 0,
-        defaults: {
-            height: 35
-        },
-        dock: 'top',
-        id: 'column_function_list',
-        items: [{
-            action: '',
-            height: 40,
-            text: 'None',
-            textAlign: 'left'
-        },{
-            action: 'Average',
-            height: 40,
-            text: 'Average',
-            textAlign: 'left'
-        }, {
-            action: 'Count',
-            height: 40,
-            text: 'Count',
-            textAlign: 'left'
-        }, {
-            action: 'Min',
-            height: 40,
-            text: 'Min',
-            textAlign: 'left'
-        }, {
-            action: 'Max',
-            height: 40,
-            text: 'Max',
-            textAlign: 'left'
-        }, {
-            action: 'Sum',
-            height: 40,
-            text: 'Sum',
-            textAlign: 'left'
-        }],
-        layout: 'vbox'
-    }, {
-        xtype: 'panel',
-        border: 0,
-        dock: 'bottom',
-        height: 10,
-        id: 'column_function_modal_footer'
-    }],
-    header: {
-        height: 44
-    },
-    height: 295,
-    id: 'column_function_modal',
-    layout: 'fit',
-    modal: true,
-    resizable: false,
-    shadow: 'frame',
-    title: 'Column Functions',
-    width: 300,
-
-    initComponent: function () {
-        if (!this.column || this.column.modelName != 'PICS.model.report.Column') {
-            Ext.Error.raise('Invalid column record');
-        }
-
-        this.callParent(arguments);
-    }
-});
 Ext.define('PICS.view.report.filter.FilterToolbar', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportfiltertoolbar'],
@@ -66903,6 +66829,23 @@ Ext.define('Ext.grid.ColumnLayout', {
         }
 
         return me.callParent(arguments);
+    }
+});
+
+Ext.define('PICS.view.report.ReportModal', {
+    extend: 'Ext.window.Window',
+
+    initComponent: function () {
+        var that = this;
+        
+        this.callParent(arguments);
+        
+        this.on('show', function (cmp, eOpts) {
+            // Close the modal when the user clicks outside of it.
+            Ext.get(Ext.query('.x-mask:last')).on('click', function () {
+                that.close();
+            });
+        });
     }
 });
 
@@ -68827,55 +68770,6 @@ Ext.define('Ext.layout.container.Border', {
     Ext.apply(props.vert, methods);
 });
 
-Ext.define('PICS.controller.report.ColumnFunctionModal', {
-    extend: 'Ext.app.Controller',
-
-    refs: [{
-        ref: 'functionModal',
-        selector: 'reportcolumnfunctionmodal'
-    }],
-
-    views: [
-        'PICS.view.report.column-function.ColumnFunctionModal'
-    ],
-
-    init: function () {
-        this.control({
-            'reportcolumnfunctionmodal button': {
-                click: this.onButtonClick
-            }
-        });
-
-        this.application.on({
-            showcolumnfunctionmodal: this.showColumnFunctionModal,
-            scope: this
-        });
-    },
-
-    onButtonClick: function (cmp, event, eOpts) {
-        var modal = this.getFunctionModal(),
-            column = modal.column,
-            action = cmp.action;
-
-        // set the method on the column store - column
-        column.set('method', action);
-
-        // refresh report
-        this.application.fireEvent('refreshreport');
-
-        // destroy modal for next use (generate with correct column)
-        modal.destroy();
-    },
-
-    // show the column function modal , but attach the specific column store - column your modifying
-    showColumnFunctionModal: function (column) {
-        var modal = Ext.create('PICS.view.report.column-function.ColumnFunctionModal', {
-            column: column
-        });
-
-        modal.show();
-    }
-});
 Ext.define('PICS.view.report.filter.FilterOptions', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilteroptions'],
@@ -68933,6 +68827,130 @@ Ext.define('PICS.view.report.header.ReportHeader', {
         region: 'east'
     }],
     layout: 'border'
+});
+Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
+    extend: 'PICS.view.report.ReportModal',
+    alias: 'widget.reportcolumnfunctionmodal',
+
+    border: 0,
+    closeAction: 'destroy',
+    draggable: false,
+    dockedItems: [{
+        xtype: 'toolbar',
+        border: 0,
+        defaults: {
+            height: 35
+        },
+        dock: 'top',
+        id: 'column_function_list',
+        items: [{
+            action: '',
+            height: 40,
+            text: 'None',
+            textAlign: 'left'
+        },{
+            action: 'Average',
+            height: 40,
+            text: 'Average',
+            textAlign: 'left'
+        }, {
+            action: 'Count',
+            height: 40,
+            text: 'Count',
+            textAlign: 'left'
+        }, {
+            action: 'Min',
+            height: 40,
+            text: 'Min',
+            textAlign: 'left'
+        }, {
+            action: 'Max',
+            height: 40,
+            text: 'Max',
+            textAlign: 'left'
+        }, {
+            action: 'Sum',
+            height: 40,
+            text: 'Sum',
+            textAlign: 'left'
+        }],
+        layout: 'vbox'
+    }, {
+        xtype: 'panel',
+        border: 0,
+        dock: 'bottom',
+        height: 10,
+        id: 'column_function_modal_footer'
+    }],
+    header: {
+        height: 44
+    },
+    height: 295,
+    id: 'column_function_modal',
+    layout: 'fit',
+    modal: true,
+    resizable: false,
+    shadow: 'frame',
+    title: 'Column Functions',
+    width: 300,
+
+    initComponent: function () {
+        if (!this.column || this.column.modelName != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column record');
+        }
+
+        this.callParent(arguments);
+    }
+});
+Ext.define('PICS.controller.report.ColumnFunctionModal', {
+    extend: 'Ext.app.Controller',
+
+    refs: [{
+        ref: 'functionModal',
+        selector: 'reportcolumnfunctionmodal'
+    }],
+
+    views: [
+        'PICS.view.report.column-function.ColumnFunctionModal'
+    ],
+
+    init: function () {
+        this.control({
+            'reportcolumnfunctionmodal button': {
+                click: this.onButtonClick
+            }
+        });
+
+        this.application.on({
+            showcolumnfunctionmodal: this.showColumnFunctionModal,
+            scope: this
+        });
+    },
+
+    onButtonClick: function (cmp, event, eOpts) {
+        var modal = this.getFunctionModal(),
+            column = modal.column,
+            action = cmp.action;
+
+        // set the method on the column store - column
+        column.set('method', action);
+
+        // refresh report
+        this.application.fireEvent('refreshreport');
+
+        // destroy modal for next use (generate with correct column)
+        modal.destroy();
+    },
+
+    // show the column function modal , but attach the specific column store - column your modifying
+    showColumnFunctionModal: function (column) {
+        var modal = Ext.create('PICS.view.report.column-function.ColumnFunctionModal', {
+                column: column
+            }),
+            that = this;
+
+        modal.show();
+    }
 });
 /**
  * Tracks what records are currently selected in a databound component.
@@ -89442,7 +89460,7 @@ Ext.define('PICS.view.report.available-field.AvailableFieldList', {
     }
 });
 Ext.define('PICS.view.report.available-field.AvailableFieldModal', {
-    extend: 'Ext.window.Window',
+    extend: 'PICS.view.report.ReportModal',
     alias: ['widget.reportavailablefieldmodal'],
 
     requires: [
@@ -91800,7 +91818,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                url: 'ReportAutocomplete.action?fieldType=' + field_type,
+                url: 'Autocompleter.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'
@@ -91862,7 +91880,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                url: 'ReportAutocomplete.action?fieldType=' + field_type,
+                url: 'Autocompleter.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'
@@ -96965,7 +96983,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore();
+        var store = this.getReportAvailableFieldsByCategoryStore(),
+            that = this;
 
         store.clearFilter();
         store.sort();
@@ -97442,14 +97461,20 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     onFilterValueDateBlur: function (cmp, event, eOpts) {
-        var filter = this.findParentFilter(cmp);
-        filter.record.set('value', cmp.getValue());
+        var filter = this.findParentFilter(cmp),
+            date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+        
+        console.log(date);
+        
+        filter.record.set('value', date);
     },
 
     onFilterValueDateSpecialKey: function (cmp, event) {
         if (event.getKey() == event.ENTER) {
-            var filter = this.findParentFilter(cmp);
-            filter.record.set('value', cmp.getValue());
+            var filter = this.findParentFilter(cmp),
+                date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+            
+            filter.record.set('value', date);
 
             this.application.fireEvent('refreshreport');
         }
@@ -97574,7 +97599,7 @@ Ext.define('PICS.controller.report.Report', {
     saveReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!edit.action';
+            url = 'ReportDynamic!save.action';
 
         Ext.Ajax.request({
             url: url,
@@ -97596,7 +97621,7 @@ Ext.define('PICS.controller.report.Report', {
             }
         });
     },
-    
+
     setPageTitle: function(title) {
         Ext.query('title')[0].innerHTML = 'PICS - ' + title;
     }
@@ -98170,7 +98195,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     showSettingsModal: function (action) {
-        var modal = Ext.create('PICS.view.report.settings.SettingsModal');
+        var modal = Ext.create('PICS.view.report.settings.SettingsModal'),
+            that = this;
 
         if (action == 'edit') {
             this.getReportSettingsTabs().setActiveTab(0);
@@ -98178,12 +98204,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             this.getReportSettingsTabs().setActiveTab(1);
         }
 
-        modal.show(false, function () {
-            // Close the modal when the user clicks outside of it.
-            Ext.get(Ext.query('.x-mask:last')).on('click', function () {
-                modal.close();
-            });
-        });
+        modal.show();
     },
     
     /**
@@ -98191,7 +98212,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
      */
 
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
-        cmp.store.getProxy().url = 'ReportAutocomplete!reportSharingAutocomplete.action?reportId=' + this.getReportId();
+        cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + this.getReportId();
         cmp.store.load();
     },
 

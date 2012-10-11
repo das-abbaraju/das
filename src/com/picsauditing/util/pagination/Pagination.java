@@ -113,7 +113,7 @@ public class Pagination<E> {
 	}
 
 	public boolean hasNextPage() {
-		if (parameters.getPage() != getTotalPages())
+		if (parameters.getPage() != getTotalPages() && getTotalPages() > 0)
 			return true;
 
 		return false;
@@ -121,7 +121,7 @@ public class Pagination<E> {
 
 	// TODO change this to only show if the last page is not in the nav
 	public boolean hasLastPage() {
-		if (parameters.getPage() != getTotalPages())
+		if (parameters.getPage() != getTotalPages() && getTotalPages() > 0)
 			return true;
 
 		return false;

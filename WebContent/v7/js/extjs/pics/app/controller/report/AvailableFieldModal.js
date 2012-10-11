@@ -111,7 +111,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore();
+        var store = this.getReportAvailableFieldsByCategoryStore(),
+            that = this;
 
         store.clearFilter();
         store.sort();

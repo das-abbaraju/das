@@ -47,7 +47,7 @@ public class ReportUserDAO extends PicsDAO {
 
 		return reportUsers;
 	}
-	
+
 	private List<ReportUser> populateReportUsers(List<BasicDynaBean> results) {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
@@ -65,7 +65,7 @@ public class ReportUserDAO extends PicsDAO {
 				User user = new User(userName.toString());
 				user.setId(Integer.parseInt(userID.toString()));
 			}
-			
+
 			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
 
 			ReportUser reportUser = new ReportUser(0, report);
@@ -118,11 +118,8 @@ public class ReportUserDAO extends PicsDAO {
 
 	@Transactional(propagation = Propagation.NESTED)
 	public void cascadeFavoriteReportSorting(int userId, int offset, int start, int end) throws SQLException {
-		String sql = "UPDATE report_user" +
-				" SET sortOrder = sortOrder + " + offset +
-				" WHERE userID = " + userId +
-				" AND sortOrder >= " + start +
-				" AND sortOrder <= " + end;
+		String sql = "UPDATE report_user SET sortOrder = sortOrder + " + offset + " WHERE userID = " + userId
+				+ " AND sortOrder >= " + start + " AND sortOrder <= " + end;
 
 		Query query = em.createNativeQuery(sql);
 		query.executeUpdate();
@@ -136,19 +133,35 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addField("r.description");
 		sql.addField("u.name as userName");
 		sql.addField("u.id as userId");
-		sql.addField("rpuru.favorite as favorite");
-		sql.addField("COUNT(DISTINCT ru.id) AS numTimesFavorited");
+		sql.addField("f.total AS numTimesFavorited");
+		sql.addField("null AS favorite");
 
-		sql.addGroupBy("r.id");
+		sql.addJoin("LEFT JOIN users AS u ON r.createdBy = u.id");
+		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
-		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.favorite = 1");
-		sql.addJoin("LEFT JOIN report_permission_user AS rpu ON r.id = rpu.reportID");
-		sql.addJoin("LEFT JOIN report_user as rpuru ON rpu.userID = rpuru.userID AND r.id = ru.reportID");
-		sql.addJoin("LEFT JOIN users as u ON rpu.userID = u.id");
-		sql.addJoin("LEFT JOIN report_permission_account AS rpa ON r.id = rpa.reportID");
-		sql.addWhere("rpu.userID = " + userId + " OR rpa.accountID = " + accountId);
-		sql.addOrderBy("numTimesFavorited DESC");
+		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + userId
+				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + accountId;
+		sql.addWhere("r.id IN (" + permissionsUnion + ")");
+
+		sql.addOrderBy("f.total DESC");
+		sql.addOrderBy("f.viewCount DESC");
+		sql.addOrderBy("r.creationDate");
 
 		return sql;
 	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void resetSortOrder(int userId) throws SQLException {
+		String sql = "UPDATE report_user ru " +
+				"JOIN (SELECT t.id FROM report_user t " +
+				"		JOIN (SELECT @row := 0) r " +
+				"		WHERE favorite = 1 " +
+				"		AND userID = " + userId + 
+				"		ORDER BY userID, sortOrder) AS t ON ru.id = t.id " +
+				" SET sortOrder = @row := @row + 1";
+
+		Database db = new Database();
+		db.executeUpdate(sql);
+	}
+
 }

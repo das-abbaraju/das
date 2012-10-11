@@ -4,11 +4,9 @@
 <title><s:text name="global.Login" /></title>
 <meta name="help" content="Logging_In">
 
-<div id="user_login">
+<div id="login_wrapper">
     <s:include value="login/_login-form.jsp"/>
 </div>
-
-<a id="registration_link" href="Registration.action"><s:text name="Login.Register" /></a>
 
 <div id="newsfeed_wrapper">
     <div id="newsfeed"></div>

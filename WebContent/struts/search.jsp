@@ -39,7 +39,7 @@
 								search
 							</s:param>
 							<s:param name="searchTerm">
-								${searchTerm.replace(' ','+') + '+' + sug.replace(' ','-')}
+								${searchTerm}<s:if test="!isStringEmpty(#sug)"> ${sug.replace(' ', '-')}</s:if>
 							</s:param>
 						</s:url>
 						<a href="${additional_search_terms}">

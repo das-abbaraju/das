@@ -53,6 +53,17 @@
 					</formats>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.7.1</version>
+				<configuration>
+					<targetJdk>${compileSource}</targetJdk>
+					<format>xml</format>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+				</configuration>
+			</plugin>
 		</plugins>
 	</reporting>
 
@@ -256,6 +267,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<integrationSourceDirectory>integration_tests</integrationSourceDirectory>
 		<integrationOutputDirectory>target/integration_test-classes</integrationOutputDirectory>		
+		<compileSource>1.6</compileSource>
 	</properties>
 	
 	<dependencies>

@@ -215,7 +215,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
     },
     
     showSettingsModal: function (action) {
-        var modal = Ext.create('PICS.view.report.settings.SettingsModal');
+        var modal = Ext.create('PICS.view.report.settings.SettingsModal'),
+            that = this;
 
         if (action == 'edit') {
             this.getReportSettingsTabs().setActiveTab(0);
@@ -223,12 +224,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             this.getReportSettingsTabs().setActiveTab(1);
         }
 
-        modal.show(false, function () {
-            // Close the modal when the user clicks outside of it.
-            Ext.get(Ext.query('.x-mask:last')).on('click', function () {
-                modal.close();
-            });
-        });
+        modal.show();
     },
     
     /**
