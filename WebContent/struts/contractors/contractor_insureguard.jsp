@@ -213,8 +213,9 @@
 		</tr>
 	</table>
 
-	<s:if test="wcbFiles.size > 0">
 	<br />
+
+	<s:if test="wcbFiles.size > 0">
 	<h3><s:text name="ConInsureGUARD.WcbFiles" /></h3>
 	<table class="report">
 		<thead>
@@ -241,6 +242,59 @@
 		</thead>
 		<tbody>
 			<s:iterator value="wcbFiles" var="wcb">
+				<tr>
+					<td><s:property value="#wcb.auditName" /></td>
+					<td><s:property value="#wcb.title" /></td>
+					<td class="center"><s:date name="#wcb.expires" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
+					<td class="center">
+						<a href="DownloadAuditData.action?auditID=<s:property value="#wcb.auditId"/>&auditData.question.id=<s:property value="#wcb.questionId"/>" target="_BLANK">
+							<img src="images/icon_insurance.gif" />
+						</a>
+					</td>
+					<td class="center">
+							<a class="edit" href="#" onclick="showFileUpload(<s:property value="#wcb.auditId"/>, <s:property value="#wcb.questionId" />); return false;" title="Opens in new window (please disable your popup blocker)">
+								<s:text name="global.Edit" />
+							</a>
+					</td>
+					<td>
+						<s:iterator value="#wcb.operators" var="op">
+							<s:property value="#op.name" /><br />
+						</s:iterator>
+					</td>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
+	<br/>
+	</s:if>
+	
+	<s:if test="expiredWcbFiles.size > 0">
+	<h3><s:text name="ConInsureGUARD.WcbFilesExpired" /></h3>
+	<table class="report">
+		<thead>
+			<tr>
+				<td>
+					<s:text name="Filters.label.PolicyType" />
+				</td>
+				<td>
+					<s:text name="ConInsureGUARD.Policy" />
+				</td>
+				<td class="center">
+					<s:text name="global.ExpirationDate" />
+				</td>
+				<td class="center">
+					<s:text name="global.View" />
+				</td>
+				<td>
+					<s:text name="global.Edit" />
+				</td>
+				<td>
+					<s:text name="ConInsureGUARD.UsedBy" />
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="expiredWcbFiles" var="wcb">
 				<tr>
 					<td><s:property value="#wcb.auditName" /></td>
 					<td><s:property value="#wcb.title" /></td>

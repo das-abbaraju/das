@@ -106,6 +106,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 	};
 
 	private List<WcbInfo> wcbFiles;
+	private List<WcbInfo> expiredWcbFiles;
 
 	public ConInsureGuard() {
 		this.noteCategory = NoteCategory.Insurance;
@@ -135,6 +136,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 				});
 
 		wcbFiles = new ArrayList<WcbInfo>();
+		expiredWcbFiles = new ArrayList<WcbInfo>();
 
 		// Populating policy Maps
 		for (ContractorAudit audit : contractorAuditDAO
@@ -161,7 +163,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 					currentPoliciesMap.put(audit, caos);
 				}
 
-				if (audit.getAuditType().isWCB() && !audit.isExpired()) {
+				if (audit.getAuditType().isWCB()) {
 					for (AuditData data : audit.getData()) {
 						if (data.getQuestion().getQuestionType().equals("File")
 								&& !Strings.isEmpty(data.getAnswer())) {
@@ -187,7 +189,11 @@ public class ConInsureGuard extends ContractorActionSupport {
 									}
 								}
 							}
-							wcbFiles.add(wcb);
+							if (!audit.isExpired()) {
+								wcbFiles.add(wcb);
+							} else {
+								expiredWcbFiles.add(wcb);
+							}
 						}
 					}
 				}
@@ -205,6 +211,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 		};
 		
 		Collections.sort(wcbFiles, comparator);
+		Collections.sort(expiredWcbFiles, comparator);
 		
 		for (Certificate certificate : getCertificates()) {
 			List<AuditData> auditData = auditDataDAO.findByCertificateID(
@@ -308,5 +315,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public void setWcbFiles(List<WcbInfo> wcbFiles) {
 		this.wcbFiles = wcbFiles;
+	}
+
+	public List<WcbInfo> getExpiredWcbFiles() {
+		return expiredWcbFiles;
+	}
+
+	public void setExpiredWcbFiles(List<WcbInfo> expiredWcbFiles) {
+		this.expiredWcbFiles = expiredWcbFiles;
 	}
 }
