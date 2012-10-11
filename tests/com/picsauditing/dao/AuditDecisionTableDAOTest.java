@@ -35,40 +35,28 @@ public class AuditDecisionTableDAOTest {
 		MockitoAnnotations.initMocks(this);
 		auditDecisionTableDAO = new AuditDecisionTableDAO();
 		auditDecisionTableDAO.setEntityManager(mockEntityManager);
-		when(mockEntityManager.createQuery(anyString())).thenReturn(mockQuery);
+		when(mockEntityManager.createNativeQuery(anyString())).thenReturn(mockQuery);
 	}
 	
 	@Test
 	public void testGetAuditTypesForOperatorIdsInQuery_OpeatorAccount() {
-		setupTestOperatorAccount();
-		
 		auditDecisionTableDAO.getAuditTypes(testOperator);
 		
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		verify(mockEntityManager).createQuery((argument.capture()));
+		verify(mockEntityManager).createNativeQuery((argument.capture()));
 		
-		assertTrue(argument.getValue().contains("opID IN (11,12,13)"));
+		assertTrue(argument.getValue().contains("caop.opID IN (SELECT f.opID FROM facilities f WHERE f.corporateID "));
 	}
 	
 	@Test
 	public void testGetAuditTypesForOperatorIdsInQuery_CorporateAccount() {
-		setupTestOperatorAccount();
 		when(testOperator.isCorporate()).thenReturn(true);
 		
 		auditDecisionTableDAO.getAuditTypes(testOperator);
 		
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		verify(mockEntityManager).createQuery((argument.capture()));
+		verify(mockEntityManager).createNativeQuery((argument.capture()));
 		
-		assertTrue(argument.getValue().contains("opID IN (11,12,13)"));
-	}
-	
-	public void setupTestOperatorAccount() {
-		List<Integer> parentFacilitiesIds= new ArrayList<Integer>();
-		parentFacilitiesIds.add(11);
-		parentFacilitiesIds.add(12);
-		parentFacilitiesIds.add(13);
-		
-		when(testOperator.getOperatorHeirarchy()).thenReturn(parentFacilitiesIds);
+		assertTrue(argument.getValue().contains("caop.opID IN (SELECT f.opID FROM facilities f WHERE f.corporateID "));
 	}
 }
