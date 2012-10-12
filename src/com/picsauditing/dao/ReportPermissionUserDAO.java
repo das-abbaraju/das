@@ -31,7 +31,9 @@ public class ReportPermissionUserDAO extends PicsDAO {
 	public ReportPermissionUser findOne(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		String findReportForUser = FIND_REPORTS_FOR_USER + " AND rpu.reportID = :reportId";
 		String findReportForGroup = FIND_REPORTS_FOR_GROUP + " AND rpu.reportID = :reportId";
-		String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, findReportForUser, findReportForGroup);
+
+		// The reason a Limit is needed is that we are searching for user permissions and group permissions 
+		String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, findReportForUser, findReportForGroup) + " LIMIT 1";
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", userId);
