@@ -68,8 +68,8 @@ public class ReportData extends PicsActionSupport {
 
 	public String report() {
 		try {
-			initialize();
 			upgradeFields();
+			initialize();
 			configuration();
 
 			json.put("report", report.toJSON(true));
@@ -135,6 +135,7 @@ public class ReportData extends PicsActionSupport {
 
 	public String data() throws Exception {
 		try {
+			upgradeFields();
 			initialize();
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 			runQuery();
@@ -208,6 +209,7 @@ public class ReportData extends PicsActionSupport {
 	}
 
 	private void writeJsonError(Exception e) {
+		e.printStackTrace();
 		String message = e.getMessage();
 		if (message == null) {
 			message = e.toString();
