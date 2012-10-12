@@ -54,9 +54,9 @@
 			</a>
 		</pics:permission>
 		
-		<s:if test="requestedContractor.status != 'Requested'">
+		<s:if test="!requestedContractor.status.requested">
 			<div class="info">
-				<s:if test="requestedContractor.status == 'Active'">
+				<s:if test="requestedContractor.status.active">
 					<s:text name="RequestNewContractor.message.Registered">
 						<s:param>
 							${requestedContractor.name}
@@ -429,9 +429,10 @@
 								</label>
 								<s:select 
 									id="request_status" 
-									list="applicableStatuses" 
+									list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
 									listValue="getText(i18nKey)"
 									name="status"
+									value="%{status}"
 								/>
 							</li>
 							<li id="hold_date">

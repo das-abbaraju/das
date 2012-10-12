@@ -243,15 +243,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return usersAndSwitchTos;
 	}
 
-	public List<ContractorRegistrationRequestStatus> getApplicableStatuses() {
-		List<ContractorRegistrationRequestStatus> applicableStatuses = new ArrayList<ContractorRegistrationRequestStatus>();
-		applicableStatuses.add(ContractorRegistrationRequestStatus.Active);
-		applicableStatuses.add(ContractorRegistrationRequestStatus.Hold);
-		applicableStatuses.add(ContractorRegistrationRequestStatus.ClosedUnsuccessful);
-
-		return applicableStatuses;
-	}
-
 	public Date getToday() {
 		return new Date();
 	}

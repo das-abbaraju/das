@@ -138,12 +138,15 @@ public class Registration extends ContractorActionSupport {
 						+ registrationKey + "'");
 
 				if (requestsByHash != null && !requestsByHash.isEmpty()) {
-					if (requestsByHash.get(0).getStatus().isRequested()) {
-						contractor = requestsByHash.get(0);
-						user = contractor.getPrimaryContact();
-						user.setUsername(user.getEmail());
-					} else {
-						addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+					contractor = requestsByHash.get(0);
+					user = contractor.getPrimaryContact();
+					user.setUsername(user.getEmail());
+
+					if (!contractor.getStatus().isRequested()) {
+						permissions = logInUser();
+						setLoginLog(permissions);
+
+						return setUrlForRedirect(getRegistrationStep().getUrl());
 					}
 				}
 			}
