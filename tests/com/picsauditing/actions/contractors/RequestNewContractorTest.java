@@ -47,6 +47,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
@@ -652,9 +653,22 @@ public class RequestNewContractorTest {
 	}
 
 	@Test
-	public void testPreviewEmail() throws Exception {
-		assertNull(requestNewContractor.previewEmail());
+	public void testBuildInitialEmail() throws Exception {
+		EmailQueue email = (EmailQueue) Whitebox.invokeMethod(requestNewContractor, "buildInitialEmail");
 
+		assertNull(email);
+		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class));
+	}
+
+	@Test
+	public void testBuildInitialEmail_WithRequest() throws Exception {
+		EmailQueue email = mock(EmailQueue.class);
+		when(emailHelper.buildInitialEmail(any(ContractorRegistrationRequest.class))).thenReturn(email);
+
+		requestNewContractor.setNewContractor(registrationRequest);
+		EmailQueue built = (EmailQueue) Whitebox.invokeMethod(requestNewContractor, "buildInitialEmail");
+
+		assertNotNull(built);
 		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class));
 	}
 

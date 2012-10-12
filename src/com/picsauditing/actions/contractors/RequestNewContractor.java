@@ -80,6 +80,8 @@ public class RequestNewContractor extends AccountActionSupport {
 	private List<ContractorAccount> potentialMatches;
 
 	private int requestID;
+	// For previews
+	private EmailQueue email;
 
 	public static final String PERSONAL_EMAIL = "Personal Email";
 	public static final String DRAFT_EMAIL = "Email";
@@ -295,8 +297,10 @@ public class RequestNewContractor extends AccountActionSupport {
 		return setUrlForRedirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
 
-	public EmailQueue previewEmail() throws Exception {
-		return emailHelper.buildInitialEmail(newContractor);
+	public String emailPreview() throws Exception {
+		email = buildInitialEmail();
+
+		return "email";
 	}
 
 	public List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
@@ -453,6 +457,14 @@ public class RequestNewContractor extends AccountActionSupport {
 
 	public void setStatus(ContractorRegistrationRequestStatus status) {
 		this.status = status;
+	}
+
+	public EmailQueue getEmail() {
+		return email;
+	}
+
+	private EmailQueue buildInitialEmail() throws Exception {
+		return emailHelper.buildInitialEmail(newContractor);
 	}
 
 	private void checkContactFields() {

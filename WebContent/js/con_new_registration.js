@@ -23,8 +23,6 @@ $(function() {
 		$('.blockOverlay').attr('title', translate('JS.RequestNewContractor.ClickToUnblock')).click($.unblockUI);              
     });
 	
-	$('.fancybox').fancybox();
-	
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -166,6 +164,22 @@ $(function() {
 		
 		$('#attachment').append(attachment);
 		$('#'+id+'_input').val(filename);
+	});
+	
+	$('#preview_email').live('click', function() {
+	    PICS.ajax({
+	        url: 'RequestNewContractor!emailPreview.action',
+	        data: $('#saveContractorForm').serialize(),
+	        success: function(data, textStatus, XMLHttpRequest) {
+	            var modal = PICS.modal({
+	                content: data,
+	                title: translate('JS.button.Preview'),
+	                width: 900
+	            });
+	            
+	            modal.show();
+	        }
+	    });
 	});
 });
 
