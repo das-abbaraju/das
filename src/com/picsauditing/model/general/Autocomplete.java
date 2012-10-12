@@ -35,7 +35,7 @@ public class Autocomplete {
 			record.put("result_name", bean.get("name"));
 			record.put("result_id", bean.get("id"));
 			record.put("search_type", bean.get("type"));
-			record.put("result_at", Strings.nullToBlank(bean.get("location").toString()));
+			record.put("result_at", Strings.nullToBlank((String) bean.get("location")));
 			resultRecords.add(record);
 		}
 		
