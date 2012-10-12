@@ -373,17 +373,6 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testGetApplicableStatuses() {
-		assertTrue(requestNewContractorAccount.getApplicableStatuses().contains(
-				ContractorRegistrationRequestStatus.Active));
-		assertTrue(requestNewContractorAccount.getApplicableStatuses().contains(
-				ContractorRegistrationRequestStatus.Hold));
-		assertTrue(requestNewContractorAccount.getApplicableStatuses().contains(
-				ContractorRegistrationRequestStatus.ClosedUnsuccessful));
-		assertEquals(3, requestNewContractorAccount.getApplicableStatuses().size());
-	}
-
-	@Test
 	public void testSetRequestStatus() throws Exception {
 		requestNewContractorAccount.setRequestedContractor(contractor);
 
@@ -606,6 +595,7 @@ public class RequestNewContractorAccountTest {
 		when(request.getId()).thenReturn(1);
 		when(request.getRequestedBy()).thenReturn(operator);
 		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(true);
+		when(request.getStatus()).thenReturn(ContractorRegistrationRequestStatus.Active);
 		when(user.getId()).thenReturn(1);
 
 		requestNewContractorAccount.setRequestedContractor(contractor);

@@ -93,7 +93,7 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 		ContractorAccount contractor = new ContractorAccount();
 
 		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful == request.getStatus()) {
-			contractor.setStatus(AccountStatus.Deactivated);
+			contractor.setStatus(AccountStatus.Declined);
 		} else {
 			contractor.setStatus(AccountStatus.Requested);
 		}

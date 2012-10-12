@@ -194,12 +194,12 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 				matchesOn.add(MatchType.Address);
 			}
 
-			if (strippedStartsWith(registered.getZip(), requested.getZip())) {
+			if (strippedStartsWithEither(registered.getZip(), requested.getZip())) {
 				matchesOn.add(MatchType.Address);
 			}
 		}
 
-		if (strippedStartsWith(registered.getTaxId(), requested.getTaxId())) {
+		if (strippedStartsWithEither(registered.getTaxId(), requested.getTaxId())) {
 			matchesOn.add(MatchType.TaxID);
 		}
 
@@ -215,7 +215,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 				matchesOn.add(MatchType.Email);
 			}
 
-			if (strippedStartsWith(registeredUser.getPhoneIndex(), requestedUser.getPhoneIndex())) {
+			if (strippedStartsWithEither(registeredUser.getPhoneIndex(), requestedUser.getPhoneIndex())) {
 				matchesOn.add(MatchType.Phone);
 			}
 		}
@@ -231,7 +231,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		return Strings.EMPTY_STRING;
 	}
 
-	private boolean strippedStartsWith(String first, String second) {
+	private boolean strippedStartsWithEither(String first, String second) {
 		String firstStripped = Strings.stripNonAlphaNumericCharacters(first);
 		String secondStripped = Strings.stripNonAlphaNumericCharacters(second);
 

@@ -354,6 +354,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
 		saveRequiredFieldsAndSaveEntities();
+
+		if (status.isClosedUnsuccessful()) {
+			requestedContractor.setStatus(AccountStatus.Declined);
+		} else if (status.isClosedSuccessful() || status.isClosedContactedSuccessful()) {
+			requestedContractor.setStatus(AccountStatus.Active);
+		} else {
+			requestedContractor.setStatus(AccountStatus.Requested);
+		}
+
 		saveLegacyRequest();
 
 		if (newRequest) {
@@ -441,6 +450,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		legacyRequest.setRequestedByUser(requestRelationship.getRequestedBy());
 		legacyRequest.setRequestedByUserOther(requestRelationship.getRequestedByOther());
 		legacyRequest.setContractor(requestedContractor);
+		legacyRequest.setStatus(status);
 		legacyRequest.setAuditColumns(permissions);
 
 		return legacyRequest;
@@ -610,6 +620,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			requestedContractor.setRequestedBy(legacyRequest.getRequestedBy());
 			requestedContractor.setAuditColumns(permissions);
 			contractorAccountDao.save(requestedContractor);
+
+			if (legacyRequest.getStatus().isHold()) {
+				requestedContractor.setFollowUpDate(legacyRequest.getHoldDate());
+			} else if (legacyRequest.getStatus().isClosedUnsuccessful()) {
+				requestedContractor.setStatus(AccountStatus.Declined);
+				requestedContractor.setReason(legacyRequest.getReasonForDecline());
+			}
 
 			primaryContact.setName(legacyRequest.getContact());
 			primaryContact.setPhone(legacyRequest.getPhone());
