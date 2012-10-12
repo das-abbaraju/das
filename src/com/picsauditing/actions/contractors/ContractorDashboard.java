@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +44,7 @@ import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
@@ -421,7 +421,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return problems;
 	}
 
-	public String getCriteriaLabel(int fcID) {
+	public String getCriteriaLabel(int fcID, int operatorId) {
 		if (fccMap == null) {
 			fccMap = new HashMap<Integer, FlagCriteriaContractor>();
 
@@ -453,9 +453,41 @@ public class ContractorDashboard extends ContractorActionSupport {
 					}
 				}
 			}
+			if (fcc.getCriteria().getId() == FlagCriteria.ANNUAL_UPDATE_ID) {
+				result += getIncompleteAnnualUpdates(fcc.getContractor(), operatorId);
+			}
 		}
 
 		return result;
+	}
+
+	private String getIncompleteAnnualUpdates(ContractorAccount con, int operatorId) {
+		String years = "";
+
+		ArrayList<String> forYears = new ArrayList<String>();
+		for (ContractorAudit audit : con.getAudits()) {
+			if (audit.getAuditType().isAnnualAddendum()) {
+				for (ContractorAuditOperator cao : audit.getOperators()) {
+					if (!cao.getStatus().equals(AuditStatus.Complete)) {
+						for (ContractorAuditOperatorPermission caop : cao
+								.getCaoPermissions()) {
+							if (caop.getOperator().getId() == operatorId) {
+								forYears.add(audit.getAuditFor());
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		Collections.sort(forYears);
+		for (String yr : forYears) {
+			if (years.length() > 0)
+				years += ", ";
+			years += yr;
+		}
+		return " " + years;
 	}
 
 	public ContractorFlagCriteriaList getCriteriaList() {

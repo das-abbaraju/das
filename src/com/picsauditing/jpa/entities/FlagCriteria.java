@@ -48,6 +48,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	public static final String STRING = "string";
 
 	public static final int EMR_AVERAGE_ID = 506;
+	public static final int ANNUAL_UPDATE_ID = 142;
 
 	public String getCategory() {
 		return category;
