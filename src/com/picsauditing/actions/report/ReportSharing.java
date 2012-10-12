@@ -35,7 +35,7 @@ public class ReportSharing extends PicsActionSupport {
 
 			if (type != null && reportModel.canUserEdit(permissions, report)
 					&& id != permissions.getUserId()) {
-				if (type.equalsIgnoreCase("user"))
+				if (type.equalsIgnoreCase("user") || type.equalsIgnoreCase("group")) // TODO: Change this to account
 					reportModel.connectReportPermissionUser(id, report.getId(), editable);
 				else
 					reportModel.connectReportPermissionAccount(id, report.getId(), permissions);

@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -8,60 +7,85 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import com.picsauditing.jpa.entities.ReportPermissionUser;
-import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("unchecked")
 public class ReportPermissionUserDAO extends PicsDAO {
+	
+	private static final String FIND_REPORTS_FOR_USER = "SELECT rpu.*, r.name, ru.lastViewedDate FROM report_permission_user rpu " + 
+			"JOIN report r ON r.id = rpu.reportID " +
+			"JOIN report_user ru on ru.reportID = rpu.reportID AND ru.userID = :userId " +
+			"WHERE rpu.userID = :userId ";
+	
+	private static final String FIND_REPORTS_FOR_GROUP = "SELECT rpu.*, r.name, ru.lastViewedDate FROM usergroup ug " + 
+			"JOIN report_permission_user rpu ON rpu.userID = ug.groupID " +
+			"JOIN report r ON r.id = rpu.reportID " +
+			"JOIN report_user ru on ru.reportID = rpu.reportID AND ru.userID = :userId " +
+			"WHERE ug.userID = :userId ";
 
+	private static final String FIND_REPORTS_BASED_ON_USER_PERMISSIONS = "SELECT DISTINCT * FROM ( " + 
+			"%s UNION %s ) t ";
+	
+	private static final String FIND_ORDERED_REPORTS_BASED_ON_USER_PERMISSIONS = 
+			FIND_REPORTS_BASED_ON_USER_PERMISSIONS + " ORDER BY %s";
+	
 	public ReportPermissionUser findOne(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
-		return findOne(ReportPermissionUser.class, query);
+		String findReportForUser = FIND_REPORTS_FOR_USER + " AND rpu.reportID = :reportId";
+		String findReportForGroup = FIND_REPORTS_FOR_GROUP + " AND rpu.reportID = :reportId";
+		String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, findReportForUser, findReportForGroup);
+		
+		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+		query.setParameter("userId", userId);
+		query.setParameter("reportId", reportId);
+		
+		return (ReportPermissionUser) query.getSingleResult();
 	}
 
 	public List<ReportPermissionUser> findAll(int userId) {
-		String query = "t.user.id = " + userId;
-		return findWhere(ReportPermissionUser.class, query);
+		String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, 
+				FIND_REPORTS_FOR_USER, FIND_REPORTS_FOR_GROUP);
+		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+		query.setParameter("userId", userId);
+		return query.getResultList();
 	}
 
 	public List<ReportPermissionUser> findAllEditable(int userId) {
-		String query = "t.user.id = " + userId + " AND editable = 1";
-		return findWhere(ReportPermissionUser.class, query);
+		String findReportForUser = FIND_REPORTS_FOR_USER + " AND editable = 1";
+		String findReportForGroup = FIND_REPORTS_FOR_GROUP + " AND editable = 1";
+		String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, findReportForUser, findReportForGroup);
+		
+		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+		query.setParameter("userId", userId);
+		
+		return query.getResultList();
 	}
 
 	public List<ReportPermissionUser> findAllSortByAlpha(int userId, String direction) {
-		List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
-
-		String where = "t.user.id = " + userId;
-		String orderBy = "t.report.name " + direction;
+		String sql = String.format(FIND_ORDERED_REPORTS_BASED_ON_USER_PERMISSIONS, 
+				FIND_REPORTS_FOR_USER, FIND_REPORTS_FOR_GROUP, "name " + direction);
 		
-		reportPermissionUsers = findWhere(ReportPermissionUser.class, where, 0, orderBy);
-
-		return reportPermissionUsers;
+		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+		query.setParameter("userId", userId);
+		
+		return query.getResultList();
 	}
 
 	public List<ReportPermissionUser> findAllSortByDateAdded(int userId, String direction) {
-		List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
-
-		String where = "t.user.id = " + userId;
-		String orderBy = "creationDate " + direction;
-
-		reportPermissionUsers = findWhere(ReportPermissionUser.class, where, 0, orderBy);
-
-		return reportPermissionUsers;
+		String sql = String.format(FIND_ORDERED_REPORTS_BASED_ON_USER_PERMISSIONS, 
+				FIND_REPORTS_FOR_USER, FIND_REPORTS_FOR_GROUP, "creationDate " + direction);
+		
+		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+		query.setParameter("userId", userId);
+		
+		return query.getResultList();
 	}
 
 	public List<ReportPermissionUser> findAllSortByLastViewed(int userId, String direction) {
-		String orderBy = "ru.lastViewedDate " + direction;
+		String sql = String.format(FIND_ORDERED_REPORTS_BASED_ON_USER_PERMISSIONS, 
+				FIND_REPORTS_FOR_USER, FIND_REPORTS_FOR_GROUP, "lastViewedDate " + direction);
 		
-		SelectSQL sql = new SelectSQL("report_permission_user rpu");
-		sql.addField("rpu.*");
-		sql.addJoin("JOIN report_user ru ON ru.userID = rpu.userID AND ru.reportID = rpu.reportID");
-		sql.addWhere("rpu.userID = :userID");
-		sql.addOrderBy(orderBy);
+		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+		query.setParameter("userId", userId);
 		
-		Query query = em.createNativeQuery(sql.toString(), ReportPermissionUser.class);
-
-		query.setParameter("userID", userId);
 		return query.getResultList();
 	}
 
