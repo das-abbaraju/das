@@ -1,6 +1,8 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -891,7 +893,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (permissions != null && isRememberMeSetInCookie()) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
-		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
+		try {
+			String cookieContent = URLEncoder.encode(sessionCookieContent, "US-ASCII");
+			addClientSessionCookieToResponse(cookieContent, maxAge);
+		} catch (UnsupportedEncodingException e) {
+			// this won't happen unless somehow US-ASCII is removed from java...
+			logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
+		}
 	}
 
 	protected void addClientSessionCookieToResponse() {
@@ -907,7 +915,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (rememberMe && maxAge < 0) {
 			addAlertMessage(getText("Login.NoPermissionToRememberMe"));
 		}
-		addClientSessionCookieToResponse(sessionCookieContent, maxAge);
+		try {
+			String cookieContent = URLEncoder.encode(sessionCookieContent, "US-ASCII");
+			addClientSessionCookieToResponse(cookieContent, maxAge);
+		} catch (UnsupportedEncodingException e) {
+			// this won't happen unless somehow US-ASCII is removed from java...
+			logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
+		}
 	}
 
 	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {

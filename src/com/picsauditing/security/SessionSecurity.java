@@ -1,5 +1,7 @@
 package com.picsauditing.security;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -111,7 +113,12 @@ public class SessionSecurity {
 		if (cookies != null && cookies.length > 0) {
 			for (Cookie cookie : cookies) {
 				if (SessionSecurity.SESSION_COOKIE_NAME.equals(cookie.getName())) {
-					return cookie.getValue();
+					try {
+						return URLDecoder.decode(cookie.getValue(), "US-ASCII");
+					} catch (UnsupportedEncodingException e) {
+						// this won't happen unless somehow US-ASCII is removed
+						logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
+					}
 				}
 			}
 		}
