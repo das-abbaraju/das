@@ -5,10 +5,10 @@ insert ignore into app_translation (msgkey, locale, msgValue, createdBy, creatio
 values('Login.PasswordIncorrect', 'en', 'Username and password do not match', 1, CURDATE(), 2, 1);
 
 insert ignore into app_translation (msgkey, locale, msgValue, createdBy, creationDate, qualityRating, applicable)
-values('OperatorAccount.rememberMeTime', 'en', 'Remember Me Timeout', 1, CURDATE(), 2, 1);
+values('OperatorAccount.rememberMeTimeInDays', 'en', 'Remember Me Timeout', 1, CURDATE(), 2, 1);
 
 insert ignore into app_translation (msgkey, locale, msgValue, createdBy, creationDate, qualityRating, applicable)
-values('OperatorAccount.rememberMeTime.fieldhelp', 'en', 'How many days do you want to stay logged in?', 1, CURDATE(), 2, 1);
+values('OperatorAccount.rememberMeTimeInDays.fieldhelp', 'en', 'How many days do you want to stay logged in?', 1, CURDATE(), 2, 1);
 
 insert ignore into app_translation (msgkey, locale, msgValue, createdBy, creationDate, qualityRating, applicable)
 values('OperatorAccount.sessionTimeout', 'en', 'Session Timeout', 1, CURDATE(), 2, 1);

@@ -434,7 +434,7 @@
 							<s:textfield name="operator.sessionTimeout" theme="formhelp" />
 						</li>
 						<li>
-							<s:textfield name="operator.rememberMeTime" theme="formhelp" />
+							<s:textfield name="operator.rememberMeTimeInDays" theme="formhelp" />
 						</li>
 					</ol>
 				</fieldset>
