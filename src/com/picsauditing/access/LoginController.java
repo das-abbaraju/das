@@ -64,6 +64,8 @@ public class LoginController extends PicsActionSupport {
 				if (sessionCookieIsValidAndNotExpired()) {
 					switchToUser = getClientSessionUserID();
 					return switchTo();
+				} else {
+					clearPicsOrgCookie();
 				}
 			}
 			return SUCCESS;

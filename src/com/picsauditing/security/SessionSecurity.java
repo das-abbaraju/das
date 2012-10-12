@@ -57,21 +57,27 @@ public class SessionSecurity {
 	}
 
 	public static boolean cookieIsValid(String picsSessionCooke) {
-		if (Strings.isEmpty(picsSessionCooke)) {
+		try {
+			if (Strings.isEmpty(picsSessionCooke)) {
+				return false;
+			}
+			// split the meat from the validation hash
+			int indexOfSplit = picsSessionCooke.lastIndexOf('|');
+			String cookieData = picsSessionCooke.substring(0, indexOfSplit);
+			String cookieValidHash = picsSessionCooke.substring(indexOfSplit + 1);
+
+			// re-encode the meat with a known good server key
+			String checkHash = EncodedMessage.hmacBase64(cookieData, serverSecretKey());
+
+			// if either hash is null/empty then it is not valid
+			// else if they match, the data or hash was not altered
+			return (!(Strings.isEmpty(cookieValidHash) || Strings.isEmpty(checkHash))
+			&& cookieValidHash.equals(checkHash));
+		} catch (Exception e) {
+			logger.error("There was a problem with checking the cookie. Removing bad cookie and returning false: {}",
+					e.getMessage());
 			return false;
 		}
-		// split the meat from the validation hash
-		int indexOfSplit = picsSessionCooke.lastIndexOf('|');
-		String cookieData = picsSessionCooke.substring(0, indexOfSplit);
-		String cookieValidHash = picsSessionCooke.substring(indexOfSplit + 1);
-
-		// re-encode the meat with a known good server key
-		String checkHash = EncodedMessage.hmacBase64(cookieData, serverSecretKey());
-
-		// if either hash is null/empty then it is not valid
-		// else if they match, the data or hash was not altered
-		return (!(Strings.isEmpty(cookieValidHash) || Strings.isEmpty(checkHash))
-		&& cookieValidHash.equals(checkHash));
 	}
 
 	public static void addValidationHashToSessionCookie(SessionCookie sessionCookie) {
