@@ -271,6 +271,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (clientSessionUserID > 0) {
 			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
 			login(clientSessionUserID);
+			int originalUserId = getClientSessionOriginalUserID();
+			if (clientSessionUserID != originalUserId) {
+				User originalUser = getUser(originalUserId);
+				permissions.setRememberMeTimeInSeconds(originalUser.getAccount().getRememberMeTimeInDays()
+						* TWENTY_FOUR_HOURS);
+			}
 			return;
 		}
 
@@ -790,7 +796,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return sessionCookie.getUserID();
 		} else {
 			int switchToUserId = (Integer) sessionCookie.getData("switchTo");
-			permissions.setAdminID(switchToUserId);
 			return switchToUserId;
 		}
 	}
@@ -878,7 +883,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected void clearPicsOrgCookie() {
 		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
 		cookie.setMaxAge(DELETE_COOKIE_AGE);
-		cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		if (!isLocalhostEnvironment()) {
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		}
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
 
@@ -893,6 +900,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (permissions != null && isRememberMeSetInCookie()) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
+		doSetCookie(sessionCookieContent, maxAge);
+	}
+
+	private void doSetCookie(String sessionCookieContent, int maxAge) {
 		try {
 			String cookieContent = URLEncoder.encode(sessionCookieContent, "US-ASCII");
 			addClientSessionCookieToResponse(cookieContent, maxAge);
@@ -915,13 +926,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (rememberMe && maxAge < 0) {
 			addAlertMessage(getText("Login.NoPermissionToRememberMe"));
 		}
-		try {
-			String cookieContent = URLEncoder.encode(sessionCookieContent, "US-ASCII");
-			addClientSessionCookieToResponse(cookieContent, maxAge);
-		} catch (UnsupportedEncodingException e) {
-			// this won't happen unless somehow US-ASCII is removed from java...
-			logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
-		}
+		doSetCookie(sessionCookieContent, maxAge);
 	}
 
 	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {

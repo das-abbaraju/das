@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -52,6 +53,7 @@ public class LoginController extends PicsActionSupport {
 	private String key;
 	private int switchToUser;
 	private boolean rememberMe = false;
+	private int sessionTimeout;
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	private static final int MAX_FAILED_ATTEMPTS = 6;
@@ -146,24 +148,16 @@ public class LoginController extends PicsActionSupport {
 			user = userDAO.find(originalUser);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
-			addClientSessionCookieToResponse(rememberMe, 0);
+			addClientSessionCookieToResponse(isRememberMeSetInCookie(), 0);
 			permissions.setAdminID(0);
 		}
 		return setRedirectUrlPostLogin();
 	}
 
-	// private void determineSwitchToUserId() {
-	// if (permissions.getAdminID() > 0) {
-	// switchToUser = permissions.getAdminID();
-	// } else {
-	// switchToUser = getClientSessionOriginalUserID();
-	// }
-	// }
-
 	public String switchTo() throws Exception {
 		loadPermissions(false);
 		// add cookie before the switch so the original user id stays correct
-		addClientSessionCookieToResponse(rememberMe, switchToUser);
+		addClientSessionCookieToResponse(isRememberMeSetInCookie(), switchToUser);
 		if (permissions.getUserId() == switchToUser) {
 			// Switch back to myself
 			user = getUser();
@@ -189,12 +183,14 @@ public class LoginController extends PicsActionSupport {
 	private void doSwitchToUser(int userID) throws Exception {
 		if (permissions.hasPermission(OpPerms.SwitchUser)) {
 			int adminID = permissions.getUserId();
+			int maxAge = permissions.getRememberMeTimeInSeconds();
 			boolean adminIsTranslator = permissions.hasPermission(OpPerms.Translator);
 
 			user = userDAO.find(userID);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
 			permissions.setAdminID(adminID);
+			permissions.setRememberMeTimeInSeconds(maxAge);
 
 			if (adminIsTranslator) {
 				permissions.setTranslatorOn();
@@ -213,6 +209,15 @@ public class LoginController extends PicsActionSupport {
 			permissionsForTest = new Permissions();
 		}
 		return permissionsForTest;
+	}
+
+	@RequiredPermission(value = OpPerms.DevelopmentEnvironment)
+	public String setSessionTimeout() {
+		HttpSession session = ServletActionContext.getRequest().getSession(false);
+		if (session != null) {
+			session.setMaxInactiveInterval(sessionTimeout);
+		}
+		return SUCCESS;
 	}
 
 	public String login() throws Exception {
@@ -482,4 +487,13 @@ public class LoginController extends PicsActionSupport {
 	public void setRememberMe(boolean rememberMe) {
 		this.rememberMe = rememberMe;
 	}
+
+	public int getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(int sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
+	}
+
 }

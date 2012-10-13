@@ -334,6 +334,10 @@ public class Permissions implements Serializable {
 		return rememberMeTimeInSeconds;
 	}
 
+	public void setRememberMeTimeInSeconds(int rememberMeTimeInSeconds) {
+		this.rememberMeTimeInSeconds = rememberMeTimeInSeconds;
+	}
+
 	/**
 	 * This gets the shadowed user from the User object, if it's set. Otherwise
 	 * this returns the user's own id
