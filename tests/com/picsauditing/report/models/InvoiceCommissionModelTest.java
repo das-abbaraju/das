@@ -1,19 +1,15 @@
 package com.picsauditing.report.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
 public class InvoiceCommissionModelTest extends ModelTest {
-	private ContractorOperatorModel model;
+	private InvoiceCommissionModel model;
 
 	@Before
 	public void setup() {
 		super.setup();
-		model = new ContractorOperatorModel(permissions);
+		model = new InvoiceCommissionModel(permissions);
 	}
 
 	@Test

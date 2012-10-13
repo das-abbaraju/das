@@ -16,6 +16,7 @@ public class ModelSpec {
 
 	public ModelSpec(String key, String alias) {
 		this.key = key;
+		this.fromAlias = "";
 		this.alias = alias;
 	}
 
