@@ -34,8 +34,16 @@ public class SelectCase {
 		conditions.add(new Condition(when, then));
 	}
 
+	public void addCondition(String when, int then) {
+		conditions.add(new Condition(when, "" + then));
+	}
+
 	public void setElse(String elseCondition) {
 		this.elseCondition = elseCondition;
+	}
+
+	public void setElse(int elseCondition) {
+		this.elseCondition = "" + elseCondition;
 	}
 
 	private class Condition {

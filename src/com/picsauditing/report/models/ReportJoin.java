@@ -20,6 +20,7 @@ import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.Strings;
 
 public class ReportJoin {
+	private String fromAlias = "";
 	private String alias = "";
 	private AbstractTable toTable;
 	private List<ReportJoin> joins = new ArrayList<ReportJoin>();
@@ -38,6 +39,14 @@ public class ReportJoin {
 			logger.debug("   Excluding " + alias + "." + field.getName());
 		}
 		return importantEnough;
+	}
+
+	public String getFromAlias() {
+		return fromAlias;
+	}
+
+	public void setFromAlias(String fromAlias) {
+		this.fromAlias = fromAlias;
 	}
 
 	public String getAlias() {
@@ -95,14 +104,23 @@ public class ReportJoin {
 			if (importantEnough(field)) {
 				Field fieldCopy = field.clone();
 
-				// Update the alias
+				// Update the aliases
 				// TODO This is scary, we should find a better way to update
 				// this
 				fieldCopy.setName(alias + fieldCopy.getName());
-				if (fieldCopy.getDatabaseColumnName().contains(ReportOnClause.ToAlias))
-					fieldCopy.setDatabaseColumnName(fieldCopy.getDatabaseColumnName().replace(ReportOnClause.ToAlias, alias));
-				else
+				// if you have the report on clause aliases in string, then
+				// don't put the leading toAlias. Instead, replace the existing
+				// locations throughout the string
+				if (fieldCopy.getDatabaseColumnName().contains(ReportOnClause.Alias)) {
+					if (fieldCopy.getDatabaseColumnName().contains(ReportOnClause.ToAlias))
+						fieldCopy.setDatabaseColumnName(fieldCopy.getDatabaseColumnName().replace(
+								ReportOnClause.ToAlias, alias));
+					if (fieldCopy.getDatabaseColumnName().contains(ReportOnClause.FromAlias))
+						fieldCopy.setDatabaseColumnName(fieldCopy.getDatabaseColumnName().replace(
+								ReportOnClause.FromAlias, fromAlias));
+				} else
 					fieldCopy.setDatabaseColumnName(alias + "." + fieldCopy.getDatabaseColumnName());
+
 				if (fieldCopy.getUrl() != null && fieldCopy.getUrl().contains(ReportOnClause.ToAlias)) {
 					fieldCopy.setUrl(fieldCopy.getUrl().replace(ReportOnClause.ToAlias, alias));
 				}

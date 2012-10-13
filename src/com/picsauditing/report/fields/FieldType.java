@@ -28,6 +28,7 @@ public enum FieldType {
 	Float,
 	Integer,
 	LowMedHigh(EnumType.ORDINAL),
+	NetworkLevel(EnumType.ORDINAL),
 	Number(FilterType.Integer, DisplayType.Number),
 	Operator(FilterType.Autocomplete),
 	OperatorTag(FilterType.Autocomplete), 

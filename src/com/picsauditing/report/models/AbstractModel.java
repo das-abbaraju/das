@@ -38,6 +38,7 @@ public abstract class AbstractModel {
 		logger.info("parsingSpec for " + toTable);
 		ReportJoin join = new ReportJoin();
 		join.setToTable(toTable);
+		join.setFromAlias(modelSpec.fromAlias);
 		join.setAlias(modelSpec.alias);
 
 		if (modelSpec.category != null)

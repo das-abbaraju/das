@@ -7,6 +7,7 @@ import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 public class ModelSpec {
+	String fromAlias;
 	String key;
 	String alias;
 	FieldCategory category;
@@ -18,14 +19,19 @@ public class ModelSpec {
 		this.alias = alias;
 	}
 
-	public ModelSpec join(String key) {
-		ModelSpec join = new ModelSpec(key, this.alias + key);
-		joins.add(join);
-		return join;
+	public ModelSpec(String key, String fromAlias, String alias) {
+		this.key = key;
+		this.fromAlias = fromAlias;
+		this.alias = alias;
 	}
 
-	public ModelSpec join(String key, String alias) {
-		ModelSpec join = new ModelSpec(key, alias);
+	public ModelSpec join(String key) {
+		String joinAlias = alias + key;
+
+		ModelSpec join = new ModelSpec(key, alias, joinAlias);
+
+		joins.add(join);
+		
 		return join;
 	}
 }

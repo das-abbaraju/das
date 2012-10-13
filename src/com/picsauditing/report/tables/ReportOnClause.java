@@ -7,8 +7,9 @@ public class ReportOnClause {
 	public static final String VisibleAccountIDs = "{CURRENT_VISIBLE_ACCOUNTIDS}";
 	public static final String AccountID = "{CURRENT_ACCOUNTID}";
 	public static final String UserID = "{CURRENT_USERID}";
-	public static final String FromAlias = "{FROM_ALIAS}";
-	public static final String ToAlias = "{TO_ALIAS}";
+	public static final String Alias = "_ALIAS}";
+	public static final String FromAlias = "{FROM" + Alias;
+	public static final String ToAlias = "{TO" + Alias;
 	
 	private String fromKey; // contactID
 	private String toKey = "id";
