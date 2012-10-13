@@ -45,8 +45,7 @@ public class ReportModel {
 
 	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions.getUserId(),
-					reportId);
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
 			if (reportPermissionUser != null)
 				return true;
 			ReportPermissionAccount reportPermissionAccount = reportPermissionAccountDao.findOne(
@@ -62,8 +61,7 @@ public class ReportModel {
 
 	public boolean canUserEdit(Permissions permissions, Report report) {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions.getUserId(),
-					report.getId());
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, report.getId());
 			if (reportPermissionUser.isEditable())
 				return true;
 
@@ -79,9 +77,9 @@ public class ReportModel {
 		return false;
 	}
 
-	public void setEditPermissions(int userId, int reportId, boolean editable) throws NoResultException,
+	public void setEditPermissions(Permissions permissions, int id, int reportId, boolean editable) throws NoResultException,
 			NonUniqueResultException, SQLException, Exception {
-		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(userId, reportId, editable);
+		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, id, reportId, editable);
 
 		reportPermissionUserDao.save(reportPermissionUser);
 	}
@@ -108,7 +106,7 @@ public class ReportModel {
 		// This is a new report owned by the user, unconditionally give them
 		// edit permission
 		connectReportUser(permissions.getUserId(), newReport.getId());
-		connectReportPermissionUser(permissions.getUserId(), newReport.getId(), editable);
+		connectReportPermissionUser(permissions, permissions.getUserId(), newReport.getId(), editable);
 
 		return newReport;
 	}
@@ -175,18 +173,18 @@ public class ReportModel {
 		return reports;
 	}
 
-	public List<ReportPermissionUser> getReportPermissionUsersForMyReports(String sort, String direction, int userId)
+	public List<ReportPermissionUser> getReportPermissionUsersForMyReports(String sort, String direction, Permissions permissions)
 			throws IllegalArgumentException {
 		List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
 
 		if (Strings.isEmpty(sort)) {
-			reportPermissionUsers = reportPermissionUserDao.findAll(userId);
+			reportPermissionUsers = reportPermissionUserDao.findAll(permissions);
 		} else if (sort.equals(ManageReports.ALPHA_SORT)) {
-			reportPermissionUsers = reportPermissionUserDao.findAllSortByAlpha(userId, direction);
+			reportPermissionUsers = reportPermissionUserDao.findAllSortByAlpha(permissions, direction);
 		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
-			reportPermissionUsers = reportPermissionUserDao.findAllSortByDateAdded(userId, direction);
+			reportPermissionUsers = reportPermissionUserDao.findAllSortByDateAdded(permissions, direction);
 		} else if (sort.equals(ManageReports.LAST_VIEWED_SORT)) {
-			reportPermissionUsers = reportPermissionUserDao.findAllSortByLastViewed(userId, direction);
+			reportPermissionUsers = reportPermissionUserDao.findAllSortByLastViewed(permissions, direction);
 		} else {
 			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
 		}
@@ -285,16 +283,25 @@ public class ReportModel {
 		return reportUser;
 	}
 
-	public ReportPermissionUser connectReportPermissionUser(int userId, int reportId, boolean editable) {
+	/**
+	 * Create permissions to access the report permissions.
+	 * 
+	 * @param permissions Permissions object from request
+	 * @param id Could be either the User ID or Group ID to share with
+	 * @param reportId 
+	 * @param editable
+	 * @return
+	 */
+	public ReportPermissionUser connectReportPermissionUser(Permissions permissions, int id, int reportId, boolean editable) {
 		ReportPermissionUser reportPermissionUser;
 
 		try {
-			reportPermissionUser = reportPermissionUserDao.findOne(userId, reportId);
+			reportPermissionUser = reportPermissionUserDao.findOne(id, reportId);
 		} catch (NoResultException nre) {
 			// Need to connect user to report first
 			Report report = reportDao.find(Report.class, reportId);
-			reportPermissionUser = new ReportPermissionUser(userId, report);
-			reportPermissionUser.setAuditColumns(new User(userId));
+			reportPermissionUser = new ReportPermissionUser(id, report);
+			reportPermissionUser.setAuditColumns(new User(permissions.getUserId()));
 		}
 
 		reportPermissionUser.setEditable(editable);
@@ -302,7 +309,7 @@ public class ReportModel {
 
 		return reportPermissionUser;
 	}
-
+	
 	public ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId, Permissions permissions) {
 		ReportPermissionAccount reportPermissionAccount;
 
@@ -320,12 +327,9 @@ public class ReportModel {
 		return reportPermissionAccount;
 	}
 
-	public void disconnectReportPermissionUser(int userId, int reportId) {
-		ReportPermissionUser reportPermissionUser;
-
+	public void disconnectReportPermissionUser(int id, int reportId) {
 		try {
-			reportPermissionUser = reportPermissionUserDao.findOne(userId, reportId);
-			reportPermissionUserDao.remove(reportPermissionUser);
+			reportPermissionUserDao.revokePermissions(id, reportId);
 		} catch (NoResultException nre) {
 
 		}

@@ -48,6 +48,7 @@ public class ManageReports extends PicsActionSupport {
 	private ReportUserDAO reportUserDao;
 	@Autowired
 	private ReportPermissionUserDAO reportPermissionUserDao;
+	
 
 	private List<ReportUser> reportUserFavorites;
 	private List<ReportUser> reportUsersFavoritesOverflow;
@@ -102,7 +103,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			reportPermissionUsers = reportModel.getReportPermissionUsersForMyReports(sort, direction, permissions.getUserId());
+			reportPermissionUsers = reportModel.getReportPermissionUsersForMyReports(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
@@ -161,7 +162,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String removeReportPermissionUser() {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions.getUserId(), reportId);
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
 			reportPermissionUserDao.remove(reportPermissionUser);
 			
 			addActionMessage(getText("ManageReports.message.ReportRemoved"));
@@ -381,7 +382,7 @@ public class ManageReports extends PicsActionSupport {
 
 		return ASC;
 	}
-
+	
 	public String getAlphaSort() {
 		return ALPHA_SORT;
 	}

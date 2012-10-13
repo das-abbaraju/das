@@ -95,10 +95,10 @@ public class ReportModelTest {
 		// use make user so that it has an account
 		User user = EntityFactory.makeUser();
 		user.setId(USER_ID);
-		when(reportPermissionUserDao.findOne(user.getId(), REPORT_ID)).thenReturn(
+		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(
 				new ReportPermissionUser());
-		Permissions makePermission = EntityFactory.makePermission(user);
-		assertTrue(reportModel.canUserViewAndCopy(makePermission, REPORT_ID));
+
+		assertTrue(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class ReportModelTest {
 
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenThrow(new NoResultException());
 
 		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
@@ -118,7 +118,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserEdit_FalseIfNoEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(false);
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
+		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 
 		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
@@ -126,7 +126,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserEdit_TrueIfEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
-		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(reportPermissionUser);
+		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 
 		assertTrue(reportModel.canUserEdit(permissions, report));
 	}
@@ -265,7 +265,7 @@ public class ReportModelTest {
 	public void testConnectReportPermissionUser() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(USER_ID, REPORT_ID, false);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, false);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
@@ -277,7 +277,7 @@ public class ReportModelTest {
 	public void testConnectReportPermissionUserEditable() {
 		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
 		when(reportDao.find(Report.class, REPORT_ID)).thenReturn(report);
-		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(USER_ID, REPORT_ID, true);
+		ReportPermissionUser reportPermissionUser = reportModel.connectReportPermissionUser(permissions, USER_ID, REPORT_ID, true);
 
 		verify(reportPermissionUserDao).save(reportPermissionUser);
 		assertEquals(REPORT_ID, reportPermissionUser.getReport().getId());
