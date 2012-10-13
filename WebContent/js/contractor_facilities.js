@@ -7,7 +7,7 @@
                 if (element.length) {
                     this.search();
                     
-                    $('#assigned_operators').delegate('.remove', 'click', {contractorFacilities : this}, this.remove);
+                    $('#facilities').delegate('.remove', 'click', {contractorFacilities : this}, this.remove);
                     
                     var facilitySearch = $('#facility_search');
                     facilitySearch.delegate('.picsbutton.positive', 'click', this.search);
