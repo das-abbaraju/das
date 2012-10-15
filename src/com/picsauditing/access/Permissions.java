@@ -12,6 +12,7 @@ import java.util.TimeZone;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -405,15 +406,11 @@ public class Permissions implements Serializable {
 		tryPermission(opPerm, OpType.View);
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, String returnURL) throws IOException {
+	public boolean loginRequired(HttpServletResponse response, String returnURL) throws IOException {
 		if (loggedIn)
 			return true;
 
-		if (returnURL != null && returnURL.length() > 0) {
-			Cookie fromCookie = new Cookie("from", returnURL);
-			fromCookie.setMaxAge(3600);
-			response.addCookie(fromCookie);
-		}
+		addReturnToCookieIfGoodUrl(response, returnURL);
 
 		Cookie c = new Cookie("PICSCookiesEnabled", "true");
 		c.setMaxAge(60);
@@ -422,11 +419,26 @@ public class Permissions implements Serializable {
 		return false;
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
+	private void addReturnToCookieIfGoodUrl(HttpServletResponse response, String returnURL) {
+		if (returnUrlIsOk(returnURL)) {
+			Cookie fromCookie = new Cookie("from", returnURL);
+			fromCookie.setMaxAge(3600);
+			response.addCookie(fromCookie);
+		}
+	}
+
+	private boolean returnUrlIsOk(String returnURL) {
+		boolean isOk = !returnURL.matches("(?iu).*(xml|json|ajax).*\\.action(\\?.*)*");
+		return returnURL != null
+				&& returnURL.length() > 0
+				&& isOk;
+	}
+
+	public boolean loginRequired(HttpServletResponse response) throws IOException {
 		return loginRequired(response, "");
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request)
+	public boolean loginRequired(HttpServletResponse response, HttpServletRequest request)
 			throws IOException {
 		if (AjaxUtils.isAjax(request)) {
 			return loginRequired(response);
