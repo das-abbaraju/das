@@ -41,6 +41,14 @@ public class PermissionsTest {
 		falseUrls.add("ChartXMLTradeCount.action");
 		falseUrls.add("ManageUserPermissionsAjax.action");
 		falseUrls.add("AuditCalendarJSON.action");
+		falseUrls.add("Autocompleter.action");
+		falseUrls.add("NewContractorSearchCSV.action");
+		falseUrls.add("ManageImportData.action");
+		falseUrls.add("ReportNewReqConImport.action");
+		falseUrls.add("ContractorSummaryExternal.action");
+		falseUrls.add("DownloadContractorFile.action");
+		falseUrls.add("AuditTranslationDownload.action");
+		falseUrls.add("CertificateUpload.action");
 		falseUrls.add("");
 		for (String url: falseUrls) {
 			assertFalse((Boolean) Whitebox.invokeMethod(permissions, "returnUrlIsOk", url));
@@ -49,7 +57,7 @@ public class PermissionsTest {
 		List<String> trueUrls = new ArrayList<String>();
 		trueUrls.add("Home.action");
 		trueUrls.add("ScheduleAudit.action");
-		trueUrls.add("AuditFileUpload.action");
+		trueUrls.add("ContractorDashboard.action");
 		for (String url : trueUrls) {
 			assertTrue((Boolean) Whitebox.invokeMethod(permissions, "returnUrlIsOk", url));
 		}

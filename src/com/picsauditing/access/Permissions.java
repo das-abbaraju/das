@@ -428,7 +428,8 @@ public class Permissions implements Serializable {
 	}
 
 	private boolean returnUrlIsOk(String returnURL) {
-		boolean isOk = !returnURL.matches("(?iu).*(xml|json|ajax).*\\.action(\\?.*)*");
+		boolean isOk = !returnURL
+				.matches("(?iu).*(xml|json|ajax|widget|autocomplete|csv|import|external|download|upload).*\\.action(\\?.*)*");
 		return returnURL != null
 				&& returnURL.length() > 0
 				&& isOk;
