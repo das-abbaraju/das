@@ -430,7 +430,6 @@
 
 												<s:if test="permissions.admin">
 													<td>
-														${transaction.status}
 														<s:text name="%{'ReportContractorUnpaidInvoices.status.' + #transaction.status}" />
 													</td>
 												</s:if>
