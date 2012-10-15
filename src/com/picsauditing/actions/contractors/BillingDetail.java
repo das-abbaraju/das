@@ -148,7 +148,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 		accountDao.save(contractor);
 
-		this.subHeading = "Billing Detail";
+		this.subHeading = getText("BillingDetail.title");
 		return SUCCESS;
 	}
 
