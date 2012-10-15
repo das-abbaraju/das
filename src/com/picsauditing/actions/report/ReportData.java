@@ -29,12 +29,13 @@ import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportData extends PicsActionSupport {
 	private static final String PRINT = "print";
-	
+
 	@Autowired
 	private ReportDAO reportDao;
 	@Autowired
@@ -68,7 +69,7 @@ public class ReportData extends PicsActionSupport {
 
 	public String report() {
 		try {
-			upgradeFields();
+			upgradeReport();
 			initialize();
 			configuration();
 
@@ -83,6 +84,25 @@ public class ReportData extends PicsActionSupport {
 		}
 
 		return JSON;
+	}
+
+	private void upgradeReport() {
+		boolean upgraded = false;
+		if (report.getVersion() == null) {
+			upgraded = true;
+
+			upgradeFields();
+		}
+
+		// Add upgrades here
+		// if (!PicsOrganizerVersion.getVersion().equals(report.getVersion())) {
+		// }
+
+		if (upgraded) {
+			report.setVersion(PicsOrganizerVersion.getVersion());
+		}
+
+		reportDao.save(report);
 	}
 
 	private void upgradeFields() {
@@ -135,7 +155,7 @@ public class ReportData extends PicsActionSupport {
 
 	public String data() throws Exception {
 		try {
-			upgradeFields();
+			upgradeReport();
 			initialize();
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 			runQuery();

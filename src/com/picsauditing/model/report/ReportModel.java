@@ -126,6 +126,7 @@ public class ReportModel {
 		newReport.setName(sourceReport.getName());
 		newReport.setDescription(sourceReport.getDescription());
 		newReport.setParameters(sourceReport.getParameters());
+		newReport.setVersion(sourceReport.getVersion());
 
 		return newReport;
 	}
@@ -218,7 +219,7 @@ public class ReportModel {
 
 		reportUser.setSortOrder(1);
 		reportUser.setFavorite(true);
-		reportDao.save(reportUser);
+		reportUserDao.save(reportUser);
 	}
 
 	public void unfavoriteReport(int userId, int reportId) throws NoResultException, NonUniqueResultException,
@@ -230,7 +231,7 @@ public class ReportModel {
 
 		unfavoritedReportUser.setSortOrder(0);
 		unfavoritedReportUser.setFavorite(false);
-		reportDao.save(unfavoritedReportUser);
+		reportUserDao.save(unfavoritedReportUser);
 	}
 
 	public void moveReportUser(int userId, int reportId, int magnitude) throws Exception {

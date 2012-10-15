@@ -27,6 +27,7 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private int rowsPerPage = 50;
+	private String version;
 	
 	private int numTimesFavorited;
 
@@ -129,6 +130,14 @@ public class Report extends BaseTable {
 
 	public void setRowsPerPage(int rowsPerPage) {
 		this.rowsPerPage = rowsPerPage;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	@Transient
