@@ -116,7 +116,7 @@ public class Permissions implements Serializable {
 		linkedClients.clear();
 		linkedGeneralContractors.clear();
 		sessionCookieTimeoutInSeconds = 0;
-		rememberMeTimeInSeconds = 0;
+		rememberMeTimeInSeconds = -1;
 	}
 
 	public void login(User user) throws Exception {
@@ -170,7 +170,11 @@ public class Permissions implements Serializable {
 			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 			generalContractor = user.getAccount().isGeneralContractor();
 			sessionCookieTimeoutInSeconds = user.getAccount().getSessionTimeout() * 60;
-			rememberMeTimeInSeconds = user.getAccount().getRememberMeTimeInDays() * TWENTY_FOUR_HOURS;
+			if (user.getAccount().isRememberMeTimeEnabled()) {
+				rememberMeTimeInSeconds = user.getAccount().getRememberMeTimeInDays() * TWENTY_FOUR_HOURS;
+			} else {
+				rememberMeTimeInSeconds = -1;
+			}
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
