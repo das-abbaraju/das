@@ -15,11 +15,12 @@ import org.apache.struts2.dispatcher.mapper.DefaultActionMapper;
 import org.apache.struts2.views.util.DefaultUrlHelper;
 
 public class URLUtils implements StreamContentProvider {
-	private ActionMapping actionMapping;
 	private DefaultUrlHelper urlHelper = new DefaultUrlHelper();
 	private DefaultActionMapper actionMapper = new DefaultActionMapper();
 	private HttpServletRequest request;
 	private HttpServletResponse response;
+
+	private String namespace;
 
 	public String getResponseFrom(String uri) throws IOException {
 		return contentOf(uri);
@@ -105,23 +106,24 @@ public class URLUtils implements StreamContentProvider {
 	 *         "/Action!method.action?param1key=param1value&amp;param2key=param2value"
 	 */
 	public String getActionUrl(String action, String method, Map<String, Object> parameters, boolean useFullUrl) {
+		ActionMapping mapping = new ActionMapping(action, getNamespace(), method, parameters);
 		// TODO Find out if we need to override these defaults
 		String scheme = null;
 		boolean includeContext = true;
 		boolean encodeResults = true;
 		boolean escapeAmp = false;
 
-		String actionUri = actionMapper.getUriFromActionMapping(getActionMapping());
+		String actionUri = actionMapper.getUriFromActionMapping(mapping);
 		return urlHelper.buildUrl(actionUri, getRequest(), getResponse(), parameters, scheme, includeContext,
 				encodeResults, useFullUrl, escapeAmp);
 	}
 
-	private ActionMapping getActionMapping() {
-		if (actionMapping == null) {
-			actionMapping = ServletActionContext.getActionMapping();
+	private String getNamespace() {
+		if (namespace == null) {
+			namespace = ServletActionContext.getActionMapping().getNamespace();
 		}
 
-		return actionMapping;
+		return namespace;
 	}
 
 	private HttpServletRequest getRequest() {

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.dispatcher.mapper.ActionMapping;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +36,6 @@ public class URLUtilsTest extends PicsActionTest {
 
 	@Mock
 	private ActionContext actionContext;
-	@Mock
-	private ActionMapping actionMapping;
 	@Mock
 	private Container container;
 	@Mock
@@ -67,8 +64,6 @@ public class URLUtilsTest extends PicsActionTest {
 
 		when(actionContext.getContainer()).thenReturn(container);
 		when(actionContext.getValueStack()).thenReturn(stack);
-		when(actionMapping.getName()).thenReturn("Action");
-		when(actionMapping.getNamespace()).thenReturn("/");
 		when(container.getInstance(eq(String.class), anyString())).thenReturn("8080");
 		when(container.getInstance(XWorkConverter.class)).thenReturn(converter);
 		when(converter.convertValue(eq(map), any(), any(Class.class))).thenAnswer(new Answer<Object>() {
@@ -91,7 +86,7 @@ public class URLUtilsTest extends PicsActionTest {
 		when(request.getContextPath()).thenReturn("/");
 		when(stack.getContext()).thenReturn(map);
 
-		Whitebox.setInternalState(urlUtils, "actionMapping", actionMapping);
+		Whitebox.setInternalState(urlUtils, "namespace", "/");
 		Whitebox.setInternalState(urlUtils, "request", request);
 		Whitebox.setInternalState(urlUtils, "response", response);
 	}
@@ -105,11 +100,8 @@ public class URLUtilsTest extends PicsActionTest {
 	@Test
 	public void testGetActionUrl() throws Exception {
 		assertEquals("/Action.action", urlUtils.getActionUrl("Action"));
-
-		when(actionMapping.getMethod()).thenReturn("test");
 		assertEquals("/Action!test.action", urlUtils.getActionUrl("Action", "test"));
 
-		when(actionMapping.getMethod()).thenReturn(null);
 		Map<String, Object> parameters = new TreeMap<String, Object>();
 		parameters.put("param1", "one");
 		parameters.put("param2", 2);
