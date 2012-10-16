@@ -91925,6 +91925,27 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '2 2 0 0'
+            },
+            dock: 'top',
+            items: [{
+                xtype: 'button',
+                action: 'remove-filter',
+                cls: 'remove-filter',
+                height: 16,
+                text: '<i class="icon-remove-sign"></i>',
+                tooltip: 'Remove',
+                width: 16
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });
+
         var filter_number = this.createFilterNumber(this.index);
         var filter_content = this.createFilterContent(this.record);
 
@@ -91990,14 +92011,6 @@ Ext.define('PICS.view.report.filter.Filter', {
                 value: text
             }, {
                 xtype: 'tbfill'
-            }, {
-                xtype: 'button',
-                action: 'remove-filter',
-                cls: 'remove-filter',
-                height: 16,
-                text: '<i class="icon-remove-sign"></i>',
-                tooltip: 'Remove',
-                width: 16
             }],
             layout: {
                 type: 'hbox',
@@ -97008,7 +97021,7 @@ Ext.define('PICS.controller.report.Filter', {
         selector: 'reportfilteroptions reportfilterformula'
     }, {
         ref: 'filterFormulaExpression',
-        selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
+        selector: 'repogrtfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
         ref: 'filterHeader',
         selector: 'reportfilterheader'
@@ -97174,6 +97187,8 @@ Ext.define('PICS.controller.report.Filter', {
         if (filter_offset) {
             filter_footer.setPosition(0, filter_offset);
         }
+
+        this.positionRemoveButtons();
     },
 
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
@@ -97404,6 +97419,8 @@ Ext.define('PICS.controller.report.Filter', {
 
         // add new filters
         filter_options.add(filters);
+
+        this.positionRemoveButtons();
     },
 
     /**
@@ -97504,6 +97521,27 @@ Ext.define('PICS.controller.report.Filter', {
     /**
      * MISC
      */
+
+    positionRemoveButtons: function () {
+        var remove_filter_elements = Ext.select('.remove-filter').elements;
+
+        if (remove_filter_elements.length) {
+            var filter_options = this.getFilterOptions(),
+                scrollbar_width = Ext.getScrollbarSize().width,
+                scrollbar_left = filter_options.width - scrollbar_width,
+                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
+                button_left = parseInt(remove_filter_elements[0].style.left),
+                button_obscured = button_left + 1 >= scrollbar_left ? true : false;
+
+           if (scrollbar_visible && button_obscured) {
+                button_left = button_left - scrollbar_width;
+
+                for (var i = 0; i < remove_filter_elements.length; i++) {
+                    remove_filter_elements[i].style.left = button_left + 'px';
+                }
+            }
+        }
+    },
 
     findParentFilter: function (cmp) {
         return cmp.findParentBy(function (cmp) {
