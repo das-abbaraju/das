@@ -30,6 +30,7 @@ import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PicsOrganizerVersion;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -88,10 +89,18 @@ public class ReportData extends PicsActionSupport {
 
 	private void upgradeReport() {
 		boolean upgraded = false;
-		if (report.getVersion() == null) {
+		Report report = reportDao.find(Report.class, this.report.getId());
+		
+		String reportVersion = report.getVersion();
+		if (Strings.isEmpty(reportVersion) || !PicsOrganizerVersion.getVersion().equals(reportVersion)) {
 			upgraded = true;
 
-			upgradeFields();
+			// Choosing to do this twice, once for the report in the database and 
+			// another time for the report that has been built from the HTTP Request.
+			// THIS IS NOT A GOOD SOLUTION, but it prevents the Ninja save.
+			reportDao.refresh(report);
+			upgradeFields(report);
+			upgradeFields(this.report);
 		}
 
 		// Add upgrades here
@@ -105,7 +114,7 @@ public class ReportData extends PicsActionSupport {
 		reportDao.save(report);
 	}
 
-	private void upgradeFields() {
+	private void upgradeFields(Report report) {
 		List<ReportElement> reportElements = new ArrayList<ReportElement>();
 		reportElements.addAll(report.getDefinition().getColumns());
 		reportElements.addAll(report.getDefinition().getSorts());
@@ -150,6 +159,7 @@ public class ReportData extends PicsActionSupport {
 		data();
 		if (this.pageNumber == 1)
 			report();
+		
 		return JSON;
 	}
 
@@ -166,6 +176,7 @@ public class ReportData extends PicsActionSupport {
 			if (permissions.isAdmin() || permissions.getAdminID() > 0) {
 				json.put("sql", debugSQL);
 			}
+			
 			json.put("success", true);
 		} catch (ReportValidationException error) {
 			writeJsonError(error.getMessage());
