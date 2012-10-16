@@ -193,12 +193,14 @@ public class ReportData extends PicsActionSupport {
 	public String download() {
 		try {
 			initialize();
+			runQuery();
 			converter.convertForPrinting();
 			HSSFWorkbook workbook = buildWorkbook();
 			writeFile(report.getName() + ".xls", workbook);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while downloading report", e);
 		}
+		
 		return BLANK;
 	}
 
