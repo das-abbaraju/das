@@ -8,6 +8,11 @@
                     $('#contractor_dashboard').delegate('.contractor-status-buttons button', 'click', function (event) {
                         that.saveContractorStatus.apply(that, [event]);
                     });
+
+                    $('#contractor_operator_numbers').delegate('.add, .edit', 'click', function (event) {
+                        event.preventDefault();
+                        $('#contractor_operator_numbers').trigger('showcontractornumbers', [event]);
+                    });
                 }
             },
 
