@@ -23,7 +23,6 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.report.ReportModel;
@@ -37,7 +36,6 @@ public class ManageReportsTest {
 	@Mock private ReportModel reportModel;
 	@Mock private ReportDAO reportDao;
 	@Mock private ReportUserDAO reportUserDao;
-	@Mock private ReportPermissionUserDAO reportPermissionUserDao;
 	@Mock private Permissions permissions;
 	@Mock private I18nCache i18nCache;
 	@Mock private Database databaseForTesting;
@@ -59,7 +57,6 @@ public class ManageReportsTest {
 		Whitebox.setInternalState(manageReports, "reportModel", reportModel);
 		Whitebox.setInternalState(manageReports, "reportDao", reportDao);
 		Whitebox.setInternalState(manageReports, "reportUserDao", reportUserDao);
-		Whitebox.setInternalState(manageReports, "reportPermissionUserDao", reportPermissionUserDao);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		Whitebox.setInternalState(manageReports, "permissions", permissions);
 		Whitebox.setInternalState(manageReports, "i18nCache", i18nCache);
