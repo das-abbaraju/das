@@ -4,14 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorNumber;
+import com.picsauditing.jpa.entities.ContractorOperatorNumberType;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageContractorOperatorNumber extends ContractorActionSupport {
-	private ContractorOperatorNumber number;
+	@Autowired
+	private UserSwitchDAO userSwitchDAO;
+
+	private ContractorOperatorNumber number = new ContractorOperatorNumber();
+	private int clientSite;
+	private String clientType;
 
 	@Override
 	public String execute() throws Exception {
@@ -19,10 +29,20 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 	}
 
 	public String edit() {
+		if (number.getId() > 0 && Strings.isEmpty(clientType) && clientSite == 0) {
+			clientSite = number.getOperator().getId();
+			clientType = number.getType().toString();
+		}
+
 		return INPUT;
 	}
 
 	public String save() {
+		OperatorAccount operator = operatorDAO.find(clientSite);
+
+		number.setOperator(operator);
+		number.setType(ContractorOperatorNumberType.valueOf(clientType));
+
 		checkForErrors();
 
 		if (!hasActionErrors()) {
@@ -73,6 +93,15 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 
 	public void setNumber(ContractorOperatorNumber number) {
 		this.number = number;
+	}
+
+	public List<User> getUsersList() {
+
+		List<User> usersAndSwitchTos = userDAO.findByAccountID(clientSite, "Yes", "No");
+		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(clientSite);
+
+		usersAndSwitchTos.addAll(switchTos);
+		return usersAndSwitchTos;
 	}
 
 	private void checkForErrors() {
@@ -132,5 +161,21 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 		return (permissions.isCorporate() && permissions.getOperatorChildren().contains(
 				contractorOperator.getOperatorAccount().getId()))
 				|| permissions.isPicsEmployee();
+	}
+
+	public int getClientSite() {
+		return clientSite;
+	}
+
+	public void setClientSite(int clientSite) {
+		this.clientSite = clientSite;
+	}
+
+	public String getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(String clientType) {
+		this.clientType = clientType;
 	}
 }
