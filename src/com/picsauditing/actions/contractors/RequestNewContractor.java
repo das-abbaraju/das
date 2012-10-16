@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -39,6 +40,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class RequestNewContractor extends AccountActionSupport {
@@ -82,6 +84,8 @@ public class RequestNewContractor extends AccountActionSupport {
 	private int requestID;
 	// For previews
 	private EmailQueue email;
+	// URL helper
+	private URLUtils urlUtils = new URLUtils();
 
 	public static final String PERSONAL_EMAIL = "Personal Email";
 	public static final String DRAFT_EMAIL = "Email";
@@ -121,23 +125,30 @@ public class RequestNewContractor extends AccountActionSupport {
 	public String ajaxCheck() throws Exception {
 		SearchEngine searchEngine = new SearchEngine(permissions);
 		List<BasicDynaBean> matches = newGap(searchEngine, term, type);
-		if (matches != null && !matches.isEmpty()) // results
+
+		if (matches != null && !matches.isEmpty()) {
 			continueCheck = false;
-		else
+		} else {
 			return null;
+		}
+
 		Database db = new Database();
 		JSONArray result = new JSONArray();
 		List<Integer> ids = new ArrayList<Integer>();
 		StringBuilder query = new StringBuilder();
 		result.add(continueCheck);
-		if ("C".equalsIgnoreCase(type))
-			query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN (");
-		else if ("U".equalsIgnoreCase(type))
+
+		if ("C".equalsIgnoreCase(type)) {
+			query.append("SELECT a.id, a.name FROM accounts a WHERE a.status IN ('Active', 'Pending', 'Requested') AND a.id IN (");
+		} else if ("U".equalsIgnoreCase(type)) {
 			query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
+		}
+
 		for (BasicDynaBean bdb : matches) {
 			int id = Integer.parseInt(bdb.get("foreignKey").toString());
 			ids.add(id);
 		}
+
 		JSONArray jObj = new JSONArray();
 		for (final String str : unusedTerms) {
 			jObj.add(new JSONObject() {
@@ -147,6 +158,7 @@ public class RequestNewContractor extends AccountActionSupport {
 			});
 		}
 		result.add(jObj);
+
 		jObj = new JSONArray();
 		for (final String str : usedTerms) {
 			jObj.add(new JSONObject() {
@@ -156,23 +168,39 @@ public class RequestNewContractor extends AccountActionSupport {
 			});
 		}
 		result.add(jObj);
+
 		query.append(Strings.implode(ids, ",")).append(')');
 		List<BasicDynaBean> cons = db.select(query.toString(), false);
 		final Hashtable<Integer, Integer> ht = searchEngine.getConIds(permissions);
+
 		for (BasicDynaBean bdb : cons) {
 			final String name = bdb.get("name").toString();
-			final String id = bdb.get("id").toString();
+			final int id = Integer.parseInt(bdb.get("id").toString());
+
+			final boolean visible = ht.containsKey(id);
+
 			result.add(new JSONObject() {
 				{
 					put("name", name);
 					put("id", id);
-					if (ht.containsKey(id))
-						put("add", false);
-					else
-						put("add", true);
+
+					if (visible || permissions.isPicsEmployee()) {
+						put("url", urlUtils.getActionUrl("ContractorView", "id", id));
+					} else {
+						put("url", urlUtils.getActionUrl("NewContractorSearch", null, new HashMap<String, Object>() {
+							{
+								put("filter.performedBy", "Self Performed");
+								put("filter.primaryInformation", true);
+								put("filter.tradeInformation", true);
+								put("filter.accountName", name);
+								put("button", "Search");
+							}
+						}, false));
+					}
 				}
 			});
 		}
+
 		json.put("result", result);
 		return JSON;
 	}
@@ -294,7 +322,7 @@ public class RequestNewContractor extends AccountActionSupport {
 
 		crrDAO.save(newContractor);
 
-		return setUrlForRedirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
+		return setUrlForRedirect(urlUtils.getActionUrl("RequestNewContractor", "newContractor", newContractor.getId()));
 	}
 
 	public String emailPreview() throws Exception {

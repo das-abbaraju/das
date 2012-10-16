@@ -23,8 +23,8 @@
                 <a 
                     class="excel" 
             		href="javascript: download('NewContractorSearch');" 
-            		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-                    <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if>>
+            		title="<s:text name="javascript.DownloadAllRows"><s:param>${report.allRows}</s:param></s:text>"
+                    <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param>${report.allRows}</s:param></s:text>');"</s:if>>
                     <s:text name="global.Download" />
                 </a>
             </div>
@@ -32,7 +32,7 @@
     </pics:permission>
     
     <div>
-        <s:property value="report.pageLinksWithDynamicForm" escape="false" />
+    	${report.pageLinksWithDynamicForm}
     </div>
     
     <table class="report">
@@ -47,7 +47,7 @@
                 
         		<s:if test="permissions.operator">
         			<td style="white-space: nowrap">
-        				<a href="#" class="cluetip help" title="<s:text name="NewContractorSearch.label.Preflag" />" rel="#watchtip"></a>
+        				<a href="javascript:;" class="cluetip help" title="<s:text name="NewContractorSearch.label.Preflag" />" rel="#watchtip"></a>
                         <s:text name="NewContractorSearch.label.Preflag" />
         				
                         <div id="watchtip">
@@ -115,24 +115,24 @@
         	</tr>
     	</thead>
     	<tbody>
-    		<s:iterator value="data" status="stat">
+    		<s:iterator value="data" status="stat" var="row">
     			<tr>
     				<td class="right">
-                        <s:property value="#stat.index + report.firstRowNumber" />
+    					${stat.index + report.firstRowNumber}
                     </td>
     				<td>
-                        <s:property value="get('name')" />
+    					${row.get('name')}
                         
     					<s:if test="get('dbaName') > '' && get('name') != get('dbaName')">
                             <br />
-                            <s:text name="ContractorAccount.dbaName.short" />: <s:property value="get('dbaName')" />
+                            <s:text name="ContractorAccount.dbaName.short" />: ${row.get('dbaName')}
                         </s:if>
     				</td>
                     
     				<s:if test="permissions.operator">
     					<td class="center">
     						<s:if test="worksForOperator(get('id'))">
-    							<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0" />
+    							<img src="images/icon_${row.get('lflag')}Flag.gif" width="12" height="15" border="0" />
     						</s:if>
     						<s:else>
     							<img width="12" height="15" border="0" src="images/icon_<s:property value="getOverallFlag(get('id')).toString().toLowerCase()"/>Flag.gif" />
@@ -142,7 +142,7 @@
     					<s:if test="operatorAccount.approvesRelationships">
     						<pics:permission perm="ViewUnApproved">
     							<td class="center">
-                                    <s:property value="get('workStatus')"/>
+    								${row.get('workStatus')}
                                 </td>
     						</pics:permission>
     					</s:if>
@@ -150,32 +150,53 @@
                     
     				<pics:permission perm="PicsScore">
     					<td>
-                            <s:property value="get('score')"/>
+    						${row.get('score')}
                         </td>
     				</pics:permission>
                     
     				<td class="center">
     					<s:if test="get('genID') > 0">
-    						<a href="ContractorView.action?id=<s:property value="get('id')"/>" class="preview"><s:text name="button.View" /></a>
+    						<s:url action="ContractorView" var="contractor_view">
+    							<s:param name="id">
+    								${row.get('id')}
+    							</s:param>
+    						</s:url>
+							<s:url action="ContractorFacilities" var="contractor_facilities">
+	  							<s:param name="id">
+	  								${row.get('id')}
+	  							</s:param>
+	  						</s:url>
+	  						
+    						<a href="${contractor_view}" class="preview"><s:text name="button.View" /></a>
                             
     						<pics:permission perm="RemoveContractors">
     							<br />
                                 
     							<s:if test="permissions.corporate">
-    								<a class="remove" href="ContractorFacilities.action?id=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
+    								<a class="remove" href="${contractor_facilities}"><s:text name="button.Remove" /></a>
     							</s:if>
     							<s:else>
-    								<a class="remove" href="NewContractorSearch!remove.action?contractor=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
+    								<s:url action="NewContractorSearch" method="remove" var="new_contractor_search_remove">
+		    							<s:param name="contractor">
+		    								${row.get('id')}
+		    							</s:param>
+		    						</s:url>
+    								<a class="remove" href="${new_contractor_search_remove}"><s:text name="button.Remove" /></a>
     							</s:else>
     						</pics:permission>
     					</s:if>
     					<s:else>
     						<pics:permission perm="AddContractors">
     							<s:if test="permissions.corporate">
-    								<a class="add" href="ContractorFacilities.action?id=<s:property value="get('id')"/>"><s:text name="button.Add" /></a>
+    								<a class="add" href="${contractor_facilities}"><s:text name="button.Add" /></a>
     							</s:if>
     							<s:else>
-    								<a class="add" href="NewContractorSearch!add.action?contractor=<s:property value="get('id')"/>"><s:text name="button.Add" /></a>
+    								<s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
+		    							<s:param name="contractor">
+		    								${row.get('id')}
+		    							</s:param>
+		    						</s:url>
+    								<a class="add" href="${new_contractor_search_add}"><s:text name="button.Add" /></a>
     							</s:else>
     						</pics:permission>
     					</s:else>
@@ -183,36 +204,36 @@
                     
     				<s:if test="showContact">
     					<td>
-                            <s:property value="get('contactname')"/>
+    						${row.get('contactname')}
                         </td>
     					<td>
-                            <s:property value="get('contactphone')"/>
+    						${row.get('contactphone')}
                         </td>
     					<td>
-                            <s:property value="get('contactemail')"/>
+    						${row.get('contactemail')}
                         </td>
     					<td>
-                            <s:property value="get('address')"/>
+    						${row.get('address')}
                         </td>
     				</s:if>
                     
     				<td>
-    					<s:property value="get('city')"/>, <s:property value="get('countrySubdivision')"/>
+    					${row.get('city')}, ${row.get('countrySubdivision')}
                         
     					<s:if test="get('countrySubdivision') == ''">
-    						<s:property value="get('country')"/>
+    						${row.get('country')}
     					</s:if>
     				</td>
                     
     				<s:if test="showTrade">
     					<td>
-    						<s:property value="get('main_trade')"/>
+    						${row.get('main_trade')}
     					</td>
     					<td class="tradeList">
-    						<s:property value="get('tradesSelf')"/>
+    						${row.get('tradesSelf')}
     					</td>
     					<td class="tradeList">
-    						<s:property value="get('tradesSub')"/>
+    						${row.get('tradesSub')}
     					</td>
     				</s:if>
                     
@@ -245,7 +266,7 @@
     </table>
     
     <div>
-        <s:property value="report.pageLinksWithDynamicForm" escape="false" />
+    	${report.pageLinksWithDynamicForm}
     </div>
     
     <div class="info">
@@ -259,12 +280,10 @@
 		
 		if (trade.length > 100) {
 			var text = trade.substring(0, 100);
-			// window.console.log("Text: " + text);
 			text = text + '<a href="#" title="' + translate('JS.NewContractorSearch.ShowMore') + '" class="showMoreLink">...</a>';
 			
 			var rest = trade.substring(100, trade.length);
-			// window.console.log("Rest: " + rest);
-			rest = '<span class="hidden">' + rest + '<br /><a href="#" class="hideLink">Hide</a></span>';
+			rest = '<span class="hidden">' + rest + '<br /><a href="javascript:;" class="hideLink">Hide</a></span>';
 			
 			$(this).html(text + rest);
 		}

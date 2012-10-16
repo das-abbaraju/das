@@ -9,14 +9,19 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 public class SearchEngine {
+	private static final Logger logger = LoggerFactory.getLogger(SearchEngine.class);
+	private static final Marker marker = MarkerFactory.getMarker("Search Engine");
 
 	protected String searchTerm;
 
@@ -83,8 +88,8 @@ public class SearchEngine {
 		String sub = buildQuery(perm, terms, null, null, total, true, true);
 		StringBuilder cSb = new StringBuilder();
 		cSb.append("SELECT a.value term, COUNT(a.value) cc FROM ").append(indexTable).append(" a JOIN (");
-		cSb.append(sub).append(
-				") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN (SELECT isoCode FROM ref_country_subdivision)");
+		cSb.append(sub)
+				.append(") AS r1 ON a.foreignKey = r1.foreignKey\nWHERE a.value NOT IN (SELECT isoCode FROM ref_country_subdivision)");
 		if (ignore != null && ignore.length() > 0)
 			cSb.append(" AND a.value NOT IN (").append(ignore).append(")");
 		cSb.append(" GROUP BY a.value HAVING cc/").append(total).append(" <.8\n").append("ORDER BY cc DESC LIMIT 10");
@@ -227,7 +232,7 @@ public class SearchEngine {
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
 							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id")
-							.append(" where u.isActive = "+userStatuses + ")");
+							.append(" where u.isActive = " + userStatuses + ")");
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
@@ -248,7 +253,8 @@ public class SearchEngine {
 						.append(") AS acc ON a.id = acc.id WHERE a.status IN (" + accountStatuses + ") )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
-							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.isActive = "+userStatuses+" and u.accountID =").append(currPerm.getAccountId()).append(')');
+							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.isActive = "
+									+ userStatuses + " and u.accountID =").append(currPerm.getAccountId()).append(')');
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
@@ -276,8 +282,8 @@ public class SearchEngine {
 			sql.append(limit);
 		}
 
-		PicsLogger.log(sql.toString());
-		PicsLogger.stop();
+		logger.info(marker, sql.toString());
+
 		return sql.toString();
 	}
 

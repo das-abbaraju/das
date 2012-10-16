@@ -52,6 +52,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.URLUtils;
 
 public class RequestNewContractorTest {
 	private RequestNewContractor requestNewContractor;
@@ -68,6 +69,8 @@ public class RequestNewContractorTest {
 	private Query query;
 	@Mock
 	private RegistrationRequestEmailHelper emailHelper;
+	@Mock
+	private URLUtils urlUtils;
 
 	@Before
 	public void setUp() throws Exception {
@@ -79,9 +82,11 @@ public class RequestNewContractorTest {
 		picsTestUtil.autowireEMInjectedDAOs(requestNewContractor, entityManager);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(urlUtils.getActionUrl(anyString(), any(), any())).thenReturn("URL");
 
 		Whitebox.setInternalState(requestNewContractor, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractor, "permissions", permissions);
+		Whitebox.setInternalState(requestNewContractor, "urlUtils", urlUtils);
 	}
 
 	@AfterClass

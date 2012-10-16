@@ -73,12 +73,9 @@ $(function() {
 					.append('<br/>');
 					var ul = $('<ul>');
 					for(var i=3; i<result.length; i++){
-						var id=result[i].id;
-						var name=result[i].name;
-						if(result[i].add)
-							ul.append($('<li>').append($('<a>').attr('href','ContractorFacilities.action?id='+id).append(name)));
-						else
-							ul.append($('<li>').append($('<a>').attr('href','ContractorView.action?id='+id).append(name)));
+						var name = result[i].name;
+						var url = result[i].url;
+						ul.append($('<li>').append($('<a>').attr('href',url).append(name)));
 					}
 					matchList.append(ul);
 					var hasResults = $('#match_'+fType).attr('matched');
