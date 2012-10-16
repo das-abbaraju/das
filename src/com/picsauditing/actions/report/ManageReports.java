@@ -144,53 +144,56 @@ public class ManageReports extends PicsActionSupport {
 		return "search";
 	}
 
+	// The code in this method was commented out to temporarily disable this functionality
 	public String removeReportUser() {
-		try {
-			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
-			reportUserDao.remove(reportUser);
-
-			addActionMessage(getText("ManageReports.message.ReportRemoved"));
-		} catch (NoResultException nre) {
-			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
-			logger.error(nre.toString());
-		} catch (Exception e) {
-			logger.error("Uncaught exception in removeUserReport(). ", e);
-		}
+//		try {
+//			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
+//			reportUserDao.remove(reportUser);
+//
+//			addActionMessage(getText("ManageReports.message.ReportRemoved"));
+//		} catch (NoResultException nre) {
+//			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
+//			logger.error(nre.toString());
+//		} catch (Exception e) {
+//			logger.error("Uncaught exception in removeUserReport(). ", e);
+//		}
 
 		return redirectToPreviousView();
 	}
 
+	// The code in this method was commented out to temporarily disable this functionality
 	public String removeReportPermissionUser() {
-		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
-			reportPermissionUserDao.remove(reportPermissionUser);
-			
-			addActionMessage(getText("ManageReports.message.ReportRemoved"));
-		} catch (NoResultException nre) {
-			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
-			logger.error(nre.toString());
-		} catch (Exception e) {
-			logger.error("Uncaught exception in removeUserReport(). ", e);
-		}
+//		try {
+//			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
+//			reportPermissionUserDao.remove(reportPermissionUser);
+//			
+//			addActionMessage(getText("ManageReports.message.ReportRemoved"));
+//		} catch (NoResultException nre) {
+//			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
+//			logger.error(nre.toString());
+//		} catch (Exception e) {
+//			logger.error("Uncaught exception in removeUserReport(). ", e);
+//		}
 
 		return redirectToPreviousView();
 	}
 
+	// The code in this method was commented out to temporarily disable this functionality
 	public String deleteReport() {
-		try {
-			Report report = reportDao.find(Report.class, reportId);
-			if (reportModel.canUserEdit(permissions, report)) {
-				reportModel.removeAndCascade(report);
-				addActionMessage(getText("ManageReports.message.ReportDeleted"));
-			} else {
-				addActionError(getText("ManageReports.error.NoDeletePermissions"));
-			}
-		} catch (NoResultException nre) {
-			addActionError(getText("ManageReports.error.NoReportToDelete"));
-			logger.error(nre.toString());
-		} catch (Exception e) {
-			logger.error("Uncaught exception in deleteReport(). ", e);
-		}
+//		try {
+//			Report report = reportDao.find(Report.class, reportId);
+//			if (reportModel.canUserEdit(permissions, report)) {
+//				reportModel.removeAndCascade(report);
+//				addActionMessage(getText("ManageReports.message.ReportDeleted"));
+//			} else {
+//				addActionError(getText("ManageReports.error.NoDeletePermissions"));
+//			}
+//		} catch (NoResultException nre) {
+//			addActionError(getText("ManageReports.error.NoReportToDelete"));
+//			logger.error(nre.toString());
+//		} catch (Exception e) {
+//			logger.error("Uncaught exception in deleteReport(). ", e);
+//		}
 
 		return redirectToPreviousView();
 	}

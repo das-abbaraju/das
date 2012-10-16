@@ -333,23 +333,25 @@ public class ReportModel {
 		return reportPermissionAccount;
 	}
 
+	// The code in this method was commented out to temporarily disable this functionality
 	public void disconnectReportPermissionUser(int id, int reportId) {
-		try {
-			reportPermissionUserDao.revokePermissions(id, reportId);
-		} catch (NoResultException nre) {
-
-		}
+//		try {
+//			reportPermissionUserDao.revokePermissions(id, reportId);
+//		} catch (NoResultException nre) {
+//
+//		}
 	}
 
+	// The code in this method was commented out to temporarily disable this functionality
 	public void disconnectReportPermissionAccount(int accountId, int reportId) {
-		ReportPermissionAccount reportPermissionAccount;
-
-		try {
-			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-			reportPermissionAccountDao.remove(reportPermissionAccount);
-		} catch (NoResultException nre) {
-
-		}
+//		ReportPermissionAccount reportPermissionAccount;
+//
+//		try {
+//			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+//			reportPermissionAccountDao.remove(reportPermissionAccount);
+//		} catch (NoResultException nre) {
+//
+//		}
 	}
 
 	public void removeAndCascade(Report report) {
