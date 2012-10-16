@@ -431,13 +431,10 @@
 					</h2>
 					<ol>
 						<li>
-							<s:checkbox id="rememberMeTimeCheckbox" name="operator.rememberMeTimeEnabled" theme="formhelp" onchange="$('#rememberMeTimeTextbox').attr('disabled', !this.checked)"/>
-						</li>
-						<li>
-							<s:textfield id="rememberMeTimeTextbox" name="operator.rememberMeTimeInDays" theme="formhelp" disabled="!operator.rememberMeTimeEnabled"/>
-						</li>
-						<li>
 							<s:textfield name="operator.sessionTimeout" theme="formhelp" />
+						</li>
+						<li>
+							<s:textfield name="operator.rememberMeTimeInDays" theme="formhelp" />
 						</li>
 					</ol>
 				</fieldset>

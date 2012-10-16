@@ -101,7 +101,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected boolean generalContractor = false;
 	private int sessionTimeout = 60;
 	private int rememberMeTime = -1;
-	private boolean rememberMeTimeEnabled = true;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -996,15 +995,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setRememberMeTimeInDays(int rememberMeTime) {
 		this.rememberMeTime = rememberMeTime;
-	}
-
-	@Column(name = "rememberMeTimeEnabled")
-	public boolean isRememberMeTimeEnabled() {
-		return rememberMeTimeEnabled;
-	}
-
-	public void setRememberMeTimeEnabled(boolean rememberMeTimeEnabled) {
-		this.rememberMeTimeEnabled = rememberMeTimeEnabled;
 	}
 
 }
