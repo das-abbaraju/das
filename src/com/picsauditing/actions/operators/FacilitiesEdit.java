@@ -716,6 +716,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.add(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
 		}
 
+		if (operator.isRememberMeTimeEnabled() && operator.getRememberMeTimeInDays() <= 0) {
+			errorMessages.add(getText("FacilitiesEdit.RememberMeMustBePositive"));
+		}
+
 		return errorMessages;
 	}
 
