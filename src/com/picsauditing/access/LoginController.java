@@ -345,7 +345,8 @@ public class LoginController extends PicsActionSupport {
 		if (cookiesA != null) {
 			for (int i = 0; i < cookiesA.length; i++) {
 				if ("from".equals(cookiesA[i].getName())) {
-					urlPreLogin = cookiesA[i].getValue();
+					// PICS-7659: "/Home.action causing a loop
+					urlPreLogin = cookiesA[i].getValue().replaceAll("\"", "");
 					// Clear the cookie, now that we've used it once
 					Cookie cookie = new Cookie("from", "");
 					cookie.setMaxAge(ONE_SECOND);

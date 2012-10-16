@@ -1,17 +1,19 @@
 package com.picsauditing.access;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -32,6 +34,28 @@ public class PermissionsTest {
 
 		groups = new HashMap<Integer, String>();
 		Whitebox.setInternalState(permissions, "groups", groups);
+	}
+
+	@Test
+	public void testAddReturnToCookieIfGoodUrl_LeadingQuote() throws Exception {
+
+		Whitebox.invokeMethod(permissions, "addReturnToCookieIfGoodUrl", response, "\"/Home.action");
+
+		ArgumentCaptor<Cookie> argument = ArgumentCaptor.forClass(Cookie.class);
+		verify(response).addCookie(argument.capture());
+		Cookie arg = argument.getValue();
+
+		assertEquals("/Home.action", arg.getValue());
+	}
+
+	@Test
+	public void testAddReturnToCookieIfGoodUrl_NoLeadingQuote() throws Exception {
+		Whitebox.invokeMethod(permissions, "addReturnToCookieIfGoodUrl", response, "/UsersManage.action?user=5484");
+		ArgumentCaptor<Cookie> argument = ArgumentCaptor.forClass(Cookie.class);
+		verify(response).addCookie(argument.capture());
+		Cookie arg = argument.getValue();
+
+		assertEquals("/UsersManage.action?user=5484", arg.getValue());
 	}
 
 	@Test

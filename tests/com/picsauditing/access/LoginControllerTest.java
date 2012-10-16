@@ -225,8 +225,15 @@ public class LoginControllerTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testClearPicsOrgCookie() throws Exception {
-
+	public void testGetPreLoginUrl() throws Exception {
+		Cookie cookie = mock(Cookie.class);
+		when(cookie.getName()).thenReturn("from");
+		when(cookie.getValue()).thenReturn("\"/Home.action");
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
+		
+		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
+		
+		assertFalse(urlPreLogin.contains("\""));
 	}
 
 	private void normalLoginSetup() {

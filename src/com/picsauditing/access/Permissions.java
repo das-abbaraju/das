@@ -425,7 +425,8 @@ public class Permissions implements Serializable {
 
 	private void addReturnToCookieIfGoodUrl(HttpServletResponse response, String returnURL) {
 		if (returnUrlIsOk(returnURL)) {
-			Cookie fromCookie = new Cookie("from", returnURL);
+			// PICS-7659: "/Home.action causing a loop - replace "
+			Cookie fromCookie = new Cookie("from", returnURL.replaceAll("\"", ""));
 			fromCookie.setMaxAge(3600);
 			response.addCookie(fromCookie);
 		}
