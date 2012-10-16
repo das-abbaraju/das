@@ -73,7 +73,7 @@ public class URLUtils implements StreamContentProvider {
 	 *            <code>&lt;String, Object&gt;</code> map.
 	 */
 	public String getActionUrl(String action, Object... parameters) {
-		if (parameters.length % 2 == 0) {
+		if (parameters != null && parameters.length % 2 == 0) {
 			Map<String, Object> parameterMap = new HashMap<String, Object>();
 
 			for (int i = 0; i < parameters.length; i = i + 2) {
@@ -101,7 +101,7 @@ public class URLUtils implements StreamContentProvider {
 	 *            &lt;String, Object&gt; map of parameter name, parameter value
 	 * @param useFullUrl
 	 *            whether to display something like
-	 *            "https://www.picsorganizer.com" beforehand<br />
+	 *            "https://www.picsorganizer.com" beforehand
 	 * @return 
 	 *         "/Action!method.action?param1key=param1value&amp;param2key=param2value"
 	 */
