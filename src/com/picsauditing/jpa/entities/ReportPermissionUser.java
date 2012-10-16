@@ -7,6 +7,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report_permission_user")
@@ -46,6 +50,7 @@ public class ReportPermissionUser extends BaseTable {
 	}
 
 	@Column(name = "editable", nullable = false)
+	@ReportField(importance = FieldImportance.Required, type = FieldType.Boolean)
 	public boolean isEditable() {
 		return editable;
 	}

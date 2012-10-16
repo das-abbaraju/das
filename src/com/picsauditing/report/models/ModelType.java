@@ -25,6 +25,7 @@ public enum ModelType {
 	Operators,
 	PaymentCommissions,
 	RegistrationRequests,
+	ReportPermissions,
 	Resources,
 	UserAssignments,
 	UserGroups,

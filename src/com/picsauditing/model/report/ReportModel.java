@@ -131,7 +131,6 @@ public class ReportModel {
 		newReport.setName(sourceReport.getName());
 		newReport.setDescription(sourceReport.getDescription());
 		newReport.setParameters(sourceReport.getParameters());
-		newReport.setVersion(sourceReport.getVersion());
 
 		return newReport;
 	}

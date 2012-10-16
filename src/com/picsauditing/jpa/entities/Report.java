@@ -15,7 +15,9 @@ import javax.persistence.Transient;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -27,7 +29,6 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private int rowsPerPage = 50;
-	private String version;
 	
 	private int numTimesFavorited;
 
@@ -37,6 +38,7 @@ public class Report extends BaseTable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@ReportField(importance = FieldImportance.Required, width = 200)
 	public ModelType getModelType() {
 		return modelType;
 	}
@@ -46,6 +48,7 @@ public class Report extends BaseTable {
 	}
 
 	@Column(nullable = false)
+	@ReportField(importance = FieldImportance.Required, width = 200)
 	public String getName() {
 		return name;
 	}
@@ -54,6 +57,7 @@ public class Report extends BaseTable {
 		this.name = name;
 	}
 
+	@ReportField(importance = FieldImportance.Low, width = 400)
 	public String getDescription() {
 		return description;
 	}
@@ -62,6 +66,7 @@ public class Report extends BaseTable {
 		this.description = description;
 	}
 
+	@ReportField(importance = FieldImportance.Low, width = 400)
 	public String getParameters() {
 		return parameters;
 	}
@@ -130,14 +135,6 @@ public class Report extends BaseTable {
 
 	public void setRowsPerPage(int rowsPerPage) {
 		this.rowsPerPage = rowsPerPage;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
 	}
 
 	@Transient

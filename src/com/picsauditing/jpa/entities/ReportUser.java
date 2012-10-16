@@ -9,6 +9,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report_user")
@@ -50,6 +54,7 @@ public class ReportUser extends BaseTable {
 		this.report = report;
 	}
 
+	@ReportField(importance = FieldImportance.Required, type = FieldType.Boolean)
 	public boolean isFavorite() {
 		return favorite;
 	}
@@ -59,6 +64,7 @@ public class ReportUser extends BaseTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Date)
 	public Date getLastViewedDate() {
 		return lastViewedDate;
 	}
@@ -67,6 +73,7 @@ public class ReportUser extends BaseTable {
 		this.lastViewedDate = lastViewedDate;
 	}
 
+	@ReportField(importance = FieldImportance.Average, type = FieldType.Integer)
 	public int getViewCount() {
 		return viewCount;
 	}
@@ -75,6 +82,7 @@ public class ReportUser extends BaseTable {
 		this.viewCount = viewCount;
 	}
 
+	@ReportField(importance = FieldImportance.Low, type = FieldType.Integer)
 	public int getSortOrder() {
 		return sortOrder;
 	}

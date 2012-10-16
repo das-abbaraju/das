@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportPermissionUserDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
@@ -46,8 +45,6 @@ public class ManageReports extends PicsActionSupport {
 	private ReportDAO reportDao;
 	@Autowired
 	private ReportUserDAO reportUserDao;
-	@Autowired
-	private ReportPermissionUserDAO reportPermissionUserDao;
 	
 
 	private List<ReportUser> reportUserFavorites;

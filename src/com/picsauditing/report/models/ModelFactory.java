@@ -33,10 +33,12 @@ public class ModelFactory {
 			return new InvoiceModel(permissions);
 		if (type.equals(ModelType.InvoiceCommissions))
 			return new InvoiceCommissionModel(permissions);
-		if (type.equals(ModelType.PaymentCommissions))
-			return new PaymentCommissionModel(permissions);
 		if (type.equals(ModelType.Operators))
 			return new AccountOperatorModel(permissions);
+		if (type.equals(ModelType.PaymentCommissions))
+			return new PaymentCommissionModel(permissions);
+		if (type.equals(ModelType.ReportPermissions))
+			return new ReportPermissionModel(permissions);
 
 		logger.warn("WARNING: ModelFactory failed to define Model for type = {}", type);
 
