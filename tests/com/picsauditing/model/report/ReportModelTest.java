@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.ReportPermissionAccount;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.pagination.Pagination;
 
@@ -119,7 +120,9 @@ public class ReportModelTest {
 	public void canUserEdit_FalseIfNoEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(false);
 		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
-
+		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
+		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
+		
 		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
 
