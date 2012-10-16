@@ -53,7 +53,9 @@ public class ReportData extends PicsActionSupport {
 	private String initialize() throws Exception {
 		logger.debug("initializing report " + report.getId());
 		ReportModel.validate(report);
-		reportModel.updateLastViewedDate(permissions.getUserId(), report);
+		Report reportFromDb =reportDao.find(Report.class, report.getId());
+		reportDao.refresh(reportFromDb);
+		reportModel.updateLastViewedDate(permissions.getUserId(), reportFromDb);
 		sql = new SqlBuilder().initializeSql(report, permissions);
 		logger.debug("Running report {0} with SQL: {1}", report.getId(), sql.toString());
 
