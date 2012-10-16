@@ -19,7 +19,7 @@
 
 // top wrapper to prevent multiple inclusion (is this OK?)
 (function () { if(jQuery && jQuery.jstree) { return; }
-	var is_ie6 = false, is_ie7 = false, is_ff2 = false;
+	var is_ie6 = false, is_ie7 = false, is_ie8 = false, is_ff2 = false;
 
 /*
  * jsTree core
@@ -75,7 +75,12 @@
 		        }
 
 		        //append styles to page
-		        jstree_style_tag.appendChild(textnode);
+		        if (is_ie7 || is_ie8) {
+		            jstree_style_tag.styleSheet.cssText += opts.str;
+		        } else {
+		            jstree_style_tag.appendChild(textnode);
+		        }
+
 		        document.getElementsByTagName("head")[0].appendChild(jstree_style_tag);
 		    }
 
@@ -327,6 +332,10 @@
 		if(/msie/.test(u) && parseInt(v, 10) == 7) {
 			is_ie7 = true;
 			css_string += '.jstree li a { border-width:0 !important; padding:0px 2px !important; } ';
+		}
+		//Set IE8 variable
+		if(/msie/.test(u) && parseInt(v, 10) == 8) {
+		    is_ie8 = true;
 		}
 		// correct ff2 lack of display:inline-block
 		if(!/compatible/.test(u) && /mozilla/.test(u) && parseFloat(v, 10) < 1.9) {
