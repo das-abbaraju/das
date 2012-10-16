@@ -211,11 +211,6 @@
 			<result name="input">/struts/contractors/contractor_operator_numbers_form.jsp</result>
 		</action>
 
-        <action name="ContractorNumbersOperatorUserListAjax"
-            class="com.picsauditing.actions.contractors.RequestNewContractor">
-            <result>/struts/users/_operator_userList.jsp</result>
-        </action>
-
 		<!-- Contractor Badge -->
 		<action name="ContractorBadge"
 			class="com.picsauditing.actions.contractors.ContractorBadge">
