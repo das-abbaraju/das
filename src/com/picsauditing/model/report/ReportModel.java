@@ -65,13 +65,18 @@ public class ReportModel {
 			if (reportPermissionUser.isEditable())
 				return true;
 
-			if (permissions.getAdminID() > 0) {
-				String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + permissions.getAdminID();
-				reportDao.findOne(UserGroup.class, where);
-				return true;
-			}
+			String userID = permissions.getUserIdString();
+			
+			if (permissions.getAdminID() > 0)
+				userID = "" + permissions.getAdminID();
+
+			String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
+			
+			reportDao.findOne(UserGroup.class, where);
+			
+			return true;
 		} catch (NoResultException e) {
-			// We don't care. The user can't edit.
+
 		}
 
 		return false;
