@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -23,14 +22,11 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.report.ReportModel;
-import com.picsauditing.report.ReportElement;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.PicsOrganizerVersion;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -70,7 +66,6 @@ public class ReportData extends PicsActionSupport {
 
 	public String report() {
 		try {
-			upgradeReport();
 			initialize();
 			configuration();
 
@@ -85,57 +80,6 @@ public class ReportData extends PicsActionSupport {
 		}
 
 		return JSON;
-	}
-
-	private void upgradeReport() {
-		boolean upgraded = false;
-		Report report = reportDao.find(Report.class, this.report.getId());
-		
-		String reportVersion = report.getVersion();
-		if (Strings.isEmpty(reportVersion) || !PicsOrganizerVersion.getVersion().equals(reportVersion)) {
-			upgraded = true;
-
-			// Choosing to do this twice, once for the report in the database and 
-			// another time for the report that has been built from the HTTP Request.
-			// THIS IS NOT A GOOD SOLUTION, but it prevents the Ninja save.
-			reportDao.refresh(report);
-			upgradeFields(report);
-			upgradeFields(this.report);
-		}
-
-		// Add upgrades here
-		// if (!PicsOrganizerVersion.getVersion().equals(report.getVersion())) {
-		// }
-
-		if (upgraded) {
-			report.setVersion(PicsOrganizerVersion.getVersion());
-		}
-
-		reportDao.save(report);
-	}
-
-	private void upgradeFields(Report report) {
-		List<ReportElement> reportElements = new ArrayList<ReportElement>();
-		reportElements.addAll(report.getDefinition().getColumns());
-		reportElements.addAll(report.getDefinition().getSorts());
-		reportElements.addAll(report.getDefinition().getFilters());
-
-		for (ReportElement reportElement : reportElements) {
-			if (reportElement.getFieldName().equalsIgnoreCase("AuditName"))
-				reportElement.setFieldName("AuditTypeName");
-			if (reportElement.getFieldName().equalsIgnoreCase("ContractorID"))
-				reportElement.setFieldName("AccountID");
-			if (reportElement.getFieldName().equalsIgnoreCase("OperatorID"))
-				reportElement.setFieldName("AccountID");
-			if (reportElement.getFieldName().equalsIgnoreCase("ContractorName"))
-				reportElement.setFieldName("AccountName");
-			if (reportElement.getFieldName().equalsIgnoreCase("OperatorName"))
-				reportElement.setFieldName("AccountName");
-			if (reportElement.getFieldName().equalsIgnoreCase("ContractorRequestedByOperatorReason"))
-				reportElement.setFieldName("AccountReason");
-			if (reportElement.getFieldName().toUpperCase().startsWith("ContractorID".toUpperCase()))
-				reportElement.setFieldName(reportElement.getFieldName().replace("contractorID", "AccountID"));
-		}
 	}
 
 	public String configuration() {
@@ -165,7 +109,6 @@ public class ReportData extends PicsActionSupport {
 
 	public String data() throws Exception {
 		try {
-			upgradeReport();
 			initialize();
 			sql.setPageNumber(report.getRowsPerPage(), pageNumber);
 			runQuery();
