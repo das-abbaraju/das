@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,6 +71,8 @@ public abstract class SafetyStatistics {
 	public AuditData makeZeroAnswerData(int id) {
 		AuditData data = new AuditData();
 		data.setAnswer("0");
+		data.setVerified(true);
+		data.setDateVerified(new Date());
 		return data;
 	}
 

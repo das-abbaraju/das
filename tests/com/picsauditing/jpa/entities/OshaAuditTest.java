@@ -1,15 +1,17 @@
 package com.picsauditing.jpa.entities;
 
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.picsauditing.EntityFactory;
@@ -24,6 +26,7 @@ public class OshaAuditTest {
 	
 	ContractorAudit contractorAudit;
 	OshaAudit oshaAudit2010;
+	
 	
 	@Before
 	public void setUp() throws Exception {
@@ -87,6 +90,52 @@ public class OshaAuditTest {
 	}	
 
 	@Test
+	public void testNotApplicableOshaIsVerified() throws Exception {
+		OshaAudit emptyAudit;
+
+		AuditType auditType = new AuditType();
+		auditType.setId(AuditType.ANNUALADDENDUM);
+		
+		ContractorAudit contractorAudit = new ContractorAudit();	
+		contractorAudit.setAuditType(auditType);
+		contractorAudit.setAuditFor("2010");
+
+		AuditCategory oshaParentCat = new AuditCategory();
+		AuditCategory oshaDataCat = new AuditCategory();
+		
+		oshaParentCat.setId(OshaAudit.CAT_ID_OSHA_PARENT);
+		oshaDataCat.setId(OshaAudit.CAT_ID_OSHA);
+
+		List<AuditCatData> auditCategories = new ArrayList<AuditCatData>();
+		AuditCatData mockAuditCategoryData = Mockito.mock(AuditCatData.class);
+		when(mockAuditCategoryData.getCategory()).thenReturn(oshaParentCat);
+		when(mockAuditCategoryData.getAudit()).thenReturn(contractorAudit);
+		when(mockAuditCategoryData.getNumRequired()).thenReturn(4);
+		when(mockAuditCategoryData.isApplies()).thenReturn(true);
+		auditCategories.add(mockAuditCategoryData);
+		
+		mockAuditCategoryData = Mockito.mock(AuditCatData.class);
+		when(mockAuditCategoryData.getCategory()).thenReturn(oshaDataCat);
+		when(mockAuditCategoryData.getAudit()).thenReturn(contractorAudit);
+		when(mockAuditCategoryData.getNumRequired()).thenReturn(4);
+		when(mockAuditCategoryData.isApplies()).thenReturn(false);
+		auditCategories.add(mockAuditCategoryData);
+		contractorAudit.setCategories(auditCategories);
+
+		List<AuditData> auditDataList = new ArrayList<AuditData>();
+		AuditData keptOsha = EntityFactory.makeAuditData("No", 2064);
+		auditDataList.add(keptOsha);
+		contractorAudit.setData(auditDataList);
+		
+		ContractorAuditOperator cao = EntityFactory.addCao(contractorAudit, EntityFactory.makeOperator());
+		cao.setStatus(AuditStatus.Complete);
+		
+		emptyAudit = new OshaAudit(contractorAudit);
+		
+		assertTrue(emptyAudit.isVerified());
+	}
+
+	@Test
 	public void testOshaAuditInitialization() throws Exception {
 		assertEquals("2010", oshaAudit2010.getAuditFor());
 	}
@@ -129,7 +178,7 @@ public class OshaAuditTest {
 	public void testGetIFR() throws Exception {
 		assertEquals("103.7", oshaAudit2010.getSafetyStatistics(OshaType.UK_HSE).getStats(OshaRateType.IFR));
 	}
-	
+		
 	private AuditCatData setupMockAuditCatData(ContractorAudit contractorAudit, int categoryId) {
 		AuditCategory mockAuditCategory = Mockito.mock(AuditCategory.class);
 		when(mockAuditCategory.getId()).thenReturn(categoryId);
