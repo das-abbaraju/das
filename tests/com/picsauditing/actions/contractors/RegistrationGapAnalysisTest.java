@@ -196,52 +196,52 @@ public class RegistrationGapAnalysisTest {
 		requested.getPrimaryContact().setEmail("user@test.com");
 		requested.getPrimaryContact().setPhoneIndex("3214567890");
 
-		Set<MatchType> matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested",
-				registered, requested);
+		Map<MatchType, String> matches = Whitebox.invokeMethod(registrationGapAnalysis,
+				"compareRegisteredWithRequested", registered, requested);
 		assertTrue(matches.isEmpty());
 
 		requested.setName("Existing1");
 
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.Name));
+		assertTrue(matches.containsKey(MatchType.Name));
 		assertEquals(1, matches.size());
 
 		requested.setCity("Irvin");
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.Address));
+		assertTrue(matches.containsKey(MatchType.Address));
 		assertEquals(2, matches.size());
 
 		requested.setCity("Other");
 		requested.setZip("99999-0001");
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.Address));
+		assertTrue(matches.containsKey(MatchType.Address));
 		assertEquals(2, matches.size());
 
 		requested.setTaxId("123456789-0");
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.TaxID));
+		assertTrue(matches.containsKey(MatchType.TaxID));
 		assertEquals(3, matches.size());
 
 		requested.getPrimaryContact().setName("Test1");
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.Contact));
+		assertTrue(matches.containsKey(MatchType.Contact));
 		assertEquals(4, matches.size());
 
 		requested.getPrimaryContact().setEmail("test@test.com");
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.Email));
+		assertTrue(matches.containsKey(MatchType.Email));
 		assertEquals(5, matches.size());
 
 		requested.getPrimaryContact().setPhoneIndex("55555555553456");
 		matches = Whitebox.invokeMethod(registrationGapAnalysis, "compareRegisteredWithRequested", registered,
 				requested);
-		assertTrue(matches.contains(MatchType.Phone));
+		assertTrue(matches.containsKey(MatchType.Phone));
 		assertEquals(6, matches.size());
 	}
 

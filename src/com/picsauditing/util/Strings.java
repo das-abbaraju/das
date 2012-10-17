@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -532,42 +533,13 @@ public class Strings {
 		return test;
 	}
 
-	/**
-	 * For computing the number of character differences between two strings
-	 * Levenshtein Distance If needed, can be optimized
-	 * 
-	 * @param m
-	 * @param n
-	 * @return
-	 */
-	public static int editDistance(String m, String n) {
-		// d is a table with m+1 rows and n+1 columns
-		int[][] d = new int[m.length() + 1][n.length() + 1];
-
-		for (int i = 0; i <= m.length(); i++)
-			d[i][0] = i; // deletion
-		for (int j = 0; j <= n.length(); j++)
-			d[0][j] = j; // insertion
-
-		for (int j = 1; j <= n.length(); j++) {
-			for (int i = 1; i <= m.length(); i++) {
-				if (m.charAt(i - 1) == n.charAt(j - 1))
-					d[i][j] = d[i - 1][j - 1];
-				else
-					d[i][j] = Math.min(d[i - 1][j] + 1, Math.min(d[i][j - 1] + 1, d[i - 1][j - 1] + 1));
-			}
-		}
-
-		return d[m.length()][n.length()];
-	}
-
 	public static boolean isSimilarTo(String m, String n, int characterDifferenceThreshold) {
-		return (editDistance(m, n) <= characterDifferenceThreshold) ? true : false;
+		return (StringUtils.getLevenshteinDistance(m, n) <= characterDifferenceThreshold) ? true : false;
 	}
 
 	public static boolean isSimilarTo(String m, String n) {
-		return (editDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(), n.length())) - .25) ? true
-				: false;
+		return (StringUtils.getLevenshteinDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(),
+				n.length())) - .25) ? true : false;
 	}
 
 	public static String capitalize(String uncapitalized) {

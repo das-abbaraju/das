@@ -193,17 +193,6 @@ public class StringsTest {
 	}
 
 	@Test
-	public void testEditDistance() {
-		assertEquals(Strings.editDistance("Tom", "Time"), 2);
-		assertEquals(Strings.editDistance("Tom", "Tom"), 0);
-		assertEquals(Strings.editDistance("Angel", "Angle"), 2);
-		assertEquals(Strings.editDistance("Total", "Angle"), 5);
-		assertEquals(Strings.editDistance("Empty", ""), 5);
-		assertEquals(Strings.editDistance("A", "B"), 1);
-		assertEquals(Strings.editDistance("", ""), 0);
-	}
-
-	@Test
 	public void testSimilarTo() {
 		assertFalse(Strings.isSimilarTo("Tom", "Time", 0));
 		assertFalse(Strings.isSimilarTo("Tom", "Time", 1));

@@ -5,7 +5,7 @@
                 var element = $('.RegistrationGapAnalysis-page');
 
                 if (element.length) {
-                    element.delegate('.add', 'click', this.confirmCopyAndDeactivation);
+                    element.delegate('.copy', 'click', this.confirmCopyAndDeactivation);
                     element.delegate('.remove', 'click', this.confirmDeactivation);
                 }
             },

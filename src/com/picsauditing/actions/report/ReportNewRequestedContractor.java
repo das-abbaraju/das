@@ -13,7 +13,6 @@ import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterNewContractor;
@@ -154,7 +153,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 					getFilter().getRequestStatus())) {
 				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone > 0");
 			} else {
-				sql.addWhere("a.status IN ('Deactivated') AND a.reason IS NOT NULL");
+				sql.addWhere("a.status IN ('Declined') AND a.reason IS NOT NULL");
 			}
 		}
 
@@ -353,7 +352,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql_legacy.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql_legacy.addField("'CRR' AS systemType");
 
-		sql_legacy.addWhere("(con.status NOT IN ('Requested', 'Deactivated') OR con.id IS NULL)");
+		sql_legacy.addWhere("(con.status NOT IN ('Requested', 'Declined') OR con.id IS NULL)");
 
 		sql_legacy.addGroupBy("cr.id");
 
@@ -399,7 +398,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql_new.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql_new.addField("'ACC' AS systemType");
 
-		sql_new.addWhere("a.status = 'Requested' OR (a.status = 'Deactivated' AND a.reason IS NOT NULL)");
+		sql_new.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL)");
 
 		sql_new.addGroupBy("c.id, gc.id");
 

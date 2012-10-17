@@ -10,6 +10,15 @@
 	</title>
 	
 	<link rel="stylesheet" type="text/css" href="css/reports.css" />
+	
+	<style type="text/css">
+		a.copy {
+			padding-left: 18px;
+			margin-left: 2px;
+			background: url('../images/copy.png') no-repeat left center;
+			zoom: 1;
+		}
+	</style>
 </head>
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
@@ -116,7 +125,7 @@
 								<td class="center">
 									<a
 										href="${copy_contractor}"
-										class="add"
+										class="copy"
 										data-contractor="${registered.name}"
 										data-request="${match.requested.name}"></a>
 								</td>

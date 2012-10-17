@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.StringUtils;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
@@ -93,9 +92,9 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 
 		for (ContractorAccount registered : recentlyRegistered) {
 			for (ContractorAccount requested : requestedContractors) {
-				Set<MatchType> matchesOn = compareRegisteredWithRequested(registered, requested);
+				Map<MatchType, String> matchesOn = compareRegisteredWithRequested(registered, requested);
 				if (!matchesOn.isEmpty()) {
-					Match match = new Match(registered, requested, matchesOn);
+					Match match = new Match(requested, matchesOn);
 
 					if (matches.get(registered) == null) {
 						matches.put(registered, new TreeSet<Match>());
@@ -182,41 +181,45 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		return contractor;
 	}
 
-	private Set<MatchType> compareRegisteredWithRequested(ContractorAccount registered, ContractorAccount requested) {
-		Set<MatchType> matchesOn = new TreeSet<MatchType>();
+	private Map<MatchType, String> compareRegisteredWithRequested(ContractorAccount registered,
+			ContractorAccount requested) {
+		Map<MatchType, String> matchesOn = new TreeMap<MatchType, String>();
 
-		if (StringUtils.getLevenshteinDistance(registered.getName(), requested.getName()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
-			matchesOn.add(MatchType.Name);
+		if (stringsAreSimilar(registered.getName(), requested.getName())) {
+			matchesOn.put(MatchType.Name, registered.getName() + ", " + requested.getName());
 		}
 
-		if (StringUtils.getLevenshteinDistance(registered.getAddress(), requested.getAddress()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
-			if (StringUtils.getLevenshteinDistance(registered.getCity(), requested.getCity()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
-				matchesOn.add(MatchType.Address);
-			}
+		if (stringsAreSimilar(registered.getAddress(), requested.getAddress())) {
+			String registeredFullAddress = String.format("%s, %s %s", registered.getAddress(), registered.getCity(),
+					registered.getZip());
+			String requestedFullAddress = String.format("%s, %s %s", requested.getAddress(), requested.getCity(),
+					requested.getZip());
 
-			if (strippedStartsWithEither(registered.getZip(), requested.getZip())) {
-				matchesOn.add(MatchType.Address);
+			if (stringsAreSimilar(registered.getCity(), requested.getCity())
+					|| strippedStartsWithEither(registered.getZip(), requested.getZip())) {
+				matchesOn.put(MatchType.Address,
+						String.format("[%s], [%s]", registeredFullAddress, requestedFullAddress));
 			}
 		}
 
 		if (strippedStartsWithEither(registered.getTaxId(), requested.getTaxId())) {
-			matchesOn.add(MatchType.TaxID);
+			matchesOn.put(MatchType.TaxID, registered.getTaxId() + ", " + requested.getTaxId());
 		}
 
 		User registeredUser = registered.getPrimaryContact();
 		User requestedUser = requested.getPrimaryContact();
 
 		if (registeredUser != null && requestedUser != null) {
-			if (StringUtils.getLevenshteinDistance(registeredUser.getName(), requestedUser.getName()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
-				matchesOn.add(MatchType.Contact);
+			if (stringsAreSimilar(registeredUser.getName(), requestedUser.getName())) {
+				matchesOn.put(MatchType.Contact, registeredUser.getName() + ", " + requestedUser.getName());
 			}
 
-			if (StringUtils.getLevenshteinDistance(registeredUser.getEmail(), requestedUser.getEmail()) < LEVENSHTEIN_DISTANCE_THRESHOLD) {
-				matchesOn.add(MatchType.Email);
+			if (stringsAreSimilar(registeredUser.getEmail(), requestedUser.getEmail())) {
+				matchesOn.put(MatchType.Email, registeredUser.getEmail() + ", " + requestedUser.getEmail());
 			}
 
 			if (strippedStartsWithEither(registeredUser.getPhoneIndex(), requestedUser.getPhoneIndex())) {
-				matchesOn.add(MatchType.Phone);
+				matchesOn.put(MatchType.Phone, registeredUser.getPhoneIndex() + ", " + requestedUser.getPhoneIndex());
 			}
 		}
 
@@ -229,6 +232,10 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		}
 
 		return Strings.EMPTY_STRING;
+	}
+
+	private boolean stringsAreSimilar(String first, String second) {
+		return Strings.isSimilarTo(first, second, LEVENSHTEIN_DISTANCE_THRESHOLD);
 	}
 
 	private boolean strippedStartsWithEither(String first, String second) {
@@ -247,43 +254,31 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 		private MatchType(String key) {
 			this.key = key;
 		}
-
-		public String getKey() {
-			return key;
-		}
 	}
 
 	public class Match implements Comparable<Match> {
-		private ContractorAccount registered;
 		private ContractorAccount requested;
-		private Set<MatchType> types;
+		private Map<MatchType, String> matches;
 
-		public Match(ContractorAccount registered, ContractorAccount requested, Set<MatchType> types) {
-			this.registered = registered;
+		public Match(ContractorAccount requested, Map<MatchType, String> matches) {
 			this.requested = requested;
-			this.types = types;
-		}
-
-		public ContractorAccount getRegistered() {
-			return registered;
+			this.matches = matches;
 		}
 
 		public ContractorAccount getRequested() {
 			return requested;
 		}
 
-		public Set<MatchType> getTypes() {
-			return types;
+		public Map<MatchType, String> getMatches() {
+			return matches;
 		}
 
 		public String getMatchedOn() {
-			boolean first = true;
 			String matchedOn = "";
+			boolean first = true;
 
-			for (MatchType type : types) {
-				matchedOn += (first ? "" : ", ") + getText(type.getKey());
-
-				first = false;
+			for (MatchType type : matches.keySet()) {
+				matchedOn += String.format("%s%s (%s)", (first ? "" : ",<br />"), getText(type.key), matches.get(type));
 			}
 
 			return matchedOn;
