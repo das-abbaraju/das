@@ -336,6 +336,30 @@
 					</td>
 				</tr>
 			</table>
+			<table>
+				<tr>
+					<td>
+						<h3>
+							<s:text name="UsersManage.Groups" />
+						</h3>
+
+						<table class="report">
+							<thead>
+								<tr>
+									<th><s:text name="ProfileEdit.label.MemberOf" /></th>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="permissions.groupNames" var="group">
+									<tr>
+										<td><s:property value="group" /></td>
+									</tr>
+								</s:iterator>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</s:if>
 

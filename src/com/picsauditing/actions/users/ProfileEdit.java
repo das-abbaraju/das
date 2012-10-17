@@ -13,11 +13,13 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.interceptors.SecurityInterceptor;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
@@ -25,6 +27,7 @@ import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -228,6 +231,12 @@ public class ProfileEdit extends PicsActionSupport {
 			}
 		}
 		return subList;
+	}
+
+	public List<AuditType> getViewableAuditsList() {
+		AuditTypeDAO auditTypeDao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		
+		return auditTypeDao.findWhere("t.id IN (" + Strings.implode(permissions.getVisibleAuditTypes()) + ")");
 	}
 
 	/**
