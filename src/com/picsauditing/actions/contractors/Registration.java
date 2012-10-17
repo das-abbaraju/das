@@ -427,7 +427,7 @@ public class Registration extends ContractorActionSupport {
 
 	public boolean isValidVAT() {
 		Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
-		if (registrationCountry.isEuropeanUnion()) {
+		if (registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
 			try {
 				vatValidator.validated(/* registrationCountry, */contractor.getVatId());
 			} catch (Exception e) {
