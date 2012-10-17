@@ -778,6 +778,7 @@ footer .footer-menu a {
 
 .client-site ul.actions li {
 	margin: 0px;
+	overflow: visible;
 }
 
 .client-site .client-site-list li.inspect,.client-site .client-site-list li.inspect a
