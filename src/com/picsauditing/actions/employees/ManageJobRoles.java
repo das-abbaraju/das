@@ -57,15 +57,14 @@ public class ManageJobRoles extends AccountActionSupport {
 		return SUCCESS;
 	}
 
-	private void findAccount() throws Exception {
+	private void findAccount() throws RecordNotFoundException {
 		if (audit != null) {
 			// Default in case role is not specified
 			account = audit.getContractorAccount();
 		}
 
-		if (role != null && role.getAccount() != null) {
+		if (role != null && role.getAccount() != null)
 			account = role.getAccount();
-		}
 
 		if (account == null && permissions.isContractor()) {
 			account = accountDAO.find(permissions.getAccountId());
@@ -76,11 +75,9 @@ public class ManageJobRoles extends AccountActionSupport {
 			contractorId = id;
 			account = accountDAO.find(id);
 		}
-
 		if (account == null) {
 			throw new RecordNotFoundException("account");
 		}
-
 		assert (account.isContractor());
 	}
 
@@ -96,9 +93,8 @@ public class ManageJobRoles extends AccountActionSupport {
 	public String save() throws Exception {
 		checkPermissions();
 
-		if (role.getAccount() == null && account != null) {
+		if (role.getAccount() == null && account != null)
 			role.setAccount(account);
-		}
 
 		if (Strings.isEmpty(role.getName())) {
 			addActionError("Name is required");
@@ -127,17 +123,14 @@ public class ManageJobRoles extends AccountActionSupport {
 
 	private String getUrlOptions() {
 		String urlOptions = "";
-
 		if (audit == null) {
 			urlOptions = "account=" + account.getId();
 		} else {
 			urlOptions = "audit=" + audit.getId();
-
 			if (questionId > 0) {
 				urlOptions += "&questionId=" + questionId;
 			}
 		}
-
 		return urlOptions;
 	}
 
@@ -220,10 +213,8 @@ public class ManageJobRoles extends AccountActionSupport {
 	}
 
 	public List<JobRole> getJobRoles() {
-		if (jobRoles == null) {
+		if (jobRoles == null)
 			jobRoles = jobRoleDAO.findJobRolesByAccount(account.getId(), false);
-		}
-
 		return jobRoles;
 	}
 
@@ -239,10 +230,8 @@ public class ManageJobRoles extends AccountActionSupport {
 			}
 		} else if (permissions.isOperatorCorporate()) {
 			permissions.tryPermission(OpPerms.DefineRoles);
-
-			if (permissions.getAccountId() != account.getId()) {
+			if (permissions.getAccountId() != account.getId())
 				permissions.tryPermission(OpPerms.AllOperators);
-			}
 		}
 	}
 
@@ -269,11 +258,8 @@ public class ManageJobRoles extends AccountActionSupport {
 
 	private Set<Integer> operatorIDs(ContractorAccount contractor) {
 		Set<Integer> opIds = new HashSet<Integer>();
-
-		for (ContractorOperator op : contractor.getOperators()) {
+		for (ContractorOperator op : contractor.getOperators())
 			opIds.add(op.getOperatorAccount().getId());
-		}
-
 		return opIds;
 	}
 

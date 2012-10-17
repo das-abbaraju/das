@@ -267,7 +267,11 @@ public class ManageJobRolesTest {
 
 		JobRole role = new JobRole();
 		role.setId(1);
-		role.getJobCompetencies().add(jobCompetency);
+
+		List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
+		jobCompetencies.add(jobCompetency);
+
+		role.setJobCompetencies(jobCompetencies);
 
 		manageJobRoles.setCompetency(competency);
 		manageJobRoles.setRole(role);
@@ -287,6 +291,7 @@ public class ManageJobRolesTest {
 
 		JobRole role = new JobRole();
 		role.setId(1);
+		role.setJobCompetencies(new ArrayList<JobCompetency>());
 
 		manageJobRoles.setCompetency(competency);
 		manageJobRoles.setRole(role);
@@ -320,6 +325,8 @@ public class ManageJobRolesTest {
 
 		JobRole role = new JobRole();
 		role.setId(1);
+		role.setJobCompetencies(new ArrayList<JobCompetency>());
+
 		role.getJobCompetencies().add(jobCompetency);
 
 		manageJobRoles.setCompetency(competency);
@@ -414,6 +421,7 @@ public class ManageJobRolesTest {
 		jobCompetency.setCompetency(competency);
 
 		JobRole role = new JobRole();
+		role.setJobCompetencies(new ArrayList<JobCompetency>());
 		role.getJobCompetencies().add(jobCompetency);
 
 		manageJobRoles.setRole(role);

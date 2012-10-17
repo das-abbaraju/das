@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -18,7 +17,7 @@ public class JobRole extends BaseTable implements Comparable<JobRole> {
 	private Account account;
 	private String name;
 	private boolean active = true;
-	private List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
+	private List<JobCompetency> jobCompetencies;
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false, updatable = false)
@@ -50,7 +49,7 @@ public class JobRole extends BaseTable implements Comparable<JobRole> {
 	public List<JobCompetency> getJobCompetencies() {
 		return jobCompetencies;
 	}
-
+	
 	public void setJobCompetencies(List<JobCompetency> jobCompetencies) {
 		this.jobCompetencies = jobCompetencies;
 	}
