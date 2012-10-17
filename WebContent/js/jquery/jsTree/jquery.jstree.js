@@ -70,8 +70,9 @@
 		        //create style tag if it doesn't exist
 		        if (!jstree_style_tag) {
 		            jstree_style_tag = document.createElement('style');
-		            jstree_style_tag.type = "text/css";
+		            jstree_style_tag.setAttribute('type', "text/css");
 		            jstree_style_tag.setAttribute('id', 'jstreestyles');
+		            document.getElementsByTagName("head")[0].appendChild(jstree_style_tag);
 		        }
 
 		        //append styles to page
@@ -80,8 +81,6 @@
 		        } else {
 		            jstree_style_tag.appendChild(textnode);
 		        }
-
-		        document.getElementsByTagName("head")[0].appendChild(jstree_style_tag);
 		    }
 
 		    function addStylesByURL() {
@@ -111,9 +110,9 @@
 		    if (checkNumberOfStylesheets()) {
 		        addJSTreeStyles();
 		    } else {
-		        if (console.log){
+		        try {
 		            console.log('You have ' + document.styleSheets.length + ' stylesheets which exceeded IE\'s stylesheet limit of 31.');
-		        }
+		        } catch (e) {}
 
 		        //Continue adding stylesSheets if not IE, otherwise do not add more styles
 		        if (!/msie/.test(browser)) {

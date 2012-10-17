@@ -187,10 +187,10 @@ $(function() {
                                 //add to result list
                                 trade_list += '<li><a href="TradeTaxonomy!tradeAjax.action?trade=' + trade.id +'" class="trade ' + trade.type + '">' + linkText + '</a></li>';
                             } else {
-                                if (console.log) {
+                                try {
                                     console.log(trade);
                                     console.log("Trade id " + trade.id + " has no name or type");
-                                }
+                                } catch (e) {}
                             }
                         });
 
