@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -44,13 +43,22 @@ public class EmployeeCompetencies extends ReportEmployee {
 	protected boolean skilled;
 	private ContractorAudit audit;
 
-	private List<Employee> employees = new ArrayList<Employee>();
-	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
-	private Map<Employee, String> employeeJobRoles = new TreeMap<Employee, String>();
-	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map = new DoubleMap<Employee, OperatorCompetency, EmployeeCompetency>();
+	private List<Employee> employees;
+	private List<OperatorCompetency> competencies;
+	private Map<Employee, String> employeeJobRoles;
+	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public String execute() throws Exception {
-		findAccount();
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
+
+		if (account == null && permissions.isContractor())
+			account = accountDAO.find(permissions.getAccountId());
+
+		if (account == null)
+			throw new RecordNotFoundException(getText("EmployeeCompetencies.message.MissingAccount"));
+
 		setDefaultFilters();
 		buildQuery();
 		sql.addGroupBy("e.id");
@@ -65,22 +73,66 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 	public String changeCompetency() throws Exception {
 		if (employee != null && competency != null) {
-			EmployeeCompetency employeeCompetency = findEmployeeCompetency();
+			EmployeeCompetency ec = findEmployeeCompetency();
 
-			if (employeeCompetency == null) {
-				employeeCompetency = createNewEmployeeCompetency();
+			if (ec == null) {
+				ec = createNewEmployeeCompetency();
 			}
 
-			employeeCompetency.setSkilled(!employeeCompetency.isSkilled());
-			employeeCompetencyDAO.save(employeeCompetency);
-			employee.getEmployeeCompetencies().add(employeeCompetency);
+			ec.setSkilled(!ec.isSkilled());
+			employeeCompetencyDAO.save(ec);
 
-			addResultToActionMessage(employeeCompetency);
-		} else {
+			addResultToActionMessage(ec);
+		} else
 			addActionError(getText("EmployeeCompetencies.message.MissingEmployeeCompetency"));
-		}
 
 		return BLANK;
+	}
+
+	private EmployeeCompetency findEmployeeCompetency() {
+		EmployeeCompetency ec = null;
+
+		for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
+			if (employeeCompetency.getCompetency().equals(competency)) {
+				ec = employeeCompetency;
+				break;
+			}
+		}
+
+		return ec;
+	}
+
+	private void addResultToActionMessage(EmployeeCompetency ec) {
+		if (ec.isSkilled()) {
+			addActionMessage(getText("EmployeeCompetencies.message.AddedTo", new Object[] {
+					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+		} else {
+			addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom", new Object[] {
+					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+		}
+	}
+
+	private void setDefaultFilters() {
+		getFilter().setPermissions(permissions);
+		getFilter().setAccountID(account.getId());
+
+		getFilter().setShowJobRoles(true);
+		getFilter().setShowCompetencies(true);
+		getFilter().setShowSsn(false);
+
+		if (permissions.isContractor())
+			getFilter().setShowAccountName(false);
+	}
+
+	private EmployeeCompetency createNewEmployeeCompetency() {
+		EmployeeCompetency ec;
+		ec = new EmployeeCompetency();
+		ec.setSkilled(false);
+		ec.setEmployee(employee);
+		ec.setCompetency(competency);
+		ec.setAuditColumns(permissions);
+
+		return ec;
 	}
 
 	@Override
@@ -103,6 +155,114 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		if (filterOn(getFilter().getJobRoles()))
 			sql.addWhere("jr.id IN (" + Strings.implode(getFilter().getJobRoles()) + ")");
+	}
+
+	private void buildMap() throws SQLException {
+		sql = new SelectSQL("employee e");
+		buildQuery();
+
+		sql.addJoin("LEFT JOIN employee_competency ec ON ec.employeeID = e.id AND ec.competencyID = oc.id");
+
+		sql.addField("jr.id jobRoleID");
+		sql.addField("jr.name jobRoleName");
+		sql.addField("oc.id competencyID");
+		sql.addField("oc.category");
+		sql.addField("oc.label");
+		sql.addField("oc.description");
+		sql.addField("ec.id ecID");
+		sql.addField("ec.skilled");
+
+		sql.addOrderBy("oc.label");
+
+		if (filterOn(getFilter().getCompetencies()))
+			sql.addWhere("oc.id IN (" + Strings.implode(getFilter().getCompetencies()) + ")");
+
+		Database db = new Database();
+		List<BasicDynaBean> data2 = db.select(sql.toString(), true);
+
+		employees = new ArrayList<Employee>();
+		competencies = new ArrayList<OperatorCompetency>();
+		employeeJobRoles = new HashMap<Employee, String>();
+		map = new DoubleMap<Employee, OperatorCompetency, EmployeeCompetency>();
+
+		Map<Employee, Set<String>> jobRoles = new HashMap<Employee, Set<String>>();
+
+		buildEntitiesForMapAndAddJobRoles(data2, jobRoles);
+		fillEmployeeJobRoles(jobRoles);
+	}
+
+	private void buildEntitiesForMapAndAddJobRoles(List<BasicDynaBean> data2, Map<Employee, Set<String>> jobRoles) {
+		for (BasicDynaBean d : data2) {
+			Employee e = buildEmployeeForMap(d);
+			OperatorCompetency o = buildOperatorForMap(d);
+			EmployeeCompetency c = buildEmployeeCompetencyForMap(d, e, o);
+
+			String jobRole = d.get("jobRoleName").toString();
+
+			if (jobRoles.get(e) == null)
+				jobRoles.put(e, new TreeSet<String>());
+
+			jobRoles.get(e).add(jobRole);
+
+			if (!competencies.contains(o)) {
+				competencies.add(o);
+			}
+
+			map.put(e, o, c);
+		}
+	}
+
+	private Employee buildEmployeeForMap(BasicDynaBean d) {
+		Employee e = new Employee();
+		e.setAccount(account);
+		e.setId(Integer.parseInt(d.get("employeeID").toString()));
+		e.setLastName(d.get("lastName").toString());
+		e.setFirstName(d.get("firstName").toString());
+
+		if (!employees.contains(e))
+			employees.add(e);
+
+		return e;
+	}
+
+	private OperatorCompetency buildOperatorForMap(BasicDynaBean d) {
+		OperatorCompetency o = new OperatorCompetency();
+		o.setId(Integer.parseInt(d.get("competencyID").toString()));
+		o.setCategory(d.get("category").toString());
+		o.setLabel(d.get("label").toString());
+		o.setDescription(d.get("description").toString());
+
+		return o;
+	}
+
+	private EmployeeCompetency buildEmployeeCompetencyForMap(BasicDynaBean d, Employee e, OperatorCompetency o) {
+		EmployeeCompetency c = new EmployeeCompetency();
+		c.setSkilled(false);
+
+		if (d.get("ecID") != null) {
+			c.setId(Integer.parseInt(d.get("ecID").toString()));
+			c.setEmployee(e);
+			c.setCompetency(o);
+			c.setSkilled(d.get("skilled").toString().equals("1"));
+		}
+
+		return c;
+	}
+
+	private void fillEmployeeJobRoles(Map<Employee, Set<String>> jobRoles) {
+		for (Employee e : jobRoles.keySet()) {
+			List<String> roles = new ArrayList<String>(jobRoles.get(e));
+
+			int last = roles.size();
+			if (last > 3)
+				last = 3;
+
+			String suffix = "";
+			if (roles.size() > 3)
+				suffix = "...";
+
+			employeeJobRoles.put(e, Strings.implode(roles.subList(0, last), ", ") + suffix);
+		}
 	}
 
 	protected HSSFWorkbook buildWorkbook(String name) {
@@ -174,175 +334,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 		}
 
 		return wb;
-	}
-
-	private void findAccount() throws RecordNotFoundException {
-		if (audit != null) {
-			account = audit.getContractorAccount();
-		}
-
-		if (account == null && permissions.isContractor())
-			account = accountDAO.find(permissions.getAccountId());
-
-		if (account == null) {
-			throw new RecordNotFoundException(getText("EmployeeCompetencies.message.MissingAccount"));
-		}
-	}
-
-	private EmployeeCompetency findEmployeeCompetency() {
-		EmployeeCompetency ec = null;
-
-		for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
-			if (employeeCompetency.getCompetency().equals(competency)) {
-				ec = employeeCompetency;
-				break;
-			}
-		}
-
-		return ec;
-	}
-
-	private void addResultToActionMessage(EmployeeCompetency ec) {
-		if (ec.isSkilled()) {
-			addActionMessage(getText("EmployeeCompetencies.message.AddedTo", new Object[] {
-					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
-		} else {
-			addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom", new Object[] {
-					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
-		}
-	}
-
-	private void setDefaultFilters() {
-		getFilter().setPermissions(permissions);
-		getFilter().setAccountID(account.getId());
-
-		getFilter().setShowJobRoles(true);
-		getFilter().setShowCompetencies(true);
-		getFilter().setShowSsn(false);
-
-		if (permissions.isContractor())
-			getFilter().setShowAccountName(false);
-	}
-
-	private EmployeeCompetency createNewEmployeeCompetency() {
-		EmployeeCompetency ec;
-		ec = new EmployeeCompetency();
-		ec.setSkilled(false);
-		ec.setEmployee(employee);
-		ec.setCompetency(competency);
-		ec.setAuditColumns(permissions);
-
-		return ec;
-	}
-
-	private void buildMap() throws SQLException {
-		sql = new SelectSQL("employee e");
-		buildQuery();
-
-		sql.addJoin("LEFT JOIN employee_competency ec ON ec.employeeID = e.id AND ec.competencyID = oc.id");
-
-		sql.addField("jr.id jobRoleID");
-		sql.addField("jr.name jobRoleName");
-		sql.addField("oc.id competencyID");
-		sql.addField("oc.category");
-		sql.addField("oc.label");
-		sql.addField("oc.description");
-		sql.addField("ec.id ecID");
-		sql.addField("ec.skilled");
-
-		sql.addOrderBy("oc.label");
-
-		if (filterOn(getFilter().getCompetencies()))
-			sql.addWhere("oc.id IN (" + Strings.implode(getFilter().getCompetencies()) + ")");
-
-		Database db = new Database();
-		List<BasicDynaBean> data2 = db.select(sql.toString(), true);
-
-		Map<Employee, Set<String>> jobRoles = new HashMap<Employee, Set<String>>();
-
-		buildEntitiesForMapAndAddJobRoles(data2, jobRoles);
-		fillEmployeeJobRoles(jobRoles);
-	}
-
-	private void buildEntitiesForMapAndAddJobRoles(List<BasicDynaBean> data2, Map<Employee, Set<String>> jobRoles) {
-		for (BasicDynaBean d : data2) {
-			Employee e = buildEmployeeForMap(d);
-			OperatorCompetency o = buildCompetencyForMap(d);
-			EmployeeCompetency c = buildEmployeeCompetencyForMap(d, e, o);
-
-			String jobRole = d.get("jobRoleName").toString();
-
-			if (jobRoles.get(e) == null)
-				jobRoles.put(e, new TreeSet<String>());
-
-			jobRoles.get(e).add(jobRole);
-
-			if (!competencies.contains(o)) {
-				competencies.add(o);
-			}
-
-			map.put(e, o, c);
-		}
-	}
-
-	private Employee buildEmployeeForMap(BasicDynaBean d) {
-		Employee employee = new Employee();
-		employee.setAccount(account);
-		employee.setId(Integer.parseInt(d.get("employeeID").toString()));
-		employee.setLastName(d.get("lastName").toString());
-		employee.setFirstName(d.get("firstName").toString());
-
-		if (!employees.contains(employee)) {
-			employees.add(employee);
-		}
-
-		return employee;
-	}
-
-	private OperatorCompetency buildCompetencyForMap(BasicDynaBean d) {
-		OperatorCompetency competency = new OperatorCompetency();
-		competency.setId(Integer.parseInt(d.get("competencyID").toString()));
-		competency.setCategory(d.get("category").toString());
-		competency.setLabel(d.get("label").toString());
-		competency.setDescription(d.get("description").toString());
-
-		if (!competencies.contains(competency)) {
-			competencies.add(competency);
-		}
-
-		return competency;
-	}
-
-	private EmployeeCompetency buildEmployeeCompetencyForMap(BasicDynaBean d, Employee e, OperatorCompetency o) {
-		EmployeeCompetency c = new EmployeeCompetency();
-		c.setSkilled(false);
-
-		if (d.get("ecID") != null) {
-			c.setId(Integer.parseInt(d.get("ecID").toString()));
-			c.setEmployee(e);
-			c.setCompetency(o);
-			c.setSkilled(d.get("skilled").toString().equals("1"));
-		}
-
-		return c;
-	}
-
-	private void fillEmployeeJobRoles(Map<Employee, Set<String>> jobRoles) {
-		for (Employee e : jobRoles.keySet()) {
-			List<String> roles = new ArrayList<String>(jobRoles.get(e));
-
-			int last = roles.size();
-			if (last > 3) {
-				last = 3;
-			}
-
-			String suffix = "";
-			if (roles.size() > 3) {
-				suffix = "...";
-			}
-
-			employeeJobRoles.put(e, Strings.implode(roles.subList(0, last), ", ") + suffix);
-		}
 	}
 
 	public Account getAccount() {
