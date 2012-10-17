@@ -92,13 +92,12 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 	public String toString() {
 		return category + ": " + label + " (" + id + ")";
 	}
-
+	
 	@Override
 	public int compareTo(OperatorCompetency o) {
-		if (this.category.equals(o.getCategory())) {
+		if (this.category.equals(o.getCategory()))
 			return this.label.compareTo(o.getLabel());
-		}
-
+		
 		return this.category.compareTo(o.getCategory());
 	}
 }

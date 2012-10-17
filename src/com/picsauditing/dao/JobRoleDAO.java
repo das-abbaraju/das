@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -20,9 +18,8 @@ public class JobRoleDAO extends PicsDAO {
 	public List<JobRole> findJobRolesByAccount(int accountID, boolean onlyActive) {
 		String queryString = "FROM JobRole WHERE account.id = :accountID";
 
-		if (onlyActive) {
+		if (onlyActive)
 			queryString += " AND active = 1";
-		}
 
 		queryString += " ORDER BY active DESC, name";
 
@@ -34,9 +31,8 @@ public class JobRoleDAO extends PicsDAO {
 	public DoubleMap<JobRole, OperatorCompetency, JobCompetency> findJobCompetencies(int accountID, boolean onlyActive) {
 		String queryString = "FROM JobCompetency WHERE jobRole.account.id = :accountID";
 
-		if (onlyActive) {
+		if (onlyActive)
 			queryString += " AND jobRole.active = 1";
-		}
 
 		Query query = em.createQuery(queryString);
 		query.setParameter("accountID", accountID);
@@ -46,27 +42,7 @@ public class JobRoleDAO extends PicsDAO {
 		for (JobCompetency jc : resultList) {
 			map.put(jc.getJobRole(), jc.getCompetency(), jc);
 		}
-
 		return map;
-	}
-
-	public Table<JobRole, OperatorCompetency, JobCompetency> buildJobCompetencyTable(int accountID, boolean onlyActive) {
-		String queryString = "FROM JobCompetency WHERE jobRole.account.id = :accountID";
-
-		if (onlyActive) {
-			queryString += " AND jobRole.active = 1";
-		}
-
-		Query query = em.createQuery(queryString);
-		query.setParameter("accountID", accountID);
-		List<JobCompetency> resultList = query.getResultList();
-
-		Table<JobRole, OperatorCompetency, JobCompetency> table = HashBasedTable.create();
-		for (JobCompetency jc : resultList) {
-			table.put(jc.getJobRole(), jc.getCompetency(), jc);
-		}
-
-		return table;
 	}
 
 	public int getUsedCount(String name) {

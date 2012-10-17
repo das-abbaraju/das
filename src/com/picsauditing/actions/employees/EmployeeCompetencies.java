@@ -20,20 +20,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
-import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
-import com.picsauditing.jpa.entities.EmployeeRole;
-import com.picsauditing.jpa.entities.JobCompetency;
-import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -44,10 +37,6 @@ import com.picsauditing.util.Strings;
 public class EmployeeCompetencies extends ReportEmployee {
 	@Autowired
 	protected EmployeeCompetencyDAO employeeCompetencyDAO;
-	@Autowired
-	protected JobRoleDAO jobRoleDAO;
-
-	private Database database = new Database();
 
 	protected Account account;
 	protected Employee employee;
@@ -59,26 +48,17 @@ public class EmployeeCompetencies extends ReportEmployee {
 	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 	private Map<Employee, String> employeeJobRoles = new TreeMap<Employee, String>();
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map = new DoubleMap<Employee, OperatorCompetency, EmployeeCompetency>();
-	private Table<Employee, OperatorCompetency, EmployeeCompetency> employeeCompetencyTable = TreeBasedTable.create();
-	// Competency Table
-	private Table<JobRole, OperatorCompetency, JobCompetency> matrixTable = HashBasedTable.create();
 
 	public String execute() throws Exception {
 		findAccount();
-		initializeCompetenciesForEmployees();
-
 		setDefaultFilters();
 		buildQuery();
 		sql.addGroupBy("e.id");
 		run(sql);
-
 		buildMap();
 
-		matrixTable = jobRoleDAO.buildJobCompetencyTable(account.getId(), true);
-
-		if (download || "download".equals(button)) {
+		if (download || "download".equals(button))
 			return download();
-		}
 
 		return SUCCESS;
 	}
@@ -103,70 +83,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 		return BLANK;
 	}
 
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-	public Employee getEmployee() {
-		return employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public OperatorCompetency getCompetency() {
-		return competency;
-	}
-
-	public void setCompetency(OperatorCompetency competency) {
-		this.competency = competency;
-	}
-
-	public boolean isSkilled() {
-		return skilled;
-	}
-
-	public void setSkilled(boolean skilled) {
-		this.skilled = skilled;
-	}
-
-	public ContractorAudit getAudit() {
-		return audit;
-	}
-
-	public void setAudit(ContractorAudit audit) {
-		this.audit = audit;
-	}
-
-	public List<Employee> getEmployees() {
-		return employees;
-	}
-
-	public List<OperatorCompetency> getCompetencies() {
-		return competencies;
-	}
-
-	public Map<Employee, String> getEmployeeJobRoles() {
-		return employeeJobRoles;
-	}
-
-	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {
-		return map;
-	}
-
-	public Table<Employee, OperatorCompetency, EmployeeCompetency> getEmployeeCompetencyTable() {
-		return employeeCompetencyTable;
-	}
-
-	public Table<JobRole, OperatorCompetency, JobCompetency> getMatrixTable() {
-		return matrixTable;
-	}
-
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
@@ -185,9 +101,8 @@ public class EmployeeCompetencies extends ReportEmployee {
 	protected void addFilterToSQL() {
 		super.addFilterToSQL();
 
-		if (filterOn(getFilter().getJobRoles())) {
+		if (filterOn(getFilter().getJobRoles()))
 			sql.addWhere("jr.id IN (" + Strings.implode(getFilter().getJobRoles()) + ")");
-		}
 	}
 
 	protected HSSFWorkbook buildWorkbook(String name) {
@@ -274,52 +189,26 @@ public class EmployeeCompetencies extends ReportEmployee {
 		}
 	}
 
-	private void initializeCompetenciesForEmployees() {
-		if (permissions.isContractor()) {
-			for (Employee employee : account.getEmployees()) {
-				boolean noCompetenciesForEmployeeWithRole = employee.getEmployeeRoles().size() > 0
-						&& employee.getEmployeeCompetencies().isEmpty();
-
-				if (noCompetenciesForEmployeeWithRole) {
-					for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
-						for (JobCompetency jobCompetency : employeeRole.getJobRole().getJobCompetencies()) {
-							EmployeeCompetency employeeCompetency = new EmployeeCompetency();
-
-							employeeCompetency.setEmployee(employee);
-							employeeCompetency.setCompetency(jobCompetency.getCompetency());
-							employeeCompetency.setSkilled(true);
-							employeeCompetency.setAuditColumns(permissions);
-
-							employeeCompetencyDAO.save(employeeCompetency);
-							employee.getEmployeeCompetencies().add(employeeCompetency);
-						}
-					}
-				}
-			}
-		}
-	}
-
 	private EmployeeCompetency findEmployeeCompetency() {
+		EmployeeCompetency ec = null;
+
 		for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
 			if (employeeCompetency.getCompetency().equals(competency)) {
-				return employeeCompetency;
+				ec = employeeCompetency;
+				break;
 			}
 		}
 
-		return null;
+		return ec;
 	}
 
-	private void addResultToActionMessage(EmployeeCompetency employeeCompetency) {
-		String label = employeeCompetency.getCompetency().getLabel();
-		String lastName = employeeCompetency.getEmployee().getLastName();
-		String firstName = employeeCompetency.getEmployee().getFirstName();
-
-		if (employeeCompetency.isSkilled()) {
-			addActionMessage(getText("EmployeeCompetencies.message.AddedTo",
-					new Object[] { label, lastName, firstName }));
+	private void addResultToActionMessage(EmployeeCompetency ec) {
+		if (ec.isSkilled()) {
+			addActionMessage(getText("EmployeeCompetencies.message.AddedTo", new Object[] {
+					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
 		} else {
-			addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom", new Object[] { label, lastName,
-					firstName }));
+			addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom", new Object[] {
+					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
 		}
 	}
 
@@ -331,20 +220,19 @@ public class EmployeeCompetencies extends ReportEmployee {
 		getFilter().setShowCompetencies(true);
 		getFilter().setShowSsn(false);
 
-		if (permissions.isContractor()) {
+		if (permissions.isContractor())
 			getFilter().setShowAccountName(false);
-		}
 	}
 
 	private EmployeeCompetency createNewEmployeeCompetency() {
-		EmployeeCompetency employeeCompetency = new EmployeeCompetency();
+		EmployeeCompetency ec;
+		ec = new EmployeeCompetency();
+		ec.setSkilled(false);
+		ec.setEmployee(employee);
+		ec.setCompetency(competency);
+		ec.setAuditColumns(permissions);
 
-		employeeCompetency.setSkilled(false);
-		employeeCompetency.setEmployee(employee);
-		employeeCompetency.setCompetency(competency);
-		employeeCompetency.setAuditColumns(permissions);
-
-		return employeeCompetency;
+		return ec;
 	}
 
 	private void buildMap() throws SQLException {
@@ -364,11 +252,11 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		sql.addOrderBy("oc.label");
 
-		if (filterOn(getFilter().getCompetencies())) {
+		if (filterOn(getFilter().getCompetencies()))
 			sql.addWhere("oc.id IN (" + Strings.implode(getFilter().getCompetencies()) + ")");
-		}
 
-		List<BasicDynaBean> data2 = database.select(sql.toString(), true);
+		Database db = new Database();
+		List<BasicDynaBean> data2 = db.select(sql.toString(), true);
 
 		Map<Employee, Set<String>> jobRoles = new HashMap<Employee, Set<String>>();
 
@@ -376,26 +264,24 @@ public class EmployeeCompetencies extends ReportEmployee {
 		fillEmployeeJobRoles(jobRoles);
 	}
 
-	private void buildEntitiesForMapAndAddJobRoles(List<BasicDynaBean> data, Map<Employee, Set<String>> jobRoles) {
-		for (BasicDynaBean dynaBean : data) {
-			Employee employee = buildEmployeeForMap(dynaBean);
-			OperatorCompetency competency = buildCompetencyForMap(dynaBean);
-			EmployeeCompetency employeeCompetency = buildEmployeeCompetencyForMap(dynaBean, employee, competency);
+	private void buildEntitiesForMapAndAddJobRoles(List<BasicDynaBean> data2, Map<Employee, Set<String>> jobRoles) {
+		for (BasicDynaBean d : data2) {
+			Employee e = buildEmployeeForMap(d);
+			OperatorCompetency o = buildCompetencyForMap(d);
+			EmployeeCompetency c = buildEmployeeCompetencyForMap(d, e, o);
 
-			String jobRole = dynaBean.get("jobRoleName").toString();
+			String jobRole = d.get("jobRoleName").toString();
 
-			if (jobRoles.get(employee) == null) {
-				jobRoles.put(employee, new TreeSet<String>());
+			if (jobRoles.get(e) == null)
+				jobRoles.put(e, new TreeSet<String>());
+
+			jobRoles.get(e).add(jobRole);
+
+			if (!competencies.contains(o)) {
+				competencies.add(o);
 			}
 
-			jobRoles.get(employee).add(jobRole);
-
-			if (!competencies.contains(competency)) {
-				competencies.add(competency);
-			}
-
-			map.put(employee, competency, employeeCompetency);
-			employeeCompetencyTable.put(employee, competency, employeeCompetency);
+			map.put(e, o, c);
 		}
 	}
 
@@ -413,12 +299,12 @@ public class EmployeeCompetencies extends ReportEmployee {
 		return employee;
 	}
 
-	private OperatorCompetency buildCompetencyForMap(BasicDynaBean data) {
+	private OperatorCompetency buildCompetencyForMap(BasicDynaBean d) {
 		OperatorCompetency competency = new OperatorCompetency();
-		competency.setId(Integer.parseInt(data.get("competencyID").toString()));
-		competency.setCategory(data.get("category").toString());
-		competency.setLabel(data.get("label").toString());
-		competency.setDescription(data.get("description").toString());
+		competency.setId(Integer.parseInt(d.get("competencyID").toString()));
+		competency.setCategory(d.get("category").toString());
+		competency.setLabel(d.get("label").toString());
+		competency.setDescription(d.get("description").toString());
 
 		if (!competencies.contains(competency)) {
 			competencies.add(competency);
@@ -427,24 +313,23 @@ public class EmployeeCompetencies extends ReportEmployee {
 		return competency;
 	}
 
-	private EmployeeCompetency buildEmployeeCompetencyForMap(BasicDynaBean data, Employee employee,
-			OperatorCompetency competency) {
-		EmployeeCompetency employeeCompetency = new EmployeeCompetency();
-		employeeCompetency.setSkilled(false);
+	private EmployeeCompetency buildEmployeeCompetencyForMap(BasicDynaBean d, Employee e, OperatorCompetency o) {
+		EmployeeCompetency c = new EmployeeCompetency();
+		c.setSkilled(false);
 
-		if (data.get("ecID") != null) {
-			employeeCompetency.setId(Integer.parseInt(data.get("ecID").toString()));
-			employeeCompetency.setEmployee(employee);
-			employeeCompetency.setCompetency(competency);
-			employeeCompetency.setSkilled(data.get("skilled").toString().equals("1"));
+		if (d.get("ecID") != null) {
+			c.setId(Integer.parseInt(d.get("ecID").toString()));
+			c.setEmployee(e);
+			c.setCompetency(o);
+			c.setSkilled(d.get("skilled").toString().equals("1"));
 		}
 
-		return employeeCompetency;
+		return c;
 	}
 
 	private void fillEmployeeJobRoles(Map<Employee, Set<String>> jobRoles) {
-		for (Employee employee : jobRoles.keySet()) {
-			List<String> roles = new ArrayList<String>(jobRoles.get(employee));
+		for (Employee e : jobRoles.keySet()) {
+			List<String> roles = new ArrayList<String>(jobRoles.get(e));
 
 			int last = roles.size();
 			if (last > 3) {
@@ -456,7 +341,63 @@ public class EmployeeCompetencies extends ReportEmployee {
 				suffix = "...";
 			}
 
-			employeeJobRoles.put(employee, Strings.implode(roles.subList(0, last), ", ") + suffix);
+			employeeJobRoles.put(e, Strings.implode(roles.subList(0, last), ", ") + suffix);
 		}
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public OperatorCompetency getCompetency() {
+		return competency;
+	}
+
+	public void setCompetency(OperatorCompetency competency) {
+		this.competency = competency;
+	}
+
+	public boolean isSkilled() {
+		return skilled;
+	}
+
+	public void setSkilled(boolean skilled) {
+		this.skilled = skilled;
+	}
+
+	public ContractorAudit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
+	}
+
+	public List<Employee> getEmployees() {
+		return employees;
+	}
+
+	public List<OperatorCompetency> getCompetencies() {
+		return competencies;
+	}
+
+	public Map<Employee, String> getEmployeeJobRoles() {
+		return employeeJobRoles;
+	}
+
+	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {
+		return map;
 	}
 }
