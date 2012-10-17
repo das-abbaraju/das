@@ -159,6 +159,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isConfigEnvironment() {
+		// FIXME How is this different than isConfigurationEnvironment()?  Is this one deprecated?
 		if (CONFIG == null) {
 			CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
 		}
@@ -166,27 +167,28 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isAlphaEnvironment() {
-		Boolean isAlpha = getRequestHost().contains("alpha");
-
-		return isAlpha;
+		return getServerName().startsWith("alpha");
 	}
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
-		Boolean isBeta = getRequestHost().contains("beta");
-		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
-			// its not beta, alpha, config, and localhost
-			if (isBetaVersion()) {
-				isBeta = true;
-			}
+		if (getServerName().startsWith("beta")) {
+			return true;
 		}
-
-		return isBeta;
+		if (isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isQaEnvironment()) {
+			return false;
+		}
+		return isBetaVersion();
 	}
 
 	public boolean isQaEnvironment() {
-		return getRequestHost().contains("qa-stable") || getRequestHost().contains("qa-beta");
+		return getServerName().startsWith("qa-");
 	}
 
+	/**
+	 * Compares the hard-coded version number in the PicsOrganizerVersion class
+	 * with app_properties in the database. If the Java code is a higher number,
+	 * then it's more advanced, i.e. a Beta version.
+	 */
 	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
@@ -195,26 +197,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isConfigurationEnvironment() {
-		Boolean isConfiguration = getRequestHost().contains("config");
-
-		return isConfiguration;
+		return getServerName().startsWith("config");
 	}
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
-		Boolean isStable = getRequestHost().contains("stable");
-		if (!(isStable || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment())) {
-			if (!isBetaVersion()) {
-				isStable = true;
-			}
+		if (getServerName().startsWith("stable")) {
+			return true;
 		}
-
-		return isStable;
+		if (isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment() || isQaEnvironment()) {
+			return false;
+		}
+		return true;
 	}
 
 	public boolean isLocalhostEnvironment() {
-		Boolean isLocalhost = getRequestHost().contains("localhost");
-
-		return isLocalhost;
+		return getServerName().startsWith("localhost");
 	}
 
 	public boolean isI18nReady() {
@@ -527,6 +524,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return ServletActionContext.getRequest().getQueryString() != null ? ServletActionContext.getRequest()
 				.getQueryString() : "";
 	}
+	private String getServerName() {
+		return ServletActionContext.getRequest().getServerName();
+	}
+	
 
 	public String getRequestHost() {
 		String requestURL = getRequestURL().toString();

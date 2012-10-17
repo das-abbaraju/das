@@ -10,6 +10,11 @@
     background: url(../images/environment/orange.jpg) repeat;
 }
 
+.environment.qaprefix
+{
+    background: url(../images/environment/solidorange.jpg) repeat;
+}
+
 .environment.alpha
 {
     background: url(../images/environment/green.jpg) repeat;

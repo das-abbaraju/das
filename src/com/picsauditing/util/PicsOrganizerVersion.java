@@ -13,10 +13,6 @@ public class PicsOrganizerVersion {
 	}
 
 	public static boolean greaterThan(int maj, int min) {
-		if (major > maj)
-			return true;
-		if (major == maj && minor > min)
-			return true;
-		return false;
+		return (major > maj) || (major == maj && minor > min);
 	}
 }
