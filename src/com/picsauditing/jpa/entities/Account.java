@@ -100,7 +100,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected boolean autoApproveRelationships = true;
 	protected boolean generalContractor = false;
 	private int sessionTimeout = 60;
-	private int rememberMeTime = -1;
+	private int rememberMeTime = 7;
 	private boolean rememberMeTimeEnabled = true;
 
 	// Other tables
