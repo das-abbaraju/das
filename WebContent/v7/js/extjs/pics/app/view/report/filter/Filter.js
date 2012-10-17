@@ -37,17 +37,17 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '2 2 0 0'
+                margin: '1 4 0 0'
             },
             dock: 'top',
             items: [{
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
-                height: 16,
+                height: 20,
                 text: '<i class="icon-remove-sign"></i>',
                 tooltip: 'Remove',
-                width: 16
+                width: 20
             }],
             layout: {
                 pack: 'end'

@@ -131,12 +131,15 @@ Ext.define('PICS.controller.report.Filter', {
             'reportfilteroptions button[action=remove-filter]': {
                 click: this.onFilterRemove
             }
-        });
+         });
 
         this.application.on({
             refreshfilters: this.refreshFilters,
             scope: this
         });
+
+        var that = this;
+        Ext.EventManager.onWindowResize(that.positionRemoveButtons, that);
     },
 
     /**
@@ -519,11 +522,10 @@ Ext.define('PICS.controller.report.Filter', {
                 scrollbar_left = filter_options.width - scrollbar_width,
                 scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
                 button_left = parseInt(remove_filter_elements[0].style.left),
-                button_obscured = button_left + 1 >= scrollbar_left ? true : false;
+                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
 
-           if (scrollbar_visible && button_obscured) {
+            if (scrollbar_visible && button_obscured) {
                 button_left = button_left - scrollbar_width;
-
                 for (var i = 0; i < remove_filter_elements.length; i++) {
                     remove_filter_elements[i].style.left = button_left + 'px';
                 }
