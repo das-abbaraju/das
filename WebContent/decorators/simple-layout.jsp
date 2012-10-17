@@ -51,6 +51,5 @@
         <%-- custom --%>
         <script type="text/javascript" src="v7/js/pics/core/core.js"></script>
         <script type="text/javascript" src="v7/js/pics/login/login-controller.js"></script>
-        <script type="text/javascript" src="v7/js/pics/login/newsfeed-controller.js"></script>
     </body>
 </html>

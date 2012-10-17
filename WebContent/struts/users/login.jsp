@@ -7,7 +7,3 @@
 <div id="login_wrapper">
     <s:include value="login/_login-form.jsp"/>
 </div>
-
-<div id="newsfeed_wrapper">
-    <div id="newsfeed"></div>
-</div>

@@ -35,9 +35,6 @@
                         $('#login_wrapper').html(data);
                         $('#supported_locales').val(language);
 
-                        //Update RSS feed
-                        $('#newsfeed_wrapper').trigger('updatefeed');
-
                         //TODO update login modal content as well
                         /*$('section.login-form, .modal-login-form .modal-body').html(response);
                         $('#supported_locales, .modal-login-form #supported_locales').val(language);
