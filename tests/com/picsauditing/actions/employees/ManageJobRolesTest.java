@@ -1,13 +1,9 @@
 package com.picsauditing.actions.employees;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,6 +56,7 @@ public class ManageJobRolesTest {
 	private Query query;
 
 	private final String ROLE = "role";
+	private final String COMPETENCIES = "competencies";
 
 	@Before
 	public void setUp() throws Exception {
@@ -248,6 +245,94 @@ public class ManageJobRolesTest {
 	}
 
 	@Test
+	public void testAddCompetency_CompetencyMissing() throws Exception {
+		setLoggedInAsContractorAdmin();
+
+		assertEquals(COMPETENCIES, manageJobRoles.addCompetency());
+		assertTrue(manageJobRoles.hasActionErrors());
+
+		verify(entityManager, never()).merge(any(BaseTable.class));
+		verify(entityManager, never()).persist(any(BaseTable.class));
+	}
+
+	@Test
+	public void testAddCompetency_CompetencyExisting() throws Exception {
+		setLoggedInAsContractorAdmin();
+
+		OperatorCompetency competency = new OperatorCompetency();
+
+		JobCompetency jobCompetency = new JobCompetency();
+		jobCompetency.setId(1);
+		jobCompetency.setCompetency(competency);
+
+		JobRole role = new JobRole();
+		role.setId(1);
+		role.getJobCompetencies().add(jobCompetency);
+
+		manageJobRoles.setCompetency(competency);
+		manageJobRoles.setRole(role);
+
+		assertEquals(COMPETENCIES, manageJobRoles.addCompetency());
+		assertTrue(manageJobRoles.hasActionErrors());
+
+		verify(entityManager, never()).merge(any(BaseTable.class));
+		verify(entityManager, never()).persist(any(BaseTable.class));
+	}
+
+	@Test
+	public void testAddCompetency_CompetencyNew() throws Exception {
+		setLoggedInAsContractorAdmin();
+
+		OperatorCompetency competency = new OperatorCompetency();
+
+		JobRole role = new JobRole();
+		role.setId(1);
+
+		manageJobRoles.setCompetency(competency);
+		manageJobRoles.setRole(role);
+
+		assertEquals(COMPETENCIES, manageJobRoles.addCompetency());
+		assertFalse(manageJobRoles.hasActionErrors());
+
+		verify(entityManager).merge(any(BaseTable.class));
+		verify(entityManager).persist(any(BaseTable.class));
+	}
+
+	@Test
+	public void testRemoveCompetency_CompetencyMissing() throws Exception {
+		setLoggedInAsContractorAdmin();
+
+		assertEquals(COMPETENCIES, manageJobRoles.removeCompetency());
+		assertTrue(manageJobRoles.hasActionErrors());
+
+		verify(entityManager, never()).remove(any(BaseTable.class));
+	}
+
+	@Test
+	public void testRemoveCompetency_CompetencyExisting() throws Exception {
+		setLoggedInAsContractorAdmin();
+
+		OperatorCompetency competency = new OperatorCompetency();
+
+		JobCompetency jobCompetency = new JobCompetency();
+		jobCompetency.setId(1);
+		jobCompetency.setCompetency(competency);
+
+		JobRole role = new JobRole();
+		role.setId(1);
+		role.getJobCompetencies().add(jobCompetency);
+
+		manageJobRoles.setCompetency(competency);
+		manageJobRoles.setRole(role);
+
+		assertEquals(COMPETENCIES, manageJobRoles.removeCompetency());
+		assertFalse(manageJobRoles.hasActionErrors());
+		assertTrue(manageJobRoles.getRole().getJobCompetencies().isEmpty());
+
+		verify(entityManager).remove(any(BaseTable.class));
+	}
+
+	@Test
 	public void testGetJobRoles_Lookup() {
 		ContractorAccount contractor = setLoggedInAsContractorAdmin();
 
@@ -316,7 +401,7 @@ public class ManageJobRolesTest {
 	public void testGetOtherCompetencies_RoleMissing() throws Exception {
 		setLoggedInAsContractorAdmin();
 
-		assertTrue(manageJobRoles.getOtherCompetencies().isEmpty());
+		assertNull(manageJobRoles.getOtherCompetencies());
 	}
 
 	@Test
@@ -376,13 +461,10 @@ public class ManageJobRolesTest {
 	public void testGetShellOps_HasOperators() throws Exception {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 
-		OperatorAccount operator1 = EntityFactory.makeOperator();
-		operator1.setRequiresCompetencyReview(true);
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setRequiresCompetencyReview(true);
 
-		OperatorAccount operator2 = EntityFactory.makeOperator();
-
-		EntityFactory.addContractorOperator(contractor, operator1);
-		EntityFactory.addContractorOperator(contractor, operator2);
+		EntityFactory.addContractorOperator(contractor, operator);
 
 		manageJobRoles.setAccount(contractor);
 
@@ -390,122 +472,7 @@ public class ManageJobRolesTest {
 
 		assertNotNull(hseOperators);
 		assertFalse(hseOperators.isEmpty());
-		assertTrue(hseOperators.contains(operator1));
-	}
-
-	@Test
-	public void testGetShellOps_AsOperator() throws Exception {
-		manageJobRoles.setAccount(EntityFactory.makeOperator());
-
-		List<OperatorAccount> hseOperators = Whitebox.invokeMethod(manageJobRoles, "getShellOps");
-
-		assertNotNull(hseOperators);
-		assertTrue(hseOperators.isEmpty());
-	}
-
-	@Test
-	public void testIsPreviouslySelected_Existing() {
-		JobRole role = new JobRole();
-		role.setId(1);
-
-		OperatorCompetency competency1 = new OperatorCompetency();
-		OperatorCompetency competency2 = new OperatorCompetency();
-
-		JobCompetency jobCompetency = new JobCompetency();
-		jobCompetency.setJobRole(role);
-		jobCompetency.setCompetency(competency1);
-
-		role.getJobCompetencies().add(jobCompetency);
-
-		manageJobRoles.setRole(role);
-
-		assertTrue(manageJobRoles.isPreviouslySelected(competency1));
-		assertFalse(manageJobRoles.isPreviouslySelected(competency2));
-	}
-
-	@Test
-	public void testIsPreviouslySelected_NewRole() {
-		JobRole role = new JobRole();
-		OperatorCompetency competency1 = new OperatorCompetency();
-
-		JobCompetency jobCompetency = new JobCompetency();
-		jobCompetency.setJobRole(role);
-		jobCompetency.setCompetency(competency1);
-
-		role.getJobCompetencies().add(jobCompetency);
-
-		manageJobRoles.setRole(role);
-
-		assertFalse(manageJobRoles.isPreviouslySelected(new OperatorCompetency()));
-		assertFalse(manageJobRoles.isPreviouslySelected(competency1));
-	}
-
-	@Test
-	public void testRemoveDeselectedCompetenciesFromRole() throws Exception {
-		JobRole role = new JobRole();
-
-		OperatorCompetency competency1 = new OperatorCompetency();
-		OperatorCompetency competency2 = new OperatorCompetency();
-
-		JobCompetency jobCompetency1 = new JobCompetency();
-		jobCompetency1.setJobRole(role);
-		jobCompetency1.setCompetency(competency1);
-
-		JobCompetency jobCompetency2 = new JobCompetency();
-		jobCompetency2.setJobRole(role);
-		jobCompetency2.setCompetency(competency2);
-
-		role.getJobCompetencies().add(jobCompetency1);
-		role.getJobCompetencies().add(jobCompetency2);
-
-		manageJobRoles.getCompetenciesToAdd().add(competency1);
-		manageJobRoles.setRole(role);
-
-		Whitebox.invokeMethod(manageJobRoles, "removeDeselectedCompetenciesFromRole");
-
-		assertEquals(1, manageJobRoles.getRole().getJobCompetencies().size());
-
-		verify(entityManager).remove(any(BaseTable.class));
-	}
-
-	@Test
-	public void testRemoveExistingCompetenciesFromSelected() throws Exception {
-		JobRole role = new JobRole();
-
-		OperatorCompetency competency1 = new OperatorCompetency();
-		OperatorCompetency competency2 = new OperatorCompetency();
-
-		JobCompetency jobCompetency1 = new JobCompetency();
-		jobCompetency1.setJobRole(role);
-		jobCompetency1.setCompetency(competency1);
-
-		role.getJobCompetencies().add(jobCompetency1);
-
-		manageJobRoles.getCompetenciesToAdd().add(competency1);
-		manageJobRoles.getCompetenciesToAdd().add(competency2);
-		manageJobRoles.setRole(role);
-
-		Whitebox.invokeMethod(manageJobRoles, "removeExistingCompetenciesFromSelected");
-
-		assertEquals(1, manageJobRoles.getRole().getJobCompetencies().size());
-	}
-
-	@Test
-	public void testSaveNewlySelectedCompetencies() throws Exception {
-		JobRole role = new JobRole();
-
-		OperatorCompetency competency1 = new OperatorCompetency();
-		OperatorCompetency competency2 = new OperatorCompetency();
-
-		manageJobRoles.getCompetenciesToAdd().add(competency1);
-		manageJobRoles.getCompetenciesToAdd().add(competency2);
-		manageJobRoles.setRole(role);
-
-		Whitebox.invokeMethod(manageJobRoles, "saveNewlySelectedCompetencies");
-
-		assertEquals(2, manageJobRoles.getRole().getJobCompetencies().size());
-
-		verify(entityManager, times(2)).persist(any(BaseTable.class));
+		assertTrue(hseOperators.contains(operator));
 	}
 
 	private ContractorAccount setLoggedInAsContractorAdmin() {
