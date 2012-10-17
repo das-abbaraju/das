@@ -28,7 +28,7 @@ import com.picsauditing.search.Database;
 
 @SuppressWarnings("serial")
 public class ContractorList extends PicsActionSupport implements ParameterAware {
-	private static final boolean USE_DYNAMIC_REPORTS = true;
+	private static final boolean USE_DYNAMIC_REPORTS = false;
 	private static final Logger logger = LoggerFactory.getLogger(ContractorList.class);
 	// private Report report;
 	//
@@ -49,7 +49,7 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 	}
 
 	public void setApiKey(final String apiKey) {
-		logger.debug("Setting apiKey = " + apiKey);
+		logger.debug("Setting apiKey = {}",apiKey);
 		this.apiKey = apiKey;
 	}
 
@@ -77,7 +77,7 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 	public void setParameters(Map<String, String[]> parameters) {
 		logger.debug("Setting parameters");
 		for (String key : parameters.keySet()) {
-			logger.debug(key + " = " + parameters.get(key)[0].toString());
+			logger.debug("{} = {}",key,parameters.get(key)[0].toString());
 			if ("apiKey".equals(key)) {
 				setApiKey(parameters.get(key)[0]);
 			}

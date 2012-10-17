@@ -1,0 +1,19 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.actions.rest.api" extends="com.picsauditing">
+
+		<action name="RestApiContractorList" class="com.picsauditing.actions.rest.api.ContractorList">
+		</action>
+
+		<action name="RestApiDataFeed" class="com.picsauditing.actions.rest.api.DataFeed">
+		</action>
+
+		<!-- Exceptions -->
+		<action name="ReportExceptions" class="com.picsauditing.actions.report.ReportExceptions">
+			<result>struts/reports/report_exceptions.jsp</result>
+		</action>
+
+	</package>
+</struts>

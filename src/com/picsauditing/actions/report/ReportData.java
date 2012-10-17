@@ -30,7 +30,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
 
 @SuppressWarnings({ "unchecked", "serial" })
-public class ReportData extends PicsActionSupport {
+public class ReportData extends PicsActionSupport  {
 	private static final String PRINT = "print";
 
 	@Autowired
@@ -40,17 +40,17 @@ public class ReportData extends PicsActionSupport {
 	@Autowired
 	private ReportUserDAO reportUserDao;
 
-	private Report report;
+	protected Report report;
 
-	private String debugSQL = "";
-	private SelectSQL sql = null;
-	private ReportDataConverter converter;
+	protected String debugSQL = "";
+	protected SelectSQL sql = null;
+	protected ReportDataConverter converter;
 
-	private int pageNumber = 1;
+	protected int pageNumber = 1;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
 
-	private String initialize() throws Exception {
+	protected String initialize() throws Exception {
 		logger.debug("initializing report " + report.getId());
 		ReportModel.validate(report);
 		Report reportFromDb =reportDao.find(Report.class, report.getId());
@@ -178,7 +178,7 @@ public class ReportData extends PicsActionSupport {
 		ServletActionContext.getResponse().flushBuffer();
 	}
 
-	private void runQuery() throws SQLException {
+	protected void runQuery() throws SQLException {
 		debugSQL = sql.toString().replace("\n", " ").replace("  ", " ");
 
 		List<BasicDynaBean> queryResults = reportDao.runQuery(debugSQL, json);
@@ -186,7 +186,7 @@ public class ReportData extends PicsActionSupport {
 		converter.setLocale(permissions.getLocale());
 	}
 
-	private void writeJsonError(Exception e) {
+	protected void writeJsonError(Exception e) {
 		e.printStackTrace();
 		String message = e.getMessage();
 		if (message == null) {
@@ -196,7 +196,7 @@ public class ReportData extends PicsActionSupport {
 		writeJsonError(message);
 	}
 
-	private void writeJsonError(String message) {
+	protected void writeJsonError(String message) {
 		json.put("success", false);
 		json.put("message", message);
 	}
