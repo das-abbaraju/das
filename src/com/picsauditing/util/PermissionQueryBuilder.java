@@ -86,7 +86,7 @@ public class PermissionQueryBuilder {
 
 	private String buildAuditorSubquery() {
 		if (isHQL())
-			return "SELECT ca.contractorAccount FROM ContractorAudit ca WHERE ca.auditor.id = "
+			return "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id = "
 					+ permissions.getUserId();
 		else
 			return "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();

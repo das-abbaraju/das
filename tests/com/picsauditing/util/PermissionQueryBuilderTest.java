@@ -104,7 +104,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		when(permissions.isOnlyAuditor()).thenReturn(true);
 
 		builder.setQueryLanguage(PermissionQueryBuilder.HQL);
-		String expected = "SELECT ca.contractorAccount FROM ContractorAudit ca WHERE ca.auditor.id =";
+		String expected = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id =";
 		assertContains(expected, builder.buildWhereClause());
 	}
 
