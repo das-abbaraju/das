@@ -200,7 +200,7 @@
 				
 				<ul>
 					<li>
-						<s:textfield name="user.username" autocomplete="off" />
+						<s:textfield name="user.username" label="global.Username" autocomplete="off" />
 				 	</li>
 					<li>
 						<s:password name="user.password" label="global.Password" autocomplete="off"  />
