@@ -91,6 +91,10 @@ public class OshaAudit implements OshaVisitable {
 		initializeStatistics();
 	}
 
+	public ContractorAudit getContractorAudit() {
+		return contractorAudit;
+	}
+
 	private void initializeDispaySafetyStatistics() {
 		dispaySafetyStatisticsMap.put(OshaType.OSHA, false);
 		dispaySafetyStatisticsMap.put(OshaType.COHS, false);

@@ -445,7 +445,7 @@
     						</s:if>
     					</s:iterator>
     					
-    					<s:if test="oshaDisplay.stats.size() > 0">
+    					<s:if test="anyOshasToDisplay">
     						<s:include value="/struts/contractors/_contractor_safety_statistics.jsp" />
     					</s:if>
     					

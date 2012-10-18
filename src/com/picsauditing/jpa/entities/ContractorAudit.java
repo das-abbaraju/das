@@ -949,4 +949,14 @@ public class ContractorAudit extends AbstractIndexableTable {
 		}
 		return false;
 	}
+	
+	@Transient
+	public boolean isDataExpectedAnswer(int questionId, String expected) {
+		for (AuditData answer:data) {
+			if (answer.getQuestion().getId() == questionId) {
+				return Strings.isEqualNullSafe(answer.getAnswer(), expected);
+			}
+		}
+		return false;
+	}
 }

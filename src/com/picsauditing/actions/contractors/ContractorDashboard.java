@@ -42,6 +42,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -63,6 +64,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -120,6 +122,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private Map<FlagColor, Integer> flagCounts;
 	private OshaOrganizer oshaOrganizer;
 	private OshaDisplay oshaDisplay;
+	private Map<OshaType, Boolean> displayOsha;
 
 	private Date earliestIndividualFlagOverride = null;
 	private int individualFlagOverrideCount = 0;
@@ -270,8 +273,39 @@ public class ContractorDashboard extends ContractorActionSupport {
 		oshaOrganizer = contractor.getOshaOrganizer();
 
 		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(), getActiveOperators(), contractor, naicsDao);
+		determineOshaTypesToDisplay();
 
 		return SUCCESS;
+	}
+
+	private void determineOshaTypesToDisplay() {
+		displayOsha = new HashMap<OshaType, Boolean>();
+		displayOsha.put(OshaType.OSHA, false);
+		displayOsha.put(OshaType.COHS, false);
+		displayOsha.put(OshaType.UK_HSE, false);
+		
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().isAnnualAddendum() && audit.hasCaoStatus(AuditStatus.Complete)) {
+				if (audit.isDataExpectedAnswer(AuditQuestion.OSHA_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.OSHA, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.COHS_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.COHS, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.UK_HSE_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.UK_HSE, true);
+			}
+		}
+	}
+	
+	public boolean isAnyOshasToDisplay() {
+		return displayOsha.containsValue(true);
+	}
+
+	public Map<OshaType, Boolean> getDisplayOsha() {
+		return displayOsha;
+	}
+
+	public void setDisplayOsha(Map<OshaType, Boolean> displayOsha) {
+		this.displayOsha = displayOsha;
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
