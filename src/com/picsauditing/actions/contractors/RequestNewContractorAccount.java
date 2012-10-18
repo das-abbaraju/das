@@ -1,12 +1,9 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.slf4j.Logger;
@@ -15,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.io.Files;
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -30,19 +26,14 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -54,17 +45,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
-	private EmailAttachmentDAO attachmentDAO;
-	@Autowired
-	private EmailSender emailSender;
-	@Autowired
 	private OperatorTagDAO operatorTagDAO;
+	@Autowired
+	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
 	private UserSwitchDAO userSwitchDAO;
 
 	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
-
-	private final int INITIAL_CONTACT_EMAIL_TEMPLATE = 259;
 
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
@@ -78,8 +65,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	private List<OperatorTag> requestedTags = new ArrayList<OperatorTag>();
 	// Email
-	private EmailQueue email = new EmailQueue();
-	private EmailBuilder emailBuilder = new EmailBuilder();
+	private EmailQueue email;
 	// Legacy
 	private ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
 	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
@@ -366,14 +352,11 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		saveLegacyRequest();
 
 		if (newRequest) {
-			email = buildEmail();
-			email.setContractorAccount(requestedContractor);
-			emailSender.send(email);
+			emailHelper.sendInitialEmail(requestedContractor, primaryContact, requestRelationship, getFtpDir());
 			legacyRequest.contactByEmail();
 			requestedContractor.contactByEmail();
 			requestedContractor.setLastContactedByAutomatedEmailDate(new Date());
 
-			addContractorLetterAttachmentTo(email);
 			addNote("Sent initial contact email.");
 		}
 
@@ -472,65 +455,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private EmailQueue buildEmail() throws Exception {
-		User info = userDAO.find(User.INFO_AT_PICSAUDITING);
-
-		emailBuilder.setTemplate(INITIAL_CONTACT_EMAIL_TEMPLATE);
-		emailBuilder.setToAddresses(primaryContact.getEmail());
-		emailBuilder.setFromAddress(info);
-		emailBuilder.addToken("requestedContractor", requestedContractor);
-		emailBuilder.addToken("requestRelationship", requestRelationship);
-		emailBuilder.addToken("primaryContact", primaryContact);
-
-		return emailBuilder.build();
-	}
-
-	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
-	private void addContractorLetterAttachmentTo(EmailQueue email) {
-		OperatorForm contractorLetter = getContractorLetter();
-
-		if (contractorLetter != null) {
-			try {
-				File letter = null;
-
-				if (contractorLetter.getFile().startsWith("form")) {
-					letter = new File(getFtpDir() + "/forms/" + contractorLetter.getFile());
-				} else {
-					letter = new File(getFtpDir() + "/files/" + FileUtils.thousandize(contractorLetter.getId())
-							+ contractorLetter.getFile());
-				}
-
-				byte[] content = Files.toByteArray(letter);
-
-				// Add attachment
-				EmailAttachment attachment = new EmailAttachment();
-				attachment.setContent(content);
-				attachment.setFileName(letter.getAbsolutePath());
-				attachment.setFileSize((int) letter.length());
-				attachment.setEmailQueue(email);
-				attachmentDAO.save(attachment);
-			} catch (Exception e) {
-				logger.error("Exception trying to attach operator form: #{} '{}'\n{}",
-						new Object[] { contractorLetter.getId(), contractorLetter.getFile(), e });
-			}
-		}
-	}
-
-	private OperatorForm getContractorLetter() {
-		Set<OperatorAccount> processed = new HashSet<OperatorAccount>();
-		OperatorAccount currentOperator = requestRelationship.getOperatorAccount();
-
-		while (currentOperator != null && !processed.contains(currentOperator)) {
-			for (OperatorForm form : currentOperator.getOperatorForms()) {
-				if (form.getFormName().contains("*")) {
-					return form;
-				}
-			}
-
-			processed.add(currentOperator);
-			currentOperator = currentOperator.getParent();
-		}
-
-		return null;
+		return emailHelper.buildInitialEmail(requestedContractor, primaryContact, requestRelationship);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)

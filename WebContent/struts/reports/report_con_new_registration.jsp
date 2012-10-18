@@ -21,19 +21,10 @@
 			</a>
 		</div>
 		<div style="padding: 5px;">
-			<a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
+			<s:url action="RequestNewContractorAccount" var="request_new_contractor" />
+			<a href="${request_new_contractor}" class="add" id="AddRegistrationRequest">
 				<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
 			</a>
-			<s:if test="amSales || debugging">
-				<a
-					href="javascript:;"
-					title="<s:text name="javascript.OpensInNewWindow" />"
-					class="add excelUpload"
-					data-url="ReportNewReqConImport.action"
-					id="ImportRegistrationRequests">
-					<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
-				</a>
-			</s:if>
 		</div>
 		<s:if test="data.size > 0">
 			<div>
