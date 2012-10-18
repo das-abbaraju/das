@@ -132,7 +132,7 @@ public class OperatorAccount extends Account {
 		return this.canSeeInsurance;
 	}
 
-	private void checkCanSeeInsurance(){
+	private void checkCanSeeInsurance() {
 		if (this.canSeeInsurance == null)
 			this.canSeeInsurance = YesNo.No;
 	}
@@ -259,6 +259,20 @@ public class OperatorAccount extends Account {
 
 	public void setDiscountPercent(BigDecimal discountPercent) {
 		this.discountPercent = discountPercent;
+	}
+
+	@Transient
+	public boolean isDiscountPercentInvalidRange() {
+		return discountPercent.compareTo(BigDecimal.ZERO) < 0 || discountPercent.compareTo(BigDecimal.ONE) > 0;
+	}
+
+	@Transient
+	public boolean isDiscountPercentWithoutExpiration() {
+		if (discountPercent.compareTo(BigDecimal.ZERO) > 0) {
+			return discountExpiration == null;
+		}
+
+		return false;
 	}
 
 	@Transient

@@ -13,6 +13,7 @@
 		
 		<action name="FacilitiesEdit" class="com.picsauditing.actions.operators.FacilitiesEdit">
 			<result>struts/operators/operator_edit.jsp</result>
+			<result name="input">struts/operators/operator_edit.jsp</result>
 			<result name="redirect" type="redirectAction">
 				<param name="actionName">FacilitiesEdit</param>
 				<param name="operator">${operator.id}</param>
