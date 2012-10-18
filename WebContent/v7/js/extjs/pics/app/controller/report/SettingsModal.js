@@ -315,7 +315,6 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
-                        html: 'with the selected account.',
                         title: 'Report Shared'
                     });
 
