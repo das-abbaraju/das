@@ -15,9 +15,11 @@
 
 <title>${param.title}</title>
 
-<div class="page-header">
-    <h1 class="title">${title}</h1>
-    <p class="subtitle">
-        ${subtitle}
-    </p>
+<div class="container">
+    <div class="page-header">
+        <h1 class="title">${title}</h1>
+        <p class="subtitle">
+            ${subtitle}
+        </p>
+    </div>
 </div>

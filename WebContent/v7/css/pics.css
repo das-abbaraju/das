@@ -6,21 +6,40 @@
  * @author: Carey Hinoki
  * @date: 2012-07-09
  */
-/* line 2, ../sass/pics/core/_core.scss */
+/* line 2, ../sass/pics/layout/_layout.scss */
+body {
+  padding: 53px 0 0;
+}
+
+/* line 2, ../sass/pics/layout/_menu.scss */
+.navbar .nav > li > a {
+  padding: 16px 15px;
+}
+
+/* line 7, ../sass/pics/layout/_menu.scss */
+.navbar-search {
+  margin-top: 10px;
+}
+/* line 11, ../sass/pics/layout/_menu.scss */
+.navbar-search .search-query {
+  line-height: normal;
+}
+
+/* line 2, ../sass/pics/layout/_page-header.scss */
 .page-header {
   border: 0px;
   margin: 18px 0px;
   padding: 0px;
 }
 
-/* line 9, ../sass/pics/core/_core.scss */
+/* line 9, ../sass/pics/layout/_page-header.scss */
 h1.title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal;
 }
 
-/* line 16, ../sass/pics/core/_core.scss */
+/* line 16, ../sass/pics/layout/_page-header.scss */
 p.subtitle {
   color: #808285;
   font-size: 14px;
@@ -29,18 +48,6 @@ p.subtitle {
   margin: 0px;
 }
 
-@media (max-width: 767px) {
-  /* line 2, ../sass/pics/layout/_layout.scss */
-  body {
-    padding: 0px;
-  }
-
-  /* line 6, ../sass/pics/layout/_layout.scss */
-  .container-fluid {
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-}
 /*
  * Overrides for Default Buttons
  */
@@ -626,9 +633,6 @@ p.subtitle {
 /* line 6, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page {
   /*
-   * Menu
-   */
-  /*
    * Description
    */
   /*
@@ -644,25 +648,7 @@ p.subtitle {
   	display: inline;
   }*/
 }
-/* line 11, ../sass/pics/templates/report/_manage.scss */
-.ManageReports-page #manage_report_menu_container {
-  border-bottom: 1px solid #CCC;
-  margin: 0px auto 20px;
-  text-align: center;
-  width: 60%;
-}
-/* line 19, ../sass/pics/templates/report/_manage.scss */
-.ManageReports-page #manage_report_menu {
-  display: inline-block;
-  bottom: -5px;
-  margin: 0px;
-  position: relative;
-}
-/* line 27, ../sass/pics/templates/report/_manage.scss */
-.ManageReports-page .lt-ie8 #manage_report_menu {
-  display: inline;
-}
-/* line 36, ../sass/pics/templates/report/_manage.scss */
+/* line 12, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page h3 {
   color: #999;
   font-size: 14px;
@@ -672,14 +658,13 @@ p.subtitle {
   margin-bottom: 35px;
   text-align: center;
 }
-/* line 51, ../sass/pics/templates/report/_manage.scss */
+/* line 27, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list {
   list-style: none;
   margin: 0px auto 20px;
   text-align: left;
-  width: 60%;
 }
-/* line 58, ../sass/pics/templates/report/_manage.scss */
+/* line 33, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -690,28 +675,28 @@ p.subtitle {
   border-radius: 3px;
   margin-bottom: 2px;
 }
-/* line 66, ../sass/pics/templates/report/_manage.scss */
+/* line 41, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .favorite {
   line-height: normal;
   float: left;
   margin: 8px 5px 0px;
   text-decoration: none;
 }
-/* line 74, ../sass/pics/templates/report/_manage.scss */
+/* line 49, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
   font-size: 12px;
 }
-/* line 80, ../sass/pics/templates/report/_manage.scss */
+/* line 55, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .icon-star.selected {
   color: #a84d10;
 }
-/* line 85, ../sass/pics/templates/report/_manage.scss */
+/* line 60, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .summary {
   float: left;
   margin-right: 10px;
 }
-/* line 91, ../sass/pics/templates/report/_manage.scss */
+/* line 66, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .name {
   color: #333;
   float: left;
@@ -719,7 +704,7 @@ p.subtitle {
   line-height: 30px;
   margin: 0px 10px 0px 0px;
 }
-/* line 100, ../sass/pics/templates/report/_manage.scss */
+/* line 75, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .created-by {
   color: #999;
   font-size: 10px;
@@ -727,30 +712,30 @@ p.subtitle {
   line-height: 30px;
   white-space: nowrap;
 }
-/* line 109, ../sass/pics/templates/report/_manage.scss */
+/* line 84, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .description {
   max-width: 400px;
 }
-/* line 114, ../sass/pics/templates/report/_manage.scss */
+/* line 89, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .options {
   border-left: 1px solid #ccc;
   float: right;
   height: 30px;
   padding: 0px 5px;
 }
-/* line 121, ../sass/pics/templates/report/_manage.scss */
+/* line 96, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .options:hover {
   background: #eaeaea;
 }
-/* line 127, ../sass/pics/templates/report/_manage.scss */
+/* line 102, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .options.open {
   background: #ccc;
 }
-/* line 131, ../sass/pics/templates/report/_manage.scss */
+/* line 106, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .options.open:hover {
   background: #ccc;
 }
-/* line 137, ../sass/pics/templates/report/_manage.scss */
+/* line 112, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .report-list .options .dropdown-toggle {
   color: #999;
   -webkit-border-radius: 0px;
@@ -764,11 +749,11 @@ p.subtitle {
   line-height: 30px;
   text-decoration: none;
 }
-/* line 147, ../sass/pics/templates/report/_manage.scss */
+/* line 122, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .lt-ie8 .report-list {
   display: inline;
 }
-/* line 152, ../sass/pics/templates/report/_manage.scss */
+/* line 127, ../sass/pics/templates/report/_manage.scss */
 .ManageReports-page .pagination {
   margin-bottom: 30px;
 }
@@ -780,14 +765,6 @@ p.subtitle {
 #ManageReports_myReportsList_page #my_reports_filter {
   margin: 0px 0px 20px;
   text-align: center;
-}
-/* line 14, ../sass/pics/templates/report/_list-my-reports.scss */
-#ManageReports_myReportsList_page #my_reports_filter .btn-group {
-  display: inline-block;
-}
-/* line 19, ../sass/pics/templates/report/_list-my-reports.scss */
-#ManageReports_myReportsList_page .lt-ie8 #my_reports_filter .btn-group {
-  display: inline;
 }
 
 /*
@@ -1137,111 +1114,4 @@ p.subtitle {
 /* line 254, ../sass/pics/login/_login-form.scss */
 .modal-login-form .modal-footer {
   display: none;
-}
-
-/* line 2, ../sass/pics/login/_newsfeed.scss */
-#Login__page {
-  /* article title */
-  /* article preview */
-}
-/* line 4, ../sass/pics/login/_newsfeed.scss */
-#Login__page #newsfeed_wrapper {
-  margin-bottom: 48px;
-  margin-top: 50px;
-}
-/* line 10, ../sass/pics/login/_newsfeed.scss */
-#Login__page #newsfeed {
-  display: inline-block;
-  float: none;
-}
-/* line 16, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssFeed {
-  margin-left: 5px;
-  float: left;
-}
-/* line 22, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssFeed a {
-  text-decoration: none;
-}
-/* line 27, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssFeed a:hover {
-  text-decoration: underline;
-}
-/* line 32, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssHeader {
-  padding: 0.2em 0;
-  font-size: 20px;
-  color: #6BA3C6;
-  text-align: center;
-}
-/* line 40, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssHeader a {
-  color: #73BBE8;
-}
-/* line 45, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssHeader a:hover {
-  color: #73BBE8;
-}
-/* line 50, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssBody ul {
-  list-style: none;
-}
-/* line 58, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssBody ul,
-#Login__page .rssRow,
-#Login__page .rssRow h4,
-#Login__page .rssRow p {
-  margin: 0px;
-  padding: 0px;
-  line-height: 16px;
-}
-/* line 64, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow {
-  padding: 10px;
-  border-bottom: 1px solid #373737;
-}
-/* line 70, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow:last-of-type {
-  border-bottom-style: none;
-}
-/* line 74, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow .title-date-wrapper {
-  width: 100%;
-}
-/* line 78, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow h4 {
-  float: left;
-}
-/* line 83, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow h4 a {
-  color: #CCC;
-  font-size: 14px;
-}
-/* line 89, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow div .pub-date {
-  font-size: 10px;
-  font-style: italic;
-}
-/* line 95, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow div {
-  color: #CCC;
-  float: right;
-}
-/* line 101, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow p {
-  clear: both;
-  color: #999;
-  font-size: 13px;
-  text-align: left;
-}
-/* line 109, ../sass/pics/login/_newsfeed.scss */
-#Login__page .rssRow .rssMedia {
-  padding: 0.5em;
-  font-size: 12px;
-}
-
-/* line 116, ../sass/pics/login/_newsfeed.scss */
-.lt-ie8 #Login__page #newsfeed {
-  display: inline;
-  width: 600px;
 }

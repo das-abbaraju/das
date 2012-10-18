@@ -17,13 +17,13 @@ module.exports = function(grunt) {
             'js/vendor/jquery-1.8.0.min.js',
             'js/vendor/bootstrap.js',
             'js/plugins.js',
-            'js/main.js',
             'js/pics/core/core.js',
-            'js/pics/layout/**/*.js',
+            //'js/pics/layout/**/*.js',
             'js/pics/widgets/**/*.js',
             'js/pics/contractor/**/*.js',
             'js/pics/login/**/*.js',
-            'js/pics/report/**/*.js'
+            'js/pics/report/**/*.js',
+            'js/main.js'
         ]
     },
     
