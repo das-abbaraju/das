@@ -315,7 +315,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
-                        title: 'Report Shared'
+                        title: 'Report shared.'
                     });
 
                     alert_message.show();
