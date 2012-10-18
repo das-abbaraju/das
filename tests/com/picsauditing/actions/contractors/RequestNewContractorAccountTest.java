@@ -35,6 +35,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
@@ -52,8 +53,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 
 public class RequestNewContractorAccountTest {
@@ -69,12 +68,6 @@ public class RequestNewContractorAccountTest {
 	@Mock
 	private Database database;
 	@Mock
-	private EmailBuilder emailBuilder;
-	@Mock
-	private EmailQueue email;
-	@Mock
-	private EmailSender emailSender;
-	@Mock
 	private EntityManager entityManager;
 	@Mock
 	private OperatorAccount operator;
@@ -82,6 +75,8 @@ public class RequestNewContractorAccountTest {
 	private Permissions permissions;
 	@Mock
 	private Query query;
+	@Mock
+	private RegistrationRequestEmailHelper emailHelper;
 	@Mock
 	private User user;
 
@@ -100,8 +95,7 @@ public class RequestNewContractorAccountTest {
 		when(query.getResultList()).thenReturn(Collections.emptyList());
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 
-		Whitebox.setInternalState(requestNewContractorAccount, "emailBuilder", emailBuilder);
-		Whitebox.setInternalState(requestNewContractorAccount, "emailSender", emailSender);
+		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
 	}
 
@@ -267,7 +261,6 @@ public class RequestNewContractorAccountTest {
 		when(contractor.getId()).thenReturn(0);
 		when(contractor.getNaics()).thenReturn(mock(Naics.class));
 		when(contractor.getPrimaryContact()).thenReturn(user);
-		when(emailBuilder.build()).thenReturn(email);
 		when(entityManager.find(eq(User.class), anyInt())).thenReturn(loggedIn);
 		when(loggedIn.getId()).thenReturn(1);
 		when(loggedIn.getName()).thenReturn("Logged in user");
@@ -282,7 +275,7 @@ public class RequestNewContractorAccountTest {
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
 		verify(contractor).generateRegistrationHash();
-		verify(emailSender).send(any(EmailQueue.class));
+		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
 		verify(entityManager, times(6)).persist(any(BaseTable.class));
 		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
@@ -310,7 +303,6 @@ public class RequestNewContractorAccountTest {
 
 		setPermissionsAsOperator();
 		when(contractor.getPrimaryContact()).thenReturn(user);
-		when(emailBuilder.build()).thenReturn(email);
 		when(entityManager.find(eq(User.class), anyInt())).thenReturn(user);
 		when(entityManager.merge(any(BaseTable.class))).thenReturn(contractor, user, contractor);
 		when(permissions.getUserId()).thenReturn(1);
@@ -324,7 +316,7 @@ public class RequestNewContractorAccountTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
-		verify(emailSender).send(any(EmailQueue.class));
+		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
 		// Contractor, user and request already exist
 		verify(entityManager, times(3)).merge(any(BaseTable.class));
 		// New contractorOperator, note and email
@@ -461,24 +453,6 @@ public class RequestNewContractorAccountTest {
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "loadLegacyRequest");
 		assertEquals(legacyRequest, Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest"));
-	}
-
-	@Test
-	public void testGetContractorLetter_FormOnCorporate() throws Exception {
-		OperatorAccount corporate = mock(OperatorAccount.class);
-		List<OperatorForm> corporateForms = createOperatorFormList();
-		OperatorForm form = corporateForms.get(0);
-
-		List<OperatorForm> operatorForms = createOperatorFormList();
-
-		when(corporate.getOperatorForms()).thenReturn(corporateForms);
-		when(operator.getParent()).thenReturn(corporate);
-		when(operatorForms.get(0).getFormName()).thenReturn("Form");
-		when(relationship.getOperatorAccount()).thenReturn(operator);
-
-		requestNewContractorAccount.setRequestRelationship(relationship);
-
-		assertEquals(form, Whitebox.invokeMethod(requestNewContractorAccount, "getContractorLetter"));
 	}
 
 	@Test
