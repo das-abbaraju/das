@@ -69,8 +69,8 @@ public class OshaAudit implements OshaVisitable {
 			case CAT_ID_FRANCE_NRIS:
 				type = OshaType.FRANCE_NRIS;
 				break;
-			default:
-				logger.warn("Unrecognized OSHA category: {}. Using 'OSHA' as default type.", catId);
+		// no need to log if we don't find it. that is expected as normal
+		// processing and logging this is so verbose as to slow down servers.
 		}
 
 		return type;
