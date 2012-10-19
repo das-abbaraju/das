@@ -42,7 +42,6 @@ public class EncodedKeyTest {
 			String pass = EncodedKey.randomPassword();
 			// System.out.println(pass); // e.g. -6291831365154337367
 			assertTrue(pass.length() <= 20);
-			assertTrue(pass.length() >= 15);
 			passwords.add(pass);
 		}
 		assertEquals(TEST_SIZE, passwords.size());
