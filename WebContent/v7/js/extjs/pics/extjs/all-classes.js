@@ -98263,9 +98263,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 name: record.get('result_name'),
                 at: record.get('result_at')
             };
-            
-            // Save the id of the selected record for use after share button is clicked.
-            cmp.record_id = record.index;
+
+            // Save the record data needed for sharing.
+            cmp.request_data = {
+                account_id: record.get('result_id'),
+                account_type: record.get('search_type')
+            };
             
             // Show the selection.
             cmp.update(account);
@@ -98283,31 +98286,21 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     onReportModalShareClick: function (cmp, e, eOpts) {
         // Get the share component.
-        var reportsettingsshare =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
-
-        // Get the record id.
-        var record_id = reportsettingsshare.record_id;
+        var cmp =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
 
         // Abort if no account has been selected.
-        if (typeof record_id == 'undefined') {
+        if (typeof cmp.request_data == 'undefined') {
             return;
         }
-        
-        // Get the record.
-        var combo =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare sharesearchbox')[0],
-            combo_store = combo.getStore(),
-            record = combo_store.getAt(record_id);
-
-        // Get the relevant record data.
-        var account_id = record.raw.result_id,
-            account_type = record.raw.search_type;
 
         // Get the editable value.
-        var el = reportsettingsshare.getEl(),
+        var el = cmp.getEl(),
             editable = el.down('.icon-edit.selected') ? true : false;
 
-        // Get the report id.
-        var report_id = this.getReportId();
+        // Get the report id and account data.
+        var report_id = this.getReportId(),
+            account_id = cmp.request_data.account_id,
+            account_type = cmp.request_data.account_type;
 
         // Construct the URL and send the request.
         var that = this;
@@ -98333,8 +98326,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
-                        html: 'with the selected account.',
-                        title: 'Report Shared'
+                        title: 'Report shared.'
                     });
 
                     alert_message.show();
