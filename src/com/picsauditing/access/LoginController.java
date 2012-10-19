@@ -45,7 +45,6 @@ public class LoginController extends PicsActionSupport {
 	protected UserLoginLogDAO loginLogDAO;
 
 	// used to inject mock permissions for testing
-	private Permissions permissionsForTest;
 	private User user;
 	private String email;
 	private String username;
@@ -77,6 +76,8 @@ public class LoginController extends PicsActionSupport {
 			return logout();
 		} else if ("switchBack".equalsIgnoreCase(button)) {
 			return switchBack();
+		} else if ("reset".equalsIgnoreCase(button)) {
+			return loginForResetPassword();
 		} else { // normal login
 			if (switchToUser > 0) {
 				return switchTo();
@@ -154,7 +155,7 @@ public class LoginController extends PicsActionSupport {
 		return setRedirectUrlPostLogin();
 	}
 
-	public String switchTo() throws Exception {
+	private String switchTo() throws Exception {
 		loadPermissions(false);
 		// add cookie before the switch so the original user id stays correct
 		addClientSessionCookieToResponse(isRememberMeSetInCookie(), switchToUser);
@@ -204,11 +205,11 @@ public class LoginController extends PicsActionSupport {
 		ActionContext.getContext().getSession().put("permissions", permissions);
 	}
 
-	private Permissions permission() {
-		if (permissionsForTest == null) {
-			permissionsForTest = new Permissions();
+	private Permissions permissions() {
+		if (permissions == null) {
+			permissions = new Permissions();
 		}
-		return permissionsForTest;
+		return permissions;
 	}
 
 	@RequiredPermission(value = OpPerms.DevelopmentEnvironment)
@@ -220,36 +221,41 @@ public class LoginController extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String login() throws Exception {
-		logger.info("Normal login, via the actual Login.action page");
+	private String loginForResetPassword() throws Exception {
+		loadUser();
+		if (logAndMessageIfError(checkResetHash())) {
+			return SUCCESS;
+		}
+		if (user != null) {
+			user.setForcePasswordReset(true);
+			user.setResetHash("");
+			user.unlockLogin();
+		}
+		return doLogin(true);
+	}
 
+	private String login() throws Exception {
+		loadUser();
+		return doLogin(false);
+	}
+
+	private String doLogin(boolean isReset) throws Exception {
 		if (ServletActionContext.getRequest().getCookies() == null) {
 			addActionMessage(getText("Login.CookiesAreDisabled"));
 			return SUCCESS;
 		}
 
-		permissions = permission();
-		String error = canLogin();
-		if (error.length() > 0) {
-			logAttempt();
-			addActionError(error);
-			ActionContext.getContext().getSession().clear();
+		if (logAndMessageIfError(canLogin(isReset))) {
 			return SUCCESS;
 		}
 
-		if ("reset".equals(button)) {
-			user.setForcePasswordReset(true);
-			user.setResetHash("");
-		}
-
-		logger.debug("logging in user");
+		permissions = permissions();
 		permissions.login(user);
 		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
 		addClientSessionCookieToResponse(rememberMe, switchToUser);
 
-		user.unlockLogin();
 		user.setLastLogin(new Date());
 		userDAO.save(user);
 
@@ -264,23 +270,22 @@ public class LoginController extends PicsActionSupport {
 		}
 	}
 
-	private String canLogin() throws Exception {
-		try {
-			user = userDAO.findName(username);
-		} catch (NoResultException e) {
-			user = null;
+	private boolean logAndMessageIfError(String error) throws Exception {
+		if (error != null && error.length() > 0) {
+			logAttempt();
+			addActionError(error);
+			ActionContext.getContext().getSession().clear();
+			return true;
 		}
+		return false;
+	}
 
+	private String canLogin(boolean isReset) throws Exception {
+		// there is no user for the supplied username, but don't tell hackers
+		// that
 		if (user == null) {
 			setActionErrorHeader(getText("Login.Failed"));
 			return getText("Login.PasswordIncorrect");
-		}
-
-		if (Strings.isNotEmpty(key)) {
-			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
-				setActionErrorHeader(getText("Login.Failed"));
-				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
-			}
 		}
 
 		if (user.isLocked()) {
@@ -288,7 +293,8 @@ public class LoginController extends PicsActionSupport {
 			return getTextParameterized("Login.TooManyFailedAttempts");
 		}
 
-		if (!user.isEncryptedPasswordEqual(password)) {
+		// do not check password if they're resetting their password
+		if (!isReset && !user.isEncryptedPasswordEqual(password)) {
 			setActionErrorHeader(getText("Login.Failed"));
 			return passwordIsIncorrect();
 		}
@@ -298,6 +304,24 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		return "";
+	}
+
+	private String checkResetHash() {
+		if (Strings.isNotEmpty(key) && user != null) {
+			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
+				setActionErrorHeader(getText("Login.Failed"));
+				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
+			}
+		}
+		return "";
+	}
+
+	private void loadUser() {
+		try {
+			user = userDAO.findName(username);
+		} catch (NoResultException e) {
+			user = null;
+		}
 	}
 
 	private boolean isUserActive() {
@@ -420,10 +444,13 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		loginLog.setServerAddress(serverName);
-		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
-		if (permissions.getAdminID() > 0)
+
+		Permissions permissions = permissions();
+		loginLog.setSuccessful(permissions.isLoggedIn());
+		if (permissions.getAdminID() > 0) {
 			loginLog.setAdmin(new User(permissions.getAdminID()));
+		}
 
 		loginLogDAO.save(loginLog);
 	}

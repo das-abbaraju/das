@@ -25,6 +25,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -70,21 +71,21 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
-		Whitebox.setInternalState(loginController, "permissionsForTest", permissions);
+		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
 		when(user.getAccount()).thenReturn(account);
 		when(switchUser.getAccount()).thenReturn(switchAccount);
+		when(request.getServerName()).thenReturn("www.picsorganizer.com");
+		when(userDAO.findName(anyString())).thenReturn(user);
 	}
 
 	// As a non-admin user
 	// Given user wishes to logout
 	// When user clicks on logout button
 	// Then the system clears permissions and session
-	// FIXME This test now requires additional mocking because of the recent changes to isLocalhostEnvironment() -- except that it's going to change again, so I'm just commenting-out this test for now. 
-	@Ignore
 	@Test
 	public void testExecute_logoutNotAdmin() throws Exception {
 		loginController.setButton("logout");
@@ -123,8 +124,6 @@ public class LoginControllerTest extends PicsActionTest {
 	// When user clicks on logout button
 	// And does not clear session
 	// Then the system logs out everybody
-	// FIXME This test now requires additional mocking because of the recent changes to isLocalhostEnvironment() -- except that it's going to change again, so I'm just commenting-out this test for now. 
-	@Ignore
 	@Test
 	public void testExecute_logoutUserWhoHasSwitchedToAnotherUser() throws Exception {
 		loginController.setButton("logout");
@@ -185,8 +184,6 @@ public class LoginControllerTest extends PicsActionTest {
 
 	// As a logged in user
 	// Given user wishes to switch to another user
-	// FIXME This test now requires additional mocking because of the recent changes to isLocalhostEnvironment() -- except that it's going to change again, so I'm just commenting-out this test for now. 
-	@Ignore
 	@Test
 	public void testExcecute_SwitchToUser() throws Exception {
 		normalLoginSetup();
@@ -214,8 +211,6 @@ public class LoginControllerTest extends PicsActionTest {
 	// And logs in the user
 	// And logs the login attempt
 	// And sets last login date
-	// FIXME This test now requires additional mocking because of the recent changes to isLocalhostEnvironment() -- except that it's going to change again, so I'm just commenting-out this test for now. 
-	@Ignore
 	@Test
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
@@ -231,6 +226,50 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testPasswordIsIncorrect_Locked() {
 		when(user.getFailedAttempts()).thenReturn(8);
 		when(user.getUsername()).thenReturn("test");
+	}
+
+	@Test
+	public void testLogAndMessageIfError_NullErrorReturnsFalse() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", (String) null));
+	}
+
+	@Test
+	public void testLogAndMessageIfError_EmptyErrorReturnsFalse() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", ""));
+	}
+
+	@Test
+	public void testLogAndMessageIfError_ErrorClearsSession() throws Exception {
+		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", "Error"));
+		assertTrue(session.isEmpty());
+	}
+
+	@Test
+	public void testLogAndMessageIfError_ErrorLogsAttempt() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", "Error"));
+		verify(loginLogDAO).save((UserLoginLog) any());
+	}
+
+	@Test
+	public void testloginForResetPassword_SetsForcePasswordReset() throws Exception {
+		loginController.setButton("reset");
+		loginController.execute();
+
+		verify(user).setForcePasswordReset(true);
+	}
+
+	@Test
+	public void testExecuteReset_NullUserGivesErrorMessage() throws Exception {
+		when(userDAO.findName(anyString())).thenReturn(null);
+		when(i18nCache.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
+		when(i18nCache.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg()))
+				.thenReturn("Password incorrect");
+		
+		loginController.setButton("reset");
+		loginController.execute();
+
+		assertTrue(loginController.getActionErrors().contains("Password incorrect"));
 	}
 
 	@Test
