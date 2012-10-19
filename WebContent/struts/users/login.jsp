@@ -4,6 +4,10 @@
 <title><s:text name="global.Login" /></title>
 <meta name="help" content="Logging_In">
 
+<div id="server_id">
+    <div title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>"></div>
+</div>
+
 <div id="login_wrapper">
     <s:include value="login/_login-form.jsp"/>
 </div>
