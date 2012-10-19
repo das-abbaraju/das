@@ -185,7 +185,7 @@ $(function() {
                                 });
 
                                 //add to result list
-                                trade_list += '<li><a href="TradeTaxonomy!tradeAjax.action?trade=' + trade.id +'" class="trade ' + trade.type + '">' + linkText + '</a></li>';
+                                trade_list += '<li><a href="ContractorTrades!tradeAjax.action?trade.trade=' + trade.id + '&contractor=' + conID + '" class="trade ' + trade.type + '">' + linkText + '</a></li>';
                             } else {
                                 try {
                                     console.log(trade);
