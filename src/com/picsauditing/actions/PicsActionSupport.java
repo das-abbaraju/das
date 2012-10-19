@@ -17,6 +17,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Transient;
 import javax.servlet.http.Cookie;
@@ -158,6 +160,50 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return !isConfigEnvironment();
 	}
 
+	private String picsEnvironment;
+	public String getPicsEnvironment() {
+		/*
+		 * Note: Lazy-loading like this is often overused in action code
+		 * (because the class only stays instantiated for as long as it takes to
+		 * render the page, and get-accessors normally only get called once in
+		 * that time); however, in this case, the PICS enviromnent is queried
+		 * numerous times during every page load.
+		 */
+		if (picsEnvironment == null) {
+			picsEnvironment = determinePicsEnvironment(); 
+		}
+		return picsEnvironment;
+		
+	}
+	
+	private String determinePicsEnvironment() {
+		Pattern p = Pattern.compile("(alpha|config|beta|stable|qa-beta|qa-stable|localhost).*");
+		Matcher m;
+		
+		// The (new) official way to determine the enviroment is using -Dpics.env=something
+		String env = System.getProperty("pics.env");
+		if (Strings.isNotEmpty(env)) {
+			m = p.matcher(env.trim().toLowerCase());
+			if (m.matches()) {
+				return m.group(1);
+			}
+		}
+		
+		// In the absense of -Dpics.env, see if there is an explicit subdomain mentioned in the URL that can tell us 
+		m = p.matcher(getServerName());
+		if (m.matches()) {
+			return m.group(1);
+		}
+		
+		// The URL must be WWW (or an IP address), so check the beta-audience level to see if we must have been redirected to beta
+		if (isBetaVersion()) {
+			return "beta";
+		}
+
+		// With no evidence to the contrary, we'd better assume we're on stable
+		return "stable";
+	}
+
 	public boolean isConfigEnvironment() {
 		// FIXME How is this different than isConfigurationEnvironment()?  Is this one deprecated?
 		if (CONFIG == null) {
@@ -167,21 +213,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isAlphaEnvironment() {
-		return getServerName().startsWith("alpha");
+		return "alpha".equals(getPicsEnvironment());
 	}
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
-		if (getServerName().startsWith("beta")) {
-			return true;
-		}
-		if (isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isQaEnvironment()) {
-			return false;
-		}
-		return isBetaVersion();
+		return "beta".equals(getPicsEnvironment());
 	}
 
 	public boolean isQaEnvironment() {
-		return getServerName().startsWith("qa-");
+		return getPicsEnvironment().startsWith("qa-");
 	}
 
 	/**
@@ -197,21 +237,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isConfigurationEnvironment() {
-		return getServerName().startsWith("config");
+		return "config".equals(getPicsEnvironment());
 	}
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
-		if (getServerName().startsWith("stable")) {
-			return true;
-		}
-		if (isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment() || isQaEnvironment()) {
-			return false;
-		}
-		return true;
+		return "stable".equals(getPicsEnvironment());
 	}
 
 	public boolean isLocalhostEnvironment() {
-		return getServerName().startsWith("localhost");
+		return "localhost".equals(getPicsEnvironment());
 	}
 
 	public boolean isI18nReady() {
@@ -1024,4 +1058,5 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected HttpServletRequest getRequest() {
 		return ServletActionContext.getRequest();
 	}
+
 }

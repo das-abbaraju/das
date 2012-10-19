@@ -1,11 +1,11 @@
 package com.picsauditing.actions;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,8 +15,6 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.util.PicsOrganizerVersion;
 
 public class PicsActionSupportTest extends PicsActionTest {
 	private PicsActionSupport picsActionSupport;
@@ -32,7 +30,10 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
 	}
-
+	@After
+	public void tearDown() throws Exception {
+		System.setProperty("pics.env", "");
+	}
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
 		Permissions permissions = new Permissions();
@@ -69,6 +70,22 @@ public class PicsActionSupportTest extends PicsActionTest {
 	}
 
 	@Test
+	public void testGetPicsEnvironment_AlphaPerEnvironmentVariable() throws Exception {
+		System.setProperty("pics.env", "Alphabet");
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertEquals("Equivalent of -Dpics.env=Alphabet", "alpha", picsActionSupport.getPicsEnvironment());
+	}
+	@Test
+	public void testGetPicsEnvironment_BetaPerUrl_withNonsenseEnvironmentVariable() throws Exception {
+		System.setProperty("pics.env", "nonsense");
+		when(request.getServerName()).thenReturn(new String("beta.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertEquals("Equivalent of -Dpics.env=nonsense", "beta", picsActionSupport.getPicsEnvironment());
+	}
+	@Test
 	public void testIsAlphaEnvironment() throws Exception {
 		when(request.getServerName()).thenReturn(new String("alpha.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
@@ -81,6 +98,22 @@ public class PicsActionSupportTest extends PicsActionTest {
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
 		assertFalse("url does not start with alpha", picsActionSupport.isAlphaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_SystemPropertySaysBeta() throws Exception {
+		System.setProperty("pics.env", " BETA ");
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue("Equivalent of -Dpics.env=beta", picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_SystemPropertySaysAlpha() throws Exception {
+		System.setProperty("pics.env", "alpha");
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse("Equivalent of -Dpics.env=alpha", picsActionSupport.isBetaEnvironment());
 	}
 	@Test
 	public void testIsBetaEnvironment_UrlExplicitlyStartsWithBeta() throws Exception {
