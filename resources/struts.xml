@@ -168,6 +168,7 @@
 		</action>
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
+			<result>/struts/layout/menu/_menu.jsp</result>
 		</action>
 
 		<action name="Contact" class="com.picsauditing.access.Contact">

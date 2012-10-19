@@ -20,6 +20,9 @@ public class Menu extends PicsActionSupport {
 	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
 
+	private MenuComponent menu;
+
+	@Override
 	public String execute() {
 		loadPermissions();
 
@@ -36,11 +39,32 @@ public class Menu extends PicsActionSupport {
 			// No reports in the menu
 		}
 
-		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
+		menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
 
 		jsonArray = MenuWriter.convertMenuToJSON(menu);
 
 		return JSON_ARRAY;
+	}
+
+	public String menu() {
+		loadPermissions();
+
+		List<ReportUser> favoriteReports = new ArrayList<ReportUser>();
+
+		// Don't break if the database schema changes
+		try {
+			favoriteReports = reportUserDao.findAllFavorite(permissions.getUserId());
+
+			if (favoriteReports.size() > ManageReports.MAX_REPORTS_IN_MENU) {
+				favoriteReports = favoriteReports.subList(0, ManageReports.MAX_REPORTS_IN_MENU);
+			}
+		} catch (Exception e) {
+			// No reports in the menu
+		}
+
+		menu = MenuBuilder.buildMenubar(permissions, favoriteReports);
+
+		return SUCCESS;
 	}
 
 	public ContractorAccount getContractor() {
@@ -49,5 +73,9 @@ public class Menu extends PicsActionSupport {
 
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
+	}
+
+	public MenuComponent getMenu() {
+		return menu;
 	}
 }

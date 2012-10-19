@@ -23,56 +23,7 @@
     <body id="${actionName}_${methodName}_page" class="${actionName}-page page">
     
         <header>
-            <div class="navbar navbar-fixed-top">
-                <div class="navbar-inner">
-                    <nav class="container">
-                        <a class="brand" href="/"><img src="/v7/img/logo.svg" /></a>
-                        <ul class="nav">
-                            <li>
-                                <a href="/">Dashboard</a>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Report</a>
-                                
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#">Manage Reports</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="/">Configure</a>
-                            </li>
-                            <li>
-                                <a href="/">Manage</a>
-                            </li>
-                            <li>
-                                <a href="/">Development</a>
-                            </li>
-                            <li>
-                                <a href="/">Support</a>
-                            </li>
-                        </ul>
-                        <ul class="nav pull-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Carey Hinoki</a>
-                                
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#">Account</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Logout</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <form class="navbar-search pull-right">
-                            <input type="text" class="search-query" placeholder="Search" />
-                        </form>
-                    </nav>
-                </div>
-            </div>
+            <s:action name="Menu!menu" executeResult="true" />
         </header>
         
         <div id="main" role="main">
