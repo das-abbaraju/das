@@ -64,16 +64,20 @@ public class ReportModel {
 			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, report.getId());
 			if (reportPermissionUser.isEditable())
 				return true;
+		} catch (NoResultException e) {
 
+		}
+
+		try {
 			String userID = permissions.getUserIdString();
-			
+
 			if (permissions.getAdminID() > 0)
 				userID = "" + permissions.getAdminID();
 
 			String where = "group.id = " + REPORT_DEVELOPER_GROUP + " AND user.id = " + userID;
-			
+
 			reportDao.findOne(UserGroup.class, where);
-			
+
 			return true;
 		} catch (NoResultException e) {
 
@@ -82,8 +86,8 @@ public class ReportModel {
 		return false;
 	}
 
-	public void setEditPermissions(Permissions permissions, int id, int reportId, boolean editable) throws NoResultException,
-			NonUniqueResultException, SQLException, Exception {
+	public void setEditPermissions(Permissions permissions, int id, int reportId, boolean editable)
+			throws NoResultException, NonUniqueResultException, SQLException, Exception {
 		ReportPermissionUser reportPermissionUser = connectReportPermissionUser(permissions, id, reportId, editable);
 
 		reportPermissionUserDao.save(reportPermissionUser);
@@ -178,8 +182,8 @@ public class ReportModel {
 		return reports;
 	}
 
-	public List<ReportPermissionUser> getReportPermissionUsersForMyReports(String sort, String direction, Permissions permissions)
-			throws IllegalArgumentException {
+	public List<ReportPermissionUser> getReportPermissionUsersForMyReports(String sort, String direction,
+			Permissions permissions) throws IllegalArgumentException {
 		List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
 
 		if (Strings.isEmpty(sort)) {
@@ -291,13 +295,16 @@ public class ReportModel {
 	/**
 	 * Create permissions to access the report permissions.
 	 * 
-	 * @param permissions Permissions object from request
-	 * @param id Could be either the User ID or Group ID to share with
-	 * @param reportId 
+	 * @param permissions
+	 *            Permissions object from request
+	 * @param id
+	 *            Could be either the User ID or Group ID to share with
+	 * @param reportId
 	 * @param editable
 	 * @return
 	 */
-	public ReportPermissionUser connectReportPermissionUser(Permissions permissions, int id, int reportId, boolean editable) {
+	public ReportPermissionUser connectReportPermissionUser(Permissions permissions, int id, int reportId,
+			boolean editable) {
 		ReportPermissionUser reportPermissionUser;
 
 		try {
@@ -314,7 +321,7 @@ public class ReportModel {
 
 		return reportPermissionUser;
 	}
-	
+
 	public ReportPermissionAccount connectReportPermissionAccount(int accountId, int reportId, Permissions permissions) {
 		ReportPermissionAccount reportPermissionAccount;
 
@@ -332,25 +339,28 @@ public class ReportModel {
 		return reportPermissionAccount;
 	}
 
-	// The code in this method was commented out to temporarily disable this functionality
+	// The code in this method was commented out to temporarily disable this
+	// functionality
 	public void disconnectReportPermissionUser(int id, int reportId) {
-//		try {
-//			reportPermissionUserDao.revokePermissions(id, reportId);
-//		} catch (NoResultException nre) {
-//
-//		}
+		// try {
+		// reportPermissionUserDao.revokePermissions(id, reportId);
+		// } catch (NoResultException nre) {
+		//
+		// }
 	}
 
-	// The code in this method was commented out to temporarily disable this functionality
+	// The code in this method was commented out to temporarily disable this
+	// functionality
 	public void disconnectReportPermissionAccount(int accountId, int reportId) {
-//		ReportPermissionAccount reportPermissionAccount;
-//
-//		try {
-//			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
-//			reportPermissionAccountDao.remove(reportPermissionAccount);
-//		} catch (NoResultException nre) {
-//
-//		}
+		// ReportPermissionAccount reportPermissionAccount;
+		//
+		// try {
+		// reportPermissionAccount =
+		// reportPermissionAccountDao.findOne(accountId, reportId);
+		// reportPermissionAccountDao.remove(reportPermissionAccount);
+		// } catch (NoResultException nre) {
+		//
+		// }
 	}
 
 	public void removeAndCascade(Report report) {

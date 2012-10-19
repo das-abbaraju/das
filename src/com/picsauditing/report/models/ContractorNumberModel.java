@@ -20,7 +20,7 @@ public class ContractorNumberModel extends AbstractModel {
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec contractorNumber = new ModelSpec(null, "ContractorNumber");
+		ModelSpec contractorNumber = new ModelSpec(null, "OperatorContractorNumber");
 
 		{
 			ModelSpec contractor = contractorNumber.join(ContractorNumberTable.Contractor);
