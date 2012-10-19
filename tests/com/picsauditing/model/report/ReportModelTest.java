@@ -1,10 +1,12 @@
 package com.picsauditing.model.report;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
@@ -112,6 +114,8 @@ public class ReportModelTest {
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
 		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenThrow(new NoResultException());
+		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
+		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
 
 		assertFalse(reportModel.canUserEdit(permissions, report));
 	}
