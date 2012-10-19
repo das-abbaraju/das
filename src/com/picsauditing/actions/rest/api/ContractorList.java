@@ -110,12 +110,14 @@ public class ContractorList extends PicsActionSupport implements ParameterAware 
 		String sql = "select a.id, a.name, a.address, a.address2, a.address3, a.city, a.countrySubdivision, a.zip, a.country, c.taxID, con.type, con.value, gc.flag"
 				+ " from accounts a"
 				+ " join contractor_info c on a.id = c.id"
-				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?"
-				+ " left join contractor_operator_number con on c.id = con.conID and con.opID = gc.genID";
+				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?"				
+				+ " left join contractor_operator_number con on c.id = con.conID and con.opID = gc.genID"
+				+ " where a.status IN ('Active')";
 		String sqlCount = "select count(a.id)" 
 				+ " from accounts a" 
 				+ " join contractor_info c on a.id = c.id"
-				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?";
+				+ " join generalcontractors gc on gc.subID = c.id and gc.genID = ?"
+				+ " where a.status IN ('Active')";
 
 		JSONObject output = new JSONObject();
 

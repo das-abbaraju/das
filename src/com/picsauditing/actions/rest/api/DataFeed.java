@@ -30,7 +30,6 @@ public class DataFeed extends ReportData implements ParameterAware {
 	public String execute() {
 		try {
 			initialize();
-			sql.setPageNumber(report.getRowsPerPage(), Integer.MAX_VALUE);
 			runQuery();
 
 			converter.convertForExtJS();

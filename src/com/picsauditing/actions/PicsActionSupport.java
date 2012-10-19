@@ -415,22 +415,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (apiKey == null) {
 			return false;
 		}
-		User user = getUser();
-
-		if (user != null && apiKey.equals(user.getApiKey())) {
-			// the user with this API key is already logged in
-			return true;
-		}
-		user = userDAO.findByApiKey(apiKey);
-
-		// Log in as that user
-		Permissions permissions = null;
-		if (ActionContext.getContext().getSession() == null) {
-			addActionError("Failed to get session");
-		} else {
-			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
-		}
-
+		User user = userDAO.findByApiKey(apiKey);
 		if (permissions == null) {
 			permissions = new Permissions();
 		}
@@ -441,9 +426,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return false;
 		}
 		LocaleController.setLocaleOfNearestSupported(permissions);
-		ActionContext.getContext().getSession().put("permissions", permissions);
 		return true;
-
 	}
 
 	public Account getAccount() {
