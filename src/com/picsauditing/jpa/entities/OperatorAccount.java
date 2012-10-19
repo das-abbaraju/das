@@ -220,7 +220,7 @@ public class OperatorAccount extends Account {
 	public OperatorAccount getInheritedDiscountPercentOperator() {
 		// check direct parents
 		OperatorAccount parent = getParent();
-		while (parent != null) {
+		while (parent != null && parent.getId() != this.getId()) {
 			if (parent.isHasDiscount())
 				return parent;
 
