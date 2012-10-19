@@ -93,15 +93,19 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected Collection<String> alertMessages;
 
+	private String actionMessageHeader;
+	private String alertMessageHeader;
+	private String actionErrorHeader;
+
 	protected String requestURL = null;
 
 	protected Permissions permissions = null;
 
 	/**
 	 * String that is used for simple messages.
-	 * 
+	 *
 	 * This is also used for plain-text type results.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -117,21 +121,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
@@ -259,7 +263,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * This method is used to set the clear_cache flag in the AppProperty table
 	 * to allow the contractor daemon to reset caches on all 3 servers.
-	 * 
+	 *
 	 */
 	protected void flagClearCache() {
 		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
@@ -561,7 +565,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private String getServerName() {
 		return ServletActionContext.getRequest().getServerName();
 	}
-	
+
 
 	public String getRequestHost() {
 		String requestURL = getRequestURL().toString();
@@ -640,7 +644,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 * 
+	 *
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -718,7 +722,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 * 
+	 *
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -853,7 +857,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * persistently remembered then return true If the cookie is valid and the
 	 * user is not being persistently remembered then check to see if the cookie
 	 * session (in the cookie itself) is expired
-	 * 
+	 *
 	 * @see
 	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
 	 */
@@ -1059,4 +1063,27 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return ServletActionContext.getRequest();
 	}
 
+	public String getActionMessageHeader() {
+		return actionMessageHeader;
+	}
+
+	public void setActionMessageHeader(String header) {
+		actionMessageHeader = header;
+	}
+
+	public String getAlertMessageHeader() {
+		return alertMessageHeader;
+	}
+
+	public void setAlertMessageHeader(String header) {
+		alertMessageHeader = header;
+	}
+
+	public String getActionErrorHeader() {
+		return actionErrorHeader;
+	}
+
+	public void setActionErrorHeader(String header) {
+		actionErrorHeader = header;
+	}
 }

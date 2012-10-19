@@ -272,17 +272,24 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		if (user == null) {
+			setActionErrorHeader(getText("Login.Failed"));
 			return getText("Login.PasswordIncorrect");
 		}
+
 		if (Strings.isNotEmpty(key)) {
 			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
+				setActionErrorHeader(getText("Login.Failed"));
 				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
 			}
 		}
+
 		if (user.isLocked()) {
+			setActionErrorHeader(getText("Login.Failed"));
 			return getTextParameterized("Login.TooManyFailedAttempts");
 		}
+
 		if (!user.isEncryptedPasswordEqual(password)) {
+			setActionErrorHeader(getText("Login.Failed"));
 			return passwordIsIncorrect();
 		}
 
