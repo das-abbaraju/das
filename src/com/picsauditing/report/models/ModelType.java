@@ -26,6 +26,7 @@ public enum ModelType {
 	PaymentCommissions,
 	RegistrationRequests,
 	ReportPermissions,
+	Reports,
 	Resources,
 	UserAssignments,
 	UserGroups,
