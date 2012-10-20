@@ -39,6 +39,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -61,6 +62,7 @@ import com.picsauditing.jpa.entities.LcCorPhase;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
@@ -308,8 +310,50 @@ public class ContractorCron extends PicsActionSupport {
 		auditBuilder.buildAudits(contractor);
 		
 		checkLcCor(contractor);
+		cancelScheduledImplementationAudits(contractor);
 	}
 	
+	private void cancelScheduledImplementationAudits(ContractorAccount contractor) {
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (isCancelImplementationAudit(audit)) {
+				audit.setLatitude(0);
+				audit.setLongitude(0);
+				audit.setScheduledDate(null);
+				dao.save(audit);
+
+				Note note = createCanceledAuditNote(contractor, audit);
+				dao.save(note);
+			}
+		}
+	}
+
+	private Note createCanceledAuditNote(ContractorAccount contractor, ContractorAudit audit) {
+		Note note = new Note();
+
+		int accountId = (audit.getAuditType().getAccount() != null) ? audit
+				.getAuditType().getAccount().getId()
+				: Account.EVERYONE;
+				
+		note.setAccount(contractor);
+		note.setAuditColumns(new User(User.SYSTEM));
+		note.setSummary("Implementation Audit canceled due to no visible CAOs");
+		note.setPriority(LowMedHigh.Low);
+		note.setNoteCategory(NoteCategory.Audits);
+		note.setViewableById(accountId);
+		note.setCanContractorView(true);
+		note.setStatus(NoteStatus.Closed);
+
+		return note;
+	}
+
+	private boolean isCancelImplementationAudit(ContractorAudit audit) {
+		if (!audit.getAuditType().isImplementation())
+			return false;
+		if (audit.hasOnlyInvisibleCaos() && audit.getScheduledDate() != null)
+			return true;
+		return false;
+	}
+
 	private void checkLcCor(ContractorAccount contractor) {
 		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return;
