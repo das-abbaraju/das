@@ -7,7 +7,7 @@
 		<action name="RestApiContractorList" class="com.picsauditing.actions.rest.api.ContractorList">
 		</action>
 
-		<action name="RestApiDataFeed" class="com.picsauditing.actions.rest.api.DataFeed">
+		<action name="DataFeed" class="com.picsauditing.actions.rest.api.DataFeed">
 		</action>
 
 		<!-- Exceptions -->
