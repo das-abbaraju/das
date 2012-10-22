@@ -14,15 +14,15 @@
 				data-requires-site-selection="<s:if test="#result.doContractorsPay == 'No'">Yes</s:if>">
 				<span class="name">${result.name}</span>
 				<span class="location">
-					<s:if test="#result.city != ''">
-						${result.city},
-					</s:if>
-					
-					${result.countrySubdivision}
-					
-					<s:if test="permissions.country != #result.country.isoCode">
-						, ${result.country.isoCode}
-					</s:if>
+                    <s:if test="#result.city != null">
+                        ${result.city},
+                    </s:if>
+                    <s:if test="#result.countrySubdivision != null">
+                        ${result.countrySubdivision},
+                    </s:if>
+                    <s:if test="#result.country.isoCode != null">
+                        ${result.country.isoCode}
+                    </s:if>
 				</span>
 				
 				<s:if test="#client_site_list_position == 'left'">
