@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
@@ -67,7 +68,7 @@ public class ReportCsrPoliciesStatusCount extends ReportAccount {
 		sql.addJoin("JOIN audit_type at ON ca.auditTypeId = at.id");
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 		sql.addJoin("JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
-		sql.addJoin("JOIN users u ON caow.createdBy = u.id AND u.accountID = 1100");
+		sql.addJoin("JOIN users u ON caow.createdBy = u.id AND u.accountID = "+Account.PicsID);
 		String csrs = " u.id IN (" + csrIds[0];
 		for (int i = 1; i < csrIds.length; i++) {
 			csrs += "," + csrIds[i];

@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AccountsModel;
@@ -30,7 +31,7 @@ public class SqlBuilderTest {
 	private SelectSQL sql;
 
 	private final int USER_ID = 123;
-	private final int ACCOUNT_ID = 1100;
+	private final int ACCOUNT_ID = Account.PicsID;
 
 	@Before
 	public void setUp() throws Exception {
@@ -116,7 +117,7 @@ public class SqlBuilderTest {
 	public void testFilterMyAccount() throws Exception {
 		Filter filter = addFilter("AccountID", QueryFilterOperator.CurrentAccount, null);
 		initializeSql();
-		assertContains("(Account.id = 1100)", sql.toString());
+		assertContains("(Account.id = "+this.ACCOUNT_ID+")", sql.toString());
 		assertEquals("CurrentAccount shouldn't change to Equals", QueryFilterOperator.CurrentAccount,
 				filter.getOperator());
 	}
