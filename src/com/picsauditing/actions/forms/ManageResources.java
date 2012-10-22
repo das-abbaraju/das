@@ -66,7 +66,7 @@ public class ManageResources extends PicsActionSupport {
 		if (formName == null)
 			formName = (parentResource == null) ? "": parentResource.getFormName();
 		if (account == null)
-			account = (parentResource == null) ? accountDAO.find(1100) : parentResource.getAccount();
+			account = (parentResource == null) ? accountDAO.find(Account.PicsID) : parentResource.getAccount();
 		if (locale == null)
 			locale = permissions.getLocale();
 		
@@ -326,7 +326,7 @@ public class ManageResources extends PicsActionSupport {
 		Set<Integer> ids = new HashSet<Integer>();
 
 		if (operator != null) {
-			ids.add(1100); // PICS
+			ids.add(Account.PicsID); // PICS
 			ids.add(operator.getId());
 			for (OperatorAccount op : operator.getChildOperators()) {
 				ids.add(op.getId());
@@ -343,7 +343,7 @@ public class ManageResources extends PicsActionSupport {
 		if (operator != null) {
 			ArrayList<Integer> ids = new ArrayList<Integer>();
 				if (permissions.isAdmin()) {
-					ids.add(1100);
+					ids.add(Account.PicsID);
 				}
 			ids.add(operator.getId());
 			for (Facility facility :operator.getCorporateFacilities()) {
@@ -361,7 +361,7 @@ public class ManageResources extends PicsActionSupport {
 		} else {
 		@SuppressWarnings("unchecked")
 		List<Account> list = (List<Account>) dao.findWhere(Account.class,
-				"t.type IN ('Operator','Corporate') or t.id=1100", 0,
+				"t.type IN ('Operator','Corporate') or t.id="+Account.PicsID, 0,
 				"CASE WHEN t.name LIKE 'PICS' THEN 1 ELSE 2 END, t.name");
 		return list;
 		}

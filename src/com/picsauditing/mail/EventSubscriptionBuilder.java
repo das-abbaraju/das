@@ -114,7 +114,7 @@ public class EventSubscriptionBuilder {
 		Calendar now = Calendar.getInstance();
 
 		if (stats.isEmailCronError()) {
-			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.EmailCronFailure, 1100);
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.EmailCronFailure, Account.PicsID);
 			for (EmailSubscription subscription : subscriptions) {
 				if (subscription.getLastSent() == null || checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
 					sendSystemStatusEmail(subscription, stats);
@@ -123,7 +123,7 @@ public class EventSubscriptionBuilder {
 		}
 
 		if (stats.isContractorCronError()) {
-			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorCronFailure, 1100);
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorCronFailure, Account.PicsID);
 			if (stats.isContractorCronError()) {
 				for (EmailSubscription subscription : subscriptions) {
 					if (subscription.getLastSent() == null
