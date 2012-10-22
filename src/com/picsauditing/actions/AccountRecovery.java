@@ -105,7 +105,10 @@ public class AccountRecovery extends PicsActionSupport {
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			userDAO.save(user);
 
-			addAlertMessage(sendRecoveryEmail(user));
+			String recoveryEmailStatus = sendRecoveryEmail(user);
+
+			addAlertMessage(recoveryEmailStatus);
+			setAlertMessageHeader(getText("global.Email") + " " + getText("global.Sent"));
 
 			return setUrlForRedirect("Login.action");
 
@@ -116,6 +119,8 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 
 	public String sendRecoveryEmail(User user) {
+		String recoveryEmailStatus = "";
+
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
@@ -133,10 +138,15 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue.setCriticalPriority();
 
 			emailSender.send(emailQueue);
-			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
+
+			// TODO change this to remove the parameterized email after all languages are translated
+//			recoveryEmailStatus = getText("AccountRecovery.EmailSent");
+			recoveryEmailStatus = getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
-			return getText("AccountRecovery.error.ResetEmailError");
+			recoveryEmailStatus = getText("AccountRecovery.error.ResetEmailError");
 		}
+
+		return recoveryEmailStatus;
 	}
 
 	public String sendActivationEmail(User user, Permissions permission) {
