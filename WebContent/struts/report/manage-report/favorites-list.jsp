@@ -11,5 +11,7 @@
 <h3><s:text name="ManageReports.favorites.subtitle" /></h3>
 
 <div id="report_favorites">
+    <s:include value="/struts/_action-messages.jsp" />
+    
     <s:include value="/struts/report/manage-report/_favorites-list.jsp" />
 </div>

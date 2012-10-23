@@ -8,8 +8,6 @@
     <s:set var="has_overflow_list" value="false" />
 </s:else>
 
-<s:include value="/struts/_action-messages.jsp" />
-
 <%-- cannot pass list as a include : param - bypass via setter --%>
 <s:set var="reports" value="reportUserFavorites" />
 <s:include value="/struts/report/manage-report/_report-list.jsp">
