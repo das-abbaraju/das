@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.EmployeeSiteDAO;
-import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -16,8 +15,6 @@ import com.picsauditing.util.Strings;
 public class ManageEmployeeSite extends ManageEmployees {
 	@Autowired
 	protected EmployeeSiteDAO employeeSiteDAO;
-	@Autowired
-	protected JobSiteDAO jobSiteDAO;
 
 	private OperatorAccount operator;
 	private EmployeeSite employeeSite;

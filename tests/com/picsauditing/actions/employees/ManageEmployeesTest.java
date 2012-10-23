@@ -6,8 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,28 +21,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.employees.ManageEmployees.EmployeeMissingTasks;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.JobSiteTaskDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -54,29 +57,42 @@ import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.UserStatus;
 
 public class ManageEmployeesTest extends PicsActionTest {
 	private ManageEmployees manageEmployees;
 
 	@Mock
-	private EmployeeDAO employeeDAO;
+	private ContractorAccount contractor;
 	@Mock
-	private JobSiteTaskDAO jobSiteTaskDAO;
+	private Employee employee;
 	@Mock
-	private AccountDAO accountDAO;
+	private EntityManager entityManager;
 	@Mock
-	private NoteDAO noteDao;
+	private Query query;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
 		manageEmployees = new ManageEmployees();
+		PicsTestUtil util = new PicsTestUtil();
+		util.autowireEMInjectedDAOs(manageEmployees, entityManager);
+
 		super.setUp(manageEmployees);
 
-		PicsTestUtil.autowireDAOsFromDeclaredMocks(manageEmployees, this);
+		setUpEmployeeAndAccount();
+
+		doAnswer(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				return invocation.getArguments()[0];
+			}
+		}).when(entityManager).persist(any(Employee.class));
+
+		when(entityManager.createQuery(anyString())).thenReturn(query);
 	}
 
 	@Test(expected = NoRightsException.class)
@@ -99,13 +115,10 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testPrepare_OperatorCorporateWithEmployeeUnderNonVisibleAccount() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(null);
-
-		manageEmployees.setEmployee(employee);
-
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(permissions.getAccountId()).thenReturn(123);
 
+		manageEmployees.setEmployee(employee);
 		manageEmployees.prepare();
 
 		assertEquals(permissions.getAccountId(), manageEmployees.getId());
@@ -116,27 +129,19 @@ public class ManageEmployeesTest extends PicsActionTest {
 		Set<Integer> visibleAccounts = new HashSet<Integer>();
 		visibleAccounts.add(12345);
 
-		Account account = new Account();
-		account.setId(12345);
-
-		Employee employee = EntityFactory.makeEmployee(account);
-
-		manageEmployees.setEmployee(employee);
-
+		when(contractor.getId()).thenReturn(12345);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(permissions.getAccountId()).thenReturn(123);
 		when(permissions.getVisibleAccounts()).thenReturn(visibleAccounts);
 
+		manageEmployees.setEmployee(employee);
 		manageEmployees.prepare();
 
-		assertEquals(account.getId(), manageEmployees.getId());
+		assertEquals(contractor.getId(), manageEmployees.getId());
 	}
 
 	@Test
 	public void testFindAccount_Employee() {
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		Employee employee = EntityFactory.makeEmployee(contractor);
-
 		manageEmployees.setEmployee(employee);
 		manageEmployees.findAccount();
 
@@ -146,52 +151,52 @@ public class ManageEmployeesTest extends PicsActionTest {
 	@Test
 	public void testFindAccount_ID() {
 		parameters.put("id", new String[] { "123" });
-		Account account = new Account();
-		account.setId(123);
-		when(accountDAO.find(123)).thenReturn(account);
+
+		when(contractor.getId()).thenReturn(123);
+		when(entityManager.find(Account.class, 123)).thenReturn(contractor);
 
 		manageEmployees.findAccount();
 
-		assertEquals(account, manageEmployees.getAccount());
+		assertEquals(contractor, manageEmployees.getAccount());
 	}
 
 	@Test
 	public void testFindAccount_Permissions() {
-		Account account = new Account();
-		account.setId(123);
-
+		when(contractor.getId()).thenReturn(123);
+		when(entityManager.find(Account.class, 123)).thenReturn(contractor);
 		when(permissions.getAccountId()).thenReturn(123);
 		when(permissions.getAccountType()).thenReturn("Test AccountType");
-		when(accountDAO.find(123, "Test AccountType")).thenReturn(account);
 
-		assertEquals(account, manageEmployees.getAccount());
+		assertEquals(contractor, manageEmployees.getAccount());
 	}
 
 	@Test
 	public void testExecute() throws Exception {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		manageEmployees.setAccount(contractorAccount);
+		manageEmployees.setAccount(contractor);
 
-		when(employeeDAO.findWhere(anyString())).thenReturn(null);
+		when(query.getResultList()).thenReturn(null);
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.execute());
 	}
 
 	@Test
 	public void testExecute_Audit() throws Exception {
-		ContractorAudit contractorAudit = EntityFactory.makeContractorAudit(AuditType.HSE_COMPETENCY,
-				EntityFactory.makeContractor());
-		manageEmployees.setAudit(contractorAudit);
+		ContractorAudit audit = mock(ContractorAudit.class);
+		AuditType auditType = mock(AuditType.class);
+
+		when(audit.getAuditType()).thenReturn(auditType);
+		when(audit.getContractorAccount()).thenReturn(contractor);
+		when(auditType.getId()).thenReturn(AuditType.HSE_COMPETENCY);
+
+		manageEmployees.setAudit(audit);
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.execute());
-		assertEquals(contractorAudit.getContractorAccount(), manageEmployees.getAccount());
+		assertEquals(audit.getContractorAccount(), manageEmployees.getAccount());
 	}
 
 	@Test
 	public void testExecute_Employee() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
 		manageEmployees.setEmployee(employee);
-
 		manageEmployees.findAccount();
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.execute());
@@ -200,8 +205,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testAdd() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		manageEmployees.setAccount(contractorAccount);
+		manageEmployees.setAccount(contractor);
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.add());
 		assertEquals(0, manageEmployees.getEmployee().getId());
@@ -209,159 +213,128 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testSave() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
-
 		saveCommonBehaviors(employee);
 	}
 
 	@Test
 	public void testSave_New() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
-		employee.setId(0);
-
 		saveCommonBehaviors(employee);
-		verify(noteDao).save(any(Note.class));
 	}
 
 	@Test
 	public void testSave_SetAccount() throws Exception {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		manageEmployees.setAccount(contractorAccount);
-
-		Employee employee = EntityFactory.makeEmployee(null);
-
+		manageEmployees.setAccount(contractor);
 		saveCommonBehaviors(employee);
-		assertEquals(contractorAccount, manageEmployees.getEmployee().getAccount());
+		assertEquals(contractor, manageEmployees.getEmployee().getAccount());
 	}
 
 	@Test
 	public void testSave_SSNCheck9Characters() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
 		manageEmployees.setSsn("999999999");
-
 		saveCommonBehaviors(employee);
-		assertEquals("999999999", manageEmployees.getEmployee().getSsn());
+		verify(employee).setSsn("999999999");
 	}
 
 	@Test
 	public void testSave_SSNCheckInvalidFormat() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
 		manageEmployees.setSsn("Hello1 World9");
-
 		saveCommonBehaviors(employee);
 		assertTrue(manageEmployees.hasActionErrors());
-		assertNull(manageEmployees.getEmployee().getSsn());
+		verify(employee, never()).setSsn(anyString());
 
 	}
 
 	@Test
 	public void testSave_EmailInvalidFormat() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
-		employee.setEmail("Hello World");
-
+		when(employee.getEmail()).thenReturn("Hello World");
 		saveCommonBehaviors(employee);
-		assertEquals("info@picsauditing.com", manageEmployees.getEmployee().getEmail());
+		verify(employee).setEmail("info@picsauditing.com");
+		verify(employee, never()).setEmail("Hello World");
 	}
 
 	@Test
 	public void testSave_EmailValidFormat() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
-		employee.setEmail("lani@test.com");
-
+		when(employee.getEmail()).thenReturn("lani@test.com");
 		saveCommonBehaviors(employee);
 		assertEquals("lani@test.com", manageEmployees.getEmployee().getEmail());
 	}
 
 	@Test
 	public void testInactivate() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-
-		manageEmployees.setAccount(contractorAccount);
+		manageEmployees.setAccount(contractor);
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.inactivate());
 		assertFalse(manageEmployees.hasActionMessages());
 
-		verify(employeeDAO, never()).save(any(Employee.class));
+		verify(entityManager, never()).merge(any(Employee.class));
+		verify(entityManager, never()).persist(any(Employee.class));
 	}
 
 	@Test
 	public void testInactivate_Employee() {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
 
-		when(employeeDAO.findWhere(anyString())).thenReturn(null);
-		when(employeeDAO.save(any(Employee.class))).thenReturn(employee);
+		when(query.getResultList()).thenReturn(null);
 
 		manageEmployees.setEmployee(employee);
 		manageEmployees.findAccount();
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.inactivate());
 		assertTrue(manageEmployees.hasActionMessages());
-		assertEquals(UserStatus.Inactive, manageEmployees.getEmployee().getStatus());
 
-		verify(employeeDAO).save(any(Employee.class));
+		verify(employee).setStatus(UserStatus.Inactive);
+		verify(entityManager).persist(any(Employee.class));
 	}
 
 	@Test
 	public void testActivate() throws Exception {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		manageEmployees.setAccount(contractorAccount);
-
+		manageEmployees.setAccount(contractor);
 		assertEquals(PicsActionSupport.REDIRECT, manageEmployees.activate());
-
-		verify(employeeDAO, never()).save(any(Employee.class));
+		verify(entityManager, never()).merge(any(BaseTable.class));
+		verify(entityManager, never()).persist(any(BaseTable.class));
 	}
 
 	@Test
 	public void testActivate_Employee() throws Exception {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
 		manageEmployees.setEmployee(employee);
 		manageEmployees.findAccount();
 
-		when(employeeDAO.save(any(Employee.class))).thenReturn(employee);
-
 		assertEquals(PicsActionSupport.REDIRECT, manageEmployees.activate());
 
-		verify(employeeDAO).save(any(Employee.class));
+		verify(entityManager).persist(any(Employee.class));
 	}
 
 	@Test
 	public void testDelete() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		manageEmployees.setAccount(contractorAccount);
-
+		manageEmployees.setAccount(contractor);
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.delete());
-
-		verify(employeeDAO).findWhere(anyString());
+		verify(query).getResultList();
 	}
 
 	@Test
 	public void testDelete_Employee() {
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
 		manageEmployees.setEmployee(employee);
 		manageEmployees.findAccount();
-
-		when(employeeDAO.save(any(Employee.class))).thenReturn(employee);
 
 		assertEquals(ActionSupport.SUCCESS, manageEmployees.delete());
 		assertNull(manageEmployees.getEmployee());
 		assertTrue(manageEmployees.hasActionMessages());
 
-		verify(employeeDAO, times(2)).findWhere(anyString());
-		verify(employeeDAO).save(any(Employee.class));
+		verify(query, times(2)).getResultList();
+		verify(entityManager).persist(any(Employee.class));
 	}
 
 	@Test
 	public void testGetActiveEmployees() throws Exception {
-		manageEmployees.setAccount(EntityFactory.makeContractor());
-		when(employeeDAO.findWhere(anyString())).thenReturn(null);
-		manageEmployees.execute();
+		when(query.getResultList()).thenReturn(null);
+		manageEmployees.setAccount(contractor);
+		manageEmployees.findAccount();
 		assertNull(manageEmployees.getActiveEmployees());
 
 		List<Employee> employees = new ArrayList<Employee>();
-		employees.add(EntityFactory.makeEmployee(null));
+		employees.add(employee);
 
-		when(employeeDAO.findWhere(anyString())).thenReturn(employees);
-		manageEmployees.execute();
+		when(query.getResultList()).thenReturn(employees);
+		manageEmployees.findAccount();
 		assertEquals(employees, manageEmployees.getActiveEmployees());
 	}
 
@@ -376,7 +349,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 		assertNotNull(manageEmployees.getActiveEmployees());
 		assertTrue(manageEmployees.getActiveEmployees().isEmpty());
 
-		employees.add(EntityFactory.makeEmployee(null));
+		employees.add(employee);
 		assertFalse(manageEmployees.getActiveEmployees().isEmpty());
 	}
 
@@ -417,51 +390,55 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetUnusedJobRoles() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
+		JobRole jobRole = mock(JobRole.class);
 
-		JobRole jobRole = new JobRole();
-		jobRole.setAccount(contractorAccount);
-		jobRole.setName("Job Role");
+		List<JobRole> jobRoles = new ArrayList<JobRole>();
+		jobRoles.add(jobRole);
 
-		contractorAccount.getJobRoles().add(jobRole);
+		when(contractor.getJobRoles()).thenReturn(jobRoles);
+		when(jobRole.getAccount()).thenReturn(contractor);
+		when(jobRole.getName()).thenReturn("Job Role");
+		when(jobRole.isActive()).thenReturn(true);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractorAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertFalse(manageEmployees.getUnusedJobRoles().isEmpty());
 	}
 
 	@Test
 	public void testGetUnusedJobRoles_JobRoleInactive() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
+		JobRole jobRole = mock(JobRole.class);
 
-		JobRole jobRole = new JobRole();
-		jobRole.setAccount(contractorAccount);
-		jobRole.setActive(false);
-		jobRole.setName("Job Role");
+		List<JobRole> jobRoles = new ArrayList<JobRole>();
+		jobRoles.add(jobRole);
 
-		contractorAccount.getJobRoles().add(jobRole);
+		when(contractor.getJobRoles()).thenReturn(jobRoles);
+		when(jobRole.getAccount()).thenReturn(contractor);
+		when(jobRole.getName()).thenReturn("Job Role");
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractorAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertTrue(manageEmployees.getUnusedJobRoles().isEmpty());
 	}
 
 	@Test
 	public void testGetUnusedJobRoles_EmployeeRoleExists() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		Employee employee = EntityFactory.makeEmployee(contractorAccount);
+		EmployeeRole employeeRole = mock(EmployeeRole.class);
+		JobRole jobRole = mock(JobRole.class);
 
-		JobRole jobRole = new JobRole();
-		jobRole.setAccount(contractorAccount);
-		jobRole.setActive(false);
-		jobRole.setName("Job Role");
+		List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
+		employeeRoles.add(employeeRole);
 
-		EmployeeRole employeeRole = new EmployeeRole();
-		employeeRole.setEmployee(employee);
-		employeeRole.setJobRole(jobRole);
+		List<JobRole> jobRoles = new ArrayList<JobRole>();
+		jobRoles.add(jobRole);
 
-		contractorAccount.getJobRoles().add(jobRole);
-		employee.getEmployeeRoles().add(employeeRole);
+		when(contractor.getJobRoles()).thenReturn(jobRoles);
+		when(employee.getEmployeeRoles()).thenReturn(employeeRoles);
+		when(employeeRole.getEmployee()).thenReturn(employee);
+		when(employeeRole.getJobRole()).thenReturn(jobRole);
+		when(jobRole.getAccount()).thenReturn(contractor);
+		when(jobRole.getName()).thenReturn("Job Role");
+		when(jobRole.isActive()).thenReturn(false);
 
 		manageEmployees.setEmployee(employee);
 
@@ -470,7 +447,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testIsShowJobRolesSection() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(EntityFactory.makeContractor()));
+		manageEmployees.setEmployee(employee);
 
 		assertFalse(manageEmployees.isShowJobRolesSection());
 	}
@@ -484,10 +461,13 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testIsShowJobRolesSection_EmployeeRole() {
-		EmployeeRole employeeRole = new EmployeeRole();
+		EmployeeRole employeeRole = mock(EmployeeRole.class);
 
-		Employee employee = EntityFactory.makeEmployee(EntityFactory.makeContractor());
-		employee.getEmployeeRoles().add(employeeRole);
+		List<EmployeeRole> employeeRoles = new ArrayList<EmployeeRole>();
+		employeeRoles.add(employeeRole);
+
+		when(employee.getEmployeeRoles()).thenReturn(employeeRoles);
+		when(employeeRole.getEmployee()).thenReturn(employee);
 
 		manageEmployees.setEmployee(employee);
 
@@ -496,10 +476,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetOqOperators() {
-		Account account = new Account();
-		account.setType("Account");
+		when(contractor.getType()).thenReturn("Account");
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(account));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getOqOperators());
 		assertTrue(manageEmployees.getOqOperators().isEmpty());
@@ -507,19 +486,19 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetOqOperators_ContractorHasJobContractor() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
+		JobContractor jobContractor = mock(JobContractor.class);
+		JobSite jobSite = mock(JobSite.class);
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, false);
 
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(operatorAccount);
+		List<JobContractor> jobContractors = new ArrayList<JobContractor>();
+		jobContractors.add(jobContractor);
 
-		JobContractor jobContractor = new JobContractor();
-		jobContractor.setContractor(contractorAccount);
-		jobContractor.setJob(jobSite);
+		when(contractor.getJobSites()).thenReturn(jobContractors);
+		when(jobContractor.getContractor()).thenReturn(contractor);
+		when(jobContractor.getJob()).thenReturn(jobSite);
+		when(jobSite.getOperator()).thenReturn(operator);
 
-		contractorAccount.getJobSites().add(jobContractor);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractorAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getOqOperators());
 		assertFalse(manageEmployees.getOqOperators().isEmpty());
@@ -527,30 +506,25 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetOqOperators_ContractorHasOperatorWithHSEAndOQ() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		contractorAccount.setRequiresCompetencyReview(true);
+		setUpOperatorAndContractorOperator(true, true);
 
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setRequiresCompetencyReview(true);
+		manageEmployees.setEmployee(employee);
 
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(operatorAccount);
-
-		operatorAccount.getJobSites().add(jobSite);
-
-		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractorAccount));
-
+		assertNotNull(manageEmployees.getHseOperators());
 		assertNotNull(manageEmployees.getOqOperators());
+		assertFalse(manageEmployees.getHseOperators().isEmpty());
 		assertFalse(manageEmployees.getOqOperators().isEmpty());
 	}
 
 	@Test
 	public void testGetOqOperators_Operator() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, false);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(operatorAccount));
+		when(employee.getAccount()).thenReturn(operator);
+		when(operator.isOperator()).thenReturn(true);
+		when(operator.isOperatorCorporate()).thenReturn(true);
+
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getOqOperators());
 		assertTrue(manageEmployees.getOqOperators().isEmpty());
@@ -558,14 +532,11 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetOqOperators_OperatorHasJobSite() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, true);
 
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(operatorAccount);
+		when(employee.getAccount()).thenReturn(operator);
 
-		operatorAccount.getJobSites().add(jobSite);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(operatorAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getOqOperators());
 		assertFalse(manageEmployees.getOqOperators().isEmpty());
@@ -573,10 +544,13 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetOqOperators_Corporate() {
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setType("Corporate");
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, false);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(operatorAccount));
+		when(employee.getAccount()).thenReturn(operator);
+		when(operator.isCorporate()).thenReturn(true);
+		when(operator.isOperatorCorporate()).thenReturn(true);
+
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getOqOperators());
 		assertTrue(manageEmployees.getOqOperators().isEmpty());
@@ -584,33 +558,30 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetOqOperators_CorporateWithFacilities() {
-		OperatorAccount corporateAccount = EntityFactory.makeOperator();
-		corporateAccount.setType("Corporate");
+		Facility facility = mock(Facility.class);
+		OperatorAccount corporate = setUpOperatorAndContractorOperator(false, false);
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, true);
 
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setType("Corporate");
+		List<Facility> facilities = new ArrayList<Facility>();
+		facilities.add(facility);
 
-		JobSite jobSite = new JobSite();
-		jobSite.setOperator(operatorAccount);
+		when(corporate.getCorporateFacilities()).thenReturn(facilities);
+		when(corporate.isCorporate()).thenReturn(true);
+		when(employee.getAccount()).thenReturn(corporate);
+		when(facility.getCorporate()).thenReturn(corporate);
+		when(facility.getOperator()).thenReturn(operator);
+		when(operator.isCorporate()).thenReturn(true);
 
-		operatorAccount.getJobSites().add(jobSite);
-
-		Facility facility = new Facility();
-		facility.setCorporate(corporateAccount);
-		facility.setOperator(operatorAccount);
-
-		corporateAccount.getCorporateFacilities().add(facility);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(corporateAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getOqOperators());
 		assertFalse(manageEmployees.getOqOperators().isEmpty());
-		assertEquals(operatorAccount, manageEmployees.getOqOperators().get(0).getOperator());
+		assertEquals(operator, manageEmployees.getOqOperators().get(0).getOperator());
 	}
 
 	@Test
 	public void testGetAllOqOperators() {
-		manageEmployees.setAccount(EntityFactory.makeContractor());
+		manageEmployees.setAccount(contractor);
 
 		assertNotNull(manageEmployees.getAllOqOperators());
 		assertTrue(manageEmployees.getAllOqOperators().isEmpty());
@@ -618,14 +589,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetAllOqOperators_OperatorRequiresOQ() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
+		setUpOperatorAndContractorOperator(false, true);
 
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setRequiresOQ(true);
-
-		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
-
-		manageEmployees.setAccount(contractorAccount);
+		manageEmployees.setAccount(contractor);
 
 		assertNotNull(manageEmployees.getAllOqOperators());
 		assertFalse(manageEmployees.getAllOqOperators().isEmpty());
@@ -633,10 +599,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetHseOperators() {
-		Account account = new Account();
-		account.setType("Account");
+		when(contractor.isContractor()).thenReturn(false);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(account));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getHseOperators());
 		assertTrue(manageEmployees.getHseOperators().isEmpty());
@@ -644,11 +609,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetHseOperators_ContractorHasNonCorporateOperatorNotRequiringHSE() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		EntityFactory.addContractorOperator(contractorAccount, operatorAccount);
+		setUpOperatorAndContractorOperator(false, false);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractorAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getHseOperators());
 		assertTrue(manageEmployees.getHseOperators().isEmpty());
@@ -656,19 +619,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetHseOperators_ContractorHasNonCorporateOperatorRequiringHSE() {
-		ContractorAccount contractorAccount = EntityFactory.makeContractor();
-		contractorAccount.setRequiresCompetencyReview(true);
+		setUpOperatorAndContractorOperator(true, false);
 
-		OperatorAccount operatorAccount = EntityFactory.makeOperator();
-		operatorAccount.setRequiresCompetencyReview(true);
-
-		ContractorOperator contractorOperator = new ContractorOperator();
-		contractorOperator.setContractorAccount(contractorAccount);
-		contractorOperator.setOperatorAccount(operatorAccount);
-
-		contractorAccount.getOperators().add(contractorOperator);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractorAccount));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getHseOperators());
 		assertFalse(manageEmployees.getHseOperators().isEmpty());
@@ -676,23 +629,24 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetHseOperators_Operator() {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		operator.setRequiresCompetencyReview(true);
+		OperatorAccount operator = setUpOperatorAndContractorOperator(true, false);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(operator));
+		when(employee.getAccount()).thenReturn(operator);
+
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getHseOperators());
-
 		assertFalse(manageEmployees.getHseOperators().isEmpty());
 	}
 
 	@Test
 	public void testGetHseOperators_Corporate() {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		operator.setRequiresCompetencyReview(true);
-		operator.setType("Corporate");
+		OperatorAccount operator = setUpOperatorAndContractorOperator(true, false);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(operator));
+		when(employee.getAccount()).thenReturn(operator);
+		when(operator.isCorporate()).thenReturn(true);
+
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getHseOperators());
 		assertFalse(manageEmployees.getHseOperators().isEmpty());
@@ -700,21 +654,21 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetHseOperators_CorporateWithFacilites() {
-		OperatorAccount corporate = EntityFactory.makeOperator();
-		corporate.setRequiresCompetencyReview(true);
-		corporate.setType("Corporate");
+		Facility facility = mock(Facility.class);
+		OperatorAccount corporate = setUpOperatorAndContractorOperator(true, false);
+		OperatorAccount operator = setUpOperatorAndContractorOperator(true, false);
 
-		OperatorAccount operator = EntityFactory.makeOperator();
-		operator.setRequiresCompetencyReview(true);
-		operator.setType("Corporate");
+		List<Facility> facilities = new ArrayList<Facility>();
+		facilities.add(facility);
 
-		Facility facility = new Facility();
-		facility.setCorporate(corporate);
-		facility.setOperator(operator);
+		when(corporate.getCorporateFacilities()).thenReturn(facilities);
+		when(corporate.isCorporate()).thenReturn(true);
+		when(employee.getAccount()).thenReturn(corporate);
+		when(facility.getCorporate()).thenReturn(corporate);
+		when(facility.getOperator()).thenReturn(operator);
+		when(operator.isOperator()).thenReturn(true);
 
-		corporate.getCorporateFacilities().add(facility);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(corporate));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getHseOperators());
 		assertFalse(manageEmployees.getHseOperators().isEmpty());
@@ -722,60 +676,8 @@ public class ManageEmployeesTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testGetNonEmployeeGUARDOperators() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(EntityFactory.makeContractor()));
-
-		assertNotNull(manageEmployees.getNonEmployeeGUARDOperators());
-
-		assertTrue(manageEmployees.getNonEmployeeGUARDOperators().isEmpty());
-	}
-
-	@Test
-	public void testGetNonEmployeeGUARDOperators_Operator() {
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		OperatorAccount operator = EntityFactory.makeOperator();
-		EntityFactory.addContractorOperator(contractor, operator);
-
-		Employee employee = EntityFactory.makeEmployee(contractor);
-
-		EmployeeSite employeeSite = new EmployeeSite();
-		employeeSite.setEmployee(employee);
-		employeeSite.setOperator(operator);
-
-		employee.getEmployeeSites().add(employeeSite);
-
-		manageEmployees.setEmployee(employee);
-
-		assertNotNull(manageEmployees.getNonEmployeeGUARDOperators());
-
-		assertFalse(manageEmployees.getNonEmployeeGUARDOperators().isEmpty());
-	}
-
-	@Test
-	public void testGetUnusedNonEmployeeGUARDOperators() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(EntityFactory.makeContractor()));
-
-		assertNotNull(manageEmployees.getUnusedNonEmployeeGUARDOperators());
-
-		assertTrue(manageEmployees.getUnusedNonEmployeeGUARDOperators().isEmpty());
-	}
-
-	@Test
-	public void testGetUnusedNonEmployeeGUARDOperators_Operator() {
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		OperatorAccount operator = EntityFactory.makeOperator();
-		EntityFactory.addContractorOperator(contractor, operator);
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(contractor));
-
-		assertNotNull(manageEmployees.getUnusedNonEmployeeGUARDOperators());
-
-		assertFalse(manageEmployees.getUnusedNonEmployeeGUARDOperators().isEmpty());
-	}
-
-	@Test
 	public void testGetEmpPhoto() {
-		Employee employee = EntityFactory.makeEmployee(null);
+		when(employee.getAccount()).thenReturn(null);
 
 		manageEmployees.setEmployee(employee);
 
@@ -784,8 +686,8 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetEmpPhoto_PhotoNotNull() {
-		Employee employee = EntityFactory.makeEmployee(null);
-		employee.setPhoto("Photo");
+		when(employee.getAccount()).thenReturn(null);
+		when(employee.getPhoto()).thenReturn("Photo");
 
 		manageEmployees.setEmployee(employee);
 
@@ -794,11 +696,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetMissingTasks() {
-		Whitebox.setInternalState(manageEmployees, "siteTaskDAO", jobSiteTaskDAO);
+		when(query.getResultList()).thenReturn(new ArrayList<JobSiteTask>());
 
-		when(jobSiteTaskDAO.findByJob(anyInt())).thenReturn(new ArrayList<JobSiteTask>());
-
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployees.setEmployee(employee);
 
 		EmployeeMissingTasks employeeMissingTasks = manageEmployees.getMissingTasks(1);
 
@@ -811,7 +711,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 	public void testGetMissingTasks_JobSiteTaskMissing() {
 		getMissingTasksCommonBehaviors();
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployees.setEmployee(employee);
 
 		EmployeeMissingTasks employeeMissingTasks = manageEmployees.getMissingTasks(1);
 
@@ -822,82 +722,82 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetMissingTasks_EmployeeHasQualifiedJobSiteTask() {
+		EmployeeQualification qualification = mock(EmployeeQualification.class);
 		JobSiteTask jobSiteTask = getMissingTasksCommonBehaviors();
 
-		EmployeeQualification employeeQualification = new EmployeeQualification();
-		employeeQualification.setQualified(true);
-		employeeQualification.setTask(jobSiteTask.getTask());
-		employeeQualification.defaultDates();
+		Set<EmployeeQualification> qualifications = new HashSet<EmployeeQualification>();
+		qualifications.add(qualification);
 
-		Employee employee = EntityFactory.makeEmployee(null);
-		employee.getEmployeeQualifications().add(employeeQualification);
+		when(employee.getEmployeeQualifications()).thenReturn(qualifications);
+		when(qualification.getTask()).thenReturn(jobSiteTask.getTask());
+		when(qualification.isCurrent()).thenReturn(true);
+		when(qualification.isQualified()).thenReturn(true);
 
 		manageEmployees.setEmployee(employee);
 
-		EmployeeMissingTasks employeeMissingTasks = manageEmployees.getMissingTasks(1);
+		EmployeeMissingTasks missingTasks = manageEmployees.getMissingTasks(1);
 
-		assertNotNull(employeeMissingTasks);
-		assertTrue(employeeMissingTasks.getMissingTasks().isEmpty());
-		assertFalse(employeeMissingTasks.getQualifiedTasks().isEmpty());
+		assertNotNull(missingTasks);
+		assertTrue(missingTasks.getMissingTasks().isEmpty());
+		assertFalse(missingTasks.getQualifiedTasks().isEmpty());
 	}
 
 	@Test
 	public void testGetMissingTasks_EmployeeHasNonQualifiedJobSiteTask() {
+		EmployeeQualification qualification = mock(EmployeeQualification.class);
 		JobSiteTask jobSiteTask = getMissingTasksCommonBehaviors();
 
-		EmployeeQualification employeeQualification = new EmployeeQualification();
-		employeeQualification.setTask(jobSiteTask.getTask());
-		employeeQualification.defaultDates();
+		Set<EmployeeQualification> qualifications = new HashSet<EmployeeQualification>();
+		qualifications.add(qualification);
 
-		Employee employee = EntityFactory.makeEmployee(null);
-		employee.getEmployeeQualifications().add(employeeQualification);
+		when(employee.getEmployeeQualifications()).thenReturn(qualifications);
+		when(qualification.getTask()).thenReturn(jobSiteTask.getTask());
+		when(qualification.isCurrent()).thenReturn(true);
 
 		manageEmployees.setEmployee(employee);
 
-		EmployeeMissingTasks employeeMissingTasks = manageEmployees.getMissingTasks(1);
+		EmployeeMissingTasks missingTasks = manageEmployees.getMissingTasks(1);
 
-		assertNotNull(employeeMissingTasks);
-		assertFalse(employeeMissingTasks.getMissingTasks().isEmpty());
-		assertTrue(employeeMissingTasks.getQualifiedTasks().isEmpty());
+		assertNotNull(missingTasks);
+		assertFalse(missingTasks.getMissingTasks().isEmpty());
+		assertTrue(missingTasks.getQualifiedTasks().isEmpty());
 	}
 
 	@Test
 	public void testGetAllJobTasks() {
 		assertNull(manageEmployees.getAllJobTasks());
 
-		verify(jobSiteTaskDAO, never()).findByEmployeeAccount(anyInt());
+		verify(query, never()).getResultList();
 	}
 
 	@Test
 	public void testGetAllJobTasks_Employee() {
-		Whitebox.setInternalState(manageEmployees, "siteTaskDAO", jobSiteTaskDAO);
+		manageEmployees.setEmployee(employee);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(EntityFactory.makeContractor()));
-
-		when(jobSiteTaskDAO.findByEmployeeAccount(anyInt())).thenReturn(new ArrayList<JobSiteTask>());
+		when(query.getResultList()).thenReturn(new ArrayList<JobSiteTask>());
 
 		assertNotNull(manageEmployees.getAllJobTasks());
 
-		verify(jobSiteTaskDAO).findByEmployeeAccount(anyInt());
+		verify(query).getResultList();
 	}
 
 	@Test
 	public void testGetAllJobTasks_EmployeeTasks() {
-		Whitebox.setInternalState(manageEmployees, "siteTaskDAO", jobSiteTaskDAO);
+		manageEmployees.setEmployee(employee);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(EntityFactory.makeContractor()));
+		JobSiteTask jobSiteTask = mock(JobSiteTask.class);
+		JobTask jobTask = mock(JobTask.class);
 
-		JobSiteTask jobSiteTask = new JobSiteTask();
-		jobSiteTask.setTask(new JobTask());
+		when(jobSiteTask.getTask()).thenReturn(jobTask);
 
 		ArrayList<JobSiteTask> jobSiteTasks = new ArrayList<JobSiteTask>();
 		jobSiteTasks.add(jobSiteTask);
 
-		when(jobSiteTaskDAO.findByEmployeeAccount(anyInt())).thenReturn(jobSiteTasks);
+		when(query.getResultList()).thenReturn(jobSiteTasks);
 
 		assertNotNull(manageEmployees.getAllJobTasks());
 
-		verify(jobSiteTaskDAO).findByEmployeeAccount(anyInt());
+		verify(query).getResultList();
 	}
 
 	@Test
@@ -907,7 +807,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetNccerResults_Employee() {
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getNccerResults());
 		assertTrue(manageEmployees.getNccerResults().isEmpty());
@@ -915,47 +815,157 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testGetNccerResults_EmployeeHasValidAssessmentResults() {
-		AssessmentTest assessmentTest = new AssessmentTest();
-		assessmentTest.setAssessmentCenter(new Account());
-		assessmentTest.getAssessmentCenter().setId(Account.ASSESSMENT_NCCER);
-		assessmentTest.setQualificationMethod("Qualification Method");
+		Account center = mock(Account.class);
+		AssessmentResult result = mock(AssessmentResult.class);
+		AssessmentTest test = mock(AssessmentTest.class);
 
-		AssessmentResult assessmentResult = new AssessmentResult();
-		assessmentResult.defaultDates();
-		assessmentResult.setAssessmentTest(assessmentTest);
+		List<AssessmentResult> results = new ArrayList<AssessmentResult>();
+		results.add(result);
 
-		manageEmployees.setEmployee(EntityFactory.makeEmployee(null));
-		manageEmployees.getEmployee().getAssessmentResults().add(assessmentResult);
+		when(center.getId()).thenReturn(Account.ASSESSMENT_NCCER);
+		when(employee.getAssessmentResults()).thenReturn(results);
+		when(result.getAssessmentTest()).thenReturn(test);
+		when(result.isCurrent()).thenReturn(true);
+		when(test.getAssessmentCenter()).thenReturn(center);
+		when(test.getQualificationMethod()).thenReturn("Qualification Method");
+
+		manageEmployees.setEmployee(employee);
 
 		assertNotNull(manageEmployees.getNccerResults());
 		assertFalse(manageEmployees.getNccerResults().isEmpty());
 	}
 
-	private void saveCommonBehaviors(Employee employee) throws Exception {
-		when(employeeDAO.save(any(Employee.class))).thenReturn(employee);
+	@Test
+	public void testAddInitialSites_Clients() throws Exception {
+		manageEmployees.setEmployee(employee);
+		manageEmployees.setInitialClients(new int[] { 1 });
+		Whitebox.invokeMethod(manageEmployees, "addInitialSites");
+		verify(entityManager).persist(any(EmployeeSite.class));
+	}
 
-		if (employee.getEmail() == null) {
-			employee.setEmail("");
+	@Test
+	public void testAddInitialSites_JobSite() throws Exception {
+		JobSite jobSite = mock(JobSite.class);
+
+		List<JobSite> jobSites = new ArrayList<JobSite>();
+		jobSites.add(jobSite);
+
+		when(query.getResultList()).thenReturn(jobSites);
+
+		manageEmployees.setEmployee(employee);
+		manageEmployees.setInitialJobSites(new int[] { 1 });
+
+		Whitebox.invokeMethod(manageEmployees, "addInitialSites");
+		verify(entityManager).persist(any(EmployeeSite.class));
+	}
+
+	@Test
+	public void testIsHseOperator() throws Exception {
+		EmployeeSite employeeSite = mock(EmployeeSite.class);
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, false);
+
+		assertFalse(manageEmployees.isHseOperator(operator));
+		// Missing tag
+		when(operator.isRequiresCompetencyReview()).thenReturn(true);
+		assertFalse(manageEmployees.isHseOperator(operator));
+
+		operator = setUpOperatorAndContractorOperator(true, false);
+		assertTrue(manageEmployees.isHseOperator(operator));
+
+		assertFalse(manageEmployees.isHseOperator(employeeSite));
+		// Missing HSE Operator
+		when(employeeSite.isCurrent()).thenReturn(true);
+		assertFalse(manageEmployees.isHseOperator(employeeSite));
+
+		when(employeeSite.getOperator()).thenReturn(operator);
+		assertTrue(manageEmployees.isHseOperator(employeeSite));
+
+	}
+
+	@Test
+	public void testOperatorHasHSECompetencyTag() throws Exception {
+		OperatorAccount operator = setUpOperatorAndContractorOperator(false, true);
+
+		Boolean hasHseTag = (Boolean) Whitebox.invokeMethod(manageEmployees, "operatorHasHSECompetencyTag",
+				(OperatorAccount) null);
+		assertFalse(hasHseTag);
+
+		hasHseTag = (Boolean) Whitebox.invokeMethod(manageEmployees, "operatorHasHSECompetencyTag", operator);
+		assertFalse(hasHseTag);
+
+		operator = setUpOperatorAndContractorOperator(true, false);
+		hasHseTag = (Boolean) Whitebox.invokeMethod(manageEmployees, "operatorHasHSECompetencyTag", operator);
+		assertTrue(hasHseTag);
+	}
+
+	private void setUpEmployeeAndAccount() {
+		when(contractor.isContractor()).thenReturn(true);
+		when(contractor.getType()).thenReturn("Contractor");
+		when(employee.getAccount()).thenReturn(contractor);
+		when(employee.getDisplayName()).thenReturn("Unit Tester");
+		when(employee.getFirstName()).thenReturn("Unit");
+		when(employee.getId()).thenReturn(0);
+		when(employee.getLastName()).thenReturn("Tester");
+		when(employee.getStatus()).thenReturn(UserStatus.Active);
+		when(employee.getTitle()).thenReturn("Title");
+	}
+
+	private OperatorAccount setUpOperatorAndContractorOperator(boolean enableHse, boolean enableOQ) {
+		ContractorOperator contractorOperator = mock(ContractorOperator.class);
+		OperatorAccount operator = mock(OperatorAccount.class);
+
+		List<ContractorOperator> nonCorporate = new ArrayList<ContractorOperator>();
+		nonCorporate.add(contractorOperator);
+
+		when(contractor.getNonCorporateOperators()).thenReturn(nonCorporate);
+		when(contractor.getOperators()).thenReturn(nonCorporate);
+		when(contractorOperator.getOperatorAccount()).thenReturn(operator);
+		when(operator.isOperatorCorporate()).thenReturn(true);
+
+		if (enableHse) {
+			OperatorTag tag = mock(OperatorTag.class);
+
+			List<OperatorTag> tags = new ArrayList<OperatorTag>();
+			tags.add(tag);
+
+			when(contractor.isRequiresCompetencyReview()).thenReturn(true);
+			when(operator.getTags()).thenReturn(tags);
+			when(operator.isRequiresCompetencyReview()).thenReturn(true);
+			when(tag.getTag()).thenReturn(OperatorTag.HSE_COMPETENCY);
 		}
 
+		if (enableOQ) {
+			JobSite jobSite = mock(JobSite.class);
+
+			List<JobSite> jobSites = new ArrayList<JobSite>();
+			jobSites.add(jobSite);
+
+			when(contractor.isRequiresOQ()).thenReturn(true);
+			when(jobSite.getOperator()).thenReturn(operator);
+			when(operator.getJobSites()).thenReturn(jobSites);
+			when(operator.isRequiresOQ()).thenReturn(true);
+		}
+
+		return operator;
+	}
+
+	private void saveCommonBehaviors(Employee employee) throws Exception {
 		manageEmployees.setEmployee(employee);
 		manageEmployees.findAccount();
 
 		assertEquals(PicsActionSupport.REDIRECT, manageEmployees.save());
 
-		verify(employeeDAO).save(any(Employee.class));
+		verify(entityManager, atLeastOnce()).persist(any(BaseTable.class));
 	}
 
 	private JobSiteTask getMissingTasksCommonBehaviors() {
-		Whitebox.setInternalState(manageEmployees, "siteTaskDAO", jobSiteTaskDAO);
-
 		JobSiteTask jobSiteTask = new JobSiteTask();
 		jobSiteTask.setTask(new JobTask());
 
 		List<JobSiteTask> jobSiteTasks = new ArrayList<JobSiteTask>();
 		jobSiteTasks.add(jobSiteTask);
 
-		when(jobSiteTaskDAO.findByJob(anyInt())).thenReturn(jobSiteTasks);
+		when(query.getResultList()).thenReturn(jobSiteTasks);
 
 		return jobSiteTask;
 	}
