@@ -516,9 +516,8 @@
     							</div>
     						</div>
     					</s:if>
-    					
-                        <s:if test="permissions.contractor">
-                            <pics:toggle name="<%= FeatureToggle.TOGGLE_CONTRACTOR_CAMPAIGN %>" contractor="contractor">
+                        <pics:toggle name="<%= FeatureToggle.TOGGLE_CONTRACTOR_CAMPAIGN %>" contractor="contractor">
+                            <s:if test="permissions.contractor">
                                 <div class="panel_placeholder">
                                     <div class="panel referral-program">
                                         <div class="panel_header">
@@ -534,8 +533,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </pics:toggle>
-                        </s:if>
+                            </s:if>
+                        </pics:toggle>
     					
     					<%-- Contractor Info --%>
     					<div class="panel_placeholder">
