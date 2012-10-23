@@ -279,6 +279,7 @@ public class RegistrationGapAnalysis extends PicsActionSupport {
 
 			for (MatchType type : matches.keySet()) {
 				matchedOn += String.format("%s%s (%s)", (first ? "" : ",<br />"), getText(type.key), matches.get(type));
+				first = false;
 			}
 
 			return matchedOn;

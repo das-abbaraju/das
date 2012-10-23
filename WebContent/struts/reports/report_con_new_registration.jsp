@@ -80,14 +80,29 @@
 								${stat.index + report.firstRowNumber}
 							</td>
 							<td>
-								<s:url action="RequestNewContractor" var="request_new_contractor">
-									<s:param name="newContractor">
-										${crr.get('id')}
-									</s:param>
-								</s:url>
-								<a href="${request_new_contractor}">
-									${crr.get('name')}
-								</a>
+								<s:if test="get('systemType') == 'CRR'">
+									<s:url action="RequestNewContractor" var="request_new_form">
+										<s:param name="newContractor">
+											${crr.get('id')}
+										</s:param>
+									</s:url>
+									<a href="${request_new_form}">
+										${crr.get('name')}
+									</a>
+								</s:if>
+								<s:else>
+									<s:url action="RequestNewContractorAccount" var="request_new_form">
+										<s:param name="requestedContractor">
+											${crr.get('id')}
+										</s:param>
+										<s:param name="requestRelationship.operatorAccount">
+											${crr.get('RequestedByID')}
+										</s:param>
+									</s:url>
+									<a href="${request_new_form}">
+										${crr.get('name')}
+									</a>
+								</s:else>
 							</td>
 							<td title="${crr.get('RequestedUser')}">
 								${crr.get('RequestedBy')}
