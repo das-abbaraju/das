@@ -185,7 +185,13 @@ $(function() {
                                 });
 
                                 //add to result list
-                                trade_list += '<li><a href="ContractorTrades!tradeAjax.action?trade.trade=' + trade.id + '&contractor=' + conID + '" class="trade ' + trade.type + '">' + linkText + '</a></li>';
+                                var contractor_id = input.attr('data-contractor');
+
+                                if (contractor_id.length > 0) {
+                                    trade_list += '<li><a href="ContractorTrades!tradeAjax.action?contractor=' + contractor_id + '&trade.trade=' + trade.id + '" class="trade ' + trade.type + '">' + linkText + '</a></li>';
+                                } else {
+                                    trade_list += '<li><a href="TradeTaxonomy!tradeAjax.action?trade=' + trade.id + '" class="trade ' + trade.type + '">' + linkText + '</a></li>';
+                                }
                             } else {
                                 try {
                                     console.log(trade);
