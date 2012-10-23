@@ -5,6 +5,10 @@ PICS.define('layout.menu.Menu', {
                 dropdown_toggle_element = navbar_element.find('.dropdown-toggle'),
                 search_query_element = navbar_element.find('.search-query');
             
+            if (!navbar_element.length) {
+                return;
+            }
+            
             // drop down menu
             this.configureDropdown(dropdown_toggle_element);
             
