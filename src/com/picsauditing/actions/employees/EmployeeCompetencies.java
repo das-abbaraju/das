@@ -395,10 +395,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 			jobRoles.get(employee).add(jobRole);
 
-			if (!competencies.contains(competency)) {
-				competencies.add(competency);
-			}
-
 			map.put(employee, competency, employeeCompetency);
 			employeeCompetencyTable.put(employee, competency, employeeCompetency);
 		}
@@ -423,6 +419,10 @@ public class EmployeeCompetencies extends ReportEmployee {
 		competency.setCategory(data.get("category").toString());
 		competency.setLabel(data.get("label").toString());
 		competency.setDescription(data.get("description").toString());
+
+		if (!competencies.contains(competency)) {
+			competencies.add(competency);
+		}
 
 		return competency;
 	}
