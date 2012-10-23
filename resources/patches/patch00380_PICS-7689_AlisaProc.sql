@@ -1,4 +1,4 @@
--- PICS-7689 fix broken user record
+-- PICS-7689 fix broken user records
 update users
 set isGroup='No'
-where id=78375;
+where isGroup NOT in ('Yes', 'No');
