@@ -28,6 +28,7 @@
 	    <td><a href="javascript: changeOrderBy('form1','cao.status DESC');">Status</a></td>
 		<td align="center"><a href="javascript: changeOrderBy('form1','pqfCompletionDate ASC, a.name');">PQF Completed</td>
 	    <td align="center"><a href="javascript: changeOrderBy('form1','dateVerified ASC,a.name');">Safety Manual Verified</td>
+	    <td align="right"><a href="javascript: changeOrderBy('form1','DaysLeft ASC,a.name');"><s:text name="DelinquentContractorAccounts.label.DaysLeft" /></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -42,6 +43,7 @@
 			<td><s:property value="[0].get('auditStatus')"/></td>
 			<td><s:date name="[0].get('pqfCompletionDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
 			<td><s:date name="[0].get('dateVerified')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}"/></td>
+			<td><s:property value="[0].get('DaysLeft')"/></td>
 		</tr>
 	</s:iterator>
 </table>
