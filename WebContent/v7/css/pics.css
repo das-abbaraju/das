@@ -768,6 +768,18 @@ p.subtitle {
   display: none;
 }
 
+/* line 2, ../sass/pics/templates/login/_server-id.scss */
+#server_id {
+  position: fixed;
+  width: 100%;
+}
+/* line 7, ../sass/pics/templates/login/_server-id.scss */
+#server_id div {
+  float: right;
+  height: 25px;
+  width: 25px;
+}
+
 /*
  * Manage Report Controller
  */
