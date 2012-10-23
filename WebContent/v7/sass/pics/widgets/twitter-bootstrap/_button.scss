@@ -1,108 +1,108 @@
-$universal_border_width:				1px;
-$universal_border_style:				solid;
-$universal_border_radius:				4px;
-$universal_box_shadow:					inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-$universal_cursor:						pointer;
-$universal_font-size:					14px;
-$universal_line-height:					20px;
-$universal_margin_left:					5px;
-$universal_margin_left_ie6:				.3em;
+$universal_border_width:                1px;
+$universal_border_style:                solid;
+$universal_border_radius:               4px;
+$universal_box_shadow:                  inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+$universal_cursor:                      pointer;
+$universal_font-size:                   14px;
+$universal_line-height:                 20px;
+$universal_margin_left:                 5px;
+$universal_margin_left_ie6:             .3em;
 
-$default_border_color:					#bcbcbc;
-$default_text_color:					#333;
-$default_text_shadow_color:				none;
-$default_top_gradient_color:			#f1f1f2;
-$default_bottom_gradient_color:			#dcdcdc;
-$default_hover_top_gradient_color:		#f7f7f8;
-$default_hover_bottom_gradient_color:	#ececec;
-$default_active_top_gradient_color:		#dcdcdc;
-$default_active_bottom_gradient_color:	#cdcdcd;
+$default_border_color:                  #bcbcbc;
+$default_text_color:                    #333;
+$default_text_shadow_color:             none;
+$default_top_gradient_color:            #f1f1f2;
+$default_bottom_gradient_color:         #dcdcdc;
+$default_hover_top_gradient_color:      #f7f7f8;
+$default_hover_bottom_gradient_color:   #ececec;
+$default_active_top_gradient_color:     #dcdcdc;
+$default_active_bottom_gradient_color:  #cdcdcd;
 
-$primary_border_color:					#226396;
-$primary_text_color:					#fff;
-$primary_text_shadow_color:				#226396;
-$primary_top_gradient_color:			#73bbe8;
-$primary_bottom_gradient_color:			#226396;
-$primary_hover_top_gradient_color:		#60c9f3;
-$primary_hover_bottom_gradient_color:	#396cc9;
-$primary_active_top_gradient_color:		#336f9c;
-$primary_active_bottom_gradient_color:	#09366f;
+$primary_border_color:                  #226396;
+$primary_text_color:                    #fff;
+$primary_text_shadow_color:             #226396;
+$primary_top_gradient_color:            #73bbe8;
+$primary_bottom_gradient_color:         #226396;
+$primary_hover_top_gradient_color:      #60c9f3;
+$primary_hover_bottom_gradient_color:   #396cc9;
+$primary_active_top_gradient_color:     #336f9c;
+$primary_active_bottom_gradient_color:  #09366f;
 
-$warning_border_color:					#e67e1c;
-$warning_text_color:					$primary_text_color;
-$warning_text_shadow_color:				#e67e1c;
-$warning_top_gradient_color:			#fcc033;
-$warning_bottom_gradient_color:			#e67e1c;
-$warning_hover_top_gradient_color:		#fcd100;
-$warning_hover_bottom_gradient_color:	#f1a300;
-$warning_active_top_gradient_color:		#ea9000;
-$warning_active_bottom_gradient_color:	#d66000;
+$warning_border_color:                  #e67e1c;
+$warning_text_color:                    $primary_text_color;
+$warning_text_shadow_color:             #e67e1c;
+$warning_top_gradient_color:            #fcc033;
+$warning_bottom_gradient_color:         #e67e1c;
+$warning_hover_top_gradient_color:      #fcd100;
+$warning_hover_bottom_gradient_color:   #f1a300;
+$warning_active_top_gradient_color:     #ea9000;
+$warning_active_bottom_gradient_color:  #d66000;
 
-$info_border_color:						#6ca6f6;
-$info_text_color:						$primary_text_color;
-$info_text_shadow_color:				#6ca6f6;
-$info_top_gradient_color:				#70cfff;
-$info_bottom_gradient_color:			#6ca6f6;
-$info_hover_top_gradient_color:			#73ddff;
-$info_hover_bottom_gradient_color:		#73d0f6;
-$info_active_top_gradient_color:		#55a9ff;
-$info_active_bottom_gradient_color:		#5599fc;
+$info_border_color:                     #6ca6f6;
+$info_text_color:                       $primary_text_color;
+$info_text_shadow_color:                #6ca6f6;
+$info_top_gradient_color:               #70cfff;
+$info_bottom_gradient_color:            #6ca6f6;
+$info_hover_top_gradient_color:         #73ddff;
+$info_hover_bottom_gradient_color:      #73d0f6;
+$info_active_top_gradient_color:        #55a9ff;
+$info_active_bottom_gradient_color:     #5599fc;
 
-$success_border_color:					#229322;
-$success_text_color:					$primary_text_color;
-$success_text_shadow_color:				#229322;
-$success_top_gradient_color:			#33c033;
-$success_bottom_gradient_color:			#229322;
-$success_hover_top_gradient_color:		#33d000;
-$success_hover_bottom_gradient_color:	#25b000;
-$success_active_top_gradient_color:		#299600;
-$success_active_bottom_gradient_color:	#1c7600;
+$success_border_color:                  #229322;
+$success_text_color:                    $primary_text_color;
+$success_text_shadow_color:             #229322;
+$success_top_gradient_color:            #33c033;
+$success_bottom_gradient_color:         #229322;
+$success_hover_top_gradient_color:      #33d000;
+$success_hover_bottom_gradient_color:   #25b000;
+$success_active_top_gradient_color:     #299600;
+$success_active_bottom_gradient_color:  #1c7600;
 
-$danger_border_color:					#ac030c;
-$danger_text_color:						$primary_text_color;
-$danger_text_shadow_color:				#ac030c;
-$danger_top_gradient_color:				#f6303c;
-$danger_bottom_gradient_color:			#ac030c;
-$danger_hover_top_gradient_color:		#f92626;
-$danger_hover_bottom_gradient_color:	#d00900;
-$danger_active_top_gradient_color:		#c60c0c;
-$danger_active_bottom_gradient_color:	#8c0600;
+$danger_border_color:                   #ac030c;
+$danger_text_color:                     $primary_text_color;
+$danger_text_shadow_color:              #ac030c;
+$danger_top_gradient_color:             #f6303c;
+$danger_bottom_gradient_color:          #ac030c;
+$danger_hover_top_gradient_color:       #f92626;
+$danger_hover_bottom_gradient_color:    #d00900;
+$danger_active_top_gradient_color:      #c60c0c;
+$danger_active_bottom_gradient_color:   #8c0600;
 
 @mixin defineUniversalOverrides() {
 
-	border-width: $universal_border_width;
-	border-style: $universal_border_style;
-	@include border-radius($universal_border_radius);
-	@include box-shadow($universal_box_shadow);
-	cursor: $universal_cursor;
-	font-size: $universal_font_size;
-	line-height: $universal_line-height;
-	*margin-left: $universal_margin_left_ie6;
-	margin-left: $universal_margin_left;
+    border-width: $universal_border_width;
+    border-style: $universal_border_style;
+    @include border-radius($universal_border_radius);
+    @include box-shadow($universal_box_shadow);
+    cursor: $universal_cursor;
+    font-size: $universal_font_size;
+    line-height: $universal_line-height;
+    *margin-left: $universal_margin_left_ie6;
+    margin-left: $universal_margin_left;
 }
 
 @mixin defineButtonSpecificOverrides(
-	$border_color,
-	$text_shadow_color) {
+    $border_color,
+    $text_shadow_color) {
 
-	border-color: $border_color;
+    border-color: $border_color;
 
-	@if $text_shadow_color != none {
-		text-shadow: 0px -1px 1px $text_shadow_color;
-	} @else {
-		text-shadow: none;
-	}
+    @if $text_shadow_color != none {
+        text-shadow: 0px -1px 1px $text_shadow_color;
+    } @else {
+        text-shadow: none;
+    }
 }
 
 @mixin defineStateSpecificOverrides(
-	$top_gradient_color,
-	$bottom_gradient_color,
-	$text_color) {
+    $top_gradient_color,
+    $bottom_gradient_color,
+    $text_color) {
 
-	color: $text_color;
-	background: none;
-	@include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$top_gradient_color}, endColorstr=#{$bottom_gradient_color});
+    color: $text_color;
+    background: none;
+    @include background-image(linear-gradient($top_gradient_color, $bottom_gradient_color));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$top_gradient_color}, endColorstr=#{$bottom_gradient_color});
 }
 
 /*
@@ -111,37 +111,37 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 .btn
 {
-	@include defineUniversalOverrides();
+    @include defineUniversalOverrides();
 
-	@include defineButtonSpecificOverrides(
-		$default_border_color,
-		$default_text_shadow_color
-	);
+    @include defineButtonSpecificOverrides(
+        $default_border_color,
+        $default_text_shadow_color
+    );
 
-	@include defineStateSpecificOverrides(
-		$default_top_gradient_color,
-		$default_bottom_gradient_color,
-		$default_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $default_top_gradient_color,
+        $default_bottom_gradient_color,
+        $default_text_color
+    );
 }
 
 .btn:hover
 {
-	@include defineStateSpecificOverrides(
-		$default_hover_top_gradient_color,
-		$default_hover_bottom_gradient_color,
-		$default_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $default_hover_top_gradient_color,
+        $default_hover_bottom_gradient_color,
+        $default_text_color
+    );
 }
 
 .btn.active,
 .btn:active
 {
-	@include defineStateSpecificOverrides(
-		$default_active_top_gradient_color,
-		$default_active_bottom_gradient_color,
-		$default_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $default_active_top_gradient_color,
+        $default_active_bottom_gradient_color,
+        $default_text_color
+    );
 }
 
 /*
@@ -150,35 +150,35 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 .btn-primary
 {
-	@include defineButtonSpecificOverrides(
-		$primary_border_color,
-		$primary_text_shadow_color
-	);
+    @include defineButtonSpecificOverrides(
+        $primary_border_color,
+        $primary_text_shadow_color
+    );
 
-	@include defineStateSpecificOverrides(
-		$primary_top_gradient_color,
-		$primary_bottom_gradient_color,
-		$primary_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $primary_top_gradient_color,
+        $primary_bottom_gradient_color,
+        $primary_text_color
+    );
 }
 
 .btn-primary:hover
 {
-	@include defineStateSpecificOverrides(
-		$primary_hover_top_gradient_color,
-		$primary_hover_bottom_gradient_color,
-		$primary_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $primary_hover_top_gradient_color,
+        $primary_hover_bottom_gradient_color,
+        $primary_text_color
+    );
 }
 
 .btn-primary.active,
 .btn-primary:active
 {
-	@include defineStateSpecificOverrides(
-		$primary_active_top_gradient_color,
-		$primary_active_bottom_gradient_color,
-		$primary_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $primary_active_top_gradient_color,
+        $primary_active_bottom_gradient_color,
+        $primary_text_color
+    );
 }
 
 /*
@@ -187,35 +187,35 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 .btn-warning
 {
-	@include defineButtonSpecificOverrides(
-		$warning_border_color,
-		$warning_text_shadow_color
-	);
+    @include defineButtonSpecificOverrides(
+        $warning_border_color,
+        $warning_text_shadow_color
+    );
 
-	@include defineStateSpecificOverrides(
-		$warning_top_gradient_color,
-		$warning_bottom_gradient_color,
-		$warning_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $warning_top_gradient_color,
+        $warning_bottom_gradient_color,
+        $warning_text_color
+    );
 }
 
 .btn-warning:hover
 {
-	@include defineStateSpecificOverrides(
-		$warning_hover_top_gradient_color,
-		$warning_hover_bottom_gradient_color,
-		$warning_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $warning_hover_top_gradient_color,
+        $warning_hover_bottom_gradient_color,
+        $warning_text_color
+    );
 }
 
 .btn-warning.active,
 .btn-warning:active
 {
-	@include defineStateSpecificOverrides(
-		$warning_active_top_gradient_color,
-		$warning_active_bottom_gradient_color,
-		$warning_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $warning_active_top_gradient_color,
+        $warning_active_bottom_gradient_color,
+        $warning_text_color
+    );
 }
 
 /*
@@ -224,35 +224,35 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 .btn-info
 {
-	@include defineButtonSpecificOverrides(
-		$info_border_color,
-		$info_text_shadow_color
-	);
+    @include defineButtonSpecificOverrides(
+        $info_border_color,
+        $info_text_shadow_color
+    );
 
-	@include defineStateSpecificOverrides(
-		$info_top_gradient_color,
-		$info_bottom_gradient_color,
-		$info_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $info_top_gradient_color,
+        $info_bottom_gradient_color,
+        $info_text_color
+    );
 }
 
 .btn-info:hover
 {
-	@include defineStateSpecificOverrides(
-		$info_hover_top_gradient_color,
-		$info_hover_bottom_gradient_color,
-		$info_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $info_hover_top_gradient_color,
+        $info_hover_bottom_gradient_color,
+        $info_text_color
+    );
 }
 
 .btn-info.active,
 .btn-info:active
 {
-	@include defineStateSpecificOverrides(
-		$info_active_top_gradient_color,
-		$info_active_bottom_gradient_color,
-		$info_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $info_active_top_gradient_color,
+        $info_active_bottom_gradient_color,
+        $info_text_color
+    );
 }
 
 /*
@@ -261,35 +261,35 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 .btn-success
 {
-	@include defineButtonSpecificOverrides(
-		$success_border_color,
-		$success_text_shadow_color
-	);
+    @include defineButtonSpecificOverrides(
+        $success_border_color,
+        $success_text_shadow_color
+    );
 
-	@include defineStateSpecificOverrides(
-		$success_top_gradient_color,
-		$success_bottom_gradient_color,
-		$success_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $success_top_gradient_color,
+        $success_bottom_gradient_color,
+        $success_text_color
+    );
 }
 
 .btn-success:hover
 {
-	@include defineStateSpecificOverrides(
-		$success_hover_top_gradient_color,
-		$success_hover_bottom_gradient_color,
-		$success_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $success_hover_top_gradient_color,
+        $success_hover_bottom_gradient_color,
+        $success_text_color
+    );
 }
 
 .btn-success.active,
 .btn-success:active
 {
-	@include defineStateSpecificOverrides(
-		$success_active_top_gradient_color,
-		$success_active_bottom_gradient_color,
-		$success_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $success_active_top_gradient_color,
+        $success_active_bottom_gradient_color,
+        $success_text_color
+    );
 }
 
 /*
@@ -298,33 +298,33 @@ $danger_active_bottom_gradient_color:	#8c0600;
 
 .btn-danger
 {
-	@include defineButtonSpecificOverrides(
-		$danger_border_color,
-		$danger_text_shadow_color
-	);
+    @include defineButtonSpecificOverrides(
+        $danger_border_color,
+        $danger_text_shadow_color
+    );
 
-	@include defineStateSpecificOverrides(
-		$danger_top_gradient_color,
-		$danger_bottom_gradient_color,
-		$danger_text_color		
-	);
+    @include defineStateSpecificOverrides(
+        $danger_top_gradient_color,
+        $danger_bottom_gradient_color,
+        $danger_text_color        
+    );
 }
 
 .btn-danger:hover
 {
-	@include defineStateSpecificOverrides(
-		$danger_hover_top_gradient_color,
-		$danger_hover_bottom_gradient_color,
-		$danger_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $danger_hover_top_gradient_color,
+        $danger_hover_bottom_gradient_color,
+        $danger_text_color
+    );
 }
 
 .btn-danger.active,
 .btn-danger:active
 {
-	@include defineStateSpecificOverrides(
-		$danger_active_top_gradient_color,
-		$danger_active_bottom_gradient_color,
-		$danger_text_color
-	);
+    @include defineStateSpecificOverrides(
+        $danger_active_top_gradient_color,
+        $danger_active_bottom_gradient_color,
+        $danger_text_color
+    );
 }
