@@ -34,9 +34,9 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
 	private ContractorAudit audit;
-	private List<JobRole> roles;
-	private List<OperatorCompetency> competencies;
-	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
+	private List<JobRole> roles = Collections.emptyList();
+	private List<OperatorCompetency> competencies = Collections.emptyList();
+	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map = new DoubleMap<JobRole, OperatorCompetency, JobCompetency>();
 
 	@Override
 	public String execute() throws Exception {
@@ -80,23 +80,23 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		this.audit = audit;
 	}
 
-	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
-		// need to check if forward entries are all null to not include in list
-		boolean usedRole = false;
-		for (JobRole role : roles) {
-			if (map.get(role, operatorCompetency) != null)
-				usedRole = true;
-		}
-
-		return (usedRole) ? roles : null;
-	}
-
 	public List<OperatorCompetency> getCompetencies() {
 		return competencies;
 	}
 
 	public JobCompetency getJobCompetency(JobRole role, OperatorCompetency comp) {
 		return map.get(role, comp);
+	}
+
+	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
+		// need to check if forward entries are all null to not include in list
+		for (JobRole role : roles) {
+			if (map.get(role, operatorCompetency) != null) {
+				return roles;
+			}
+		}
+
+		return null;
 	}
 
 	private void loadRolesAndCompetencies() {

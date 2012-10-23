@@ -39,10 +39,11 @@ public class ManageJobRoles extends AccountActionSupport {
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
 	private ContractorAudit audit;
-	protected JobRole role;
-	protected OperatorCompetency competency;
-	protected List<JobRole> jobRoles;
+	protected JobRole role = new JobRole();
 	protected int contractorId = 0;
+
+	protected List<JobRole> jobRoles;
+	protected List<OperatorCompetency> competenciesToAdd = new ArrayList<OperatorCompetency>();
 
 	@Before
 	public void startup() throws Exception {
@@ -57,35 +58,8 @@ public class ManageJobRoles extends AccountActionSupport {
 		return SUCCESS;
 	}
 
-	private void findAccount() throws RecordNotFoundException {
-		if (audit != null) {
-			// Default in case role is not specified
-			account = audit.getContractorAccount();
-		}
-
-		if (role != null && role.getAccount() != null)
-			account = role.getAccount();
-
-		if (account == null && permissions.isContractor()) {
-			account = accountDAO.find(permissions.getAccountId());
-			contractorId = permissions.getAccountId();
-		}
-
-		if (account == null) {
-			contractorId = id;
-			account = accountDAO.find(id);
-		}
-		if (account == null) {
-			throw new RecordNotFoundException("account");
-		}
-		assert (account.isContractor());
-	}
-
 	public String get() throws Exception {
 		checkPermissions();
-
-		if (role == null)
-			role = new JobRole();
 
 		return "role";
 	}
@@ -93,8 +67,9 @@ public class ManageJobRoles extends AccountActionSupport {
 	public String save() throws Exception {
 		checkPermissions();
 
-		if (role.getAccount() == null && account != null)
+		if (role.getAccount() == null && account != null) {
 			role.setAccount(account);
+		}
 
 		if (Strings.isEmpty(role.getName())) {
 			addActionError("Name is required");
@@ -102,6 +77,8 @@ public class ManageJobRoles extends AccountActionSupport {
 		}
 
 		jobRoleDAO.save(role);
+
+		saveCompetencies();
 
 		return setUrlForRedirect("ManageJobRoles.action?" + getUrlOptions());
 	}
@@ -121,79 +98,12 @@ public class ManageJobRoles extends AccountActionSupport {
 		return setUrlForRedirect("ManageJobRoles.action?" + getUrlOptions());
 	}
 
-	private String getUrlOptions() {
-		String urlOptions = "";
-		if (audit == null) {
-			urlOptions = "account=" + account.getId();
-		} else {
-			urlOptions = "audit=" + audit.getId();
-			if (questionId > 0) {
-				urlOptions += "&questionId=" + questionId;
-			}
-		}
-		return urlOptions;
-	}
-
-	public String addCompetency() throws Exception {
-		checkPermissions();
-
-		if (competency != null) {
-			for (JobCompetency jc : role.getJobCompetencies()) {
-				if (competency.equals(jc.getCompetency()))
-					addActionError(getText("ManageJobRoles.message.CompetencyExistsForRole"));
-			}
-
-			if (getActionErrors().size() == 0) {
-				JobCompetency jc = new JobCompetency();
-				jc.setJobRole(role);
-				jc.setCompetency(competency);
-				jc.setAuditColumns(permissions);
-				jobCompetencyDAO.save(jc);
-
-				role.getJobCompetencies().add(jc);
-				jobRoleDAO.save(role);
-			}
-		} else {
-			addActionError(getText("ManageJobRoles.message.MissingCompetency"));
-		}
-
-		return "competencies";
-	}
-
-	public String removeCompetency() throws Exception {
-		checkPermissions();
-
-		if (competency != null) {
-			Iterator<JobCompetency> iterator = role.getJobCompetencies().iterator();
-			while (iterator.hasNext()) {
-				JobCompetency jc = iterator.next();
-
-				if (competency.equals(jc.getCompetency())) {
-					iterator.remove();
-					jobCompetencyDAO.remove(jc);
-				}
-			}
-		} else {
-			addActionError(getText("ManageJobRoles.message.MissingCompetency"));
-		}
-
-		return "competencies";
-	}
-
 	public JobRole getRole() {
 		return role;
 	}
 
 	public void setRole(JobRole role) {
 		this.role = role;
-	}
-
-	public OperatorCompetency getCompetency() {
-		return competency;
-	}
-
-	public void setCompetency(OperatorCompetency competency) {
-		this.competency = competency;
 	}
 
 	public int getId() {
@@ -213,54 +123,43 @@ public class ManageJobRoles extends AccountActionSupport {
 	}
 
 	public List<JobRole> getJobRoles() {
-		if (jobRoles == null)
+		if (jobRoles == null) {
 			jobRoles = jobRoleDAO.findJobRolesByAccount(account.getId(), false);
+		}
+
 		return jobRoles;
+	}
+
+	public List<OperatorCompetency> getCompetenciesToAdd() {
+		return competenciesToAdd;
+	}
+
+	public void setCompetenciesToAdd(List<OperatorCompetency> competenciesToAdd) {
+		this.competenciesToAdd = competenciesToAdd;
 	}
 
 	public int getUsedCount(JobRole jobRole) {
 		return jobRoleDAO.getUsedCount(jobRole.getName());
 	}
 
-	private void checkPermissions() throws NoRightsException {
-		if (permissions.isContractor()) {
-			if (!permissions.hasPermission(OpPerms.ContractorAdmin)
-					&& !permissions.hasPermission(OpPerms.ContractorSafety)) {
-				throw new NoRightsException("Contractor Admin or Safety");
-			}
-		} else if (permissions.isOperatorCorporate()) {
-			permissions.tryPermission(OpPerms.DefineRoles);
-			if (permissions.getAccountId() != account.getId())
-				permissions.tryPermission(OpPerms.AllOperators);
-		}
-	}
-
 	// "other" means "unassigned"/"available"
 	public List<OperatorCompetency> getOtherCompetencies() throws Exception {
 		findAccount();
 
-		if (role != null) {
-			List<OperatorCompetency> others;
-			ContractorAccount contractor = (ContractorAccount) account;
-			others = operatorCompetencyDAO.findByOperatorHierarchy(operatorIDs(contractor));
+		List<OperatorCompetency> others = getOperatorCompetencies();
 
-			List<OperatorCompetency> alreadyAssigned = new ArrayList<OperatorCompetency>();
-			for (JobCompetency jc : role.getJobCompetencies()) {
-				alreadyAssigned.add(jc.getCompetency());
-			}
-
-			others.removeAll(alreadyAssigned);
-			return others;
+		for (JobCompetency jc : role.getJobCompetencies()) {
+			others.remove(jc.getCompetency());
 		}
 
-		return null;
+		others.removeAll(competenciesToAdd);
+
+		return others;
 	}
 
-	private Set<Integer> operatorIDs(ContractorAccount contractor) {
-		Set<Integer> opIds = new HashSet<Integer>();
-		for (ContractorOperator op : contractor.getOperators())
-			opIds.add(op.getOperatorAccount().getId());
-		return opIds;
+	public List<OperatorCompetency> getOperatorCompetencies() {
+		ContractorAccount contractor = (ContractorAccount) account;
+		return operatorCompetencyDAO.findByOperatorHierarchy(operatorIDs(contractor));
 	}
 
 	public List<OperatorAccount> getShellOps() {
@@ -276,5 +175,121 @@ public class ManageJobRoles extends AccountActionSupport {
 		}
 
 		return shellOps;
+	}
+
+	public boolean isPreviouslySelected(OperatorCompetency competency) {
+		if (role.getId() > 0) {
+			for (JobCompetency jobCompetency : role.getJobCompetencies()) {
+				if (jobCompetency.getCompetency().equals(competency)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private void findAccount() throws Exception {
+		if (audit != null) {
+			// Default in case role is not specified
+			account = audit.getContractorAccount();
+		}
+
+		if (role != null && role.getAccount() != null) {
+			account = role.getAccount();
+		}
+
+		if (account == null && permissions.isContractor()) {
+			account = accountDAO.find(permissions.getAccountId());
+			contractorId = permissions.getAccountId();
+		}
+
+		if (account == null) {
+			contractorId = id;
+			account = accountDAO.find(id);
+		}
+
+		if (account == null) {
+			throw new RecordNotFoundException("account");
+		}
+
+		assert (account.isContractor());
+	}
+
+	private String getUrlOptions() {
+		String urlOptions = "";
+
+		if (audit == null) {
+			urlOptions = "account=" + account.getId();
+		} else {
+			urlOptions = "audit=" + audit.getId();
+
+			if (questionId > 0) {
+				urlOptions += "&questionId=" + questionId;
+			}
+		}
+
+		return urlOptions;
+	}
+
+	private void checkPermissions() throws NoRightsException {
+		if (permissions.isContractor()) {
+			if (!permissions.hasPermission(OpPerms.ContractorAdmin)
+					&& !permissions.hasPermission(OpPerms.ContractorSafety)) {
+				throw new NoRightsException("Contractor Admin or Safety");
+			}
+		} else if (permissions.isOperatorCorporate()) {
+			permissions.tryPermission(OpPerms.DefineRoles);
+
+			if (permissions.getAccountId() != account.getId()) {
+				permissions.tryPermission(OpPerms.AllOperators);
+			}
+		}
+	}
+
+	private Set<Integer> operatorIDs(ContractorAccount contractor) {
+		Set<Integer> opIds = new HashSet<Integer>();
+
+		for (ContractorOperator op : contractor.getOperators()) {
+			opIds.add(op.getOperatorAccount().getId());
+		}
+
+		return opIds;
+	}
+
+	private void saveCompetencies() {
+		removeDeselectedCompetenciesFromRole();
+		removeExistingCompetenciesFromSelected();
+		saveNewlySelectedCompetencies();
+	}
+
+	private void removeDeselectedCompetenciesFromRole() {
+		Iterator<JobCompetency> jobCompetencyIterator = role.getJobCompetencies().iterator();
+		while (jobCompetencyIterator.hasNext()) {
+			JobCompetency jobCompetency = jobCompetencyIterator.next();
+
+			if (!competenciesToAdd.contains(jobCompetency.getCompetency())) {
+				jobCompetencyIterator.remove();
+				jobCompetencyDAO.remove(jobCompetency);
+			}
+		}
+	}
+
+	private void removeExistingCompetenciesFromSelected() {
+		for (JobCompetency jobCompetency : role.getJobCompetencies()) {
+			competenciesToAdd.remove(jobCompetency.getCompetency());
+		}
+	}
+
+	private void saveNewlySelectedCompetencies() {
+		for (OperatorCompetency remaining : competenciesToAdd) {
+			JobCompetency jobCompetency = new JobCompetency();
+			jobCompetency.setJobRole(role);
+			jobCompetency.setCompetency(remaining);
+			jobCompetency.setAuditColumns(permissions);
+			jobCompetencyDAO.save(jobCompetency);
+
+			role.getJobCompetencies().add(jobCompetency);
+		}
 	}
 }
