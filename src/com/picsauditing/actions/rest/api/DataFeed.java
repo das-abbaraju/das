@@ -14,16 +14,7 @@ import com.picsauditing.actions.report.ReportData;
 @SuppressWarnings("serial")
 public class DataFeed extends ReportData implements ParameterAware {
 	private static final Logger logger = LoggerFactory.getLogger(DataFeed.class);
-	
-	public String getApiKey() {
-		return apiKey;
-	}
-
-	public void setApiKey(final String apiKey) {
-		logger.debug("Setting apiKey = {}", apiKey);
-		this.apiKey = apiKey;
-	}
-
+	private String reportIdSpecified = "";
 
 	@Override
 	@Api
@@ -41,30 +32,39 @@ public class DataFeed extends ReportData implements ParameterAware {
 			json.put("success", true);
 		} catch (ReportValidationException error) {
 			writeJsonError(error.getMessage());
-		} catch (Exception error) {
-			logger.error("Report:" + report.getId() + " " + error.getMessage() + " SQL: " + debugSQL);
-			if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
-				writeJsonError(error);
-				json.put("sql", debugSQL);
+		} catch (Exception e) {
+			if (report == null) {
+				String err = "Invalid report ID: " + reportIdSpecified;
+				logger.error(err);
+				writeJsonError(err);
 			} else {
-				writeJsonError("Invalid Query");
+				logger.error("Report: {} {} SQL: {}", new Object[] { report.getId(), e.getMessage(), debugSQL });
+				if (permissions.has(OpPerms.Debug) || permissions.getAdminID() > 0) {
+					writeJsonError(e);
+					json.put("sql", debugSQL);
+				} else {
+					writeJsonError("Invalid Query");
+				}
 			}
 		}
-
 		return JSON;
-
 	}
 
+	/**
+	 * We need to set the apiKey parameter early (earlier than when the
+	 * JpaEntityInterceptor/JpaEntityConverter code normally kicks in to set the
+	 * parameters), so that the apiKey will be available to the
+	 * SecurityInterceptor.
+	 */
 	@Override
 	public void setParameters(Map<String, String[]> parameters) {
-		logger.debug("Setting parameters");
-		for (String key : parameters.keySet()) {
-			logger.debug("{} = {}", key, parameters.get(key)[0].toString());
-			if ("apiKey".equals(key)) {
-				setApiKey(parameters.get(key)[0]);
-			}
-		}
-
+		setApiKey(parameters.get("apiKey")[0]);
+		/*
+		 * While we are here, let's memorize the report ID specified in the
+		 * paramers, just in case the JpaEntityConverter cannot find the report
+		 * in question, so that we can report on the requested ID number in the
+		 * error message (above).
+		 */
+		reportIdSpecified = parameters.get("report")[0];
 	}
-
 }

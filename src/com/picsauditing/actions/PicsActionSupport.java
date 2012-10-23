@@ -410,6 +410,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected String apiKey;
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	/**
+	 * IMPORTANT NOTE: This setter does not normally get called in time for the
+	 * SecurityInterceptor to make use of it. (It's a chicken-and-egg thing.)
+	 * So, this setter must be called mannually -- by making your action class
+	 * ParameterAware and then implementing the setParameters method. See
+	 * DataFeed, for example.
+	 */
+	public void setApiKey(final String apiKey) {
+		logger.debug("Setting apiKey = {}", apiKey);
+		this.apiKey = apiKey;
+	}
 
 	public boolean isApiUser() {
 		if (apiKey == null) {
