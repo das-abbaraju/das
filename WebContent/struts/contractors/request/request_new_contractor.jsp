@@ -7,6 +7,8 @@
 		<s:text name="RequestNewContractor.title" />
 	</title>
 	
+	<s:include value="../../jquery.jsp" />
+	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
@@ -29,9 +31,6 @@
 			border: 1px solid #DDD;
 		}
 	</style>
-	
-	<script type="text/javascript" src="js/jquery/jquery.fieldfocus.js?v=${version}"></script>
-	<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js?v=${version}"></script>
 </head>
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
