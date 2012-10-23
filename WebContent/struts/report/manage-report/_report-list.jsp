@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page import="com.picsauditing.report.access.ReportUtil" %>
 
-<s:include value="../_action-messages.jsp" />
+<s:include value="/struts/_action-messages.jsp" />
 
 <% if (request.getParameter("list_id") != null) { %>
     <s:set var="list_id">${param.list_id}</s:set>
@@ -49,7 +49,7 @@
                 <s:param name="report">${report_id}</s:param>
             </s:url>
     
-           <%--  <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
+            <%-- <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
                 <s:param name="reportId">${report_id}</s:param>
             </s:url>
 
@@ -88,10 +88,10 @@
                 </div>
     
     			<s:if test="#enable_sort">
-                	<div class="btn-group options">
-                    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                	<div class="btn-group pull-right">
+                    	<button class="dropdown-toggle btn" data-toggle="dropdown" href="#">
                         	<s:text name="ManageReports.myReports.Options" />
-                    	</a>
+                    	</button>
     
                     	<ul class="dropdown-menu">
                         <%-- <li>

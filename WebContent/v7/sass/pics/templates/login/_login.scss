@@ -1,0 +1,37 @@
+#Login__page
+{
+    background: #454545;
+    text-align: center;
+
+    .well
+    {
+        background: #F1F1F2;
+        color: #666;
+        display: inline-block;
+        font-size: 13px;
+        margin-top: 50px;
+        padding: 40px;
+        text-align: left;
+    }
+
+    #registration_link
+    {
+        color: #CCC;
+        text-decoration: none;
+    }
+
+    #registration_link:hover
+    {
+        color: #73BBE8;
+    }
+}
+
+.lt-ie8 #Login__page #login_form
+{
+    display:inline;
+    width: 304px;
+}
+
+@import 'login-form';
+@import 'login-modal';
+@import 'server-id';

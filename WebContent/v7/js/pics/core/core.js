@@ -92,15 +92,15 @@ if (typeof Object.create !== 'function') {
                 var timeout;
                 
                 return function () {
-                    var obj = this;
-                    var args = arguments;
+                    var context = this,
+                        args = arguments;
                     
                     if (timeout) {
                         clearTimeout(timeout);
                     }
                     
                     timeout = setTimeout(function() {
-                        func.apply(obj, args);
+                        func.apply(context, args);
                         
                         timeout = null;
                     }, threshold || 250);
@@ -298,12 +298,15 @@ if (typeof Object.create !== 'function') {
                 var timer;
                 
                 return function () {
+                    var context = this, 
+                        args = arguments;
+                    
                     if (!timer) {
                         timer = setTimeout(function () {
-                            func.apply(this, arguments);
+                            func.apply(context, args);
                             
                             timer = null;
-                        }, delay);
+                        }, delay || 250);
                     }
                 };
             }

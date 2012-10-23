@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <div id="report_search_list">
-    <s:include value="../_action-messages.jsp" />
+    <s:include value="/struts/_action-messages.jsp" />
 
     <ul class="report-list">
         <s:iterator value="reports" var="report">

@@ -16,7 +16,6 @@
 	
 	#report_search_form
 	{
-		display: inline-block;
 		margin: 0px 0px 35px;
 		
 		.icon-search
@@ -57,6 +56,16 @@
 		.created-by
 		{
 			line-height: 18px;
+		}
+		
+		.name
+		{
+			float: none;
+		}
+		
+		.description
+		{
+			font-size: 13px;
 		}
 		
 		.number-favorites

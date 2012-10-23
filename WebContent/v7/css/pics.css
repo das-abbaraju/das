@@ -8,29 +8,113 @@
  */
 /* line 2, ../sass/pics/layout/_layout.scss */
 body {
-  padding-top: 53px;
+  padding-top: 55px;
 }
 
-@media (max-width: 980px) and (min-width: 768px), (max-width: 767px) {
+@media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
   /* line 8, ../sass/pics/layout/_layout.scss */
   body {
     padding-top: 0;
   }
 }
-/* line 2, ../sass/pics/layout/_menu.scss */
+/* line 4, ../sass/pics/layout/_menu.scss */
+.navbar .brand {
+  padding-right: 15px;
+}
+/* line 9, ../sass/pics/layout/_menu.scss */
 .navbar .nav > li > a {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  color: #002441;
+  font-size: 13px;
+  font-weight: bold;
   padding: 16px 15px;
 }
-
-/* line 7, ../sass/pics/layout/_menu.scss */
-.navbar-search {
-  margin-top: 10px;
+/* line 19, ../sass/pics/layout/_menu.scss */
+.navbar .nav > li > a:hover {
+  color: #C66603;
 }
-/* line 11, ../sass/pics/layout/_menu.scss */
-.navbar-search .search-query {
+/* line 26, ../sass/pics/layout/_menu.scss */
+.navbar .nav li.dropdown.open > .dropdown-toggle,
+.navbar .nav li.dropdown.active > .dropdown-toggle,
+.navbar .nav li.dropdown.open.active > .dropdown-toggle {
+  background: #f1f1f2;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
+  background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
+  background-image: linear-gradient(#eaeaea, #f1f1f2);
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  border: 1px solid #aeaeae;
+  border-top: 1px solid #999999;
+  border-bottom: 0px;
+  color: #C66603;
+}
+/* line 37, ../sass/pics/layout/_menu.scss */
+.navbar .navbar-search {
+  border-right: 1px solid #e7e7e7;
+  margin: 0;
+  padding: 11px 15px;
+}
+/* line 43, ../sass/pics/layout/_menu.scss */
+.navbar .navbar-search .icon-search {
+  color: #ccc;
+  margin-right: 2px;
+  position: relative;
+  top: 8px;
+}
+/* line 51, ../sass/pics/layout/_menu.scss */
+.navbar .navbar-search .search-query {
   line-height: normal;
 }
 
+/* line 62, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user a {
+  font-size: 13px;
+  overflow: hidden;
+  white-space: normal;
+}
+/* line 69, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user .name {
+  float: left;
+  width: 175px;
+}
+/* line 75, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user .id {
+  float: right;
+}
+/* line 80, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user .company {
+  float: left;
+  width: 175px;
+}
+/* line 86, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user .type {
+  float: right;
+  font-style: italic;
+}
+
+/* line 96, ../sass/pics/layout/_menu.scss */
+#user_menu .icon-cog {
+  font-size: 16px;
+  position: relative;
+  top: 4px;
+}
+
+@media (max-width: 1199px) and (min-width: 980px) {
+  /* line 107, ../sass/pics/layout/_menu.scss */
+  .navbar .brand {
+    padding-right: 10px;
+  }
+  /* line 112, ../sass/pics/layout/_menu.scss */
+  .navbar .nav > li > a {
+    padding: 16px 10px;
+  }
+}
 /* line 2, ../sass/pics/layout/_page-header.scss */
 .page-header {
   border: 0px;
@@ -57,15 +141,15 @@ p.subtitle {
 /*
  * Overrides for Default Buttons
  */
-/* line 113, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 113, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn {
   border-width: 1px;
   border-style: solid;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -o-border-radius: 6px;
-  border-radius: 6px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -86,7 +170,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=gainsboro);
 }
 
-/* line 129, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 129, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn:hover {
   color: #333333;
   background: none;
@@ -98,7 +182,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f7f7f8, endColorstr=#ececec);
 }
 
-/* line 139, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 139, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn.active,
 .btn:active {
   color: #333333;
@@ -114,7 +198,7 @@ p.subtitle {
 /*
  * Overrides for Primary Buttons
  */
-/* line 152, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 152, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary {
   border-color: #226396;
   text-shadow: 0px -1px 1px #226396;
@@ -128,7 +212,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73bbe8, endColorstr=#226396);
 }
 
-/* line 166, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 166, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary:hover {
   color: white;
   background: none;
@@ -140,7 +224,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#60c9f3, endColorstr=#396cc9);
 }
 
-/* line 176, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 176, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary.active,
 .btn-primary:active {
   color: white;
@@ -156,7 +240,7 @@ p.subtitle {
 /*
  * Overrides for Warning Buttons
  */
-/* line 189, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 189, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning {
   border-color: #e67e1c;
   text-shadow: 0px -1px 1px #e67e1c;
@@ -170,7 +254,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcc033, endColorstr=#e67e1c);
 }
 
-/* line 203, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 203, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning:hover {
   color: white;
   background: none;
@@ -182,7 +266,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcd100, endColorstr=#f1a300);
 }
 
-/* line 213, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 213, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning.active,
 .btn-warning:active {
   color: white;
@@ -198,7 +282,7 @@ p.subtitle {
 /*
  * Overrides for Info Buttons
  */
-/* line 226, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 226, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info {
   border-color: #6ca6f6;
   text-shadow: 0px -1px 1px #6ca6f6;
@@ -212,7 +296,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#70cfff, endColorstr=#6ca6f6);
 }
 
-/* line 240, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 240, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info:hover {
   color: white;
   background: none;
@@ -224,7 +308,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73ddff, endColorstr=#73d0f6);
 }
 
-/* line 250, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 250, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info.active,
 .btn-info:active {
   color: white;
@@ -240,7 +324,7 @@ p.subtitle {
 /*
  * Overrides for Success Buttons
  */
-/* line 263, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 263, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success {
   border-color: #229322;
   text-shadow: 0px -1px 1px #229322;
@@ -254,7 +338,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33c033, endColorstr=#229322);
 }
 
-/* line 277, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 277, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success:hover {
   color: white;
   background: none;
@@ -266,7 +350,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33d000, endColorstr=#25b000);
 }
 
-/* line 287, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 287, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success.active,
 .btn-success:active {
   color: white;
@@ -282,7 +366,7 @@ p.subtitle {
 /*
  * Overrides for Danger Buttons
  */
-/* line 300, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 300, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger {
   border-color: #ac030c;
   text-shadow: 0px -1px 1px #ac030c;
@@ -296,7 +380,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6303c, endColorstr=#ac030c);
 }
 
-/* line 314, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 314, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger:hover {
   color: white;
   background: none;
@@ -308,7 +392,7 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f92626, endColorstr=#d00900);
 }
 
-/* line 324, ../sass/pics/widgets/twitter_bootstrap/custom/_buttons.scss */
+/* line 324, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger.active,
 .btn-danger:active {
   color: white;
@@ -321,206 +405,11 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#c60c0c, endColorstr=#8c0600);
 }
 
-/* Other Button Properties */
-/* line 3, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn:first-child {
-  *margin-left: 0;
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+.dropdown-menu {
+  z-index: 9999;
 }
-
-/* line 7, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn:focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-
-/* line 13, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn.disabled, .btn[disabled] {
-  cursor: default;
-  background-image: none;
-  background-color: #e6e6e6;
-  opacity: 0.65;
-  filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-
-/* line 24, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-large {
-  padding: 9px 14px;
-  font-size: 15px;
-  line-height: normal;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-}
-
-/* line 33, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-large .icon {
-  margin-top: 1px;
-}
-
-/* line 37, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-small {
-  padding: 5px 9px;
-  font-size: 11px;
-  line-height: 16px;
-}
-
-/* line 43, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-small .icon {
-  margin-top: -1px;
-}
-
-/* line 48, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-primary.disabled,
-.btn-primary[disabled] {
-  background-color: #226396;
-}
-
-/* line 53, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-danger.disabled,
-.btn-danger[disabled] {
-  background-color: #ac030c;
-}
-
-/* line 55, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-danger:active, .btn-danger.active {
-  background-color: #942a25 \9;
-}
-
-/* line 60, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-success.disabled,
-.btn-success[disabled] {
-  background-color: #229322;
-}
-
-/* line 65, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-info.disabled,
-.btn-info[disabled] {
-  background-color: #6ca6f6;
-}
-
-/* Label Overrides */
-/* line 71, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.label {
-  padding: 2px 4px 2px;
-  font-size: 9px;
-  font-weight: bold;
-  color: #ffffff;
-  text-transform: uppercase;
-  background-color: #999999;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-
-/* line 83, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.label-important {
-  background-color: #229322;
-}
-
-/* line 87, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.label-warning {
-  background-color: #e67e1c;
-}
-
-/* line 91, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.label-success {
-  background-color: #ac030c;
-}
-
-/* line 95, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.label-info {
-  background-color: #226396;
-}
-
-/* Alert Overrides */
-/* line 101, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert {
-  padding: 8px 36px 8px 16px;
-  margin-bottom: 18px;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  background-color: #fcf3cc;
-  border: 1px solid #e67e1c;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-}
-
-/* line 112, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert, .alert-heading {
-  color: #e67e1c;
-}
-
-/* line 116, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert .close {
-  position: relative;
-  top: -2px;
-  right: -21px;
-  line-height: 18px;
-}
-
-/* line 123, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-success {
-  background-color: #acf5ac;
-  border-color: #229322;
-}
-
-/* line 128, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-success, .alert-success .alert-heading {
-  color: #229322;
-}
-
-/* line 132, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-danger, .alert-error {
-  background-color: #ffc6c9;
-  border-color: #ff969c;
-}
-
-/* line 140, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-danger,
-.alert-error,
-.alert-danger .alert-heading,
-.alert-error .alert-heading {
-  color: #ac030c;
-}
-
-/* line 144, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-info {
-  background-color: #c3f0f9;
-  border-color: #226396;
-}
-
-/* line 149, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-info, .alert-info .alert-heading {
-  color: #226396;
-}
-
-/* line 153, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-block {
-  padding-top: 14px;
-  padding-bottom: 14px;
-}
-
-/* line 158, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-block > p, .alert-block > ul {
-  margin-bottom: 0;
-}
-
-/* line 162, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.alert-block p + p {
-  margin-top: 5px;
-}
-
-/* line 167, ../sass/pics/widgets/twitter_bootstrap/custom/_other.scss */
-.btn-warning.disabled,
-.btn-warning[disabled] {
-  background-color: #e67e1c;
-}
-
-/* line 4, ../sass/pics/widgets/twitter_bootstrap/_dropdown.scss */
+/* line 8, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-menu li > a:hover,
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
@@ -532,14 +421,14 @@ p.subtitle {
   background-image: linear-gradient(#c66603, #a84d10);
 }
 
-/* line 3, ../sass/pics/widgets/twitter_bootstrap/_pagination.scss */
+/* line 3, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
   line-height: 28px;
   width: auto;
 }
 
-/* line 9, ../sass/pics/widgets/twitter_bootstrap/_pagination.scss */
+/* line 9, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination a {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
@@ -549,18 +438,18 @@ p.subtitle {
   color: #333;
 }
 
-/* line 2, ../sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs {
   border-color: #ccc;
 }
 
-/* line 7, ../sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 7, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > li {
   margin-left: 5px;
   margin-right: 5px;
 }
 
-/* line 13, ../sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 13, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > li > a {
   background: #eaeaea;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #eaeaea));
@@ -575,7 +464,7 @@ p.subtitle {
   padding-top: 13px;
 }
 
-/* line 24, ../sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 24, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > li > a:hover {
   background: #f1f1f2;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
@@ -586,7 +475,7 @@ p.subtitle {
   border-color: #ccc #ccc #ccc;
 }
 
-/* line 32, ../sass/pics/widgets/twitter_bootstrap/_tabs.scss */
+/* line 32, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover {
   background: #fff;
@@ -604,39 +493,285 @@ p.subtitle {
  * @author: Carey Hinoki
  * @date: 2012-07-10
  */
-/* line 6, ../sass/pics/templates/app_property/_app_property.scss */
+/* line 6, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .name {
   width: 20%;
 }
-/* line 11, ../sass/pics/templates/app_property/_app_property.scss */
+/* line 11, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .value {
   width: 70%;
 }
-/* line 16, ../sass/pics/templates/app_property/_app_property.scss */
+/* line 16, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .actions {
   width: 10%;
 }
-/* line 21, ../sass/pics/templates/app_property/_app_property.scss */
+/* line 21, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .value p {
   width: 400px;
   word-wrap: break-word;
 }
-/* line 31, ../sass/pics/templates/app_property/_app_property.scss */
+/* line 31, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_edit_form .form-actions,
 .ManageAppProperty-page #app_property_create_form .form-actions {
   text-align: right;
   width: 220px;
 }
-/* line 37, ../sass/pics/templates/app_property/_app_property.scss */
+/* line 37, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_edit_form .form-actions .btn,
 .ManageAppProperty-page #app_property_create_form .form-actions .btn {
   margin-left: 10px;
 }
 
+/* line 4, ../sass/pics/templates/contractor/edit/_edit.scss */
+.ContractorEdit-page #vat_wrapper {
+  display: none;
+}
+
+/* line 2, ../sass/pics/templates/login/_login.scss */
+#Login__page {
+  background: #454545;
+  text-align: center;
+}
+/* line 7, ../sass/pics/templates/login/_login.scss */
+#Login__page .well {
+  background: #F1F1F2;
+  color: #666;
+  display: inline-block;
+  font-size: 13px;
+  margin-top: 50px;
+  padding: 40px;
+  text-align: left;
+}
+/* line 18, ../sass/pics/templates/login/_login.scss */
+#Login__page #registration_link {
+  color: #CCC;
+  text-decoration: none;
+}
+/* line 24, ../sass/pics/templates/login/_login.scss */
+#Login__page #registration_link:hover {
+  color: #73BBE8;
+}
+
+/* line 30, ../sass/pics/templates/login/_login.scss */
+.lt-ie8 #Login__page #login_form {
+  display: inline;
+  width: 304px;
+}
+
+/* line 2, ../sass/pics/templates/login/_login-form.scss */
+#login_form {
+  -webkit-box-shadow: #131313 0px 2px 8px;
+  -moz-box-shadow: #131313 0px 2px 8px;
+  box-shadow: #131313 0px 2px 8px;
+}
+/* line 6, ../sass/pics/templates/login/_login-form.scss */
+#login_form h1 {
+  background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
+  height: 78px;
+  margin: 0px auto 30px auto;
+  width: 287px;
+}
+/* line 14, ../sass/pics/templates/login/_login-form.scss */
+#login_form .alert {
+  width: 225px;
+}
+/* line 19, ../sass/pics/templates/login/_login-form.scss */
+#login_form fieldset {
+  padding-right: 40px;
+}
+/* line 24, ../sass/pics/templates/login/_login-form.scss */
+#login_form .icon-globe {
+  color: #666;
+  font-size: 20px;
+  margin-right: 5px;
+  text-align: right;
+  vertical-align: middle;
+}
+/* line 33, ../sass/pics/templates/login/_login-form.scss */
+#login_form #user_fields {
+  margin-left: 26px;
+}
+/* line 38, ../sass/pics/templates/login/_login-form.scss */
+#login_form #user_fields label {
+  margin-top: 10px;
+}
+/* line 43, ../sass/pics/templates/login/_login-form.scss */
+#login_form #user_fields .password {
+  margin-bottom: 2px;
+}
+/* line 48, ../sass/pics/templates/login/_login-form.scss */
+#login_form #forgotPassword {
+  margin-bottom: 5px;
+  text-align: right;
+}
+/* line 54, ../sass/pics/templates/login/_login-form.scss */
+#login_form #forgotPassword a {
+  color: #666;
+  font-size: 11px;
+  text-decoration: none;
+}
+/* line 61, ../sass/pics/templates/login/_login-form.scss */
+#login_form #forgotPassword a:hover {
+  color: #226396;
+}
+/* line 66, ../sass/pics/templates/login/_login-form.scss */
+#login_form #remember_me {
+  margin: 0px 0px 10px 26px;
+}
+/* line 71, ../sass/pics/templates/login/_login-form.scss */
+#login_form #remember_me .checkbox input[type="checkbox"] {
+  margin-right: 6px;
+}
+/* line 76, ../sass/pics/templates/login/_login-form.scss */
+#login_form .form-actions {
+  background: none;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  text-align: right;
+}
+/* line 85, ../sass/pics/templates/login/_login-form.scss */
+#login_form #cancel_btn {
+  display: none;
+}
+
+/*** Login Modal Styling ***/
+/* line 4, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form {
+  left: 55%;
+}
+
+/* line 9, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form h2 {
+  display: none;
+}
+
+/* line 14, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form > .modal-header {
+  background-color: #454545;
+  text-align: left;
+}
+
+/* line 20, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form > .modal-header > h3 {
+  color: #FFF;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 27px;
+  margin-bottom: 0px;
+  text-align: left;
+}
+
+/* line 31, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form > .modal-header > .close {
+  color: #666;
+  cursor: pointer;
+  filter: alpha(opacity=100);
+  font-size: 20px;
+  opacity: 1;
+  text-shadow: none;
+}
+
+/* line 41, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form > .modal-header > .close:hover {
+  color: #999;
+}
+
+/* line 46, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .modal-body {
+  background: #EAEAEA;
+  color: #666;
+  font-size: 13px;
+  text-align: left;
+  padding: 10px 15px 0px 15px;
+}
+
+/* line 55, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .well {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0px;
+}
+
+/* line 63, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .control-group {
+  padding-right: 25px;
+}
+
+/* line 68, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form #control_password {
+  margin-bottom: 0px;
+}
+
+/* line 73, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .control-label {
+  width: 100px;
+}
+
+/* line 78, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .controls {
+  margin-left: 109px;
+}
+
+/* line 83, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .icon-globe {
+  color: #666;
+  font-size: 20px;
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* line 93, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form select,
+.modal-login-form input[type="text"],
+.modal-login-form input[type="password"] {
+  width: 200px;
+}
+
+/* line 98, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form #forgotPassword {
+  margin: 10px 0px 5px 0px;
+  padding: 0px 25px;
+  text-align: right;
+}
+
+/* line 105, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form #forgotPassword a {
+  color: #666;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+/* line 112, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form #forgotPassword a:hover {
+  color: #226396;
+}
+
+/* line 117, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .form-actions {
+  background: none;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  text-align: right;
+}
+
+/* line 126, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .btn-primary {
+  margin-left: 6px;
+}
+
+/* line 131, ../sass/pics/templates/login/_login-modal.scss */
+.modal-login-form .modal-footer {
+  display: none;
+}
+
 /*
  * Manage Report Controller
  */
-/* line 6, ../sass/pics/templates/report/_manage.scss */
+/* line 6, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page {
   /*
    * Description
@@ -654,7 +789,7 @@ p.subtitle {
   	display: inline;
   }*/
 }
-/* line 12, ../sass/pics/templates/report/_manage.scss */
+/* line 12, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page h3 {
   color: #999;
   font-size: 14px;
@@ -664,13 +799,13 @@ p.subtitle {
   margin-bottom: 35px;
   text-align: center;
 }
-/* line 27, ../sass/pics/templates/report/_manage.scss */
+/* line 27, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
   list-style: none;
   margin: 0px auto 20px;
   text-align: left;
 }
-/* line 33, ../sass/pics/templates/report/_manage.scss */
+/* line 33, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -681,28 +816,28 @@ p.subtitle {
   border-radius: 3px;
   margin-bottom: 2px;
 }
-/* line 41, ../sass/pics/templates/report/_manage.scss */
+/* line 41, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite {
   line-height: normal;
   float: left;
   margin: 8px 5px 0px;
   text-decoration: none;
 }
-/* line 49, ../sass/pics/templates/report/_manage.scss */
+/* line 49, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
   font-size: 12px;
 }
-/* line 55, ../sass/pics/templates/report/_manage.scss */
+/* line 55, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
   color: #a84d10;
 }
-/* line 60, ../sass/pics/templates/report/_manage.scss */
+/* line 60, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .summary {
   float: left;
   margin-right: 10px;
 }
-/* line 66, ../sass/pics/templates/report/_manage.scss */
+/* line 66, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name {
   color: #333;
   float: left;
@@ -710,7 +845,7 @@ p.subtitle {
   line-height: 30px;
   margin: 0px 10px 0px 0px;
 }
-/* line 75, ../sass/pics/templates/report/_manage.scss */
+/* line 75, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .created-by {
   color: #999;
   font-size: 10px;
@@ -718,30 +853,30 @@ p.subtitle {
   line-height: 30px;
   white-space: nowrap;
 }
-/* line 84, ../sass/pics/templates/report/_manage.scss */
+/* line 84, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .description {
   max-width: 400px;
 }
-/* line 89, ../sass/pics/templates/report/_manage.scss */
+/* line 89, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .options {
   border-left: 1px solid #ccc;
   float: right;
   height: 30px;
   padding: 0px 5px;
 }
-/* line 96, ../sass/pics/templates/report/_manage.scss */
+/* line 96, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .options:hover {
   background: #eaeaea;
 }
-/* line 102, ../sass/pics/templates/report/_manage.scss */
+/* line 102, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .options.open {
   background: #ccc;
 }
-/* line 106, ../sass/pics/templates/report/_manage.scss */
+/* line 106, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .options.open:hover {
   background: #ccc;
 }
-/* line 112, ../sass/pics/templates/report/_manage.scss */
+/* line 112, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .options .dropdown-toggle {
   color: #999;
   -webkit-border-radius: 0px;
@@ -755,11 +890,11 @@ p.subtitle {
   line-height: 30px;
   text-decoration: none;
 }
-/* line 122, ../sass/pics/templates/report/_manage.scss */
+/* line 122, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .lt-ie8 .report-list {
   display: inline;
 }
-/* line 127, ../sass/pics/templates/report/_manage.scss */
+/* line 127, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .pagination {
   margin-bottom: 30px;
 }
@@ -767,7 +902,7 @@ p.subtitle {
 /*
  * My Reports
  */
-/* line 8, ../sass/pics/templates/report/_list-my-reports.scss */
+/* line 8, ../sass/pics/templates/report/manage-report/_my-reports-list.scss */
 #ManageReports_myReportsList_page #my_reports_filter {
   margin: 0px 0px 20px;
   text-align: center;
@@ -776,18 +911,18 @@ p.subtitle {
 /*
  * Favorites
  */
-/* line 6, ../sass/pics/templates/report/_list-favorites.scss */
+/* line 6, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page {
  	/*
 	 * Excluded Reports
 	 */
 }
-/* line 12, ../sass/pics/templates/report/_list-favorites.scss */
+/* line 12, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page #report_favorites_list_excluded {
   margin: 0px auto;
   width: 60%;
 }
-/* line 17, ../sass/pics/templates/report/_list-favorites.scss */
+/* line 17, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page #report_favorites_list_excluded h1 {
   border-bottom: 1px solid #ccc;
   color: #999;
@@ -795,7 +930,7 @@ p.subtitle {
   margin-bottom: 30px;
   text-align: left;
 }
-/* line 26, ../sass/pics/templates/report/_list-favorites.scss */
+/* line 26, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page #report_favorites_list_excluded p {
   color: #999;
   font-size: 12px;
@@ -805,30 +940,29 @@ p.subtitle {
 /*
  * Search
  */
-/* line 6, ../sass/pics/templates/report/_search.scss */
+/* line 6, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page {
   /*
    * Search box
    */
 }
-/* line 12, ../sass/pics/templates/report/_search.scss */
+/* line 12, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search {
   margin: 30px 0px 0px;
   text-align: center;
 }
-/* line 18, ../sass/pics/templates/report/_search.scss */
+/* line 18, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form {
-  display: inline-block;
   margin: 0px 0px 35px;
 }
-/* line 23, ../sass/pics/templates/report/_search.scss */
+/* line 22, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form .icon-search {
   color: #666;
   position: relative;
   right: 2px;
   top: 8px;
 }
-/* line 31, ../sass/pics/templates/report/_search.scss */
+/* line 30, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form input {
   background: #f1f1f2;
   color: #999;
@@ -839,285 +973,35 @@ p.subtitle {
   -o-border-radius: 20px;
   border-radius: 20px;
 }
-/* line 40, ../sass/pics/templates/report/_search.scss */
+/* line 39, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .lt-ie8 #report_search_form {
   display: inline;
 }
-/* line 47, ../sass/pics/templates/report/_search.scss */
+/* line 46, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .report {
   padding: 0px 20px;
 }
-/* line 52, ../sass/pics/templates/report/_search.scss */
+/* line 51, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .summary {
   padding-top: 7px;
 }
-/* line 58, ../sass/pics/templates/report/_search.scss */
+/* line 57, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .name,
 #ManageReports_searchList_page .report-list .created-by {
   line-height: 18px;
 }
-/* line 63, ../sass/pics/templates/report/_search.scss */
+/* line 62, ../sass/pics/templates/report/manage-report/_search-list.scss */
+#ManageReports_searchList_page .report-list .name {
+  float: none;
+}
+/* line 67, ../sass/pics/templates/report/manage-report/_search-list.scss */
+#ManageReports_searchList_page .report-list .description {
+  font-size: 13px;
+}
+/* line 72, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .number-favorites {
   color: #a84d10;
   font-size: 12px;
   float: right;
   margin: 18px 0px;
-}
-
-/* line 4, ../sass/pics/contractor-edit/_contractor-edit.scss */
-.ContractorEdit-page #vat_wrapper {
-  display: none;
-}
-
-/* line 2, ../sass/pics/login/_server-id.scss */
-#server_id {
-  position: fixed;
-  width: 100%;
-}
-/* line 7, ../sass/pics/login/_server-id.scss */
-#server_id div {
-  float: right;
-  height: 25px;
-  width: 25px;
-}
-
-/* line 2, ../sass/pics/login/_login-form.scss */
-#Login__page {
-  background: #454545;
-  text-align: center;
-}
-/* line 7, ../sass/pics/login/_login-form.scss */
-#Login__page .well {
-  background: #F1F1F2;
-  color: #666;
-  display: inline-block;
-  font-size: 13px;
-  margin-top: 50px;
-  padding: 40px;
-  text-align: left;
-}
-/* line 18, ../sass/pics/login/_login-form.scss */
-#Login__page #registration_link {
-  color: #CCC;
-  text-decoration: none;
-}
-/* line 24, ../sass/pics/login/_login-form.scss */
-#Login__page #registration_link:hover {
-  color: #73BBE8;
-}
-
-/* line 30, ../sass/pics/login/_login-form.scss */
-.lt-ie8 #Login__page #login_form {
-  display: inline;
-  width: 304px;
-}
-
-/* line 36, ../sass/pics/login/_login-form.scss */
-#login_form {
-  -webkit-box-shadow: #131313 0px 2px 8px;
-  -moz-box-shadow: #131313 0px 2px 8px;
-  box-shadow: #131313 0px 2px 8px;
-}
-/* line 40, ../sass/pics/login/_login-form.scss */
-#login_form h1 {
-  background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
-  height: 78px;
-  margin: 0px auto 30px auto;
-  width: 287px;
-}
-/* line 48, ../sass/pics/login/_login-form.scss */
-#login_form .alert {
-  width: 225px;
-}
-/* line 53, ../sass/pics/login/_login-form.scss */
-#login_form fieldset {
-  padding-right: 40px;
-}
-/* line 58, ../sass/pics/login/_login-form.scss */
-#login_form .icon-globe {
-  color: #666;
-  font-size: 20px;
-  margin-right: 5px;
-  text-align: right;
-  vertical-align: middle;
-}
-/* line 67, ../sass/pics/login/_login-form.scss */
-#login_form #user_fields {
-  margin-left: 26px;
-}
-/* line 72, ../sass/pics/login/_login-form.scss */
-#login_form #user_fields label {
-  margin-top: 10px;
-}
-/* line 77, ../sass/pics/login/_login-form.scss */
-#login_form #user_fields .password {
-  margin-bottom: 2px;
-}
-/* line 82, ../sass/pics/login/_login-form.scss */
-#login_form #forgotPassword {
-  margin-bottom: 5px;
-  text-align: right;
-}
-/* line 88, ../sass/pics/login/_login-form.scss */
-#login_form #forgotPassword a {
-  color: #666;
-  font-size: 11px;
-  text-decoration: none;
-}
-/* line 95, ../sass/pics/login/_login-form.scss */
-#login_form #forgotPassword a:hover {
-  color: #226396;
-}
-/* line 100, ../sass/pics/login/_login-form.scss */
-#login_form #remember_me {
-  margin: 0px 0px 10px 26px;
-}
-/* line 105, ../sass/pics/login/_login-form.scss */
-#login_form #remember_me .checkbox input[type="checkbox"] {
-  margin-right: 6px;
-}
-/* line 110, ../sass/pics/login/_login-form.scss */
-#login_form .form-actions {
-  background: none;
-  border: none;
-  margin: 0px;
-  padding: 0px;
-  text-align: right;
-}
-/* line 119, ../sass/pics/login/_login-form.scss */
-#login_form #cancel_btn {
-  display: none;
-}
-
-/*** Login Modal Styling ***/
-/* line 127, ../sass/pics/login/_login-form.scss */
-.modal-login-form {
-  left: 55%;
-}
-
-/* line 132, ../sass/pics/login/_login-form.scss */
-.modal-login-form h2 {
-  display: none;
-}
-
-/* line 137, ../sass/pics/login/_login-form.scss */
-.modal-login-form > .modal-header {
-  background-color: #454545;
-  text-align: left;
-}
-
-/* line 143, ../sass/pics/login/_login-form.scss */
-.modal-login-form > .modal-header > h3 {
-  color: #FFF;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: bold;
-  line-height: 27px;
-  margin-bottom: 0px;
-  text-align: left;
-}
-
-/* line 154, ../sass/pics/login/_login-form.scss */
-.modal-login-form > .modal-header > .close {
-  color: #666;
-  cursor: pointer;
-  filter: alpha(opacity=100);
-  font-size: 20px;
-  opacity: 1;
-  text-shadow: none;
-}
-
-/* line 164, ../sass/pics/login/_login-form.scss */
-.modal-login-form > .modal-header > .close:hover {
-  color: #999;
-}
-
-/* line 169, ../sass/pics/login/_login-form.scss */
-.modal-login-form .modal-body {
-  background: #EAEAEA;
-  color: #666;
-  font-size: 13px;
-  text-align: left;
-  padding: 10px 15px 0px 15px;
-}
-
-/* line 178, ../sass/pics/login/_login-form.scss */
-.modal-login-form .well {
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0px;
-}
-
-/* line 186, ../sass/pics/login/_login-form.scss */
-.modal-login-form .control-group {
-  padding-right: 25px;
-}
-
-/* line 191, ../sass/pics/login/_login-form.scss */
-.modal-login-form #control_password {
-  margin-bottom: 0px;
-}
-
-/* line 196, ../sass/pics/login/_login-form.scss */
-.modal-login-form .control-label {
-  width: 100px;
-}
-
-/* line 201, ../sass/pics/login/_login-form.scss */
-.modal-login-form .controls {
-  margin-left: 109px;
-}
-
-/* line 206, ../sass/pics/login/_login-form.scss */
-.modal-login-form .icon-globe {
-  color: #666;
-  font-size: 20px;
-  text-align: right;
-  vertical-align: middle;
-}
-
-/* line 216, ../sass/pics/login/_login-form.scss */
-.modal-login-form select,
-.modal-login-form input[type="text"],
-.modal-login-form input[type="password"] {
-  width: 200px;
-}
-
-/* line 221, ../sass/pics/login/_login-form.scss */
-.modal-login-form #forgotPassword {
-  margin: 10px 0px 5px 0px;
-  padding: 0px 25px;
-  text-align: right;
-}
-
-/* line 228, ../sass/pics/login/_login-form.scss */
-.modal-login-form #forgotPassword a {
-  color: #666;
-  font-size: 12px;
-  text-decoration: none;
-}
-
-/* line 235, ../sass/pics/login/_login-form.scss */
-.modal-login-form #forgotPassword a:hover {
-  color: #226396;
-}
-
-/* line 240, ../sass/pics/login/_login-form.scss */
-.modal-login-form .form-actions {
-  background: none;
-  border: none;
-  margin: 0px;
-  padding: 0px;
-  text-align: right;
-}
-
-/* line 249, ../sass/pics/login/_login-form.scss */
-.modal-login-form .btn-primary {
-  margin-left: 6px;
-}
-
-/* line 254, ../sass/pics/login/_login-form.scss */
-.modal-login-form .modal-footer {
-  display: none;
 }

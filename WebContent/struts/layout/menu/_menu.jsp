@@ -17,11 +17,14 @@
                     <s:set var="menu_items" value="menu.children.subList(0, 6)" />
                     <s:include value="/struts/layout/menu/_menu-item.jsp" />
                 </ul>
+                
                 <ul class="nav pull-right">
                     <s:set var="menu_items" value="menu.children.subList(6, 7)" />
                     <s:include value="/struts/layout/menu/_menu-item.jsp" />
                 </ul>
+                
                 <form class="navbar-search pull-right">
+                    <i class="icon-search icon-large"></i>
                     <input type="text" class="search-query span2" placeholder="Search" />
                 </form>
             </div>

@@ -1,13 +1,7 @@
 @import "compass/css3";
 @import "blueprint/typography";
 
-@import 'variables';
-
-@import 'layout/layout';
+@import 'layout';
 
 @import 'widgets';
 @import 'templates';
-
-@import 'contractor-edit/contractor-edit';
-
-@import 'login/login';

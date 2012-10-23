@@ -24,7 +24,13 @@
             href="${menu_item.url}" 
             class="${a_dropdown_class}" 
             data-toggle="${a_data_toggle}"
-        >${menu_item.name}</a>
+        >
+            ${menu_item.name}
+            
+            <s:if test="#menu_item.level == 1 && #menu_item.htmlId == 'user_menu'">
+                <i class="icon-cog icon-large"></i>
+            </s:if>
+        </a>
         
         <s:if test="#menu_item.hasChildren()">
             <ul class="dropdown-menu">

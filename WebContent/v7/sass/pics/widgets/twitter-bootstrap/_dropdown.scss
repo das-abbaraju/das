@@ -1,0 +1,12 @@
+.dropdown-menu
+{
+	z-index: 9999;
+	
+	li > a:hover,
+	.active > a,
+	.active > a:hover
+	{
+		background-color: #a84d10;
+		@include background-image(linear-gradient(#c66603, #a84d10));
+	}
+}
