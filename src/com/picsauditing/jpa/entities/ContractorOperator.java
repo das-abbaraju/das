@@ -244,6 +244,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.forceEnd = forceEnd;
 	}
 
+	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
 	public Date getForceBegin() {
 		return forceBegin;
 	}

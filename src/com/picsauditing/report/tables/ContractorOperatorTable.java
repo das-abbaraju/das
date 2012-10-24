@@ -10,6 +10,7 @@ public class ContractorOperatorTable extends AbstractTable {
 
 	public static final String Operator = "Operator";
 	public static final String Contractor = "Contractor";
+	public static final String ForcedByUser = "ForcedByUser";
 
 	public ContractorOperatorTable() {
 		super("generalcontractors");
@@ -60,5 +61,9 @@ public class ContractorOperatorTable extends AbstractTable {
 		addRequiredKey(operator);
 
 		addRequiredKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("subID")));
+
+		ReportForeignKey forcedByUser = new ReportForeignKey(ForcedByUser, new UserTable(), new ReportOnClause("forcedBy"));
+		forcedByUser.setMinimumImportance(FieldImportance.Average);
+		addOptionalKey(forcedByUser);
 	}
 }

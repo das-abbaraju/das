@@ -11,6 +11,7 @@ public class ContractorTable extends AbstractTable {
 	public static final String RequestedBy = "RequestedBy";
 	public static final String Watch = "Watch";
 	public static final String Tag = "Tag";
+	public static final String ContractorTrade = "ContractorTrade";
 
 	public ContractorTable() {
 		super("contractor_info");
@@ -44,5 +45,7 @@ public class ContractorTable extends AbstractTable {
 
 		addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
 				ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
+
+		addOptionalKey(new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id", "conID")));
 	}
 }

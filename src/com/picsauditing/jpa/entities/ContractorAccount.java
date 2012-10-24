@@ -674,11 +674,6 @@ public class ContractorAccount extends Account implements JSONable {
 		return list;
 	}
 
-	@ReportField(category = FieldCategory.Classification, width = 300)
-	public String getTradesSelf() {
-		return tradesSelf;
-	}
-
 	@Transient
 	public ContractorTrade getTopTrade() {
 		ContractorTrade topTrade = null;
@@ -704,6 +699,11 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return "0";
+	}
+
+	@ReportField(category = FieldCategory.Classification, width = 300)
+	public String getTradesSelf() {
+		return tradesSelf;
 	}
 
 	public void setTradesSelf(String tradesSelf) {
