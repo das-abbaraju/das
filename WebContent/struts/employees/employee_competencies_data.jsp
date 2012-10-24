@@ -57,7 +57,10 @@
 									<input
 										type="checkbox"
 										<s:if test="#competent">checked="checked" </s:if>
-										id="${employee.id}_${competency.id}"
+										data-account="${account.id}"
+										data-audit="${audit.id}"
+										data-competency="${competency.id}"
+										data-employee="${employee.id}"
 									/>
 								</s:if>
 								<s:else>

@@ -20,7 +20,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.access.RecordNotFoundException;
@@ -61,7 +60,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map = new DoubleMap<Employee, OperatorCompetency, EmployeeCompetency>();
 	private Table<Employee, OperatorCompetency, EmployeeCompetency> employeeCompetencyTable = TreeBasedTable.create();
 	// Competency Table
-	private Table<JobRole, OperatorCompetency, JobCompetency> matrixTable = HashBasedTable.create();
+	private Table<JobRole, OperatorCompetency, JobCompetency> matrixTable = TreeBasedTable.create();
 
 	public String execute() throws Exception {
 		findAccount();
@@ -447,12 +446,14 @@ public class EmployeeCompetencies extends ReportEmployee {
 			List<String> roles = new ArrayList<String>(jobRoles.get(employee));
 
 			int last = roles.size();
-			if (last > 3)
+			if (last > 3) {
 				last = 3;
+			}
 
 			String suffix = "";
-			if (roles.size() > 3)
+			if (roles.size() > 3) {
 				suffix = "...";
+			}
 
 			employeeJobRoles.put(employee, Strings.implode(roles.subList(0, last), ", ") + suffix);
 		}
