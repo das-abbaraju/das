@@ -417,10 +417,10 @@ function loadStatus(caoID, addUserNote){
 				
 				<fieldset>
 					<ul>
-						<s:if test="conAudit.auditType.hasAuditor">
+						<s:if test="conAudit.auditType.hasAuditor && !conAudit.auditType.annualAddendum">
 							<li>
 								<label>
-									<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum">
+									<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy')">
 										<s:text name="global.CSR" />:
 									</s:if>
 									<s:else>
