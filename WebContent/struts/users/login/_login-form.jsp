@@ -8,36 +8,36 @@
 <%-- URL --%>
 <s:url action="Login.action" var="loginform" />
 
-<div id="user_login">
-    <s:form cssClass="form-login well" action="%{#loginform}" name="login_form" id="login_form">
-        <input type="hidden" name="button" value="Login" />
+<s:form id="login_form" name="login_form" action="%{#loginform}" cssClass="form-login">
+    <input type="hidden" name="button" value="Login" />
 
-    <%-- grab the switchToUser parameters if its passed to this page when switch servers.--%>
-        <s:if test="switchToUser > 0">
-            <s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
+<%-- grab the switchToUser parameters if its passed to this page when switch servers.--%>
+    <s:if test="switchToUser > 0">
+        <s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
+    </s:if>
+
+    <img src="/v7/img/login/PICS-login-logo.png" class="logo" />
+
+    <s:include value="../../_action-messages.jsp" />
+
+    <fieldset>
+        <s:if test="configEnvironment || i18nReady">
+            <% String currentLanguage = LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage(); %>
+            <input id="current_locale" type="hidden" value="<%= currentLanguage %>" />
         </s:if>
 
-        <h1></h1>
+        <div class="form-inline">
+            <label for="supported_locales">
+                <i class="icon-globe"></i>
+            </label>
+            
+            <s:include value="_supported-locales-list.jsp" />
+        </div>
 
-        <s:include value="../../_action-messages.jsp" />
+        <s:include value="_login-form-fields.jsp"/>
+    </fieldset>
+</s:form>
 
-        <fieldset>
-            <s:if test="configEnvironment || i18nReady">
-                <% String currentLanguage = LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage(); %>
-                <input id="current_locale" type="hidden" value="<%= currentLanguage %>" />
-            </s:if>
-
-            <div class="form-inline">
-                <label for="supported_locales">
-                    <i class="icon-globe"></i>
-                    <s:include value="_supported-locales-list.jsp" />
-                </label>
-            </div>
-
-            <s:include value="_login-form-fields.jsp"/>
-
-        </fieldset>
-    </s:form>
-</div>
-
-<a id="registration_link" href="Registration.action"><s:text name="Login.Register" /></a>
+<small>
+    <a href="Registration.action" class="register"><s:text name="Login.Register" /></a>
+</small>

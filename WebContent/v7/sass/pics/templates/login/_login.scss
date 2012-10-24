@@ -1,37 +1,67 @@
 #Login__page
 {
     background: #454545;
+    padding-top: 0;
     text-align: center;
-
-    .well
+    
+    #server_id
     {
-        background: #F1F1F2;
-        color: #666;
-        display: inline-block;
-        font-size: 13px;
-        margin-top: 50px;
-        padding: 40px;
+        height: 25px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 25px;
+    }
+    
+    #login_form
+    {
+        background: #f1f1f2;
+        @include box-shadow(#131313 0px 2px 8px);
+        margin: 100px auto 20px;
+        padding: 40px 60px;
         text-align: left;
+        width: 220px;
     }
 
-    #registration_link
+    .register
     {
-        color: #CCC;
+        color: #ccc;
         text-decoration: none;
     }
 
-    #registration_link:hover
+    .register:hover
     {
         color: #73BBE8;
     }
 }
 
-.lt-ie8 #Login__page #login_form
-{
-    display:inline;
-    width: 304px;
+@media (max-width: 480px) {
+    #Login__page
+    {
+        background: #f1f1f2;
+        
+        #login_form
+        {
+            background: transparent;
+            @include box-shadow(none);
+            margin: 0;
+            padding: 40px 0;
+            text-align: center;
+            width: 100%;
+            
+            #forgot_password,
+            .form-actions
+            {
+                text-align: center;
+            }
+        }
+        
+        .register
+        {
+            display: none;
+        }
+    }
 }
 
 @import 'login-form';
 @import 'login-modal';
-@import 'server-id';

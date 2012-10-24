@@ -1,88 +1,41 @@
 #login_form
 {
-    @include box-shadow(#131313 0px 2px 8px);
-
-    h1
+    .logo
     {
-        background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
-        height: 78px;
-        margin: 0px auto 30px auto;
-        width: 287px;
+        margin-bottom: 40px;
     }
-
-    .alert
+    
+    .form-inline
     {
-        width: 225px;
+        margin-bottom: 9px;
     }
-
-    fieldset
-    {
-        padding-right: 40px;
-    }
-
+    
     .icon-globe
     {
-        color: #666;
         font-size: 20px;
         margin-right: 5px;
+        position: relative;
+        top: 3px;
+    }
+    
+    #supported_locales
+    {
+        width: 195px;
+    }
+    
+    #forgot_password
+    {
+        margin: -5px 0 5px;
         text-align: right;
-        vertical-align: middle;
+        
+        a
+        {
+            color: #999;
+        }
     }
-
-    #user_fields
-    {
-        margin-left: 26px;
-    }
-
-    #user_fields label
-    {
-        margin-top: 10px;
-    }
-
-    #user_fields .password
-    {
-        margin-bottom: 2px;
-    }
-
-    #forgotPassword
-    {
-        margin-bottom: 5px;
-        text-align: right;
-    }
-
-    #forgotPassword a
-    {
-        color: #666;
-        font-size: 11px;
-        text-decoration: none;
-    }
-
-    #forgotPassword a:hover
-    {
-        color: #226396;
-    }
-
-    #remember_me
-    {
-        margin: 0px 0px 10px 26px;
-    }
-
-    #remember_me .checkbox input[type="checkbox"]
-    {
-        margin-right: 6px;
-    }
-
+    
     .form-actions
     {
-        background: none;
-        border: none;
-        margin: 0px;
-        padding: 0px;
         text-align: right;
-    }
-
-    #cancel_btn
-    {
-        display: none;
     }
 }

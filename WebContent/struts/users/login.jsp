@@ -2,12 +2,9 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <title><s:text name="global.Login" /></title>
-<meta name="help" content="Logging_In">
 
-<div id="server_id">
-    <div title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>"></div>
-</div>
+<div id="server_id" title="Server: <%= java.net.InetAddress.getLocalHost().getHostName() %>"></div>
 
-<div id="login_wrapper">
+<div class="login-container">
     <s:include value="login/_login-form.jsp"/>
 </div>

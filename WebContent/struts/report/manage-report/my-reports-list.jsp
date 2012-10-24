@@ -27,12 +27,10 @@
 <h3><s:text name="ManageReports.myReports.subtitle" /></h3>
 
 <s:if test="!reportPermissionUsers.isEmpty()">
-    <div id="my_reports_filter">
-        <div class="btn-group">
-            <a href="${alpha_sort_url}" class="btn"><s:text name="ManageReports.myReports.alphabetical" /></a>
-            <a href="${date_added_sort_url}" class="btn"><s:text name="ManageReports.myReports.dateAdded" /></a>
-            <a href="${last_viewed_sort_url}" class="btn"><s:text name="ManageReports.myReports.lastViewed" /></a>
-        </div>
+    <div id="my_reports_filter" class="btn-group">
+        <a href="${alpha_sort_url}" class="btn"><s:text name="ManageReports.myReports.alphabetical" /></a>
+        <a href="${date_added_sort_url}" class="btn"><s:text name="ManageReports.myReports.dateAdded" /></a>
+        <a href="${last_viewed_sort_url}" class="btn"><s:text name="ManageReports.myReports.lastViewed" /></a>
     </div>
 </s:if>
 

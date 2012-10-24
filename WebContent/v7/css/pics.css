@@ -127,9 +127,10 @@ h1.title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal;
+  margin-bottom: 0;
 }
 
-/* line 16, ../sass/pics/layout/_page-header.scss */
+/* line 17, ../sass/pics/layout/_page-header.scss */
 p.subtitle {
   color: #808285;
   font-size: 14px;
@@ -421,6 +422,40 @@ p.subtitle {
   background-image: linear-gradient(#c66603, #a84d10);
 }
 
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
+label {
+  color: #666;
+}
+
+/* line 23, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  color: #333;
+}
+
+/* line 28, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
+.form-actions {
+  background-color: transparent;
+  border-top: 0;
+  margin: 0;
+  padding: 0;
+}
+
 /* line 3, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
@@ -530,109 +565,95 @@ p.subtitle {
 /* line 2, ../sass/pics/templates/login/_login.scss */
 #Login__page {
   background: #454545;
+  padding-top: 0;
   text-align: center;
 }
-/* line 7, ../sass/pics/templates/login/_login.scss */
-#Login__page .well {
-  background: #F1F1F2;
-  color: #666;
-  display: inline-block;
-  font-size: 13px;
-  margin-top: 50px;
-  padding: 40px;
-  text-align: left;
+/* line 8, ../sass/pics/templates/login/_login.scss */
+#Login__page #server_id {
+  height: 25px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 25px;
 }
-/* line 18, ../sass/pics/templates/login/_login.scss */
-#Login__page #registration_link {
-  color: #CCC;
-  text-decoration: none;
-}
-/* line 24, ../sass/pics/templates/login/_login.scss */
-#Login__page #registration_link:hover {
-  color: #73BBE8;
-}
-
-/* line 30, ../sass/pics/templates/login/_login.scss */
-.lt-ie8 #Login__page #login_form {
-  display: inline;
-  width: 304px;
-}
-
-/* line 2, ../sass/pics/templates/login/_login-form.scss */
-#login_form {
+/* line 17, ../sass/pics/templates/login/_login.scss */
+#Login__page #login_form {
+  background: #f1f1f2;
   -webkit-box-shadow: #131313 0px 2px 8px;
   -moz-box-shadow: #131313 0px 2px 8px;
   box-shadow: #131313 0px 2px 8px;
+  margin: 100px auto 20px;
+  padding: 40px 60px;
+  text-align: left;
+  width: 220px;
 }
-/* line 6, ../sass/pics/templates/login/_login-form.scss */
-#login_form h1 {
-  background: url("../img/login/PICS-login-logo.png") no-repeat 0px 0px;
-  height: 78px;
-  margin: 0px auto 30px auto;
-  width: 287px;
-}
-/* line 14, ../sass/pics/templates/login/_login-form.scss */
-#login_form .alert {
-  width: 225px;
-}
-/* line 19, ../sass/pics/templates/login/_login-form.scss */
-#login_form fieldset {
-  padding-right: 40px;
-}
-/* line 24, ../sass/pics/templates/login/_login-form.scss */
-#login_form .icon-globe {
-  color: #666;
-  font-size: 20px;
-  margin-right: 5px;
-  text-align: right;
-  vertical-align: middle;
-}
-/* line 33, ../sass/pics/templates/login/_login-form.scss */
-#login_form #user_fields {
-  margin-left: 26px;
-}
-/* line 38, ../sass/pics/templates/login/_login-form.scss */
-#login_form #user_fields label {
-  margin-top: 10px;
-}
-/* line 43, ../sass/pics/templates/login/_login-form.scss */
-#login_form #user_fields .password {
-  margin-bottom: 2px;
-}
-/* line 48, ../sass/pics/templates/login/_login-form.scss */
-#login_form #forgotPassword {
-  margin-bottom: 5px;
-  text-align: right;
-}
-/* line 54, ../sass/pics/templates/login/_login-form.scss */
-#login_form #forgotPassword a {
-  color: #666;
-  font-size: 11px;
+/* line 27, ../sass/pics/templates/login/_login.scss */
+#Login__page .register {
+  color: #ccc;
   text-decoration: none;
 }
-/* line 61, ../sass/pics/templates/login/_login-form.scss */
-#login_form #forgotPassword a:hover {
-  color: #226396;
+/* line 33, ../sass/pics/templates/login/_login.scss */
+#Login__page .register:hover {
+  color: #73BBE8;
 }
-/* line 66, ../sass/pics/templates/login/_login-form.scss */
-#login_form #remember_me {
-  margin: 0px 0px 10px 26px;
+
+@media (max-width: 480px) {
+  /* line 40, ../sass/pics/templates/login/_login.scss */
+  #Login__page {
+    background: #f1f1f2;
+  }
+  /* line 44, ../sass/pics/templates/login/_login.scss */
+  #Login__page #login_form {
+    background: transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 40px 0;
+    text-align: center;
+    width: 100%;
+  }
+  /* line 54, ../sass/pics/templates/login/_login.scss */
+  #Login__page #login_form #forgot_password,
+  #Login__page #login_form .form-actions {
+    text-align: center;
+  }
+  /* line 60, ../sass/pics/templates/login/_login.scss */
+  #Login__page .register {
+    display: none;
+  }
 }
-/* line 71, ../sass/pics/templates/login/_login-form.scss */
-#login_form #remember_me .checkbox input[type="checkbox"] {
-  margin-right: 6px;
+/* line 4, ../sass/pics/templates/login/_login-form.scss */
+#login_form .logo {
+  margin-bottom: 40px;
 }
-/* line 76, ../sass/pics/templates/login/_login-form.scss */
-#login_form .form-actions {
-  background: none;
-  border: none;
-  margin: 0px;
-  padding: 0px;
+/* line 9, ../sass/pics/templates/login/_login-form.scss */
+#login_form .form-inline {
+  margin-bottom: 9px;
+}
+/* line 14, ../sass/pics/templates/login/_login-form.scss */
+#login_form .icon-globe {
+  font-size: 20px;
+  margin-right: 5px;
+  position: relative;
+  top: 3px;
+}
+/* line 22, ../sass/pics/templates/login/_login-form.scss */
+#login_form #supported_locales {
+  width: 195px;
+}
+/* line 27, ../sass/pics/templates/login/_login-form.scss */
+#login_form #forgot_password {
+  margin: -5px 0 5px;
   text-align: right;
 }
-/* line 85, ../sass/pics/templates/login/_login-form.scss */
-#login_form #cancel_btn {
-  display: none;
+/* line 32, ../sass/pics/templates/login/_login-form.scss */
+#login_form #forgot_password a {
+  color: #999;
+}
+/* line 38, ../sass/pics/templates/login/_login-form.scss */
+#login_form .form-actions {
+  text-align: right;
 }
 
 /*** Login Modal Styling ***/
@@ -766,18 +787,6 @@ p.subtitle {
 /* line 131, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .modal-footer {
   display: none;
-}
-
-/* line 2, ../sass/pics/templates/login/_server-id.scss */
-#server_id {
-  position: fixed;
-  width: 100%;
-}
-/* line 7, ../sass/pics/templates/login/_server-id.scss */
-#server_id div {
-  float: right;
-  height: 25px;
-  width: 25px;
 }
 
 /*
