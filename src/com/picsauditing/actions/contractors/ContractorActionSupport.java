@@ -12,6 +12,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.struts2.ServletActionContext;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -55,10 +60,11 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.PermissionToViewContractor;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {
+	private final static Logger logger = LoggerFactory.getLogger(ContractorActionSupport.class);
+
 	protected ContractorAccount contractor;
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
 
@@ -274,13 +280,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 		final int MAX_MENU_ITEM = 10;
 		boolean addMoreMenu = false;
 
-		// PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
-		PicsLogger.start("ContractorActionSupport.getAuditMenu");
+		Logger profiler = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
+		StopWatch stopwatch = new Slf4JStopWatch(profiler);
+		stopwatch.start("ContractorActionSupport.getAuditMenu");
 
 		// Create the menu
 		List<MenuComponent> menu = new ArrayList<MenuComponent>();
-		// String checkIcon =
-		// "<img src=\"images/okCheck.gif\" border=\"0\" title=\"Complete\"/>";
 		Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
 
 		// Sort audits, by throwing them into a tree set and sorting them by
@@ -324,7 +329,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		treeSet.addAll(auditList);
 		auditList = treeSet;
 
-		PicsLogger.log("Found [" + auditList.size() + "] total active audits");
+		logger.info("Found [{}] total active audits", auditList.size());
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
 			// Add the PQF
@@ -421,7 +426,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id="
 					+ id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
-			boolean addMenu = false;
 			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
 				subMenu.addChild(getText("ManageEmployees.title"), "ManageEmployees.action?id=" + id);
 			}
@@ -442,7 +446,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 						childMenu.setName(linkText);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					}
-					addMenu = true;
 					iter.remove();
 				}
 			}
@@ -484,15 +487,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 			addSubMenu(menu, subMenu);
 		}
-		PicsLogger.stop();
+
+		stopwatch.stop();
+
 		resetActiveAudits();
 		return menu;
 	}
 
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
 		if (subMenu.getChildren().size() > 0) {
-			PicsLogger.log("Found [" + subMenu.getChildren().size() + "] " + subMenu.getName()
-					+ (subMenu.getChildren().size() == 1 ? "" : "s"));
+			logger.info("Found [{}] {}{}", new Object[] { subMenu.getChildren().size(), subMenu.getName(),
+					(subMenu.getChildren().size() == 1 ? "" : "s") });
 			menu.add(subMenu);
 		}
 	}
@@ -581,7 +586,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 *         then this does the appropriate checking to remove the certs that
 	 *         they shouldn't be able to see
 	 */
-	@SuppressWarnings("deprecation")
 	public List<Certificate> getCertificates() {
 		if (certificates == null) {
 			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
@@ -798,7 +802,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		ContractorRegistrationStep highestStepReached = ContractorRegistrationStep.getStep(contractor);
 		if (highestStepReached.ordinal() < this.currentStep.ordinal()
 				|| highestStepReached == ContractorRegistrationStep.Done) {
-			setUrlForRedirect(highestStepReached.getUrl());
+			ServletActionContext.getResponse().sendRedirect(highestStepReached.getUrl());
 			return true;
 		}
 		return false;
