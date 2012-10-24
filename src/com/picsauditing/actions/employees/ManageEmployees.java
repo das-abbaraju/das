@@ -139,6 +139,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String save() throws Exception {
+		boolean employeeIsNew = employee.getId() == 0;
+
 		if (employee.getAccount() == null) {
 			employee.setAccount(account);
 		}
@@ -150,9 +152,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		employee.setAuditColumns(permissions);
-		employee = (Employee) employeeDAO.save(employee);
+		employeeDAO.save(employee);
 
-		if (employee.getId() == 0) {
+		if (employeeIsNew) {
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 		}
 
