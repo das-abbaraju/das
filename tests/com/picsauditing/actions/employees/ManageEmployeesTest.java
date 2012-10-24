@@ -190,7 +190,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 		manageEmployees.setAudit(audit);
 
-		assertEquals(ActionSupport.SUCCESS, manageEmployees.execute());
+		manageEmployees.findAccount();
 		assertEquals(audit.getContractorAccount(), manageEmployees.getAccount());
 	}
 

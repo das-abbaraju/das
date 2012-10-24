@@ -89,6 +89,10 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			account = accountDAO.find(id);
 		}
 
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
+
 		if (account == null) {
 			account = accountDAO.find(permissions.getAccountId());
 		}
@@ -101,10 +105,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	@Override
 	public String execute() {
 		subHeading = getText("ManageEmployees.title");
-
-		if (audit != null) {
-			account = audit.getContractorAccount();
-		}
 
 		if (employee != null) {
 			account = employee.getAccount();
