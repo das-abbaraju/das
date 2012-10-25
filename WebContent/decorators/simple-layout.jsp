@@ -21,6 +21,8 @@
         <script src="v7/js/vendor/modernizr-2.6.1.min.js"></script>
     </head>
     <body id="${actionName}_${methodName}_page" class="${actionName}-page page">
+        <s:include value="/struts/layout/_environment.jsp" />
+        
         <decorator:body />
 
         <script src="v7/js/script.js"></script>

@@ -17,6 +17,61 @@ body {
     padding-top: 0;
   }
 }
+/* line 2, ../sass/pics/layout/_environment.scss */
+#environment {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
+  background-image: -webkit-linear-gradient(#252525, #333333);
+  background-image: -moz-linear-gradient(#252525, #333333);
+  background-image: -o-linear-gradient(#252525, #333333);
+  background-image: linear-gradient(#252525, #333333);
+  color: #f1f1f2;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 10px;
+}
+/* line 10, ../sass/pics/layout/_environment.scss */
+#environment a {
+  color: #ccc;
+  float: right;
+  padding: 0 10px;
+  text-decoration: none;
+}
+/* line 17, ../sass/pics/layout/_environment.scss */
+#environment a:hover {
+  color: #f1f1f2;
+}
+/* line 25, ../sass/pics/layout/_environment.scss */
+#environment .active.localhost {
+  color: #f6303c;
+}
+/* line 30, ../sass/pics/layout/_environment.scss */
+#environment .active.alpha {
+  color: #33c033;
+}
+/* line 35, ../sass/pics/layout/_environment.scss */
+#environment .active.config {
+  color: #fcc033;
+}
+/* line 40, ../sass/pics/layout/_environment.scss */
+#environment .active.beta {
+  color: #73bbe8;
+}
+/* line 45, ../sass/pics/layout/_environment.scss */
+#environment .active.qa-beta {
+  color: #ff6600;
+}
+/* line 50, ../sass/pics/layout/_environment.scss */
+#environment .active.qa-stable {
+  color: #996fff;
+}
+
+@media (max-width: 979px) {
+  /* line 58, ../sass/pics/layout/_environment.scss */
+  #environment.navbar-fixed-bottom {
+    margin: 0;
+    position: fixed;
+  }
+}
 /* line 4, ../sass/pics/layout/_menu.scss */
 .navbar .brand {
   padding-right: 15px;
@@ -118,7 +173,7 @@ body {
 /* line 2, ../sass/pics/layout/_page-header.scss */
 .page-header {
   border: 0px;
-  margin: 18px 0px;
+  margin: 20px 0px;
   padding: 0px;
 }
 
@@ -566,9 +621,8 @@ input[type="color"],
 #Login__page {
   background: #454545;
   padding-top: 0;
-  text-align: center;
 }
-/* line 8, ../sass/pics/templates/login/_login.scss */
+/* line 7, ../sass/pics/templates/login/_login.scss */
 #Login__page #server_id {
   height: 25px;
   position: absolute;
@@ -576,7 +630,11 @@ input[type="color"],
   top: 0;
   width: 25px;
 }
-/* line 17, ../sass/pics/templates/login/_login.scss */
+/* line 16, ../sass/pics/templates/login/_login.scss */
+#Login__page .login-container {
+  text-align: center;
+}
+/* line 21, ../sass/pics/templates/login/_login.scss */
 #Login__page #login_form {
   background: #f1f1f2;
   -webkit-box-shadow: #131313 0px 2px 8px;
@@ -587,22 +645,22 @@ input[type="color"],
   text-align: left;
   width: 220px;
 }
-/* line 27, ../sass/pics/templates/login/_login.scss */
+/* line 31, ../sass/pics/templates/login/_login.scss */
 #Login__page .register {
   color: #ccc;
   text-decoration: none;
 }
-/* line 33, ../sass/pics/templates/login/_login.scss */
+/* line 37, ../sass/pics/templates/login/_login.scss */
 #Login__page .register:hover {
   color: #73BBE8;
 }
 
 @media (max-width: 480px) {
-  /* line 40, ../sass/pics/templates/login/_login.scss */
+  /* line 44, ../sass/pics/templates/login/_login.scss */
   #Login__page {
     background: #f1f1f2;
   }
-  /* line 44, ../sass/pics/templates/login/_login.scss */
+  /* line 48, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form {
     background: transparent;
     -webkit-box-shadow: none;
@@ -613,12 +671,12 @@ input[type="color"],
     text-align: center;
     width: 100%;
   }
-  /* line 54, ../sass/pics/templates/login/_login.scss */
+  /* line 58, ../sass/pics/templates/login/_login.scss */
   #Login__page #login_form #forgot_password,
   #Login__page #login_form .form-actions {
     text-align: center;
   }
-  /* line 60, ../sass/pics/templates/login/_login.scss */
+  /* line 64, ../sass/pics/templates/login/_login.scss */
   #Login__page .register {
     display: none;
   }
@@ -812,64 +870,64 @@ input[type="color"],
 }
 /* line 12, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page h3 {
-  color: #999;
+  color: #a84310;
   font-size: 14px;
   font-style: italic;
   font-weight: normal;
-  line-height: 18px;
-  margin-bottom: 35px;
-  text-align: center;
+  line-height: 1;
+  margin: 0 0 20px;
 }
-/* line 27, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 26, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
   list-style: none;
   margin: 0px auto 20px;
   text-align: left;
 }
-/* line 33, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 32, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
   margin-bottom: 2px;
 }
-/* line 41, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 40, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite {
   line-height: normal;
   float: left;
   margin: 8px 5px 0px;
   text-decoration: none;
 }
-/* line 49, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 48, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
   font-size: 12px;
 }
-/* line 55, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 54, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
   color: #a84d10;
 }
-/* line 60, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 59, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .summary {
   float: left;
   margin-right: 10px;
 }
-/* line 66, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 65, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name {
   color: #333;
   float: left;
   font-size: 13px;
+  font-weight: bold;
   line-height: 30px;
   margin: 0px 10px 0px 0px;
 }
 /* line 75, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .created-by {
   color: #999;
-  font-size: 10px;
+  font-size: 11px;
   font-style: italic;
   line-height: 30px;
   white-space: nowrap;

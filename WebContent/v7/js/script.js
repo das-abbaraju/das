@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2012-10-23
+/*! Picsorganizer - v0.1.0 - 2012-10-24
 * http://www.picsorganizer.com/
 * Copyright (c) 2012 Carey Hinoki; Licensed MIT */
 
@@ -2846,7 +2846,7 @@ PICS.define('layout.menu.Menu', {
             }
         }
     });
-})(jQuery);
+}(jQuery));
 PICS.define('report.ListFavoritesController', {
     methods: {
         init: function () {

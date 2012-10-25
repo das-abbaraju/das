@@ -33,3 +33,16 @@
     <s:param name="enable_move_up" value="true" />
     <s:param name="enable_move_down" value="false"/>
 </s:include>
+
+<s:if test="reportUserFavorites.isEmpty()">
+    <div class="row">
+        <div class="alert alert-info alert-block span6 offset3">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            
+            <h4>You have no favorite reports.</h4>
+            <p>
+                Star your most used reports to access them from your menu.
+            </p>
+        </div>
+    </div>
+</s:if>

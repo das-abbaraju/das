@@ -26,6 +26,8 @@
             <s:action name="Menu!menu" executeResult="true" />
         </header>
         
+        <s:include value="/struts/layout/_environment.jsp" />
+        
         <div id="main" role="main" class="container">
             <decorator:body />
         </div>

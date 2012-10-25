@@ -1,66 +1,46 @@
-.environment
-{
-    border-bottom: 2px solid #404040;
-    overflow: hidden;
-    padding: 3px;
+#environment {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
+  background-image: -webkit-linear-gradient(#252525, #333333);
+  background-image: -moz-linear-gradient(#252525, #333333);
+  background-image: -o-linear-gradient(#252525, #333333);
+  background-image: linear-gradient(#252525, #333333);
+  color: #f1f1f2;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 10px;
 }
 
-.environment.localhost
-{
-    background: url(../images/environment/orange.jpg) repeat;
+#environment a {
+  float: right;
+  padding: 0 10px;
+  color: #ccc;
+  text-decoration: none;
 }
 
-.environment.qa-beta
-{
-    background: url(../images/environment/solidorange.jpg) repeat;
+#environment a:hover {
+  color: #f1f1f2;
 }
 
-.environment.qa-stable
-{
-    background: url(../images/environment/solidorange.jpg) repeat;
+#environment .active.localhost {
+  color: #f6303c;
 }
 
-
-.environment.alpha
-{
-    background: url(../images/environment/green.jpg) repeat;
+#environment .active.alpha {
+  color: #33c033;
 }
 
-.environment.config
-{
-    background: url(../images/environment/purple.jpg) repeat;
+#environment .active.config {
+  color: #fcc033;
 }
 
-.environment.beta
-{
-    background: url(../images/environment/blue.jpg) repeat;
+#environment .active.beta {
+  color: #73bbe8;
 }
 
-.environment a,
-.environment span
-{
-    color: white;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    display: block;
-    float: right;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    margin-left: 3px;
-    padding: 4px 6px;
-    text-decoration: none;
+#environment .active.qa-beta {
+  color: #ff6600;
 }
 
-.environment a.active,
-.environment span.database,
-.environment a:hover
-{
-    background-color: #404040;
-}
-
-.environment span.database
-{
-	float: left;
+#environment .active.qa-stable {
+  color: #996fff;
 }

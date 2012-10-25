@@ -28,7 +28,7 @@
 		<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	</head>
     <body id="${actionName}_${methodName}_page" class="${actionName}-page page">
-        <jsp:include page="/struts/layout/environment.jsp" />
+        <s:include value="/struts/layout/_environment.jsp" />
         
 		<div id="container">
 			<s:include value="/struts/layout/header_registration.jsp" />

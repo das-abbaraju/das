@@ -2,7 +2,6 @@
 {
     background: #454545;
     padding-top: 0;
-    text-align: center;
     
     #server_id
     {
@@ -11,6 +10,11 @@
         right: 0;
         top: 0;
         width: 25px;
+    }
+    
+    .login-container
+    {
+    	text-align: center;
     }
     
     #login_form
