@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.Filter', {
     bodyCls: 'filter-body',
     border: 0,
     cls: 'filter',
-    height: 80,
+    height: 90,
     layout: {
         type: 'hbox',
         align: 'middle'
@@ -34,10 +34,51 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
+        this.addRemoveButton();
+        
+        var config = PICS.app.configuration;
+        if (config.isEditable()) {
+            this.addEditableButton();
+        }
+        
+        var filter_number = this.createFilterNumber(this.index);
+        var filter_content = this.createFilterContent(this.record);
+
+        this.add([
+            filter_number,
+            filter_content
+        ]);
+    },
+
+    addEditableButton: function () {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '1 4 0 0'
+                margin: '0 0 0 0',
+                padding: '0 6 5 0'
+            },
+            dock: 'bottom',
+            items: [{
+                xtype: 'button',
+                action: 'remove-filter',
+                cls: 'advanced-filter-button',
+                height: 22,
+                text: '<i class="icon-pencil"></i>',
+                tooltip: 'Advanced Filter',
+                width: 20
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });
+    },
+    
+    addRemoveButton: function () {
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '2 4 0 0',
             },
             dock: 'top',
             items: [{
@@ -53,17 +94,9 @@ Ext.define('PICS.view.report.filter.Filter', {
                 pack: 'end'
             },
             ui: 'footer'
-        });
-
-        var filter_number = this.createFilterNumber(this.index);
-        var filter_content = this.createFilterContent(this.record);
-
-        this.add([
-            filter_number,
-            filter_content
-        ]);
+        });        
     },
-
+    
     createFilterNumber: function (index) {
         return {
             xtype: 'displayfield',
@@ -114,7 +147,7 @@ Ext.define('PICS.view.report.filter.Filter', {
             border: 0,
             height: 30,
             items: [{
-                xtype: 'displayfield',
+                xtype : 'displayfield',
                 cls: 'filter-name',
                 name: 'filter_name',
                 value: text
