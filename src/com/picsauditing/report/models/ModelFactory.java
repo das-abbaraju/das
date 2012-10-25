@@ -41,6 +41,8 @@ public class ModelFactory {
 			return new ReportPermissionModel(permissions);
 		if (type.equals(ModelType.Reports))
 			return new ReportModel(permissions);
+		if (type.equals(ModelType.Users))
+			return new UserModel(permissions);
 
 		logger.warn("WARNING: ModelFactory failed to define Model for type = {}", type);
 

@@ -8,7 +8,8 @@ import com.picsauditing.util.SpringUtils;
 public enum FieldType {
 	AccountID,
 	AccountLevel(EnumType.STRING),
-	AccountStatus(EnumType.STRING),
+	AccountStatus(EnumType.STRING), 
+	AccountType(EnumType.STRING),
 	ApprovalStatus(EnumType.STRING),
 	AuditStatus(EnumType.STRING),
 	AuditSubStatus(EnumType.STRING),

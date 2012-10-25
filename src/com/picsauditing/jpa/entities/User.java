@@ -35,6 +35,7 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
@@ -168,6 +169,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Column(name = "username", length = 100, nullable = false, unique = true)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 6)
+	@ReportField(type = FieldType.String, importance = FieldImportance.Low)
 	public String getUsername() {
 		return username;
 	}
@@ -224,7 +226,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo") })
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.Boolean)
+	@ReportField(type = FieldType.Boolean, sql = "CASE " + ReportOnClause.ToAlias
+			+ ".isActive WHEN 'Yes' THEN 1 ELSE 0 END")
 	public YesNo getIsActive() {
 		return isActive;
 	}
@@ -243,7 +246,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(type = FieldType.DateTime)
+	@ReportField(type = FieldType.Date)
 	public Date getLastLogin() {
 		return lastLogin;
 	}
@@ -340,7 +343,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public void setFailedAttempts(int failedAttempts) {
 		this.failedAttempts = failedAttempts;
 	}
-	
+
 	public void unlockLogin() {
 		setFailedAttempts(0);
 		setLockUntil(null);
@@ -518,7 +521,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * This is a total HACK!! But we can add it to the DB later or something
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -596,7 +599,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 *
+	 * 
 	 * @param permissions
 	 *            The new set of permission for this user (transient version of
 	 *            user.permissions)
@@ -718,7 +721,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * Grants all allowable permission types for this OpPerm
-	 *
+	 * 
 	 * @param opPerm
 	 * @param grantorID
 	 *            who is granting the permission
@@ -790,7 +793,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * In UsersManage, another user (non-group) is inserted into this user's
 	 * groups for shadowing
-	 *
+	 * 
 	 * @return shadowed user or null
 	 */
 	@Transient
@@ -817,7 +820,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * Enables subscription if disabled or creates subscription if it does not
 	 * exist.
-	 *
+	 * 
 	 * @param subscription
 	 * @return
 	 */

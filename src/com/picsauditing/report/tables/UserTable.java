@@ -1,6 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 
 public class UserTable extends AbstractTable {
@@ -10,6 +11,10 @@ public class UserTable extends AbstractTable {
 		super("users");
 		addPrimaryKey(FieldType.UserID);
 		addFields(User.class);
+		
+		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+		addField(creationDate);
+
 	}
 
 	protected void addJoins() {
