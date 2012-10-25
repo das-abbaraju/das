@@ -95,12 +95,22 @@
 			// ajax field validation - using jsonValidate intercepter
 			field_validate: function (event) {
 			    var element = $(this),
+			        error_element = element.siblings('.errors'),
 			        form = element.closest('form'),
 			        data = form.serialize() + '&method%3AcreateAccount="Get Started"' + '&struts.enableJSONValidation=true' + '&struts.validateOnly=true'; // serialized form including json validator interceptors
 
+			    function clearFieldErrors() {
+			        if (error_element.length) {
+			            error_element.remove();
+
+			            if (element.attr('id') === 'Registration_contractor_name') {
+			                $('.contractor-name-duplicate').hide();
+			            }
+			        }
+			    }
+
 			    function displayFieldErrors(form_errors) {
-			        var error_element = element.siblings('.errors'),
-			            field_name = element.attr('name'),
+			        var field_name = element.attr('name'),
 			            field_errors = form_errors[field_name];
 
 			        if (field_errors) {
@@ -123,14 +133,7 @@
 			                element.after(html);
 			            }
 			        } else {
-			            //remove errors from DOM
-			            if (error_element.length) {
-			                error_element.remove();
-
-			                if (element.attr('id') === 'Registration_contractor_name') {
-			                    $('.contractor-name-duplicate').hide();
-			                }
-			            }
+			            clearFieldErrors();
 			        }
 			    }
 
@@ -142,6 +145,8 @@
 			        success: function (data, textStatus, XMLHttpRequest) {
 			            if (data.fieldErrors) {
 			                displayFieldErrors(data.fieldErrors);
+			            } else {
+			                clearFieldErrors();
 			            }
 			        }
 			    });
@@ -324,11 +329,11 @@
 
 					if ($.inArray(element_id, ['onSite', 'offSite']) != -1 && is_checked) {
 						service_safety_evaluation_display = true;
-					} 
+					}
 					if($.inArray(element_id, ['materialSupplier']) != -1 && is_checked) {
 						product_safety_evaluation_display = true;
 						business_interruption_evaluation_display = true;
-					} 
+					}
 					if($.inArray(element_id, ['transportation']) != -1 && is_checked) {
 					    product_safety_evaluation_display = true;
 					}
@@ -345,7 +350,7 @@
 				} else {
 					product_safety_evaluation.slideUp(400);
 				}
-				
+
                 if (business_interruption_evaluation_display) {
                     business_interruption_evaluation.slideDown(400);
                 } else {
