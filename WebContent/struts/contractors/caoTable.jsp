@@ -22,7 +22,7 @@
                     <s:text name="global.Status" />
                 </th>
 				
-                <s:if test="conAudit.auditType.classType.policy">
+                <s:if test="conAudit.auditType.classType.policy && systemEdit">
                 	<th>
                     	<s:text name="global.AuditSubStatus" />
                 	</th>                
@@ -161,8 +161,8 @@
 							</s:if>
 						</td>
 						
-						<s:if test="conAudit.auditType.classType.policy">
-							<td class="caoStatus<s:if test="!systemEdit"> hoverable</s:if><s:else> systemEdit</s:else>">							
+						<s:if test="conAudit.auditType.classType.policy && systemEdit">
+							<td class="caoStatus systemEdit">
 								<s:if test="isCanEditCao(#currentCao)">
 									<span class="caoEdit left">
 										<s:hidden cssClass="caoID" name="#currentCao.id"/>
