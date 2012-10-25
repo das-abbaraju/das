@@ -167,14 +167,14 @@ public class ReportModel {
 		if (Strings.isEmpty(searchTerm)) {
 			// By default, show the top ten most favorited reports sorted by
 			// number of favorites
-			List<ReportUser> reportUsers = reportUserDao.findTenMostFavoritedReports(permissions.getUserId(),
+			List<ReportUser> reportUsers = reportUserDao.findTenMostFavoritedReports(permissions.getUserId(), Strings.implode(permissions.getGroupIds()),
 					permissions.getAccountId());
 			for (ReportUser reportUser : reportUsers) {
 				reports.add(reportUser.getReport());
 			}
 		} else {
 			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions.getUserId(),
-					permissions.getAccountId(), searchTerm);
+					Strings.implode(permissions.getGroupIds()), permissions.getAccountId(), searchTerm);
 			pagination.Initialize(parameters, reportDao);
 			reports = pagination.getResults();
 		}

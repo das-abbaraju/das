@@ -6,10 +6,12 @@ public class ReportPaginationParameters extends PaginationParameters {
 
 	private String query;
 	private int userId;
+	private String groupIds;
 	private int accountId;
 
-	public ReportPaginationParameters(int userId, int accountId, String query) {
+	public ReportPaginationParameters(int userId, String groupIds, int accountId, String query) {
 		this.userId = userId;
+		this.groupIds = groupIds;
 		this.accountId = accountId;
 		this.query = query;
 	}
@@ -28,6 +30,14 @@ public class ReportPaginationParameters extends PaginationParameters {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public String getGroupIds() {
+		return groupIds;
+	}
+
+	public void setGroupIds(String groupIds) {
+		this.groupIds = groupIds;
 	}
 
 	public int getAccountId() {

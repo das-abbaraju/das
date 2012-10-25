@@ -1,6 +1,7 @@
 package com.picsauditing.model.report;
 
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -11,7 +12,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
@@ -183,17 +186,21 @@ public class ReportModelTest {
 	@Test
 	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
 		List<Report> reports = reportModel.getReportsForSearch(null, EntityFactory.makePermission(), pagination);
+		Set<Integer> set = new HashSet<Integer>();
+		set.add(1294);
 
 		assertNotNull(reports);
-		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyInt());
+		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyString(), anyInt());
 	}
 
 	@Test
 	public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
 		List<Report> reports = reportModel.getReportsForSearch("", EntityFactory.makePermission(), pagination);
+		Set<Integer> set = new HashSet<Integer>();
+		set.add(1294);
 
 		assertNotNull(reports);
-		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyInt());
+		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyString(), anyInt());
 	}
 
 	// TODO add new tests for paging

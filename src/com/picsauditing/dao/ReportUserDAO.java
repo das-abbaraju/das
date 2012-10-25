@@ -30,11 +30,11 @@ public class ReportUserDAO extends PicsDAO {
 		return findOne(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findTenMostFavoritedReports(int userId, int accountId) {
+	public List<ReportUser> findTenMostFavoritedReports(int userId, String groupIds, int accountId) {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 		try {
-			SelectSQL sql = setupSqlForSearchFilterQuery(userId, accountId);
+			SelectSQL sql = setupSqlForSearchFilterQuery(userId, groupIds, accountId);
 
 			sql.setLimit(10);
 
@@ -125,7 +125,7 @@ public class ReportUserDAO extends PicsDAO {
 		query.executeUpdate();
 	}
 
-	public static SelectSQL setupSqlForSearchFilterQuery(int userId, int accountId) {
+	public static SelectSQL setupSqlForSearchFilterQuery(int userId, String groupIds, int accountId) {
 		SelectSQL sql = new SelectSQL("report r");
 
 		sql.addField("r.id");
@@ -140,6 +140,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + userId
+				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + groupIds + ")"
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + accountId;
 		sql.addWhere("r.id IN (" + permissionsUnion + ")");
 
