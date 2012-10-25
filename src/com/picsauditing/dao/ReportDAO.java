@@ -78,7 +78,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		// TODO escape properly
 		String query = "\'%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\'";
 		
-		SelectSQL selectSQL = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getUserId(), reportParams.getGroupIds(), reportParams.getAccountId());
+		SelectSQL selectSQL = ReportUserDAO.setupSqlForSearchFilterQuery(reportParams.getPermissions());
 		selectSQL.addWhere("r.name LIKE " + query +
 				" OR r.description LIKE " + query +
 				" OR u.name LIKE " + query);

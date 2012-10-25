@@ -15,11 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 public class ReportUserDAO extends PicsDAO {
 
@@ -30,11 +32,11 @@ public class ReportUserDAO extends PicsDAO {
 		return findOne(ReportUser.class, query);
 	}
 
-	public List<ReportUser> findTenMostFavoritedReports(int userId, String groupIds, int accountId) {
+	public List<ReportUser> findTenMostFavoritedReports(Permissions permissions) {
 		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 		try {
-			SelectSQL sql = setupSqlForSearchFilterQuery(userId, groupIds, accountId);
+			SelectSQL sql = setupSqlForSearchFilterQuery(permissions);
 
 			sql.setLimit(10);
 
@@ -125,7 +127,7 @@ public class ReportUserDAO extends PicsDAO {
 		query.executeUpdate();
 	}
 
-	public static SelectSQL setupSqlForSearchFilterQuery(int userId, String groupIds, int accountId) {
+	public static SelectSQL setupSqlForSearchFilterQuery(Permissions permissions) {
 		SelectSQL sql = new SelectSQL("report r");
 
 		sql.addField("r.id");
@@ -139,9 +141,9 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN users AS u ON r.createdBy = u.id");
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
-		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + userId
-				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + groupIds + ")"
-				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + accountId;
+		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
+				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getGroupIds()) + ")"
+				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
 		sql.addWhere("r.id IN (" + permissionsUnion + ")");
 
 		sql.addOrderBy("f.total DESC");

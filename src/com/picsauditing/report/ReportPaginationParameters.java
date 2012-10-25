@@ -1,18 +1,15 @@
 package com.picsauditing.report;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.util.pagination.PaginationParameters;
 
 public class ReportPaginationParameters extends PaginationParameters {
 
 	private String query;
-	private int userId;
-	private String groupIds;
-	private int accountId;
+	private Permissions permissions;
 
-	public ReportPaginationParameters(int userId, String groupIds, int accountId, String query) {
-		this.userId = userId;
-		this.groupIds = groupIds;
-		this.accountId = accountId;
+	public ReportPaginationParameters(Permissions permissions, String query) {
+		this.permissions = permissions;
 		this.query = query;
 	}
 
@@ -24,27 +21,11 @@ public class ReportPaginationParameters extends PaginationParameters {
 		this.query = query;
 	}
 
-	public int getUserId() {
-		return userId;
+	public Permissions getPermissions() {
+		return permissions;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	public String getGroupIds() {
-		return groupIds;
-	}
-
-	public void setGroupIds(String groupIds) {
-		this.groupIds = groupIds;
-	}
-
-	public int getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
+	public void setPermissions(Permissions permissions) {
+		this.permissions = permissions;
 	}
 }

@@ -6,8 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
@@ -185,22 +183,22 @@ public class ReportModelTest {
 
 	@Test
 	public void testGetReportAccessesForSearch_NullSearchTermCallsTopTenFavorites() {
-		List<Report> reports = reportModel.getReportsForSearch(null, EntityFactory.makePermission(), pagination);
+		List<Report> reports = reportModel.getReportsForSearch(null, permissions, pagination);
 		Set<Integer> set = new HashSet<Integer>();
 		set.add(1294);
 
 		assertNotNull(reports);
-		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyString(), anyInt());
+		verify(reportUserDao).findTenMostFavoritedReports(permissions);
 	}
 
 	@Test
 	public void testGetReportAccessesForSearch_BlankSearchTermCallsTopTenFavorites() {
-		List<Report> reports = reportModel.getReportsForSearch("", EntityFactory.makePermission(), pagination);
+		List<Report> reports = reportModel.getReportsForSearch("", permissions, pagination);
 		Set<Integer> set = new HashSet<Integer>();
 		set.add(1294);
 
 		assertNotNull(reports);
-		verify(reportUserDao).findTenMostFavoritedReports(anyInt(), anyString(), anyInt());
+		verify(reportUserDao).findTenMostFavoritedReports(permissions);
 	}
 
 	// TODO add new tests for paging

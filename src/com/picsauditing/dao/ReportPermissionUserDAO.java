@@ -26,7 +26,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 			"LEFT JOIN report_user ru on ru.reportID = rpu.reportID AND ru.userID = :userId " +
 			"WHERE rpu.userID IN ( :groupIds ) ";
 
-	private static final String FIND_REPORTS_BASED_ON_USER_PERMISSIONS = "SELECT DISTINCT * FROM ( " + 
+	private static final String FIND_REPORTS_BASED_ON_USER_PERMISSIONS = "SELECT * FROM ( " + 
 			"%s UNION %s ) t GROUP BY t.reportID ";
 	
 	private static final String FIND_ORDERED_REPORTS_BASED_ON_USER_PERMISSIONS = 
