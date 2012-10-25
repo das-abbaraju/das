@@ -91928,17 +91928,17 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '2 2 0 0'
+                margin: '1 4 0 0'
             },
             dock: 'top',
             items: [{
                 xtype: 'button',
                 action: 'remove-filter',
                 cls: 'remove-filter',
-                height: 16,
+                height: 20,
                 text: '<i class="icon-remove-sign"></i>',
                 tooltip: 'Remove',
-                width: 16
+                width: 20
             }],
             layout: {
                 pack: 'end'
@@ -97143,12 +97143,15 @@ Ext.define('PICS.controller.report.Filter', {
             'reportfilteroptions button[action=remove-filter]': {
                 click: this.onFilterRemove
             }
-        });
+         });
 
         this.application.on({
             refreshfilters: this.refreshFilters,
             scope: this
         });
+
+        var that = this;
+        Ext.EventManager.onWindowResize(that.positionRemoveButtons, that);
     },
 
     /**
@@ -97531,11 +97534,10 @@ Ext.define('PICS.controller.report.Filter', {
                 scrollbar_left = filter_options.width - scrollbar_width,
                 scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
                 button_left = parseInt(remove_filter_elements[0].style.left),
-                button_obscured = button_left + 1 >= scrollbar_left ? true : false;
+                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
 
-           if (scrollbar_visible && button_obscured) {
+            if (scrollbar_visible && button_obscured) {
                 button_left = button_left - scrollbar_width;
-
                 for (var i = 0; i < remove_filter_elements.length; i++) {
                     remove_filter_elements[i].style.left = button_left + 'px';
                 }
@@ -97606,7 +97608,7 @@ Ext.define('PICS.controller.report.Report', {
     createReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!create.action';
+            url = 'ReportDynamic!copy.action';
 
         Ext.Ajax.request({
             url: url,
