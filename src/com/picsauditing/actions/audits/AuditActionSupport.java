@@ -310,9 +310,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 			if (!canContractorSubmitPQF(step)) {
 				return false;
-			} else if (conAudit.getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()
-					&& !permissions.isAdmin() && step.getNewStatus().isApproved()) {
-				return false;
 			}
 		}
 
