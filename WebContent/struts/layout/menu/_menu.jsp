@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:set var="menu_size" value="menu.children.size()" />
+<s:set var="last_menu_index" value="menu.children.size() - 1" />
+
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
@@ -14,12 +17,12 @@
                 <a class="brand" href="/"><img src="/v7/img/logo.svg" /></a>
                 
                 <ul class="nav">
-                    <s:set var="menu_items" value="menu.children.subList(0, 6)" />
+                    <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)" />
                     <s:include value="/struts/layout/menu/_menu-item.jsp" />
                 </ul>
                 
                 <ul class="nav pull-right">
-                    <s:set var="menu_items" value="menu.children.subList(6, 7)" />
+                    <s:set var="menu_items" value="menu.children.subList(#last_menu_index, #menu_size)" />
                     <s:include value="/struts/layout/menu/_menu-item.jsp" />
                 </ul>
                 
