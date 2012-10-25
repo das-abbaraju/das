@@ -776,7 +776,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 						add = true;
 				}
 			}
-			if (add)
+			if (add && auditCatData.getCategory().getAuditType().equals(auditType))
 				categories.put(auditCatData.getCategory(), auditCatData);
 		}
 
