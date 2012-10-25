@@ -265,7 +265,8 @@ public class OpenTasks extends TranslationActionSupport {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 
 			String auditTypeAndFor = conAudit.getAuditType().getId()
-					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "");
+					+ StringUtils.defaultIfEmpty(conAudit.getAuditFor(), "")
+					+ ((conAudit.getEmployee() != null)?  conAudit.getEmployee().getId():"");
 			boolean isAuditTypeAndForRepeated = auditTypeAndForWithOpenTasks.contains(auditTypeAndFor);
 
 			if (!isAuditTypeAndForRepeated) {
@@ -593,10 +594,11 @@ public class OpenTasks extends TranslationActionSupport {
 								|| cao.getStatus() == AuditStatus.Resubmit) {
 							needed++;
 						}
-					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
+					} 
+					if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
 						if (conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
 								&& cao.getStatus().isPending()) {
-							continue;
+							needed++;
 						}
 						if (cao.getStatus().before(AuditStatus.Complete)) {
 							needed++;

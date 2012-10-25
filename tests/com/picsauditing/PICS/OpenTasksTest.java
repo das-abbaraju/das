@@ -572,6 +572,9 @@ public class OpenTasksTest {
 		when(cao.getStatus()).thenReturn(AuditStatus.Incomplete);
 		when(cao.isVisible()).thenReturn(true);
 		when(audit.getOperators()).thenReturn(caos);
+		
+		Workflow wf = new Workflow();
+		when(auditType.getWorkFlow()).thenReturn(wf);
 	}
 
 	private void setUpPolicyAuditTask() {
