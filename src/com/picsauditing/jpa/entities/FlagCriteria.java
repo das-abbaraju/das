@@ -17,6 +17,11 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria")
@@ -50,6 +55,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	public static final int EMR_AVERAGE_ID = 506;
 	public static final int ANNUAL_UPDATE_ID = 142;
 
+	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Required)
 	public String getCategory() {
 		return category;
 	}
@@ -80,6 +86,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.OshaType, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
 	public OshaType getOshaType() {
 		return oshaType;
 	}
@@ -90,6 +97,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaRateType") })
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.OshaRateType, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
 	public OshaRateType getOshaRateType() {
 		return oshaRateType;
 	}
@@ -136,6 +144,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		}
 	}
 
+	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public String getComparison() {
 		return comparison;
 	}
@@ -146,6 +155,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.MultiYearScope, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
 	public MultiYearScope getMultiYearScope() {
 		return multiYearScope;
 	}
@@ -155,6 +165,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.AuditStatus, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
 	public AuditStatus getRequiredStatus() {
 		return requiredStatus;
 	}
@@ -163,6 +174,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.requiredStatus = requiredStatus;
 	}
 
+	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public String getRequiredStatusComparison() {
 		return requiredStatusComparison;
 	}
@@ -171,6 +183,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.requiredStatusComparison = requiredStatusComparison;
 	}
 
+	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public String getDefaultValue() {
 		return defaultValue;
 	}
@@ -179,6 +192,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.defaultValue = defaultValue;
 	}
 
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public boolean isAllowCustomValue() {
 		return allowCustomValue;
 	}
@@ -187,6 +201,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.allowCustomValue = allowCustomValue;
 	}
 
+	@ReportField(type = FieldType.String, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public String getDataType() {
 		return dataType;
 	}
@@ -195,6 +210,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.dataType = dataType;
 	}
 
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public boolean isFlaggableWhenMissing() {
 		return flaggableWhenMissing;
 	}
@@ -203,6 +219,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.flaggableWhenMissing = flaggableWhenMissing;
 	}
 
+	@ReportField(type = FieldType.Boolean, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public boolean isInsurance() {
 		return insurance;
 	}
@@ -211,6 +228,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 		this.insurance = insurance;
 	}
 
+	@ReportField(type = FieldType.Integer, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public int getDisplayOrder() {
 		return displayOrder;
 	}
@@ -221,6 +239,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
+	@ReportField(type = FieldType.FlagCriteriaOptionCode, category = FieldCategory.CompanyStatistics, importance = FieldImportance.Low)
 	public FlagCriteriaOptionCode getOptionCode() {
 		return optionCode;
 	}

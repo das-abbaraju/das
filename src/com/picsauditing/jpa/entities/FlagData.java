@@ -9,6 +9,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data")
@@ -65,6 +70,7 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatistics, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getFlag() {
 		return flag;
 	}
@@ -74,6 +80,7 @@ public class FlagData extends BaseTable implements Comparable<FlagData> {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatistics, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Low)
 	public FlagColor getBaselineFlag() {
 		return baselineFlag;
 	}
