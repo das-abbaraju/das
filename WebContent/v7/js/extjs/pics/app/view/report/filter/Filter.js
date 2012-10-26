@@ -168,13 +168,7 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid available field');
         }
 
-        var type = field && field.get('filterType');
-
-        if (!type) {
-            Ext.Error.raise('Invalid filter type');
-        }
-
-        var cls = this.getFilterClassByType(type);
+        var cls = getFilterClass(field);
 
         if (!cls) {
             Ext.Error.raise('Invalid filter cls');
@@ -188,13 +182,32 @@ Ext.define('PICS.view.report.filter.Filter', {
         });
     },
 
+    // Checks if the filter should display the advanced version of the filter.
+    getFilterClass: function (field) {
+        var advanced = field && field.get('advanced');
+    
+        if (!advanced) {
+            var type = field && field.get('filterType');
+
+            if (!type) {
+                Ext.Error.raise('Invalid filter type');
+            }
+
+            return this.getFilterClassByType(type);            
+        
+        } else {
+
+            return 'PICS.view.report.filter.base.AdvancedFilter';
+        }
+    },
+    
     getFilterClassByType: function (type) {
         var cls;
         
         switch (type) {
-            //case 'Date':
-            //    cls = 'PICS.view.report.filter.base.AdvancedFilter';
-            //    break;
+            case 'Date':
+                cls = 'PICS.view.report.filter.base.AdvancedFilter';
+                break;
             case 'AccountID':
             case 'Autocomplete':
             case 'Boolean':
