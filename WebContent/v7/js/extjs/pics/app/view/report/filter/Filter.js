@@ -35,12 +35,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         }
 
         this.addRemoveButton();
-        
-        var config = PICS.app.configuration;
-        if (config.isEditable()) {
-            this.addEditableButton();
-        }
-        
+                
         var filter_number = this.createFilterNumber(this.index);
         var filter_content = this.createFilterContent(this.record);
 
@@ -168,10 +163,14 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid available field');
         }
 
-        var cls = getFilterClass(field);
+        var cls = this.getFilterClass(field);
 
         if (!cls) {
             Ext.Error.raise('Invalid filter cls');
+        }
+
+        if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
+            this.addEditableButton();
         }
 
         return Ext.create(cls, {
@@ -182,6 +181,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         });
     },
 
+    
     // Checks if the filter should display the advanced version of the filter.
     getFilterClass: function (field) {
         var advanced = field && field.get('advanced');

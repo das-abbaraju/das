@@ -123,6 +123,11 @@ Ext.define('PICS.controller.report.Filter', {
             },
             
             // saving edits to filter store + refresh
+            'reportfilterbaseuseridfilter [name=filter_field_compare]': {
+                blur: this.onFilterFieldCompareInputBlur
+            },
+            
+            // saving edits to filter store + refresh
             '#report_filters checkbox': {
                 change: this.onFilterValueSelect
             },
@@ -152,28 +157,23 @@ Ext.define('PICS.controller.report.Filter', {
      */
 
     onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
-        var filter_store = this.getReportReportsStore().first().filters(),
-        filter = this.findParentFilter(cmp),
-        record = filter.record;
-        
-        // Toggle the pencil icon's color
+        // Toggle the pencil icon's color.
         var el = cmp.getEl(),
-            advanced_button = el.down('.icon-pencil');
+            advanced_button = el.down('.icon-pencil'),
+            advanced_on = el.down('.icon-pencil.selected');
 
-        advanced_button.toggleCls('selected');
-        console.log(filter_store);
-/*
-        if (record) {
-            filter_store.remove(record);
-    
-            this.application.fireEvent('refreshfilters');
-    
-            if (record.get('value') != '') {
-                this.application.fireEvent('refreshreport');
-            }
+        var filter = this.findParentFilter(cmp),
+            filter_content = filter.down('reportfilterbaseuseridfilter');
+
+        if (advanced_on) {
+            filter.record.set('fieldCompare', null);
+            filter_content.createNumberfield(filter.record);
+            advanced_button.removeCls('selected');
+        } else {
+            filter.record.set('value', null);
+            advanced_button.addCls('selected');
+            filter_content.createFieldSelect(filter.record);
         }
-*/
-
     },
     
     onFilterOptionsAfterLayout: function (cmp, eOpts) {
@@ -502,8 +502,6 @@ Ext.define('PICS.controller.report.Filter', {
         var filter = this.findParentFilter(cmp),
             date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
         
-        console.log(date);
-        
         filter.record.set('value', date);
     },
 
@@ -521,8 +519,17 @@ Ext.define('PICS.controller.report.Filter', {
     onFilterValueInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('value', cmp.getSubmitValue());
+        console.log("onFilterValueInputBlur");
+        console.log(filter.record);
     },
 
+    onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp);
+        filter.record.set('fieldCompare', cmp.getSubmitValue());
+        console.log("onFilterFieldCompareInputBlur");
+        console.log(filter.record);
+    },
+    
     onFilterValueInputSpecialKey: function (cmp, event) {
         if (event.getKey() == event.ENTER) {
             var filter = this.findParentFilter(cmp);
