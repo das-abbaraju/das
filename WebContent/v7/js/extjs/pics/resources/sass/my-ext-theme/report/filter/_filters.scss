@@ -25,7 +25,9 @@ $report_filter_input_border_color: #bcbcbc;
 $report_filter_remove_filter_text_color: #ac030c;
 
 // report filter - advanced filter button
-$report_filter_advanced_button_color: #76bae7;
+$report_filter_advanced_button_color: #dcdcdc;
+$report_filter_advanced_button_hover_color: #ccc;
+$report_filter_advanced_button_selected_color: #76bae7;
 
 #report_filters
 {
@@ -51,7 +53,7 @@ $report_filter_advanced_button_color: #76bae7;
 			color: $report_filter_number_text_color;
 			font-size: 18px;
 			font-weight: bold;
-			margin: 0px !important;
+			margin: -5px 0px 0px 0px !important;
 			text-align: center;
 		}
 	}
@@ -113,6 +115,16 @@ $report_filter_advanced_button_color: #76bae7;
 			color: $report_filter_advanced_button_color;
 			font-size: 20px;
 			line-height: 20px;
+			
+			&:hover
+			{
+				color: $report_filter_advanced_button_hover_color;
+			}
+			
+			&.selected
+			{
+				color: $report_filter_advanced_button_selected_color
+			}
 		}
 	}
 }
