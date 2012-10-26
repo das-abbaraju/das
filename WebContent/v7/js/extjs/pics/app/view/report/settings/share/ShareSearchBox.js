@@ -1,4 +1,4 @@
-Ext.define('PICS.view.settings.share.ShareSearchBox', {
+Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     extend: 'Ext.form.field.ComboBox',
     alias: ['widget.sharesearchbox'],
 

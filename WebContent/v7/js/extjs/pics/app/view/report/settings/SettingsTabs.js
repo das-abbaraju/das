@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.settings.Tabs', {
+Ext.define('PICS.view.report.settings.SettingsTabs', {
     extend: 'Ext.tab.Panel',
     alias: ['widget.reportsettingstabs'],
 
