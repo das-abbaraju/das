@@ -340,7 +340,14 @@ public class FeatureToggleExpressionsTest {
 		when(appPropertyDAO.getProperty(AppProperty.BETA_LEVEL)).thenReturn("NAN");
 		featureToggleExpressions.applicationBetaLevel();
 	}
-
+	@Test
+	public void testHasPermission_Happy() throws Exception {
+		assertFalse(featureToggleExpressions.hasPermission("RestApi"));
+	}
+	@Test(expected = FeatureToggleException.class)
+	public void testHasPermission_NoSuchPermission() throws Exception {
+		assertFalse(featureToggleExpressions.hasPermission("NoSuchPermission"));
+	}
 	private class FeatureToggleExpressionsTestable extends FeatureToggleExpressions {
 
 		@Override

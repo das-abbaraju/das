@@ -80,13 +80,14 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 		try {
 			Object scriptResult = script.run();
 			if (scriptResult instanceof Boolean) {
+				logger.debug("FeatureToggle \"{}\" is {}",toggleName,scriptResult.toString());
 				return (Boolean) scriptResult;
 			} else {
-				logger.error("Toggle script returned a non-boolean result; result will be false");
+				logger.error("FeatureToggle \"{}\" script returned a non-boolean result; result will be false",toggleName);
 			}
 		} catch (Exception e) {
 			// any exception should result in false script
-			logger.error("Toggle script threw an exception; result will be false: {}", e.getMessage());
+			logger.error("FeatureToggle \"{}\"  script threw an exception; result will be false: {}",toggleName, e.getMessage());
 			if (permissions == null) {
 				unCacheScript(toggleName);
 			}
