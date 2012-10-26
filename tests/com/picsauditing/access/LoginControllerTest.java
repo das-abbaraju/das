@@ -10,8 +10,8 @@ import java.util.Locale;
 import javax.servlet.http.Cookie;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -273,7 +273,50 @@ public class LoginControllerTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testGetPreLoginUrl() throws Exception {
+	public void testLogAttempt_NullUserDoesNotPersistLog() throws Exception {
+		Whitebox.setInternalState(loginController, "user", (User) null);
+
+		Whitebox.invokeMethod(loginController, "logAttempt");
+
+		verify(loginLogDAO, never()).save((UserLoginLog) any());
+	}
+
+	@Test
+	public void testLogAttempt_BigIpCookieIpGetsPersisted() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+		Cookie cookie1 = mock(Cookie.class);
+		when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
+		when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie1 });
+
+		Whitebox.invokeMethod(loginController, "logAttempt");
+		ArgumentCaptor<UserLoginLog> captor = ArgumentCaptor.forClass(UserLoginLog.class);
+		
+		verify(loginLogDAO).save(captor.capture());
+
+		UserLoginLog log = captor.getValue();
+
+		assertThat(log.getTargetIP(), is(equalTo("74.205.45.70")));
+	}
+
+	@Test
+	public void testExtractTargetIpFromCookie() throws Exception {
+		Cookie cookie1 = mock(Cookie.class);
+		when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
+		when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
+		Cookie cookie2 = mock(Cookie.class);
+		when(cookie2.getName()).thenReturn("from");
+		when(cookie2.getValue()).thenReturn("/Home.action");
+
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie1, cookie2 });
+
+		String targetIp = Whitebox.invokeMethod(loginController, "extractTargetIpFromCookie");
+
+		assertTrue("74.205.45.70".equals(targetIp));
+	}
+
+	@Test
+	public void testGetPreLoginUrl_StartsWithDoubleQuote() throws Exception {
 		Cookie cookie = mock(Cookie.class);
 		when(cookie.getName()).thenReturn("from");
 		when(cookie.getValue()).thenReturn("\"/Home.action");
@@ -282,6 +325,18 @@ public class LoginControllerTest extends PicsActionTest {
 		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
 		
 		assertFalse(urlPreLogin.contains("\""));
+	}
+
+	@Test
+	public void testGetPreLoginUrl() throws Exception {
+		Cookie cookie = mock(Cookie.class);
+		when(cookie.getName()).thenReturn("from");
+		when(cookie.getValue()).thenReturn("/ContractorDashboard.action?foo=1");
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
+
+		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
+
+		assertTrue("/ContractorDashboard.action?foo=1".equals(urlPreLogin));
 	}
 
 	private void normalLoginSetup() {

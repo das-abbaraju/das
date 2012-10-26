@@ -52,6 +52,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
@@ -918,7 +919,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected void clearPicsOrgCookie() {
-		Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, "");
+		Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, "");
 		cookie.setMaxAge(DELETE_COOKIE_AGE);
 		if (!isLocalhostEnvironment()) {
 			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
@@ -968,7 +969,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
 		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
-			Cookie cookie = new Cookie(SessionSecurity.SESSION_COOKIE_NAME, sessionCookieContent);
+			Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
 			cookie.setMaxAge(maxAge);
 			if (!isLocalhostEnvironment()) {
 				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);

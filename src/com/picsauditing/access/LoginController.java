@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
@@ -26,6 +29,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
@@ -38,6 +42,8 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
 	private static final int ONE_SECOND = 1;
+	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
+			+ CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
 
 	@Autowired
 	protected UserDAO userDAO;
@@ -372,18 +378,14 @@ public class LoginController extends PicsActionSupport {
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
 		String urlPreLogin = null;
-		Cookie[] cookiesA = getRequest().getCookies();
-		if (cookiesA != null) {
-			for (int i = 0; i < cookiesA.length; i++) {
-				if ("from".equals(cookiesA[i].getName())) {
-					// PICS-7659: "/Home.action causing a loop
-					urlPreLogin = cookiesA[i].getValue().replaceAll("\"", "");
-					// Clear the cookie, now that we've used it once
-					Cookie cookie = new Cookie("from", "");
-					cookie.setMaxAge(ONE_SECOND);
-					getResponse().addCookie(cookie);
-				}
-			}
+		Cookie cookie = CookieSupport.cookieFromRequest(getRequest(), CookieSupport.PRELOGIN_URL_COOKIE_NAME);
+		if (cookie != null) {
+			// PICS-7659: "/Home.action causing a loop
+			urlPreLogin = cookie.getValue().replaceAll("\"", "");
+			// Clear the cookie, now that we've used it once
+			Cookie resetCookie = new Cookie(CookieSupport.PRELOGIN_URL_COOKIE_NAME, "");
+			resetCookie.setMaxAge(ONE_SECOND);
+			getResponse().addCookie(resetCookie);
 		}
 		return urlPreLogin;
 	}
@@ -409,7 +411,7 @@ public class LoginController extends PicsActionSupport {
 
 	private void setBetaTestingCookie() {
 		boolean userBetaTester = isUserBetaTester();
-		Cookie cookie = new Cookie("USE_BETA", userBetaTester + "");
+		Cookie cookie = new Cookie(CookieSupport.USE_BETA_COOKIE_NAME, userBetaTester + "");
 		if (userBetaTester) {
 			cookie.setMaxAge(365 * 24 * 60 * 60);
 		} else {
@@ -446,6 +448,11 @@ public class LoginController extends PicsActionSupport {
 		loginLog.setServerAddress(serverName);
 		loginLog.setUser(user);
 
+		String targetIp = extractTargetIpFromCookie();
+		if (!Strings.isEmpty(targetIp)) {
+			loginLog.setTargetIP(targetIp);
+		}
+
 		Permissions permissions = permissions();
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		if (permissions.getAdminID() > 0) {
@@ -454,6 +461,19 @@ public class LoginController extends PicsActionSupport {
 
 		loginLogDAO.save(loginLog);
 	}
+
+	private String extractTargetIpFromCookie() {
+		List<Cookie> matchingCookies = CookieSupport.cookiesFromRequestThatStartWith(getRequest(),
+				CookieSupport.TARGET_IP_COOKIE_NAME);
+		for (Cookie cookie : matchingCookies) {
+			Matcher matcher = TARGET_IP_PATTERN.matcher(cookie.getName());
+			if (matcher.matches()) {
+				return matcher.group(1);
+			}
+		}
+		return "";
+	}
+
 
 	/* GETTER & SETTERS */
 	private HttpServletResponse getResponse() {

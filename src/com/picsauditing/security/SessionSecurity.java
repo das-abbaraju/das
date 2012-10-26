@@ -16,7 +16,6 @@ import com.picsauditing.util.Base64;
 import com.picsauditing.util.Strings;
 
 public class SessionSecurity {
-	public static final String SESSION_COOKIE_NAME = "PICS_ORG_SESSION";
 	public static final String SESSION_COOKIE_DOMAIN = "picsorganizer.com";
 
 	private static final Logger logger = LoggerFactory.getLogger(SessionSecurity.class);
@@ -115,17 +114,13 @@ public class SessionSecurity {
 	}
 
 	public static String clientSessionCookieValue(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null && cookies.length > 0) {
-			for (Cookie cookie : cookies) {
-				if (SessionSecurity.SESSION_COOKIE_NAME.equals(cookie.getName())) {
-					try {
-						return URLDecoder.decode(cookie.getValue(), "US-ASCII");
-					} catch (UnsupportedEncodingException e) {
-						// this won't happen unless somehow US-ASCII is removed
-						logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
-					}
-				}
+		Cookie cookie = CookieSupport.cookieFromRequest(request, CookieSupport.SESSION_COOKIE_NAME);
+		if (cookie != null) {
+			try {
+				return URLDecoder.decode(cookie.getValue(), "US-ASCII");
+			} catch (UnsupportedEncodingException e) {
+				// this won't happen unless somehow US-ASCII is removed
+				logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
 			}
 		}
 		return null;

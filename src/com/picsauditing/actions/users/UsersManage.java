@@ -51,6 +51,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
@@ -573,7 +574,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public void removeBetaMaxCookie() {
-		Cookie cookie = new Cookie("USE_BETA", "");
+		Cookie cookie = new Cookie(CookieSupport.USE_BETA_COOKIE_NAME, "");
 		cookie.setMaxAge(0);
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
