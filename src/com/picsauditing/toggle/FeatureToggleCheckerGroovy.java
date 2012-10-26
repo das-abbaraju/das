@@ -83,7 +83,8 @@ public class FeatureToggleCheckerGroovy implements FeatureToggle {
 				logger.debug("FeatureToggle \"{}\" is {}",toggleName,scriptResult.toString());
 				return (Boolean) scriptResult;
 			} else {
-				logger.error("FeatureToggle \"{}\" script returned a non-boolean result; result will be false",toggleName);
+				logger.debug("FeatureToggle \"{}\" script returned a non-boolean result; result will be false",
+						toggleName);
 			}
 		} catch (Exception e) {
 			// any exception should result in false script
