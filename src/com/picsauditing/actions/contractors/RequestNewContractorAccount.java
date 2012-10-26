@@ -314,8 +314,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private void loadTags() {
+		int operatorID = 0;
+
 		if (permissions.isOperator()) {
-			operatorTags = operatorTagDAO.findByOperator(permissions.getAccountId(), true);
+			operatorID = permissions.getAccountId();
+		} else if (requestRelationship.getOperatorAccount().getId() > 0) {
+			operatorID = requestRelationship.getOperatorAccount().getId();
+		}
+
+		if (operatorID > 0) {
+			operatorTags = operatorTagDAO.findByOperator(operatorID, true);
 
 			for (ContractorTag tag : getViewableExistingContractorTags(operatorTags)) {
 				requestedTags.add(tag.getTag());

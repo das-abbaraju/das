@@ -399,7 +399,7 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testLoadTags() throws Exception {
+	public void testLoadTags_Permissions() throws Exception {
 		OperatorTag tag = mock(OperatorTag.class);
 		List<OperatorTag> tags = new ArrayList<OperatorTag>();
 		tags.add(tag);
@@ -418,6 +418,36 @@ public class RequestNewContractorAccountTest {
 		when(tag.getTag()).thenReturn("Tag");
 
 		requestNewContractorAccount.setRequestedContractor(contractor);
+
+		Whitebox.invokeMethod(requestNewContractorAccount, "loadTags");
+
+		assertTrue(requestNewContractorAccount.getOperatorTags().isEmpty());
+		assertTrue(requestNewContractorAccount.getRequestedTags().contains(tag));
+	}
+
+	@Test
+	public void testLoadTags_Relationship() throws Exception {
+		OperatorTag tag = mock(OperatorTag.class);
+		List<OperatorTag> tags = new ArrayList<OperatorTag>();
+		tags.add(tag);
+
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		List<ContractorTag> contractorTags = new ArrayList<ContractorTag>();
+		contractorTags.add(contractorTag);
+
+		when(contractor.getOperatorTags()).thenReturn(contractorTags);
+		when(contractorTag.getContractor()).thenReturn(contractor);
+		when(contractorTag.getTag()).thenReturn(tag);
+		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(operator.getId()).thenReturn(1);
+		when(operator.getTags()).thenReturn(tags);
+		when(query.getResultList()).thenReturn(tags);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
+		when(tag.getOperator()).thenReturn(operator);
+		when(tag.getTag()).thenReturn("Tag");
+
+		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "loadTags");
 
