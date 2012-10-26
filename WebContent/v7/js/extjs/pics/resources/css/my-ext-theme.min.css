@@ -8558,38 +8558,38 @@ textarea.x-form-invalid-field {
 .filter-formula-tooltip span {
   font-style: italic; }
 
-/* line 31, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 35, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter {
   background: #eaeaea;
   border-bottom: 1px solid #cccccc;
   border-top: 1px solid white; }
-/* line 38, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 42, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-content {
   top: -9px !important; }
-/* line 43, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 47, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-number {
   display: none;
   top: 25px !important; }
-  /* line 48, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 52, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .filter-number label {
     color: #999999;
     font-size: 18px;
     font-weight: bold;
-    margin: 0px !important;
+    margin: -5px 0px 0px 0px !important;
     text-align: center; }
-/* line 58, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 62, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter-name {
   white-space: nowrap; }
-  /* line 62, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 66, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .filter-name div {
     color: #333333;
     font-size: 14px;
     font-weight: bold; }
-/* line 70, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 74, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .x-form-field {
   border-color: #bcbcbc;
   padding-left: 3px; }
-/* line 76, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 80, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .remove-filter {
   background: none;
   border: 0px;
@@ -8600,24 +8600,49 @@ textarea.x-form-invalid-field {
   border-radius: 0px;
   display: none;
   padding: 0px; }
-  /* line 84, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 88, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter span {
     padding: 0px; }
-  /* line 89, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+  /* line 93, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
   #report_filters .remove-filter .icon-remove-sign {
     color: #ac030c;
-    font-size: 18px;
-    line-height: 18px; }
+    font-size: 20px;
+    line-height: 20px; }
+/* line 101, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+#report_filters .advanced-filter-button {
+  background: none;
+  border: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  display: none;
+  padding: 0px; }
+  /* line 109, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .advanced-filter-button span {
+    padding: 0px; }
+  /* line 114, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+  #report_filters .advanced-filter-button .icon-pencil {
+    color: #dcdcdc;
+    font-size: 20px;
+    line-height: 20px; }
+    /* line 120, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+    #report_filters .advanced-filter-button .icon-pencil:hover {
+      color: #cccccc; }
+    /* line 125, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+    #report_filters .advanced-filter-button .icon-pencil.selected {
+      color: #76bae7; }
 
-/* line 98, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 133, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters-body {
   width: 100% !important; }
 
-/* line 104, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 139, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters.x-active .filter-number {
   display: block; }
 
-/* line 110, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 145, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter.x-over,
 #report_filters .filter.x-form-focus {
   background: #f1f1f2;
@@ -8628,9 +8653,11 @@ textarea.x-form-invalid-field {
   box-shadow: 0px 1px 1px #cccccc;
   z-index: 1; }
 
-/* line 120, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
+/* line 157, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filters.scss */
 #report_filters .filter.x-over .remove-filter,
-#report_filters .filter.x-form-focus .remove-filter {
+#report_filters .filter.x-form-focus .remove-filter,
+#report_filters .filter.x-over .advanced-filter-button,
+#report_filters .filter.x-form-focus .advanced-button {
   display: block; }
 
 /* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/loading/_loading.scss */
