@@ -71,10 +71,9 @@ public class Filter extends ReportElement implements JSONable {
 
 		parseOperator(json);
 
-		parseValues(json);
+		parseValues(json);		
 		
-//		advancedFilter = BooleanUtils.toBoolean(json.get(JSON_FIELD_FOR_COMPARISON_KEY));
-		advancedFilter = (Boolean) json.get(JSON_FIELD_FOR_COMPARISON_KEY);
+		parseAdvancedFilter(json);
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -120,6 +119,14 @@ public class Filter extends ReportElement implements JSONable {
 				this.values.add(value);
 			}
 		}
+	}
+	
+	private void parseAdvancedFilter(JSONObject json) {
+		Object value = json.get(JSON_FIELD_FOR_COMPARISON_KEY);
+		if (value == null)
+			advancedFilter = false;
+		else 
+			advancedFilter = (Boolean) value;
 	}
 
 	@SuppressWarnings("unchecked")

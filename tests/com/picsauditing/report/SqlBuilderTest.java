@@ -123,8 +123,6 @@ public class SqlBuilderTest {
 				
 		initializeSql();
 		
-		System.out.println(sql.toString());
-		
 		assertContains("WHERE ((Account.nameIndex = AccountContact.name))", sql.toString());
 		assertAllFiltersHaveFields();
 	}
