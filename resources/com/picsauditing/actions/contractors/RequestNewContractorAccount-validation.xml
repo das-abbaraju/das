@@ -85,7 +85,7 @@
 			<message>${getText("RequestNewContractor.error.SelectDeadline")}</message>
 		</field-validator>
 		<field-validator type="fieldexpression">
-			<param name="expression"><![CDATA[ requestRelationship.deadline.after(today) ]]></param>
+			<param name="expression"><![CDATA[ (requestRelationship.id == 0 && requestRelationship.deadline.after(today)) || (requestRelationship.id > 0) ]]></param>
 			<message>${getText("RequestNewContractor.error.PastDeadline")}</message>
 		</field-validator>
 	</field>

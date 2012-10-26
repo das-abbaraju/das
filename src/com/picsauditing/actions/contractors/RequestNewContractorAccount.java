@@ -38,6 +38,8 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorAccount extends ContractorActionSupport {
+	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
+
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
@@ -50,8 +52,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
 	private UserSwitchDAO userSwitchDAO;
-
-	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
 
 	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
@@ -353,9 +353,23 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 		if (newRequest) {
 			emailHelper.sendInitialEmail(requestedContractor, primaryContact, requestRelationship, getFtpDir());
+
+			if (requestRelationship.getRequestedBy() != null) {
+				legacyRequest.setLastContactedBy(requestRelationship.getRequestedBy());
+				requestedContractor.setLastContactedByInsideSales(requestRelationship.getRequestedBy());
+			} else {
+				legacyRequest.setLastContactedBy(new User(permissions.getUserId()));
+				requestedContractor.setLastContactedByInsideSales(permissions.getUserId());
+			}
+
+			Date now = new Date();
+
 			legacyRequest.contactByEmail();
+			legacyRequest.setLastContactDate(now);
+			legacyRequest.setLastContactedByAutomatedEmailDate(now);
 			requestedContractor.contactByEmail();
-			requestedContractor.setLastContactedByAutomatedEmailDate(new Date());
+			requestedContractor.setLastContactedByInsideSalesDate(now);
+			requestedContractor.setLastContactedByAutomatedEmailDate(now);
 
 			addNote("Sent initial contact email.");
 		}
@@ -471,6 +485,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		if (contactType != null) {
 			addNote(getText(contactType.getI18nKey()) + ": " + contactNote);
 
+			Date now = new Date();
+
 			if (RequestContactType.EMAIL == contactType) {
 				legacyRequest.contactByEmail();
 				requestedContractor.contactByEmail();
@@ -478,6 +494,11 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 				legacyRequest.contactByPhone();
 				requestedContractor.contactByPhone();
 			}
+
+			legacyRequest.setLastContactDate(now);
+			legacyRequest.setLastContactedBy(new User(permissions.getUserId()));
+			requestedContractor.setLastContactedByInsideSales(permissions.getUserId());
+			requestedContractor.setLastContactedByInsideSalesDate(now);
 		}
 	}
 

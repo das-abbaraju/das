@@ -275,6 +275,9 @@ public class RequestNewContractorAccountTest {
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
 
 		verify(contractor).generateRegistrationHash();
+		verify(contractor).setLastContactedByAutomatedEmailDate(any(Date.class));
+		verify(contractor).setLastContactedByInsideSales(anyInt());
+		verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
 		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
 		verify(entityManager, times(6)).persist(any(BaseTable.class));
 		verify(entityManager, never()).merge(any(BaseTable.class));
