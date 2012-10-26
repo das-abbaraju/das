@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.Filter', {
     bodyCls: 'filter-body',
     border: 0,
     cls: 'filter',
-    height: 90,
+    height: 96,
     layout: {
         type: 'hbox',
         align: 'middle'
@@ -54,13 +54,12 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '0 0 0 0',
-                padding: '0 6 5 0'
+                margin: '0 5 5 0'
             },
             dock: 'bottom',
             items: [{
                 xtype: 'button',
-                action: 'remove-filter',
+                action: 'show-advanced-filter',
                 cls: 'advanced-filter-button',
                 height: 22,
                 text: '<i class="icon-pencil"></i>',
@@ -193,6 +192,9 @@ Ext.define('PICS.view.report.filter.Filter', {
         var cls;
         
         switch (type) {
+            //case 'Date':
+            //    cls = 'PICS.view.report.filter.base.AdvancedFilter';
+            //    break;
             case 'AccountID':
             case 'Autocomplete':
             case 'Boolean':

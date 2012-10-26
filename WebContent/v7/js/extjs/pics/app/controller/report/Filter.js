@@ -130,6 +130,11 @@ Ext.define('PICS.controller.report.Filter', {
             // remove filter
             'reportfilteroptions button[action=remove-filter]': {
                 click: this.onFilterRemove
+            },
+
+            // advanced filter
+            'reportfilteroptions button[action=show-advanced-filter]': {
+                click: this.onAdvancedFilterButtonClick
             }
          });
 
@@ -146,6 +151,31 @@ Ext.define('PICS.controller.report.Filter', {
      * Filter Options
      */
 
+    onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
+        var filter_store = this.getReportReportsStore().first().filters(),
+        filter = this.findParentFilter(cmp),
+        record = filter.record;
+        
+        // Toggle the pencil icon's color
+        var el = cmp.getEl(),
+            advanced_button = el.down('.icon-pencil');
+
+        advanced_button.toggleCls('selected');
+        console.log(filter_store);
+/*
+        if (record) {
+            filter_store.remove(record);
+    
+            this.application.fireEvent('refreshfilters');
+    
+            if (record.get('value') != '') {
+                this.application.fireEvent('refreshreport');
+            }
+        }
+*/
+
+    },
+    
     onFilterOptionsAfterLayout: function (cmp, eOpts) {
         var filters = this.getFilters();
 
@@ -529,8 +559,19 @@ Ext.define('PICS.controller.report.Filter', {
                 for (var i = 0; i < remove_filter_elements.length; i++) {
                     remove_filter_elements[i].style.left = button_left + 'px';
                 }
+
+                // Do the same thing to any advanced filter buttons.
+                var advanced_button_elements = Ext.select('.advanced-filter-button').elements;
+                if (advanced_button_elements.length) {
+                    for (var i = 0; i < advanced_button_elements.length; i++) {
+                        advanced_button_elements[i].style.left = button_left + 'px';
+                    }
+                }
+
             }
         }
+        
+        var remove_filter_elements = Ext.select('.remove-filter').elements;
     },
 
     findParentFilter: function (cmp) {
