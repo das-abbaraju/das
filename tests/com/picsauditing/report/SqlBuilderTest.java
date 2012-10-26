@@ -8,7 +8,6 @@ import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -25,8 +24,10 @@ import com.picsauditing.search.SelectSQL;
 public class SqlBuilderTest {
 
 	private SqlBuilder builder;
+	
 	@Mock
 	private Permissions permissions;
+	
 	private Definition definition;
 	private SelectSQL sql;
 
@@ -112,6 +113,21 @@ public class SqlBuilderTest {
 		assertContains("(YEAR(Account.creationDate) > 2010)", sql.toString());
 		assertAllFiltersHaveFields();
 	}
+	
+	@Test
+	public void testAdvancedFilter() throws Exception {
+		Column column = addColumn("AccountName");
+		Column columnCompare = addColumn("AccountContactName");
+		
+		addFilter(column.getFieldName(), QueryFilterOperator.Equals, columnCompare.getFieldName(), true);
+				
+		initializeSql();
+		
+		System.out.println(sql.toString());
+		
+		assertContains("WHERE ((Account.nameIndex = AccountContact.name))", sql.toString());
+		assertAllFiltersHaveFields();
+	}
 
 	@Test
 	public void testFilterMyAccount() throws Exception {
@@ -193,12 +209,18 @@ public class SqlBuilderTest {
 		definition.getColumns().add(column);
 		return column;
 	}
-
+	
 	private Filter addFilter(String fieldName, QueryFilterOperator operator, String value) {
+		return addFilter(fieldName, operator, value, false);
+	}
+
+	private Filter addFilter(String fieldName, QueryFilterOperator operator, String value, boolean advanced) {
 		Filter filter = new Filter();
 		filter.setFieldName(fieldName);
 		filter.setOperator(operator);
 		filter.values.add(value);
+		filter.setAdvancedFilter(advanced);
+
 		definition.getFilters().add(filter);
 		return filter;
 	}

@@ -3,12 +3,14 @@ package com.picsauditing.report;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
@@ -18,17 +20,24 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 public class Filter extends ReportElement implements JSONable {
+	
+	private static final String JSON_FIELD_FOR_COMPARISON_KEY = "fieldCompare";
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	List<String> values = new ArrayList<String>();
+	
+	private boolean advancedFilter;
+	private Field fieldForComparison;
 
+	// TODO: Needs to be modified to serialize to JSON with the new advanced filter
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
@@ -47,9 +56,13 @@ public class Filter extends ReportElement implements JSONable {
 				json.put("value", StringUtils.join(values, ", "));
 			}
 		}
+		
+		json.put(JSON_FIELD_FOR_COMPARISON_KEY, advancedFilter);
+		
 		return json;
 	}
 
+	// TODO: Needs to be deserialized from JSON with the new advanced filter option
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
@@ -59,6 +72,9 @@ public class Filter extends ReportElement implements JSONable {
 		parseOperator(json);
 
 		parseValues(json);
+		
+//		advancedFilter = BooleanUtils.toBoolean(json.get(JSON_FIELD_FOR_COMPARISON_KEY));
+		advancedFilter = (Boolean) json.get(JSON_FIELD_FOR_COMPARISON_KEY);
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -153,6 +169,14 @@ public class Filter extends ReportElement implements JSONable {
 	public List<String> getValues() {
 		return values;
 	}
+	
+	public boolean isAdvancedFilter() {
+		return advancedFilter;
+	}
+	
+	public void setAdvancedFilter(boolean advancedFilter) {
+		this.advancedFilter = advancedFilter; 
+	}
 
 	public String getSql() {
 		if (fieldName.equalsIgnoreCase("accountName")) {
@@ -197,6 +221,10 @@ public class Filter extends ReportElement implements JSONable {
 	private String buildFilterSingleValue() {
 		DisplayType fieldType = getActualFieldTypeForFilter();
 
+		if (isAdvancedFilter()) {
+			return fieldForComparison.getDatabaseColumnName();
+		}
+		
 		String filterValue = getValues().get(0);
 
 		if (fieldType.equals(DisplayType.Date)) {
@@ -257,6 +285,7 @@ public class Filter extends ReportElement implements JSONable {
 		if (hasMethodWithDifferentFieldType()) {
 			fieldType = method.getDisplayType();
 		}
+		
 		return fieldType;
 	}
 
@@ -276,6 +305,9 @@ public class Filter extends ReportElement implements JSONable {
 
 		if (values.isEmpty())
 			return false;
+		
+		if (isAdvancedFilter() && fieldForComparison == null)
+			return false;
 
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
@@ -293,6 +325,27 @@ public class Filter extends ReportElement implements JSONable {
 			values.clear();
 			values.add(permissions.getUserIdString());
 		}
+	}
+	
+	@Override
+	public void addFieldCopy(Map<String, Field> availableFields) {
+		super.addFieldCopy(availableFields);
+		
+		if (!advancedFilter || CollectionUtils.isEmpty(values) || values.size() > 1) {
+			fieldForComparison = null;
+			return;
+		}
+		
+		String fieldName = values.get(0);		
+		Field field = availableFields.get(fieldName.toUpperCase());
+
+		if (field == null) {
+			logger.warn("Failed to find " + fieldName + " in availableFields");
+			return;
+		}
+
+		fieldForComparison = field.clone();
+		fieldForComparison.setName(fieldName);
 	}
 
 	public String toString() {
