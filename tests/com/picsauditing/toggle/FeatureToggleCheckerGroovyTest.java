@@ -151,7 +151,6 @@ public class FeatureToggleCheckerGroovyTest {
 				"permissions.username.equals('foo')");
 		Boolean result = Whitebox.invokeMethod(featureToggleCheckerGroovy, "runScript", toggleName, script);
 		assertFalse(result);
-		verify(logger).error(anyString(), anyString());
 	}
 
 	@Test
@@ -161,7 +160,6 @@ public class FeatureToggleCheckerGroovyTest {
 		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript", "2");
 		Boolean result = Whitebox.invokeMethod(featureToggleCheckerGroovy, "runScript", toggleName, script);
 		assertFalse(result);
-		verify(logger).error(startsWith("Toggle script returned a non-boolean result"));
 	}
 
 	@Test
