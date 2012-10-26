@@ -4,7 +4,6 @@ Ext.define('PICS.view.report.filter.base.UserIDFilter', {
 
     border: 0,
     layout: 'hbox',
-    value_field: null,
     
     initComponent: function () {
         this.callParent(arguments);
@@ -47,13 +46,13 @@ Ext.define('PICS.view.report.filter.base.UserIDFilter', {
     },
 
     createNumberfield: function (record) {
-        
         if (this.value_field) {
             this.remove(this.value_field);
         }
 
         var value = record.get('value');
 
+        // TODO: COMMENT
         this.value_field = this.add({
             xtype: 'numberfield',
             allowDecimals: false,

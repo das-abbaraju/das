@@ -43,6 +43,14 @@ Ext.define('PICS.view.report.filter.Filter', {
             filter_number,
             filter_content
         ]);
+        
+        var field = this.record.getAvailableField(),
+            type = field.get('filterType'),
+            cls = this.getFilterClassByType(type);
+        
+        if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
+            this.addEditableButton();
+        }
     },
 
     addEditableButton: function () {
@@ -141,7 +149,7 @@ Ext.define('PICS.view.report.filter.Filter', {
             border: 0,
             height: 30,
             items: [{
-                xtype : 'displayfield',
+                xtype: 'displayfield',
                 cls: 'filter-name',
                 name: 'filter_name',
                 value: text
@@ -157,20 +165,21 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createFilterInput: function (record) {
-        var field = record.getAvailableField();
+        var field = record.getAvailableField(),
+            type = field.get('filterType');
 
         if (!field) {
             Ext.Error.raise('Invalid available field');
         }
+        
+        if (!type) {
+            Ext.Error.raise('Invalid filter type');
+        }
 
-        var cls = this.getFilterClass(field);
+        var cls = this.getFilterClassByType(type);
 
         if (!cls) {
             Ext.Error.raise('Invalid filter cls');
-        }
-
-        if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
-            this.addEditableButton();
         }
 
         return Ext.create(cls, {
@@ -181,33 +190,10 @@ Ext.define('PICS.view.report.filter.Filter', {
         });
     },
 
-    
-    // Checks if the filter should display the advanced version of the filter.
-    getFilterClass: function (field) {
-        var advanced = field && field.get('advanced');
-    
-        if (!advanced) {
-            var type = field && field.get('filterType');
-
-            if (!type) {
-                Ext.Error.raise('Invalid filter type');
-            }
-
-            return this.getFilterClassByType(type);            
-        
-        } else {
-
-            return 'PICS.view.report.filter.base.AdvancedFilter';
-        }
-    },
-    
     getFilterClassByType: function (type) {
         var cls;
         
         switch (type) {
-            case 'Date':
-                cls = 'PICS.view.report.filter.base.AdvancedFilter';
-                break;
             case 'AccountID':
             case 'Autocomplete':
             case 'Boolean':
