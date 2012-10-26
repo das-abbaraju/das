@@ -5,14 +5,19 @@
 <s:if test="getCountrySubdivisionList(countryString).size() > 0">
 	<label>
 		<s:if test="countryString == 'CA'">
-			<s:text name="ContractorAccount.province"/>:
+			<s:text name="global.Province"/>:
 		</s:if>
 		<s:else>
-			<s:text name="ContractorAccount.countrySubdivision"/>:
+			<s:text name="CountrySubdivision"/>:
 		</s:else>
 	</label>
-	<s:select list="getCountrySubdivisionList(countryString)" id="countrySubdivision_sel" name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"  
-		listKey="isoCode" listValue="simpleName" value="countrySubdivisionString" headerKey="" headerValue="- %{countryString == 'CA' ? getText('ContractorAccount.province') : getText('ContractorAccount.countrySubdivision')} -"/>
+	<s:select list="getCountrySubdivisionList(countryString)"
+		id="countrySubdivision_sel"
+		name="%{countrySubdivisionPrefix + (needsSuffix ? '.isoCode' : '')}"
+		listKey="isoCode" listValue="simpleName" value="countrySubdivisionString"
+		headerKey=""
+		headerValue="- %{countryString == 'CA' ? getText('global.Province') : getText('CountrySubdivision')} -"
+	/>
 	<s:if test="countrySubdivisionString.length() < 1 || required" >
 		<span class="redMain" id="countrySubdivision_req">*</span>
 	</s:if>
