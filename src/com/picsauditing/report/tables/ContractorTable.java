@@ -6,6 +6,7 @@ public class ContractorTable extends AbstractTable {
 
 	public static final String Account = "Account";
 	public static final String CustomerService = "CustomerService";
+	public static final String RecommendedCSR = "RecommendedCSR";
 	public static final String PQF = "PQF";
 	public static final String Flag = "Flag";
 	public static final String RequestedBy = "RequestedBy";
@@ -47,5 +48,10 @@ public class ContractorTable extends AbstractTable {
 				ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
 
 		addOptionalKey(new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id", "conID")));
+		
+		ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),
+				new ReportOnClause("recommendedCsrID")));
+		recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
+		recommendedCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 	}
 }

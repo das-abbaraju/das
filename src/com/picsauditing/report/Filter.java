@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -122,11 +123,11 @@ public class Filter extends ReportElement implements JSONable {
 	}
 	
 	private void parseAdvancedFilter(JSONObject json) {
-		Object value = json.get(JSON_FIELD_FOR_COMPARISON_KEY);
+		String value = (String) json.get(JSON_FIELD_FOR_COMPARISON_KEY);
 		if (value == null)
 			advancedFilter = false;
 		else 
-			advancedFilter = (Boolean) value;
+			advancedFilter = BooleanUtils.toBoolean(value);
 	}
 
 	@SuppressWarnings("unchecked")

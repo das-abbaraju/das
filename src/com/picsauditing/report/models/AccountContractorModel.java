@@ -32,6 +32,7 @@ public class AccountContractorModel extends AbstractModel {
 			flag.join(ContractorOperatorTable.ForcedByUser);
 		}
 		contractor.join(ContractorTable.CustomerService);
+		contractor.join(ContractorTable.RecommendedCSR);
 		contractor.join(ContractorTable.Watch).category = FieldCategory.AccountInformation;
 		contractor.join(ContractorTable.Tag).category = FieldCategory.AccountInformation;
 
