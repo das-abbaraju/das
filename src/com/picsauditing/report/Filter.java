@@ -123,11 +123,16 @@ public class Filter extends ReportElement implements JSONable {
 	}
 	
 	private void parseAdvancedFilter(JSONObject json) {
-		String value = (String) json.get(JSON_FIELD_FOR_COMPARISON_KEY);
-		if (value == null)
+		Object advancedFilterOption = json.get(JSON_FIELD_FOR_COMPARISON_KEY);
+		if (advancedFilterOption == null)
 			advancedFilter = false;
-		else 
-			advancedFilter = BooleanUtils.toBoolean(value);
+		else if (advancedFilterOption instanceof String)
+			advancedFilter = BooleanUtils.toBoolean((String) advancedFilterOption);
+		else if (advancedFilterOption instanceof Boolean) {
+			advancedFilter = (Boolean) advancedFilterOption;
+		} else {
+			advancedFilter = false;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
