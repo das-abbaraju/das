@@ -210,6 +210,9 @@ public class I18nCache implements Serializable {
 			successful = false;
 		} finally {
 			stopBuild(stopWatch, successful);
+			if (cache == null) {
+				cache = TreeBasedTable.create();
+			}
 		}
 	}
 

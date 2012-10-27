@@ -3,13 +3,17 @@ package com.picsauditing.PICS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.sql.SQLException;
 import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -18,8 +22,10 @@ import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
+import com.picsauditing.search.Database;
 
 public class I18nCacheTest extends PicsActionTest {
+	
 	private I18nCache i18nCacheToTest;
 
 	private final Locale FOREIGN_LOCALE = Locale.CANADA;
@@ -217,5 +223,29 @@ public class I18nCacheTest extends PicsActionTest {
 		String value = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
+	}
+	
+	/**
+	 * The purpose of this test is to verify that in the event a SQLException is thrown while
+	 * reading data from the database, the cache in the i18n cache will not be null.
+	 * 
+	 * This test is purposely sets the internal INSTANCE field to "null" and adds in a specific
+	 * mock database, overriding the behavior of the setup() method and the super class's setupMocks()
+	 * method in order to verify that a non-null cache instance is created.
+	 * 
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testFailedCacheBuildCreatesEmptyCache() throws SQLException {
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
+		
+		Database mockDatabase = Mockito.mock(Database.class);
+		when(mockDatabase.select(anyString(), anyBoolean())).thenThrow(new SQLException("SQL Error for JUnit test"));
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mockDatabase);
+		
+		Table<String, String, String> cache = Whitebox.getInternalState(i18nCacheToTest, "cache");
+		
+		assertNotNull(cache);
+		assertEquals(0, cache.size());
 	}
 }
