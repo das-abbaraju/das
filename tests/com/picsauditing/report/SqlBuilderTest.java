@@ -16,6 +16,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.report.models.AccountsModel;
@@ -217,7 +218,10 @@ public class SqlBuilderTest {
 		filter.setFieldName(fieldName);
 		filter.setOperator(operator);
 		filter.values.add(value);
-		filter.setAdvancedFilter(advanced);
+		if (advanced) {
+			filter.setAdvancedFilter(advanced);
+			filter.setFieldForComparison(new Field(value));
+		}
 
 		definition.getFilters().add(filter);
 		return filter;
