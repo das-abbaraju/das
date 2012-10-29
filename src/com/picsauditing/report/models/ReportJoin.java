@@ -161,6 +161,14 @@ public class ReportJoin {
 					return true;
 			}
 
+			for (Filter filter : definition.getFilters()) {
+				if (filter.getFieldForComparison() != null) {
+					String filterName = filter.getFieldForComparison().getName();
+					if (filterName.equalsIgnoreCase(fieldName))
+						return true;
+				}
+			}
+
 			for (Sort sort : definition.getSorts()) {
 				String sortName = sort.getFieldNameWithoutMethod();
 				if (sortName.equalsIgnoreCase(fieldName))

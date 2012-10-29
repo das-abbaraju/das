@@ -364,4 +364,12 @@ public class Filter extends ReportElement implements JSONable {
 	public String toString() {
 		return super.toString() + " " + operator + " " + values;
 	}
+
+	public Field getFieldForComparison() {
+		return fieldForComparison;
+	}
+
+	public void setFieldForComparison(Field fieldForComparison) {
+		this.fieldForComparison = fieldForComparison;
+	}
 }
