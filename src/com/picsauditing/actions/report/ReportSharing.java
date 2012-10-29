@@ -24,8 +24,6 @@ public class ReportSharing extends PicsActionSupport {
 		int id = -1;
 		String type = "";
 		String dirtyParameter = "";
-		
-		System.out.println(permissions.getGroupIds());
 
 		try {
 			dirtyParameter = ServletActionContext.getRequest().getParameter("id");

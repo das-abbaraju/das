@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
@@ -165,5 +166,9 @@ public class UserDAO extends PicsDAO {
 		} catch (NoResultException e) {
 			return null;
 		}
+	}
+	
+	public List<User> findByIds(List<Integer> ids) {
+		return findWhere("u.id IN (" + Strings.implodeForDB(ids, ",") + ") ");
 	}
 }

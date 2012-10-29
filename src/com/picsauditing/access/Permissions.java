@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -14,8 +15,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
@@ -26,6 +29,9 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.LocaleController;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.hierarchy.GroupHierarchyBuilder;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -43,6 +49,7 @@ public class Permissions implements Serializable {
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 	private Map<Integer, String> groups = new HashMap<Integer, String>();
+	private Map<Integer, String> groupHierarchy = new HashMap<Integer, String>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
@@ -110,6 +117,7 @@ public class Permissions implements Serializable {
 
 		permissions.clear();
 		groups.clear();
+		groupHierarchy.clear();
 		visibleAuditTypes.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
@@ -239,11 +247,8 @@ public class Permissions implements Serializable {
 				conProfileEdit.setEditFlag(true);
 				permissions.add(conProfileEdit);
 			}
-			for (UserGroup u : user.getGroups()) {
-				if (u.getGroup().isGroup()) {
-					groups.put(u.getGroup().getId(), u.getGroup().getName());
-				}
-			}
+			
+			populateGroupMap(user);
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -277,6 +282,16 @@ public class Permissions implements Serializable {
 
 	public Collection<String> getGroupNames() {
 		return groups.values();
+	}
+	
+	public Set<Integer> getGroupHierarchyIds() {
+		if (MapUtils.isEmpty(groupHierarchy)) {
+			UserDAO userDAO = SpringUtils.getBean("UserDAO");
+			User user = userDAO.find(userID);
+			populateGroupHierarchyMap(user);
+		}
+		
+		return groupHierarchy.keySet();
 	}
 
 	public String getUsername() {
@@ -718,5 +733,36 @@ public class Permissions implements Serializable {
 
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
+	}
+	
+	private void populateGroupHierarchyMap(User user) {
+		GroupHierarchyBuilder hierarchyBuilder = SpringUtils.getBean("GroupHierarchyBuilder");		
+		Set<Integer> ids = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(user);
+		
+		UserDAO userDAO = SpringUtils.getBean("UserDAO");
+		List<User> users = userDAO.findWhere("u.id IN (" + Strings.implodeForDB(ids, ",") + ") ");
+		
+		for (User group : users) {
+			if (group.isGroup()) {
+				groupHierarchy.put(group.getId(), group.getName());
+			}			
+		}
+	}
+	
+	/**
+	 * Leaving this method in for backwards compatibility.
+	 * 
+	 * This method does not return all the users in the Group Hierarchy. Please use the
+	 * method populateGroupHierarchy instead.
+	 * 
+	 * @param user User that is logging into the system
+	 */
+	@Deprecated
+	private void populateGroupMap(User user) {
+		for (UserGroup u : user.getGroups()) {
+			if (u.getGroup().isGroup()) {
+				groups.put(u.getGroup().getId(), u.getGroup().getName());
+			}
+		}		
 	}
 }
