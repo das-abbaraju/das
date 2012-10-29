@@ -5,13 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
@@ -58,7 +56,8 @@ public class Filter extends ReportElement implements JSONable {
 			}
 		}
 		
-		json.put(JSON_FIELD_FOR_COMPARISON_KEY, advancedFilter);
+		if (isAdvancedFilter())
+			json.put(JSON_FIELD_FOR_COMPARISON_KEY, fieldForComparison.getName());
 		
 		return json;
 	}
@@ -123,15 +122,13 @@ public class Filter extends ReportElement implements JSONable {
 	}
 	
 	private void parseAdvancedFilter(JSONObject json) {
-		Object advancedFilterOption = json.get(JSON_FIELD_FOR_COMPARISON_KEY);
-		if (advancedFilterOption == null)
+		String advancedFilterOption = (String)  json.get(JSON_FIELD_FOR_COMPARISON_KEY);
+		// TODO: HACK!!!!
+		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false"))
 			advancedFilter = false;
-		else if (advancedFilterOption instanceof String)
-			advancedFilter = BooleanUtils.toBoolean((String) advancedFilterOption);
-		else if (advancedFilterOption instanceof Boolean) {
-			advancedFilter = (Boolean) advancedFilterOption;
-		} else {
-			advancedFilter = false;
+		else {
+			advancedFilter = true;
+			fieldForComparison = new Field(advancedFilterOption.toString());
 		}
 	}
 
@@ -316,12 +313,9 @@ public class Filter extends ReportElement implements JSONable {
 		if (!operator.isValueUsed())
 			return true;
 
-		if (values.isEmpty())
+		if (values.isEmpty() && fieldForComparison == null)
 			return false;
 		
-		if (isAdvancedFilter() && fieldForComparison == null)
-			return false;
-
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
 
@@ -343,13 +337,13 @@ public class Filter extends ReportElement implements JSONable {
 	@Override
 	public void addFieldCopy(Map<String, Field> availableFields) {
 		super.addFieldCopy(availableFields);
-		
-		if (!advancedFilter || CollectionUtils.isEmpty(values) || values.size() > 1) {
+
+		if (!advancedFilter || fieldForComparison == null || fieldForComparison.getName() == null) {
 			fieldForComparison = null;
 			return;
 		}
 		
-		String fieldName = values.get(0);		
+		String fieldName = fieldForComparison.getName();		
 		Field field = availableFields.get(fieldName.toUpperCase());
 
 		if (field == null) {
@@ -362,7 +356,10 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public String toString() {
-		return super.toString() + " " + operator + " " + values;
+		String display = values.toString();
+		if (fieldForComparison != null)
+			display = fieldForComparison.toString();
+		return super.toString() + " " + operator + " " + display;
 	}
 
 	public Field getFieldForComparison() {
