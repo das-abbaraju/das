@@ -232,12 +232,14 @@ public class OshaDisplay {
 
 	private boolean isEquivalentRateTypes(OshaRateType flagCriteriaRateType,
 			OshaRateType requestedRateType) {
-		if (flagCriteriaRateType == requestedRateType)
+		if (flagCriteriaRateType == null) {
+			return false;
+		}
+
+		if (flagCriteriaRateType == requestedRateType || (flagCriteriaRateType.isTrir() && requestedRateType.isTrir())) {
 			return true;
-		
-		if (flagCriteriaRateType.isTrir() && requestedRateType.isTrir())
-			return true;
-		
+		}
+
 		return false;
 	}
 

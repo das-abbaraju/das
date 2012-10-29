@@ -1,28 +1,30 @@
 package com.picsauditing.oshadisplay;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.sql.DataSource;
+
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.DBBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -33,30 +35,53 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.YearList;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Utilities.class)
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class OshaDisplayTest extends PicsTest {
-	OshaDisplay oshaDisplay;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "OshaDisplayTest-context.xml" })
+public class OshaDisplayTest {
+	private OshaDisplay oshaDisplay;
 
-	@Mock private OshaOrganizer oshaOrganizer;
-	@Mock private NaicsDAO naicsDao;
-	@Mock private YearList yearList;
-	@Mock private ContractorAccount contractor;
-	@Mock private OperatorAccount operator;
-	@Mock private OperatorAccount canadianOperator;
-	@Mock private FlagCriteriaOperator fco;
-	@Mock private FlagCriteriaOperator canadianFco;
-	@Mock private FlagCriteria flagCriteria;
-	@Mock private FlagCriteria canadianFlagCriteria;
-	
-	
+	@Autowired
+	private NaicsDAO springNaicsDao;
+
+	@Mock
+	private OshaOrganizer oshaOrganizer;
+	@Mock
+	private NaicsDAO naicsDao;
+	@Mock
+	private YearList yearList;
+	@Mock
+	private ContractorAccount contractor;
+	@Mock
+	private OperatorAccount operator;
+	@Mock
+	private OperatorAccount canadianOperator;
+	@Mock
+	private FlagCriteriaOperator fco;
+	@Mock
+	private FlagCriteriaOperator canadianFco;
+	@Mock
+	private FlagCriteria flagCriteria;
+	@Mock
+	private FlagCriteria canadianFlagCriteria;
+	@Mock
+	private Database databaseForTesting;
+	@Mock
+	private DataSource dataSource;
+
+	@AfterClass
+	public static void classTearDown() {
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(DBBean.class, "staticDataSource", (DataSource) null);
+	}
+
 	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		MockitoAnnotations.initMocks(this);
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
+		Whitebox.setInternalState(DBBean.class, "staticDataSource", dataSource);
 		
 		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 		ContractorOperator conOp = new ContractorOperator();
@@ -72,8 +97,35 @@ public class OshaDisplayTest extends PicsTest {
 				contractorOperators, contractor, naicsDao);
 
 
-		autowireEMInjectedDAOs(oshaDisplay);
-		PowerMockito.mockStatic(Utilities.class);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(oshaDisplay, this);
+	}
+
+	@Test
+	public void testIsEquivalentRateTypes_NullFlagCriteriaRateTypeIsFalse() throws Exception {
+		Boolean result = Whitebox
+				.invokeMethod(oshaDisplay, "isEquivalentRateTypes", (OshaRateType) null, OshaRateType.EMR);
+		assertFalse(result);
+	}
+
+	@Test
+	public void testIsEquivalentRateTypes_EqualIsTrue() throws Exception {
+		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaRateType.EMR, OshaRateType.EMR);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testIsEquivalentRateTypes_NotEqualIsTrue() throws Exception {
+		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaRateType.Fatalities,
+				OshaRateType.EMR);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void testIsEquivalentRateTypes_TrirTypesAreEquivalent() throws Exception {
+		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes",
+				OshaRateType.TrirAbsolute,
+				OshaRateType.TrirNaics);
+		assertTrue(result);
 	}
 
 	@Test
@@ -101,9 +153,9 @@ public class OshaDisplayTest extends PicsTest {
 		when(canadianFlagCriteria.getOshaRateType()).thenReturn(OshaRateType.TrirAbsolute);
 		when(canadianFlagCriteria.getMultiYearScope()).thenReturn(MultiYearScope.LastYearOnly);
 		
-		when(Utilities.getIndustryAverage(true, contractor)).thenReturn(0.2f);
-		when(Utilities.getIndustryAverage(false, contractor)).thenReturn(1.2f);
-		
+		when(springNaicsDao.getIndustryAverage(eq(true), (Naics) any())).thenReturn(0.2f);
+		when(springNaicsDao.getIndustryAverage(eq(false), (Naics) any())).thenReturn(1.2f);
+
 		when(yearList.getYearForScope(MultiYearScope.LastYearOnly)).thenReturn(2011);
 		when(yearList.getYearForScope(MultiYearScope.TwoYearsAgo)).thenReturn(2010);
 		when(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo)).thenReturn(2009);

@@ -146,8 +146,9 @@ public class Utilities {
             select.addWhere("rta.category = 'NAICS'");
             select.addWhere("rta.name=" + naics.getCode());
 
-            Database db = new Database();
             try {
+				Database db = new Database();
+
                     List<BasicDynaBean> results = db.select(select.toString(),
                                     false);
                     if (results != null && results.size() > 0) {
