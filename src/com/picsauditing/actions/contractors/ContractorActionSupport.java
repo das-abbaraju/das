@@ -420,7 +420,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 		}
 
-		if (isContractorHasEmployeeGuard()
+		if (contractor.isHasEmployeeGUARDTag()
 				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add EmployeeGUARD
 			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id="
@@ -919,17 +919,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 				auditBuilder.buildAudits(contractor);
 			}
 		}
-	}
-
-	protected boolean isContractorHasEmployeeGuard() {
-		for (ContractorTag tag : contractor.getOperatorTags()) {
-			if (tag.getTag().getTag().equals("HSE Competency")
-					|| tag.getTag().getTag().equals("Implementation Audit Plus")
-					|| tag.getTag().getTag().equals("Integrity Management")
-					|| tag.getTag().getTag().equals("Operator Qualification (OQ)"))
-				return true;
-		}
-		return false;
 	}
 
 	private void recalculatePQF(ContractorAudit pqf) {

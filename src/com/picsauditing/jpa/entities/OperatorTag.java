@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -19,13 +21,13 @@ import org.json.simple.JSONObject;
 @Table(name = "operator_tag")
 public class OperatorTag extends BaseTable {
 	public static final int SHELL_COMPETENCY_REVIEW = 142;
-	public static final String HSE_COMPETENCY = "HSE Competency";
 
 	private OperatorAccount operator;
 	private String tag;
 	private boolean active = true;
 	private boolean visibleToContractor = false;
 	private boolean inheritable = true;
+	private OperatorTagCategory category = OperatorTagCategory.None;
 
 	private List<AuditTypeRule> auditTypeRules = new ArrayList<AuditTypeRule>();
 	private List<AuditCategoryRule> auditCategoryRules = new ArrayList<AuditCategoryRule>();
@@ -76,6 +78,16 @@ public class OperatorTag extends BaseTable {
 		this.inheritable = inheritable;
 	}
 
+	@Column(name = "category")
+	@Enumerated(EnumType.STRING)
+	public OperatorTagCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(OperatorTagCategory category) {
+		this.category = category;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transient
@@ -84,6 +96,7 @@ public class OperatorTag extends BaseTable {
 		o.put("id", this.getId());
 		o.put("operator", this.getOperator().getName());
 		o.put("tag", this.getTag());
+		o.put("category", category);
 
 		return o;
 	}

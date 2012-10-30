@@ -41,6 +41,7 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OperatorTagCategory;
 import com.picsauditing.search.Database;
 
 public class EmployeeDashboardTest {
@@ -254,6 +255,7 @@ public class EmployeeDashboardTest {
 	private void addEmployeeGUARDTag() {
 		OperatorTag operatorTag = new OperatorTag();
 		operatorTag.setTag("HSE Competency");
+		operatorTag.setCategory(OperatorTagCategory.CompetencyReview);
 
 		ContractorTag contractorTag = new ContractorTag();
 		contractorTag.setContractor(contractorAccount);

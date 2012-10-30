@@ -15,12 +15,17 @@ import org.apache.struts2.dispatcher.mapper.DefaultActionMapper;
 import org.apache.struts2.views.util.DefaultUrlHelper;
 
 public class URLUtils implements StreamContentProvider {
-	private DefaultUrlHelper urlHelper = new DefaultUrlHelper();
-	private DefaultActionMapper actionMapper = new DefaultActionMapper();
+	private DefaultUrlHelper urlHelper;
+	private DefaultActionMapper actionMapper;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 
 	private String namespace;
+
+	public URLUtils() {
+		urlHelper = new DefaultUrlHelper();
+		actionMapper = new DefaultActionMapper();
+	}
 
 	public String getResponseFrom(String uri) throws IOException {
 		return contentOf(uri);

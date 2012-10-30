@@ -184,7 +184,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 		if (getEmployeeGuardAudits() == null) {
 			Set<ContractorAudit> auditList = getActiveAuditsStatuses().keySet();
 
-			if (isContractorHasEmployeeGuard()
+			if (contractor.isHasEmployeeGUARDTag()
 					&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 				Iterator<ContractorAudit> iter = auditList.iterator();
 				while (iter.hasNext()) {

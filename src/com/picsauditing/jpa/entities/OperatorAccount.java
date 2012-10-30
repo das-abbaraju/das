@@ -698,4 +698,17 @@ public class OperatorAccount extends Account {
 	public boolean isGeneralContractorFree() {
 		return isGeneralContractor() && "No".equals(getDoContractorsPay());
 	}
+
+	@Transient
+	public boolean hasTagCategory(OperatorTagCategory category) {
+		if (category != null) {
+			for (OperatorTag tag : getTags()) {
+				if (category == tag.getCategory()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 }

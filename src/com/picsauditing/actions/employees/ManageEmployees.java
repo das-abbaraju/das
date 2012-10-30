@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -41,11 +42,12 @@ import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OperatorTagCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserStatus;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class ManageEmployees extends AccountActionSupport implements Preparable {
@@ -68,6 +70,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	private List<Employee> activeEmployees;
 	private List<OperatorSite> allEmployeeGUARDOperators;
+
+	private URLUtils urlUtil = new URLUtils();
 
 	public ManageEmployees() {
 		noteCategory = NoteCategory.Employee;
@@ -160,9 +164,19 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		addInitialSites();
 
-		return setUrlForRedirect("ManageEmployees.action?"
-				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account="
-						+ account.getId()) + "#employee=" + employee.getId());
+		String url = urlUtil.getActionUrl("ManageEmployees", new HashMap<String, Object>() {
+			{
+				if (audit != null) {
+					put("audit", audit.getId());
+					put("questionId", questionId);
+				}
+
+				put("account", account.getId());
+				put("employee", employee.getId());
+			}
+		});
+
+		return setUrlForRedirect(url);
 	}
 
 	public String inactivate() {
@@ -178,14 +192,18 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String activate() throws Exception {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("account", employee.getAccount().getId());
+
 		if (employee != null) {
 			employee.setStatus(UserStatus.Active);
 			employeeDAO.save(employee);
-			return this.setUrlForRedirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
-					+ employee.getId());
+
+			parameters.put("employee", employee.getId());
 		}
 
-		return setUrlForRedirect("ManageEmployees.action?id=" + account.getId());
+		String actionUrl = urlUtil.getActionUrl("ManageEmployees", parameters);
+		return setUrlForRedirect(actionUrl);
 	}
 
 	public String delete() {
@@ -609,10 +627,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private boolean operatorHasHSECompetencyTag(OperatorAccount operator) {
 		Set<Integer> processed = new HashSet<Integer>();
 		while (operator != null && !processed.contains(operator.getId())) {
-			for (OperatorTag operatorTag : operator.getTags()) {
-				if (OperatorTag.HSE_COMPETENCY.equals(operatorTag.getTag())) {
-					return true;
-				}
+			if (operator.hasTagCategory(OperatorTagCategory.CompetencyReview)) {
+				return true;
 			}
 
 			processed.add(operator.getId());

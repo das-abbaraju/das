@@ -64,6 +64,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
@@ -84,7 +85,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
-	
+
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
@@ -109,9 +110,11 @@ public class ContractorCron extends PicsActionSupport {
 	private ExceptionService exceptionService;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-	
-	// this is @Autowired at the setter because we need @Qualifier which does NOT work
-	// on the variable declaration; only on the method (I think this is a Spring bug)
+
+	// this is @Autowired at the setter because we need @Qualifier which does
+	// NOT work
+	// on the variable declaration; only on the method (I think this is a Spring
+	// bug)
 	private Publisher flagChangePublisher;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
@@ -308,13 +311,13 @@ public class ContractorCron extends PicsActionSupport {
 		if (!runStep(ContractorCronStep.AuditBuilder))
 			return;
 		auditBuilder.buildAudits(contractor);
-		
+
 		checkLcCor(contractor);
 		cancelScheduledImplementationAudits(contractor);
 	}
-	
+
 	private void cancelScheduledImplementationAudits(ContractorAccount contractor) {
-		for (ContractorAudit audit:contractor.getAudits()) {
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (isCancelImplementationAudit(audit)) {
 				audit.setLatitude(0);
 				audit.setLongitude(0);
@@ -330,10 +333,9 @@ public class ContractorCron extends PicsActionSupport {
 	private Note createCanceledAuditNote(ContractorAccount contractor, ContractorAudit audit) {
 		Note note = new Note();
 
-		int accountId = (audit.getAuditType().getAccount() != null) ? audit
-				.getAuditType().getAccount().getId()
+		int accountId = (audit.getAuditType().getAccount() != null) ? audit.getAuditType().getAccount().getId()
 				: Account.EVERYONE;
-				
+
 		note.setAccount(contractor);
 		note.setAuditColumns(new User(User.SYSTEM));
 		note.setSummary("Implementation Audit canceled due to no visible CAOs");
@@ -357,18 +359,18 @@ public class ContractorCron extends PicsActionSupport {
 	private void checkLcCor(ContractorAccount contractor) {
 		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return;
-		
+
 		ContractorAudit corAudit = null;
-		for (ContractorAudit audit: contractor.getAudits()) {
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == AuditType.COR) {
 				corAudit = audit;
 				break;
 			}
 		}
-		
+
 		if (corAudit == null)
 			return;
-		
+
 		boolean isLcCorNotify = false;
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 120);
@@ -385,7 +387,7 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		}
-		
+
 		if (isLcCorNotify) {
 			contractor.setLcCorPhase(LcCorPhase.RemindMeLaterAudit);
 			contractor.setLcCorNotification(new Date());
@@ -458,7 +460,9 @@ public class ContractorCron extends PicsActionSupport {
 		contractor.setRequiresCompetencyReview(false);
 		if (requiresCompetency) {
 			for (ContractorTag tag : contractor.getOperatorTags()) {
-				if ("HSE Competency".equals(tag.getTag().getTag())) {
+				OperatorTag operatorTag = tag.getTag();
+
+				if (operatorTag.getCategory().isCompetencyReview()) {
 					contractor.setRequiresCompetencyReview(true);
 				}
 			}

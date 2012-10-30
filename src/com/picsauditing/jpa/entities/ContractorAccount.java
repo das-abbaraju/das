@@ -1707,4 +1707,32 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean hasVatId() {
 		return !Strings.isEmpty(vatId);
 	}
+
+	@Transient
+	public boolean isHasEmployeeGUARDTag() {
+		for (ContractorTag contractorTag : getOperatorTags()) {
+			OperatorTag operatorTag = contractorTag.getTag();
+
+			if (operatorTag != null && operatorTag.getCategory().isEmployeeGUARD()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Transient
+	public boolean hasTagCategory(OperatorTagCategory category) {
+		if (category != null) {
+			for (ContractorTag contractorTag : getOperatorTags()) {
+				OperatorTag tag = contractorTag.getTag();
+
+				if (category == tag.getCategory()) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 }

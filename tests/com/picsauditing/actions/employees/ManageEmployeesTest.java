@@ -58,7 +58,7 @@ import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OperatorTagCategory;
 import com.picsauditing.jpa.entities.UserStatus;
 
 public class ManageEmployeesTest extends PicsActionTest {
@@ -923,15 +923,9 @@ public class ManageEmployeesTest extends PicsActionTest {
 		when(operator.isOperatorCorporate()).thenReturn(true);
 
 		if (enableHse) {
-			OperatorTag tag = mock(OperatorTag.class);
-
-			List<OperatorTag> tags = new ArrayList<OperatorTag>();
-			tags.add(tag);
-
 			when(contractor.isRequiresCompetencyReview()).thenReturn(true);
-			when(operator.getTags()).thenReturn(tags);
+			when(operator.hasTagCategory(OperatorTagCategory.CompetencyReview)).thenReturn(true);
 			when(operator.isRequiresCompetencyReview()).thenReturn(true);
-			when(tag.getTag()).thenReturn(OperatorTag.HSE_COMPETENCY);
 		}
 
 		if (enableOQ) {
