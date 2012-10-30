@@ -28,7 +28,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/contractor_safety_statistics.js?v=${version}"></script>
 <script type="text/javascript" src="js/header_search.js?v=${version}"></script>
 <script type="text/javascript" src="js/main_system_message.js?v=${version}"></script>
-<script type="text/javascript" src="js/modal.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/widgets/modal.js?v=${version}"></script>
 <script type="text/javascript" src="js/operator_edit.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration/registration_add_client_site.js?v=${version}"></script>
