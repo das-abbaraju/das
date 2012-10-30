@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,9 +185,7 @@ public class AuditBuilder {
 	 * auditFor fields in the WCB is corrected. 
 	 */
 	private boolean foundCurrentYearWCB(ContractorAudit audit) {
-		if (Strings.isEmpty(audit.getAuditFor())) { // TODO: remove this once all the WCBs have consistent auditFor
-			return true;
-		} 
+		validateWCBAudit(audit);
 		
 		buildSetOfAllWCBYears(audit.getContractorAccount(), audit.getAuditType());
 		if (DateBean.isGracePeriodForWCB()) {
@@ -194,6 +193,19 @@ public class AuditBuilder {
 		} 
 		
 		return yearsForAllWCBs.contains(DateBean.getWCBYear());
+	}
+	
+	/**
+	 * Performs validation to make sure that a WCB Audit's auditFor field only contains 
+	 * a numeric year value.
+	 * 
+	 * @param audit A WCB Audit
+	 */
+	private void validateWCBAudit(ContractorAudit audit) {
+		String auditFor = audit.getAuditFor();
+		if (Strings.isEmpty(auditFor) || !NumberUtils.isDigits(auditFor) || auditFor.length() != 4) {
+			throw new RuntimeException("WCBs must always have an AuditFor that is a 4-digit year.");
+		}
 	}
 	
 	private void buildSetOfAllWCBYears(ContractorAccount contractor, AuditType wcbAuditType) {
