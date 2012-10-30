@@ -12,10 +12,11 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.search.SelectSQL;
@@ -24,15 +25,16 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.Strings;
 
-
 @SuppressWarnings("serial")
-public class ReportResources extends ReportActionSupport {
+public class ReportContractorResources extends ReportActionSupport {
 	@Autowired
-	protected OperatorAccountDAO operatorDao;
+	protected ContractorAccountDAO contractorDao;
 	@Autowired
 	private OperatorFormDAO operatorFormDAO;
+	@Autowired
+	private OperatorAccountDAO operatorDao;
 	
-	protected OperatorAccount operator;
+	protected ContractorAccount contractor;
 	List<Resource> resources;
 	protected SelectSQL sql = new SelectSQL("operatorforms o");
 	private ReportFilterAccount filter = new ReportFilterAccount();
@@ -46,21 +48,24 @@ public class ReportResources extends ReportActionSupport {
 			return LOGIN;
 		
 		getFilter().setShowTitleName(true);
-		getFilter().setShowIncludePicsReources(true);
 		
-		findOperator();
+		findContractor();
 		
 		Set<Integer> ids = new HashSet<Integer>();
 
-		if (operator != null) {
-			if (getFilter().isIncludePicsResources())
-				ids.add(Account.PicsID); // PICS
-			ids.add(operator.getId());
-			for (OperatorAccount op : operator.getChildOperators()) {
+		if (contractor != null) {
+			ids.add(Account.PicsID);
+			List<OperatorAccount> pics = operatorDao.findWhere(true, "inPicsConsortium=true");
+			for (OperatorAccount op:pics) {
 				ids.add(op.getId());
 			}
-			for (OperatorAccount op : operator.getParentOperators()) {
+
+			for (OperatorAccount op:contractor.getOperatorAccounts()) {
 				ids.add(op.getId());
+				while (op.getParent() != null) {
+					op = op.getParent();
+					ids.add(op.getId());
+				}
 			}
 		}
 
@@ -116,18 +121,12 @@ public class ReportResources extends ReportActionSupport {
 		return SUCCESS;
 	}
 
-	protected void findOperator() {
+	private void findContractor() {
 		loadPermissions();
-
-		int id = 0;
-
-		if (operator == null) {
-			if (permissions.isOperatorCorporate())
-				id = permissions.getAccountId();
-
-			if (id != 0)
-				operator = operatorDao.find(id);
+		if (id == 0 && permissions.isContractor()) {
+			id = permissions.getAccountId();
 		}
+		contractor = contractorDao.find(id);
 	}
 	
 	public List<Resource> getResources() {
@@ -300,4 +299,5 @@ public class ReportResources extends ReportActionSupport {
 			return id - o.getId();
 		}
 	}
+
 }

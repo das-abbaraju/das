@@ -271,8 +271,14 @@
 			</result>
 		</action>
 
-		<action name="ContractorForms" class="com.picsauditing.actions.forms.ContractorForms">
-			<result>struts/forms/con_forms.jsp</result>
+ 		<action name="ContractorForms" class="com.picsauditing.actions.report.ReportContractorResources">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ContractorForms</param>
+			<result>struts/reports/resources.jsp</result>
+		</action>
+
+		<action name="ContractorFormsAjax" class="com.picsauditing.actions.report.ReportContractorResources">
+			<result>struts/reports/resources_data.jsp</result>
 		</action>
 
 		<action name="ContractorFacilities" class="com.picsauditing.actions.contractors.ContractorFacilities">

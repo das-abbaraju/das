@@ -23,6 +23,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showType = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
+	protected boolean showIncludePicsReources = false;
 	protected boolean showTitleName = false;
 
 	// /////// Parameter Values /////////////////
@@ -35,6 +36,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
+	protected boolean includePicsResources = false;
 	protected String titleName;
 
 	protected Permissions permissions = null;
@@ -137,6 +139,22 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowTradeInformation(boolean showTradeInformation) {
 		this.showTradeInformation = showTradeInformation;
+	}
+
+	public boolean isShowIncludePicsReources() {
+		return showIncludePicsReources;
+	}
+
+	public void setShowIncludePicsReources(boolean showIncludePicsReources) {
+		this.showIncludePicsReources = showIncludePicsReources;
+	}
+
+	public boolean isIncludePicsResources() {
+		return includePicsResources;
+	}
+
+	public void setIncludePicsResources(boolean includePicsResources) {
+		this.includePicsResources = includePicsResources;
 	}
 
 	public String getStartsWith() {
