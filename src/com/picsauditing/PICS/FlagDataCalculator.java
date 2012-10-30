@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -111,10 +112,12 @@ public class FlagDataCalculator {
 	}
 
 	/**
+	 * Determines whether or not this criteria should be flagged.
 	 * 
 	 * @param opCriteria
 	 * @param conCriteria
-	 * @return true if something is BAD
+	 * @return True if the flag criteria is not being met (i.e. Red Flagged), or False if a criteria
+	 * is met (i.e. Green Flagged). NULL can be returned from this method when flagging does not apply.
 	 */
 	private Boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		if (!opCriteria.getCriteria().equals(conCriteria.getCriteria()))
@@ -238,21 +241,29 @@ public class FlagDataCalculator {
 							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
 								return false;
 						}
-						for (ContractorAuditOperator cao : ca.getOperators()) {
+						
+						List<ContractorAuditOperator> caos = ca.getOperators();
+						if (ca.getAuditType().isWCB()) {
+							caos = findCaosForCurrentWCB(con, criteria.getAuditType());
+						}
+						
+						for (ContractorAuditOperator cao : caos) {
 							if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
 								if (flagCAO(criteria, cao))
 									return false;
 								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly())
 									return false;
 
-								if (!criteria.getAuditType().isHasMultiple())
+								if (!criteria.getAuditType().isHasMultiple()) {
 									// There aren't any more so we might as
 									// we'll return flagged right now
 									return true;
+								}
 							}
 						}
 					}
 				}
+				
 				if (criteria.isFlaggableWhenMissing())
 					// isFlaggableWhenMissing would be really useful for
 					// Manual Audits or Implementation Audits
@@ -293,18 +304,22 @@ public class FlagDataCalculator {
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirWIA)) {
 							return answer2 > con.getWeightedIndustryAverage() * hurdle2 / 100;
 						}
+						
 						if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
 							return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor()) 
 									* hurdle2) / 100;
 						}
+						
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
 							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()) 
 									* hurdle2) / 100;
 						}
+						
 						if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
 							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor().getNaics()) * hurdle2) / 100;
 						}
 					}
+					
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
 					if (comparison.equals(">"))
@@ -488,6 +503,7 @@ public class FlagDataCalculator {
 				}
 			}
 		}
+		
 		if (flag == null)
 			flag = FlagColor.Green;
 
@@ -510,6 +526,41 @@ public class FlagDataCalculator {
 	}
 
 	/**
+	 * Determine the list of CAOs we should be flagging off of for WCBs, so we do not flag off a WCB
+	 * for the wrong year.
+	 * 
+	 * @param contractor The contractor with WCBs.
+	 * @param auditType The Audit Type, which should be one of the known WCB AuditTypes like Alberta WCB
+	 * @return List of CAOs for the appropriate WCB Audit that we should be flagging on. If no WCBs for the current
+	 * year are found, an empty list is returned.
+	 */
+	private List<ContractorAuditOperator> findCaosForCurrentWCB(ContractorAccount contractor, AuditType auditType) {
+		String auditFor = determineAuditForYear();
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (isCurrentYearWCBAudit(auditType, auditFor, audit)) {
+				return audit.getOperators();
+			}
+		}
+		
+		return Collections.emptyList();
+	}
+	
+	private String determineAuditForYear() {
+		if (DateBean.isGracePeriodForWCB()) {
+			return Integer.toString(DateBean.getPreviousWCBYear());
+		}
+		
+		return DateBean.getWCBYear();
+	}
+
+	private boolean isCurrentYearWCBAudit(AuditType auditType, String auditFor, ContractorAudit audit) {
+		return audit != null 
+				&& audit.getAuditType() != null 
+				&& auditType.getId() == audit.getAuditType().getId() 
+				&& auditFor.equals(audit.getAuditFor());
+	}
+
+	/**
 	 * 
 	 * @param criteria
 	 * @param cao
@@ -529,10 +580,11 @@ public class FlagDataCalculator {
 			return !cao.getStatus().equals(criteria.getRequiredStatus());
 		if (compare.equals("!="))
 			return cao.getStatus().equals(criteria.getRequiredStatus());
+		
 		// Default is "<"
 		return !cao.getStatus().before(criteria.getRequiredStatus());
 	}
-
+	
 	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator value : list) {
