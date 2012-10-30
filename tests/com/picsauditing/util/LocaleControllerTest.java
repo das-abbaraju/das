@@ -13,6 +13,12 @@ import com.picsauditing.access.Permissions;
 public class LocaleControllerTest {
 
 	@Test
+	public void testIsLocaleSupported() throws Exception {
+		assertTrue(LocaleController.isLocaleSupported(Locale.ENGLISH));
+		assertTrue(LocaleController.isLocaleSupported(new Locale("pt")));
+	}
+
+	@Test
 	public void testKoreanFallbackToEnglish() throws Exception {
 		assertEquals(Locale.ENGLISH, LocaleController.getNearestSupportedLocale(Locale.KOREAN));
 	}
