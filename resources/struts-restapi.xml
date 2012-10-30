@@ -10,6 +10,9 @@
 		<action name="DataFeed" class="com.picsauditing.actions.rest.api.DataFeed">
 		</action>
 
+		<action name="ApiCheck" class="com.picsauditing.actions.rest.api.ApiCheck">
+		</action>
+
 		<!-- Exceptions -->
 		<action name="ReportExceptions" class="com.picsauditing.actions.report.ReportExceptions">
 			<result>struts/reports/report_exceptions.jsp</result>

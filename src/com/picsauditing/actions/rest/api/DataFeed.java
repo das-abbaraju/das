@@ -58,13 +58,22 @@ public class DataFeed extends ReportData implements ParameterAware {
 	 */
 	@Override
 	public void setParameters(Map<String, String[]> parameters) {
-		setApiKey(parameters.get("apiKey")[0]);
+		setApiKey(lookupParam(parameters, "apiKey"));
 		/*
 		 * While we are here, let's memorize the report ID specified in the
 		 * paramers, just in case the JpaEntityConverter cannot find the report
 		 * in question, so that we can report on the requested ID number in the
 		 * error message (above).
 		 */
-		reportIdSpecified = parameters.get("report")[0];
+		reportIdSpecified = lookupParam(parameters, "report");
+	}
+
+	private String lookupParam(Map<String, String[]> parameters, String key) {
+		String paramValue = null;
+		String[] param = parameters.get(key);
+		if (param != null && param.length > 0) {
+			paramValue = param[0];
+		}
+		return paramValue;
 	}
 }

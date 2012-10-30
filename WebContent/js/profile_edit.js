@@ -42,6 +42,10 @@
                         if (input_field) {
                             input_field.val(data.ApiKey);
                         }
+                        var check_link = $('#UserApiKey__div').find('.apikey');
+                        if (check_link) {
+                            check_link.attr('href', data.ApiCheck);
+                        }
                     }
                 });
             }

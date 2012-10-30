@@ -125,6 +125,7 @@ public class ProfileEdit extends PicsActionSupport {
 		User u = getUser();
 		u.setApiKey(apiKey);
 		json.put("ApiKey", apiKey);
+		json.put("ApiCheck", getRequestHost()+"/ApiCheck.action?valueToEcho=2&apiKey="+apiKey);
 		userDAO.save(u);
 		return JSON;
 	}
