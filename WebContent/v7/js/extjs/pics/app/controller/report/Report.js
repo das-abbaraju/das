@@ -109,6 +109,6 @@ Ext.define('PICS.controller.report.Report', {
     },
 
     setPageTitle: function(title) {
-        Ext.query('title')[0].innerHTML = 'PICS - ' + title;
+        document.title = 'PICS - ' + title;
     }
 });
