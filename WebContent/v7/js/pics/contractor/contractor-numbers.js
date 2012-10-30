@@ -15,21 +15,18 @@
                 var element = $(event_trigger.currentTarget),
                     contractor = element.attr('data-contractor'),
                     data_number = element.attr('data-number'),
+                    modal = null,
                     that = this;
 
-                function addModalEvents () {
-                    var contractor_modal =  $('.contractor-operator-number-modal');
+                function addModalEvents() {
+                    if (modal) {
+                        var modal_element = $(modal.getElement());
 
-                    if (contractor_modal) {
-                        contractor_modal.delegate('.negative.closeButton', 'click', function() {
-                            PICS.getClass('modal.Modal').hide();
-                        });
-
-                        contractor_modal.delegate('#contractor_numbers_client, #contractor_numbers_type', 'change', function () {
+                        modal_element.on('change', '#contractor_numbers_client, #contractor_numbers_type', function () {
                             that.updateModal(contractor, data_number);
                         });
 
-                        contractor_modal.delegate('.positive', 'click', that.saveContractorNumber);
+                        modal_element.on('click', '.positive', that.saveContractorNumber);
                     }
                 }
 
@@ -40,15 +37,15 @@
                         number : data_number
                     },
                     success : function(data, textStatus, jqXHR) {
-                        var modal = PICS.modal({
+                        modal = PICS.modal({
                             height : 300,
                             width : 700,
                             title : 'Contractor Numbers',
-                            modal_class: 'modal contractor-operator-number-modal',
+                            modal_class: 'modal',
+                            modal_id: 'contractor-operator-number-modal',
                             content : data,
+                            show: true
                         });
-
-                        modal.show();
 
                         addModalEvents();
                     }
@@ -63,25 +60,22 @@
                     url : 'ManageContractorOperatorNumber!save.action',
                     data : form.serialize(),
                     success : function(data, textStatus, jqXHR) {
-                        if (data.indexOf('error') > 0) {
-                            var modal = $('.contractor-operator-number-modal'),
-                            content = modal.find('.modal-body');
+                        var modal = PICS.getClass('modal.Modal');
 
-                            content.html(data);
+                        if (data.indexOf('error') > 0) {
+                            modal.update({body: data});
                         } else {
                             //update contractor dashboard numbers table
                             $('#contractor_operator_numbers').html(data);
 
-                            var modal = PICS.getClass('modal.Modal');
-                            modal.hide();
+                            modal.destroy();
                         }
                     }
                 });
             },
 
             updateModal: function (contractor, data_number) {
-
-                //get updated select values
+                //get updated values
                 var client = $('#contractor_numbers_client'),
                     type = $('#contractor_numbers_type');
 
@@ -94,10 +88,9 @@
                         number: data_number
                     },
                     success: function (data, textStatus, jqXHR) {
-                        var modal = $('.contractor-operator-number-modal'),
-                        content = modal.find('.modal-body');
+                        var modal = PICS.getClass('modal.Modal');
 
-                        content.html(data);
+                        modal.update({body: data});
                     }
                 });
             }
