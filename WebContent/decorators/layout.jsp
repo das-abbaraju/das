@@ -26,13 +26,13 @@
             <s:action name="Menu!menu" executeResult="true" />
         </header>
         
-        <s:include value="/struts/layout/_environment.jsp" />
-        
         <div id="main" role="main" class="container">
             <decorator:body />
         </div>
         
-        <footer></footer>
+        <footer>
+            <s:include value="/struts/layout/_environment.jsp" />
+        </footer>
 
         <script src="v7/js/script.js"></script>
 

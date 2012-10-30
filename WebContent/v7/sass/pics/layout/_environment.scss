@@ -60,3 +60,15 @@
         position: fixed;
     }
 }
+
+@media (max-width: 767px) {
+    #environment a
+    {
+        display: none;
+    }
+    
+    #environment .active
+    {
+    	display: inline;
+    }
+}

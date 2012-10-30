@@ -4,140 +4,86 @@
  
 .ManageReports-page
 {
-	/*
-	 * Description
-	 */
-	 
-	h3
-	{
-		color: #a84310;
-		font-size: 14px;
-		font-style: italic;
-		font-weight: normal;
-		line-height: 1;
-		margin: 0 0 20px;
-	}
-	
-	/*
-	 * List
-	 */
-	
-	.report-list
-	{
-		list-style: none;
-		margin: 0px auto 20px;
-		text-align: left;
-		
-		.report
-		{
-			background: #f1f1f2;
-			border: 1px solid #ccc;
-			@include border-radius(4px);
-			margin-bottom: 2px;
-		}
-		
-		.favorite
-		{
-			line-height: normal;
-			float: left;
-			margin: 8px 5px 0px;
-			text-decoration: none;
-		}
-		
-		.icon-star
-		{
-			color: #ccc;
-			font-size: 12px;
-		}
-		
-		.icon-star.selected
-		{
-			color: #a84d10;
-		}
-		
-		.summary
-		{
-			float: left;
-			margin-right: 10px;
-		}
-		
-		.name
-		{
-			color: #333;
-			float: left;
-			font-size: 13px;
-			font-weight: bold;
-			line-height: 30px;
-			margin: 0px 10px 0px 0px;
-		}
-		
-		.created-by
-		{
-			color: #999;
-			font-size: 11px;
-			font-style: italic;
-			line-height: 30px;
-			white-space: nowrap;
-		}
-		
-		.description
-		{
-			max-width: 400px;
-		}
-		
-		.options
-		{
-			border-left: 1px solid #ccc;
-			float: right;
-			height: 30px;
-			padding: 0px 5px;
-
-			&:hover
-			{
-				background: #eaeaea;
-			}
-		}
-		
-		.options.open
-		{
-			background: #ccc;
-
-			&:hover
-			{
-				background: #ccc;
-			}
-		}
-		
-		.options .dropdown-toggle
-		{
-			color: #999;
-			@include border-radius(0px);
-			@include box-shadow(none);
-			line-height: 30px;
-			text-decoration: none;
-		}
-	}
-	
-	.lt-ie8 .report-list
-	{
-		display: inline;
-	}
-	
-	.pagination
-	{
-		margin-bottom: 30px;
-		// text-align: center;
-	}
-	
-	/*.pagination > ul
-	{
-		display: inline-block;
-	}
-	
-	.lt-ie8 .pagination > ul
-	{
-		display: inline;
-	}*/
+    /*
+     * Description
+     */
+     
+    .report-subtitle
+    {
+        color: #a84310;
+        font-size: 14px;
+        font-style: italic;
+        font-weight: normal;
+        line-height: 1;
+        margin: 0 0 20px;
+    }
+    
+    /*
+     * List
+     */
+    
+    .report-list
+    {
+        margin-bottom: 20px;
+        text-align: left;
+        
+        .report
+        {
+            background: #f1f1f2;
+            border: 1px solid #ccc;
+            @include border-radius(4px);
+            line-height: 35px;
+            margin-bottom: 2px;
+        }
+        
+        .favorite
+        {
+            float: left;
+            margin: 0 5px;
+            text-decoration: none;
+        }
+        
+        .icon-star
+        {
+            color: #ccc;
+            font-size: 12px;
+            position: relative;
+            top: 2px;
+        }
+        
+        .icon-star.selected
+        {
+            color: #a84d10;
+        }
+        
+        .summary
+        {
+            float: left;
+            margin-right: 10px;
+        }
+        
+        .name
+        {
+            color: #333;
+            float: left;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .created-by
+        {
+            color: #999;
+            font-size: 12px;
+            font-style: italic;
+            white-space: nowrap;
+        }
+        
+        .description
+        {
+            max-width: 400px;
+        }
+    }
 }
 
 @import 'my-reports-list';

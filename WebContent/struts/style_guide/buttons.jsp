@@ -77,6 +77,14 @@
                         Alternate dark gray button, not tied to a semantic action or use
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-link">Link</a>
+                    </td>
+                    <td>
+                        Alternate dark gray button, not tied to a semantic action or use
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -96,6 +104,8 @@
 &lt;a class="btn btn-danger"&gt;Danger&lt;/a&gt;
 
 &lt;a class="btn btn-inverse"&gt;Inverse&lt;/a&gt;
+
+&lt;a class="btn btn-link"&gt;Link&lt;/a&gt;
 </pre>
 
     </div>

@@ -19,9 +19,7 @@
 </s:include>
 
 <s:if test="reportUsersFavoritesOverflow.size > 0">
-    <div id="report_favorites_list_excluded">
-        <h1><s:text name="ManageReports.favorites.NotIncluded" /></h1>
-    </div>
+    <h3><s:text name="ManageReports.favorites.NotIncluded" /></h3>
 </s:if>
 
 <%-- cannot pass list as a include : param - bypass via setter --%>
@@ -35,7 +33,7 @@
 </s:include>
 
 <s:if test="reportUserFavorites.isEmpty()">
-    <div class="row">
+    <div class="row-fluid">
         <div class="alert alert-info alert-block span6 offset3">
             <button type="button" class="close" data-dismiss="alert">×</button>
             

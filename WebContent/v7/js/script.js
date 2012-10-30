@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2012-10-24
+/*! Picsorganizer - v0.1.0 - 2012-10-26
 * http://www.picsorganizer.com/
 * Copyright (c) 2012 Carey Hinoki; Licensed MIT */
 
@@ -2384,14 +2384,12 @@ PICS.define('layout.menu.Menu', {
                 search_query_element = navbar_element.find('.search-query');
             
             if (!navbar_element.length) {
-                return;
+                // drop down menu
+                this.configureDropdown(dropdown_toggle_element);
+                
+                // autocomplete user searchbox
+                this.configureUserSearch(search_query_element);
             }
-            
-            // drop down menu
-            this.configureDropdown(dropdown_toggle_element);
-            
-            // autocomplete user searchbox
-            this.configureUserSearch(search_query_element);
         },
         
         configureDropdown: function (dropdown_toggle_element) {

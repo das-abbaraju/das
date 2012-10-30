@@ -9,12 +9,19 @@
 /* line 2, ../sass/pics/layout/_layout.scss */
 body {
   padding-top: 55px;
+  padding-bottom: 26px;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  /* line 8, ../sass/pics/layout/_layout.scss */
+  /* line 9, ../sass/pics/layout/_layout.scss */
   body {
     padding-top: 0;
+  }
+}
+@media (max-width: 767px) {
+  /* line 16, ../sass/pics/layout/_layout.scss */
+  .alert[class*="offset"] {
+    margin: 0;
   }
 }
 /* line 2, ../sass/pics/layout/_environment.scss */
@@ -70,6 +77,17 @@ body {
   #environment.navbar-fixed-bottom {
     margin: 0;
     position: fixed;
+  }
+}
+@media (max-width: 767px) {
+  /* line 66, ../sass/pics/layout/_environment.scss */
+  #environment a {
+    display: none;
+  }
+
+  /* line 71, ../sass/pics/layout/_environment.scss */
+  #environment .active {
+    display: inline;
   }
 }
 /* line 4, ../sass/pics/layout/_menu.scss */
@@ -197,27 +215,12 @@ p.subtitle {
 /*
  * Overrides for Default Buttons
  */
-/* line 113, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 103, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn {
-  border-width: 1px;
-  border-style: solid;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 20px;
-  *margin-left: 0.3em;
-  margin-left: 5px;
   border-color: #bcbcbc;
   text-shadow: none;
   color: #333333;
-  background: none;
+  background: gainsboro;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
   background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
@@ -226,10 +229,10 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=gainsboro);
 }
 
-/* line 129, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 118, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn:hover {
   color: #333333;
-  background: none;
+  background: #ececec;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
   background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
   background-image: -moz-linear-gradient(#f7f7f8, #ececec);
@@ -238,11 +241,11 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f7f7f8, endColorstr=#ececec);
 }
 
-/* line 139, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 129, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn.active,
 .btn:active {
   color: #333333;
-  background: none;
+  background: #cdcdcd;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
   background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
   background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
@@ -254,12 +257,12 @@ p.subtitle {
 /*
  * Overrides for Primary Buttons
  */
-/* line 152, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 143, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary {
   border-color: #226396;
   text-shadow: 0px -1px 1px #226396;
   color: white;
-  background: none;
+  background: #226396;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
   background-image: -webkit-linear-gradient(#73bbe8, #226396);
   background-image: -moz-linear-gradient(#73bbe8, #226396);
@@ -268,10 +271,10 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73bbe8, endColorstr=#226396);
 }
 
-/* line 166, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 158, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary:hover {
   color: white;
-  background: none;
+  background: #396cc9;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
   background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
   background-image: -moz-linear-gradient(#60c9f3, #396cc9);
@@ -280,11 +283,11 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#60c9f3, endColorstr=#396cc9);
 }
 
-/* line 176, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 169, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary.active,
 .btn-primary:active {
   color: white;
-  background: none;
+  background: #09366f;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
   background-image: -webkit-linear-gradient(#336f9c, #09366f);
   background-image: -moz-linear-gradient(#336f9c, #09366f);
@@ -296,12 +299,12 @@ p.subtitle {
 /*
  * Overrides for Warning Buttons
  */
-/* line 189, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 183, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning {
   border-color: #e67e1c;
   text-shadow: 0px -1px 1px #e67e1c;
   color: white;
-  background: none;
+  background: #e67e1c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
   background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
   background-image: -moz-linear-gradient(#fcc033, #e67e1c);
@@ -310,10 +313,10 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcc033, endColorstr=#e67e1c);
 }
 
-/* line 203, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 198, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning:hover {
   color: white;
-  background: none;
+  background: #f1a300;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
   background-image: -webkit-linear-gradient(#fcd100, #f1a300);
   background-image: -moz-linear-gradient(#fcd100, #f1a300);
@@ -322,11 +325,11 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcd100, endColorstr=#f1a300);
 }
 
-/* line 213, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 209, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning.active,
 .btn-warning:active {
   color: white;
-  background: none;
+  background: #d66000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
   background-image: -webkit-linear-gradient(#ea9000, #d66000);
   background-image: -moz-linear-gradient(#ea9000, #d66000);
@@ -338,12 +341,12 @@ p.subtitle {
 /*
  * Overrides for Info Buttons
  */
-/* line 226, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 223, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info {
   border-color: #6ca6f6;
   text-shadow: 0px -1px 1px #6ca6f6;
   color: white;
-  background: none;
+  background: #6ca6f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
   background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
   background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
@@ -352,10 +355,10 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#70cfff, endColorstr=#6ca6f6);
 }
 
-/* line 240, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 238, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info:hover {
   color: white;
-  background: none;
+  background: #73d0f6;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
   background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
   background-image: -moz-linear-gradient(#73ddff, #73d0f6);
@@ -364,11 +367,11 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73ddff, endColorstr=#73d0f6);
 }
 
-/* line 250, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 249, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info.active,
 .btn-info:active {
   color: white;
-  background: none;
+  background: #5599fc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
   background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
   background-image: -moz-linear-gradient(#55a9ff, #5599fc);
@@ -385,7 +388,7 @@ p.subtitle {
   border-color: #229322;
   text-shadow: 0px -1px 1px #229322;
   color: white;
-  background: none;
+  background: #229322;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
   background-image: -webkit-linear-gradient(#33c033, #229322);
   background-image: -moz-linear-gradient(#33c033, #229322);
@@ -394,10 +397,10 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33c033, endColorstr=#229322);
 }
 
-/* line 277, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 278, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success:hover {
   color: white;
-  background: none;
+  background: #25b000;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
   background-image: -webkit-linear-gradient(#33d000, #25b000);
   background-image: -moz-linear-gradient(#33d000, #25b000);
@@ -406,11 +409,11 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33d000, endColorstr=#25b000);
 }
 
-/* line 287, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 289, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success.active,
 .btn-success:active {
   color: white;
-  background: none;
+  background: #1c7600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
   background-image: -webkit-linear-gradient(#299600, #1c7600);
   background-image: -moz-linear-gradient(#299600, #1c7600);
@@ -422,12 +425,12 @@ p.subtitle {
 /*
  * Overrides for Danger Buttons
  */
-/* line 300, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 303, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger {
   border-color: #ac030c;
   text-shadow: 0px -1px 1px #ac030c;
   color: white;
-  background: none;
+  background: #ac030c;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
   background-image: -webkit-linear-gradient(#f6303c, #ac030c);
   background-image: -moz-linear-gradient(#f6303c, #ac030c);
@@ -436,10 +439,10 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6303c, endColorstr=#ac030c);
 }
 
-/* line 314, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 318, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger:hover {
   color: white;
-  background: none;
+  background: #d00900;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
   background-image: -webkit-linear-gradient(#f92626, #d00900);
   background-image: -moz-linear-gradient(#f92626, #d00900);
@@ -448,17 +451,101 @@ p.subtitle {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f92626, endColorstr=#d00900);
 }
 
-/* line 324, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+/* line 329, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger.active,
 .btn-danger:active {
   color: white;
-  background: none;
+  background: #8c0600;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
   background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
   background-image: -moz-linear-gradient(#c60c0c, #8c0600);
   background-image: -o-linear-gradient(#c60c0c, #8c0600);
   background-image: linear-gradient(#c60c0c, #8c0600);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#c60c0c, endColorstr=#8c0600);
+}
+
+/*
+ * Overrides for Inverse Buttons
+ */
+/* line 343, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-inverse {
+  border-color: #222222 #222222 black;
+  text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.25);
+  color: white;
+  background: #222222;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
+  background-image: -webkit-linear-gradient(#444444, #222222);
+  background-image: -moz-linear-gradient(#444444, #222222);
+  background-image: -o-linear-gradient(#444444, #222222);
+  background-image: linear-gradient(#444444, #222222);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
+}
+
+/* line 358, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-inverse:hover {
+  color: white;
+  background: #222222;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
+  background-image: -webkit-linear-gradient(#444444, #222222);
+  background-image: -moz-linear-gradient(#444444, #222222);
+  background-image: -o-linear-gradient(#444444, #222222);
+  background-image: linear-gradient(#444444, #222222);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
+}
+
+/* line 369, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-inverse.active,
+.btn-inverse:active {
+  color: white;
+  background: #222222;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
+  background-image: -webkit-linear-gradient(#444444, #222222);
+  background-image: -moz-linear-gradient(#444444, #222222);
+  background-image: -o-linear-gradient(#444444, #222222);
+  background-image: linear-gradient(#444444, #222222);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
+}
+
+/*
+ * Overrides for Link Buttons
+ */
+/* line 383, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-link {
+  border-color: transparent;
+  text-shadow: none;
+  color: #226396;
+  background: transparent;
+}
+
+/* line 395, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-link:hover {
+  color: #73bbe8;
+  background: transparent;
+  text-decoration: none;
+}
+
+/* line 406, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
+.btn-link.active,
+.btn-link:active {
+  color: #226396;
+  background: transparent;
+}
+
+/* line 4, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
+.btn-group .btn-link {
+  border: 0;
+  padding-bottom: 7px;
+  padding-top: 7px;
+}
+
+/* line 14, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
+.btn-group > .btn:first-child.btn-link {
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
@@ -509,6 +596,16 @@ input[type="color"],
   border-top: 0;
   margin: 0;
   padding: 0;
+}
+
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */
+.navbar-inner {
+  background: #eaeaea;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
+  background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
+  background-image: -moz-linear-gradient(#ffffff, #eaeaea);
+  background-image: -o-linear-gradient(#ffffff, #eaeaea);
+  background-image: linear-gradient(#ffffff, #eaeaea);
 }
 
 /* line 3, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
@@ -858,18 +955,9 @@ input[type="color"],
   /*
    * List
    */
-  /*.pagination > ul
-  {
-  	display: inline-block;
-  }
-  
-  .lt-ie8 .pagination > ul
-  {
-  	display: inline;
-  }*/
 }
 /* line 12, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page h3 {
+.ManageReports-page .report-subtitle {
   color: #a84310;
   font-size: 14px;
   font-style: italic;
@@ -879,11 +967,10 @@ input[type="color"],
 }
 /* line 26, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
-  list-style: none;
-  margin: 0px auto 20px;
+  margin-bottom: 20px;
   text-align: left;
 }
-/* line 32, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 31, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
   background: #f1f1f2;
   border: 1px solid #ccc;
@@ -892,90 +979,49 @@ input[type="color"],
   -ms-border-radius: 4px;
   -o-border-radius: 4px;
   border-radius: 4px;
+  line-height: 35px;
   margin-bottom: 2px;
 }
 /* line 40, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite {
-  line-height: normal;
   float: left;
-  margin: 8px 5px 0px;
+  margin: 0 5px;
   text-decoration: none;
 }
-/* line 48, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 47, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
   color: #ccc;
   font-size: 12px;
+  position: relative;
+  top: 2px;
 }
-/* line 54, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 55, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
   color: #a84d10;
 }
-/* line 59, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 60, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .summary {
   float: left;
   margin-right: 10px;
 }
-/* line 65, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 66, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name {
   color: #333;
   float: left;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
-  line-height: 30px;
-  margin: 0px 10px 0px 0px;
+  margin-right: 10px;
 }
 /* line 75, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .created-by {
   color: #999;
-  font-size: 11px;
+  font-size: 12px;
   font-style: italic;
-  line-height: 30px;
   white-space: nowrap;
 }
-/* line 84, ../sass/pics/templates/report/manage-report/_manage-report.scss */
+/* line 83, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .description {
   max-width: 400px;
-}
-/* line 89, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .options {
-  border-left: 1px solid #ccc;
-  float: right;
-  height: 30px;
-  padding: 0px 5px;
-}
-/* line 96, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .options:hover {
-  background: #eaeaea;
-}
-/* line 102, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .options.open {
-  background: #ccc;
-}
-/* line 106, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .options.open:hover {
-  background: #ccc;
-}
-/* line 112, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .report-list .options .dropdown-toggle {
-  color: #999;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -o-border-radius: 0px;
-  border-radius: 0px;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  line-height: 30px;
-  text-decoration: none;
-}
-/* line 122, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .lt-ie8 .report-list {
-  display: inline;
-}
-/* line 127, ../sass/pics/templates/report/manage-report/_manage-report.scss */
-.ManageReports-page .pagination {
-  margin-bottom: 30px;
 }
 
 /*
@@ -992,28 +1038,17 @@ input[type="color"],
  */
 /* line 6, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page {
- 	/*
-	 * Excluded Reports
-	 */
+  /*
+   * Excluded Reports
+   */
 }
 /* line 12, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
-#ManageReports_favoritesList_page #report_favorites_list_excluded {
-  margin: 0px auto;
-  width: 60%;
-}
-/* line 17, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
-#ManageReports_favoritesList_page #report_favorites_list_excluded h1 {
+#ManageReports_favoritesList_page h3 {
   border-bottom: 1px solid #ccc;
   color: #999;
   font-size: 18px;
-  margin-bottom: 30px;
+  margin: 30px 0 20px;
   text-align: left;
-}
-/* line 26, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
-#ManageReports_favoritesList_page #report_favorites_list_excluded p {
-  color: #999;
-  font-size: 12px;
-  text-align: center;
 }
 
 /*
@@ -1027,60 +1062,54 @@ input[type="color"],
 }
 /* line 12, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search {
-  margin: 30px 0px 0px;
+  margin: 30px 0px 40px;
   text-align: center;
 }
 /* line 18, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form {
-  margin: 0px 0px 35px;
+  margin: 0;
 }
 /* line 22, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form .icon-search {
   color: #666;
+  margin-right: 2px;
   position: relative;
-  right: 2px;
   top: 8px;
 }
 /* line 30, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form input {
   background: #f1f1f2;
-  color: #999;
-  height: 18px;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  -ms-border-radius: 20px;
-  -o-border-radius: 20px;
-  border-radius: 20px;
 }
-/* line 39, ../sass/pics/templates/report/manage-report/_search-list.scss */
+/* line 36, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .lt-ie8 #report_search_form {
   display: inline;
 }
-/* line 46, ../sass/pics/templates/report/manage-report/_search-list.scss */
+/* line 43, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .report {
+  line-height: 20px;
   padding: 0px 20px;
 }
-/* line 51, ../sass/pics/templates/report/manage-report/_search-list.scss */
+/* line 49, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .summary {
-  padding-top: 7px;
+  padding-top: 8px;
 }
-/* line 57, ../sass/pics/templates/report/manage-report/_search-list.scss */
-#ManageReports_searchList_page .report-list .name,
-#ManageReports_searchList_page .report-list .created-by {
-  line-height: 18px;
-}
-/* line 62, ../sass/pics/templates/report/manage-report/_search-list.scss */
+/* line 54, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .name {
   float: none;
 }
-/* line 67, ../sass/pics/templates/report/manage-report/_search-list.scss */
-#ManageReports_searchList_page .report-list .description {
-  font-size: 13px;
+/* line 59, ../sass/pics/templates/report/manage-report/_search-list.scss */
+#ManageReports_searchList_page .report-list .created-by {
+  line-height: normal;
 }
-/* line 72, ../sass/pics/templates/report/manage-report/_search-list.scss */
+/* line 64, ../sass/pics/templates/report/manage-report/_search-list.scss */
+#ManageReports_searchList_page .report-list .description {
+  font-size: 12px;
+  margin: 0;
+}
+/* line 70, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .number-favorites {
   color: #a84d10;
-  font-size: 12px;
+  font-size: 14px;
   float: right;
   margin: 18px 0px;
 }

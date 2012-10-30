@@ -17,23 +17,25 @@
 <% if (request.getParameter("enable_sort") != null) { %>
     <s:set var="enable_sort">${param.enable_sort}</s:set>
 <% } else { %>
-    <s:set var="enable_sort" value="true" />
+    <s:set var="enable_sort">true</s:set>
 <% } %>
 
 <% if (request.getParameter("enable_move_up") != null) { %>
     <s:set var="enable_move_up">${param.enable_move_up}</s:set>
 <% } else { %>
-    <s:set var="enable_move_up" value="true" />
+    <s:set var="enable_move_up">true</s:set>
 <% } %>
 
 <% if (request.getParameter("enable_move_down") != null) { %>
     <s:set var="enable_move_down">${param.enable_move_down}</s:set>
 <% } else { %>
-    <s:set var="enable_move_down" value="true" />
+    <s:set var="enable_move_down">true</s:set>
 <% } %>
 
 <s:if test="#reports">
-    <ul id="${list_id}" class="${list_class}">
+    <s:set name="report_size" value="#reports.size()" />
+
+    <ul id="${list_id}" class="${list_class} unstyled">
         <s:iterator value="#reports" var="user_report" status="rowstatus">
             <s:set name="report" value="#user_report.report" />
             <s:set name="report_id" value="#report.id" />
@@ -47,22 +49,6 @@
                 <s:param name="report">${report_id}</s:param>
             </s:url>
     
-            <%-- <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
-                <s:param name="reportId">${report_id}</s:param>
-            </s:url>
-
-			    
-            <s:if test="#enable_sort">
-	            <s:url action="ManageReports" method="removeReportUser" var="remove_report_url">
-	                <s:param name="reportId">${report_id}</s:param>
-	            </s:url>
-            </s:if>
-            <s:else>
-	            <s:url action="ManageReports" method="removeReportPermissionUser" var="remove_report_url">
-	                <s:param name="reportId">${report_id}</s:param>
-	            </s:url>
-            </s:else> --%>
-    
             <%-- Icon --%>
             <s:set name="is_favorite_class" value="''" />
     
@@ -70,7 +56,7 @@
                 <s:set name="is_favorite_class">selected</s:set>
             </s:if>
     
-            <li class="report">
+            <li class="report clearfix">
                 <a href="${report_favorite_url}" class="favorite" data-id="${report_id}">
                     <i class="icon-star icon-large ${is_favorite_class}"></i>
                 </a>
@@ -85,30 +71,14 @@
                     </s:if>
                 </div>
     
-    			<s:if test="#enable_sort">
+    			<s:if test="#enable_sort == 'true' && #report_size > 1">
                 	<div class="btn-group pull-right">
-                    	<button class="dropdown-toggle btn" data-toggle="dropdown" href="#">
-                        	<s:text name="ManageReports.myReports.Options" />
-                    	</button>
+                        <button class="dropdown-toggle btn btn-link" data-toggle="dropdown" href="#">
+                            <s:text name="ManageReports.myReports.Options" />
+                        </button>
     
-                    	<ul class="dropdown-menu">
-                        <%-- <li>
-                            <s:if test="%{reportModel.canUserEdit(permissions.userId, report)}">
-                                <a href="${delete_report_url}" class="delete">
-                                    <s:text name="ManageReports.myReports.Delete" />
-                                </a>
-                            </s:if>
-                            <s:else>
-                                <a href="${remove_report_url}" class="remove">
-                                    <s:text name="ManageReports.myReports.Remove" />
-                                </a>
-                            </s:else>
-                        </li> --%>
-                        
-                        <%-- <s:if test="#enable_sort"> --%>
-                            <%-- <li class="divider"></li> --%>
-                            
-                            <s:if test="!#rowstatus.first || (#rowstatus.first && #enable_move_up)">
+                        <ul class="dropdown-menu">
+                            <s:if test="!#rowstatus.first || (#rowstatus.first && #enable_move_up == 'true')">
                                 <li>
                                     <a href="ManageReports!moveUp.action?reportId=${report_id}" class="move-up">
                                         <s:text name="ManageReports.myReports.MoveUp" />
@@ -116,19 +86,16 @@
                                 </li>
                             </s:if>
                             
-                            <s:if test="!#rowstatus.last || (#rowstatus.last && #enable_move_down)">
+                            <s:if test="!#rowstatus.last || (#rowstatus.last && #enable_move_down == 'true')">
                                 <li>
                                     <a href="ManageReports!moveDown.action?reportId=${report_id}" class="move-down">
                                         <s:text name="ManageReports.myReports.MoveDown" />
                                     </a>
                                 </li>
                             </s:if>
-                        <%-- </s:if> --%>
-                    	</ul>
-                	</div>
+                        </ul>
+                    </div>
                 </s:if>
-    
-                <div class="clearfix"></div>
             </li>
         </s:iterator>
     </ul>

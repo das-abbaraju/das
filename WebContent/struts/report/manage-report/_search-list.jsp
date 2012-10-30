@@ -4,7 +4,7 @@
 <div id="report_search_list">
     <s:include value="/struts/_action-messages.jsp" />
 
-    <ul class="report-list">
+    <ul class="report-list unstyled">
         <s:iterator value="reports" var="report">
             <s:set name="report_id" value="#report.id" />
     
@@ -13,15 +13,17 @@
                 <s:param name="report">${report_id}</s:param>
             </s:url>
     
-            <li class="report">
+            <li class="report clearfix">
                 <div class="summary">
-                    <a href="${report_url}" class="name">
-                        ${report.name}
-                    </a>
-    
-                    <s:if test="#report.createdBy.id != permissions.userId">
-                        <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
-                    </s:if>
+                    <div>
+                        <a href="${report_url}" class="name">
+                            ${report.name}
+                        </a>
+        
+                        <s:if test="#report.createdBy.id != permissions.userId">
+                            <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
+                        </s:if>
+                    </div>
     
                     <p class="description">${report.description}</p>
                 </div>
@@ -29,8 +31,6 @@
                 <span class="number-favorites">
                     ${report.numTimesFavorited} <s:text name="ManageReports.report.Favorites" />
                 </span>
-    
-                <div class="clearfix"></div>
             </li>
         </s:iterator>
     </ul>

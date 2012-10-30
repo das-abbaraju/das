@@ -8,7 +8,7 @@
 
 <s:include value="/struts/report/manage-report/_report-menu.jsp" />
 
-<h3><s:text name="ManageReports.favorites.subtitle" /></h3>
+<h4 class="report-subtitle"><s:text name="ManageReports.favorites.subtitle" /></h4>
 
 <div id="report_favorites">
     <s:include value="/struts/report/manage-report/_favorites-list.jsp" />
