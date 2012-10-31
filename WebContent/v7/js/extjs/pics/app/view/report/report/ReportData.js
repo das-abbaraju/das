@@ -42,6 +42,22 @@ Ext.define('PICS.view.report.report.ReportData', {
 
             this.createHeaderMenu(menu);
         }, this);
+
+        this.on('reconfigure', function (cmp) {
+            var store = cmp.getStore();
+
+            cmp.columns[0].setHeight(23);
+
+            store.on('load', function () {
+                if (store.getCount() == 0) {
+                    cmp.view.emptyText = '<div class="x-grid-empty">no results</div>';
+                } else {
+                    cmp.view.emptyText = '';
+                }
+
+                cmp.view.refresh();
+            });
+        }, this);
     },
 
     createHeaderMenu: function (menu) {

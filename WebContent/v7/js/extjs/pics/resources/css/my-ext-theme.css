@@ -8727,8 +8727,15 @@ textarea.x-form-invalid-field {
 #report_data-body {
   border: 0px;
   border-top: 0px !important; }
+  /* line 118, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report.scss */
+  #report_data-body .x-grid-empty {
+    color: #ccc;
+    font-size: 34px;
+    margin-top: 100px;
+    text-align: center;
+    text-shadow: rgba(0, 0, 0, 0.5) -1px 0, rgba(0, 0, 0, 0.3) 0 -1px, rgba(255, 255, 255, 0.5) 0 1px; }
 
-/* line 119, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report.scss */
+/* line 128, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report.scss */
 #report_data-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 
