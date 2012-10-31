@@ -194,7 +194,7 @@ public class DateBean {
 			wcbYearStart.setTime(date);
 		}
 
-		wcbYearStart.set(Calendar.MONTH, 8); // September is 8 (zero based)
+		wcbYearStart.set(Calendar.MONTH, Calendar.SEPTEMBER);
 		wcbYearStart.set(Calendar.DAY_OF_MONTH, 1);
 
 		Calendar now = Calendar.getInstance();
@@ -241,9 +241,9 @@ public class DateBean {
 		Calendar expirationDate = Calendar.getInstance();
 
 		try {
-			expirationDate.set(Calendar.MONTH, 11);
+			expirationDate.set(Calendar.MONTH, Calendar.JANUARY);
 			expirationDate.set(Calendar.DAY_OF_MONTH, 31);
-			expirationDate.set(Calendar.YEAR, Integer.parseInt(year));
+			expirationDate.set(Calendar.YEAR, Integer.parseInt(year) + 1);
 		} catch (Exception e) {
 			return null;
 		}
