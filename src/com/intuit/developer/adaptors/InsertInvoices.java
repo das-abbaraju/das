@@ -108,7 +108,6 @@ public class InsertInvoices extends CustomerAdaptor {
 				if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
                     boolean lineItemsNeedConversion = invoiceJPA.containsATaxLineItem();
 					for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
-                        if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT()) continue;
 
 						InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
 
