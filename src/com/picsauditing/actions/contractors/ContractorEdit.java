@@ -166,17 +166,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
 
-			if (logo != null)
+			if (logo != null) {
 				handleLogo(ftpDir);
-			if (brochure != null)
+			}
+			if (brochure != null) {
 				handleBrochure(ftpDir);
+			}
 			checkContractorTypes();
 			checkListOnlyAcceptability();
 			handleLocationChange();
 			runContractorValidator();
 
-			if (this.hasActionErrors())
+			if (this.hasActionErrors()) {
 				return SUCCESS;
+			}
 
 			addNoteWhenStatusChange();
 			// auditBuilder.buildAudits(contractor);
