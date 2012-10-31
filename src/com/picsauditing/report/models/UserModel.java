@@ -44,10 +44,10 @@ public class UserModel extends AbstractModel {
 		String userWhere = "";
 		
 		if(permissions.isOperator()) {
-			userWhere = "AND User.accountID = " + permissions.getAccountIdString();
+			userWhere = "User.accountID = " + permissions.getAccountIdString();
 		}
 		if(permissions.isCorporate()) {
-			userWhere = "AND User.accountID IN (" + Strings.implode(permissions.getVisibleAccounts())+")";
+			userWhere = "User.accountID IN (" + Strings.implode(permissions.getVisibleAccounts())+")";
 		}
 		return userWhere;
 	}
