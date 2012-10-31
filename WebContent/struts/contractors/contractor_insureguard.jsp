@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
+
 <head>
 	<title>
 		<s:text name="ConInsureGUARD.title">
@@ -8,18 +9,18 @@
 			<s:param><s:property value="contractor.name" /></s:param>
 		</s:text>
 	</title>
-	
+
 	<s:include value="../jquery.jsp"/>
-	
+
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
-	
+
 	<script type="text/javascript">
 		function showAddAudit() {
-			$('#addAudit').hide();	
+			$('#addAudit').hide();
 			$('#addAuditManually').show();
 		}
-	
+
 		function showCertUpload(conid, certid) {
 			url = 'CertificateUpload.action?id='+conid+'&certID='+certid;
 			title = 'Upload';
@@ -27,7 +28,7 @@
 			fileUpload = window.open(url,title,pars);
 			fileUpload.focus();
 		}
-		
+
 		function showFileUpload(auditid, questionid) {
 		    url = 'AuditDataUpload.action?auditData.audit.id=' + auditid + '&auditData.question.id=' + questionid + '&mode=Edit';
 			title = 'Upload';
@@ -37,7 +38,7 @@
 		}
 
 	</script>
-	
+
 	<style type="text/css">
 		.Pending { color: #770 !important; }
 		.Current { color: #272 !important; }
@@ -47,15 +48,15 @@
 </head>
 <body>
 	<s:include value="conHeader.jsp" />
-	
+
 	<s:if test="currentPoliciesMap.size > 0">
 		<h3><s:text name="ConInsureGUARD.CurrentPolicies" /></h3>
-		
+
 		<table class="report">
 			<thead>
 				<tr>
 					<td><s:text name="Filters.label.PolicyType" /></td>
-					
+
 					<s:iterator value="@com.picsauditing.jpa.entities.AuditStatus@values()" var="stat">
 						<s:if test="#stat.toString() != 'Expired'">
 							<td><s:property value="#stat" /></td>
@@ -75,7 +76,7 @@
 								</s:text>
 							</a>
 						</td>
-						
+
 						<s:iterator value="@com.picsauditing.jpa.entities.AuditStatus@values()" var="stat">
 							<s:if test="#stat.toString() != 'Expired'">
 								<td>
@@ -99,10 +100,10 @@
 		</table>
 		<br />
 	</s:if>
-	
+
 	<s:if test="expiredPoliciesMap.size > 0">
 		<h3><s:text name="ConInsureGUARD.ExpiredPolicies" /></h3>
-		
+
 		<table class="report">
 			<thead>
 				<tr>
@@ -135,77 +136,22 @@
 		</table>
 	</s:if>
 	<br />
-	
+
 	<table>
 		<tr>
 			<td>
-				<s:iterator value="certTypes" var="stat">
-					<s:if test="certificatesMap.row(#stat).size > 0">
-						<h3>
-							<s:text name="ConInsureGUARD.NumCertificates">
-								<s:param><s:property value="#stat" /></s:param>
-							</s:text>
-						</h3>
-						
-						<table class="report">
-							<thead>
-								<tr>
-									<td>
-										<s:text name="global.Filename" />
-									</td>
-									<td>
-										<s:text name="global.ExpirationDate" />
-									</td>
-									<td>
-										<s:text name="global.View" />
-									</td>
-									<td>
-										<s:text name="global.Edit" />
-									</td>
-									
-									<s:if test="#stat != 'Uploaded'">
-										<td>
-											<s:text name="ConInsureGUARD.UsedBy" />
-										</td>
-									</s:if>
-								</tr>
-							</thead>
-							<tbody>
-								<s:iterator value="certificatesMap.row(#stat).keySet()" var="cert">
-									<tr>
-										<td>
-											<s:property value="description" />
-										</td>
-										<td class="center">
-											<s:date name="expirationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-										</td>
-										<td class="center">
-											<a href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="id"/>&button=download" target="_BLANK">
-												<img src="images/icon_insurance.gif" />
-											</a>
-										</td>
-										<td>
-											<s:if test="permissions.userId == createdBy.Id || permissions.admin">
-												<a class="edit" href="#" onclick="showCertUpload(<s:property value="contractor.id"/>, <s:property value="id" />); return false;" title="Opens in new window (please disable your popup blocker)">
-													<s:text name="global.Edit" />
-												</a>
-											</s:if>
-										</td>
-										<s:if test="#stat != 'Uploaded'">
-											<td>
-												<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
-													<s:property value="certificatesMap.get(#stat, #cert)" />
-												</s:if>
-											</td>
-										</s:if>
-									</tr>
-								</s:iterator>
-							</tbody>
-						</table>
-					</s:if>
-					<br />
-				</s:iterator>
-				
+                <s:set name="certType" value="%{'Current'}" />
+                <s:set name="insureguardCertificates" value="currentCertificatesClientSites" />
+                <s:include value="_insureguard-certificates.jsp" />
+
+                <s:set name="certType" value="%{'Expired'}" />
+                <s:set name="insureguardCertificates" value="expiredCertificatesClientSites" />
+                <s:include value="_insureguard-certificates.jsp" />
+
+                <s:set name="certType" value="%{'Uploaded'}" />
+                <s:set name="insureguardCertificates" value="uploadedCertificatesClientSites" />
+                <s:include value="_insureguard-certificates.jsp" />
+
 				<div>
 					<input type="button" class="picsbutton positive" onclick="showCertUpload(<s:property value="id" />, 0)" title="Opens in new window (please disable your popup blocker)" value="<s:text name="Audit.AddFile" />" />
 				</div>
@@ -267,7 +213,7 @@
 	</table>
 	<br/>
 	</s:if>
-	
+
 	<s:if test="expiredWcbFiles.size > 0">
 	<h3><s:text name="ConInsureGUARD.WcbFilesExpired" /></h3>
 	<table class="report">
@@ -320,9 +266,9 @@
 	</table>
 	<br/>
 	</s:if>
-		
+
 	<div id="notesList">
 		<s:include value="../notes/account_notes_embed.jsp"></s:include>
 	</div>
-	
+
 </body>
