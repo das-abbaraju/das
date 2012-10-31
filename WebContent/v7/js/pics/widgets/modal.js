@@ -142,7 +142,6 @@
 
                         updateModalPosition(modal, modal_body);
 
-
                         return modal;
                     }
 

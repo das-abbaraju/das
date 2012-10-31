@@ -9,11 +9,22 @@
                         that.saveContractorStatus.apply(that, [event]);
                     });
 
-                    $('#contractor_operator_numbers').delegate('.add, .edit', 'click', function (event) {
+                    $('#contractor_operator_numbers').on('click', '.add, .edit', function (event) {
                         event.preventDefault();
-                        $('#contractor_operator_numbers').trigger('showcontractornumbers', [event]);
+                        that.getContractorIDAndDataNumber(event);
                     });
+
                 }
+            },
+
+            getContractorIDAndDataNumber: function (event) {
+                var element = $(event.currentTarget),
+                    contractor_number_data = {
+                        contractorID: element.attr('data-contractor'),
+                        data_number: element.attr('data-number')
+                    };
+
+                $('#contractor_operator_numbers').trigger('showcontractornumbers', [contractor_number_data]);
             },
 
             saveContractorStatus: function (event) {

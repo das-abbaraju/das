@@ -5,16 +5,15 @@
                 if ($('#contractor_operator_numbers').length > 0) {
                     var that = this;
 
-                    $('#contractor_operator_numbers').on('showcontractornumbers', function (event, event_trigger) {
-                        that.createModal.apply(that, [event_trigger]);
+                    $('#contractor_operator_numbers').on('showcontractornumbers', function (event, contractor_number_data) {
+                        that.createModal.apply(that, [contractor_number_data]);
                     });
                 }
             },
 
-            createModal: function (event_trigger) {
-                var element = $(event_trigger.currentTarget),
-                    contractor = element.attr('data-contractor'),
-                    data_number = element.attr('data-number'),
+            createModal: function (contractor_number_data) {
+                var contractorID = contractor_number_data.contractorID,
+                    data_number = contractor_number_data.data_number,
                     modal = null,
                     that = this;
 
@@ -23,7 +22,7 @@
                         var modal_element = $(modal.getElement());
 
                         modal_element.on('change', '#contractor_numbers_client, #contractor_numbers_type', function () {
-                            that.updateModal(contractor, data_number);
+                            that.updateModal(contractorID, data_number);
                         });
 
                         modal_element.on('click', '.positive', that.saveContractorNumber);
@@ -33,8 +32,8 @@
                 PICS.ajax({
                     url : 'ManageContractorOperatorNumber!edit.action',
                     data : {
-                        contractor : contractor,
-                        number : data_number
+                        contractor: contractorID,
+                        number: data_number
                     },
                     success : function(data, textStatus, jqXHR) {
                         modal = PICS.modal({
@@ -74,7 +73,7 @@
                 });
             },
 
-            updateModal: function (contractor, data_number) {
+            updateModal: function (contractorID, data_number) {
                 //get updated values
                 var client = $('#contractor_numbers_client'),
                     type = $('#contractor_numbers_type');
@@ -84,7 +83,7 @@
                     data: {
                         clientSite: client.val(),
                         clientType: type.val(),
-                        contractor: contractor,
+                        contractor: contractorID,
                         number: data_number
                     },
                     success: function (data, textStatus, jqXHR) {
