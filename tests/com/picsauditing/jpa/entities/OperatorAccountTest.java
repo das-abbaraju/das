@@ -36,13 +36,13 @@ public class OperatorAccountTest {
 		classUnderTest = new OperatorAccount();
 		
 		MockitoAnnotations.initMocks(this);
+		classUnderTest.setParent(parentOperator);
 	}
 
 	@Test(timeout = 3000)
 	public void testGetInheritedDiscountPercentOperator() {
 		int id = 1;
 		classUnderTest.setId(id);
-		classUnderTest.setParent(parentOperator);
 		when(parentOperator.getId()).thenReturn(id);
 		when(parentOperator.isHasDiscount()).thenReturn(false);
 		when(parentOperator.getParent()).thenReturn(parentOperator);
@@ -60,7 +60,6 @@ public class OperatorAccountTest {
 	@Test
 	public void test_isAcceptsList_descendsFromCEDA_CANADA () {
 		classUnderTest.setId(5);
-		classUnderTest.setParent(parentOperator);
 		when(parentOperator.getId()).thenReturn(OperatorAccount.CEDA_CANADA);
 		assertTrue(classUnderTest.isAcceptsList());
 	}
@@ -68,7 +67,6 @@ public class OperatorAccountTest {
 	@Test
 	public void test_isAcceptsList_descendsFromCEDA_CANADA2 () {
 		classUnderTest.setId(5);
-		classUnderTest.setParent(parentOperator);
 		when(parentOperator.getId()).thenReturn(10);
 		when(parentOperator.isDescendantOf(OperatorAccount.CEDA_CANADA)).thenReturn(true);
 		assertTrue(classUnderTest.isAcceptsList());
@@ -83,7 +81,6 @@ public class OperatorAccountTest {
 	@Test
 	public void test_isAcceptsList_descendsFromCEDA_USA () {
 		classUnderTest.setId(5);
-		classUnderTest.setParent(parentOperator);
 		when(parentOperator.getId()).thenReturn(OperatorAccount.CEDA_USA);
 		assertTrue(classUnderTest.isAcceptsList());
 	}
@@ -91,7 +88,6 @@ public class OperatorAccountTest {
 	@Test
 	public void test_isAcceptsList_descendsFromCEDA_USA2 () {
 		classUnderTest.setId(5);
-		classUnderTest.setParent(parentOperator);
 		when(parentOperator.getId()).thenReturn(10);
 		when(parentOperator.isDescendantOf(OperatorAccount.CEDA_USA)).thenReturn(true);
 		assertTrue(classUnderTest.isAcceptsList());
