@@ -39,16 +39,18 @@ import com.picsauditing.util.SpringUtils;
 @Table(name = "operators")
 public class OperatorAccount extends Account {
 
+	public static final int AI = 19344;
+	public static final int BASF = 6115;
+	public static final int CEDA_CANADA = 29228;
+	public static final int CEDA_USA = 29230;
+	public static final int CINTAS = 17144;
+	public static final int CINTAS_CANADA = 17302;
+	public static final int CINTAS_NORTHAMERICA = 17146;
+	public static final int OLDCASTLE = 20481;
 	public static final int PicsConsortium = 4;
 	public static final int PICSPSM = 8;
 	public static final int SUNCOR = 10566;
 	public static final int SALES = 23325;
-	public static final int CINTAS = 17144;
-	public static final int CINTAS_CANADA = 17302;
-	public static final int CINTAS_NORTHAMERICA = 17146;
-	public static final int BASF = 6115;
-	public static final int AI = 19344;
-	public static final int OLDCASTLE = 20481;
 	public static final int SUNOCO = 27406;
 
 	private OperatorAccount parent;
@@ -300,7 +302,8 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public boolean isAcceptsList() {
-		return this.isDescendantOf(OperatorAccount.SUNCOR) || this.isDescendantOf(OperatorAccount.CINTAS);
+		return this.isDescendantOf(OperatorAccount.SUNCOR) || this.isDescendantOf(OperatorAccount.CINTAS)
+			|| this.isOrIsDescendantOf(OperatorAccount.CEDA_CANADA) || this.isOrIsDescendantOf(OperatorAccount.CEDA_USA);
 	}
 
 	@ManyToOne
