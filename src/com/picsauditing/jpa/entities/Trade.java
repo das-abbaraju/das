@@ -425,7 +425,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	/**
 	 * Is this trade equal to t or a child of t? For example, Residential
 	 * Construction is a childOf Residential Construction and Construction.
-	 * 
+	 *
 	 * @param candidateParent
 	 * @return
 	 */
@@ -522,6 +522,10 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		attr.put("class", "trade-" + id);
 		if (getProductI() && getServiceI())
 			attr.put("rel", "product-service");
+		else if (getServiceI() && getTransportationI())
+			attr.put("rel", "transportation-service");
+		else if (getTransportationI())
+			attr.put("rel", "transportation");
 		else if (getServiceI())
 			attr.put("rel", "service");
 		else if (getProductI())

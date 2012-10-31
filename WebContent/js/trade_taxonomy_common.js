@@ -53,7 +53,19 @@ $(function() {
 						"image": "images/icon_box_combo.png",
 						"position": "0px 2px"
 					}
-				}
+				},
+                "transportation": {
+                    "icon": {
+                        "image": "images/icon_box_dark_blue.png",
+                        "position": "0px 2px"
+                    }
+                },
+                "transportation-service": {
+                    "icon": {
+                        "image": "images/icon_box_combo.png",
+                        "position": "0px 2px"
+                    }
+                },
 			}
 		},
 		"ui": {

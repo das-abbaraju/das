@@ -372,7 +372,10 @@ h3.new {
 	width: 200px;
 }
 
-.service,.product,.product-service {
+.service,
+.product,
+.product-service,
+.transportation {
 	background-repeat: no-repeat;
 	background-position: left center;
 	padding-left: 16px;
@@ -387,8 +390,13 @@ h3.new {
 	background-image: url(../images/icon_box_orange.png);
 }
 
-.product-service {
+.product-service,
+.transporation-service {
 	background-image: url(../images/icon_box_combo.png);
+}
+
+.transportation {
+    background-image: url(../images/icon_box_dark_blue.png);
 }
 
 /* load area icon */
