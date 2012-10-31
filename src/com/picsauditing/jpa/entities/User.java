@@ -9,10 +9,13 @@ import java.util.TimeZone;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -101,6 +104,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private String department;
 	private String apiKey;
 	private boolean usingDynamicReports;
+	private int assignmentCapacity;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -110,6 +114,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
 	private List<Report> reports = new ArrayList<Report>();
+	private List<Locale> spokenLanguages = new ArrayList<Locale>();
 
 	@Transient
 	public boolean isSuperUser() {
@@ -411,6 +416,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return result;
 	}
 
+	public int getAssignmentCapacity() {
+		return assignmentCapacity;
+	}
+
+	public void setAssignmentCapacity(int assignmentCapacity) {
+		this.assignmentCapacity = assignmentCapacity;
+	}
+
 	@OneToMany(mappedBy = "user", cascade = { CascadeType.ALL })
 	public List<UserGroup> getGroups() {
 		return groups;
@@ -472,6 +485,17 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setReports(List<Report> reports) {
 		this.reports = reports;
+	}
+
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "user_language", joinColumns = @JoinColumn(name = "userID"))
+	@Column(name = "locale")
+	public List<Locale> getSpokenLanguages() {
+		return spokenLanguages;
+	}
+
+	public void setSpokenLanguages(List<Locale> spokenLanguages) {
+		this.spokenLanguages = spokenLanguages;
 	}
 
 	@Transient
@@ -876,6 +900,16 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return (isActive == YesNo.No || username.startsWith("DELETE-"));
 	}
 
+	@Transient
+	public boolean hasGroup(int id) {
+		for (UserGroup group : groups) {
+			if (group.getGroup().getId() == id) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public String getApiKey() {
 		return apiKey;
 	}
@@ -888,5 +922,4 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public boolean isApi() {
 		return (this.apiKey != null) && hasPermission(OpPerms.RestApi, OpType.View);
 	}
-
 }

@@ -115,6 +115,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date tradesUpdated;
 	private LcCorPhase lcCorPhase;
 	private Date lcCorNotification;
+	private boolean dontReassign;
 
 	private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 	protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
@@ -406,6 +407,15 @@ public class ContractorAccount extends Account implements JSONable {
 	@Deprecated
 	public void setLwcrAverage(Float lwcrAverage) {
 		this.lwcrAverage = lwcrAverage;
+	}
+
+	@Column(name = "dontReassign")
+	public boolean isDontReassign() {
+		return dontReassign;
+	}
+
+	public void setDontReassign(boolean dontReassign) {
+		this.dontReassign = dontReassign;
 	}
 
 	// //// BILLING/ACCOUNT - related columns //////
@@ -1707,32 +1717,5 @@ public class ContractorAccount extends Account implements JSONable {
 	public boolean hasVatId() {
 		return !Strings.isEmpty(vatId);
 	}
-
-	@Transient
-	public boolean isHasEmployeeGUARDTag() {
-		for (ContractorTag contractorTag : getOperatorTags()) {
-			OperatorTag operatorTag = contractorTag.getTag();
-
-			if (operatorTag != null && operatorTag.getCategory().isEmployeeGUARD()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Transient
-	public boolean hasTagCategory(OperatorTagCategory category) {
-		if (category != null) {
-			for (ContractorTag contractorTag : getOperatorTags()) {
-				OperatorTag tag = contractorTag.getTag();
-
-				if (category == tag.getCategory()) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
 }
+>>>>>>> PICS-6885

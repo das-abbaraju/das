@@ -10,7 +10,7 @@ CREATE TABLE `user_language` (
         FOREIGN KEY (`userID`) REFERENCES users(`id`)        
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
-alter table `users` add column `assignmentCapacity` TINYINT UNSIGNED NOT NULL DEFAULT 100;
+alter table `users` add column `assignmentCapacity` TINYINT UNSIGNED NOT NULL DEFAULT 0;
 alter table `users` add column `shiftStartHour` TINYINT UNSIGNED DEFAULT 9;
 alter table `users` add column `shiftEndHour` TINYINT UNSIGNED DEFAULT 17;
 alter table `users` add column `workdays` char(7) DEFAULT 'xMTWTFx';
