@@ -1,9 +1,8 @@
-Ext.define('PICS.view.report.ReportData', {
+Ext.define('PICS.view.report.report.ReportData', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportdata'],
 
     requires: [
-        'PICS.view.report.LinkColumn',
         'PICS.view.report.report.ReportPagingToolbar'
     ],
 

@@ -2,8 +2,8 @@
 	PICS.define('contractor.registrationRequest.Report', {
 		methods: {
 			init: function () {
-				$('#ReportNewRequestedContractor-page a.excel').live('click', this.downloadExcelFile);
-				$('#ReportNewRequestedContractor-page a.excelUpload').live('click', this.uploadExcelFile);
+				$('.ReportNewRequestedContractor-page a.excel').live('click', this.downloadExcelFile);
+				$('.ReportNewRequestedContractor-page a.excelUpload').live('click', this.uploadExcelFile);
 			},
 			
 			downloadExcelFile: function(event) {

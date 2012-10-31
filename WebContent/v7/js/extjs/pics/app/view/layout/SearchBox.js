@@ -99,7 +99,7 @@ Ext.define('PICS.view.layout.SearchBox', {
         ],
         proxy: {
             type: 'ajax',
-            url: 'SearchBox!json.action',
+            url: '/SearchBox!json.action',
             reader: {
                 root: 'results',
                 type: 'json',

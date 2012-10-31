@@ -51,7 +51,7 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 	<tag>
 		<description>else part of if/condition/then/else tag.</description>

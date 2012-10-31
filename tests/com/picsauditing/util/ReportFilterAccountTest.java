@@ -9,49 +9,49 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.FlagColor;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ReportFilterAccount.class, I18nCache.class, SpringUtils.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class ReportFilterAccountTest {
+public class ReportFilterAccountTest extends PicsActionTest {
 	public ReportFilterAccount accountFilter;
 
 	@Mock
-	private I18nCache i18nCache;
+	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
-	private Permissions permissions;
+	private CountryDAO countryDAO;
+
+	@AfterClass
+	public static void classTearDown() throws Exception {
+		Whitebox.setInternalState(ReportFilter.class, "cache", (I18nCache) null);
+		PicsActionTest.classTearDown();
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-		PowerMockito.mockStatic(SpringUtils.class);
-		when(I18nCache.getInstance()).thenReturn(i18nCache);
-
 		accountFilter = new ReportFilterAccount();
+		super.setupMocks();
+
+		Whitebox.setInternalState(accountFilter, "countrySubdivisionDAOForTests", countrySubdivisionDAO);
+		Whitebox.setInternalState(ReportFilter.class, "cache", i18nCache);
 	}
 
 	@Test
@@ -94,8 +94,6 @@ public class ReportFilterAccountTest {
 
 	@Test
 	public void testGetCountrySubdivisionList_NoPermissions() {
-		CountrySubdivisionDAO countrySubdivisionDAO = mock(CountrySubdivisionDAO.class);
-		when(SpringUtils.getBean(anyString())).thenReturn(countrySubdivisionDAO);
 
 		accountFilter.getCountrySubdivisionList();
 
@@ -106,9 +104,6 @@ public class ReportFilterAccountTest {
 	@Test
 	public void testGetCountrySubdivisionList_NoCountryOnPermissions() {
 		accountFilter.setPermissions(permissions);
-
-		CountrySubdivisionDAO countrySubdivisionDAO = mock(CountrySubdivisionDAO.class);
-		when(SpringUtils.getBean(anyString())).thenReturn(countrySubdivisionDAO);
 
 		accountFilter.getCountrySubdivisionList();
 
@@ -121,9 +116,6 @@ public class ReportFilterAccountTest {
 		accountFilter.setPermissions(permissions);
 		when(permissions.getCountry()).thenReturn("Country");
 
-		CountrySubdivisionDAO countrySubdivisionDAO = mock(CountrySubdivisionDAO.class);
-		when(SpringUtils.getBean(anyString())).thenReturn(countrySubdivisionDAO);
-
 		accountFilter.getCountrySubdivisionList();
 
 		verify(countrySubdivisionDAO, never()).findAll();
@@ -133,17 +125,11 @@ public class ReportFilterAccountTest {
 	@Test
 	public void testGetCountrySubdivisionMap_NoPermissions() {
 		assertNull(accountFilter.getCountrySubdivisionMap());
-
-		PowerMockito.verifyStatic(never());
-		SpringUtils.getBean(anyString());
 	}
 
 	@Test
 	public void testGetCountrySubdivisionMap_Permissions() {
 		accountFilter.setPermissions(permissions);
-
-		CountrySubdivisionDAO countrySubdivisionDAO = mock(CountrySubdivisionDAO.class);
-		when(SpringUtils.getBean(anyString())).thenReturn(countrySubdivisionDAO);
 
 		accountFilter.getCountrySubdivisionMap();
 
@@ -152,8 +138,7 @@ public class ReportFilterAccountTest {
 
 	@Test
 	public void testGetCountryList() {
-		CountryDAO countryDAO = mock(CountryDAO.class);
-		when(SpringUtils.getBean(anyString())).thenReturn(countryDAO);
+		Whitebox.setInternalState(accountFilter, "countryDAOForTests", countryDAO);
 
 		accountFilter.getCountryList();
 
@@ -222,8 +207,7 @@ public class ReportFilterAccountTest {
 
 		accountFilter.getAccountName();
 
-		PowerMockito.verifyStatic();
-		ReportFilterAccount.getDefaultName();
+		verify(i18nCache).getText(eq("global.CompanyName"), (Locale) any());
 	}
 
 	@Test
@@ -232,7 +216,7 @@ public class ReportFilterAccountTest {
 
 		accountFilter.getAccountName();
 
-		verify(i18nCache, never()).getText(anyString(), any(Locale.class));
+		verify(i18nCache, never()).getText("global.CompanyName", Locale.ENGLISH);
 	}
 
 	@Test
@@ -241,8 +225,7 @@ public class ReportFilterAccountTest {
 
 		accountFilter.getCity();
 
-		PowerMockito.verifyStatic();
-		ReportFilterAccount.getDefaultCity();
+		verify(i18nCache).getText(eq("global.City"), (Locale) any());
 	}
 
 	@Test
@@ -251,7 +234,7 @@ public class ReportFilterAccountTest {
 
 		accountFilter.getCity();
 
-		verify(i18nCache, never()).getText(anyString(), any(Locale.class));
+		verify(i18nCache, never()).getText(anyString(), (Locale) any(Locale.class));
 	}
 
 	@Test
@@ -273,8 +256,7 @@ public class ReportFilterAccountTest {
 
 		accountFilter.getZip();
 
-		PowerMockito.verifyStatic();
-		ReportFilterAccount.getDefaultZip();
+		verify(i18nCache).getText(eq("global.ZipPostalCode"), (Locale) any());
 	}
 
 	@Test
@@ -283,7 +265,7 @@ public class ReportFilterAccountTest {
 
 		accountFilter.getZip();
 
-		verify(i18nCache, never()).getText(anyString(), any(Locale.class));
+		verify(i18nCache, never()).getText(anyString(), (Locale) any(Locale.class));
 	}
 
 	@Test

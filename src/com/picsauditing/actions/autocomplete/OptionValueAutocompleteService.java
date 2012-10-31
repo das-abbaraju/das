@@ -4,48 +4,38 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.jpa.entities.Autocompleteable;
 import com.picsauditing.util.Strings;
 
-public class OptionValueAutocompleteService extends AutocompleteService<Autocompleteable> {
+// TODO: Find out if this is even working properly
+public class OptionValueAutocompleteService extends AbstractAutocompleteService<Autocompleteable> {
+	
 	@Autowired
 	protected AuditOptionValueDAO valueDAO;
 
+	
 	@Override
-	protected Collection<Autocompleteable> getItems(String q) {
-		Collection<Autocompleteable> result = new ArrayList<Autocompleteable>();
-
-		if (!Strings.isEmpty(q)) {
-			final String value = q;
-			result.add(new Autocompleteable() {
-
-				@Override
-				public JSONObject toJSON() {
-					return new JSONObject();
-				}
-
-				@Override
-				public String getAutocompleteValue() {
-					return value;
-				}
-
-				@Override
-				public String getAutocompleteResult() {
-					return value;
-				}
-
-				@Override
-				public String getAutocompleteItem() {
-					return value;
-				}
-			});
-			return result;
+	protected Collection<Autocompleteable> getItems(String search, Permissions permissions) {
+		if (Strings.isEmpty(search)) {
+			return Collections.emptyList();
 		}
+		
+		Collection<Autocompleteable> result = new ArrayList<Autocompleteable>();
+		// this is where the implementation belongs
+		return result;
+	}
 
-		return Collections.<Autocompleteable> emptyList();
+	@Override
+	protected Object getKey(Autocompleteable item) {
+		return item.getAutocompleteItem();
+	}
+
+	@Override
+	protected Object getValue(Autocompleteable item, Permissions permissions) {
+		return item.getAutocompleteValue(); 	
 	}
 }

@@ -100,7 +100,7 @@
 								<ol>
 									<li>
 										<label>Method:</label>
-										<s:property value="payment.paymentMethod.description" />
+										<s:text name="%{payment.paymentMethod.i18nKey}" />
 									</li>
 									
 									<s:if test="payment.paymentMethod.check">
@@ -385,7 +385,7 @@
 					<ol>
 						<li>
 							<label>Refund Method:</label>
-							<s:property value="payment.paymentMethod.description"/>
+							<s:text name="%{payment.paymentMethod.i18nKey}" />
 						</li>
 						<li>
 							<label>Amount:</label>

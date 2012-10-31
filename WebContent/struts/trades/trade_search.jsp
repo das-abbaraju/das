@@ -14,7 +14,7 @@
 	
 	<div id="search-tab">
 		<form id="suggest">
-			<input type="search" class="searchText" name="q" placeholder="<s:text name='ContractorTrades.button.SearchPlaceholder' />"/>
+			<input type="search" class="searchText" name="q" placeholder="<s:text name='ContractorTrades.button.SearchPlaceholder' />" data-contractor="<s:property value='id'/>"/>
 			<input type="submit" class="searchButton" title="<s:text name='ContractorTrades.button.SearchTitle' />" value="Search" />
 		</form>
 		

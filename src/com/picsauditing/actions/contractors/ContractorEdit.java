@@ -11,7 +11,8 @@ import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import com.picsauditing.util.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -52,10 +53,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.ReportFilterContractor;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
@@ -286,10 +283,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			contractor.setCountry(country);
 		}
 
-		if (!contractor.getCountry().isHasCountrySubdivisions()) {
-			contractor.setCountrySubdivision(null);
-			countrySubdivision = null;
-		}
+        if (!contractor.getCountry().hasCountrySubdivisions()){
+            contractor.setCountrySubdivision(null);
+            countrySubdivision = null;
+        }
 
 		boolean subdivisionHasChanged = (countrySubdivision != null)
 				&& (!countrySubdivision.equals(contractor.getCountrySubdivision()));
@@ -322,7 +319,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
+		if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
 			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
 					getText(countrySubdivision.getI18nKey())));
 		}

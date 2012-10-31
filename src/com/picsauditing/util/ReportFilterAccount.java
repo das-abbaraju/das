@@ -23,6 +23,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showType = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
+	protected boolean showIncludePicsReources = false;
 	protected boolean showTitleName = false;
 
 	// /////// Parameter Values /////////////////
@@ -35,9 +36,13 @@ public class ReportFilterAccount extends ReportFilter {
 	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
+	protected boolean includePicsResources = false;
 	protected String titleName;
 
 	protected Permissions permissions = null;
+
+	private CountrySubdivisionDAO countrySubdivisionDAOForTests;
+	private CountryDAO countryDAOForTests;
 
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
@@ -57,8 +62,7 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public List<CountrySubdivision> getCountrySubdivisionList() {
-		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils
-				.getBean("CountrySubdivisionDAO");
+		CountrySubdivisionDAO countrySubdivisionDAO = countrySubdivisionDAO();
 
 		List<CountrySubdivision> result;
 		if (permissions != null && !Strings.isEmpty(permissions.getCountry())) {
@@ -76,8 +80,7 @@ public class ReportFilterAccount extends ReportFilter {
 		Multimap<Country, CountrySubdivision> countrySubdivisionMap = null;
 
 		if (permissions != null) {
-			CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils
-					.getBean("CountrySubdivisionDAO");
+			CountrySubdivisionDAO countrySubdivisionDAO = countrySubdivisionDAO();
 
 			countrySubdivisionMap = countrySubdivisionDAO.getCountrySubdivisionMap(permissions.getCountry());
 		}
@@ -86,7 +89,7 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public List<Country> getCountryList() {
-		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
+		CountryDAO countryDAO = countryDAO();
 		return countryDAO.findAll();
 	}
 
@@ -136,6 +139,22 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setShowTradeInformation(boolean showTradeInformation) {
 		this.showTradeInformation = showTradeInformation;
+	}
+
+	public boolean isShowIncludePicsReources() {
+		return showIncludePicsReources;
+	}
+
+	public void setShowIncludePicsReources(boolean showIncludePicsReources) {
+		this.showIncludePicsReources = showIncludePicsReources;
+	}
+
+	public boolean isIncludePicsResources() {
+		return includePicsResources;
+	}
+
+	public void setIncludePicsResources(boolean includePicsResources) {
+		this.includePicsResources = includePicsResources;
 	}
 
 	public String getStartsWith() {
@@ -256,5 +275,19 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public static String getDefaultZip() {
 		return String.format("- %s -", cache.getText("global.ZipPostalCode", getLocaleStatic()));
+	}
+
+	private CountrySubdivisionDAO countrySubdivisionDAO() {
+		if (countrySubdivisionDAOForTests == null) {
+			return (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		}
+		return countrySubdivisionDAOForTests;
+	}
+
+	private CountryDAO countryDAO() {
+		if (countryDAOForTests == null) {
+			return (CountryDAO) SpringUtils.getBean("CountryDAO");
+		}
+		return countryDAOForTests;
 	}
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -75,6 +75,9 @@ public class Definition implements JSONable {
 	}
 
 	public void fromJSON(JSONObject json) {
+		if (json == null) {
+			return;
+		}
 		String filterExpressionFromJson = (String) json.get(FILTER_EXPRESSION);
 		if (FilterExpression.isValid(filterExpressionFromJson))
 			this.filterExpression = filterExpressionFromJson;

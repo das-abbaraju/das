@@ -77,7 +77,7 @@
                             <br />
                             <input type="button" class="btn success reschedule-fee-continue" value="<s:text name="button.Continue" />" />
                             
-                            <s:if test="permissions.userId == 1029 || permissions.userId == 935 || permissions.userId == 11503 || permissions.userId == 34065">
+                            <s:if test="permissions.userId == 1029 || permissions.userId == 935 || permissions.userId == 11503 || permissions.userId == 38048">
                                 <!-- This option is available for Mina, Harvey, Gary, and Rick only -->
                                 <input type="button" class="btn reschedule-fee-override" value="<s:text name="ScheduleAudit.button.OverrideFee" />" />
                             </s:if>

@@ -10,6 +10,17 @@
     background: url(../images/environment/orange.jpg) repeat;
 }
 
+.environment.qa-beta
+{
+    background: url(../images/environment/solidorange.jpg) repeat;
+}
+
+.environment.qa-stable
+{
+    background: url(../images/environment/solidorange.jpg) repeat;
+}
+
+
 .environment.alpha
 {
     background: url(../images/environment/green.jpg) repeat;

@@ -1,5 +1,3 @@
-var dummy;
-
 Ext.define('PICS.view.report.settings.EditSettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingsedit'],

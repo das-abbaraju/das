@@ -1,33 +1,30 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 
 public class ContractorAuditOperatorTable extends AbstractTable {
+	public static final String Audit = "Audit";
+	public static final String Operator = "Operator";
 
 	public ContractorAuditOperatorTable() {
-		super("contractor_audit_operator", "auditOperator", "cao", "cao.auditID = ca.id AND cao.visible = 1");
+		super("contractor_audit_operator");
+		addPrimaryKey();
+
+		Field statusSubstatus = new Field("StatusSubstatus", "CONCAT(" + ReportOnClause.ToAlias
+				+ ".status,IFNULL(CONCAT(':'," + ReportOnClause.ToAlias + ".auditSubStatus),''))", FieldType.String);
+		addField(statusSubstatus);
+
+		addFields(ContractorAuditOperator.class);
 	}
 
-	public ContractorAuditOperatorTable(String prefix, String alias, String foreignKey) {
-		super("contractor_audit_operator", prefix, alias, alias + ".id = " + foreignKey);
-	}
-
-	public ContractorAuditOperatorTable(String alias, String foreignKey) {
-		super("contractor_audit_operator", alias, alias, alias + ".id = " + foreignKey);
-	}
-
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.ClientSiteMonitoringAnAudit);
-
-		addField(prefix + "StatusSubstatus", "CONCAT(" + alias + ".status,IFNULL(CONCAT(':'," + alias + ".auditSubStatus),''))",
-				FilterType.String, FieldCategory.ClientSiteMonitoringAnAudit);
-
-		addFields(com.picsauditing.jpa.entities.ContractorAuditOperator.class);
-	}
-
-	public void addJoins() {
-		AccountTable auditingSite = new AccountTable(prefix + "Account", alias + ".opID");
-		auditingSite.setOverrideCategory(FieldCategory.ClientSiteMonitoringAnAudit);
-		addLeftJoin(auditingSite);
+	protected void addJoins() {
+		ReportOnClause auditOnClause = new ReportOnClause("auditID");
+		addOptionalKey(new ReportForeignKey(Audit, new ContractorAuditTable(), auditOnClause));
+		ReportForeignKey operatorKey = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
+		operatorKey.setCategory(FieldCategory.ClientSiteMonitoringAnAudit);
+		operatorKey.setMinimumImportance(FieldImportance.Required);
+		addOptionalKey(operatorKey);
 	}
 }

@@ -49,6 +49,9 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	static public final int PRODUCT_CRITICAL_ASSESSMENT = 7678;
 	static public final int PRODUCT_SAFETY_CRITICAL_ASSESSMENT = 7679;
 	static public final int IMPORT_PQF = 7727;
+	static public final int OSHA_KEPT_ID = 2064;
+	static public final int COHS_KEPT_ID = 2066;
+	static public final int UK_HSE_KEPT_ID = 9106;
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",

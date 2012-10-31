@@ -28,6 +28,8 @@ public class UsersManageTest extends PicsActionTest {
 	private User group;
 	@Mock
 	private UserGroup userGroup;
+	@Mock
+	private UserDAO userDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -35,6 +37,16 @@ public class UsersManageTest extends PicsActionTest {
 		usersManage = new UsersManage();
 		super.setUp(usersManage);
 
+		Whitebox.setInternalState(usersManage, "userDAO", userDAO);		
+	}
+
+	@Test
+	public void testSetUserResetHash() throws Exception {
+		user = new User();
+		Whitebox.setInternalState(usersManage, "user", user);		
+		Whitebox.invokeMethod(usersManage, "setUserResetHash");
+		assertNotNull(user.getResetHash());
+		verify(userDAO).save(user);
 	}
 
 	@Test

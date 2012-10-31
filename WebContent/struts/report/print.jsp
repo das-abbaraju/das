@@ -12,16 +12,14 @@
     </s:iterator>
     </thead>
     <tbody>
-    <s:iterator value="data" var="row">
+    <s:iterator value="results.rows" var="row">
         <tr>
-        <s:iterator value="report.definition.columns">
+        <s:iterator value="report.definition.columns" var="column">
             <td class="<s:property value="fieldName"/>">
-                <s:property value="#row.get(fieldName)"/>
+                <s:property value="#row.getCellByColumn(#column).value"/>
             </td>
         </s:iterator>
         </tr>
     </s:iterator>
     </thead>
 </table>
-
-                <s:property value="%{fieldName.toUpperCase()}"/>

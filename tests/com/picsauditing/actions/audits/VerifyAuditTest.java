@@ -1,6 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -14,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.dao.AuditDataDAO;
@@ -23,6 +24,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.search.Database;
 
 public class VerifyAuditTest {
@@ -75,5 +77,19 @@ public class VerifyAuditTest {
 		PicsTestUtil.forceSetPrivateField(verifyAudit, "pqfQuestions", null);
 		assertEquals(0, verifyAudit.getPqfQuestions().size()); // no applicable
 	}
+
+	@Test
+	public void testShowOsha() {
+		ContractorAccount con = EntityFactory.makeContractor();
+		
+		ContractorAudit annual= EntityFactory.makeAnnualUpdate(11, con, "2010");
+		PicsTestUtil.forceSetPrivateField(verifyAudit, "conAudit", annual);
+		
+		
+		assertFalse(verifyAudit.showOsha(OshaType.OSHA));
+		AuditData oshaKept = EntityFactory.makeAuditData("Yes", 2064);
+		annual.getData().add(oshaKept);
+		assertTrue(verifyAudit.showOsha(OshaType.OSHA));
+;	}
 
 }

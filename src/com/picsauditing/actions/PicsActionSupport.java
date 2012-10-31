@@ -1,6 +1,8 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -11,15 +13,20 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Transient;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -45,7 +52,11 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.SessionCookie;
+import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.PicsOrganizerVersion;
@@ -57,6 +68,9 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware {
 
+	protected static final int DELETE_COOKIE_AGE = 0;
+	protected static final int SESSION_COOKIE_AGE = -1;
+	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
 
 	public static final String PLAIN_TEXT = "plain-text";
@@ -75,8 +89,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected AppPropertyDAO propertyDAO;
 	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
+	protected FeatureToggle featureToggleChecker;
 
 	protected Collection<String> alertMessages;
+
+	private String actionMessageHeader;
+	private String alertMessageHeader;
+	private String actionErrorHeader;
 
 	protected String requestURL = null;
 
@@ -84,9 +104,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 * 
+	 *
 	 * This is also used for plain-text type results.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -102,21 +122,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
@@ -145,7 +165,52 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return !isConfigEnvironment();
 	}
 
+	private String picsEnvironment;
+	public String getPicsEnvironment() {
+		/*
+		 * Note: Lazy-loading like this is often overused in action code
+		 * (because the class only stays instantiated for as long as it takes to
+		 * render the page, and get-accessors normally only get called once in
+		 * that time); however, in this case, the PICS enviromnent is queried
+		 * numerous times during every page load.
+		 */
+		if (picsEnvironment == null) {
+			picsEnvironment = determinePicsEnvironment(); 
+		}
+		return picsEnvironment;
+		
+	}
+	
+	private String determinePicsEnvironment() {
+		Pattern p = Pattern.compile("(alpha|config|beta|stable|qa-beta|qa-stable|localhost).*");
+		Matcher m;
+		
+		// The (new) official way to determine the enviroment is using -Dpics.env=something
+		String env = System.getProperty("pics.env");
+		if (Strings.isNotEmpty(env)) {
+			m = p.matcher(env.trim().toLowerCase());
+			if (m.matches()) {
+				return m.group(1);
+			}
+		}
+		
+		// In the absense of -Dpics.env, see if there is an explicit subdomain mentioned in the URL that can tell us 
+		m = p.matcher(getServerName());
+		if (m.matches()) {
+			return m.group(1);
+		}
+		
+		// The URL must be WWW (or an IP address), so check the beta-audience level to see if we must have been redirected to beta
+		if (isBetaVersion()) {
+			return "beta";
+		}
+
+		// With no evidence to the contrary, we'd better assume we're on stable
+		return "stable";
+	}
+
 	public boolean isConfigEnvironment() {
+		// FIXME How is this different than isConfigurationEnvironment()?  Is this one deprecated?
 		if (CONFIG == null) {
 			CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
 		}
@@ -153,23 +218,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isAlphaEnvironment() {
-		Boolean isAlpha = getRequestHost().contains("alpha");
-
-		return isAlpha;
+		return "alpha".equals(getPicsEnvironment());
 	}
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
-		Boolean isBeta = getRequestHost().contains("beta");
-		if (!(isBeta || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment())) {
-			// its not beta, alpha, config, and localhost
-			if (isBetaVersion()) {
-				isBeta = true;
-			}
-		}
-
-		return isBeta;
+		return "beta".equals(getPicsEnvironment());
 	}
 
+	public boolean isQaEnvironment() {
+		return getPicsEnvironment().startsWith("qa-");
+	}
+
+	/**
+	 * Compares the hard-coded version number in the PicsOrganizerVersion class
+	 * with app_properties in the database. If the Java code is a higher number,
+	 * then it's more advanced, i.e. a Beta version.
+	 */
 	public boolean isBetaVersion() {
 		int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
 		int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
@@ -178,26 +242,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isConfigurationEnvironment() {
-		Boolean isConfiguration = getRequestHost().contains("config");
-
-		return isConfiguration;
+		return "config".equals(getPicsEnvironment());
 	}
 
 	public boolean isLiveEnvironment() throws UnknownHostException {
-		Boolean isStable = getRequestHost().contains("stable");
-		if (!(isStable || isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment())) {
-			if (!isBetaVersion()) {
-				isStable = true;
-			}
-		}
-
-		return isStable;
+		return "stable".equals(getPicsEnvironment());
 	}
 
 	public boolean isLocalhostEnvironment() {
-		Boolean isLocalhost = getRequestHost().contains(":8080");
-
-		return isLocalhost;
+		return "localhost".equals(getPicsEnvironment());
 	}
 
 	public boolean isI18nReady() {
@@ -211,7 +264,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * This method is used to set the clear_cache flag in the AppProperty table
 	 * to allow the contractor daemon to reset caches on all 3 servers.
-	 * 
+	 *
 	 */
 	protected void flagClearCache() {
 		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
@@ -246,24 +299,43 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			permissions = new Permissions();
 		}
 
-		if (autoLogin && !permissions.isLoggedIn()) {
+		if (permissions.isLoggedIn()) {
+			return;
+		}
 
-			String autoLoginID = System.getProperty("pics.autoLogin");
-
-			if (autoLoginID != null && autoLoginID.length() != 0) {
-				try {
-					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
-							autoLoginID);
-					UserDAO userDAO = SpringUtils.getBean("UserDAO");
-					User user = userDAO.find(Integer.parseInt(autoLoginID));
-
-					permissions.login(user);
-					LocaleController.setLocaleOfNearestSupported(permissions);
-					ActionContext.getContext().getSession().put("permissions", permissions);
-				} catch (Exception e) {
-					logger.error("Problem autologging in.  Id supplied was: {}", autoLoginID);
-				}
+		int clientSessionUserID = getClientSessionUserID();
+		if (clientSessionUserID > 0) {
+			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
+			login(clientSessionUserID);
+			int originalUserId = getClientSessionOriginalUserID();
+			if (clientSessionUserID != originalUserId) {
+				User originalUser = getUser(originalUserId);
+				permissions.setRememberMeTimeInSeconds(originalUser.getAccount().getRememberMeTimeInDays()
+						* TWENTY_FOUR_HOURS);
 			}
+			return;
+		}
+
+		if (autoLogin) {
+			String autoLoginID = System.getProperty("pics.autoLogin");
+			if (Strings.isNotEmpty(autoLoginID)) {
+				logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.",
+						autoLoginID);
+				login(Integer.parseInt(autoLoginID));
+			}
+		}
+	}
+
+	private void login(int userID) {
+		try {
+			UserDAO userDAO = SpringUtils.getBean("UserDAO");
+			User user = userDAO.find(userID);
+
+			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
+			ActionContext.getContext().getSession().put("permissions", permissions);
+		} catch (Exception e) {
+			logger.error("Problem autologging in.  Id supplied was: {}", userID);
 		}
 	}
 
@@ -329,14 +401,48 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public User getUser(int userId) {
-		UserDAO dao = SpringUtils.getBean("UserDAO");
 		try {
-			User user = dao.find(userId);
+			User user = userDAO.find(userId);
 			return user;
 		} catch (Exception e) {
 			logger.error("Error finding user: {}", e.getMessage());
 			return null;
 		}
+	}
+
+	protected String apiKey;
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	/**
+	 * IMPORTANT NOTE: This setter does not normally get called in time for the
+	 * SecurityInterceptor to make use of it. (It's a chicken-and-egg thing.)
+	 * So, this setter must be called mannually -- by making your action class
+	 * ParameterAware and then implementing the setParameters method. See
+	 * DataFeed, for example.
+	 */
+	public void setApiKey(final String apiKey) {
+		logger.debug("Setting apiKey = {}", apiKey);
+		this.apiKey = apiKey;
+	}
+
+	public boolean isApiUser() {
+		if (apiKey == null) {
+			return false;
+		}
+		User user = userDAO.findByApiKey(apiKey);
+		if (permissions == null) {
+			permissions = new Permissions();
+		}
+		try {
+			permissions.login(user);
+			this.user = user;
+		} catch (Exception e) {
+			return false;
+		}
+		LocaleController.setLocaleOfNearestSupported(permissions);
+		return true;
 	}
 
 	public Account getAccount() {
@@ -357,8 +463,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public Permissions getPermissions() {
 		try {
-			if (permissions == null)
+			if (permissions == null) {
 				loadPermissions();
+			}
 			return permissions;
 		} catch (Exception e) {
 			return new Permissions();
@@ -454,6 +561,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return ServletActionContext.getRequest().getQueryString() != null ? ServletActionContext.getRequest()
 				.getQueryString() : "";
 	}
+	private String getServerName() {
+		return ServletActionContext.getRequest().getServerName();
+	}
+
 
 	public String getRequestHost() {
 		String requestURL = getRequestURL().toString();
@@ -505,9 +616,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new TreeSet<User>();
-			UserDAO dao = SpringUtils.getBean("UserDAO");
-			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
-			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
+			auditorList.addAll(userDAO.findByGroup(User.GROUP_AUDITOR));
+			auditorList.addAll(userDAO.findByGroup(User.GROUP_CSR));
 		}
 		return auditorList;
 	}
@@ -515,8 +625,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
-			UserDAO dao = SpringUtils.getBean("UserDAO");
-			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));
+			safetyList.addAll(userDAO.findByGroup(User.GROUP_SAFETY));
 		}
 		return safetyList;
 	}
@@ -534,7 +643,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 * 
+	 *
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -542,7 +651,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 
-		ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		try {
+			ftpDir = ServletActionContext.getServletContext().getInitParameter("FTP_DIR");
+		} catch (Exception exception) {
+			// Most likely thrown during testing
+			Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
+			logger.error("Error getting ftp dir", exception);
+		}
+
 		if (ftpDir != null && ftpDir.length() > 0)
 			return ftpDir;
 
@@ -605,7 +721,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 * 
+	 *
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -704,6 +820,186 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		alertMessages = messages;
 	}
 
+	protected int getClientSessionOriginalUserID() {
+		SessionCookie sessionCookie = validSessionCookie();
+		return (sessionCookie == null) ? 0 : sessionCookie.getUserID();
+	}
+
+	protected int getClientSessionUserID() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
+			return 0;
+		}
+		if (sessionCookie.getData("switchTo") == null) {
+			return sessionCookie.getUserID();
+		} else {
+			int switchToUserId = (Integer) sessionCookie.getData("switchTo");
+			return switchToUserId;
+		}
+	}
+
+	protected boolean isRememberMeSetInCookie() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie == null) {
+			return false;
+		}
+		if (sessionCookie.getData("rememberMe") == null || !(Boolean)sessionCookie.getData("rememberMe")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/*
+	 * If the cookie is not valid (tampered with or the server key is the wrong
+	 * one) then return false If the cookie is valid and the user is being
+	 * persistently remembered then return true If the cookie is valid and the
+	 * user is not being persistently remembered then check to see if the cookie
+	 * session (in the cookie itself) is expired
+	 *
+	 * @see
+	 * com.picsauditing.access.SecurityAware#sessionCookieIsValidAndNotExpired()
+	 */
+	public boolean sessionCookieIsValidAndNotExpired() {
+		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			return true;
+		}
+		String sessionCookieValue = clientSessionCookieValue();
+		if (!SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			return false;
+		} else if (isRememberMeSetInCookie()) {
+			return true;
+		} else {
+			loadPermissions();
+			SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+			long nowInSeconds = new Date().getTime() / 1000;
+			long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+			return (permissions != null && nowInSeconds - cookieCreatedSeconds < permissions
+					.getSessionCookieTimeoutInSeconds());
+		}
+	}
+
+	private SessionCookie validSessionCookie() {
+		String sessionCookieValue = clientSessionCookieValue();
+		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
+			clearPicsOrgCookie();
+			return null;
+		}
+		SessionCookie sessionCookie = SessionSecurity.parseSessionCookie(sessionCookieValue);
+		return sessionCookie;
+	}
+
+	public void updateClientSessionCookieExpiresTime() {
+		SessionCookie sessionCookie = validSessionCookie();
+		if (sessionCookie != null) {
+			addClientSessionCookieToResponse(sessionCookie);
+		}
+	}
+
+	public String clearPermissionsSessionAndCookie() throws Exception {
+		if (permissions != null) {
+			permissions.clear();
+		}
+		ActionContext.getContext().getSession().clear();
+		clearPicsOrgCookie();
+		return SUCCESS;
+	}
+
+	public String logout() throws Exception {
+		invalidateSession();
+		return clearPermissionsSessionAndCookie();
+	}
+
+	public void invalidateSession() {
+		ActionContext.getContext().getSession().clear();
+		HttpSession session = ServletActionContext.getRequest().getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
+	}
+
+	protected void clearPicsOrgCookie() {
+		Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, "");
+		cookie.setMaxAge(DELETE_COOKIE_AGE);
+		if (!isLocalhostEnvironment()) {
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		}
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+	private String clientSessionCookieValue() {
+		return SessionSecurity.clientSessionCookieValue(getRequest());
+	}
+
+	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
+		loadPermissions(false);
+		String sessionCookieContent = sessionCookieContent(sessionCookie);
+		int maxAge = SESSION_COOKIE_AGE;
+		if (permissions != null && isRememberMeSetInCookie()) {
+			maxAge = permissions.getRememberMeTimeInSeconds();
+		}
+		doSetCookie(sessionCookieContent, maxAge);
+	}
+
+	private void doSetCookie(String sessionCookieContent, int maxAge) {
+		try {
+			String cookieContent = URLEncoder.encode(sessionCookieContent, "US-ASCII");
+			addClientSessionCookieToResponse(cookieContent, maxAge);
+		} catch (UnsupportedEncodingException e) {
+			// this won't happen unless somehow US-ASCII is removed from java...
+			logger.error("URLEncoder was given a bad encoding format: {}", e.getMessage());
+		}
+	}
+
+	protected void addClientSessionCookieToResponse() {
+		addClientSessionCookieToResponse(false, 0);
+	}
+
+	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
+		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
+		int maxAge = SESSION_COOKIE_AGE;
+		if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
+			maxAge = permissions.getRememberMeTimeInSeconds();
+		}
+		if (rememberMe && maxAge < 0) {
+			addAlertMessage(getText("Login.NoPermissionToRememberMe"));
+		}
+		doSetCookie(sessionCookieContent, maxAge);
+	}
+
+	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_SESSION_COOKIE)) {
+			Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
+			cookie.setMaxAge(maxAge);
+			if (!isLocalhostEnvironment()) {
+				cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+			}
+			ServletActionContext.getResponse().addCookie(cookie);
+		}
+	}
+
+	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
+		SessionCookie sessionCookie = new SessionCookie();
+		Date now = new Date();
+		sessionCookie.setUserID(permissions.getUserId());
+		sessionCookie.setCookieCreationTime(now);
+		if (switchToUser > 0) {
+			sessionCookie.putData("switchTo", switchToUser);
+		}
+		sessionCookie.putData("rememberMe", rememberMe);
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
+	}
+
+	private String sessionCookieContent(SessionCookie sessionCookie) {
+		Date now = new Date();
+		sessionCookie.setUserID(sessionCookie.getUserID());
+		sessionCookie.setCookieCreationTime(now);
+		sessionCookie.setEmbeddedData(sessionCookie.getEmbeddedData());
+		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
+		return sessionCookie.toString();
+	}
+
 	/**
 	 * @return the i18n text to use for this page's title
 	 */
@@ -730,6 +1026,26 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return helpUrl;
 	}
 
+	public String getChatUrl() {
+		String protocol = getRequest().getProtocol();
+		Locale locale = TranslationActionSupport.getLocaleStatic();
+
+		// We're using a whitelist strategy because we don't want to pass junk downstream
+		String language = Locale.ENGLISH.getDisplayLanguage();
+		if (LocaleController.isLocaleValid(locale)) {
+			language = locale.getDisplayLanguage();
+		}
+
+		String chatUrl = protocol + "://server.iad.liveperson.net/hc/90511184/" +
+	    "?cmd=file" +
+	    "&amp;file=visitorWantsToChat" +
+	    "&amp;site=90511184" +
+	    "&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
+	    "&amp;referrer=";
+
+		return chatUrl;
+	}
+
 	public String getActionName() {
 		return ServletActionContext.getActionMapping().getName();
 	}
@@ -744,5 +1060,29 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected HttpServletRequest getRequest() {
 		return ServletActionContext.getRequest();
+	}
+
+	public String getActionMessageHeader() {
+		return actionMessageHeader;
+	}
+
+	public void setActionMessageHeader(String header) {
+		actionMessageHeader = header;
+	}
+
+	public String getAlertMessageHeader() {
+		return alertMessageHeader;
+	}
+
+	public void setAlertMessageHeader(String header) {
+		alertMessageHeader = header;
+	}
+
+	public String getActionErrorHeader() {
+		return actionErrorHeader;
+	}
+
+	public void setActionErrorHeader(String header) {
+		actionErrorHeader = header;
 	}
 }

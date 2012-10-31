@@ -19,7 +19,7 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
 
     views: [
         'PICS.view.report.available-field.AvailableFieldModal',
-        'Ext.ux.util.FilterMultipleColumn'
+        'PICS.ux.util.FilterMultipleColumn'
     ],
 
     init: function () {
@@ -73,7 +73,7 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
 
     onAvailableFieldAdd: function (cmp, event, eOpts) {
         var modal = this.getAvailableFieldModal(),
-            list = this.getAvailableFieldList()
+            list = this.getAvailableFieldList(),
             search_box = this.getAvailableFieldSearchBox(),
             type = modal.type;
 
@@ -99,7 +99,7 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
             search_box = this.getAvailableFieldSearchBox();
 
         store.clearFilter();
-        store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
+        store.filter(Ext.create('PICS.ux.util.FilterMultipleColumn', {
             anyMatch: true,
             property: [
                 'category',
@@ -111,7 +111,8 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore();
+        var store = this.getReportAvailableFieldsByCategoryStore(),
+            that = this;
 
         store.clearFilter();
         store.sort();

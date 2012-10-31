@@ -1,68 +1,59 @@
 package com.picsauditing.interceptors;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.*;
-import org.junit.runner.RunWith;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.report.ReportActionSupport;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ActionContext.class, LoggerFactory.class})
-public class ReportUsageInterceptorTest {
+public class ReportUsageInterceptorTest extends PicsActionTest {
+	private ReportUsageInterceptor classUnderTest;
 	
-	@Mock ActionContext actionContext;
-	@Mock ActionInvocation invocation;
-	@Mock ReportActionSupport goodAction;
-	@Mock ActionSupport badAction;
-	@Mock Permissions permissions;
-	@Mock Logger logger;
-	Map<String, Object> fauxSession;
-	ReportUsageInterceptor classUnderTest;
+	@Mock
+	private ActionInvocation invocation;
+	@Mock
+	private ReportActionSupport goodAction;
+	@Mock
+	private ActionSupport badAction;
+	@Mock
+	private Logger logger;
+
+	@After
+	public void tearDown() throws Exception {
+		Whitebox.setInternalState(ReportUsageInterceptor.class, "logger", (Logger) null);
+	}
 	
-	@SuppressWarnings("rawtypes")
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.mockStatic(LoggerFactory.class);
-		PowerMockito.when(ActionContext.getContext()).thenReturn(actionContext);
-		PowerMockito.when(LoggerFactory.getLogger((Class) any())).thenReturn(logger);
-		
 		classUnderTest = new ReportUsageInterceptor();
-		fauxSession = new HashMap<String, Object>();
-		fauxSession.put("permissions", permissions);
-		when(actionContext.getSession()).thenReturn(fauxSession);
+		setupMocks();
+		Whitebox.setInternalState(ReportUsageInterceptor.class, "logger", logger);
 		when(permissions.getUserId()).thenReturn(1);
-		
 		when(invocation.invoke()).thenReturn("SUCCESS");
 		when(invocation.getInvocationContext()).thenReturn(actionContext);
-		when(actionContext.getParameters()).thenReturn(fauxSession);
 	}
 	
 	@Test
 	public void testIntercept_goodAction() throws Exception {
 		when(invocation.getAction()).thenReturn(goodAction);
 		when(goodAction.toString()).thenReturn("foo.bar.baz@something");
-		
+		parameters.put("foo", "bar");
 		assertEquals("SUCCESS", classUnderTest.intercept(invocation));
 		
-		//verify(logger).info((String) any(), (Object[]) any());
 		verify(logger).info("{},{},{}", new Object[] {1, "baz", 1} );
 	}
 	

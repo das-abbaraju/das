@@ -13,4 +13,16 @@ public interface AdvancedValidationAware extends ValidationAware {
 	void setAlertMessages(Collection<String> messages);
 
 	boolean hasAlertMessages();
+
+	String getActionMessageHeader();
+
+	void setActionMessageHeader(String header);
+
+	String getAlertMessageHeader();
+
+	void setAlertMessageHeader(String header);
+
+	String getActionErrorHeader();
+
+	void setActionErrorHeader(String header);
 }

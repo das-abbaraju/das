@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.persistence.EnumType;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -23,20 +24,21 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryMethod;
-import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.util.Strings;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -97,7 +99,8 @@ public final class ReportUtil {
 			Field field = column.getField();
 
 			if (field == null) {
-				field = new Field(column.getFieldNameWithoutMethod(), "", FilterType.String);
+				field = new Field(column.getFieldNameWithoutMethod());
+				column.setField(field);
 			}
 			field.setName(column.getFieldNameWithoutMethod());
 			String translateLabel = translateLabel(field, locale);
@@ -105,7 +108,9 @@ public final class ReportUtil {
 			field.setName(column.getFieldName());
 
 			if (column.getMethod() != null) {
-				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": " + translateLabel;
+				field.setTranslationPrefixAndSuffix(null, null);
+				translateLabel = getText("Report.Function." + column.getMethod().toString(), locale) + ": "
+						+ translateLabel;
 			}
 
 			field.setText(translateLabel);
@@ -120,8 +125,10 @@ public final class ReportUtil {
 		for (Filter filter : definition.getFilters()) {
 			Field field = filter.getField();
 			if (field != null) {
+				field.setName(filter.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
+				field.setName(filter.getFieldName());
 			}
 		}
 	}
@@ -133,8 +140,10 @@ public final class ReportUtil {
 		for (Sort sort : definition.getSorts()) {
 			Field field = sort.getField();
 			if (field != null) {
+				field.setName(sort.getFieldNameWithoutMethod());
 				field.setText(translateLabel(field, locale));
 				field.setHelp(translateHelp(field, locale));
+				field.setName(sort.getFieldName());
 			}
 		}
 	}
@@ -144,6 +153,10 @@ public final class ReportUtil {
 
 		if (field != null) {
 			translatedText = getText("Report." + field.getName(), locale);
+
+			if (Strings.isEmpty(translatedText)) {
+				return field.getName();
+			}
 		}
 
 		return translatedText;
@@ -171,19 +184,6 @@ public final class ReportUtil {
 		}
 
 		return translatedText;
-	}
-
-	public static boolean hasColumns(Report report) {
-		return (report.getDefinition().getColumns().size() > 0);
-	}
-
-	public static boolean containsReportWithId(List<ReportUser> userReports, int reportId) {
-		for (ReportUser userReport : userReports) {
-			if (userReport.getReport().getId() == reportId)
-				return true;
-		}
-
-		return false;
 	}
 
 	public static void findColumnsToTranslate(List<Report> allReports) throws IOException {
@@ -218,7 +218,7 @@ public final class ReportUtil {
 		for (Locale locale : locales) {
 			translations.clear();
 			// get the translations
-			ReportUtil.populateTranslationToPrint(translations, allReports, methods, locale);
+			populateTranslationToPrint(translations, allReports, methods, locale);
 
 			// convert to Excel sheet
 			sheetNumber = createExcelSheet(translations, workBook, cellStyle, headerStyle, sheetNumber, locale);
@@ -278,11 +278,8 @@ public final class ReportUtil {
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
 			QueryMethod[] methods, Locale locale) {
 		for (Report report : reports) {
-			AbstractTable table = report.getTable();
-			if (table == null)
-				continue;
-
-			Map<String, Field> availableFields = ReportModel.buildAvailableFields(table, createSuperUserPermissions());
+			Map<String, Field> availableFields = ModelFactory
+					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
 
 			for (Field field : availableFields.values()) {
 				String category = field.getCategory().toString();
@@ -297,7 +294,7 @@ public final class ReportUtil {
 		}
 
 		for (QueryMethod queryMethod : methods) {
-			String fieldSuffixKey = "Report.Suffix." + queryMethod.name();
+			String fieldSuffixKey = "Report.Function." + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}
 	}
@@ -309,6 +306,48 @@ public final class ReportUtil {
 			userAccess.setOpPerm(opPerm);
 			permissions.getPermissions().add(userAccess);
 		}
+		permissions.setAccountType("Corporate");
 		return permissions;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static JSONObject renderEnumFieldAsJson(FieldType fieldType, Permissions permissions)
+			throws ClassNotFoundException {
+		JSONArray jsonArray = new JSONArray();
+		JSONObject json = new JSONObject();
+
+		Class enumClass = Class.forName("com.picsauditing.jpa.entities." + fieldType.toString());
+		for (Object enumValue : enumClass.getEnumConstants()) {
+			if (enumValue instanceof PermissionAware) {
+				if (!((PermissionAware) enumValue).isVisibleTo(permissions)) {
+					continue;
+				}
+			}
+
+			JSONObject enumAsJson = new JSONObject();
+			enumAsJson.put("key", setKeyForEnum(fieldType, enumValue));
+			enumAsJson.put("value", setValueForEnum(fieldType, enumValue, permissions.getLocale()));
+			jsonArray.add(enumAsJson);
+		}
+		json.put("result", jsonArray);
+
+		return json;
+	}
+
+	private static Object setKeyForEnum(FieldType fieldType, Object enumValue) {
+		Enum<?> enumValue2 = (Enum<?>) enumValue;
+		if (fieldType.getEnumType() == EnumType.ORDINAL) {
+			return enumValue2.ordinal();
+		} else {
+			return enumValue2.toString();
+		}
+	}
+
+	private static Object setValueForEnum(FieldType fieldType, Object enumValue, Locale locale) {
+		if (enumValue instanceof Translatable) {
+			return getText(((Translatable) enumValue).getI18nKey(), locale);
+		} else {
+			return ((Enum<?>) enumValue).toString();
+		}
 	}
 }

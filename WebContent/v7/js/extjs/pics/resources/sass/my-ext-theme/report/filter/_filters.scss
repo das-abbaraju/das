@@ -2,12 +2,12 @@
 $report_filters_border_color_bottom: #ccc;
 
 // report filter
-$report_filter_background_color: #f1f1f2;
+$report_filter_background_color: #eaeaea;
 $report_filter_border_color_bottom: #ccc;
 $report_filter_border_color_top: #fff;
 
 // report filter focus
-$report_filter_focus_background_color: #fff;
+$report_filter_focus_background_color: #f1f1f2;
 $report_filter_focus_border_color_bottom: #999;
 $report_filter_focus_border_color_top: #999;
 $report_filter_focus_box_shadow_color: #ccc;
@@ -24,6 +24,10 @@ $report_filter_input_border_color: #bcbcbc;
 // report filter - remove button
 $report_filter_remove_filter_text_color: #ac030c;
 
+// report filter - advanced filter button
+$report_filter_advanced_button_color: #dcdcdc;
+$report_filter_advanced_button_hover_color: #ccc;
+$report_filter_advanced_button_selected_color: #76bae7;
 
 #report_filters
 {
@@ -34,6 +38,11 @@ $report_filter_remove_filter_text_color: #ac030c;
 		border-top: 1px solid $report_filter_border_color_top;
 	}
 	
+	.filter-content
+	{
+		top: -9px !important;
+	}
+
 	.filter-number
 	{
 		display: none;
@@ -44,7 +53,7 @@ $report_filter_remove_filter_text_color: #ac030c;
 			color: $report_filter_number_text_color;
 			font-size: 18px;
 			font-weight: bold;
-			margin: 0px !important;
+			margin: -5px 0px 0px 0px !important;
 			text-align: center;
 		}
 	}
@@ -83,8 +92,39 @@ $report_filter_remove_filter_text_color: #ac030c;
 		.icon-remove-sign
 		{
 			color: $report_filter_remove_filter_text_color;
-			font-size: 18px;
-			line-height: 18px;
+			font-size: 20px;
+			line-height: 20px;
+		}
+	}
+
+	.advanced-filter-button
+	{
+		background: none;
+		border: 0px;
+		@include border-radius(0px);
+		display: none;
+		padding: 0px;
+		
+		span
+		{
+			padding: 0px;
+		}
+		
+		.icon-pencil
+		{
+			color: $report_filter_advanced_button_color;
+			font-size: 20px;
+			line-height: 20px;
+			
+			&:hover
+			{
+				color: $report_filter_advanced_button_hover_color;
+			}
+			
+			&.selected
+			{
+				color: $report_filter_advanced_button_selected_color
+			}
 		}
 	}
 }
@@ -111,7 +151,9 @@ $report_filter_remove_filter_text_color: #ac030c;
 }
 
 #report_filters .filter.x-over .remove-filter,
-#report_filters .filter.x-form-focus .remove-filter
+#report_filters .filter.x-form-focus .remove-filter,
+#report_filters .filter.x-over .advanced-filter-button,
+#report_filters .filter.x-form-focus .advanced-button
 {
 	display: block;
 }

@@ -28,7 +28,7 @@
 							</tr>
 						</thead>
 						<s:iterator value="employee.employeeSites" var="site">
-							<s:if test="#site.current && #site.jobSite == null && #site.operator.requiresCompetencyReview">
+							<s:if test="isHseOperator(#site)">
 								<tr>
 									<td>
 										${operator.name}
@@ -62,7 +62,7 @@
 							<td colspan="4">
 								<s:if test="hseOperators.size > 0">
 									<s:select
-										data-employee="${employee.id}"
+										data-employee="${employee.id.toString()}"
 										headerKey=""
 										headerValue=" - %{getText('ManageEmployees.header.AssignSite')} - "
 										id="hse_operator_list"
@@ -92,63 +92,6 @@
 	
 	<s:if test="employee.account.requiresOQ">
 		<s:include value="manage_employees_sites_oq.jsp" />
-	</s:if>
-	
-	<s:if test="nonEmployeeGUARDOperators.size > 0">
-		<fieldset class="form">
-			<h2 class="formLegend">
-				<s:text name="global.Operators" />
-			</h2>
-			<ol>
-				<li>
-					<table class="report" style="width: 500px;">
-						<thead>
-							<tr>
-								<th>
-									<s:text name="global.Operator" />
-								</th>
-								<th>
-									<s:text name="button.Remove" />
-								</th>
-							</tr>
-						</thead>
-						<s:iterator value="nonEmployeeGUARDOperators" var="non_eg_operator">
-							<tr>
-								<td>
-									${non_eg_operator.name}
-								</td>
-								<td class="center">
-									<a
-										href="javascript:;"
-										class="remove site"
-										data-employee="${employee.id}"
-										data-operator="${non_eg_operator.id}"></a>
-								</td>
-							</tr>
-						</s:iterator>
-						<tr>
-							<td colspan="2">
-								<s:if test="unusedNonEmployeeGUARDOperators.size > 0">
-									<s:select
-										data-employee="${employee.id}"
-										headerKey=""
-										headerValue=" - %{getText('ManageEmployees.header.AssignSite')} - "
-										id="non_eg_operator_list"
-										list="unusedNonEmployeeGUARDOperators"
-										listKey="id"
-										listValue="name" />
-								</s:if>
-								<s:else>
-									<h5>
-										<s:text name="ManageEmployees.AssignedAllSites" />
-									</h5>
-								</s:else>
-							</td>
-						</tr>
-					</table>
-				</li>
-			</ol>
-		</fieldset>
 	</s:if>
 </s:if>
 <s:if test="employee.prevAssigned">

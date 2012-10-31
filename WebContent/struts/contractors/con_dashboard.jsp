@@ -267,7 +267,7 @@
     													<li>
     														<s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/>
 															<span title="<s:property value="getPercentComplete(#probcrit, opID)" />" ><s:property value="label" /></span>
-    														<s:property value="getCriteriaLabel(#probcrit.id)"/>
+    														<s:property value="getCriteriaLabel(#probcrit.id, opID)"/>
     													</li>
     												</s:iterator>
     											</s:iterator>
@@ -445,7 +445,7 @@
     						</s:if>
     					</s:iterator>
     					
-    					<s:if test="oshaDisplay.stats.size() > 0">
+    					<s:if test="anyOshasToDisplay">
     						<s:include value="/struts/contractors/_contractor_safety_statistics.jsp" />
     					</s:if>
     					
@@ -516,25 +516,25 @@
     							</div>
     						</div>
     					</s:if>
-    					
-    					<s:if test="permissions.contractor">
-                            <div class="panel_placeholder">
-                                <div class="panel referral-program">
-                                    <div class="panel_header">
-                                        <s:text name="ReferralProgram.title" />
-                                    </div>
-                                    <div class="panel_content">
-                                        <img src="images/tablet/ipad.png" />
-                                        
-                                        <div class="summary">
-                                            <p>
-                                                <s:text name="ReferralProgram.summary" />
-                                            </p>
+                        <pics:toggle name="<%= FeatureToggle.TOGGLE_CONTRACTOR_CAMPAIGN %>" contractor="contractor">
+                            <s:if test="permissions.contractor">
+                                <div class="panel_placeholder">
+                                    <div class="panel referral-program">
+                                        <div class="panel_header">
+                                            <s:text name="ReferralProgram.title" />
+                                        </div>
+                                        <div class="panel_content">
+                                            <img src="images/tablet/ipad.png" />
+                                            <div class="summary">
+                                                <p>
+                                                    <s:text name="ReferralProgram.summary" />
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </s:if>
+                            </s:if>
+                        </pics:toggle>
     					
     					<%-- Contractor Info --%>
     					<div class="panel_placeholder">

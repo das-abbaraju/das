@@ -151,7 +151,10 @@ public enum OpPerms implements Translatable {
 	PicsScore("PICS Score", "Shows the Contractor's calculated PicsScore", false, false, true, false, true),
 	// Contractor Simulator
 	ContractorSimulator("Contractor Simulator", "Allows users to preview Audit configurations for operators", false, false, true, false, false),
-	ImportPQF("Import PQF", "Users can only view a page listing contractor Import PQFs and PICS PQFs.", false, false, true, false, false);
+	ImportPQF("Import PQF", "Users can only view a page listing contractor Import PQFs and PICS PQFs.", false, false, true, false, false),
+	
+	// REST API
+	RestApi("REST API","Only special 'API' users have access to REST API URLs", false, false, true, false, false);
 	
 	private String description;
 	private String helpText;

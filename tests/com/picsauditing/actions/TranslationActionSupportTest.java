@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -23,6 +24,22 @@ public class TranslationActionSupportTest extends PicsTest {
 		MockitoAnnotations.initMocks(this);
 
 		translationActionSupport = new TranslationActionSupport();
+	}
+
+	@Test
+	public void testGetSupportedLocales() throws Exception {
+		Locale[] supportedLocales = TranslationActionSupport.getSupportedLocales();
+
+		assertTrue(supportedLocales.length == 9);
+		boolean found = false;
+		Locale searchFor = new Locale("fi");
+		for (int i = 0; i < supportedLocales.length; i++) {
+			if (supportedLocales[i].equals(searchFor)) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
 	}
 
 	@Test

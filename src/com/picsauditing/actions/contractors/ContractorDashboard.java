@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +42,10 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
@@ -63,6 +64,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -120,6 +122,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private Map<FlagColor, Integer> flagCounts;
 	private OshaOrganizer oshaOrganizer;
 	private OshaDisplay oshaDisplay;
+	private Map<OshaType, Boolean> displayOsha;
 
 	private Date earliestIndividualFlagOverride = null;
 	private int individualFlagOverrideCount = 0;
@@ -270,8 +273,39 @@ public class ContractorDashboard extends ContractorActionSupport {
 		oshaOrganizer = contractor.getOshaOrganizer();
 
 		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(), getActiveOperators(), contractor, naicsDao);
+		determineOshaTypesToDisplay();
 
 		return SUCCESS;
+	}
+
+	private void determineOshaTypesToDisplay() {
+		displayOsha = new HashMap<OshaType, Boolean>();
+		displayOsha.put(OshaType.OSHA, false);
+		displayOsha.put(OshaType.COHS, false);
+		displayOsha.put(OshaType.UK_HSE, false);
+		
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().isAnnualAddendum() && audit.hasCaoStatus(AuditStatus.Complete)) {
+				if (audit.isDataExpectedAnswer(AuditQuestion.OSHA_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.OSHA, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.COHS_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.COHS, true);
+				if (audit.isDataExpectedAnswer(AuditQuestion.UK_HSE_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.UK_HSE, true);
+			}
+		}
+	}
+	
+	public boolean isAnyOshasToDisplay() {
+		return displayOsha.containsValue(true);
+	}
+
+	public Map<OshaType, Boolean> getDisplayOsha() {
+		return displayOsha;
+	}
+
+	public void setDisplayOsha(Map<OshaType, Boolean> displayOsha) {
+		this.displayOsha = displayOsha;
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
@@ -421,7 +455,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return problems;
 	}
 
-	public String getCriteriaLabel(int fcID) {
+	public String getCriteriaLabel(int fcID, int operatorId) {
 		if (fccMap == null) {
 			fccMap = new HashMap<Integer, FlagCriteriaContractor>();
 
@@ -453,9 +487,41 @@ public class ContractorDashboard extends ContractorActionSupport {
 					}
 				}
 			}
+			if (fcc.getCriteria().getId() == FlagCriteria.ANNUAL_UPDATE_ID) {
+				result += getIncompleteAnnualUpdates(fcc.getContractor(), operatorId);
+			}
 		}
 
 		return result;
+	}
+
+	private String getIncompleteAnnualUpdates(ContractorAccount con, int operatorId) {
+		String years = "";
+
+		ArrayList<String> forYears = new ArrayList<String>();
+		for (ContractorAudit audit : con.getAudits()) {
+			if (audit.getAuditType().isAnnualAddendum()) {
+				for (ContractorAuditOperator cao : audit.getOperators()) {
+					if (!cao.getStatus().equals(AuditStatus.Complete)) {
+						for (ContractorAuditOperatorPermission caop : cao
+								.getCaoPermissions()) {
+							if (caop.getOperator().getId() == operatorId) {
+								forYears.add(audit.getAuditFor());
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		Collections.sort(forYears);
+		for (String yr : forYears) {
+			if (years.length() > 0)
+				years += ", ";
+			years += yr;
+		}
+		return " " + years;
 	}
 
 	public ContractorFlagCriteriaList getCriteriaList() {

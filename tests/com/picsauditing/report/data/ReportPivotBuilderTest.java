@@ -14,10 +14,9 @@ import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.model.ReportModel;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.data.ReportPivotBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.PivotCellMethod;
 import com.picsauditing.report.fields.PivotDimension;
@@ -43,8 +42,9 @@ public class ReportPivotBuilderTest {
 		addDataRow(AccountStatus.Pending, "Houston");
 
 		columns = new ArrayList<Column>();
-		AbstractModel table = ModelFactory.build(ModelType.Contractors);
-		availableFields = ReportModel.buildAvailableFields(table.getRootTable(), EntityFactory.makePermission());
+		Permissions permissions = EntityFactory.makePermission();
+		AbstractModel table = ModelFactory.build(ModelType.Contractors, permissions);
+		availableFields = table.getAvailableFields();
 	}
 
 	@Test

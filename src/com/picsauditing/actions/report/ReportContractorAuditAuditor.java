@@ -15,6 +15,9 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 	public void buildQuery() {
 		super.buildQuery();
 
+		sql.addJoin("LEFT JOIN invoice i2 ON (i2.accountId = a.id) and (i2.status = 'Unpaid') AND (i2.dueDate < NOW()) AND (i2.totalAmount > 0)");
+		sql.addField("case when i2.id is null then '--' else DATEDIFF(ADDDATE(i2.dueDate, 90),NOW()) end as DaysLeft");
+
 		sql.addField("ca2.expiresDate AS expired");
 		sql.addJoin("LEFT JOIN contractor_audit ca2 ON "
 				+ "ca2.conID = a.id "

@@ -27,8 +27,13 @@
     <s:include value="filters.jsp" />
     
     <div id="report_data">
-    	<div class="info">
-    		<s:text name="NewContractorSearch.message.SearchByNameOrTrade" />
-    	</div>
+    	<s:if test="data.size > 0">
+    		<s:include value="newContractor_operator_data.jsp" />
+    	</s:if>
+    	<s:else>
+	    	<div class="info">
+	    		<s:text name="NewContractorSearch.message.SearchByNameOrTrade" />
+	    	</div>
+    	</s:else>
     </div>
 </body>

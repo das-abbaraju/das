@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
@@ -151,5 +152,23 @@ public class UserDAO extends PicsDAO {
 				+ " ORDER BY c.user.name, c.contractor.name");
 
 		return query.getResultList();
+	}
+
+	public User findByApiKey(String apiKey) {
+		if (apiKey == null) {
+			return null;
+		}
+
+		try {
+			Query query = em.createQuery("SELECT u FROM User u WHERE apiKey = ?");
+			query.setParameter(1, apiKey);
+			return (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+	
+	public List<User> findByIds(List<Integer> ids) {
+		return findWhere("u.id IN (" + Strings.implodeForDB(ids, ",") + ") ");
 	}
 }

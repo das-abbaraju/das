@@ -227,6 +227,13 @@
 							<s:text name="button.password" />
 						</a>
 					</li>
+					<s:if test="User.lastLogin==null">
+						<li>
+							<a class="btn" href="UsersManage!reSendActivationEmail.action?user=<s:property value="user.id"/>"  id="users_manage_resendActivation">
+								<s:text name="button.activation" />
+							</a>
+						</li>
+					</s:if>
 					<li>
 						<s:if test="hasProfileEdit">
 							<a class="btn" href="UsersManage!emailPassword.action?user=<s:property value="user.id"/>">
@@ -339,7 +346,7 @@
 								<li><s:select
 										list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 										name="user.locale"
-										listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))"
+										listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 										theme="form" /></li>
 							</s:if>
 
@@ -502,6 +509,7 @@
 					</s:if>
 					<s:if test="!user.activeB">
 						<s:submit method="activate" cssClass="picsbutton positive" value="%{getText('button.Activate')}" />
+						<s:submit method="addToExclusionList" cssClass="picsbutton positive" value="%{getText('button.addToExclusionList')}" />
 						<pics:permission perm="EditUsers" type="Delete">							
 							<s:if test="user.id > 0">
 								<s:submit method="delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText('UsersManage.confirm.Delete')}');" />

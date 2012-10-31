@@ -74,7 +74,7 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 						&& criteria.getCategory().indexOf("AMB") == -1) {
 					try {
 						BigDecimal number = new BigDecimal(
-								criteria.getDefaultValue());
+								criteria.getDefaultValue().replaceAll(",", ""));
 					} catch (Exception e) {
 						addActionError("Default hurdle needs to be a valid number.");
 					}

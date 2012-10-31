@@ -44,12 +44,14 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/workflow_manage.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit.js?v=${version}"></script>
 <script type="text/javascript" src="js/audit/audit_controller.js?v=${version}"></script>
+<script type="text/javascript" src="js/employee/employee_competencies.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/manage_employees.js?v=${version}"></script>
 <script type="text/javascript" src="js/employee/manage_job_roles.js?v=${version}"></script>
 <script type="text/javascript" src="js/insureguard/report_insurance_approval.js?v=${version}"></script>
 <script type="text/javascript" src="js/insureguard/report_insurance_approval_controller.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/contractor/dashboard-controller.js?v=${version}"></script>
 <script type="text/javascript" src="v7/js/pics/contractor/contractor-edit.js?v=${version}"></script>
+<script type="text/javascript" src="v7/js/pics/contractor/lc-cor-controller.js?v=${version}"></script>
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>

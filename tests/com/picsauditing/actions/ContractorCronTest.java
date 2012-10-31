@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -40,6 +41,7 @@ public class ContractorCronTest {
 	@Mock private Database databaseForTesting;
 	@Mock private FeatureToggle featureToggleChecker;
 	@Mock private ContractorAccountDAO contractorDAO;
+	@Mock private BasicDAO dao; 
 
 	ContractorCron contractorCron;
 	
@@ -55,6 +57,7 @@ public class ContractorCronTest {
 		contractorCron = new ContractorCron();
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
+		Whitebox.setInternalState(contractorCron, "dao", dao);
 	}
 	
 	/**
@@ -613,5 +616,20 @@ public class ContractorCronTest {
 		}
 
 		return contractor;
+	}
+
+	@Test
+	public void testCancelScheduledImplementationAudits() throws Exception {
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.OFFICE, contractor);
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+		cao.setVisible(false);
+		
+		audit.setScheduledDate(new Date());
+		contractor.getAudits().add(audit);
+		
+		Whitebox.invokeMethod(contractorCron, "cancelScheduledImplementationAudits", contractor);
+		assertTrue(audit.getScheduledDate() == null);
+	
 	}
 }

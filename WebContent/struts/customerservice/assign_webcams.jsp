@@ -14,7 +14,7 @@ var contractor = {
 	'audit.address2': '<s:property value="audit.contractorAccount.address2"/>',
 	'audit.city': '<s:property value="audit.contractorAccount.city"/>',
 	'audit.country': '<s:property value="audit.contractorAccount.country"/>',
-	'audit.state': '<s:property value="audit.contractorAccount.state"/>',
+	'audit.countrySubdivision': '<s:property value="audit.contractorAccount.countrySubdivision"/>',
 	'audit.zip': '<s:property value="audit.contractorAccount.zip"/>',
 	'audit.phone': '<s:property value="audit.contractorAccount.phone"/>',
 	'audit.phone2': '<s:property value="audit.contractorAccount.email"/>'
@@ -100,8 +100,8 @@ function changeState(state) {
 							listKey="isoCode" listValue="name"
 							onchange="changeState(this.value);"/>
 				</li>
-				<li id="state_sel"><label>State:</label>
-					<s:select list="stateList" name="audit.state" 
+				<li id="state_sel"><label>Country Subdivision:</label>
+					<s:select list="countrySubdivisionList" name="audit.countrySubdivision"
 						headerKey="" headerValue="- State -" listKey="isoCode" listValue="name"/>
 				</li>
 				<li><label>Zip:</label><s:textfield name="audit.zip"/></li>

@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -54,6 +57,8 @@ public class AuditBuilder {
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
+	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
+	
 	private User systemUser = new User(User.SYSTEM);
 	
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
@@ -180,9 +185,7 @@ public class AuditBuilder {
 	 * auditFor fields in the WCB is corrected. 
 	 */
 	private boolean foundCurrentYearWCB(ContractorAudit audit) {
-		if (Strings.isEmpty(audit.getAuditFor())) { // TODO: remove this once all the WCBs have consistent auditFor
-			return true;
-		} 
+		validateWCBAudit(audit);
 		
 		buildSetOfAllWCBYears(audit.getContractorAccount(), audit.getAuditType());
 		if (DateBean.isGracePeriodForWCB()) {
@@ -190,6 +193,19 @@ public class AuditBuilder {
 		} 
 		
 		return yearsForAllWCBs.contains(DateBean.getWCBYear());
+	}
+	
+	/**
+	 * Performs validation to make sure that a WCB Audit's auditFor field only contains 
+	 * a numeric year value.
+	 * 
+	 * @param audit A WCB Audit
+	 */
+	private void validateWCBAudit(ContractorAudit audit) {
+		String auditFor = audit.getAuditFor();
+		if (Strings.isEmpty(auditFor) || !NumberUtils.isDigits(auditFor) || auditFor.length() != 4) {
+			throw new RuntimeException("WCBs must always have an AuditFor that is a 4-digit year.");
+		}
 	}
 	
 	private void buildSetOfAllWCBYears(ContractorAccount contractor, AuditType wcbAuditType) {
@@ -533,8 +549,12 @@ public class AuditBuilder {
 					// subcategories when adding it to the AuditCatData
 					categoryApplies = areAllParentsApplicable(categoriesNeeded, catData.getCategory());
 				}
-				if (categoryApplies != catData.isApplies())
+				if (categoryApplies != catData.isApplies()) {
 					catData.setAuditColumns(systemUser);
+					if (catData.getCategory().getId() == 443 && !categoryApplies) {
+						logger.warn("Safety Manual category no longer applicable for audit (" + conAudit.getId() + ")");
+					}
+				}
 				catData.setApplies(categoryApplies);
 			}
 			// Where are we saving the catData??

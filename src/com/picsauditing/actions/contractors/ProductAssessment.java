@@ -3,13 +3,13 @@ package com.picsauditing.actions.contractors;
 import com.picsauditing.jpa.entities.LowMedHigh;
 
 public enum ProductAssessment {
-	FAILURE_WORK_STOPPAGE(7660, LowMedHigh.High, LowMedHigh.Low),
-	DELIVERY_WORK_STOPPAGE(7661, LowMedHigh.High, LowMedHigh.Low),
+	FAILURE_WORK_STOPPAGE(7660, LowMedHigh.High, LowMedHigh.Low), 
+	DELIVERY_WORK_STOPPAGE(7661, LowMedHigh.High, LowMedHigh.Low), 
 	RISK_ON_HEALTH_SAFETY(7679, true),
 	// Old questions
-	UTILIZED_IN_CRITICAL_PROCESSES(9798, LowMedHigh.High, LowMedHigh.Low),
-	FAILURE_BODILY_INJURY_ILLNESS(7662, LowMedHigh.High, LowMedHigh.Low),
-	LIABILITY_INSURANCE(7663, true),
+	UTILIZED_IN_CRITICAL_PROCESSES(9798, LowMedHigh.High, LowMedHigh.Low), 
+	FAILURE_BODILY_INJURY_ILLNESS(7662, LowMedHigh.High, LowMedHigh.Low), 
+	LIABILITY_INSURANCE(7663, LowMedHigh.High, LowMedHigh.Low), 
 	SELF_RATING(7678, true);
 
 	private int questionID;
@@ -59,24 +59,24 @@ public enum ProductAssessment {
 	public void setNo(LowMedHigh no) {
 		this.no = no;
 	}
-	
+
 	public static ProductAssessment getProductAssessment(int questionID) {
 		for (ProductAssessment productAssessment : values()) {
 			if (productAssessment.getQuestionID() == questionID) {
 				return productAssessment;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public static boolean isSelfAssessment(int questionID) {
 		for (ProductAssessment productAssessment : values()) {
 			if (productAssessment.getQuestionID() == questionID) {
 				return productAssessment.isSelfEvaluation();
 			}
 		}
-		
+
 		return false;
 	}
 }

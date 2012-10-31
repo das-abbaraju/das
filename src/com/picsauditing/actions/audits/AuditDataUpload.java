@@ -304,6 +304,10 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			}
 		} catch (Exception e) {
 			addActionError(getText("AuditDataUpload.error.FailedSavingFile") + fileFileName);
+			auditData.setAnswer("");
+			auditDataDAO.save(auditData);
+			file = null;
+			return SUCCESS;
 		}
 
 		if (dataID > 0) {

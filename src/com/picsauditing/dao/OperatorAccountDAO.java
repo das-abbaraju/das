@@ -22,6 +22,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
+	
 	@Transactional(propagation = Propagation.NESTED)
 	public OperatorAccount save(OperatorAccount o) {
 		if (o.getId() == 0) {
@@ -48,7 +49,7 @@ public class OperatorAccountDAO extends PicsDAO {
 	public OperatorAccount find(int id) {
 		return em.find(OperatorAccount.class, id);
 	}
-
+	
 	/**
 	 * Return a list of Operators and Corporates if necessary Depending on who
 	 * is asking (permissions), we may need to the return the Corporate list in
@@ -60,6 +61,23 @@ public class OperatorAccountDAO extends PicsDAO {
 	 * @return
 	 */
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, Permissions permissions) {
+		return findWhere(includeCorporate, where, permissions, NO_LIMIT);
+	}
+	
+	/**
+	 * Return a list of Operators and Corporates if necessary Depending on who
+	 * is asking (permissions), we may need to the return the Corporate list in
+	 * a special way.
+	 * 
+	 * This method will limit the number of results returned.
+	 * 
+	 * @param includeCorporate
+	 * @param where
+	 * @param permissions
+	 * @param limit maximum number of results to return
+	 * @return
+	 */
+	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, Permissions permissions, int limit) {
 		// Get a list of corporate accounts if this a Corporate or Operator
 		// account
 		List<OperatorAccount> corporateList = new ArrayList<OperatorAccount>();
@@ -67,11 +85,13 @@ public class OperatorAccountDAO extends PicsDAO {
 			if (permissions.isCorporate()) {
 				Query query = em.createQuery("SELECT a FROM OperatorAccount a where a.id = :id");
 				query.setParameter("id", permissions.getAccountId());
+				setLimit(query, limit);
 				corporateList = query.getResultList();
 			}
 			if (permissions.isOperator()) {
 				Query query = em.createQuery("select a.corporate from Facility a where a.operator.id = :id");
 				query.setParameter("id", permissions.getAccountId());
+				setLimit(query, limit);
 				corporateList = query.getResultList();
 			}
 		}
@@ -113,7 +133,7 @@ public class OperatorAccountDAO extends PicsDAO {
 			}
 		}
 
-		List<OperatorAccount> operatorList = findWhere(includeCorporate, where);
+		List<OperatorAccount> operatorList = findWhere(includeCorporate, where, limit);
 
 		if (corporateList.size() > 0) {
 			corporateList.addAll(operatorList);
@@ -121,7 +141,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		}
 
 		return operatorList;
-	}
+	}	
 
 	/**
 	 * Alias a
@@ -149,7 +169,7 @@ public class OperatorAccountDAO extends PicsDAO {
 	}
 
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where) {
-		return findWhere(includeCorporate, where, 0);
+		return findWhere(includeCorporate, where, NO_LIMIT);
 	}
 
 	public List<OperatorAccount> findWhere(boolean includeCorporate, String where, int maxResults) {
@@ -165,7 +185,7 @@ public class OperatorAccountDAO extends PicsDAO {
 
 		Query query = em.createQuery("select a from OperatorAccount a " + where + " order by a.name");
 
-		if (maxResults > 0)
+		if (maxResults > NO_LIMIT)
 			query.setMaxResults(maxResults);
 
 		return query.getResultList();

@@ -7,9 +7,11 @@ import static org.hamcrest.Matchers.*;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.servlet.http.Cookie;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -23,7 +25,9 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 
 public class LoginControllerTest extends PicsActionTest {
@@ -34,7 +38,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private UserDAO userDAO;
 	@Mock
-	protected AppPropertyDAO appPropertyDAO;
+	protected AppPropertyDAO propertyDAO;
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
 	@Mock
@@ -47,6 +51,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private Account switchAccount;
 	@Mock
 	private ApplicationContext applicationContext;
+	@Mock
+	private FeatureToggle featureToggleChecker;
 
 	@AfterClass
 	public static void tearDown() throws Exception {
@@ -55,18 +61,25 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Before
 	public void setUp() throws Exception {
+		System.setProperty("sk",
+				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
+
 		MockitoAnnotations.initMocks(this);
 		loginController = new LoginController();
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
-		Whitebox.setInternalState(loginController, "appPropertyDAO", appPropertyDAO);
+		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
+		Whitebox.setInternalState(loginController, "permissions", permissions);
+		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
 		when(user.getAccount()).thenReturn(account);
 		when(switchUser.getAccount()).thenReturn(switchAccount);
+		when(request.getServerName()).thenReturn("www.picsorganizer.com");
+		when(userDAO.findName(anyString())).thenReturn(user);
 	}
 
 	// As a non-admin user
@@ -94,7 +107,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_logoutNotAdminCookiesDisabled() throws Exception {
 		String testMessage = "Test Message";
-		loginController.setButton("logout");
+		loginController.setButton("login");
 		when(i18nCache.getText(eq("Login.CookiesAreDisabled"), eq(Locale.ENGLISH), any())).thenReturn(testMessage);
 		when(request.getCookies()).thenReturn(null);
 
@@ -109,10 +122,8 @@ public class LoginControllerTest extends PicsActionTest {
 	// As a user who has switched to another user
 	// Given user wishes to logout as the switched to user
 	// When user clicks on logout button
-	// Then the system clears permissions
 	// And does not clear session
-	// And logs in the original user
-	// And redirects
+	// Then the system logs out everybody
 	@Test
 	public void testExecute_logoutUserWhoHasSwitchedToAnotherUser() throws Exception {
 		loginController.setButton("logout");
@@ -121,9 +132,9 @@ public class LoginControllerTest extends PicsActionTest {
 
 		String actionResult = loginController.execute();
 
-		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
+		assertThat(actionResult, is(equalTo(PicsActionSupport.SUCCESS)));
 		verify(permissions).clear();
-		verify(permissions).login(user);
+		verify(response).addCookie((Cookie) any());
 	}
 
 	// As a user responding to the confirmation email
@@ -203,15 +214,129 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
-
 		String actionResult = loginController.execute();
-
-		verify(permissions).clear();
 		verify(permissions).login(user);
 		verify(user).setLastLogin((Date) any());
 		verify(userDAO).save(user);
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
 		assertThat(session.keySet(), hasItem("permissions"));
+	}
+
+	@Test
+	public void testPasswordIsIncorrect_Locked() {
+		when(user.getFailedAttempts()).thenReturn(8);
+		when(user.getUsername()).thenReturn("test");
+	}
+
+	@Test
+	public void testLogAndMessageIfError_NullErrorReturnsFalse() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", (String) null));
+	}
+
+	@Test
+	public void testLogAndMessageIfError_EmptyErrorReturnsFalse() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", ""));
+	}
+
+	@Test
+	public void testLogAndMessageIfError_ErrorClearsSession() throws Exception {
+		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", "Error"));
+		assertTrue(session.isEmpty());
+	}
+
+	@Test
+	public void testLogAndMessageIfError_ErrorLogsAttempt() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", "Error"));
+		verify(loginLogDAO).save((UserLoginLog) any());
+	}
+
+	@Test
+	public void testloginForResetPassword_SetsForcePasswordReset() throws Exception {
+		loginController.setButton("reset");
+		loginController.execute();
+
+		verify(user).setForcePasswordReset(true);
+	}
+
+	@Test
+	public void testExecuteReset_NullUserGivesErrorMessage() throws Exception {
+		when(userDAO.findName(anyString())).thenReturn(null);
+		when(i18nCache.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
+		when(i18nCache.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg()))
+				.thenReturn("Password incorrect");
+		
+		loginController.setButton("reset");
+		loginController.execute();
+
+		assertTrue(loginController.getActionErrors().contains("Password incorrect"));
+	}
+
+	@Test
+	public void testLogAttempt_NullUserDoesNotPersistLog() throws Exception {
+		Whitebox.setInternalState(loginController, "user", (User) null);
+
+		Whitebox.invokeMethod(loginController, "logAttempt");
+
+		verify(loginLogDAO, never()).save((UserLoginLog) any());
+	}
+
+	@Test
+	public void testLogAttempt_BigIpCookieIpGetsPersisted() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
+		Cookie cookie1 = mock(Cookie.class);
+		when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
+		when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie1 });
+
+		Whitebox.invokeMethod(loginController, "logAttempt");
+		ArgumentCaptor<UserLoginLog> captor = ArgumentCaptor.forClass(UserLoginLog.class);
+		
+		verify(loginLogDAO).save(captor.capture());
+
+		UserLoginLog log = captor.getValue();
+
+		assertThat(log.getTargetIP(), is(equalTo("74.205.45.70")));
+	}
+
+	@Test
+	public void testExtractTargetIpFromCookie() throws Exception {
+		Cookie cookie1 = mock(Cookie.class);
+		when(cookie1.getName()).thenReturn("BIGipServerPOOL-74.205.45.70-81");
+		when(cookie1.getValue()).thenReturn("1664397834.20736.0000");
+		Cookie cookie2 = mock(Cookie.class);
+		when(cookie2.getName()).thenReturn("from");
+		when(cookie2.getValue()).thenReturn("/Home.action");
+
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie1, cookie2 });
+
+		String targetIp = Whitebox.invokeMethod(loginController, "extractTargetIpFromCookie");
+
+		assertTrue("74.205.45.70".equals(targetIp));
+	}
+
+	@Test
+	public void testGetPreLoginUrl_StartsWithDoubleQuote() throws Exception {
+		Cookie cookie = mock(Cookie.class);
+		when(cookie.getName()).thenReturn("from");
+		when(cookie.getValue()).thenReturn("\"/Home.action");
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
+		
+		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
+		
+		assertFalse(urlPreLogin.contains("\""));
+	}
+
+	@Test
+	public void testGetPreLoginUrl() throws Exception {
+		Cookie cookie = mock(Cookie.class);
+		when(cookie.getName()).thenReturn("from");
+		when(cookie.getValue()).thenReturn("/ContractorDashboard.action?foo=1");
+		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
+
+		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
+
+		assertTrue("/ContractorDashboard.action?foo=1".equals(urlPreLogin));
 	}
 
 	private void normalLoginSetup() {
@@ -221,9 +346,12 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userDAO.findName("test")).thenReturn(user);
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
 		when(user.isEncryptedPasswordEqual("test password")).thenReturn(true);
+		when(user.getId()).thenReturn(941);
 		when(permissions.belongsToGroups()).thenReturn(true);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAccountName()).thenReturn("test account");
 		when(permissions.hasPermission(OpPerms.Dashboard)).thenReturn(true);
+		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 	}
+
 }

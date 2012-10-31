@@ -1,21 +1,34 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.tables.OperatorTable;
 
-public class AccountOperatorModel extends AccountModel {
-	public AccountOperatorModel() {
-		super();
-		rootTable.removeField("accountID");
-		rootTable.removeField("accountName");
-		rootTable.removeField("accountType");
+import java.util.Map;
 
-		OperatorTable operatorTable = new OperatorTable(rootTable.getPrefix(), rootTable.getAlias());
-		operatorTable.includeAllColumns();
-		rootTable.addAllFieldsAndJoins(operatorTable);
+import com.picsauditing.access.Permissions;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.tables.AccountTable;
+import com.picsauditing.report.tables.FieldCategory;
 
-		parentTable = operatorTable;
-		
-		rootTable.getTable("accountNaics").includeOnlyRequiredColumns();
+public class AccountOperatorModel extends AbstractModel {
+
+	public AccountOperatorModel(Permissions permissions) {
+		super(permissions, new AccountTable());
 	}
 
+	public ModelSpec getJoinSpec() {
+		ModelSpec spec = new ModelSpec(null, "Account");
+		ModelSpec operator = spec.join(AccountTable.Operator);
+		operator.category = FieldCategory.ReportingClientSite;
+		operator.alias = "Operator";
+		spec.join(AccountTable.Naics);
+		return spec;
+	}
+
+	@Override
+	public Map<String, Field> getAvailableFields() {
+		Map<String, Field> fields = super.getAvailableFields();
+
+		Field accountName = fields.get("AccountName".toUpperCase());
+		accountName.setUrl("FacilitiesEdit.action?operator={AccountID}");
+		return fields;
+	}
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -12,9 +13,12 @@ import java.util.TimeZone;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.struts2.ServletActionContext;
 
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
@@ -24,6 +28,10 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.LocaleController;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.hierarchy.GroupHierarchyBuilder;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -35,11 +43,13 @@ import com.picsauditing.strutsutil.AjaxUtils;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -3120292424348289561L;
+	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 
 	private int userID;
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 	private Map<Integer, String> groups = new HashMap<Integer, String>();
+	private Map<Integer, String> groupHierarchy = new HashMap<Integer, String>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
@@ -69,6 +79,8 @@ public class Permissions implements Serializable {
 	private boolean generalContractor = false;
 	private boolean gcFree = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
+	private long sessionCookieTimeoutInSeconds;
+	private int rememberMeTimeInSeconds;
 
 	private int shadowedUserID;
 	private String shadowedUserName;
@@ -105,11 +117,14 @@ public class Permissions implements Serializable {
 
 		permissions.clear();
 		groups.clear();
+		groupHierarchy.clear();
 		visibleAuditTypes.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
 		linkedClients.clear();
 		linkedGeneralContractors.clear();
+		sessionCookieTimeoutInSeconds = 0;
+		rememberMeTimeInSeconds = -1;
 	}
 
 	public void login(User user) throws Exception {
@@ -139,6 +154,7 @@ public class Permissions implements Serializable {
 			setTimeZone(user);
 
 			setAccountPerms(user);
+			LocaleController.setLocaleOfNearestSupported(this);
 
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
@@ -161,6 +177,12 @@ public class Permissions implements Serializable {
 			requiresOQ = user.getAccount().isRequiresOQ();
 			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
 			generalContractor = user.getAccount().isGeneralContractor();
+			sessionCookieTimeoutInSeconds = user.getAccount().getSessionTimeout() * 60;
+			if (user.getAccount().isRememberMeTimeEnabled()) {
+				rememberMeTimeInSeconds = user.getAccount().getRememberMeTimeInDays() * TWENTY_FOUR_HOURS;
+			} else {
+				rememberMeTimeInSeconds = -1;
+			}
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
@@ -225,12 +247,8 @@ public class Permissions implements Serializable {
 				conProfileEdit.setEditFlag(true);
 				permissions.add(conProfileEdit);
 			}
-
-			for (UserGroup u : user.getGroups()) {
-				if (u.getGroup().isGroup()) {
-					groups.put(u.getGroup().getId(), u.getGroup().getName());
-				}
-			}
+			
+			populateGroupMap(user);
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -265,6 +283,16 @@ public class Permissions implements Serializable {
 	public Collection<String> getGroupNames() {
 		return groups.values();
 	}
+	
+	public Set<Integer> getGroupHierarchyIds() {
+		if (MapUtils.isEmpty(groupHierarchy)) {
+			UserDAO userDAO = SpringUtils.getBean("UserDAO");
+			User user = userDAO.find(userID);
+			populateGroupHierarchyMap(user);
+		}
+		
+		return groupHierarchy.keySet();
+	}
 
 	public String getUsername() {
 		return username;
@@ -275,7 +303,7 @@ public class Permissions implements Serializable {
 	}
 
 	public String getAccountIdString() {
-		return Integer.toString(accountID);
+		return Integer.toString(getAccountId());
 	}
 
 	public int getTopAccountID() {
@@ -316,6 +344,18 @@ public class Permissions implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public long getSessionCookieTimeoutInSeconds() {
+		return sessionCookieTimeoutInSeconds;
+	}
+
+	public int getRememberMeTimeInSeconds() {
+		return rememberMeTimeInSeconds;
+	}
+
+	public void setRememberMeTimeInSeconds(int rememberMeTimeInSeconds) {
+		this.rememberMeTimeInSeconds = rememberMeTimeInSeconds;
 	}
 
 	/**
@@ -385,15 +425,11 @@ public class Permissions implements Serializable {
 		tryPermission(opPerm, OpType.View);
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, String returnURL) throws IOException {
+	public boolean loginRequired(HttpServletResponse response, String returnURL) throws IOException {
 		if (loggedIn)
 			return true;
 
-		if (returnURL != null && returnURL.length() > 0) {
-			Cookie fromCookie = new Cookie("from", returnURL);
-			fromCookie.setMaxAge(3600);
-			response.addCookie(fromCookie);
-		}
+		addReturnToCookieIfGoodUrl(response, returnURL);
 
 		Cookie c = new Cookie("PICSCookiesEnabled", "true");
 		c.setMaxAge(60);
@@ -402,11 +438,28 @@ public class Permissions implements Serializable {
 		return false;
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response) throws IOException {
+	private void addReturnToCookieIfGoodUrl(HttpServletResponse response, String returnURL) {
+		if (returnUrlIsOk(returnURL)) {
+			// PICS-7659: "/Home.action causing a loop - replace "
+			Cookie fromCookie = new Cookie("from", returnURL.replaceAll("\"", ""));
+			fromCookie.setMaxAge(3600);
+			response.addCookie(fromCookie);
+		}
+	}
+
+	private boolean returnUrlIsOk(String returnURL) {
+		boolean isOk = !returnURL
+				.matches("(?iu).*(xml|json|ajax|widget|autocomplete|csv|import|external|download|upload).*\\.action(\\?.*)*");
+		return returnURL != null
+				&& returnURL.length() > 0
+				&& isOk;
+	}
+
+	public boolean loginRequired(HttpServletResponse response) throws IOException {
 		return loginRequired(response, "");
 	}
 
-	public boolean loginRequired(javax.servlet.http.HttpServletResponse response, HttpServletRequest request)
+	public boolean loginRequired(HttpServletResponse response, HttpServletRequest request)
 			throws IOException {
 		if (AjaxUtils.isAjax(request)) {
 			return loginRequired(response);
@@ -464,6 +517,10 @@ public class Permissions implements Serializable {
 		return seesAllContractors();
 	}
 
+	public boolean isRestApi(){
+		return hasPermission(OpPerms.RestApi);
+	}
+
 	public boolean seesAllContractors() {
 		return hasPermission(OpPerms.AllContractors);
 	}
@@ -476,14 +533,17 @@ public class Permissions implements Serializable {
 	 * @return
 	 */
 	public boolean isAuditor() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(11);
 	}
 
 	public boolean isMarketing() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(10801);
 	}
 
 	public boolean isIndependentAuditor() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(11265);
 	}
 
@@ -492,6 +552,7 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isSecurity() {
+		// FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
 		return hasGroup(68908);
 	}
 
@@ -629,6 +690,10 @@ public class Permissions implements Serializable {
 		return linkedGeneralContractors;
 	}
 
+	public void setSessionCookieTimeoutInSeconds(int seconds) {
+		this.sessionCookieTimeoutInSeconds = seconds;
+	}
+
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (hasPermission(OpPerms.AuditRuleAdmin))
 			return true;
@@ -664,5 +729,40 @@ public class Permissions implements Serializable {
 		ua.setDeleteFlag(true);
 
 		permissions.add(ua);
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+	
+	private void populateGroupHierarchyMap(User user) {
+		GroupHierarchyBuilder hierarchyBuilder = SpringUtils.getBean("GroupHierarchyBuilder");		
+		Set<Integer> ids = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(user);
+		
+		UserDAO userDAO = SpringUtils.getBean("UserDAO");
+		List<User> users = userDAO.findWhere("u.id IN (" + Strings.implodeForDB(ids, ",") + ") ");
+		
+		for (User group : users) {
+			if (group.isGroup()) {
+				groupHierarchy.put(group.getId(), group.getName());
+			}			
+		}
+	}
+	
+	/**
+	 * Leaving this method in for backwards compatibility.
+	 * 
+	 * This method does not return all the users in the Group Hierarchy. Please use the
+	 * method populateGroupHierarchy instead.
+	 * 
+	 * @param user User that is logging into the system
+	 */
+	@Deprecated
+	private void populateGroupMap(User user) {
+		for (UserGroup u : user.getGroups()) {
+			if (u.getGroup().isGroup()) {
+				groups.put(u.getGroup().getId(), u.getGroup().getName());
+			}
+		}		
 	}
 }

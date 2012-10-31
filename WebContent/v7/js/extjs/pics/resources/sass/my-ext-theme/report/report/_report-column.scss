@@ -1,0 +1,33 @@
+// report data column - boolean
+$report_data_column_boolean_text_color: #666;
+
+#report_data
+{
+	.x-grid-cell-inner
+	{
+		.icon-ok
+		{
+			color: $report_data_column_boolean_text_color;
+		}
+		
+		.icon-flag.clear
+		{
+			color: #CCC;
+		}
+		
+		.icon-flag.green
+		{
+			color: #229322;
+		}
+		
+		.icon-flag.red
+		{
+			color: #AC030C;
+		}
+		
+		.icon-flag.amber
+		{
+			color: #F1A300;
+		}
+	}
+}

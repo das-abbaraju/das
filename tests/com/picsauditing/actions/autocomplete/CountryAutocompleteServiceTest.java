@@ -38,7 +38,7 @@ public class CountryAutocompleteServiceTest {
 
 	@Test
 	public void testGetItems_EmptyQuery() throws Exception {
-		Collection<Country> results = service.getItems(null);
+		Collection<Country> results = service.getItems(null, null);
 		
 		assertThat(results, notNullValue());
 		assertTrue(results.isEmpty());
@@ -49,7 +49,7 @@ public class CountryAutocompleteServiceTest {
 		List<Country> emptyResult = new ArrayList<Country>();
 		when(countryDAO.findWhere(anyString())).thenReturn(emptyResult);
 		
-		Collection<Country> results = service.getItems("non-empty query");
+		Collection<Country> results = service.getItems("non-empty query", null);
 		
 		assertThat(results, notNullValue());
 		assertTrue(results.isEmpty());
@@ -61,9 +61,9 @@ public class CountryAutocompleteServiceTest {
 		List<Country> fakeList2 = Arrays.asList(new Country("BC"), new Country("BD"));
 		
 		when(countryDAO.findWhere(anyString())).thenReturn(fakeList1);
-		when(countryDAO.findByTranslatableField(same(Country.class), anyString())).thenReturn(fakeList2);
+		when(countryDAO.findByTranslatableField(same(Country.class), anyString(), anyInt())).thenReturn(fakeList2);
 				
-		Collection<Country> results = service.getItems("TE,ST");
+		Collection<Country> results = service.getItems("TE,ST", null);
 		
 		assertEquals(4, results.size());
 		

@@ -23,8 +23,6 @@ $(function() {
 		$('.blockOverlay').attr('title', translate('JS.RequestNewContractor.ClickToUnblock')).click($.unblockUI);              
     });
 	
-	$('.fancybox').fancybox();
-	
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -75,12 +73,9 @@ $(function() {
 					.append('<br/>');
 					var ul = $('<ul>');
 					for(var i=3; i<result.length; i++){
-						var id=result[i].id;
-						var name=result[i].name;
-						if(result[i].add)
-							ul.append($('<li>').append($('<a>').attr('href','ContractorFacilities.action?id='+id).append(name)));
-						else
-							ul.append($('<li>').append($('<a>').attr('href','ContractorView.action?id='+id).append(name)));
+						var name = result[i].name;
+						var url = result[i].url;
+						ul.append($('<li>').append($('<a>').attr('href',url).append(name)));
 					}
 					matchList.append(ul);
 					var hasResults = $('#match_'+fType).attr('matched');
@@ -166,6 +161,22 @@ $(function() {
 		
 		$('#attachment').append(attachment);
 		$('#'+id+'_input').val(filename);
+	});
+	
+	$('#preview_email').live('click', function() {
+	    PICS.ajax({
+	        url: 'RequestNewContractor!emailPreview.action',
+	        data: $('#saveContractorForm').serialize(),
+	        success: function(data, textStatus, XMLHttpRequest) {
+	            var modal = PICS.modal({
+	                content: data,
+	                title: translate('JS.button.Preview'),
+	                width: 900
+	            });
+	            
+	            modal.show();
+	        }
+	    });
 	});
 });
 

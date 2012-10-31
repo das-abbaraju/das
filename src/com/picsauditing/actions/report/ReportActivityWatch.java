@@ -1,10 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,19 +11,19 @@ import com.picsauditing.PICS.ContractorWatchlistHelper;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorWatch;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportActivityWatch extends ReportAccount {
+	@Autowired
+	private ContractorWatchlistHelper contractorWatchlistHelper;
 	@Autowired
 	protected UserDAO userDAO;
 
@@ -40,8 +37,6 @@ public class ReportActivityWatch extends ReportAccount {
 	private boolean login = true;
 	private boolean notesAndEmail = true;
 	private boolean flagCriteria = true;
-
-	private ContractorWatchlistHelper contractorWatchlistHelper;
 
 	@Override
 	public String execute() throws Exception {
@@ -58,18 +53,20 @@ public class ReportActivityWatch extends ReportAccount {
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
 	public String add() throws Exception {
 		if (contractor != null) {
-			if (getContractorWatchlistHelper().isWatching(contractor))
+			if (contractorWatchlistHelper.isWatching(contractor, getUser())) {
 				addActionError(getText("ReportActivityWatch.message.ContractorAlreadyWatched"));
-			else {
-				getContractorWatchlistHelper().addContractorToWatchList(contractor);
+			} else {
+				contractorWatchlistHelper.addContractorToWatchList(contractor, permissions, getUser());
 				addActionMessage(getText("ReportActivityWatch.message.AddedToWatchList",
 						new Object[] { contractor.getName() }));
 			}
-		} else
+		} else {
 			addActionError(getText("ReportActivityWatch.message.SelectContractor"));
+		}
 
-		if (getActionErrors().size() > 0)
+		if (getActionErrors().size() > 0) {
 			return SUCCESS;
+		}
 
 		return super.execute();
 	}
@@ -80,9 +77,11 @@ public class ReportActivityWatch extends ReportAccount {
 			addActionError(getText("ReportActivityWatch.message.SelectContractorToStopWatching"));
 			return SUCCESS;
 		}
-		getContractorWatchlistHelper().removeContractorFromWatchList(contractorWatch);
+
+		contractorWatchlistHelper.removeContractorFromWatchList(contractorWatch);
+
 		return setUrlForRedirect("ReportActivityWatch.action"
-				+ (contractor != null && contractor.getId() != getContractorWatchlistHelper().getRemovedContractorId() ? "?contractor="
+				+ (contractor != null && contractor.getId() != contractorWatchlistHelper.getRemovedContractorId() ? "?contractor="
 						+ contractor.getId()
 						: ""));
 	}
@@ -118,6 +117,7 @@ public class ReportActivityWatch extends ReportAccount {
 
 			joins.clear();
 		}
+
 		if (flagColorChange) {
 			joins.add("JOIN accounts oper ON oper.id = gc.genID AND oper.type = 'Operator'");
 			SelectSQL sql2 = buildWatch("FlagColorChange", "generalcontractors gc", "gc.subID", "gc.flagLastUpdated",
@@ -130,12 +130,14 @@ public class ReportActivityWatch extends ReportAccount {
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();
 		}
+
 		if (login) {
 			SelectSQL sql2 = buildWatch("Login", "users u", "u.accountID", "u.lastLogin", "u.name", "''", "''", "''",
 					"''", joins);
 			sql2.addWhere("u.lastLogin IS NOT NULL AND u.isGroup = 'No'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
+
 		if (notesAndEmail) {
 			joins.add("JOIN users u ON n.createdBy = u.id");
 			SelectSQL sql2 = buildWatch("Note", "note n USE INDEX(creationDate)", "n.accountID", "n.creationDate",
@@ -169,6 +171,7 @@ public class ReportActivityWatch extends ReportAccount {
 			sql2.addWhere("eq.status = 'Sent'");
 			watchOptions.add("(" + sql2.toString() + ")");
 		}
+
 		if (flagCriteria) {
 			joins.add("JOIN flag_criteria_operator fco ON fc.id = fco.criteriaID");
 			joins.add("JOIN accounts o ON o.id = fco.opID"
@@ -302,26 +305,19 @@ public class ReportActivityWatch extends ReportAccount {
 	}
 
 	public List<ContractorWatch> getWatched() {
-		return getContractorWatchlistHelper().getWatchedSortedByContractorName();
+		return contractorWatchlistHelper.getWatchedSortedByContractorName(getUser());
 	}
 
 	@Override
 	protected void checkPermissions() throws Exception {
 		super.checkPermissions();
 
-		if (!permissions.hasPermission(OpPerms.ContractorWatch) && !permissions.isAdmin())
+		if (!permissions.hasPermission(OpPerms.ContractorWatch) && !permissions.isAdmin()) {
 			throw new NoRightsException(OpPerms.ContractorWatch, OpType.View);
+		}
 	}
 
 	public ReportFilterCAO getFilter() {
 		return filter;
 	}
-
-	private ContractorWatchlistHelper getContractorWatchlistHelper() {
-		if (contractorWatchlistHelper == null) {
-			contractorWatchlistHelper = new ContractorWatchlistHelper(getUser(), permissions);
-		}
-		return contractorWatchlistHelper;
-	}
-
 }

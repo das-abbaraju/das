@@ -1,6 +1,10 @@
 Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaseautocompletefilter'],
+    alias: 'widget.reportfilterbaseautocompletefilter',
+    
+    requires: [
+        'Ext.form.field.ComboBox'
+    ],
 
     cls: 'autocomplete-filter',
 
@@ -11,11 +15,9 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             Ext.Error.raise('Invalid filter record');
         }
 
-        // TODO: why the hell is this here
         this.record.set('operator', 'In');
 
         var autocomplete = this.createAutocomplete(this.record);
-
         this.add(autocomplete);
     },
 
@@ -28,6 +30,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             displayField: 'value',
             editable: true,
             hideTrigger: true,
+            minChars: 2,
             multiSelect: false,
             name: 'filter_value',
             queryParam: 'searchQuery',
@@ -39,8 +42,8 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
     },
 
     getStoreForAutocomplete: function (record) {
-        var url = Ext.Object.fromQueryString(document.location.search);
-        var name = record.get('name');
+        var field = record.getAvailableField(),
+            field_type = field.get('fieldType');
 
         return {
             fields: [{
@@ -52,8 +55,7 @@ Ext.define('PICS.view.report.filter.base.AutocompleteFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                // TODO: why does this require a report number
-                url: 'ReportAutocomplete.action?report=' + url.report + '&fieldName=' + name,
+                url: 'Autocompleter.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'

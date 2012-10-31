@@ -19,7 +19,7 @@ import javax.persistence.Transient;
 
 import org.apache.velocity.tools.generic.DateTool;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.PicsDateFormat;
@@ -53,7 +53,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date)
 	public Date getDueDate() {
 		return dueDate;
 	}
@@ -63,7 +63,7 @@ public class Invoice extends Transaction {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.Date)
 	public Date getPaidDate() {
 		return paidDate;
 	}
@@ -72,7 +72,7 @@ public class Invoice extends Transaction {
 		this.paidDate = paidDate;
 	}
 
-	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.String)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.String)
 	public String getPoNumber() {
 		return poNumber;
 	}
@@ -81,7 +81,7 @@ public class Invoice extends Transaction {
 		this.poNumber = poNumber;
 	}
 
-	@ReportField(category = FieldCategory.Invoicing, filterType = FilterType.String)
+	@ReportField(category = FieldCategory.Invoicing, type = FieldType.String)
 	public String getNotes() {
 		return notes;
 	}

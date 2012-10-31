@@ -2,7 +2,7 @@ package com.picsauditing.actions.converters;
 
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.struts2.util.StrutsTypeConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;

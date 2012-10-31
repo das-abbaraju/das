@@ -25,9 +25,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -105,7 +106,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	 * @return P=Pending, Y=Yes, N=No
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.ApprovalStatus, category = FieldCategory.CompanyStatus, importance = FieldImportance.Average)
 	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
@@ -184,7 +185,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatus)
 	public FlagColor getBaselineFlag() {
 		return baselineFlag;
 	}
@@ -224,7 +225,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatus)
 	public FlagColor getForceFlag() {
 		return forceFlag;
 	}
@@ -234,7 +235,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
 	public Date getForceEnd() {
 		return forceEnd;
 	}
@@ -243,6 +244,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.forceEnd = forceEnd;
 	}
 
+	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
 	public Date getForceBegin() {
 		return forceBegin;
 	}
@@ -262,7 +264,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
 	public Date getProcessCompletion() {
 		return processCompletion;
 	}
@@ -297,7 +299,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "flag", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "FlagColor")
+	@ReportField(type = FieldType.FlagColor, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getFlagColor() {
 		return flagColor;
 	}
@@ -316,7 +318,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "waitingOn", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "WaitingOn")
+	@ReportField(type = FieldType.WaitingOn, category = FieldCategory.CompanyStatus, i18nKeyPrefix = "WaitingOn", importance = FieldImportance.Average)
 	public WaitingOn getWaitingOn() {
 		return waitingOn;
 	}
@@ -382,7 +384,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		return null;
 	}
 
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.CompanyStatus)
+	@ReportField(type = FieldType.Date, category = FieldCategory.CompanyStatus)
 	public Date getLastStepToGreenDate() {
 		return lastStepToGreenDate;
 	}

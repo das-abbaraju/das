@@ -36,7 +36,7 @@
 				headerValue=" - %{getText('ManageEmployees.header.AddNewRole')} - "
 				listKey="id"
 				listValue="name"
-				data-employee="${employee.id}" />
+				data-employee="${employee.id.toString()}" />
 		</s:if>
 		<s:else>
 			<h5>

@@ -1,6 +1,10 @@
 Ext.define('PICS.view.report.filter.base.ListFilter', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterbaselistfilter'],
+    alias: 'widget.reportfilterbaselistfilter',
+    
+    requires: [
+        'Ext.form.field.ComboBox'
+    ],
 
     initComponent: function () {
         this.callParent(arguments);
@@ -9,7 +13,6 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             Ext.Error.raise('Invalid filter record');
         }
 
-        // TODO: shouldn't the server do this?
         this.record.set('operator', 'In');
 
         var list = this.createList(this.record);
@@ -35,8 +38,8 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
     },
 
     getStoreForList: function (record) {
-        var url = Ext.Object.fromQueryString(document.location.search);
-        var name = record.get('name');
+        var field = record.getAvailableField(),
+            field_type = field.get('fieldType');
 
         return {
             fields: [{
@@ -48,8 +51,7 @@ Ext.define('PICS.view.report.filter.base.ListFilter', {
             }],
             proxy: {
                 type: 'ajax',
-                // TODO: why does this require a report number
-                url: 'ReportAutocomplete.action?report=' + url.report + '&fieldName=' + name,
+                url: 'Autocompleter.action?fieldType=' + field_type,
                 reader: {
                     root: 'result',
                     type: 'json'

@@ -1,22 +1,55 @@
 package com.picsauditing.report.models;
 
+import java.util.Map;
+
+import com.picsauditing.access.Permissions;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.ContractorAuditTable;
+import com.picsauditing.report.tables.ContractorTable;
+import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 
-public class AccountContractorAuditModel extends AccountContractorModel {
-	public AccountContractorAuditModel() {
-		super();
+public class AccountContractorAuditModel extends AbstractModel {
+	public AccountContractorAuditModel(Permissions permissions) {
+		super(permissions, new ContractorAuditTable());
+	}
 
-		ContractorAuditTable conAuditTable = new ContractorAuditTable("audit", "ca", "conID", "a.id");
-		conAuditTable.includeAllColumns();
-		rootTable.addAllFieldsAndJoins(conAuditTable);
+	public ModelSpec getJoinSpec() {
+		ModelSpec conAudit = new ModelSpec(null, "Audit");
+		{
+			ModelSpec contractor = conAudit.join(ContractorAuditTable.Contractor);
+			contractor.alias = "Contractor";
+			// We may not need this either if the Entity Fields are set
+			// correctly
+			// contractor.category = FieldCategory.AccountInformation;
 
-		parentTable = conAuditTable;
+			{
+				ModelSpec account = contractor.join(ContractorTable.Account);
+				account.alias = "Account";
+				account.minimumImportance = FieldImportance.Average;
+				// We may not need this either if the Entity Fields are set
+				// correctly
+				// account.category = FieldCategory.AccountInformation;
+			}
 
-		rootTable.removeJoin("contractorCustomerService");
-		rootTable.removeJoin("contractorPQF");
+			if (permissions.isOperatorCorporate()) {
+				ModelSpec flag = contractor.join(ContractorTable.Flag);
+				flag.alias = "ContractorOperator";
+				flag.minimumImportance = FieldImportance.Average;
+				flag.category = FieldCategory.AccountInformation;
+			}
+		}
+		conAudit.join(ContractorAuditTable.Auditor);
+		conAudit.join(ContractorAuditTable.ClosingAuditor);
+		conAudit.join(ContractorAuditTable.Type);
+		return conAudit;
+	}
 
-		// TODO I think we should remove this join to eliminate confusion
-		// But let's leave it until after we can support joining on GC table
-		// rootTable.removeJoin("contractorRequestedBy");
+	@Override
+	public Map<String, Field> getAvailableFields() {
+		Map<String, Field> fields = super.getAvailableFields();
+		Field accountName = fields.get("AccountName".toUpperCase());
+		accountName.setUrl("ContractorView.action?id={AccountID}");
+		return fields;
 	}
 }

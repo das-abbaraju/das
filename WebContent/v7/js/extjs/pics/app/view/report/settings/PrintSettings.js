@@ -8,12 +8,19 @@ Ext.define('PICS.view.report.settings.PrintSettings', {
         text: '<i class="icon-print icon-large"></i>Print'
     }],*/
     items: [{
-        cls: 'coming-soon',
-        html: new Ext.Template([
-            '<i class="icon-wrench icon-large"></i>',
-            '<p>Coming Soon</p>'
-        ])
+        xtype: 'button',
+        action: 'print',
+        text : 'Print',
+        cls: 'primary print',
+        id: 'print-button',
+        tooltip: 'Print this report',
+        margin: '100 0 0 0'
     }],
+
+    layout: {
+        type: 'vbox',
+        align: 'center'
+    },
     title: '<i class="icon-print icon-large"></i>Print',
     // custom config
     modal_title: 'Print Report'

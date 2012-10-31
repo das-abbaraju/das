@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -30,60 +31,6 @@ public class StringsTest  {
 	@Test
 	public void testInsertSpace3() {
 		assertEquals("a b c", Strings.insertSpaces("abc"));
-	}
-
-	@Test
-	public void testHash_sha1Algorithm() {
-		// Known SHA-1 encoding taken from http://en.wikipedia.org/wiki/SHA-1#Example_hashes
-		assertEquals("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",
-				Strings.hash("The quick brown fox jumps over the lazy dog"));
-		assertEquals("de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3",
-				Strings.hash("The quick brown fox jumps over the lazy cog"));
-		assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709", Strings.hash(""));
-	}
-
-	/**
-	 * In the following assertions, the expected value is taken for granted. The point of this test is demonstrate a
-	 * common way that the hash method is used for passwords, by adding a numeric seed to the end of the password before
-	 * encoding it.
-	 */
-	@Test
-	public void testHash_passwordPlusSeed() {
-		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60", Strings.hash("@Irvine1" + 2357));
-		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60", Strings.hash("@Irvine12357"));
-	}
-
-	@Test
-	public void testHash_equals() {
-		String source = "mypassword";
-		String source2 = "mypassword";
-
-		// Checking the two hashes are equal
-		assertTrue(Strings.hash(source).equals(Strings.hash(source2)));
-		assertTrue(Strings.hash(source2).equals(Strings.hash(source)));
-
-		// Checking similar strings are not equal
-		assertFalse(Strings.hash(source).equals("mypasswor"));
-		assertFalse(Strings.hash(source).equals("ypassword"));
-
-		// Check appended seeds are equal
-		int val = 121314;
-		int val2 = 121314;
-		assertTrue(Strings.hash(source + val).equals(Strings.hash(source + val2)));
-	}
-
-	@Test
-	public void testHash_length() {
-		// Old hash function -- updated to SHA1
-		// assertEquals(28,Strings.hash("").length());
-		// Zero-length strings should be encoded
-		assertEquals(40, Strings.hash("").length());
-
-		// Strings longer than 28 bytes (size of return hash) should be encoded
-		// assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length()
-		// == 28);
-		// Strings longer than 40 bytes (size of return hash) should be encoded
-		assertEquals(40, Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./1234567890-=").length());
 	}
 
 	@Test
@@ -182,11 +129,6 @@ public class StringsTest  {
 		name = name.replaceAll(" I ?N ?C$", "");
 
 		return name;
-	}
-
-	@Test
-	public void testMd5() {
-		assertEquals("593b069af7c100f8ee335184c763fad1", Strings.md5("e4d909c290d0fb1ca068ffaddf22cbd0|20080516190549"));
 	}
 
 	@Test
@@ -315,7 +257,7 @@ public class StringsTest  {
 		assertEquals("ab" + backSlash + singleQuote + backSlash + singleQuote,
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
-	
+
 	@Test
 	public void nullToBlank() {
 		assertEquals("", Strings.nullToBlank(null));
@@ -323,5 +265,5 @@ public class StringsTest  {
 		assertEquals("  ", Strings.nullToBlank("  "));
 		assertEquals(" This is a test ", Strings.nullToBlank(" This is a test "));
 	}
-	
+
 }

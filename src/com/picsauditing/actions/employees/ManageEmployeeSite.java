@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.EmployeeSiteDAO;
-import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -16,8 +15,6 @@ import com.picsauditing.util.Strings;
 public class ManageEmployeeSite extends ManageEmployees {
 	@Autowired
 	protected EmployeeSiteDAO employeeSiteDAO;
-	@Autowired
-	protected JobSiteDAO jobSiteDAO;
 
 	private OperatorAccount operator;
 	private EmployeeSite employeeSite;
@@ -28,7 +25,7 @@ public class ManageEmployeeSite extends ManageEmployees {
 			EmployeeSite employeeSite = new EmployeeSite();
 			employeeSite.setEmployee(employee);
 
-			if (operator != null) {
+			if (operator != null && jobSite == null) {
 				employeeSite.setOperator(operator);
 			} else {
 				employeeSite.setJobSite(jobSite);
@@ -44,13 +41,14 @@ public class ManageEmployeeSite extends ManageEmployees {
 			String note = "Added ";
 			if (jobSite.getId() > 0) {
 				note += "OQ Project " + jobSite.getOperator().getName() + ": " + jobSite.getLabel();
+				addNote(note, jobSite.getOperator().getId());
 			} else if (operator.isRequiresCompetencyReview()) {
 				note += "HSE site " + operator.getName();
+				addNote(note, operator.getId());
 			} else {
 				note += "Client site " + operator.getName();
+				addNote(note, operator.getId());
 			}
-
-			addNote(note);
 		}
 
 		return SUCCESS;

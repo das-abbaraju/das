@@ -2,10 +2,11 @@
     PICS.define('operator.Edit', {
         methods: {
             init: function () {
-                if ($('#FacilitiesEdit-page').length) {
-                    $('#FacilitiesEdit-page').delegate('#general_contractor_checkbox', 'click', this.toggleLinkedAccountField);
-                    $('#FacilitiesEdit-page').delegate('#opCountry', 'change', this.updateCountry);
-                    $('#FacilitiesEdit-page').delegate('#save_autoApproveRelationships', 'change', this.showAutoApproveRelationshipModal);
+                var facilitiesEdit = $('.FacilitiesEdit-page');
+                if (facilitiesEdit.length) {
+                    facilitiesEdit.delegate('#general_contractor_checkbox', 'click', this.toggleLinkedAccountField);
+                    facilitiesEdit.delegate('#opCountry', 'change', this.updateCountry);
+                    facilitiesEdit.delegate('#save_autoApproveRelationships', 'change', this.showAutoApproveRelationshipModal);
 
                     //autofill Country Subdivision list
                     if ($('#opCountry').length) {
@@ -20,17 +21,18 @@
                         url: "CountrySubdivisionListAjax.action",
                         data: {
                             countryString: country,
-                            countrySubdivisionString: countrySubdivision
+                            countrySubdivisionString: countrySubdivision,
+                            prefix: 'operator.'
                         },
                         success: function(data, textStatus, XMLHttpRequest) {
-                            $('#FacilitiesEdit-page #countrySubdivision_li').html(data);
+                            $('.FacilitiesEdit-page #countrySubdivision_li').html(data);
                         }
                     });
                 }
 
                 var element = $('#opCountry') || $(this);
                 var country = element.val();
-                var countrySubdivision = $('#FacilitiesEdit-page #operatorCountrySubdivision').val();
+                var countrySubdivision = $('.FacilitiesEdit-page #operatorCountrySubdivision').val();
 
                 if (country == 'AE') {
                     $('#zip_li').hide();
@@ -103,7 +105,7 @@
             },
 
             toggleLinkedAccountField: function(event) {
-                $('#FacilitiesEdit-page #linked_clients').toggle();
+                $('.FacilitiesEdit-page #linked_clients').toggle();
             }
         }
     });

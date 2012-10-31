@@ -63,6 +63,7 @@ public class PermissionQueryBuilderEmployee extends PermissionQueryBuilder {
 			return query += ".id IN (" + subquery + ")";
 	}
 
+	@Override
 	public void setQueryLanguage(int queryLanguage) {
 		if (queryLanguage == HQL)
 			this.accountAlias = "employee";

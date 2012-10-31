@@ -21,9 +21,13 @@
 				<th>
                     <s:text name="global.Status" />
                 </th>
-                <th>
-                    <s:text name="global.AuditSubStatus" />
-                </th>
+				
+                <s:if test="conAudit.auditType.classType.policy && systemEdit">
+                	<th>
+                    	<s:text name="global.AuditSubStatus" />
+                	</th>                
+                </s:if>
+				
 				<th>
                     <s:text name="global.Date" />
                 </th>
@@ -157,25 +161,27 @@
 							</s:if>
 						</td>
 						
-						<td class="caoStatus<s:if test="!systemEdit"> hoverable</s:if><s:else> systemEdit</s:else>">							
-							<s:if test="isCanEditCao(#currentCao)">
-								<span class="caoEdit left">
-									<s:hidden cssClass="caoID" name="#currentCao.id"/>
+						<s:if test="conAudit.auditType.classType.policy && systemEdit">
+							<td class="caoStatus systemEdit">
+								<s:if test="isCanEditCao(#currentCao)">
+									<span class="caoEdit left">
+										<s:hidden cssClass="caoID" name="#currentCao.id"/>
                                     
-									<s:select 
-                                        cssClass="status" 
-                                        list="getAuditSubStatuses()" 
-                                        emptyOption="true" 
-                                        name="caosSave[%{#rowStatus.index}].auditSubStatus" 
-                                        value="#currentCao.auditSubStatus"
-                                    />
-								</span>
+										<s:select 
+											cssClass="status" 
+											list="getAuditSubStatuses()" 
+											emptyOption="true" 
+											name="caosSave[%{#rowStatus.index}].auditSubStatus" 
+											value="#currentCao.auditSubStatus"
+										/>
+									</span>
                                 
-								<s:if test="!systemEdit">
-									<span class="right"><a href="#" class="edit"></a></span>
-								</s:if>
-							</s:if>							
-						</td>
+									<s:if test="!systemEdit">
+										<span class="right"><a href="#" class="edit"></a></span>
+									</s:if>
+								</s:if>							
+							</td>
+						</s:if>
                         
 						<!-- Date -->
 						<td class="caoDate">

@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,6 +66,14 @@ public abstract class SafetyStatistics {
 	
 	public void setVerified(boolean verified) {
 		this.verified = verified;
+	}
+	
+	public AuditData makeZeroAnswerData(int id) {
+		AuditData data = new AuditData();
+		data.setAnswer("0");
+		data.setVerified(true);
+		data.setDateVerified(new Date());
+		return data;
 	}
 
 	abstract public List<AuditData> getQuestionsToVerify();

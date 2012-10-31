@@ -368,16 +368,16 @@ public class AuditBuilderTest extends PicsTest {
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
 	}
 	
-	@Test
+	
+	@Test(expected = RuntimeException.class)
 	public void testFoundCurrentYearWCB_NullAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		when(audit.getAuditFor()).thenReturn(null);
 		
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
-		assertTrue(result);
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testFoundCurrentYearWCB_BlankAuditFor() throws Exception {
 		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
 		when(audit.getAuditFor()).thenReturn(" ");

@@ -121,6 +121,9 @@ public class AuditFileUpload extends AuditActionSupport {
 						addActionMessage(getTextParameterized("AuditFileUpload.message.FileUploaded", fileFileName));
 					} catch (Exception e) {
 						addActionError(getText("AuditDataUpload.error.FailedSavingFile") + fileFileName);
+						contractorAuditFileDAO.remove(contractorAuditFile.getId());
+						file = null;
+						return SUCCESS;
 					}
 				}
 			}

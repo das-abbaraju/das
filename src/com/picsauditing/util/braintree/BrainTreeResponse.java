@@ -184,13 +184,18 @@ public abstract class BrainTreeResponse {
 				
 				case CAD:
 					return dao.find("brainTree.processor_id.canada").getValue();
-			
 				case GBP:				
 					return dao.find("brainTree.processor_id.gbp").getValue();
-					
 				case EUR:
 					return dao.find("brainTree.processor_id.eur").getValue();
-					
+				case DKK:
+					return dao.find("brainTree.processor_id.dkk").getValue();
+				case NOK:
+					return dao.find("brainTree.processor_id.nok").getValue();
+				case SEK:
+					return dao.find("brainTree.processor_id.sek").getValue();
+				case ZAR:
+					return dao.find("brainTree.processor_id.zar").getValue(); 
 				default:
 					return dao.find("brainTree.processor_id.us").getValue();
 			}

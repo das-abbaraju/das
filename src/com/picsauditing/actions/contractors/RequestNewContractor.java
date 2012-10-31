@@ -1,13 +1,9 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -21,67 +17,53 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.EmailAttachmentDAO;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.EmailAttachment;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.EmailAddressUtils;
-import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class RequestNewContractor extends AccountActionSupport {
 	@Autowired
-	protected ContractorAccountDAO contractorAccountDAO;
+	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
-	protected ContractorRegistrationRequestDAO crrDAO;
+	private ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
-	protected EmailAttachmentDAO attachmentDAO;
+	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
-	protected EmailTemplateDAO templateDAO;
+	private OperatorTagDAO operatorTagDAO;
 	@Autowired
-	protected OperatorAccountDAO operatorAccountDAO;
+	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
-	protected OperatorTagDAO operatorTagDAO;
+	private UserDAO userDAO;
 	@Autowired
-	protected UserDAO userDAO;
-	@Autowired
-	protected UserSwitchDAO userSwitchDAO;
+	private UserSwitchDAO userSwitchDAO;
 
-	@Autowired
-	protected EmailSender emailSenderSpring;
+	private String requestedTagIds;
+	private List<String> rightAnswers;
 
-	protected String requestedTagIds;
-	protected List<String> rightAnswers;
-
-	protected List<OperatorForm> forms;
-	protected List<OperatorTag> requestedTags = new ArrayList<OperatorTag>();
+	private List<OperatorTag> requestedTags = new ArrayList<OperatorTag>();
 	// selected tags of requestor
-	protected List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
-	// available tags of the operator
 
 	private ContractorRegistrationRequest newContractor;
 	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
@@ -92,16 +74,19 @@ public class RequestNewContractor extends AccountActionSupport {
 	private String contactType;
 
 	// fields used for matching
-	protected String term;
-	protected String type;
-	protected List<String> unusedTerms;
-	protected List<String> usedTerms;
-	protected boolean continueCheck = true;
-	protected List<ContractorAccount> potentialMatches;
+	private String term;
+	private String type;
+	private List<String> unusedTerms;
+	private List<String> usedTerms;
+	private boolean continueCheck = true;
+	private List<ContractorAccount> potentialMatches;
 
 	private int requestID;
+	// For previews
+	private EmailQueue email;
+	// URL helper
+	private URLUtils urlUtils = new URLUtils();
 
-	private static final int INITIAL_EMAIL = 83;
 	public static final String PERSONAL_EMAIL = "Personal Email";
 	public static final String DRAFT_EMAIL = "Email";
 	public static final String PHONE = "Phone";
@@ -140,23 +125,30 @@ public class RequestNewContractor extends AccountActionSupport {
 	public String ajaxCheck() throws Exception {
 		SearchEngine searchEngine = new SearchEngine(permissions);
 		List<BasicDynaBean> matches = newGap(searchEngine, term, type);
-		if (matches != null && !matches.isEmpty()) // results
+
+		if (matches != null && !matches.isEmpty()) {
 			continueCheck = false;
-		else
+		} else {
 			return null;
+		}
+
 		Database db = new Database();
 		JSONArray result = new JSONArray();
 		List<Integer> ids = new ArrayList<Integer>();
 		StringBuilder query = new StringBuilder();
 		result.add(continueCheck);
-		if ("C".equalsIgnoreCase(type))
-			query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN (");
-		else if ("U".equalsIgnoreCase(type))
+
+		if ("C".equalsIgnoreCase(type)) {
+			query.append("SELECT a.id, a.name FROM accounts a WHERE a.status IN ('Active', 'Pending', 'Requested') AND a.id IN (");
+		} else if ("U".equalsIgnoreCase(type)) {
 			query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
+		}
+
 		for (BasicDynaBean bdb : matches) {
 			int id = Integer.parseInt(bdb.get("foreignKey").toString());
 			ids.add(id);
 		}
+
 		JSONArray jObj = new JSONArray();
 		for (final String str : unusedTerms) {
 			jObj.add(new JSONObject() {
@@ -166,6 +158,7 @@ public class RequestNewContractor extends AccountActionSupport {
 			});
 		}
 		result.add(jObj);
+
 		jObj = new JSONArray();
 		for (final String str : usedTerms) {
 			jObj.add(new JSONObject() {
@@ -175,23 +168,39 @@ public class RequestNewContractor extends AccountActionSupport {
 			});
 		}
 		result.add(jObj);
+
 		query.append(Strings.implode(ids, ",")).append(')');
 		List<BasicDynaBean> cons = db.select(query.toString(), false);
 		final Hashtable<Integer, Integer> ht = searchEngine.getConIds(permissions);
+
 		for (BasicDynaBean bdb : cons) {
 			final String name = bdb.get("name").toString();
-			final String id = bdb.get("id").toString();
+			final int id = Integer.parseInt(bdb.get("id").toString());
+
+			final boolean visible = ht.containsKey(id);
+
 			result.add(new JSONObject() {
 				{
 					put("name", name);
 					put("id", id);
-					if (ht.containsKey(id))
-						put("add", false);
-					else
-						put("add", true);
+
+					if (visible || permissions.isPicsEmployee()) {
+						put("url", urlUtils.getActionUrl("ContractorView", "id", id));
+					} else {
+						put("url", urlUtils.getActionUrl("NewContractorSearch", null, new HashMap<String, Object>() {
+							{
+								put("filter.performedBy", "Self Performed");
+								put("filter.primaryInformation", true);
+								put("filter.tradeInformation", true);
+								put("filter.accountName", name);
+								put("button", "Search");
+							}
+						}, false));
+					}
 				}
 			});
 		}
+
 		json.put("result", result);
 		return JSON;
 	}
@@ -259,6 +268,8 @@ public class RequestNewContractor extends AccountActionSupport {
 			newContractor.setHoldDate(null);
 		}
 
+		transferTagsToContractor();
+
 		if (newContractor.getId() == 0) {
 			newContractor.setStatus(ContractorRegistrationRequestStatus.Active);
 
@@ -271,7 +282,7 @@ public class RequestNewContractor extends AccountActionSupport {
 
 			// Save the contractor before sending the email
 			newContractor = crrDAO.save(newContractor);
-			sendEmail();
+			emailHelper.sendInitialEmail(newContractor, getFtpDir());
 		} else {
 			if (status != null)
 				newContractor.setStatus(status);
@@ -298,7 +309,7 @@ public class RequestNewContractor extends AccountActionSupport {
 		String notes = "Contacted by " + contactType + (PERSONAL_EMAIL.equals(contactType) ? "" : ": " + addToNotes);
 
 		if (DRAFT_EMAIL.equals(contactType)) {
-			sendEmail();
+			emailHelper.sendInitialEmail(newContractor, getFtpDir());
 			newContractor.contactByEmail();
 		} else if (PERSONAL_EMAIL.equals(contactType)) {
 			newContractor.contactByEmail();
@@ -311,12 +322,13 @@ public class RequestNewContractor extends AccountActionSupport {
 
 		crrDAO.save(newContractor);
 
-		return setUrlForRedirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
+		return setUrlForRedirect(urlUtils.getActionUrl("RequestNewContractor", "newContractor", newContractor.getId()));
 	}
 
-	public EmailQueue previewEmail() throws IOException {
-		EmailBuilder builder = prepareEmailBuilder();
-		return builder.build();
+	public String emailPreview() throws Exception {
+		email = buildInitialEmail();
+
+		return "email";
 	}
 
 	public List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
@@ -388,73 +400,6 @@ public class RequestNewContractor extends AccountActionSupport {
 		return usersAndSwitchTos;
 	}
 
-	public OperatorForm getForm() {
-		if (newContractor != null && newContractor.getRequestedBy() != null) {
-			List<OperatorAccount> hierarchy = new ArrayList<OperatorAccount>();
-			hierarchy.add(newContractor.getRequestedBy());
-
-			List<Facility> corpFac = new ArrayList<Facility>(newContractor.getRequestedBy().getCorporateFacilities());
-			Collections.reverse(corpFac);
-
-			for (Facility f : corpFac) {
-				if (!f.getCorporate().equals(newContractor.getRequestedBy().getTopAccount())
-						&& !Account.PICS_CORPORATE.contains(f.getCorporate().getId()))
-					hierarchy.add(f.getCorporate());
-			}
-
-			if (!newContractor.getRequestedBy().getTopAccount().equals(newContractor.getRequestedBy())
-					&& !Account.PICS_CORPORATE.contains(newContractor.getRequestedBy().getTopAccount().getId()))
-				hierarchy.add(newContractor.getRequestedBy().getTopAccount());
-
-			for (OperatorAccount o : hierarchy) {
-				for (OperatorForm form : o.getOperatorForms()) {
-					if (form.getFormName().contains("*"))
-						return form;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public List<OperatorForm> getForms() {
-		if (forms == null && newContractor != null && newContractor.getRequestedBy() != null) {
-			Set<OperatorForm> allForms = new HashSet<OperatorForm>();
-			Set<OperatorAccount> family = new HashSet<OperatorAccount>();
-			family.add(newContractor.getRequestedBy());
-
-			for (Facility f : newContractor.getRequestedBy().getCorporateFacilities()) {
-				if (!Account.PICS_CORPORATE.contains(f.getCorporate().getId())) {
-					for (Facility f2 : f.getCorporate().getOperatorFacilities())
-						family.add(f2.getOperator()); // Siblings
-					family.add(f.getCorporate()); // Direct parents
-				}
-			}
-
-			family.add(newContractor.getRequestedBy().getTopAccount());
-
-			for (OperatorAccount o : family) {
-				for (OperatorForm f : o.getOperatorForms()) {
-					if (f.getFormName().contains("*"))
-						allForms.add(f);
-				}
-			}
-
-			forms = new ArrayList<OperatorForm>(allForms);
-			// Sort alphabetically
-			Collections.sort(forms, new Comparator<OperatorForm>() {
-				public int compare(OperatorForm o1, OperatorForm o2) {
-					if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)
-						return (o1.getFormName().compareTo(o2.getFormName()));
-
-					return o1.getAccount().getName().compareTo(o2.getAccount().getName());
-				}
-			});
-		}
-
-		return forms;
-	}
-
 	public ContractorRegistrationRequest getNewContractor() {
 		return newContractor;
 	}
@@ -494,24 +439,12 @@ public class RequestNewContractor extends AccountActionSupport {
 		return results;
 	}
 
-	public void setOperatorTags(List<OperatorTag> operatorTags) {
-		this.operatorTags = operatorTags;
-	}
-
 	public List<String> getRightAnswers() {
 		return rightAnswers;
 	}
 
 	public void setRightAnswers(List<String> rightAnswers) {
 		this.rightAnswers = rightAnswers;
-	}
-
-	public String getDraftEmailSubject() {
-		return templateDAO.find(INITIAL_EMAIL).getSubject();
-	}
-
-	public String getDraftEmailBody() {
-		return templateDAO.find(INITIAL_EMAIL).getBody();
 	}
 
 	public int getOpID() {
@@ -554,30 +487,12 @@ public class RequestNewContractor extends AccountActionSupport {
 		this.status = status;
 	}
 
-	protected void sendEmail() {
-		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
-			EmailBuilder emailBuilder = prepareEmailBuilder();
-			try {
-				EmailQueue q = emailBuilder.build();
-				emailSenderSpring.send(q);
-				OperatorForm form = getForm();
-				if (form != null)
-					addAttachments(q, form);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public EmailQueue getEmail() {
+		return email;
 	}
 
-	protected EmailBuilder prepareEmailBuilder() {
-		EmailBuilder email = new EmailBuilder();
-		email.setToAddresses(newContractor.getEmail());
-
-		email.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
-
-		email.setTemplate(INITIAL_EMAIL);
-		email.addToken("newContractor", newContractor);
-		return email;
+	private EmailQueue buildInitialEmail() throws Exception {
+		return emailHelper.buildInitialEmail(newContractor);
 	}
 
 	private void checkContactFields() {
@@ -599,7 +514,7 @@ public class RequestNewContractor extends AccountActionSupport {
 		if (Strings.isEmpty(newContractor.getPhone()))
 			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
 
-		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
+		if (Strings.isEmpty(newContractor.getEmail()) || !EmailAddressUtils.isValidEmail(newContractor.getEmail()))
 			addActionError(getText("RequestNewContractor.error.FillValidEmail"));
 	}
 
@@ -659,25 +574,38 @@ public class RequestNewContractor extends AccountActionSupport {
 		}
 	}
 
-	private void addAttachments(EmailQueue emailQueue, OperatorForm form) {
-		String filename = FileUtils.thousandize(form.getId()) + form.getFile();
+	private void transferTagsToContractor() {
+		if (newContractor.getContractor() != null && !Strings.isEmpty(newContractor.getOperatorTags())) {
+			for (String tagID : newContractor.getOperatorTags().split(",")) {
+				try {
+					OperatorTag tag = operatorTagDAO.find(Integer.parseInt(tagID));
 
-		try {
-			EmailAttachment attachment = new EmailAttachment();
+					if (!contractorHasTag(tag)
+							&& newContractor.getContractor().getOperatorAccounts().contains(tag.getOperator())) {
+						ContractorTag contractorTag = new ContractorTag();
+						contractorTag.setContractor(newContractor.getContractor());
+						contractorTag.setTag(tag);
+						contractorTag.setAuditColumns(permissions);
 
-			File file = new File(getFtpDir() + "/files/" + filename);
-
-			byte[] bytes = new byte[(int) file.length()];
-			FileInputStream fis = new FileInputStream(file);
-			fis.read(bytes);
-
-			attachment.setFileName(getFtpDir() + "/files/" + filename);
-			attachment.setContent(bytes);
-			attachment.setFileSize((int) file.length());
-			attachment.setEmailQueue(emailQueue);
-			attachmentDAO.save(attachment);
-		} catch (Exception e) {
-			LOG.error("Unable to open file: /files/{}", filename);
+						dao.save(contractorTag);
+					}
+				} catch (Exception exception) {
+					LOG.error("Error with transfering tag {} from request {} to contractor {}\n{}", new Object[] {
+							tagID, newContractor.getId(), newContractor.getContractor().getId(), exception });
+				}
+			}
 		}
+	}
+
+	private boolean contractorHasTag(OperatorTag tag) {
+		if (newContractor.getContractor() != null) {
+			for (ContractorTag contractorTag : newContractor.getContractor().getOperatorTags()) {
+				if (contractorTag.getTag().equals(tag)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

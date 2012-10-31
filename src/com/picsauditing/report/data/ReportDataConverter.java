@@ -7,16 +7,21 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.report.Column;
-import com.picsauditing.report.fields.ExtFieldType;
+import com.picsauditing.report.fields.DisplayType;
 import com.picsauditing.report.fields.QueryMethod;
 
 public class ReportDataConverter {
+	
 	private final static I18nCache i18nCache = I18nCache.getInstance();
 	private Locale locale;
 	private ReportResults reportResults;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ReportDataConverter.class);
 
 	public ReportDataConverter(Collection<Column> columns, List<BasicDynaBean> results) {
 		reportResults = new ReportResults(columns, results);
@@ -68,17 +73,22 @@ public class ReportDataConverter {
 				// is better than an NPE
 				return column.getFieldName() + ": Field not available";
 			}
+			
 			if (column.getField().isTranslated()) {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
-			if (column.getField().getType() == ExtFieldType.Int) {
+			
+			DisplayType displayType = column.getField().getType().getDisplayType();
+			if (displayType == DisplayType.Integer) {
 				return value;
 			}
-			if (column.getField().getType() == ExtFieldType.Float) {
+			
+			if (displayType == DisplayType.Float) {
 				return value;
 			}
-			if (column.getField().getType() == ExtFieldType.Boolean) {
+			
+			if (displayType == DisplayType.Boolean) {
 				return value;
 			}
 		}
@@ -99,10 +109,11 @@ public class ReportDataConverter {
 		Object value = cell.getValue();
 		if (value == null)
 			return null;
+		
 		Column column = cell.getColumn();
 
 		if (column != null) {
-			System.out.println("Converting " + cell.getColumn().getFieldName() + " value: " + value);
+			logger.info("Converting {} value: {}", cell.getColumn().getFieldName(), value );
 			
 			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
 				int month = Integer.parseInt(value.toString());
@@ -133,7 +144,7 @@ public class ReportDataConverter {
 				String key = column.getField().getI18nKey(value.toString());
 				return getText(key, locale);
 			}
-			if (column.getField().getType() == ExtFieldType.Boolean) {
+			if (column.getField().getType().getDisplayType() == DisplayType.Boolean) {
 				return value;
 			}
 		}

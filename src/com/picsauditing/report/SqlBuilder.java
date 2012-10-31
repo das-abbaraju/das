@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.models.ReportJoin;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 	private Definition definition;
@@ -25,6 +25,11 @@ public class SqlBuilder {
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
+	public SelectSQL initializeSql(Report report, Permissions permissions) throws ReportValidationException {
+		AbstractModel model = ModelFactory.build(report.getModelType(), permissions);
+		return initializeSql(model, report.getDefinition(), permissions);
+	}
+
 	public SelectSQL initializeSql(AbstractModel model, Definition definition, Permissions permissions)
 			throws ReportValidationException {
 		logger.info("Starting SqlBuilder for " + model);
@@ -32,41 +37,28 @@ public class SqlBuilder {
 
 		sql = new SelectSQL();
 
-		setFrom(model);
+		sql.setFromTable(model.getStartingJoin().getTableClause());
 
-		availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
-
+		availableFields = model.getAvailableFields();
+		
 		addFieldsAndGroupBy(definition.getColumns());
 		addRuntimeFilters(permissions);
 		addOrderByClauses(model);
 
-		addJoins(model.getRootTable());
+		addJoins(model.getStartingJoin());
 
-		sql.addWhere(model.getWhereClause(permissions, definition.getFilters()));
+		sql.addWhere(model.getWhereClause(definition.getFilters()));
 
 		logger.debug("SQL: " + sql);
 		logger.info("Completed SqlBuilder");
 		return sql;
 	}
 
-	private void setFrom(AbstractModel model) {
-		String from = model.getRootTable().getTableName();
-		String alias = model.getRootTable().getAlias();
-		if (!Strings.isEmpty(alias))
-			from += " AS " + alias;
-
-		sql.setFromTable(from);
-	}
-
-	private void addJoins(AbstractTable table) {
-		if (table == null || table.getJoins() == null)
-			return;
-
-		for (AbstractTable joinTable : table.getJoins()) {
-
-			if (joinTable.isJoinNeeded(definition)) {
-				sql.addJoin(joinTable.getJoinSql());
-				addJoins(joinTable);
+	private void addJoins(ReportJoin parentJoin) {
+		for (ReportJoin join : parentJoin.getJoins()) {
+			if (join.isNeeded(definition)) {
+				sql.addJoin(join.toJoinClause());
+				addJoins(join);
 			}
 		}
 	}
@@ -147,7 +139,7 @@ public class SqlBuilder {
 
 		for (Filter filter : definition.getFilters()) {
 			filter.addFieldCopy(availableFields);
-
+			
 			if (filter.isValid()) {
 				filter.updateCurrentUser(permissions);
 				if (filter.isHasAggregateMethod()) {

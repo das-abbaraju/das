@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import groovy.lang.Binding;
 
@@ -49,6 +50,7 @@ public class FeatureToggleExpressionsTest {
 		when(currentUser.getId()).thenReturn(941);
 		when(currentUser.getName()).thenReturn("Test Group");
 		when(currentUser.getAccount()).thenReturn(account);
+		when(currentUser.getLocale()).thenReturn(Locale.ENGLISH);
 
 		permissions = new Permissions();
 		when(binding.getVariable("permissions")).thenReturn(permissions);
@@ -338,7 +340,14 @@ public class FeatureToggleExpressionsTest {
 		when(appPropertyDAO.getProperty(AppProperty.BETA_LEVEL)).thenReturn("NAN");
 		featureToggleExpressions.applicationBetaLevel();
 	}
-
+	@Test
+	public void testHasPermission_Happy() throws Exception {
+		assertFalse(featureToggleExpressions.hasPermission("RestApi"));
+	}
+	@Test(expected = FeatureToggleException.class)
+	public void testHasPermission_NoSuchPermission() throws Exception {
+		assertFalse(featureToggleExpressions.hasPermission("NoSuchPermission"));
+	}
 	private class FeatureToggleExpressionsTestable extends FeatureToggleExpressions {
 
 		@Override

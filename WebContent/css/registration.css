@@ -323,7 +323,6 @@ footer .footer-menu a {
 .registration-side-bar {
 	background: url(../images/registration/bg.png) no-repeat;
 	float: left;
-	height: 900px;
 	width: 370px;
 }
 
@@ -779,6 +778,7 @@ footer .footer-menu a {
 
 .client-site ul.actions li {
 	margin: 0px;
+	overflow: visible;
 }
 
 .client-site .client-site-list li.inspect,.client-site .client-site-list li.inspect a

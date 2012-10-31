@@ -19,13 +19,13 @@ public class UkStatisticsTest {
 
 	@Test
 	public void testGetOshaType() {
-		UkStatistics stats = new UkStatistics(2012, generateTestData1());
+		UkStatistics stats = new UkStatistics(2012, generateTestData1(), true);
 		assertEquals(OshaType.UK_HSE, stats.getOshaType());
 	}
 
 	@Test
 	public void testGetStats() {
-		UkStatistics stats = new UkStatistics(2012, generateTestData1());
+		UkStatistics stats = new UkStatistics(2012, generateTestData1(), true);
 		assertEquals("1", stats.getStats(OshaRateType.IFR));
 		assertEquals("2", stats.getStats(OshaRateType.Hours));
 		assertEquals("3", stats.getStats(OshaRateType.Fatalities));

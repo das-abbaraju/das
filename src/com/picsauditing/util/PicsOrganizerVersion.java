@@ -2,7 +2,7 @@ package com.picsauditing.util;
 
 public class PicsOrganizerVersion {
 	final static public int major = 6;
-	final static public int minor = 23;
+	final static public int minor = 28;
 	final static public int patch = 0;
 
 	@SuppressWarnings("unused")
@@ -13,10 +13,6 @@ public class PicsOrganizerVersion {
 	}
 
 	public static boolean greaterThan(int maj, int min) {
-		if (major > maj)
-			return true;
-		if (major == maj && minor > min)
-			return true;
-		return false;
+		return (major > maj) || (major == maj && minor > min);
 	}
 }

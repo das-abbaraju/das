@@ -42,7 +42,7 @@
 		<s:if test="oqOperators.size > 0">
 			<li>
 				<s:select
-					data-employee="${employee.id}"
+					data-employee="${employee.id.toString()}"
 					headerKey=""
 					headerValue=" - %{getText('ManageEmployees.header.AssignProject')} - "
 					id="oq_project_list"

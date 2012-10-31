@@ -7,12 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -133,7 +132,7 @@ public class Utilities {
 	//       purpose utility.
 	public static float getIndustryAverage(boolean lwcr, ContractorAccount contractor) {
         float answer = 0f;
-        ContractorTrade trade = contractor.getTopTrade();
+//        ContractorTrade trade = contractor.getTopTrade();
         
         if (!lwcr) {
 // TODO swap this for below               answer = trade.getTrade().getNaicsTRIRI();
@@ -147,8 +146,9 @@ public class Utilities {
             select.addWhere("rta.category = 'NAICS'");
             select.addWhere("rta.name=" + naics.getCode());
 
-            Database db = new Database();
             try {
+				Database db = new Database();
+
                     List<BasicDynaBean> results = db.select(select.toString(),
                                     false);
                     if (results != null && results.size() > 0) {

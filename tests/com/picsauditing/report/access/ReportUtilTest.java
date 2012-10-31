@@ -1,9 +1,13 @@
 package com.picsauditing.report.access;
 
+import static com.picsauditing.util.Assert.assertContains;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.Locale;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +15,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.search.Database;
 
 public class ReportUtilTest {
@@ -37,4 +44,28 @@ public class ReportUtilTest {
 		assertNull(translatedText);
 	}
 
+	@Test
+	public void testEnumList_Permissions() throws ClassNotFoundException {
+		Permissions permissions = EntityFactory.makePermission();
+		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
+		JSONArray results = (JSONArray)json.get("result");
+		assertEquals(4, results.size());
+	}
+
+	@Test
+	public void testEnumList_Translated() throws ClassNotFoundException {
+		Permissions permissions = EntityFactory.makePermission();
+		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
+		// TODO Mock the DB since the translation doesn't return anything
+		assertContains("{\"value\":\"\",\"key\":\"Active\"}", json.toString());
+	}
+
+	@Test
+	public void testEnumList_Ordinal() throws ClassNotFoundException {
+		Permissions permissions = EntityFactory.makePermission();
+		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.LowMedHigh, permissions);
+		JSONArray results = (JSONArray)json.get("result");
+		assertEquals(4, results.size());
+		assertContains("\"key\":1}", json.toString());
+	}
 }
