@@ -207,4 +207,12 @@ public class Invoice extends Transaction {
 		DateTool dateTool = new DateTool();
 		return dateTool.format(PicsDateFormat.Iso, getDueDate());
 	}
+
+    public boolean containsATaxLineItem() {
+        for (InvoiceItem item : getItems()) {
+           if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT())
+               return true;
+        }
+        return false;
+    }
 }
