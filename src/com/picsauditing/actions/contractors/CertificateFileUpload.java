@@ -143,6 +143,9 @@ public class CertificateFileUpload extends ContractorActionSupport {
 						addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 					} catch (Exception x) {
 						addActionError(getText("AuditDataUpload.error.FailedSavingFile") + fileFileName);
+						certificateDAO.remove(certID);
+						file = null;
+						return SUCCESS;
 					}
 				}
 
