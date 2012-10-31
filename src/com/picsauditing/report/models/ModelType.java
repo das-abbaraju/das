@@ -12,6 +12,7 @@ public enum ModelType {
 	ContractorOperators,
 	Contractors,
 	ContractorSearch,
+	ContractorStatistics,
 	ContractorTrades,
 	Country,
 	EmailExclusions,
