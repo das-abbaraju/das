@@ -1,17 +1,15 @@
 package com.picsauditing.report;
 
 import static com.picsauditing.util.Assert.assertContains;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryFilterOperator;
-
-import com.picsauditing.report.Filter;
 
 @SuppressWarnings("unchecked")
 public class FilterTest {
@@ -55,7 +53,7 @@ public class FilterTest {
 	@Test
 	public void testFilterEmpty() throws ReportValidationException {
 		filter.setFieldName("FieldName");
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
 		filter.setOperator(QueryFilterOperator.Empty);
 
 		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
@@ -64,9 +62,32 @@ public class FilterTest {
 	@Test
 	public void testFilterWithValue() throws ReportValidationException {
 		filter.setFieldName("FieldName");
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FilterType.String));
+		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
 		filter.getValues().add("Trevor's");
 
 		assertEquals("fieldName = 'Trevor\\'s'", filter.getSqlForFilter());
+	}
+
+	@Test
+	public void testFilterFromJson__CommaSpaceSeparatedValues() throws ReportValidationException {
+		createAccountStatusJson();
+
+		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
+		assertEquals(4, filter.getValues().size());
+	}
+
+	@Test
+	public void testFilterFromJson__CommaSeparatedValues() throws ReportValidationException {
+		createAccountStatusJson();
+
+		assertEquals("[Active, Pending, Requested, Deactivated]", filter.getValues().toString());
+		assertEquals(4, filter.getValues().size());
+	}
+	
+	private void createAccountStatusJson() {
+		JSONObject json = new JSONObject();
+		json.put("name", "AccountStatus");
+		json.put("value", "Active, Pending, Requested, Deactivated");
+		filter.fromJSON(json);
 	}
 }

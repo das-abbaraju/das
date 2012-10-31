@@ -1,9 +1,19 @@
 -- PICS-3666 
 -- Adding support for an API key to be used with the REST API to link the request to a (special) user account.
 
-ALTER TABLE `users` 
-	add column `api` tinyint(4) NOT NULL DEFAULT '0',                                                                
+alter table `users` 
     add column `apiKey` varchar(36) DEFAULT NULL,
     add key `apiKey` (`apiKey`);    
 
-insert into `users` (`username`, `password`, `isGroup`, `name`, `isActive`, `accountID`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`,`timezone`, `forcePasswordReset`, `needsIndexing`, `locale`) values('GROUP1100PICS API Approver','14f9f54924f300e942565e0b3e3722f5e1efb1f0','Yes','PICS API Approver','Yes','1100','63932','63932',now(),now(),'US/Central','0','1','en_US');
+-- Various corrections to the usergroup schema to bring it up to snuff
+delete from `usergroup` 
+where `userId` not in (select `id` from `users`)
+or `groupId` not in (select `id` from `users`);
+    
+alter table `usergroup` 
+	change `userID` `userID` int(11) NOT NULL, 
+	change `groupID` `groupID` int(11) NOT NULL,
+	change `creationDate` `creationDate` datetime NULL, 
+	change `createdBy` `createdBy` int(11) NULL,
+	add constraint `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+	add constraint `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`) ON DELETE CASCADE;

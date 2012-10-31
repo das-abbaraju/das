@@ -17,6 +17,7 @@
 <%@ page import="com.picsauditing.jpa.entities.User" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
+<%@ page import="com.picsauditing.util.LocaleController"%>
 <%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
@@ -24,6 +25,8 @@
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+<%@ page import="com.picsauditing.security.SessionSecurity" %>
+
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
@@ -33,6 +36,7 @@
 	String protocol = mainPage.isPageSecure() ? "https" : "http";
 	Permissions permissions = mainPage.getPermissions();
 
+	boolean switchToUserIsSet = SessionSecurity.switchToUserIsSet(request);
 	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
 	boolean debugMode = mainPage.isDebugMode();
 	boolean useDynamicReports = false;
@@ -73,7 +77,6 @@
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" href="css/print.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css?v=${version}">
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=${version}" />
@@ -212,9 +215,16 @@
                                     <%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
                                 <% } %>
                             </span>
-                        | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
+                        | <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a>
+                        | <a href="http://www.picsauditing.com">PICS</a>
+                        | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
+                        <% if (switchToUserIsSet) { %>
+                        	| <a href="Login.action?button=switchBack">SwitchBack</a>
+                        <% } %>
                         <% } else { %>
-                            <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
+                            <span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span>
+                            | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a>
+                            | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
                         <% } %>
                         </p>
                     </td>
@@ -270,7 +280,7 @@
 							"&amp;imageUrl=" +
 							protocol +
 							"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
-							locale.getDisplayLanguage() +
+							LocaleController.getValidLocale(locale).getDisplayLanguage() +
 							"/General/3a";
 
 						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
@@ -301,9 +311,9 @@
 		
 								<a id="_lpChatBtn"
 									class="liveperson-chat"
-									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a"
+									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a"
 									target="chat90511184"
-									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
 		
 									<% if (!Strings.isEmpty(chatIcon)) { %>
 										<img src="<%= chatIcon %>" />
@@ -342,9 +352,9 @@
 						<%  if(item.getName().equals("Online Chat"))  {
 								if (liveChatEnabled) { %>
 								<a id="_lpChatBtn"
-									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a'
+									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a'
 									target='chat90511184'
-									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
+									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
 						<% 		}
 							} else {
 							String dataFields = "";

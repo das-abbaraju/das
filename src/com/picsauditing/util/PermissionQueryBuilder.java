@@ -8,15 +8,18 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 
 public class PermissionQueryBuilder {
+	private static final String PERMISSION_DENIED = "1=0";
 	static final public int SQL = 1;
 	static final public int HQL = 2;
+
 	protected int queryLanguage = SQL;
-	protected String accountAlias = "a"; // or contractorAccount
-	private boolean showPendingDeactivated = false;
+	protected String accountAlias = "a"; // aka contractorAccount
+	protected String contractorOperatorAlias = ""; // aka contractorOperator
 	protected Permissions permissions;
+
 	private boolean workingFacilities = true;
-	private String subquery;
-	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();;
+
+	private Set<AccountStatus> visibleStatuses = new HashSet<AccountStatus>();
 
 	public PermissionQueryBuilder(Permissions permissions) {
 		this(permissions, SQL);
@@ -27,6 +30,9 @@ public class PermissionQueryBuilder {
 		setQueryLanguage(queryLanguage);
 	}
 
+	/**
+	 * Use buildWhereClause instead
+	 */
 	@Deprecated
 	public String toString() {
 		String whereClause = buildWhereClause();
@@ -38,114 +44,124 @@ public class PermissionQueryBuilder {
 	}
 
 	public String buildWhereClause() {
-		// For Nobody
 		if (permissions == null || !permissions.isLoggedIn())
-			return "1=0";
+			return PERMISSION_DENIED;
 
-		// For Admins and Contractors (easy ones)
 		if (permissions.hasPermission(OpPerms.AllContractors))
 			return "";
 
-		if (permissions.isContractor()) {
+		if (permissions.isContractor())
 			return "" + accountAlias + ".id = " + permissions.getAccountId();
-		}
 
-		// Assessment Centers
-		if (permissions.isAssessment()) {
+		if (permissions.isAssessment())
 			return "" + accountAlias + ".status IN ('Active', 'Pending', 'Deactivated')";
-		}
-
-		buildSubQuery();
-
-		// /////////////////////////
-		if (subquery.length() == 0)
-			// If we never set the query, then show no contractors
-			return "1=0";
 
 		String query = buildStatusFilter();
 
-		if (queryLanguage == HQL)
-			return query += " AND " + accountAlias + " IN (" + subquery + ")";
+		if (!permissions.isOperatorCorporate())
+			contractorOperatorAlias = "";
+
+		String subSQL;
+		query += " AND ";
+
+		if (!Strings.isEmpty(contractorOperatorAlias) && permissions.isOperator())
+			return query + buildContractorOperatorClause(contractorOperatorAlias);
+
+		String alias = isHQL() ? "co" : "gc";
+
+		if (permissions.isOnlyAuditor())
+			subSQL = buildAuditorSubquery();
+		else if (permissions.isOperatorCorporate())
+			subSQL = buildContractorOperatorSubquery(alias);
 		else
-			return query += " AND " + accountAlias + ".id IN (" + subquery + ")";
+			return PERMISSION_DENIED;
+
+		query += accountAlias;
+
+		if (!isHQL())
+			query += ".id";
+
+		return query + " IN (" + subSQL + ")";
 	}
 
-	private void buildSubQuery() {
-		subquery = "";
+	private String buildAuditorSubquery() {
+		if (isHQL())
+			return "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id = "
+					+ permissions.getUserId();
+		else
+			return "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();
+	}
 
-		if (permissions.isOperator()) {
-			String operatorIDs = permissions.getAccountIdString();
+	private String buildContractorOperatorSubquery(String alias) {
+		String contractorColumn;
+		String contractorOperatorTable;
 
-			if (permissions.isGeneralContractor()) {
-				operatorIDs += "," + Strings.implode(permissions.getLinkedClients());
-			}
-
-			String contractors = "gc.subID";
-			String contractorOperatorTable = "generalcontractors gc";
-			String whereOperator = "gc.genID IN (" + operatorIDs + ")";
-
-			if (queryLanguage == HQL) {
-				contractors = "t.contractorAccount";
-				contractorOperatorTable = "ContractorOperator t";
-				whereOperator = "t.operatorAccount.id IN (" + operatorIDs + ")";
-			}
-
-			subquery = "SELECT " + contractors + " FROM " + contractorOperatorTable + " WHERE " + whereOperator;
-
-			if (workingFacilities) {
-				if ((permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved))
-						|| permissions.isGeneralContractor()) {
-					subquery += " AND " + (queryLanguage == HQL ? "t." : "gc.") + "workStatus = 'Y'";
-				}
-			}
+		if (isHQL()) {
+			contractorColumn = alias + ".contractorAccount";
+			contractorOperatorTable = "ContractorOperator " + alias;
+		} else {
+			contractorColumn = alias + ".subID";
+			contractorOperatorTable = "generalcontractors " + alias;
 		}
 
-		if (permissions.isCorporate()) {
-			if (queryLanguage == HQL)
-				subquery = "SELECT co.contractorAccount FROM ContractorOperator co WHERE co.operatorAccount IN "
-						+ "(SELECT f.operator FROM Facility f WHERE f.corporate.id = " + permissions.getAccountId()
-						+ ")";
-			else
-				subquery = "SELECT gc.subID FROM generalcontractors gc "
-						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId();
+		String subquery = "SELECT " + contractorColumn + " FROM " + contractorOperatorTable;
 
-			if (workingFacilities) {
-				if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
-					if (queryLanguage == HQL)
-						subquery += " AND co.operatorAccount IN "
-								+ "(SELECT f.operator FROM Facility f WHERE f.corporate.id = "
-								+ permissions.getAccountId() + ")" + " AND workStatus = 'Y'";
-					else
-						subquery += " JOIN operators o ON f.opID = o.id WHERE o.approvesRelationships = 'No' OR workStatus = 'Y'";
-				}
-			}
+		subquery += " WHERE " + buildContractorOperatorClause(alias);
+
+		return subquery;
+	}
+
+	private String buildContractorOperatorClause(String alias) {
+		String where = alias;
+
+		if (isHQL()) {
+			where += ".operatorAccount.id";
+		} else {
+			where += ".genID";
 		}
 
-		if (permissions.isOnlyAuditor()) {
-			if (queryLanguage == HQL)
-				subquery = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id = "
-						+ permissions.getUserId();
-			else
-				subquery = "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();
-		}
+		where += " IN (" + getOperatorIDs() + ")";
+
+		if (showOnlyApprovedContractors())
+			where += " AND " + alias + ".workStatus = 'Y'";
+
+		return where;
+	}
+
+	private boolean showOnlyApprovedContractors() {
+		if (!permissions.hasPermission(OpPerms.ViewUnApproved))
+			return true;
+
+		if (permissions.isGeneralContractor())
+			return true;
+
+		return workingFacilities;
+	}
+
+	private String getOperatorIDs() {
+		if (permissions.isCorporate())
+			return Strings.implode(permissions.getOperatorChildren());
+
+		if (permissions.isGeneralContractor())
+			return permissions.getAccountId() + "," + Strings.implode(permissions.getLinkedClients());
+
+		return permissions.getAccountIdString();
+	}
+
+	private boolean isHQL() {
+		return queryLanguage == HQL;
 	}
 
 	private String buildStatusFilter() {
-		defaultVisibleStatuses();
+		// TODO we shouldn't always add these, make the user add these when they want
+		// if (visibleStatuses.isEmpty()) {}
+		addDefaultStatuses();
 		String statusList = Strings.implodeForDB(visibleStatuses, ",");
 		return accountAlias + ".status IN (" + statusList + ")";
 	}
 
-	private void defaultVisibleStatuses() {
-		if (visibleStatuses.isEmpty()) {
-			if (showPendingDeactivated) {
-				visibleStatuses.add(AccountStatus.Pending);
-				visibleStatuses.add(AccountStatus.Deactivated);
-			}
-		}
-
+	public void addDefaultStatuses() {
 		visibleStatuses.add(AccountStatus.Active);
-
 		if (permissions.getAccountStatus().isDemo())
 			visibleStatuses.add(AccountStatus.Demo);
 	}
@@ -169,8 +185,11 @@ public class PermissionQueryBuilder {
 		this.accountAlias = accountAlias;
 	}
 
+	public void setContractorOperatorAlias(String contractorOperatorAlias) {
+		this.contractorOperatorAlias = contractorOperatorAlias;
+	}
+
 	public void setWorkingFacilities(boolean workingFacilities) {
 		this.workingFacilities = workingFacilities;
 	}
-
 }

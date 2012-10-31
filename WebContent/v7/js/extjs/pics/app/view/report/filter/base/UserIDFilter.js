@@ -4,7 +4,7 @@ Ext.define('PICS.view.report.filter.base.UserIDFilter', {
 
     border: 0,
     layout: 'hbox',
-
+    
     initComponent: function () {
         this.callParent(arguments);
 
@@ -13,12 +13,14 @@ Ext.define('PICS.view.report.filter.base.UserIDFilter', {
         }
 
         var combobox = this.createCombobox(this.record);
-        var numberfield = this.createNumberfield(this.record);
-
-        this.add([
-            combobox,
-            numberfield
-        ]);
+        
+        this.add(combobox);
+        
+        if (this.record.get('fieldCompare')) {
+            this.createFieldSelect(this.record);
+        } else {
+            this.createNumberfield(this.record);
+        }
     },
 
     createCombobox: function (record) {
@@ -44,17 +46,40 @@ Ext.define('PICS.view.report.filter.base.UserIDFilter', {
     },
 
     createNumberfield: function (record) {
+        if (this.value_field) {
+            this.remove(this.value_field);
+        }
+
         var value = record.get('value');
 
-        return {
+        // TODO: COMMENT
+        this.value_field = this.add({
             xtype: 'numberfield',
             allowDecimals: false,
+            blankText: 'Number',
             flex: 2,
             hideTrigger: true,
             keyNavEnabled: false,
             mouseWheelEnabled: false,
             name: 'filter_value',
             value: value
-        };
+        });
+    },
+    
+    createFieldSelect: function (record) {
+
+        if (this.value_field) {
+            this.remove(this.value_field);
+        }
+
+        var value = record.get('fieldCompare');
+        
+        this.value_field = this.add({
+            xtype: 'textfield',
+            blankText: 'Field',
+            flex: 2,
+            name: 'filter_field_compare',
+            value: value
+        });
     }
 });

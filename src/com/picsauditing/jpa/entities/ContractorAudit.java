@@ -34,7 +34,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
@@ -152,7 +152,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.Date, category = FieldCategory.Audits, importance = FieldImportance.Required)
 	public Date getExpiresDate() {
 		return expiresDate;
 	}
@@ -162,7 +162,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits, importance = FieldImportance.Required)
+	@ReportField(type = FieldType.Date, category = FieldCategory.Audits, importance = FieldImportance.Required)
 	public Date getEffectiveDate() {
 		return effectiveDate;
 	}
@@ -199,7 +199,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Date, category = FieldCategory.Audits)
 	public Date getAssignedDate() {
 		return assignedDate;
 	}
@@ -209,7 +209,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(filterType = FilterType.Date, category = FieldCategory.AuditScheduling)
+	@ReportField(type = FieldType.Date, category = FieldCategory.AuditScheduling)
 	public Date getScheduledDate() {
 		return scheduledDate;
 	}
@@ -247,7 +247,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		return true;
 	}
 
-	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.String, category = FieldCategory.Audits)
 	public String getAuditLocation() {
 		return auditLocation;
 	}
@@ -269,7 +269,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(filterType = FilterType.Integer, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.Integer, category = FieldCategory.Audits)
 	public int getScore() {
 		return score;
 	}
@@ -433,7 +433,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.AuditScheduling, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.AuditScheduling, type = FieldType.Date)
 	public Date getContractorConfirm() {
 		return contractorConfirm;
 	}
@@ -443,7 +443,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@ReportField(category = FieldCategory.AuditScheduling, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.AuditScheduling, type = FieldType.Date)
 	public Date getAuditorConfirm() {
 		return auditorConfirm;
 	}
@@ -466,7 +466,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	 * 
 	 * @return
 	 */
-	@ReportField(filterType = FilterType.String, category = FieldCategory.Audits)
+	@ReportField(type = FieldType.String, category = FieldCategory.Audits)
 	public String getAuditFor() {
 		return auditFor;
 	}
@@ -776,7 +776,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 						add = true;
 				}
 			}
-			if (add)
+			if (add && auditCatData.getCategory().getAuditType().equals(auditType))
 				categories.put(auditCatData.getCategory(), auditCatData);
 		}
 
@@ -946,6 +946,16 @@ public class ContractorAudit extends AbstractIndexableTable {
 				}
 			}
 			return true;
+		}
+		return false;
+	}
+	
+	@Transient
+	public boolean isDataExpectedAnswer(int questionId, String expected) {
+		for (AuditData answer:data) {
+			if (answer.getQuestion().getId() == questionId) {
+				return Strings.isEqualNullSafe(answer.getAnswer(), expected);
+			}
 		}
 		return false;
 	}

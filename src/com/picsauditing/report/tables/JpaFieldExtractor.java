@@ -7,15 +7,14 @@ import java.util.Set;
 
 import javax.persistence.Column;
 
-import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.util.Strings;
 
 public class JpaFieldExtractor {
-	public static Set<Field> addFields(Class<?> clazz, String prefix, String alias) {
+	public static Set<Field> addFields(Class<?> clazz) {
 		Set<Field> fields = new HashSet<Field>();
-		
+
 		for (Method method : clazz.getMethods()) {
 			if (!clazz.equals(method.getDeclaringClass()))
 				continue;
@@ -25,29 +24,23 @@ public class JpaFieldExtractor {
 				continue;
 
 			Field field = new Field(fieldAnnotation);
-			String fieldName = stripGetFromMethodName(method.getName());
 			field.setFieldClass(method.getReturnType());
-			field.setName(prefix + fieldName);
-			field.setType(fieldAnnotation.filterType().getFieldType());
+			String fieldName = stripGetFromMethodName(method.getName());
+			field.setName(fieldName);
 			fields.add(field);
 
 			if (!Strings.isEmpty(fieldAnnotation.sql())) {
-				field.setDatabaseColumnName(fieldAnnotation.sql().replace("{ALIAS}", alias));
+				field.setDatabaseColumnName(fieldAnnotation.sql());
 				continue;
 			}
 
 			Column columnAnnotation = getColumnAnnotation(method);
 			if (columnAnnotation == null || Strings.isEmpty(columnAnnotation.name())) {
-				field.setDatabaseColumnName(alias + "." + fieldName.toLowerCase());
+				field.setDatabaseColumnName(fieldName.toLowerCase());
 			} else {
-				field.setDatabaseColumnName(alias + "." + columnAnnotation.name());
+				field.setDatabaseColumnName(columnAnnotation.name());
 			}
 		}
-
-		// TODO: Revise this to allow for super class methods
-//		Class<?> superclass = clazz.getSuperclass();
-//		if (superclass != null)
-//			fields.addAll(addFields(superclass, prefix, alias));
 
 		return fields;
 	}

@@ -18,9 +18,6 @@
                         this.initDateTimePickers();
                     }
                     
-                    // display google map preview
-                    this.showGoogleMap();
-                    
                     // update location with primary contact
                     $('.update-location-contractor-info').bind('click', this.updateLocationWithContractorInformation);
                     
@@ -42,6 +39,9 @@
                             return false;
                         }
                     });
+                    
+                    // display google map preview
+                    this.showGoogleMap();
                 }
             },
             

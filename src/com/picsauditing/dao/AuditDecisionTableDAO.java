@@ -29,7 +29,7 @@ import com.picsauditing.util.Strings;
 public class AuditDecisionTableDAO extends PicsDAO {
 
 	private final Logger logger = LoggerFactory.getLogger(AuditDecisionTableDAO.class);
-	
+
 	public <T extends BaseDecisionTreeRule> List<T> findAllRules(Class<T> clazz) {
 		Query query = em.createQuery("FROM " + clazz.getName()
 				+ " WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
@@ -338,21 +338,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	 * @return
 	 */
 	public Set<Integer> getAuditTypes(OperatorAccount operator) {
-		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
+		String where = "caop.opID IN (SELECT f.opID FROM facilities f WHERE f.corporateID = "
+				+ operator.getId() + " UNION SELECT " + operator.getId() + ")";
 
-		Set<Integer> operatorIDs = new HashSet<Integer>();
-		//if (operator.isCorporate()) {
-		//	operatorIDs.add(operator.getId());
-		//} else
-		operatorIDs.addAll(operator.getOperatorHeirarchy());
-
-		where += " AND (opID IS NULL";
-		if (operatorIDs.size() > 0)
-			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-		where += ")";
-
-		Query query = em.createQuery("SELECT DISTINCT a.auditType.id FROM AuditTypeRule a " + where
-				+ " ORDER BY priority DESC");
+		Query query = em
+				.createNativeQuery("SELECT DISTINCT ca.auditTypeID FROM contractor_audit_operator_permission caop "
+						+ "JOIN contractor_audit_operator cao ON caop.caoID = cao.id " 
+						+ "JOIN contractor_audit ca ON cao.auditID = ca.id "
+						+ "WHERE " + where);
 
 		Set<Integer> ids = new HashSet<Integer>();
 		for (Object id : query.getResultList()) {

@@ -30,10 +30,14 @@ Ext.define('PICS.controller.report.ReportHeader', {
         selector: 'reportsettingscopy [name=report_description]'
     }],
 
-    stores: [
-        'report.Reports'
+    views: [
+        'PICS.view.report.settings.SettingsModal'
     ],
 
+    stores: [
+             'report.Reports'
+             ],
+             
     init: function () {
         this.control({
             'reportheader': {

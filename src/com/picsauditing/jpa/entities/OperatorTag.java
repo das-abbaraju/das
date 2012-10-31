@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 @Table(name = "operator_tag")
 public class OperatorTag extends BaseTable {
 	public static final int SHELL_COMPETENCY_REVIEW = 142;
+	public static final String HSE_COMPETENCY = "HSE Competency";
 
 	private OperatorAccount operator;
 	private String tag;

@@ -1,26 +1,33 @@
 package com.picsauditing.report.models;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Map;
-
+import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.access.OpPerms;
 
+public class InvoiceModelTest extends ModelTest {
+	private InvoiceModel model;
 
-public class InvoiceModelTest {
+	@Before
+	public void setup() {
+		super.setup();
+		EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+		model = new InvoiceModel(permissions);
+	}
+
 	@Test
 	public void testAvailableFields() throws Exception {
-		InvoiceModel model = new InvoiceModel();
-		Permissions permissions = EntityFactory.makePermission();
+		availableFields = model.getAvailableFields();
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		includedFields.add("AccountName");
+		includedFields.add("AccountContactEmail");
+		includedFields.add("ContractorBalance");
+		includedFields.add("InvoicePoNumber");
 
-		assertEquals("OK if close to expected because we added a few fields", 53, availableFields.size());
+		excludedFields.add("AccountCountry");
+
+		checkFields();
 	}
 
 }

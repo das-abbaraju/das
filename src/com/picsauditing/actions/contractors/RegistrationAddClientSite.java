@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorOperatorDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -23,8 +23,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class RegistrationAddClientSite extends ContractorActionSupport {
 	@Autowired
-	private OperatorAccountDAO operatorDao;
-	@Autowired
 	ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private FacilityChanger facilityChanger;
@@ -34,6 +32,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	private String searchValue;
 	private OperatorAccount operator;
 	private OperatorAccount generalContractor;
+	private SearchEngine searchEngineForTesting;
 
 	public RegistrationAddClientSite() {
 		this.noteCategory = NoteCategory.OperatorChanges;
@@ -133,6 +132,13 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		}
 	}
 
+	private SearchEngine searchEngine(Permissions permissions) {
+		if (searchEngineForTesting == null) {
+			return new SearchEngine(permissions);
+		}
+		return searchEngineForTesting;
+	}
+	
 	public String search() throws Exception {
 		findContractor();
 
@@ -141,13 +147,13 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		} else {
 			// * == search for all
 			if (searchValue.equals("*")) {
-				searchResults = operatorDao.findWhere(false, null, permissions);
+				searchResults = operatorDAO.findWhere(false, null, permissions);
 			} else {
-				SearchEngine searchEngine = new SearchEngine(permissions);
+				SearchEngine searchEngine = searchEngine(permissions);
 				List<String> terms = searchEngine.buildTerm(searchValue, true, true);
 				String select = searchEngine.buildNativeOperatorSearch(permissions, terms);
 
-				searchResults = operatorDao.nativeClientSiteSearch(select);
+				searchResults = operatorDAO.nativeClientSiteSearch(select);
 
 				// If searchResults returns a GC Free operator,
 				// search for their operators and make free operator
@@ -251,7 +257,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 				operatorIDs.add(Integer.parseInt(d.get("opID").toString()));
 			}
 
-			results = operatorDao.findWhere(false, "a.id IN (" + Strings.implode(operatorIDs) + ")");
+			results = operatorDAO.findWhere(false, "a.id IN (" + Strings.implode(operatorIDs) + ")");
 		} else {
 			// Search for a list of operators in the contractor's
 			// country?
@@ -260,7 +266,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 			if (contractor.getStatus().isDemo())
 				status += ",'Demo', 'Pending'";
 
-			results = operatorDao.findWhere(false, "a.country = '" + contractor.getCountry().getIsoCode()
+			results = operatorDAO.findWhere(false, "a.country = '" + contractor.getCountry().getIsoCode()
 					+ "' AND a.status IN (" + status + ")", 10);
 		}
 

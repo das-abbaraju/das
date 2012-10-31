@@ -23,6 +23,7 @@ public class UserLoginLog {
 	private User admin;
 	private String browser;
 	private String fullUserAgent;
+	private String targetIP;
 
 	public UserLoginLog() {
 	}
@@ -131,5 +132,13 @@ public class UserLoginLog {
 
 	public void setUserAgent(String userAgent) {
 		this.fullUserAgent = userAgent;
+	}
+
+	public String getTargetIP() {
+		return targetIP;
+	}
+
+	public void setTargetIP(String targetIP) {
+		this.targetIP = targetIP;
 	}
 }

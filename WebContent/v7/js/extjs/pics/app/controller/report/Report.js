@@ -54,7 +54,7 @@ Ext.define('PICS.controller.report.Report', {
     createReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!create.action';
+            url = 'ReportDynamic!copy.action';
 
         Ext.Ajax.request({
             url: url,
@@ -72,15 +72,20 @@ Ext.define('PICS.controller.report.Report', {
     },
 
     refreshReport: function () {
-        var store = this.getReportReportDatasStore();
-
-        store.reload();
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_name = report.get('name'),
+            report_data_store = this.getReportReportDatasStore();
+        
+        this.setPageTitle(report_name);
+        
+        report_data_store.reload();
     },
 
     saveReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!edit.action';
+            url = 'ReportDynamic!save.action';
 
         Ext.Ajax.request({
             url: url,
@@ -101,5 +106,9 @@ Ext.define('PICS.controller.report.Report', {
                 }
             }
         });
+    },
+
+    setPageTitle: function(title) {
+        document.title = 'PICS - ' + title;
     }
 });

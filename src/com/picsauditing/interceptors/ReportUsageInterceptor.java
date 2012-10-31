@@ -26,7 +26,7 @@ public class ReportUsageInterceptor extends AbstractInterceptor {
 
 	private static final List<String> classList = Arrays.asList(nonReportActionSupportClasses);
 
-	private static final Logger logger = LoggerFactory.getLogger(ReportUsageInterceptor.class);
+	private static Logger logger = LoggerFactory.getLogger(ReportUsageInterceptor.class);
 
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {

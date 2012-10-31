@@ -1,9 +1,9 @@
 package com.picsauditing.util.pagination;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -12,13 +12,13 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.Report;
 
 public class PaginationTest {
 
-	Pagination<ReportUser> pagination;
+	Pagination<Report> pagination;
 
-	@Mock Paginatable<ReportUser> paginationDao;
+	@Mock Paginatable<Report> paginationDao;
 	@Mock PaginationParameters parameters;
 
 	private final int pageSize = 5;
@@ -27,7 +27,7 @@ public class PaginationTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		pagination = new Pagination<ReportUser>();
+		pagination = new Pagination<Report>();
 
 		// This step is done automatically by Struts through URL parameters
 		parameters.setPage(1);

@@ -32,7 +32,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.util.SpringUtils;
 
@@ -126,7 +126,7 @@ public class ReportDynamicTest {
 	@Test
 	@Ignore
 	public void testExecute_NullReportUserDoesNotHavePermissionToViewAndCopy() throws Exception {
-		when(reportModel.canUserViewAndCopy(anyInt(), anyInt())).thenReturn(false);
+		when(reportModel.canUserViewAndCopy(permissions, anyInt())).thenReturn(false);
 		reportDynamic.setReport(null);
 
 		String strutsResult = reportDynamic.execute();

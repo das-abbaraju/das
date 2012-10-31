@@ -11,8 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 
@@ -28,6 +30,8 @@ public class UsersManageTest extends PicsActionTest {
 	private User group;
 	@Mock
 	private UserGroup userGroup;
+	@Mock
+	private UserDAO userDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -35,6 +39,16 @@ public class UsersManageTest extends PicsActionTest {
 		usersManage = new UsersManage();
 		super.setUp(usersManage);
 
+		Whitebox.setInternalState(usersManage, "userDAO", userDAO);		
+	}
+
+	@Test
+	public void testSetUserResetHash() throws Exception {
+		user = new User();
+		Whitebox.setInternalState(usersManage, "user", user);		
+		Whitebox.invokeMethod(usersManage, "setUserResetHash");
+		assertNotNull(user.getResetHash());
+		verify(userDAO).save(user);
 	}
 
 	@Test

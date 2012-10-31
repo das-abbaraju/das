@@ -118,20 +118,34 @@ public class DateBeanTest {
 		assertEquals("3/15/07", formatted);
 	}
 
+	@Ignore("too slow for every test run")
 	@Test
 	public void testParseDate_EveryDayForNextYearStartingToday() {
 		int DAYS_IN_A_YEAR = 365;
+		testParseDate_EveryDayForNextXDaysStartingToday(DAYS_IN_A_YEAR);
+	}
+
+	@Test
+	public void testParseDate_EveryDayForNextTwoWeeksStartingToday() {
+		testParseDate_EveryDayForNextXDaysStartingToday(14);
+	}
+
+	public void testParseDate_EveryDayForNextXDaysStartingToday(int daysToTest) {
 		Calendar testDate = startDateZeroTime();
 
-		for (int days = 0; days < DAYS_IN_A_YEAR; days++) {
+		for (int days = 0; days < daysToTest; days++) {
 			parseDateAllPatternsAndSeparators(separators, testDate);
 			testDate.add(Calendar.DAY_OF_YEAR, 1);
 		}
 	}
 
 	@Test
-	public void testParseDate_TodayEveryMonthFor10Years() {
-		int MONTHS_TO_TEST = 12 * 10;
+	public void testParseDate_TodayEveryMonthFor1Years() {
+		testParseDate_TodayEveryMonthForXYears(1);
+	}
+
+	private void testParseDate_TodayEveryMonthForXYears(int yearsToTest) {
+		int MONTHS_TO_TEST = 12 * yearsToTest;
 		Calendar testDate = startDateZeroTime();
 
 		for (int count = 0; count < MONTHS_TO_TEST; count++) {
@@ -569,8 +583,8 @@ public class DateBeanTest {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 
-		assertEquals(2012, cal.get(Calendar.YEAR));
-		assertEquals(11, cal.get(Calendar.MONTH));
+		assertEquals(2013, cal.get(Calendar.YEAR));
+		assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
 		assertEquals(31, cal.get(Calendar.DAY_OF_MONTH));
 	}
 

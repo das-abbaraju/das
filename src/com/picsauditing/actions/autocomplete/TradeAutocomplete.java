@@ -37,10 +37,11 @@ public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 				}
 		} else if (itemKeys.length > 0) {
 			if (extraArgs)
-				return (List<Trade>) tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implodeForDB(itemKeys,",") + " AND t.selectable = 1 AND t.contractorCount > 0", 0);
+				return tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implodeForDB(itemKeys,",") + " AND t.selectable = 1 AND t.contractorCount > 0", 0);
 			else
-				return (List<Trade>) tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implodeForDB(itemKeys,","), 0);
+				return tradeDAO.findWhere(Trade.class, "t.id = " + Strings.implodeForDB(itemKeys,","), 0);
 		}
+		
 		return Collections.emptyList();
 	}
 

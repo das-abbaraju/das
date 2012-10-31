@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
 
 public class VerifyAudit extends AuditActionSupport {
@@ -130,6 +131,25 @@ public class VerifyAudit extends AuditActionSupport {
 			return oshaAudit;
 		}
 		return null;
+	}
+	
+	public boolean showOsha(OshaType oshaType) {
+		if (conAudit == null || !conAudit.getAuditType().isAnnualAddendum())
+			return false;
+		if (OshaType.OSHA.equals(oshaType)) {
+			return conAudit.isDataExpectedAnswer(
+					AuditQuestion.OSHA_KEPT_ID, "Yes");
+		}
+		if (OshaType.COHS.equals(oshaType)) {
+			return conAudit.isDataExpectedAnswer(
+					AuditQuestion.COHS_KEPT_ID, "Yes");
+		}
+		if (OshaType.UK_HSE.equals(oshaType)) {
+			return conAudit.isDataExpectedAnswer(
+					AuditQuestion.UK_HSE_KEPT_ID, "Yes");
+		}
+		
+		return true;
 	}
 
 	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {

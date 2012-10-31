@@ -139,6 +139,17 @@ p {
 
 }
 
+.ac_results .accountDeactivated
+{
+	text-decoration: line-through;
+}
+
+.ac_results .accountDemo,
+.ac_results .accountPending
+{
+	font-style: italic;
+}
+
 /********************  SIDEBOX STYLES - OLD SMALLNAV  ************************/
 #sidebox {
 	text-align: right;
@@ -737,8 +748,11 @@ ul#navlist {
 	background-color: #FFA;
 }
 
-table.report td a.inactive,table.report td a.accountDeactivated,table.report td a.accountDeleted,table.report td a.userActiveNo
-	{
+table.report td a.inactive,
+table.report td a.accountDeactivated,
+table.report td a.accountDeleted,
+table.report td a.userActiveNo
+{
 	color: #4C4D4D;
 	text-decoration: line-through;
 }

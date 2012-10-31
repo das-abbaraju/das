@@ -22,6 +22,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BillingStatus;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
@@ -155,8 +156,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		this.resetActiveAudits();
 
 		// enforcing workflow steps before completing registration
-		String url = "";
-		url = contractorRiskUrl(url);
+		String url = contractorRiskUrl();
 
 		if (!url.isEmpty()) {
 			ServletActionContext.getResponse().sendRedirect(url);
@@ -255,13 +255,12 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		if (contractor.getCountry().getIsoCode().equals("CA")
-				&& featureToggleChecker
-						.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
+				&& featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR)) {
 			contractor.setLcCorPhase(LcCorPhase.RemindMeLater);
 			contractor.setLcCorNotification(new Date());
 			contractorAccountDao.save(contractor);
 		}
-		
+
 		complete = true;
 
 		if (!contractor.getAccountLevel().isBidOnly() && !contractor.isRenew()) {
@@ -289,9 +288,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		return BLANK;
 	}
 
-	private String contractorRiskUrl(String url) {
-		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !(contractor.isMaterialSupplierOnly() || contractor
-				.isTransportationServices()))
+	private String contractorRiskUrl() {
+		String url = "";
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk())
+				&& !(contractor.isMaterialSupplierOnly() || contractor.isTransportationServices()))
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
 			url = "RegistrationServiceEvaluation.action?id=" + contractor.getId();
 
@@ -680,7 +680,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return true;
 		}
 
-		Invoice newInvoice = billingService.createInvoice(contractor, "Activation", getUser());
+		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());

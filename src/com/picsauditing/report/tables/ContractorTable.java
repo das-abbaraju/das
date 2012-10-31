@@ -1,55 +1,57 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class ContractorTable extends AbstractTable {
 
-	public ContractorTable(String parentPrefix, String parentAlias) {
-		super("contractor_info", "contractor", "c", parentAlias + ".id = c.id AND " + parentAlias
-				+ ".type = 'Contractor'");
-		this.parentPrefix = parentPrefix;
-		this.parentAlias = parentAlias;
+	public static final String Account = "Account";
+	public static final String CustomerService = "CustomerService";
+	public static final String RecommendedCSR = "RecommendedCSR";
+	public static final String PQF = "PQF";
+	public static final String Flag = "Flag";
+	public static final String RequestedBy = "RequestedBy";
+	public static final String Watch = "Watch";
+	public static final String Tag = "Tag";
+	public static final String ContractorTrade = "ContractorTrade";
+
+	public ContractorTable() {
+		super("contractor_info");
+		addFields(ContractorAccount.class);
 	}
 
-	public void addFields() {
-		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
+	protected void addJoins() {
+		addRequiredKey(new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("id", "id",
+				ReportOnClause.ToAlias + ".type = 'Contractor'")));
 
-		addField(prefix + "ID", alias + ".id", FilterType.Integer, FieldCategory.AccountInformation).setWidth(80);
+		ReportForeignKey flagKey = addRequiredKey(new ReportForeignKey(Flag, new ContractorOperatorTable(),
+				new ReportOnClause("id", "subID", ReportOnClause.ToAlias + ".genID = " + ReportOnClause.AccountID)));
+		flagKey.setMinimumImportance(FieldImportance.Low);
 
-		Field contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName,
-				FieldCategory.AccountInformation);
-		contractorName.setUrl("ContractorView.action?id={" + prefix + "ID}");
-		contractorName.setWidth(300);
+		ReportForeignKey csrKey = addOptionalKey(new ReportForeignKey(CustomerService, new UserTable(),
+				new ReportOnClause("welcomeAuditor_id")));
+		csrKey.setMinimumImportance(FieldImportance.Average);
+		csrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 
-		{
-			// TODO Remove these fields eventually
-			Field contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
-			contractorEdit.setUrl("ContractorEdit.action?id={" + prefix + "ID}");
-			contractorEdit.setWidth(100);
+		ReportForeignKey pqfKey = addOptionalKey(new ReportForeignKey(PQF, new ContractorAuditTable(),
+				new ReportOnClause("id", "conID", ReportOnClause.ToAlias + ".auditTypeID = 1")));
+		pqfKey.setMinimumImportance(FieldImportance.Required);
 
-			Field contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
-			contractorAudits.setUrl("ContractorDocuments.action?id={" + prefix + "ID}");
-			contractorAudits.setWidth(100);
-		}
-	}
+		ReportForeignKey requestedBy = addOptionalKey(new ReportForeignKey(RequestedBy, new AccountTable(),
+				new ReportOnClause("requestedByID")));
+		requestedBy.setMinimumImportance(FieldImportance.Required);
+		requestedBy.setCategory(FieldCategory.RequestingClientSite);
 
-	public void addJoins() {
-		UserTable customerServiceRep = new UserTable(prefix + "CustomerService", alias + ".welcomeAuditor_id");
-		customerServiceRep.setOverrideCategory(FieldCategory.CustomerServiceRepresentatives);
-		addLeftJoin(customerServiceRep);
+		addOptionalKey(new ReportForeignKey(Watch, new ContractorWatchTable(), new ReportOnClause("id", "conID",
+				ReportOnClause.ToAlias + ".userID = " + ReportOnClause.UserID)));
 
-		AccountTable requestedByOperator = new AccountTable(prefix + "RequestedByOperator", alias + ".requestedByID");
-		requestedByOperator.setOverrideCategory(FieldCategory.RequestingClientSite);
-		addLeftJoin(requestedByOperator);
+		addOptionalKey(new ReportForeignKey(Tag, new ContractorTagView(), new ReportOnClause("id", "conID",
+				ReportOnClause.ToAlias + ".opID IN (" + ReportOnClause.VisibleAccountIDs + ")")));
 
-		ContractorOperatorTable contractorOperator = new ContractorOperatorTable(prefix + "Operator", alias, "myFlag");
-		contractorOperator.includeAllColumns();
-		addJoin(contractorOperator);
-
-		ContractorAuditTable pqf = new ContractorAuditTable(prefix + "PQF", prefix + "PQF", "conID", alias + ".id AND "
-				+ prefix + "PQF.auditTypeID = 1");
-		pqf.setOverrideCategory(FieldCategory.PQF);
-		addLeftJoin(pqf);
+		addOptionalKey(new ReportForeignKey(ContractorTrade, new ContractorTradeTable(), new ReportOnClause("id", "conID")));
+		
+		ReportForeignKey recommendedCsrKey = addOptionalKey(new ReportForeignKey(RecommendedCSR, new UserTable(),
+				new ReportOnClause("recommendedCsrID")));
+		recommendedCsrKey.setMinimumImportance(FieldImportance.Required);
+		recommendedCsrKey.setCategory(FieldCategory.CustomerServiceRepresentatives);
 	}
 }

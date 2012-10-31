@@ -46,13 +46,15 @@ public class ReportResources extends ReportActionSupport {
 			return LOGIN;
 		
 		getFilter().setShowTitleName(true);
+		getFilter().setShowIncludePicsReources(true);
 		
 		findOperator();
 		
 		Set<Integer> ids = new HashSet<Integer>();
 
 		if (operator != null) {
-			ids.add(1100); // PICS
+			if (getFilter().isIncludePicsResources())
+				ids.add(Account.PicsID); // PICS
 			ids.add(operator.getId());
 			for (OperatorAccount op : operator.getChildOperators()) {
 				ids.add(op.getId());

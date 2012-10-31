@@ -11,6 +11,8 @@ public class CountryTest {
 	Country canada;
 	Country uk;
 	Country uae;
+	Country austria;
+	Country lithuania;
 
 	@Before
 	public void setUp() throws Exception {
@@ -23,6 +25,10 @@ public class CountryTest {
 		canada = new Country("CA");
 		uk = new Country("GB");
 		uae = new Country("AE");
+
+		// See http://tickets.picsauditing.com/browse/PICS-6555?focusedCommentId=34012&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-34012
+		austria = new Country("AT"); 
+		lithuania = new Country("LT");
 	}
 
 	@Test
@@ -96,10 +102,14 @@ public class CountryTest {
 		// In the EuroZone
 		assertTrue(france.isEuroZone());
 		assertTrue(france.isEuropeanUnion());
+		assertTrue(austria.isEuroZone());
+		assertTrue(austria.isEuropeanUnion());
 
 		// In the EU, but not in the EuroZone
 		assertFalse(uk.isEuroZone());
 		assertTrue(uk.isEuropeanUnion());
+		assertFalse(lithuania.isEuroZone());
+		assertTrue(lithuania.isEuropeanUnion());
 	}
 
 }

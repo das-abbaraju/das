@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.Filter', {
     bodyCls: 'filter-body',
     border: 0,
     cls: 'filter',
-    height: 80,
+    height: 96,
     layout: {
         type: 'hbox',
         align: 'middle'
@@ -34,6 +34,8 @@ Ext.define('PICS.view.report.filter.Filter', {
             Ext.Error.raise('Invalid filter index');
         }
 
+        this.addRemoveButton();
+                
         var filter_number = this.createFilterNumber(this.index);
         var filter_content = this.createFilterContent(this.record);
 
@@ -41,8 +43,62 @@ Ext.define('PICS.view.report.filter.Filter', {
             filter_number,
             filter_content
         ]);
+        
+        var field = this.record.getAvailableField(),
+            type = field.get('filterType'),
+            cls = this.getFilterClassByType(type);
+        
+        if (cls == 'PICS.view.report.filter.base.UserIDFilter') {
+            this.addEditableButton();
+        }
     },
 
+    addEditableButton: function () {
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '0 5 5 0'
+            },
+            dock: 'bottom',
+            items: [{
+                xtype: 'button',
+                action: 'show-advanced-filter',
+                cls: 'advanced-filter-button',
+                height: 22,
+                text: '<i class="icon-pencil"></i>',
+                tooltip: 'Advanced Filter',
+                width: 20
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });
+    },
+    
+    addRemoveButton: function () {
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '2 4 0 0',
+            },
+            dock: 'top',
+            items: [{
+                xtype: 'button',
+                action: 'remove-filter',
+                cls: 'remove-filter',
+                height: 20,
+                text: '<i class="icon-remove-sign"></i>',
+                tooltip: 'Remove',
+                width: 20
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });        
+    },
+    
     createFilterNumber: function (index) {
         return {
             xtype: 'displayfield',
@@ -99,14 +155,6 @@ Ext.define('PICS.view.report.filter.Filter', {
                 value: text
             }, {
                 xtype: 'tbfill'
-            }, {
-                xtype: 'button',
-                action: 'remove-filter',
-                cls: 'remove-filter',
-                height: 16,
-                text: '<i class="icon-remove-sign"></i>',
-                tooltip: 'Remove',
-                width: 16
             }],
             layout: {
                 type: 'hbox',
@@ -117,14 +165,13 @@ Ext.define('PICS.view.report.filter.Filter', {
     },
 
     createFilterInput: function (record) {
-        var field = record.getAvailableField();
+        var field = record.getAvailableField(),
+            type = field.get('filterType');
 
         if (!field) {
             Ext.Error.raise('Invalid available field');
         }
-
-        var type = field && field.get('filterType');
-
+        
         if (!type) {
             Ext.Error.raise('Invalid filter type');
         }
@@ -145,51 +192,28 @@ Ext.define('PICS.view.report.filter.Filter', {
 
     getFilterClassByType: function (type) {
         var cls;
-
+        
         switch (type) {
-            // TODO: this is retarded the backend architecture is invalid
             case 'AccountID':
-                cls = 'PICS.view.report.filter.base.AccountIDFilter';
-                break;
-            case 'AccountName':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
             case 'Autocomplete':
-                cls = 'PICS.view.report.filter.base.AutocompleteFilter';
-                break;
             case 'Boolean':
-                cls = 'PICS.view.report.filter.base.BooleanFilter';
-                break;
             case 'Date':
+            case 'Float':
+            case 'Integer':
+            case 'String':
+            case 'UserID':
+                cls = 'PICS.view.report.filter.base.' + type + 'Filter';
+                break;
+            case 'ShortList':
+                // TODO Rename ListFilter to ShortListFilter
+                cls = 'PICS.view.report.filter.base.ListFilter';
+                break;
+            case 'DateTime':
+                // TODO add in a DateTime filter type
                 cls = 'PICS.view.report.filter.base.DateFilter';
                 break;
-            case 'DaysAgo':
-                // Add new filter for days ago for Steps to Green report
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'Enum':
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'Float':
-                cls = 'PICS.view.report.filter.base.FloatFilter';
-                break;
-            case 'Integer':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'LowMedHigh':
-                cls = 'PICS.view.report.filter.base.ListFilter';
-                break;
-            case 'Number':
-                cls = 'PICS.view.report.filter.base.IntegerFilter';
-                break;
-            case 'String':
-                cls = 'PICS.view.report.filter.base.StringFilter';
-                break;
-            case 'UserID':
-                cls = 'PICS.view.report.filter.base.UserIDFilter';
-                break;
             default:
-                cls = null;
+                cls = 'PICS.view.report.filter.base.StringFilter';
                 break;
         }
 

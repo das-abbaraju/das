@@ -40,6 +40,7 @@
 	<bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO"/>
 	<bean id="AuditRejectionCodeDAO" class="com.picsauditing.dao.AuditRejectionCodeDAO"/>
 	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
+	<bean id="AutocompleteDAO" class="com.picsauditing.dao.AutocompleteDAO"/>
 	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
 	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
 	<bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
@@ -92,6 +93,8 @@
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
 	<bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
 	<bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>
+	<bean id="ReportPermissionUserDAO" class="com.picsauditing.dao.ReportPermissionUserDAO"/>
+	<bean id="ReportPermissionAccountDAO" class="com.picsauditing.dao.ReportPermissionAccountDAO"/>
 	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
 	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
 	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
@@ -109,23 +112,26 @@
 	<bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
 	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
 	<bean id="CorruptionPerceptionIndexMap" class="com.picsauditing.util.CorruptionPerceptionIndexMap"/>
+	<bean id="GroupHierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder" />
 
+	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
 	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle"/>
 	<bean id="BrainTreeService" class="com.picsauditing.util.braintree.BrainTreeService"/>
 	<bean id="BrainTreeRequest" class="com.picsauditing.util.braintree.BrainTreeResponse.BrainTreeRequest" />
-	<bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
+	<bean id="ContractorWatchlistHelper" class="com.picsauditing.PICS.ContractorWatchlistHelper" scope="prototype"/>
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
 	<bean id="EmailSubscriptionHandler" class="com.picsauditing.messaging.subscription.EmailSubscriptionHandler" scope="prototype"/>
+	<bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
-	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
+	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
+	<bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper" scope="prototype"/>
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
-	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
     <bean id="VATValidator" class="com.picsauditing.PICS.VATValidator" scope="prototype"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>
@@ -154,6 +160,7 @@
 	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
 	<bean id="AuditQuestionAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />
 	<bean id="AuditTypeAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService" />
+	<bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete" />
 	<bean id="ContractorAutocompleteService" class=" com.picsauditing.actions.autocomplete.ContractorAutocompleteService" />
 	<bean id="CountryAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountryAutocompleteService" />
 	<bean id="LocationAutocompleteService" class=" com.picsauditing.actions.autocomplete.LocationAutocompleteService" />
@@ -161,8 +168,7 @@
 	<bean id="OperatorTagAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
 	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
 	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
-	<bean id="ReportModel" class="com.picsauditing.model.ReportModel" />
-	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
+	<bean id="ReportModel" class="com.picsauditing.model.report.ReportModel" />
 	<bean id="CountrySubdivisionAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 

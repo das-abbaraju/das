@@ -25,7 +25,7 @@ Ext.define('PICS.view.report.filter.base.AccountIDFilter', {
         var operator = record.get('operator');
 
         if (!operator) {
-            record.set('operator', 'equals');
+            record.set('operator', 'Equals');
         }
 
         return {

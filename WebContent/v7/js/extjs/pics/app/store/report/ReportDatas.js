@@ -25,7 +25,7 @@ Ext.define('PICS.store.report.ReportDatas', {
             exception: function (proxy, response, operation, eOpts) {
             	console.log(proxy, response, operation, eOpts);
                 if (operation.success == false) {
-                	Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
                 }
             }
         },
@@ -34,9 +34,9 @@ Ext.define('PICS.store.report.ReportDatas', {
             root: 'data',
             type: 'json'
         },
-        timeout: 10000,
+        timeout: 60000,
         type: 'ajax',
-        url: 'ReportData.action'
+        url: '/ReportData!extjs.action'
     },
 
     reload: function () {

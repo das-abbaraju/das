@@ -20,8 +20,9 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
         return {
             xtype: 'checkbox',
             boxLabel: 'True',
-            inputValue: null,
+            inputValue: true,
             name: 'filter_value',
+            uncheckedValue: false,
             value: value
         };
     }

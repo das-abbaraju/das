@@ -9,7 +9,7 @@ Ext.define('PICS.controller.report.Filter', {
         selector: 'reportfilteroptions reportfilterformula'
     }, {
         ref: 'filterFormulaExpression',
-        selector: 'reportfilteroptions reportfilterformula textfield[name=filter_formula]'
+        selector: 'repogrtfilteroptions reportfilterformula textfield[name=filter_formula]'
     }, {
         ref: 'filterHeader',
         selector: 'reportfilterheader'
@@ -76,7 +76,7 @@ Ext.define('PICS.controller.report.Filter', {
             // save filter formula expression
             'reportfilterformula textfield[name=filter_formula]': {
                 blur: this.onFilterFormulaBlur,
-                specialkey: this.onFilterFormulaInputEnter
+                specialkey: this.onFilterFormulaInputSpecialKey
             },
 
             // hide filter formula
@@ -110,12 +110,23 @@ Ext.define('PICS.controller.report.Filter', {
                 select: this.onFilterValueSelect
             },
 
-            // saving edits to filter store + refresh
-            '#report_filters [name=filter_value]': {
-                blur: this.onFilterValueInputBlur,
-                specialkey: this.onFilterValueInputEnter
+            // saving edits to date filter store + refresh
+            '#report_filters datefield[name=filter_value]': {
+                blur: this.onFilterValueDateBlur,
+                specialkey: this.onFilterValueDateSpecialKey
             },
-
+            
+            // saving edits to non-date filter store + refresh
+            '#report_filters [name=filter_value]:not(datefield)': {
+                blur: this.onFilterValueInputBlur,
+                specialkey: this.onFilterValueInputSpecialKey
+            },
+            
+            // saving edits to filter store + refresh
+            'reportfilterbaseuseridfilter [name=filter_field_compare]': {
+                blur: this.onFilterFieldCompareInputBlur
+            },
+            
             // saving edits to filter store + refresh
             '#report_filters checkbox': {
                 change: this.onFilterValueSelect
@@ -124,19 +135,47 @@ Ext.define('PICS.controller.report.Filter', {
             // remove filter
             'reportfilteroptions button[action=remove-filter]': {
                 click: this.onFilterRemove
+            },
+
+            // advanced filter
+            'reportfilteroptions button[action=show-advanced-filter]': {
+                click: this.onAdvancedFilterButtonClick
             }
-        });
+         });
 
         this.application.on({
             refreshfilters: this.refreshFilters,
             scope: this
         });
+
+        var that = this;
+        Ext.EventManager.onWindowResize(that.positionRemoveButtons, that);
     },
 
     /**
      * Filter Options
      */
 
+    onAdvancedFilterButtonClick: function (cmp, event, eOpts) {
+        // Toggle the pencil icon's color.
+        var el = cmp.getEl(),
+            advanced_button = el.down('.icon-pencil'),
+            advanced_on = el.down('.icon-pencil.selected');
+
+        var filter = this.findParentFilter(cmp),
+            filter_content = filter.down('reportfilterbaseuseridfilter');
+
+        if (advanced_on) {
+            filter.record.set('fieldCompare', null);
+            filter_content.createNumberfield(filter.record);
+            advanced_button.removeCls('selected');
+        } else {
+            filter.record.set('value', null);
+            advanced_button.addCls('selected');
+            filter_content.createFieldSelect(filter.record);
+        }
+    },
+    
     onFilterOptionsAfterLayout: function (cmp, eOpts) {
         var filters = this.getFilters();
 
@@ -169,6 +208,8 @@ Ext.define('PICS.controller.report.Filter', {
         if (filter_offset) {
             filter_footer.setPosition(0, filter_offset);
         }
+
+        this.positionRemoveButtons();
     },
 
     onFilterOptionsBeforeRender: function (cmp, eOpts) {
@@ -305,7 +346,7 @@ Ext.define('PICS.controller.report.Filter', {
         this.saveFilterFormula();
     },
 
-    onFilterFormulaInputEnter: function (cmp, event) {
+    onFilterFormulaInputSpecialKey: function (cmp, event) {
         if (event.getKey() != event.ENTER) {
             return false;
         }
@@ -399,6 +440,8 @@ Ext.define('PICS.controller.report.Filter', {
 
         // add new filters
         filter_options.add(filters);
+
+        this.positionRemoveButtons();
     },
 
     /**
@@ -422,8 +465,17 @@ Ext.define('PICS.controller.report.Filter', {
     },
 
     onFilterOperatorSelect: function (cmp, records, eOpts) {
-        var filter = this.findParentFilter(cmp);
+        var filter = this.findParentFilter(cmp),
+            filter_value = cmp.next('textfield, inputfield, numberfield');
+        
         filter.record.set('operator', cmp.getSubmitValue());
+        
+        if (cmp.getSubmitValue() == 'Empty') {
+            filter_value.setValue('');
+            filter_value.disable();
+        } else {
+            filter_value.enable();
+        }
 
         if (filter.record.get('value') != '') {
             this.application.fireEvent('refreshreport');
@@ -446,12 +498,39 @@ Ext.define('PICS.controller.report.Filter', {
         }
     },
 
+    onFilterValueDateBlur: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp),
+            date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+        
+        filter.record.set('value', date);
+    },
+
+    onFilterValueDateSpecialKey: function (cmp, event) {
+        if (event.getKey() == event.ENTER) {
+            var filter = this.findParentFilter(cmp),
+                date = Ext.Date.format(cmp.getValue(), 'Y-m-d') || cmp.getValue();
+            
+            filter.record.set('value', date);
+
+            this.application.fireEvent('refreshreport');
+        }
+    },
+    
     onFilterValueInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('value', cmp.getSubmitValue());
+        console.log("onFilterValueInputBlur");
+        console.log(filter.record);
     },
 
-    onFilterValueInputEnter: function (cmp, event) {
+    onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
+        var filter = this.findParentFilter(cmp);
+        filter.record.set('fieldCompare', cmp.getSubmitValue());
+        console.log("onFilterFieldCompareInputBlur");
+        console.log(filter.record);
+    },
+    
+    onFilterValueInputSpecialKey: function (cmp, event) {
         if (event.getKey() == event.ENTER) {
             var filter = this.findParentFilter(cmp);
             filter.record.set('value', cmp.getSubmitValue());
@@ -470,6 +549,37 @@ Ext.define('PICS.controller.report.Filter', {
     /**
      * MISC
      */
+
+    positionRemoveButtons: function () {
+        var remove_filter_elements = Ext.select('.remove-filter').elements;
+
+        if (remove_filter_elements.length) {
+            var filter_options = this.getFilterOptions(),
+                scrollbar_width = Ext.getScrollbarSize().width,
+                scrollbar_left = filter_options.width - scrollbar_width,
+                scrollbar_visible = filter_options.body.dom.scrollHeight > filter_options.body.dom.clientHeight ? true : false,
+                button_left = parseInt(remove_filter_elements[0].style.left),
+                button_obscured = button_left + 7 >= scrollbar_left ? true : false;
+
+            if (scrollbar_visible && button_obscured) {
+                button_left = button_left - scrollbar_width;
+                for (var i = 0; i < remove_filter_elements.length; i++) {
+                    remove_filter_elements[i].style.left = button_left + 'px';
+                }
+
+                // Do the same thing to any advanced filter buttons.
+                var advanced_button_elements = Ext.select('.advanced-filter-button').elements;
+                if (advanced_button_elements.length) {
+                    for (var i = 0; i < advanced_button_elements.length; i++) {
+                        advanced_button_elements[i].style.left = button_left + 'px';
+                    }
+                }
+
+            }
+        }
+        
+        var remove_filter_elements = Ext.select('.remove-filter').elements;
+    },
 
     findParentFilter: function (cmp) {
         return cmp.findParentBy(function (cmp) {

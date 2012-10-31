@@ -1,4 +1,4 @@
-Ext.define('PICS.view.report.settings.Tabs', {
+Ext.define('PICS.view.report.settings.SettingsTabs', {
     extend: 'Ext.tab.Panel',
     alias: ['widget.reportsettingstabs'],
 
@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.settings.Tabs', {
         'PICS.view.report.settings.EditSettings',
         'PICS.view.report.settings.ExportSettings',
         'PICS.view.report.settings.PrintSettings',
-        'PICS.view.report.settings.ShareSettings'
+        'PICS.view.report.settings.share.ShareSettings'
     ],
 
     border: false,

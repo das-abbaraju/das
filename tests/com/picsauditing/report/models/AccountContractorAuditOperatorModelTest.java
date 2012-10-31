@@ -1,29 +1,30 @@
 package com.picsauditing.report.models;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.util.Map;
-
+import org.junit.Before;
 import org.junit.Test;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.Column;
 
-public class AccountContractorAuditOperatorModelTest {
-	
+public class AccountContractorAuditOperatorModelTest extends ModelTest {
+	private AccountContractorAuditOperatorModel model;
+
+	@Before
+	public void setup() {
+		super.setup();
+		model = new AccountContractorAuditOperatorModel(permissions);
+	}
+
 	@Test
 	public void testAvailableFields() throws Exception {
-		AccountContractorAuditOperatorModel model = new AccountContractorAuditOperatorModel();
-		Permissions permissions = EntityFactory.makePermission();
+		availableFields = model.getAvailableFields();
 
-		Map<String, Field> availableFields = ReportModel.buildAvailableFields(model.getRootTable(), permissions);
+		excludedFields.add("ContractorOperatorFlagColor");
+		
+		excludedFields.add("AccountContactName");
+		includedFields.add("AuditID");
+		includedFields.add("AuditClosingAuditorName");
 
-		assertFalse("accountContactName was removed", availableFields.containsKey("accountContactName".toUpperCase()));
-
-		assertEquals("OK if close to expected because we added a few fields", 50, availableFields.size());
+		checkFields();
 	}
 
 }

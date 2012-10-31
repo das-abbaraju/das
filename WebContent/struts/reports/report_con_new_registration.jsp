@@ -1,144 +1,154 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<html>
-	<head>
-		<title>
+<head>
+	<title>
+		<s:text name="ReportNewRequestedContractor.title" />
+	</title>
+	<s:include value="reportHeader.jsp" />
+</head>
+<body>
+	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
+		<h1>
 			<s:text name="ReportNewRequestedContractor.title" />
-		</title>
-		<s:include value="reportHeader.jsp" />
-	</head>
-	<body>
-		<div id="${actionName}-page">
-			<h1>
-				<s:text name="ReportNewRequestedContractor.title" />
-			</h1>
-			<s:include value="filters.jsp" />
-			<div class="right">
-				<a class="excel" rel="<s:property value="report.allRows" />" href="javascript:;" 
-					title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>">
-					<s:text name="global.Download" />
+		</h1>
+		
+		<s:include value="filters.jsp" />
+		
+		<div class="right">
+			<a class="excel" rel="${report.allRows}" href="javascript:;" 
+				title="<s:text name="javascript.DownloadAllRows"><s:param>${report.allRows}</s:param></s:text>">
+				<s:text name="global.Download" />
+			</a>
+		</div>
+		<div style="padding: 5px;">
+			<a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
+				<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
+			</a>
+			<s:if test="amSales || debugging">
+				<a
+					href="javascript:;"
+					title="<s:text name="javascript.OpensInNewWindow" />"
+					class="add excelUpload"
+					data-url="ReportNewReqConImport.action"
+					id="ImportRegistrationRequests">
+					<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
 				</a>
+			</s:if>
+		</div>
+		<s:if test="data.size > 0">
+			<div>
+				${report.pageLinksWithDynamicForm}
 			</div>
-			<div style="padding: 5px;">
-				<a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
-					<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
-				</a>
-				<s:if test="amSales || debugging">
-					<a
-						href="javascript:;"
-						title="<s:text name="javascript.OpensInNewWindow" />"
-						class="add excelUpload"
-						data-url="ReportNewReqConImport.action"
-						id="ImportRegistrationRequests">
-						<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
-					</a>
-				</s:if>
-			</div>
-			<s:if test="data.size > 0">
-				<div>
-					<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-				</div>
-				<table class="report">
-					<thead>
+			<table class="report">
+				<thead>
+					<tr>
+						<td colspan="2">
+							<s:text name="global.Account.name" />
+						</td>
+						<td>
+							<s:text name="ContractorRegistrationRequest.requestedBy" />
+						</td>
+						<td>
+							<a href="javascript: changeOrderBy('form1','cr.creationDate');">
+								<s:text name="global.CreationDate" />
+							</a>
+						</td>
+						<td>
+							<a href="javascript: changeOrderBy('form1','cr.deadline');">
+								<s:text name="ContractorRegistrationRequest.deadline" />
+							</a>
+						</td>
+						<td>
+							<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
+						</td>
+						<td>
+							<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');">
+								<s:text name="ReportNewRequestedContractor.label.On" />
+							</a>
+						</td>
+						<td>
+							<s:text name="ReportNewRequestedContractor.label.Attempts" />
+						</td>
+						<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />">
+							<s:text name="ReportNewRequestedContractor.label.Matches" />
+						</td>
+						<td>
+							<s:text name="ReportNewRequestedContractor.label.InPics" />
+						</td>
+						<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
+							<td>
+								<s:text name="ReportNewRequestedContractor.label.ClosedDate" />
+							</td>
+						</s:if>
+						<td>
+							<s:text name="RequestNewContractor.OperatorTags" />
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<s:iterator value="data" status="stat" var="crr">
 						<tr>
-							<td colspan="2">
-								<s:text name="global.Account.name" />
+							<td class="right">
+								${stat.index + report.firstRowNumber}
 							</td>
 							<td>
-								<s:text name="ContractorRegistrationRequest.requestedBy" />
-							</td>
-							<td>
-								<a href="javascript: changeOrderBy('form1','cr.creationDate');">
-									<s:text name="global.CreationDate" />
+								<s:url action="RequestNewContractor" var="request_new_contractor">
+									<s:param name="newContractor">
+										${crr.get('id')}
+									</s:param>
+								</s:url>
+								<a href="${request_new_contractor}">
+									${crr.get('name')}
 								</a>
 							</td>
-							<td>
-								<a href="javascript: changeOrderBy('form1','cr.deadline');">
-									<s:text name="ContractorRegistrationRequest.deadline" />
-								</a>
+							<td title="${crr.get('RequestedUser')}">
+								${crr.get('RequestedBy')}
 							</td>
 							<td>
-								<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
+								<s:date name="get('creationDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
 							<td>
-								<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');">
-									<s:text name="ReportNewRequestedContractor.label.On" />
-								</a>
+								<s:date name="get('deadline')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 							</td>
 							<td>
-								<s:text name="ReportNewRequestedContractor.label.Attempts" />
-							</td>
-							<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />">
-								<s:text name="ReportNewRequestedContractor.label.Matches" />
+								${crr.get('ContactedBy')}
 							</td>
 							<td>
-								<s:text name="ReportNewRequestedContractor.label.InPics" />
+								<s:date name="get('lastContactDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+							</td>
+							<td>
+								${crr.get('contactCount')}
+							</td>
+							<td>
+								${crr.get('matchCount')}
+							</td>
+							<td>
+								<s:if test="get('conID') != null">
+									<s:url action="ContractorView" var="contractor_view">
+										<s:param name="id">
+											${crr.get('conID')}
+										</s:param>
+									</s:url>
+									<a href="${contractor_view}">
+										${crr.get('contractorName')}
+									</a>			
+								</s:if>
 							</td>
 							<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
 								<td>
-									<s:text name="ReportNewRequestedContractor.label.ClosedDate" />
+									<s:date name="get('closedOnDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 								</td>
 							</s:if>
 							<td>
-								<s:text name="RequestNewContractor.OperatorTags" />
+								${crr.get('operatorTags')}
 							</td>
 						</tr>
-					</thead>
-					<tbody>
-						<s:iterator value="data" status="stat" var="crr">
-							<tr>
-								<td class="right">
-									<s:property value="#stat.index + report.firstRowNumber" />
-								</td>
-								<td>
-									<a href="RequestNewContractor.action?newContractor=<s:property value="get('id')"/>">
-										<s:property value="get('name')" />
-									</a>
-								</td>
-								<td title="<s:property value="get('RequestedUser')"/>">
-									<s:property value="get('RequestedBy')"/>
-								</td>
-								<td>
-									<s:date name="get('creationDate')" />
-								</td>
-								<td>
-									<s:date name="get('deadline')" />
-								</td>
-								<td>
-									<s:property value="get('ContactedBy')" />
-								</td>
-								<td>
-									<s:date name="get('lastContactDate')" />
-								</td>
-								<td>
-									<s:property value="get('contactCount')" />
-								</td>
-								<td>
-									<s:property value="get('matchCount')" />
-								</td>
-								<td>
-									<s:if test="get('conID') != null">
-										<a href="ContractorView.action?id=<s:property value="get('conID')"/>">
-											<s:property value="get('contractorName')" />
-										</a>			
-									</s:if>
-								</td>
-								<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
-									<td>
-										<s:date name="get('closedOnDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-									</td>
-								</s:if>
-								<td>
-									<s:property value="get('operatorTags')" />
-								</td>
-							</tr>
-						</s:iterator>
-					</tbody>
-				</table>
-			</s:if>
-			<div>
-				<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-			</div>
+					</s:iterator>
+				</tbody>
+			</table>
+		</s:if>
+		<div>
+			${report.pageLinksWithDynamicForm}
 		</div>
-	</body>
-</html>
+	</div>
+</body>

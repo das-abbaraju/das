@@ -258,7 +258,7 @@
 			</s:iterator>
 		</fieldset>
 		
-		<s:if test="!osha.isEmpty('OSHA')">
+		<s:if test="showOsha('OSHA')">
 			<fieldset class="form osha-verification">
 				<h2 class="formLegend">OSHA</h2>
 				
@@ -315,7 +315,7 @@
 				</div>
 			</fieldset>
 		</s:if>
-		<s:if test="!osha.isEmpty('UK_HSE')" >
+		<s:if test="showOsha('UK_HSE')" >
 			<fieldset class="form uk-hse-verification">
 				<h2 class="formLegend">UK HSE</h2>
 			

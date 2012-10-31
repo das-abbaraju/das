@@ -33,7 +33,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportValidationException;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.model.ReportModel;
+import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.SpringUtils;

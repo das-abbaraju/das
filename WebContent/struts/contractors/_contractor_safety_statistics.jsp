@@ -14,6 +14,7 @@
 		</div>
 		<div class="panel_content">
 			<s:iterator value="oshaDisplay.stats.keySet()" var="stat">
+				<s:if test="displayOsha.get(#stat)">
 				<table class="table">
 					<thead>
 						<tr>
@@ -56,6 +57,7 @@
 						</s:iterator>
 					</tbody>
 				</table>
+				</s:if>
 			</s:iterator>
             
 			<a class="weighted-industry-average"

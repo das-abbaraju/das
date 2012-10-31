@@ -45,36 +45,71 @@ function getResult(data){
 	location.href='HeaderSearchAjax.action?button=getResult&searchID='+data[2]+'&searchType='+data[0];
 }
 function format(row, i){
-	if(row[0]=='account'){
-		var rStr = "<div style=\"float: left; margin-right: 5px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
-			")</span></div>"+row[3];
-		if(row[4]!=null)
-			rStr+="<br/> at ("+row[4]+")";
-		return rStr;
+	if(row[0] == 'account') {
+	    return getSearchResultHtml(row, '5px', null, row[5]);
 	}
-	if(row[0]=='user'){
-		var rStr = "<div style=\"float: left; margin-right: 23px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
-			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
-		return rStr;
-	}
-	if(row[0]=='employee'){
-		var rStr = "<div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
-			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
-		return rStr;
-	}
-	if(row[0]=='audit'){
-		var rStr = "<div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
-			")</span></div><div style=\"\">"+row[3]+"<br/> for ("+row[4]+")</div>";
-		return rStr;
-	}
-	if(row[0]=='FULL')
-		return row[1];
-	if(row[0]=='NULL')
-		return row[1];
-	return row[0];
+	
+    if (row[0] == 'user') {
+        return getSearchResultHtml(row, '23px');
+    }
+
+    if (row[0] == 'employee') {
+        return getSearchResultHtml(row, '10px');
+    }
+
+    if (row[0] == 'audit') {
+        return getSearchResultHtml(row, '10px', 'for');
+    }
+
+    if (row[0] == 'FULL') {
+        return row[1];
+    }
+
+    if (row[0] == 'NULL') {
+        return row[1];
+    }
+
+    return row[0];
 }
+
 function buildAction(type, id){
 	if(type=='user'){
 		return '<div class="searchAction" onclick="location.href("Login.action?button=login&switchToUser='+id+')">S</div>';
 	}
+}
+
+function getSearchResultHtml(row, marginRight, location, status) {
+    if (!location) {
+        location = 'at';
+    }
+    
+    var breakElement = $(document.createElement('br'));
+    
+    var wrapper = $(document.createElement('div')),
+        container = $(document.createElement('div')).css('float', 'left'),
+        strong = $(document.createElement('strong')),
+        info = $(document.createElement('span')).css('font-size', '0.9em'),
+        name = $(document.createElement('span')).append($(document.createTextNode(row[3])));
+    
+    if (status) {
+        name.addClass('account' + status);
+    }
+    
+    container.css('margin-right', marginRight);
+    strong.text(row[1]);
+    info.text('(ID ' + row[2] + ')');
+    
+    container.append(strong)
+        .append(breakElement.clone())
+        .append(info);
+    
+    wrapper.append(container)
+        .append(name);
+    
+    if (row[4] != null) {
+        wrapper.append(breakElement.clone())
+            .append(document.createTextNode(location + ' (' + row[4] + ')'));
+    }
+
+    return wrapper.html();
 }

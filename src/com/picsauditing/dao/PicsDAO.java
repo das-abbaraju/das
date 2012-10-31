@@ -19,6 +19,9 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 abstract public class PicsDAO {
+
+	protected static final int NO_LIMIT = 0;
+
 	protected EntityManager em;
 	protected QueryMetaData queryMetaData = null;
 
@@ -131,13 +134,27 @@ abstract public class PicsDAO {
 		return findByTranslatableField(cls, "", name, value, null);
 	}
 
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String name, String value, int limit) {
+		return findByTranslatableField(cls, "", name, value, null, limit);
+	}
+
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
 			String value) {
 		return findByTranslatableField(cls, where, name, value, null);
 	}
 
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
+			String value, int limit) {
+		return findByTranslatableField(cls, where, name, value, null, limit);
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
 			String value, Locale locale) {
+		return findByTranslatableField(cls, where, name, value, locale, NO_LIMIT);
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
+			String value, Locale locale, int limit) {
 		String tableName = ReflectUtil.getTableName(cls);
 
 		SelectSQL sql = new SelectSQL(tableName + " t");
@@ -169,8 +186,7 @@ abstract public class PicsDAO {
 		sql.addField("t.*");
 
 		if (locale != null)
-			sql
-					.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
+			sql.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
 
 		Query query = em.createNativeQuery(sql.toString(), cls);
 		query.setParameter("value", value);
@@ -181,11 +197,19 @@ abstract public class PicsDAO {
 			query.setParameter("default", I18nCache.DEFAULT_LANGUAGE);
 		}
 
+		if (limit > NO_LIMIT) {
+			query.setMaxResults(limit);
+		}
+
 		return query.getResultList();
 	}
 
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value) {
 		return findByTranslatableField(cls, "", value, Locale.ENGLISH);
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value, int limit) {
+		return findByTranslatableField(cls, "", value, Locale.ENGLISH, limit);
 	}
 
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value, Locale locale) {
@@ -197,9 +221,22 @@ abstract public class PicsDAO {
 		return findByTranslatableField(cls, where, "", value, locale);
 	}
 
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String value,
+			Locale locale, int limit) {
+		return findByTranslatableField(cls, where, "", value, locale, limit);
+	}
+
 	@Transactional(propagation = Propagation.NESTED)
 	public int deleteData(Class<? extends BaseTable> clazz, String where) {
 		Query query = em.createQuery("DELETE " + clazz.getName() + " t WHERE " + where);
 		return query.executeUpdate();
+	}
+
+	protected static Query setLimit(Query query, int limit) {
+		if (limit > NO_LIMIT) {
+			return query.setMaxResults(limit);
+		}
+
+		return query;
 	}
 }

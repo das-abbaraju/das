@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.access.BetaPool;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -157,5 +158,14 @@ public abstract class FeatureToggleExpressions extends Script {
 		Binding binding = getBinding();
 		return (Permissions) binding.getVariable("permissions");
 	}
-
+	public boolean hasPermission(String opPermsName) throws FeatureToggleException {
+	
+		OpPerms opPerms;
+		try {
+			opPerms = OpPerms.valueOf(opPermsName);
+		} catch (Exception e) {
+			throw new FeatureToggleException("No such permission: "+opPermsName);
+		}
+		return permissions().has(opPerms);
+	}
 }

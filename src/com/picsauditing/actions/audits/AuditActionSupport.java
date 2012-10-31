@@ -78,7 +78,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
 
-	private List<CategoryNode> categoryNodes;
+	protected List<CategoryNode> categoryNodes;
 
 	public String execute() throws Exception {
 		this.findConAudit();
@@ -158,8 +158,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDAO.findAnswersForSafetyManual(
-				conAudit.getContractorAccount().getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDAO.findAnswersForSafetyManual(conAudit.getContractorAccount()
+				.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -172,7 +172,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			hasManual = getDataForSafetyManual();
 		return hasManual;
 	}
-	
+
 	public int getCategoryID() {
 		return categoryID;
 	}
@@ -198,7 +198,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 
 		}
-		
+
 		return viewableCaos;
 	}
 
@@ -229,9 +229,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		if (!actionStatus.isEmpty()) {
-			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en.hasNext();) {
+			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en
+					.hasNext();) {
 				if (!(en.next().getValue().size() > 1))
 					en.remove();
 			}
@@ -292,47 +293,38 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
 		if (caoSteps == null || caoSteps.isEmpty())
 			getValidSteps();
-		
+
 		return caoSteps.get(caoID);
 	}
-	
+
 	public boolean displayMultiStatusDropDown() {
-		return (actionStatus.size() > 0 
-				&& CollectionUtils.isNotEmpty(contractor.getTrades())
-				&& !permissions.hasGroup(10));
+		return (actionStatus.size() > 0 && CollectionUtils.isNotEmpty(contractor.getTrades()) && !permissions
+				.hasGroup(10));
 	}
-	
+
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
-			if (conAudit.getAuditType().isCorIecWaState()
-					&& !permissions.isAdmin()
+			if (conAudit.getAuditType().isCorIecWaState() && !permissions.isAdmin()
 					&& step.getNewStatus().isResubmitted())
 				return false;
-			
+
 			if (!canContractorSubmitPQF(step)) {
 				return false;
 			}
-			else if (conAudit.getAuditType().getClassType().isPolicy() 
-					&& cao.getOperator().isAutoApproveInsurance()
-					&& permissions.isAdmin() 
-					&& step.getNewStatus().isApproved()) {
-				return false;
-			}
 		}
-		
+
 		return true;
 	}
-	
+
 	private boolean canContractorSubmitPQF(WorkflowStep step) {
-		if (step.getNewStatus().isSubmitted()
-				&& !permissions.hasGroup(10)
+		if (step.getNewStatus().isSubmitted() && !permissions.hasGroup(10)
 				&& CollectionUtils.isEmpty(contractor.getTrades())) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	protected boolean atLeastOneCompleteVisibleCao() {
 		List<ContractorAuditOperator> visibleCaos = getViewableOperators(permissions);
 		for (ContractorAuditOperator cao : visibleCaos) {
@@ -340,7 +332,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -355,7 +347,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 		return validStatuses;
 	}
-	
+
 	public Collection<AuditSubStatus> getAuditSubStatuses() {
 		return new ArrayList<AuditSubStatus>(Arrays.asList(AuditSubStatus.values()));
 	}
@@ -471,10 +463,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			else
 				return false;
 		}
-		
+
 		if (cao.getStatus().before(AuditStatus.Complete))
 			return true;
-		
+
 		else
 			return false;
 	}
@@ -495,7 +487,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanVerifyPqf() {
 		if (!permissions.hasPermission(OpPerms.AuditVerification))
 			return false;
-		
+
 		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum())
 			return false;
 
@@ -511,15 +503,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isCanViewRequirements() {
 		if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
-			
+
 			if (conAudit.getAuditType().getId() == AuditType.COR) {
 				return conAudit.hasCaoStatusAfter(AuditStatus.Pending);
-			}
-			else {
+			} else {
 				return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -528,7 +519,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
 	}
-	
+
 	protected void autoExpireOldAudits(ContractorAudit conAudit, AuditStatus status) {
 		if (status.isSubmitted() && (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation())) {
 			for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
@@ -560,7 +551,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			auditSetWCBExpiresDate(cao, status);
 			return;
 		}
-		
+
 		if (status.isSubmittedResubmitted()) {
 			if (cao.getAudit().getExpiresDate() == null)
 				cao.getAudit().setExpiresDate(getAuditExpirationDate());
@@ -570,25 +561,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (!cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
 			AuditType auditType = cao.getAudit().getAuditType();
 			if (cao.getAudit().getExpiresDate() == null || auditType.isRenewable()) {
-				Date expirationDate = getAuditExpirationDate();				
+				Date expirationDate = getAuditExpirationDate();
 				if (!auditType.isRenewable() && auditType.getClassType().isPqf()) {
-					for (ContractorAudit conAudit:cao.getAudit().getContractorAccount().getAudits()) {
+					for (ContractorAudit conAudit : cao.getAudit().getContractorAccount().getAudits()) {
 						if (conAudit.getAuditType().getId() == auditType.getId() && conAudit.getExpiresDate() != null) {
 							if (conAudit.getExpiresDate().compareTo(expirationDate) <= 0) {
-								expirationDate = DateBean.setToEndOfDay(DateBean.getMarchOfNextYear(conAudit.getExpiresDate()));
+								expirationDate = DateBean.setToEndOfDay(DateBean.getMarchOfNextYear(conAudit
+										.getExpiresDate()));
 							}
 						}
 					}
 				}
-				
+
 				cao.getAudit().setExpiresDate(expirationDate);
 			}
 		}
 	}
-	
+
 	/**
-	 * Only set the expiration date for the WCB if it has a status of "Approved" for
-	 * all the CAOs
+	 * Only set the expiration date for the WCB if it has a status of "Approved"
+	 * for all the CAOs
 	 * 
 	 * @param audit
 	 */
@@ -597,18 +589,21 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (CollectionUtils.isEmpty(audit.getOperators())) {
 			return;
 		}
-		
+
 		boolean allCaosAreApproved = true;
 		for (ContractorAuditOperator cao : audit.getOperators()) {
-			// we need to do this here because the modified CAO has not been persisted yet, so the status
+			// we need to do this here because the modified CAO has not been
+			// persisted yet, so the status
 			// to check is the newStatus, not the cao's status
-			if (cao.getId() == updatedCao.getId() && updatedCao.isVisible() && !(newStatus.isApproved() || newStatus.isNotApplicable())) {
+			if (cao.getId() == updatedCao.getId() && updatedCao.isVisible()
+					&& !(newStatus.isApproved() || newStatus.isNotApplicable())) {
 				allCaosAreApproved = false;
-			} else if (cao.getId() != updatedCao.getId() && cao.isVisible() && !(cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())) {
+			} else if (cao.getId() != updatedCao.getId() && cao.isVisible()
+					&& !(cao.getStatus().isApproved() || cao.getStatus().isNotApplicable())) {
 				allCaosAreApproved = false;
 			}
 		}
-		
+
 		if (allCaosAreApproved) {
 			audit.setExpiresDate(DateBean.getWCBExpirationDate(audit.getAuditFor()));
 		} else {
@@ -655,9 +650,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 			if (!Strings.isEmpty(noteBody)) {
 				caoW.setNotes(noteBody);
 
-				// since the note is stored in a separate table, forget about doing extra work to give the
-				// user a correct view to edit the Reason Codes in the note, just throw in the mapped note.
-				newNote.setBody(caoW.getMappedNote());				
+				// since the note is stored in a separate table, forget about
+				// doing extra work to give the
+				// user a correct view to edit the Reason Codes in the note,
+				// just throw in the mapped note.
+				newNote.setBody(caoW.getMappedNote());
 				noteDAO.save(newNote);
 			}
 
@@ -733,6 +730,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 	}
 
+	public Set<AuditCategory> getCategoriesFromCategoryNodes(List<CategoryNode> nodes) {
+		Set<AuditCategory> categories = new HashSet<AuditCategory>();
+		for (CategoryNode node : nodes) {
+			categories.add(node.category);
+		}
+		return categories;
+	}
+
 	public List<CategoryNode> getCategoryNodes() {
 		if (categoryNodes == null)
 			categoryNodes = createCategoryNodes(conAudit.getAuditType().getTopCategories());
@@ -801,7 +806,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	/**
-	 * This method is used to determine if a user has the ability to edit a category.
+	 * This method is used to determine if a user has the ability to edit a
+	 * category.
 	 * 
 	 * @param category
 	 * 
@@ -813,8 +819,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		/*
-		 * This is hardcoded for the HSE Competency Review. Contractors are only allowed to edit the sub-categories of
-		 * these audits.
+		 * This is hardcoded for the HSE Competency Review. Contractors are only
+		 * allowed to edit the sub-categories of these audits.
 		 */
 		if (permissions.isContractor() && category.getAuditType().getId() == AuditType.HSE_COMPETENCY
 				&& category.getParent() != null)
@@ -822,38 +828,43 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
 			auditCategoryRuleCache.initialize(auditRuleDAO);
-			AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, conAudit.getContractorAccount());
+			AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
+					conAudit.getContractorAccount());
 			for (ContractorAuditOperator cao : conAudit.getOperators()) {
 				setCategoryBuilderToSpecificCao(builder, cao);
 
-				if (cao.getStatus().after(AuditStatus.Incomplete)
-						&& builder.isCategoryApplicable(category, cao)) {
+				if (cao.getStatus().after(AuditStatus.Incomplete) && builder.isCategoryApplicable(category, cao)) {
 					return false;
 				}
 			}
 		}
-		
+
 		/*
-		 * Non-policy audits do not have restrictions on a per category basis. If the user can see the category and has
-		 * the 'Edit' view, they are allowed to edit the audit.
+		 * Non-policy audits do not have restrictions on a per category basis.
+		 * If the user can see the category and has the 'Edit' view, they are
+		 * allowed to edit the audit.
 		 */
 		if (!conAudit.getAuditType().getClassType().isPolicy())
 			return true;
 
 		/*
-		 * Single CAO audits (in this case, policies) are editable by the owners of that CAO
+		 * Single CAO audits (in this case, policies) are editable by the owners
+		 * of that CAO
 		 */
 		if (conAudit.getOperatorsVisible().size() == 1
 				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
 			return true;
 
 		/*
-		 * Contractors are only allowed to edit the limits and policy information BEFORE the policy is submitted. Once
-		 * the policy is submitted we "lock" down these categories to prevent contractors from changing them.
+		 * Contractors are only allowed to edit the limits and policy
+		 * information BEFORE the policy is submitted. Once the policy is
+		 * submitted we "lock" down these categories to prevent contractors from
+		 * changing them.
 		 * 
-		 * Contractors are still allowed to edit the attached certificates of this policy. For example, when the
-		 * contractors add a new facility they should be allowed to add their certificate to that operator's insurance
-		 * category.
+		 * Contractors are still allowed to edit the attached certificates of
+		 * this policy. For example, when the contractors add a new facility
+		 * they should be allowed to add their certificate to that operator's
+		 * insurance category.
 		 */
 		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
 			if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete, true) && !permissions.isAdmin())

@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -28,9 +29,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-//@RunWith(PowerMockRunner.class)
-//@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class FlagDataCalculatorTest { // extends PicsTest {
+public class FlagDataCalculatorTest {
 
 	private FlagDataCalculator calculator;
 	private FlagCriteriaContractor fcCon;
@@ -486,5 +485,26 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 			return data.get(0);
 		else
 			return null;
+	}
+
+	@Test
+	public void testIsInsuranceCriteria() throws Exception {
+		Boolean isInsuranceCriteria;
+		FlagData flagData = EntityFactory.makeFlagData();;
+		FlagCriteria criteria = EntityFactory.makeFlagCriteria();
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		AuditType generalLiability = EntityFactory.makeAuditType(13);
+		AuditType pqf = EntityFactory.makeAuditType(1);
+		flagData.setCriteria(criteria);
+
+		// non insurance
+		criteria.setInsurance(false);
+		isInsuranceCriteria = Whitebox.invokeMethod(calculator, "isInsuranceCriteria", flagData, generalLiability);
+		assertFalse(isInsuranceCriteria);
+		
+		// insurance
+		criteria.setInsurance(true);
+		isInsuranceCriteria = Whitebox.invokeMethod(calculator, "isInsuranceCriteria", flagData, generalLiability);
+		assertTrue(isInsuranceCriteria);
 	}
 }

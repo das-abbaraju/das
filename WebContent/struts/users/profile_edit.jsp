@@ -10,6 +10,13 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
+	<script type="text/javascript" src="js/profile_edit.js?v=<s:property value="version"/>"></script>
+	<script type="text/javascript">
+		var accountID = '<s:property value="account.id" />';
+		var currentUserID = 0;
+		
+		<s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
+	</script>
 	
 	<s:include value="../jquery.jsp" />
 	
@@ -175,7 +182,7 @@
 								<s:if test="u.account.demo || u.account.admin || i18nReady">
 									<li><s:select name="u.locale"
 											list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-											listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))"
+											listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
 											theme="form" /></li>
 								</s:if>
 
@@ -205,6 +212,10 @@
 						</fieldset>
 						
 					</s:form>
+					<!-- See if this user has the RestApi permission, which means it is a special (non-human) API user. If so, allow it to (re)generate the API key. -->				
+					<s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@RestApi)">
+						<s:include value="user_api_key.jsp" />
+					</s:if>
 				</td>
 				<td style="width: 20px;">&nbsp;</td>
 				<td style="vertical-align: top;">
@@ -322,6 +333,30 @@
 								</s:text>
 							</div>
 						</s:if>
+					</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td>
+						<h3>
+							<s:text name="UsersManage.Groups" />
+						</h3>
+
+						<table class="report">
+							<thead>
+								<tr>
+									<th><s:text name="ProfileEdit.label.MemberOf" /></th>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="permissions.groupNames" var="group">
+									<tr>
+										<td><s:property value="group" /></td>
+									</tr>
+								</s:iterator>
+							</tbody>
+						</table>
 					</td>
 				</tr>
 			</table>

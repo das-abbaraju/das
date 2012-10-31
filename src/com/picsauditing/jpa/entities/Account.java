@@ -33,11 +33,11 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.report.fields.AutocompleteType;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
@@ -99,6 +99,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected TimeZone timezone;
 	protected boolean autoApproveRelationships = true;
 	protected boolean generalContractor = false;
+	private int sessionTimeout = 60;
+	private int rememberMeTime = 7;
+	private boolean rememberMeTimeEnabled = true;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -120,7 +123,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "name", nullable = false, length = 50)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Required)
+	@ReportField(category = FieldCategory.AccountInformation, importance = FieldImportance.Required, width = 250)
 	public String getName() {
 		return this.name;
 	}
@@ -144,7 +147,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "dbaName", length = 400)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-	@ReportField(filterType = FilterType.AccountName, category = FieldCategory.AccountInformation, importance = FieldImportance.Average)
 	public String getDbaName() {
 		return dbaName;
 	}
@@ -197,7 +199,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
-	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country)
+	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, type = FieldType.Country, width = 150)
 	public Country getCountry() {
 		return country;
 	}
@@ -209,7 +211,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "countrySubdivision")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.ContactInformation, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Subdivision)
+	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.ContactInformation, type = FieldType.CountrySubdivision)
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
 	}
@@ -238,7 +240,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Transient
-	@ReportField(category = FieldCategory.ContactInformation, sql = "CONCAT({ALIAS}.city, {ALIAS}.countrySubdivision)", filterable = false)
+	@ReportField(category = FieldCategory.ContactInformation, sql = "CONCAT(" + ReportOnClause.ToAlias + ".city, "
+			+ ReportOnClause.ToAlias + ".countrySubdivision)", filterable = false)
 	public String getFullAddress() {
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
@@ -347,7 +350,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * North American Industry Classification System
 	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
-	 *
+	 * 
 	 * @return
 	 */
 	@ManyToOne(optional = false)
@@ -371,7 +374,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	@ReportField(filterType = FilterType.Enum, category = FieldCategory.AccountInformation, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Average)
+	@ReportField(type = FieldType.AccountStatus, category = FieldCategory.AccountInformation, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Average)
 	public AccountStatus getStatus() {
 		return status;
 	}
@@ -383,7 +386,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into
 	 * QuickBooks
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isQbSync() {
@@ -396,7 +399,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Unique Customer ID in QuickBooks, sample: 31A0000-1151296183
-	 *
+	 * 
 	 * @return
 	 */
 	public String getQbListID() {
@@ -446,7 +449,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Contractor, Operator, Admin, Corporate
-	 *
+	 * 
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
@@ -482,10 +485,10 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Operator Qualification regulation, and if Contractor,
 	 * do they work for an operator who does too?
-	 *
+	 * 
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isRequiresOQ() {
 		return requiresOQ;
 	}
@@ -502,7 +505,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.needsIndexing = needsIndex;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isOnsiteServices() {
 		return onsiteServices;
 	}
@@ -511,7 +514,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.onsiteServices = onsiteServices;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isOffsiteServices() {
 		return offsiteServices;
 	}
@@ -520,7 +523,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.offsiteServices = offsiteServices;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isMaterialSupplier() {
 		return materialSupplier;
 	}
@@ -529,7 +532,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.materialSupplier = materialSupplier;
 	}
 
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isTransportationServices() {
 		return transportationServices;
 	}
@@ -541,10 +544,10 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	/**
 	 * Are they subject to Competency Reviews, and if Contractor, do they work
 	 * for an operator who does too?
-	 *
+	 * 
 	 * @return
 	 */
-	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.Classification, type = FieldType.Boolean)
 	public boolean isRequiresCompetencyReview() {
 		return requiresCompetencyReview;
 	}
@@ -571,7 +574,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * The date HSAN accredited the Training Provider to provide training
 	 * services. If HSAN training providers use a lot more custom fields then
 	 * we'll create a new table for this and other fields.
-	 *
+	 * 
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -610,7 +613,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			if (!employee.isActive())
 				continue;
 
-			// We need to check the status also because I found a user with a status of "Deleted" with active=true
+			// We need to check the status also because I found a user with a
+			// status of "Deleted" with active=true
 			if (!employee.getStatus().equals(UserStatus.Active))
 				continue;
 
@@ -660,7 +664,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	/**
 	 * Is Operator or Corporate
-	 *
+	 * 
 	 * @return
 	 */
 	@Transient
@@ -785,10 +789,21 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
 				.append(this.name).append('|');
-		if (this.city != null)
+
+		if (this.city != null) {
 			sb.append(this.city);
-		if (this.countrySubdivision != null)
-			sb.append(", ").append(this.countrySubdivision).append("\n");
+		}
+
+		if (this.countrySubdivision != null) {
+			if (this.city != null) {
+				sb.append(", ");
+			}
+
+			sb.append(this.countrySubdivision);
+		}
+
+		sb.append("|").append(this.status.toString()).append('|');
+
 		return sb.toString();
 	}
 
@@ -962,4 +977,34 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public boolean isRemoved() {
 		return (status == AccountStatus.Deactivated || status == AccountStatus.Deleted);
 	}
+
+	/**
+	 * In minutes
+	 */
+	public int getSessionTimeout() {
+		return sessionTimeout;
+	}
+
+	public void setSessionTimeout(int sessionTimeout) {
+		this.sessionTimeout = sessionTimeout;
+	}
+
+	@Column(name = "rememberMeTime")
+	public int getRememberMeTimeInDays() {
+		return rememberMeTime;
+	}
+
+	public void setRememberMeTimeInDays(int rememberMeTime) {
+		this.rememberMeTime = rememberMeTime;
+	}
+
+	@Column(name = "rememberMeTimeEnabled")
+	public boolean isRememberMeTimeEnabled() {
+		return rememberMeTimeEnabled;
+	}
+
+	public void setRememberMeTimeEnabled(boolean rememberMeTimeEnabled) {
+		this.rememberMeTimeEnabled = rememberMeTimeEnabled;
+	}
+
 }

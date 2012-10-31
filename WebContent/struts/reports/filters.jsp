@@ -125,6 +125,15 @@
 			</div>
 		</s:if>
 
+		<s:if test="filter.showIncludePicsReources" >
+			<div class="filterOption">
+				<label>
+					<s:checkbox name="filter.includePicsResources" />
+					<s:text name="Filters.label.IncludePicsReources" />
+				</label>
+			</div>
+		</s:if>
+		
 		<s:if test="filter.showType">
 			<div class="filterOption" id="type">
 				<a href="#" class="filterBox">

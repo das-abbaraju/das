@@ -49,13 +49,21 @@
                 <s:param name="report">${report_id}</s:param>
             </s:url>
     
-            <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
+           <%--  <s:url action="ManageReports" method="deleteReport" var="delete_report_url">
                 <s:param name="reportId">${report_id}</s:param>
             </s:url>
-    
-            <s:url action="ManageReports" method="removeUserReport" var="remove_report_url">
-                <s:param name="reportId">${report_id}</s:param>
-            </s:url>
+
+			    
+            <s:if test="#enable_sort">
+	            <s:url action="ManageReports" method="removeReportUser" var="remove_report_url">
+	                <s:param name="reportId">${report_id}</s:param>
+	            </s:url>
+            </s:if>
+            <s:else>
+	            <s:url action="ManageReports" method="removeReportPermissionUser" var="remove_report_url">
+	                <s:param name="reportId">${report_id}</s:param>
+	            </s:url>
+            </s:else> --%>
     
             <%-- Icon --%>
             <s:set name="is_favorite_class" value="''" />
@@ -73,20 +81,21 @@
                     <a href="${report_url}" class="name">
                         ${report.name}
                     </a>
-    
+
                     <s:if test="#report.createdBy.id != permissions.userId">
                         <span class="created-by"><s:text name="ManageReports.report.createdBy" /> ${report.createdBy.name}</span>
                     </s:if>
                 </div>
     
-                <div class="btn-group options">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <s:text name="ManageReports.myReports.Options" />
-                    </a>
+    			<s:if test="#enable_sort">
+                	<div class="btn-group options">
+                    	<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        	<s:text name="ManageReports.myReports.Options" />
+                    	</a>
     
-                    <ul class="dropdown-menu">
-                        <li>
-                            <s:if test="%{@com.picsauditing.model.ReportModel@canUserDelete(permissions.userId, report)}">
+                    	<ul class="dropdown-menu">
+                        <%-- <li>
+                            <s:if test="%{reportModel.canUserEdit(permissions.userId, report)}">
                                 <a href="${delete_report_url}" class="delete">
                                     <s:text name="ManageReports.myReports.Delete" />
                                 </a>
@@ -96,17 +105,17 @@
                                     <s:text name="ManageReports.myReports.Remove" />
                                 </a>
                             </s:else>
-                        </li>
+                        </li> --%>
                         
-                        <s:if test="#enable_sort">
-                            <li class="divider"></li>
+                        <%-- <s:if test="#enable_sort"> --%>
+                            <%-- <li class="divider"></li> --%>
                             
                             <s:if test="!#rowstatus.first || (#rowstatus.first && #enable_move_up)">
                                 <li>
                                     <a href="ManageReports!moveUp.action?reportId=${report_id}" class="move-up">
                                         <s:text name="ManageReports.myReports.MoveUp" />
                                     </a>
-                                </li>    
+                                </li>
                             </s:if>
                             
                             <s:if test="!#rowstatus.last || (#rowstatus.last && #enable_move_down)">
@@ -116,9 +125,10 @@
                                     </a>
                                 </li>
                             </s:if>
-                        </s:if>
-                    </ul>
-                </div>
+                        <%-- </s:if> --%>
+                    	</ul>
+                	</div>
+                </s:if>
     
                 <div class="clearfix"></div>
             </li>

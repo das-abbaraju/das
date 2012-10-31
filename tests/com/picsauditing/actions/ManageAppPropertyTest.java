@@ -3,7 +3,6 @@ package com.picsauditing.actions;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
@@ -13,50 +12,32 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ManageAppProperty.class, ActionContext.class, I18nCache.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class ManageAppPropertyTest {
+public class ManageAppPropertyTest extends PicsActionTest {
 	private static final String GET = "GET";
 	private static final String POST = "POST";
 
 	private ManageAppProperty manageAppProperty;
 
 	@Mock
-	private ActionContext actionContext;
-	@Mock
 	private AppPropertyDAO appPropertyDAO;
-	@Mock
-	private HttpServletRequest httpServletRequest;
 
 	@Before
 	public void setUp() {
-		PowerMockito.mockStatic(I18nCache.class);
-
+		MockitoAnnotations.initMocks(this);
 		manageAppProperty = new ManageAppProperty();
+		super.setupMocks();
 
 		Whitebox.setInternalState(manageAppProperty, "appPropertyDAO", appPropertyDAO);
-		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.when(ActionContext.getContext()).thenReturn(actionContext);
-
-		when(actionContext.get(HTTP_REQUEST)).thenReturn(httpServletRequest);
 	}
 
 	@Test
@@ -78,7 +59,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testCreate_GET() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(GET);
+		when(request.getMethod()).thenReturn(GET);
 
 		assertEquals("create", manageAppProperty.create());
 
@@ -87,7 +68,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testCreate_GET_ParametersSet() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(GET);
+		when(request.getMethod()).thenReturn(GET);
 
 		manageAppProperty.setNewProperty("Hey");
 		manageAppProperty.setNewValue("Universe");
@@ -106,7 +87,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testCreate_POST_MissingProperty() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		assertEquals("create", manageAppProperty.create());
 		assertTrue(manageAppProperty.hasActionErrors());
@@ -118,7 +99,7 @@ public class ManageAppPropertyTest {
 	public void testCreate_POST_EmptyProperty() throws Exception {
 		manageAppProperty.setNewProperty("");
 
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		assertEquals("create", manageAppProperty.create());
 		assertTrue(manageAppProperty.hasActionErrors());
@@ -130,7 +111,7 @@ public class ManageAppPropertyTest {
 	public void testCreate_POST_MissingValue() throws Exception {
 		manageAppProperty.setNewProperty("Hello");
 
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		assertEquals("create", manageAppProperty.create());
 
@@ -142,7 +123,7 @@ public class ManageAppPropertyTest {
 		manageAppProperty.setNewProperty("Hello");
 		manageAppProperty.setNewValue("");
 
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		assertEquals("create", manageAppProperty.create());
 
@@ -154,7 +135,7 @@ public class ManageAppPropertyTest {
 		manageAppProperty.setNewProperty("Hello");
 		manageAppProperty.setNewValue("World");
 
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		assertEquals("create", manageAppProperty.create());
 		assertEquals("Hello", manageAppProperty.getProperty().getProperty());
@@ -168,8 +149,8 @@ public class ManageAppPropertyTest {
 		manageAppProperty.setNewProperty("Hello");
 		manageAppProperty.setNewValue("World");
 
-		when(httpServletRequest.getMethod()).thenReturn(POST);
-		when(httpServletRequest.getParameter(ManageAppProperty.SAVE)).thenReturn(ManageAppProperty.SAVE);
+		when(request.getMethod()).thenReturn(POST);
+		when(request.getParameter(ManageAppProperty.SAVE)).thenReturn(ManageAppProperty.SAVE);
 
 		assertEquals(PicsActionSupport.REDIRECT, manageAppProperty.create());
 		assertEquals("Hello", manageAppProperty.getProperty().getProperty());
@@ -187,7 +168,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_GET() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(GET);
+		when(request.getMethod()).thenReturn(GET);
 
 		assertEquals("edit", manageAppProperty.edit());
 
@@ -196,7 +177,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_GET_ParametersSet() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(GET);
+		when(request.getMethod()).thenReturn(GET);
 
 		manageAppProperty.setProperty(new AppProperty());
 		manageAppProperty.getProperty().setProperty("Hello");
@@ -213,7 +194,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_POST_NoParameters() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		assertEquals("edit", manageAppProperty.edit());
 		assertTrue(manageAppProperty.hasActionErrors());
@@ -223,7 +204,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_POST_MissingNewValue() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		manageAppProperty.setProperty(new AppProperty());
 		manageAppProperty.getProperty().setProperty("Hello");
@@ -239,7 +220,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_POST_SaveValue() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		manageAppProperty.setProperty(new AppProperty());
 		manageAppProperty.getProperty().setProperty("Hello");
@@ -256,7 +237,7 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_POST_SaveProperty() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
+		when(request.getMethod()).thenReturn(POST);
 
 		manageAppProperty.setProperty(new AppProperty());
 		manageAppProperty.getProperty().setProperty("Hello");
@@ -273,8 +254,8 @@ public class ManageAppPropertyTest {
 
 	@Test
 	public void testEdit_POST_Save_RedirectSave() throws Exception {
-		when(httpServletRequest.getMethod()).thenReturn(POST);
-		when(httpServletRequest.getParameter(ManageAppProperty.SAVE)).thenReturn(ManageAppProperty.SAVE);
+		when(request.getMethod()).thenReturn(POST);
+		when(request.getParameter(ManageAppProperty.SAVE)).thenReturn(ManageAppProperty.SAVE);
 
 		manageAppProperty.setProperty(new AppProperty());
 		manageAppProperty.getProperty().setProperty("Hello");

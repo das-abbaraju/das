@@ -2,6 +2,9 @@ Ext.define('PICS.view.report.available-field.AvailableFieldList', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportavailablefieldlist'],
 
+    requires: [
+        'Ext.grid.column.Template'
+    ],
     store: 'report.AvailableFieldsByCategory',
 
     border: 0,

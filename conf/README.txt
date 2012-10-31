@@ -1,13 +1,6 @@
-// Add this to the end of your server VM arguments
-// Run...Open Run Dialog...Arguments.VMArguments
-// Then restart Tomcat
-	-XX:MaxPermSize=256m
-	-Dpics.debug=1
-	-Dpics.autoLogin=941
-	
-// Replace this from your Servers / Tomcat / server.xml
+// 1) Replace the following from your Servers / Tomcat / server.xml
 			<Context docBase="picsWeb2" path="/picsWeb2" reloadable="true" source="org.eclipse.jst.j2ee.server:picsWeb2"/></Host>
-// With this
+// with this:
 				<Context docBase="PICSORG" path="/" reloadable="false"
 					source="org.eclipse.jst.j2ee.server:PICSORG">
 					<Resource name="jdbc/pics" auth="Container" type="javax.sql.DataSource"
@@ -18,6 +11,18 @@
 				</Context>
 			</Host>
 
+// 2) Add the following to the end of your server VM arguments:
+// (To navigate to the VM arguments: Run-->Open Run Dialog-->Arguments.VMArguments)
+
+	-XX:MaxPermSize=256m
+	-Dpics.debug=1
+	// This is for the session cookie
+	-Dsk="9KuRXTx0cnuZefrt0EIfXd1MFqKvMY9x7OSub0B1EGLpR69b1Z+sdB7p6PT3Sy5rhl6qXKYyINdPJoHMWCqBNQ=="
+	-Dpics.autoLogin=941
+
+// 3) Restart Tomcat.
+
+/***********************/
 			
 // If you are going to use RabbitMQ and the default settings in resources/amqp_connection.properties, you can alternately set these
 // as a JNDI Resource in the Context as:

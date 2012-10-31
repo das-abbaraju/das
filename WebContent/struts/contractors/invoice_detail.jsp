@@ -230,6 +230,11 @@
 										<s:property value="contractor.countrySubdivision.isoCode" />
 										<s:property	value="contractor.zip" />
 									</s:else>
+                                    <s:if test="%{@com.picsauditing.util.Strings@isNotEmpty(contractor.vatId)}">
+                                        <br>
+                                        <s:text name="FeeClass.VAT" />
+                                        <s:property value="contractor.vatId" />
+                                    </s:if>
 								</td>
 								<td>
 									<s:if test="edit">

@@ -1,65 +1,95 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.util.Strings;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationMakePayment.class, I18nCache.class, TranslationActionSupport.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class RegistrationMakePaymentTest {
-	RegistrationMakePayment registrationMakePayment;	
+public class RegistrationMakePaymentTest extends PicsActionTest {
+	private RegistrationMakePayment registrationMakePayment;
+	private List<ContractorOperator> nonCorporateOperators;
+
+	@Mock
 	private ContractorAccount contractor;
 	@Mock
 	private ContractorOperator contractorOperator;
-	@Mock
-	private I18nCache i18nCache;
 	
 	@Before
-	public void setup(){
+	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);			
-		PowerMockito.mockStatic(I18nCache.class);
-
 		registrationMakePayment = new RegistrationMakePayment();
+		super.setUp(registrationMakePayment);
+
+		nonCorporateOperators = new ArrayList<ContractorOperator>();
+		when(contractor.getId()).thenReturn(1);
 	}
 		
+	// if they have not specified a safety risk
+	// and they are not only a material supplier or transportation services
+	// make them specify one
 	@Test
-	public void testContractorRiskUrl() throws Exception{
-		RegistrationMakePayment registrationMakePaymentSpy = spy(registrationMakePayment);
-		contractor = new ContractorAccount(1);
-		contractor.setMaterialSupplier(false);
-		contractor.setTransportationServices(true);
-		contractor.setSafetyRisk(LowMedHigh.None);
-		contractor.setProductRisk(LowMedHigh.None);
+	public void testContractorRiskUrl_RequiresServiceEval() throws Exception {
+		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
+		when(contractor.isMaterialSupplierOnly()).thenReturn(false);
+		when(contractor.isTransportationServices()).thenReturn(false);
 		
-		when(i18nCache.getText(anyString(), any(Locale.class), any())).thenReturn("Text");
-		verify(registrationMakePaymentSpy, never()).addActionMessage(any(String.class));		
-		Whitebox.setInternalState(registrationMakePayment, "contractor", contractor);
+		registrationMakePayment.setContractor(contractor);
 		
-		//String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl", new String(""));
+		String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
 				
-		//assertEquals("", url);
+		assertThat(url, startsWith("RegistrationServiceEvaluation"));
+		verify(i18nCache).hasKey("ContractorRegistrationFinish.message.SelectService", Locale.ENGLISH);
+
+		when(contractor.isTransportationServices()).thenReturn(true);
+		when(contractor.getProductRisk()).thenReturn(LowMedHigh.None);
+		when(contractor.isMaterialSupplier()).thenReturn(true);
+		url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
+		assertThat(url, startsWith("RegistrationServiceEvaluation"));
+
+	}
+
+	@Test
+	public void testContractorRiskUrl_RequiresClientSite() throws Exception {
+		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
+		when(contractor.isMaterialSupplierOnly()).thenReturn(false);
+		when(contractor.isTransportationServices()).thenReturn(false);
+		when(contractor.getNonCorporateOperators()).thenReturn(nonCorporateOperators);
+
+		registrationMakePayment.setContractor(contractor);
+
+		String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
+
+		assertThat(url, startsWith("AddClientSite"));
+		verify(i18nCache).hasKey("ContractorRegistrationFinish.message.AddFacility", Locale.ENGLISH);
+	}
+
+	@Test
+	public void testContractorRiskUrl_NoWorkflowStepsToComplete() throws Exception {
+		when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.Low);
+		when(contractor.isMaterialSupplierOnly()).thenReturn(false);
+		when(contractor.isTransportationServices()).thenReturn(false);
+		nonCorporateOperators.add(contractorOperator);
+		when(contractor.getNonCorporateOperators()).thenReturn(nonCorporateOperators);
+
+		registrationMakePayment.setContractor(contractor);
+
+		String url = Whitebox.invokeMethod(registrationMakePayment, "contractorRiskUrl");
+
+		assertTrue(Strings.isEmpty(url));
 	}
 }

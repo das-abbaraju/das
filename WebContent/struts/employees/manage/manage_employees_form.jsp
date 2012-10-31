@@ -94,17 +94,28 @@
 					theme="formhelp"
 				/>
 			</li>
-			<s:if test="employee.id == 0 && account.contractor">
+			<s:if test="employee.id == 0 && account.contractor && allEmployeeGUARDOperators.size > 0">
 				<li>
 					<label>
 						<s:text name="ManageEmployees.EmployeesFacilities" />
 					</label>
-					<s:iterator value="account.operatorAccounts" var="site">
-						<input type="checkbox" name="initialSites" value="${site.id}" id="site_${site.id}" />
-						<label for="site_${site.id}" class="sites-label">
-							${site.name}
-						</label>
-						<br />
+					<s:iterator value="allEmployeeGUARDOperators" var="client">
+						<s:if test="#client.site == null">
+							<%-- HSE Operators --%>
+							<input type="checkbox" name="initialClients" value="${client.id}" id="site_${client.id}" />
+							<label for="site_${client.id}" class="sites-label">
+								${client.name}
+							</label>
+							<br />
+						</s:if>
+						<s:else>
+							<%-- OQ Operators --%>
+							<input type="checkbox" name="initialJobSites" value="${client.site.id}" id="site_${client.site.id}" />
+							<label for="site_${client.id}" class="sites-label">
+								${client.name}: ${client.site.name}
+							</label>
+							<br />
+						</s:else>
 					</s:iterator>
 				</li>
 			</s:if>

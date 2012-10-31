@@ -17,6 +17,8 @@
 		<s:if test="permissions.admin">
 			<td><s:text name="DelinquentContractorAccounts.label.Amount" /></td>
 			<td><s:text name="DelinquentContractorAccounts.label.FacilityCount" /></td>
+			<td><s:text name="AuditType.2.name" /></td>
+			<td><s:text name="AuditType.3.name" /></td>
 		</s:if>
 		<td><s:text name="DelinquentContractorAccounts.label.DaysLeft" /></td>
 		<s:if test="showContact">
@@ -45,6 +47,8 @@
 			<s:if test="permissions.admin">
 				<td><s:property value="get('invoiceAmount')"/></td>
 				<td><s:property value="get('facilityCount')"/></td>
+				<td class="center"><s:property value="get('manualAuditStatus')"/></td>
+				<td class="center"><s:date name="[0].get('impAuditScheduledDate')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /><br /><s:property value="[0].get('impAuditStatus')"/></td>
 			</s:if>
 			<td class="center"><s:property value="[0].get('DaysLeft')" /></td>
 			<s:if test="showContact">

@@ -346,7 +346,7 @@ public class EntityFactory {
 	static public User makeUser() {
 		User user = new User(counter++);
 		user.setAccount(new Account());
-		user.getAccount().setId(1100);
+		user.getAccount().setId(Account.PicsID);
 		return user;
 	}
 

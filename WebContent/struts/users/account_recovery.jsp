@@ -3,6 +3,8 @@
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 <%@ page import="java.util.Locale" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.util.LocaleController" %>
+
 <head>
 	<title><s:text name="AccountRecovery.title" /></title>
 	
@@ -72,6 +74,6 @@
 		<s:include value="../actionMessages.jsp"></s:include>
 	</div>
 	<script type="text/javascript">
-		RecaptchaState.lang = '<%=TranslationActionSupport.getLocaleStatic().getLanguage()%>';
+		RecaptchaState.lang = '<%= LocaleController.getValidLocale(TranslationActionSupport.getLocaleStatic()).getLanguage() %>';
 	</script>
 </body>

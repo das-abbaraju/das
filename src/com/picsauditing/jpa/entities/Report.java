@@ -1,19 +1,23 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
 import com.picsauditing.report.Definition;
-import com.picsauditing.report.models.AbstractModel;
-import com.picsauditing.report.models.ModelFactory;
+import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.models.ModelType;
-import com.picsauditing.report.tables.AbstractTable;
+import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -26,13 +30,15 @@ public class Report extends BaseTable {
 	private String parameters;
 	private int rowsPerPage = 50;
 	
-	private boolean isPrivate;
 	private int numTimesFavorited;
 
 	private Definition definition;
+	private List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+	private String sql;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@ReportField(importance = FieldImportance.Required, width = 200)
 	public ModelType getModelType() {
 		return modelType;
 	}
@@ -42,6 +48,7 @@ public class Report extends BaseTable {
 	}
 
 	@Column(nullable = false)
+	@ReportField(importance = FieldImportance.Required, width = 200)
 	public String getName() {
 		return name;
 	}
@@ -50,6 +57,7 @@ public class Report extends BaseTable {
 		this.name = name;
 	}
 
+	@ReportField(importance = FieldImportance.Low, width = 400)
 	public String getDescription() {
 		return description;
 	}
@@ -58,25 +66,13 @@ public class Report extends BaseTable {
 		this.description = description;
 	}
 
+	@ReportField(importance = FieldImportance.Low, width = 400)
 	public String getParameters() {
 		return parameters;
 	}
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
-	}
-
-	public boolean isPrivate() {
-		return isPrivate;
-	}
-
-	public void setPrivate(boolean isPrivate) {
-		this.isPrivate = isPrivate;
-	}
-
-	@Transient
-	public boolean isPublic() {
-		return !isPrivate;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,6 +110,24 @@ public class Report extends BaseTable {
 		this.definition = definition;
 	}
 
+	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
+	public List<ReportUser> getReportUsers() {
+		return reportUsers;
+	}
+
+	public void setReportUsers(List<ReportUser> reportUsers) {
+		this.reportUsers = reportUsers;
+	}
+
+	@Transient
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
 	@Transient
 	public int getRowsPerPage() {
 		return rowsPerPage;
@@ -121,20 +135,6 @@ public class Report extends BaseTable {
 
 	public void setRowsPerPage(int rowsPerPage) {
 		this.rowsPerPage = rowsPerPage;
-	}
-
-	@Transient
-	public AbstractModel getModel() {
-		return ModelFactory.build(modelType);
-	}
-
-	@Transient
-	public AbstractTable getTable() {
-		if (getModel() != null) {
-			return getModel().getRootTable();
-		}
-
-		return null;
 	}
 
 	@Transient

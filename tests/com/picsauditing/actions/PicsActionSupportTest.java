@@ -1,79 +1,39 @@
 package com.picsauditing.actions;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.ServletActionContext;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.util.PicsOrganizerVersion;
-import com.picsauditing.util.SpringUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ActionContext.class, SpringUtils.class, ServletActionContext.class, I18nCache.class,
-		PicsOrganizerVersion.class })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class PicsActionSupportTest {
-	PicsActionSupport picsActionSupport;
+public class PicsActionSupportTest extends PicsActionTest {
+	private PicsActionSupport picsActionSupport;
 
 	@Mock
-	private EntityManager em;
-	@Mock
-	HttpServletRequest request;
-	@Mock
-	PicsOrganizerVersion picOrgVersion;
+	private AppPropertyDAO propertyDAO;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-
-		Map<String, Object> session = new HashMap<String, Object>();
-		session.put("permissions", new Permissions());
-
-		ActionContext actionContext = mock(ActionContext.class);
-		when(actionContext.getSession()).thenReturn(session);
-
-		PowerMockito.mockStatic(ActionContext.class);
-		when(ActionContext.getContext()).thenReturn(actionContext);
-
-		PowerMockito.mockStatic(ServletActionContext.class);
-		when(ServletActionContext.getRequest()).thenReturn(request);
-
-		PowerMockito.mockStatic(PicsOrganizerVersion.class);
-
 		picsActionSupport = new PicsActionSupport();
+		super.setUp(picsActionSupport);
 
-		AppPropertyDAO propertyDAO = new AppPropertyDAO();
-		propertyDAO.setEntityManager(em);
-		picsActionSupport.propertyDAO = propertyDAO;
+		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
 	}
-
+	@After
+	public void tearDown() throws Exception {
+		System.setProperty("pics.env", "");
+	}
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
 		Permissions permissions = new Permissions();
@@ -95,86 +55,209 @@ public class PicsActionSupportTest {
 	}
 
 	@Test
-	public void testIsConfigEnvironmentFalse() throws Exception {
-		AppProperty appPropertyFalse = new AppProperty();
-		appPropertyFalse.setProperty("PICS.config");
-		appPropertyFalse.setValue("0");
-		AppProperty appPropertyTrue = new AppProperty();
-		appPropertyTrue.setProperty("PICS.config");
-		appPropertyTrue.setValue("1");
-		when(em.find(AppProperty.class, "PICS.config")).thenReturn(appPropertyFalse).thenReturn(appPropertyTrue);
+	public void testIsConfigEnvironment_False() throws Exception {
+		when(propertyDAO.getProperty("PICS.config")).thenReturn("0").thenReturn("1");
+
 		assertFalse("Config should be false", picsActionSupport.isConfigEnvironment());
-		assertFalse("Config should still be false (static variable)", picsActionSupport.isConfigEnvironment());
-		verify(em, times(1)).find(AppProperty.class, "PICS.config");
+		assertFalse("Config should still be false despite second thenReturn (static variable)", picsActionSupport.isConfigEnvironment());
 	}
 
 	@Test
-	public void testIsBetaEnvironment_UrlContainsBeta() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("beta.picsorganizer.com"));
+	public void testIsConfigEnvironment_True() throws Exception {
+		when(propertyDAO.getProperty("PICS.config")).thenReturn("1");
+
+		assertFalse(picsActionSupport.isConfigEnvironment());
+	}
+
+	@Test
+	public void testGetPicsEnvironment_AlphaPerEnvironmentVariable() throws Exception {
+		System.setProperty("pics.env", "Alphabet");
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
-		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
+		assertEquals("Equivalent of -Dpics.env=Alphabet", "alpha", picsActionSupport.getPicsEnvironment());
 	}
-
 	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBeta() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
-		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
-
-		assertTrue("url does not have beta", picsActionSupport.isBetaEnvironment());
-	}
-
-	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckVersionYes() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
-		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
-
-		assertTrue("url has beta", picsActionSupport.isBetaEnvironment());
-	}
-
-	@Test
-	public void testIsBetaEnvironment_UrlContainsWithNoBetaCheckVersionNo() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
-		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(false);
-
-		assertFalse("url does not have beta", picsActionSupport.isBetaEnvironment());
-	}
-
-	@Test
-	public void testIsLiveEnvironment_UrlContainsStable() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("stable.picsorganizer.com"));
+	public void testGetPicsEnvironment_BetaPerUrl_withNonsenseEnvironmentVariable() throws Exception {
+		System.setProperty("pics.env", "nonsense");
+		when(request.getServerName()).thenReturn(new String("beta.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
-		assertTrue("url has stable", picsActionSupport.isLiveEnvironment());
+		assertEquals("Equivalent of -Dpics.env=nonsense", "beta", picsActionSupport.getPicsEnvironment());
 	}
-
 	@Test
-	public void testIsLiveEnvironment_UrlContainsWithNoStable() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+	public void testIsAlphaEnvironment() throws Exception {
+		when(request.getServerName()).thenReturn(new String("alpha.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
 
-		assertFalse("url does not have stable", picsActionSupport.isLiveEnvironment());
+		assertTrue("url starts with alpha", picsActionSupport.isAlphaEnvironment());
+	}
+	@Test
+	public void testIsAlphaEnvironment_false() throws Exception {
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse("url does not start with alpha", picsActionSupport.isAlphaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_SystemPropertySaysBeta() throws Exception {
+		System.setProperty("pics.env", " BETA ");
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue("Equivalent of -Dpics.env=beta", picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_SystemPropertySaysAlpha() throws Exception {
+		System.setProperty("pics.env", "alpha");
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse("Equivalent of -Dpics.env=alpha", picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_UrlExplicitlyStartsWithBeta() throws Exception {
+		when(request.getServerName()).thenReturn(new String("beta.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue("url starts with beta", picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_UrlExplicitlyStartsWithAlpha() throws Exception {
+		when(request.getServerName()).thenReturn(new String("alpha.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_UrlExplicitlyStartsWithLocalhost() throws Exception {
+		when(request.getServerName()).thenReturn(new String("localhost:8080"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isBetaEnvironment());
+	}
+	@Test
+	public void testIsBetaEnvironment_UrlExplicitlyStartsWithQaBeta() throws Exception {
+		when(request.getServerName()).thenReturn(new String("qa-beta.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		// Confirming intention: "qa-beta" is NOT considered "beta" (as far as the environment bar being colorized light blue for beta is concerned).  
+		assertFalse(picsActionSupport.isBetaEnvironment());
+	}
+
+
+	@Test
+	public void testIsBetaEnvironment_comparedToLowVersionNumberInAppProperties() throws Exception {
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		// as if app_properties thinks that version 1.0 is running live
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
+
+		assertTrue("URL is not explicitly beta, but version number is higher than app_properties", picsActionSupport.isBetaEnvironment());
 	}
 
 	@Test
-	public void testIsLiveEnvironment_UrlContainsWithNoStableCheckVersionNo() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
+	public void testIsBetaEnvironment_comparedToHighVersionNumberInAppProperties() throws Exception {
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(true);
+		// as if app_properties thinks that version 200000.0 is running live
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("200000");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
 
-		assertFalse("has beta cookie, its not stable", picsActionSupport.isLiveEnvironment());
+		assertFalse("URL is not explicitly beta, but version number is lower than app_properties", picsActionSupport.isBetaEnvironment());
 	}
 
 	@Test
-	public void testIsLiveEnvironment_UrlContainsWithNoStableCheckVersionYes() throws Exception {
-		when(request.getRequestURL()).thenReturn(new StringBuffer("www.picsorganizer.com"));
-		when(request.getRequestURI()).thenReturn(new String(""));
-		when(picsActionSupport.isBetaVersion()).thenReturn(false);
+	public void testIsLiveEnvironment_UrlExplicitlyStartsWithStable() throws Exception {
+		when(request.getServerName()).thenReturn(new String("stable.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
-		assertTrue("has no beta cookie, its stable", picsActionSupport.isLiveEnvironment());
+		assertTrue(picsActionSupport.isLiveEnvironment());
 	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlExplicitlyStartsWithAlpha() throws Exception {
+		when(request.getServerName()).thenReturn(new String("alpha.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlExplicitlyStartsWithConfig() throws Exception {
+		when(request.getServerName()).thenReturn(new String("config.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlExplicitlyStartsWithQaBeta() throws Exception {
+		when(request.getServerName()).thenReturn(new String("qa-beta.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_UrlExplicitlyStartsWithQaStable() throws Exception {
+		when(request.getServerName()).thenReturn(new String("qa-stable.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isLiveEnvironment());
+	}
+	@Test
+	public void testIsLiveEnvironment_UrlExplicitlyStartsWithLocalhost() throws Exception {
+		when(request.getServerName()).thenReturn(new String("localhost:8080"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertFalse(picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_comparedToLowVersionNumberInAppProperties() throws Exception {
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		// as if app_properties thinks that version 1.0 is running live
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("1");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
+
+		assertFalse("URL is not explicitly stable, but version number is higher than app_properties", picsActionSupport.isLiveEnvironment());
+	}
+
+	@Test
+	public void testIsLiveEnvironment_comparedToHighVersionNumberInAppProperties() throws Exception {
+		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+		// as if app_properties thinks that version 200000.0 is running live
+		when(propertyDAO.getProperty("VERSION.major")).thenReturn("200000");
+		when(propertyDAO.getProperty("VERSION.minor")).thenReturn("0");
+
+		assertTrue("URL is not explicitly stable, but version number is lower than app_properties", picsActionSupport.isLiveEnvironment());
+	}
+	@Test
+	public void testIsQaEnvironment_UrlExplicitlyStartsWithQaStable() throws Exception {
+		when(request.getServerName()).thenReturn(new String("qa-stable.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isQaEnvironment());
+	}
+	@Test
+	public void testIsQaEnvironment_UrlExplicitlyStartsWithQaBeta() throws Exception {
+		when(request.getServerName()).thenReturn(new String("qa-beta.picsorganizer.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isQaEnvironment());
+	}
+	@Test
+	public void testIsLocalhostEnvironment() throws Exception {
+		when(request.getServerName()).thenReturn(new String("localhost:8080"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isLocalhostEnvironment());
+	}
+
+
+
+
 }

@@ -1,18 +1,8 @@
 package com.picsauditing.jpa.entities;
 
-public enum PaymentMethod {
-	CreditCard("Credit Card"), Check("Check"), Refund("Refund"), EFT("EFT");  // EFT is for wiring the money 
-
-	private String description;
-
-	PaymentMethod(String description) {
-		this.description = description;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
+public enum PaymentMethod implements Translatable {
+	CreditCard, Check, Refund, EFT;
+	// EFT is for wiring the money
 	public boolean isCreditCard() {
 		return this.equals(CreditCard);
 	}
@@ -20,8 +10,22 @@ public enum PaymentMethod {
 	public boolean isCheck() {
 		return this.equals(Check);
 	}
-	
+
+	public boolean isRefund() {
+		return this.equals(Refund);
+	}
+
 	public boolean isEFT() {
 		return this.equals(EFT);
+	}
+
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.toString();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

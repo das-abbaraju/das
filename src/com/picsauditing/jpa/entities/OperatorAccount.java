@@ -29,7 +29,7 @@ import org.hibernate.annotations.Where;
 
 import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.SpringUtils;
@@ -132,7 +132,7 @@ public class OperatorAccount extends Account {
 		return this.canSeeInsurance;
 	}
 
-	private void checkCanSeeInsurance(){
+	private void checkCanSeeInsurance() {
 		if (this.canSeeInsurance == null)
 			this.canSeeInsurance = YesNo.No;
 	}
@@ -192,7 +192,7 @@ public class OperatorAccount extends Account {
 		this.oshaType = oshaType;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Boolean)
 	public boolean isPrimaryCorporate() {
 		return primaryCorporate;
 	}
@@ -201,7 +201,7 @@ public class OperatorAccount extends Account {
 		this.primaryCorporate = primaryCorporate;
 	}
 
-	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Boolean)
+	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Boolean)
 	public boolean isAutoApproveInsurance() {
 		return autoApproveInsurance;
 	}
@@ -220,7 +220,7 @@ public class OperatorAccount extends Account {
 	public OperatorAccount getInheritedDiscountPercentOperator() {
 		// check direct parents
 		OperatorAccount parent = getParent();
-		while (parent != null) {
+		while (parent != null && parent.getId() != this.getId()) {
 			if (parent.isHasDiscount())
 				return parent;
 
@@ -262,6 +262,20 @@ public class OperatorAccount extends Account {
 	}
 
 	@Transient
+	public boolean isDiscountPercentInvalidRange() {
+		return discountPercent.compareTo(BigDecimal.ZERO) < 0 || discountPercent.compareTo(BigDecimal.ONE) > 0;
+	}
+
+	@Transient
+	public boolean isDiscountPercentWithoutExpiration() {
+		if (discountPercent.compareTo(BigDecimal.ZERO) > 0) {
+			return discountExpiration == null;
+		}
+
+		return false;
+	}
+
+	@Transient
 	public BigDecimal getScaledDiscountPercent() {
 		return getDiscountPercent().multiply(new BigDecimal(100));
 	}
@@ -275,7 +289,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@ReportField(category = FieldCategory.ClientSitePreferences, filterType = FilterType.Date)
+	@ReportField(category = FieldCategory.ClientSitePreferences, type = FieldType.Date)
 	public Date getDiscountExpiration() {
 		return discountExpiration;
 	}

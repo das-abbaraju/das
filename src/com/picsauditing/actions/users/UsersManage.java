@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -33,6 +32,7 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -52,6 +52,8 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.security.CookieSupport;
+import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -98,6 +100,8 @@ public class UsersManage extends PicsActionSupport {
 	protected AppPropertyDAO appPropertyDAO;
 	@Autowired
 	private EmailSender emailSender;
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -191,7 +195,7 @@ public class UsersManage extends PicsActionSupport {
 		// a user
 		if (user.getId() < 0) {
 			// We want to save a new user
-			final String randomPassword = Long.toString(new Random().nextLong());
+			final String randomPassword = EncodedKey.randomPassword();
 			user.setEncryptedPassword(randomPassword);
 			user.setForcePasswordReset(true);
 		}
@@ -503,6 +507,9 @@ public class UsersManage extends PicsActionSupport {
 
 		user.setActive(true);
 		userDAO.save(user);
+
+		removeFromExclusionList();
+
 		addActionMessage(getTextParameterized("UsersManage.UserActivated", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
 
@@ -565,7 +572,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public void removeBetaMaxCookie() {
-		Cookie cookie = new Cookie("USE_BETA", "");
+		Cookie cookie = new Cookie(CookieSupport.USE_BETA_COOKIE_NAME, "");
 		cookie.setMaxAge(0);
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
@@ -1086,12 +1093,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String emailPassword() throws Exception {
-
-		// Seeding the time in the reset hash so that each one will be
-		// guaranteed unique
-		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
-		userDAO.save(user);
-
+		setUserResetHash();
 		addActionMessage(sendRecoveryEmail(user));
 		return SUCCESS;
 	}
@@ -1112,13 +1114,16 @@ public class UsersManage extends PicsActionSupport {
 	// TODO: Move this to Event Subscription Builder
 	public String sendRecoveryEmail(User user) {
 		try {
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
+					"http://", "https://");
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("user", user);
 
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+			String confirmLink = serverName + "Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
@@ -1134,15 +1139,31 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	public String reSendActivationEmail() throws Exception {
+		setUserResetHash();
+		addActionMessage(sendActivationEmail(user, permissions));
+		return SUCCESS;
+	}
+
+	private void setUserResetHash() {
+		// Seeding the time in the reset hash so that each one will be
+		// guaranteed unique
+		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
+		userDAO.save(user);
+	}
+
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
+					"http://", "https://");
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+			String confirmLink = serverName + "Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
@@ -1158,6 +1179,15 @@ public class UsersManage extends PicsActionSupport {
 		} catch (Exception e) {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
+	}
+
+	public String addToExclusionList() throws Exception {
+		emailQueueDAO.addEmailAddressExclusions(user.getEmail(), permissions.getUserId());
+		return SUCCESS;
+	}
+
+	private void removeFromExclusionList() throws SQLException {
+		emailQueueDAO.removeEmailAddressExclusions(user.getEmail());
 	}
 
 	public Locale getSelectedLanguage() {

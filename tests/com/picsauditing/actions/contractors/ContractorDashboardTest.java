@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -20,7 +21,12 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -121,5 +127,29 @@ public class ContractorDashboardTest {
 		Whitebox.invokeMethod(dashboard, "findCorporateOverride");
 		assertNotNull(dashboard.getCorporateFlagOverride()); // parent has force
 																// flag
+	}
+
+	@Test
+	public void testGetIncompleteAnnualUpdates() throws Exception {
+		
+		contractor.getAudits().add(createAU("2010", AuditStatus.Complete));
+		contractor.getAudits().add(createAU("2009", AuditStatus.Pending));
+		
+		
+		String results = Whitebox.invokeMethod(dashboard, "getIncompleteAnnualUpdates" , contractor, operator.getId());
+		assertTrue(results.contains("2009"));
+		assertTrue(!results.contains("2010"));
+	}
+	
+	private ContractorAudit createAU(String year, AuditStatus status) {
+		ContractorAudit audit;
+		audit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, year);
+		ContractorAuditOperator cao;
+		cao = EntityFactory.addCao(audit, operator);
+		cao.setStatus(status);
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		caop.setOperator(operator);
+		cao.getCaoPermissions().add(caop);
+		return audit;
 	}
 }

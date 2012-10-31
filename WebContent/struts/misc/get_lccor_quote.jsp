@@ -1,30 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<head>
 <title><s:text name="GetLcCorQuote.title" /></title>
 <style type="text/css">
       .leftside { float: left; padding: 8px; }
       .rightside { float: right; padding: 8px; }
+      .hidden { visibility: hidden; }
 </style>
-<script type="text/javascript">
-function showHideProvinceInfo() {
-    var target = window.event.target;
-    var targetId = target.id;
-    var partners = document.getElementById("partner_" + targetId);
-    var employees = document.getElementById("emp_" + targetId);
-    if (target.checked) {
-		document.getElementById("partner_" + targetId).style.visibility="visible";
-		document.getElementById("emp_" + targetId).style.visibility="visible";
-    } else {
-        document.getElementById("partner_" + targetId).style.visibility="hidden";
-        document.getElementById("emp_" + targetId).style.visibility="hidden";
-    }
-}
-</script>
-</head>
 
-<body>
 <h1>
 	<s:text name="GetLcCorQuote.title"></s:text>
 	<span class="sub">
@@ -32,7 +15,7 @@ function showHideProvinceInfo() {
 	</span>
 </h1>
 <s:include value="../actionMessages.jsp" />
-<table width="100%">
+<table width="100%" id="lc_cor_quote">
 	<tr>
 		<td style="vertical-align:top; width: 48%">
 		<div><h2><s:text name="GetLcCorQuote.header" /></h2><br /></div>
@@ -78,11 +61,11 @@ function showHideProvinceInfo() {
 							<tbody>
 								<s:iterator value="provinces" status="provinceStatus">
 								<tr>
-									<td><s:checkbox name="provIndex" id="%{#provinceStatus.index}" fieldValue="%{#provinceStatus.index}" value="false" onclick="showHideProvinceInfo()" cssClass="provCheckBox" /> <s:property value="%{provinces[#provinceStatus.index]}" /></td>
+									<td><s:checkbox name="provIndex" id="%{#provinceStatus.index}" fieldValue="%{#provinceStatus.index}" value="false" cssClass="provCheckBox" /> <s:property value="%{provinces[#provinceStatus.index]}" /></td>
 									<td width="15px"></td>
-									<td><s:textfield name="partners" id="partner_%{#provinceStatus.index}" value="%{partners[#provinceStatus.index]}" cssStyle="visibility:hidden;" /></td>
+									<td><s:textfield name="partners" id="partner_%{#provinceStatus.index}" value="%{partners[#provinceStatus.index]}" cssClass="province-details hidden" /></td>
 									<td width="15px"></td>
-									<td><s:textfield name="employees" id="emp_%{#provinceStatus.index}" value="%{employees[#provinceStatus.index]}" cssStyle="visibility:hidden;" /></td>
+									<td><s:textfield name="employees" id="emp_%{#provinceStatus.index}" value="%{employees[#provinceStatus.index]}" cssClass="province-details hidden" /></td>
 								</tr>
 								</s:iterator>
 						
@@ -119,4 +102,3 @@ function showHideProvinceInfo() {
 		</td>
 	</tr>
 </table>
-</body>

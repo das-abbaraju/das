@@ -123,6 +123,7 @@
 			<result>struts/users/login.jsp</result>
 			<result name="forgot">struts/users/account_recovery.jsp</result>
 			<result name="overlay">/struts/users/login_form.jsp</result>
+            <result name="loginform">/struts/users/login/_login-form.jsp</result>
 		</action>
 		<action name="ChangePassword" class="com.picsauditing.actions.users.ChangePassword">
 			<result>struts/users/password.jsp</result>
@@ -270,8 +271,14 @@
 			</result>
 		</action>
 
-		<action name="ContractorForms" class="com.picsauditing.actions.forms.ContractorForms">
-			<result>struts/forms/con_forms.jsp</result>
+ 		<action name="ContractorForms" class="com.picsauditing.actions.report.ReportContractorResources">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ContractorForms</param>
+			<result>struts/reports/resources.jsp</result>
+		</action>
+
+		<action name="ContractorFormsAjax" class="com.picsauditing.actions.report.ReportContractorResources">
+			<result>struts/reports/resources_data.jsp</result>
 		</action>
 
 		<action name="ContractorFacilities" class="com.picsauditing.actions.contractors.ContractorFacilities">
@@ -958,10 +965,13 @@
 			</result>
 		</action>
 
+		<!-- These action classes are in the process of being deprecated. Please use the ReportAutocomplete below. -->
 		<!-- Autocomplete Ajax -->
 		<action name="{type:\w+}Autocomplete"
 			class="com.picsauditing.actions.autocomplete.{1}Autocomplete" method="autocomplete">
 		</action>
+
+		<action name="Autocompleter" class="com.picsauditing.actions.autocomplete.Autocompleter" />
 
 		<!-- Ajax Snippets -->
 		<action name="ContractorSelectAjax" class="com.picsauditing.actions.report.ReportAccount">
@@ -1126,6 +1136,7 @@
 		<action name="OptionGroupTagit" class="com.picsauditing.actions.tagit.OptionGroupTagit">
 		</action>
 
+
 		<!-- Remember to Categorize your new Struts pages -->
 
 		<action name="FileIndexingEngine"
@@ -1162,10 +1173,14 @@
 			<result name="forms">/struts/style_guide/forms.jsp</result>
 			<result name="pills">/struts/style_guide/pills.jsp</result>
 		</action>
+		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
+			<result>struts/users/login.jsp</result>
+		</action>
 	</package>
 
-	<!-- Registration -->
+	<!-- Reports & API -->
 	<include file="struts-reports.xml" />
+	<include file="struts-restapi.xml" />
 
 	<!-- Registration -->
 	<include file="struts-registration.xml" />

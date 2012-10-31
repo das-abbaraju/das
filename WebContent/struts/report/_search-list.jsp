@@ -5,8 +5,7 @@
     <s:include value="../_action-messages.jsp" />
 
     <ul class="report-list">
-        <s:iterator value="userReports" var="user_report">
-            <s:set name="report" value="#user_report.report" />
+        <s:iterator value="reports" var="report">
             <s:set name="report_id" value="#report.id" />
     
             <%-- Url --%>
@@ -41,7 +40,7 @@
     	<div class="pagination pagination-centered">
         	<ul>
             	<%-- if previous page --%>
-            	<s:if test="pagination.hasPreviousPage">
+            	<s:if test="pagination.hasPreviousPage()">
             		<s:url action="ManageReports" method="searchList" var="previous_page_url" includeParams="all">
     					<s:param name="pagination.parameters.page" value="pagination.previousPage"/>
     					<s:param name="searchTerm">${searchTerm}</s:param>
@@ -67,7 +66,7 @@
     				</li>
             	</s:iterator>
 
-            	<s:if test="pagination.hasNextPage">
+            	<s:if test="pagination.hasNextPage()">
             		<s:url action="ManageReports" method="searchList" var="next_page_url" includeParams="all">
     						<s:param name="pagination.parameters.page" value="pagination.nextPage"/>
     						<s:param name="searchTerm">${searchTerm}</s:param>

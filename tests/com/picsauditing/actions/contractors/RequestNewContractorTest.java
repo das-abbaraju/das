@@ -9,8 +9,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -34,40 +34,43 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
-import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.URLUtils;
 
 public class RequestNewContractorTest {
 	private RequestNewContractor requestNewContractor;
-	private PicsTestUtil picsTestUtil = new PicsTestUtil();
 
 	@Mock
 	private ContractorRegistrationRequest registrationRequest;
 	@Mock
 	private Database database;
 	@Mock
-	private EmailBuilder builder;
-	@Mock
 	private EntityManager entityManager;
 	@Mock
 	private Permissions permissions;
 	@Mock
 	private Query query;
+	@Mock
+	private RegistrationRequestEmailHelper emailHelper;
+	@Mock
+	private URLUtils urlUtils;
 
 	@Before
 	public void setUp() throws Exception {
@@ -75,11 +78,15 @@ public class RequestNewContractorTest {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", database);
 
 		requestNewContractor = new RequestNewContractor();
+		PicsTestUtil picsTestUtil = new PicsTestUtil();
 		picsTestUtil.autowireEMInjectedDAOs(requestNewContractor, entityManager);
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(urlUtils.getActionUrl(anyString(), any(), any())).thenReturn("URL");
 
+		Whitebox.setInternalState(requestNewContractor, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractor, "permissions", permissions);
+		Whitebox.setInternalState(requestNewContractor, "urlUtils", urlUtils);
 	}
 
 	@AfterClass
@@ -255,11 +262,6 @@ public class RequestNewContractorTest {
 		verify(entityManager, never()).merge(any(ContractorRegistrationRequest.class));
 		verify(entityManager).persist(any(ContractorRegistrationRequest.class));
 		verify(requestNewContractor).runGapAnalysis(any(ContractorRegistrationRequest.class));
-	}
-
-	@Test
-	public void testLoadTags() {
-		assertEquals(PicsActionSupport.SUCCESS, requestNewContractor.loadTags());
 	}
 
 	@Test
@@ -483,7 +485,6 @@ public class RequestNewContractorTest {
 
 		requestNewContractor = spy(requestNewContractor);
 		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
-		doNothing().when(requestNewContractor).sendEmail();
 
 		requestNewContractor.setNewContractor(registrationRequest);
 
@@ -491,6 +492,7 @@ public class RequestNewContractorTest {
 		assertFalse(requestNewContractor.hasActionErrors());
 		assertTrue(requestNewContractor.hasActionMessages());
 
+		verify(emailHelper).sendInitialEmail(any(ContractorRegistrationRequest.class), anyString());
 		verify(entityManager).persist(any(ContractorRegistrationRequest.class));
 	}
 
@@ -503,7 +505,6 @@ public class RequestNewContractorTest {
 
 		requestNewContractor = spy(requestNewContractor);
 		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
-		doNothing().when(requestNewContractor).sendEmail();
 
 		requestNewContractor.setNewContractor(registrationRequest);
 
@@ -511,6 +512,72 @@ public class RequestNewContractorTest {
 		assertFalse(requestNewContractor.hasActionErrors());
 		assertTrue(requestNewContractor.hasActionMessages());
 
+		verify(entityManager).merge(any(ContractorRegistrationRequest.class));
+	}
+
+	@Test
+	public void testSave_TransferNewTagsToContractorAccount() throws Exception {
+		ContractorAccount contractor = mock(ContractorAccount.class);
+		OperatorAccount operator = mock(OperatorAccount.class);
+		OperatorTag tag = mock(OperatorTag.class);
+
+		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+		operators.add(operator);
+
+		when(contractor.getOperatorAccounts()).thenReturn(operators);
+		when(entityManager.find(OperatorTag.class, 1)).thenReturn(tag);
+		when(registrationRequest.getContractor()).thenReturn(contractor);
+		when(registrationRequest.getId()).thenReturn(1);
+		when(registrationRequest.getOperatorTags()).thenReturn("1");
+		when(tag.getId()).thenReturn(1);
+		when(tag.getOperator()).thenReturn(operator);
+
+		filledContactFields();
+		filledOperatorSpecificFields();
+
+		requestNewContractor = spy(requestNewContractor);
+		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
+
+		requestNewContractor.setNewContractor(registrationRequest);
+
+		assertEquals(PicsActionSupport.SUCCESS, requestNewContractor.save());
+		assertFalse(requestNewContractor.hasActionErrors());
+		assertTrue(requestNewContractor.hasActionMessages());
+
+		verify(entityManager).persist(any(BaseTable.class));
+		verify(entityManager).merge(any(ContractorRegistrationRequest.class));
+	}
+
+	@Test
+	public void testSave_DoNotAddExistingTags() throws Exception {
+		ContractorAccount contractor = mock(ContractorAccount.class);
+		ContractorTag contractorTag = mock(ContractorTag.class);
+		OperatorTag tag = mock(OperatorTag.class);
+
+		List<ContractorTag> tags = new ArrayList<ContractorTag>();
+		tags.add(contractorTag);
+
+		when(contractorTag.getTag()).thenReturn(tag);
+		when(contractor.getOperatorTags()).thenReturn(tags);
+		when(entityManager.find(OperatorTag.class, 1)).thenReturn(tag);
+		when(registrationRequest.getContractor()).thenReturn(contractor);
+		when(registrationRequest.getId()).thenReturn(1);
+		when(registrationRequest.getOperatorTags()).thenReturn("1");
+		when(tag.getId()).thenReturn(1);
+
+		filledContactFields();
+		filledOperatorSpecificFields();
+
+		requestNewContractor = spy(requestNewContractor);
+		doReturn(new ArrayList<ContractorAccount>()).when(requestNewContractor).runGapAnalysis(registrationRequest);
+
+		requestNewContractor.setNewContractor(registrationRequest);
+
+		assertEquals(PicsActionSupport.SUCCESS, requestNewContractor.save());
+		assertFalse(requestNewContractor.hasActionErrors());
+		assertTrue(requestNewContractor.hasActionMessages());
+
+		verify(entityManager, never()).persist(any(BaseTable.class));
 		verify(entityManager).merge(any(ContractorRegistrationRequest.class));
 	}
 
@@ -545,7 +612,6 @@ public class RequestNewContractorTest {
 	@Test
 	public void testContact_DraftEmailWithNotes() throws Exception {
 		requestNewContractor = spy(requestNewContractor);
-		doNothing().when(requestNewContractor).sendEmail();
 
 		registrationRequest = new ContractorRegistrationRequest();
 		registrationRequest.setRequestedBy(EntityFactory.makeOperator());
@@ -558,6 +624,8 @@ public class RequestNewContractorTest {
 		assertFalse(requestNewContractor.hasActionErrors());
 		assertEquals(1, registrationRequest.getContactCountByEmail());
 		assertEquals(1, registrationRequest.getContactCount());
+
+		verify(emailHelper).sendInitialEmail(any(ContractorRegistrationRequest.class), anyString());
 	}
 
 	@Test
@@ -590,13 +658,23 @@ public class RequestNewContractorTest {
 	}
 
 	@Test
-	public void testPreviewEmail() throws Exception {
-		requestNewContractor = spy(requestNewContractor);
-		doReturn(builder).when(requestNewContractor).prepareEmailBuilder();
+	public void testBuildInitialEmail() throws Exception {
+		EmailQueue email = (EmailQueue) Whitebox.invokeMethod(requestNewContractor, "buildInitialEmail");
 
-		assertNull(requestNewContractor.previewEmail());
+		assertNull(email);
+		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class));
+	}
 
-		verify(builder).build();
+	@Test
+	public void testBuildInitialEmail_WithRequest() throws Exception {
+		EmailQueue email = mock(EmailQueue.class);
+		when(emailHelper.buildInitialEmail(any(ContractorRegistrationRequest.class))).thenReturn(email);
+
+		requestNewContractor.setNewContractor(registrationRequest);
+		EmailQueue built = (EmailQueue) Whitebox.invokeMethod(requestNewContractor, "buildInitialEmail");
+
+		assertNotNull(built);
+		verify(emailHelper).buildInitialEmail(any(ContractorRegistrationRequest.class));
 	}
 
 	@Test
@@ -619,77 +697,6 @@ public class RequestNewContractorTest {
 		when(query.getResultList()).thenReturn(new ArrayList<User>());
 
 		assertNotNull(requestNewContractor.getUsersList(1));
-	}
-
-	@Test
-	public void testGetForm() throws Exception {
-		assertNull(requestNewContractor.getForm());
-	}
-
-	@Test
-	public void testGetForm_NewContractor() throws Exception {
-		requestNewContractor.setNewContractor(registrationRequest);
-		assertNull(requestNewContractor.getForm());
-	}
-
-	@Test
-	public void testGetForm_NewContractorWithOperator() throws Exception {
-		OperatorAccount operator = EntityFactory.makeOperator();
-		OperatorForm form = new OperatorForm();
-		form.setFormName("*Contractor Letter");
-		operator.getOperatorForms().add(form);
-
-		when(registrationRequest.getRequestedBy()).thenReturn(operator);
-
-		requestNewContractor.setNewContractor(registrationRequest);
-		assertEquals(form, requestNewContractor.getForm());
-	}
-
-	@Test
-	public void testGetForms_FormsAndRequestNull() {
-		assertNull(requestNewContractor.getForms());
-	}
-
-	@Test
-	public void testGetForms_FormRequestedByNull() {
-		requestNewContractor.setNewContractor(registrationRequest);
-
-		assertNull(requestNewContractor.getForms());
-	}
-
-	@Test
-	public void testGetForms_RequestedByNoForms() {
-		when(registrationRequest.getRequestedBy()).thenReturn(EntityFactory.makeOperator());
-
-		requestNewContractor.setNewContractor(registrationRequest);
-
-		assertNotNull(requestNewContractor.getForms());
-		assertTrue(requestNewContractor.getForms().isEmpty());
-	}
-
-	@Test
-	public void testGetForms_RequestedByCorporateForms() {
-		OperatorAccount corporate = EntityFactory.makeOperator();
-		corporate.setType("Corporate");
-		// Make sure they don't end up under the PICS umbrella, just in case.
-		corporate.setId(50 + corporate.getId());
-
-		OperatorAccount operator = EntityFactory.makeOperator();
-		operator.setId(50 + operator.getId());
-		Facility facility = EntityFactory.makeFacility(operator, corporate);
-		operator.getCorporateFacilities().add(facility);
-
-		OperatorForm form = new OperatorForm();
-		form.setFormName("*Form");
-		corporate.getOperatorForms().add(form);
-
-		when(registrationRequest.getRequestedBy()).thenReturn(operator);
-
-		requestNewContractor.setNewContractor(registrationRequest);
-
-		assertNotNull(requestNewContractor.getForms());
-		assertFalse(requestNewContractor.getForms().isEmpty());
-		assertEquals(form, requestNewContractor.getForms().get(0));
 	}
 
 	private void saveWithErrors() throws Exception {

@@ -1,0 +1,2 @@
+insert ignore into app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, sourceLanguage, contentDriven)
+values ('button.activation', 'en', 'Resend Activation Email', 1, 1, now(), now(), 'en', 0);

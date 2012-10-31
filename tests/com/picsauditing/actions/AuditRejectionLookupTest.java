@@ -10,19 +10,14 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.Action;
-import com.picsauditing.PICS.DBBean;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.dao.AuditRejectionCodeDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditRejectionCode;
@@ -36,37 +31,25 @@ import com.picsauditing.jpa.entities.OperatorAccount;
  *
  */
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({AuditRejectionLookup.class, DBBean.class, I18nCache.class})
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class AuditRejectionLookupTest {
+public class AuditRejectionLookupTest extends PicsActionTest {
 	
-	AuditRejectionLookup auditRejectionLookup;
+	private AuditRejectionLookup auditRejectionLookup;
 
 	@Mock
 	private AuditRejectionCodeDAO auditRejectionCodeDao;
 	@Mock
 	private ContractorAuditOperatorDAO contractorAuditOperatorDao;
-	
 	@Mock
 	private ContractorAuditOperator cao;
-	@Mock
-	private I18nCache mockCache;
-	
 	@Mock
 	private List<ContractorAuditOperatorPermission> caops;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(I18nCache.class);
-		PowerMockito.when(I18nCache.getInstance()).thenReturn(mockCache);
-		
-		auditRejectionLookup = PowerMockito.spy(new AuditRejectionLookup());	
 		auditRejectionLookup = new AuditRejectionLookup();
-		
-		Whitebox.setInternalState(auditRejectionLookup, AuditRejectionCodeDAO.class, auditRejectionCodeDao);
-		Whitebox.setInternalState(auditRejectionLookup, ContractorAuditOperatorDAO.class, contractorAuditOperatorDao);
+		super.setUp(auditRejectionLookup);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(auditRejectionLookup, this);
 	}
 	
 	@Test

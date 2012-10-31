@@ -5,6 +5,7 @@
 	<package name="com.picsauditing.registration.requests" extends="com.picsauditing">
 		<action name="RequestNewContractor" class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
+			<result name="email">/struts/contractors/con_new_registration_email.jsp</result>
 			<result name="backToReport" type="redirectAction">
 				<param name="actionName">ReportNewRequestedContractor</param>
 			</result>

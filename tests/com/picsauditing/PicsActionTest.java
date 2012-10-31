@@ -4,6 +4,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.StrutsStatics;
 import org.junit.AfterClass;
@@ -39,6 +41,8 @@ public class PicsActionTest {
 	@Mock
 	protected HttpServletResponse response;
 	@Mock
+	protected HttpSession httpSession;
+	@Mock
 	protected ServletContext servletContext;
 	@Mock
 	protected Permissions permissions;
@@ -46,6 +50,9 @@ public class PicsActionTest {
 	protected I18nCache i18nCache;
 	@Mock
 	protected AppPropertyDAO propertyDAO;
+	@SuppressWarnings("rawtypes")
+	@Mock
+	private Enumeration enumeration;
 
 	@BeforeClass
 	public static void classSetUp() throws Exception {
@@ -55,6 +62,7 @@ public class PicsActionTest {
 	@AfterClass
 	public static void classTearDown() throws Exception {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
 		ActionContext.setContext(null);
 	}
 
@@ -90,8 +98,11 @@ public class PicsActionTest {
 		when(request.getRequestURL()).thenReturn(new StringBuffer("www.example.com/example.html"));
 		when(request.getRequestURI()).thenReturn("/example.html");
 		when(request.getHeader("User-Agent")).thenReturn(userAgent);
+		when(request.getSession()).thenReturn(httpSession);
+		when(request.getHeaderNames()).thenReturn(enumeration);
 		when(i18nCache.hasKey(anyString(), eq(Locale.ENGLISH))).thenReturn(true);
 		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 		when(servletContext.getInitParameter("FTP_DIR")).thenReturn("/tmp/ftp_dir");
+		session.put("permissions", permissions);
 	}
 }

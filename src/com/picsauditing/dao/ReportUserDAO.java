@@ -2,13 +2,11 @@ package com.picsauditing.dao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
@@ -17,73 +15,69 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.ReportModel;
-import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.pagination.Paginatable;
-import com.picsauditing.util.pagination.PaginationParameters;
 
-public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
+public class ReportUserDAO extends PicsDAO {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportUserDAO.class);
-
-	@Transactional(propagation = Propagation.NESTED)
-	public ReportUser save(ReportUser userReport) {
-		if (userReport.getId() == 0) {
-			em.persist(userReport);
-		} else {
-			userReport = em.merge(userReport);
-		}
-
-		return userReport;
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void remove(int userId, int reportId) {
-		ReportUser userReport = findOne(userId, reportId);
-		remove(userReport);
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void remove(ReportUser userReport) {
-		if (userReport != null) {
-			em.remove(userReport);
-		}
-	}
 
 	public ReportUser findOne(int userId, int reportId) throws NoResultException, NonUniqueResultException {
 		String query = "t.user.id = " + userId + " AND t.report.id = " + reportId;
 		return findOne(ReportUser.class, query);
 	}
 
-	public ReportUser findOneByFavoriteIndex(int userId, int favoriteSortIndex) throws NoResultException, NonUniqueResultException {
-		String query = "t.user.id = " + userId + " AND t.favoriteSortIndex = " + favoriteSortIndex;
-		return findOne(ReportUser.class, query);
-	}
-
-	public List<ReportUser> findTenMostFavoritedReports(int userId) {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
+	public List<ReportUser> findTenMostFavoritedReports(Permissions permissions) {
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 		try {
-			SelectSQL sql = setupSqlForSearchFilterQuery(userId);
+			SelectSQL sql = setupSqlForSearchFilterQuery(permissions);
 
 			sql.setLimit(10);
 
 			Database db = new Database();
 			List<BasicDynaBean> results = db.select(sql.toString(), false);
-			userReports = ReportModel.populateUserReports(results);
-		} catch (SQLException se) {
-			logger.warn("SQL Exception in findTopTenFavoriteReports()", se);
+			reportUsers = populateReportUsers(results);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findTopTenFavoriteReports()");
 		}
 
-		return userReports;
+		return reportUsers;
+	}
+
+	private List<ReportUser> populateReportUsers(List<BasicDynaBean> results) {
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
+
+		for (BasicDynaBean result : results) {
+			Report report = new Report();
+
+			report.setId(Integer.parseInt(result.get("id").toString()));
+			report.setName(result.get("name").toString());
+			report.setDescription(result.get("description").toString());
+
+			Object userName = result.get("userName");
+			Object userID = result.get("userId");
+
+			if (userName != null) {
+				User user = new User(userName.toString());
+				user.setId(Integer.parseInt(userID.toString()));
+			}
+
+			report.setNumTimesFavorited(Integer.parseInt(result.get("numTimesFavorited").toString()));
+
+			ReportUser reportUser = new ReportUser(0, report);
+			Object favorite = result.get("favorite");
+			if (favorite != null)
+				reportUser.setFavorite(Boolean.parseBoolean(favorite.toString()));
+			reportUsers.add(reportUser);
+		}
+
+		return reportUsers;
 	}
 
 	public List<ReportUser> findAll(int userId) {
@@ -92,82 +86,13 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 	}
 
 	public List<ReportUser> findAllFavorite(int userId) {
-		String query = "t.user.id = " + userId + " AND favorite = 1";
-		List<ReportUser> userReports = findWhere(ReportUser.class, query);
+		String where = "t.user.id = " + userId + " AND favorite = 1";
+		String orderBy = "sortOrder";
+		int limit = 0;
 
-		Collections.sort(userReports, new Comparator<ReportUser>() {
-			@Override
-			public int compare(ReportUser ru1, ReportUser ru2) {
-				return ru1.getFavoriteSortIndex() - ru2.getFavoriteSortIndex();
-			}
-		});
+		List<ReportUser> reportUsers = findWhere(ReportUser.class, where, limit, orderBy);
 
-		return userReports;
-	}
-
-	public List<ReportUser> findAllEditable(int userId) {
-		String query = "t.user.id = " + userId + " AND editable = 1";
-		return findWhere(ReportUser.class, query);
-	}
-
-	public List<ReportUser> findAllSortByAlphaAsc(int userId) {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-
-		try {
-			userReports = findAll(userId);
-
-			// Sort by report name, ignoring case
-			Collections.sort(userReports, new Comparator<ReportUser>() {
-				@Override
-				public int compare(ReportUser ru1, ReportUser ru2) {
-					return ru1.getReport().getName().compareToIgnoreCase(ru2.getReport().getName());
-				}
-			});
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDAO.findAllUserReportsByAlpha()", e);
-		}
-
-		return userReports;
-	}
-
-	public List<ReportUser> findAllSortByAlphaDesc(int userId) {
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
-
-		try {
-			userReports = findAll(userId);
-
-			// Sort by report name, ignoring case
-			Collections.sort(userReports, new Comparator<ReportUser>() {
-				@Override
-				public int compare(ReportUser ru1, ReportUser ru2) {
-					return ru2.getReport().getName().compareToIgnoreCase(ru1.getReport().getName());
-				}
-			});
-		} catch (Exception e) {
-			logger.error("Unexpected exception in ReportDAO.findAllUserReportsByAlpha()", e);
-		}
-
-		return userReports;
-	}
-
-	public List<ReportUser> findAllSortByDateAddedAsc(int userId) {
-		String query = "t.user.id = " + userId + " ORDER BY creationDate ASC";
-		return findWhere(ReportUser.class, query);
-	}
-
-	public List<ReportUser> findAllSortByDateAddedDesc(int userId) {
-		String query = "t.user.id = " + userId + " ORDER BY creationDate DESC";
-		return findWhere(ReportUser.class, query);
-	}
-
-	public List<ReportUser> findAllSortByLastUsedAsc(int userId) {
-		String query = "t.user.id = " + userId + " ORDER BY lastOpened ASC";
-		return findWhere(ReportUser.class, query);
-	}
-
-	public List<ReportUser> findAllSortByLastUsedDesc(int userId) {
-		String query = "t.user.id = " + userId + " ORDER BY lastOpened DESC";
-		return findWhere(ReportUser.class, query);
+		return reportUsers;
 	}
 
 	public List<ReportUser> findAllByReportId(int reportId) {
@@ -175,13 +100,9 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 		return findWhere(ReportUser.class, query);
 	}
 
-	public void setEditPermissions(Report report, User user, boolean value) throws NoResultException, NonUniqueResultException {
-		ReportUser userReport = findOne(user.getId(), report.getId());
-		userReport.setEditable(value);
-		save(userReport);
-	}
-
 	public int getFavoriteCount(int userId) throws SQLException, Exception {
+		int favoriteCount = 0;
+
 		SelectSQL sql = new SelectSQL("report_user");
 		sql.addField("count(reportID) AS favoriteCount");
 		sql.addWhere("userID = " + userId + " AND favorite = 1");
@@ -189,44 +110,24 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 		Database database = new Database();
 		List<BasicDynaBean> results = database.select(sql.toString(), false);
 
-		int favoriteCount;
-
 		if (CollectionUtils.isNotEmpty(results)) {
 			Long favoriteCountLong = (Long) results.get(0).get("favoriteCount");
 			favoriteCount = favoriteCountLong.intValue();
-		} else {
-			favoriteCount = findAllFavorite(userId).size();
 		}
 
 		return favoriteCount;
 	}
 
-	public void updateLastOpened(int userId, int reportId) {
-		ReportUser userReport;
-
-		try {
-			userReport = findOne(userId, reportId);
-		} catch (NoResultException nre) {
-			// If the user is viewing a new public report, can't update this yet
-			return;
-		}
-
-		userReport.setLastOpened(new Date());
-		save(userReport);
-	}
-
+	@Transactional(propagation = Propagation.NESTED)
 	public void cascadeFavoriteReportSorting(int userId, int offset, int start, int end) throws SQLException {
-		String query = "UPDATE report_user" +
-				" SET favoriteSortIndex = favoriteSortIndex + " + offset +
-				" WHERE userID = " + userId +
-				" AND favoriteSortIndex >= " + start +
-				" AND favoriteSortIndex <= " + end;
+		String sql = "UPDATE report_user SET sortOrder = sortOrder + " + offset + " WHERE userID = " + userId
+				+ " AND sortOrder >= " + start + " AND sortOrder <= " + end;
 
-		Database database = new Database();
-		database.executeUpdate(query);
+		Query query = em.createNativeQuery(sql);
+		query.executeUpdate();
 	}
 
-	private SelectSQL setupSqlForSearchFilterQuery(int userId) {
+	public static SelectSQL setupSqlForSearchFilterQuery(Permissions permissions) {
 		SelectSQL sql = new SelectSQL("report r");
 
 		sql.addField("r.id");
@@ -234,78 +135,36 @@ public class ReportUserDAO extends PicsDAO implements Paginatable<ReportUser> {
 		sql.addField("r.description");
 		sql.addField("u.name as userName");
 		sql.addField("u.id as userId");
-		sql.addField("count(ru.favorite) as numTimesFavorited");
+		sql.addField("f.total AS numTimesFavorited");
+		sql.addField("null AS favorite");
 
-		sql.addGroupBy("r.id");
+		sql.addJoin("LEFT JOIN users AS u ON r.createdBy = u.id");
+		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
-		sql.addJoin("LEFT JOIN report_user as ru ON r.id = ru.reportID AND ru.favorite = 1");
-		sql.addJoin("JOIN users as u ON r.createdBy = u.id");
+		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
+				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getGroupHierarchyIds()) + ")"
+				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
+		sql.addWhere("r.id IN (" + permissionsUnion + ")");
 
-		sql.addOrderBy("numTimesFavorited DESC");
+		sql.addOrderBy("f.total DESC");
+		sql.addOrderBy("f.viewCount DESC");
+		sql.addOrderBy("r.creationDate");
 
 		return sql;
 	}
 
-	@Override
-	public List<ReportUser> getPaginationResults(PaginationParameters parameters) {
-		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
-		List<ReportUser> userReports = new ArrayList<ReportUser>();
+	@Transactional(propagation = Propagation.NESTED)
+	public void resetSortOrder(int userId) throws SQLException {
+		String sql = "UPDATE report_user ru " +
+				"JOIN (SELECT t.id FROM report_user t " +
+				"		JOIN (SELECT @row := 0) r " +
+				"		WHERE favorite = 1 " +
+				"		AND userID = " + userId + 
+				"		ORDER BY userID, sortOrder) AS t ON ru.id = t.id " +
+				" SET sortOrder = @row := @row + 1";
 
-		// TODO escape properly
-		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
-
-		try {
-			SelectSQL sql = setupSqlForSearchFilterQuery(reportParams.getUserId());
-
-			sql.addWhere("r.name LIKE " + query +
-					" OR r.description LIKE " + query +
-					" OR u.name LIKE " + query);
-
-			sql.setPageNumber(reportParams.getPageSize(), reportParams.getPage());
-
-			Database db = new Database();
-			List<BasicDynaBean> results = db.select(sql.toString(), false);
-			userReports = ReportModel.populateUserReports(results);
-		} catch (SQLException se) {
-			logger.error("SQL Exception in getPaginationResults()", se);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in getPaginationResults()");
-		}
-
-		return userReports;
+		Database db = new Database();
+		db.executeUpdate(sql);
 	}
 
-	@Override
-	public int getPaginationOverallCount(PaginationParameters parameters) {
-		ReportPaginationParameters reportParams = (ReportPaginationParameters) parameters;
-
-		// TODO escape properly
-		String query = "\"%" + Strings.escapeQuotes(reportParams.getQuery()) + "%\"";
-
-		try {
-			SelectSQL sql = new SelectSQL("report r");
-
-			sql.addField("count(r.id) AS count");
-
-			sql.addJoin("JOIN users as u ON r.createdBy = u.id");
-
-			sql.addWhere("r.name LIKE " + query +
-					" OR r.description LIKE " + query +
-					" OR u.name LIKE " + query);
-
-			Database db = new Database();
-			List<BasicDynaBean> results = db.select(sql.toString(), false);
-			String countStr = results.get(0).get("count").toString();
-
-			return Integer.parseInt(countStr);
-		} catch (SQLException se) {
-			logger.error("SQL Exception in getPaginationOverallCount()", se);
-		} catch (NumberFormatException nfe) {
-			logger.error("Number Format Exception in getPaginationOverallCount()", nfe);
-		} catch (Exception e) {
-			logger.error("Unexpected exception in getPaginationOverallCount()", e);
-		}
-
-		return -1;
-	}
 }

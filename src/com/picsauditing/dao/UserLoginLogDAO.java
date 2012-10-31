@@ -38,9 +38,9 @@ public class UserLoginLogDAO extends PicsDAO {
 		query.setParameter("userID", userID);
 		query.setFirstResult(startIndex);
 		query.setMaxResults(maxResults);
-		return  query.getResultList();
+		return query.getResultList();
 	}
-	
+
 	public List<UserLoginLog> findRecentLogins(int userID, int maxResults) {
 		return findRecentLogins(userID, 0, maxResults);
 	}

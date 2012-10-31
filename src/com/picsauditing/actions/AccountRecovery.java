@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
@@ -105,7 +106,10 @@ public class AccountRecovery extends PicsActionSupport {
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			userDAO.save(user);
 
-			addAlertMessage(sendRecoveryEmail(user));
+			String recoveryEmailStatus = sendRecoveryEmail(user);
+
+			addAlertMessage(recoveryEmailStatus);
+			setAlertMessageHeader(getText("global.Email") + " " + getText("global.Sent"));
 
 			return setUrlForRedirect("Login.action");
 
@@ -116,14 +120,18 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 
 	public String sendRecoveryEmail(User user) {
+		String recoveryEmailStatus = "";
+
 		try {
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
+					"http://", "https://");
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("user", user);
 
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+			String confirmLink = serverName + "Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
@@ -133,21 +141,28 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue.setCriticalPriority();
 
 			emailSender.send(emailQueue);
-			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
+
+			// TODO change this to remove the parameterized email after all languages are translated
+//			recoveryEmailStatus = getText("AccountRecovery.EmailSent");
+			recoveryEmailStatus = getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
-			return getText("AccountRecovery.error.ResetEmailError");
+			recoveryEmailStatus = getText("AccountRecovery.error.ResetEmailError");
 		}
+
+		return recoveryEmailStatus;
 	}
 
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
+					"http://", "https://");
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+			String confirmLink = serverName + "Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());

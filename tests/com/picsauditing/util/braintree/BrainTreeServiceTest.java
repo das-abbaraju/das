@@ -194,6 +194,56 @@ public class BrainTreeServiceTest {
 		assertEquals(testPayment.getTransactionID(), TESTING_TRANSACTION_ID);
 	}
 
+	@Test
+	public void processPayment_norwegian_withInvoice () throws Exception {
+		setUpDAOForProcessors();
+		testPayment.setCurrency(Currency.NOK);
+		when(mockContentProvider.getResponseFrom(anyString())).thenReturn(POSITIVE_RESPONSE_TEXT);
+		
+		assertTrue(upperclassUnderTest.processPayment(testPayment, testInvoice));
+		
+		verify(mockContentProvider).getResponseFrom(NORWEGIAN_TEST_STRING_WITH_INVOICE);
+		assertEquals(testPayment.getTransactionID(), TESTING_TRANSACTION_ID);
+	}
+
+	@Test
+	public void processPayment_danish_withInvoice () throws Exception {
+		setUpDAOForProcessors();
+		testPayment.setCurrency(Currency.DKK);
+		when(mockContentProvider.getResponseFrom(anyString())).thenReturn(POSITIVE_RESPONSE_TEXT);
+		
+		assertTrue(upperclassUnderTest.processPayment(testPayment, testInvoice));
+		
+		verify(mockContentProvider).getResponseFrom(DANISH_TEST_STRING_WITH_INVOICE);
+		assertEquals(testPayment.getTransactionID(), TESTING_TRANSACTION_ID);
+	}
+
+	@Test
+	public void processPayment_southAfrican_withInvoice () throws Exception {
+		setUpDAOForProcessors();
+		testPayment.setCurrency(Currency.ZAR);
+		when(mockContentProvider.getResponseFrom(anyString())).thenReturn(POSITIVE_RESPONSE_TEXT);
+		
+		assertTrue(upperclassUnderTest.processPayment(testPayment, testInvoice));
+		
+		verify(mockContentProvider).getResponseFrom(SOUTHAFRICAN_TEST_STRING_WITH_INVOICE);
+		assertEquals(testPayment.getTransactionID(), TESTING_TRANSACTION_ID);
+	}
+
+	@Test
+	public void processPayment_swedish_withInvoice () throws Exception {
+		setUpDAOForProcessors();
+		testPayment.setCurrency(Currency.SEK);
+		when(mockContentProvider.getResponseFrom(anyString())).thenReturn(POSITIVE_RESPONSE_TEXT);
+		
+		assertTrue(upperclassUnderTest.processPayment(testPayment, testInvoice));
+		
+		verify(mockContentProvider).getResponseFrom(SWEDISH_TEST_STRING_WITH_INVOICE);
+		assertEquals(testPayment.getTransactionID(), TESTING_TRANSACTION_ID);
+	}
+
+
+
 	@Test(expected=BrainTreeCardDeclinedException.class)
 	public void processPayment_us_noInvoice_failure () throws Exception {
 		setUpDAOForProcessors();
@@ -247,15 +297,27 @@ public class BrainTreeServiceTest {
 		AppProperty property1 = new AppProperty(),
 					property2 = new AppProperty(),
 					property3 = new AppProperty(),
-					property4 = new AppProperty();
+					property4 = new AppProperty(),
+					property5 = new AppProperty(),
+					property6 = new AppProperty(),
+					property7 = new AppProperty(),
+					property8 = new AppProperty();
 		property1.setValue("canadaprocessor");
 		property2.setValue("britainprocessor");
 		property3.setValue("europrocessor");
 		property4.setValue("usprocessor");
+		property5.setValue("dkkprocessor");
+		property6.setValue("nokprocessor");
+		property7.setValue("sekprocessor");
+		property8.setValue("zarprocessor");
 		when(mockDao.find("brainTree.processor_id.canada")).thenReturn(property1);
 		when(mockDao.find("brainTree.processor_id.gbp")).thenReturn(property2);
 		when(mockDao.find("brainTree.processor_id.eur")).thenReturn(property3);
 		when(mockDao.find("brainTree.processor_id.us")).thenReturn(property4);
+		when(mockDao.find("brainTree.processor_id.dkk")).thenReturn(property5);
+		when(mockDao.find("brainTree.processor_id.nok")).thenReturn(property6);
+		when(mockDao.find("brainTree.processor_id.sek")).thenReturn(property7);
+		when(mockDao.find("brainTree.processor_id.zar")).thenReturn(property8);
 	}
 
 
@@ -297,5 +359,12 @@ public class BrainTreeServiceTest {
 			"https://secure.braintreepaymentgateway.com/api/transact.php?type=sale&customer_vault_id=5&amount=12.09&currency=EUR&processor_id=europrocessor&order_id=5&username=foo&password=bar";
 	private static final String GBP_TEST_STRING_WITHOUT_INVOICE =
 			"https://secure.braintreepaymentgateway.com/api/transact.php?type=sale&customer_vault_id=5&amount=12.09&currency=GBP&processor_id=britainprocessor&username=foo&password=bar";
-
+	private static final String DANISH_TEST_STRING_WITH_INVOICE = 
+			"https://secure.braintreepaymentgateway.com/api/transact.php?type=sale&customer_vault_id=5&amount=12.09&currency=DKK&processor_id=dkkprocessor&order_id=5&username=foo&password=bar";
+	private static final String SOUTHAFRICAN_TEST_STRING_WITH_INVOICE = 
+			"https://secure.braintreepaymentgateway.com/api/transact.php?type=sale&customer_vault_id=5&amount=12.09&currency=ZAR&processor_id=zarprocessor&order_id=5&username=foo&password=bar";
+	private static final String NORWEGIAN_TEST_STRING_WITH_INVOICE = 
+			"https://secure.braintreepaymentgateway.com/api/transact.php?type=sale&customer_vault_id=5&amount=12.09&currency=NOK&processor_id=nokprocessor&order_id=5&username=foo&password=bar";
+	private static final String SWEDISH_TEST_STRING_WITH_INVOICE =
+			"https://secure.braintreepaymentgateway.com/api/transact.php?type=sale&customer_vault_id=5&amount=12.09&currency=SEK&processor_id=sekprocessor&order_id=5&username=foo&password=bar";
 }

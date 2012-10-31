@@ -1,20 +1,25 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 
 public class UserTable extends AbstractTable {
+	public static final String Account = "Account";
 
-	public UserTable(String alias, String foreignKey) {
-		super("users", alias, alias, alias + ".id = " + foreignKey);
-		includedColumnImportance = FieldImportance.Average;
+	public UserTable() {
+		super("users");
+		addPrimaryKey(FieldType.UserID);
+		addFields(User.class);
+		
+		Field creationDate = new Field("CreationDate", "creationDate", FieldType.Date);
+		addField(creationDate);
+
 	}
 
-	public void addFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.UserID);
-		addFields(com.picsauditing.jpa.entities.User.class);
-	}
-
-	public void addJoins() {
-		addJoin(new AccountTable(prefix + "Account", alias + ".accountID"));
+	protected void addJoins() {
+		ReportForeignKey accountKey = new ReportForeignKey(Account, new AccountTable(), new ReportOnClause("accountID"));
+		accountKey.setMinimumImportance(FieldImportance.Average);
+		addOptionalKey(accountKey);
 	}
 }

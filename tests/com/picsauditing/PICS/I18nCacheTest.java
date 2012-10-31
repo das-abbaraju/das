@@ -1,66 +1,47 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.Locale;
-import java.util.Map;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.search.Database;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ActionContext.class})
-public class I18nCacheTest {
-
-	I18nCache i18nCache;
+public class I18nCacheTest extends PicsActionTest {
+	
+	private I18nCache i18nCacheToTest;
 
 	private final Locale FOREIGN_LOCALE = Locale.CANADA;
-
-	@Mock private Database databaseForTesting;
-	@Mock private Permissions permissions;
-	@Mock private ActionContext actionContext;
-	Map<String, Object> fakeSession;
-
-
-	@AfterClass
-	public static void classTearDown() {
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
-	}
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		PowerMockito.mockStatic(ActionContext.class);
-		PowerMockito.when(ActionContext.getContext()).thenReturn(actionContext);
+		super.setupMocks();
+		i18nCacheToTest = I18nCache.getInstance();
 
-		fakeSession = new HashMap<String, Object>();
-		fakeSession.put("permissions", permissions);
-		when(actionContext.getSession()).thenReturn(fakeSession);
 		when(permissions.getUserId()).thenReturn(1);
+	}
 
-		when(actionContext.getParameters()).thenReturn(fakeSession);
-
-		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", databaseForTesting);
-
-		i18nCache = I18nCache.getInstance();
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
 	}
 
 	@Test
@@ -93,14 +74,14 @@ public class I18nCacheTest {
 		translationToTest.setValue(value);
 		translationToTest.setQualityRating(TranslationQualityRating.Good);
 
-		assertEquals(expectedQuery, Whitebox.invokeMethod(i18nCache, "buildInsertStatement", translationToTest));
+		assertEquals(expectedQuery, Whitebox.invokeMethod(i18nCacheToTest, "buildInsertStatement", translationToTest));
 	}
 
 	@Test
 	public void testGetText_MissingKeyShouldNotReturnNull() {
 		String key = "INVALID_KEY";
 
-		String value = i18nCache.getText(key, Locale.ENGLISH);
+		String value = i18nCacheToTest.getText(key, Locale.ENGLISH);
 
 		assertNotNull(value);
 	}
@@ -110,7 +91,7 @@ public class I18nCacheTest {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 		String key = "INVALID_KEY";
 
-		String value = i18nCache.getText(key, Locale.ENGLISH);
+		String value = i18nCacheToTest.getText(key, Locale.ENGLISH);
 
 		assertEquals(key, value);
 	}
@@ -120,7 +101,7 @@ public class I18nCacheTest {
 		when(permissions.isPicsEmployee()).thenReturn(false);
 		String key = "INVALID_KEY";
 
-		String value = i18nCache.getText(key, Locale.ENGLISH);
+		String value = i18nCacheToTest.getText(key, Locale.ENGLISH);
 
 		assertEquals("", value);
 	}
@@ -130,7 +111,7 @@ public class I18nCacheTest {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 		String key = "INVALID_KEY";
 
-		String value = i18nCache.getText(key, FOREIGN_LOCALE);
+		String value = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
 	}
@@ -140,7 +121,7 @@ public class I18nCacheTest {
 		when(permissions.isPicsEmployee()).thenReturn(false);
 		String key = "INVALID_KEY";
 
-		String value = i18nCache.getText(key, FOREIGN_LOCALE);
+		String value = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
 		assertEquals("", value);
 	}
@@ -149,18 +130,18 @@ public class I18nCacheTest {
 	public void testGetText_MissingKeyShouldNotInsertIntoDatabase() {
 		String key = "INVALID_KEY";
 
-		i18nCache.getText(key, Locale.ENGLISH);
+		i18nCacheToTest.getText(key, Locale.ENGLISH);
 
-		assertFalse(i18nCache.hasKey(key, Locale.ENGLISH));
+		assertFalse(i18nCacheToTest.hasKey(key, Locale.ENGLISH));
 	}
 
 	@Test
 	public void testGetText_MissingKeyForeignLocaleShouldNotInsertIntoDatabase() {
 		String key = "INVALID_KEY";
 
-		i18nCache.getText(key, FOREIGN_LOCALE);
+		i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
-		assertFalse(i18nCache.hasKey(key, FOREIGN_LOCALE));
+		assertFalse(i18nCacheToTest.hasKey(key, FOREIGN_LOCALE));
 	}
 
 	@Test
@@ -168,10 +149,10 @@ public class I18nCacheTest {
 		String key = "VALID_KEY";
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), "VALID_TRANSLATION");
-		Whitebox.setInternalState(i18nCache, "cache", cache);
+		Whitebox.setInternalState(i18nCacheToTest, "cache", cache);
 
-		String englishValue = i18nCache.getText(key, Locale.ENGLISH);
-		String foriegnValue = i18nCache.getText(key, FOREIGN_LOCALE);
+		String englishValue = i18nCacheToTest.getText(key, Locale.ENGLISH);
+		String foriegnValue = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(englishValue, foriegnValue);
 	}
@@ -182,9 +163,9 @@ public class I18nCacheTest {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
-		Whitebox.setInternalState(i18nCache, "cache", cache);
+		Whitebox.setInternalState(i18nCacheToTest, "cache", cache);
 
-		String value = i18nCache.getText(key, Locale.ENGLISH);
+		String value = i18nCacheToTest.getText(key, Locale.ENGLISH);
 
 		assertEquals(key, value);
 	}
@@ -195,9 +176,9 @@ public class I18nCacheTest {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
-		Whitebox.setInternalState(i18nCache, "cache", cache);
+		Whitebox.setInternalState(i18nCacheToTest, "cache", cache);
 
-		String value = i18nCache.getText(key, FOREIGN_LOCALE);
+		String value = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
 	}
@@ -208,10 +189,10 @@ public class I18nCacheTest {
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), "VALID_TRANSLATION");
 		cache.put(key, FOREIGN_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
-		Whitebox.setInternalState(i18nCache, "cache", cache);
+		Whitebox.setInternalState(i18nCacheToTest, "cache", cache);
 
-		String foreignValue = i18nCache.getText(key, FOREIGN_LOCALE);
-		String englishValue = i18nCache.getText(key, Locale.ENGLISH);
+		String foreignValue = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
+		String englishValue = i18nCacheToTest.getText(key, Locale.ENGLISH);
 
 		assertEquals(englishValue, foreignValue);
 	}
@@ -223,9 +204,9 @@ public class I18nCacheTest {
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
 		cache.put(key, FOREIGN_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
-		Whitebox.setInternalState(i18nCache, "cache", cache);
+		Whitebox.setInternalState(i18nCacheToTest, "cache", cache);
 
-		String value = i18nCache.getText(key, Locale.ENGLISH);
+		String value = i18nCacheToTest.getText(key, Locale.ENGLISH);
 
 		assertEquals(key, value);
 	}
@@ -237,10 +218,34 @@ public class I18nCacheTest {
 		Table<String, String, String> cache = TreeBasedTable.create();
 		cache.put(key, Locale.ENGLISH.toString(), I18nCache.DEFAULT_TRANSLATION);
 		cache.put(key, FOREIGN_LOCALE.toString(), I18nCache.DEFAULT_TRANSLATION);
-		Whitebox.setInternalState(i18nCache, "cache", cache);
+		Whitebox.setInternalState(i18nCacheToTest, "cache", cache);
 
-		String value = i18nCache.getText(key, FOREIGN_LOCALE);
+		String value = i18nCacheToTest.getText(key, FOREIGN_LOCALE);
 
 		assertEquals(key, value);
+	}
+	
+	/**
+	 * The purpose of this test is to verify that in the event a SQLException is thrown while
+	 * reading data from the database, the cache in the i18n cache will not be null.
+	 * 
+	 * This test is purposely sets the internal INSTANCE field to "null" and adds in a specific
+	 * mock database, overriding the behavior of the setup() method and the super class's setupMocks()
+	 * method in order to verify that a non-null cache instance is created.
+	 * 
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testFailedCacheBuildCreatesEmptyCache() throws SQLException {
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
+		
+		Database mockDatabase = Mockito.mock(Database.class);
+		when(mockDatabase.select(anyString(), anyBoolean())).thenThrow(new SQLException("SQL Error for JUnit test"));
+		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", mockDatabase);
+		
+		Table<String, String, String> cache = Whitebox.getInternalState(i18nCacheToTest, "cache");
+		
+		assertNotNull(cache);
+		assertEquals(0, cache.size());
 	}
 }

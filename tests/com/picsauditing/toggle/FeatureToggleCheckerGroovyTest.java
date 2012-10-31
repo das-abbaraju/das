@@ -8,12 +8,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.startsWith;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 import net.sf.ehcache.Cache;
@@ -21,6 +21,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -30,7 +31,9 @@ import org.slf4j.Logger;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class FeatureToggleCheckerGroovyTest {
 	private FeatureToggleCheckerGroovy featureToggleCheckerGroovy;
@@ -74,6 +77,48 @@ public class FeatureToggleCheckerGroovyTest {
 		cache.removeAll();
 	}
 
+	@Ignore("too slow to run every time")
+	@Test
+	public void testScriptWithDynamicVariable_True() throws Exception {
+		boolean result = dynamicContractorScript(1, 22107);
+		assertTrue(result);
+		result = dynamicContractorScript(22107, 222);
+		assertTrue(result);
+		result = dynamicContractorScript(1, 222);
+		assertTrue(result);
+	}
+
+	@Ignore("too slow to run every time")
+	@Test
+	public void testScriptWithDynamicVariable_False() throws Exception {
+		boolean result = dynamicContractorScript(1, 2);
+		assertFalse(result);
+	}
+
+	private boolean dynamicContractorScript(int opId1, int opId2) {
+		String scriptBody =
+				"return contractor.operatorAccounts.find {it.id in [22107, 222] } != null";
+
+		ContractorAccount contractor = mock(ContractorAccount.class);
+		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+		// OperatorAccount op1 = mock(OperatorAccount.class);
+		// when(op1.getId()).thenReturn(opId1);
+		OperatorAccount op1 = new OperatorAccount();
+		op1.setId(opId1);
+		operators.add(op1);
+		// OperatorAccount op2 = mock(OperatorAccount.class);
+		// when(op2.getId()).thenReturn(opId2);
+		OperatorAccount op2 = new OperatorAccount();
+		op2.setId(opId2);
+		operators.add(op2);
+
+		when(contractor.getOperatorAccounts()).thenReturn(operators);
+		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn(scriptBody);
+
+		featureToggleCheckerGroovy.addToggleVariable("contractor", contractor);
+		return featureToggleCheckerGroovy.isFeatureEnabled(toggleName);
+	}
+
 	@Test
 	public void testIsFeatureEnabled_Happy() throws Exception {
 		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn("true");
@@ -106,7 +151,6 @@ public class FeatureToggleCheckerGroovyTest {
 				"permissions.username.equals('foo')");
 		Boolean result = Whitebox.invokeMethod(featureToggleCheckerGroovy, "runScript", toggleName, script);
 		assertFalse(result);
-		verify(logger).error(anyString(), anyString());
 	}
 
 	@Test
@@ -116,7 +160,6 @@ public class FeatureToggleCheckerGroovyTest {
 		Script script = Whitebox.invokeMethod(featureToggleCheckerGroovy, "createScript", "2");
 		Boolean result = Whitebox.invokeMethod(featureToggleCheckerGroovy, "runScript", toggleName, script);
 		assertFalse(result);
-		verify(logger).error(startsWith("Toggle script returned a non-boolean result"));
 	}
 
 	@Test

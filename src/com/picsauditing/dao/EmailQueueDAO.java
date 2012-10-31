@@ -13,10 +13,13 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class EmailQueueDAO extends PicsDAO {
+	private Database database;
+
 	@Transactional(propagation = Propagation.NESTED)
 	public EmailQueue save(EmailQueue o) {
 		if (o.getId() == 0) {
@@ -152,15 +155,32 @@ public class EmailQueueDAO extends PicsDAO {
 	}
 
 	public void addEmailAddressExclusions(String email) throws SQLException {
-		Database db = new Database();
-		String sql = "INSERT INTO email_exclusion (email,createdBy,creationDate,updatedBy,updateDate)" + " VALUES ('"
-				+ email + "', 1, NOW(), 1, NOW())";
-		db.executeInsert(sql);
+		addEmailAddressExclusions(email, 1);
+	}
+
+	private Database database(){
+		database = new Database();
+		return database;
+	}
+
+	public void addEmailAddressExclusions(String email, int userID) throws SQLException {
+		if (EmailAddressUtils.isValidEmail(email) && !findActiveUserEmail(email) && !findEmailAddressExclusionAlreadyExists(email)){
+			String sql = "INSERT INTO email_exclusion (email,createdBy,creationDate,updatedBy,updateDate)" + " VALUES ('"
+					+ email + "',"+ userID+", NOW(),"+ userID+", NOW())";
+			database().executeInsert(sql);
+		}
 	}
 
 	public void removeEmailAddressExclusions(String email) throws SQLException {
-		Database db = new Database();
-		String sql = "DELETE FROM email_exclusion " + " WHERE email = '" + email + "'";
-		db.executeUpdate(sql);
+		if (EmailAddressUtils.isValidEmail(email)){
+			String sql = "DELETE FROM email_exclusion " + " WHERE email = '" + email + "'";
+			database().executeUpdate(sql);
+		}
+	}
+
+	private boolean findActiveUserEmail(String email) throws SQLException{
+		String sql = "SELECT DISTINCT email FROM users WHERE email = '" + email + "' and isActive='Yes' and isGroup='No'";
+		Query query = em.createNativeQuery(sql);
+		return (query.getResultList().size() > 0);
 	}
 }

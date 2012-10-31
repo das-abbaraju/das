@@ -21,5 +21,9 @@ Ext.define('PICS.model.report.Filter', {
         // filter value
         name: 'value',
         type: 'string'
+    }, {
+        // filter value
+        name: 'fieldCompare',
+        type: 'string'
     }]
 });

@@ -32,10 +32,30 @@ public class TranslationActionSupport extends ActionSupport {
 	static final protected String i18nTracing = "i18nTracing";
 
 	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
-	private static final Locale[] supportedLocales = new Locale[] { Locale.ENGLISH, Locale.FRENCH, new Locale("es"),
-			Locale.GERMAN, new Locale("sv"), new Locale("fi"), new Locale("nl"), new Locale("no"), new Locale("pt") };
+	private static Locale[] supportedLocales = null;
+
+	public static final List<KeyValue> supportedLocaleList = new ArrayList<KeyValue>() {
+		{
+			add(new KeyValue("en", "English"));
+			add(new KeyValue("fr", "Français"));
+			add(new KeyValue("es", "Español"));
+			add(new KeyValue("de", "Deutsch"));
+			add(new KeyValue("sv", "Svenska"));
+			add(new KeyValue("fi", "Suomi"));
+			add(new KeyValue("nl", "Nederlands"));
+			add(new KeyValue("no", "Norsk"));
+			add(new KeyValue("pt", "Português"));
+		}
+	};
 
 	public static Locale[] getSupportedLocales() {
+		if (supportedLocales == null) {
+			supportedLocales = new Locale[supportedLocaleList.size()];
+			for (int i = 0; i < supportedLocales.length; i++) {
+				KeyValue kv = supportedLocaleList.get(i);
+				supportedLocales[i] = new Locale(kv.getKey());
+			}
+		}
 		return supportedLocales;
 	}
 
@@ -341,5 +361,31 @@ public class TranslationActionSupport extends ActionSupport {
 		Map<Locale, String> sortedTranslationMap = new TreeMap<Locale, String>(displayNameComparator);
 		sortedTranslationMap.putAll(newTranslationMap);
 		return sortedTranslationMap;
+	}
+	
+	private static class KeyValue {
+		private String key;
+		private String value;
+
+		public KeyValue(String key, String value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
 	}
 }
