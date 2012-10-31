@@ -193,7 +193,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	public String activate() throws Exception {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("account", employee.getAccount().getId());
+		parameters.put("account", account);
 
 		if (employee != null) {
 			employee.setStatus(UserStatus.Active);

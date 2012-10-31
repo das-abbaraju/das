@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -60,6 +61,7 @@ import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTagCategory;
 import com.picsauditing.jpa.entities.UserStatus;
+import com.picsauditing.util.URLUtils;
 
 public class ManageEmployeesTest extends PicsActionTest {
 	private ManageEmployees manageEmployees;
@@ -72,6 +74,8 @@ public class ManageEmployeesTest extends PicsActionTest {
 	private EntityManager entityManager;
 	@Mock
 	private Query query;
+	@Mock
+	private URLUtils urlUtil;
 
 	@Before
 	public void setUp() throws Exception {
@@ -85,6 +89,8 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 		setUpEmployeeAndAccount();
 
+		Whitebox.setInternalState(manageEmployees, "urlUtil", urlUtil);
+
 		doAnswer(new Answer<Object>() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -93,6 +99,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 		}).when(entityManager).persist(any(Employee.class));
 
 		when(entityManager.createQuery(anyString())).thenReturn(query);
+		when(urlUtil.getActionUrl(anyString(), any(Map.class))).thenReturn("URL");
 	}
 
 	@Test(expected = NoRightsException.class)

@@ -385,13 +385,20 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private boolean areAllHSEJobRoleQuestionsAnswered(int currentQuestionId, ContractorAccount contractor) {
 		if (currentQuestionId == 3669) {
-			if (contractor.getJobRoles().isEmpty()) {
+			boolean allInactive = true;
+			for (JobRole jobRole : contractor.getJobRoles()) {
+				if (jobRole.isActive()) {
+					allInactive = false;
+				}
+			}
+
+			if (contractor.getJobRoles().isEmpty() || allInactive) {
 				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRole"));
 				return false;
 			}
 		} else if (currentQuestionId == 3675) {
 			for (JobRole role : contractor.getJobRoles()) {
-				if (role.getJobCompetencies().isEmpty()) {
+				if (role.isActive() && role.getJobCompetencies().isEmpty()) {
 					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.CompetencyForEachJobRole"));
 					return false;
 				}
@@ -718,9 +725,9 @@ public class AuditDataSave extends AuditActionSupport {
 
 			try {
 				BigDecimal value = new BigDecimal(answer);
-				if (isInvalidNegativeNumber(value, question)){
+				if (isInvalidNegativeNumber(value, question)) {
 					addActionError(getText("Audit.message.InvalidNegativeNumber"));
-					return false;					
+					return false;
 				}
 				auditData.setAnswer(format.format(value));
 			} catch (Exception ignore) {
@@ -741,12 +748,11 @@ public class AuditDataSave extends AuditActionSupport {
 		return true;
 	}
 
-	private boolean isInvalidNegativeNumber(BigDecimal value,
-			AuditQuestion question) {
+	private boolean isInvalidNegativeNumber(BigDecimal value, AuditQuestion question) {
 		if (question.getId() == AuditQuestion.EMR && value.floatValue() < 0.0f) {
 			return true;
 		}
-			
+
 		return false;
 	}
 

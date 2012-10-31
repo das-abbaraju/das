@@ -1,6 +1,7 @@
 update operator_tag
 set category = 'CompetencyReview'
-where tag = 'HSE Competency';
+where tag = 'HSE Competency'
+or id = 142;
 
 update operator_tag
 set category = 'OperatorQualification'

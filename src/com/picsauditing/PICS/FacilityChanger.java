@@ -294,8 +294,9 @@ public class FacilityChanger {
 		contractor.setRequiresCompetencyReview(false);
 		if (requiresCompetency) {
 			for (ContractorTag tag : contractor.getOperatorTags()) {
-				if (tag.getTag().getId() == OperatorTag.SHELL_COMPETENCY_REVIEW)
+				if (tag.getTag().getCategory().isCompetencyReview()) {
 					contractor.setRequiresCompetencyReview(true);
+				}
 			}
 		}
 	}
