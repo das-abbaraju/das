@@ -1,0 +1,1 @@
+delete from ref_trade where ref_trade.id = 22242;
