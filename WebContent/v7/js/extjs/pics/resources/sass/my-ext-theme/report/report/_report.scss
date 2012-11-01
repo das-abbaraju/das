@@ -116,11 +116,11 @@ $report_data_cell_link_color: #226396;
 
 	.x-grid-empty
 	{
-		color: #ccc;
-		font-size: 34px;
+		color: #dcdcdc;
+		font-size: 35px;
 		margin-top: 100px;
 		text-align: center;
-		@include text-shadow(rgba(0,0,0,0.5) -1px 0, rgba(0,0,0,0.3) 0 -1px, rgba(255,255,255,0.5) 0 1px);
+		@include text-shadow(rgba(153,153,153,0.5) -1px 0, rgba(153,153,153,0.3) 0 -1px, rgba(255,255,255,0.5) 0 1px);
 	}
 }
 
