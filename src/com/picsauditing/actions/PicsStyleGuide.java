@@ -11,6 +11,11 @@ public class PicsStyleGuide extends PicsActionSupport {
 	}
 
 	@Anonymous
+	public String alerts() {
+		return "alerts";
+	}
+
+	@Anonymous
 	public String buttons() {
 		return "buttons";
 	}

@@ -5,7 +5,7 @@
     <s:param name="title">PICS Style Guide</s:param>
 </s:include>
 
-<s:include value="/struts/style_guide/_menu.jsp" />
+<s:include value="/struts/style-guide/_style-guide-menu.jsp" />
 
 <%-- URL --%>
 <s:url action="PicsStyleGuide" method="forms" var="pics_style_guide_forms" />

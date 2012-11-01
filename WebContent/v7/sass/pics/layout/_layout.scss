@@ -11,13 +11,6 @@ body
     }
 }
 
-@media (max-width: 767px) {
-    .alert[class*="offset"]
-    {
-        margin: 0;
-    }
-}
-
 @import 'environment';
 @import 'menu';
 @import "page-header";

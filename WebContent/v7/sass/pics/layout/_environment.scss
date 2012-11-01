@@ -1,6 +1,8 @@
 #environment
 {
+    background: #333;
     @include background-image(linear-gradient(#252525, #333));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525', endColorstr='#ff333333', GradientType=0);
     color: #f1f1f2;
     height: 26px;
     line-height: 26px;
@@ -69,6 +71,6 @@
     
     #environment .active
     {
-    	display: inline;
+        display: inline;
     }
 }

@@ -14,7 +14,7 @@
             </button>
             
             <div class="nav-collapse collapse">
-                <a class="brand" href="/"><img src="/v7/img/logo.svg" /></a>
+                <a class="brand" href="/"></a>
                 
                 <ul class="nav">
                     <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)" />

@@ -17,6 +17,7 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
         <link rel="stylesheet" href="v7/css/style.css">
+        <!--[if lt IE 8]><link rel="stylesheet" href="v7/css/vendor/font-awesome-ie7.css"><![endif]-->
         
         <script src="v7/js/vendor/modernizr-2.6.1.min.js"></script>
     </head>

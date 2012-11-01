@@ -1169,11 +1169,13 @@
 		</action>
 
 		<action name="PicsStyleGuide" class="com.picsauditing.actions.PicsStyleGuide">
-			<result>/struts/style_guide/dashboard.jsp</result>
-			<result name="buttons">/struts/style_guide/buttons.jsp</result>
-			<result name="forms">/struts/style_guide/forms.jsp</result>
-			<result name="pills">/struts/style_guide/pills.jsp</result>
+			<result>/struts/style-guide/dashboard.jsp</result>
+			<result name="alerts">/struts/style-guide/alerts.jsp</result>
+			<result name="buttons">/struts/style-guide/buttons.jsp</result>
+			<result name="forms">/struts/style-guide/forms.jsp</result>
+			<result name="pills">/struts/style-guide/pills.jsp</result>
 		</action>
+		
 		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
 			<result>struts/users/login.jsp</result>
 		</action>
