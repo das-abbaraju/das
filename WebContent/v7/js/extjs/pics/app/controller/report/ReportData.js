@@ -4,6 +4,9 @@ Ext.define('PICS.controller.report.ReportData', {
     refs: [{
         ref: 'reportPagingToolbar',
         selector: 'reportpagingtoolbar'
+    },{
+        ref: 'reportData',
+        selector: 'reportdata'
     }],
 
     stores: [
@@ -59,6 +62,11 @@ Ext.define('PICS.controller.report.ReportData', {
             refreshreportdisplayinfo: this.onRefreshReportDisplayInfo,
             scope: this
         });
+
+        this.application.on({
+            noresultsmessageremove: this.onNoResultsMessageRemove,
+            scope: this
+        })
     },
 
     // find index position of the grid column starting after the row numberer (row number)
@@ -209,6 +217,16 @@ Ext.define('PICS.controller.report.ReportData', {
         }));
 
         this.application.fireEvent('refreshreport');
+    },
+
+    onNoResultsMessageRemove: function (cmp, eOpts) {
+        var report_data_view = this.getReportData().view,
+            store = report_data_view.getStore();
+
+        if (store.getCount() == 0) {
+            report_data_view.emptyText = '';
+            report_data_view.refresh();
+        }
     },
 
     onRefreshReportDisplayInfo: function () {

@@ -75,12 +75,9 @@ Ext.define('PICS.controller.report.Report', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_name = report.get('name'),
-            report_data_store = this.getReportReportDatasStore(),
-            report_data_view = Ext.getCmp('report_data').view;
+            report_data_store = this.getReportReportDatasStore();
 
-        // Remove the 'no results' message.
-        report_data_view.emptyText = '';
-        report_data_view.refresh();
+        this.application.fireEvent('noresultsmessageremove');
         
         this.setPageTitle(report_name);
         

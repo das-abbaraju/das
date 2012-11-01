@@ -519,15 +519,11 @@ Ext.define('PICS.controller.report.Filter', {
     onFilterValueInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('value', cmp.getSubmitValue());
-        console.log("onFilterValueInputBlur");
-        console.log(filter.record);
     },
 
     onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('fieldCompare', cmp.getSubmitValue());
-        console.log("onFilterFieldCompareInputBlur");
-        console.log(filter.record);
     },
     
     onFilterValueInputSpecialKey: function (cmp, event) {
