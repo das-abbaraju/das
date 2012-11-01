@@ -80750,7 +80750,6 @@ Ext.define('PICS.store.report.ReportDatas', {
         },
         listeners: {
             exception: function (proxy, response, operation, eOpts) {
-            	console.log(proxy, response, operation, eOpts);
                 if (operation.success == false) {
                     Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
                 }
@@ -91335,6 +91334,22 @@ Ext.define('PICS.view.report.report.ReportData', {
 
             this.createHeaderMenu(menu);
         }, this);
+
+        this.on('reconfigure', function (cmp) {
+            var store = cmp.getStore();
+
+            cmp.columns[0].setHeight(23);
+
+            store.on('load', function () {
+                if (store.getCount() == 0) {
+                    cmp.view.emptyText = '<div class="x-grid-empty">no results</div>';
+                } else {
+                    cmp.view.emptyText = '';
+                }
+
+                cmp.view.refresh();
+            });
+        }, this);
     },
 
     createHeaderMenu: function (menu) {
@@ -99851,15 +99866,11 @@ Ext.define('PICS.controller.report.Filter', {
     onFilterValueInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('value', cmp.getSubmitValue());
-        console.log("onFilterValueInputBlur");
-        console.log(filter.record);
     },
 
     onFilterFieldCompareInputBlur: function (cmp, event, eOpts) {
         var filter = this.findParentFilter(cmp);
         filter.record.set('fieldCompare', cmp.getSubmitValue());
-        console.log("onFilterFieldCompareInputBlur");
-        console.log(filter.record);
     },
     
     onFilterValueInputSpecialKey: function (cmp, event) {
@@ -99998,6 +100009,8 @@ Ext.define('PICS.controller.report.Report', {
             report = report_store.first(),
             report_name = report.get('name'),
             report_data_store = this.getReportReportDatasStore();
+
+        this.application.fireEvent('noresultsmessageremove');
         
         this.setPageTitle(report_name);
         
@@ -100040,6 +100053,9 @@ Ext.define('PICS.controller.report.ReportData', {
     refs: [{
         ref: 'reportPagingToolbar',
         selector: 'reportpagingtoolbar'
+    },{
+        ref: 'reportData',
+        selector: 'reportdata'
     }],
 
     stores: [
@@ -100095,6 +100111,11 @@ Ext.define('PICS.controller.report.ReportData', {
             refreshreportdisplayinfo: this.onRefreshReportDisplayInfo,
             scope: this
         });
+
+        this.application.on({
+            noresultsmessageremove: this.onNoResultsMessageRemove,
+            scope: this
+        })
     },
 
     // find index position of the grid column starting after the row numberer (row number)
@@ -100245,6 +100266,16 @@ Ext.define('PICS.controller.report.ReportData', {
         }));
 
         this.application.fireEvent('refreshreport');
+    },
+
+    onNoResultsMessageRemove: function (cmp, eOpts) {
+        var report_data_view = this.getReportData().view,
+            store = report_data_view.getStore();
+
+        if (store.getCount() == 0) {
+            report_data_view.emptyText = '';
+            report_data_view.refresh();
+        }
     },
 
     onRefreshReportDisplayInfo: function () {
