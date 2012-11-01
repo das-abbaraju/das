@@ -9,6 +9,7 @@ import javax.crypto.SecretKey;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
@@ -52,6 +53,7 @@ public class SessionSecurityTest {
 	}
 
 	@Test
+	@Ignore
 	public void testCookieIsValid_HashIsNull() throws Exception {
 		Whitebox.setInternalState(SessionSecurity.class, "secretKeyspec", (String) null);
 		Whitebox.setInternalState(SessionSecurity.class, "serverSecretKey", (SecretKey) null);

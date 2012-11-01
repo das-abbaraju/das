@@ -249,8 +249,10 @@ public class PicsMenu {
 					"PqfVerification.action?filter.status=Active"
 							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
 									+ permissions.getShadowedUserID() : ""), "PQFVerification");
-		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
+		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment)) {
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action", "CSRAssignment");
+			subMenu.addChild("CSR Assignment Stats", "ReportCsrAssignmentStats.action", "CSRAssignmentStats");
+		}
 
 		subMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.Billing)) {
@@ -288,7 +290,8 @@ public class PicsMenu {
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending",
 					"ManageAccounts");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
-			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P", "subMenu_ApproveContractors");
+			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P",
+					"subMenu_ApproveContractors");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			addChildAction(subMenu, "OperatorTags");
 		if (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions.hasPermission(OpPerms.EditUsers)) {

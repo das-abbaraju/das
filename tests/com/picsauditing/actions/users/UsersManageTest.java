@@ -1,7 +1,11 @@
 package com.picsauditing.actions.users;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,14 +16,23 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserGroup;
 
 public class UsersManageTest extends PicsActionTest {
+	private static int NOT_GROUP_CSR = User.GROUP_CSR++;
 	private UsersManage usersManage;
+	private List<UserGroup> userGroups;
+	private List<UserGroup> members;
+
 	@Mock
-	private User user;	
+	private User user;
+	@Mock
+	private User group;
+	@Mock
+	private UserGroup userGroup;
 	@Mock
 	private UserDAO userDAO;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -28,6 +41,7 @@ public class UsersManageTest extends PicsActionTest {
 
 		Whitebox.setInternalState(usersManage, "userDAO", userDAO);		
 	}
+
 	@Test
 	public void testSetUserResetHash() throws Exception {
 		user = new User();
@@ -36,4 +50,42 @@ public class UsersManageTest extends PicsActionTest {
 		assertNotNull(user.getResetHash());
 		verify(userDAO).save(user);
 	}
+
+	@Test
+	public void testGetCsrs_Users_UserGroup_WillNotBeReturned() throws Exception {
+		usersManage.setUser(user);
+		userGroups = new ArrayList<UserGroup>();
+		userGroups.add(userGroup);
+		when(user.getGroups()).thenReturn(userGroups);
+
+		members = new ArrayList<UserGroup>();
+		UserGroup firstMemberOfGroup = mock(UserGroup.class);
+		User firstMemberOfGroupUser = mock(User.class);
+		when(firstMemberOfGroup.getUser()).thenReturn(firstMemberOfGroupUser);
+		when(firstMemberOfGroupUser.isGroup()).thenReturn(false);
+		UserGroup secondMemberOfGroup = mock(UserGroup.class);
+		User secondMemberOfGroupUser = mock(User.class);
+		when(secondMemberOfGroup.getUser()).thenReturn(secondMemberOfGroupUser);
+		when(secondMemberOfGroupUser.isGroup()).thenReturn(false);
+
+		members.add(userGroup);
+		members.add(firstMemberOfGroup);
+		members.add(secondMemberOfGroup);
+
+		when(group.getId()).thenReturn(User.GROUP_CSR);
+		when(group.getMembers()).thenReturn(members);
+		when(userGroup.getGroup()).thenReturn(group);
+		when(userGroup.getUser()).thenReturn(group);
+		when(group.getName()).thenReturn("TestyMcTest");
+		when(firstMemberOfGroupUser.getName()).thenReturn("aTestyMcTest");
+		when(secondMemberOfGroupUser.getName()).thenReturn("bTestyMcTest");
+		when(user.getId()).thenReturn(NOT_GROUP_CSR);
+		when(user.isGroup()).thenReturn(false);
+
+		List<UserGroup> csrsNotIncludingCurrent = usersManage.getCsrs();
+
+		assertThat(csrsNotIncludingCurrent, not(hasItem(userGroup)));
+	}
+
+	// test correct removal
 }

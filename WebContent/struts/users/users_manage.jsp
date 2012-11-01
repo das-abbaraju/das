@@ -446,17 +446,57 @@
 							<s:hidden name="user.isActive" value="Yes" />
 						</s:else>
 
-						<li><s:if
-								test="user.id == 0 && (permissions.picsEmployee || permissions.operatorCorporate)">
+						<li>
+							<s:if test="user.id == 0 && (permissions.picsEmployee || permissions.operatorCorporate)">
 								<div class="alert">
 									<s:text name="UsersManage.AssignUserToGroupReminder" />
 								</div>
-							</s:if></li>
+							</s:if>
+						</li>
+
+						<s:if test="%{user.hasGroup(959)}">				
+							<li>
+								<label>Languages Spoken</label>
+								<table class="report">
+									<thead>
+										<th>language</th>
+										<th>remove</th>
+									</thead>
+									<tbody>
+										<s:iterator value="getSortedSpokenLanguages()" var="language">
+											<tr>
+												<td><s:property value="%{#language.displayName}" /></td>
+												<td>
+													<a href="UsersManage!removeLanguage.action?user=<s:property value='user.id' />&removeLanguage=<s:property value='%{#language}' />" class="remove"> Remove </a>
+												</td>
+											</tr>
+										</s:iterator>
+										<tr>
+											<td colspan="2">
+												<s:select 
+													id="selectedLanguage"
+													name="selectedLanguage"
+													list="getSortedLocales()" 
+													listValue="getDisplayName()"
+													headerKey=""
+													headerValue="Select Language" 
+												/>
+												<s:submit method="addLanguage" value="Add" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</li>
+							<li>
+								<label>TRANSLATE THIS - Assignment Capacity</label>
+								<s:textfield name="user.assignmentCapacity" size="3" />%
+							</li>
+						</s:if>
+
 					</ol>
 				</fieldset>
 
 				<fieldset class="form submit">
-
 					<s:if test="user.activeB">
 						<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 						<pics:permission perm="EditUsers" type="Edit">							
@@ -540,14 +580,16 @@
 									<td>
 										<s:property value="browser" />
 									</td>
-									<td><s:if test="admin.id > 0">
+									<td>
+										<s:if test="admin.id > 0">
 											<s:text name="Login.LoginBy">
 												<s:param value="%{admin.name}" />
 												<s:param value="%{admin.account.name}" />
 											</s:text>
 										</s:if> <s:if test="successful == 'N'">
 											<s:text name="ProfileEdit.message.IncorrectPasswordAttempt" />
-										</s:if></td>
+										</s:if>
+									</td>
 								</tr>
 							</s:iterator>
 						</tbody>
