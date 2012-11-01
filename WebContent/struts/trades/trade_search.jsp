@@ -42,6 +42,6 @@
 		<span class="service"><s:text name="ContractorTrades.Service" /></span>
 		<span class="product"><s:text name="ContractorTrades.Product" /></span>
         <span class="transportation"><s:text name="ContractorTrades.Transportation" /></span>
-		<span class="product-service"><s:text name="ContractorTrades.Both" /></span>
+		<span class="product-service"><s:text name="ContractorTrades.Multiple" /></span>
 	</div>
 </div>
