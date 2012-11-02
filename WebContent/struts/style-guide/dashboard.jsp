@@ -33,6 +33,35 @@
         </div>
     </div>
     <div class="span8">
-        something
+        <h2>CSS Naming Conventions</h2>
+        
+        <div class="row">
+            <div class="span4">
+                <h3>ID Naming Conventions</h3>
+                <ul>
+                    <li>Lowercase</li>
+                    <li>Words are separated by underscores</li>
+                    <li>a-z0-9_</li>
+                </ul>
+            </div>
+            <div class="span4">
+                <pre class="prettyprint linenums">
+                    
+                </pre>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="span4">
+                <h3>Class Naming Conventions</h3>
+                <ul>
+                    <li>Lowercase</li>
+                    <li>Words are separated by underscores</li>
+                    <li>a-z0-9_</li>
+                </ul>
+            </div>
+            <div class="span4">
+            </div>
+        </div>
     </div>
 </div>

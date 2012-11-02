@@ -247,12 +247,6 @@ p.subtitle {
   color: #226396;
 }
 
-@media (max-width: 767px) {
-  /* line 31, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
-  .row-fluid .alert[class*="offset"] {
-    margin-left: 0;
-  }
-}
 /*
  * Overrides for Default Buttons
  */
@@ -758,11 +752,6 @@ input[type="color"],
 .ManageAppProperty-page #app_property_edit_form .form-actions .btn,
 .ManageAppProperty-page #app_property_create_form .form-actions .btn {
   margin-left: 10px;
-}
-
-/* line 4, ../sass/pics/templates/contractor/edit/_edit.scss */
-.ContractorEdit-page #vat_wrapper {
-  display: none;
 }
 
 /* line 2, ../sass/pics/templates/login/_login.scss */

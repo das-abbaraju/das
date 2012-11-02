@@ -16,6 +16,7 @@ module.exports = function(grunt) {
         files: [
             'js/vendor/jquery-1.8.0.min.js',
             'js/vendor/bootstrap.js',
+            'js/vendor/prettify.js',
             'js/plugins.js',
             'js/pics/core/core.js',
             'js/pics/layout/menu/*.js',
@@ -75,6 +76,7 @@ module.exports = function(grunt) {
                 'css/vendor/bootstrap.css',
                 'css/vendor/bootstrap-responsive.css',
                 'css/vendor/font-awesome.css',
+                'css/vendor/prettify.css',
                 'css/pics.css'
             ],
             dest: 'css/style.css',
