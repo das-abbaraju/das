@@ -8734,10 +8734,9 @@ textarea.x-form-invalid-field {
     font-size: 35px;
     margin-top: 100px;
     text-align: center;
-    text-shadow: #aeaeae 0 -1px;
-    filter: progid:DXImageTransform.Microsoft.Shadow(color=#828282,direction=0); }
+    text-shadow: #aeaeae 0 -1px; }
 
-/* line 130, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report.scss */
+/* line 129, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report.scss */
 #report_data-body .x-grid-cell {
   border-right: 1px solid #dcdcdc; }
 
