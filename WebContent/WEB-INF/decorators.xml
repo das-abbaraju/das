@@ -60,6 +60,5 @@
 	</decorator>
     <decorator name="simpleLayout" page="simple-layout.jsp">
         <pattern>/Login.action</pattern>
-		<pattern>/JasonAction.action</pattern>
     </decorator>
 </decorators>

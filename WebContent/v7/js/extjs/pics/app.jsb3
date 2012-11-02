@@ -985,11 +985,6 @@
                     "path": "extjs/src/layout/component/"
                 },
                 {
-                    "clsName": "Ext.layout.container.Card",
-                    "name": "Card.js",
-                    "path": "extjs/src/layout/container/"
-                },
-                {
                     "clsName": "Ext.dd.DragZone",
                     "name": "DragZone.js",
                     "path": "extjs/src/dd/"
@@ -1038,11 +1033,6 @@
                     "clsName": "Ext.picker.Month",
                     "name": "Month.js",
                     "path": "extjs/src/picker/"
-                },
-                {
-                    "clsName": "Ext.layout.component.Tab",
-                    "name": "Tab.js",
-                    "path": "extjs/src/layout/component/"
                 },
                 {
                     "clsName": "Ext.selection.DataViewModel",
@@ -1140,26 +1130,6 @@
                     "path": "app/view/report/filter/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.CopySettings",
-                    "name": "CopySettings.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.EditSettings",
-                    "name": "EditSettings.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.ExportSettings",
-                    "name": "ExportSettings.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.PrintSettings",
-                    "name": "PrintSettings.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
                     "clsName": "Ext.layout.component.field.ComboBox",
                     "name": "ComboBox.js",
                     "path": "extjs/src/layout/component/field/"
@@ -1168,21 +1138,6 @@
                     "clsName": "Ext.picker.Date",
                     "name": "Date.js",
                     "path": "extjs/src/picker/"
-                },
-                {
-                    "clsName": "Ext.tab.Tab",
-                    "name": "Tab.js",
-                    "path": "extjs/src/tab/"
-                },
-                {
-                    "clsName": "Ext.tab.Bar",
-                    "name": "Bar.js",
-                    "path": "extjs/src/tab/"
-                },
-                {
-                    "clsName": "Ext.tab.Panel",
-                    "name": "Panel.js",
-                    "path": "extjs/src/tab/"
                 },
                 {
                     "clsName": "Ext.form.field.Trigger",
@@ -1255,6 +1210,16 @@
                     "path": "app/view/report/report/"
                 },
                 {
+                    "clsName": "PICS.view.report.available-field.AvailableFieldList",
+                    "name": "AvailableFieldList.js",
+                    "path": "app/view/report/available-field/"
+                },
+                {
+                    "clsName": "PICS.view.report.available-field.AvailableFieldModal",
+                    "name": "AvailableFieldModal.js",
+                    "path": "app/view/report/available-field/"
+                },
+                {
                     "clsName": "Ext.view.BoundList",
                     "name": "BoundList.js",
                     "path": "extjs/src/view/"
@@ -1310,26 +1275,6 @@
                     "path": "app/view/report/filter/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.share.ShareSearchBox",
-                    "name": "ShareSearchBox.js",
-                    "path": "app/view/report/settings/share/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.share.ShareSettings",
-                    "name": "ShareSettings.js",
-                    "path": "app/view/report/settings/share/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.SettingsTabs",
-                    "name": "SettingsTabs.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
-                    "clsName": "PICS.view.report.settings.SettingsModal",
-                    "name": "SettingsModal.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
                     "clsName": "Ext.dd.DropTarget",
                     "name": "DropTarget.js",
                     "path": "extjs/src/dd/"
@@ -1368,21 +1313,6 @@
                     "clsName": "Ext.grid.column.Number",
                     "name": "Number.js",
                     "path": "extjs/src/grid/column/"
-                },
-                {
-                    "clsName": "Ext.grid.column.Template",
-                    "name": "Template.js",
-                    "path": "extjs/src/grid/column/"
-                },
-                {
-                    "clsName": "PICS.view.report.available-field.AvailableFieldList",
-                    "name": "AvailableFieldList.js",
-                    "path": "app/view/report/available-field/"
-                },
-                {
-                    "clsName": "PICS.view.report.available-field.AvailableFieldModal",
-                    "name": "AvailableFieldModal.js",
-                    "path": "app/view/report/available-field/"
                 },
                 {
                     "clsName": "PICS.model.report.AvailableField",
