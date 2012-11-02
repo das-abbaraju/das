@@ -1506,6 +1506,9 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean onlyWorksFor(Set<Integer> operatorIDs) {
+		//This is an inclusive 'or'. (As in, "Coffee or desert?" vs. "Soup or Salad?")
+		//So long as the operators for this contractor are a subset of the parameter list,
+		//this method will return true.
 		if (getOperatorAccounts().isEmpty()) return false;
 		for (OperatorAccount operator : getOperatorAccounts())
 			if (!operatorIDs.contains(operator.getId())) {
@@ -1695,6 +1698,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
+	@Deprecated
 	public boolean isOnlyAssociatedWith(int operatorID) {
 		if (getOperators().size() == 0) {
 			return false;
