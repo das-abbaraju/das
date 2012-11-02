@@ -65,7 +65,7 @@ $(function() {
                         "image": "images/icon_box_combo.png",
                         "position": "0px 2px"
                     }
-                },
+                }
 			}
 		},
 		"ui": {
