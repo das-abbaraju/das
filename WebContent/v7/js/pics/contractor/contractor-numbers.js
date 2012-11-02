@@ -12,9 +12,9 @@
             },
 
             createModal: function (contractor_number_data) {
-                var contractorID = contractor_number_data.contractorID,
+                var contractor_id = contractor_number_data.contractor_id,
                     data_number = contractor_number_data.data_number,
-                    modal = null,
+                    modal,
                     that = this;
 
                 function addModalEvents() {
@@ -22,7 +22,7 @@
                         var modal_element = $(modal.getElement());
 
                         modal_element.on('change', '#contractor_numbers_client, #contractor_numbers_type', function () {
-                            that.updateModal(contractorID, data_number);
+                            that.updateModal(contractor_id, data_number);
                         });
 
                         modal_element.on('click', '.positive', that.saveContractorNumber);
@@ -32,7 +32,7 @@
                 PICS.ajax({
                     url : 'ManageContractorOperatorNumber!edit.action',
                     data : {
-                        contractor: contractorID,
+                        contractor: contractor_id,
                         number: data_number
                     },
                     success : function(data, textStatus, jqXHR) {
@@ -62,7 +62,9 @@
                         var modal = PICS.getClass('modal.Modal');
 
                         if (data.indexOf('error') > 0) {
-                            modal.update({body: data});
+                            modal.update({
+                                body: data
+                            });
                         } else {
                             //update contractor dashboard numbers table
                             $('#contractor_operator_numbers').html(data);
@@ -73,7 +75,7 @@
                 });
             },
 
-            updateModal: function (contractorID, data_number) {
+            updateModal: function (contractor_id, data_number) {
                 //get updated values
                 var client = $('#contractor_numbers_client'),
                     type = $('#contractor_numbers_type');
@@ -83,13 +85,15 @@
                     data: {
                         clientSite: client.val(),
                         clientType: type.val(),
-                        contractor: contractorID,
+                        contractor: contractor_id,
                         number: data_number
                     },
                     success: function (data, textStatus, jqXHR) {
                         var modal = PICS.getClass('modal.Modal');
 
-                        modal.update({body: data});
+                        modal.update({
+                            body: data
+                        });
                     }
                 });
             }

@@ -11,6 +11,7 @@
 
                     $('#contractor_operator_numbers').on('click', '.add, .edit', function (event) {
                         event.preventDefault();
+
                         that.getContractorIDAndDataNumber(event);
                     });
 
@@ -18,11 +19,12 @@
             },
 
             getContractorIDAndDataNumber: function (event) {
-                var element = $(event.currentTarget),
-                    contractor_number_data = {
-                        contractorID: element.attr('data-contractor'),
-                        data_number: element.attr('data-number')
-                    };
+                var element = $(event.currentTarget);
+
+                var contractor_number_data = {
+                    contractorID: element.attr('data-contractor'),
+                    data_number: element.attr('data-number')
+                };
 
                 $('#contractor_operator_numbers').trigger('showcontractornumbers', [contractor_number_data]);
             },

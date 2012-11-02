@@ -5,36 +5,29 @@
                 var contractor_dashboard = $('.ContractorView-page');
 
                 if (contractor_dashboard.length > 0) {
-                    contractor_dashboard.delegate(
-                            '#start_watch_link', 'click', {
-                                action : 'Add',
-                                method : 'start'
-                            }, this.controlWatch);
-                    contractor_dashboard.delegate(
-                            '#start_watch_link', 'click', {
-                                action : 'Remove',
-                                method : 'stop'
-                            }, this.controlWatch);
-                    contractor_dashboard.delegate(
-                            '#contractor_operator_numbers a.remove',
-                            'click',
-                            this.deleteContractorOperatorNumber);
+                    contractor_dashboard.delegate('#start_watch_link', 'click', {
+                        action : 'Add',
+                        method : 'start'
+                    }, this.controlWatch);
 
-                    contractor_dashboard.delegate(
-                            '.reloadPage', 'click', function() {
-                                location.reload();
-                            });
+                    contractor_dashboard.delegate('#start_watch_link', 'click', {
+                        action : 'Remove',
+                        method : 'stop'
+                    }, this.controlWatch);
 
-                    contractor_dashboard.delegate(
-                            '#con_pending_gcs .positive', 'click',
-                            {
-                                approved : true
-                            }, this.updateGeneralContractor);
-                    contractor_dashboard.delegate(
-                            '#con_pending_gcs .negative', 'click',
-                            {
-                                approved : false
-                            }, this.updateGeneralContractor);
+                    contractor_dashboard.delegate('#contractor_operator_numbers a.remove', 'click', this.deleteContractorOperatorNumber);
+
+                    contractor_dashboard.delegate('.reloadPage', 'click', function() {
+                        location.reload();
+                    });
+
+                    contractor_dashboard.delegate('#con_pending_gcs .positive', 'click', {
+                        approved : true
+                    }, this.updateGeneralContractor);
+
+                    contractor_dashboard.delegate('#con_pending_gcs .negative', 'click', {
+                        approved : false
+                    }, this.updateGeneralContractor);
 
                     this.requestOpenTasks();
                 }
