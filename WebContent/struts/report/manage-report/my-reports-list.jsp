@@ -35,7 +35,5 @@
 </s:if>
 
 <div id="report_my_reports">
-    <s:include value="/struts/_action-messages.jsp" />
-
     <s:include value="/struts/report/manage-report/_my-reports-list.jsp" />
 </div>

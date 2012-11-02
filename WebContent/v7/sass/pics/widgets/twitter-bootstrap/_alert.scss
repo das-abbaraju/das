@@ -25,10 +25,3 @@
 	border: 1px solid #226396;
 	color: #226396;
 }
-
-@media (max-width: 767px) {
-    .row-fluid .alert[class*="offset"]
-    {
-        margin-left: 0;
-    }
-}
