@@ -60,13 +60,11 @@
 								<s:hidden name="questionID" />
 								<s:hidden name="auditID" />
 								
-								<s:if test="certificate == null || certificate.caos == null || certificate.caos.size() == 0">
 									<div class="question">
 										<label><s:text name="global.File" />:</label>
 										<s:file id="fileTextbox" name="file" value="%{file}" size="50" ></s:file>
 										<br />
 									</div>
-								</s:if>
 								
 								<s:if test="file != null && file.exists()">
 									<div class="question">
