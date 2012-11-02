@@ -284,6 +284,7 @@
                                                 name="updateOtherLocales"
                                                 label="TranslationQualityRating.Questionable.helpText"
                                                 theme="pics"
+                                                value="false"
                                             />
                                         </li>
                                     </s:if>
