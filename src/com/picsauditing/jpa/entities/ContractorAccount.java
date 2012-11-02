@@ -1463,7 +1463,10 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean isListOnlyEligible() {
 		// Low Risk Material Supplier Only
-		if (isMaterialSupplierOnly() && getProductRisk().equals(LowMedHigh.Low))
+		// or is Material Supplier who only works for CEDA
+		if (isMaterialSupplierOnly() && (
+			getProductRisk().equals(LowMedHigh.Low) 
+			|| onlyWorksFor(new int[] {OperatorAccount.CEDA_CANADA, OperatorAccount.CEDA_USA})))
 			return true;
 		// Low Safety Risk Offsite Services
 		else if (isOffsiteServices() && !isOnsiteServices() && getSafetyRisk().equals(LowMedHigh.Low))
@@ -1474,6 +1477,44 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
+
+	@Transient
+	public boolean onlyWorksFor(OperatorAccount operator) {
+		return onlyWorksFor(operator.getId());
+	}
+
+	@Transient
+	public boolean onlyWorksFor(List<OperatorAccount> operators) {
+		Set<Integer> IDs = new HashSet<Integer>(operators.size());
+		for (OperatorAccount operator : operators)
+			IDs.add(operator.getId());
+		return onlyWorksFor(IDs);
+	}
+
+	@Transient
+	public boolean onlyWorksFor(int operatorId) {
+		return onlyWorksFor(new int[] {operatorId});
+	}
+
+	@Transient
+	public boolean onlyWorksFor(int[] operatorIDs) {
+		Set<Integer> IDs = new HashSet<Integer>(operatorIDs.length);
+		for (int id : operatorIDs)
+			IDs.add(id);
+		return onlyWorksFor(IDs);	
+	}
+
+	@Transient
+	public boolean onlyWorksFor(Set<Integer> operatorIDs) {
+		if (getOperatorAccounts().isEmpty()) return false;
+		for (OperatorAccount operator : getOperatorAccounts())
+			if (!operatorIDs.contains(operator.getId())) {
+                if (operator.getParent() != null && operatorIDs.contains(operator.getParent().getId())) continue;
+                return false;
+            }
+		return true;
+	}
+
 
 	public boolean willExpireSoon(int daysBeforeExpiration) {
 		int daysToExpire = DateBean.getDateDifference(paymentExpires);
