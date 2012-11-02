@@ -8910,6 +8910,18 @@ p.subtitle {
   background-image: linear-gradient(#c66603, #a84d10);
 }
 
+/* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+
+.dropdown-menu span {
+  display: block;
+  padding: 3px 20px;
+  margin-top: 9px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #999;
+  text-transform: uppercase;
+}
+
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
 
 label {

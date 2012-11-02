@@ -1,4 +1,4 @@
-PICS.define('report.Report', {
+PICS.define('report.manage-report.ManageReport', {
     methods: {
         init: function () {
             if ($('#ManageReports_myReportsList_page').length || $('#ManageReports_favoritesList_page').length) {

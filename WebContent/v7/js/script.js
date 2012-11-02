@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2012-10-30
+/*! Picsorganizer - v0.1.0 - 2012-11-01
 * http://www.picsorganizer.com/
 * Copyright (c) 2012 Carey Hinoki; Licensed MIT */
 
@@ -2694,158 +2694,6 @@ PICS.define('layout.menu.Menu', {
     });
 }(jQuery));
 (function ($) {
-    PICS.define('contractor.ContractorEdit', {
-        methods: {
-            init: function () {
-                if ($('.ContractorEdit-page').length) {
-                    var that = this;
-
-                    $('.ContractorEdit-page').delegate('#save_contractor_hasVatId', 'change', this.toggleVatField);
-                    this.hasVat() ? this.showVat() : this.hideVat();
-                }
-            },
-
-            hasVat: function() {
-                var vat_field = $('#save_contractor_vatId');
-
-                return (vat_field.val() == '') ? false : true;
-            },
-
-            hideVat: function() {
-                var vat = {
-                        wrapper: $('#vat_wrapper'),
-                        checkbox: $('#save_contractor_hasVatId')
-                }
-
-                vat.checkbox.removeAttr('checked');
-                vat.wrapper.hide();
-            },
-
-            showVat: function() {
-                var vat = {
-                        wrapper: $('#vat_wrapper'),
-                        checkbox: $('#save_contractor_hasVatId')
-                }
-
-                vat.checkbox.attr('checked', 'checked')
-                vat.wrapper.show();
-            },
-
-            toggleVatField: function (event) {
-                var vat_checkbox = $(this),
-                    vat_wrapper = $('#vat_wrapper');
-
-                if (vat_checkbox.prop('checked')) {
-                    vat_wrapper.slideDown(400);
-                } else {
-                    $('#save_contractor_vatId').val('');
-                    vat_wrapper.slideUp(400);
-                }
-            }
-        }
-    });
-})(jQuery);
-(function ($) {
-    PICS.define('contractor.DashboardController', {
-        methods: {
-            init: function () {
-                if ($('#ContractorView__page').length > 0) {
-                    var that = this;
-
-                    $('#contractor_dashboard').delegate('.contractor-status-buttons button', 'click', function (event) {
-                        that.saveContractorStatus.apply(that, [event]);
-                    });
-                }
-            },
-
-            saveContractorStatus: function (event) {
-                var that = this,
-                    element = $(event.currentTarget),
-                    contractor_id = element.attr('data-conid'),
-                    contractor_status = element.attr('data-constatus');
-
-                PICS.ajax({
-                    url: 'ContractorApprovalAjax!save.action',
-                    data: {
-                        conids: contractor_id,
-                        workStatus: contractor_status
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        var message = element.closest('.alert'),
-                            operator_id = element.attr('data-opid');
-
-                        that.updateContractorStatusDisplay(message, contractor_status, contractor_id, operator_id);
-                    }
-                });
-            },
-
-            updateContractorStatusDisplay: function (message, contractor_status, contractor_id, operator_id) {
-
-                function getContractorNotApprovedMessage() {
-                    PICS.ajax({
-                        url: 'ContractorView!getContractorAndOperatorNames.action',
-                        data: {
-                            id: contractor_id,
-                            opId: operator_id
-                        },
-                        dataType: 'json',
-                        success: function (data, textStatus, jqXHR) {
-                            if (data.result === "success") {
-                                var not_approved_message =
-                                    "<p>" +
-                                        data.contractorName +
-                                        " " + translate("JS.ContractorView.ContractorDashboard.NotApproved") + " " +
-                                        data.operatorName + "." +
-                                    "</p>";
-
-                                message.html(not_approved_message);
-                            }
-                        }
-                    });
-                }
-
-                if (contractor_status === 'Y') {
-                    message.hide('blind', 1000);
-                } else {
-                    getContractorNotApprovedMessage();
-                }
-            }
-        }
-    });
-
-})(jQuery);
-(function ($) {
-    PICS.define('contractor.LCCoreController', {
-        methods: {
-            init: function () {
-                if ($('#lc_cor_quote').length > 0) {
-                    var that = this;
-
-                    $('#lc_cor_quote').on('click', '.provCheckBox', function (event) {
-                        that.toggleHiddenFields(event.currentTarget);
-                    });
-
-                    //show pre-selected fields
-                    $('.provCheckBox').each(function (index, element) {
-                        that.toggleHiddenFields(element);
-                    });
-                }
-            },
-
-            toggleHiddenFields: function (element) {
-                var element = $(element),
-                current_row = element.closest('tr');
-
-                if (element.is(':checked')) {
-                    current_row.find('.province-details').removeClass('hidden');
-                } else {
-                    current_row.find('.province-details').addClass('hidden');
-                }
-            }
-        }
-    });
-})(jQuery);
-(function ($) {
     PICS.define('login.LoginController', {
         methods: {
             init: function () {
@@ -2876,7 +2724,7 @@ PICS.define('layout.menu.Menu', {
         }
     });
 }(jQuery));
-PICS.define('report.ListFavoritesController', {
+PICS.define('report.manage-report.FavoritesListController', {
     methods: {
         init: function () {
             if ($('#ManageReports_favoritesList_page').length) {
@@ -2949,7 +2797,7 @@ PICS.define('report.ListFavoritesController', {
         },
         
         onMoveUpClick: function (event) {
-            var element = $(event.currentTarget)
+            var element = $(event.currentTarget),
                 that = this;
             
             PICS.ajax({
@@ -3007,7 +2855,65 @@ PICS.define('report.ListFavoritesController', {
         }
     }
 });
-PICS.define('report.ListMyReportsController', {
+PICS.define('report.manage-report.ManageReport', {
+    methods: {
+        init: function () {
+            if ($('#ManageReports_myReportsList_page').length || $('#ManageReports_favoritesList_page').length) {
+                var body = $('body');
+                
+                body.on('report-favorite', this.favorite);
+                body.on('report-unfavorite', this.unfavorite);
+            }
+        },
+        
+        favorite: function (event, report_id, success, error) {
+            if (!report_id) {
+                throw 'Missing report id';
+            }
+            
+            if (typeof success != 'function') {
+                success = function (data, textStatus, jqXHR) {};
+            }
+            
+            if (typeof error != 'function') {
+                error = function (jqXHR, textStatus, errorThrown) {};
+            }
+            
+            PICS.ajax({
+                url: 'ManageReports!favorite.action',
+                data: {
+                    reportId: report_id
+                },
+                success: success,
+                error: error
+            });
+        },
+        
+        unfavorite: function (event, report_id, success, error) {
+            if (!report_id) {
+                throw 'Missing report id';
+            }
+            
+            if (typeof success != 'function') {
+                success = function (data, textStatus, jqXHR) {};
+            }
+            
+            if (typeof error != 'function') {
+                error = function (jqXHR, textStatus, errorThrown) {};
+            }
+            
+            PICS.ajax({
+                url: 'ManageReports!unfavorite.action',
+                data: {
+                    reportId: report_id
+                },
+                success: success,
+                error: error
+            });
+        }
+    }
+});
+PICS.define('report.manage-report.MyReportsListController', {
     methods: {
         init: function () {
             if ($('#ManageReports_myReportsList_page').length) {
@@ -3036,7 +2942,7 @@ PICS.define('report.ListMyReportsController', {
         },
         
         onDeleteClick: function (event) {
-            var element = $(event.currentTarget)
+            var element = $(event.currentTarget),
                 that = this;
             
             element.closest('.report').fadeOut(750, function () {
@@ -3152,102 +3058,12 @@ PICS.define('report.ListMyReportsController', {
         }
     }
 });
-PICS.define('report.Tester', {
+PICS.define('report.manage-report.SearchListController', {
     methods: {
         init: function () {
-            $('#models td.results').each(function(index) {
-                var modelType = $(this).text();
-                $.getJSON("ReportDynamic!availableFields.action", {"report.modelType": modelType}, function(data) {
-                    var resultTD = $('#models-row-' + data.modelType + ' td.results');
-                    if (data.success) {
-                        resultTD.text("OK - " + data.fields.length + " fields");
-                        resultTD.addClass("success");
-                    } else {
-                        resultTD.text(data.message);
-                        resultTD.addClass("fail");
-                    };
-                });
-            });
-            $('#reports td.results').each(function(index) {
-                var reportID = $(this).text();
-                $.getJSON("ReportData!report.action", {"report": reportID}, function(data) {
-                    var resultTD = $('#reports-row-' + data.reportID + ' td.results');
-                    resultTD.removeClass("waiting");
-                    if (data.success) {
-                        resultTD.text("OK");
-                        resultTD.addClass("success");
-                    } else {
-                        resultTD.text(data.message);
-                        resultTD.addClass("fail");
-                    };
-                });
-            });
-        }
-    }
-});
-
-PICS.define('report.Report', {
-    methods: {
-        init: function () {
-            if ($('#ManageReports_myReportsList_page').length || $('#ManageReports_favoritesList_page').length) {
-                var body = $('body');
-                
-                body.on('report-favorite', this.favorite);
-                body.on('report-unfavorite', this.unfavorite);
+            if ($('#ManageReports_searchList_page').length) {
+                $('#report_search_form input[type=text]').on('keyup', PICS.debounce(this.onSearchKeyup, 250));
             }
-        },
-        
-        favorite: function (event, report_id, success, error) {
-            if (!report_id) {
-                throw 'Missing report id';
-            }
-            
-            if (typeof success != 'function') {
-                success = function (data, textStatus, jqXHR) {};
-            }
-            
-            if (typeof error != 'function') {
-                error = function (jqXHR, textStatus, errorThrown) {};
-            }
-            
-            PICS.ajax({
-                url: 'ManageReports!favorite.action',
-                data: {
-                    reportId: report_id
-                },
-                success: success,
-                error: error
-            });
-        },
-        
-        unfavorite: function (event, report_id, success, error) {
-            if (!report_id) {
-                throw 'Missing report id';
-            }
-            
-            if (typeof success != 'function') {
-                success = function (data, textStatus, jqXHR) {};
-            }
-            
-            if (typeof error != 'function') {
-                error = function (jqXHR, textStatus, errorThrown) {};
-            }
-            
-            PICS.ajax({
-                url: 'ManageReports!unfavorite.action',
-                data: {
-                    reportId: report_id
-                },
-                success: success,
-                error: error
-            });
-        }
-    }
-});
-PICS.define('report.SearchController', {
-    methods: {
-        init: function () {
-            $('#report_search_form input[type=text]').on('keyup', PICS.debounce(this.onSearchKeyup, 250));
         },
         
         onSearchKeyup: function (event) {
@@ -3255,7 +3071,7 @@ PICS.define('report.SearchController', {
             
             PICS.ajax({
                 url: 'ManageReports!searchList.action',
-                type: 'get',
+                type: 'GET',
                 data: {
                     searchTerm: element.val()
                 },

@@ -604,6 +604,16 @@ p.subtitle {
   background-image: -o-linear-gradient(#c66603, #a84d10);
   background-image: linear-gradient(#c66603, #a84d10);
 }
+/* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
+.dropdown-menu span {
+  color: #999;
+  display: block;
+  font-weight: bold;
+  font-size: 11px;
+  margin-top: 9px;
+  padding: 3px 20px;
+  text-transform: uppercase;
+}
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
 label {

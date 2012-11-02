@@ -1,7 +1,9 @@
-PICS.define('report.SearchController', {
+PICS.define('report.manage-report.SearchListController', {
     methods: {
         init: function () {
-            $('#report_search_form input[type=text]').on('keyup', PICS.debounce(this.onSearchKeyup, 250));
+            if ($('#ManageReports_searchList_page').length) {
+                $('#report_search_form input[type=text]').on('keyup', PICS.debounce(this.onSearchKeyup, 250));
+            }
         },
         
         onSearchKeyup: function (event) {
@@ -9,7 +11,7 @@ PICS.define('report.SearchController', {
             
             PICS.ajax({
                 url: 'ManageReports!searchList.action',
-                type: 'get',
+                type: 'GET',
                 data: {
                     searchTerm: element.val()
                 },
