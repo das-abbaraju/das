@@ -196,22 +196,20 @@ body {
   }
 }
 /* line 2, ../sass/pics/layout/_page-header.scss */
-.page-header {
+#main > .page-header {
   border: 0px;
   margin: 20px 0px;
   padding: 0px;
 }
-
-/* line 9, ../sass/pics/layout/_page-header.scss */
-h1.title {
+/* line 8, ../sass/pics/layout/_page-header.scss */
+#main > .page-header .title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal;
   margin-bottom: 0;
 }
-
-/* line 17, ../sass/pics/layout/_page-header.scss */
-p.subtitle {
+/* line 16, ../sass/pics/layout/_page-header.scss */
+#main > .page-header .subtitle {
   color: #808285;
   font-size: 14px;
   font-weight: normal;
@@ -599,7 +597,7 @@ p.subtitle {
   background-image: linear-gradient(#c66603, #a84d10);
 }
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
-.dropdown-menu span {
+.dropdown-menu .nav-header {
   color: #999;
   display: block;
   font-weight: bold;

@@ -33,7 +33,9 @@
         </div>
     </div>
     <div class="span8">
-        <h2>CSS Naming Conventions</h2>
+        <div class="page-header">
+            <h2>CSS Naming Conventions</h2>
+        </div>
         
         <div class="row">
             <div class="span4">
@@ -45,9 +47,11 @@
                 </ul>
             </div>
             <div class="span4">
-                <pre class="prettyprint linenums">
-                    
-                </pre>
+<pre class="prettyprint linenums">
+id
+my_id
+your_long_id
+</pre>
             </div>
         </div>
         

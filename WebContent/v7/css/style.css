@@ -8520,24 +8520,24 @@ body {
 
 /* line 2, ../sass/pics/layout/_page-header.scss */
 
-.page-header {
+#main > .page-header {
   padding: 0;
   margin: 20px 0;
   border: 0;
 }
 
-/* line 9, ../sass/pics/layout/_page-header.scss */
+/* line 8, ../sass/pics/layout/_page-header.scss */
 
-h1.title {
+#main > .page-header .title {
   margin-bottom: 0;
   font-size: 36px;
   font-weight: normal;
   color: #73bbe8;
 }
 
-/* line 17, ../sass/pics/layout/_page-header.scss */
+/* line 16, ../sass/pics/layout/_page-header.scss */
 
-p.subtitle {
+#main > .page-header .subtitle {
   margin: 0;
   font-size: 14px;
   font-weight: normal;
@@ -8968,7 +8968,7 @@ p.subtitle {
 
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 
-.dropdown-menu span {
+.dropdown-menu .nav-header {
   display: block;
   padding: 3px 20px;
   margin-top: 9px;

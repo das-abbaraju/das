@@ -12,3 +12,10 @@ if (!(window.console && console.log)) {
 }
 
 // Place any jQuery/helper plugins in here.
+
+(function ($) {
+    $(function () {
+        //make code pretty
+        window.prettyPrint && prettyPrint();
+    });
+}(jQuery));

@@ -6,8 +6,8 @@
         <li class="divider"></li>
     </s:if>
     <s:elseif test="#menu_item.url == null && #menu_item.cssClass == 'label'">
-        <li>
-            <span>${menu_item.name}</span>
+        <li class="nav-header">
+            ${menu_item.name}
         </li>
     </s:elseif>
     <s:else>
