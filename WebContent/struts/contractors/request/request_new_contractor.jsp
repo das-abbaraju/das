@@ -47,21 +47,21 @@
 		<s:include value="../../actionMessages.jsp" />
 		
 		<pics:permission perm="RequestNewContractor">
-			<s:url action="ReportNewRequestedContractor" var="request_report" />
+			<s:url action="ReportRegistrationRequests" var="request_report" />
 			<a href="${request_report}">&lt;&lt;
 				<s:text name="RequestNewContractor.link.BackToRequests" />
 			</a>
 		</pics:permission>
 		
-		<s:if test="!requestedContractor.status.requested">
+		<s:if test="!contractor.status.requested">
 			<div class="info">
-				<s:if test="requestedContractor.status.active">
+				<s:if test="contractor.status.active">
 					<s:text name="RequestNewContractor.message.Registered">
 						<s:param>
-							${requestedContractor.name}
+							${contractor.name}
 						</s:param>
 						<s:param>
-							<s:date name="requestedContractor.membershipDate" />
+							<s:date name="contractor.membershipDate" />
 						</s:param>
 					</s:text>
 				</s:if>
@@ -72,8 +72,8 @@
 		</s:if>
 		
 		<s:form action="RequestNewContractorAccount" validate="true" id="request_form">
-			<s:hidden name="requestedContractor" />
-			<s:hidden name="requestedContractor.status" />
+			<s:hidden name="contractor" />
+			<s:hidden name="contractor.status" />
 			<s:hidden name="requestRelationship" />
 			
 			<s:if test="permissions.operator">
@@ -88,14 +88,16 @@
 				<h2 class="formLegend">
 					<s:text name="RequestNewContractor.header.CompanyInformation" />
 				</h2>
+				
+				<s:set name="isEditable" value="%{permissions.picsEmployee || contractor.id == 0 || contractor.requestedBy.id == permissions.accountId}" />
 
 				<ol>
-					<s:if test="permissions.picsEmployee || requestedContractor.id == 0">
+					<s:if test="#isEditable">
 						<li>
 							<s:textfield
 								cssClass="checkReq"
 								id="company_name"
-								name="requestedContractor.name"
+								name="contractor.name"
 								size="35"
 								theme="formhelp"
 								required="true"
@@ -138,7 +140,7 @@
 								cssClass="checkReq"
 								id="taxID"
 								maxLength="9"
-								name="requestedContractor.taxId"
+								name="contractor.taxId"
 								size="9"
 								theme="formhelp"
 							/>
@@ -150,7 +152,7 @@
 							<label>
 								<s:text name="ContractorAccount.name" />
 							</label>
-							${requestedContractor.name}
+							${contractor.name}
 						</li>
 						<li>
 							<label>
@@ -174,7 +176,7 @@
 							<label>
 								<s:text name="ContractorAccount.taxId" />
 							</label>
-							${requestedContractor.taxId}
+							${contractor.taxId}
 						</li>
 					</s:else>
 				</ol>
@@ -185,37 +187,37 @@
 				</h2>
 				
 				<ol>
-					<s:if test="permissions.picsEmployee || requestedContractor.id == 0">
+					<s:if test="#isEditable">
 						<li>
 							<s:select
 								id="country"
 								list="countryList"
 								listKey="isoCode" 
 								listValue="name"
-								name="requestedContractor.country"
+								name="contractor.country"
 								required="true"
 								theme="formhelp"
-								value="%{requestedContractor.country.isoCode}"
+								value="%{contractor.country.isoCode}"
 							/>
 						</li>
 						<li id="country_subdivision">
-							<s:if test="requestedContractor.country != null">
+							<s:if test="contractor.country != null">
 								<s:select
 									id="countrySubdivision_sel"
-									label="%{requestedContractor.country.isoCode == 'CA' ? 'global.Province' : 'CountrySubdivision'}"
-									list="getCountrySubdivisionList(requestedContractor.country.isoCode)"
+									label="%{contractor.country.isoCode == 'CA' ? 'global.Province' : 'CountrySubdivision'}"
+									list="getCountrySubdivisionList(contractor.country.isoCode)"
 									listKey="isoCode"
 									listValue="simpleName"
-									name="requestedContractor.countrySubdivision"
+									name="contractor.countrySubdivision"
 									required="true"
 									theme="formhelp"
-									value="%{requestedContractor.countrySubdivision.isoCode}"
+									value="%{contractor.countrySubdivision.isoCode}"
 								/>
 							</s:if>
 						</li>
 						<li>
 							<s:textfield
-								name="requestedContractor.city"
+								name="contractor.city"
 								size="20"
 								id="city"
 								theme="formhelp"
@@ -223,7 +225,7 @@
 						</li>
 						<li class="address-zip">
 							<s:textfield
-								name="requestedContractor.address"
+								name="contractor.address"
 								size="35"
 								id="address"
 								theme="formhelp"
@@ -231,7 +233,7 @@
 						</li>
 						<li class="address-zip">
 							<s:textfield
-								name="requestedContractor.zip"
+								name="contractor.zip"
 								size="7"
 								id="zip"
 								theme="formhelp"
@@ -243,31 +245,31 @@
 							<label>
 								<s:text name="ContractorAccount.country" />
 							</label>
-							${requestedContractor.country.name}
+							${contractor.country.name}
 						</li>
 						<li>
 							<label>
 								<s:text name="ContractorAccount.countrySubdivision" />
 							</label>
-							${requestedContractor.countrySubdivision.simpleName}
+							${contractor.countrySubdivision.simpleName}
 						</li>
 						<li>
 							<label>
 								<s:text name="ContractorAccount.city" />
 							</label>
-							${requestedContractor.city}
+							${contractor.city}
 						</li>
 						<li>
 							<label>
 								<s:text name="ContractorAccount.address" />
 							</label>
-							${requestedContractor.address}
+							${contractor.address}
 						</li>
 						<li>
 							<label>
 								<s:text name="ContractorAccount.zip" />
 							</label>
-							${requestedContractor.zip}
+							${contractor.zip}
 						</li>
 					</s:else>
 				</ol>
@@ -280,10 +282,10 @@
 				
 				
 				<ol>
-					<s:if test="requestedContractor.id > 0 && requestRelationship.operatorAccount.id > 0 && !permissions.operator">
+					<s:if test="contractor.id > 0 && requestRelationship.operatorAccount.id > 0 && !permissions.operator">
 						<s:url action="RequestNewContractorAccount" var="request_add_operator">
-							<s:param name="requestedContractor">
-								${requestedContractor.id}
+							<s:param name="contractor">
+								${contractor.id}
 							</s:param>
 						</s:url>
 						<li>
@@ -319,7 +321,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<s:iterator value="requestedContractor.operators" var="relationship" status="position">
+									<s:iterator value="contractor.operators" var="relationship" status="position">
 										<s:if test="relationship.operatorAccount.id == requestRelationship.operatorAccount.id">
 											<s:set name="selected_row" value="'highlight'" />
 										</s:if>
@@ -349,8 +351,8 @@
 											</td>
 											<td class="center">
 												<s:url action="RequestNewContractorAccount" var="edit_operator_request">
-													<s:param name="requestedContractor">
-														${requestedContractor.id}
+													<s:param name="contractor">
+														${contractor.id}
 													</s:param>
 													<s:param name="requestRelationship.operatorAccount">
 														${relationship.operatorAccount.id}
@@ -370,7 +372,7 @@
 					
 					<s:include value="operator_required_fields.jsp" />
 					
-					<s:if test="requestedContractor.id > 0">
+					<s:if test="contractor.id > 0">
 						<li id="tag_list">
 							<s:include value="operator_tags.jsp" />
 						</li>
@@ -390,12 +392,12 @@
 				</h2>
 				
 				<ol>
-					<s:if test="requestedContractor.id > 0">
+					<s:if test="contractor.id > 0">
 						<li>
 							<label>
 								<s:text name="RequestNewContractor.label.TimesContacted" />:
 							</label>
-							<s:property value="requestedContractor.totalContactCount" />
+							<s:property value="contractor.totalContactCount" />
 						</li>
 						<li>
 							<label>
@@ -404,7 +406,7 @@
 							<s:include value="../../notes/account_notes_embed.jsp" />
 						</li>
 					</s:if>
-					<s:if test="requestedContractor.id == 0">
+					<s:if test="contractor.id == 0">
 						<li>
 							<div class="info">
 								<s:text name="RequestNewContractor.message.AutoEmailOnSave" />
@@ -414,7 +416,7 @@
 				</ol>
 			</fieldset>
 			
-			<s:if test="requestedContractor.id > 0">
+			<s:if test="contractor.id > 0">
 				<fieldset class="form">
 					<h2 class="formLegend">
 						<s:text name="ContractorRegistrationRequest.label.status" />
@@ -438,7 +440,7 @@
 								<s:textfield
 									id="holdDate"
 									label="ContractorRegistrationRequest.holdDate"
-									name="requestedContractor.followUpDate"
+									name="contractor.followUpDate"
 									cssClass="datepicker"
 									required="true"
 									size="10"
@@ -449,7 +451,7 @@
 								<s:textarea
 									id="reasonForDecline"
 									label="ContractorRegistrationRequest.reasonForDecline"
-									name="requestedContractor.reason"
+									name="contractor.reason"
 									required="true"
 									theme="formhelp"
 								/>
@@ -474,7 +476,7 @@
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
 									</label>
-									<s:date name="requestedContractor.followUpDate" format="%{getText('date.short')}"/>
+									<s:date name="contractor.followUpDate" format="%{getText('date.short')}"/>
 								</li>
 							</s:if>
 							
@@ -483,7 +485,7 @@
 									<label>
 										<s:text name="RequestNewContractor.label.reasonForDecline" />:
 									</label>
-									${requestedContractor.reason}
+									${contractor.reason}
 								</li>
 							</s:if>
 						</s:else>

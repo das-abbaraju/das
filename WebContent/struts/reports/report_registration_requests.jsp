@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+
 <head>
 	<title>
 		<s:text name="ReportNewRequestedContractor.title" />
@@ -21,19 +22,10 @@
 			</a>
 		</div>
 		<div style="padding: 5px;">
-			<a href="RequestNewContractor.action" class="add" id="AddRegistrationRequest">
+			<s:url action="RequestNewContractorAccount" var="request_new_contractor" />
+			<a href="${request_new_contractor}" class="add" id="AddRegistrationRequest">
 				<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
 			</a>
-			<s:if test="amSales || debugging">
-				<a
-					href="javascript:;"
-					title="<s:text name="javascript.OpensInNewWindow" />"
-					class="add excelUpload"
-					data-url="ReportNewReqConImport.action"
-					id="ImportRegistrationRequests">
-					<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
-				</a>
-			</s:if>
 		</div>
 		<s:if test="data.size > 0">
 			<div>
@@ -49,12 +41,12 @@
 							<s:text name="ContractorRegistrationRequest.requestedBy" />
 						</td>
 						<td>
-							<a href="javascript: changeOrderBy('form1','cr.creationDate');">
+							<a href="javascript: changeOrderBy('form1','creationDate');">
 								<s:text name="global.CreationDate" />
 							</a>
 						</td>
 						<td>
-							<a href="javascript: changeOrderBy('form1','cr.deadline');">
+							<a href="javascript: changeOrderBy('form1','deadline');">
 								<s:text name="ContractorRegistrationRequest.deadline" />
 							</a>
 						</td>
@@ -62,15 +54,12 @@
 							<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
 						</td>
 						<td>
-							<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');">
+							<a href="javascript: changeOrderBy('form1','lastContactDate DESC');">
 								<s:text name="ReportNewRequestedContractor.label.On" />
 							</a>
 						</td>
 						<td>
 							<s:text name="ReportNewRequestedContractor.label.Attempts" />
-						</td>
-						<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />">
-							<s:text name="ReportNewRequestedContractor.label.Matches" />
 						</td>
 						<td>
 							<s:text name="ReportNewRequestedContractor.label.InPics" />
@@ -92,12 +81,15 @@
 								${stat.index + report.firstRowNumber}
 							</td>
 							<td>
-								<s:url action="RequestNewContractor" var="request_new_contractor">
-									<s:param name="newContractor">
+								<s:url action="RequestNewContractorAccount" var="request_new_form">
+									<s:param name="contractor">
 										${crr.get('id')}
 									</s:param>
+									<s:param name="requestRelationship.operatorAccount">
+										${crr.get('RequestedByID')}
+									</s:param>
 								</s:url>
-								<a href="${request_new_contractor}">
+								<a href="${request_new_form}">
 									${crr.get('name')}
 								</a>
 							</td>
@@ -118,9 +110,6 @@
 							</td>
 							<td>
 								${crr.get('contactCount')}
-							</td>
-							<td>
-								${crr.get('matchCount')}
 							</td>
 							<td>
 								<s:if test="get('conID') != null">

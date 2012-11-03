@@ -1,8 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <%-- URLS --%>
-<s:url action="ReportNewRequestedContractor" var="requested_contractor_report" />
+<pics:toggle name="RequestNewContractorAccount">
+	<s:url action="ReportRegistrationRequests" var="requested_contractor_report" />
+</pics:toggle>
+<pics:toggleElse>
+	<s:url action="ReportNewRequestedContractor" var="requested_contractor_report" />
+</pics:toggleElse>
 
 <table class="report" id="requestedContractor">
 	<thead>

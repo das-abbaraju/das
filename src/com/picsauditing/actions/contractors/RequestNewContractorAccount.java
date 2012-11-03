@@ -2,44 +2,48 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.struts2.interceptor.validation.SkipValidation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.RegistrationRequestEmailHelper;
-import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class RequestNewContractorAccount extends ContractorActionSupport {
-	private static Logger logger = LoggerFactory.getLogger(RequestNewContractorAccount.class);
-
+	@Autowired
+	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
@@ -47,15 +51,17 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
+	private OperatorAccountDAO operatorDAO;
+	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 	@Autowired
 	private RegistrationRequestEmailHelper emailHelper;
 	@Autowired
 	private UserSwitchDAO userSwitchDAO;
 
-	private ContractorAccount requestedContractor = new ContractorAccount();
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
+	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 	// Logged in as corporate or PICS user
 	private List<ContractorOperator> visibleRelationships = new ArrayList<ContractorOperator>();
 	// Contacting Information
@@ -66,9 +72,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private List<OperatorTag> requestedTags = new ArrayList<OperatorTag>();
 	// Email
 	private EmailQueue email;
-	// Legacy
-	private ContractorRegistrationRequest legacyRequest = new ContractorRegistrationRequest();
-	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
+	// Links
+	private URLUtils urlUtil = new URLUtils();
 
 	public enum RequestContactType implements Translatable {
 		EMAIL, PHONE;
@@ -85,9 +90,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		}
 	}
 
+	public RequestNewContractorAccount() {
+		contractor = new ContractorAccount();
+	}
+
 	@Override
+	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
-		checkPermissions();
 		loadRelationships();
 		initializeRequest();
 		loadTags();
@@ -100,19 +109,24 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return "contactModal";
 	}
 
+	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String save() throws Exception {
-		checkPermissions();
-
 		boolean newRequest = requestRelationship.getId() == 0;
 
 		saveRequestComponentsAndEmailIfNew(newRequest);
-
-		int operatorID = requestRelationship.getOperatorAccount().getId();
-
 		addActionMessage(getText("RequestNewContractor.SuccessfullySaved"));
-		return setUrlForRedirect("RequestNewContractorAccount.action?requestedContractor="
-				+ requestedContractor.getId()
-				+ (operatorID > 0 ? "&requestRelationship.operatorAccount=" + operatorID : ""));
+
+		String url = urlUtil.getActionUrl("RequestNewContractorAccount", new HashMap<String, Object>() {
+			{
+				put("contractor", contractor.getId());
+
+				int operatorID = requestRelationship.getOperatorAccount().getId();
+				if (operatorID > 0) {
+					put("requestRelationship.operatorAccount", operatorID);
+				}
+			}
+		});
+		return setUrlForRedirect(url);
 	}
 
 	@SkipValidation
@@ -125,14 +139,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@SkipValidation
 	public String load() {
 		return SUCCESS;
-	}
-
-	public ContractorAccount getRequestedContractor() {
-		return requestedContractor;
-	}
-
-	public void setRequestedContractor(ContractorAccount requestedContractor) {
-		this.requestedContractor = requestedContractor;
 	}
 
 	public ContractorOperator getRequestRelationship() {
@@ -204,15 +210,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			return false;
 		}
 
-		if (requestedContractor.getId() == 0) {
+		if (contractor.getId() == 0) {
 			return false;
 		}
 
-		if (requestedContractor.getPrimaryContact() == null) {
+		if (contractor.getPrimaryContact() == null) {
 			return false;
 		}
 
-		if (Strings.isEmpty(requestedContractor.getPrimaryContact().getPhone())) {
+		if (Strings.isEmpty(contractor.getPrimaryContact().getPhone())) {
 			return false;
 		}
 
@@ -233,35 +239,25 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return new Date();
 	}
 
-	private void checkPermissions() throws NoRightsException {
-		if (!permissions.isOperatorCorporate() && !permissions.isPicsEmployee()) {
-			throw new NoRightsException(getText("global.Operators"));
-		}
-	}
-
 	private void initializeRequest() {
-		if (requestedContractor.getId() == 0) {
-			requestedContractor.setStatus(AccountStatus.Requested);
+		if (contractor.getId() == 0) {
+			contractor.setStatus(AccountStatus.Requested);
 
-			requestedContractor.setRequestedBy(new OperatorAccount());
+			contractor.setRequestedBy(new OperatorAccount());
 
-			requestedContractor.setCountry(new Country());
-			requestedContractor.getCountry().setIsoCode(permissions.getCountry());
+			contractor.setCountry(new Country());
+			contractor.getCountry().setIsoCode(permissions.getCountry());
 		} else {
-			id = requestedContractor.getId();
-			account = requestedContractor;
-			primaryContact = requestedContractor.getPrimaryContact();
+			account = contractor;
+			primaryContact = contractor.getPrimaryContact();
 
 			setRequestStatus();
-			// Check changes to old request
-			loadLegacyRequest();
-			updateAccountWithLegacyChanges();
 		}
 	}
 
 	private void loadRelationships() {
 		if (permissions.isOperator()) {
-			for (ContractorOperator relationship : requestedContractor.getOperators()) {
+			for (ContractorOperator relationship : contractor.getOperators()) {
 				if (relationship.getOperatorAccount().getId() == permissions.getAccountId()) {
 					requestRelationship = relationship;
 				}
@@ -272,20 +268,20 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			}
 		} else {
 			if (permissions.isCorporate()) {
-				for (ContractorOperator relationship : requestedContractor.getOperators()) {
+				for (ContractorOperator relationship : contractor.getOperators()) {
 					if (permissions.getOperatorChildren().contains(relationship.getOperatorAccount().getId())) {
 						visibleRelationships.add(relationship);
 					}
 				}
 			} else {
-				visibleRelationships.addAll(requestedContractor.getOperators());
+				visibleRelationships.addAll(contractor.getOperators());
 			}
 		}
 
 		if (requestRelationship.getOperatorAccount() == null) {
 			requestRelationship.setOperatorAccount(new OperatorAccount());
 		} else {
-			for (ContractorOperator relationship : requestedContractor.getOperators()) {
+			for (ContractorOperator relationship : contractor.getOperators()) {
 				if (relationship.getOperatorAccount().getId() == requestRelationship.getOperatorAccount().getId()) {
 					requestRelationship = relationship;
 				}
@@ -294,16 +290,16 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private void setRequestStatus() {
-		AccountStatus requestedContractorStatus = requestedContractor.getStatus();
+		AccountStatus requestedContractorStatus = contractor.getStatus();
 
 		if (requestedContractorStatus.isRequested()) {
-			if (requestedContractor.getFollowUpDate() == null) {
+			if (contractor.getFollowUpDate() == null) {
 				status = ContractorRegistrationRequestStatus.Active;
 			} else {
 				status = ContractorRegistrationRequestStatus.Hold;
 			}
 		} else if (requestedContractorStatus.isActive() || requestedContractorStatus.isPending()) {
-			if (requestedContractor.getContactCountByPhone() > 0) {
+			if (contractor.getContactCountByPhone() > 0) {
 				status = ContractorRegistrationRequestStatus.ClosedContactedSuccessful;
 			} else {
 				status = ContractorRegistrationRequestStatus.ClosedSuccessful;
@@ -336,7 +332,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private List<ContractorTag> getViewableExistingContractorTags(List<OperatorTag> viewable) {
 		List<ContractorTag> existingViewable = new ArrayList<ContractorTag>();
 
-		for (ContractorTag contractorTag : requestedContractor.getOperatorTags()) {
+		for (ContractorTag contractorTag : contractor.getOperatorTags()) {
 			if (viewable.contains(contractorTag.getTag())) {
 				existingViewable.add(contractorTag);
 			}
@@ -350,34 +346,27 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		saveRequiredFieldsAndSaveEntities();
 
 		if (status.isClosedUnsuccessful()) {
-			requestedContractor.setStatus(AccountStatus.Declined);
+			contractor.setStatus(AccountStatus.Declined);
 		} else if (status.isClosedSuccessful() || status.isClosedContactedSuccessful()) {
-			requestedContractor.setStatus(AccountStatus.Active);
+			contractor.setStatus(AccountStatus.Active);
 		} else {
-			requestedContractor.setStatus(AccountStatus.Requested);
+			contractor.setStatus(AccountStatus.Requested);
 		}
 
-		saveLegacyRequest();
-
 		if (newRequest) {
-			emailHelper.sendInitialEmail(requestedContractor, primaryContact, requestRelationship, getFtpDir());
+			emailHelper.sendInitialEmail(contractor, primaryContact, requestRelationship, getFtpDir());
 
 			if (requestRelationship.getRequestedBy() != null) {
-				legacyRequest.setLastContactedBy(requestRelationship.getRequestedBy());
-				requestedContractor.setLastContactedByInsideSales(requestRelationship.getRequestedBy());
+				contractor.setLastContactedByInsideSales(requestRelationship.getRequestedBy());
 			} else {
-				legacyRequest.setLastContactedBy(new User(permissions.getUserId()));
-				requestedContractor.setLastContactedByInsideSales(permissions.getUserId());
+				contractor.setLastContactedByInsideSales(permissions.getUserId());
 			}
 
 			Date now = new Date();
 
-			legacyRequest.contactByEmail();
-			legacyRequest.setLastContactDate(now);
-			legacyRequest.setLastContactedByAutomatedEmailDate(now);
-			requestedContractor.contactByEmail();
-			requestedContractor.setLastContactedByInsideSalesDate(now);
-			requestedContractor.setLastContactedByAutomatedEmailDate(now);
+			contractor.contactByEmail();
+			contractor.setLastContactedByInsideSalesDate(now);
+			contractor.setLastContactedByAutomatedEmailDate(now);
 
 			addNote("Sent initial contact email.");
 		}
@@ -385,40 +374,38 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		saveNoteIfContacted();
 		saveOperatorTags();
 
-		legacyRequest = (ContractorRegistrationRequest) dao.save(legacyRequest);
-		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
+		contractor = (ContractorAccount) contractorAccountDAO.save(contractor);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveRequiredFieldsAndSaveEntities() throws Exception {
 		// NAICS is required for accounts
-		if (requestedContractor.getId() == 0) {
-			requestedContractor.setNaics(new Naics());
-			requestedContractor.getNaics().setCode("0");
-			requestedContractor.setRequestedBy(requestRelationship.getOperatorAccount());
-			requestedContractor.generateRegistrationHash();
+		if (contractor.getId() == 0) {
+			contractor.setNaics(new Naics());
+			contractor.getNaics().setCode("0");
+			contractor.setRequestedBy(requestRelationship.getOperatorAccount());
+			contractor.generateRegistrationHash();
 		}
 
-		requestedContractor.setAuditColumns(permissions);
-		requestedContractor = (ContractorAccount) contractorAccountDao.save(requestedContractor);
+		contractor.setAuditColumns(permissions);
+		contractor = (ContractorAccount) contractorAccountDAO.save(contractor);
 
 		// Username and isGroup is required
 		if (primaryContact.getId() == 0) {
-			primaryContact.setAccount(requestedContractor);
+			primaryContact.setAccount(contractor);
 			primaryContact.setIsGroup(YesNo.No);
 
 			boolean usernameIsAlreadyTaken = userDAO.duplicateUsername(primaryContact.getEmail(), 0);
 			if (usernameIsAlreadyTaken) {
-				primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(),
-						requestedContractor.getId()));
+				primaryContact.setUsername(String.format("%s-%d", primaryContact.getEmail(), contractor.getId()));
 			} else {
 				primaryContact.setUsername(primaryContact.getEmail());
 			}
 
 			primaryContact.setAuditColumns(permissions);
 
-			requestedContractor.setPrimaryContact(primaryContact);
-			requestedContractor.getUsers().add(primaryContact);
+			contractor.setPrimaryContact(primaryContact);
+			contractor.getUsers().add(primaryContact);
 		}
 
 		primaryContact.setPhoneIndex(Strings.stripPhoneNumber(primaryContact.getPhone()));
@@ -429,63 +416,20 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			requestRelationship.setFlagColor(FlagColor.Clear);
 		}
 
-		requestRelationship.setContractorAccount(requestedContractor);
+		requestRelationship.setContractorAccount(contractor);
 		requestRelationship.setAuditColumns(permissions);
 		requestRelationship = (ContractorOperator) contractorOperatorDAO.save(requestRelationship);
 	}
 
-	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
-	private ContractorRegistrationRequest saveLegacyRequest() {
-		loadLegacyRequest();
-
-		legacyRequest.setName(requestedContractor.getName());
-		legacyRequest.setContact(requestedContractor.getPrimaryContact().getName());
-		legacyRequest.setPhone(requestedContractor.getPrimaryContact().getPhone());
-		legacyRequest.setEmail(requestedContractor.getPrimaryContact().getEmail());
-		legacyRequest.setTaxID(requestedContractor.getTaxId());
-		legacyRequest.setAddress(requestedContractor.getAddress());
-		legacyRequest.setCity(requestedContractor.getCity());
-		legacyRequest.setZip(requestedContractor.getZip());
-		legacyRequest.setCountry(requestedContractor.getCountry());
-		legacyRequest.setCountrySubdivision(requestedContractor.getCountrySubdivision());
-
-		legacyRequest.setReasonForRegistration(requestRelationship.getReasonForRegistration());
-		legacyRequest.setDeadline(requestRelationship.getDeadline());
-		legacyRequest.setRequestedBy(requestedContractor.getRequestedBy());
-		legacyRequest.setRequestedByUser(requestRelationship.getRequestedBy());
-		legacyRequest.setRequestedByUserOther(requestRelationship.getRequestedByOther());
-		legacyRequest.setContractor(requestedContractor);
-		legacyRequest.setStatus(status);
-		legacyRequest.setAuditColumns(permissions);
-
-		return legacyRequest;
-	}
-
-	private void loadLegacyRequest() {
-		if (requestedContractor.getId() > 0) {
-			List<ContractorRegistrationRequest> requests = requestDAO.findWhere(ContractorRegistrationRequest.class,
-					"t.contractor.id = " + requestedContractor.getId());
-
-			if (requests != null && !requests.isEmpty()) {
-				for (ContractorRegistrationRequest request : requests) {
-					if (request.getRequestedBy().equals(requestRelationship.getOperatorAccount())) {
-						legacyRequest = request;
-					}
-				}
-			}
-		}
-	}
-
 	private EmailQueue buildEmail() throws Exception {
-		return emailHelper.buildInitialEmail(requestedContractor, primaryContact, requestRelationship);
+		return emailHelper.buildInitialEmail(contractor, primaryContact, requestRelationship);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
-	private void addNote(String note) {
+	private void addNote(String additionalNote) {
 		// Save notes to RR note field and a new Note entity
-		legacyRequest.addToNotes(note, userDAO.find(permissions.getUserId()));
-
-		addNote(requestedContractor, note, noteCategory, requestRelationship.getOperatorAccount().getId());
+		addNote(contractor, additionalNote, NoteCategory.Registration, LowMedHigh.Low, true, requestRelationship
+				.getOperatorAccount().getId(), null);
 	}
 
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
@@ -496,17 +440,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			Date now = new Date();
 
 			if (RequestContactType.EMAIL == contactType) {
-				legacyRequest.contactByEmail();
-				requestedContractor.contactByEmail();
+				contractor.contactByEmail();
 			} else {
-				legacyRequest.contactByPhone();
-				requestedContractor.contactByPhone();
+				contractor.contactByPhone();
 			}
 
-			legacyRequest.setLastContactDate(now);
-			legacyRequest.setLastContactedBy(new User(permissions.getUserId()));
-			requestedContractor.setLastContactedByInsideSales(permissions.getUserId());
-			requestedContractor.setLastContactedByInsideSalesDate(now);
+			contractor.setLastContactedByInsideSales(permissions.getUserId());
+			contractor.setLastContactedByInsideSalesDate(now);
 		}
 	}
 
@@ -520,7 +460,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	}
 
 	private List<ContractorTag> getVisibleExistingTags() {
-		List<ContractorTag> existing = new ArrayList<ContractorTag>(requestedContractor.getOperatorTags());
+		List<ContractorTag> existing = new ArrayList<ContractorTag>(contractor.getOperatorTags());
 
 		if (permissions.isOperatorCorporate()) {
 			List<OperatorTag> viewable = operatorTagDAO.findByOperator(permissions.getAccountId(), true);
@@ -538,7 +478,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 			if (!requestedTags.contains(existingTag.getTag())) {
 				tagIterator.remove();
 				contractorTagDAO.remove(existingTag);
-				requestedContractor.getOperatorTags().remove(existingTag);
+				contractor.getOperatorTags().remove(existingTag);
 			}
 		}
 	}
@@ -552,51 +492,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private void addRemainingTags() {
 		for (OperatorTag operatorTag : requestedTags) {
 			ContractorTag tag = new ContractorTag();
-			tag.setContractor(requestedContractor);
+			tag.setContractor(contractor);
 			tag.setTag(operatorTag);
 			tag.setAuditColumns(permissions);
 
 			contractorTagDAO.save(tag);
 
-			requestedContractor.getOperatorTags().add(tag);
-		}
-	}
-
-	private void updateAccountWithLegacyChanges() {
-		if (legacyRequest.getId() > 0 && legacyRequest.isCreatedUpdatedAfter(requestedContractor)) {
-			requestedContractor.setName(legacyRequest.getName());
-			requestedContractor.setTaxId(legacyRequest.getTaxID());
-			requestedContractor.setAddress(legacyRequest.getAddress());
-			requestedContractor.setCity(legacyRequest.getCity());
-			requestedContractor.setZip(legacyRequest.getZip());
-			requestedContractor.setCountry(legacyRequest.getCountry());
-			requestedContractor.setCountrySubdivision(legacyRequest.getCountrySubdivision());
-			requestedContractor.setRequestedBy(legacyRequest.getRequestedBy());
-			requestedContractor.setAuditColumns(permissions);
-			contractorAccountDao.save(requestedContractor);
-
-			if (legacyRequest.getStatus().isHold()) {
-				requestedContractor.setFollowUpDate(legacyRequest.getHoldDate());
-			} else if (legacyRequest.getStatus().isClosedUnsuccessful()) {
-				requestedContractor.setStatus(AccountStatus.Declined);
-				requestedContractor.setReason(legacyRequest.getReasonForDecline());
-			}
-
-			primaryContact.setName(legacyRequest.getContact());
-			primaryContact.setPhone(legacyRequest.getPhone());
-			primaryContact.setEmail(legacyRequest.getEmail());
-			primaryContact.setAuditColumns(permissions);
-			userDAO.save(primaryContact);
-
-			for (ContractorOperator contractorOperator : requestedContractor.getOperators()) {
-				if (legacyRequest.getRequestedBy().equals(contractorOperator.getOperatorAccount())) {
-					contractorOperator.setDeadline(legacyRequest.getDeadline());
-					contractorOperator.setRequestedBy(legacyRequest.getRequestedByUser());
-					contractorOperator.setRequestedByOther(legacyRequest.getRequestedByUserOther());
-					contractorOperator.setAuditColumns(permissions);
-					contractorOperatorDAO.save(contractorOperator);
-				}
-			}
+			contractor.getOperatorTags().add(tag);
 		}
 	}
 }

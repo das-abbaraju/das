@@ -29,7 +29,8 @@ public class AccountActionSupport extends PicsActionSupport {
 	protected int id;
 	// protected Account account;
 	protected String subHeading = null;
-	// TODO This local-copy optimzation is probably unnecessary, being redundant with Hibernate's caching.
+	// TODO This local-copy optimzation is probably unnecessary, being redundant
+	// with Hibernate's caching.
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
 	protected int questionId;
@@ -102,9 +103,10 @@ public class AccountActionSupport extends PicsActionSupport {
 	 * Get a list of notes up to the limit, using the given where clause
 	 * 
 	 * @param where
-	 *        should be in the format of "AND field=1", can be an empty string
+	 *            should be in the format of "AND field=1", can be an empty
+	 *            string
 	 * @param limit
-	 *        e.g. 25
+	 *            e.g. 25
 	 * @return
 	 */
 	public List<Note> getNotes(String where, int firstLimit, int limit) {
@@ -119,8 +121,8 @@ public class AccountActionSupport extends PicsActionSupport {
 	 * one more note that can be fetched after that.
 	 */
 	public boolean atLeastOneMoreNote(String where, int firstLimit, int limit) {
-		List<Note> zeroOrOneMoreNote = noteDao
-				.getNotes(id, permissions, "status IN (1,2)" + where, firstLimit + limit, 1);
+		List<Note> zeroOrOneMoreNote = noteDao.getNotes(id, permissions, "status IN (1,2)" + where, firstLimit + limit,
+				1);
 		return (zeroOrOneMoreNote.size() > 0);
 	}
 
@@ -183,12 +185,12 @@ public class AccountActionSupport extends PicsActionSupport {
 	public CountrySubdivisionDAO getCountrySubdivisionDAO() {
 		return countrySubdivisionDAO;
 	}
-	
+
 	public CountrySubdivision getAccountCountrySubdivision() {
 		CountrySubdivision value = null;
 		Account account = accountDAO.find(id, "Contractor");
 		if (account != null) {
-			value=account.getCountrySubdivision();
+			value = account.getCountrySubdivision();
 		}
 		return value;
 	}
@@ -197,7 +199,7 @@ public class AccountActionSupport extends PicsActionSupport {
 		String value = "";
 		Account account = accountDAO.find(id, "Contractor");
 		if (account != null) {
-			value=account.getCountrySubdivision().getSimpleName();
+			value = account.getCountrySubdivision().getSimpleName();
 		}
 		return value;
 	}
@@ -209,6 +211,7 @@ public class AccountActionSupport extends PicsActionSupport {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
+
 		countryList.add(0, countryDAO.find("GB"));
 		countryList.add(0, countryDAO.find("CA"));
 		countryList.add(0, countryDAO.find("US"));

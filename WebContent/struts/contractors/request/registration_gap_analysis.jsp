@@ -77,7 +77,7 @@
 						
 							<%-- URLS --%>
 							<s:url action="RequestNewContractorAccount" var="request_contractor">
-								<s:param name="requestedContractor">
+								<s:param name="contractor">
 									${match.requested.id}
 								</s:param>
 							</s:url>

@@ -47,7 +47,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;

@@ -51,7 +51,7 @@
                             countrySubdivisionString: isocode,
                             needsSuffix: false,
                             required: true,
-                            prefix: 'requestedContractor.'
+                            prefix: 'contractor.'
                         },
                         success: function(data, textStatus, XMLHttpRequest) {
                             $('#country_subdivision').html(data);

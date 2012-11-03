@@ -3,42 +3,49 @@ package com.picsauditing.actions.contractors;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.report.ReportNewRequestedContractor;
+import com.picsauditing.actions.report.ReportRegistrationRequests;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RequestedConWidget extends PicsActionSupport {
+	@Autowired
+	private FeatureToggle featureToggle;
+
 	private Database database = new Database();
 
 	public String execute() throws Exception {
-		if (!permissions.isLoggedIn())
+		if (!permissions.isLoggedIn()) {
 			return LOGIN_AJAX;
+		}
 
 		return SUCCESS;
 	}
 
 	public List<BasicDynaBean> getRequestedContractors() throws Exception {
-		SelectSQL legacy = ReportNewRequestedContractor.buildLegacyQuery();
-		SelectSQL current = ReportNewRequestedContractor.buildNewQuery();
+		SelectSQL current;
+
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+			current = ReportRegistrationRequests.buildAccountQuery();
+		} else {
+			current = new SelectSQL("contractor_registration_request crr");
+		}
 
 		if (permissions.isOperator()) {
-			legacy.addWhere("cr.requestedByID = " + permissions.getAccountId());
 			current.addWhere("gc.genID = " + permissions.getAccountId());
 		} else if (permissions.isCorporate()) {
-			legacy.addWhere("cr.requestedByID IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")");
 			current.addWhere("gc.genID IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")");
 		}
 
-		legacy.addWhere("cr.status = 'Active'");
 		current.addWhere("a.status = 'Requested' AND c.followupDate IS NULL");
+		current.addOrderBy("deadline, creationDate");
+		current.setLimit(10);
 
-		String sql = String.format("%s \nUNION\n %s ORDER BY deadline, creationDate LIMIT 10", legacy.toString(),
-				current.toString());
-
-		return database.select(sql, false);
+		return database.select(current.toString(), false);
 	}
 }
