@@ -68,7 +68,7 @@
                     });
                     
                     // add custom more results link
-                    more_results = $('<li><a href="#" class="more-results"><b>More Results</b></a></li>');
+                    more_results = $('<li><a href="#" class="more-results"><i>More Results</i></a></li>');
                     items.push(more_results[0]);
 
                     items.first().addClass('active');
