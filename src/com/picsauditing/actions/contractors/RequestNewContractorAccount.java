@@ -92,11 +92,15 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	public RequestNewContractorAccount() {
 		contractor = new ContractorAccount();
+		noteCategory = NoteCategory.Registration;
 	}
 
 	@Override
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
+		id = contractor.getId();
+		account = contractor;
+
 		loadRelationships();
 		initializeRequest();
 		loadTags();

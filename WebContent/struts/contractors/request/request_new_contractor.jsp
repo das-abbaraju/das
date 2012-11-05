@@ -42,6 +42,9 @@
 			<div class="alert">
 				<s:text name="RequestNewContractor.ErrorSaving" />
 			</div>
+			<s:iterator value="fieldErrors.keySet" var="field_error">
+				${fieldErrors.get(field_error)}
+			</s:iterator>
 		</s:if>
 		
 		<s:include value="../../actionMessages.jsp" />

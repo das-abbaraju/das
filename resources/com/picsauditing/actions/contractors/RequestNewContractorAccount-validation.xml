@@ -1,7 +1,7 @@
 <!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>
-	<field name="requestedContractor.name">
+	<field name="contractor.name">
 		<field-validator type="requiredstring">
 			<message>${getText("RequestNewContractor.error.FillContractorName")}</message>
 		</field-validator>
@@ -53,14 +53,14 @@
 		</field-validator>
 	</field>
 
-	<field name="requestedContractor.country">
+	<field name="contractor.country">
 		<field-validator type="fieldexpression">
-			<param name="expression"><![CDATA[ requestedContractor.country.isoCode.length() > 0 ]]></param>
+			<param name="expression"><![CDATA[ contractor.country.isoCode.length() > 0 ]]></param>
 			<message>${getText("RequestNewContractor.error.SelectCountry")}</message>
 		</field-validator>
 	</field>
 	
-	<field name="requestedContractor.countrySubdivision">
+	<field name="contractor.countrySubdivision">
 		<field-validator type="required">
 			<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
 		</field-validator>
@@ -98,12 +98,12 @@
 	</field>
 	
 	<validator type="expression">
-		<param name="expression"><![CDATA[ !status.hold || (status.hold && requestedContractor.followUpDate != null) ]]></param>
+		<param name="expression"><![CDATA[ !status.hold || (status.hold && contractor.followUpDate != null) ]]></param>
 		<message>${getText("RequestNewContractor.error.EnterHoldDate")}</message>
 	</validator>
 	
 	<validator type="expression">
-		<param name="expression"><![CDATA[ !status.closedUnsuccessful || (status.closedUnsuccessful && !isStringEmpty(requestedContractor.reason)) ]]></param>
+		<param name="expression"><![CDATA[ !status.closedUnsuccessful || (status.closedUnsuccessful && !isStringEmpty(contractor.reason)) ]]></param>
 		<message>${getText("RequestNewContractor.error.EnterReasonDeclined")}</message>
 	</validator>
 	

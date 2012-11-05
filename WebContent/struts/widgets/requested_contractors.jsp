@@ -38,23 +38,23 @@
 		<s:iterator value="requestedContractors" var="request">
 			<tr>
 				<td>
-					<s:if test="#request.get('systemType') == 'CRR'">
-						<s:url action="RequestNewContractor" var="request_new_contractor">
-							<s:param name="newContractor">
-								${request.get('id')}
-							</s:param>
-						</s:url>
-					</s:if>
-					<s:else>
+					<pics:toggle name="RequestNewContractorAccount">
 						<s:url action="RequestNewContractorAccount" var="request_new_contractor">
-							<s:param name="requestedContractor">
+							<s:param name="contractor">
 								${request.get('id')}
 							</s:param>
 							<s:param name="requestRelationship.operatorAccount">
 								${request.get('RequestedByID')}
 							</s:param>
 						</s:url>
-					</s:else>
+					</pics:toggle>
+					<pics:toggleElse>
+						<s:url action="RequestNewContractor" var="request_new_contractor">
+							<s:param name="newContractor">
+								${request.get('id')}
+							</s:param>
+						</s:url>
+					</pics:toggleElse>
 					<a href="${request_new_contractor}">
 						${request.get('name')}
 					</a>
@@ -87,6 +87,8 @@
 	</s:else>
 </table>
 
-<a href="${requested_contractor_report}" class="preview">
-	<s:text name="RequestedContractorsAjax.SeeAllOpenRequests" />
-</a>
+<s:if test="total > 10">
+	<a href="${requested_contractor_report}" class="preview">
+		<s:text name="RequestedContractorsAjax.SeeAllOpenRequests" />
+	</a>
+</s:if>
