@@ -51,6 +51,10 @@
                 return modal;
             }
 
+            function destroyModal() {
+                modal = null;
+            }
+
             return {
                 bind: function (event, callback) {
                     if (typeof callback == 'function') {
@@ -65,17 +69,6 @@
 
                     // generate config
                     $.extend(config, defaults, options);
-
-                    function removeModal() {
-                        try {
-                            var modal = getModal();
-
-                            if (modal) {
-                                modal.remove();
-                                $('.modal-backdrop').remove();
-                            }
-                        } catch (e) {}
-                    }
 
                     function createModal() {
                         // update modal content
@@ -145,7 +138,10 @@
                         return modal;
                     }
 
-                    removeModal();
+                    //destroy existing modal
+                    if (typeof modal !== 'undefined') {
+                        destroyModal();
+                    }
 
                     modal = createModal();
 
@@ -157,6 +153,8 @@
 
                     modal.remove();
                     $('.modal-backdrop').remove();
+
+                    destroyModal();
                 },
 
                 getConfig: function () {
