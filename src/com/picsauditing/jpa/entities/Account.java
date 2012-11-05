@@ -802,7 +802,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			sb.append(this.countrySubdivision);
 		}
 
-		sb.append("|").append(this.status.toString()).append('|');
+		sb.append("|").append(this.status.toString()).append('|').append("\n");
 
 		return sb.toString();
 	}
