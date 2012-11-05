@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,7 +37,6 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.RegistrationRequestEmailHelper;
-import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.RequestNewContractorAccount.RequestContactType;
@@ -49,10 +49,10 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.util.URLUtils;
 
 public class RequestNewContractorAccountTest {
 	private RequestNewContractorAccount requestNewContractorAccount;
@@ -78,6 +78,8 @@ public class RequestNewContractorAccountTest {
 	private RegistrationRequestEmailHelper emailHelper;
 	@Mock
 	private User user;
+	@Mock
+	private URLUtils urlUtil;
 
 	@Before
 	public void setUp() throws Exception {
@@ -93,9 +95,11 @@ public class RequestNewContractorAccountTest {
 		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(Collections.emptyList());
 		when(relationship.getOperatorAccount()).thenReturn(operator);
+		when(urlUtil.getActionUrl(anyString(), any(HashMap.class))).thenReturn("URL");
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
+		Whitebox.setInternalState(requestNewContractorAccount, "urlUtil", urlUtil);
 	}
 
 	@AfterClass
@@ -103,33 +107,12 @@ public class RequestNewContractorAccountTest {
 		Whitebox.setInternalState(I18nCache.class, "databaseForTesting", (Database) null);
 	}
 
-	@Test(expected = NoRightsException.class)
-	public void testExecute_Contractor() throws Exception {
-		when(permissions.isContractor()).thenReturn(true);
-
-		requestNewContractorAccount.execute();
-	}
-
-	@Test
-	public void testExecute_PicsEmployee() throws Exception {
-		when(permissions.isPicsEmployee()).thenReturn(true);
-
-		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
-	}
-
-	@Test
-	public void testExecute_OperatorCorporate() throws Exception {
-		when(permissions.isOperatorCorporate()).thenReturn(true);
-
-		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
-	}
-
 	@Test
 	public void testExecute_DefaultStatus() throws Exception {
 		when(permissions.isPicsEmployee()).thenReturn(true);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
-		assertEquals(AccountStatus.Requested, requestNewContractorAccount.getRequestedContractor().getStatus());
+		assertEquals(AccountStatus.Requested, requestNewContractorAccount.getContractor().getStatus());
 	}
 
 	@Test
@@ -137,10 +120,10 @@ public class RequestNewContractorAccountTest {
 		when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
 		when(permissions.isPicsEmployee()).thenReturn(true);
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
-		assertEquals(AccountStatus.Deactivated, requestNewContractorAccount.getRequestedContractor().getStatus());
+		assertEquals(AccountStatus.Deactivated, requestNewContractorAccount.getContractor().getStatus());
 	}
 
 	@Test
@@ -150,11 +133,11 @@ public class RequestNewContractorAccountTest {
 		setPermissionsAsOperator();
 		when(contractor.getRequestedBy()).thenReturn(otherOperator);
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
 		assertEquals(operator, requestNewContractorAccount.getRequestRelationship().getOperatorAccount());
-		assertEquals(otherOperator, requestNewContractorAccount.getRequestedContractor().getRequestedBy());
+		assertEquals(otherOperator, requestNewContractorAccount.getContractor().getRequestedBy());
 	}
 
 	// If we're logged in as the operator, find the my relationship with
@@ -167,7 +150,7 @@ public class RequestNewContractorAccountTest {
 		setPermissionsAsOperator();
 		when(contractor.getOperators()).thenReturn(operators);
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
 		assertEquals(relationship, requestNewContractorAccount.getRequestRelationship());
@@ -208,7 +191,7 @@ public class RequestNewContractorAccountTest {
 		when(permissions.isCorporate()).thenReturn(true);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
 		assertTrue(requestNewContractorAccount.getVisibleRelationships().contains(link1));
@@ -235,7 +218,7 @@ public class RequestNewContractorAccountTest {
 		when(link2.getOperatorAccount()).thenReturn(operator2);
 		when(permissions.isPicsEmployee()).thenReturn(true);
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		assertEquals(PicsActionSupport.SUCCESS, requestNewContractorAccount.execute());
 		assertTrue(requestNewContractorAccount.getVisibleRelationships().contains(link1));
@@ -268,7 +251,7 @@ public class RequestNewContractorAccountTest {
 		when(user.getEmail()).thenReturn("test@test.com");
 
 		requestNewContractorAccount.setPrimaryContact(user);
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
@@ -278,7 +261,7 @@ public class RequestNewContractorAccountTest {
 		verify(contractor).setLastContactedByInsideSales(anyInt());
 		verify(contractor).setLastContactedByInsideSalesDate(any(Date.class));
 		verify(emailHelper).sendInitialEmail(eq(contractor), eq(user), eq(relationship), anyString());
-		verify(entityManager, times(6)).persist(any(BaseTable.class));
+		verify(entityManager, times(5)).persist(any(BaseTable.class));
 		verify(entityManager, never()).merge(any(BaseTable.class));
 	}
 
@@ -313,7 +296,7 @@ public class RequestNewContractorAccountTest {
 		when(user.getId()).thenReturn(1);
 
 		requestNewContractorAccount.setPrimaryContact(user);
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		assertEquals(PicsActionSupport.REDIRECT, requestNewContractorAccount.save());
@@ -322,7 +305,7 @@ public class RequestNewContractorAccountTest {
 		// Contractor, user and request already exist
 		verify(entityManager, times(3)).merge(any(BaseTable.class));
 		// New contractorOperator, note and email
-		verify(entityManager, times(3)).persist(any(BaseTable.class));
+		verify(entityManager, times(2)).persist(any(BaseTable.class));
 	}
 
 	@Test
@@ -334,7 +317,7 @@ public class RequestNewContractorAccountTest {
 		// Requested contractor id = 0
 		assertFalse(requestNewContractorAccount.isContactable());
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 		// Missing primary user
 		assertFalse(requestNewContractorAccount.isContactable());
 
@@ -368,7 +351,7 @@ public class RequestNewContractorAccountTest {
 
 	@Test
 	public void testSetRequestStatus() throws Exception {
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
 		assertEquals(ContractorRegistrationRequestStatus.Active, requestNewContractorAccount.getStatus());
@@ -416,7 +399,7 @@ public class RequestNewContractorAccountTest {
 		when(tag.getOperator()).thenReturn(operator);
 		when(tag.getTag()).thenReturn("Tag");
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "loadTags");
 
@@ -445,7 +428,7 @@ public class RequestNewContractorAccountTest {
 		when(tag.getOperator()).thenReturn(operator);
 		when(tag.getTag()).thenReturn("Tag");
 
-		requestNewContractorAccount.setRequestedContractor(contractor);
+		requestNewContractorAccount.setContractor(contractor);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "loadTags");
@@ -455,47 +438,10 @@ public class RequestNewContractorAccountTest {
 	}
 
 	@Test
-	public void testLoadLegacyRequest() throws Exception {
-		ContractorRegistrationRequest request = new ContractorRegistrationRequest();
-		request.setId(1);
-		request.setRequestedBy(operator);
-
-		List<ContractorRegistrationRequest> requests = new ArrayList<ContractorRegistrationRequest>();
-		requests.add(request);
-
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(requests);
-		when(relationship.getOperatorAccount()).thenReturn(operator);
-
-		requestNewContractorAccount.setRequestedContractor(contractor);
-		requestNewContractorAccount.setRequestRelationship(relationship);
-
-		Whitebox.invokeMethod(requestNewContractorAccount, "loadLegacyRequest");
-		assertEquals(request, Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest"));
-	}
-
-	@Test
-	public void testLoadLegacyRequest_Empty() throws Exception {
-		when(entityManager.createQuery(anyString())).thenReturn(query);
-		when(query.getResultList()).thenReturn(Collections.emptyList());
-
-		Object legacyRequest = Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest");
-
-		requestNewContractorAccount.setRequestedContractor(contractor);
-
-		Whitebox.invokeMethod(requestNewContractorAccount, "loadLegacyRequest");
-		assertEquals(legacyRequest, Whitebox.getInternalState(requestNewContractorAccount, "legacyRequest"));
-	}
-
-	@Test
 	public void testSaveNoteIfContacted_NoContactType() throws Exception {
-		ContractorRegistrationRequest legacyRequest = Whitebox.getInternalState(requestNewContractorAccount,
-				"legacyRequest");
-
 		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
 
-		assertEquals(0, requestNewContractorAccount.getRequestedContractor().getTotalContactCount());
-		assertEquals(0, legacyRequest.getContactCount());
+		assertEquals(0, requestNewContractorAccount.getContractor().getTotalContactCount());
 
 		verify(entityManager, never()).merge(any(BaseTable.class));
 		verify(entityManager, never()).persist(any(BaseTable.class));
@@ -507,23 +453,18 @@ public class RequestNewContractorAccountTest {
 		when(permissions.getUserId()).thenReturn(1);
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 
-		ContractorRegistrationRequest legacyRequest = Whitebox.getInternalState(requestNewContractorAccount,
-				"legacyRequest");
-
 		requestNewContractorAccount.setContactType(RequestContactType.EMAIL);
 		requestNewContractorAccount.setRequestRelationship(relationship);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
 
-		assertEquals(1, requestNewContractorAccount.getRequestedContractor().getTotalContactCount());
-		assertEquals(1, legacyRequest.getContactCount());
+		assertEquals(1, requestNewContractorAccount.getContractor().getTotalContactCount());
 
 		requestNewContractorAccount.setContactType(RequestContactType.PHONE);
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "saveNoteIfContacted");
 
-		assertEquals(2, requestNewContractorAccount.getRequestedContractor().getTotalContactCount());
-		assertEquals(2, legacyRequest.getContactCount());
+		assertEquals(2, requestNewContractorAccount.getContractor().getTotalContactCount());
 	}
 
 	@Test
@@ -584,71 +525,10 @@ public class RequestNewContractorAccountTest {
 
 		Whitebox.invokeMethod(requestNewContractorAccount, "addRemainingTags");
 
-		assertFalse(requestNewContractorAccount.getRequestedContractor().getOperatorTags().isEmpty());
-		assertEquals(tag, requestNewContractorAccount.getRequestedContractor().getOperatorTags().get(0).getTag());
+		assertFalse(requestNewContractorAccount.getContractor().getOperatorTags().isEmpty());
+		assertEquals(tag, requestNewContractorAccount.getContractor().getOperatorTags().get(0).getTag());
 
 		verify(entityManager).persist(any(ContractorTag.class));
-	}
-
-	@Test
-	public void testUpdateAccounWithLegacyChanges() throws Exception {
-		List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
-		contractorOperators.add(relationship);
-
-		when(contractor.getOperators()).thenReturn(contractorOperators);
-		when(relationship.getId()).thenReturn(1);
-		when(relationship.getOperatorAccount()).thenReturn(operator);
-		when(request.getId()).thenReturn(1);
-		when(request.getRequestedBy()).thenReturn(operator);
-		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(true);
-		when(request.getStatus()).thenReturn(ContractorRegistrationRequestStatus.Active);
-		when(user.getId()).thenReturn(1);
-
-		requestNewContractorAccount.setRequestedContractor(contractor);
-		requestNewContractorAccount.setRequestRelationship(relationship);
-		Whitebox.setInternalState(requestNewContractorAccount, "legacyRequest", request);
-		Whitebox.setInternalState(requestNewContractorAccount, "primaryContact", user);
-
-		Whitebox.invokeMethod(requestNewContractorAccount, "updateAccountWithLegacyChanges");
-
-		verify(entityManager, times(3)).merge(any(BaseTable.class));
-	}
-
-	@Test
-	public void testUpdateAccounWithLegacyChanges_NotUpdated() throws Exception {
-		ContractorRegistrationRequest request = mock(ContractorRegistrationRequest.class);
-
-		when(request.getId()).thenReturn(1);
-		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(false);
-
-		Whitebox.setInternalState(requestNewContractorAccount, "legacyRequest", request);
-		Whitebox.invokeMethod(requestNewContractorAccount, "updateAccountWithLegacyChanges");
-
-		verify(entityManager, never()).merge(any(BaseTable.class));
-	}
-
-	@Test
-	public void testUpdateAccounWithLegacyChanges_NewLegacyRequest() throws Exception {
-		ContractorRegistrationRequest request = mock(ContractorRegistrationRequest.class);
-
-		when(request.getId()).thenReturn(0);
-		when(request.isCreatedUpdatedAfter(any(ContractorAccount.class))).thenReturn(true);
-
-		Whitebox.setInternalState(requestNewContractorAccount, "legacyRequest", request);
-		Whitebox.invokeMethod(requestNewContractorAccount, "updateAccountWithLegacyChanges");
-
-		verify(entityManager, never()).merge(any(BaseTable.class));
-	}
-
-	private List<OperatorForm> createOperatorFormList() {
-		List<OperatorForm> forms = new ArrayList<OperatorForm>();
-
-		OperatorForm form = mock(OperatorForm.class);
-		when(form.getFormName()).thenReturn("*");
-
-		forms.add(form);
-
-		return forms;
 	}
 
 	private void setPermissionsAsOperator() {

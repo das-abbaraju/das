@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +29,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.Database;
 
 public class DataConversionRequestAccountTest {
@@ -38,6 +40,8 @@ public class DataConversionRequestAccountTest {
 	private Database database;
 	@Mock
 	private EntityManager entityManager;
+	@Mock
+	private OperatorAccount operator;
 	@Mock
 	private Permissions permissions;
 	@Mock
@@ -54,6 +58,8 @@ public class DataConversionRequestAccountTest {
 		picsTestUtil.autowireEMInjectedDAOs(requestConversion, entityManager);
 
 		Whitebox.setInternalState(requestConversion, "permissions", permissions);
+
+		when(entityManager.createQuery(anyString())).thenReturn(query);
 	}
 
 	@AfterClass
@@ -63,7 +69,6 @@ public class DataConversionRequestAccountTest {
 
 	@Test
 	public void testExecute() {
-		when(entityManager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(Collections.emptyList());
 
 		assertEquals(PicsActionSupport.SUCCESS, requestConversion.execute());
@@ -87,5 +92,26 @@ public class DataConversionRequestAccountTest {
 		Whitebox.setInternalState(requestConversion, "requestsNeedingConversion", needsConversion);
 
 		assertTrue((Boolean) Whitebox.invokeMethod(requestConversion, "needsUpgrade"));
+	}
+
+	@Test
+	public void testNeedsUpgrade_ForOneOperator() throws Exception {
+		ContractorRegistrationRequest request = new ContractorRegistrationRequest();
+
+		List<ContractorRegistrationRequest> needsConversion = new ArrayList<ContractorRegistrationRequest>();
+		needsConversion.add(request);
+
+		when(operator.getId()).thenReturn(1);
+		when(query.getResultList()).thenReturn(needsConversion);
+
+		Whitebox.setInternalState(requestConversion, "restrictToOperator", operator);
+
+		needsConversion = Whitebox.invokeMethod(requestConversion, "findRequestsNeedingConversion");
+
+		Whitebox.setInternalState(requestConversion, "requestsNeedingConversion", needsConversion);
+
+		assertTrue((Boolean) Whitebox.invokeMethod(requestConversion, "needsUpgrade"));
+
+		verify(operator, times(2)).getId();
 	}
 }

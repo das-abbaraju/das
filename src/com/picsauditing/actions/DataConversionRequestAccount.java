@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -29,6 +30,7 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 
 	private int limit = 10;
 	private List<ContractorRegistrationRequest> requestsNeedingConversion = Collections.emptyList();
+	private OperatorAccount restrictToOperator;
 
 	@Anonymous
 	@Override
@@ -56,6 +58,14 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 
 	public void setLimit(int limit) {
 		this.limit = limit;
+	}
+
+	public OperatorAccount getRestrictToOperator() {
+		return restrictToOperator;
+	}
+
+	public void setRestrictToOperator(OperatorAccount restrictToOperator) {
+		this.restrictToOperator = restrictToOperator;
 	}
 
 	private boolean needsUpgrade() {
@@ -86,7 +96,13 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 	}
 
 	private List<ContractorRegistrationRequest> findRequestsNeedingConversion() {
-		return dao.findWhere(ContractorRegistrationRequest.class, "t.contractor IS NULL", limit);
+		String where = "t.contractor IS NULL";
+
+		if (restrictToOperator != null && restrictToOperator.getId() > 0) {
+			where += " AND t.requestedBy.id = " + restrictToOperator.getId();
+		}
+
+		return dao.findWhere(ContractorRegistrationRequest.class, where, limit);
 	}
 
 	private ContractorAccount createContractorFrom(ContractorRegistrationRequest request) {
