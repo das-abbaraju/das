@@ -204,10 +204,11 @@ public class ContractorValidator {
 	public void setOfficeLocationInPqfBasedOffOfAddress(
 			ContractorAccount contractor) {
 		
-		String countryCountrySubdivisionCode = contractor.getCountry().getIsoCode() + "."
-				+ contractor.getCountrySubdivision();
+		if (contractor == null)
+			return;
+		
 		List<String> uniqueCodes = new ArrayList<String>();
-		uniqueCodes.add(countryCountrySubdivisionCode);
+		uniqueCodes.add(contractor.getCountrySubdivision().toString());
 
 		List<AuditQuestion> officeLocationResultSet = auditQuestionDao
 				.findQuestionsByUniqueCodes(uniqueCodes);

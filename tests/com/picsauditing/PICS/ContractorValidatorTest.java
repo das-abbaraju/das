@@ -1,12 +1,9 @@
 package com.picsauditing.PICS;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
@@ -31,14 +24,13 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 
 public class ContractorValidatorTest extends PicsTest {
 
+	
 	@Mock
 	private ContractorAccount contractor;
 	@Mock
@@ -51,7 +43,9 @@ public class ContractorValidatorTest extends PicsTest {
 	private ContractorAccountDAO contractorAccountDao;
 
 	private ContractorValidator contractorValidator;
-
+	
+	private static final String YES_WITH_OFFICE = "YesWithOffice";
+	
 	@Before
 	public void setup() throws Exception {
 		super.setUp();
@@ -72,48 +66,66 @@ public class ContractorValidatorTest extends PicsTest {
 
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_SwitchToAlberta() {
-		AuditData officeLocationAnswer = setupOfficeLocationTest("CA", "AB",
-				"CA", "BC", true);
+		AuditData officeLocationAnswer = setupOfficeLocationTest(
+				new CountrySubdivision("CA-AB"),
+				new CountrySubdivision("CA-BC"), true);
 		
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 
-		assertEquals("YesWithOffice", officeLocationAnswer.getAnswer());
+		assertEquals(YES_WITH_OFFICE, officeLocationAnswer.getAnswer());
 	}
 
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_SwitchToCalifornia() {
-		AuditData officeLocationAnswer = setupOfficeLocationTest("US", "CA",
-				"US", "TX", true);
+		AuditData officeLocationAnswer = setupOfficeLocationTest(
+				new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), true);
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 		
-		assertEquals("YesWithOffice", officeLocationAnswer.getAnswer());
+		assertEquals(YES_WITH_OFFICE, officeLocationAnswer.getAnswer());
 	}
-	
 	
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_NoAuditData() {
-		setupOfficeLocationTest("US", "CA",	"US", "TX", false);
+		setupOfficeLocationTest(new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), false);
 		
 		ArgumentCaptor<AuditData> officeLocationAnswer = ArgumentCaptor.forClass(AuditData.class);
 				
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 		verify(auditDataDao).save(officeLocationAnswer.capture());
 				
-		assertEquals("YesWithOffice", officeLocationAnswer.getValue().getAnswer());
+		assertEquals(YES_WITH_OFFICE, officeLocationAnswer.getValue().getAnswer());
 	}
-
+		
+	@Test
+	public void testSetOfficeLocationInPqfBasedOffOfAddress_NullContractor() {
+		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(null);
+	}
+	
+	@Test
+	public void testSetOfficeLocationInPqfBasedOffOfAddress_ValidateQuestionUniqeCode() {
+		setupOfficeLocationTest(new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), false);
+		@SuppressWarnings({ "unchecked" })
+		ArgumentCaptor<List<String>> uniqueCodePassedToAuditQuestionDao = (ArgumentCaptor<List<String>>) (Object) ArgumentCaptor.forClass(List.class);
+		
+		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
+		
+		verify(auditQuestionDao).findQuestionsByUniqueCodes(uniqueCodePassedToAuditQuestionDao.capture());
+		
+		assertEquals("US-TX", uniqueCodePassedToAuditQuestionDao.getValue().get(0));
+	}
+	
 	@SuppressWarnings("unchecked")
-	private AuditData setupOfficeLocationTest(String newCountry,
-			String newCountrySubdivision, String oldCountry, String oldCountrySubdivision, boolean auditDataFindable) {
-		setCountryAndCountrySubdivision(contractor, newCountry, newCountrySubdivision);
+	private AuditData setupOfficeLocationTest(CountrySubdivision oldCountrySubdivision,
+			CountrySubdivision newCountrySubdivision, boolean auditDataFindable) {
+		contractor.setCountrySubdivision(newCountrySubdivision);
 		ContractorAccount previousContractorSettings = new ContractorAccount();
-		setCountryAndCountrySubdivision(previousContractorSettings, oldCountry, oldCountrySubdivision);
+		previousContractorSettings.setCountrySubdivision(oldCountrySubdivision);
 
 		when(contractorAccountDao.find(contractor.getId())).thenReturn(
 				previousContractorSettings);
 
 		List<String> uniqueCodes = new ArrayList<String>();
-		uniqueCodes.add(newCountry + "." + newCountrySubdivision);
+		uniqueCodes.add(newCountrySubdivision.toString());
 		List<AuditQuestion> mockResultSetForAuditQuestionDao = new ArrayList<AuditQuestion>();
 		AuditQuestion officeLocationQuestion = new AuditQuestion();
 		mockResultSetForAuditQuestionDao.add(officeLocationQuestion);
@@ -145,11 +157,5 @@ public class ContractorValidatorTest extends PicsTest {
 				null);
 		}
 		return officeLocationAnswer;
-	}
-
-	private void setCountryAndCountrySubdivision(ContractorAccount contractor,
-			String countryIsoCode, String countrySubdivisionIsoCode) {
-		contractor.setCountry(new Country(countryIsoCode));
-		contractor.setCountrySubdivision(new CountrySubdivision(countrySubdivisionIsoCode));
 	}
 }
