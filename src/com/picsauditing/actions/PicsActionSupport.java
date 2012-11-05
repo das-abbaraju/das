@@ -1027,7 +1027,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getChatUrl() {
-		String protocol = getRequest().getProtocol();
+		String scheme = getRequest().getScheme();
 		Locale locale = TranslationActionSupport.getLocaleStatic();
 
 		// We're using a whitelist strategy because we don't want to pass junk downstream
@@ -1036,11 +1036,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			language = locale.getDisplayLanguage();
 		}
 
-		String chatUrl = protocol + "://server.iad.liveperson.net/hc/90511184/" +
+		String chatUrl = scheme + "://server.iad.liveperson.net/hc/90511184/" +
 	    "?cmd=file" +
 	    "&amp;file=visitorWantsToChat" +
 	    "&amp;site=90511184" +
-	    "&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
+	    "&amp;imageUrl=" + scheme + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + language + "/General/3a" +
 	    "&amp;referrer=";
 
 		return chatUrl;

@@ -3,7 +3,7 @@ package com.picsauditing.actions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +17,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 
 public class PicsActionSupportTest extends PicsActionTest {
+
 	private PicsActionSupport picsActionSupport;
 
 	@Mock
@@ -30,10 +31,12 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
 	}
+
 	@After
 	public void tearDown() throws Exception {
 		System.setProperty("pics.env", "");
 	}
+
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
 		Permissions permissions = new Permissions();
@@ -77,6 +80,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertEquals("Equivalent of -Dpics.env=Alphabet", "alpha", picsActionSupport.getPicsEnvironment());
 	}
+
 	@Test
 	public void testGetPicsEnvironment_BetaPerUrl_withNonsenseEnvironmentVariable() throws Exception {
 		System.setProperty("pics.env", "nonsense");
@@ -85,6 +89,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertEquals("Equivalent of -Dpics.env=nonsense", "beta", picsActionSupport.getPicsEnvironment());
 	}
+
 	@Test
 	public void testIsAlphaEnvironment() throws Exception {
 		when(request.getServerName()).thenReturn(new String("alpha.picsorganizer.com"));
@@ -92,6 +97,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue("url starts with alpha", picsActionSupport.isAlphaEnvironment());
 	}
+
 	@Test
 	public void testIsAlphaEnvironment_false() throws Exception {
 		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
@@ -99,6 +105,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertFalse("url does not start with alpha", picsActionSupport.isAlphaEnvironment());
 	}
+
 	@Test
 	public void testIsBetaEnvironment_SystemPropertySaysBeta() throws Exception {
 		System.setProperty("pics.env", " BETA ");
@@ -107,6 +114,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue("Equivalent of -Dpics.env=beta", picsActionSupport.isBetaEnvironment());
 	}
+
 	@Test
 	public void testIsBetaEnvironment_SystemPropertySaysAlpha() throws Exception {
 		System.setProperty("pics.env", "alpha");
@@ -115,6 +123,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertFalse("Equivalent of -Dpics.env=alpha", picsActionSupport.isBetaEnvironment());
 	}
+
 	@Test
 	public void testIsBetaEnvironment_UrlExplicitlyStartsWithBeta() throws Exception {
 		when(request.getServerName()).thenReturn(new String("beta.picsorganizer.com"));
@@ -122,6 +131,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue("url starts with beta", picsActionSupport.isBetaEnvironment());
 	}
+
 	@Test
 	public void testIsBetaEnvironment_UrlExplicitlyStartsWithAlpha() throws Exception {
 		when(request.getServerName()).thenReturn(new String("alpha.picsorganizer.com"));
@@ -129,6 +139,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertFalse(picsActionSupport.isBetaEnvironment());
 	}
+
 	@Test
 	public void testIsBetaEnvironment_UrlExplicitlyStartsWithLocalhost() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost:8080"));
@@ -136,14 +147,14 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertFalse(picsActionSupport.isBetaEnvironment());
 	}
+
 	@Test
 	public void testIsBetaEnvironment_UrlExplicitlyStartsWithQaBeta() throws Exception {
 		when(request.getServerName()).thenReturn(new String("qa-beta.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
-		// Confirming intention: "qa-beta" is NOT considered "beta" (as far as the environment bar being colorized light blue for beta is concerned).  
+		// Confirming intention: "qa-beta" is NOT considered "beta" (as far as the environment bar being colorized light blue for beta is concerned).
 		assertFalse(picsActionSupport.isBetaEnvironment());
 	}
-
 
 	@Test
 	public void testIsBetaEnvironment_comparedToLowVersionNumberInAppProperties() throws Exception {
@@ -206,6 +217,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertFalse(picsActionSupport.isLiveEnvironment());
 	}
+
 	@Test
 	public void testIsLiveEnvironment_UrlExplicitlyStartsWithLocalhost() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost:8080"));
@@ -235,6 +247,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue("URL is not explicitly stable, but version number is lower than app_properties", picsActionSupport.isLiveEnvironment());
 	}
+
 	@Test
 	public void testIsQaEnvironment_UrlExplicitlyStartsWithQaStable() throws Exception {
 		when(request.getServerName()).thenReturn(new String("qa-stable.picsorganizer.com"));
@@ -242,6 +255,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue(picsActionSupport.isQaEnvironment());
 	}
+
 	@Test
 	public void testIsQaEnvironment_UrlExplicitlyStartsWithQaBeta() throws Exception {
 		when(request.getServerName()).thenReturn(new String("qa-beta.picsorganizer.com"));
@@ -249,6 +263,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 		assertTrue(picsActionSupport.isQaEnvironment());
 	}
+
 	@Test
 	public void testIsLocalhostEnvironment() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost:8080"));
@@ -257,7 +272,13 @@ public class PicsActionSupportTest extends PicsActionTest {
 		assertTrue(picsActionSupport.isLocalhostEnvironment());
 	}
 
+	@Test
+	public void testGetChatUrl() throws Exception {
+		when(request.getScheme()).thenReturn("http");
 
+		picsActionSupport.getChatUrl();
 
+		verify(request).getScheme();
+	}
 
 }

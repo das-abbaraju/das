@@ -130,7 +130,10 @@
                     				<li><s:text name="Registration.Error.CallUs" /></li>
                     				<li>
                     					<a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-                    					<s:text name="Registration.Error.LiveChat" /></a> <s:text name="Registration.Error.PicsRep" /></li>
+                    					   <s:text name="Registration.Error.LiveChat" />
+                                        </a>
+                                        <s:text name="Registration.Error.PicsRep" />
+                                    </li>
                     			</ul>
                     		</p>
                     	</div>
