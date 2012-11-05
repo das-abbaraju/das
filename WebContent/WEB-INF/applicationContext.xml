@@ -198,7 +198,18 @@
           <property name="resourceRef" value="false" />
           <property name="defaultObject" value="dummy"></property>
  	</bean>
-
+	<bean 
+  		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" 
+  		lazy-init="false"> 
+  		<property name="targetObject" ref="jndiDataSource" /> 
+  		<property name="targetMethod" value="addConnectionProperty" /> 
+  		<property name="arguments"> 
+   		<list> 
+   			 <value>characterEncoding</value> 
+   			 <value>UTF-8</value> 
+   		</list> 
+  		</property> 
+ 	</bean> 
     <bean id="transactionManager"
         class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
