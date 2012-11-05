@@ -22,7 +22,7 @@
                 var element = $(event.currentTarget);
 
                 var contractor_number_data = {
-                    contractorID: element.attr('data-contractor'),
+                    contractor_id: element.attr('data-contractor'),
                     data_number: element.attr('data-number')
                 };
 

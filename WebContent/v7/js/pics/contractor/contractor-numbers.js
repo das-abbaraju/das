@@ -26,6 +26,10 @@
                         });
 
                         modal_element.on('click', '.positive', that.saveContractorNumber);
+
+                        modal_element.on('click', '.negative', function () {
+                             PICS.getClass('modal.Modal').hide();
+                        });
                     }
                 }
 

@@ -68,6 +68,6 @@
 			value="<s:text name="button.Save" />"
 			data-url="${contractor_number_save}"
 		/>
-		<input type="button" class="picsbutton negative closeButton" data-dismiss="modal" value="<s:text name="button.Close" />" />
+		<input type="button" class="picsbutton negative closeButton" value="<s:text name="button.Close" />" />
 	</fieldset>
 </s:form>
