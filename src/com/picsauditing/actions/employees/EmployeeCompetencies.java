@@ -274,24 +274,22 @@ public class EmployeeCompetencies extends ReportEmployee {
 	}
 
 	private void initializeCompetenciesForEmployees() {
-		if (permissions.isContractor()) {
-			for (Employee employee : account.getEmployees()) {
-				boolean noCompetenciesForEmployeeWithRole = employee.getEmployeeRoles().size() > 0
-						&& employee.getEmployeeCompetencies().isEmpty();
+		for (Employee employee : account.getEmployees()) {
+			boolean noCompetenciesForEmployeeWithRole = employee.getEmployeeRoles().size() > 0
+					&& employee.getEmployeeCompetencies().isEmpty();
 
-				if (noCompetenciesForEmployeeWithRole) {
-					for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
-						for (JobCompetency jobCompetency : employeeRole.getJobRole().getJobCompetencies()) {
-							EmployeeCompetency employeeCompetency = new EmployeeCompetency();
+			if (noCompetenciesForEmployeeWithRole) {
+				for (EmployeeRole employeeRole : employee.getEmployeeRoles()) {
+					for (JobCompetency jobCompetency : employeeRole.getJobRole().getJobCompetencies()) {
+						EmployeeCompetency employeeCompetency = new EmployeeCompetency();
 
-							employeeCompetency.setEmployee(employee);
-							employeeCompetency.setCompetency(jobCompetency.getCompetency());
-							employeeCompetency.setSkilled(true);
-							employeeCompetency.setAuditColumns(permissions);
+						employeeCompetency.setEmployee(employee);
+						employeeCompetency.setCompetency(jobCompetency.getCompetency());
+						employeeCompetency.setSkilled(true);
+						employeeCompetency.setAuditColumns(permissions);
 
-							employeeCompetencyDAO.save(employeeCompetency);
-							employee.getEmployeeCompetencies().add(employeeCompetency);
-						}
+						employeeCompetencyDAO.save(employeeCompetency);
+						employee.getEmployeeCompetencies().add(employeeCompetency);
 					}
 				}
 			}
