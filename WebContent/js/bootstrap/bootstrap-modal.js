@@ -38,11 +38,11 @@
     if ( $.support.transition ) {
       transitionEnd = "TransitionEnd"
       if ( $.browser.webkit ) {
-      	transitionEnd = "webkitTransitionEnd"
+        transitionEnd = "webkitTransitionEnd"
       } else if ( $.browser.mozilla ) {
-      	transitionEnd = "transitionend"
+        transitionEnd = "transitionend"
       } else if ( $.browser.opera ) {
-      	transitionEnd = "oTransitionEnd"
+        transitionEnd = "oTransitionEnd"
       }
     }
 
@@ -55,7 +55,7 @@
   var Modal = function ( content, options ) {
     this.settings = $.extend({}, $.fn.modal.defaults, options)
     this.$element = $(content)
-        .delegate('.close, [data-dismiss="modal"]', 'click.modal', $.proxy(this.hide, this))
+      .delegate('.close', 'click.modal', $.proxy(this.hide, this))
 
     if ( this.settings.show ) {
       this.show()
