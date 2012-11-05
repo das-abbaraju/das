@@ -25,7 +25,10 @@
                             that.updateModal(contractor_id, data_number);
                         });
 
-                        modal_element.on('click', '.positive', that.saveContractorNumber);
+                        modal_element.on('submit', '#contractor_operator_numbers_form', function (event) {
+                            event.preventDefault();
+                            that.saveContractorNumber();
+                        });
 
                         modal_element.on('click', '.negative', function () {
                              PICS.getClass('modal.Modal').hide();
@@ -60,7 +63,7 @@
                     form = $('#contractor_operator_numbers_form');
 
                 PICS.ajax({
-                    url : 'ManageContractorOperatorNumber!save.action',
+                    url : form.attr('action'),
                     data : form.serialize(),
                     success : function(data, textStatus, jqXHR) {
                         var modal = PICS.getClass('modal.Modal');

@@ -6,7 +6,7 @@
 
 <s:include value="../actionMessages.jsp" />
 
-<s:form id="contractor_operator_numbers_form">
+<s:form id="contractor_operator_numbers_form" action="%{contractor_number_save}">
 	<s:hidden name="contractor" />
 	<s:hidden name="number" />
 
@@ -63,10 +63,9 @@
 	</fieldset>
 	<fieldset class="form submit">
 		<input
-			type="button"
+			type="submit"
 			class="picsbutton positive"
 			value="<s:text name="button.Save" />"
-			data-url="${contractor_number_save}"
 		/>
 		<input type="button" class="picsbutton negative closeButton" value="<s:text name="button.Close" />" />
 	</fieldset>
