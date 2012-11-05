@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:if test="contractor.getVisibleContractorOperatorNumbers(permissions).size > 0">
-	<table class="report">
+	<table class="table">
 		<thead>
 			<tr>
 				<s:if test="permissions.picsEmployee || permissions.corporate">

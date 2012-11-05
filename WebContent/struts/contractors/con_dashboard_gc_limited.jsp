@@ -123,7 +123,7 @@
 						<s:text name="ContractorOperatorNumber" />:
 					</span>
 					<div id="contractor_operator_numbers">
-						<s:include value="contractor_operator_numbers.jsp" />
+						<s:include value="../contractors/third-party-identifier/_identifier-table.jsp" />
 					</div>
 				</div>
 			</s:if>

@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('contractor.ContractorNumbers', {
+    PICS.define('contractor.Identifier', {
         methods: {
             init: function () {
                 if ($('#contractor_operator_numbers').length > 0) {
