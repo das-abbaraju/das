@@ -28,7 +28,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/contractor_safety_statistics.js?v=${version}"></script>
 <script type="text/javascript" src="js/header_search.js?v=${version}"></script>
 <script type="text/javascript" src="js/main_system_message.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/widgets/modal.js?v=${version}"></script>
+<script type="text/javascript" src="js/modal.js?v=${version}"></script>
 <script type="text/javascript" src="js/operator_edit.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration.js?v=${version}"></script>
 <script type="text/javascript" src="js/registration/registration_add_client_site.js?v=${version}"></script>
@@ -49,10 +49,10 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/employee/manage_job_roles.js?v=${version}"></script>
 <script type="text/javascript" src="js/insureguard/report_insurance_approval.js?v=${version}"></script>
 <script type="text/javascript" src="js/insureguard/report_insurance_approval_controller.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/contractor/dashboard-controller.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/contractor/contractor-edit.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/contractor/lc-cor-controller.js?v=${version}"></script>
-<script type="text/javascript" src="v7/js/pics/contractor/contractor-numbers.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor/dashboard/dashboard-controller.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor/edit-account/contractor-edit.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor/lc-cor/lc-cor-controller.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor/third-party-identifier/contractor-numbers.js?v=${version}"></script>
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js?v=${version}"></script>
