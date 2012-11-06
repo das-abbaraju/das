@@ -67,6 +67,6 @@
 			class="picsbutton positive"
 			value="<s:text name="button.Save" />"
 		/>
-		<input type="button" class="picsbutton negative closeButton" value="<s:text name="button.Close" />" />
+		<input type="button" class="picsbutton negative" value="<s:text name="button.Close" />" />
 	</fieldset>
 </s:form>
