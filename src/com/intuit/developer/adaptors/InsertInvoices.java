@@ -98,7 +98,6 @@ public class InsertInvoices extends CustomerAdaptor {
 
 				invoice.setDueDate(DateBean.format(invoiceJPA.getDueDate(), "yyyy-MM-dd"));
 
-				// this may cause a problem
 				invoice.setCustomerMsgRef(factory.createCustomerMsgRef());
 				invoice.getCustomerMsgRef().setFullName("Thank you for your business.");
 
