@@ -1918,4 +1918,18 @@ public class ContractorAccount extends Account implements JSONable {
 		String seed = "request" + this.getId() + "-" + new Date();
 		setRegistrationHash(Strings.hashUrlSafe(seed));
 	}
+
+	public ContractorOperator getContractorOperatorWithClosestDeadline() {
+		ContractorOperator closestDeadline = null;
+
+		for (ContractorOperator contractorOperator : getOperators()) {
+			if (contractorOperator.getDeadline() != null) {
+				if (closestDeadline == null || closestDeadline.getDeadline().after(contractorOperator.getDeadline())) {
+					closestDeadline = contractorOperator;
+				}
+			}
+		}
+
+		return closestDeadline;
+	}
 }

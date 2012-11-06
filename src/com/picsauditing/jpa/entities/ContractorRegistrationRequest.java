@@ -13,8 +13,9 @@ import javax.persistence.Transient;
 
 import com.picsauditing.util.Strings;
 
-@SuppressWarnings("serial")
+@Deprecated
 @Entity
+@SuppressWarnings("serial")
 @Table(name = "contractor_registration_request")
 public class ContractorRegistrationRequest extends BaseTable implements java.io.Serializable {
 	private String name;
