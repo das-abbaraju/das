@@ -106,7 +106,6 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.setIsToBeEmailed("false");
 
 				if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
-                    boolean lineItemsNeedConversion = invoiceJPA.containsATaxLineItem();
 					for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
 
 						InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
@@ -122,9 +121,6 @@ public class InsertInvoices extends CustomerAdaptor {
 						lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
 						invoice.getInvoiceLineAddOrInvoiceLineGroupAdd().add(lineItem);
-
-                        if (lineItemsNeedConversion)
-                            lineItem.setIsTaxable("Yes"); //Need to know the magic value to pass to QB.
 					}
 				}
 
