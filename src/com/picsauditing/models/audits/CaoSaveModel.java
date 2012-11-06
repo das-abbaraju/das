@@ -72,13 +72,11 @@ public class CaoSaveModel {
 				}
 			}
 		}
-
 	}
 	
 	public void updatePqfOnSubmittedResubmitter(ContractorAudit audit, AuditStatus newStatus) {
 		if (newStatus.isSubmittedResubmitted() && audit.getAuditType().isPqf()) {
 			auditPercentCalculator.percentCalculateComplete(audit, true);
 		}
-
 	}
 }

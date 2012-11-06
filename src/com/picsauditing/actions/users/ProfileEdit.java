@@ -1,10 +1,12 @@
 package com.picsauditing.actions.users;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
@@ -32,6 +34,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ProfileEdit extends PicsActionSupport {
+	
 	@Autowired
 	private UserDAO dao;
 	@Autowired
@@ -238,6 +241,20 @@ public class ProfileEdit extends PicsActionSupport {
 		AuditTypeDAO auditTypeDao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
 		
 		return auditTypeDao.findWhere("t.id IN (" + Strings.implode(permissions.getVisibleAuditTypes()) + ")");
+	}
+	
+	public List<String> getGroupNames() {
+		List<User> groups = userDAO.findByIds(permissions.getAllInheritedGroupIds());
+		if (CollectionUtils.isNotEmpty(groups)) {
+			return Collections.emptyList();
+		}
+		
+		List<String> groupNames = new ArrayList<String>(); 
+		for (User group : groups) {
+			groupNames.add(group.getName());
+		}
+		
+		return groupNames;
 	}
 
 	/**

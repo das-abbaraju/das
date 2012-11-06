@@ -112,7 +112,6 @@
 	<bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
 	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
 	<bean id="CorruptionPerceptionIndexMap" class="com.picsauditing.util.CorruptionPerceptionIndexMap"/>
-	<bean id="GroupHierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder" />
 
 	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
@@ -173,6 +172,7 @@
 	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 
 	<bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
+	<bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder" />
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

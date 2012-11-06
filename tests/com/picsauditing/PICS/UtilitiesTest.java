@@ -5,8 +5,12 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
+
+import com.picsauditing.EntityFactory;
+import com.picsauditing.jpa.entities.AuditType;
 
 public class UtilitiesTest {
 
@@ -82,5 +86,20 @@ public class UtilitiesTest {
 		Collection<String> collection1 = Arrays.asList("DE", "AB", "AC");
 		Collection<String> collection2 = Arrays.asList("AC", "DE", "AB");
 		assertTrue(Utilities.collectionsAreEqual(collection1, collection2, String.CASE_INSENSITIVE_ORDER));
+	}
+	
+	@Test
+	public void testCollectionsAreEqual_CollectionsHaveSameContents_EntriesImplement_Comparable() {
+		Collection<Integer> collection1 = Arrays.asList(1, 2, 3);
+		Collection<Integer> collection2 = Arrays.asList(3, 2, 1);
+		assertTrue(Utilities.collectionsAreEqual(collection1, collection2));
+	}
+	
+	@Test
+	public void testGetIdsBaseTableEntities() {
+		List<AuditType> audits = Arrays.asList(EntityFactory.makeAuditType(1), 
+				EntityFactory.makeAuditType(2), EntityFactory.makeAuditType(3));
+		
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(1, 2, 3), Utilities.getIdsBaseTableEntities(audits)));
 	}
 }

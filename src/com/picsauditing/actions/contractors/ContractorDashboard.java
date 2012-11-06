@@ -839,6 +839,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (User user : co.getOperatorAccount().getUsers()) {
 				Permissions permissions = new Permissions();
 				try {
+					permissions.setHierarchyBuilder(hierarchyBuilder);
+					permissions.setFeatureToggle(featureToggleChecker);
 					permissions.login(user);
 
 					if (permissions.hasPermission(operatorPermission)) {

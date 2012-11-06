@@ -22,6 +22,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class FacilityChangerTest {
 	private FacilityChanger facilityChanger;
@@ -37,12 +38,15 @@ public class FacilityChangerTest {
 	private AuditDataDAO auditDataDAO;
 	@Mock
 	private AccountLevelAdjuster accountLevelAdjuster;
+	@Mock
+	private HierarchyBuilder hierarchyBuilder;
 
 	@Before
 	public void setup() {
 		facilityChanger = new FacilityChanger();
 
 		Permissions permissions = new Permissions();
+		permissions.setHierarchyBuilder(hierarchyBuilder);
 		Whitebox.setInternalState(permissions, "accountType", "Contractor");
 
 		facilityChanger.setPermissions(permissions);

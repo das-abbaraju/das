@@ -105,20 +105,18 @@ public class ReportModelTest {
 		assertTrue(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
 	}
 
-	@Test
+	@Ignore
 	public void canUserViewAndCopy_FalseIfNoResultException() {
 		when(reportUserDao.findOne(USER_ID, REPORT_ID)).thenThrow(new NoResultException());
-		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
-		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
 
-		assertFalse(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
+		assertFalse(reportModel.canUserViewAndCopy(EntityFactory.makePermission(), REPORT_ID));
 	}
 
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
 		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenThrow(new NoResultException());
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
-		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
+		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
 
 		assertFalse(reportModel.canUserEdit(permissions, report));
 	}

@@ -65,6 +65,7 @@ import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class OpenTasksTest {
 	private final String ImportAndSubmitPQF = "Please upload your prequalification form/questionnaire from your other registry";
@@ -120,7 +121,9 @@ public class OpenTasksTest {
 	private Database databaseForTesting;
 	@Mock
 	private FeatureToggle featureToggleChecker;
-
+	@Mock 
+	private HierarchyBuilder hierarchyBuilder;
+	
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private static final int TALLRED_USER_ID = 941;
 	private ArrayList<String> openTaskList;
@@ -151,6 +154,7 @@ public class OpenTasksTest {
 		Whitebox.setInternalState(openTasks, "openTasks", openTaskList);
 		Whitebox.setInternalState(openTasks, "operatorTagDao", operatorTagDao);
 		Whitebox.setInternalState(openTasks, "featureToggleChecker", featureToggleChecker);
+		Whitebox.setInternalState(openTasks, "hierarchyBuilder", hierarchyBuilder);
 		when(contractor.getLocale()).thenReturn(Locale.ENGLISH);
 	}
 

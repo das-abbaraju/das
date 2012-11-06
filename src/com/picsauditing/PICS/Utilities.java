@@ -1,7 +1,9 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +13,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.NaicsDAO;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.search.Database;
@@ -184,7 +187,7 @@ public class Utilities {
 	/**
 	 * Only to be used with smaller collections.  There will be a performance bottle neck when used on larger collections.
 	 */
-	public static <T> boolean collectionsAreEqual(Collection<T> collection1, Collection<T> collection2, Comparator<T> comparator) {
+	public static <E> boolean collectionsAreEqual(Collection<E> collection1, Collection<E> collection2, Comparator<E> comparator) {
 		if (CollectionUtils.isEmpty(collection1) || CollectionUtils.isEmpty(collection2)) {
 			return false;
 		}
@@ -193,9 +196,9 @@ public class Utilities {
 			return false;
 		}
 		
-		for (T object : collection1) {
+		for (E object : collection1) {
 			boolean foundMatch = false;
-			for (T objectForComparison : collection2) {
+			for (E objectForComparison : collection2) {
 				if (comparator.compare(object, objectForComparison) == 0) {
 					foundMatch = true;
 					break;
@@ -208,6 +211,35 @@ public class Utilities {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Only to be used with smaller collections.  There will be a performance bottle neck when used on larger collections.
+	 */
+	public static <E extends Comparable<E>> boolean collectionsAreEqual(Collection<E> collection1, Collection<E> collection2) {
+		Comparator<E> comparableComparator = new Comparator<E>() {
+
+			@Override
+			public int compare(E o1, E o2) {
+				return o1.compareTo(o2); 
+			}
+			
+		};
+		
+		return collectionsAreEqual(collection1, collection2, comparableComparator);
+	}
+	
+	public static <E extends BaseTable> Collection<Integer> getIdsBaseTableEntities(Collection<E> entities) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptyList();
+		}
+		
+		Collection<Integer> ids = new ArrayList<Integer>();
+		for (E entity : entities) {
+			ids.add(entity.getId());
+		}
+		
+		return ids;
 	}
 	
 }

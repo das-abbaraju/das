@@ -8,6 +8,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class DashboardHome extends PicsActionSupport {
+	
 	private int id = 0;
 	private Dashboard dashboard = null;
 

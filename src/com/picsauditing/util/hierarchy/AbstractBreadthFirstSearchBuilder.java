@@ -9,12 +9,10 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.picsauditing.jpa.entities.BaseTable;
+public abstract class AbstractBreadthFirstSearchBuilder implements HierarchyBuilder {
 
-public abstract class AbstractBreadthFirstSearchBuilder<T extends BaseTable> {
-
-	public final Set<Integer> retrieveAllEntityIdsInHierarchy(T entity) {
-		List<Integer> entitiesIds = findAllParentEntityIds(entity.getId());
+	public final Set<Integer> retrieveAllEntityIdsInHierarchy(int entityId) {
+		List<Integer> entitiesIds = findAllParentEntityIds(entityId);
 		if (CollectionUtils.isEmpty(entitiesIds)) {
 			return Collections.emptySet();
 		}

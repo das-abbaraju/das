@@ -50,7 +50,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
 		query.setParameter("reportId", reportId);
-		query.setParameter("groupIds", permissions.getGroupHierarchyIds());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		
 		return (ReportPermissionUser) query.getSingleResult();
 	}
@@ -70,7 +70,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getGroupHierarchyIds());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		
 		return query.getResultList();
 	}
@@ -82,7 +82,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getGroupHierarchyIds());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		
 		return query.getResultList();
 	}
@@ -93,7 +93,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getGroupHierarchyIds());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		
 		return query.getResultList();
 	}
@@ -104,7 +104,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getGroupHierarchyIds());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		
 		return query.getResultList();
 	}
@@ -115,7 +115,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getGroupHierarchyIds());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		
 		return query.getResultList();
 	}

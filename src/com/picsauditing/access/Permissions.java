@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -15,10 +14,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
@@ -28,10 +27,9 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.hierarchy.GroupHierarchyBuilder;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -48,8 +46,11 @@ public class Permissions implements Serializable {
 	private int userID;
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
+	
+	@Deprecated
 	private Map<Integer, String> groups = new HashMap<Integer, String>();
-	private Map<Integer, String> groupHierarchy = new HashMap<Integer, String>();
+	
+	private Set<Integer> allInheritedGroupIds = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
@@ -84,6 +85,11 @@ public class Permissions implements Serializable {
 
 	private int shadowedUserID;
 	private String shadowedUserName;
+	
+	// These are transient because they should not be in the session, and only used
+	// because these are necessary for object construction
+	private transient HierarchyBuilder hierarchyBuilder;
+	private transient FeatureToggle featureToggle;
 
 	public void clear() {
 		userID = 0;
@@ -117,7 +123,7 @@ public class Permissions implements Serializable {
 
 		permissions.clear();
 		groups.clear();
-		groupHierarchy.clear();
+		allInheritedGroupIds.clear();
 		visibleAuditTypes.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
@@ -248,6 +254,7 @@ public class Permissions implements Serializable {
 				permissions.add(conProfileEdit);
 			}
 			
+			populateGroupHierarchyMap();
 			populateGroupMap(user);
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
@@ -276,22 +283,18 @@ public class Permissions implements Serializable {
 		this.forcePasswordReset = forcePasswordReset;
 	}
 
+	@Deprecated
 	public Set<Integer> getGroupIds() {
 		return groups.keySet();
 	}
 
+	@Deprecated
 	public Collection<String> getGroupNames() {
 		return groups.values();
 	}
 	
-	public Set<Integer> getGroupHierarchyIds() {
-		if (MapUtils.isEmpty(groupHierarchy)) {
-			UserDAO userDAO = SpringUtils.getBean("UserDAO");
-			User user = userDAO.find(userID);
-			populateGroupHierarchyMap(user);
-		}
-		
-		return groupHierarchy.keySet();
+	public Set<Integer> getAllInheritedGroupIds() {
+		return allInheritedGroupIds;
 	}
 
 	public String getUsername() {
@@ -471,17 +474,35 @@ public class Permissions implements Serializable {
 			return loginRequired(response, url);
 		}
 	}
-
+	
 	public boolean belongsToGroups() {
-		return groups != null && groups.size() > 0;
+		if (featureToggle != null && featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)) {
+			return CollectionUtils.isNotEmpty(allInheritedGroupIds);
+		}
+		
+		return belongsToGroupsOld();
 	}
 
-	public boolean hasGroup(Integer group) {
-		if (groups == null || groups.keySet().isEmpty()) {
+	@Deprecated
+	private boolean belongsToGroupsOld() {
+		return MapUtils.isNotEmpty(groups);
+	}
+
+	public boolean hasGroup(Integer groupId) {
+		if (featureToggle != null && featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)) {
+			return CollectionUtils.isNotEmpty(allInheritedGroupIds) ? allInheritedGroupIds.contains(groupId) : false;
+		}
+		
+		return hasGroupOld(groupId);
+	}
+	
+	@Deprecated
+	public boolean hasGroupOld(Integer groupId) {
+		if (MapUtils.isNotEmpty(groups)) {
 			return false;
 		} else {
-			return groups.keySet().contains(group);
-		}
+			return groups.containsKey(groupId);
+		}		
 	}
 
 	public boolean isContractor() {
@@ -735,18 +756,20 @@ public class Permissions implements Serializable {
 		this.accountType = accountType;
 	}
 	
-	private void populateGroupHierarchyMap(User user) {
-		GroupHierarchyBuilder hierarchyBuilder = SpringUtils.getBean("GroupHierarchyBuilder");		
-		Set<Integer> ids = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(user);
-		
-		UserDAO userDAO = SpringUtils.getBean("UserDAO");
-		List<User> users = userDAO.findWhere("u.id IN (" + Strings.implodeForDB(ids, ",") + ") ");
-		
-		for (User group : users) {
-			if (group.isGroup()) {
-				groupHierarchy.put(group.getId(), group.getName());
-			}			
+	public void setHierarchyBuilder(HierarchyBuilder hierarchyBuilder) {
+		this.hierarchyBuilder = hierarchyBuilder;
+	}
+	
+	public void setFeatureToggle(FeatureToggle featureToggle) {
+		this.featureToggle = featureToggle;
+	}
+	
+	private void populateGroupHierarchyMap() {
+		if (hierarchyBuilder == null) {
+			throw new IllegalStateException("You must set the HierarchyBuilder.");
 		}
+		
+		allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(userID);
 	}
 	
 	/**
@@ -763,6 +786,6 @@ public class Permissions implements Serializable {
 			if (u.getGroup().isGroup()) {
 				groups.put(u.getGroup().getId(), u.getGroup().getName());
 			}
-		}		
+		}
 	}
 }

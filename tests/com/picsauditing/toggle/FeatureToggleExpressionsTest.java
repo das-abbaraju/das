@@ -1,14 +1,17 @@
 package com.picsauditing.toggle;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+import groovy.lang.Binding;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import groovy.lang.Binding;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +26,8 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.util.hierarchy.AbstractBreadthFirstSearchBuilder;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class FeatureToggleExpressionsTest {
 	private FeatureToggleExpressions featureToggleExpressions;
@@ -37,6 +42,8 @@ public class FeatureToggleExpressionsTest {
 	private Account account;
 	@Mock
 	private AppPropertyDAO appPropertyDAO;
+	@Mock
+	private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
@@ -53,6 +60,10 @@ public class FeatureToggleExpressionsTest {
 		when(currentUser.getLocale()).thenReturn(Locale.ENGLISH);
 
 		permissions = new Permissions();
+		permissions.setHierarchyBuilder(getHierarchyBuilder(groups));
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)).thenReturn(true);
+		permissions.setFeatureToggle(featureToggle);
+		
 		when(binding.getVariable("permissions")).thenReturn(permissions);
 		when(binding.getVariable("appPropertyDAO")).thenReturn(appPropertyDAO);
 	}
@@ -66,7 +77,27 @@ public class FeatureToggleExpressionsTest {
 		group.setGroup(user);
 		groups.add(group);
 	}
-
+	
+	private HierarchyBuilder getHierarchyBuilder(final List<UserGroup> groups) {
+		return new AbstractBreadthFirstSearchBuilder() {
+			
+			@Override
+			protected List<Integer> getIdsForAllParentEntities(List<Integer> entities) {
+				return Collections.emptyList();
+			}
+			
+			@Override
+			protected List<Integer> findAllParentEntityIds(int id) {
+				List<Integer> groupIds = new ArrayList<Integer>();
+				for (UserGroup group : groups) {
+					groupIds.add(group.getGroup().getId());
+				}
+				
+				return groupIds;
+			}
+		};
+	}
+	
 	@Test
 	public void testReleaseToApplicationAudienceLevel_NobodyLevelIsFalse() throws Exception {
 		when(appPropertyDAO.getProperty(AppProperty.BETA_LEVEL)).thenReturn("3");
@@ -340,14 +371,17 @@ public class FeatureToggleExpressionsTest {
 		when(appPropertyDAO.getProperty(AppProperty.BETA_LEVEL)).thenReturn("NAN");
 		featureToggleExpressions.applicationBetaLevel();
 	}
+	
 	@Test
 	public void testHasPermission_Happy() throws Exception {
 		assertFalse(featureToggleExpressions.hasPermission("RestApi"));
 	}
+	
 	@Test(expected = FeatureToggleException.class)
 	public void testHasPermission_NoSuchPermission() throws Exception {
 		assertFalse(featureToggleExpressions.hasPermission("NoSuchPermission"));
 	}
+	
 	private class FeatureToggleExpressionsTestable extends FeatureToggleExpressions {
 
 		@Override

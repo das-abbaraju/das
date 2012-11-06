@@ -63,6 +63,7 @@ import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
@@ -91,6 +92,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected UserDAO userDAO;
 	@Autowired
 	protected FeatureToggle featureToggleChecker;
+	@Autowired
+	protected HierarchyBuilder hierarchyBuilder;
 
 	protected Collection<String> alertMessages;
 
@@ -297,6 +300,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		if (permissions == null) {
 			permissions = new Permissions();
+			permissions.setHierarchyBuilder(hierarchyBuilder);
+			permissions.setFeatureToggle(featureToggleChecker);
 		}
 
 		if (permissions.isLoggedIn()) {
@@ -434,6 +439,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		User user = userDAO.findByApiKey(apiKey);
 		if (permissions == null) {
 			permissions = new Permissions();
+			permissions.setHierarchyBuilder(hierarchyBuilder);
+			permissions.setFeatureToggle(featureToggleChecker);
 		}
 		try {
 			permissions.login(user);

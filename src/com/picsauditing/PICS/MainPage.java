@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class MainPage {
 	private final static Logger logger = LoggerFactory.getLogger(MainPage.class);
@@ -71,7 +73,12 @@ public class MainPage {
 		}
 
 		if (permissions == null) {
+			HierarchyBuilder hierarchyBuilder = SpringUtils.getBean("HierarchyBuilder");
+			FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
+			
 			permissions = new Permissions();
+			permissions.setHierarchyBuilder(hierarchyBuilder);
+			permissions.setFeatureToggle(featureToggle);
 		}
 
 		return permissions;
@@ -79,7 +86,7 @@ public class MainPage {
 
 	private AppPropertyDAO getAppPropertyDAO() {
 		if (appPropertyDAO == null) {
-			appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+			appPropertyDAO = SpringUtils.getBean("AppPropertyDAO");
 		}
 
 		return appPropertyDAO;

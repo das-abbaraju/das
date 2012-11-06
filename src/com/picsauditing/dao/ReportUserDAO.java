@@ -142,7 +142,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
-				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getGroupHierarchyIds()) + ")"
+				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getAllInheritedGroupIds()) + ")"
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
 		sql.addWhere("r.id IN (" + permissionsUnion + ")");
 

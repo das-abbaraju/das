@@ -48,6 +48,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 
 public class ManageJobRolesTest {
+	
 	private ManageJobRoles manageJobRoles;
 
 	@Mock
@@ -289,8 +290,7 @@ public class ManageJobRolesTest {
 
 	@Test(expected = NoRightsException.class)
 	public void testCheckPermissions_OperatorWithoutDefineRoles() throws Exception {
-		Permissions permissions = new Permissions();
-		permissions.login(EntityFactory.makeUser(OperatorAccount.class));
+		Permissions permissions = EntityFactory.makePermission(EntityFactory.makeUser(OperatorAccount.class));
 
 		Whitebox.setInternalState(manageJobRoles, "permissions", permissions);
 
@@ -299,9 +299,10 @@ public class ManageJobRolesTest {
 
 	@Test(expected = NoRightsException.class)
 	public void testCheckPermissions_OperatorWithoutAllOperators() throws Exception {
-		Permissions permissions = new Permissions();
 		OperatorAccount operator = EntityFactory.makeOperator();
 		User user = EntityFactory.makeUser(OperatorAccount.class);
+		Permissions permissions = EntityFactory.makePermission(user);
+		
 		user.addOwnedPermissions(OpPerms.DefineRoles, 1);
 
 		permissions.login(user);

@@ -1,12 +1,16 @@
 package com.picsauditing.access;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -18,22 +22,32 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.picsauditing.toggle.FeatureToggle;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
+
 
 public class PermissionsTest {
 	private Permissions permissions;
-	private Map<Integer, String> groups;
+	private Set<Integer> allInheritedGroupIds;
 
 	@Mock
 	private HttpServletResponse response;
+	@Mock
+	private HierarchyBuilder hierarchyBuilder;
+	@Mock
+	private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		permissions = new Permissions();
+		permissions.setHierarchyBuilder(hierarchyBuilder);
+		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)).thenReturn(true);		
+		permissions.setFeatureToggle(featureToggle);
 
-		groups = new HashMap<Integer, String>();
-		Whitebox.setInternalState(permissions, "groups", groups);
+		allInheritedGroupIds = new HashSet<Integer>();
+		Whitebox.setInternalState(permissions, "allInheritedGroupIds", allInheritedGroupIds);
 	}
 
 	@Test
@@ -74,6 +88,7 @@ public class PermissionsTest {
 		falseUrls.add("AuditTranslationDownload.action");
 		falseUrls.add("CertificateUpload.action");
 		falseUrls.add("");
+		
 		for (String url: falseUrls) {
 			assertFalse((Boolean) Whitebox.invokeMethod(permissions, "returnUrlIsOk", url));
 		}
@@ -88,36 +103,36 @@ public class PermissionsTest {
 	}
 	@Test
 	public void testHasGroup_FalseNullGroups() throws Exception {
-		Whitebox.setInternalState(permissions, "groups", (Map<Integer, String>) null);
+		Whitebox.setInternalState(permissions, "allInheritedGroupIds", (Set<Integer>) null);
 
 		assertFalse(permissions.hasGroup(1));
 	}
 
 	@Test
 	public void testHasGroup_FalseEmptyGroups() throws Exception {
-		groups.clear();
+		allInheritedGroupIds.clear();
 
 		assertFalse(permissions.hasGroup(1));
 	}
 
 	@Test
 	public void testHasGroup_Normal() throws Exception {
-		groups.put(1, "one");
+		allInheritedGroupIds.add(1);
 
 		assertTrue(permissions.hasGroup(1));
 		assertFalse(permissions.hasGroup(2));
 	}
 
 	@Test
-	public void testBelongsToGroups_True() throws Exception {
-		groups.put(1, "one");
+	public void testBelongsToGroups_True() throws Exception {		
+		allInheritedGroupIds.add(1);
 
 		assertTrue(permissions.belongsToGroups());
 	}
 
 	@Test
 	public void testBelongsToGroups_EmptyGroupsReturnsFalse() throws Exception {
-		groups.clear();
+		allInheritedGroupIds.clear();
 
 		assertFalse(permissions.belongsToGroups());
 	}

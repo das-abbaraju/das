@@ -1,22 +1,23 @@
 package com.picsauditing.util.hierarchy;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.util.CollectionUtils;
+import javax.sql.DataSource;
 
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.search.Database;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
 import com.picsauditing.util.Strings;
 
-public class GroupHierarchyBuilder extends AbstractBreadthFirstSearchBuilder<User> {
-
-	private static final Database DATABASE = new Database();
+public class GroupHierarchyBuilder extends AbstractBreadthFirstSearchBuilder {
 	
-	private static final String QUERY_GROUP_IDS_FOR_USER = "SELECT ug.groupID FROM usergroup ug WHERE ug.userID IN ( %s ) ";
+	private static final String QUERY_GROUP_IDS_FOR_USER = "SELECT ug.groupID FROM usergroup ug WHERE ug.userID IN ( ? ) ";
 	
+	private JdbcTemplate jdbcTemplate;
+		
 	@Override
 	protected List<Integer> findAllParentEntityIds(int id) {
 		return queryResults(Integer.toString(id));
@@ -28,26 +29,25 @@ public class GroupHierarchyBuilder extends AbstractBreadthFirstSearchBuilder<Use
 	}
 	
 	private List<Integer> queryResults(String queryParameter) {
-		try {
-			String query = String.format(QUERY_GROUP_IDS_FOR_USER, queryParameter);
-			List<BasicDynaBean> results = DATABASE.select(query, false);
-			return mapResults(results);
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
+		return jdbcTemplate.query(QUERY_GROUP_IDS_FOR_USER, buildRowMapper(), queryParameter);
 	}
 	
-	private List<Integer> mapResults(List<BasicDynaBean> results) {
-		if (CollectionUtils.isEmpty(results)) {
-			return Collections.emptyList();
-		}
+	private RowMapper<Integer> buildRowMapper() {
+		RowMapper<Integer> rowMapper = new RowMapper<Integer>() {
+
+			@Override
+			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getInt("groupID");
+			}
+			
+		};
 		
-		List<Integer> ids = new ArrayList<Integer>();
-		for (BasicDynaBean bean : results) {
-			ids.add(Database.toInt(bean, "groupID"));
-		}
-		
-		return ids;
+		return rowMapper;
+	}
+	
+	@Autowired
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 }

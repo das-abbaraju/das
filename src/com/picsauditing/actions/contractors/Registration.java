@@ -52,6 +52,7 @@ import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
@@ -79,6 +80,8 @@ public class Registration extends ContractorActionSupport {
 	private UserLoginLogDAO userLoginLogDAO;
 	@Autowired
 	private VATValidator vatValidator;
+	@Autowired
+	private HierarchyBuilder hierarchyBuilder;
 
 	private User user;
 	private String username;
@@ -269,6 +272,8 @@ public class Registration extends ContractorActionSupport {
 
 	private Permissions logInUser() throws Exception {
 		Permissions permissions = new Permissions();
+		permissions.setHierarchyBuilder(hierarchyBuilder);
+		permissions.setFeatureToggle(featureToggleChecker);
 		permissions.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 		return permissions;

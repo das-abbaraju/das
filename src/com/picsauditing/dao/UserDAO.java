@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -17,7 +18,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
+	
+	private static final String FIND_USERS_BY_IDS = "SELECT * FROM user u WHERE u.id IN ( :userIds ) ORDER BY u.name";
+	
 	private final Logger logger = LoggerFactory.getLogger(UserDAO.class);
+	
 	@Transactional(propagation = Propagation.NESTED)
 	public User save(User o) {
 		if (o.getId() == 0) {
@@ -168,7 +173,9 @@ public class UserDAO extends PicsDAO {
 		}
 	}
 	
-	public List<User> findByIds(List<Integer> ids) {
-		return findWhere("u.id IN (" + Strings.implodeForDB(ids, ",") + ") ");
+	public List<User> findByIds(Collection<Integer> ids) {
+		Query query = em.createNamedQuery(FIND_USERS_BY_IDS);
+		query.setParameter("userIds", ids);
+		return query.getResultList();		
 	}
 }

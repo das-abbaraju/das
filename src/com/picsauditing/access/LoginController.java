@@ -34,6 +34,7 @@ import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -49,6 +50,10 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
+	@Autowired
+	protected HierarchyBuilder hierarchyBuilder;
+	@Autowired
+	protected FeatureToggle featureToggle;
 
 	// used to inject mock permissions for testing
 	private User user;
@@ -150,6 +155,7 @@ public class LoginController extends PicsActionSupport {
 	private String switchBack() throws Exception {
 		loadPermissions(false);
 		switchToUser = 0;
+		
 		int originalUser = getClientSessionOriginalUserID();
 		if (originalUser > 0) {
 			user = userDAO.find(originalUser);
@@ -158,6 +164,7 @@ public class LoginController extends PicsActionSupport {
 			addClientSessionCookieToResponse(isRememberMeSetInCookie(), 0);
 			permissions.setAdminID(0);
 		}
+		
 		return setRedirectUrlPostLogin();
 	}
 
@@ -214,7 +221,10 @@ public class LoginController extends PicsActionSupport {
 	private Permissions permissions() {
 		if (permissions == null) {
 			permissions = new Permissions();
+			permissions.setHierarchyBuilder(hierarchyBuilder);
+			permissions.setFeatureToggle(featureToggle);
 		}
+		
 		return permissions;
 	}
 
@@ -309,7 +319,7 @@ public class LoginController extends PicsActionSupport {
 			return getTextParameterized("Login.AccountNotActive", user.getUsername());
 		}
 
-		return "";
+		return Strings.EMPTY_STRING;
 	}
 
 	private String checkResetHash() {

@@ -32,6 +32,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
@@ -42,6 +43,8 @@ public class OpenTasks extends TranslationActionSupport {
 	protected OperatorTagDAO operatorTagDao;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
+	@Autowired
+	private HierarchyBuilder hierarchyBuilder;
 
 	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
 
@@ -128,6 +131,7 @@ public class OpenTasks extends TranslationActionSupport {
 	private void establishPermissions(User user) {
 		permissions = new Permissions();
 		try {
+			permissions.setHierarchyBuilder(hierarchyBuilder);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
 		} catch (Exception e) {

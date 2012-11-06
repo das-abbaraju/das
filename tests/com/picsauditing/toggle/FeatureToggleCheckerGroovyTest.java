@@ -6,9 +6,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.startsWith;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import groovy.lang.Script;
 
 import java.util.ArrayList;
@@ -32,8 +33,8 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 
 public class FeatureToggleCheckerGroovyTest {
 	private FeatureToggleCheckerGroovy featureToggleCheckerGroovy;
@@ -218,12 +219,14 @@ public class FeatureToggleCheckerGroovyTest {
 				add("test2");
 			}
 		});
-		when(permissions.getGroupIds()).thenReturn(new HashSet<Integer>() {
+		
+		when(permissions.getAllInheritedGroupIds()).thenReturn(new HashSet<Integer>() {
 			{
 				add(1);
 				add(2);
 			}
 		});
+		
 		trueScript("userIsMemberOfAny(['test2'])");
 		trueScript("userIsMemberOfAny(['test2', 'notMember'])");
 	}

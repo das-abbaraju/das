@@ -15,6 +15,7 @@ import org.powermock.reflect.Whitebox;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class PicsActionSupportTest extends PicsActionTest {
 
@@ -22,6 +23,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 	@Mock
 	private AppPropertyDAO propertyDAO;
+	@Mock
+	private HierarchyBuilder hierarchyBuilder;
 
 	@Before
 	public void setUp() throws Exception {
@@ -40,6 +43,8 @@ public class PicsActionSupportTest extends PicsActionTest {
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
 		Permissions permissions = new Permissions();
+		permissions.setHierarchyBuilder(hierarchyBuilder);
+
 		picsActionSupport.permissions = permissions;
 		picsActionSupport.loadPermissions();
 		Permissions permissions2 = picsActionSupport.getPermissions();

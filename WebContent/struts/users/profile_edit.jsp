@@ -350,7 +350,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<s:iterator value="permissions.groupNames" var="group">
+								<s:iterator value="groupNames" var="group">
 									<tr>
 										<td><s:property value="group" /></td>
 									</tr>
