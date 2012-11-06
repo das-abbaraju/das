@@ -49,12 +49,10 @@ public class ReportPivotBuilder {
 		Field pivotField = definition.getCell().getField();
 		
 		for (Object rowValue : this.dataTree.keySet()) {
-			System.out.println("rowValue = " + rowValue);
 			JSONObject rowObject = new JSONObject();
 			rowObject.put(definition.getRow().getFieldName(), rowValue);
 			pivotedResults.add(rowObject);
 			for (Object colValue : this.dataTree.get(rowValue).keySet()) {
-				System.out.println("colValue = " + colValue);
 				List<Object> columnValues = getRow(rowValue).get(colValue);
 				Object valueObject = null;
 				
@@ -85,7 +83,6 @@ public class ReportPivotBuilder {
 			columnForValue.setField(pivotField);
 			columnsOut.add(columnForValue);
 		}
-		System.out.println(this.dataTree);
 
 		return pivotedResults;
 	}

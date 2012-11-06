@@ -331,8 +331,11 @@ public class FileUtils {
 		}
 
 		// Ensure all the bytes have been read in
+		// If not, close the open file. (Memory Leak!!)
 		if (offset < bytes.length) {
-			throw new IOException("Could not completely read file " + file.getName());
+			String name = file.getName();
+			is.close();
+			throw new IOException("Could not completely read file " + name);
 		}
 
 		// Close the input stream and return bytes
@@ -375,7 +378,6 @@ public class FileUtils {
 		VelocityAdaptor adaptor = new VelocityAdaptor();
 		for (Integer fromID : pairings.keySet()) {
 			if (count++ % 100 == 0) {
-				System.out.print(".");
 				if (count++ % 1000 == 0) {
 					System.out.println("");
 				}

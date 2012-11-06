@@ -8,10 +8,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.search.SelectSQL;
 
 public class TabularResultQueryRunner implements QueryRunner {
+	private static final Logger logger =
+		LoggerFactory.getLogger(TabularResultQueryRunner.class);
+
 	private String query;
 	private TabularModel data = new TabularData();
 	private Connection connection;
@@ -25,10 +31,10 @@ public class TabularResultQueryRunner implements QueryRunner {
 			setColumnNamesOnData(rs);
 			setDataValues(rs);
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			throw e;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		} finally {
 			if (rs != null)
 				rs.close();

@@ -5,6 +5,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.reflection.Whitebox.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.table.TableModel;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
+import org.slf4j.Logger;
 
 import com.picsauditing.search.SelectSQL;
 
@@ -31,7 +31,6 @@ public class TabularResultQueryRunnerTest {
 	private Object[][] testData = { { 10, 100, "Green", "Green", now }, { 20, 200, "Red", "Red", now } };
 
 	private TabularResultQueryRunner analysis;
-	private TableModel data;
 
 	@Mock
 	private Connection connection;
