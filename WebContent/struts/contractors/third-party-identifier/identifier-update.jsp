@@ -4,7 +4,7 @@
 
 <s:url action="ManageContractorOperatorNumber" method="save" var="contractor_number_save" />
 
-<s:include value="../actionMessages.jsp" />
+<s:include value="/struts/actionMessages.jsp" />
 
 <s:form id="contractor_operator_numbers_form" action="%{contractor_number_save}">
 	<s:hidden name="contractor" />

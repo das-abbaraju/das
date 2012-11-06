@@ -207,8 +207,8 @@
 
 		<action name="ManageContractorOperatorNumber"
 			class="com.picsauditing.actions.contractors.ManageContractorOperatorNumber">
-			<result>/struts/contractors/third-party-identifier/identifier-table.jsp</result>
-			<result name="input">/struts/contractors/third-party-identifier/update-identifier.jsp</result>
+			<result>/struts/contractors/third-party-identifier/_identifier-table.jsp</result>
+			<result name="input">/struts/contractors/third-party-identifier/identifier-update.jsp</result>
 		</action>
 
 		<!-- Contractor Badge -->
