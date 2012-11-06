@@ -17,7 +17,7 @@
  * @author: Carey Hinoki
  * @date: 1-18-2012
  * @version: 2
- * @updated 10-30-2012 Jbrownell
+ * @updated 11-05-2012 Jbrownell
  */
 (function ($) {
     PICS.define('modal.Modal', {
@@ -52,7 +52,7 @@
             }
 
             function destroyModal() {
-                modal = null;
+                modal = undefined;
             }
 
             return {
@@ -138,9 +138,9 @@
                         return modal;
                     }
 
-                    //destroy existing modal
+                    // destroy existing modal if trying to create another modal
                     if (typeof modal !== 'undefined') {
-                        destroyModal();
+                        this.destroy();
                     }
 
                     modal = createModal();
@@ -151,9 +151,11 @@
                 destroy: function () {
                     var modal = getModal();
 
+                    // remove modal and backdrop markup from dom
                     modal.remove();
                     $('.modal-backdrop').remove();
 
+                    // reinitialize modal var
                     destroyModal();
                 },
 
@@ -233,4 +235,4 @@
             };
         }())
     });
-}(jQuery));
+})(jQuery);
