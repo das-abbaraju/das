@@ -3,6 +3,7 @@ package com.picsauditing.access;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -317,10 +318,17 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
+		if (CollectionUtils.isNotEmpty(favoriteReports)) {
+			reportsMenu.addChild("separator", null);
+			MenuComponent favoriteLabel = new MenuComponent("Favorites", null);
+			favoriteLabel.setCssClass("label");
+			reportsMenu.addChild(favoriteLabel);
+		}
+
 		for (ReportUser reportUser : favoriteReports) {
 			Report report = reportUser.getReport();
-			reportsMenu
-					.addChild(report.getName(), "Report.action?report=" + report.getId(), "report_" + report.getId());
+			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
+					"report_" + report.getId());
 		}
 	}
 

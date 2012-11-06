@@ -1,0 +1,5 @@
+.navbar-inner
+{
+    background: #eaeaea;
+    @include background-image(linear-gradient(#fff, #eaeaea));
+}

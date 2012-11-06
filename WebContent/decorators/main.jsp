@@ -88,7 +88,6 @@
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
-        <link rel="stylesheet" type="text/css" href="v7/css/libs/font-awesome.css?v=${version}" />
 
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 
@@ -174,15 +173,16 @@
 		<![endif]-->
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
-        <jsp:include page="/struts/layout/environment.jsp" />
+        <jsp:include page="/struts/layout/_environment.jsp" />
         
         <% if (useDynamicReports) { %>
         
         <nav id="site_navigation"></nav>
         
         <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/my-ext-theme-menu.css" />
+        <link rel="stylesheet" type="text/css" href="v7/js/extjs/pics/resources/css/font-awesome.css?v=${version}" />
         <script type="text/javascript" src="v7/js/extjs/pics/extjs/ext-all.js"></script>
-        <script type="text/javascript" src="v7/js/pics/layout/menu.js"></script>
+        <script type="text/javascript" src="js/layout/menu.js"></script>
         
         <% } %>
 

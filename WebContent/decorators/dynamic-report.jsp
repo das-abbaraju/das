@@ -34,7 +34,7 @@
             <link rel="stylesheet" type="text/css" href="${css_dir}/my-ext-theme.min.css?v=${version}" />
         </s:else>
         
-        <link rel="stylesheet" type="text/css" href="v7/css/libs/font-awesome.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="${css_dir}/font-awesome.css?v=${version}" />
 		
 		<decorator:head />
 	</head>

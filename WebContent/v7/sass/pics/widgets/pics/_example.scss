@@ -1,0 +1,23 @@
+.example
+{
+	background-color: #fff;
+	border: 1px solid #e5e5e5;
+	@include border-radius(4px);
+	margin: 15px 0;
+	padding: 50px 20px 20px;
+	position: relative;
+}
+
+.example:after
+{
+	background-color: #f1f1f2;
+	border: 1px solid #e5e5e5;
+	@include border-radius(4px 0 4px 0);
+	color: #999;
+	content: "Example";
+	font-weight: bold;
+	left: -1px;
+	padding: 3px 7px;
+	position: absolute;
+	top: -1px;
+}

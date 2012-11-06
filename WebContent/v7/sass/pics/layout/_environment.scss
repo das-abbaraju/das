@@ -1,0 +1,76 @@
+#environment
+{
+    background: #333;
+    @include background-image(linear-gradient(#252525, #333));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525', endColorstr='#ff333333', GradientType=0);
+    color: #f1f1f2;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 10px;
+    
+    a
+    {
+        color: #ccc;
+        float: right;
+        padding: 0 10px;
+        text-decoration: none;
+        
+        &:hover
+        {
+            color: #f1f1f2;
+        }
+    }
+    
+    .active
+    {
+        &.localhost
+        {
+            color: #f6303c;
+        }
+        
+        &.alpha
+        {
+            color: #33c033;
+        }
+        
+        &.config
+        {
+            color: #fcc033;
+        }
+        
+        &.beta
+        {
+            color: #73bbe8;
+        }
+        
+        &.qa-beta
+        {
+            color: #ff6600;
+        }
+        
+        &.qa-stable
+        {
+            color: #996fff;
+        }
+    }
+}
+
+@media (max-width: 979px) {
+    #environment.navbar-fixed-bottom
+    {
+        margin: 0;
+        position: fixed;
+    }
+}
+
+@media (max-width: 767px) {
+    #environment a
+    {
+        display: none;
+    }
+    
+    #environment .active
+    {
+        display: inline;
+    }
+}

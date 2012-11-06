@@ -1,0 +1,41 @@
+#login_form
+{
+    .logo
+    {
+        margin-bottom: 40px;
+    }
+    
+    .form-inline
+    {
+        margin-bottom: 9px;
+    }
+    
+    .icon-globe
+    {
+        font-size: 20px;
+        margin-right: 5px;
+        position: relative;
+        top: 3px;
+    }
+    
+    #supported_locales
+    {
+        width: 195px;
+    }
+    
+    #forgot_password
+    {
+        margin: -5px 0 5px;
+        text-align: right;
+        
+        a
+        {
+            color: #999;
+        }
+    }
+    
+    .form-actions
+    {
+        text-align: right;
+    }
+}

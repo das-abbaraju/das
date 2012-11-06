@@ -168,6 +168,7 @@
 		</action>
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
+			<result>/struts/layout/menu/_menu.jsp</result>
 		</action>
 
 		<action name="Contact" class="com.picsauditing.access.Contact">
@@ -1166,12 +1167,18 @@
 			<result>/struts/selenium/reset_selenium.jsp</result>
 		</action>
 
-		<action name="PicsStyleGuide" class="com.picsauditing.actions.PicsStyleGuide">
-			<result>/struts/style_guide/dashboard.jsp</result>
-			<result name="buttons">/struts/style_guide/buttons.jsp</result>
-			<result name="forms">/struts/style_guide/forms.jsp</result>
-			<result name="pills">/struts/style_guide/pills.jsp</result>
+		<action name="FrontendDevelopmentGuide" class="com.picsauditing.actions.FrontendDevelopmentGuide">
+			<result>/struts/frontend-development-guide/dashboard.jsp</result>
+			<result name="alerts">/struts/frontend-development-guide/alerts.jsp</result>
+			<result name="buttons">/struts/frontend-development-guide/buttons.jsp</result>
+			<result name="forms">/struts/frontend-development-guide/forms.jsp</result>
+			<result name="pills">/struts/frontend-development-guide/pills.jsp</result>
+			<result name="conventions">/struts/frontend-development-guide/conventions/conventions.jsp</result>
+			<result name="file-structure">/struts/frontend-development-guide/file-structure/file-structure.jsp</result>
+			<result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
+			<result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
 		</action>
+		
 		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
 			<result>struts/users/login.jsp</result>
 		</action>

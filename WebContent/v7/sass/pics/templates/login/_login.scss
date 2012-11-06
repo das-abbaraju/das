@@ -1,0 +1,76 @@
+#Login__page
+{
+    background: #454545;
+    padding-top: 0;
+    
+    #server_id
+    {
+        height: 25px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 25px;
+    }
+    
+    .login-container
+    {
+    	text-align: center;
+    }
+    
+    #login_form
+    {
+        background: #f1f1f2;
+        @include box-shadow(#131313 0px 2px 8px);
+        margin: 100px auto 20px;
+        padding: 40px 60px;
+        text-align: left;
+        width: 220px;
+    }
+
+    .register
+    {
+        color: #ccc;
+        text-decoration: none;
+    }
+
+    .register:hover
+    {
+        color: #73BBE8;
+    }
+}
+
+@media (max-width: 480px) {
+    #Login__page
+    {
+        background: #f1f1f2;
+        
+        #login_form
+        {
+            background: transparent;
+            @include box-shadow(none);
+            margin: 0;
+            padding: 40px 0;
+            text-align: center;
+            width: 100%;
+            
+            .logo
+            {
+            	width: 50%;
+            }
+            
+            #forgot_password,
+            .form-actions
+            {
+                text-align: center;
+            }
+        }
+        
+        .register
+        {
+            display: none;
+        }
+    }
+}
+
+@import 'login-form';
+@import 'login-modal';

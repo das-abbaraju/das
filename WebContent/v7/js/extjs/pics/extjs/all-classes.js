@@ -93357,7 +93357,7 @@ Ext.override(Ext.menu.Menu, {
 Ext.define('PICS.view.layout.Menu', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutmenu'],
-    
+
     requires: [
         'PICS.view.layout.SearchBox'
     ],
@@ -93480,11 +93480,11 @@ Ext.define('PICS.view.layout.Menu', {
             return;
         }
 
-        items.splice(1, 0, {
+        items.splice(1, 1, {
             xtype: 'menuseparator'
         });
 
-        items.splice(2, 0, {
+        items.splice(2, 1, {
             xtype: 'tbtext',
             cls: 'menu-title',
             // TODO pass in translated "Favorites"

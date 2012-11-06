@@ -1,0 +1,128 @@
+.navbar
+{
+	.brand
+	{
+		// svg fallback for ie6/7/8
+		background: url(../img/logo.png) no-repeat;
+		background: rgba(0,0,0,0) url(../img/logo.svg) no-repeat;
+		display: block;
+		height: 32px;
+		margin: 10px 15px 10px 0;
+		padding: 0;
+		width: 32px;
+	}
+	
+	.nav > li > a
+	{
+		border: 1px solid transparent;
+		border-bottom: 0;
+		color: #002441;
+		font-size: 13px;
+		font-weight: bold;
+		padding: 16px 15px;
+	}
+	
+	.nav > li > a:hover
+	{
+		color: #C66603;
+	}
+	
+	.nav li.dropdown.open > .dropdown-toggle,
+    .nav li.dropdown.active > .dropdown-toggle, 
+    .nav li.dropdown.open.active > .dropdown-toggle
+    {
+    	background: #f1f1f2;
+	    @include background-image(linear-gradient(#eaeaea, #f1f1f2));
+	    @include border-radius(0px);
+	    border: 1px solid #aeaeae;
+	    border-top: 1px solid #999999;
+	    border-bottom: 0px;
+	    color: #C66603;
+    }
+	
+	.navbar-search
+	{
+		border-right: 1px solid #e7e7e7;
+		margin: 0;
+		padding: 11px 15px;
+		
+		.icon-search
+		{
+			color: #ccc;
+			margin-right: 2px;
+			position: relative;
+			top: 8px;
+		}
+			
+		.search-query
+		{
+			line-height: normal;
+		}
+	}
+}
+
+.lt-ie9 .nav > li > a
+{
+	padding: 16px 10px;
+}
+
+#user_searchbox
+{
+	.user
+	{
+		a
+		{
+			font-size: 13px;
+			overflow: hidden;
+			white-space: normal;
+		}
+		
+		.name
+		{
+			float: left;
+			width: 175px;
+		}
+		
+		.id
+		{
+			float: right;
+		}
+		
+		.company
+		{
+			float: left;
+			width: 175px;
+		}
+		
+		.type
+		{
+			float: right;
+			font-style: italic;
+		}
+	}
+}
+
+#user_menu
+{
+	.icon-cog
+	{
+		font-size: 16px;
+		position: relative;
+		top: 4px;
+	}
+}
+
+@media (max-width: 1199px) and (min-width: 980px) {
+	.navbar
+	{
+		.brand
+		{
+			padding-right: 10px;
+		}
+		
+		.nav > li > a
+		{
+			padding: 16px 10px;
+		}
+	}
+}

@@ -1,0 +1,23 @@
+.dropdown-menu
+{
+	z-index: 9999;
+	
+	li > a:hover,
+	.active > a,
+	.active > a:hover
+	{
+		background-color: #a84d10;
+		@include background-image(linear-gradient(#c66603, #a84d10));
+	}
+	
+	.nav-header
+	{
+		color: #999;
+		display: block;
+		font-weight: bold;
+		font-size: 11px;
+		margin-top: 9px;
+		padding: 3px 20px;
+		text-transform: uppercase;
+	}
+}
