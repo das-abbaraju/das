@@ -8509,9 +8509,13 @@ Ext.supports = {
         },
 
         
+         // When returning false (e.g, for <IE9), this function caused ExtJS to generate table layouts
+         // that ruined the styles of many components. The original code is commented out.
         {
             identity: 'CSS3BorderRadius',
             fn: function(doc, div) {
+                return true;
+                /*
                 var domPrefixes = ['borderRadius', 'BorderRadius', 'MozBorderRadius', 'WebkitBorderRadius', 'OBorderRadius', 'KhtmlBorderRadius'],
                     pass = false,
                     i;
@@ -8521,6 +8525,7 @@ Ext.supports = {
                     }
                 }
                 return pass;
+                */
             }
         },
 

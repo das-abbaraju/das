@@ -193,7 +193,13 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         dashboard_menu.height = 50;
-        dashboard_menu.icon = '/v7/img/logo.svg';
+
+        if (Ext.supports.Svg) {
+            dashboard_menu.icon = '/v7/img/logo.svg';
+        } else {
+            dashboard_menu.icon = '/v7/img/logo.png';
+        }
+
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
     },

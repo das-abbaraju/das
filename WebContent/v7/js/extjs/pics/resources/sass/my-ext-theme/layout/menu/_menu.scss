@@ -70,12 +70,13 @@ $site_menu_search_more_results_text_color: #333;
 		{
 		    color: $site_menu_text_color;
 		    font-weight: bold;
+			margin-left: -10px;
 		}
 	}
 	
 	.x-btn.x-over
 	{
-		background: $site_menu_active_background_color;
+		background: $site_menu_over_background_color;
 	    @include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
 	    border: 1px solid transparent;
 	    border-bottom: 0px;
@@ -135,6 +136,7 @@ $site_menu_search_more_results_text_color: #333;
 	{
 	    @include border-radius(15px);
 	    height: 25px !important;
+		line-height: 20px;
 	    padding: 0px 7px;
 	}
 }
