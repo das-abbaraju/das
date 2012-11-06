@@ -1,0 +1,28 @@
+.nav-list
+{
+	@include border-radius(6px);
+	padding: 0;
+	
+	li > a
+	{
+		border: 1px solid #e5e5e5;
+		margin: 0 0 -1px;
+		padding: 8px 14px;
+	}
+	
+	li:first-child a
+	{
+		@include border-radius(6px 6px 0 0);
+	}
+	
+	li:last-child a
+	{
+		@include border-radius(0 0 6px 6px);
+	}
+	
+	.icon-chevron-right
+	{
+		color: #e5e5e5;
+		float: right;
+	}
+}

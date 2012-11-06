@@ -1,0 +1,56 @@
+#style_guide_colors
+{
+	.colors
+	{
+		margin-bottom: 30px;
+		overflow: hidden;
+		
+		li
+		{
+			float: left;
+			margin-right: 20px;
+			margin-bottom: 20px;
+		}
+		
+		a
+		{
+			border: 1px solid #333;
+			display: block;
+			height: 90px;
+			line-height: 90px;
+			padding: 10px;
+			text-align: center;
+			width: 90px;
+		}
+		
+		.pics-blue
+		{
+			background: #002441;
+			color: #fff;
+		}
+		
+		.burnt-orange
+		{
+			background: #a84d10;
+			color: #fff;
+		}
+		
+		.light-blue
+		{
+			background: #73bbe8;
+			color: #fff;
+		}
+		
+		.warm-grey
+		{
+			background: #808285;
+			color: #fff;
+		}
+		
+		.cool-grey
+		{
+			background: #f1f1f2;
+			color: #333;
+		}
+	}
+}

@@ -5,4 +5,4 @@
     <s:param name="title">PICS Style Guide</s:param>
 </s:include>
 
-<s:include value="/struts/style-guide/_style-guide-menu.jsp" />
+<s:include value="/struts/frontend-development-guide/_menu.jsp" />

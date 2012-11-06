@@ -1,32 +1,42 @@
 package com.picsauditing.actions;
 
-import com.picsauditing.access.Anonymous;
 
 @SuppressWarnings("serial")
-public class PicsStyleGuide extends PicsActionSupport {
-	@Anonymous
+public class FrontendDevelopmentGuide extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		return SUCCESS;
 	}
 
-	@Anonymous
 	public String alerts() {
 		return "alerts";
 	}
 
-	@Anonymous
 	public String buttons() {
 		return "buttons";
 	}
 
-	@Anonymous
 	public String forms() {
 		return "forms";
 	}
 
-	@Anonymous
 	public String pills() {
 		return "pills";
+	}
+
+	public String conventions() {
+		return "conventions";
+	}
+
+	public String file_structure() {
+		return "file-structure";
+	}
+
+	public String page_layout() {
+		return "page-layout";
+	}
+
+	public String style_guide() {
+		return "style-guide";
 	}
 }

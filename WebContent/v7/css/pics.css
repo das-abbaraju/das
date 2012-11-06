@@ -195,21 +195,21 @@ body {
     padding: 16px 10px;
   }
 }
-/* line 2, ../sass/pics/layout/_page-header.scss */
-#main > .page-header {
+/* line 4, ../sass/pics/layout/_page-header.scss */
+.page-header.pics {
   border: 0px;
   margin: 20px 0px;
   padding: 0px;
 }
-/* line 8, ../sass/pics/layout/_page-header.scss */
-#main > .page-header .title {
+/* line 10, ../sass/pics/layout/_page-header.scss */
+.page-header.pics .title {
   color: #73bbe8;
   font-size: 36px;
   font-weight: normal;
   margin-bottom: 0;
 }
-/* line 16, ../sass/pics/layout/_page-header.scss */
-#main > .page-header .subtitle {
+/* line 18, ../sass/pics/layout/_page-header.scss */
+.page-header.pics .subtitle {
   color: #808285;
   font-size: 14px;
   font-weight: normal;
@@ -639,6 +639,43 @@ input[type="color"],
   border-top: 0;
   margin: 0;
   padding: 0;
+}
+
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+.nav-list {
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+  border-radius: 6px;
+  padding: 0;
+}
+/* line 7, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+.nav-list li > a {
+  border: 1px solid #e5e5e5;
+  margin: 0 0 -1px;
+  padding: 8px 14px;
+}
+/* line 14, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+.nav-list li:first-child a {
+  -webkit-border-radius: 6px 6px 0 0;
+  -moz-border-radius: 6px 6px 0 0;
+  -ms-border-radius: 6px 6px 0 0;
+  -o-border-radius: 6px 6px 0 0;
+  border-radius: 6px 6px 0 0;
+}
+/* line 19, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+.nav-list li:last-child a {
+  -webkit-border-radius: 0 0 6px 6px;
+  -moz-border-radius: 0 0 6px 6px;
+  -ms-border-radius: 0 0 6px 6px;
+  -o-border-radius: 0 0 6px 6px;
+  border-radius: 0 0 6px 6px;
+}
+/* line 24, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+.nav-list .icon-chevron-right {
+  color: #e5e5e5;
+  float: right;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */
@@ -1154,4 +1191,66 @@ input[type="color"],
   font-size: 14px;
   float: right;
   margin: 18px 0px;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors {
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors li {
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors a {
+  border: 1px solid #333;
+  display: block;
+  height: 90px;
+  line-height: 90px;
+  padding: 10px;
+  text-align: center;
+  width: 90px;
+}
+/* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .pics-blue {
+  background: #002441;
+  color: #fff;
+}
+/* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .burnt-orange {
+  background: #a84d10;
+  color: #fff;
+}
+/* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .light-blue {
+  background: #73bbe8;
+  color: #fff;
+}
+/* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .warm-grey {
+  background: #808285;
+  color: #fff;
+}
+/* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .cool-grey {
+  background: #f1f1f2;
+  color: #333;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#style_guide_typography .lowercase {
+  text-transform: lowercase;
+}
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#style_guide_typography .uppercase {
+  text-transform: uppercase;
+}
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#style_guide_typography h3 span {
+  color: #999;
+  font-size: 14px;
+  text-transform: lowercase;
 }

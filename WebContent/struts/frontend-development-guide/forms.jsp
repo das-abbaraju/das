@@ -5,14 +5,14 @@
     <s:param name="title">PICS Style Guide</s:param>
 </s:include>
 
-<s:include value="/struts/style-guide/_style-guide-menu.jsp" />
+<s:include value="/struts/frontend-development-guide/_menu.jsp" />
 
 <%-- URL --%>
-<s:url action="PicsStyleGuide" method="forms" var="pics_style_guide_forms" />
+<s:url action="FrontendDevelopmentGuide" method="forms" var="frontend_development_guide_forms" />
 
 <div class="row-fluid">
     <div class="span6">
-        <s:form cssClass="well form-horizontal" action="%{#pics_style_guide_forms}" name="YOUR_FORM_NAME" id="YOUR_FORM_ID">
+        <s:form cssClass="well form-horizontal" action="%{#frontend_development_guide_forms}" name="YOUR_FORM_NAME" id="YOUR_FORM_ID">
             <fieldset>
                 <div class="control-group">
                     <label class="control-label" for="field_1">Label 1</label>
@@ -23,7 +23,7 @@
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" name="save">Save</button>
                     <button type="submit" class="btn" name="save_add">Save and Add</button>
-                    <a href="${pics_style_guide_forms}" class="btn">Back to List</a>
+                    <a href="${frontend_development_guide_forms}" class="btn">Back to List</a>
                 </div>
             </fieldset>
         </s:form>

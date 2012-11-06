@@ -1,23 +1,26 @@
-#main > .page-header
+.page-header
 {
-	border: 0px;
-	margin: 20px 0px;
-	padding: 0px;
-	
-	.title
+	&.pics
 	{
-	    color: #73bbe8;
-	    font-size: 36px;
-	    font-weight: normal;
-	    margin-bottom: 0;
-	}
-	
-	.subtitle
-	{
-		color: #808285;
-	    font-size: 14px;
-	    font-weight: normal;
-	    line-height: 20px;
-	    margin: 0px;
+		border: 0px;
+		margin: 20px 0px;
+		padding: 0px;
+		
+		.title
+		{
+		    color: #73bbe8;
+		    font-size: 36px;
+		    font-weight: normal;
+		    margin-bottom: 0;
+		}
+		
+		.subtitle
+		{
+			color: #808285;
+		    font-size: 14px;
+		    font-weight: normal;
+		    line-height: 20px;
+		    margin: 0px;
+		}
 	}
 }

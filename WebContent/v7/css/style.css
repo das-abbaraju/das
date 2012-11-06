@@ -8518,26 +8518,26 @@ body {
   }
 }
 
-/* line 2, ../sass/pics/layout/_page-header.scss */
+/* line 4, ../sass/pics/layout/_page-header.scss */
 
-#main > .page-header {
+.page-header.pics {
   padding: 0;
   margin: 20px 0;
   border: 0;
 }
 
-/* line 8, ../sass/pics/layout/_page-header.scss */
+/* line 10, ../sass/pics/layout/_page-header.scss */
 
-#main > .page-header .title {
+.page-header.pics .title {
   margin-bottom: 0;
   font-size: 36px;
   font-weight: normal;
   color: #73bbe8;
 }
 
-/* line 16, ../sass/pics/layout/_page-header.scss */
+/* line 18, ../sass/pics/layout/_page-header.scss */
 
-#main > .page-header .subtitle {
+.page-header.pics .subtitle {
   margin: 0;
   font-size: 14px;
   font-weight: normal;
@@ -9013,6 +9013,52 @@ input[type="color"],
   margin: 0;
   background-color: transparent;
   border-top: 0;
+}
+
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+
+.nav-list {
+  padding: 0;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+      -ms-border-radius: 6px;
+       -o-border-radius: 6px;
+          border-radius: 6px;
+}
+
+/* line 7, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+
+.nav-list li > a {
+  padding: 8px 14px;
+  margin: 0 0 -1px;
+  border: 1px solid #e5e5e5;
+}
+
+/* line 14, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+
+.nav-list li:first-child a {
+  -webkit-border-radius: 6px 6px 0 0;
+     -moz-border-radius: 6px 6px 0 0;
+      -ms-border-radius: 6px 6px 0 0;
+       -o-border-radius: 6px 6px 0 0;
+          border-radius: 6px 6px 0 0;
+}
+
+/* line 19, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+
+.nav-list li:last-child a {
+  -webkit-border-radius: 0 0 6px 6px;
+     -moz-border-radius: 0 0 6px 6px;
+      -ms-border-radius: 0 0 6px 6px;
+       -o-border-radius: 0 0 6px 6px;
+          border-radius: 0 0 6px 6px;
+}
+
+/* line 24, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+
+.nav-list .icon-chevron-right {
+  float: right;
+  color: #e5e5e5;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */
@@ -9657,4 +9703,86 @@ input[type="color"],
   margin: 18px 0;
   font-size: 14px;
   color: #a84d10;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors {
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors li {
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors a {
+  display: block;
+  width: 90px;
+  height: 90px;
+  padding: 10px;
+  line-height: 90px;
+  text-align: center;
+  border: 1px solid #333;
+}
+
+/* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .pics-blue {
+  color: #fff;
+  background: #002441;
+}
+
+/* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .burnt-orange {
+  color: #fff;
+  background: #a84d10;
+}
+
+/* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .light-blue {
+  color: #fff;
+  background: #73bbe8;
+}
+
+/* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .warm-grey {
+  color: #fff;
+  background: #808285;
+}
+
+/* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .cool-grey {
+  color: #333;
+  background: #f1f1f2;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+
+#style_guide_typography .lowercase {
+  text-transform: lowercase;
+}
+
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+
+#style_guide_typography .uppercase {
+  text-transform: uppercase;
+}
+
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+
+#style_guide_typography h3 span {
+  font-size: 14px;
+  color: #999;
+  text-transform: lowercase;
 }

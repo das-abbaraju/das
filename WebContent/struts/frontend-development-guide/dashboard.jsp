@@ -5,34 +5,17 @@
     <s:param name="title">PICS Style Guide</s:param>
 </s:include>
 
-<s:include value="/struts/style-guide/_style-guide-menu.jsp" />
+<s:include value="/struts/frontend-development-guide/_menu.jsp" />
 
 <div class="row">
     <div class="span4">
-        <div class="well" style="padding: 8px 0;">
-            <ul class="nav nav-list">
-                <li>
-                    <a href="#">Style Guide <i class="icon-chevron-right"></i></a>
-                </li>
-                <li class="nav-header">
-                    Folder Structure
-                </li>
-                <li>
-                    <a href="#">Alerts <i class="icon-chevron-right"></i></a>
-                </li>
-                <li>
-                    <a href="#">Buttons <i class="icon-chevron-right"></i></a>
-                </li>
-                <li>
-                    <a href="#">Forms <i class="icon-chevron-right"></i></a>
-                </li>
-                <li>
-                    <a href="#">Pills <i class="icon-chevron-right"></i></a>
-                </li>
-            </ul>
-        </div>
+        
     </div>
     <div class="span8">
+        <s:include value="/struts/frontend-development-guide/style-guide/_typography.jsp" />
+        
+        <s:include value="/struts/frontend-development-guide/style-guide/_colors.jsp" />
+        
         <div class="page-header">
             <h2>CSS Naming Conventions</h2>
         </div>
@@ -67,5 +50,14 @@ your_long_id
             <div class="span4">
             </div>
         </div>
+        
+        <div class="page-header">
+            <h2>Page Header</h2>
+        </div>
+        
+        <s:include value="/struts/layout/_page-header.jsp">
+            <s:param name="title">You are the sunshine of my life</s:param>
+            <s:param name="subtitle">You are the apple of my eye</s:param>
+        </s:include>
     </div>
 </div>
