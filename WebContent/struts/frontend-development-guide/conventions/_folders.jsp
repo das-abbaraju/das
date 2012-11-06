@@ -5,4 +5,8 @@
     <div class="page-header">
         <h1>Folders</h1>
     </div>
+    
+    <div class="example">
+        hello world
+    </div>
 </section>

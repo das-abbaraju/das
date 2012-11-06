@@ -8545,6 +8545,40 @@ body {
   color: #808285;
 }
 
+/* line 2, ../sass/pics/widgets/pics/_example.scss */
+
+.example {
+  position: relative;
+  padding: 50px 20px 20px;
+  margin: 15px 0;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+      -ms-border-radius: 4px;
+       -o-border-radius: 4px;
+          border-radius: 4px;
+}
+
+/* line 12, ../sass/pics/widgets/pics/_example.scss */
+
+.example:after {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 3px 7px;
+  font-weight: bold;
+  color: #999;
+  background-color: #f1f1f2;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 4px 0 4px 0;
+     -moz-border-radius: 4px 0 4px 0;
+      -ms-border-radius: 4px 0 4px 0;
+       -o-border-radius: 4px 0 4px 0;
+          border-radius: 4px 0 4px 0;
+  content: "Example";
+}
+
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 
 .alert {

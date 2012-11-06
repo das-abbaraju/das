@@ -217,6 +217,38 @@ body {
   margin: 0px;
 }
 
+/* line 2, ../sass/pics/widgets/pics/_example.scss */
+.example {
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  margin: 15px 0;
+  padding: 50px 20px 20px;
+  position: relative;
+}
+
+/* line 12, ../sass/pics/widgets/pics/_example.scss */
+.example:after {
+  background-color: #f1f1f2;
+  border: 1px solid #e5e5e5;
+  -webkit-border-radius: 4px 0 4px 0;
+  -moz-border-radius: 4px 0 4px 0;
+  -ms-border-radius: 4px 0 4px 0;
+  -o-border-radius: 4px 0 4px 0;
+  border-radius: 4px 0 4px 0;
+  color: #999;
+  content: "Example";
+  font-weight: bold;
+  left: -1px;
+  padding: 3px 7px;
+  position: absolute;
+  top: -1px;
+}
+
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert {
   background: #fcf3cc;
