@@ -53,10 +53,9 @@ public class ReportModel {
 			if (reportPermissionAccount != null)
 				return true;
 		} catch (NoResultException e) {
-			return false;
 		}
 
-		return false;
+		return isReportDevelopmentGroup(permissions);
 	}
 
 	public boolean canUserEdit(Permissions permissions, Report report) {
@@ -65,9 +64,12 @@ public class ReportModel {
 			if (reportPermissionUser.isEditable())
 				return true;
 		} catch (NoResultException e) {
-
 		}
 
+		return isReportDevelopmentGroup(permissions);
+	}
+
+	private boolean isReportDevelopmentGroup(Permissions permissions) {
 		try {
 			String userID = permissions.getUserIdString();
 
@@ -80,9 +82,8 @@ public class ReportModel {
 
 			return true;
 		} catch (NoResultException e) {
-
 		}
-
+		
 		return false;
 	}
 
