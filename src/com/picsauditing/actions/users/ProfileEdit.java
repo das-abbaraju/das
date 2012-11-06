@@ -245,7 +245,7 @@ public class ProfileEdit extends PicsActionSupport {
 	
 	public List<String> getGroupNames() {
 		List<User> groups = userDAO.findByIds(permissions.getAllInheritedGroupIds());
-		if (CollectionUtils.isNotEmpty(groups)) {
+		if (CollectionUtils.isEmpty(groups)) {
 			return Collections.emptyList();
 		}
 		
