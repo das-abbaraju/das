@@ -88,9 +88,9 @@
                 <div class="alert alert-info alert-block">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     
-                    <h4>You have no reports.</h4>
+                    <h4>No results found.</h4>
                     <p>
-                        BANANA SUPERMAN
+                        Try a broader search or use different terms to find the report you're looking for.
                     </p>
                 </div>
             </div>
