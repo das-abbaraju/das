@@ -18,7 +18,7 @@
         
         <s:include value="_css.jsp" />
         
-        <s:include value="_js.jsp" />
+        <s:include value="_javascript.jsp" />
         
         <s:include value="_extjs.jsp" />
     </div>
