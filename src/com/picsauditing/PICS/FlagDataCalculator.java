@@ -32,7 +32,6 @@ import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 public class FlagDataCalculator {
 
@@ -127,7 +126,7 @@ public class FlagDataCalculator {
 		String hurdle = criteria.getDefaultValue();
 		ContractorAccount con = conCriteria.getContractor();
 
-		if (criteria.isAllowCustomValue() && !Strings.isEmpty(opCriteria.getHurdle())) {
+		if (criteria.isAllowCustomValue() && Strings.isNotEmpty(opCriteria.getHurdle())) {
 			hurdle = opCriteria.getHurdle();
 		}
 
@@ -269,6 +268,7 @@ public class FlagDataCalculator {
 					// Manual Audits or Implementation Audits
 					return true;
 			}
+			
 			return null;
 
 		} else {
@@ -492,13 +492,15 @@ public class FlagDataCalculator {
 	}
 
 	public FlagColor calculateCaoStatus(AuditType auditType, Set<FlagData> flagDatas) {
-		PicsLogger.log("Calculating recommendation for " + auditType);
+		logger.info("Calculating recommendation for {}", auditType);
+		
 		FlagColor flag = null;
 		for (FlagData flagData : flagDatas) {
 			if (isInsuranceCriteria(flagData, auditType)) {
 				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
 				if (flag.isRed()) {
-					PicsLogger.log(" --- " + flagData.getFlag() + " " + flagData.getCriteria().getQuestion());
+					logger.info(" --- {} {}", flagData.getFlag(), flagData.getCriteria().getQuestion());
+
 					return flag;
 				}
 			}

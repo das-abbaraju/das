@@ -1,19 +1,25 @@
 package com.picsauditing.PICS;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -31,6 +37,9 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class FlagDataCalculatorTest {
 
+	private static final int ALBERTA_WCB_AUDIT_TYPE_ID = 145;
+	private static final int OPERATOR_ID_FOR_CAOP = 11111;
+	
 	private FlagDataCalculator calculator;
 	private FlagCriteriaContractor fcCon;
 	private FlagCriteriaOperator fcOp;
@@ -45,7 +54,7 @@ public class FlagDataCalculatorTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
+//		MockitoAnnotations.initMocks(this);
 		//super.setUp();
 		
 		contractor = EntityFactory.makeContractor();
@@ -507,4 +516,148 @@ public class FlagDataCalculatorTest {
 		isInsuranceCriteria = Whitebox.invokeMethod(calculator, "isInsuranceCriteria", flagData, generalLiability);
 		assertTrue(isInsuranceCriteria);
 	}
+	
+	@Test
+	public void testIsFlagged_WCB_DoesNotHaveApplicableCAOP() throws Exception {		
+		ContractorAccount contractor = buildFakeContractorAccountWithWCBs(AuditStatus.NotApplicable);		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();				
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);			
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(123);		
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertNull(result);
+	}
+	
+	@Test
+	public void testIsFlagged_WCB_RedFlagged() throws Exception {		
+		ContractorAccount contractor = buildFakeContractorAccountWithWCBs(AuditStatus.Submitted);		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();				
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);			
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);		
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertTrue(result);
+	}
+	
+	@Test
+	public void testIsFlagged_WCB_GreenFlagged() throws Exception {		
+		ContractorAccount contractor = buildFakeContractorAccountWithWCBs(AuditStatus.Approved);		
+		FlagCriteria flagCriteria = buildFakeFlagCriteria();				
+		FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(flagCriteria);			
+		FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(flagCriteria, contractor);
+		
+		OperatorAccount operator = EntityFactory.makeOperator();
+		operator.setId(OPERATOR_ID_FOR_CAOP);		
+		calculator.setOperator(operator);
+
+		Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+		
+		assertFalse(result);
+	}
+	
+	private ContractorAccount buildFakeContractorAccountWithWCBs(AuditStatus caoStatus) {
+		int yearForCurrentWCB = yearForCurrentWCB();
+		
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		contractor.setAccountLevel(AccountLevel.Full);
+		contractor.setAudits(buildMockAuditList(yearForCurrentWCB, caoStatus));
+		
+		return contractor;
+	}
+	
+	private FlagCriteria buildFakeFlagCriteria() {
+		FlagCriteria flagCriteria = EntityFactory.makeFlagCriteria();
+		flagCriteria.setId(709);
+		flagCriteria.setDisplayOrder(999);
+		flagCriteria.setDataType("boolean");
+		flagCriteria.setAllowCustomValue(false);
+		flagCriteria.setAuditType(EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+		flagCriteria.setRequiredStatus(AuditStatus.Approved);
+		
+		return flagCriteria;
+	}
+	
+	private FlagCriteriaContractor buildFakeFlagCriteriaContractor(FlagCriteria flagCriteria, ContractorAccount contractor) {
+		FlagCriteriaContractor contractorFlagCriteria = EntityFactory.makeFlagCriteriaContractor("true");
+		contractorFlagCriteria.setContractor(contractor);
+		contractorFlagCriteria.setCriteria(flagCriteria);
+		
+		return contractorFlagCriteria;
+	}
+	
+	private FlagCriteriaOperator buildFakeFlagCriteriaOperator(FlagCriteria flagCriteria) {
+		FlagCriteriaOperator operatorFlagCriteria = EntityFactory.makeFlagCriteriaOperator(null);
+		operatorFlagCriteria.setTag(null);
+		operatorFlagCriteria.setCriteria(flagCriteria);
+		
+		return operatorFlagCriteria;
+	}
+	
+	@Test
+	public void testFindCaosForCurrentWCB() throws Exception {
+		ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
+	
+		int yearForCurrentWCB = yearForCurrentWCB();
+		List<ContractorAudit> audits = buildMockAuditList(yearForCurrentWCB, AuditStatus.Approved);
+		when(contractor.getAudits()).thenReturn(audits);
+		
+		List<ContractorAuditOperator> caos = Whitebox.invokeMethod(calculator, "findCaosForCurrentWCB", contractor, 
+				EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+		
+		assertNotNull(caos);
+		assertFalse(caos.isEmpty());
+		assertEquals(yearForCurrentWCB, caos.get(0).getId());
+	}
+	
+	private int yearForCurrentWCB() {
+		if (DateBean.isGracePeriodForWCB()) {
+			return DateBean.getPreviousWCBYear();
+		}
+		
+		return NumberUtils.toInt(DateBean.getWCBYear());
+	}
+	
+	private List<ContractorAudit> buildMockAuditList(int yearForCurrentWCB, AuditStatus caoStatus) {
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		for (int year = yearForCurrentWCB; year <= yearForCurrentWCB + 1; year++) {
+			audits.add(buildMockAudit(year + 1000, year, caoStatus));
+		}
+		
+		return audits;
+	}
+	
+	/**
+	 * Builds a mock ContractorAudit.
+	 * 
+	 * @param id ContractorAudit's ID value
+	 * @param auditForYear AuditFor field value for the ContractorAudit
+	 * @return ContractorAudit with list that has one CAO with an ID that is the same as the 
+	 * auditForYear for the purpose of verifying the proper CAO was returned in tests.
+	 */
+	private ContractorAudit buildMockAudit(int id, int auditForYear, AuditStatus caoStatus) {
+		ContractorAudit audit = Mockito.mock(ContractorAudit.class);
+		when(audit.getId()).thenReturn(id);
+		when(audit.getAuditFor()).thenReturn(Integer.toString(auditForYear));
+		
+		when(audit.getAuditType()).thenReturn(EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+		
+		ContractorAuditOperator cao = Mockito.mock(ContractorAuditOperator.class);
+		when(cao.getId()).thenReturn(auditForYear);
+		when(cao.isVisible()).thenReturn(true);
+		when(audit.getOperators()).thenReturn(Arrays.asList(cao));
+		when(cao.hasCaop(OPERATOR_ID_FOR_CAOP)).thenReturn(true);
+		when(cao.getStatus()).thenReturn(caoStatus);
+				
+		return audit;
+	}		
 }
