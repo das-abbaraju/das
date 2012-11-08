@@ -101,7 +101,7 @@ Ext.define('PICS.controller.report.Report', {
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
                         html: 'to My Reports in Manage Reports.',
-                        title: 'Report Saved',
+                        title: 'Report Saved'
                     });
 
                     alert_message.show();

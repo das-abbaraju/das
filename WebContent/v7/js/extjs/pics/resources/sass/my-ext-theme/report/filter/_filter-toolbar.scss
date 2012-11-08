@@ -9,7 +9,8 @@ $report_filter_toolbar_button_text_color: #ccc;
 // report filter toolbar - button over
 $report_filter_toolbar_button_over_text_color: #fff;
 
-#report_filter_toolbar
+#report_filter_toolbar,
+#report_filter_toolbar-innerCt
 {
 	background: $report_filter_toolbar_background_color;
 	
@@ -36,7 +37,8 @@ $report_filter_toolbar_button_over_text_color: #fff;
 	}
 }
 
-#report_filter_toolbar > div
+#report_filter_toolbar > div,
+#report_filter_toolbar-innerCt
 {
 	border-bottom: 1px solid $report_filter_toolbar_border_color_bottom !important;
 	border-top: 1px solid $report_filter_toolbar_border_color_top !important;
