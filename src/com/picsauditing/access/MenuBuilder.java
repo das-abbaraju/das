@@ -52,17 +52,11 @@ public final class MenuBuilder {
 	private static void buildGeneralMenubar(MenuComponent menubar, Permissions permissions,
 			List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
-
 		addReportsMenu(menubar, favoriteReports, permissions);
-
 		addConfigureMenu(menubar, permissions);
-
 		addManageMenu(menubar, permissions);
-
 		addDevelopmentMenu(menubar, permissions);
-
 		addSupportMenu(menubar, permissions);
-
 		addUserMenu(menubar, permissions);
 	}
 
@@ -158,13 +152,9 @@ public final class MenuBuilder {
 	private static void buildOperatorCorporateMenubar(MenuComponent menubar, Permissions permissions,
 			List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
-
 		addReportsMenu(menubar, favoriteReports, permissions);
-
 		addManageMenu(menubar, permissions);
-
 		addSupportMenu(menubar, permissions);
-
 		addUserMenu(menubar, permissions);
 	}
 
@@ -324,38 +314,76 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
+		if (CollectionUtils.isNotEmpty(favoriteReports)) {
+			reportsMenu.addChild("separator", null);
+			MenuComponent favoriteLabel = new MenuComponent("Favorites", null);
+			favoriteLabel.setCssClass("label");
+			reportsMenu.addChild(favoriteLabel);
+		}
+
 		{
 			MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
+			// CONTRACTORS
 			if (permissions.hasPermission(OpPerms.RequestNewContractor))
 				legacyMenu.addChild(getText("ReportNewRequestedContractor.title"),
 						"ReportNewRequestedContractor.action", "ReportNewRequestedContractor");
+			if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
+				String statusFilter = "";
+				if (!permissions.getAccountStatus().isDemo())
+					statusFilter = "?filter.status=Active";
+				legacyMenu.addChild(getText("BiddingContractorSearch.title"), "BiddingContractorSearch.action"
+						+ statusFilter, "BiddingContractorSearch");
+			}
+			if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
+				legacyMenu.addChild(getText("ArchivedContractorAccounts.title"), "ArchivedContractorAccounts.action",
+						"ArchivedContractorAccounts");
+				legacyMenu.addChild(getText("DelinquentContractorAccounts.title"),
+						"DelinquentContractorAccounts.action", "DelinquentContractorAccounts");
+			}
+			if (permissions.hasPermission(OpPerms.ContractorApproval))
+				legacyMenu.addChild(getText("ContractorApproval.title"),
+						"ContractorApproval.action?filter.workStatus=P", "subMenu_ApproveContractors");
+
+			// FLAGS
+			if (permissions.isCorporate())
+				legacyMenu.addChild(getText("ReportContractorOperatorFlag.title"),
+						"ReportContractorOperatorFlag.action", "ReportContractorOperatorFlag");
 			if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity())
 				legacyMenu.addChild(getText("ReportContractorOperatorFlagMatrix.title"),
 						"ReportContractorOperatorFlagMatrix.action", "ReportContractorOperatorFlagMatrix");
 			if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
 				legacyMenu.addChild(getText("OperatorFlagMatrix.title"), "OperatorFlagMatrix.action",
 						"OperatorFlagMatrix");
-			if (permissions.hasPermission(OpPerms.ContractorDetails))
-				legacyMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
-						"QuestionAnswerSearch");
+
 			if (permissions.hasPermission(OpPerms.InsuranceApproval))
 				legacyMenu.addChild(getText("ReportInsuranceApproval.title"),
 						"ReportInsuranceApproval.action?filter.auditStatus=Complete", "RepInsApproval");
+
+			// OTHER
+			if (permissions.hasPermission(OpPerms.ContractorDetails))
+				legacyMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
+						"QuestionAnswerSearch");
 			if (permissions.hasPermission(OpPerms.EmailQueue))
 				legacyMenu.addChild(getText("EmailQueueList.title"), "EmailQueueList.action?filter.status=Pending",
 						"EmailQueue");
+
 			if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
 				legacyMenu.addChild(getText("GraphEmrRates.title"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
 				legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2010",
 						"ReportEmrRates");
 			}
-		}
-
-		if (CollectionUtils.isNotEmpty(favoriteReports)) {
-			reportsMenu.addChild("separator", null);
-			MenuComponent favoriteLabel = new MenuComponent("Favorites", null);
-			favoriteLabel.setCssClass("label");
-			reportsMenu.addChild(favoriteLabel);
+			if (permissions.hasPermission(OpPerms.TRIRReport)) {
+				legacyMenu.addChild(getText("GraphTrirRates.title"), "GraphTrirRates.action", "GraphTrirRates");
+				legacyMenu.addChild(getText("ReportIncidenceRate.title"),
+						"ReportIncidenceRate.action?filter.shaType=OSHA&filter.shaLocation=Corporate",
+						"ReportIncidenceRate");
+			}
+			if (permissions.hasPermission(OpPerms.FatalitiesReport))
+				legacyMenu
+						.addChild(
+								getText("ReportFatalities.title"),
+								"ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate",
+								"ReportFatalities");
 		}
 
 		for (ReportUser reportUser : favoriteReports) {
@@ -493,9 +521,6 @@ public final class MenuBuilder {
 		// We're trying to get rid of this
 		if (permissions.hasPermission(OpPerms.AuditorPayments) || permissions.hasGroup(User.INDEPENDENT_CONTRACTOR))
 			menu.addChild("Create Safety Pro Invoices", "CreateAuditorInvoices.action", "create_auditor_invoices");
-
-		if (permissions.has(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
-			menu.addChild(getText("OperatorTags.title"), "OperatorTags.action", "operator_tags");
 
 		// From dev menu
 		menu.addChild("Exception Log", "ReportExceptions.action", "exception_log");
