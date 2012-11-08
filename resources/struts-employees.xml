@@ -63,6 +63,7 @@
 		
 		<action name="EmployeeDashboard"
 			class="com.picsauditing.actions.employees.EmployeeDashboard">
+			<result name="error">struts/blank.jsp</result>
 			<result>struts/employees/employee_dashboard.jsp</result>
 		</action>
 		

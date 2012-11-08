@@ -104,6 +104,16 @@ public class EmployeeDashboardTest {
 	}
 
 	@Test
+	public void testExecute_FailsGracefullyIfContractorIsNull() throws Exception {
+		employeeDashboard.startup();
+		employeeDashboard.setContractor(null);
+
+		String result = employeeDashboard.execute();
+
+		assertEquals(PicsActionSupport.ERROR, result);
+	}
+
+	@Test
 	public void testCompetencyReview_NoYearSet() throws Exception {
 		employeeDashboard.startup();
 		employeeDashboard.setAuditTypeID(AuditType.INTEGRITYMANAGEMENT);
