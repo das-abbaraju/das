@@ -80,8 +80,12 @@ public class QBWebConnectorSvcSkeleton {
 
 			if (("PICSQBLOADER".equals(authenticate.getStrUserName())
 					|| "PICSQBLOADERCAN".equals(authenticate.getStrUserName())
-					|| "PICSQBLOADERUK".equals(authenticate.getStrUserName()) || "PICSQBLOADEREU".equals(authenticate
-					.getStrUserName()))
+					|| "PICSQBLOADERUK".equals(authenticate.getStrUserName()) 
+					|| "PICSQBLOADEREU".equals(authenticate.getStrUserName())
+					|| "PICSQBLOADERDKK".equals(authenticate.getStrUserName())
+					|| "PICSQBLOADERSEK".equals(authenticate.getStrUserName())
+					|| "PICSQBLOADERZAR".equals(authenticate.getStrUserName())
+					|| "PICSQBLOADERNOK".equals(authenticate.getStrUserName()))
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 
 				QBSession session = setUpSession(authenticate);
@@ -157,6 +161,18 @@ public class QBWebConnectorSvcSkeleton {
 			session.setQbID("qbListUKID");
 		} else if ("PICSQBLOADEREU".equals(authenticate.getStrUserName())) {
 			session.setCurrencyCode("EUR");
+			session.setQbID("qbListEUID");
+		} else if ("PICSQBLOADERDKK".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("DKK");
+			session.setQbID("qbListEUID");
+		} else if ("PICSQBLOADERNOK".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("NOK");
+			session.setQbID("qbListEUID");
+		} else if ("PICSQBLOADERZAR".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("ZAR");
+			session.setQbID("qbListEUID");
+		} else if ("PICSQBLOADERSEK".equals(authenticate.getStrUserName())) {
+			session.setCurrencyCode("SEK");
 			session.setQbID("qbListEUID");
 		}
 		session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
