@@ -79,7 +79,7 @@ $site_menu_search_more_results_text_color: #333;
 	    @include background-image(linear-gradient($site_menu_over_gradient_color_top, $site_menu_over_gradient_color_bottom));
 	    border: 1px solid transparent;
 	    border-bottom: 0px;
-	    border-top: 1px solid $site_menu_over_gradient_color_top;
+	    border-top: 1px solid transparent;
 	    @include border-radius(0px);
 	    
 	    .x-btn-inner
