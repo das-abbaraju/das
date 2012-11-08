@@ -314,13 +314,6 @@ public final class MenuBuilder {
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
 
-		if (CollectionUtils.isNotEmpty(favoriteReports)) {
-			reportsMenu.addChild("separator", null);
-			MenuComponent favoriteLabel = new MenuComponent("Favorites", null);
-			favoriteLabel.setCssClass("label");
-			reportsMenu.addChild(favoriteLabel);
-		}
-
 		{
 			MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
 			// CONTRACTORS
@@ -384,6 +377,13 @@ public final class MenuBuilder {
 								getText("ReportFatalities.title"),
 								"ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate",
 								"ReportFatalities");
+		}
+
+		if (CollectionUtils.isNotEmpty(favoriteReports)) {
+			reportsMenu.addChild("separator", null);
+			MenuComponent favoriteLabel = new MenuComponent("Favorites", null);
+			favoriteLabel.setCssClass("label");
+			reportsMenu.addChild(favoriteLabel);
 		}
 
 		for (ReportUser reportUser : favoriteReports) {
