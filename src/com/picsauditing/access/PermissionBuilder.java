@@ -43,7 +43,7 @@ public class PermissionBuilder {
 	}
 
 	private boolean useInheritedGroups() {
-		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS);
+		return featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS);
 	}
 
 	private Set<Integer> getDirectlyRelatedGroupIds(int userID) {
