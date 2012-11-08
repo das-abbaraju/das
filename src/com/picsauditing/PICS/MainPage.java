@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
@@ -73,12 +74,8 @@ public class MainPage {
 		}
 
 		if (permissions == null) {
-			HierarchyBuilder hierarchyBuilder = SpringUtils.getBean("HierarchyBuilder");
-			FeatureToggle featureToggle = SpringUtils.getBean("FeatureToggle");
-			
-			permissions = new Permissions();
-			permissions.setHierarchyBuilder(hierarchyBuilder);
-			permissions.setFeatureToggle(featureToggle);
+			PermissionBuilder permissionBuilder = SpringUtils.getBean("PermissionBuilder");
+			permissionBuilder.build(permissions);
 		}
 
 		return permissions;

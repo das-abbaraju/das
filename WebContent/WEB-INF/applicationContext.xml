@@ -173,6 +173,7 @@
 
 	<bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
 	<bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder" />
+	<bean id="PermissionBuilder" class="com.picsauditing.access.PermissionBuilder" />
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 
@@ -29,6 +30,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class LoginControllerTest extends PicsActionTest {
 	private LoginController loginController;
@@ -53,6 +55,11 @@ public class LoginControllerTest extends PicsActionTest {
 	private ApplicationContext applicationContext;
 	@Mock
 	private FeatureToggle featureToggleChecker;
+	@Mock
+	private HierarchyBuilder hierarchyBuilder;
+	
+	@Spy
+	private PermissionBuilder permissionBuilder;
 
 	@AfterClass
 	public static void tearDown() throws Exception {
@@ -66,8 +73,12 @@ public class LoginControllerTest extends PicsActionTest {
 
 		MockitoAnnotations.initMocks(this);
 		loginController = new LoginController();
+//		permissionBuilder = new PermissionBuilder();
 		super.setUp(loginController);
 
+		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggleChecker);
+		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", hierarchyBuilder);
+		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
@@ -80,6 +91,10 @@ public class LoginControllerTest extends PicsActionTest {
 		when(switchUser.getAccount()).thenReturn(switchAccount);
 		when(request.getServerName()).thenReturn("www.picsorganizer.com");
 		when(userDAO.findName(anyString())).thenReturn(user);
+		when(featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PERMISSION_GROUPS)).thenReturn(true);
+//		when(userDAO.find(anyInt())).thenReturn(user);
+//		when(user.getId()).thenReturn(1);
+//		when(permissionBuilder.login(user)).thenReturn(permissions);
 	}
 
 	// As a non-admin user
@@ -190,14 +205,18 @@ public class LoginControllerTest extends PicsActionTest {
 		when(permissions.hasPermission(OpPerms.SwitchUser)).thenReturn(true);
 		loginController.setSwitchToUser(SWITCH_USER_ID);
 		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
+		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
 		when(permissions.getUserId()).thenReturn(NOT_ZERO);
+		when(switchUser.getLocale()).thenReturn(Locale.ENGLISH);
 
 		String actionResult = loginController.execute();
 
-		verify(permissions).login(switchUser);
-		verify(permissions).setAdminID(NOT_ZERO);
+		verify(permissionBuilder).login(switchUser);
+
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
 		assertThat(session.keySet(), hasItem("permissions"));
+		assertEquals(SWITCH_USER_ID, ((Permissions) session.get("permissions")).getUserId());
+		assertEquals(NOT_ZERO, ((Permissions) session.get("permissions")).getAdminID());
 	}
 
 	// As a pics user
@@ -215,7 +234,7 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
 		String actionResult = loginController.execute();
-		verify(permissions).login(user);
+		verify(permissionBuilder).login(user);
 		verify(user).setLastLogin((Date) any());
 		verify(userDAO).save(user);
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
@@ -253,6 +272,9 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Test
 	public void testloginForResetPassword_SetsForcePasswordReset() throws Exception {
+		when(user.getId()).thenReturn(NOT_ZERO);
+		when(user.getLocale()).thenReturn(Locale.ENGLISH);
+		
 		loginController.setButton("reset");
 		loginController.execute();
 
@@ -347,11 +369,11 @@ public class LoginControllerTest extends PicsActionTest {
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
 		when(user.isEncryptedPasswordEqual("test password")).thenReturn(true);
 		when(user.getId()).thenReturn(941);
+		when(user.getLocale()).thenReturn(Locale.ENGLISH);
 		when(permissions.belongsToGroups()).thenReturn(true);
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAccountName()).thenReturn("test account");
 		when(permissions.hasPermission(OpPerms.Dashboard)).thenReturn(true);
-		when(permissions.getLocale()).thenReturn(Locale.ENGLISH);
 	}
 
 }

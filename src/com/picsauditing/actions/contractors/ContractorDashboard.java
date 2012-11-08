@@ -27,6 +27,7 @@ import com.picsauditing.access.GeneralContractorNotApprovedException;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDataDAO;
@@ -99,6 +100,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private AccountLevelAdjuster accountLevelAdjuster;
 	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
+	private PermissionBuilder permissionBuilder;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -837,12 +840,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		if (co != null) {
 			for (User user : co.getOperatorAccount().getUsers()) {
-				Permissions permissions = new Permissions();
 				try {
-					permissions.setHierarchyBuilder(hierarchyBuilder);
-					permissions.setFeatureToggle(featureToggleChecker);
-					permissions.login(user);
-
+					Permissions permissions = permissionBuilder.login(user);
 					if (permissions.hasPermission(operatorPermission)) {
 						visibleUsersWithPermissions.add(user);
 					}

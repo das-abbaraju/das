@@ -19,8 +19,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
 	
-	private static final String FIND_USERS_BY_IDS = "SELECT u FROM User u WHERE u.id IN ( :userIds ) ORDER BY u.name ";
-	
 	private final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 	
 	@Transactional(propagation = Propagation.NESTED)
@@ -171,11 +169,5 @@ public class UserDAO extends PicsDAO {
 		} catch (NoResultException e) {
 			return null;
 		}
-	}
-	
-	public List<User> findByIds(Collection<Integer> ids) {
-		Query query = em.createQuery(FIND_USERS_BY_IDS);
-		query.setParameter("userIds", ids);
-		return query.getResultList();		
 	}
 }

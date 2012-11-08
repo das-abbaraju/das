@@ -2,11 +2,8 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -15,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.jpa.entities.Account;
@@ -25,11 +21,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.LocaleController;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 /**
  * This is the main class that is stored for each user containing information if
@@ -46,9 +39,6 @@ public class Permissions implements Serializable {
 	private int userID;
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
-	
-	@Deprecated
-	private Map<Integer, String> groups = new HashMap<Integer, String>();
 	
 	private Set<Integer> allInheritedGroupIds = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
@@ -86,11 +76,6 @@ public class Permissions implements Serializable {
 	private int shadowedUserID;
 	private String shadowedUserName;
 	
-	// These are transient because they should not be in the session, and only used
-	// because these are necessary for object construction
-	private transient HierarchyBuilder hierarchyBuilder;
-	private transient FeatureToggle featureToggle;
-
 	public void clear() {
 		userID = 0;
 		loggedIn = false;
@@ -122,7 +107,6 @@ public class Permissions implements Serializable {
 		shadowedUserName = "";
 
 		permissions.clear();
-		groups.clear();
 		allInheritedGroupIds.clear();
 		visibleAuditTypes.clear();
 		corporateParent.clear();
@@ -254,8 +238,6 @@ public class Permissions implements Serializable {
 				permissions.add(conProfileEdit);
 			}
 			
-			populateGroupHierarchyMap();
-			populateGroupMap(user);
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -283,20 +265,10 @@ public class Permissions implements Serializable {
 		this.forcePasswordReset = forcePasswordReset;
 	}
 
-	@Deprecated
-	public Set<Integer> getGroupIds() {
-		return groups.keySet();
-	}
-
-	@Deprecated
-	public Collection<String> getGroupNames() {
-		return groups.values();
-	}
-	
 	public Set<Integer> getAllInheritedGroupIds() {
 		return allInheritedGroupIds;
 	}
-
+	
 	public String getUsername() {
 		return username;
 	}
@@ -476,35 +448,13 @@ public class Permissions implements Serializable {
 	}
 	
 	public boolean belongsToGroups() {
-		if (featureToggle != null && featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)) {
-			return CollectionUtils.isNotEmpty(allInheritedGroupIds);
-		}
-		
-		return belongsToGroupsOld();
-	}
-
-	@Deprecated
-	private boolean belongsToGroupsOld() {
-		return MapUtils.isNotEmpty(groups);
+		return CollectionUtils.isNotEmpty(allInheritedGroupIds);
 	}
 
 	public boolean hasGroup(Integer groupId) {
-		if (featureToggle != null && featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)) {
-			return CollectionUtils.isNotEmpty(allInheritedGroupIds) ? allInheritedGroupIds.contains(groupId) : false;
-		}
-		
-		return hasGroupOld(groupId);
+		return CollectionUtils.isEmpty(allInheritedGroupIds) ? false : allInheritedGroupIds.contains(groupId);
 	}
 	
-	@Deprecated
-	public boolean hasGroupOld(Integer groupId) {
-		if (MapUtils.isNotEmpty(groups)) {
-			return false;
-		} else {
-			return groups.containsKey(groupId);
-		}		
-	}
-
 	public boolean isContractor() {
 		return "Contractor".equals(accountType);
 	}
@@ -756,36 +706,4 @@ public class Permissions implements Serializable {
 		this.accountType = accountType;
 	}
 	
-	public void setHierarchyBuilder(HierarchyBuilder hierarchyBuilder) {
-		this.hierarchyBuilder = hierarchyBuilder;
-	}
-	
-	public void setFeatureToggle(FeatureToggle featureToggle) {
-		this.featureToggle = featureToggle;
-	}
-	
-	private void populateGroupHierarchyMap() {
-		if (hierarchyBuilder == null) {
-			throw new IllegalStateException("You must set the HierarchyBuilder.");
-		}
-		
-		allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(userID);
-	}
-	
-	/**
-	 * Leaving this method in for backwards compatibility.
-	 * 
-	 * This method does not return all the users in the Group Hierarchy. Please use the
-	 * method populateGroupHierarchy instead.
-	 * 
-	 * @param user User that is logging into the system
-	 */
-	@Deprecated
-	private void populateGroupMap(User user) {
-		for (UserGroup u : user.getGroups()) {
-			if (u.getGroup().isGroup()) {
-				groups.put(u.getGroup().getId(), u.getGroup().getName());
-			}
-		}
-	}
 }

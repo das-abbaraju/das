@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,6 +99,12 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
+	public <T extends BaseTable> List<T> findByIDs(Class<T> clazz, Collection<Integer> ids) {
+		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE t.id IN ( :ids )");
+		q.setParameter("ids", ids);
+		return q.getResultList();
+	}
+	
 	public <T extends BaseTable> T findOne(Class<T> c, String where) {
 		Query q = em.createQuery("FROM " + c.getName() + " t WHERE " + where);
 		return (T) q.getSingleResult();

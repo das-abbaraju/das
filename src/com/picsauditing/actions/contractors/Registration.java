@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -81,7 +82,7 @@ public class Registration extends ContractorActionSupport {
 	@Autowired
 	private VATValidator vatValidator;
 	@Autowired
-	private HierarchyBuilder hierarchyBuilder;
+	protected PermissionBuilder permissionBuilder;
 
 	private User user;
 	private String username;
@@ -271,10 +272,7 @@ public class Registration extends ContractorActionSupport {
 	}
 
 	private Permissions logInUser() throws Exception {
-		Permissions permissions = new Permissions();
-		permissions.setHierarchyBuilder(hierarchyBuilder);
-		permissions.setFeatureToggle(featureToggleChecker);
-		permissions.login(user);
+		Permissions permissions = permissionBuilder.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 		return permissions;
 	}

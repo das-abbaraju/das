@@ -43,8 +43,6 @@ public class OpenTasks extends TranslationActionSupport {
 	protected OperatorTagDAO operatorTagDao;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
-	@Autowired
-	private HierarchyBuilder hierarchyBuilder;
 
 	private static final int VOPAK_OPERATOR_QUALIFICATION = 640;
 
@@ -54,6 +52,7 @@ public class OpenTasks extends TranslationActionSupport {
 	private ArrayList<String> openTasks;
 	private ContractorAccount contractor;
 	private User user;
+	// TODO We should convert this and build all the tasks off a user instead of a permission
 	private Permissions permissions;
 	private final Logger logger = LoggerFactory.getLogger(OpenTasks.class);
 
@@ -72,6 +71,7 @@ public class OpenTasks extends TranslationActionSupport {
 	public List<String> getOpenTasks(ContractorAccount contractor, User user) {
 		initializeForGatheringTasks(contractor, user);
 		gatherTasksAboutDeclaringTrades();
+		// user.getAccount().isOperatorCorporate()
 		if (!permissions.isOperatorCorporate()) {
 			gatherTasksAboutRelationshipBetweenContractorAndPics();
 		}
@@ -131,7 +131,6 @@ public class OpenTasks extends TranslationActionSupport {
 	private void establishPermissions(User user) {
 		permissions = new Permissions();
 		try {
-			permissions.setHierarchyBuilder(hierarchyBuilder);
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
 		} catch (Exception e) {

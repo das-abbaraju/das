@@ -2,11 +2,11 @@ package com.picsauditing.actions.users;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
@@ -34,7 +34,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ProfileEdit extends PicsActionSupport {
-	
+
 	@Autowired
 	private UserDAO dao;
 	@Autowired
@@ -50,7 +50,7 @@ public class ProfileEdit extends PicsActionSupport {
 	private String url;
 
 	private boolean goEmailSub = false;
-	private boolean usingDynamicReports=false;
+	private boolean usingDynamicReports = false;
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -87,7 +87,7 @@ public class ProfileEdit extends PicsActionSupport {
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
 		String username = u.getUsername().trim();
-		if(u.getEmail().length()>0)
+		if (u.getEmail().length() > 0)
 			u.setEmail(EmailAddressUtils.validate(u.getEmail()));
 
 		if (Strings.isEmpty(username)) {
@@ -128,7 +128,7 @@ public class ProfileEdit extends PicsActionSupport {
 		User u = getUser();
 		u.setApiKey(apiKey);
 		json.put("ApiKey", apiKey);
-		json.put("ApiCheck", getRequestHost()+"/ApiCheck.action?valueToEcho=2&apiKey="+apiKey);
+		json.put("ApiCheck", getRequestHost() + "/ApiCheck.action?valueToEcho=2&apiKey=" + apiKey);
 		userDAO.save(u);
 		return JSON;
 	}
@@ -239,22 +239,22 @@ public class ProfileEdit extends PicsActionSupport {
 
 	public List<AuditType> getViewableAuditsList() {
 		AuditTypeDAO auditTypeDao = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		
+
 		return auditTypeDao.findWhere("t.id IN (" + Strings.implode(permissions.getVisibleAuditTypes()) + ")");
 	}
-	
-	public List<String> getGroupNames() {
-		List<User> groups = userDAO.findByIds(permissions.getAllInheritedGroupIds());
-		if (CollectionUtils.isEmpty(groups)) {
-			return Collections.emptyList();
-		}
-		
-		List<String> groupNames = new ArrayList<String>(); 
-		for (User group : groups) {
-			groupNames.add(group.getName());
-		}
-		
-		return groupNames;
+
+	public List<User> getAllInheritedGroups() {
+		List<User> users = userDAO.findByIDs(User.class, permissions.getAllInheritedGroupIds());
+		Collections.sort(users, new Comparator<User>() {
+
+			@Override
+			public int compare(User o1, User o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+
+		});
+
+		return users;
 	}
 
 	/**

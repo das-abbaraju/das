@@ -40,6 +40,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.SecurityAware;
 import com.picsauditing.actions.users.ChangePassword;
@@ -63,7 +64,6 @@ import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
@@ -93,7 +93,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	@Autowired
 	protected FeatureToggle featureToggleChecker;
 	@Autowired
-	protected HierarchyBuilder hierarchyBuilder;
+	private PermissionBuilder permissionBuilder;
 
 	protected Collection<String> alertMessages;
 
@@ -300,8 +300,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		if (permissions == null) {
 			permissions = new Permissions();
-			permissions.setHierarchyBuilder(hierarchyBuilder);
-			permissions.setFeatureToggle(featureToggleChecker);
 		}
 
 		if (permissions.isLoggedIn()) {
@@ -336,8 +334,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			UserDAO userDAO = SpringUtils.getBean("UserDAO");
 			User user = userDAO.find(userID);
 
-			permissions.login(user);
-			LocaleController.setLocaleOfNearestSupported(permissions);
+			permissions = permissionBuilder.login(user);
 			ActionContext.getContext().getSession().put("permissions", permissions);
 		} catch (Exception e) {
 			logger.error("Problem autologging in.  Id supplied was: {}", userID);
@@ -437,18 +434,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return false;
 		}
 		User user = userDAO.findByApiKey(apiKey);
-		if (permissions == null) {
-			permissions = new Permissions();
-			permissions.setHierarchyBuilder(hierarchyBuilder);
-			permissions.setFeatureToggle(featureToggleChecker);
-		}
 		try {
-			permissions.login(user);
+			permissions = permissionBuilder.login(user);
 			this.user = user;
 		} catch (Exception e) {
 			return false;
 		}
-		LocaleController.setLocaleOfNearestSupported(permissions);
 		return true;
 	}
 

@@ -350,9 +350,9 @@
 								</tr>
 							</thead>
 							<tbody>
-								<s:iterator value="groupNames" var="group">
+								<s:iterator value="allInheritedGroups">
 									<tr>
-										<td><s:property value="group" /></td>
+										<td><s:property value="name" /></td>
 									</tr>
 								</s:iterator>
 							</tbody>

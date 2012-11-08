@@ -3,14 +3,12 @@ package com.picsauditing.access;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class UserIndexPageTest {
 	
@@ -18,7 +16,6 @@ public class UserIndexPageTest {
 	public void testNotLoggedIn() throws Exception {
 		assertEquals("Login.action", UserIndexPage.getIndexURL(null));
 		Permissions permissions = new Permissions();
-		permissions.setHierarchyBuilder(Mockito.mock(HierarchyBuilder.class));
 		assertEquals("Login.action", UserIndexPage.getIndexURL(permissions));
 	}
 

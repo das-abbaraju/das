@@ -43,7 +43,6 @@ public class PicsActionSupportTest extends PicsActionTest {
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
 		Permissions permissions = new Permissions();
-		permissions.setHierarchyBuilder(hierarchyBuilder);
 
 		picsActionSupport.permissions = permissions;
 		picsActionSupport.loadPermissions();
