@@ -36,7 +36,7 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Column'
+        text: '<i class="icon-plus icon-large"></i> Add Column'
     }],
 
     getPagingItems: function() {

@@ -182,7 +182,7 @@ Ext.define('PICS.view.layout.Menu', {
 
     addUserMenu: function (user_menu, menu_items) {
         user_menu.padding = '0px 20px 0px 20px';
-        user_menu.text += '&nbsp<i class="icon-cog icon-large"></i>';
+        user_menu.text += ' <i class="icon-cog icon-large"></i>';
 
         menu_items.push(user_menu);
     },
