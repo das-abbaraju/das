@@ -46,13 +46,13 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             cls: 'paging-icon',
             height: 22,
             itemId: 'refresh',
+            overCls: 'paging-icon-over',
             overflowText: me.refreshText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-refresh icon-large"></i>',
-            tooltip: me.refreshText,
-            overCls: 'paging-icon-over',
-            pressedCls: 'paging-icon-pressed'
+            tooltip: me.refreshText
         },{
             xtype: 'tbseparator',
             height: 28
@@ -62,7 +62,9 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             handler: me.moveFirst,
             height: 22,
             itemId: 'first',
+            overCls: 'paging-icon-over',
             overflowText: me.firstText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-step-backward icon-small"></i>',
@@ -73,11 +75,13 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             handler: me.movePrevious,
             height: 22,
             itemId: 'prev',
+            overCls: 'paging-icon-over',
             overflowText: me.prevText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-caret-left icon-small"></i>',
-            tooltip: me.prevText
+            tooltip: me.prevText,
         }, {
             xtype: 'tbseparator',
             height: 28
@@ -117,7 +121,9 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             handler: me.moveNext,
             height: 22,
             itemId: 'next',
+            overCls: 'paging-icon-over',
             overflowText: me.nextText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-caret-right icon-small"></i>',
@@ -128,7 +134,9 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             handler: me.moveLast,
             height: 22,
             itemId: 'last',
+            overCls: 'paging-icon-over',
             overflowText: me.lastText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-step-forward icon-small"></i>',
