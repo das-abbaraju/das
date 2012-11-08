@@ -36,7 +36,7 @@ public final class MenuBuilder {
 		} else if (permissions.isContractor()) {
 			buildContractorMenubar(menubar, permissions);
 		} else if (permissions.isAssessment()) {
-			buildAssessmentMenubar(menubar);
+			buildAssessmentMenubar(menubar, permissions);
 		} else if (permissions.isOperatorCorporate()) {
 			buildOperatorCorporateMenubar(menubar, permissions, favoriteReports);
 		} else {
@@ -53,7 +53,7 @@ public final class MenuBuilder {
 			List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
 
-		addReportsMenu(menubar, favoriteReports);
+		addReportsMenu(menubar, favoriteReports, permissions);
 
 		addConfigureMenu(menubar, permissions);
 
@@ -61,7 +61,7 @@ public final class MenuBuilder {
 
 		addDevelopmentMenu(menubar, permissions);
 
-		addSupportMenu(menubar);
+		addSupportMenu(menubar, permissions);
 
 		addUserMenu(menubar, permissions);
 	}
@@ -75,7 +75,7 @@ public final class MenuBuilder {
 		// now
 		if (!permissions.getAccountStatus().isActiveDemo()) {
 			menubar.addChild(getText("Registration.CompanyDetails.heading"), "ContractorEdit.action", "contractor_edit");
-			addSupportMenu(menubar);
+			addSupportMenu(menubar, permissions);
 			return;
 		}
 
@@ -128,10 +128,10 @@ public final class MenuBuilder {
 
 		menubar.addChild(getText("global.Resources"), "ContractorForms.action", "contractor_forms");
 
-		addSupportMenu(menubar);
+		addSupportMenu(menubar, permissions);
 	}
 
-	private static void buildAssessmentMenubar(MenuComponent menubar) {
+	private static void buildAssessmentMenubar(MenuComponent menubar, Permissions permissions) {
 		MenuComponent assessmentMenu = menubar.addChild(getText("menu.Assessment"));
 		assessmentMenu.addChild(getText("menu.Assessment.ImportedData"), "ManageImportData.action",
 				"manage_import_data");
@@ -152,18 +152,18 @@ public final class MenuBuilder {
 		// "assessment_center_edit");
 		// editMenu.addChild("Users", "UsersManage.action", "users_manage");
 
-		addSupportMenu(menubar);
+		addSupportMenu(menubar, permissions);
 	}
 
 	private static void buildOperatorCorporateMenubar(MenuComponent menubar, Permissions permissions,
 			List<ReportUser> favoriteReports) {
 		addDashboard(menubar);
 
-		addReportsMenu(menubar, favoriteReports);
+		addReportsMenu(menubar, favoriteReports, permissions);
 
 		addManageMenu(menubar, permissions);
 
-		addSupportMenu(menubar);
+		addSupportMenu(menubar, permissions);
 
 		addUserMenu(menubar, permissions);
 	}
@@ -275,9 +275,22 @@ public final class MenuBuilder {
 					"report_user_permission_matrix");
 		}
 
-		if (permissions.has(OpPerms.ContractorWatch)) {
+		if (permissions.has(OpPerms.ContractorWatch))
 			manageMenu.addChild(getText("ReportActivityWatch.title"), "ReportActivityWatch.action",
 					"report_activity_watch");
+
+		if (permissions.has(OpPerms.WatchListManager))
+			manageMenu.addChild(getText("WatchListManager.title"), "WatchListManager.action", "watch_list_manager");
+
+		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
+			manageMenu.addChild(getText("OperatorTags.title"), "OperatorTags.action", "OperatorTags");
+
+		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
+			manageMenu.addChild(getText("ManageFlagCriteriaOperator.title"), "ManageFlagCriteriaOperator.action",
+					"ManageFlagCriteriaOperator");
+			if (permissions.isCanSeeInsurance())
+				manageMenu.addChild(getText("ManageInsuranceCriteriaOperator.title"),
+						"ManageInsuranceCriteriaOperator.action", "ManageInsuranceCriteriaOperator");
 		}
 
 		if (permissions.has(OpPerms.FormsAndDocs)) {
@@ -304,19 +317,39 @@ public final class MenuBuilder {
 		}
 
 		addEmailSubmenu(manageMenu, permissions);
-
-		// We're not translating webcam stuff because it's being phased out
-		if (permissions.has(OpPerms.ManageWebcam)) {
-			MenuComponent webcamMenu = manageMenu.addChild("Webcams");
-			webcamMenu.addChild("Manage Webcams", "ManageWebcams.action?button=out", "manage_webcams");
-			webcamMenu.addChild("Assign Webcams", "AssignWebcams.action", "assign_webcams");
-		}
 	}
 
-	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports) {
+	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
 		MenuComponent reportsMenu = menubar.addChild(getText("menu.Reports"));
 
 		reportsMenu.addChild(getText("menu.ManageReports"), ManageReports.LANDING_URL, "manage_reports");
+
+		{
+			MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
+			if (permissions.hasPermission(OpPerms.RequestNewContractor))
+				legacyMenu.addChild(getText("ReportNewRequestedContractor.title"),
+						"ReportNewRequestedContractor.action", "ReportNewRequestedContractor");
+			if ((permissions.isCorporate() || permissions.getCorporateParent().size() > 0) && !permissions.isSecurity())
+				legacyMenu.addChild(getText("ReportContractorOperatorFlagMatrix.title"),
+						"ReportContractorOperatorFlagMatrix.action", "ReportContractorOperatorFlagMatrix");
+			if (permissions.isOperatorCorporate() && permissions.hasPermission(OpPerms.OperatorFlagMatrix))
+				legacyMenu.addChild(getText("OperatorFlagMatrix.title"), "OperatorFlagMatrix.action",
+						"OperatorFlagMatrix");
+			if (permissions.hasPermission(OpPerms.ContractorDetails))
+				legacyMenu.addChild(getText("QuestionAnswerSearch.title"), "QuestionAnswerSearch.action",
+						"QuestionAnswerSearch");
+			if (permissions.hasPermission(OpPerms.InsuranceApproval))
+				legacyMenu.addChild(getText("ReportInsuranceApproval.title"),
+						"ReportInsuranceApproval.action?filter.auditStatus=Complete", "RepInsApproval");
+			if (permissions.hasPermission(OpPerms.EmailQueue))
+				legacyMenu.addChild(getText("EmailQueueList.title"), "EmailQueueList.action?filter.status=Pending",
+						"EmailQueue");
+			if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
+				legacyMenu.addChild(getText("GraphEmrRates.title"), "GraphEmrRates.action?years=2010", "GraphEmrRates");
+				legacyMenu.addChild(getText("ReportEmrRates.title"), "ReportEmrRates.action?filter.auditFor=2010",
+						"ReportEmrRates");
+			}
+		}
 
 		if (CollectionUtils.isNotEmpty(favoriteReports)) {
 			reportsMenu.addChild("separator", null);
@@ -327,18 +360,25 @@ public final class MenuBuilder {
 
 		for (ReportUser reportUser : favoriteReports) {
 			Report report = reportUser.getReport();
-			reportsMenu.addChild(report.getName(), "Report.action?report=" + report.getId(),
-					"report_" + report.getId());
+			reportsMenu
+					.addChild(report.getName(), "Report.action?report=" + report.getId(), "report_" + report.getId());
 		}
 	}
 
-	private static void addSupportMenu(MenuComponent menubar) {
+	private static void addSupportMenu(MenuComponent menubar, Permissions permissions) {
 		MenuComponent supportMenu = menubar.addChild(getText("menu.Support"));
 		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&os_username=admin&os_password=ad9870mins";
 		supportMenu.addChild(getText("Header.HelpCenter"), helpUrl, "help_center");
 		supportMenu.addChild(getText("Registration.Error.LiveChat"), "#", "live_chat");
 		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
 		supportMenu.addChild(getText("global.AboutPICS"), "#", "about_pics");
+		supportMenu.addChild(getText("Footer.Privacy"), "PrivatePolicy.action", "private_policy");
+
+		{
+			MenuComponent referenceMenu = supportMenu.addChild("References");
+			if (permissions.hasPermission(OpPerms.ManageTrades))
+				referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
+		}
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
@@ -392,15 +432,6 @@ public final class MenuBuilder {
 		}
 	}
 
-	// TODO this menu is very different from the one in PicsMenu, starting on
-	// line ~146
-	private static void addContractorSubmenu(MenuComponent parentMenu, Permissions permissions) {
-		MenuComponent contractorMenu = parentMenu.addChild(getText("global.Contractors"));
-		if (permissions.has(OpPerms.WatchListManager)) {
-			contractorMenu.addChild(getText("WatchListManager.title"), "WatchListManager.action", "watch_list_manager");
-		}
-	}
-
 	private static void addEmailSubmenu(MenuComponent parentMenu, Permissions permissions) {
 		MenuComponent emailMenu = parentMenu.addChild(getText("global.Email"));
 
@@ -409,6 +440,8 @@ public final class MenuBuilder {
 					"report_email_subscription");
 		}
 
+		if (permissions.hasPermission(OpPerms.EmailTemplates))
+			emailMenu.addChild(getText("EmailWizard.title"), "EmailWizard.action", "EmailWizard");
 		if (permissions.has(OpPerms.EmailTemplates, OpType.Edit)) {
 			emailMenu.addChild(getText("EditEmailTemplate.title"), "EditEmailTemplate.action", "edit_email_template");
 
@@ -470,9 +503,5 @@ public final class MenuBuilder {
 
 		// From user menu
 		menu.addChild("Schedule", "MySchedule.action", "my_schedule");
-
-		// From configure menu
-		if (permissions.has(OpPerms.ManageTrades))
-			menu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "trade_taxonomy");
 	}
 }
