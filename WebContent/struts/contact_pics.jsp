@@ -14,6 +14,11 @@
 <title><s:text name="Contact.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 </head>
+
+<h1>
+    <s:text name="Contact.title" />
+</h1>
+
 <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 <form action="Contact">
 	<fieldset class="form">
