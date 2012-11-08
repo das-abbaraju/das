@@ -10,8 +10,7 @@ public class AccountTableTest {
 	@Test
 	public void testAccountFields() {
 		AccountTable accountTable = new AccountTable();
-		assertEquals("CASE WHEN TRIM({TO_ALIAS}.dbaName) IS NULL THEN TRIM({TO_ALIAS}.name) "
-				+ "WHEN TRIM({TO_ALIAS}.dbaName) = '' THEN TRIM({TO_ALIAS}.name) ELSE TRIM({TO_ALIAS}.dbaName) END", accountTable
+		assertEquals("TRIM({TO_ALIAS}.name)", accountTable
 				.getField("Name").getDatabaseColumnName());
 		assertEquals("Name", accountTable.getField("Name").getName());
 		assertTrue(accountTable.getFields().size() > 10);
