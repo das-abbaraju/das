@@ -2,9 +2,13 @@ package com.picsauditing.actions.users;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import com.picsauditing.jpa.entities.PasswordHistory;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,6 +17,7 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.PasswordDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
@@ -25,6 +30,10 @@ public class ChangePassword extends PicsActionSupport {
 	protected EmailSubscriptionDAO emailSubscriptionDAO;
 	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
+	protected PasswordDAO passwordDAO;
+	@Autowired
+	protected PasswordValidator passwordValidator;
 
 	protected User u;
 	protected User user;
@@ -86,7 +95,7 @@ public class ChangePassword extends PicsActionSupport {
 					addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
 				}
 
-				Vector<String> errors = PasswordValidator.validateContractor(user, password1);
+				Vector<String> errors = passwordValidator.validatePassword(user, password1);
 				for (String error : errors)
 					addActionError(error);
 
@@ -95,15 +104,9 @@ public class ChangePassword extends PicsActionSupport {
 				}
 
 				// Set password to the encrypted version
+				String oldPassword = user.getPassword();
 				user.setEncryptedPassword(password1);
-
-				/*
-				 * TODO: this doesn't seem to to anything at the moment.
-				 * 
-				 * Also, these passwords should not be saved in plain text.
-				 */
-				int maxHistory = 0;
-				user.addPasswordToHistory(password1, maxHistory);
+                savePasswordHistory(oldPassword);
 
 				// If the user is changing their password, they are no longer
 				// forced to reset.
@@ -142,7 +145,17 @@ public class ChangePassword extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public void setU(User u) {
+    private void savePasswordHistory(String oldPassword) {
+	    if (!getAccount().getPasswordSecurityLevel().enforceHistory()) {
+		    return;
+	    }
+
+	    PasswordHistory passwordHistory = new PasswordHistory(user, oldPassword, new Date());
+	    passwordHistory.setAuditColumns(user);
+	    passwordDAO.save(passwordHistory);
+    }
+
+    public void setU(User u) {
 		this.u = u;
 	}
 

@@ -583,4 +583,8 @@ public class Strings {
 
 		return value;
 	}
+
+    public static boolean isMixedCase(String value) {
+        return (!value.equals(value.toUpperCase()) && !value.equals(value.toLowerCase()));
+    }
 }

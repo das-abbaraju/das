@@ -102,6 +102,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	private int sessionTimeout = 60;
 	private int rememberMeTime = 7;
 	private boolean rememberMeTimeEnabled = true;
+    private int passwordSecurityLevelId;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -978,6 +979,15 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		return (status == AccountStatus.Deactivated || status == AccountStatus.Deleted);
 	}
 
+    @Transient
+    public PasswordSecurityLevel getPasswordSecurityLevel() {
+        return PasswordSecurityLevel.fromDbValue(passwordSecurityLevelId);
+    }
+
+    public void setPasswordSecurityLevel(PasswordSecurityLevel passwordSecurityLevel) {
+        setPasswordSecurityLevelId(passwordSecurityLevel.dbValue);
+    }
+
 	/**
 	 * In minutes
 	 */
@@ -1007,4 +1017,11 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.rememberMeTimeEnabled = rememberMeTimeEnabled;
 	}
 
+    private int getPasswordSecurityLevelId() {
+        return passwordSecurityLevelId;
+    }
+
+    protected void setPasswordSecurityLevelId(int passwordSecurityLevelId) {
+        this.passwordSecurityLevelId = passwordSecurityLevelId;
+    }
 }

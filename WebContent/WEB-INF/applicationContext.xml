@@ -90,6 +90,7 @@
 	<bean id="TradeDAO" class="com.picsauditing.dao.TradeDAO"/>
 	<bean id="TradeAlternateDAO" class="com.picsauditing.dao.TradeAlternateDAO"/>
 	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
+	<bean id="PasswordDAO" class="com.picsauditing.dao.PasswordDAO"/>
 	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
 	<bean id="ReportDAO" class="com.picsauditing.dao.ReportDAO"/>
 	<bean id="ReportUserDAO" class="com.picsauditing.dao.ReportUserDAO"/>
@@ -128,6 +129,7 @@
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
+	<bean id="PasswordValidator" class="com.picsauditing.PICS.PasswordValidator" scope="prototype"/>
 	<bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper" scope="prototype"/>
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>

@@ -73,6 +73,25 @@ public class AccountTest {
         assertEquals(NEWLINE_CHARACTER, getLastElement(searchText));
     }
 
+    @Test
+    public void testGetPasswordSecurityLevel() throws Exception {
+
+        account.setPasswordSecurityLevelId(-1);
+        assertEquals(PasswordSecurityLevel.Normal, account.getPasswordSecurityLevel());
+
+        account.setPasswordSecurityLevelId(0);
+        assertEquals(PasswordSecurityLevel.Normal, account.getPasswordSecurityLevel());
+
+        account.setPasswordSecurityLevelId(1);
+        assertEquals(PasswordSecurityLevel.High, account.getPasswordSecurityLevel());
+
+        account.setPasswordSecurityLevelId(2);
+        assertEquals(PasswordSecurityLevel.Maximum, account.getPasswordSecurityLevel());
+
+        account.setPasswordSecurityLevelId(3);
+        assertEquals(PasswordSecurityLevel.Normal, account.getPasswordSecurityLevel());
+    }
+
     private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision, AccountStatus status) {
         account.setType(type);
         account.setId(id);

@@ -46,7 +46,6 @@ import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -95,7 +94,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private String password;
 	private Date passwordChanged;
 	private String resetHash;
-	private String passwordHistory;
 	private boolean forcePasswordReset;
 	private int failedAttempts = 0;
 	private Date lockUntil = null;
@@ -158,7 +156,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.password = u.getPassword();
 		this.passwordChanged = u.getPasswordChanged();
 		this.resetHash = u.getResetHash();
-		this.passwordHistory = u.getPasswordHistory();
 		this.forcePasswordReset = u.isForcePasswordReset();
 		this.failedAttempts = u.getFailedAttempts();
 		this.lockUntil = u.getLockUntil();
@@ -286,29 +283,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.resetHash = resetHash;
 	}
 
-	public String getPasswordHistory() {
-		return passwordHistory;
-	}
-
-	public void setPasswordHistory(String passwordHistory) {
-		this.passwordHistory = passwordHistory;
-	}
-
-	@Transient
-	public List<String> getPasswordHistoryList() {
-
-		List<String> list = new ArrayList<String>();
-
-		if (passwordHistory != null) {
-			String[] list1 = passwordHistory.split("\n");
-			for (String item : list1) {
-				if (!Strings.isEmpty(item))
-					list.add(item);
-			}
-		}
-		return list;
-	}
-
 	public boolean isForcePasswordReset() {
 		return forcePasswordReset;
 	}
@@ -317,32 +291,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.forcePasswordReset = forcePasswordReset;
 	}
 
-	public void addPasswordToHistory(String newPassword, int maxHistory) {
-		List<String> list = getPasswordHistoryList();
-
-		this.passwordHistory = "";
-
-		if (maxHistory > 0) {
-			if (!list.contains(password))
-				list.add(0, password);
-
-			// double check to see if newPassword is not equal to password.
-			if (!list.contains(newPassword))
-				list.add(0, newPassword);
-
-			// "Serialize" the password history
-			int i = 0;
-			for (String password : list) {
-				i++;
-				this.passwordHistory += password + "\n";
-				if (i >= maxHistory) // don't store more than maxHistory
-					// passwords
-					break;
-			}
-		}
-	}
-
-	public int getFailedAttempts() {
+    public int getFailedAttempts() {
 		return failedAttempts;
 	}
 
@@ -628,7 +577,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	 * @param permissions
 	 *            The new set of permission for this user (transient version of
 	 *            user.permissions)
-	 * @param perm
+	 * @param connectPerm
 	 *            The actual UserAccess object owned by either the current user
 	 *            or one of its parent groups.
 	 * @param overrideBoth
@@ -895,7 +844,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
 	}
-	
+
 	@Temporal(TemporalType.DATE)
 	public Date getUsingDynamicReportsDate() {
 		return usingDynamicReportsDate;
