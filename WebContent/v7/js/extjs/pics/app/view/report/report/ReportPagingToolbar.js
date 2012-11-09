@@ -81,7 +81,7 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             scale: 'large',
             scope: me,
             text: '<i class="icon-caret-left icon-small"></i>',
-            tooltip: me.prevText,
+            tooltip: me.prevText
         }, {
             xtype: 'tbseparator',
             height: 28
