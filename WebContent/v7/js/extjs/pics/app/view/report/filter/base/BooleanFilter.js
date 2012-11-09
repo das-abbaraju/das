@@ -15,11 +15,13 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
     },
 
     createCheckbox: function (record) {
-        var value = record.get('not');
+        var value = record.get('value'),
+            checked = value == 'true' ? true : false;
 
         return {
             xtype: 'checkbox',
             boxLabel: 'True',
+            checked: value == 'true' ? true : false,
             inputValue: true,
             name: 'filter_value',
             uncheckedValue: false,
