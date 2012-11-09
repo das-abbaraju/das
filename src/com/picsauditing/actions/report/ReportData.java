@@ -187,7 +187,9 @@ public class ReportData extends PicsActionSupport  {
 	}
 
 	protected void writeJsonError(Exception e) {
-		e.printStackTrace();
+		// TODO decide if this should be logged, but it shouldn't be rather than
+		// output to STDOUT
+		// e.printStackTrace();
 		String message = e.getMessage();
 		if (message == null) {
 			message = e.toString();

@@ -45,6 +45,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected NoteDAO noteDAO;
 	@Autowired
 	private EmailSender emailSender;
+	@Autowired
+	private EmailBuilder emailBuilder;
 
 	public static String SAFETY = "Safety";
 	public static String PRODUCT = "Product";
@@ -330,7 +332,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	private void buildAndSendBillingRiskDowngradeEmail(LowMedHigh currentRisk, LowMedHigh newRisk) {
-		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(159);
 		emailBuilder.setFromAddress(EmailAddressUtils.PICS_IT_TEAM_EMAIL);
 		emailBuilder.setToAddresses(EmailAddressUtils.getBillingEmail(con.getCurrency()));

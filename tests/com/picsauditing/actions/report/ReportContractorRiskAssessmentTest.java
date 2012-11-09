@@ -11,25 +11,18 @@ import javax.persistence.EntityManager;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
@@ -42,21 +35,17 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Report;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.SpringUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ I18nCache.class, ActionContext.class, SpringUtils.class  })
-@PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
-public class ReportContractorRiskAssessmentTest {
-	private ContractorAccount contractorAccount;
+public class ReportContractorRiskAssessmentTest extends PicsActionTest {
 	private ReportContractorRiskAssessment reportContractorRiskAssessment;
 
-	private final String DEFAULT = "DEFAULT";
+	private ContractorAccount contractorAccount;
 
-	@Mock
-	private ActionContext actionContext;
 	@Mock
 	private EmailTemplate emailTemplate;
 	@Mock
@@ -64,30 +53,27 @@ public class ReportContractorRiskAssessmentTest {
 	@Mock
 	private EntityManager entityManager;
 	@Mock
-	private Permissions permissions;
-	@Mock
 	private Report report;
 	@Mock
 	private ReportFilterContractor reportFilterContractor;
 	@Mock
 	private UserDAO userDAO;
+	@Mock
+	private ApplicationContext applicationContext;
+	@Mock
+	private EmailSender emailSender;
+	@Mock
+	private EmailBuilder emailBuilder;
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		// something in initialization is using ReportFilter which calls I18nCache.getInstance() before our own setup
-		PowerMockito.mockStatic(I18nCache.class);
-	}
-	
 	@Before
 	public void setUp() throws Exception {
-		initializeMocks();
-
+		MockitoAnnotations.initMocks(this);
 		reportContractorRiskAssessment = new ReportContractorRiskAssessment();
+		super.setUp(reportContractorRiskAssessment);
 
 		initializeContractorAccount();
 		setCustomPageVariables();
 		setExpectedBehaviors();
-		//stubStaticFilterMethods();
 	}
 
 	@Test
@@ -103,10 +89,8 @@ public class ReportContractorRiskAssessmentTest {
 
 	@Test
 	public void testAcceptWithSafetyType() throws Exception {
-		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
-
-		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.SAFETY);
-		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.accept());
+		reportContractorRiskAssessment.setType(ReportContractorRiskAssessment.SAFETY);
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.accept());
 		Assert.assertEquals(LowMedHigh.Low, contractorAccount.getSafetyRisk());
 		Assert.assertNotNull(contractorAccount.getSafetyRiskVerified());
 
@@ -119,10 +103,8 @@ public class ReportContractorRiskAssessmentTest {
 
 	@Test
 	public void testAcceptWithProductType() throws Exception {
-		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
-
-		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.PRODUCT);
-		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.accept());
+		reportContractorRiskAssessment.setType(ReportContractorRiskAssessment.PRODUCT);
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.accept());
 		// Even though the first product risk question was low, the highest
 		// risks from the two product risk questions was medium
 		Assert.assertEquals(LowMedHigh.Med, contractorAccount.getProductRisk());
@@ -148,10 +130,8 @@ public class ReportContractorRiskAssessmentTest {
 
 	@Test
 	public void testRejectWithSafetyType() throws Exception {
-		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
-
-		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.SAFETY);
-		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.reject());
+		reportContractorRiskAssessment.setType(ReportContractorRiskAssessment.SAFETY);
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.reject());
 		Assert.assertEquals(LowMedHigh.Med, contractorAccount.getSafetyRisk());
 		Assert.assertNotNull(contractorAccount.getSafetyRiskVerified());
 
@@ -164,10 +144,8 @@ public class ReportContractorRiskAssessmentTest {
 
 	@Test
 	public void testRejectWithProductType() throws Exception {
-		ReportContractorRiskAssessment reportContractorRiskAssessmentSpy = Mockito.spy(reportContractorRiskAssessment);
-
-		reportContractorRiskAssessmentSpy.setType(ReportContractorRiskAssessment.PRODUCT);
-		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessmentSpy.reject());
+		reportContractorRiskAssessment.setType(ReportContractorRiskAssessment.PRODUCT);
+		Assert.assertEquals(PicsActionSupport.REDIRECT, reportContractorRiskAssessment.reject());
 
 		Assert.assertEquals(LowMedHigh.High, contractorAccount.getProductRisk());
 		Assert.assertNotNull(contractorAccount.getProductRiskVerified());
@@ -177,16 +155,6 @@ public class ReportContractorRiskAssessmentTest {
 		Mockito.verify(entityManager).persist(Mockito.any(Note.class));
 
 		Assert.assertFalse(reportContractorRiskAssessment.hasActionErrors());
-	}
-
-	private void initializeMocks() {
-		// I18nCache must be initialized first for ReportFilterContractor to initialize
-		PowerMockito.mockStatic(I18nCache.class);
-		MockitoAnnotations.initMocks(this);
-		
-		PowerMockito.mockStatic(ActionContext.class);
-		//PowerMockito.mockStatic(ReportFilterContractor.class);
-		PowerMockito.mockStatic(SpringUtils.class);
 	}
 
 	private void initializeContractorAccount() {
@@ -200,20 +168,22 @@ public class ReportContractorRiskAssessmentTest {
 		Whitebox.setInternalState(reportContractorRiskAssessment, "con", contractorAccount);
 		Whitebox.setInternalState(reportContractorRiskAssessment, "report", report);
 		Whitebox.setInternalState(reportContractorRiskAssessment, "permissions", permissions);
+		Whitebox.setInternalState(reportContractorRiskAssessment, "emailSender", emailSender);
+		Whitebox.setInternalState(reportContractorRiskAssessment, "emailBuilder", emailBuilder);
 		picsTestUtil.autowireEMInjectedDAOs(reportContractorRiskAssessment, entityManager);
 	}
 
 	private void setExpectedBehaviors() throws SQLException {
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
+		
 		Mockito.doNothing().when(contractorAccount).syncBalance();
 
-		Mockito.when(ActionContext.getContext()).thenReturn(actionContext);
-		Mockito.when(actionContext.getSession()).thenReturn(createSessionObject());
 		Mockito.when(emailTemplateDAO.find(Mockito.anyInt())).thenReturn(emailTemplate);
 		Mockito.when(permissions.hasPermission(OpPerms.RiskRank, OpType.View)).thenReturn(true);
 		Mockito.when(report.getPage(false)).thenReturn(new ArrayList<BasicDynaBean>());
 
-		Mockito.when(SpringUtils.getBean("EmailTemplateDAO")).thenReturn(emailTemplateDAO);
-		Mockito.when(SpringUtils.getBean("UserDAO")).thenReturn(userDAO);
+		Mockito.when(applicationContext.getBean("EmailTemplateDAO")).thenReturn(emailTemplateDAO);
+		Mockito.when(applicationContext.getBean("UserDAO")).thenReturn(userDAO);
 	}
 
 	private Map<String, Object> createSessionObject() {
@@ -222,17 +192,6 @@ public class ReportContractorRiskAssessmentTest {
 		return sessions;
 	}
 
-/*	private void stubStaticFilterMethods() {
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultName")).toReturn(DEFAULT);
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultCity")).toReturn(DEFAULT);
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultZip")).toReturn(DEFAULT);
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultAmount")).toReturn(DEFAULT);
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultTaxID")).toReturn(DEFAULT);
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultPerformedBy")).toReturn(DEFAULT);
-		PowerMockito.stub(PowerMockito.method(ReportFilterContractor.class, "getDefaultSelectPerformedBy")).toReturn(
-				DEFAULT);
-	}
-*/
 	private List<ContractorAudit> generatePQFWithRiskAnswers() {
 		List<ContractorAudit> contractorAudits = new ArrayList<ContractorAudit>();
 		ContractorAudit contractorAudit = new ContractorAudit();
