@@ -1,5 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,6 +32,8 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 	protected SelectSQL sql;
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
+	@Deprecated
+	protected SelectSQL legacy;
 
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
@@ -36,7 +41,13 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		getFilter().setPermissions(permissions);
 
 		buildQuery();
-		run(sql);
+
+		List<SelectSQL> unions = new ArrayList<SelectSQL>();
+		if (permissions.isPicsEmployee()) {
+			unions.add(legacy);
+		}
+
+		run(sql, unions);
 
 		if (download) {
 			addExcelColumns();
@@ -71,53 +82,56 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 	}
 
 	public static SelectSQL buildAccountQuery() {
-		SelectSQL sql_new = new SelectSQL("accounts a");
-		sql_new.addJoin("JOIN contractor_info c ON c.id = a.id");
-		sql_new.addJoin("JOIN generalcontractors gc ON gc.subID = c.id");
-		sql_new.addJoin("JOIN accounts op ON op.id = gc.genID");
-		sql_new.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
-		sql_new.addJoin("LEFT JOIN users requestedUser ON requestedUser.id = gc.requestedByUserID");
-		sql_new.addJoin("LEFT JOIN users pics ON pics.id = c.lastContactedByInsideSales");
-		sql_new.addJoin("LEFT JOIN contractor_tag ct ON ct.conID = c.id");
-		sql_new.addJoin("LEFT JOIN operator_tag ot ON ct.tagID = ot.id > 0");
+		SelectSQL sql = new SelectSQL("accounts a");
+		sql.addJoin("JOIN contractor_info c ON c.id = a.id");
+		sql.addJoin("JOIN generalcontractors gc ON gc.subID = c.id");
+		sql.addJoin("JOIN accounts op ON op.id = gc.genID");
+		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
+		sql.addJoin("LEFT JOIN users requestedUser ON requestedUser.id = gc.requestedByUserID");
+		sql.addJoin("LEFT JOIN users pics ON pics.id = c.lastContactedByInsideSales");
+		sql.addJoin("LEFT JOIN contractor_tag ct ON ct.conID = c.id");
+		sql.addJoin("LEFT JOIN operator_tag ot ON ct.tagID = ot.id > 0");
 
-		sql_new.addField("c.id");
-		sql_new.addField("a.name");
-		sql_new.addField("contact.name AS Contact");
-		sql_new.addField("contact.phone AS Phone");
-		sql_new.addField("contact.email AS Email");
-		sql_new.addField("c.taxID AS TaxID");
-		sql_new.addField("a.address AS Address");
-		sql_new.addField("a.city AS City");
-		sql_new.addField("a.countrySubdivision AS CountrySubdivision");
-		sql_new.addField("a.zip AS Zip");
-		sql_new.addField("a.country AS Country");
-		sql_new.addField("op.name AS RequestedBy");
-		sql_new.addField("op.id AS RequestedByID");
-		sql_new.addField("requestedUser.id AS RequestedUserID");
-		sql_new.addField("requestedUser.name AS RequestedUser");
-		sql_new.addField("gc.requestedByUser AS RequestedByUserOther");
-		sql_new.addField("gc.deadline");
-		sql_new.addField("pics.name AS ContactedBy");
-		sql_new.addField("pics.id AS ContactedByID");
-		sql_new.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
-		sql_new.addField("(c.contactCountByEmail + c.contactCountByPhone) AS contactCount");
-		sql_new.addField("c.expiresOnDate AS closedOnDate");
-		sql_new.addField("a.creationDate");
-		sql_new.addField("a.id AS conID");
-		sql_new.addField("a.name AS contractorName");
-		sql_new.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
-		sql_new.addField("'ACC' AS systemType");
+		sql.addField("c.id");
+		sql.addField("a.name");
+		sql.addField("contact.name AS Contact");
+		sql.addField("contact.phone AS Phone");
+		sql.addField("contact.email AS Email");
+		sql.addField("c.taxID AS TaxID");
+		sql.addField("a.address AS Address");
+		sql.addField("a.city AS City");
+		sql.addField("a.countrySubdivision AS CountrySubdivision");
+		sql.addField("a.zip AS Zip");
+		sql.addField("a.country AS Country");
+		sql.addField("op.name AS RequestedBy");
+		sql.addField("op.id AS RequestedByID");
+		sql.addField("requestedUser.id AS RequestedUserID");
+		sql.addField("requestedUser.name AS RequestedUser");
+		sql.addField("gc.requestedByUser AS RequestedByUserOther");
+		sql.addField("gc.deadline");
+		sql.addField("pics.name AS ContactedBy");
+		sql.addField("pics.id AS ContactedByID");
+		sql.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
+		sql.addField("(c.contactCountByEmail + c.contactCountByPhone) AS contactCount");
+		sql.addField("c.expiresOnDate AS closedOnDate");
+		sql.addField("a.creationDate");
+		sql.addField("a.id AS conID");
+		sql.addField("a.name AS contractorName");
+		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
+		sql.addField("'ACC' AS systemType");
+		sql.addField("'' AS matchCount");
+		sql.addField("'' AS Notes");
 
-		sql_new.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL)");
+		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL)");
 
-		sql_new.addGroupBy("c.id, gc.id");
+		sql.addGroupBy("c.id, gc.id");
 
-		return sql_new;
+		return sql;
 	}
 
 	private void buildQuery() {
 		sql = buildAccountQuery();
+		legacy = ReportNewRequestedContractor.buildLegacyQuery();
 
 		addFilterToSQL();
 
@@ -144,6 +158,8 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 			}
 		}
 
+		legacy.addWhere("cr.conID NOT IN (SELECT id FROM accounts WHERE status IN ('Requested', 'Declined')) OR cr.conID IS NULL");
+
 		orderByDefault = "deadline, name";
 	}
 
@@ -152,6 +168,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		if (filterOn(f.getStartsWith())) {
 			sql.addWhere("a.name LIKE '" + f.getStartsWith() + "%'");
+			legacy.addWhere("cr.name LIKE '" + f.getStartsWith() + "%'");
 
 			setFiltered(true);
 		}
@@ -160,11 +177,14 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 			String accountName = f.getAccountName().trim();
 
 			sql.addWhere("a.name LIKE '%" + accountName + "%'");
+			legacy.addWhere("cr.name LIKE '%" + accountName + "%'");
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getRequestStatus())) {
+			legacy.addWhere("cr.status = '" + f.getRequestStatus().toString() + "'");
+
 			if (ContractorRegistrationRequestStatus.Active.toString().equals(getFilter().getRequestStatus())) {
 				sql.addWhere("a.status IN ('Requested', 'Pending') AND c.followupDate IS NULL");
 			} else if (ContractorRegistrationRequestStatus.Hold.toString().equals(getFilter().getRequestStatus())) {
@@ -178,15 +198,23 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 			} else {
 				sql.addWhere("a.status IN ('Denied') AND a.reason IS NOT NULL");
 			}
+
+			setFiltered(true);
 		}
 
 		String locationList = Strings.implodeForDB(f.getLocation(), ",");
 		if (filterOn(locationList)) {
 			sql.addWhere("a.countrySubdivision IN (" + locationList + ") OR a.country IN (" + locationList + ")");
-			sql.addOrderBy("CASE WHEN country IN (" + locationList + ") THEN 1 ELSE 2 END");
-			sql.addOrderBy("CASE WHEN countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END");
-			sql.addOrderBy("country");
-			sql.addOrderBy("countrySubdivision");
+			sql.addOrderBy("CASE WHEN a.country IN (" + locationList + ") THEN 1 ELSE 2 END");
+			sql.addOrderBy("CASE WHEN a.countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END");
+			sql.addOrderBy("a.country");
+			sql.addOrderBy("a.countrySubdivision");
+
+			legacy.addWhere("cr.countrySubdivision IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
+			legacy.addOrderBy("CASE WHEN cr.country IN (" + locationList + ") THEN 1 ELSE 2 END");
+			legacy.addOrderBy("CASE WHEN cr.countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END");
+			legacy.addOrderBy("cr.country");
+			legacy.addOrderBy("cr.countrySubdivision");
 
 			setFiltered(true);
 		}
@@ -195,18 +223,22 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 			String list = Strings.implode(f.getOperator(), ",");
 
 			sql.addWhere("gc.genID IN (" + list + ")");
+			legacy.addWhere("cr.requestedByID IN (" + list + ")");
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getMarketingUsers())) {
 			sql.addWhere("c.lastContactedByInsideSales IN (" + Strings.implode(f.getMarketingUsers()) + ")");
+			legacy.addWhere("cr.lastContactedByInsideSales IN (" + Strings.implode(f.getMarketingUsers()) + ")");
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getFollowUpDate())) {
 			sql.addWhere("c.followupDate IS NULL OR c.followupDate < '"
+					+ DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd") + "'");
+			legacy.addWhere("cr.holdDate IS NULL OR cr.holdDate < '"
 					+ DateBean.format(f.getFollowUpDate(), "yyyy-MM-dd") + "'");
 
 			setFiltered(true);
@@ -216,18 +248,21 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin()) {
 			sql.addWhere(f.getCustomAPI());
+			legacy.addWhere(f.getCustomAPI());
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getExcludeOperators())) {
 			sql.addWhere("gc.genID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
+			legacy.addWhere("cr.requestedByID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
 
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getOperatorTags())) {
 			sql.addWhere(String.format("ot.id IN (%s)", Strings.implode(f.getOperatorTags())));
+			legacy.addWhere(String.format("ot.id IN (%s)", Strings.implode(f.getOperatorTags())));
 
 			setFiltered(true);
 		}
@@ -236,21 +271,29 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 	private void filterOnCreationDate(ReportFilterNewContractor f) {
 		if (filterOn(f.getCreationDate1())) {
 			sql.addWhere(String.format("a.creationDate >= '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+			legacy.addWhere(String.format("cr.creationDate >= '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getCreationDate2())) {
 			sql.addWhere(String.format("a.creationDate < '%s'", DateBean.toDBFormat(f.getCreationDate2())));
+			legacy.addWhere(String.format("cr.creationDate < '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getClosedOnDate1())) {
 			sql.addWhere(String.format("c.expiresOnDate >= '%s'", DateBean.toDBFormat(f.getClosedOnDate1())));
+			legacy.addWhere(String.format("cr.closedOnDate >= '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+
 			setFiltered(true);
 		}
 
 		if (filterOn(f.getClosedOnDate2())) {
 			sql.addWhere(String.format("c.expiresOnDate < '%s'", DateBean.toDBFormat(f.getClosedOnDate2())));
+			legacy.addWhere(String.format("cr.closedOnDate < '%s'", DateBean.toDBFormat(f.getCreationDate1())));
+
 			setFiltered(true);
 		}
 	}

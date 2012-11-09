@@ -63,8 +63,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	}
 
 	@Deprecated
-	private void buildQuery() {
-		sql = new SelectSQL("contractor_registration_request cr");
+	public static SelectSQL buildLegacyQuery() {
+		SelectSQL sql = new SelectSQL("contractor_registration_request cr");
 		sql.addJoin("JOIN accounts op ON op.id = cr.requestedByID");
 		sql.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
 		sql.addJoin("LEFT JOIN users uc ON uc.id = cr.lastContactedBy");
@@ -82,7 +82,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.countrySubdivision AS CountrySubdivision");
 		sql.addField("cr.zip AS Zip");
 		sql.addField("cr.country AS Country");
-		sql.addField("cr.notes AS notes");
 		sql.addField("op.name AS RequestedBy");
 		sql.addField("op.id AS RequestedByID");
 		sql.addField("u.name AS RequestedUser");
@@ -100,10 +99,16 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
+		sql.addField("'CRR' AS systemType");
 
 		sql.addGroupBy("cr.id");
 
-		orderByDefault = "cr.deadline, cr.name";
+		return sql;
+	}
+
+	@Deprecated
+	private void buildQuery() {
+		sql = buildLegacyQuery();
 
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.isCorporate()) {
@@ -126,6 +131,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 			}
 		}
+
+		orderByDefault = "deadline, name";
 	}
 
 	@Deprecated

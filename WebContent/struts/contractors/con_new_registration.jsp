@@ -20,7 +20,13 @@
 	</h1>
 	<s:include value="../actionMessages.jsp" />
 	<pics:permission perm="RequestNewContractor">
-		<a href="ReportNewRequestedContractor.action">&lt;&lt;
+		<pics:toggle name="RequestNewContractorAccount">
+			<s:url action="ReportRegistrationRequests" var="report_registration_requests" />
+		</pics:toggle>
+		<pics:toggleElse>
+			<s:url action="ReportNewRequestedContractor" var="report_registration_requests" />
+		</pics:toggleElse>
+		<a href="${report_registration_requests}">&lt;&lt;
 			<s:text name="RequestNewContractor.link.BackToRequests" />
 		</a>
 	</pics:permission>
