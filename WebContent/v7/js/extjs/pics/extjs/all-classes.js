@@ -66506,7 +66506,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
     items: [{
         xtype: 'button',
         id: 'report_filter_options_collapse',
-        text: '<i class="icon-chevron-left icon-large"></i> Filter',
+        text: '<i class="icon-chevron-left icon-large"></i> Filter'
     }, {
         xtype: 'tbfill'
     }, {
@@ -93227,7 +93227,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '</tpl>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     listeners: {
@@ -93272,7 +93272,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             url: '/SearchBox!json.action',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             }
         }
     },
@@ -93493,8 +93493,10 @@ Ext.define('PICS.view.layout.Menu', {
 
     styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
-
-        if (items === undefined || items.length < 2) {
+        
+        // hack-ish to determine if we should "switch" out the menu separator and favorites label
+        // backend includes at least 4 items (manage reports, legacy, reports, separator, favorites label)
+        if (items === undefined || items.length < 4) {
             return;
         }
 
@@ -93820,7 +93822,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '2 4 0 0',
+                margin: '2 4 0 0'
             },
             dock: 'top',
             items: [{
@@ -93900,7 +93902,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 type: 'hbox',
                 align: 'middle'
             },
-            name: 'filter_title',
+            name: 'filter_title'
         };
     },
 
@@ -94032,7 +94034,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                     '</li>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     minChars: 1,
@@ -94056,7 +94058,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
             url: '',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             },
             pageParam: false,
             startParam: false,
@@ -94206,7 +94208,7 @@ Ext.define('PICS.view.report.settings.SettingsTabs', {
     }, {
         xtype: 'reportsettingscopy'
     }, {
-        xtype: 'reportsettingsshare',
+        xtype: 'reportsettingsshare'
     }, {
         xtype: 'reportsettingsexport'
     }, {
@@ -94236,7 +94238,7 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     height: 324,
     id: 'report_settings_modal',
     items: [{
-        xtype: 'reportsettingstabs',
+        xtype: 'reportsettingstabs'
     }],
     layout: 'fit',
     modal: true,
