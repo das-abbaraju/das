@@ -225,9 +225,7 @@
   -webkit-box-sizing: border-box; }
 
 /* line 13, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3,
-.x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend,
-.x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
+.x-reset html, .x-reset body, .x-reset div, .x-reset dl, .x-reset dt, .x-reset dd, .x-reset ul, .x-reset ol, .x-reset li, .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6, .x-reset pre, .x-reset code, .x-reset form, .x-reset fieldset, .x-reset legend, .x-reset input, .x-reset textarea, .x-reset p, .x-reset blockquote, .x-reset th, .x-reset td {
   margin: 0;
   padding: 0; }
 /* line 18, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
@@ -238,8 +236,7 @@
 .x-reset fieldset, .x-reset img {
   border: 0; }
 /* line 28, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset address, .x-reset caption, .x-reset cite, .x-reset code,
-.x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
+.x-reset address, .x-reset caption, .x-reset cite, .x-reset code, .x-reset dfn, .x-reset em, .x-reset strong, .x-reset th, .x-reset var {
   font-style: normal;
   font-weight: normal; }
 /* line 33, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
@@ -252,8 +249,7 @@
 .x-reset h1, .x-reset h2, .x-reset h3, .x-reset h4, .x-reset h5, .x-reset h6 {
   font-size: 100%; }
 /* line 46, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
-.x-reset q:before,
-.x-reset q:after {
+.x-reset q:before, .x-reset q:after {
   content: ""; }
 /* line 50, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/core/_reset.scss */
 .x-reset abbr, .x-reset acronym {
@@ -1552,32 +1548,7 @@ tr.x-container:before {
   .x-reset .x-html {
     /* Begin bidirectionality settings (do not change) */ }
     /* line 34, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html html,
-    .x-reset .x-html address,
-    .x-reset .x-html blockquote,
-    .x-reset .x-html body,
-    .x-reset .x-html dd,
-    .x-reset .x-html div,
-    .x-reset .x-html dl,
-    .x-reset .x-html dt,
-    .x-reset .x-html fieldset,
-    .x-reset .x-html form,
-    .x-reset .x-html frame, .x-reset .x-html frameset,
-    .x-reset .x-html h1,
-    .x-reset .x-html h2,
-    .x-reset .x-html h3,
-    .x-reset .x-html h4,
-    .x-reset .x-html h5,
-    .x-reset .x-html h6,
-    .x-reset .x-html noframes,
-    .x-reset .x-html ol,
-    .x-reset .x-html p,
-    .x-reset .x-html ul,
-    .x-reset .x-html center,
-    .x-reset .x-html dir,
-    .x-reset .x-html hr,
-    .x-reset .x-html menu,
-    .x-reset .x-html pre {
+    .x-reset .x-html html, .x-reset .x-html address, .x-reset .x-html blockquote, .x-reset .x-html body, .x-reset .x-html dd, .x-reset .x-html div, .x-reset .x-html dl, .x-reset .x-html dt, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html frame, .x-reset .x-html frameset, .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html noframes, .x-reset .x-html ol, .x-reset .x-html p, .x-reset .x-html ul, .x-reset .x-html center, .x-reset .x-html dir, .x-reset .x-html hr, .x-reset .x-html menu, .x-reset .x-html pre {
       display: block; }
     /* line 35, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html li {
@@ -1608,8 +1579,7 @@ tr.x-container:before {
     .x-reset .x-html colgroup {
       display: table-column-group; }
     /* line 45, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td,
-    .x-reset .x-html th {
+    .x-reset .x-html td, .x-reset .x-html th {
       display: table-cell; }
     /* line 46, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html caption {
@@ -1637,16 +1607,7 @@ tr.x-container:before {
       font-size: 1.17em;
       margin: .83em 0; }
     /* line 62, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h4,
-    .x-reset .x-html p,
-    .x-reset .x-html blockquote,
-    .x-reset .x-html ul,
-    .x-reset .x-html fieldset,
-    .x-reset .x-html form,
-    .x-reset .x-html ol,
-    .x-reset .x-html dl,
-    .x-reset .x-html dir,
-    .x-reset .x-html menu {
+    .x-reset .x-html h4, .x-reset .x-html p, .x-reset .x-html blockquote, .x-reset .x-html ul, .x-reset .x-html fieldset, .x-reset .x-html form, .x-reset .x-html ol, .x-reset .x-html dl, .x-reset .x-html dir, .x-reset .x-html menu {
       margin: 1.12em 0; }
     /* line 63, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html h5 {
@@ -1657,49 +1618,29 @@ tr.x-container:before {
       font-size: .75em;
       margin: 1.67em 0; }
     /* line 72, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html h1,
-    .x-reset .x-html h2,
-    .x-reset .x-html h3,
-    .x-reset .x-html h4,
-    .x-reset .x-html h5,
-    .x-reset .x-html h6,
-    .x-reset .x-html b,
-    .x-reset .x-html strong {
+    .x-reset .x-html h1, .x-reset .x-html h2, .x-reset .x-html h3, .x-reset .x-html h4, .x-reset .x-html h5, .x-reset .x-html h6, .x-reset .x-html b, .x-reset .x-html strong {
       font-weight: bolder; }
     /* line 73, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html blockquote {
       margin-left: 40px;
       margin-right: 40px; }
     /* line 78, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html i,
-    .x-reset .x-html cite,
-    .x-reset .x-html em,
-    .x-reset .x-html var,
-    .x-reset .x-html address {
+    .x-reset .x-html i, .x-reset .x-html cite, .x-reset .x-html em, .x-reset .x-html var, .x-reset .x-html address {
       font-style: italic; }
     /* line 83, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html pre,
-    .x-reset .x-html tt,
-    .x-reset .x-html code,
-    .x-reset .x-html kbd,
-    .x-reset .x-html samp {
+    .x-reset .x-html pre, .x-reset .x-html tt, .x-reset .x-html code, .x-reset .x-html kbd, .x-reset .x-html samp {
       font-family: monospace; }
     /* line 84, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html pre {
       white-space: pre; }
     /* line 88, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html button,
-    .x-reset .x-html textarea,
-    .x-reset .x-html input,
-    .x-reset .x-html select {
+    .x-reset .x-html button, .x-reset .x-html textarea, .x-reset .x-html input, .x-reset .x-html select {
       display: inline-block; }
     /* line 89, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html big {
       font-size: 1.17em; }
     /* line 92, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html small,
-    .x-reset .x-html sub,
-    .x-reset .x-html sup {
+    .x-reset .x-html small, .x-reset .x-html sub, .x-reset .x-html sup {
       font-size: .83em; }
     /* line 93, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html sub {
@@ -1711,28 +1652,19 @@ tr.x-container:before {
     .x-reset .x-html table {
       border-spacing: 2px; }
     /* line 98, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html thead,
-    .x-reset .x-html tbody,
-    .x-reset .x-html tfoot {
+    .x-reset .x-html thead, .x-reset .x-html tbody, .x-reset .x-html tfoot {
       vertical-align: middle; }
     /* line 100, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html td,
-    .x-reset .x-html th {
+    .x-reset .x-html td, .x-reset .x-html th {
       vertical-align: inherit; }
     /* line 103, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html s,
-    .x-reset .x-html strike,
-    .x-reset .x-html del {
+    .x-reset .x-html s, .x-reset .x-html strike, .x-reset .x-html del {
       text-decoration: line-through; }
     /* line 104, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html hr {
       border: 1px inset; }
     /* line 109, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol,
-    .x-reset .x-html ul,
-    .x-reset .x-html dir,
-    .x-reset .x-html menu,
-    .x-reset .x-html dd {
+    .x-reset .x-html ol, .x-reset .x-html ul, .x-reset .x-html dir, .x-reset .x-html menu, .x-reset .x-html dd {
       margin-left: 40px; }
     /* line 110, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html ul, .x-reset .x-html menu, .x-reset .x-html dir {
@@ -1741,15 +1673,11 @@ tr.x-container:before {
     .x-reset .x-html ol {
       list-style-type: decimal; }
     /* line 115, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html ol ul,
-    .x-reset .x-html ul ol,
-    .x-reset .x-html ul ul,
-    .x-reset .x-html ol ol {
+    .x-reset .x-html ol ul, .x-reset .x-html ul ol, .x-reset .x-html ul ul, .x-reset .x-html ol ol {
       margin-top: 0;
       margin-bottom: 0; }
     /* line 117, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
-    .x-reset .x-html u,
-    .x-reset .x-html ins {
+    .x-reset .x-html u, .x-reset .x-html ins {
       text-decoration: underline; }
     /* line 118, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
     .x-reset .x-html br:before {
@@ -2182,8 +2110,7 @@ tr.x-container:before {
   line-height: 16px; }
 
 /* line 665, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon button,
-.x-btn-default-small-icon a {
+.x-btn-default-small-icon button, .x-btn-default-small-icon a {
   padding: 0; }
 /* line 669, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon .x-btn-inner {
@@ -2200,8 +2127,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-left button,
-.x-btn-default-small-icon-text-left a {
+.x-btn-default-small-icon-text-left button, .x-btn-default-small-icon-text-left a {
   height: 16px; }
 /* line 690, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-left .x-btn-inner {
@@ -2221,8 +2147,7 @@ tr.x-container:before {
     height: 16px; }
 
 /* line 713, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-small-icon-text-right button,
-.x-btn-default-small-icon-text-right a {
+.x-btn-default-small-icon-text-right button, .x-btn-default-small-icon-text-right a {
   height: 16px; }
 /* line 716, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-small-icon-text-right .x-btn-inner {
@@ -7936,7 +7861,7 @@ textarea.x-form-invalid-field {
       font-weight: bold; }
   /* line 77, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-btn.x-over {
-    background: #f1f1f2;
+    background: #eaeaea;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
     background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
     background-image: -moz-linear-gradient(#ffffff, #eaeaea);
@@ -7944,7 +7869,7 @@ textarea.x-form-invalid-field {
     background-image: linear-gradient(#ffffff, #eaeaea);
     border: 1px solid transparent;
     border-bottom: 0px;
-    border-top: 1px solid white;
+    border-top: 1px solid transparent;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     -ms-border-radius: 0px;
@@ -7954,8 +7879,7 @@ textarea.x-form-invalid-field {
     #site_menu .x-btn.x-over .x-btn-inner {
       color: #c66603; }
   /* line 93, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-  #site_menu .x-btn.x-menu-active,
-  #site_menu .x-btn.x-pressed {
+  #site_menu .x-btn.x-menu-active, #site_menu .x-btn.x-pressed {
     background: #f1f1f2;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
     background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
@@ -7971,8 +7895,7 @@ textarea.x-form-invalid-field {
     border-top: 1px solid #eaeaea;
     border-bottom: 0px; }
     /* line 102, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-    #site_menu .x-btn.x-menu-active .x-btn-inner,
-    #site_menu .x-btn.x-pressed .x-btn-inner {
+    #site_menu .x-btn.x-menu-active .x-btn-inner, #site_menu .x-btn.x-pressed .x-btn-inner {
       color: #c66603; }
   /* line 108, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   #site_menu .x-toolbar-separator-horizontal {
@@ -8000,9 +7923,10 @@ textarea.x-form-invalid-field {
   -o-border-radius: 15px;
   border-radius: 15px;
   height: 25px !important;
+  line-height: 20px;
   padding: 0px 7px; }
 
-/* line 143, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 144, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
 .site-menu-search-list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
@@ -8010,7 +7934,7 @@ textarea.x-form-invalid-field {
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 148, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 149, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list li:first-child {
     -moz-border-radius-topleft: 4px;
     -webkit-border-top-left-radius: 4px;
@@ -8018,7 +7942,7 @@ textarea.x-form-invalid-field {
     -moz-border-radius-topright: 4px;
     -webkit-border-top-right-radius: 4px;
     border-top-right-radius: 4px; }
-  /* line 154, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 155, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list li:last-child {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-bottom-left-radius: 4px;
@@ -8026,13 +7950,13 @@ textarea.x-form-invalid-field {
     -moz-border-radius-bottomright: 4px;
     -webkit-border-bottom-right-radius: 4px;
     border-bottom-right-radius: 4px; }
-  /* line 160, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 161, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .even {
     background: #f1f1f2; }
-  /* line 165, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 166, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .x-boundlist-item {
     border: 1px solid transparent; }
-  /* line 170, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 171, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .x-boundlist-item-over {
     background: #a84d10;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
@@ -8044,40 +7968,34 @@ textarea.x-form-invalid-field {
     border-bottom: 1px solid #a84d10;
     border-top: 1px solid #c66603;
     color: white; }
-  /* line 180, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 181, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .search-item {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-    /* line 186, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 187, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item div {
       clear: both; }
-    /* line 191, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 192, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item em {
       font-weight: bold; }
-    /* line 197, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-    .site-menu-search-list .search-item .name,
-    .site-menu-search-list .search-item .company {
+    /* line 198, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    .site-menu-search-list .search-item .name, .site-menu-search-list .search-item .company {
       float: left;
       width: 175px; }
-    /* line 203, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 204, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item .id {
       float: right; }
-    /* line 208, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+    /* line 209, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
     .site-menu-search-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 215, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+  /* line 216, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
   .site-menu-search-list .more-results {
     color: #333333;
     font-weight: bold; }
 
-/* line 222, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
-#user_menu .icon-cog {
-  font-size: 16px;
-  margin: 0px 0px 0px 10px; }
-
-/* line 228, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
+/* line 223, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/layout/menu/_menu.scss */
 .x-menu-overflow .icon-cog {
   margin: 0px 0px 0px 5px; }
 
@@ -8482,11 +8400,13 @@ textarea.x-form-invalid-field {
   -o-border-radius: 0px;
   border-radius: 0px; }
 
-/* line 13, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
-#report_filter_toolbar {
+/* line 14, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+#report_filter_toolbar,
+#report_filter_toolbar-innerCt {
   background: #454545; }
-  /* line 17, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
-  #report_filter_toolbar .x-btn {
+  /* line 18, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  #report_filter_toolbar .x-btn,
+  #report_filter_toolbar-innerCt .x-btn {
     background: none;
     border: 0px;
     -webkit-border-radius: 0px;
@@ -8494,17 +8414,20 @@ textarea.x-form-invalid-field {
     -ms-border-radius: 0px;
     -o-border-radius: 0px;
     border-radius: 0px; }
-    /* line 23, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
-    #report_filter_toolbar .x-btn span {
+    /* line 24, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+    #report_filter_toolbar .x-btn span,
+    #report_filter_toolbar-innerCt .x-btn span {
       color: #cccccc;
       font-size: 11px;
       font-weight: bold; }
-  /* line 33, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
-  #report_filter_toolbar .x-btn.x-over span {
+  /* line 34, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+  #report_filter_toolbar .x-btn.x-over span,
+  #report_filter_toolbar-innerCt .x-btn.x-over span {
     color: white; }
 
-/* line 40, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
-#report_filter_toolbar > div {
+/* line 42, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/filter/_filter-toolbar.scss */
+#report_filter_toolbar > div,
+#report_filter_toolbar-innerCt {
   border-bottom: 1px solid #333333 !important;
   border-top: 1px solid #333333 !important; }
 
@@ -8703,60 +8626,32 @@ textarea.x-form-invalid-field {
   /* line 55, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .paging-toolbar .x-form-trigger {
     height: 24px; }
-/* line 65, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
-#report_data .refresh,
-#report_data .page-first,
-#report_data .page-prev,
-#report_data .page-next,
-#report_data .page-last {
-  background: none;
-  border: 0px;
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -o-border-radius: 0px;
-  border-radius: 0px; }
-  /* line 71, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
-  #report_data .refresh span,
-  #report_data .page-first span,
-  #report_data .page-prev span,
-  #report_data .page-next span,
-  #report_data .page-last span {
-    color: #f1f1f2;
-    margin: 0px 5px;
-    padding: 2px 0px 0px !important; }
-/* line 79, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
-#report_data .refresh span {
-  font-size: 18px;
-  margin: 0px 5px 0px 0px; }
-/* line 91, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
-#report_data .refresh.x-over span,
-#report_data .page-first.x-over span,
-#report_data .page-prev.x-over span,
-#report_data .page-next.x-over span,
-#report_data .page-last.x-over span {
+/* line 63, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .paging-icon span {
+  color: #f1f1f2;
+  font-size: 18px; }
+/* line 72, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .paging-icon.over span {
   color: white; }
-/* line 103, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
-#report_data .refresh.x-disabled span,
-#report_data .page-first.x-disabled span,
-#report_data .page-prev.x-disabled span,
-#report_data .page-next.x-disabled span,
-#report_data .page-last.x-disabled span {
+/* line 80, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .paging-icon.pressed span {
+  color: white; }
+/* line 88, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+#report_data .paging-icon.x-disabled span {
   color: #96ccff !important; }
-/* line 109, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+/* line 94, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
 #report_data .add-column {
   margin-left: 10px; }
-  /* line 113, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 98, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column em {
     background-image: url("../images/button/s-arrow.gif"); }
-  /* line 118, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 103, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column button span {
     font-size: 11px;
     line-height: 24px !important; }
-  /* line 124, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
+  /* line 109, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/report/report/_report-paging-toolbar.scss */
   #report_data .add-column .icon-plus {
     color: #2caf2c;
-    margin-right: 5px;
     position: relative;
     top: 1px; }
 
@@ -9593,14 +9488,20 @@ textarea.x-form-invalid-field {
   -moz-box-shadow: #333333 0px 0px 3px !important;
   box-shadow: #333333 0px 0px 3px !important; }
 
-/* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_tooltip.scss */
+/* line 1, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_tooltip.scss */
 .x-tip {
   background: #333;
   border: 1px solid #999;
   padding: 5px 10px !important; }
 
-/* line 9, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_tooltip.scss */
+/* line 8, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_tooltip.scss */
 .x-tip-body {
+  border: 1px solid #333;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
   color: #fff; }
 
 /* line 2, C:/Users/JRoos/git/PICSORG/WebContent/v7/js/extjs/pics/resources/sass/my-ext-theme/widget/_triggerfield.scss */

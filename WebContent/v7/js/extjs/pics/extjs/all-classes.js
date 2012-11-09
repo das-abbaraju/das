@@ -66514,7 +66514,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Filter'
+        text: '<i class="icon-plus icon-large"></i> Add Filter'
     }],
     layout: {
         type: 'hbox',
@@ -87851,45 +87851,51 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Column'
+        text: '<i class="icon-plus icon-large"></i> Add Column'
     }],
 
     getPagingItems: function() {
         var me = this;
 
         return [{
-            cls: 'refresh',
+            cls: 'paging-icon',
             height: 22,
             itemId: 'refresh',
+            overCls: 'paging-icon-over',
             overflowText: me.refreshText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-refresh icon-large"></i>',
             tooltip: me.refreshText
-        }, {
+        },{
             xtype: 'tbseparator',
             height: 28
         }, {
-            cls: 'page-first',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveFirst,
-            height: 16,
+            height: 22,
             itemId: 'first',
+            overCls: 'paging-icon-over',
             overflowText: me.firstText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-step-backward icon-large"></i>',
+            text: '<i class="icon-step-backward icon-small"></i>',
             tooltip: me.firstText
         }, {
-            cls: 'page-prev',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.movePrevious,
-            height: 16,
+            height: 22,
             itemId: 'prev',
+            overCls: 'paging-icon-over',
             overflowText: me.prevText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-caret-left icon-large"></i>',
+            text: '<i class="icon-caret-left icon-small"></i>',
             tooltip: me.prevText
         }, {
             xtype: 'tbseparator',
@@ -87925,26 +87931,30 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             xtype: 'tbseparator',
             height: 28
         }, {
-            cls: 'page-next',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveNext,
-            height: 16,
+            height: 22,
             itemId: 'next',
+            overCls: 'paging-icon-over',
             overflowText: me.nextText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-caret-right icon-large"></i>',
+            text: '<i class="icon-caret-right icon-small"></i>',
             tooltip: me.nextText
         }, {
-            cls: 'page-last',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveLast,
-            height: 16,
+            height: 22,
             itemId: 'last',
+            overCls: 'paging-icon-over',
             overflowText: me.lastText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-step-forward icon-large"></i>',
+            text: '<i class="icon-step-forward icon-small"></i>',
             tooltip: me.lastText
         }, {
             xtype: 'tbseparator',
@@ -93457,7 +93467,7 @@ Ext.define('PICS.view.layout.Menu', {
 
     addUserMenu: function (user_menu, menu_items) {
         user_menu.padding = '0px 20px 0px 20px';
-        user_menu.text += '<i class="icon-cog icon-large"></i>';
+        user_menu.text += ' <i class="icon-cog icon-large"></i>';
 
         menu_items.push(user_menu);
     },
@@ -93468,7 +93478,13 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         dashboard_menu.height = 50;
-        dashboard_menu.icon = '/v7/img/logo.svg';
+
+        if (Ext.supports.Svg) {
+            dashboard_menu.icon = '/v7/img/logo.svg';
+        } else {
+            dashboard_menu.icon = '/v7/img/logo.png';
+        }
+
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
     },
@@ -100034,7 +100050,7 @@ Ext.define('PICS.controller.report.Report', {
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
                         html: 'to My Reports in Manage Reports.',
-                        title: 'Report Saved',
+                        title: 'Report Saved'
                     });
 
                     alert_message.show();
