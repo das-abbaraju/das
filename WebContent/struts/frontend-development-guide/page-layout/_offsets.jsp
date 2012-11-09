@@ -12,21 +12,38 @@
     
     <div class="row">
         <div class="span5 offset2">
-            <div class="alert alert-block">
-                <h4>Warning!</h4>
-                Best check yo self, you're not looking too good. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+            <div class="alert alert-info alert-block">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                
+                <h4>You don't have any favorite reports.</h4>
+                <p>
+                    For quick access to the reports you use most, select the star icon or choose "Favorite" in the report options in My Reports.
+                </p>
             </div>
         </div>
     </div>
     
+    <div class="example">
+
+        <p>
+            <strong>This example was taken from <code>/struts/report/manage-report/_favorites-list.jsp</code> with a few tweaks:</strong>
+        </p>
+            
 <pre class="prettyprint linenums">
 &lt;div class="row"&gt;
     &lt;div class="span5 offset2"&gt;
-        &lt;div class="alert alert-block"&gt;
-            &lt;h4&gt;Warning!&lt;/h4&gt;
-            Best check yo self, you're not looking too good. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+        &lt;div class="alert alert-info alert-block"&gt;
+            &lt;button type="button" class="close" data-dismiss="alert"&gt;×&lt;/button&gt;
+            
+            &lt;h4&gt;You don't have any favorite reports.&lt;/h4&gt;
+            &lt;p&gt;
+                For quick access to the reports you use most, select the star icon or choose "Favorite" in the report options in My Reports.
+            &lt;/p&gt;
         &lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
 </pre>
+    
+    </div>
+
 </section>

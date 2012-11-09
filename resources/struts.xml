@@ -1173,14 +1173,20 @@
 
 		<action name="FrontendDevelopmentGuide" class="com.picsauditing.actions.FrontendDevelopmentGuide">
 			<result>/struts/frontend-development-guide/dashboard.jsp</result>
+			
+			<result name="technology">/struts/frontend-development-guide/technology/technology.jsp</result>
+			<result name="file-structure">/struts/frontend-development-guide/file-structure/file-structure.jsp</result>
+			<result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
+			<result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
+			<result name="component">/struts/frontend-development-guide/component/components.jsp</result>
+			
 			<result name="alerts">/struts/frontend-development-guide/alerts.jsp</result>
 			<result name="buttons">/struts/frontend-development-guide/buttons.jsp</result>
 			<result name="forms">/struts/frontend-development-guide/forms.jsp</result>
 			<result name="pills">/struts/frontend-development-guide/pills.jsp</result>
-			<result name="conventions">/struts/frontend-development-guide/conventions/conventions.jsp</result>
-			<result name="file-structure">/struts/frontend-development-guide/file-structure/file-structure.jsp</result>
-			<result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
-			<result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
+			<result name="css-javascript-conventions">/struts/frontend-development-guide/conventions/css-javascript/conventions.jsp</result>
+			<result name="html-conventions">/struts/frontend-development-guide/conventions/html/conventions.jsp</result>
+			<result name="file-structure-conventions">/struts/frontend-development-guide/conventions/file-structure/conventions.jsp</result>
 		</action>
 		
 		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">

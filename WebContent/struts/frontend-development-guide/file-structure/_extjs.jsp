@@ -10,8 +10,12 @@
         ExtJS4 is a large MV* Javascript framework that is used for Dynamic Reports.  ExtJS4 works very different from the typical web stack.  It is responsible for page layout, interaction and styles, but also handles client side database storage.
     </p>
     
+    <div class="example">
+    
 <pre class="prettyprint linenums lang-sh">
 # extjs application for dynamic reports
 js/extjs/pics
 </pre>
+    
+    </div>
 </section>

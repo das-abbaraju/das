@@ -10,22 +10,32 @@
         This is the standard header that is to be include on every page.  The title is mandatory. The subtitle is optional.
     </p>
     
+    <div class="example">
+    
+        <p>
+            <strong>Header with title only:</strong>
+        </p>
+        
         <s:include value="/struts/layout/_page-header.jsp">
-        <s:param name="title">You are the sunshine of my life</s:param>
-        <s:param name="subtitle">You are the apple of my eye</s:param>
-    </s:include>
+            <s:param name="title">If they say, why, why? Tell 'em that is human nature</s:param>
+        </s:include>
     
 <pre class="prettyprint linenums">
 &lt;s:include value="/struts/layout/_page-header.jsp"&gt;
-    &lt;s:param name="title"&gt;You are the sunshine of my life&lt;/s:param&gt;
-    &lt;s:param name="subtitle"&gt;You are the apple of my eye&lt;/s:param&gt;
+    &lt;s:param name="title"&gt;If they say, why, why? Tell 'em that is human nature&lt;/s:param&gt;
 &lt;/s:include&gt;
 </pre>
-    
-    <s:include value="/struts/layout/_page-header.jsp">
-        <s:param name="title">Ma cherie amour, distant as the Milky Way</s:param>
-        <s:param name="subtitle">Ma cherie amour, pretty little one that I adore</s:param>
-    </s:include>
+
+        <hr />
+
+        <p>
+            <strong>Header with title and sub-title:</strong>
+        </p>
+        
+        <s:include value="/struts/layout/_page-header.jsp">
+            <s:param name="title">Ma cherie amour, distant as the Milky Way</s:param>
+            <s:param name="subtitle">Ma cherie amour, pretty little one that I adore</s:param>
+        </s:include>
     
 <pre class="prettyprint linenums">
 &lt;s:include value="/struts/layout/_page-header.jsp"&gt;
@@ -34,13 +44,5 @@
 &lt;/s:include&gt;
 </pre>
 
-<s:include value="/struts/layout/_page-header.jsp">
-        <s:param name="title">If they say, why, why? Tell 'em that is human nature</s:param>
-    </s:include>
-    
-<pre class="prettyprint linenums">
-&lt;s:include value="/struts/layout/_page-header.jsp"&gt;
-    &lt;s:param name="title"&gt;If they say, why, why? Tell 'em that is human nature&lt;/s:param&gt;
-&lt;/s:include&gt;
-</pre>
+    </div>
 </section>

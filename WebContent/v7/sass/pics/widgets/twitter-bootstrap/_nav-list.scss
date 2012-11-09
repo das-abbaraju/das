@@ -12,12 +12,14 @@
 	
 	li:first-child a
 	{
-		@include border-radius(6px 6px 0 0);
+		@include border-top-left-radius(6px);
+		@include border-top-right-radius(6px);
 	}
 	
 	li:last-child a
 	{
-		@include border-radius(0 0 6px 6px);
+		@include border-bottom-left-radius(6px);
+		@include border-bottom-right-radius(6px);
 	}
 	
 	.icon-chevron-right

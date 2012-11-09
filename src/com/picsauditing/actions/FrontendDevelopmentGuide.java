@@ -8,6 +8,27 @@ public class FrontendDevelopmentGuide extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	public String technology() {
+		return "technology";
+	}
+
+	public String file_structure() {
+		return "file-structure";
+	}
+
+	public String style_guide() {
+		return "style-guide";
+	}
+
+	public String page_layout() {
+		return "page-layout";
+	}
+
+	public String component() {
+		return "component";
+	}
+
+
 	public String alerts() {
 		return "alerts";
 	}
@@ -24,19 +45,15 @@ public class FrontendDevelopmentGuide extends PicsActionSupport {
 		return "pills";
 	}
 
-	public String conventions() {
-		return "conventions";
+	public String css_javascript_conventions() {
+		return "css-javascript-conventions";
 	}
 
-	public String file_structure() {
-		return "file-structure";
+	public String html_conventions() {
+		return "html-conventions";
 	}
 
-	public String page_layout() {
-		return "page-layout";
-	}
-
-	public String style_guide() {
-		return "style-guide";
+	public String file_structure_conventions() {
+		return "file-structure-conventions";
 	}
 }

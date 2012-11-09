@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:include value="/struts/layout/_page-header.jsp">
-    <s:param name="title">Conventions</s:param>
+    <s:param name="title">Components</s:param>
 </s:include>
 
 <s:include value="/struts/frontend-development-guide/_menu.jsp" />
@@ -12,14 +12,12 @@
         <s:include value="_menu.jsp" />
     </div>
     <div class="span9">
-        <s:include value="_folders.jsp" />
+        <s:include value="_alerts.jsp" />
         
-        <s:include value="_files.jsp" />
+        <s:include value="_buttons.jsp" />
         
-        <s:include value="_html.jsp" />
+        <s:include value="_forms.jsp" />
         
-        <s:include value="_css.jsp" />
-        
-        <s:include value="_js.jsp" />
+        <s:include value="_pills.jsp" />
     </div>
 </div>
