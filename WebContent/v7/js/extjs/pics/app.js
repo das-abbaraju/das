@@ -52,7 +52,12 @@ Ext.application({
         'report.SettingsModal'
     ],
 
-    launch: function() {
+    init: function () {
+        // Override CSS3BorderRadius value which caused render problems in <IE9 when false.
+        Ext.supports['CSS3BorderRadius'] = true;
+    },
+
+    launch: function () {
         var that = this;
 
         // save reference to application
