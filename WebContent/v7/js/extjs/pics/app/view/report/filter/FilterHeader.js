@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
     items: [{
         xtype: 'button',
         id: 'report_filter_options_collapse',
-        text: '<i class="icon-chevron-left icon-large"></i> Filter',
+        text: '<i class="icon-chevron-left icon-large"></i> Filter'
     }, {
         xtype: 'tbfill'
     }, {

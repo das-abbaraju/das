@@ -57,7 +57,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '</tpl>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     listeners: {
@@ -102,7 +102,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             url: '/SearchBox!json.action',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             }
         }
     },

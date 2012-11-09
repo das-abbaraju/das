@@ -206,8 +206,10 @@ Ext.define('PICS.view.layout.Menu', {
 
     styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
-
-        if (items === undefined || items.length < 2) {
+        
+        // hack-ish to determine if we should "switch" out the menu separator and favorites label
+        // backend includes at least 4 items (manage reports, legacy, reports, separator, favorites label)
+        if (items === undefined || items.length < 4) {
             return;
         }
 

@@ -33,9 +33,23 @@ $report_filter_options_header_add_filter_icon_plus_text_color: #2caf2c;
 		.icon-plus
 		{
 			color: $report_filter_options_header_add_filter_icon_plus_text_color;
-			margin-right: 5px;
+			margin-right: 4px;
 			position: relative;
 			top: 1px;
+		}
+	}
+}
+
+.lt-ie9
+{
+	#report_filter_options_header
+	{
+		.add-filter
+		{
+			.icon-plus
+			{
+				margin-right: 0;
+			}
 		}
 	}
 }

@@ -35,6 +35,7 @@
         </s:else>
         
         <link rel="stylesheet" type="text/css" href="${css_dir}/font-awesome.css?v=${version}" />
+        <!--[if lt IE 8]><link rel="stylesheet" href="${css_dir}/font-awesome-ie7.css"><![endif]-->
 		
 		<decorator:head />
 	</head>

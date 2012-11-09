@@ -108,8 +108,23 @@ $report_data_paging_toolbar_add_column_icon_plus_text_color: #2caf2c;
 		.icon-plus
 		{
 			color: $report_data_paging_toolbar_add_column_icon_plus_text_color;
+			margin-right: 4px;
 			position: relative;
 			top: 1px;
+		}
+	}
+}
+
+.lt-ie9
+{
+	#report_data
+	{
+		.add-column
+		{
+			.icon-plus
+			{
+				margin-right: 0;
+			}
 		}
 	}
 }

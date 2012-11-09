@@ -52,6 +52,7 @@ $site_menu_search_more_results_text_color: #333;
 {
 	background: $site_menu_background_color;
     @include background-image(linear-gradient($site_menu_gradient_color_top, $site_menu_gradient_color_bottom));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffeaeaea', GradientType=0);
     @include box-shadow($site_menu_box_shadow_color 0px 2px 2px 0px);
     
     .x-btn-arrow

@@ -10,7 +10,7 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     height: 324,
     id: 'report_settings_modal',
     items: [{
-        xtype: 'reportsettingstabs',
+        xtype: 'reportsettingstabs'
     }],
     layout: 'fit',
     modal: true,
