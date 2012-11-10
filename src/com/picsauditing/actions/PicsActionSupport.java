@@ -187,9 +187,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private String determinePicsEnvironment() {
 		
 		// The (new) official way to determine the enviroment is using -Dpics.env=something
-		String env = System.getProperty("pics.env").trim().toLowerCase();
+		String env = System.getProperty("pics.env");
 		if (Strings.isNotEmpty(env)) {
-			return env;
+			return env.trim().toLowerCase();
 		}
 		
 		// In the absense of -Dpics.env, see if there is an explicit subdomain mentioned in the URL that can tell us 
