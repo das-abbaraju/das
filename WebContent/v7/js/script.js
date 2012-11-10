@@ -1,4 +1,4 @@
-/*! Picsorganizer - v0.1.0 - 2012-11-08
+/*! Picsorganizer - v0.1.0 - 2012-11-09
 * http://www.picsorganizer.com/
 * Copyright (c) 2012 Carey Hinoki; Licensed MIT */
 

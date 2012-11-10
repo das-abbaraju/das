@@ -179,6 +179,10 @@
 			<result>struts/about-pics.jsp</result>
 		</action>
 
+		<action name="Tutorial" class="com.picsauditing.actions.Tutorial">
+			<result>/struts/tutorial/navigation-menu.jsp</result>
+		</action>
+		
 		<action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
 			<result>struts/forms/manage_resources.jsp</result>
 		</action>
