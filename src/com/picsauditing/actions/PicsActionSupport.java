@@ -185,23 +185,27 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 	
 	private String determinePicsEnvironment() {
-		Pattern p = Pattern.compile("(alpha|config|beta|stable|qa-beta|qa-stable|localhost).*");
-		Matcher m;
 		
 		// The (new) official way to determine the enviroment is using -Dpics.env=something
-		String env = System.getProperty("pics.env");
+		String env = System.getProperty("pics.env").trim().toLowerCase();
 		if (Strings.isNotEmpty(env)) {
-			m = p.matcher(env.trim().toLowerCase());
-			if (m.matches()) {
-				return m.group(1);
-			}
+			return env;
 		}
 		
 		// In the absense of -Dpics.env, see if there is an explicit subdomain mentioned in the URL that can tell us 
+		Pattern p = Pattern.compile("(demo[0-9]+|alpha|config|beta|stable|old|qa-beta|qa-stable)\\..*");
+		Matcher m;
 		m = p.matcher(getServerName());
 		if (m.matches()) {
 			return m.group(1);
 		}
+
+		// "localhost" can be "localhost", "localhost:123456", "foo.bar.baz.local", or "foo.bar.baz.local:123456"  
+		p = Pattern.compile("(localhost|.*\\.local)(:[0-9]+)?");
+		m = p.matcher(getServerName());
+		if (m.matches()) {
+			return "localhost";
+		}		
 		
 		// The URL must be WWW (or an IP address), so check the beta-audience level to see if we must have been redirected to beta
 		if (isBetaVersion()) {
