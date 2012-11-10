@@ -16,7 +16,7 @@ Ext.define('PICS.view.report.settings.SettingsTabs', {
     }, {
         xtype: 'reportsettingscopy'
     }, {
-        xtype: 'reportsettingsshare',
+        xtype: 'reportsettingsshare'
     }, {
         xtype: 'reportsettingsexport'
     }, {

@@ -1,119 +1,54 @@
 package com.picsauditing.actions.report;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.dao.ReportDAO;
+import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.model.report.ReportModel;
-import com.picsauditing.report.access.ReportUtil;
-import com.picsauditing.report.models.ModelType;
-import com.picsauditing.util.SpringUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ I18nCache.class, ServletActionContext.class, ActionContext.class, SpringUtils.class,
-		LoggerFactory.class, ReportUtil.class })
-@PowerMockIgnore({ "org.apache.commons.logging.*", "org.apache.xerces.*" })
-public class ReportDataTest {
+public class ReportDataTest extends PicsActionTest {
 	private ReportData reportAction;
+
 	private Report report;
-	private Map<String, Object> session;
-
-	private Permissions permissions;
 	@Mock
-	private HttpServletRequest request;
+	private ReportDAO reportDao;
 	@Mock
-	private ActionContext actionContext;
-
-	// PowerMocked in setUpBeforeClass
-	private static Logger logger;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		logger = PowerMockito.mock(Logger.class);
-		PowerMockito.mockStatic(LoggerFactory.class);
-		PowerMockito.when(LoggerFactory.getLogger(ReportDynamic.class)).thenReturn(logger);
-	}
+	private ReportModel reportModel;
+	@Mock
+	private ReportUserDAO reportUserDao;
 
 	@Before
 	public void setUp() throws Exception {
-		PowerMockito.mockStatic(I18nCache.class);
-
 		MockitoAnnotations.initMocks(this);
+		reportAction = new ReportData();
+		super.setUp(reportAction);
 
-		PowerMockito.mockStatic(SpringUtils.class);
-		PowerMockito.mockStatic(ActionContext.class);
-
-		PowerMockito.mockStatic(ServletActionContext.class);
-		when(ServletActionContext.getRequest()).thenReturn(request);
-
-		session = new HashMap<String, Object>();
-		when(actionContext.getSession()).thenReturn(session);
-		when(ActionContext.getContext()).thenReturn(actionContext);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(reportAction, this);
 
 		report = new Report();
 		report.setId(123);
 
-		reportAction = new ReportData();
 		reportAction.setReport(report);
-		permissions = EntityFactory.makePermission();
-		Whitebox.setInternalState(reportAction, "permissions", permissions);
 	}
 
 	@Test
-	@Ignore
-	public void testData_JsonResult() throws Exception {
-		report.setModelType(ModelType.Contractors);
-
-		String strutsResult = reportAction.execute();
-
-		assertEquals(ReportDynamic.JSON, strutsResult);
-	}
-
-	@Test
-	@Ignore
-	public void testData_ReportFailsValidation() throws Exception {
-		Report report = new Report();
+	public void testReport_NullModelTypeFailsValidationSetsSuccessToFalse() throws Exception {
 		report.setModelType(null);
-		try {
-			ReportModel.validate(report);
-			// Should always throw before this line
-			fail();
-		} catch (ReportValidationException rve) {
-		}
 
-		String strutsResult = reportAction.execute();
+		String strutsResult = reportAction.report();
+
 		JSONObject json = reportAction.getJson();
-
-		assertFalse((Boolean) json.get("success"));
+		assertThat((Boolean) json.get("success"), is(equalTo(Boolean.FALSE)));
 		assertEquals(ReportDynamic.JSON, strutsResult);
 	}
 }

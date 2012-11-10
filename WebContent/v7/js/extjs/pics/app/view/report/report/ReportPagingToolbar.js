@@ -36,45 +36,51 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Column'
+        text: '<i class="icon-plus icon-large"></i> Add Column'
     }],
 
     getPagingItems: function() {
         var me = this;
 
         return [{
-            cls: 'refresh',
+            cls: 'paging-icon',
             height: 22,
             itemId: 'refresh',
+            overCls: 'paging-icon-over',
             overflowText: me.refreshText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-refresh icon-large"></i>',
             tooltip: me.refreshText
-        }, {
+        },{
             xtype: 'tbseparator',
             height: 28
         }, {
-            cls: 'page-first',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveFirst,
-            height: 16,
+            height: 22,
             itemId: 'first',
+            overCls: 'paging-icon-over',
             overflowText: me.firstText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-step-backward icon-large"></i>',
+            text: '<i class="icon-step-backward icon-small"></i>',
             tooltip: me.firstText
         }, {
-            cls: 'page-prev',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.movePrevious,
-            height: 16,
+            height: 22,
             itemId: 'prev',
+            overCls: 'paging-icon-over',
             overflowText: me.prevText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-caret-left icon-large"></i>',
+            text: '<i class="icon-caret-left icon-small"></i>',
             tooltip: me.prevText
         }, {
             xtype: 'tbseparator',
@@ -110,26 +116,30 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             xtype: 'tbseparator',
             height: 28
         }, {
-            cls: 'page-next',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveNext,
-            height: 16,
+            height: 22,
             itemId: 'next',
+            overCls: 'paging-icon-over',
             overflowText: me.nextText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-caret-right icon-large"></i>',
+            text: '<i class="icon-caret-right icon-small"></i>',
             tooltip: me.nextText
         }, {
-            cls: 'page-last',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveLast,
-            height: 16,
+            height: 22,
             itemId: 'last',
+            overCls: 'paging-icon-over',
             overflowText: me.lastText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-step-forward icon-large"></i>',
+            text: '<i class="icon-step-forward icon-small"></i>',
             tooltip: me.lastText
         }, {
             xtype: 'tbseparator',

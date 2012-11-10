@@ -16,9 +16,9 @@
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 
-                <h4>You have no reports.</h4>
+                <h4>You don't have any reports.</h4>
                 <p>
-                    BANANA SUPERMAN
+                    Search for new reports, duplicate others' reports, or ask someone to share some of their reports with you.
                 </p>
             </div>
         </div>

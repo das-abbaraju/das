@@ -3,7 +3,6 @@ package com.picsauditing.toggle;
 import groovy.lang.Binding;
 import groovy.lang.Script;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -40,22 +39,6 @@ public abstract class FeatureToggleExpressions extends Script {
 		}
 	}
 
-	public boolean userIsMemberOf(String userGroup) {
-		if (userGroup == null) {
-			return false;
-		}
-		Permissions permissions = permissions();
-		if (permissions == null) {
-			return false;
-		}
-		for (String group : permissions.getGroupNames()) {
-			if (userGroup.equalsIgnoreCase(group)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public boolean userIsMemberOf(Integer userGroup) {
 		if (userGroup == null) {
 			return false;
@@ -64,7 +47,7 @@ public abstract class FeatureToggleExpressions extends Script {
 		if (permissions == null) {
 			return false;
 		}
-		for (Integer group : permissions.getGroupIds()) {
+		for (Integer group : permissions.getAllInheritedGroupIds()) {
 			if (userGroup.equals(group)) {
 				return true;
 			}
@@ -72,7 +55,7 @@ public abstract class FeatureToggleExpressions extends Script {
 		return false;
 	}
 
-	public <E> boolean userIsMemberOfAny(List<E> userGroups) {
+	public boolean userIsMemberOfAny(List<Integer> userGroups) {
 		if (userGroups == null || userGroups.isEmpty()) {
 			return false;
 		}
@@ -81,19 +64,17 @@ public abstract class FeatureToggleExpressions extends Script {
 		if (permissions == null) {
 			return false;
 		}
-		Collection<String> groupNames = permissions.getGroupNames();
-		Set<Integer> groupIds = permissions.getGroupIds();
-		for (Object userGroup : userGroups) {
-			if (userGroup instanceof String && groupNames.contains(userGroup)) {
-				return true;
-			} else if (userGroup instanceof Integer && groupIds.contains(userGroup)) {
+
+		Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
+		for (int groupId : userGroups) {
+			if (groupIds.contains(groupId)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public <E> boolean userIsMemberOfAll(List<E> userGroups) {
+	public boolean userIsMemberOfAll(List<Integer> userGroups) {
 		if (userGroups == null || userGroups.isEmpty()) {
 			return false;
 		}
@@ -102,15 +83,14 @@ public abstract class FeatureToggleExpressions extends Script {
 		if (permissions == null) {
 			return false;
 		}
-		Collection<String> groupNames = permissions.getGroupNames();
-		Set<Integer> groupIds = permissions.getGroupIds();
-		for (Object userGroup : userGroups) {
-			if (userGroup instanceof String && !groupNames.contains(userGroup)) {
-				return false;
-			} else if (userGroup instanceof Integer && !groupIds.contains(userGroup)) {
+
+		Set<Integer> groupIds = permissions.getAllInheritedGroupIds();
+		for (int userGroup : userGroups) {
+			if (!groupIds.contains(userGroup)) {
 				return false;
 			}
 		}
+		
 		return true;
 	}
 
@@ -158,6 +138,7 @@ public abstract class FeatureToggleExpressions extends Script {
 		Binding binding = getBinding();
 		return (Permissions) binding.getVariable("permissions");
 	}
+	
 	public boolean hasPermission(String opPermsName) throws FeatureToggleException {
 	
 		OpPerms opPerms;

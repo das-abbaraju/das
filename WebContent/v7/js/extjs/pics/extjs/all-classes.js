@@ -66506,7 +66506,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
     items: [{
         xtype: 'button',
         id: 'report_filter_options_collapse',
-        text: '<i class="icon-chevron-left icon-large"></i> Filter',
+        text: '<i class="icon-chevron-left icon-large"></i> Filter'
     }, {
         xtype: 'tbfill'
     }, {
@@ -66514,7 +66514,7 @@ Ext.define('PICS.view.report.filter.FilterHeader', {
         action: 'add-filter',
         cls: 'add-filter default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Filter'
+        text: '<i class="icon-plus icon-large"></i> Add Filter'
     }],
     layout: {
         type: 'hbox',
@@ -71432,11 +71432,13 @@ Ext.define('PICS.view.report.filter.base.BooleanFilter', {
     },
 
     createCheckbox: function (record) {
-        var value = record.get('not');
+        var value = record.get('value'),
+            checked = value == 'true' ? true : false;
 
         return {
             xtype: 'checkbox',
             boxLabel: 'True',
+            checked: value == 'true' ? true : false,
             inputValue: true,
             name: 'filter_value',
             uncheckedValue: false,
@@ -87851,45 +87853,51 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
         action: 'add-column',
         cls: 'add-column default',
         height: 26,
-        text: '<i class="icon-plus icon-large"></i>Add Column'
+        text: '<i class="icon-plus icon-large"></i> Add Column'
     }],
 
     getPagingItems: function() {
         var me = this;
 
         return [{
-            cls: 'refresh',
+            cls: 'paging-icon',
             height: 22,
             itemId: 'refresh',
+            overCls: 'paging-icon-over',
             overflowText: me.refreshText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
             text: '<i class="icon-refresh icon-large"></i>',
             tooltip: me.refreshText
-        }, {
+        },{
             xtype: 'tbseparator',
             height: 28
         }, {
-            cls: 'page-first',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveFirst,
-            height: 16,
+            height: 22,
             itemId: 'first',
+            overCls: 'paging-icon-over',
             overflowText: me.firstText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-step-backward icon-large"></i>',
+            text: '<i class="icon-step-backward icon-small"></i>',
             tooltip: me.firstText
         }, {
-            cls: 'page-prev',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.movePrevious,
-            height: 16,
+            height: 22,
             itemId: 'prev',
+            overCls: 'paging-icon-over',
             overflowText: me.prevText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-caret-left icon-large"></i>',
+            text: '<i class="icon-caret-left icon-small"></i>',
             tooltip: me.prevText
         }, {
             xtype: 'tbseparator',
@@ -87925,26 +87933,30 @@ Ext.define('PICS.view.report.report.ReportPagingToolbar', {
             xtype: 'tbseparator',
             height: 28
         }, {
-            cls: 'page-next',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveNext,
-            height: 16,
+            height: 22,
             itemId: 'next',
+            overCls: 'paging-icon-over',
             overflowText: me.nextText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-caret-right icon-large"></i>',
+            text: '<i class="icon-caret-right icon-small"></i>',
             tooltip: me.nextText
         }, {
-            cls: 'page-last',
+            cls: 'paging-icon',
             disabled: true,
             handler: me.moveLast,
-            height: 16,
+            height: 22,
             itemId: 'last',
+            overCls: 'paging-icon-over',
             overflowText: me.lastText,
+            pressedCls: 'paging-icon-pressed',
             scale: 'large',
             scope: me,
-            text: '<i class="icon-step-forward icon-large"></i>',
+            text: '<i class="icon-step-forward icon-small"></i>',
             tooltip: me.lastText
         }, {
             xtype: 'tbseparator',
@@ -93215,7 +93227,7 @@ Ext.define('PICS.view.layout.SearchBox', {
                     '</tpl>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     listeners: {
@@ -93260,7 +93272,7 @@ Ext.define('PICS.view.layout.SearchBox', {
             url: '/SearchBox!json.action',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             }
         }
     },
@@ -93457,7 +93469,7 @@ Ext.define('PICS.view.layout.Menu', {
 
     addUserMenu: function (user_menu, menu_items) {
         user_menu.padding = '0px 20px 0px 20px';
-        user_menu.text += '<i class="icon-cog icon-large"></i>';
+        user_menu.text += ' <i class="icon-cog icon-large"></i>';
 
         menu_items.push(user_menu);
     },
@@ -93468,23 +93480,31 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         dashboard_menu.height = 50;
-        dashboard_menu.icon = '/v7/img/logo.svg';
+
+        if (Ext.supports.Svg) {
+            dashboard_menu.icon = '/v7/img/logo.svg';
+        } else {
+            dashboard_menu.icon = '/v7/img/logo.png';
+        }
+
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
     },
 
     styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
-
-        if (items === undefined || items.length < 2) {
+        
+        // hack-ish to determine if we should "switch" out the menu separator and favorites label
+        // backend includes at least 4 items (manage reports, legacy, reports, separator, favorites label)
+        if (items === undefined || items.length < 4) {
             return;
         }
 
-        items.splice(1, 1, {
+        items.splice(2, 1, {
             xtype: 'menuseparator'
         });
 
-        items.splice(2, 1, {
+        items.splice(3, 1, {
             xtype: 'tbtext',
             cls: 'menu-title',
             // TODO pass in translated "Favorites"
@@ -93802,7 +93822,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '2 4 0 0',
+                margin: '2 4 0 0'
             },
             dock: 'top',
             items: [{
@@ -93882,7 +93902,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 type: 'hbox',
                 align: 'middle'
             },
-            name: 'filter_title',
+            name: 'filter_title'
         };
     },
 
@@ -94014,7 +94034,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                     '</li>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     minChars: 1,
@@ -94038,7 +94058,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
             url: '',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             },
             pageParam: false,
             startParam: false,
@@ -94188,7 +94208,7 @@ Ext.define('PICS.view.report.settings.SettingsTabs', {
     }, {
         xtype: 'reportsettingscopy'
     }, {
-        xtype: 'reportsettingsshare',
+        xtype: 'reportsettingsshare'
     }, {
         xtype: 'reportsettingsexport'
     }, {
@@ -94218,7 +94238,7 @@ Ext.define('PICS.view.report.settings.SettingsModal', {
     height: 324,
     id: 'report_settings_modal',
     items: [{
-        xtype: 'reportsettingstabs',
+        xtype: 'reportsettingstabs'
     }],
     layout: 'fit',
     modal: true,
@@ -100034,7 +100054,7 @@ Ext.define('PICS.controller.report.Report', {
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
                         html: 'to My Reports in Manage Reports.',
-                        title: 'Report Saved',
+                        title: 'Report Saved'
                     });
 
                     alert_message.show();

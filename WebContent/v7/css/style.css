@@ -9049,6 +9049,12 @@ input[type="color"],
   border-top: 0;
 }
 
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_hr.scss */
+
+hr {
+  margin: 40px 0 39px;
+}
+
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 
 .nav-list {
@@ -9071,24 +9077,26 @@ input[type="color"],
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 
 .nav-list li:first-child a {
-  -webkit-border-radius: 6px 6px 0 0;
-     -moz-border-radius: 6px 6px 0 0;
-      -ms-border-radius: 6px 6px 0 0;
-       -o-border-radius: 6px 6px 0 0;
-          border-radius: 6px 6px 0 0;
+  -webkit-border-top-right-radius: 6px;
+          border-top-right-radius: 6px;
+  -webkit-border-top-left-radius: 6px;
+          border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -moz-border-radius-topleft: 6px;
 }
 
-/* line 19, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+/* line 20, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 
 .nav-list li:last-child a {
-  -webkit-border-radius: 0 0 6px 6px;
-     -moz-border-radius: 0 0 6px 6px;
-      -ms-border-radius: 0 0 6px 6px;
-       -o-border-radius: 0 0 6px 6px;
-          border-radius: 0 0 6px 6px;
+  -webkit-border-bottom-right-radius: 6px;
+          border-bottom-right-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+          border-bottom-left-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -moz-border-radius-bottomleft: 6px;
 }
 
-/* line 24, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+/* line 26, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 
 .nav-list .icon-chevron-right {
   float: right;
@@ -9224,6 +9232,125 @@ input[type="color"],
 .ManageAppProperty-page #app_property_edit_form .form-actions .btn,
 .ManageAppProperty-page #app_property_create_form .form-actions .btn {
   margin-left: 10px;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+
+.FrontendDevelopmentGuide-page .span3 > .nav-list {
+  width: 220px;
+}
+
+/* line 9, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+
+.FrontendDevelopmentGuide-page .span3 > .nav-list.affix {
+  top: 20px;
+  margin-top: 55px;
+}
+
+@media (min-width: 1200px) {
+  {
+    /* line 19, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+  
+  }
+  .FrontendDevelopmentGuide-page .span3 > .nav-list {
+    width: 270px;
+  }
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/page-layout/_page-layout.scss */
+
+#page_layout_containers .show-grid [class*="span"] {
+  margin-bottom: 20px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #999;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+      -ms-border-radius: 4px;
+       -o-border-radius: 4px;
+          border-radius: 4px;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors {
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors li {
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors a {
+  display: block;
+  width: 90px;
+  height: 90px;
+  padding: 10px;
+  line-height: 90px;
+  text-align: center;
+  border: 1px solid #333;
+}
+
+/* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .pics-blue {
+  color: #fff;
+  background: #002441;
+}
+
+/* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .burnt-orange {
+  color: #fff;
+  background: #a84d10;
+}
+
+/* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .light-blue {
+  color: #fff;
+  background: #73bbe8;
+}
+
+/* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .warm-grey {
+  color: #fff;
+  background: #808285;
+}
+
+/* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+
+#style_guide_colors .colors .cool-grey {
+  color: #333;
+  background: #f1f1f2;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+
+#style_guide_typography .lowercase {
+  text-transform: lowercase;
+}
+
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+
+#style_guide_typography .uppercase {
+  text-transform: uppercase;
+}
+
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+
+#style_guide_typography h3 span {
+  font-size: 14px;
+  color: #999;
+  text-transform: lowercase;
 }
 
 /* line 2, ../sass/pics/templates/login/_login.scss */
@@ -9739,84 +9866,116 @@ input[type="color"],
   color: #a84d10;
 }
 
-/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+/* line 2, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
-#style_guide_colors .colors {
-  margin-bottom: 30px;
-  overflow: hidden;
+#Tutorial__page {
+  padding-top: 0;
+  background-color: #454545;
 }
 
-/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+/* line 7, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
-#style_guide_colors .colors li {
+#Tutorial__page .container {
+  background-color: #f1f1f2;
+}
+
+/* line 14, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page #main .row {
+  margin-bottom: 60px;
+}
+
+/* line 19, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page #main > .row {
+  margin-top: 60px;
+}
+
+/* line 25, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .page-title {
   float: left;
-  margin-right: 20px;
-  margin-bottom: 20px;
+  margin: 30px 30px 0 30px;
 }
 
-/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+/* line 30, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
-#style_guide_colors .colors a {
-  display: block;
-  width: 90px;
-  height: 90px;
-  padding: 10px;
-  line-height: 90px;
-  text-align: center;
-  border: 1px solid #333;
+#Tutorial__page .page-title h1 {
+  font-size: 60px;
+  font-weight: normal;
+  color: #808285;
 }
 
-/* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+/* line 37, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
-#style_guide_colors .colors .pics-blue {
-  color: #fff;
-  background: #002441;
-}
-
-/* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-
-#style_guide_colors .colors .burnt-orange {
-  color: #fff;
-  background: #a84d10;
-}
-
-/* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-
-#style_guide_colors .colors .light-blue {
-  color: #fff;
-  background: #73bbe8;
-}
-
-/* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-
-#style_guide_colors .colors .warm-grey {
-  color: #fff;
-  background: #808285;
-}
-
-/* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-
-#style_guide_colors .colors .cool-grey {
-  color: #333;
-  background: #f1f1f2;
-}
-
-/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-
-#style_guide_typography .lowercase {
-  text-transform: lowercase;
-}
-
-/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-
-#style_guide_typography .uppercase {
-  text-transform: uppercase;
-}
-
-/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-
-#style_guide_typography h3 span {
+#Tutorial__page .page-title h2 {
   font-size: 14px;
-  color: #999;
-  text-transform: lowercase;
+  color: #a84d10;
+}
+
+/* line 44, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .logo {
+  float: right;
+  margin: 30px 30px 0 0;
+}
+
+/* line 52, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .overview h1 {
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: #73bbe8;
+}
+
+/* line 60, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .overview p {
+  color: #666;
+}
+
+/* line 66, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .dashboard {
+  text-align: right;
+}
+
+/* line 71, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .settings {
+  text-align: left;
+}
+
+/* line 76, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page .support {
+  text-align: center;
+}
+
+/* line 83, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page footer .container {
+  padding: 30px 0;
+  text-align: center;
+  background-color: #ccc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(#eaeaea, #cccccc);
+  background-image: -moz-linear-gradient(#eaeaea, #cccccc);
+  background-image: -o-linear-gradient(#eaeaea, #cccccc);
+  background-image: linear-gradient(#eaeaea, #cccccc);
+  border: 1px solid #999;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
+}
+
+/* line 92, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page footer .container a {
+  margin-bottom: 10px;
+}
+
+/* line 97, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+
+#Tutorial__page footer .container p {
+  color: #808285;
 }

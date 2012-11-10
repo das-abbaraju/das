@@ -182,7 +182,7 @@ Ext.define('PICS.view.layout.Menu', {
 
     addUserMenu: function (user_menu, menu_items) {
         user_menu.padding = '0px 20px 0px 20px';
-        user_menu.text += '<i class="icon-cog icon-large"></i>';
+        user_menu.text += ' <i class="icon-cog icon-large"></i>';
 
         menu_items.push(user_menu);
     },
@@ -193,23 +193,31 @@ Ext.define('PICS.view.layout.Menu', {
         }
 
         dashboard_menu.height = 50;
-        dashboard_menu.icon = '/v7/img/logo.svg';
+
+        if (Ext.supports.Svg) {
+            dashboard_menu.icon = '/v7/img/logo.svg';
+        } else {
+            dashboard_menu.icon = '/v7/img/logo.png';
+        }
+
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
     },
 
     styleReportsMenu: function (report_menu) {
         var items = report_menu && report_menu.menu && report_menu.menu.items;
-
-        if (items === undefined || items.length < 2) {
+        
+        // hack-ish to determine if we should "switch" out the menu separator and favorites label
+        // backend includes at least 4 items (manage reports, legacy, reports, separator, favorites label)
+        if (items === undefined || items.length < 4) {
             return;
         }
 
-        items.splice(1, 1, {
+        items.splice(2, 1, {
             xtype: 'menuseparator'
         });
 
-        items.splice(2, 1, {
+        items.splice(3, 1, {
             xtype: 'tbtext',
             cls: 'menu-title',
             // TODO pass in translated "Favorites"

@@ -35,7 +35,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
                     '</li>',
                 '</tpl>',
             '</ul>'
-        ),
+        )
     },
 
     minChars: 1,
@@ -59,7 +59,7 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
             url: '',
             reader: {
                 root: 'results',
-                type: 'json',
+                type: 'json'
             },
             pageParam: false,
             startParam: false,

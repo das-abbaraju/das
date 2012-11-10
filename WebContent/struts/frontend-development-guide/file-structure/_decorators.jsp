@@ -27,9 +27,12 @@
         &lt;title&gt;PICS - &lt;decorator:title default="PICS" /&gt;&lt;/title&gt;
         ...
     &lt;/head&gt;
-    &lt;div id="main" role="main" class="container"&gt;
-        &lt;decorator:body /&gt;
-    &lt;/div&gt;
+    &lt;body&gt;
+        &lt;div id="main" role="main" class="container"&gt;
+            &lt;decorator:body /&gt;
+        &lt;/div&gt;
+        ...
+    &lt;/body&gt;
     ...
 </pre>
     </div>

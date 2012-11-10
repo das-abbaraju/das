@@ -12,6 +12,8 @@
         <s:include value="_menu.jsp" />
     </div>
     <div class="span9">
+        <s:include value="_folders.jsp" />
+        
         <s:include value="_decorators.jsp" />
         
         <s:include value="_templates.jsp" />

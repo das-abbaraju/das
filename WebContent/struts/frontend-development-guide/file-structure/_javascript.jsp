@@ -10,6 +10,8 @@
         Javascript is used to unobtrusively add sophisticated functionality to our HTML.  Javascript should not control page layout or styles.  Those jobs are better suited for Templates and CSS.  Javascript can and should be used for adding interaction to a web application or to fetch "extra" data asynchronously.
     </p>
     
+    <div class="example">
+    
 <pre class="prettyprint linenums lang-sh">
 # extjs application for dynamic reports
 js/extjs
@@ -23,4 +25,6 @@ js/vendor
 # a compile version of the applications javascript
 js/script.js
 </pre>
+    
+    </div>
 </section>

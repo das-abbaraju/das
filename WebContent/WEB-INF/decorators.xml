@@ -5,6 +5,10 @@
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ReportTester.action</pattern>
     </decorator>
+    <decorator name="simpleLayout" page="simple-layout.jsp">
+        <pattern>/Login.action</pattern>
+		<pattern>/Tutorial*.action</pattern>
+    </decorator>
 	<decorator name="dynamic-report" page="dynamic-report.jsp">
 		<pattern>/Report.action</pattern>
 	</decorator>
@@ -58,7 +62,4 @@
 		<pattern>/AuditFileUpload.action</pattern>
 		<pattern>/*External.action</pattern>
 	</decorator>
-    <decorator name="simpleLayout" page="simple-layout.jsp">
-        <pattern>/Login.action</pattern>
-    </decorator>
 </decorators>

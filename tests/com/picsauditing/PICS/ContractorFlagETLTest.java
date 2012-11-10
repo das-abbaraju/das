@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +37,9 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.FlagCriteriaContractorDAO;
+import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -55,12 +56,14 @@ import com.picsauditing.jpa.entities.TranslatableString;
 @PrepareForTest(ContractorFlagETL.class)
 @PowerMockIgnore({ "javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*" })
 public class ContractorFlagETLTest {
-
 	private ContractorFlagETL contractorFlagETL;
-	private PicsTestUtil picsTestUtil = new PicsTestUtil();
 
 	@Mock
-	private EntityManager em;
+	private FlagCriteriaDAO flagCriteriaDao;
+	@Mock
+	private AuditDataDAO auditDataDao;
+	@Mock
+	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 	@Mock
 	private FlagCriteria flagCriteria;
 	@Mock
@@ -87,9 +90,8 @@ public class ContractorFlagETLTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-
 		contractorFlagETL = new ContractorFlagETL();
-		picsTestUtil.autowireEMInjectedDAOs(contractorFlagETL, em);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(contractorFlagETL, this);
 	}
 
 	@Test
@@ -380,11 +382,6 @@ public class ContractorFlagETLTest {
 		assertTrue(results.isEmpty());
 		PowerMockito.verifyPrivate(spy, times(1)).invoke("performOshaFlagCalculations", anyObject(), anySet(),
 				anyObject());
-	}
-
-	@Test
-	public void testCalculateFlagCriteriaForEMR() throws Exception {
-
 	}
 
 	@Test

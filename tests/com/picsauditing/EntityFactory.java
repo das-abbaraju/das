@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.powermock.reflect.Whitebox;
+
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -341,27 +343,12 @@ public class EntityFactory {
 	static public Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
 		try {
-			permission.setHierarchyBuilder(getBuilderForUser(user));
 			permission.login(user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		return permission;
-	}
-	
-	public static HierarchyBuilder getBuilderForUser(final User user) {
-		return new GroupHierarchyBuilder() {
-			
-			@Override
-			protected List<Integer> getIdsForAllParentEntities(List<Integer> entities) {
-				return Collections.emptyList();
-			}
-			
-			@Override
-			protected List<Integer> findAllParentEntityIds(int id) {
-				return  (List<Integer>) (Utilities.getIdsBaseTableEntities(user.getGroups()));
-			}
-		};
 	}
 
 	static public User makeUser() {

@@ -673,6 +673,11 @@ input[type="color"],
   padding: 0;
 }
 
+/* line 2, ../sass/pics/widgets/twitter-bootstrap/_hr.scss */
+hr {
+  margin: 40px 0 39px;
+}
+
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list {
   -webkit-border-radius: 6px;
@@ -690,21 +695,23 @@ input[type="color"],
 }
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list li:first-child a {
-  -webkit-border-radius: 6px 6px 0 0;
-  -moz-border-radius: 6px 6px 0 0;
-  -ms-border-radius: 6px 6px 0 0;
-  -o-border-radius: 6px 6px 0 0;
-  border-radius: 6px 6px 0 0;
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
 }
-/* line 19, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+/* line 20, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list li:last-child a {
-  -webkit-border-radius: 0 0 6px 6px;
-  -moz-border-radius: 0 0 6px 6px;
-  -ms-border-radius: 0 0 6px 6px;
-  -o-border-radius: 0 0 6px 6px;
-  border-radius: 0 0 6px 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
-/* line 24, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
+/* line 26, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list .icon-chevron-right {
   color: #e5e5e5;
   float: right;
@@ -819,6 +826,97 @@ input[type="color"],
 .ManageAppProperty-page #app_property_edit_form .form-actions .btn,
 .ManageAppProperty-page #app_property_create_form .form-actions .btn {
   margin-left: 10px;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+.FrontendDevelopmentGuide-page .span3 > .nav-list {
+  width: 220px;
+}
+/* line 9, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+.FrontendDevelopmentGuide-page .span3 > .nav-list.affix {
+  margin-top: 55px;
+  top: 20px;
+}
+
+@media (min-width: 1200px) {
+  /* line 19, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+  .FrontendDevelopmentGuide-page .span3 > .nav-list {
+    width: 270px;
+  }
+}
+/* line 4, ../sass/pics/templates/frontend-development-guide/page-layout/_page-layout.scss */
+#page_layout_containers .show-grid [class*="span"] {
+  background-color: #999;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  line-height: 40px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors {
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors li {
+  float: left;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors a {
+  border: 1px solid #333;
+  display: block;
+  height: 90px;
+  line-height: 90px;
+  padding: 10px;
+  text-align: center;
+  width: 90px;
+}
+/* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .pics-blue {
+  background: #002441;
+  color: #fff;
+}
+/* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .burnt-orange {
+  background: #a84d10;
+  color: #fff;
+}
+/* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .light-blue {
+  background: #73bbe8;
+  color: #fff;
+}
+/* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .warm-grey {
+  background: #808285;
+  color: #fff;
+}
+/* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
+#style_guide_colors .colors .cool-grey {
+  background: #f1f1f2;
+  color: #333;
+}
+
+/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#style_guide_typography .lowercase {
+  text-transform: lowercase;
+}
+/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#style_guide_typography .uppercase {
+  text-transform: uppercase;
+}
+/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#style_guide_typography h3 span {
+  color: #999;
+  font-size: 14px;
+  text-transform: lowercase;
 }
 
 /* line 2, ../sass/pics/templates/login/_login.scss */
@@ -1225,64 +1323,85 @@ input[type="color"],
   margin: 18px 0px;
 }
 
-/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors {
-  margin-bottom: 30px;
-  overflow: hidden;
+/* line 2, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page {
+  background-color: #454545;
+  padding-top: 0;
 }
-/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors li {
+/* line 7, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .container {
+  background-color: #f1f1f2;
+}
+/* line 14, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page #main .row {
+  margin-bottom: 60px;
+}
+/* line 19, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page #main > .row {
+  margin-top: 60px;
+}
+/* line 25, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .page-title {
   float: left;
-  margin-right: 20px;
-  margin-bottom: 20px;
+  margin: 30px 30px 0 30px;
 }
-/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors a {
-  border: 1px solid #333;
-  display: block;
-  height: 90px;
-  line-height: 90px;
-  padding: 10px;
-  text-align: center;
-  width: 90px;
+/* line 30, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .page-title h1 {
+  color: #808285;
+  font-size: 60px;
+  font-weight: normal;
 }
-/* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .pics-blue {
-  background: #002441;
-  color: #fff;
-}
-/* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .burnt-orange {
-  background: #a84d10;
-  color: #fff;
-}
-/* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .light-blue {
-  background: #73bbe8;
-  color: #fff;
-}
-/* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .warm-grey {
-  background: #808285;
-  color: #fff;
-}
-/* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .cool-grey {
-  background: #f1f1f2;
-  color: #333;
-}
-
-/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-#style_guide_typography .lowercase {
-  text-transform: lowercase;
-}
-/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-#style_guide_typography .uppercase {
-  text-transform: uppercase;
-}
-/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-#style_guide_typography h3 span {
-  color: #999;
+/* line 37, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .page-title h2 {
+  color: #a84d10;
   font-size: 14px;
-  text-transform: lowercase;
+}
+/* line 44, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .logo {
+  float: right;
+  margin: 30px 30px 0 0;
+}
+/* line 52, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .overview h1 {
+  color: #73bbe8;
+  font-size: 24px;
+  font-weight: normal;
+  margin-top: 0;
+}
+/* line 60, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .overview p {
+  color: #666;
+}
+/* line 66, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .dashboard {
+  text-align: right;
+}
+/* line 71, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .settings {
+  text-align: left;
+}
+/* line 76, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page .support {
+  text-align: center;
+}
+/* line 83, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page footer .container {
+  background-color: #ccc;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(#eaeaea, #cccccc);
+  background-image: -moz-linear-gradient(#eaeaea, #cccccc);
+  background-image: -o-linear-gradient(#eaeaea, #cccccc);
+  background-image: linear-gradient(#eaeaea, #cccccc);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
+  border: 1px solid #999;
+  padding: 30px 0;
+  text-align: center;
+}
+/* line 92, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page footer .container a {
+  margin-bottom: 10px;
+}
+/* line 97, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial__page footer .container p {
+  color: #808285;
 }

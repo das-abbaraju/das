@@ -26,12 +26,16 @@
     </p>
     
     <div class="example">
+    
 <pre class="prettyprint linenums lang-sh">
 /struts/contractor/registration/registration.jsp
 /struts/contractor/trade/trade-list.jsp
 /struts/frontend-development-guide/style-guide/style-guide.jsp
 </pre>
+
     </div>
+    
+    <hr />
     
     <h2>Partials</h2>
     
@@ -40,6 +44,7 @@
     </p>
     
     <div class="example">
+    
 <pre class="prettyprint linenums lang-sh">
 # menu is used on every page (primary navigation)
 /struts/layout/_menu.jsp
@@ -50,5 +55,7 @@
 /struts/frontend-development-guide/style-guide/_colors.jsp
 /struts/frontend-development-guide/style-guide/_typography.jsp
 </pre>
+
     </div>
+    
 </section>

@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
@@ -22,9 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
-
 
 public class PermissionsTest {
 	private Permissions permissions;
@@ -32,20 +27,12 @@ public class PermissionsTest {
 
 	@Mock
 	private HttpServletResponse response;
-	@Mock
-	private HierarchyBuilder hierarchyBuilder;
-	@Mock
-	private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		permissions = new Permissions();
-		permissions.setHierarchyBuilder(hierarchyBuilder);
-		when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_PERRMISSION_GROUPS)).thenReturn(true);		
-		permissions.setFeatureToggle(featureToggle);
-
 		allInheritedGroupIds = new HashSet<Integer>();
 		Whitebox.setInternalState(permissions, "allInheritedGroupIds", allInheritedGroupIds);
 	}
@@ -139,7 +126,7 @@ public class PermissionsTest {
 
 	@Test
 	public void testBelongsToGroups_NullGroupsReturnsFalse() throws Exception {
-		Whitebox.setInternalState(permissions, "groups", (Map<Integer, String>) null);
+		Whitebox.setInternalState(permissions, "allInheritedGroupIds", (Set<Integer>) null);
 
 		assertFalse(permissions.belongsToGroups());
 	}

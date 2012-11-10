@@ -32,9 +32,7 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.toggle.FeatureToggle;
-import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -51,9 +49,7 @@ public class LoginController extends PicsActionSupport {
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
 	@Autowired
-	protected HierarchyBuilder hierarchyBuilder;
-	@Autowired
-	protected FeatureToggle featureToggle;
+	protected PermissionBuilder permissionBuilder;
 
 	// used to inject mock permissions for testing
 	private User user;
@@ -159,8 +155,7 @@ public class LoginController extends PicsActionSupport {
 		int originalUser = getClientSessionOriginalUserID();
 		if (originalUser > 0) {
 			user = userDAO.find(originalUser);
-			permissions.login(user);
-			LocaleController.setLocaleOfNearestSupported(permissions);
+			permissions = permissionBuilder.login(user);
 			addClientSessionCookieToResponse(isRememberMeSetInCookie(), 0);
 			permissions.setAdminID(0);
 		}
@@ -201,8 +196,7 @@ public class LoginController extends PicsActionSupport {
 			boolean adminIsTranslator = permissions.hasPermission(OpPerms.Translator);
 
 			user = userDAO.find(userID);
-			permissions.login(user);
-			LocaleController.setLocaleOfNearestSupported(permissions);
+			permissions = permissionBuilder.login(user);
 			permissions.setAdminID(adminID);
 			permissions.setRememberMeTimeInSeconds(maxAge);
 
@@ -221,8 +215,6 @@ public class LoginController extends PicsActionSupport {
 	private Permissions permissions() {
 		if (permissions == null) {
 			permissions = new Permissions();
-			permissions.setHierarchyBuilder(hierarchyBuilder);
-			permissions.setFeatureToggle(featureToggle);
 		}
 		
 		return permissions;
@@ -265,9 +257,7 @@ public class LoginController extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		permissions = permissions();
-		permissions.login(user);
-		LocaleController.setLocaleOfNearestSupported(permissions);
+		permissions = permissionBuilder.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
 		addClientSessionCookieToResponse(rememberMe, switchToUser);

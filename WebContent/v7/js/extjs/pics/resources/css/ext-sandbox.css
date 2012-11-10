@@ -695,8 +695,7 @@ tr.x4-container:before {
   padding: 2px;
   border: 1px solid;
   border-color: #99bce8;
-  background-image: none;
-  background-color: #dfe9f6; }
+  background: #dfe9f6; }
   /* line 38, ../themes/stylesheets/ext4/default/widgets/_loadmask.scss */
   .x4-mask-msg div {
     padding: 5px 10px 5px 25px;
@@ -1069,7 +1068,8 @@ tr.x4-container:before {
   line-height: 16px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-small-icon button, .x4-btn-default-small-icon a {
+.x4-btn-default-small-icon button,
+.x4-btn-default-small-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-small-icon .x4-btn-inner {
@@ -1086,7 +1086,8 @@ tr.x4-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-small-icon-text-left button, .x4-btn-default-small-icon-text-left a {
+.x4-btn-default-small-icon-text-left button,
+.x4-btn-default-small-icon-text-left a {
   height: 16px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-small-icon-text-left .x4-btn-inner {
@@ -1106,7 +1107,8 @@ tr.x4-container:before {
     height: 16px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-small-icon-text-right button, .x4-btn-default-small-icon-text-right a {
+.x4-btn-default-small-icon-text-right button,
+.x4-btn-default-small-icon-text-right a {
   height: 16px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-small-icon-text-right .x4-btn-inner {
@@ -1396,7 +1398,8 @@ tr.x4-container:before {
   line-height: 24px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-medium-icon button, .x4-btn-default-medium-icon a {
+.x4-btn-default-medium-icon button,
+.x4-btn-default-medium-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-medium-icon .x4-btn-inner {
@@ -1413,7 +1416,8 @@ tr.x4-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-medium-icon-text-left button, .x4-btn-default-medium-icon-text-left a {
+.x4-btn-default-medium-icon-text-left button,
+.x4-btn-default-medium-icon-text-left a {
   height: 24px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-medium-icon-text-left .x4-btn-inner {
@@ -1433,7 +1437,8 @@ tr.x4-container:before {
     height: 24px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-medium-icon-text-right button, .x4-btn-default-medium-icon-text-right a {
+.x4-btn-default-medium-icon-text-right button,
+.x4-btn-default-medium-icon-text-right a {
   height: 24px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-medium-icon-text-right .x4-btn-inner {
@@ -1723,7 +1728,8 @@ tr.x4-container:before {
   line-height: 32px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-large-icon button, .x4-btn-default-large-icon a {
+.x4-btn-default-large-icon button,
+.x4-btn-default-large-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-large-icon .x4-btn-inner {
@@ -1740,7 +1746,8 @@ tr.x4-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-large-icon-text-left button, .x4-btn-default-large-icon-text-left a {
+.x4-btn-default-large-icon-text-left button,
+.x4-btn-default-large-icon-text-left a {
   height: 32px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-large-icon-text-left .x4-btn-inner {
@@ -1760,7 +1767,8 @@ tr.x4-container:before {
     height: 32px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-large-icon-text-right button, .x4-btn-default-large-icon-text-right a {
+.x4-btn-default-large-icon-text-right button,
+.x4-btn-default-large-icon-text-right a {
   height: 32px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-large-icon-text-right .x4-btn-inner {
@@ -2040,7 +2048,8 @@ tr.x4-container:before {
   line-height: 16px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-small-icon button, .x4-btn-default-toolbar-small-icon a {
+.x4-btn-default-toolbar-small-icon button,
+.x4-btn-default-toolbar-small-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-small-icon .x4-btn-inner {
@@ -2057,7 +2066,8 @@ tr.x4-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-small-icon-text-left button, .x4-btn-default-toolbar-small-icon-text-left a {
+.x4-btn-default-toolbar-small-icon-text-left button,
+.x4-btn-default-toolbar-small-icon-text-left a {
   height: 16px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-small-icon-text-left .x4-btn-inner {
@@ -2077,7 +2087,8 @@ tr.x4-container:before {
     height: 16px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-small-icon-text-right button, .x4-btn-default-toolbar-small-icon-text-right a {
+.x4-btn-default-toolbar-small-icon-text-right button,
+.x4-btn-default-toolbar-small-icon-text-right a {
   height: 16px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-small-icon-text-right .x4-btn-inner {
@@ -2340,7 +2351,8 @@ tr.x4-container:before {
   line-height: 24px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-medium-icon button, .x4-btn-default-toolbar-medium-icon a {
+.x4-btn-default-toolbar-medium-icon button,
+.x4-btn-default-toolbar-medium-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-medium-icon .x4-btn-inner {
@@ -2357,7 +2369,8 @@ tr.x4-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-medium-icon-text-left button, .x4-btn-default-toolbar-medium-icon-text-left a {
+.x4-btn-default-toolbar-medium-icon-text-left button,
+.x4-btn-default-toolbar-medium-icon-text-left a {
   height: 24px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-medium-icon-text-left .x4-btn-inner {
@@ -2377,7 +2390,8 @@ tr.x4-container:before {
     height: 24px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-medium-icon-text-right button, .x4-btn-default-toolbar-medium-icon-text-right a {
+.x4-btn-default-toolbar-medium-icon-text-right button,
+.x4-btn-default-toolbar-medium-icon-text-right a {
   height: 24px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-medium-icon-text-right .x4-btn-inner {
@@ -2640,7 +2654,8 @@ tr.x4-container:before {
   line-height: 32px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-large-icon button, .x4-btn-default-toolbar-large-icon a {
+.x4-btn-default-toolbar-large-icon button,
+.x4-btn-default-toolbar-large-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-large-icon .x4-btn-inner {
@@ -2657,7 +2672,8 @@ tr.x4-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-large-icon-text-left button, .x4-btn-default-toolbar-large-icon-text-left a {
+.x4-btn-default-toolbar-large-icon-text-left button,
+.x4-btn-default-toolbar-large-icon-text-left a {
   height: 32px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-large-icon-text-left .x4-btn-inner {
@@ -2677,7 +2693,8 @@ tr.x4-container:before {
     height: 32px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x4-btn-default-toolbar-large-icon-text-right button, .x4-btn-default-toolbar-large-icon-text-right a {
+.x4-btn-default-toolbar-large-icon-text-right button,
+.x4-btn-default-toolbar-large-icon-text-right a {
   height: 32px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x4-btn-default-toolbar-large-icon-text-right .x4-btn-inner {
@@ -3602,7 +3619,6 @@ table.x4-datepicker-inner {
   border-top: 0 none;
   border-bottom: 0 none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-  color: null;
   font: normal 11px tahoma, arial, verdana, sans-serif;
   background-image: none;
   background-color: #c5c5c5;
@@ -3711,7 +3727,6 @@ table.x4-datepicker-inner {
   vertical-align: top; }
   /* line 199, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
   .x4-grid-row .x4-grid-cell {
-    color: null;
     font: normal 11px/15px tahoma, arial, verdana, sans-serif;
     background-color: white;
     border-color: #ededed;
@@ -3940,7 +3955,8 @@ browsers will do whacky things with it.
   background-color: #0f0f0f; }
 
 /* line 459, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
-.col-move-top, .col-move-bottom {
+.col-move-top,
+.col-move-bottom {
   width: 9px;
   height: 9px;
   position: absolute;
@@ -4040,7 +4056,8 @@ browsers will do whacky things with it.
 /* IE6, IE7, and all IE Quirks mode need line-height to be the same as checkbox height or the header/row height will be too tall */
 /* line 573, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x4-quirks .x4-ie .x4-grid-row-checker,
-.x4-quirks .x4-ie .x4-column-header-checkbox .x4-column-header-text, .x4-ie7m .x4-grid-row-checker, .x4-ie7m .x4-column-header-checkbox .x4-column-header-text {
+.x4-quirks .x4-ie .x4-column-header-checkbox .x4-column-header-text, .x4-ie7m .x4-grid-row-checker,
+.x4-ie7m .x4-column-header-checkbox .x4-column-header-text {
   line-height: 14px; }
 
 /* line 579, ../themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -4805,14 +4822,12 @@ textarea.x4-form-invalid-field {
 
 /* line 49, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x4-form-trigger-wrap-focus .x4-form-trigger-over {
-  background-position: -68px 0;
-  border-bottom-color: null; }
+  background-position: -68px 0; }
 
 /* line 58, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x4-form-trigger-click,
 .x4-form-trigger-wrap-focus .x4-form-trigger-click {
-  background-position: -34px 0;
-  border-bottom-color: null; }
+  background-position: -34px 0; }
 
 /* line 66, ../themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x4-form-trigger-icon {
@@ -5242,39 +5257,6 @@ textarea.x4-form-invalid-field {
   background-image: -moz-linear-gradient(right, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: -o-linear-gradient(right, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: linear-gradient(right, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3); }
-
-/* line 416, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x4-panel-collapsed .x4-panel-header-default-top {
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  border-bottom-right-radius: null; }
-/* line 420, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x4-panel-collapsed .x4-panel-header-default-right {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  border-bottom-left-radius: null; }
-/* line 424, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x4-panel-collapsed .x4-panel-header-default-bottom {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  border-top-right-radius: null; }
-/* line 428, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x4-panel-collapsed .x4-panel-header-default-left {
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  border-top-right-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  border-bottom-right-radius: null; }
 
 /* line 434, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x4-panel-header-default-top {
@@ -9377,7 +9359,32 @@ svg, vml {
 .x4-html {
   /* Begin bidirectionality settings (do not change) */ }
   /* line 34, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html html, .x4-html address, .x4-html blockquote, .x4-html body, .x4-html dd, .x4-html div, .x4-html dl, .x4-html dt, .x4-html fieldset, .x4-html form, .x4-html frame, .x4-html frameset, .x4-html h1, .x4-html h2, .x4-html h3, .x4-html h4, .x4-html h5, .x4-html h6, .x4-html noframes, .x4-html ol, .x4-html p, .x4-html ul, .x4-html center, .x4-html dir, .x4-html hr, .x4-html menu, .x4-html pre {
+  .x4-html html,
+  .x4-html address,
+  .x4-html blockquote,
+  .x4-html body,
+  .x4-html dd,
+  .x4-html div,
+  .x4-html dl,
+  .x4-html dt,
+  .x4-html fieldset,
+  .x4-html form,
+  .x4-html frame, .x4-html frameset,
+  .x4-html h1,
+  .x4-html h2,
+  .x4-html h3,
+  .x4-html h4,
+  .x4-html h5,
+  .x4-html h6,
+  .x4-html noframes,
+  .x4-html ol,
+  .x4-html p,
+  .x4-html ul,
+  .x4-html center,
+  .x4-html dir,
+  .x4-html hr,
+  .x4-html menu,
+  .x4-html pre {
     display: block; }
   /* line 35, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html li {
@@ -9408,7 +9415,8 @@ svg, vml {
   .x4-html colgroup {
     display: table-column-group; }
   /* line 45, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html td, .x4-html th {
+  .x4-html td,
+  .x4-html th {
     display: table-cell; }
   /* line 46, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html caption {
@@ -9436,7 +9444,16 @@ svg, vml {
     font-size: 1.17em;
     margin: .83em 0; }
   /* line 62, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html h4, .x4-html p, .x4-html blockquote, .x4-html ul, .x4-html fieldset, .x4-html form, .x4-html ol, .x4-html dl, .x4-html dir, .x4-html menu {
+  .x4-html h4,
+  .x4-html p,
+  .x4-html blockquote,
+  .x4-html ul,
+  .x4-html fieldset,
+  .x4-html form,
+  .x4-html ol,
+  .x4-html dl,
+  .x4-html dir,
+  .x4-html menu {
     margin: 1.12em 0; }
   /* line 63, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html h5 {
@@ -9447,29 +9464,49 @@ svg, vml {
     font-size: .75em;
     margin: 1.67em 0; }
   /* line 72, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html h1, .x4-html h2, .x4-html h3, .x4-html h4, .x4-html h5, .x4-html h6, .x4-html b, .x4-html strong {
+  .x4-html h1,
+  .x4-html h2,
+  .x4-html h3,
+  .x4-html h4,
+  .x4-html h5,
+  .x4-html h6,
+  .x4-html b,
+  .x4-html strong {
     font-weight: bolder; }
   /* line 73, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html blockquote {
     margin-left: 40px;
     margin-right: 40px; }
   /* line 78, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html i, .x4-html cite, .x4-html em, .x4-html var, .x4-html address {
+  .x4-html i,
+  .x4-html cite,
+  .x4-html em,
+  .x4-html var,
+  .x4-html address {
     font-style: italic; }
   /* line 83, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html pre, .x4-html tt, .x4-html code, .x4-html kbd, .x4-html samp {
+  .x4-html pre,
+  .x4-html tt,
+  .x4-html code,
+  .x4-html kbd,
+  .x4-html samp {
     font-family: monospace; }
   /* line 84, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html pre {
     white-space: pre; }
   /* line 88, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html button, .x4-html textarea, .x4-html input, .x4-html select {
+  .x4-html button,
+  .x4-html textarea,
+  .x4-html input,
+  .x4-html select {
     display: inline-block; }
   /* line 89, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html big {
     font-size: 1.17em; }
   /* line 92, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html small, .x4-html sub, .x4-html sup {
+  .x4-html small,
+  .x4-html sub,
+  .x4-html sup {
     font-size: .83em; }
   /* line 93, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html sub {
@@ -9481,19 +9518,28 @@ svg, vml {
   .x4-html table {
     border-spacing: 2px; }
   /* line 98, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html thead, .x4-html tbody, .x4-html tfoot {
+  .x4-html thead,
+  .x4-html tbody,
+  .x4-html tfoot {
     vertical-align: middle; }
   /* line 100, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html td, .x4-html th {
+  .x4-html td,
+  .x4-html th {
     vertical-align: inherit; }
   /* line 103, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html s, .x4-html strike, .x4-html del {
+  .x4-html s,
+  .x4-html strike,
+  .x4-html del {
     text-decoration: line-through; }
   /* line 104, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html hr {
     border: 1px inset; }
   /* line 109, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html ol, .x4-html ul, .x4-html dir, .x4-html menu, .x4-html dd {
+  .x4-html ol,
+  .x4-html ul,
+  .x4-html dir,
+  .x4-html menu,
+  .x4-html dd {
     margin-left: 40px; }
   /* line 110, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html ul, .x4-html menu, .x4-html dir {
@@ -9502,11 +9548,15 @@ svg, vml {
   .x4-html ol {
     list-style-type: decimal; }
   /* line 115, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html ol ul, .x4-html ul ol, .x4-html ul ul, .x4-html ol ol {
+  .x4-html ol ul,
+  .x4-html ul ol,
+  .x4-html ul ul,
+  .x4-html ol ol {
     margin-top: 0;
     margin-bottom: 0; }
   /* line 117, ../themes/stylesheets/ext4/default/widgets/_html.scss */
-  .x4-html u, .x4-html ins {
+  .x4-html u,
+  .x4-html ins {
     text-decoration: underline; }
   /* line 118, ../themes/stylesheets/ext4/default/widgets/_html.scss */
   .x4-html br:before {

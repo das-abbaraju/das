@@ -12,6 +12,10 @@
         <s:include value="_menu.jsp" />
     </div>
     <div class="span9">
+        <s:include value="_navigation.jsp" />
+        
+        <s:include value="_environment.jsp" />
+        
         <s:include value="_page-header.jsp" />
         
         <s:include value="_containers.jsp" />

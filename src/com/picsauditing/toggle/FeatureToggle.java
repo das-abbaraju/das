@@ -14,7 +14,7 @@ public interface FeatureToggle {
 	String TOGGLE_BPROC = "Toggle.BackgroundProcesses";
 	String TOGGLE_SESSION_COOKIE = "Toggle.SessionCookie";
 	String TOGGLE_CONTRACTOR_CAMPAIGN = "Toggle.ContractorCampaign";
-	String TOGGLE_PERRMISSION_GROUPS = "Toggle.PermissionGroups";
+	String TOGGLE_PERMISSION_GROUPS = "Toggle.PermissionGroups";
 
 	boolean isFeatureEnabled(String toggleName);
 

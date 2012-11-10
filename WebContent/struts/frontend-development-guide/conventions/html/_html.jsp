@@ -5,4 +5,14 @@
     <div class="page-header">
         <h1>HTML</h1>
     </div>
+    
+    <p></p>
+    
+    no xml in xml
+    printing text
+    basic iterating
+    passing lists into partials
+    logic (if else else if)
+    
+    
 </section>

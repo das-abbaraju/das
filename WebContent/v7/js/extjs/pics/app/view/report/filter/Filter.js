@@ -80,7 +80,7 @@ Ext.define('PICS.view.report.filter.Filter', {
         this.addDocked({
             xtype: 'toolbar',
             defaults: {
-                margin: '2 4 0 0',
+                margin: '2 4 0 0'
             },
             dock: 'top',
             items: [{
@@ -160,7 +160,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 type: 'hbox',
                 align: 'middle'
             },
-            name: 'filter_title',
+            name: 'filter_title'
         };
     },
 

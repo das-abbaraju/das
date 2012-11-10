@@ -43,7 +43,6 @@ public class PicsActionSupportTest extends PicsActionTest {
 	@Test
 	public void testLoadPermissionsReturnsSameInstanceIfSet() throws Exception {
 		Permissions permissions = new Permissions();
-		permissions.setHierarchyBuilder(hierarchyBuilder);
 
 		picsActionSupport.permissions = permissions;
 		picsActionSupport.loadPermissions();
@@ -79,20 +78,25 @@ public class PicsActionSupportTest extends PicsActionTest {
 
 	@Test
 	public void testGetPicsEnvironment_AlphaPerEnvironmentVariable() throws Exception {
+		// Note: PICS-7936 clarified that we should take the word of whoever
+		// sets the -Dpicvs.env string on the name of the environment and not
+		// try to match it up to a known list. So, this test was changed from
+		// considering that -Dpics.env=Alphabet was the same as
+		// -Dpics.env=alpha, because "Alphabet" starts with alpha.
 		System.setProperty("pics.env", "Alphabet");
 		when(request.getServerName()).thenReturn(new String("www.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
-		assertEquals("Equivalent of -Dpics.env=Alphabet", "alpha", picsActionSupport.getPicsEnvironment());
+		assertEquals("Equivalent of -Dpics.env=Alphabet", "alphabet", picsActionSupport.getPicsEnvironment());
 	}
 
 	@Test
-	public void testGetPicsEnvironment_BetaPerUrl_withNonsenseEnvironmentVariable() throws Exception {
-		System.setProperty("pics.env", "nonsense");
+	public void testGetPicsEnvironment_BetaPerUrl_withEmptyEnvironmentVariable() throws Exception {
+		System.setProperty("pics.env", "    ");
 		when(request.getServerName()).thenReturn(new String("beta.picsorganizer.com"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
-		assertEquals("Equivalent of -Dpics.env=nonsense", "beta", picsActionSupport.getPicsEnvironment());
+		assertEquals("Equivalent of -Dpics.env=", "beta", picsActionSupport.getPicsEnvironment());
 	}
 
 	@Test
@@ -270,8 +274,39 @@ public class PicsActionSupportTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testIsLocalhostEnvironment() throws Exception {
+	public void testIsLocalhostEnvironment_perEnvironmentVar() throws Exception {
+		System.setProperty("pics.env", "localhost");
+		when(request.getServerName()).thenReturn(new String("example.com"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isLocalhostEnvironment());
+	}
+	@Test
+	public void testIsLocalhostEnvironment_noPort() throws Exception {
+		when(request.getServerName()).thenReturn(new String("localhost"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isLocalhostEnvironment());
+	}
+	@Test
+	public void testIsLocalhostEnvironment_8080() throws Exception {
 		when(request.getServerName()).thenReturn(new String("localhost:8080"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isLocalhostEnvironment());
+	}
+
+	@Test
+	public void testIsLocalhostEnvironment_DotLocal_noPort() throws Exception {
+		when(request.getServerName()).thenReturn(new String("foo.local"));
+		when(request.getRequestURI()).thenReturn(new String("/index.html"));
+
+		assertTrue(picsActionSupport.isLocalhostEnvironment());
+	}
+
+	@Test
+	public void testIsLocalhostEnvironment_DotLocal_8080() throws Exception {
+		when(request.getServerName()).thenReturn(new String("foo.local:8080"));
 		when(request.getRequestURI()).thenReturn(new String("/index.html"));
 
 		assertTrue(picsActionSupport.isLocalhostEnvironment());

@@ -1,1 +1,26 @@
+.FrontendDevelopmentGuide-page
+{
+	.span3 > .nav-list
+	{
+		width: 220px;
+	}
+	
+	.span3 > .nav-list.affix
+	{
+		margin-top: 55px;
+		top: 20px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.FrontendDevelopmentGuide-page
+	{
+		.span3 > .nav-list
+		{
+			width: 270px;
+		}
+	}
+}
+
+@import 'page-layout/page-layout';
 @import 'style-guide/style-guide';

@@ -1,264 +1,235 @@
 package com.picsauditing.actions.i18n;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.util.reflection.Whitebox.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.reflection.Whitebox.getInternalState;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import com.opensymphony.xwork2.Action;
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PicsTest;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.converters.JsonObjectConverter;
 import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
-import com.picsauditing.search.SelectSQL;
+import com.picsauditing.search.Report;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ServletActionContext.class, ManageTranslations.class, ActionContext.class})
-@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
-public class ManageTranslationsTest extends PicsTest {
+public class ManageTranslationsTest extends PicsActionTest {
+	private ManageTranslations manageTranslations;
 	
-	ManageTranslations classUnderTest;
-	Map<String, Object> session;
-	
-	@Mock Permissions permissions;
-	@Mock AppTranslation translation;
-	@Mock BasicDAO dao;
-	@Mock private HttpServletRequest request;
+	@Mock
+	private AppTranslation translation;
+	@Mock
+	private BasicDAO dao;
+	@Mock
+	private UserDAO userDAO;
+	@Mock
+	private Report report;
 	
 	@Before
-	public void TestSetup () throws Exception {
-		setUp();
-		
-		classUnderTest = new ManageTranslations();
-		
-		PowerMockito.mockStatic(ServletActionContext.class);
+	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		manageTranslations = new ManageTranslations();
+		super.setUp(manageTranslations);
 		
-		classUnderTest = PowerMockito.spy(new ManageTranslations());
-		autowireEMInjectedDAOs(classUnderTest);
+		PicsTestUtil.autowireDAOsFromDeclaredMocks(manageTranslations, this);
 		
-		session = new HashMap<String, Object>();
-		
-		ActionContext actionContext = mock(ActionContext.class);
-		when(actionContext.getSession()).thenReturn(session);
-		
-		PowerMockito.mockStatic(ActionContext.class);
-		when(ActionContext.getContext()).thenReturn(actionContext);		
-		
-		classUnderTest.setTranslation(translation);
-		setProperty("permissions", permissions);
+		manageTranslations.setTranslation(translation);
+		manageTranslations.setReport(report);
+
 		when(permissions.getLocale()).thenReturn(Locale.FRANCE);
 		when(permissions.getUserId()).thenReturn(1);
 		when(permissions.getAdminID()).thenReturn(1);
-		
-		PowerMockito.mockStatic(ServletActionContext.class);
-		when(ServletActionContext.getRequest()).thenReturn(request);
 	}
 	
 	@Test
 	public void execute_emptyLocaleTo () throws Exception {
-		
-		decoupleDatabaseCallingMethods();
 		setProperty("localeTo", null);
 		setProperty("button", null);
 		setProperty("data", new ArrayList<BasicDynaBean> ());
 		setProperty("download", false);
 		
-		String resultCode = classUnderTest.execute();
+		String resultCode = manageTranslations.execute();
 		
 		assertEquals(resultCode, Action.SUCCESS);
 		verify(permissions).getLocale();
-		verify(classUnderTest).run(any(SelectSQL.class));
+		verify(report).getPage(anyBoolean());
 	}
 	
 	@Test
-	public void execute_saveWithNullTranslation () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
+	public void execute_SaveAttemptWithNullTranslationDoesNotSave() throws Exception {
 		setProperty("localeTo", null);
 		setProperty("button", "save");
 		setProperty("translation", null);
-		setProperty("data", new ArrayList<BasicDynaBean> ());
+		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
 		assertEquals(resultCode, Action.SUCCESS);
-		verify(classUnderTest).run(any(SelectSQL.class));
+		verify(dao, never()).save((AppTranslation) any());
 	}
 
 	@Test
-	public void execute_tracingOn () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
+	public void execute_tracingOnSetsTracingInSession() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
-		setProperty("data", new ArrayList<BasicDynaBean> ());
+		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "tracing On");
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
 		assertEquals(resultCode, Action.SUCCESS);
 		assertEquals(session.get("i18nTracing"), true);
-		
 	}
-	
+
 	@Test
-	public void execute_tracingOff () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
+	public void execute_tracingOffSetsTracingToFalseInSession() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "tracing Off");
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
 		assertEquals(resultCode, Action.SUCCESS);
 		assertEquals(session.get("i18nTracing"), false);
 	}
-	
+
 	@Test
-	@SuppressWarnings("unchecked")	
-	public void execute_tracingClear () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
+	@SuppressWarnings("unchecked")
+	public void execute_tracingClear() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "tracing Clear");
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
 		assertEquals(resultCode, Action.SUCCESS);
-		assertTrue(((Set<String>)session.get("usedI18nKeys")).isEmpty());
+		assertTrue(((Set<String>) session.get("usedI18nKeys")).isEmpty());
 	}
-	
+
 	@Test
-	public void execute_tracingAjax () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
+	public void execute_tracingAjaxReturnsBlank() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "tracing Ajax");
-		
-		assertEquals(classUnderTest.execute(), PicsActionSupport.BLANK);
+
+		assertEquals(manageTranslations.execute(), PicsActionSupport.BLANK);
 	}
-	
+
 	@Test
-	public void execute_saveFunctions_delete () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
-		decoupleEntityManager();
+	public void execute_saveFunctions_EmptyTranslationValueIsDeleted() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "Save");
-		
-		PowerMockito.doReturn("nothing").when(classUnderTest, "getRequestURL");
+
 		when(translation.getId()).thenReturn(1);
 		when(translation.getValue()).thenReturn("");
 		when(translation.getKey()).thenReturn("UnitTest");
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
+		verify(dao).deleteData(eq(AppTranslation.class), anyString());
 		assertEquals(resultCode, Action.SUCCESS);
-		verify(em).createQuery(anyString());
 	}
-	
+
 	@Test
-	public void execute_ajaxSaveFunctions_emptyKeyError () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
-		decoupleEntityManager();
+	public void execute_ajaxSaveFunctions_emptyKeyError() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "Save");
-		
-		PowerMockito.doReturn("ajax").when(classUnderTest, "getRequestURL");
+
+		when(request.getRequestURL()).thenReturn(new StringBuffer("ajax"));
 		when(translation.getId()).thenReturn(1);
 		when(translation.getValue()).thenReturn("UnitTest");
-		
-		String resultCode = classUnderTest.execute();
-		JSONObject out = (JSONObject) new JSONParser().parse((String) getInternalState(classUnderTest, "output"));
-		
+
+		String resultCode = manageTranslations.execute();
+
+		JSONObject out =
+				(JSONObject) new JSONParser().parse((String)
+						getInternalState(manageTranslations, "output"));
+
 		assertEquals(resultCode, PicsActionSupport.BLANK);
 		assertTrue(out.get("success").toString().equals("false"));
 		assertTrue(out.get("reason").toString().equals("Missing Translation Key"));
 	}
-	
+
 	@Test
-	public void execute_ajaxSaveFunctions_emptySourceLanguage () throws Exception {
-		decoupleDatabaseCallingMethods();
-		decoupleEntityManager();
+	public void execute_ajaxSaveFunctions_emptySourceLanguage() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("localeFrom", Locale.ENGLISH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "Save");
-		
-		PowerMockito.doReturn("ajax").when(classUnderTest, "getRequestURL");
+
+		when(request.getRequestURL()).thenReturn(new StringBuffer("ajax"));
 		when(translation.getId()).thenReturn(1);
 		when(translation.getKey()).thenReturn("TestKey");
 		when(translation.getValue()).thenReturn("Test Value");
 		when(translation.getSourceLanguage()).thenReturn("");
 		when(translation.getLocale()).thenReturn("french");
-		
-		String resultCode = classUnderTest.execute();
-		JSONObject out = (JSONObject) new JSONParser().parse((String) getInternalState(classUnderTest, "output"));
+
+		String resultCode = manageTranslations.execute();
+		JSONObject out =
+				(JSONObject) new JSONParser().parse((String)
+						getInternalState(manageTranslations, "output"));
 
 		assertEquals(resultCode, PicsActionSupport.BLANK);
 		verify(translation).setAuditColumns(any(Permissions.class));
 		verify(translation).setSourceLanguage(anyString());
-		verify(em).merge(any());
+		verify(dao).save((AppTranslation) any());
 		assertTrue(out.get("success").toString().equals("true"));
 		assertTrue(out.get("id").toString().equals("1"));
 	}
-	
+
 	@Test
-	public void execute_ajaxSaveFunctions_emptyQualityRating () throws Exception {
-		decoupleDatabaseCallingMethods();
-		decoupleEntityManager();
+	public void execute_ajaxSaveFunctions_emptyQualityRating() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("localeFrom", Locale.ENGLISH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "Save");
-		
-		PowerMockito.doReturn("ajax").when(classUnderTest, "getRequestURL");
+
+		when(request.getRequestURL()).thenReturn(new StringBuffer("ajax"));
 		when(translation.getId()).thenReturn(1);
 		when(translation.getKey()).thenReturn("TestKey");
 		when(translation.getValue()).thenReturn("Test Value");
 		when(translation.getSourceLanguage()).thenReturn("french");
 		when(translation.getQualityRating()).thenReturn(null);
-		
-		String resultCode = classUnderTest.execute();
-		JSONObject out = (JSONObject) new JSONParser().parse((String) getInternalState(classUnderTest, "output"));
-		
+
+		String resultCode = manageTranslations.execute();
+		JSONObject out =
+				(JSONObject) new JSONParser().parse((String)
+						getInternalState(manageTranslations, "output"));
+
 		assertEquals(resultCode, PicsActionSupport.BLANK);
 		verify(translation).setAuditColumns(any(Permissions.class));
 		verify(translation, never()).setSourceLanguage(anyString());
@@ -266,154 +237,77 @@ public class ManageTranslationsTest extends PicsTest {
 		assertTrue(out.get("success").toString().equals("true"));
 		assertTrue(out.get("id").toString().equals("1"));
 	}
-	
+
 	@Test
-	public void execute_nonAjaxSaveFunction_translationHasDot () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
-		decoupleEntityManager();
+	public void execute_nonAjaxSaveFunction_translationHasDot() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("localeFrom", Locale.ENGLISH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "Save");
-		
-		PowerMockito.doReturn("zilch").when(classUnderTest, "getRequestURL");
+
+		when(request.getRequestURL()).thenReturn(new StringBuffer("zilch"));
 		when(translation.getId()).thenReturn(1);
 		when(translation.getKey()).thenReturn("Test.Key");
 		when(translation.getValue()).thenReturn("Test Value");
 		when(translation.getSourceLanguage()).thenReturn("french");
 		when(translation.getQualityRating()).thenReturn(TranslationQualityRating.Good);
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
 		assertEquals(resultCode, Action.SUCCESS);
-		assertEquals("Test", getInternalState(classUnderTest, "key"));
+		assertEquals("Test", getInternalState(manageTranslations, "key"));
 	}
-	
+
 	@Test
-	public void execute_nonAjaxSaveFunction_translationWithoutDot () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
-		decoupleEntityManager();
+	public void execute_nonAjaxSaveFunction_translationWithoutDot() throws Exception {
 		setProperty("localeTo", Locale.FRENCH);
 		setProperty("localeFrom", Locale.ENGLISH);
 		setProperty("data", new ArrayList<BasicDynaBean>());
 		setProperty("download", false);
 		setProperty("button", "Save");
-		
-		PowerMockito.doReturn("zilch").when(classUnderTest, "getRequestURL");
+
+		when(request.getRequestURL()).thenReturn(new StringBuffer("zilch"));
 		when(translation.getId()).thenReturn(1);
 		when(translation.getKey()).thenReturn("TestKey");
 		when(translation.getValue()).thenReturn("Test Value");
 		when(translation.getSourceLanguage()).thenReturn("french");
 		when(translation.getQualityRating()).thenReturn(TranslationQualityRating.Good);
-		
-		String resultCode = classUnderTest.execute();
-		
+
+		String resultCode = manageTranslations.execute();
+
 		assertEquals(resultCode, Action.SUCCESS);
-		assertEquals("TestKey", getInternalState(classUnderTest, "key"));
+		assertEquals("TestKey", getInternalState(manageTranslations, "key"));
 	}
 
 	@Test
-	public void testUpdate_null(){		
+	public void testUpdate_nullWillCreateAndSaveNewTranslation() {
 		when(translation.getKey()).thenReturn(null);
-		Whitebox.setInternalState(classUnderTest, "translation", translation);
 		when(request.getParameter("key2")).thenReturn("Pending");
 		when(request.getParameter("locale")).thenReturn("Pending");
-		AppTranslation newTranslation = new AppTranslation();
 
-		classUnderTest.update();
-		//verify(dao).save(any(AppTranslation.class));
+		manageTranslations.update();
+
+		ArgumentCaptor<AppTranslation> captor = ArgumentCaptor.forClass(AppTranslation.class);
+		verify(dao).save(captor.capture());
+		assertFalse(captor.getValue().equals(translation));
 	}
-
+	  
 	@Test
-	public void testUpdate_notNull(){				
+	public void testUpdate_NotNull() {
 		when(translation.getKey()).thenReturn("TestKey");
-		translation.setKey("testkey");
-		Whitebox.setInternalState(classUnderTest, "translation", translation);
-		classUnderTest.update();
-		//verify(dao).save(any(AppTranslation.class));
+		when(request.getParameter("key2")).thenReturn("Pending");
+		when(request.getParameter("locale")).thenReturn("Pending");
+
+		manageTranslations.update();
+
+		verify(dao).save(translation);
 	}
 
-	@Ignore
-	@Test
-	public void validate_nullKey() {
-		when(translation.getKey()).thenReturn(null);
-		classUnderTest.validate();
-		assertTrue(classUnderTest.hasActionErrors());
-	}
-	
-	@Ignore
-	@Test
-	public void validate_emptyKey() {
-		when(translation.getKey()).thenReturn("");
-		classUnderTest.validate();
-		assertTrue(classUnderTest.hasActionErrors());		
-	}
-	
-	@Ignore
-	@Test
-	public void validate_keyWithSpace() {
-		when(translation.getKey()).thenReturn("has spaces");
-		classUnderTest.validate();
-		assertTrue(classUnderTest.hasActionErrors());		
-	}
+	// TODO: write tests to test validation
 
-	@Ignore
-	@Test
-	public void validate_keyStartsWithSpace() {
-		when(translation.getKey()).thenReturn(" ThisHasASpace");
-		classUnderTest.validate();
-		assertTrue(classUnderTest.hasActionErrors());		
-	}	
-	
-	@Ignore
-	@Test
-	public void validate_keyStartingWithDot () {
-		classUnderTest.setLocaleTo(Locale.FRENCH);
-		when(translation.getKey()).thenReturn(".key.this");
-		classUnderTest.validate();
-		assertTrue(classUnderTest.hasActionErrors());		
-	}
-	
-	@Ignore
-	@Test
-	public void validate_keyEndingWithDot () {
-		classUnderTest.setLocaleTo(Locale.FRENCH);
-		when(translation.getKey()).thenReturn("key.this.");		
-		classUnderTest.validate();
-		assertTrue(classUnderTest.hasActionErrors());		
-	}
-	
-	@Ignore
-	@Test
-	public void validate_emptyLocaleTo () {
-		classUnderTest.validate();
-		assertTrue(classUnderTest.getLocaleTo().equals(Locale.FRENCH));
-	}
-	
-	@Ignore
-	@Test
-	public void validate_correctKey () {
-		when(translation.getKey()).thenReturn("correct.value");
-		classUnderTest.validate();
-		assertFalse(classUnderTest.hasActionErrors());
-	}
-	
 	private void setProperty (String field, Object value) {
-		setInternalState(classUnderTest, field, value);
-	}
-	
-	
-	private void decoupleDatabaseCallingMethods () throws Exception {
-		PowerMockito.doNothing().when(classUnderTest, "updateOtherLanguagesToQuestionable");
-		PowerMockito.doNothing().when(classUnderTest).run(any(SelectSQL.class));
-	}
-	
-	private void decoupleEntityManager () throws Exception {
-		autowireEMInjectedDAOs(classUnderTest);
-		PowerMockito.doNothing().when(em).persist(any());
-		PowerMockito.doReturn(new AppTranslation()).when(em).merge(any());
-		PowerMockito.doReturn(null).when(em).createQuery(Mockito.anyString());
+		setInternalState(manageTranslations, field, value);
 	}
 
 }
