@@ -1114,7 +1114,8 @@ public class UsersManage extends PicsActionSupport {
 	// TODO: Move this to Event Subscription Builder
 	public String sendRecoveryEmail(User user) {
 		try {
-			String serverName = ServletActionContext.getRequest().getServerName();
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
+					"http://", "https://");
 
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
@@ -1122,7 +1123,7 @@ public class UsersManage extends PicsActionSupport {
 			emailBuilder.addToken("user", user);
 
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = "https://" + serverName + "/Login.action?username="
+			String confirmLink = serverName + "Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
@@ -1153,7 +1154,8 @@ public class UsersManage extends PicsActionSupport {
 
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
-			String serverName = ServletActionContext.getRequest().getServerName();
+			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
+					"http://", "https://");
 
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
@@ -1161,7 +1163,7 @@ public class UsersManage extends PicsActionSupport {
 			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = "https://" + serverName + "/Login.action?username="
+			String confirmLink = serverName + "Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
