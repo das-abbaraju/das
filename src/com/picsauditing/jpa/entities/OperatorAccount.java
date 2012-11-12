@@ -264,20 +264,6 @@ public class OperatorAccount extends Account {
 	}
 
 	@Transient
-	public boolean isDiscountPercentInvalidRange() {
-		return discountPercent.compareTo(BigDecimal.ZERO) < 0 || discountPercent.compareTo(BigDecimal.ONE) > 0;
-	}
-
-	@Transient
-	public boolean isDiscountPercentWithoutExpiration() {
-		if (discountPercent.compareTo(BigDecimal.ZERO) > 0) {
-			return discountExpiration == null;
-		}
-
-		return false;
-	}
-
-	@Transient
 	public BigDecimal getScaledDiscountPercent() {
 		return getDiscountPercent().multiply(new BigDecimal(100));
 	}
@@ -303,7 +289,8 @@ public class OperatorAccount extends Account {
 	@Transient
 	public boolean isAcceptsList() {
 		return this.isDescendantOf(OperatorAccount.SUNCOR) || this.isDescendantOf(OperatorAccount.CINTAS)
-			|| this.isOrIsDescendantOf(OperatorAccount.CEDA_CANADA) || this.isOrIsDescendantOf(OperatorAccount.CEDA_USA);
+				|| this.isOrIsDescendantOf(OperatorAccount.CEDA_CANADA)
+				|| this.isOrIsDescendantOf(OperatorAccount.CEDA_USA);
 	}
 
 	@ManyToOne

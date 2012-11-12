@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,6 +43,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
@@ -97,11 +99,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 
-		subHeading = getTextParameterized("FacilitiesEdit.Edit", getText("global." + operator.getType()));
+		subHeading = getText("FacilitiesEdit.Edit", new Object[] { getText("global." + operator.getType()) });
 
-		if (operator.getPrimaryContact() == null) {
+		if (operator.getPrimaryContact() == null)
 			addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
-		}
 
 		notChildOperatorList = getOperatorsNotMyChildren();
 		childOperatorList = operator.getChildOperators();
@@ -118,7 +119,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		} else {
 			setCreateType("Operator");
-
 			if (!isCanEditOp()) {
 				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
 			}
@@ -141,12 +141,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public String addRole() {
 		AccountUser accountUser = new AccountUser();
-		if (accountRep != null && accountRep.getUser().getId() > 0) {
+		if (accountRep != null && accountRep.getUser().getId() > 0)
 			accountUser = accountRep;
-		} else {
+		else
 			accountUser = salesRep;
-		}
-
 		accountUser.setAccount(operator);
 		// First of this month to next year, minus a day
 		// Feb 1st, 2010 to Jan 31st, 2011
@@ -241,6 +239,26 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		if (hasActionErrors()) {
 			return SUCCESS;
+		}
+
+		List<String> errors = validateAccount(operator);
+		if (errors.size() > 0) {
+			operatorDao.clear();
+			operator = operatorDao.find(operator.getId());
+
+			if (operator != null){
+				List<Facility> operatorFacilities = operator.getOperatorFacilities();
+				for (Facility facility : operatorFacilities) {
+					if (!operatorFacilities.contains(facility)) {
+						facilities.add(facility.getOperator().getId());
+					}
+				}
+			}
+
+			for (String error : errors)
+				addActionError(error);
+
+			return REDIRECT;
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
@@ -520,10 +538,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
 
 		// Adding all SwitchTo users to primary contacts
-		try {
+		try{
 			primaryContactSet.addAll(switchToSet);
-		} catch (Exception e) {
-			logger.error("Adding switchTo users error", e);
+		} catch (Exception e){
+			logger.error(e.toString());
 		}
 		addParentPrimaryOperatorContactUsers(primaryContactSet);
 
@@ -672,6 +690,39 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		notSelectedClients.removeAll(childOperatorList);
 	}
 
+	// TODO: This should be converted to Struts2 Validation
+	private List<String> validateAccount(OperatorAccount operator) {
+		List<String> errorMessages = new ArrayList<String>();
+		if (Strings.isEmpty(operator.getName()))
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCompanyName"));
+		else if (operator.getName().length() < 2)
+			errorMessages.add(getText("FacilitiesEdit.NameAtLeast2Chars"));
+
+		if (operator.getCountry() == null) {
+			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
+		}
+
+		if (operator.getCountry().hasCountrySubdivisions()
+				&& (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
+		}
+
+		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
+				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
+			errorMessages.add(getText("FacilitiesEdit.EnterValidRange"));
+		}
+
+		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0 && operator.getDiscountExpiration() == null) {
+			errorMessages.add(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
+		}
+
+		if (operator.isRememberMeTimeEnabled() && operator.getRememberMeTimeInDays() <= 0) {
+			errorMessages.add(getText("FacilitiesEdit.RememberMeMustBePositive"));
+		}
+
+		return errorMessages;
+	}
+
 	// Insure that all newly added facilities get linked to all parent accounts.
 	// i.e. if F1 -> Hub -> US -> Corporate
 	// then F1 needs to be linked to US and Corporate
@@ -695,7 +746,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	// Recursively find all the parents of this operator.
 	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents) {
-		if (currentOperator.getParent() != null) {
+		if (currentOperator.getParent() == null)
+			return;
+		else {
 			parents.add(currentOperator.getParent());
 			findParentAccounts(currentOperator.getParent(), parents);
 		}
