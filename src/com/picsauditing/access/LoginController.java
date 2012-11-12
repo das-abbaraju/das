@@ -158,6 +158,7 @@ public class LoginController extends PicsActionSupport {
 			permissions = permissionBuilder.login(user);
 			addClientSessionCookieToResponse(isRememberMeSetInCookie(), 0);
 			permissions.setAdminID(0);
+			ActionContext.getContext().getSession().put("permissions", permissions);
 		}
 		
 		return setRedirectUrlPostLogin();
@@ -319,7 +320,7 @@ public class LoginController extends PicsActionSupport {
 				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
 			}
 		}
-		return "";
+		return Strings.EMPTY_STRING;
 	}
 
 	private void loadUser() {
