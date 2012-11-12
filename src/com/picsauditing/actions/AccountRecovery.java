@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -123,15 +124,15 @@ public class AccountRecovery extends PicsActionSupport {
 		String recoveryEmailStatus = "";
 
 		try {
-			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
-					"http://", "https://");
+			String serverName = ServletActionContext.getRequest().getServerName();
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.addToken("user", user);
 
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = serverName + "Login.action?username="
+			String confirmLink = "https://" + serverName + "/Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
@@ -154,15 +155,15 @@ public class AccountRecovery extends PicsActionSupport {
 
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
-			String serverName = getRequestURL().replace(ActionContext.getContext().getName() + ".action", "").replace(
-					"http://", "https://");
+			String serverName = ServletActionContext.getRequest().getServerName();
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
 			emailBuilder.setBccAddresses(EmailAddressUtils.PICS_MARKETING_EMAIL_ADDRESS_WITH_NAME);
 			emailBuilder.addToken("user", user);
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			String confirmLink = serverName + "Login.action?username="
+			String confirmLink = "https://" + serverName + "/Login.action?username="
 					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 			emailBuilder.addToken("confirmLink", confirmLink);
 			emailBuilder.setToAddresses(user.getEmail());
