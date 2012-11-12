@@ -29,7 +29,7 @@ public class FirstTimeDynamicReportUser extends AbstractInterceptor {
 
 			if (permissions.isLoggedIn()) {
 				User user = userDAO.find(permissions.getUserId());
-				if (user.getUsingDynamicReportsDate() == null) {
+				if (user.getUsingDynamicReportsDate() == null && user.isUsingDynamicReports()) {
 					// TODO: possible put the "usingDynamicReports" into the Permissions object
 					user.setUsingDynamicReportsDate(new Date());
 					userDAO.save(user);
