@@ -69,7 +69,7 @@
     <div class="container">
         <div class="row">
             <div class="span4 offset4">
-                <a class="btn btn-success" href="#">Start Using PICS Organizer 7.0</a>
+                <a class="btn btn-success" href="Home.action">Start Using PICS Organizer 7.0</a>
                 <p>
                     For a short time, you can choose to revert to the old menu style by going to your Account Settings.
                 </p>

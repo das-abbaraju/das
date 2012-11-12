@@ -39,6 +39,7 @@
 			<interceptor name="jsonValidation"
 				class="org.apache.struts2.json.JSONValidationInterceptor" />
 			<interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor" />
+			<interceptor name="FirstTimeDynamicReportUser" class="com.picsauditing.interceptors.FirstTimeDynamicReportUser" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
@@ -58,6 +59,7 @@
 				<interceptor-ref name="multiselect" />
 				<interceptor-ref name="staticParams" />
 				<interceptor-ref name="ReportUsageInterceptor" />
+				<interceptor-ref name="FirstTimeDynamicReportUser" />
 				<interceptor-ref name="params">
 					<param name="excludeParams">dojo\..*</param>
 					<param name="excludeParams">struts\..*</param>
@@ -181,6 +183,9 @@
 
 		<action name="Tutorial" class="com.picsauditing.actions.Tutorial">
 			<result>/struts/tutorial/navigation-menu.jsp</result>
+			<interceptor-ref name="validation">
+    			<param name="excludeMethods">execute</param>
+			</interceptor-ref>
 		</action>
 		
 		<action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
