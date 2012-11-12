@@ -105,6 +105,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private String apiKey;
 	private boolean usingDynamicReports;
 	private int assignmentCapacity;
+	private Date usingDynamicReportsDate;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -893,6 +894,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	public Date getUsingDynamicReportsDate() {
+		return usingDynamicReportsDate;
+	}
+
+	public void setUsingDynamicReportsDate(Date usingDynamicReportsDate) {
+		this.usingDynamicReportsDate = usingDynamicReportsDate;
 	}
 
 	@Transient
