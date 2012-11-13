@@ -74,8 +74,7 @@ public class MainPage {
 		}
 
 		if (permissions == null) {
-			PermissionBuilder permissionBuilder = SpringUtils.getBean("PermissionBuilder");
-			permissionBuilder.build(permissions);
+			permissions = new Permissions();
 		}
 
 		return permissions;
