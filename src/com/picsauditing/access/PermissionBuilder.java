@@ -33,7 +33,7 @@ public class PermissionBuilder {
 		Set<Integer> groupIDs;
 		
 		// TODO: Remove this section once all issues are resolved with the Group Hierarchy
-		Set<Integer> allInheritedGroupIds = getDirectlyRelatedGroupIds(permissions.getUserId());
+		Set<Integer> allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
 		
 		if (useInheritedGroups()) {
 			groupIDs = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
