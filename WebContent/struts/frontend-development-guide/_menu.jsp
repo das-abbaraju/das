@@ -29,13 +29,13 @@
         
         <ul class="dropdown-menu">
             <li class="${methodName == 'css_javascript_conventions' ? 'active' : ''}">
-                <a href="${css_javascript_conventions}">CSS Javascript Conventions</a>
+                <a href="${css_javascript_conventions}">CSS &amp; Javascript</a>
             </li>
             <li class="${methodName == 'html_conventions' ? 'active' : ''}">
-                <a href="${html_conventions}">HTML Conventions</a>
+                <a href="${html_conventions}">HTML</a>
             </li>
             <li class="${methodName == 'file_structure_conventions' ? 'active' : ''}">
-                <a href="${file_structure_conventions}">File Structure Conventions</a>
+                <a href="${file_structure_conventions}">File Structure</a>
             </li>
         </ul>
     </li>
