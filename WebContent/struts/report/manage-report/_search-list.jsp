@@ -88,9 +88,9 @@
                 <div class="alert alert-info alert-block">
                     <button type="button" class="close" data-dismiss="alert">×</button>
                     
-                    <h4>No results found.</h4>
+                     <h4><s:text name="ManageReports.Search.NoResultsInfo" /></h4>
                     <p>
-                        Try a broader search or use different terms to find the report you're looking for.
+                        <s:text name="ManageReports.Search.NoResultsMessage" />
                     </p>
                 </div>
             </div>

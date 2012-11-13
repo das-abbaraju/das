@@ -39,9 +39,9 @@
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 
-                <h4>You don't have any favorite reports.</h4>
+                <h4><s:text name="ManageReports.NoFavorites.Info" /></h4>
                 <p>
-                    For quick access to the reports you use most, select the star icon or choose "Favorite" in the report options in My Reports.
+                    <s:text name="ManageReports.NoFavorites.Message" />
                 </p>
             </div>
         </div>

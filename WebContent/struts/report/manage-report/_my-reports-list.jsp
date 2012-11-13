@@ -16,9 +16,9 @@
             <div class="alert alert-info alert-block">
                 <button type="button" class="close" data-dismiss="alert">×</button>
                 
-                <h4>You don't have any reports.</h4>
+                <h4><s:text name="ManageReports.NoReports.Info" /></h4>
                 <p>
-                    Search for new reports, duplicate others' reports, or ask someone to share some of their reports with you.
+                    <s:text name="ManageReports.NoReports.Message" />
                 </p>
             </div>
         </div>
