@@ -131,6 +131,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private int individualFlagOverrideCount = 0;
 	private ContractorOperator corporateFlagOverride = null;
 
+	// Show extremely limited contractor view for operators
+	private boolean showBasicsOnly = false;
+
 	@Override
 	public String execute() throws Exception {
 		if (!forceLogin()) {
@@ -138,11 +141,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		this.subHeading = getText("ContractorView.title");
-		findContractor();
 
-		if (permissions.isOperatorCorporate()
-				&& (contractor.getStatus().isDeactivated() || contractor.getStatus().isDeleted()))
-			throw new NoRightsException("PICS Administrator");
+		try {
+			findContractor();
+		} catch (NoRightsException noRights) {
+			showBasicsOnly = true;
+		} catch (Exception e) {
+			throw e;
+		}
 
 		if (permissions.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
 			OperatorAccount gc = new OperatorAccount();
@@ -286,8 +292,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		displayOsha.put(OshaType.OSHA, false);
 		displayOsha.put(OshaType.COHS, false);
 		displayOsha.put(OshaType.UK_HSE, false);
-		
-		for (ContractorAudit audit:contractor.getAudits()) {
+
+		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isAnnualAddendum() && audit.hasCaoStatus(AuditStatus.Complete)) {
 				if (audit.isDataExpectedAnswer(AuditQuestion.OSHA_KEPT_ID, "Yes"))
 					displayOsha.put(OshaType.OSHA, true);
@@ -298,7 +304,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 	}
-	
+
 	public boolean isAnyOshasToDisplay() {
 		return displayOsha.containsValue(true);
 	}
@@ -383,7 +389,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String getContractorAndOperatorNames() throws Exception  {
+	public String getContractorAndOperatorNames() throws Exception {
 		int id = Integer.parseInt(getRequest().getParameter("id"));
 		int opID = Integer.parseInt(getRequest().getParameter("opId"));
 		json = new JSONObject();
@@ -422,6 +428,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public void setEmployeeGUARD(List<ContractorAudit> employeeGUARD) {
 		this.employeeGUARD = employeeGUARD;
+	}
+
+	public boolean isShowBasicsOnly() {
+		return showBasicsOnly;
 	}
 
 	public List<AuditData> getServicesPerformed() {
@@ -506,8 +516,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (audit.getAuditType().isAnnualAddendum()) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
 					if (!cao.getStatus().equals(AuditStatus.Complete)) {
-						for (ContractorAuditOperatorPermission caop : cao
-								.getCaoPermissions()) {
+						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 							if (caop.getOperator().getId() == operatorId) {
 								forYears.add(audit.getAuditFor());
 								break;
@@ -517,7 +526,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		Collections.sort(forYears);
 		for (String yr : forYears) {
 			if (years.length() > 0)

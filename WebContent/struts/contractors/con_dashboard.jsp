@@ -88,7 +88,7 @@
 </head>
 <body>
 <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
-<s:if test="viewableByGC">
+<s:if test="viewableByGC && !showBasicsOnly">
 <s:include value="conHeader.jsp"/>
 
 <s:if test="permissions.admin">
@@ -904,6 +904,9 @@
 </tr>
 </table>
 </s:if>
+<s:elseif test="showBasicsOnly">
+    <s:include value="_con-dashboard-basics-only.jsp"/>
+</s:elseif>
 <s:else>
     <s:include value="con_dashboard_gc_limited.jsp"/>
 </s:else>
