@@ -192,13 +192,14 @@
         <action name="About" class="com.picsauditing.actions.About">
             <result>/struts/general/about.jsp</result>
         </action>
-
+		
         <action name="Tutorial" class="com.picsauditing.actions.Tutorial">
-            <result>/struts/tutorial/navigation-menu.jsp</result>
-            <interceptor-ref name="validation">
-                <param name="excludeMethods">execute</param>
-            </interceptor-ref>
-        </action>
+			<result name="navigation-menu">/struts/tutorial/navigation-menu.jsp</result>
+			
+			<interceptor-ref name="validation">
+    			<param name="excludeMethods">execute,navigationMenu</param>
+			</interceptor-ref>
+		</action>
 
         <action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
             <result>struts/forms/manage_resources.jsp</result>

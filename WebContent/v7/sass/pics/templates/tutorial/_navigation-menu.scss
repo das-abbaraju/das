@@ -1,4 +1,4 @@
-#Tutorial__page
+#Tutorial_navigationMenu_page
 {
 	background-color: #454545;
 	padding-top: 0;
@@ -8,35 +8,30 @@
 		background-color: #f1f1f2;
 	}
 	
-	#main
+	header
 	{
-		.row
-		{
-			margin-bottom: 60px;
-		}
-	
-		> .row
-		{
-			margin-top: 60px;
-		}
+		overflow: hidden;
+		padding: 30px 30px 0;
 	}
 	
 	.page-title
 	{
 		float: left;
-		margin: 30px 30px 0 30px;
 
 		h1
 		{
 			color: #808285;
 			font-size: 60px;
 			font-weight: normal;
+			line-height: 1;
+			margin: 0;
 		}
 		
 		h2
 		{
 			color: #a84d10;
 			font-size: 14px;
+			line-height: 1;
 		}
 	}
 	
@@ -47,6 +42,15 @@
 		width: 165px;
 	}
 	
+	#main
+	{
+		.row
+		{
+			margin-bottom: 60px;
+			margin-top: 60px;
+		}
+	}
+	
 	.overview
 	{
 		h1
@@ -54,6 +58,7 @@
 			color: #73bbe8;
 			font-size: 24px;
 			font-weight: normal;
+			line-height: 1;
 			margin-top: 0;
 		}
 		
@@ -80,24 +85,89 @@
 	
 	footer
 	{
-		.container
+		background-color: #ccc;
+		@include background-image(linear-gradient(#eaeaea, #ccc));
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
+		border-top: 1px solid #999;
+		padding: 30px 0;
+		text-align: center;
+		
+		a
 		{
-			background-color: #ccc;
-			@include background-image(linear-gradient(#eaeaea, #ccc));
-			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
-			border: 1px solid #999;
-			padding: 30px 0;
+			margin-bottom: 10px;
+		}
+		
+		p
+		{
+			color: #808285;
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	#Tutorial_navigationMenu_page
+	{
+		background-color: #f1f1f2;
+		
+		header
+		{
 			text-align: center;
+		}
+		
+		.page-title
+		{
+			float: none;
 			
-			a
+			h1
 			{
-				margin-bottom: 10px;
+				font-size: 40px;
 			}
-			
-			p
+		}
+		
+		.logo
+		{
+			float: none;
+			margin-bottom: 30px;
+			width: 100px;
+		}
+		
+		#main
+		{
+			.row
 			{
-				color: #808285;
+				margin-bottom: 30px;
+				margin-top: 30px;
 			}
+		}
+		
+		.dashboard img
+		{
+			margin-right: -20px;
+		}
+		
+		.settings
+		{
+			margin-bottom: 30px;
+		}
+		
+		.settings img
+		{
+			margin-left: -20px;
+		}
+		
+		.support
+		{
+			margin-top: 30px;
+		}
+		
+		.support img
+		{
+			margin-right: -20px;
+		}
+		
+		footer
+		{
+			margin: 0 -20px;
 		}
 	}
 }
