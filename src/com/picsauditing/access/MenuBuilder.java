@@ -400,13 +400,12 @@ public final class MenuBuilder {
 		supportMenu.addChild(getText("Registration.Error.LiveChat"), "#", "live_chat");
 		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
 		supportMenu.addChild(getText("global.AboutPICS"), "#", "about_pics");
-		supportMenu.addChild(getText("Footer.Privacy"), "PrivatePolicy.action", "private_policy");
 
-		{
-			MenuComponent referenceMenu = supportMenu.addChild("References");
-			if (permissions.hasPermission(OpPerms.ManageTrades))
-				referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
-		}
+		MenuComponent referenceMenu = supportMenu.addChild("Reference");
+		if (permissions.hasPermission(OpPerms.ManageTrades))
+			referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
+
+		referenceMenu.addChild("Menu Navigation", "Tutorial.action", "menu_navigation");
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
