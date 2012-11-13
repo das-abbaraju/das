@@ -40,7 +40,7 @@ public class PermissionBuilder {
 		} else {
 			// TODO remove this section after we're able to finish the testing
 			// on Group Inheritance
-			groupIDs = allInheritedGroupIds;
+			groupIDs = getDirectlyRelatedGroupIds(permissions.getUserId());
 		}
 		
 		permissions.getAllInheritedGroupIds().clear();
