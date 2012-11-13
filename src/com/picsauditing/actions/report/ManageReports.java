@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -79,8 +80,7 @@ public class ManageReports extends PicsActionSupport {
 			reportUserFavorites = reportUserDao.findAllFavorite(permissions.getUserId());
 
 			if (CollectionUtils.isEmpty(reportUserFavorites)) {
-				addActionMessage(getText("ManageReports.message.NoFavorites"));
-				reportUserFavorites = new ArrayList<ReportUser>();
+				reportUserFavorites = Collections.emptyList();
 			}
 
 			if (reportUserFavorites.size() > MAX_REPORTS_IN_MENU) {
@@ -108,8 +108,7 @@ public class ManageReports extends PicsActionSupport {
 		}
 
 		if (CollectionUtils.isEmpty(reportPermissionUsers)) {
-			addActionMessage(getText("ManageReports.message.NoUserReports"));
-			reportPermissionUsers = new ArrayList<ReportPermissionUser>();
+			reportPermissionUsers = Collections.emptyList();
 		}
 
 		if (AjaxUtils.isAjax(request())) {
@@ -123,12 +122,8 @@ public class ManageReports extends PicsActionSupport {
 		reports = new ArrayList<Report>();
 		try {
 			reports = reportModel.getReportsForSearch(searchTerm, permissions, getPagination());
-			if (CollectionUtils.isEmpty(reports)) {
-				addActionMessage("No Reports found.");
-			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!searchList.action", e);
-			addActionError("Unexpected error occurred while searching for reports.");
 			if (permissions.has(OpPerms.Debug)) {
 				addActionError(e.getMessage());
 			}
@@ -141,57 +136,33 @@ public class ManageReports extends PicsActionSupport {
 		return "search";
 	}
 
-	// The code in this method was commented out to temporarily disable this functionality
+	/**
+	 * This method has purposely been left empty because we wanted to disable 
+	 * this functionality.
+	 * 
+	 * @return
+	 */
 	public String removeReportUser() {
-//		try {
-//			ReportUser reportUser = reportUserDao.findOne(permissions.getUserId(), reportId);
-//			reportUserDao.remove(reportUser);
-//
-//			addActionMessage(getText("ManageReports.message.ReportRemoved"));
-//		} catch (NoResultException nre) {
-//			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
-//			logger.error(nre.toString());
-//		} catch (Exception e) {
-//			logger.error("Uncaught exception in removeUserReport(). ", e);
-//		}
-
 		return redirectToPreviousView();
 	}
 
-	// The code in this method was commented out to temporarily disable this functionality
+	/**
+	 * This method has purposely been left empty because we wanted to disable 
+	 * this functionality.
+	 * 
+	 * @return
+	 */
 	public String removeReportPermissionUser() {
-//		try {
-//			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
-//			reportPermissionUserDao.remove(reportPermissionUser);
-//			
-//			addActionMessage(getText("ManageReports.message.ReportRemoved"));
-//		} catch (NoResultException nre) {
-//			addActionMessage(getText("ManageReports.message.NoReportToRemove"));
-//			logger.error(nre.toString());
-//		} catch (Exception e) {
-//			logger.error("Uncaught exception in removeUserReport(). ", e);
-//		}
-
 		return redirectToPreviousView();
 	}
 
-	// The code in this method was commented out to temporarily disable this functionality
+	/**
+	 * This method has purposely been left empty because we wanted to disable 
+	 * this functionality.
+	 * 
+	 * @return
+	 */
 	public String deleteReport() {
-//		try {
-//			Report report = reportDao.find(Report.class, reportId);
-//			if (reportModel.canUserEdit(permissions, report)) {
-//				reportModel.removeAndCascade(report);
-//				addActionMessage(getText("ManageReports.message.ReportDeleted"));
-//			} else {
-//				addActionError(getText("ManageReports.error.NoDeletePermissions"));
-//			}
-//		} catch (NoResultException nre) {
-//			addActionError(getText("ManageReports.error.NoReportToDelete"));
-//			logger.error(nre.toString());
-//		} catch (Exception e) {
-//			logger.error("Uncaught exception in deleteReport(). ", e);
-//		}
-
 		return redirectToPreviousView();
 	}
 
@@ -199,7 +170,6 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			reportModel.favoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
-			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
 			logger.error("Uncaught exception in ManageReports.favorite(). ", e);
@@ -212,7 +182,6 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			reportModel.unfavoriteReport(permissions.getUserId(), reportId);
 		} catch (NoResultException nre) {
-			addActionMessage(getText("ManageReports.message.FavoriteNotFound"));
 			logger.error(nre.toString());
 		} catch (Exception e) {
 			logger.error("Uncaught exception in ManageReports.unfavorite(). ", e);
@@ -226,7 +195,6 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			reportModel.moveReportUser(permissions.getUserId(), reportId, positionChange);
 		} catch (NoResultException nre) {
-			// Don't do anything
 			logger.warn("No result found in ManageReports.moveUp()", nre);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports.moveUp(). ", e);
@@ -240,7 +208,6 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			reportModel.moveReportUser(permissions.getUserId(), reportId, positionChange);
 		} catch (NoResultException nre) {
-			// Don't do anything
 			logger.warn("No result found in ManageReports.moveDown()", nre);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports.moveDown(). ", e);
@@ -249,7 +216,12 @@ public class ManageReports extends PicsActionSupport {
 		return redirectToPreviousView();
 	}
 
-	// Exclusively to export Columns for translations 
+	/**
+	 * Exclusively to export Columns for translations
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public String columnsToTranslate() throws Exception {
 		List<Report> allReports = reportDao.findAll(Report.class);
 		ReportUtil.findColumnsToTranslate(allReports);
@@ -260,7 +232,6 @@ public class ManageReports extends PicsActionSupport {
 		try {
 			String referer = getRequest().getHeader("Referer");
 			if (Strings.isEmpty(referer)) {
-				// TODO make this a full URL and add a test for it
 				referer = LANDING_URL;
 			}
 

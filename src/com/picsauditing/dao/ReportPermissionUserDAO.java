@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ReportPermissionUser;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings( {"unchecked", "deprecation"} )
 public class ReportPermissionUserDAO extends PicsDAO {
 	
 	private static final String FIND_REPORTS_FOR_USER = "SELECT rpu.*, r.name, ru.lastViewedDate FROM report_permission_user rpu " + 
@@ -40,19 +40,25 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		return (ReportPermissionUser) query.getSingleResult();
 	}
 	
-	public ReportPermissionUser findOne(Permissions permissions, int reportId) throws NoResultException, NonUniqueResultException {
-		String findReportForUser = FIND_REPORTS_FOR_USER + " AND rpu.reportID = :reportId ";
-		String findReportForGroup = FIND_REPORTS_FOR_GROUP + " AND rpu.reportID = :reportId ";
+	public ReportPermissionUser findOne(Permissions permissions, int reportId) throws NonUniqueResultException {
+		try {
+			String findReportForUser = FIND_REPORTS_FOR_USER + " AND rpu.reportID = :reportId ";
+			String findReportForGroup = FIND_REPORTS_FOR_GROUP + " AND rpu.reportID = :reportId ";
 
-		// The reason a Limit is needed is that we are searching for user permissions and group permissions 
-		String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, findReportForUser, findReportForGroup) + " LIMIT 1 ";
-		
-		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
-		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("reportId", reportId);
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
-		
-		return (ReportPermissionUser) query.getSingleResult();
+			// The reason a Limit is needed is that we are searching for user
+			// permissions and group permissions
+			String sql = String.format(FIND_REPORTS_BASED_ON_USER_PERMISSIONS, findReportForUser, findReportForGroup)
+					+ " LIMIT 1 ";
+
+			Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
+			query.setParameter("userId", permissions.getUserId());
+			query.setParameter("reportId", reportId);
+			query.setParameter("groupIds", permissions.getGoupIds());
+
+			return (ReportPermissionUser) query.getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
 	}
 	
 	@Transactional(propagation = Propagation.NESTED)
@@ -70,7 +76,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+		query.setParameter("groupIds", permissions.getGoupIds());
 		
 		return query.getResultList();
 	}
@@ -82,7 +88,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+		query.setParameter("groupIds", permissions.getGoupIds());
 		
 		return query.getResultList();
 	}
@@ -93,7 +99,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+		query.setParameter("groupIds", permissions.getGoupIds());
 		
 		return query.getResultList();
 	}
@@ -104,7 +110,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+		query.setParameter("groupIds", permissions.getGoupIds());
 		
 		return query.getResultList();
 	}
@@ -115,7 +121,7 @@ public class ReportPermissionUserDAO extends PicsDAO {
 		
 		Query query = em.createNativeQuery(sql, ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+		query.setParameter("groupIds", permissions.getGoupIds());
 		
 		return query.getResultList();
 	}

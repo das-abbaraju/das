@@ -10,6 +10,8 @@ import javax.persistence.NonUniqueResultException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -42,17 +44,22 @@ public class ReportModel {
 	private ReportPermissionUserDAO reportPermissionUserDao;
 	@Autowired
 	private ReportPermissionAccountDAO reportPermissionAccountDao;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ReportModel.class);
 
 	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
 		try {
 			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
 			if (reportPermissionUser != null)
 				return true;
+			
 			ReportPermissionAccount reportPermissionAccount = reportPermissionAccountDao.findOne(
 					permissions.getAccountId(), reportId);
+			
 			if (reportPermissionAccount != null)
 				return true;
-		} catch (NoResultException e) {
+		} catch (NoResultException nre) {
+
 		}
 
 		return isReportDevelopmentGroup(permissions);
@@ -61,9 +68,10 @@ public class ReportModel {
 	public boolean canUserEdit(Permissions permissions, Report report) {
 		try {
 			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, report.getId());
-			if (reportPermissionUser.isEditable())
+			if (reportPermissionUser != null && reportPermissionUser.isEditable())
 				return true;
-		} catch (NoResultException e) {
+		} catch (NonUniqueResultException nure) {
+			logger.error("No unique results found for {} and reportId = {}", permissions.toString(), report.getId());
 		}
 
 		return isReportDevelopmentGroup(permissions);
@@ -81,7 +89,7 @@ public class ReportModel {
 			reportDao.findOne(UserGroup.class, where);
 
 			return true;
-		} catch (NoResultException e) {
+		} catch (NoResultException nre) {
 		}
 		
 		return false;

@@ -41,6 +41,7 @@ public class Permissions implements Serializable {
 	private boolean forcePasswordReset = false;
 	
 	private Set<Integer> allInheritedGroupIds = new HashSet<Integer>();
+	private Set<Integer> groupIds = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
@@ -264,9 +265,21 @@ public class Permissions implements Serializable {
 	public void setForcePasswordReset(boolean forcePasswordReset) {
 		this.forcePasswordReset = forcePasswordReset;
 	}
-
+	
 	public Set<Integer> getAllInheritedGroupIds() {
 		return allInheritedGroupIds;
+	}
+	
+	/**
+	 * This method was added so it will ALWAYS return the entire set of 
+	 * inherited groups. Added because we had some issues with the effects 
+	 * of everything else throughout the site. Never to be used with hasGroup().
+	 * 
+	 * @return
+	 */
+	@Deprecated
+	public Set<Integer> getGoupIds() {
+		return groupIds;
 	}
 	
 	public String getUsername() {

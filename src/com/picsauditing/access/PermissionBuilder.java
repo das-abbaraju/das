@@ -13,6 +13,7 @@ import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 public class PermissionBuilder {
+	
 	@Autowired
 	private HierarchyBuilder hierarchyBuilder;
 	@Autowired
@@ -30,16 +31,23 @@ public class PermissionBuilder {
 
 	public void build(Permissions permissions) {
 		Set<Integer> groupIDs;
+		
+		// TODO: Remove this section once all issues are resolved with the Group Hierarchy
+		Set<Integer> allInheritedGroupIds = getDirectlyRelatedGroupIds(permissions.getUserId());
+		
 		if (useInheritedGroups()) {
 			groupIDs = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
 		} else {
 			// TODO remove this section after we're able to finish the testing
 			// on Group Inheritance
-			groupIDs = getDirectlyRelatedGroupIds(permissions.getUserId());
+			groupIDs = allInheritedGroupIds;
 		}
 		
 		permissions.getAllInheritedGroupIds().clear();
 		permissions.getAllInheritedGroupIds().addAll(groupIDs);
+		
+		permissions.getGoupIds().clear();
+		permissions.getGoupIds().addAll(allInheritedGroupIds);
 	}
 
 	private boolean useInheritedGroups() {

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -114,7 +115,7 @@ public class ReportModelTest {
 
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
-		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenThrow(new NoResultException());
+		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenThrow(new NonUniqueResultException());
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
 
