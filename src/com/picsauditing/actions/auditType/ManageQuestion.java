@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -51,6 +52,15 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	@Override
 	protected void loadParent(int id) {
 		super.load(id);
+	}
+	
+	@Override
+	public String execute() throws Exception {
+		String result = super.execute();
+		if (result.equals(Redirect.SAVE)) {
+			return setUrlForRedirect("ManageCategory.action?id=" + category.getId());
+		}
+		return result;
 	}
 
 	private AuditExtractOption auditExtractOptionForAuditQuestion() {

@@ -468,7 +468,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		}
 	}
 
-	private static class Redirect {
+	protected static class Redirect {
 		static final String DELETE = "delete";
 		static final String SAVE = "save";
 		static final String MOVE = "move";
