@@ -4,6 +4,7 @@
   background-image: -moz-linear-gradient(#252525, #333333);
   background-image: -o-linear-gradient(#252525, #333333);
   background-image: linear-gradient(#252525, #333333);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525', endColorstr='#ff333333', GradientType=0);
   color: #f1f1f2;
   height: 26px;
   line-height: 26px;
