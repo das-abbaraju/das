@@ -41,7 +41,7 @@ public abstract class SafetyStatistics {
 			return null;
 		}
 		
-		return answerMap.get(rateType).getAnswer();
+		return answerMap.get(rateType).getAnswer().replace(",", "");
 	}
 	
 	public HashMap<OshaRateType, AuditData> getAnswerMap() {

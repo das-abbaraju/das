@@ -91,11 +91,11 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("injuries")))
 				return MISSING_PARAMETER;
 			
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int fatalities = Integer.parseInt(params.get("fatalities"));
-			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
-			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
-			int injuries= Integer.parseInt(params.get("injuries"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int fatalities = Integer.parseInt(params.get("fatalities").replace(",", ""));
+			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases").replace(",", ""));
+			int restrictedCases = Integer.parseInt(params.get("restrictedCases").replace(",", ""));
+			int injuries= Integer.parseInt(params.get("injuries").replace(",", ""));
 			int totalCases = fatalities + lostWorkdayCases + restrictedCases + injuries;
 			
 			return calculateRate(totalCases, manHours, OSHA_NORMALIZER);
@@ -114,8 +114,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostWorkdayCases")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases").replace(",", ""));
 			
 			return calculateRate(lostWorkdayCases, manHours, OSHA_NORMALIZER);
 		}
@@ -133,8 +133,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("restrictedCases")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int restrictedCases = Integer.parseInt(params.get("restrictedCases").replace(",", ""));
 			
 			return calculateRate(restrictedCases, manHours, OSHA_NORMALIZER);	
 		}
@@ -153,9 +153,9 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("restrictedCases")))
 				return MISSING_PARAMETER;
 			
-			int manHours = Integer.parseInt(params.get("manHours"));			
-			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
-			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));			
+			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases").replace(",", ""));
+			int restrictedCases = Integer.parseInt(params.get("restrictedCases").replace(",", ""));
 			
 			int dartCases = lostWorkdayCases + restrictedCases;
 			
@@ -175,8 +175,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int fatalities = Integer.parseInt(params.get("fatalities"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int fatalities = Integer.parseInt(params.get("fatalities").replace(",", ""));
 			
 			return calculateRate(fatalities, manHours, OSHA_NORMALIZER);	
 		}
@@ -194,8 +194,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostWorkdays")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays").replace(",", ""));
 			
 			return calculateRate(lostWorkdays, manHours, OSHA_NORMALIZER);	
 		}
@@ -214,9 +214,9 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("restrictedDays")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
-			int restrictedDays = Integer.parseInt(params.get("restrictedDays"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays").replace(",", ""));
+			int restrictedDays = Integer.parseInt(params.get("restrictedDays").replace(",", ""));
 			int totalDays = lostWorkdays + restrictedDays;
 			
 			return calculateRate(totalDays, manHours, OSHA_NORMALIZER);	
@@ -240,10 +240,10 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 			
-			BigDecimal totalHours = new BigDecimal(params.get("totalHours")).setScale(7);
-			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
-			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries")).setScale(7);
-			BigDecimal nonMajorInjuries = new BigDecimal(params.get("nonMajorInjuries")).setScale(7);
+			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities").replace(",", "")).setScale(7);
+			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries").replace(",", "")).setScale(7);
+			BigDecimal nonMajorInjuries = new BigDecimal(params.get("nonMajorInjuries").replace(",", "")).setScale(7);
 					
 			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(nonMajorInjuries));
 			
@@ -270,8 +270,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("totalHours")))
 				return MISSING_PARAMETER;
 			
-			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries")).setScale(7);
-			BigDecimal hours = new BigDecimal(params.get("totalHours")).setScale(7);
+			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries").replace(",", "")).setScale(7);
+			BigDecimal hours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
 			
 			BigDecimal result = null;
 			try {
@@ -296,8 +296,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("dangerousOccurrences")))
 				return MISSING_PARAMETER;
 			
-			BigDecimal totalHours = new BigDecimal(params.get("totalHours")).setScale(7);
-			BigDecimal dangerousOccurences = new BigDecimal(params.get("dangerousOccurrences")).setScale(7);				
+			BigDecimal totalHours = new BigDecimal(params.get("totalHours").replace(",", "")).setScale(7);
+			BigDecimal dangerousOccurences = new BigDecimal(params.get("dangerousOccurrences").replace(",", "")).setScale(7);				
 					
 			BigDecimal result;
 			try {
@@ -321,8 +321,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("underThreeDays")))
 				return MISSING_PARAMETER;
 			
-			int overThreeDays = Integer.valueOf(params.get("overThreeDays"));
-			int underThreeDays = Integer.valueOf(params.get("underThreeDays"));
+			int overThreeDays = Integer.valueOf(params.get("overThreeDays").replace(",", ""));
+			int underThreeDays = Integer.valueOf(params.get("underThreeDays").replace(",", ""));
 			
 			return overThreeDays + underThreeDays;
 		}
@@ -342,8 +342,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostTimeInjuries")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int totalCases = Integer.parseInt(params.get("deaths")) + Integer.parseInt(params.get("lostTimeInjuries"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int totalCases = Integer.parseInt(params.get("deaths").replace(",", "")) + Integer.parseInt(params.get("lostTimeInjuries").replace(",", ""));
 			
 			return calculateRate(totalCases, manHours, IFR_FREQUENCY_RATE_NORMALIZER);	
 		}
@@ -361,8 +361,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostWorkDays")))
 				return MISSING_PARAMETER;
 
-			int manHours = Integer.parseInt(params.get("manHours"));
-			int lostWorkDays = Integer.parseInt(params.get("lostWorkDays"));
+			int manHours = Integer.parseInt(params.get("manHours").replace(",", ""));
+			int lostWorkDays = Integer.parseInt(params.get("lostWorkDays").replace(",", ""));
 			
 			return calculateRate(lostWorkDays, manHours, FRANCE_NORMALIZER);	
 		}
@@ -380,8 +380,8 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostTimeInjuries")))
 				return MISSING_PARAMETER;
 
-			int employees = Integer.parseInt(params.get("employees"));
-			int lostTimeInjuries = Integer.parseInt(params.get("lostTimeInjuries"));
+			int employees = Integer.parseInt(params.get("employees").replace(",", ""));
+			int lostTimeInjuries = Integer.parseInt(params.get("lostTimeInjuries").replace(",", ""));
 			
 			return calculateRate(lostTimeInjuries, employees, FRANCE_NORMALIZER);	
 		}
