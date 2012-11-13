@@ -278,7 +278,7 @@ public class Permissions implements Serializable {
 	 * @return
 	 */
 	@Deprecated
-	public Set<Integer> getGoupIds() {
+	public Set<Integer> getGroupIds() {
 		return groupIds;
 	}
 	

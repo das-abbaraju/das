@@ -100,7 +100,7 @@ public class ReportModelTest {
 		// use make user so that it has an account
 		User user = EntityFactory.makeUser();
 		user.setId(USER_ID);
-		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(
+		when(reportPermissionUserDao.findOne(USER_ID, REPORT_ID)).thenReturn(
 				new ReportPermissionUser());
 
 		assertTrue(reportModel.canUserViewAndCopy(permissions, REPORT_ID));
@@ -115,7 +115,7 @@ public class ReportModelTest {
 
 	@Test
 	public void canUserEdit_FalseIfNoResultException() {
-		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenThrow(new NonUniqueResultException());
+		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenThrow(new NonUniqueResultException());
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = 23")).thenThrow(new NoResultException());
 
@@ -125,7 +125,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserEdit_FalseIfNoEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(false);
-		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
+		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 		when(permissions.getUserIdString()).thenReturn("" + USER_ID);
 		when(reportDao.findOne(UserGroup.class, "group.id = 77375 AND user.id = " + USER_ID)).thenThrow(new NoResultException());
 		
@@ -135,7 +135,7 @@ public class ReportModelTest {
 	@Test
 	public void canUserEdit_TrueIfEditPermission() {
 		when(reportPermissionUser.isEditable()).thenReturn(true);
-		when(reportPermissionUserDao.findOne(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
+		when(reportPermissionUserDao.findOneByPermissions(permissions, REPORT_ID)).thenReturn(reportPermissionUser);
 
 		assertTrue(reportModel.canUserEdit(permissions, report));
 	}

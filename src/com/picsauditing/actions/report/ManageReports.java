@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -18,7 +17,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportPermissionUser;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.model.report.ReportModel;
 import com.picsauditing.report.access.ReportUtil;
@@ -46,13 +44,11 @@ public class ManageReports extends PicsActionSupport {
 	private ReportDAO reportDao;
 	@Autowired
 	private ReportUserDAO reportUserDao;
-	
 
-	private List<ReportUser> reportUserFavorites;
-	private List<ReportUser> reportUsersFavoritesOverflow;
-	private List<ReportPermissionUser> reportPermissionUsers;
+	private List<ReportUser> reportUsers;
+	private List<ReportUser> reportUserOverflow;
 	private List<Report> reports;
-	
+
 	private Pagination<Report> pagination;
 
 	// URL parameters
@@ -77,15 +73,16 @@ public class ManageReports extends PicsActionSupport {
 
 	public String favoritesList() {
 		try {
-			reportUserFavorites = reportUserDao.findAllFavorite(permissions.getUserId());
+			reportUsers = reportUserDao.findAllFavorite(permissions.getUserId());
 
-			if (CollectionUtils.isEmpty(reportUserFavorites)) {
-				reportUserFavorites = Collections.emptyList();
+			if (CollectionUtils.isEmpty(reportUsers)) {
+				reportUsers = new ArrayList<ReportUser>();
 			}
 
-			if (reportUserFavorites.size() > MAX_REPORTS_IN_MENU) {
-				reportUsersFavoritesOverflow = reportUserFavorites.subList(MAX_REPORTS_IN_MENU, reportUserFavorites.size());
-				reportUserFavorites = reportUserFavorites.subList(0, MAX_REPORTS_IN_MENU);
+			if (reportUsers.size() > MAX_REPORTS_IN_MENU) {
+				reportUserOverflow = reportUsers.subList(MAX_REPORTS_IN_MENU,
+						reportUsers.size());
+				reportUsers = reportUsers.subList(0, MAX_REPORTS_IN_MENU);
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!favoritesList.action", e);
@@ -100,15 +97,15 @@ public class ManageReports extends PicsActionSupport {
 
 	public String myReportsList() {
 		try {
-			reportPermissionUsers = reportModel.getReportPermissionUsersForMyReports(sort, direction, permissions);
+			reportUsers = reportModel.getReportUsersForMyReports(sort, direction, permissions);
 		} catch (IllegalArgumentException iae) {
 			logger.warn("Illegal argument exception in ManageReports!myReportsList.action", iae);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in ManageReports!myReportsList.action", e);
 		}
 
-		if (CollectionUtils.isEmpty(reportPermissionUsers)) {
-			reportPermissionUsers = Collections.emptyList();
+		if (CollectionUtils.isEmpty(reportUsers)) {
+			reportUsers = new ArrayList<ReportUser>();
 		}
 
 		if (AjaxUtils.isAjax(request())) {
@@ -252,24 +249,16 @@ public class ManageReports extends PicsActionSupport {
 		return getRequest();
 	}
 
-	public List<ReportUser> getReportUserFavorites() {
-		return reportUserFavorites;
+	public List<ReportUser> getReportUsers() {
+		return reportUsers;
 	}
 
-	public void setReportUserFavorites(List<ReportUser> reportUserFavorites) {
-		this.reportUserFavorites = reportUserFavorites;
+	public void setReportUsers(List<ReportUser> reportUsers) {
+		this.reportUsers = reportUsers;
 	}
 
-	public List<ReportUser> getReportUsersFavoritesOverflow() {
-		return reportUsersFavoritesOverflow;
-	}
-
-	public List<ReportPermissionUser> getReportPermissionUsers() {
-		return reportPermissionUsers;
-	}
-
-	public void setReportPermissionUsers(List<ReportPermissionUser> reportPermissionUsers) {
-		this.reportPermissionUsers = reportPermissionUsers;
+	public List<ReportUser> getReportUserOverflow() {
+		return reportUserOverflow;
 	}
 
 	public List<Report> getReports() {
@@ -325,7 +314,7 @@ public class ManageReports extends PicsActionSupport {
 			pagination = new Pagination<Report>();
 			pagination.setParameters(new PaginationParameters());
 		}
-		
+
 		return pagination;
 	}
 
@@ -353,7 +342,7 @@ public class ManageReports extends PicsActionSupport {
 
 		return ASC;
 	}
-	
+
 	public String getAlphaSort() {
 		return ALPHA_SORT;
 	}

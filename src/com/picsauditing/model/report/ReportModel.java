@@ -49,7 +49,8 @@ public class ReportModel {
 
 	public boolean canUserViewAndCopy(Permissions permissions, int reportId) {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, reportId);
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOneByPermissions(permissions,
+					reportId);
 			if (reportPermissionUser != null)
 				return true;
 			
@@ -67,8 +68,9 @@ public class ReportModel {
 
 	public boolean canUserEdit(Permissions permissions, Report report) {
 		try {
-			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOne(permissions, report.getId());
-			if (reportPermissionUser != null && reportPermissionUser.isEditable())
+			ReportPermissionUser reportPermissionUser = reportPermissionUserDao.findOneByPermissions(permissions,
+					report.getId());
+			if (reportPermissionUser.isEditable())
 				return true;
 		} catch (NonUniqueResultException nure) {
 			logger.error("No unique results found for {} and reportId = {}", permissions.toString(), report.getId());
@@ -181,8 +183,7 @@ public class ReportModel {
 				reports.add(reportUser.getReport());
 			}
 		} else {
-			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions,
-					searchTerm);
+			ReportPaginationParameters parameters = new ReportPaginationParameters(permissions, searchTerm);
 			pagination.Initialize(parameters, reportDao);
 			reports = pagination.getResults();
 		}
@@ -190,23 +191,18 @@ public class ReportModel {
 		return reports;
 	}
 
-	public List<ReportPermissionUser> getReportPermissionUsersForMyReports(String sort, String direction,
+	public List<ReportUser> getReportUsersForMyReports(String sort, String direction,
 			Permissions permissions) throws IllegalArgumentException {
-		List<ReportPermissionUser> reportPermissionUsers = new ArrayList<ReportPermissionUser>();
+		List<ReportUser> reportUsers = new ArrayList<ReportUser>();
 
 		if (Strings.isEmpty(sort)) {
-			reportPermissionUsers = reportPermissionUserDao.findAll(permissions);
-		} else if (sort.equals(ManageReports.ALPHA_SORT)) {
-			reportPermissionUsers = reportPermissionUserDao.findAllSortByAlpha(permissions, direction);
-		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
-			reportPermissionUsers = reportPermissionUserDao.findAllSortByDateAdded(permissions, direction);
-		} else if (sort.equals(ManageReports.LAST_VIEWED_SORT)) {
-			reportPermissionUsers = reportPermissionUserDao.findAllSortByLastViewed(permissions, direction);
-		} else {
-			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
+			sort = ManageReports.ALPHA_SORT;
+			direction = "ASC";
 		}
 
-		return reportPermissionUsers;
+		reportUsers = reportUserDao.findAllOrdered(permissions, sort, direction);
+
+		return reportUsers;
 	}
 
 	public void updateLastViewedDate(int userID, Report report) {
@@ -347,28 +343,23 @@ public class ReportModel {
 		return reportPermissionAccount;
 	}
 
-	// The code in this method was commented out to temporarily disable this
-	// functionality
 	public void disconnectReportPermissionUser(int id, int reportId) {
-		// try {
-		// reportPermissionUserDao.revokePermissions(id, reportId);
-		// } catch (NoResultException nre) {
-		//
-		// }
+		try {
+			reportPermissionUserDao.revokePermissions(id, reportId);
+		} catch (NoResultException nre) {
+
+		}
 	}
 
-	// The code in this method was commented out to temporarily disable this
-	// functionality
 	public void disconnectReportPermissionAccount(int accountId, int reportId) {
-		// ReportPermissionAccount reportPermissionAccount;
-		//
-		// try {
-		// reportPermissionAccount =
-		// reportPermissionAccountDao.findOne(accountId, reportId);
-		// reportPermissionAccountDao.remove(reportPermissionAccount);
-		// } catch (NoResultException nre) {
-		//
-		// }
+		ReportPermissionAccount reportPermissionAccount;
+
+		try {
+			reportPermissionAccount = reportPermissionAccountDao.findOne(accountId, reportId);
+			reportPermissionAccountDao.remove(reportPermissionAccount);
+		} catch (NoResultException nre) {
+
+		}
 	}
 
 	public void removeAndCascade(Report report) {

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
@@ -143,7 +144,7 @@ public class ReportUserDAO extends PicsDAO {
 		sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
 
 		String permissionsUnion = "SELECT reportID FROM report_permission_user WHERE userID = " + permissions.getUserId()
-				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getGoupIds()) + ")"
+				+ " UNION SELECT reportID FROM report_permission_user WHERE userID IN (" + Strings.implode(permissions.getGroupIds()) + ")"
 				+ " UNION SELECT reportID FROM report_permission_account WHERE accountID = " + permissions.getAccountId();
 		sql.addWhere("r.id IN (" + permissionsUnion + ")");
 
@@ -156,16 +157,60 @@ public class ReportUserDAO extends PicsDAO {
 
 	@Transactional(propagation = Propagation.NESTED)
 	public void resetSortOrder(int userId) throws SQLException {
-		String sql = "UPDATE report_user ru " +
-				"JOIN (SELECT t.id FROM report_user t " +
-				"		JOIN (SELECT @row := 0) r " +
-				"		WHERE favorite = 1 " +
-				"		AND userID = " + userId + 
-				"		ORDER BY userID, sortOrder) AS t ON ru.id = t.id " +
-				" SET sortOrder = @row := @row + 1";
+		String sql = "UPDATE report_user ru " + "JOIN (SELECT t.id FROM report_user t "
+				+ "		JOIN (SELECT @row := 0) r " + "		WHERE favorite = 1 " + "		AND userID = " + userId
+				+ "		ORDER BY userID, sortOrder) AS t ON ru.id = t.id " + " SET sortOrder = @row := @row + 1";
 
 		Database db = new Database();
 		db.executeUpdate(sql);
 	}
 
+	public List<ReportUser> findAllByPermission(Permissions permissions) {
+		SelectSQL sql = getMyReportsSql();
+
+		Query query = em.createNativeQuery(sql.toString(), ReportUser.class);
+		query.setParameter("userId", permissions.getUserId());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+
+		return query.getResultList();
+	}
+
+	public List<ReportUser> findAllOrdered(Permissions permissions, String sort, String direction) {
+		String orderBy = getOrderBySort(sort);
+
+		SelectSQL sql = getMyReportsSql();
+		sql.addOrderBy(orderBy + " " + direction);
+
+		Query query = em.createNativeQuery(sql.toString(), ReportUser.class);
+		query.setParameter("userId", permissions.getUserId());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+
+		return query.getResultList();
+	}
+
+	private String getOrderBySort(String sort) {
+		String orderBy = "";
+	
+		if (sort.equals(ManageReports.ALPHA_SORT)) {
+			orderBy = "name";
+		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
+			orderBy = "creationDate";
+		} else if (sort.equals(ManageReports.LAST_VIEWED_SORT)) {
+			orderBy = "lastViewedDate";
+		} else {
+			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
+		}
+		return orderBy;
+	}
+
+	private SelectSQL getMyReportsSql() {
+		SelectSQL subSql = new SelectSQL("report_permission_user rpu");
+		subSql.addField("rpu.reportID");
+		subSql.addWhere("rpu.userID = :userId OR rpu.userID IN ( :groupIds )");
+
+		SelectSQL sql = new SelectSQL("report_user ru");
+		sql.addWhere("ru.userID = :userId");
+		sql.addWhere("ru.reportID IN (" + subSql.toString() + ")");
+		return sql;
+	}
 }

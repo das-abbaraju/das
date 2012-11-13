@@ -4,12 +4,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;

@@ -26,7 +26,7 @@
 
 <h4 class="report-subtitle"><s:text name="ManageReports.myReports.subtitle" /></h4>
 
-<s:if test="!reportPermissionUsers.isEmpty()">
+<s:if test="!reportUsers.isEmpty()">
     <div id="my_reports_filter" class="btn-group">
         <a href="${alpha_sort_url}" class="btn active"><s:text name="ManageReports.myReports.alphabetical" /></a>
         <a href="${date_added_sort_url}" class="btn"><s:text name="ManageReports.myReports.dateAdded" /></a>

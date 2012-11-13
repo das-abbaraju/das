@@ -109,7 +109,7 @@ public class Report extends BaseTable {
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}
-
+	
 	@OneToMany(mappedBy = "report", cascade = { CascadeType.ALL })
 	public List<ReportUser> getReportUsers() {
 		return reportUsers;
@@ -144,5 +144,10 @@ public class Report extends BaseTable {
 
 	public void setNumTimesFavorited(int numTimesFavorited) {
 		this.numTimesFavorited = numTimesFavorited;
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 }

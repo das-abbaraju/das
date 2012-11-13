@@ -106,7 +106,7 @@ public class ManageReportsTest {
 
 		manageReports.favoritesList();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "reportUserFavorites"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportUsers"));
 	}
 
 	@Test
@@ -142,7 +142,7 @@ public class ManageReportsTest {
 
 		manageReports.myReportsList();
 
-		assertNotNull(Whitebox.getInternalState(manageReports, "reportPermissionUsers"));
+		assertNotNull(Whitebox.getInternalState(manageReports, "reportUsers"));
 	}
 
 	@Test

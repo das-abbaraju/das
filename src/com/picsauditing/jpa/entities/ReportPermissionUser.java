@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -57,16 +56,5 @@ public class ReportPermissionUser extends BaseTable {
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
-	}
-
-	@Transient
-	public boolean isFavorite() {
-		for (ReportUser reportUser : report.getReportUsers()) {
-			if (reportUser.getUser().getId() == user.getId()) {
-				return reportUser.isFavorite();
-			}
-		}
-		
-		return false;
 	}
 }

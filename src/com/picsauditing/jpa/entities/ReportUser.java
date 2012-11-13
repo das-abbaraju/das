@@ -90,4 +90,9 @@ public class ReportUser extends BaseTable {
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
 	}
+	
+	@Override
+	public String toString() {
+		return "{" + report.getName() + "}(" + user.getName() + ")";
+	}
 }

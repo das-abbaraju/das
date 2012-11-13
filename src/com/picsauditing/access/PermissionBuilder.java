@@ -46,8 +46,8 @@ public class PermissionBuilder {
 		permissions.getAllInheritedGroupIds().clear();
 		permissions.getAllInheritedGroupIds().addAll(groupIDs);
 		
-		permissions.getGoupIds().clear();
-		permissions.getGoupIds().addAll(allInheritedGroupIds);
+		permissions.getGroupIds().clear();
+		permissions.getGroupIds().addAll(allInheritedGroupIds);
 	}
 
 	private boolean useInheritedGroups() {

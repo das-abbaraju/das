@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:if test="!reportPermissionUsers.isEmpty()">
+<s:if test="!reportUsers.isEmpty()">
     <%-- cannot pass list as a include : param - bypass via setter --%>
-    <s:set var="reports" value="reportPermissionUsers" />
+    <s:set var="reports" value="reportUsers" />
     <s:include value="/struts/report/manage-report/_report-list.jsp">
         <s:param name="list_id">report_my_reports_list</s:param>
         <s:param name="list_class">report-list</s:param>
