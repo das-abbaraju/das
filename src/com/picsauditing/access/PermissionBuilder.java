@@ -36,7 +36,7 @@ public class PermissionBuilder {
 		Set<Integer> allInheritedGroupIds = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
 		
 		if (useInheritedGroups()) {
-			groupIDs = hierarchyBuilder.retrieveAllEntityIdsInHierarchy(permissions.getUserId());
+			groupIDs = allInheritedGroupIds;
 		} else {
 			// TODO remove this section after we're able to finish the testing
 			// on Group Inheritance
