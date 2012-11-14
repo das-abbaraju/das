@@ -119,7 +119,6 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
-	@Ignore
 	@Test
 	public void testOperatorNoWorkingFacility() throws Exception {
 		when(permissions.isOperator()).thenReturn(true);
@@ -127,7 +126,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 
 		builder.setWorkingFacilities(false);
 		String whereClause = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
-				+ ACCOUNT_ID + ") AND gc.workStatus = 'Y')";
+				+ ACCOUNT_ID + "))";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
