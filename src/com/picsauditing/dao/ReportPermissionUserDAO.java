@@ -17,20 +17,17 @@ import com.picsauditing.search.SelectSQL;
 public class ReportPermissionUserDAO extends PicsDAO {
 
 	public ReportPermissionUser findOne(int userId, int reportId) throws NoResultException, NonUniqueResultException {
-		return findOne(ReportPermissionUser.class, "t.user.id = " + userId + "AND t.report.id" + reportId);
+		return findOne(ReportPermissionUser.class, "t.user.id = " + userId + " AND t.report.id = " + reportId);
 	}
 
-	public ReportPermissionUser findOneByPermissions(Permissions permissions, int reportId) throws NoResultException,
-			NonUniqueResultException {
+	public ReportPermissionUser findOneByPermissions(Permissions permissions, int reportId) throws NoResultException {
 		SelectSQL sql = new SelectSQL("report_permission_user rpu");
-		sql.addField("rpu.reportID");
 		sql.addWhere("rpu.userID = :userId OR rpu.userID IN ( :groupIds )");
 		sql.addOrderBy("editable DESC");
 		sql.setLimit(1);
 
 		Query query = em.createNativeQuery(sql.toString(), ReportPermissionUser.class);
 		query.setParameter("userId", permissions.getUserId());
-		query.setParameter("reportId", reportId);
 		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		return (ReportPermissionUser) query.getSingleResult();
 	}

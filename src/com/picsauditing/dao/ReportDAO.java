@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.ReportPaginationParameters;
 import com.picsauditing.search.Database;
@@ -87,5 +88,39 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 				" OR u.name LIKE " + query);
 		
 		return selectSQL;
+	}
+
+	public List<Report> findAllOrdered(Permissions permissions, String sort, String direction) {
+		String orderBy = getOrderBySort(sort);
+
+		SelectSQL subSql = new SelectSQL("report_permission_user rpu");
+		subSql.addField("rpu.reportID");
+		subSql.addWhere("rpu.userID = :userId OR rpu.userID IN ( :groupIds )");
+
+		SelectSQL sql = new SelectSQL("report r");
+		sql.addWhere("r.id IN (" + subSql.toString() + ")");
+
+		sql.addOrderBy(orderBy + " " + direction);
+		System.out.println(sql);
+		Query query = em.createNativeQuery(sql.toString(), Report.class);
+		query.setParameter("userId", permissions.getUserId());
+		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
+
+		return query.getResultList();
+	}
+
+	private String getOrderBySort(String sort) {
+		String orderBy = "";
+	
+		if (sort.equals(ManageReports.ALPHA_SORT)) {
+			orderBy = "name";
+		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
+			orderBy = "creationDate";
+		} else if (sort.equals(ManageReports.LAST_VIEWED_SORT)) {
+			orderBy = "lastViewedDate";
+		} else {
+			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
+		}
+		return orderBy;
 	}
 }

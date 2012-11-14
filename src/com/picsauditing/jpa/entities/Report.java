@@ -118,6 +118,15 @@ public class Report extends BaseTable {
 	public void setReportUsers(List<ReportUser> reportUsers) {
 		this.reportUsers = reportUsers;
 	}
+	
+	@Transient
+	public ReportUser getReportUser(int userId) {
+		for (ReportUser reportUser : reportUsers)
+			if (userId == reportUser.getUser().getId())
+				return reportUser;
+		
+		return null;
+	}
 
 	@Transient
 	public String getSql() {
