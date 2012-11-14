@@ -121,7 +121,19 @@
     					${stat.index + report.firstRowNumber}
                     </td>
     				<td>
-    					${row.get('name')}
+    					<s:if test="#row.get('showInDirectory') == 1">
+    						<s:url action="ContractorView" var="limited_contractor_view">
+    							<s:param name="id">
+	    							${row.get('id')}
+    							</s:param>
+    						</s:url>
+    						<a href="${limited_contractor_view}">
+    							${row.get('name')}
+    						</a>
+    					</s:if>
+    					<s:else>
+    						${row.get('name')}
+    					</s:else>
                         
     					<s:if test="get('dbaName') > '' && get('name') != get('dbaName')">
                             <br />

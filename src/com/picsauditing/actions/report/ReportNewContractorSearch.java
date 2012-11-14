@@ -131,6 +131,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.country");
 		sql.addField("a.phone");
 		sql.addField("c.score");
+		sql.addField("c.showInDirectory");
 
 		sql.addAudit(AuditType.PQF);
 
@@ -186,13 +187,13 @@ public class ReportNewContractorSearch extends ReportAccount {
 		getFilter().setShowMinorityOwned(true);
 		getFilter().setShowLocation(true);
 		getFilter().setPermissions(permissions);
-		
+
 		if (!permissions.isOperator())
 			getFilter().setShowFlagStatus(false);
 
 		if (permissions.getCorporateParent().size() > 0)
 			getFilter().setShowInParentCorporation(true);
-		
+
 		if (button == null) {
 			runReport = false;
 			return super.execute();

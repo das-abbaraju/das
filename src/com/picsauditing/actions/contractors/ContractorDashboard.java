@@ -145,7 +145,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 		try {
 			findContractor();
 		} catch (NoRightsException noRights) {
-			showBasicsOnly = true;
+			if (permissions.isOperatorCorporate() && contractor.isShowInDirectory()) {
+				showBasicsOnly = true;
+			} else {
+				throw noRights;
+			}
 		} catch (Exception e) {
 			throw e;
 		}
