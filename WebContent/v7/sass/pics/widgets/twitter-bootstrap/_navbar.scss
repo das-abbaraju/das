@@ -3,3 +3,11 @@
     background: #eaeaea;
     @include background-image(linear-gradient(#fff, #eaeaea));
 }
+
+.lt-ie9
+ {
+	.navbar .collapse
+	{
+	  overflow: visible;
+	}
+}
