@@ -263,6 +263,7 @@ public class LoginController extends PicsActionSupport {
 
 		addClientSessionCookieToResponse(rememberMe, switchToUser);
 
+		user.unlockLogin();
 		user.setLastLogin(new Date());
 		userDAO.save(user);
 
