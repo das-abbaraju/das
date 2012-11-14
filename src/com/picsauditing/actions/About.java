@@ -1,7 +1,6 @@
 package com.picsauditing.actions;
 
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.strutsutil.AjaxUtils;
 
 public class About extends PicsActionSupport {
 
@@ -10,11 +9,6 @@ public class About extends PicsActionSupport {
 	@Override
 	@Anonymous
 	public String execute() {
-		if (AjaxUtils.isAjax(getRequest())) {
-			return "partial";
-		}
-		
 		return SUCCESS;
 	}
-	
 }

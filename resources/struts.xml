@@ -143,8 +143,9 @@
 			<result name="print">contractor_agreement.jsp</result>
 		</action>
 
-		<action name="PrivacyPolicy" class="com.picsauditing.actions.PicsPolicy">
+		<action name="PrivacyPolicy" class="com.picsauditing.actions.PrivacyPolicy">
 			<result>privacy_policy.jsp</result>
+			<result name="privacy-policy">/struts/general/_privacy-policy.jsp</result>
 		</action>
 
 		<action name="RefundPolicy" class="com.picsauditing.actions.PicsPolicy">
@@ -179,7 +180,6 @@
 		
 		<action name="About" class="com.picsauditing.actions.About">
 			<result>/struts/general/about.jsp</result>
-			<result name="partial">/struts/general/_about-partial.jsp</result>
 		</action>
 
 		<action name="Tutorial" class="com.picsauditing.actions.Tutorial">
