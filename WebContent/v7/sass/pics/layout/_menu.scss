@@ -61,17 +61,9 @@
 	}
 }
 
-.lt-ie9
+.lt-ie9 .nav > li > a
 {
-	.nav > li > a
-	{
-		padding: 16px 10px;
-	}
-
-	 .collapse
-	{
-	  overflow: visible;
-	}
+	padding: 16px 10px;
 }
 
 #user_searchbox
