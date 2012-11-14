@@ -98,6 +98,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		subSql.addWhere("rpu.userID = :userId OR rpu.userID IN ( :groupIds )");
 
 		SelectSQL sql = new SelectSQL("report r");
+		sql.addJoin("JOIN report_user ru ON ru.reportID = r.id AND ru.userID = :userId");
 		sql.addWhere("r.id IN (" + subSql.toString() + ")");
 
 		sql.addOrderBy(orderBy + " " + direction);
@@ -113,11 +114,11 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		String orderBy = "";
 	
 		if (sort.equals(ManageReports.ALPHA_SORT)) {
-			orderBy = "name";
+			orderBy = "r.name";
 		} else if (sort.equals(ManageReports.DATE_ADDED_SORT)) {
-			orderBy = "creationDate";
+			orderBy = "r.creationDate";
 		} else if (sort.equals(ManageReports.LAST_VIEWED_SORT)) {
-			orderBy = "lastViewedDate";
+			orderBy = "ru.lastViewedDate";
 		} else {
 			throw new IllegalArgumentException("Unexpected sort type '" + sort + "'");
 		}
