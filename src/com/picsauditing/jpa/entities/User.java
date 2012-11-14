@@ -31,6 +31,10 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.perf4j.StopWatch;
+import org.perf4j.slf4j.Slf4JStopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -46,7 +50,6 @@ import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Location;
-import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 @Entity
@@ -54,6 +57,7 @@ import com.picsauditing.util.log.PicsLogger;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 4) })
 public class User extends AbstractIndexableTable implements java.io.Serializable, Comparable<User>, JSONable {
+	private static final Logger logger = LoggerFactory.getLogger(User.class);
 
 	public static String DEFAULT_AUDITOR = "- Auditor -";
 	public static int SYSTEM = 1;
@@ -525,7 +529,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public Set<UserAccess> getPermissions() {
 		// Our permissions are empty, so go get some
 		Set<UserAccess> permissions = new TreeSet<UserAccess>();
-		PicsLogger.start("User.Permissions", "userID=" + id);
+
+		Logger logger = LoggerFactory.getLogger("org.perf4j.TimingLogger");
+		StopWatch stopwatch = new Slf4JStopWatch(logger);
+
+		stopwatch.start("User.getPermissions()", "userID = " + id);
 
 		if (isSuperUser()) {
 			// This is the Super User Group, which should have grant ability on
@@ -548,7 +556,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 				permissions.add(perm);
 			}
 			// PicsLogger.log(message)
-			PicsLogger.stop();
+
+			stopwatch.stop();
 			return permissions;
 		}
 
@@ -568,7 +577,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 				add(permissions, perm, true);
 		}
 
-		PicsLogger.stop();
+		stopwatch.stop();
 		return permissions;
 	}
 
@@ -589,13 +598,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		// Create a disconnected copy of UserAccess (perm)
 		UserAccess perm = new UserAccess(connectPerm);
-		PicsLogger.log(" - - Adding perm " + perm.getOpPerm().getDescription() + " V:" + perm.getViewFlag() + " E:"
-				+ perm.getEditFlag() + " D:" + perm.getDeleteFlag() + " G:" + perm.getGrantFlag());
+		logger.info(
+				" - - Adding perm {} V:{} E:{} D:{} G:{}",
+				new Object[] { perm.getOpPerm().getDescription(), perm.getViewFlag(), perm.getEditFlag(),
+						perm.getDeleteFlag(), perm.getGrantFlag() });
 
 		for (UserAccess origPerm : permissions) {
 			if (origPerm.getOpPerm().equals(perm.getOpPerm())) {
 				if (overrideBoth) {
-					PicsLogger.log(" overriding previous values (these are ownedPermissions)");
+					logger.info(" overriding previous values (these are ownedPermissions)");
 					// Override the previous settings, regardless if Granting or
 					// Revoking
 					if (perm.getViewFlag() != null)
@@ -607,7 +618,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 					if (perm.getGrantFlag() != null)
 						origPerm.setGrantFlag(perm.getGrantFlag());
 				} else {
-					PicsLogger.log(" optimistic granting (merging with sibling perms)");
+					logger.info(" optimistic granting (merging with sibling perms)");
 					// Optimistic Granting
 					// if the user has two groups with the same perm type,
 					// and one grants but the other revokes, then the users WILL
