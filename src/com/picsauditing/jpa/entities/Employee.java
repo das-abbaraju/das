@@ -396,7 +396,8 @@ public class Employee extends AbstractIndexableTable implements Comparable<Emplo
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getReturnType()).append('|').append("Employee").append('|').append(this.id).append('|')
-				.append(this.getDisplayName()).append('|').append(this.account.name).append("\n");
+				.append(this.getDisplayName()).append('|').append(this.account.name).append('|')
+				.append(this.getStatus()).append("\n");
 		return sb.toString();
 	}
 

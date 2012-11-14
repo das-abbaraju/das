@@ -1618,5 +1618,31 @@ div.blockDialog {
 }
 
 /* line 4, ../sass/pics/contractor-edit/_contractor-edit.scss */
-.ContractorEdit-page #vat_wrapper {
-  display: none; }
+.ContractorEdit-page #vat_wrapper
+{
+  display: none;
+}
+
+.search-result-status.account-demo
+{
+	font-style: italic;
+}
+
+.search-result-status.account-deleted,
+.search-result-status.account-deactivated,
+.search-result-status.user-inactive,
+.search-result-status.employee-inactive,
+.search-result-status.employee-deleted
+{
+	text-decoration: line-through;
+}
+
+.search-result-status.account-pending
+{
+	background-color: #FFA;
+}
+
+.ac_over .search-result-status.account-pending
+{
+	background-color: inherit;
+}

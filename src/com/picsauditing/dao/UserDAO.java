@@ -1,7 +1,6 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -14,13 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(UserDAO.class);
-	
+
 	@Transactional(propagation = Propagation.NESTED)
 	public User save(User o) {
 		if (o.getId() == 0) {

@@ -46,7 +46,7 @@ function getResult(data){
 }
 function format(row, i){
 	if(row[0] == 'account') {
-	    return getSearchResultHtml(row, '5px', null, row[5]);
+	    return getSearchResultHtml(row, '5px');
 	}
 	
     if (row[0] == 'user') {
@@ -83,6 +83,10 @@ function getSearchResultHtml(row, marginRight, location, status) {
         location = 'at';
     }
     
+    if (!status && row[5]) {
+        status = row[5];
+    }
+    
     var breakElement = $(document.createElement('br'));
     
     var wrapper = $(document.createElement('div')),
@@ -92,7 +96,8 @@ function getSearchResultHtml(row, marginRight, location, status) {
         name = $(document.createElement('span')).append($(document.createTextNode(row[3])));
     
     if (status) {
-        name.addClass('account' + status);
+        name.addClass('search-result-status');
+        name.addClass(row[0] + '-' + status.toLowerCase());
     }
     
     container.css('margin-right', marginRight);

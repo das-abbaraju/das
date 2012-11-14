@@ -880,7 +880,15 @@ public class ContractorAudit extends AbstractIndexableTable {
 		if (auditFor != null) {
 			sb.append(" ").append(this.auditFor);
 		}
-		sb.append('|').append(this.contractorAccount.name).append("\n");
+		sb.append('|').append(this.contractorAccount.name).append('|');
+
+		if (isExpired()) {
+			sb.append("expired");
+		} else {
+			sb.append("effective");
+		}
+
+		sb.append("\n");
 		return sb.toString();
 	}
 
@@ -925,23 +933,21 @@ public class ContractorAudit extends AbstractIndexableTable {
 	public boolean isRemoved() {
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isHasOpenRequirements() {
-		if (getAuditType().getWorkFlow().isHasRequirements() &&
-				hasCaoStatus(AuditStatus.Submitted)) {
+		if (getAuditType().getWorkFlow().isHasRequirements() && hasCaoStatus(AuditStatus.Submitted)) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isOkayToChangeCaoStatus(ContractorAuditOperator cao) {
 		if (auditType.isPqf() && cao.getPercentVerified() == 100) {
-			for (AuditData data:getData()) {
-				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF
-						&& data.isUnverified()) {
+			for (AuditData data : getData()) {
+				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF && data.isUnverified()) {
 					return false;
 				}
 			}
@@ -949,10 +955,10 @@ public class ContractorAudit extends AbstractIndexableTable {
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isDataExpectedAnswer(int questionId, String expected) {
-		for (AuditData answer:data) {
+		for (AuditData answer : data) {
 			if (answer.getQuestion().getId() == questionId) {
 				return Strings.isEqualNullSafe(answer.getAnswer(), expected);
 			}

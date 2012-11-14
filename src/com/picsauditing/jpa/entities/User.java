@@ -291,7 +291,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.forcePasswordReset = forcePasswordReset;
 	}
 
-    public int getFailedAttempts() {
+	public int getFailedAttempts() {
 		return failedAttempts;
 	}
 
@@ -755,7 +755,16 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.getReturnType()).append('|').append("User");
-		sb.append('|').append(this.id).append('|').append(this.name).append('|').append(this.account.name).append("\n");
+		sb.append('|').append(this.id).append('|').append(this.name).append('|').append(this.account.name);
+		sb.append('|');
+
+		if (!isActiveB()) {
+			sb.append("inactive");
+		} else {
+			sb.append("active");
+		}
+
+		sb.append("\n");
 		return sb.toString();
 	}
 
