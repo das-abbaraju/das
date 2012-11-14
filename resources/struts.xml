@@ -179,6 +179,7 @@
 		
 		<action name="About" class="com.picsauditing.actions.About">
 			<result>/struts/general/about.jsp</result>
+			<result name="partial">/struts/general/_about-partial.jsp</result>
 		</action>
 
 		<action name="Tutorial" class="com.picsauditing.actions.Tutorial">
