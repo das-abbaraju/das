@@ -122,16 +122,17 @@ public class PermissionQueryBuilder {
 
 		where += " IN (" + getOperatorIDs() + ")";
 
-		if (showOnlyApprovedContractors())
-			where += " AND " + alias + ".workStatus = 'Y'";
+		if (showOnlyApprovedContractors()) {
+			if (permissions.hasPermission(OpPerms.ViewUnApproved))
+				where += " AND " + alias + ".workStatus in ('Y', 'P')";
+			else
+				where += " AND " + alias + ".workStatus = 'Y'";
+		}
 
 		return where;
 	}
 
 	private boolean showOnlyApprovedContractors() {
-		if (!permissions.hasPermission(OpPerms.ViewUnApproved))
-			return true;
-
 		if (permissions.isGeneralContractor())
 			return true;
 
