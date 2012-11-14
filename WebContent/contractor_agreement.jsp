@@ -3,6 +3,6 @@
 
 <section>
 	<s:text name="ContractorAgreement.content">
-		<s:param value="getText(\"PicsPhone\", locale)" />
+		<s:param value="getText( locale, \"PicsPhone\")" />
 	</s:text>
 </section>
