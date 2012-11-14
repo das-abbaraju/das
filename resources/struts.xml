@@ -177,8 +177,8 @@
 			<result>struts/contact_pics.jsp</result>
 		</action>
 		
-		<action name="About" class="com.picsauditing.actions.AboutPICS">
-			<result>struts/about-pics.jsp</result>
+		<action name="About" class="com.picsauditing.actions.About">
+			<result>/struts/general/about.jsp</result>
 		</action>
 
 		<action name="Tutorial" class="com.picsauditing.actions.Tutorial">

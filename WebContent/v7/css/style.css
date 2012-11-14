@@ -9353,6 +9353,38 @@ hr {
   text-transform: lowercase;
 }
 
+/* line 5, ../sass/pics/templates/general/_about.scss */
+
+#About__page .product-description {
+  margin-bottom: 30px;
+  color: #808285;
+  text-align: center;
+}
+
+/* line 11, ../sass/pics/templates/general/_about.scss */
+
+#About__page .product-description img {
+  margin: 40px 0;
+}
+
+/* line 16, ../sass/pics/templates/general/_about.scss */
+
+#About__page .product-description span {
+  display: block;
+}
+
+/* line 21, ../sass/pics/templates/general/_about.scss */
+
+#About__page .product-description .version {
+  font-size: 18px;
+}
+
+/* line 26, ../sass/pics/templates/general/_about.scss */
+
+#About__page .product-description .copyright {
+  margin-bottom: 30px;
+}
+
 /* line 2, ../sass/pics/templates/login/_login.scss */
 
 #Login__page {
@@ -9917,10 +9949,11 @@ hr {
 
 #Tutorial__page .logo {
   float: right;
+  width: 165px;
   margin: 30px 30px 0 0;
 }
 
-/* line 52, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 53, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page .overview h1 {
   margin-top: 0;
@@ -9929,31 +9962,31 @@ hr {
   color: #73bbe8;
 }
 
-/* line 60, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 61, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page .overview p {
   color: #666;
 }
 
-/* line 66, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 67, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page .dashboard {
   text-align: right;
 }
 
-/* line 71, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 72, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page .settings {
   text-align: left;
 }
 
-/* line 76, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 77, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page .support {
   text-align: center;
 }
 
-/* line 83, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 84, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page footer .container {
   padding: 30px 0;
@@ -9968,13 +10001,13 @@ hr {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
 }
 
-/* line 92, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 93, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page footer .container a {
   margin-bottom: 10px;
 }
 
-/* line 97, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 98, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 
 #Tutorial__page footer .container p {
   color: #808285;

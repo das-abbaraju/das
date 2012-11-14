@@ -1,6 +1,7 @@
 <decorators defaultdir="/decorators">
     <decorator name="layout" page="layout.jsp">
-        <pattern>/Manage*Reports*.action</pattern>
+        <pattern>/About.action</pattern>
+        <pattern>/ManageReports*.action</pattern>
         <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ReportTester.action</pattern>
