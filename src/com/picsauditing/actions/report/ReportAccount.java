@@ -99,10 +99,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		excelSheet.setData(data);
 		// Add the following columns to the far right
 		if (permissions.isOperatorCorporate()) {
-			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.Date), 400);
-			if (permissions.hasPermission(OpPerms.ViewUnApproved)) {
-				excelSheet.addColumn(new ExcelColumn("workStatus", "Work Status"));
-			}
+			excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.String), 400);
+			excelSheet.addColumn(new ExcelColumn("workStatus", "Work Status"));
 		}
 		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 500);
 		excelSheet.addColumn(new ExcelColumn("safetyRisk", "Safety Assessment", ExcelCellType.Enum));
