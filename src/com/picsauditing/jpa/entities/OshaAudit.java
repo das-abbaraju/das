@@ -38,6 +38,9 @@ public class OshaAudit implements OshaVisitable {
 	public static final Set<Integer> SAFETY_STATISTICS_CATEGORY_IDS = 
 			Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL, 
 					CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
+	public static final Set<Integer> OSHA_COHS_UK_HSE =
+			Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
+					CAT_ID_COHS, CAT_ID_UK_HSE)));
 
 	private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -55,6 +58,7 @@ public class OshaAudit implements OshaVisitable {
 
 		switch (catId) {
 			case CAT_ID_OSHA:
+			case CAT_ID_OSHA_ADDITIONAL:
 				type = OshaType.OSHA;
 				break;
 			case CAT_ID_MSHA:
@@ -69,8 +73,6 @@ public class OshaAudit implements OshaVisitable {
 			case CAT_ID_FRANCE_NRIS:
 				type = OshaType.FRANCE_NRIS;
 				break;
-		// no need to log if we don't find it. that is expected as normal
-		// processing and logging this is so verbose as to slow down servers.
 		}
 
 		return type;
@@ -134,28 +136,33 @@ public class OshaAudit implements OshaVisitable {
 
 	private void initializeStatistics() {
 		int year = new Integer(contractorAudit.getAuditFor());
-		for (AuditCatData category : getCategories()) {
-			SafetyStatistics safetyStatistics = null;
-			OshaType oshaType = convertCategoryToOshaType(category.getCategory().getId());
-			if (oshaType != null) {
-				if (dispaySafetyStatisticsMap.get(oshaType) != null
-						&& dispaySafetyStatisticsMap.get(oshaType).equals(true)) {
-					if (oshaType == OshaType.OSHA) {
-						safetyStatistics = new OshaStatistics(year,
-								contractorAudit.getData(), category.isApplies());
-					} else if (oshaType == OshaType.COHS) {
-						safetyStatistics = new CohsStatistics(year,
-								contractorAudit.getData(), category.isApplies());
-					} else if (oshaType == OshaType.UK_HSE) {
-						safetyStatistics = new UkStatistics(year,
-								contractorAudit.getData(), category.isApplies());
-					}
-				}
 
-				if (safetyStatistics != null) {
-					safetyStatisticsMap.put(oshaType, safetyStatistics);
-					safetyStatistics.setVerified(isVerified(oshaType));
-				}
+		for (AuditCatData category : getCategories()) {
+			int categoryId = category.getCategory().getId();
+			// This check is to keep the behavior the same as before, when convertCategoryToOshaType()
+			// would return null for everyone except OSHA, COHS, and UK_HSE.
+			if (!OSHA_COHS_UK_HSE.contains(categoryId)) {
+				continue;
+			}
+
+			OshaType oshaType = convertCategoryToOshaType(categoryId);
+			Boolean shouldDisplay = dispaySafetyStatisticsMap.get(oshaType);
+			if (shouldDisplay == null || shouldDisplay.equals(Boolean.FALSE)) {
+				continue;
+			}
+
+			SafetyStatistics safetyStatistics = null;
+			if (oshaType == OshaType.OSHA) {
+				safetyStatistics = new OshaStatistics(year, contractorAudit.getData(), category.isApplies());
+			} else if (oshaType == OshaType.COHS) {
+				safetyStatistics = new CohsStatistics(year, contractorAudit.getData(), category.isApplies());
+			} else if (oshaType == OshaType.UK_HSE) {
+				safetyStatistics = new UkStatistics(year, contractorAudit.getData(), category.isApplies());
+			}
+
+			if (safetyStatistics != null) {
+				safetyStatisticsMap.put(oshaType, safetyStatistics);
+				safetyStatistics.setVerified(isVerified(oshaType));
 			}
 		}
 	}

@@ -1,8 +1,6 @@
 package com.picsauditing.models.audits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -30,12 +28,12 @@ import com.picsauditing.jpa.entities.OshaAudit;
 
 public class CaoSaveModelTest extends PicsTest {
 
+	private CaoSaveModel caoSaveModel;
+
 	@Mock
 	I18nCache i18nCache;
 	@Mock
 	AuditPercentCalculator auditPercentCalculator;
-	
-	private CaoSaveModel caoSaveModel;
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,7 +45,44 @@ public class CaoSaveModelTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(caoSaveModel, "i18nCache", i18nCache);
 		PicsTestUtil.forceSetPrivateField(caoSaveModel, "auditPercentCalculator", auditPercentCalculator);
 	}
-	
+
+	@Test
+	public void testAddAuditDataComment_BlankIfAlreadyVerified() {
+		int catIdOsha = OshaAudit.CAT_ID_OSHA;
+		AuditData auditData = EntityFactory.makeAuditData("pdf");
+		auditData.getQuestion().getCategory().setId(catIdOsha);
+		auditData.setVerified(true);
+		auditData.setComment("I'm not empty.");
+
+		String comment = caoSaveModel.addAuditDataComment(auditData);
+
+		assertEquals("", comment);
+	}
+
+	@Test
+	public void testAddAuditDataComment_BlankIfNoComment() {
+		int catIdOsha = OshaAudit.CAT_ID_OSHA;
+		AuditData auditData = EntityFactory.makeAuditData("pdf");
+		auditData.getQuestion().getCategory().setId(catIdOsha);
+		auditData.setVerified(false);
+		auditData.setComment("");
+
+		String comment = caoSaveModel.addAuditDataComment(auditData);
+
+		assertEquals("", comment);
+	}
+
+	@Test
+	public void testAddAuditDataComment_OshaAdditionalDoesntCauseNullPointerException() {
+		int catId = OshaAudit.CAT_ID_OSHA_ADDITIONAL;
+		AuditData auditData = EntityFactory.makeAuditData("pdf");
+		auditData.getQuestion().getCategory().setId(catId);
+		auditData.setVerified(false);
+		auditData.setComment("I'm not empty.");
+
+		caoSaveModel.addAuditDataComment(auditData);
+	}
+
 	@Test
 	public void testUpdatePqfOnIncomplete() {
 		ContractorAccount contractor = EntityFactory.makeContractor();
@@ -57,7 +92,7 @@ public class CaoSaveModelTest extends PicsTest {
 		data.setVerified(true);
 		data.setAuditor(EntityFactory.makeUser());
 		pqf.getData().add(data);
-		
+
 		caoSaveModel.updatePqfOnIncomplete(pqf, AuditStatus.Incomplete);
 		assertNull(data.getAuditor());
 		assertFalse(data.isVerified());
@@ -66,7 +101,7 @@ public class CaoSaveModelTest extends PicsTest {
 	@Test
 	public void testAddCommentsToNote() throws Exception {
 		AuditData normalAuditData = setupAuditData();
-		
+
 		assertEquals("Comment : O hai\n",
 				caoSaveModel.addAuditDataComment(normalAuditData));
 	}
@@ -74,7 +109,7 @@ public class CaoSaveModelTest extends PicsTest {
 	@Test
 	public void testAddCommentsToNote_EmrCategory() throws Exception {
 		AuditData emrAuditData = setupAuditData();
-		
+
 		emrAuditData.getQuestion().setCategory(
 				EntityFactory.makeAuditCategory(AuditCategory.EMR));
 		assertEquals("EMR : O hai\n",
@@ -91,50 +126,50 @@ public class CaoSaveModelTest extends PicsTest {
 		assertEquals("OSHA : O hai\n",
 				caoSaveModel.addAuditDataComment(oshaAuditData));
 	}
-	
+
 	@Test
 	public void generateNote_EmptyList() {
 		assertEquals("", caoSaveModel.generateNote(new ArrayList<AuditData>()));
 	}
-	
+
 	@Test
 	public void generateNote_mixedList() {
 		stubI18nCache();
-		String expectedString = 
-			"EMR : O hai\n" + 
-			"Comment : O hai\n" + 
+		String expectedString =
+			"EMR : O hai\n" +
+			"Comment : O hai\n" +
 			"OSHA : O hai\n";
-		
+
 		List<AuditData> testDataList = new ArrayList<AuditData>();
 
 		AuditData emrAuditData = setupAuditData();
 		emrAuditData.getQuestion().setCategory(
 				EntityFactory.makeAuditCategory(AuditCategory.EMR));
-		
+
 		AuditData normalAuditData = setupAuditData();
-			
+
 		AuditData oshaAuditData = setupAuditData();
 		oshaAuditData.getQuestion().setCategory(
 				EntityFactory.makeAuditCategory(OshaAudit.CAT_ID_OSHA));
-		
+
 		testDataList.add(emrAuditData);
 		testDataList.add(normalAuditData);
 		testDataList.add(oshaAuditData);
-		
+
 		assertEquals(expectedString, caoSaveModel.generateNote(testDataList));
 	}
-	
+
 	private AuditData setupAuditData() {
 		AuditData auditData = new AuditData();
-		
+
 		auditData = EntityFactory.makeAuditData("Yes");
 
 		auditData.setComment("O hai");
 		auditData.setVerified(false);
-		
+
 		return auditData;
 	}
-	
+
 	private void stubI18nCache() {
 		when(i18nCache.hasKey("OSHA", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
 		when(i18nCache.getText("OSHA", Locale.ENGLISH)).thenReturn("OSHA");

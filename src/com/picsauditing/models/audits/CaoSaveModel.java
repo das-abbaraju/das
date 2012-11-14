@@ -20,7 +20,7 @@ import com.picsauditing.util.Strings;
 /**
  * This class acts as a service layer for CaoSave.java. All business logic for
  * that action class should be moved into here.
- * 
+ *
  */
 public class CaoSaveModel {
 	@Autowired
@@ -40,27 +40,25 @@ public class CaoSaveModel {
 	}
 
 	public String addAuditDataComment(AuditData auditData) {
-		String comment = "";
-
-		if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
-			String commentHeader = "";
-			int categoryId = auditData.getQuestion().getCategory().getId();
-
-			if (categoryId == AuditCategory.EMR) {
-				commentHeader = "EMR : ";
-			} else if (OshaAudit.isSafetyStatisticsCategory(categoryId)) {
-				OshaType oshaType = OshaAudit.convertCategoryToOshaType(categoryId);
-				commentHeader = i18nCache.getText(oshaType.getI18nKey(), Locale.ENGLISH) + " : ";
-			} else {
-				commentHeader = "Comment : ";
-			}
-
-			comment += commentHeader + auditData.getComment() + "\n";
+		if (auditData.isVerified() || Strings.isEmpty(auditData.getComment())) {
+			return "";
 		}
 
-		return comment;
+		String commentHeader = "";
+		int categoryId = auditData.getQuestion().getCategory().getId();
+		OshaType oshaType = OshaAudit.convertCategoryToOshaType(categoryId);
+
+		if (categoryId == AuditCategory.EMR) {
+			commentHeader = "EMR : ";
+		} else if (OshaAudit.isSafetyStatisticsCategory(categoryId) && oshaType != null) {
+			commentHeader = i18nCache.getText(oshaType.getI18nKey(), Locale.ENGLISH) + " : ";
+		} else {
+			commentHeader = "Comment : ";
+		}
+
+		return commentHeader + auditData.getComment() + "\n";
 	}
-	
+
 	public void updatePqfOnIncomplete(ContractorAudit audit, AuditStatus newStatus) {
 		if (audit.getAuditType().isPqf() && newStatus.isIncomplete()) {
 			for (AuditData data:audit.getData()) {
@@ -73,7 +71,7 @@ public class CaoSaveModel {
 			}
 		}
 	}
-	
+
 	public void updatePqfOnSubmittedResubmitter(ContractorAudit audit, AuditStatus newStatus) {
 		if (newStatus.isSubmittedResubmitted() && audit.getAuditType().isPqf()) {
 			auditPercentCalculator.percentCalculateComplete(audit, true);

@@ -10,19 +10,14 @@ package com.picsauditing.jpa.entities;
  */
 public enum OshaType implements Translatable {
 
-	OSHA(2033, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart, OshaRateType.SeverityRate, 
+	OSHA(OshaAudit.CAT_ID_OSHA, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart, OshaRateType.SeverityRate, 
 			OshaRateType.Fatalities, OshaRateType.Hours, OshaRateType.EMR }),
-	MSHA(2256, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
+	MSHA(OshaAudit.CAT_ID_MSHA, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
-	COHS(2086, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
+	COHS(OshaAudit.CAT_ID_COHS, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
-	UK_HSE(2092, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
-	FRANCE_NRIS(1691, null);
-
-	public static final int CAT_ID_OSHA = 2033; // U.S.
-	public static final int CAT_ID_COHS = 2086; // Canada
-	public static final int CAT_ID_UK_HSE = 2092; // U.K.
-	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
+	UK_HSE(OshaAudit.CAT_ID_UK_HSE, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
+	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, null);
 
 	public final OshaRateType[] rates;
 	public final int categoryId;
