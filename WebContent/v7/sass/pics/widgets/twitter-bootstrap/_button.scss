@@ -7,6 +7,7 @@ $default_hover_top_gradient_color:      #f7f7f8;
 $default_hover_bottom_gradient_color:   #ececec;
 $default_active_top_gradient_color:     #dcdcdc;
 $default_active_bottom_gradient_color:  #cdcdcd;
+$default_disabled_background_color:     #e6e6e6;
 
 $primary_border_color:                  #226396;
 $primary_text_color:                    #fff;
@@ -17,6 +18,7 @@ $primary_hover_top_gradient_color:      #60c9f3;
 $primary_hover_bottom_gradient_color:   #396cc9;
 $primary_active_top_gradient_color:     #336f9c;
 $primary_active_bottom_gradient_color:  #09366f;
+$primary_disabled_background_color:     #04c;
 
 $warning_border_color:                  #e67e1c;
 $warning_text_color:                    $primary_text_color;
@@ -27,6 +29,7 @@ $warning_hover_top_gradient_color:      #fcd100;
 $warning_hover_bottom_gradient_color:   #f1a300;
 $warning_active_top_gradient_color:     #ea9000;
 $warning_active_bottom_gradient_color:  #d66000;
+$warning_disabled_background_color:     #F89406;
 
 $info_border_color:                     #6ca6f6;
 $info_text_color:                       $primary_text_color;
@@ -37,6 +40,7 @@ $info_hover_top_gradient_color:         #73ddff;
 $info_hover_bottom_gradient_color:      #73d0f6;
 $info_active_top_gradient_color:        #55a9ff;
 $info_active_bottom_gradient_color:     #5599fc;
+$info_disabled_background_color:        #2F96B4;
 
 $success_border_color:                  #229322;
 $success_text_color:                    $primary_text_color;
@@ -47,6 +51,7 @@ $success_hover_top_gradient_color:      #33d000;
 $success_hover_bottom_gradient_color:   #25b000;
 $success_active_top_gradient_color:     #299600;
 $success_active_bottom_gradient_color:  #1c7600;
+$success_disabled_background_color:     #51A351;
 
 $danger_border_color:                   #ac030c;
 $danger_text_color:                     $primary_text_color;
@@ -57,25 +62,28 @@ $danger_hover_top_gradient_color:       #f92626;
 $danger_hover_bottom_gradient_color:    #d00900;
 $danger_active_top_gradient_color:      #c60c0c;
 $danger_active_bottom_gradient_color:   #8c0600;
+$danger_disabled_background_color:      #BD362F;
 
-$inverse_border_color:                   #222222 #222222 #000000;
-$inverse_text_color:                     $primary_text_color;
-$inverse_text_shadow_color:              rgba(0, 0, 0, 0.25);
-$inverse_top_gradient_color:             #444;
-$inverse_bottom_gradient_color:          #222;
-$inverse_hover_top_gradient_color:       #444;
-$inverse_hover_bottom_gradient_color:    #222;
-$inverse_active_top_gradient_color:      #444;
-$inverse_active_bottom_gradient_color:   #222;
+$inverse_border_color:                  #222222 #222222 #000000;
+$inverse_text_color:                    $primary_text_color;
+$inverse_text_shadow_color:             rgba(0, 0, 0, 0.25);
+$inverse_top_gradient_color:            #444;
+$inverse_bottom_gradient_color:         #222;
+$inverse_hover_top_gradient_color:      #444;
+$inverse_hover_bottom_gradient_color:   #222;
+$inverse_active_top_gradient_color:     #444;
+$inverse_active_bottom_gradient_color:  #222;
+$inverse_disabled_background_color:     #222;
 
-$link_border_color:                      transparent;
-$link_text_color:                        #226396;
-$link_hover_text_color:                  #73BBE8;
-$link_active_text_color:                 #226396;
 
-@mixin defineButtonSpecificOverrides($border_color, $text_shadow_color: none)
+$link_border_color:                     transparent;
+$link_text_color:                       #226396;
+$link_hover_text_color:                 #73BBE8;
+$link_active_text_color:                #226396;
+
+@mixin buttonOverrides($border_color, $text_shadow_color: none)
 {
-    border-color: $border_color;
+	border-color: $border_color;
 
     @if $text_shadow_color != none {
         text-shadow: 0px -1px 1px $text_shadow_color;
@@ -84,9 +92,17 @@ $link_active_text_color:                 #226396;
     }
 }
 
-@mixin defineStateSpecificOverrides($text_color, $background_color: none, $top_gradient_color: none, $bottom_gradient_color: none)
+@mixin buttonDisabledOverrides($background_color: none, $opacity: 0.65)
 {
-    color: $text_color;
+	background-color: $background_color;
+	background-image: none;
+	@include box-shadow(none);
+	opacity: $opacity;
+}
+
+@mixin buttonStateOverrides($text_color, $background_color: none, $top_gradient_color: none, $bottom_gradient_color: none)
+{
+	color: $text_color;
     background: $background_color;
     
     @if $top_gradient_color != none {
@@ -101,12 +117,12 @@ $link_active_text_color:                 #226396;
 
 .btn
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $default_border_color,
         $default_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $default_text_color,
         $default_bottom_gradient_color,
         $default_top_gradient_color,
@@ -116,7 +132,7 @@ $link_active_text_color:                 #226396;
 
 .btn:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $default_text_color,
         $default_hover_bottom_gradient_color,
         $default_hover_top_gradient_color,
@@ -127,12 +143,19 @@ $link_active_text_color:                 #226396;
 .btn.active,
 .btn:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $default_text_color,
         $default_active_bottom_gradient_color,
         $default_active_top_gradient_color,
         $default_active_bottom_gradient_color
     );
+}
+
+.btn.disabled
+{
+	@include buttonDisabledOverrides(
+		$default_disabled_background_color
+	);
 }
 
 /*
@@ -141,12 +164,12 @@ $link_active_text_color:                 #226396;
 
 .btn-primary
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $primary_border_color,
         $primary_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $primary_text_color,
         $primary_bottom_gradient_color,
         $primary_top_gradient_color,
@@ -156,7 +179,7 @@ $link_active_text_color:                 #226396;
 
 .btn-primary:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $primary_text_color,
         $primary_hover_bottom_gradient_color,
         $primary_hover_top_gradient_color,
@@ -167,12 +190,19 @@ $link_active_text_color:                 #226396;
 .btn-primary.active,
 .btn-primary:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $primary_text_color,
         $primary_active_bottom_gradient_color,
         $primary_active_top_gradient_color,
         $primary_active_bottom_gradient_color
     );
+}
+
+.btn-primary.disabled
+{
+	@include buttonDisabledOverrides(
+		$primary_disabled_background_color
+	);
 }
 
 /*
@@ -181,12 +211,12 @@ $link_active_text_color:                 #226396;
 
 .btn-warning
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $warning_border_color,
         $warning_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $warning_text_color,
         $warning_bottom_gradient_color,
         $warning_top_gradient_color,
@@ -196,7 +226,7 @@ $link_active_text_color:                 #226396;
 
 .btn-warning:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $warning_text_color,
         $warning_hover_bottom_gradient_color,
         $warning_hover_top_gradient_color,
@@ -207,12 +237,19 @@ $link_active_text_color:                 #226396;
 .btn-warning.active,
 .btn-warning:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $warning_text_color,
         $warning_active_bottom_gradient_color,
         $warning_active_top_gradient_color,
         $warning_active_bottom_gradient_color
     );
+}
+
+.btn-warning.disabled
+{
+	@include buttonDisabledOverrides(
+		$warning_disabled_background_color
+	);
 }
 
 /*
@@ -221,12 +258,12 @@ $link_active_text_color:                 #226396;
 
 .btn-info
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $info_border_color,
         $info_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $info_text_color,
         $info_bottom_gradient_color,
         $info_top_gradient_color,
@@ -236,7 +273,7 @@ $link_active_text_color:                 #226396;
 
 .btn-info:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $info_text_color,
         $info_hover_bottom_gradient_color,
         $info_hover_top_gradient_color,
@@ -247,12 +284,19 @@ $link_active_text_color:                 #226396;
 .btn-info.active,
 .btn-info:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $info_text_color,
         $info_active_bottom_gradient_color,
         $info_active_top_gradient_color,
         $info_active_bottom_gradient_color
     );
+}
+
+.btn-info.disabled
+{
+	@include buttonDisabledOverrides(
+		$info_disabled_background_color
+	);
 }
 
 /*
@@ -261,12 +305,12 @@ $link_active_text_color:                 #226396;
 
 .btn-success
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $success_border_color,
         $success_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $success_text_color,
         $success_bottom_gradient_color,
         $success_top_gradient_color,
@@ -276,7 +320,7 @@ $link_active_text_color:                 #226396;
 
 .btn-success:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $success_text_color,
         $success_hover_bottom_gradient_color,
         $success_hover_top_gradient_color,
@@ -287,12 +331,19 @@ $link_active_text_color:                 #226396;
 .btn-success.active,
 .btn-success:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $success_text_color,
         $success_active_bottom_gradient_color,
         $success_active_top_gradient_color,
         $success_active_bottom_gradient_color
     );
+}
+
+.btn-success.disabled
+{
+	@include buttonDisabledOverrides(
+		$success_disabled_background_color
+	);
 }
 
 /*
@@ -301,12 +352,12 @@ $link_active_text_color:                 #226396;
 
 .btn-danger
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $danger_border_color,
         $danger_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $danger_text_color,
         $danger_bottom_gradient_color,
         $danger_top_gradient_color,
@@ -316,7 +367,7 @@ $link_active_text_color:                 #226396;
 
 .btn-danger:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $danger_text_color,
         $danger_hover_bottom_gradient_color,
         $danger_hover_top_gradient_color,
@@ -327,12 +378,19 @@ $link_active_text_color:                 #226396;
 .btn-danger.active,
 .btn-danger:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $danger_text_color,
         $danger_active_bottom_gradient_color,
         $danger_active_top_gradient_color,
         $danger_active_bottom_gradient_color
     );
+}
+
+.btn-danger.disabled
+{
+	@include buttonDisabledOverrides(
+		$danger_disabled_background_color
+	);
 }
 
 /*
@@ -341,12 +399,12 @@ $link_active_text_color:                 #226396;
 
 .btn-inverse
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $inverse_border_color,
         $inverse_text_shadow_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $inverse_text_color,
         $inverse_bottom_gradient_color,
         $inverse_top_gradient_color,
@@ -356,7 +414,7 @@ $link_active_text_color:                 #226396;
 
 .btn-inverse:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $inverse_text_color,
         $inverse_hover_bottom_gradient_color,
         $inverse_hover_top_gradient_color,
@@ -367,12 +425,19 @@ $link_active_text_color:                 #226396;
 .btn-inverse.active,
 .btn-inverse:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $inverse_text_color,
         $inverse_active_bottom_gradient_color,
         $inverse_active_top_gradient_color,
         $inverse_active_bottom_gradient_color
     );
+}
+
+.btn-inverse.disabled
+{
+	@include buttonDisabledOverrides(
+		$inverse_disabled_background_color
+	);
 }
 
 /*
@@ -381,11 +446,11 @@ $link_active_text_color:                 #226396;
 
 .btn-link
 {
-    @include defineButtonSpecificOverrides(
+    @include buttonOverrides(
         $link_border_color
     );
 
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $link_text_color,
         transparent
     );
@@ -393,7 +458,7 @@ $link_active_text_color:                 #226396;
 
 .btn-link:hover
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $link_hover_text_color,
         transparent
     );
@@ -404,7 +469,7 @@ $link_active_text_color:                 #226396;
 .btn-link.active,
 .btn-link:active
 {
-    @include defineStateSpecificOverrides(
+    @include buttonStateOverrides(
         $link_active_text_color,
         transparent
     );

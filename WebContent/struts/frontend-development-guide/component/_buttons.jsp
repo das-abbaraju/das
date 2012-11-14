@@ -17,6 +17,9 @@
                     Button
                 </th>
                 <th>
+                    Disabled
+                </th>
+                <th>
                     class=""
                 </th>
                 <th>
@@ -30,6 +33,9 @@
                     <a class="btn">Default</a>
                 </td>
                 <td>
+                    <a class="btn disabled">Default</a>
+                </td>
+                <td>
                     <code>btn</code>
                 </td>
                 <td>
@@ -39,6 +45,9 @@
             <tr>
                 <td>
                     <a class="btn btn-primary">Primary</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary disabled">Primary</a>
                 </td>
                 <td>
                     <code>btn btn-primary</code>
@@ -52,6 +61,9 @@
                     <a class="btn btn-info">Info</a>
                 </td>
                 <td>
+                    <a class="btn btn-info disabled">Info</a>
+                </td>
+                <td>
                     <code>btn btn-info</code>
                 </td>
                 <td>
@@ -61,6 +73,9 @@
             <tr>
                 <td>
                     <a class="btn btn-success">Success</a>
+                </td>
+                <td>
+                    <a class="btn btn-success disabled">Success</a>
                 </td>
                 <td>
                     <code>btn btn-success</code>
@@ -74,6 +89,9 @@
                     <a class="btn btn-warning">Warning</a>
                 </td>
                 <td>
+                    <a class="btn btn-warning disabled">Warning</a>
+                </td>
+                <td>
                     <code>btn btn-warning</code>
                 </td>
                 <td>
@@ -83,6 +101,9 @@
             <tr>
                 <td>
                     <a class="btn btn-danger">Danger</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger disabled">Danger</a>
                 </td>
                 <td>
                     <code>btn btn-danger</code>
@@ -96,6 +117,9 @@
                     <a class="btn btn-inverse">Inverse</a>
                 </td>
                 <td>
+                    <a class="btn btn-inverse disabled">Inverse</a>
+                </td>
+                <td>
                     <code>btn btn-inverse</code>
                 </td>
                 <td>
@@ -105,6 +129,9 @@
             <tr>
                 <td>
                     <a class="btn btn-link">Link</a>
+                </td>
+                <td>
+                    
                 </td>
                 <td>
                     <code>btn btn-link</code>
