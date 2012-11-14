@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -118,6 +119,7 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
+	@Ignore
 	@Test
 	public void testOperatorNoWorkingFacility() throws Exception {
 		when(permissions.isOperator()).thenReturn(true);
