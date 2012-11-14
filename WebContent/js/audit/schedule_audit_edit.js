@@ -153,7 +153,7 @@
                 var difference = new_date - today;
                 var day_difference = Math.ceil(difference/(1000 * 60 * 60 * 24));
                 
-                if (day_difference <= 10 && date < original_date) {
+                if (day_difference <= 14 && date < original_date) {
                     PICS.ajax({
                         url: 'ScheduleAudit!ajaxScheduleAuditExpediteModal.action',
                         success: function (data, textStatus, XMLHttpRequest) {
