@@ -4,7 +4,7 @@
 <s:set var="menu_size" value="menu.children.size()" />
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
 
-<div class="navbar navbar-fixed-top">
+<div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
             <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">

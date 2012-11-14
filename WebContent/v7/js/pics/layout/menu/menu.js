@@ -2,7 +2,7 @@
     PICS.define('layout.menu.Menu', {
         methods: {
             init: function () {
-                var navbar_element = $('.navbar'),
+                var navbar_element = $('#primary_navigation'),
                     dropdown_toggle_element = navbar_element.find('.dropdown-toggle'),
                     search_query_element = navbar_element.find('.search-query');
                 
