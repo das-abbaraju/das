@@ -26,6 +26,8 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.access.ReportUtil;
 import com.picsauditing.report.data.ReportDataConverter;
 import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.fields.DisplayType;
+import com.picsauditing.report.fields.QueryMethod;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.excel.ExcelBuilder;
 
@@ -41,6 +43,7 @@ public class ReportData extends PicsActionSupport  {
 	private ReportUserDAO reportUserDao;
 
 	protected Report report;
+	protected DisplayType displayType;
 
 	protected String debugSQL = "";
 	protected SelectSQL sql = null;
@@ -202,7 +205,12 @@ public class ReportData extends PicsActionSupport  {
 		json.put("success", false);
 		json.put("message", message);
 	}
-
+	
+	// TODO: This should be handled by the handshake.
+	public List<QueryMethod> getDisplayTypeFunctions() {
+		return displayType.getFunctions();
+	}
+	
 	public Report getReport() {
 		return report;
 	}
