@@ -18,7 +18,6 @@
                 
                 version_detail_tooltip.tooltip({
                     placement: 'right',
-                    title: version_detail_tooltip.attr('data-tooltip'),
                     trigger: 'manual'
                 });
                 
