@@ -5,16 +5,16 @@
     <div class='version-detail-tooltip'>
         <ul class='unstyled'>
             <li>
-                <span>OS:</span> Windows
+                <span><s:text name="global.OperatingSystem.Acronym" />:</span> <s:property value="operatingSystem" />
             </li>
             <li>
-                <span>Browser:</span> Chrome
+                <span><s:text name="global.Browser" />:</span> <s:property value="browserName" />
             </li>
             <li>
-                <span>Environment:</span> Alpha
+                <span><s:text name="global.ServerEnvironment" />:</span> <s:property value="picsEnvironment" />
             </li>
             <li>
-                <span>Server:</span> DB@pics_alpha1
+                <span><s:text name="Login.Server" />:</span> DB@<s:property value="@com.picsauditing.search.Database@getDatabaseName()"/>
             </li>
         </ul>
     </div>
