@@ -66532,6 +66532,7 @@ Ext.define('PICS.view.report.filter.FilterPlaceholder', {
         height: 25,
         id: 'report_filter_options_expand',
         text: '<i class="icon-filter"></i>',
+        tooltip: 'Filters',
         width: 20
     }],
     margin: '0 10 0 0'
