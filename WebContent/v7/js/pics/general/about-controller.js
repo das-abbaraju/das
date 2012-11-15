@@ -22,8 +22,10 @@
                     trigger: 'manual'
                 });
                 
-                version_detail_tooltip.on('click', function () {
+                version_detail_tooltip.on('click', function (event) {
                     $(this).data('tooltip').toggle();
+                    
+                    event.preventDefault();
                 });
             },
             
