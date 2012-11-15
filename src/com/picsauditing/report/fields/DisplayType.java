@@ -6,11 +6,11 @@ import java.util.List;
 public enum DisplayType {
 	String, Integer, Float, Number, Boolean, Date, DateTime, Flag;
 
-	public List<String> getFunctions() {
-		List<String> list = new ArrayList<String>();
+	public List<QueryMethod> getFunctions() {
+		List<QueryMethod> list = new ArrayList<QueryMethod>();
 		for (QueryMethod function : QueryMethod.values()) {
 			if (isCanUseFunction(function)) {
-				list.add(function.toString());
+				list.add(function);
 			}
 		}
 		return list;

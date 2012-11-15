@@ -1,6 +1,7 @@
 package com.picsauditing.report.access;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -113,6 +114,13 @@ public final class ReportUtil {
 						+ translateLabel;
 			}
 
+			List<QueryMethod> functions = field.getType().getDisplayType().getFunctions();
+			Map<String,String> translatedFunctions = new HashMap<String, String>();
+			for (QueryMethod function : functions) {
+				translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
+			}
+			
+			field.setFunctions(translatedFunctions);
 			field.setText(translateLabel);
 			field.setHelp(translateHelp);
 		}
