@@ -1,14 +1,18 @@
 .FrontendDevelopmentGuide-page
 {
-	.span3 > .nav-list
+	.side-bar > .nav-list
 	{
 		width: 220px;
 	}
 	
-	.span3 > .nav-list.affix
+	.side-bar > .nav-list.affix
 	{
-		margin-top: 55px;
-		top: 20px;
+		top: 75px;
+	}
+	
+	section
+	{
+		margin-bottom: 60px;
 	}
 }
 

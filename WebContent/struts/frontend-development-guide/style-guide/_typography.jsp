@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<section id="style_guide_typography" class="guide">
+<section id="typography" class="guide">
     <div class="page-header">
         <h1>Typography</h1>
     </div>
@@ -11,11 +11,26 @@
     </p>
     
     <p>
-        To maintain a branded and recognizable look, we must use our recomemended web safe fonts that are widely available and always declare a fail-safe system font.
+        To maintain a branded and recognizable look, we must use our recommended web safe fonts that are widely available and always declare a fail-safe system font.
     </p>
     
-    <div class="well helvetica-regular">
-        <h3>Helvetica Regular <span>Print and web body copy</span></h3>
+    <p>
+        For main titles and copy we use <code>"Franklin Gothic Medium Condensed"</code>
+    </p>
+    <p>
+        For print and web body copy we use <code>"Helvetica Regular"</code>
+    </p>
+    
+    <div class="example">
+    
+        <p>
+            <strong>However, the font-family used by default is the same as Twitter Bootstrap (listed below):</strong>
+        </p>
+        
+<pre class="prettyprint linenums">
+font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+</pre>        
+
         <span class="uppercase">abcdefghijklmnopqrstuvwxyz</span><br />
         <span class="lowercase">abcdefghijklmnopqrstuvwxyz</span>
     </div>

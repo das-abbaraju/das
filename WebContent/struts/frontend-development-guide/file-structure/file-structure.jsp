@@ -8,7 +8,7 @@
 <s:include value="/struts/frontend-development-guide/_menu.jsp" />
 
 <div class="row">
-    <div class="span3">
+    <div class="span3 side-bar">
         <s:include value="_menu.jsp" />
     </div>
     <div class="span9">

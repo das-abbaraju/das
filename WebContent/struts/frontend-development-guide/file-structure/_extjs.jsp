@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<section id="file_structure_extjs" class="guide">
+<section id="extjs" class="guide">
     <div class="page-header">
         <h1>ExtJS</h1>
     </div>
@@ -15,6 +15,27 @@
 <pre class="prettyprint linenums lang-sh">
 # extjs application for dynamic reports
 js/extjs/pics
+
+# extjs source files + custom compliations
+js/extjs/pics/extjs
+
+# application files
+js/extjs/pics/app
+
+# application runner
+app.js
+
+# application instructions
+js/extjs/pics/README
+
+# application deployment
+app.jsb3
+index.html
+prod.html
+
+# application resources
+js/extjs/pics/resources
+
 </pre>
     
     </div>
