@@ -23,15 +23,14 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
 
         this.callParent(arguments);
 
-//      this.getFunctions(this.column, this.addDockedItems);
-        var functions = ['Max', 'Min'];
-        this.addDockedItems(functions);
-        this.height = 40 * functions.length + 55;
+        var functions = ['Max','Min','StdDev'];
+            function_items = this.getFunctionItems(functions);
+        this.addDockedItems(function_items);
+
+        this.height = 40 * functions.length + 95;
     },
 
-    addDockedItems: function (functions) {
-       var items = this.getFunctionItems(functions);
-
+    addDockedItems: function (function_items) {
        this.addDocked({
            xtype: 'toolbar',
            border: 0,
@@ -40,7 +39,7 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
            },
            dock: 'top',
            id: 'column_function_list',
-           items: items,
+           items: function_items,
            layout: 'vbox'
            });
 
@@ -76,28 +75,5 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
        });
 
        return items;
-   },
-
-   getFunctions: function (column, callback) {
-       /*
-       var displayType = this.column.raw.field.displayType;
-           url = 'ReportDynamic!copy.action';
-
-       Ext.Ajax.request({
-           url: url,
-           params: displayType,
-           success: function (result) {
-               var result = Ext.decode(result.responseText);
-
-               if (result.error) {
-                   Ext.Msg.alert('Status', result.error);
-               } else {
-                   callback(result);
-               }
-           }
-       });
-       */
-       var result = ['Max', 'Min'];
-       callback(result).apply(this);
-   },
+   }
 });
