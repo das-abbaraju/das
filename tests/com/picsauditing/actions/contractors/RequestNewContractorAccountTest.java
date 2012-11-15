@@ -52,6 +52,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.URLUtils;
 
 public class RequestNewContractorAccountTest {
@@ -68,6 +69,8 @@ public class RequestNewContractorAccountTest {
 	private Database database;
 	@Mock
 	private EntityManager entityManager;
+	@Mock
+	private FeatureToggle featureToggle;
 	@Mock
 	private OperatorAccount operator;
 	@Mock
@@ -98,6 +101,7 @@ public class RequestNewContractorAccountTest {
 		when(urlUtil.getActionUrl(anyString(), any(HashMap.class))).thenReturn("URL");
 
 		Whitebox.setInternalState(requestNewContractorAccount, "emailHelper", emailHelper);
+		Whitebox.setInternalState(requestNewContractorAccount, "featureToggle", featureToggle);
 		Whitebox.setInternalState(requestNewContractorAccount, "permissions", permissions);
 		Whitebox.setInternalState(requestNewContractorAccount, "urlUtil", urlUtil);
 	}
