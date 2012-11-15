@@ -23,7 +23,7 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
 
         this.callParent(arguments);
 
-        var functions = ['Max','Min','StdDev'];
+        var functions = this.column.raw.field.functions,
             function_items = this.getFunctionItems(functions);
         this.addDockedItems(function_items);
 
@@ -54,9 +54,9 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
 
    getFunctionItem: function (fn) {
        return {
-           action: fn,
+           action: fn.key,
            height: 40,
-           text: fn,
+           text: fn.value,
            textAlign: 'left'
        };
    },
