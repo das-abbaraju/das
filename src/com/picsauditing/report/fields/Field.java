@@ -1,10 +1,9 @@
 package com.picsauditing.report.fields;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +39,7 @@ public class Field implements JSONAware {
 	private String postTranslation;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
-	private Map<String,String> functions = new HashMap<String, String>();
+	private Map<String,String> functions = new TreeMap<String, String>();
 
 	public Field(ReportField annotation) {
 		type = annotation.type();
