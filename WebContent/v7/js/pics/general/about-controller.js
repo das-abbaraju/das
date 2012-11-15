@@ -6,22 +6,51 @@
                     var that = this;
                     
                     $('.show-privacy-policy').on('click', function (event) {
-                        var element = $(this);
-                        
-                        element.remove();
-                        
-                        that.togglePrivacyPolicy();
+                        that.onShowPrivacyPolicy.call(that, event);
                     });
+                    
+                    this.initVersionDetailTooltip();
                 }
             },
             
-            togglePrivacyPolicy: function () {
-                PICS.ajax({
-                    url: 'PrivacyPolicy.action',
-                    success: function (data, textStatus, jqXHR) {
-                        $('.privacy-policy').html(data);
-                    }
+            initVersionDetailTooltip: function () {
+                var version_detail_tooltip = $('.version a');
+                
+                version_detail_tooltip.tooltip({
+                    placement: 'right',
+                    title: version_detail_tooltip.attr('data-tooltip'),
+                    trigger: 'manual'
                 });
+                
+                version_detail_tooltip.on('click', function () {
+                    $(this).data('tooltip').toggle();
+                });
+            },
+            
+            onShowPrivacyPolicy: function (event) {
+                var element = $(event.target);
+                
+                element.toggleClass('active');
+                
+                this.togglePrivacyPolicy();
+            },
+            
+            togglePrivacyPolicy: function () {
+                var element = $('.privacy-policy'),
+                    content = element.html();
+                
+                if (content.length == 0) {
+                    PICS.ajax({
+                        url: 'PrivacyPolicy.action',
+                        success: function (data, textStatus, jqXHR) {
+                            element.html(data);
+                        }
+                    });
+                } else if (element.is(':visible')) {
+                    element.hide();
+                } else {
+                    element.show();
+                }
             }
         }
     });
