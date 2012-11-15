@@ -1,10 +1,12 @@
 package com.picsauditing.report.fields;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -99,7 +101,10 @@ public class Field implements JSONAware {
 		// TODO convert type to displayType in JavaScript
 		json.put("displayType", type.toString().toLowerCase());
 		json.put("type", type.toString().toLowerCase());
-		json.put("functions", type.getDisplayType().getFunctions());
+		List<String> functions = type.getDisplayType().getFunctions();
+		JSONArray jsonArray = new JSONArray();
+		jsonArray.addAll(functions);
+		json.put("functions", jsonArray);
 
 		return json;
 	}
