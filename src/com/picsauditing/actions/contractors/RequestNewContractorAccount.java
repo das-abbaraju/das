@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.PICS.RegistrationRequestEmailHelper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -37,6 +38,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
 
@@ -50,6 +52,8 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
+	@Autowired
+	private FeatureToggle featureToggle;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
 	@Autowired
@@ -98,6 +102,12 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Override
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
+		if (permissions.isOperatorCorporate()
+				&& featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+			DataConversionRequestAccount justInTimeConversion = new DataConversionRequestAccount(dao, permissions);
+			justInTimeConversion.upgrade();
+		}
+
 		id = contractor.getId();
 		account = contractor;
 
@@ -130,6 +140,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 				}
 			}
 		});
+
 		return setUrlForRedirect(url);
 	}
 

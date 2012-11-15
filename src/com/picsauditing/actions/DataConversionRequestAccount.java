@@ -1,12 +1,12 @@
 package com.picsauditing.actions;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -18,35 +18,68 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
 
+/**
+ * ETL ContractorRegistrationRequest to Account, User, and ContractorOperator
+ * entities.
+ * 
+ * @author UAung
+ * 
+ */
+@Deprecated
 @SuppressWarnings("serial")
-public class DataConversionRequestAccount extends AccountActionSupport {
+public class DataConversionRequestAccount extends PicsActionSupport {
 	private static Logger logger = LoggerFactory.getLogger(DataConversionRequestAccount.class);
 
 	private int limit = 10;
-	private List<ContractorRegistrationRequest> requestsNeedingConversion = Collections.emptyList();
-	private OperatorAccount restrictToOperator;
+	private List<ContractorRegistrationRequest> requestsNeedingConversion;
+	private OperatorAccount restrictToOperator = new OperatorAccount();
 
-	@Anonymous
+	public DataConversionRequestAccount() {
+	}
+
+	public DataConversionRequestAccount(BasicDAO dao, Permissions permissions) {
+		this.dao = dao;
+		this.permissions = permissions;
+
+		if (permissions.isOperatorCorporate()) {
+			restrictToOperator.setId(permissions.getAccountId());
+		}
+
+		limit = 0;
+	}
+
 	@Override
 	public String execute() {
 		loadPermissions();
 
-		requestsNeedingConversion = findRequestsNeedingConversion();
-
 		if (needsUpgrade()) {
-			try {
-				upgrade();
-				addActionMessage("Successfully converted " + requestsNeedingConversion.size() + " requests");
-			} catch (Exception e) {
-				logger.error("Error in upgrade", e);
-				addActionError(e.getLocalizedMessage());
+			String operatorRestriction = Strings.EMPTY_STRING;
+			if (restrictToOperator.getId() > 0) {
+				operatorRestriction = String.format(" for operator ID %d", restrictToOperator.getId());
 			}
+
+			addActionMessage(String.format("There are %d requests ready for conversion%s",
+					findRequestsNeedingConversion().size(), operatorRestriction));
+		}
+
+		return SUCCESS;
+	}
+
+	public String upgrade() {
+		try {
+			performUpgrade();
+			addActionMessage(String
+					.format("Successfully converted %d requests", findRequestsNeedingConversion().size()));
+		} catch (Exception e) {
+			logger.error("Error in upgrade", e);
+			addActionError(e.getLocalizedMessage());
 		}
 
 		return SUCCESS;
@@ -69,40 +102,40 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 	}
 
 	private boolean needsUpgrade() {
-		return !requestsNeedingConversion.isEmpty();
+		return !findRequestsNeedingConversion().isEmpty();
 	}
 
-	private void upgrade() {
-		for (ContractorRegistrationRequest request : requestsNeedingConversion) {
-			ContractorAccount contractor = createContractorFrom(request);
-			createContractorOperatorFrom(request, contractor);
-			User user = createUserFrom(request, contractor);
+	private void performUpgrade() {
+		for (ContractorRegistrationRequest request : findRequestsNeedingConversion()) {
+			ContractorAccount toContractor = createContractorFrom(request);
+			User user = copyUserFrom(request, toContractor);
+			copyRequestingOperatorFrom(request, toContractor);
 
 			// Move notes and tag
-			Note note = addNote(contractor, "Imported from Registration Request", NoteCategory.Registration,
-					LowMedHigh.Med, false, 1, request.getLastContactedBy());
-			note.setBody(request.getNotes());
-			dao.save(note);
+			copyNotesFrom(request, toContractor);
+			copyTagsFrom(request, toContractor);
 
-			addContractorTags(request, contractor);
+			toContractor.setPrimaryContact(user);
+			toContractor.getUsers().add(user);
+			toContractor = (ContractorAccount) dao.save(toContractor);
 
-			contractor.setPrimaryContact(user);
-			contractor.getUsers().add(user);
-			contractor = (ContractorAccount) dao.save(contractor);
-
-			request.setContractor(contractor);
+			request.setContractor(toContractor);
 			dao.save(request);
 		}
 	}
 
 	private List<ContractorRegistrationRequest> findRequestsNeedingConversion() {
-		String where = "t.contractor IS NULL";
+		if (requestsNeedingConversion == null) {
+			String where = "t.contractor IS NULL";
 
-		if (restrictToOperator != null && restrictToOperator.getId() > 0) {
-			where += " AND t.requestedBy.id = " + restrictToOperator.getId();
+			if (restrictToOperator.getId() > 0) {
+				where += " AND t.requestedBy.id = " + restrictToOperator.getId();
+			}
+
+			requestsNeedingConversion = dao.findWhere(ContractorRegistrationRequest.class, where, limit);
 		}
 
-		return dao.findWhere(ContractorRegistrationRequest.class, where, limit);
+		return requestsNeedingConversion;
 	}
 
 	private ContractorAccount createContractorFrom(ContractorRegistrationRequest request) {
@@ -114,7 +147,14 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 			contractor.setStatus(AccountStatus.Requested);
 		}
 
-		contractor.setName(request.getName());
+		String name = request.getName();
+		if (name.length() > 50) {
+			contractor.setName(name.substring(0, 50));
+			contractor.setDbaName(name);
+		} else {
+			contractor.setName(name);
+		}
+
 		contractor.setTaxId(request.getTaxID());
 		contractor.setAddress(request.getAddress());
 		contractor.setCity(request.getCity());
@@ -130,13 +170,21 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 		contractor.setCreationDate(request.getCreationDate());
 		contractor.setUpdateDate(request.getUpdateDate());
 		contractor.setUpdatedBy(request.getUpdatedBy());
+		// Contact information
+		contractor.setContactCountByEmail(request.getContactCountByEmail());
+		contractor.setContactCountByPhone(request.getContactCountByPhone());
+		contractor.setLastContactedByAutomatedEmailDate(request.getLastContactedByAutomatedEmailDate());
+		contractor.setLastContactedByInsideSales(request.getLastContactedBy());
+		contractor.setLastContactedByInsideSalesDate(request.getLastContactDate());
+		// Reason
+		contractor.setReason(request.getReasonForDecline());
 
 		return (ContractorAccount) dao.save(contractor);
 	}
 
-	private void createContractorOperatorFrom(ContractorRegistrationRequest request, ContractorAccount contractor) {
+	private void copyRequestingOperatorFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		ContractorOperator link = new ContractorOperator();
-		link.setContractorAccount(contractor);
+		link.setContractorAccount(toContractor);
 		link.setOperatorAccount(request.getRequestedBy());
 
 		if (request.getRequestedByUser() != null) {
@@ -155,23 +203,37 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 		link = (ContractorOperator) dao.save(link);
 	}
 
-	private User createUserFrom(ContractorRegistrationRequest request, ContractorAccount contractor) {
+	private User copyUserFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		User user = new User();
 		user.setName(request.getContact());
 		user.setEmail(request.getEmail());
 		user.setPhone(request.getPhone());
 		user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
-		user.setUsername(request.getEmail() + "-" + contractor.getId());
-		user.setAccount(contractor);
+		user.setUsername(request.getEmail() + "-" + toContractor.getId());
+		user.setAccount(toContractor);
 		// Other required fields
 		user.setIsGroup(YesNo.No);
 		user.setAuditColumns();
 
-		user = userDAO.save(user);
+		user = (User) dao.save(user);
 		return user;
 	}
 
-	private void addContractorTags(ContractorRegistrationRequest request, ContractorAccount contractor) {
+	private void copyNotesFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
+		Note note = new Note();
+		note.setAccount(toContractor);
+		note.setAuditColumns(permissions);
+		note.setSummary("Imported from Registration Request");
+		note.setPriority(LowMedHigh.Med);
+		note.setNoteCategory(NoteCategory.Registration);
+		note.setViewableBy(request.getRequestedBy());
+		note.setCanContractorView(false);
+		note.setStatus(NoteStatus.Closed);
+		note.setBody(request.getNotes());
+		dao.save(note);
+	}
+
+	private void copyTagsFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		if (!Strings.isEmpty(request.getOperatorTags())) {
 			for (String tag : request.getOperatorTags().split(",")) {
 				try {
@@ -180,12 +242,12 @@ public class DataConversionRequestAccount extends AccountActionSupport {
 					OperatorTag operatorTag = dao.find(OperatorTag.class, tagID);
 
 					ContractorTag contractorTag = new ContractorTag();
-					contractorTag.setContractor(contractor);
+					contractorTag.setContractor(toContractor);
 					contractorTag.setTag(operatorTag);
 					contractorTag.setAuditColumns(permissions);
 
 					dao.save(contractorTag);
-					contractor.getOperatorTags().add(contractorTag);
+					toContractor.getOperatorTags().add(contractorTag);
 				} catch (Exception e) {
 					logger.error("Could not parse operator tag {} from {} for registration request #{}", new Object[] {
 							tag, request.getOperatorTags(), request.getId() });

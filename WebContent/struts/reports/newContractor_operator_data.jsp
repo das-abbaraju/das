@@ -307,7 +307,12 @@
     </div>
     
     <div class="info">
-        <s:text name="NewContractorSearch.message.CompanyAccountNotListed" />
+    	<pics:toggle name="RequestNewContractorAccount">
+	        <s:text name="NewContractorSearch.message.CompanyAccountNotListed" />
+    	</pics:toggle>
+    	<pics:toggleElse>
+	        <s:text name="NewContractorSearch.message.CompanyNotListed" />
+    	</pics:toggleElse>
     </div>
 </s:else>
 

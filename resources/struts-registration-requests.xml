@@ -68,7 +68,7 @@
 		</action>
 		
 		<action name="DataConversionRequestAccount" class="com.picsauditing.actions.DataConversionRequestAccount">
-			<result>/struts/blank.jsp</result>
+			<result>/struts/data_conversion.jsp</result>
 		</action>
 		
 		<action name="RegistrationGapAnalysis" class="com.picsauditing.actions.contractors.RegistrationGapAnalysis">

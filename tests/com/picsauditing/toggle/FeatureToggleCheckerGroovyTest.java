@@ -96,8 +96,7 @@ public class FeatureToggleCheckerGroovyTest {
 	}
 
 	private boolean dynamicContractorScript(int opId1, int opId2) {
-		String scriptBody =
-				"return contractor.operatorAccounts.find {it.id in [22107, 222] } != null";
+		String scriptBody = "return contractor.operatorAccounts.find {it.id in [22107, 222] } != null";
 
 		ContractorAccount contractor = mock(ContractorAccount.class);
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
@@ -122,7 +121,7 @@ public class FeatureToggleCheckerGroovyTest {
 	@Test
 	public void testIsFeatureEnabled_Happy() throws Exception {
 		when(featureToggleProvider.findFeatureToggle(toggleName)).thenReturn("true");
-		
+
 		assertTrue(featureToggleCheckerGroovy.isFeatureEnabled(toggleName));
 	}
 
@@ -170,6 +169,16 @@ public class FeatureToggleCheckerGroovyTest {
 		trueScript(scriptBody);
 
 		scriptBody = "permissions.locale.toString() in ['en_CA', 'en_US']";
+		trueScript(scriptBody);
+	}
+
+	@Test
+	public void testGroovyScript_PermissionsAccountID() throws Exception {
+		when(permissions.getAccountId()).thenReturn(3);
+		String scriptBody = "permissions.accountId in [1813, 31828]";
+		falseScript(scriptBody);
+
+		when(permissions.getAccountId()).thenReturn(31828);
 		trueScript(scriptBody);
 	}
 
@@ -260,7 +269,7 @@ public class FeatureToggleCheckerGroovyTest {
 	@Test
 	public void testCacheScript_HappyPath() throws Exception {
 		Whitebox.invokeMethod(featureToggleCheckerGroovy, "cacheScript", toggleName, script);
-		
+
 		CacheManager cacheManager = CacheManager.getInstance();
 		Cache cache = cacheManager.getCache(cacheName);
 		Element element = cache.get(toggleName);

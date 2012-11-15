@@ -1,2 +1,2 @@
 insert IGNORE into app_properties (property, value)
-VALUES ('Toggle.RequestNewContractorAccount', 'hasPermission("RequestNewContractor") || releaseToUserAudienceLevel(1)');
+VALUES ('Toggle.RequestNewContractorAccount', '(hasPermission("RequestNewContractor") && permissions.accountId in [1957]) || permissions.picsEmployee');

@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterNewContractor;
 import com.picsauditing.util.Strings;
@@ -26,17 +28,25 @@ import com.picsauditing.util.excel.ExcelColumn;
 @SuppressWarnings("serial")
 public class ReportRegistrationRequests extends ReportActionSupport {
 	@Autowired
-	protected AccountUserDAO auDAO;
+	private AccountUserDAO auDAO;
 	@Autowired
-	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+	private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+	@Autowired
+	private FeatureToggle featureToggle;
 
-	protected SelectSQL sql;
-	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
+	private SelectSQL sql;
+	private ReportFilterNewContractor filter = new ReportFilterNewContractor();
 	@Deprecated
-	protected SelectSQL legacy;
+	private SelectSQL legacy;
 
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
+		if (permissions.isOperatorCorporate()
+				&& featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+			DataConversionRequestAccount justInTimeConversion = new DataConversionRequestAccount(dao, permissions);
+			justInTimeConversion.upgrade();
+		}
+
 		setDefaultFilterDisplay();
 		getFilter().setPermissions(permissions);
 
