@@ -99,6 +99,7 @@ public class Field implements JSONAware {
 		// TODO convert type to displayType in JavaScript
 		json.put("displayType", type.toString().toLowerCase());
 		json.put("type", type.toString().toLowerCase());
+		json.put("functions", type.getDisplayType().getFunctions());
 
 		return json;
 	}

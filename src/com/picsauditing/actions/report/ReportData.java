@@ -43,7 +43,6 @@ public class ReportData extends PicsActionSupport  {
 	private ReportUserDAO reportUserDao;
 
 	protected Report report;
-	protected DisplayType displayType;
 
 	protected String debugSQL = "";
 	protected SelectSQL sql = null;
@@ -204,11 +203,6 @@ public class ReportData extends PicsActionSupport  {
 	protected void writeJsonError(String message) {
 		json.put("success", false);
 		json.put("message", message);
-	}
-	
-	// TODO: This should be handled by the handshake.
-	public List<QueryMethod> getDisplayTypeFunctions() {
-		return displayType.getFunctions();
 	}
 	
 	public Report getReport() {
