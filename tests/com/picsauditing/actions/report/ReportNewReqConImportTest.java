@@ -24,6 +24,7 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.report.ReportNewReqConImport.RegistrationRequestColumn;
 import com.picsauditing.jpa.entities.Country;
@@ -31,6 +32,7 @@ import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class ReportNewReqConImportTest {
 	private ReportNewReqConImport reportNewReqConImport;
@@ -46,9 +48,13 @@ public class ReportNewReqConImportTest {
 	@Mock
 	private EntityManager entityManager;
 	@Mock
+	private FeatureToggle featureToggle;
+	@Mock
 	private File file;
 	@Mock
 	private OperatorAccount operator;
+	@Mock
+	private Permissions permissions;
 	@Mock
 	private RichTextString richText;
 	@Mock
@@ -69,6 +75,8 @@ public class ReportNewReqConImportTest {
 
 		when(file.length()).thenReturn(Long.MAX_VALUE);
 
+		Whitebox.setInternalState(reportNewReqConImport, "featureToggle", featureToggle);
+		Whitebox.setInternalState(reportNewReqConImport, "permissions", permissions);
 		Whitebox.setInternalState(reportNewReqConImport, "workbook", workbook);
 	}
 
