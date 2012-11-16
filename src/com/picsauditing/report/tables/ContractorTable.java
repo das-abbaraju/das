@@ -1,6 +1,8 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
 
 public class ContractorTable extends AbstractTable {
 
@@ -18,6 +20,30 @@ public class ContractorTable extends AbstractTable {
 	public ContractorTable() {
 		super("contractor_info");
 		addFields(ContractorAccount.class);
+		Field docuGUARD = new Field("DocuGUARD", "EXISTS(SELECT * FROM contractor_fee cf WHERE cf.conID = "
+				+ ReportOnClause.ToAlias + ".id AND cf.currentAmount > 0 AND cf.feeClass = 'DocuGUARD')",
+				FieldType.Boolean);
+		docuGUARD.setCategory(FieldCategory.AccountInformation);
+		docuGUARD.setWidth(100);
+		addField(docuGUARD);
+		Field auditGUARD = new Field("AuditGUARD", "EXISTS(SELECT * FROM contractor_fee cf WHERE cf.conID = "
+				+ ReportOnClause.ToAlias + ".id AND cf.currentAmount > 0 AND cf.feeClass = 'AuditGUARD')",
+				FieldType.Boolean);
+		auditGUARD.setCategory(FieldCategory.AccountInformation);
+		auditGUARD.setWidth(100);
+		addField(auditGUARD);
+		Field insureGUARD = new Field("InsureGUARD", "EXISTS(SELECT * FROM contractor_fee cf WHERE cf.conID = "
+				+ ReportOnClause.ToAlias + ".id AND cf.currentAmount > 0 AND cf.feeClass = 'InsureGUARD')",
+				FieldType.Boolean);
+		insureGUARD.setCategory(FieldCategory.AccountInformation);
+		insureGUARD.setWidth(100);
+		addField(insureGUARD);
+		Field employeeGUARD = new Field("EmployeeGUARD", "EXISTS(SELECT * FROM contractor_fee cf WHERE cf.conID = "
+				+ ReportOnClause.ToAlias + ".id AND cf.currentAmount > 0 AND cf.feeClass = 'EmployeeGUARD')",
+				FieldType.Boolean);
+		employeeGUARD.setCategory(FieldCategory.AccountInformation);
+		employeeGUARD.setWidth(100);
+		addField(employeeGUARD);
 	}
 
 	protected void addJoins() {
