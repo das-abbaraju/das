@@ -85,6 +85,12 @@ if (typeof Object.create !== 'function') {
                 
                 $.extend(config, defaults, options);
                 
+                if ($.browser.msie && $.browser.version <= 8) {
+                    var date = new Date();
+                    
+                    config.data['ie_timestamp'] = date.getTime();
+                }
+                
                 return $.ajax(config);
             },
             

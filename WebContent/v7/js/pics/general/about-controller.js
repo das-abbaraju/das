@@ -29,7 +29,7 @@
             },
             
             onShowPrivacyPolicy: function (event) {
-                var element = $(event.target);
+                var element = $(event.currentTarget);
                 
                 element.toggleClass('active');
                 
