@@ -1,6 +1,9 @@
 (function ($) {
     PICS.define('layout.menu.Menu', {
         methods: {
+            // try to catch jqXHR processing to prevent double submit
+            jqXHR: false,
+            
             init: function () {
                 var navbar_element = $('#primary_navigation'),
                     dropdown_toggle_element = navbar_element.find('.dropdown-toggle'),
@@ -46,21 +49,21 @@
                         });
                         
                         i.find('a').html([
-                            '<div>',
-                                '<strong class="name">',
+                            '<div class="clearfix">',
+                                '<div class="name">',
                                     item.name,
-                                '</strong>',
-                                '<strong class="id">',
+                                '</div>',
+                                '<div class="id">',
                                     item.id,
-                                '</strong>',
+                                '</div>',
                             '</div>',
-                            '<div>',
-                                '<span class="company">',
-                                    item.company,
-                                '</span>',
-                                '<span class="type">',
+                            '<div class="clearfix">',
+                                '<div class="location">',
+                                    item.location,
+                                '</div>',
+                                '<div class="type">',
                                     item.type,
-                                '</span>',
+                                '</div>',
                             '</div>',
                         ].join(''));
                         
@@ -94,21 +97,32 @@
             },
             
             search: function (query, process) {
-                PICS.ajax({
+                var that = this,
+                    cls = PICS.getClass('layout.menu.Menu');
+                
+                if (cls.jqXHR) {
+                    return;
+                }
+                
+                cls.jqXHR = PICS.ajax({
                     url: 'SearchBox!json.action',
                     dataType: 'json',
                     data: {
                         q: query
                     },
                     success: function (data, textStatus, jqXHR) {
-                        process($.map(data.results, function (item) {
-                            return {
-                                name: item.result_name,
-                                id: item.result_id,
-                                type: item.result_type,
-                                company: item.result_at
-                            };
-                        }));
+                        if (that.$element.val().length > 0) {
+                            process($.map(data.results, function (item) {
+                                return {
+                                    name: item.result_name,
+                                    id: item.result_id,
+                                    location: item.result_at,
+                                    type: item.result_type
+                                };
+                            }));
+                        }
+                        
+                        cls.jqXHR = false;
                     }
                 });
             }

@@ -68,7 +68,7 @@ if (typeof Object.create !== 'function') {
             /**
              * Ajax
              * 
-             * @options: An object literial configuration for an ajax request
+             * @options: An object literal configuration for an ajax request
              */
             ajax: function (options) {
                 var defaults = {

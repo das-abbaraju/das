@@ -155,30 +155,31 @@ body {
 /* line 74, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user a {
   font-size: 13px;
-  overflow: hidden;
   white-space: normal;
 }
-/* line 81, ../sass/pics/layout/_menu.scss */
+/* line 80, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .name {
   float: left;
+  font-weight: bold;
   width: 175px;
 }
 /* line 87, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .id {
   float: right;
+  font-weight: bold;
 }
-/* line 92, ../sass/pics/layout/_menu.scss */
-#user_searchbox .user .company {
+/* line 93, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user .location {
   float: left;
   width: 175px;
 }
-/* line 98, ../sass/pics/layout/_menu.scss */
+/* line 99, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .type {
   float: right;
   font-style: italic;
 }
 
-/* line 108, ../sass/pics/layout/_menu.scss */
+/* line 109, ../sass/pics/layout/_menu.scss */
 #user_menu .icon-cog {
   font-size: 16px;
   position: relative;
@@ -186,11 +187,11 @@ body {
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
-  /* line 119, ../sass/pics/layout/_menu.scss */
+  /* line 120, ../sass/pics/layout/_menu.scss */
   .navbar .brand {
     padding-right: 10px;
   }
-  /* line 124, ../sass/pics/layout/_menu.scss */
+  /* line 125, ../sass/pics/layout/_menu.scss */
   .navbar .nav > li > a {
     padding: 16px 10px;
   }
