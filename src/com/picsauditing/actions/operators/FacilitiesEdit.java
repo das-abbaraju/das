@@ -104,7 +104,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (operator.getPrimaryContact() == null)
 			addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
 
-		notChildOperatorList = getOperatorsNotMyChildren();
+		notChildOperatorList = getOperatorsNotMyChildrenOrMyself();
 		childOperatorList = operator.getChildOperators();
 
 		loadSelectedClients();
@@ -225,6 +225,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			for (Facility fac : operator.getOperatorFacilities()) {
 				facilities.add(fac.getOperator().getId());
 			}
+		} else {
+			if (facilities.contains(operator.getId())) {
+				addActionError(getTextParameterized("FacilitiesEdit.CyclicalRelationship", operator.getId(),
+						Strings.implode(facilities)));
+				return REDIRECT;
+			}
 		}
 
 		if (country != null && !country.equals(operator.getCountry())) {
@@ -246,7 +252,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operatorDao.clear();
 			operator = operatorDao.find(operator.getId());
 
-			if (operator != null){
+			if (operator != null) {
 				List<Facility> operatorFacilities = operator.getOperatorFacilities();
 				for (Facility facility : operatorFacilities) {
 					if (!operatorFacilities.contains(facility)) {
@@ -287,10 +293,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 							newFacilities.remove(opFacilities.getOperator());
 						} else {
 							facilitiesDAO.remove(opFacilities);
+
 							if (operator.equals(opFacilities.getOperator().getParent())) {
 								opFacilities.getOperator().setParent(null);
 								operatorDao.save(opFacilities.getOperator());
 							}
+
 							facList.remove();
 						}
 					}
@@ -303,15 +311,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 							facility.setOperator(opAccount);
 							facility.setAuditColumns(permissions);
 							facilitiesDAO.save(facility);
+
 							operator.getOperatorFacilities().add(facility);
+
 							if (opAccount.getParent() == null) {
 								opAccount.setParent(operator);
 								operatorDao.save(opAccount);
 							}
 						}
 					}
-					if (operator.getParent() != null && newFacilities.size() > 0)
+
+					if (operator.getParent() != null && newFacilities.size() > 0) {
 						linkChildOperatorsToAllParentAccounts(newFacilities);
+					}
 				}
 			}
 
@@ -390,13 +402,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return setUrlForRedirect("ReportAccountList.action");
 	}
 
-	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {
+	public List<OperatorAccount> getOperatorsNotMyChildrenOrMyself() throws Exception {
 		// find all operators
 		List<OperatorAccount> tmpOperatorList;
 		tmpOperatorList = operatorDao.findWhere(true, "status IN ('Active','Demo','Pending')");
 
 		// remove operators that are children of the current operator
 		tmpOperatorList.removeAll(operator.getChildOperators());
+		tmpOperatorList.remove(operator);
 
 		// return the list of operators not associated with the current operator
 		return tmpOperatorList;
@@ -538,9 +551,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			switchToSet.addAll(userSwitchDAO.findUsersBySwitchToId(u.getId()));
 
 		// Adding all SwitchTo users to primary contacts
-		try{
+		try {
 			primaryContactSet.addAll(switchToSet);
-		} catch (Exception e){
+		} catch (Exception e) {
 			logger.error(e.toString());
 		}
 		addParentPrimaryOperatorContactUsers(primaryContactSet);
@@ -746,9 +759,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	// Recursively find all the parents of this operator.
 	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents) {
-		if (currentOperator.getParent() == null)
+		if (currentOperator.getParent() == null || parents.contains(currentOperator.getParent())) {
 			return;
-		else {
+		} else {
 			parents.add(currentOperator.getParent());
 			findParentAccounts(currentOperator.getParent(), parents);
 		}
@@ -799,7 +812,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public List<OperatorAccount> getNotChildOperatorList() throws Exception {
-		notChildOperatorList = getOperatorsNotMyChildren();
+		notChildOperatorList = getOperatorsNotMyChildrenOrMyself();
 		return notChildOperatorList;
 	}
 
