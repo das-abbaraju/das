@@ -2,6 +2,9 @@ Ext.define('PICS.model.report.AvailableField', {
 	extend: 'Ext.data.Model',
 
 	fields: [{
+        name: 'functions',
+        type: 'auto'
+    }, {
 	    // field category (categorizes fields in available field modal - column, filter picker)
 	    name: 'category',
 	    type: 'string'

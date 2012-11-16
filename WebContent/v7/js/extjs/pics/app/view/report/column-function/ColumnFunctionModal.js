@@ -17,63 +17,66 @@ Ext.define('PICS.view.report.column-function.ColumnFunctionModal', {
     width: 300,
 
     initComponent: function () {
-        if (!this.column || this.column.modelName != 'PICS.model.report.Column') {
+        if (!this.column
+                || this.column.modelName != 'PICS.model.report.Column') {
             Ext.Error.raise('Invalid column record');
         }
 
         this.callParent(arguments);
 
-        var functions = this.column.raw.field.functions,
-            function_items = this.getFunctionItems(functions);
-        this.addDockedItems(function_items);
+        var field = this.column.getAvailableField(),
+            column_functions = field.get('functions'),
+            column_function_items = this.getColumnFunctionItems(column_functions);
 
-        this.height = 40 * functions.length + 95;
+        this.addDockedItems(column_function_items);
+
+        this.height = (40 * column_functions.length) + 95;
     },
 
-    addDockedItems: function (function_items) {
-       this.addDocked({
-           xtype: 'toolbar',
-           border: 0,
-           defaults: {
-               height: 35
-           },
-           dock: 'top',
-           id: 'column_function_list',
-           items: function_items,
-           layout: 'vbox'
-           });
+    addDockedItems: function (column_function_items) {
+        this.addDocked({
+            xtype: 'toolbar',
+            border: 0,
+            defaults: {
+                height: 35
+            },
+            dock: 'top',
+            id: 'column_function_list',
+            items: column_function_items,
+            layout: 'vbox'
+        });
 
-       this.addDocked({
-           xtype: 'panel',
-           border: 0,
-           dock: 'bottom',
-           height: 10,
-           id: 'column_function_modal_footer'
-       });
-   },
+        this.addDocked({
+            xtype: 'panel',
+            border: 0,
+            dock: 'bottom',
+            height: 10,
+            id: 'column_function_modal_footer'
+        });
+    },
 
-   getFunctionItem: function (fn) {
-       return {
-           action: fn.key,
-           height: 40,
-           text: fn.value,
-           textAlign: 'left'
-       };
-   },
+    getColumnFunctionItem: function (column_function) {
+        return {
+            action: column_function.key,
+            height: 40,
+            text: column_function.value,
+            textAlign: 'left'
+        };
+    },
 
-   getFunctionItems: function (functions) {
-       var items = [{
-           action: '',
-           height: 40,
-           text: 'None',
-           textAlign: 'left'
-       }];
+    getColumnFunctionItems: function (column_functions) {
+        var items = [{
+            action: '',
+            height: 40,
+            text: 'None',
+            textAlign: 'left'
+        }];
 
-       var that = this;
-       Ext.each(functions, function (fn) {
-           items.push(that.getFunctionItem(fn));
-       });
+        var that = this;
+        Ext.each(column_functions, function (column_function) {
+            items.push(that.getColumnFunctionItem(column_function));
+        });
 
-       return items;
-   }
+        return items;
+    }
 });
