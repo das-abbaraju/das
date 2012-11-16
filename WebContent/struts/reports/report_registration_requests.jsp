@@ -16,8 +16,12 @@
 		<s:include value="filters.jsp" />
 		
 		<div class="right">
-			<a class="excel" rel="${report.allRows}" href="javascript:;" 
-				title="<s:text name="javascript.DownloadAllRows"><s:param>${report.allRows}</s:param></s:text>">
+			<s:url action="ReportRegistrationRequestsCSV" var="download_requests_excel" />
+			<a class="excel"
+				rel="${report.allRows}"
+				href="javascript:;"
+				title="<s:text name="javascript.DownloadAllRows"><s:param>${report.allRows}</s:param></s:text>"
+				data-url="${download_requests_excel}">
 				<s:text name="global.Download" />
 			</a>
 		</div>
@@ -26,6 +30,17 @@
 			<a href="${request_new_contractor}" class="add" id="AddRegistrationRequest">
 				<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
 			</a>
+			<s:if test="amSales || debugging">
+				<s:url action="ReportNewReqConImport" var="import_registration_request" />
+				<a
+					href="javascript:;"
+					title="<s:text name="javascript.OpensInNewWindow" />"
+					class="add excelUpload"
+					data-url="${import_registration_request}"
+					id="ImportRegistrationRequests">
+					<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
+				</a>
+			</s:if>
 		</div>
 		<s:if test="data.size > 0">
 			<div>

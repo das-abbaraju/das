@@ -2,14 +2,27 @@
 	PICS.define('contractor.registrationRequest.Report', {
 		methods: {
 			init: function () {
-				$('.ReportNewRequestedContractor-page a.excel').live('click', this.downloadExcelFile);
-				$('.ReportNewRequestedContractor-page a.excelUpload').live('click', this.uploadExcelFile);
+			    function performDelegation(element, reportRegistrationRequests) {
+			        if (element.length) {
+			            console.log('performing delegation on ' + element.attr('class'));
+			            element.delegate('a.excel', 'click', reportRegistrationRequests.downloadExcelFile);
+			            element.delegate('a.excelUpload', 'click', reportRegistrationRequests.uploadExcelFile);
+			        }
+			    }
+			    
+			    performDelegation($('.ReportNewRequestedContractor-page'), this);
+			    performDelegation($('.ReportRegistrationRequests-page'), this);
 			},
 			
 			downloadExcelFile: function(event) {
 				event.preventDefault();
 				
 				var num = $(this).attr('rel');
+				var url = $(this).attr('data-url');
+				
+				if (!url) {
+				    url = 'ReportNewRequestedContractorCSV.action';
+				}
 				
 				var confirmed = false;
 				if (num > 500)
@@ -18,8 +31,8 @@
 					confirmed = true;
 				
 				if (confirmed) {
-					newurl = 'ReportNewRequestedContractorCSV.action?' + $('#form1').serialize();
-					popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
+					newurl = url + '?' + $('#form1').serialize();
+					popupWin = window.open(newurl, url, '');
 				}
 			},
 			

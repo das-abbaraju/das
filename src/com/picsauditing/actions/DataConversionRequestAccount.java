@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.BasicDAO;
@@ -105,6 +107,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		return !findRequestsNeedingConversion().isEmpty();
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void performUpgrade() {
 		for (ContractorRegistrationRequest request : findRequestsNeedingConversion()) {
 			ContractorAccount toContractor = createContractorFrom(request);
@@ -138,6 +141,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		return requestsNeedingConversion;
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private ContractorAccount createContractorFrom(ContractorRegistrationRequest request) {
 		ContractorAccount contractor = new ContractorAccount();
 
@@ -182,6 +186,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		return (ContractorAccount) dao.save(contractor);
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyRequestingOperatorFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		ContractorOperator link = new ContractorOperator();
 		link.setContractorAccount(toContractor);
@@ -203,6 +208,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		link = (ContractorOperator) dao.save(link);
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private User copyUserFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		User user = new User();
 		user.setName(request.getContact());
@@ -219,6 +225,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		return user;
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyNotesFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		Note note = new Note();
 		note.setAccount(toContractor);
@@ -233,6 +240,7 @@ public class DataConversionRequestAccount extends PicsActionSupport {
 		dao.save(note);
 	}
 
+	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void copyTagsFrom(ContractorRegistrationRequest request, ContractorAccount toContractor) {
 		if (!Strings.isEmpty(request.getOperatorTags())) {
 			for (String tag : request.getOperatorTags().split(",")) {
