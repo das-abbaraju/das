@@ -1,8 +1,7 @@
 (function ($) {
     PICS.define('layout.menu.Menu', {
         methods: {
-            // try to catch jqXHR processing to prevent double submit
-            jqXHR: false,
+            jqXHR: null,
             
             init: function () {
                 var navbar_element = $('#primary_navigation'),
@@ -100,8 +99,8 @@
                 var that = this,
                     cls = PICS.getClass('layout.menu.Menu');
                 
-                if (cls.jqXHR) {
-                    return;
+                if (cls && cls.jqXHR && typeof cls.jqXHR.abort == 'function') {
+                    cls.jqXHR.abort();
                 }
                 
                 cls.jqXHR = PICS.ajax({
@@ -122,7 +121,7 @@
                             }));
                         }
                         
-                        cls.jqXHR = false;
+                        cls.jqXHR = null;
                     }
                 });
             }
