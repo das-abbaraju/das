@@ -184,7 +184,7 @@
 					listValue="getTextNullSafe(getI18nKey())"
 					name="filter.requestStatus"
 					headerKey=""
-					headerValue="Any" />
+					headerValue="%{getTextNullSafe('Filters.status.Any')}" />
 			</div>
 		</s:if>
 
@@ -201,7 +201,7 @@
 					listValue="getTextNullSafe(getI18nKey())"
 					name="filter.referralStatus"
 					headerKey=""
-					headerValue="Any" />
+					headerValue="%{getTextNullSafe('Filters.status.Any')}" />
 			</div>
 		</s:if>
 
