@@ -50,7 +50,7 @@
 		</script>
 	</head>
 	
-	<body>
+	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 		<s:if test="!permissions.contractor || contractor.status.activeDemo">
 			<s:include value="conHeader.jsp"></s:include>
 		</s:if>
@@ -75,6 +75,34 @@
 		<s:if test="invoice.qbSync">
 			<div class="alert" class="noprint"><s:text name="InvoiceDetail.WaitingSync"></s:text></div>
 		</s:if>
+		
+		<s:if test="permissions.hasGroup(981)">
+			<div>
+				<s:if test="invoiceCommissions.isEmpty()">
+					No Commission Details for this invoice.
+				</s:if>
+				<s:else>
+					<table class="allborder breakdown-table">
+						<caption>Commissions Breakdown for Sales/Account Manager(s)</caption>
+						<thead>
+							<tr>
+								<th>Account Manage/Sales Representative</th>
+								<th>Points For Activation</th>
+								<th>Revenue Split</th>
+							</tr>
+						</thead>
+					<s:iterator value="invoiceCommissions" > <!--  var="invoiceCommissions"> -->
+						<tr>
+							<td><s:property value="user.name" /></td>
+							<td class="number"><s:property value="points" /></td>
+							<td class="number"><s:property value="revenuePercent" /></td>
+						</tr>
+					</s:iterator>
+					</table>
+				</s:else>
+			</div>
+		</s:if>
+		
 		</s:if>
 		
 		<s:form id="save" name="save" method="POST">
@@ -499,5 +527,5 @@
 				</s:if>
 			</table>
 		</s:form>
-	</body>
+	</div>
 </html>

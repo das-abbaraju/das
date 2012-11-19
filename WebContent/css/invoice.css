@@ -46,6 +46,24 @@ table.allborder th.right, table.allborder td.right {
 	float: none;
 }
 
+.breakdown-table
+{
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.breakdown-table caption
+{
+	text-align: center;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+.breakdown-table .number
+{
+	text-align: right;
+}
+
 /**
  Help text for ContractorPaymentOptions
 */

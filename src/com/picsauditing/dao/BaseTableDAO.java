@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -71,6 +72,13 @@ public class BaseTableDAO<T extends BaseTable> {
 	@SuppressWarnings("unchecked")
 	public List<T> findAll() {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<T> findByIds(Collection<Integer> ids) {
+		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE t.id IN ( :ids )");
+		q.setParameter("ids", ids);
 		return q.getResultList();
 	}
 

@@ -14,6 +14,7 @@ import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -52,6 +53,8 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.salecommission.InvoiceObserver;
+import com.picsauditing.salecommission.PaymentObserver;
 import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
@@ -81,9 +84,17 @@ public class BillingCalculatorSingle {
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
-
+	@Autowired
+	private DataObservable salesCommissionDataObservable;
+	@Autowired
+	private InvoiceObserver invoiceObserver;
+	
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
+	public void initService() {
+		salesCommissionDataObservable.addObserver(invoiceObserver);
+	}
+	
 	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
@@ -103,8 +114,12 @@ public class BillingCalculatorSingle {
 
 		contractor.setPayingFacilities(payingOperators.size());
 	}
-
+	
 	public void calculateAnnualFees(ContractorAccount contractor) {
+		calculateAnnualFees(contractor, true);
+	}
+	
+	private void calculateAnnualFees(ContractorAccount contractor, boolean persistChanges) {
 		setPayingFacilities(contractor);
 
 		int payingFacilities = contractor.getPayingFacilities();
@@ -242,7 +257,7 @@ public class BillingCalculatorSingle {
 				importConFee.setCurrentLevel(currentLevel);
 				importConFee.setCurrentAmount(contractor.getCountry().getAmount(currentLevel));
 				importConFee.setFeeClass(FeeClass.ImportFee);
-				invoiceFeeDAO.save(importConFee);
+				saveContractorImportPqfFee(importConFee, persistChanges);
 
 				contractor.getFees().put(FeeClass.ImportFee, importConFee);
 			} else {
@@ -252,6 +267,12 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.ImportFee, feeDAO);
 		}
 
+	}
+	
+	private void saveContractorImportPqfFee(ContractorFee importPqfFee, boolean persistChanges) {
+		if (persistChanges) {
+			invoiceFeeDAO.save(importPqfFee);
+		}
 	}
 
 	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
@@ -320,11 +341,19 @@ public class BillingCalculatorSingle {
 	}
 
 	public Invoice createInvoice(ContractorAccount contractor, User user) {
-		return createInvoice(contractor, contractor.getBillingStatus(), user);
+		return createInvoice(contractor, contractor.getBillingStatus(), user, true);
 	}
-
+	
 	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
-		calculateAnnualFees(contractor);
+		return createInvoice(contractor, billingStatus, user, true);
+	}
+	
+	public Invoice createInvoiceWithoutSave(ContractorAccount contractor, User user) {
+		return createInvoice(contractor, contractor.getBillingStatus(), user, false);
+	}
+	
+	private Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user, boolean persistChanges) {
+		calculateAnnualFees(contractor, persistChanges);
 
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
 

@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.data.DataEvent;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
@@ -46,6 +49,8 @@ public class BillingDetail extends ContractorActionSupport {
 	private TransactionDAO transactionDAO;
 	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
+	private DataObservable saleCommissionDataObservable;
 
 	private BigDecimal invoiceTotal;
 	private List<InvoiceItem> invoiceItems;
@@ -118,6 +123,9 @@ public class BillingDetail extends ContractorActionSupport {
 				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
 						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
+			
+			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
+			
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
 		}
@@ -242,5 +250,10 @@ public class BillingDetail extends ContractorActionSupport {
 		}
 
 		return freeOperators;
+	}
+	
+	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
+		saleCommissionDataObservable.setChanged();
+		saleCommissionDataObservable.notifyObservers(dataEvent);
 	}
 }
