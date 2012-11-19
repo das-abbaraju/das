@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.salecommission.strategy.invoice.ActivateInvoiceCommissionStrategy;
 import com.picsauditing.salecommission.strategy.invoice.InvoiceCommissionStrategy;
 import com.picsauditing.salecommission.strategy.invoice.InvoiceStrategy;
 import com.picsauditing.salecommission.strategy.invoice.VoidInvoiceCommissionStrategy;
