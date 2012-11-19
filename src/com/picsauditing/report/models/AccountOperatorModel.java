@@ -7,6 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.OperatorTable;
 
 public class AccountOperatorModel extends AbstractModel {
 
@@ -19,6 +20,9 @@ public class AccountOperatorModel extends AbstractModel {
 		ModelSpec operator = spec.join(AccountTable.Operator);
 		operator.category = FieldCategory.ReportingClientSite;
 		operator.alias = "Operator";
+		ModelSpec reporting = operator.join(OperatorTable.Reporting);
+		reporting.category = FieldCategory.AccountInformation;
+		reporting.alias = "ReportingClient";
 		spec.join(AccountTable.Naics);
 		return spec;
 	}
