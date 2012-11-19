@@ -6,7 +6,7 @@
 	// trade preview - hover
 	TRADE.preview = {
 		init: function() {
-			var element = $('#contractor_dashboard a.trade');
+			var element = $('#contractor_dashboard a.trade').not('.trade-not-viewable');
 			
 			if (element.length) {
 				// initialize on contractor dashboard
