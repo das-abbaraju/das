@@ -55,7 +55,7 @@ public class PasswordValidatorTest {
     @Test
     public void testValidatePassword_validHighCases() throws Exception {
         setupTestUser(PasswordSecurityLevel.High);
-        String newPassword = "joeSi1";
+        String newPassword = "joeSi?1";
 
         errorMessages = passwordValidator.validatePassword(user, newPassword);
         assertTrue(errorMessages.size() == 0);
@@ -126,8 +126,8 @@ public class PasswordValidatorTest {
 
         assertTrue(errorMessages.size() > 0);
         assertTrue(errorMessages.contains("Please choose a password at least " + PasswordSecurityLevel.High.minLength + " characters in length."));
-        assertTrue(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
-        assertFalse(errorMessages.contains("Please choose a password with at least one special character."));
+        assertFalse(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
+        assertTrue(errorMessages.contains("Please choose a password with at least one special character."));
     }
 
     @Test

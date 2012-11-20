@@ -20,8 +20,7 @@ public class PasswordValidator {
 	@Autowired
 	protected PasswordDAO passwordDAO;
 
-	public static int MINIMUM_LENGTH = 5;
-    public static final String REGEX_NON_WORD_CHARACTER = "[^\\w\\*]";
+	public static final String REGEX_NON_WORD_CHARACTER = "[^\\w\\*]";
 
 	public Vector<String> validatePassword(User user, String newPassword) {
 		Vector<String> errorMessages = new Vector<String>();
