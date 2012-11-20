@@ -1,10 +1,13 @@
 package com.picsauditing.report.fields;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -36,6 +39,7 @@ public class Field implements JSONAware {
 	private String postTranslation;
 	private OpPerms requiredPermission = OpPerms.None;
 	private FieldImportance importance = FieldImportance.Low;
+	private Map<String,String> functions = new TreeMap<String, String>();
 
 	public Field(ReportField annotation) {
 		type = annotation.type();
@@ -99,6 +103,16 @@ public class Field implements JSONAware {
 		// TODO convert type to displayType in JavaScript
 		json.put("displayType", type.toString().toLowerCase());
 		json.put("type", type.toString().toLowerCase());
+		
+		JSONArray functionsArray = new JSONArray();
+		for (String key : functions.keySet()) {
+			JSONObject translatedFunction = new JSONObject();
+			translatedFunction.put("key", key);
+			translatedFunction.put("value", functions.get(key));
+			functionsArray.add(translatedFunction);
+		}
+		
+		json.put("functions", functionsArray);
 
 		return json;
 	}
@@ -285,6 +299,14 @@ public class Field implements JSONAware {
 		this.importance = importance;
 	}
 
+	public Map<String, String> getFunctions() {
+		return functions;
+	}
+
+	public void setFunctions(Map<String, String> functions) {
+		this.functions = functions;
+	}
+
 	public Field clone() {
 		Field copiedField = new Field(name, databaseColumnName, type);
 		copiedField.category = category;
@@ -301,6 +323,7 @@ public class Field implements JSONAware {
 		copiedField.postTranslation = postTranslation;
 		copiedField.requiredPermission = requiredPermission;
 		copiedField.importance = importance;
+		copiedField.functions = functions;
 		return copiedField;
 	}
 

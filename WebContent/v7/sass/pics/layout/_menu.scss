@@ -73,22 +73,23 @@
 		a
 		{
 			font-size: 13px;
-			overflow: hidden;
 			white-space: normal;
 		}
 		
 		.name
 		{
 			float: left;
+			font-weight: bold;
 			width: 175px;
 		}
 		
 		.id
 		{
 			float: right;
+			font-weight: bold;
 		}
 		
-		.company
+		.location
 		{
 			float: left;
 			width: 175px;

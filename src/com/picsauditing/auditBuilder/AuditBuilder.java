@@ -157,8 +157,10 @@ public class AuditBuilder {
 					// need all the categories for this audit.
 					categories = new HashSet<AuditCategory>(conAudit.getAuditType().getCategories());
 				}
-				fillAuditCategories(conAudit, categories);
+				
+				// order dependent in czse of new caos
 				fillAuditOperators(conAudit, categoriesBuilder.getCaos());
+				fillAuditCategories(conAudit, categories); 
 			}
 		}
 

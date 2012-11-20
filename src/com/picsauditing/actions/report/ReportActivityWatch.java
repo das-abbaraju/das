@@ -95,7 +95,6 @@ public class ReportActivityWatch extends ReportAccount {
 		List<String> joins = new ArrayList<String>();
 
 		if (audits) {
-			joins.add("JOIN audit_type aType ON ca.auditTypeID = aType.id");
 			joins.add("JOIN contractor_audit_operator cao on cao.auditID = ca.id AND cao.visible = 1");
 			joins.add("JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
 
@@ -104,7 +103,7 @@ public class ReportActivityWatch extends ReportAccount {
 						+ visibleCaoOpIDsAsCsvList() + ")");
 			}
 			// Audit Expiration
-			SelectSQL sql2 = buildWatch("Audits", "contractor_audit ca", "ca.conID", "caow.creationDate", "aType.id",
+			SelectSQL sql2 = buildWatch("Audits", "contractor_audit ca", "ca.conID", "caow.creationDate", "ca.auditTypeID",
 					"caow.previousStatus", "caow.status",
 					"(CASE WHEN ca.auditFor IS NULL OR ca.auditFor = '' THEN 0 ELSE ca.auditFor END)",
 					"CONCAT('Audit.action?auditID=', ca.id)", joins);

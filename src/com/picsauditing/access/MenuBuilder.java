@@ -73,7 +73,7 @@ public final class MenuBuilder {
 			return;
 		}
 
-		menubar.addChild(getText("global.Home"), "ContractorView.action", "contractor_view");
+		addDashboard(menubar);
 
 		// Don't show for insurance only users
 		if (!permissions.isInsuranceOnlyContractorUser()) {
@@ -98,19 +98,6 @@ public final class MenuBuilder {
 				hseMenu.addChild(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action",
 						"employee_competencies");
 			}
-
-			// if (permissions.isRequiresOQ()) {
-			// MenuComponent operatorQualMenu =
-			// menu.addChild(getText("global.OperatorQualification"));
-			// String url =
-			// "ReportOQEmployees.action?orderBy=e.lastName,e.firstName";
-			// operatorQualMenu.addChild(getText("ReportOQEmployees.title"),
-			// url, "report_oq_employees");
-			// operatorQualMenu.addChild(getText("ReportOQChanges.title"),
-			// "ReportOQChanges.action", "report_oq_changes");
-			// operatorQualMenu.addChild(getText("ReportNewProjects.title"),
-			// "ReportNewProjects.action", "report_new_projects");
-			// }
 		}
 
 		if (permissions.has(OpPerms.ContractorBilling)) {
@@ -123,6 +110,7 @@ public final class MenuBuilder {
 		menubar.addChild(getText("global.Resources"), "ContractorForms.action", "contractor_forms");
 
 		addSupportMenu(menubar, permissions);
+		addUserMenu(menubar, permissions);
 	}
 
 	private static void buildAssessmentMenubar(MenuComponent menubar, Permissions permissions) {
@@ -399,7 +387,7 @@ public final class MenuBuilder {
 		supportMenu.addChild(getText("Header.HelpCenter"), helpUrl, "help_center");
 		supportMenu.addChild(getText("Registration.Error.LiveChat"), "#", "live_chat");
 		supportMenu.addChild(getText("global.ContactPICS"), "Contact.action", "contact_action");
-		supportMenu.addChild(getText("global.AboutPICS"), "#", "about_pics");
+		supportMenu.addChild(getText("global.AboutPICS"), "About.action", "about_pics");
 
 		MenuComponent referenceMenu = supportMenu.addChild("Reference");
 		if (permissions.hasPermission(OpPerms.ManageTrades))

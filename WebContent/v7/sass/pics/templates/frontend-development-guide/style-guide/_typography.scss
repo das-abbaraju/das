@@ -1,5 +1,14 @@
-#style_guide_typography
+#typography
 {
+	.example
+	{
+		.lowercase,
+		.uppercase
+		{
+			font-size: 32px;
+			line-height: 1.2;
+		}
+	}
 	.lowercase
 	{
 		text-transform: lowercase;
@@ -8,15 +17,5 @@
 	.uppercase
 	{
 		text-transform: uppercase;
-	}
-	
-	h3
-	{
-		span
-		{
-			color: #999;
-			font-size: 14px;
-			text-transform: lowercase;
-		}
 	}
 }

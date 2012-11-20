@@ -218,12 +218,12 @@ public class ReportData extends PicsActionSupport implements ParameterAware {
     }
 
     public void setParameters(Map<String, String[]> parameters) {
-        logger.debug("Setting parameters");
+        logger.warn("Setting parameters");
         for (String key : parameters.keySet()) {
             logger.debug("{} = {}", key, parameters.get(key)[0].toString());
             if ("format".equals(key)) {
                 outputFormat = parameters.get(key)[0].toString();
-                if (outputFormat == null || outputFormat.isEmpty() || outputFormat.equalsIgnoreCase("xml")) {
+                if (outputFormat == null || outputFormat.isEmpty() || !outputFormat.equalsIgnoreCase("xml")) {
                     outputFormat = "json";
                 }
 

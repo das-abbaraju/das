@@ -1,11 +1,11 @@
-<ul class="nav nav-list">
+<ul class="nav nav-list" data-spy="affix" data-offset-top="100">
     <li>
-        <a href="#">Overview <i class="icon-chevron-right"></i></a>
+        <a href="#overview">Overview <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Typography <i class="icon-chevron-right"></i></a>
+        <a href="#typography">Typography <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Colors <i class="icon-chevron-right"></i></a>
+        <a href="#colors">Colors <i class="icon-chevron-right"></i></a>
     </li>
 </ul>

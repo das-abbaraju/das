@@ -6,6 +6,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.thoughtworks.xstream.XStream;
 import org.apache.struts2.dispatcher.StreamResult;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 
@@ -13,16 +15,16 @@ import java.io.ByteArrayInputStream;
  * Custom result used to return JSON to the browser using the proper
  * contentType.
  *
- * @author kpartridge
+ * @author pschlesinger
  */
 public class XMLResult extends StreamResult {
-
+    private static final Logger logger = LoggerFactory.getLogger(XMLResult.class);
     private static final long serialVersionUID = 7789432829226367722L;
 
     @SuppressWarnings("unchecked")
     @Override
     protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
-
+        logger.debug("In XMLResult");
         JSONObject json = (JSONObject) invocation.getStack().findValue("json");
 
         /*

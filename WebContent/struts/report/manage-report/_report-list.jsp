@@ -73,7 +73,7 @@
     
     			<s:if test="#enable_sort == 'true' && (#report_size > 1 || #enable_move_up == 'true')">
                 	<div class="btn-group pull-right">
-                        <button class="dropdown-toggle btn btn-link" data-toggle="dropdown" href="#">
+                        <button class="dropdown-toggle btn btn-link" data-toggle="dropdown">
                             <s:text name="ManageReports.myReports.Options" />
                         </button>
     

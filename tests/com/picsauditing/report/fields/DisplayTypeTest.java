@@ -12,25 +12,25 @@ public class DisplayTypeTest {
 	@Test
 	public void testBooleanFunctions() {
 		log(DisplayType.Boolean);
-		assertEquals(5, DisplayType.Boolean.getFunctions().size());
+		assertEquals(3, DisplayType.Boolean.getFunctions().size());
 	}
 
 	@Test
 	public void testDateFunctions() {
 		log(DisplayType.Date);
-		assertEquals(11, DisplayType.Date.getFunctions().size());
+		assertEquals(3, DisplayType.Date.getFunctions().size());
 	}
 
 	@Test
 	public void testFloatFunctions() {
 		log(DisplayType.Float);
-		assertEquals(8, DisplayType.Float.getFunctions().size());
+		assertEquals(6, DisplayType.Float.getFunctions().size());
 	}
 
 	@Test
 	public void testIntFunctions() {
 		log(DisplayType.Integer);
-		assertEquals(7, DisplayType.Integer.getFunctions().size());
+		assertEquals(5, DisplayType.Integer.getFunctions().size());
 	}
 
 	private void log(DisplayType type) {

@@ -155,30 +155,31 @@ body {
 /* line 74, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user a {
   font-size: 13px;
-  overflow: hidden;
   white-space: normal;
 }
-/* line 81, ../sass/pics/layout/_menu.scss */
+/* line 80, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .name {
   float: left;
+  font-weight: bold;
   width: 175px;
 }
 /* line 87, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .id {
   float: right;
+  font-weight: bold;
 }
-/* line 92, ../sass/pics/layout/_menu.scss */
-#user_searchbox .user .company {
+/* line 93, ../sass/pics/layout/_menu.scss */
+#user_searchbox .user .location {
   float: left;
   width: 175px;
 }
-/* line 98, ../sass/pics/layout/_menu.scss */
+/* line 99, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .type {
   float: right;
   font-style: italic;
 }
 
-/* line 108, ../sass/pics/layout/_menu.scss */
+/* line 109, ../sass/pics/layout/_menu.scss */
 #user_menu .icon-cog {
   font-size: 16px;
   position: relative;
@@ -186,11 +187,11 @@ body {
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
-  /* line 119, ../sass/pics/layout/_menu.scss */
+  /* line 120, ../sass/pics/layout/_menu.scss */
   .navbar .brand {
     padding-right: 10px;
   }
-  /* line 124, ../sass/pics/layout/_menu.scss */
+  /* line 125, ../sass/pics/layout/_menu.scss */
   .navbar .nav > li > a {
     padding: 16px 10px;
   }
@@ -865,6 +866,12 @@ hr {
   color: #333;
 }
 
+/* line 5, ../sass/pics/widgets/twitter-bootstrap/_tooltip.scss */
+.tooltip ol,
+.tooltip ul {
+  margin: 0;
+}
+
 /*
  * Templates
  *
@@ -904,23 +911,26 @@ hr {
 }
 
 /* line 4, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
-.FrontendDevelopmentGuide-page .span3 > .nav-list {
+.FrontendDevelopmentGuide-page .side-bar > .nav-list {
   width: 220px;
 }
 /* line 9, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
-.FrontendDevelopmentGuide-page .span3 > .nav-list.affix {
-  margin-top: 55px;
-  top: 20px;
+.FrontendDevelopmentGuide-page .side-bar > .nav-list.affix {
+  top: 75px;
+}
+/* line 14, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+.FrontendDevelopmentGuide-page section {
+  margin-bottom: 60px;
 }
 
 @media (min-width: 1200px) {
-  /* line 19, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+  /* line 23, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
   .FrontendDevelopmentGuide-page .span3 > .nav-list {
     width: 270px;
   }
 }
-/* line 4, ../sass/pics/templates/frontend-development-guide/page-layout/_page-layout.scss */
-#page_layout_containers .show-grid [class*="span"] {
+/* line 4, ../sass/pics/templates/frontend-development-guide/page-layout/_containers.scss */
+#FrontendDevelopmentGuide_page_layout_page #containers .show-grid [class*="span"] {
   background-color: #999;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -933,18 +943,18 @@ hr {
 }
 
 /* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors {
   margin-bottom: 30px;
   overflow: hidden;
 }
 /* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors li {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors li {
   float: left;
   margin-right: 20px;
   margin-bottom: 20px;
 }
 /* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors a {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors a {
   border: 1px solid #333;
   display: block;
   height: 90px;
@@ -954,67 +964,70 @@ hr {
   width: 90px;
 }
 /* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .pics-blue {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors .pics-blue {
   background: #002441;
   color: #fff;
 }
 /* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .burnt-orange {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors .burnt-orange {
   background: #a84d10;
   color: #fff;
 }
 /* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .light-blue {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors .light-blue {
   background: #73bbe8;
   color: #fff;
 }
 /* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .warm-grey {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors .warm-grey {
   background: #808285;
   color: #fff;
 }
 /* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
-#style_guide_colors .colors .cool-grey {
+#FrontendDevelopmentGuide_style_guide_page #colors .colors .cool-grey {
   background: #f1f1f2;
   color: #333;
 }
-
-/* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-#style_guide_typography .lowercase {
+/* line 7, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#FrontendDevelopmentGuide_style_guide_page #typography .example .lowercase,
+#FrontendDevelopmentGuide_style_guide_page #typography .example .uppercase {
+  font-size: 32px;
+  line-height: 1.2;
+}
+/* line 13, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#FrontendDevelopmentGuide_style_guide_page #typography .lowercase {
   text-transform: lowercase;
 }
-/* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-#style_guide_typography .uppercase {
+/* line 18, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
+#FrontendDevelopmentGuide_style_guide_page #typography .uppercase {
   text-transform: uppercase;
-}
-/* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
-#style_guide_typography h3 span {
-  color: #999;
-  font-size: 14px;
-  text-transform: lowercase;
 }
 
 /* line 5, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description {
   color: #808285;
-  margin-bottom: 30px;
+  margin-bottom: 60px;
   text-align: center;
 }
 /* line 11, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description img {
-  margin: 40px 0;
+  margin: 60px 0;
 }
 /* line 16, ../sass/pics/templates/general/_about.scss */
-#About__page .product-description span {
-  display: block;
-}
-/* line 21, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description .version {
   font-size: 18px;
 }
-/* line 26, ../sass/pics/templates/general/_about.scss */
+/* line 21, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description .copyright {
   margin-bottom: 30px;
+}
+/* line 27, ../sass/pics/templates/general/_about.scss */
+#About__page .version-detail-tooltip {
+  text-align: left;
+}
+/* line 31, ../sass/pics/templates/general/_about.scss */
+#About__page .version-detail-tooltip span {
+  margin-right: 5px;
 }
 
 /* line 2, ../sass/pics/templates/login/_login.scss */

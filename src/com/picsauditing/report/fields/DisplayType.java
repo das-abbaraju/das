@@ -49,24 +49,24 @@ public enum DisplayType {
 	}
 
 	private boolean isStringOnlyFunction(QueryMethod function) {
-		if (function == QueryMethod.LowerCase)
-			return true;
-		if (function == QueryMethod.UpperCase)
-			return true;
-		if (function == QueryMethod.Length)
-			return true;
-		if (function == QueryMethod.Left)
-			return true;
+//		if (function == QueryMethod.LowerCase)
+//			return true;
+//		if (function == QueryMethod.UpperCase)
+//			return true;
+//		if (function == QueryMethod.Length)
+//			return true;
+//		if (function == QueryMethod.Left)
+//			return true;
 		return false;
 	}
 
 	private boolean isFunctionValidForAllTypes(QueryMethod function) {
 		if (function == QueryMethod.Count)
 			return true;
-		if (function == QueryMethod.CountDistinct)
-			return true;
-		if (function == QueryMethod.GroupConcat)
-			return true;
+//		if (function == QueryMethod.CountDistinct)
+//			return true;
+//		if (function == QueryMethod.GroupConcat)
+//			return true;
 		if (function == QueryMethod.Max)
 			return true;
 		if (function == QueryMethod.Min)
@@ -75,18 +75,18 @@ public enum DisplayType {
 	}
 
 	private boolean isDateOnlyFunction(QueryMethod function) {
-		if (function == QueryMethod.Year)
-			return true;
-		if (function == QueryMethod.YearMonth)
-			return true;
-		if (function == QueryMethod.Month)
-			return true;
-		if (function == QueryMethod.WeekDay)
-			return true;
-		if (function == QueryMethod.Date)
-			return true;
-		if (function == QueryMethod.Hour)
-			return true;
+//		if (function == QueryMethod.Year)
+//			return true;
+//		if (function == QueryMethod.YearMonth)
+//			return true;
+//		if (function == QueryMethod.Month)
+//			return true;
+//		if (function == QueryMethod.WeekDay)
+//			return true;
+//		if (function == QueryMethod.Date)
+//			return true;
+//		if (function == QueryMethod.Hour)
+//			return true;
 		return false;
 	}
 }

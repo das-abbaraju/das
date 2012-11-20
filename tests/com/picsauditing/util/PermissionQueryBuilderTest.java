@@ -198,8 +198,8 @@ public class PermissionQueryBuilderTest extends PicsTest {
 
 		builder.setContractorOperatorAlias("flag");
 		String whereClause = "a.status IN ('Active') " + "AND a.id IN (SELECT gc.subID "
-				+ "FROM generalcontractors gc " + "WHERE gc.genID IN ("
-				+ Strings.implode(CLIENT_SITES, ",") + ") AND gc.workStatus = 'Y')";
+				+ "FROM generalcontractors gc " + "WHERE gc.genID IN (" + Strings.implode(CLIENT_SITES, ",")
+				+ ") AND gc.workStatus = 'Y')";
 		assertEquals(whereClause, builder.buildWhereClause());
 	}
 
@@ -223,6 +223,45 @@ public class PermissionQueryBuilderTest extends PicsTest {
 		builder.setQueryLanguage(PermissionQueryBuilder.HQL);
 		String expected = "SELECT co.contractorAccount FROM ContractorOperator co "
 				+ "WHERE co.operatorAccount.id IN (" + Strings.implode(CLIENT_SITES, ",") + ") AND co.workStatus = 'Y'";
+		assertContains(expected, builder.buildWhereClause());
+	}
+
+	@Test
+	public void testOnlyApproved__CanViewUnapproved() throws Exception {
+		when(permissions.isCorporate()).thenReturn(true);
+		when(permissions.getOperatorChildren()).thenReturn(CLIENT_SITES);
+		setPermissionAccount();
+		when(permissions.isGeneralContractor()).thenReturn(false);
+		when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(true);
+
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+				+ Strings.implode(CLIENT_SITES, ",") + "))";
+		assertContains(expected, builder.buildWhereClause());
+	}
+
+	@Test
+	public void testOnlyApproved__cannotViewUnapproved() throws Exception {
+		when(permissions.isCorporate()).thenReturn(true);
+		when(permissions.getOperatorChildren()).thenReturn(CLIENT_SITES);
+		setPermissionAccount();
+		when(permissions.isGeneralContractor()).thenReturn(false);
+		when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(false);
+
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+				+ Strings.implode(CLIENT_SITES, ",") + ") AND gc.workStatus = 'Y')";
+		assertContains(expected, builder.buildWhereClause());
+	}
+
+	@Test
+	public void testOnlyApproved__isGeneralContractor() throws Exception {
+		when(permissions.isCorporate()).thenReturn(true);
+		when(permissions.getOperatorChildren()).thenReturn(CLIENT_SITES);
+		setPermissionAccount();
+		when(permissions.isGeneralContractor()).thenReturn(true);
+		when(permissions.hasPermission(OpPerms.ViewUnApproved)).thenReturn(false);
+
+		String expected = "a.status IN ('Active') AND a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID IN ("
+				+ Strings.implode(CLIENT_SITES, ",") + ") AND gc.workStatus = 'Y')";
 		assertContains(expected, builder.buildWhereClause());
 	}
 

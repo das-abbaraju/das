@@ -47,6 +47,7 @@ public class DataFeed extends ReportData implements ParameterAware {
                 }
             }
         }
+        logger.warn("Output Format: " + outputFormat);
         return outputFormat;
     }
 
@@ -58,6 +59,7 @@ public class DataFeed extends ReportData implements ParameterAware {
      */
     @Override
     public void setParameters(Map<String, String[]> parameters) {
+        logger.debug("Setting parameters");
         super.setParameters(parameters);
         setApiKey(lookupParam(parameters, "apiKey"));
         /*

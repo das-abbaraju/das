@@ -1,17 +1,17 @@
-<ul class="nav nav-list">
+<ul class="nav nav-list" data-spy="affix" data-offset-top="100">
     <li>
-        <a href="#">Primary Navigation <i class="icon-chevron-right"></i></a>
+        <a href="#navigation">Primary Navigation <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Environment Toolbar <i class="icon-chevron-right"></i></a>
+        <a href="#environment_toolbar">Environment Toolbar <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Page Header <i class="icon-chevron-right"></i></a>
+        <a href="#page_header">Page Header <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Containers <i class="icon-chevron-right"></i></a>
+        <a href="#containers">Containers <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Offsets <i class="icon-chevron-right"></i></a>
+        <a href="#offsets">Offsets <i class="icon-chevron-right"></i></a>
     </li>
 </ul>

@@ -13,6 +13,9 @@ import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.data.DataEvent;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -71,6 +74,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private ContractorValidator contractorValidator;
 	@Autowired
 	private FeatureToggle featureToggleChecker;
+	@Autowired
+	private DataObservable saleCommissionDataObservable;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -672,6 +677,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		invoice = contractor.findLastUnpaidInvoice();
 		if (invoice == null) {
 			invoice = billingService.createInvoice(contractor, getUser());
+			
+			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
+			
 			contractor.getInvoices().add(invoice);
 			invoiceDAO.save(invoice);
 			contractor.syncBalance();
@@ -683,7 +691,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		Invoice newInvoice = billingService.createInvoice(contractor, BillingStatus.Activation, getUser());
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
-			billingService.updateInvoice(invoice, newInvoice, getUser());
+			billingService.updateInvoice(invoice, newInvoice, getUser());			
+			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));			
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
@@ -691,5 +700,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		return false;
+	}
+	
+	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
+		saleCommissionDataObservable.setChanged();
+		saleCommissionDataObservable.notifyObservers(dataEvent);
 	}
 }

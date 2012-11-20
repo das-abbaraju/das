@@ -68,7 +68,7 @@ if (typeof Object.create !== 'function') {
             /**
              * Ajax
              * 
-             * @options: An object literial configuration for an ajax request
+             * @options: An object literal configuration for an ajax request
              */
             ajax: function (options) {
                 var defaults = {
@@ -84,6 +84,12 @@ if (typeof Object.create !== 'function') {
                 var config = {};
                 
                 $.extend(config, defaults, options);
+                
+                if ($.browser.msie && $.browser.version <= 8) {
+                    var date = new Date();
+                    
+                    config.data['ie_timestamp'] = date.getTime();
+                }
                 
                 return $.ajax(config);
             },

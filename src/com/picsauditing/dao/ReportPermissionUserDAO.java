@@ -22,11 +22,13 @@ public class ReportPermissionUserDAO extends PicsDAO {
 
 	public ReportPermissionUser findOneByPermissions(Permissions permissions, int reportId) throws NoResultException {
 		SelectSQL sql = new SelectSQL("report_permission_user rpu");
+		sql.addWhere("rpu.reportID = :reportId");
 		sql.addWhere("rpu.userID = :userId OR rpu.userID IN ( :groupIds )");
 		sql.addOrderBy("editable DESC");
 		sql.setLimit(1);
 
 		Query query = em.createNativeQuery(sql.toString(), ReportPermissionUser.class);
+		query.setParameter("reportId", reportId);
 		query.setParameter("userId", permissions.getUserId());
 		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());
 		return (ReportPermissionUser) query.getSingleResult();

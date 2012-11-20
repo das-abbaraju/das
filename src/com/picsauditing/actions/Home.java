@@ -30,6 +30,8 @@ public class Home extends ContractorActionSupport {
 				addActionError("Your account is inactive. You can't access this page");
 				return BLANK;
 			}
+			
+			return setUrlForRedirect("ContractorView.action");
 		} else if (permissions.isOperatorCorporate() && !permissions.hasPermission(OpPerms.Dashboard)) {
 			// Redirect operators/corporate accounts without the dashboard
 			// permission to the contractor list

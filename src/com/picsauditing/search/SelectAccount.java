@@ -157,9 +157,6 @@ public class SelectAccount extends SelectSQL {
 
 				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND " + operatorRelationship);
 				this.addJoin("JOIN operators gco ON gco.id = gc.genID");
-
-				this.addWhere("gc.subID IN (SELECT subID FROM generalcontractors WHERE genID = "
-						+ permissions.getAccountId() + ")");
 			}
 
 			this.addField("gc.workStatus");

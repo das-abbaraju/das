@@ -1,4 +1,4 @@
-<ul class="nav nav-list">
+<ul class="nav nav-list" data-spy="affix" data-offset-top="100">
     <li class="nav-header">
         Folder Structure
     </li>

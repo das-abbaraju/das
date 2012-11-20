@@ -86,8 +86,7 @@ public class PermissionQueryBuilder {
 
 	private String buildAuditorSubquery() {
 		if (isHQL())
-			return "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id = "
-					+ permissions.getUserId();
+			return "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.auditor.id = " + permissions.getUserId();
 		else
 			return "SELECT conID FROM contractor_audit WHERE auditorID = " + permissions.getUserId();
 	}
@@ -123,20 +122,15 @@ public class PermissionQueryBuilder {
 		where += " IN (" + getOperatorIDs() + ")";
 
 		if (showOnlyApprovedContractors()) {
-			if (permissions.hasPermission(OpPerms.ViewUnApproved))
-				where += " AND " + alias + ".workStatus in ('Y', 'P')";
-			else
-				where += " AND " + alias + ".workStatus = 'Y'";
+			where += " AND " + alias + ".workStatus = 'Y'";
 		}
 
 		return where;
 	}
 
 	private boolean showOnlyApprovedContractors() {
-		if (permissions.isGeneralContractor())
-			return true;
-
-		return workingFacilities;
+		return workingFacilities
+				&& (permissions.isGeneralContractor() || !permissions.hasPermission(OpPerms.ViewUnApproved));
 	}
 
 	private String getOperatorIDs() {
@@ -154,7 +148,8 @@ public class PermissionQueryBuilder {
 	}
 
 	private String buildStatusFilter() {
-		// TODO we shouldn't always add these, make the user add these when they want
+		// TODO we shouldn't always add these, make the user add these when they
+		// want
 		// if (visibleStatuses.isEmpty()) {}
 		addDefaultStatuses();
 		String statusList = Strings.implodeForDB(visibleStatuses, ",");

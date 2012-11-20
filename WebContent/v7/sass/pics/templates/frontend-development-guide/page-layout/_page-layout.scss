@@ -1,11 +1,4 @@
-#page_layout_containers
+#FrontendDevelopmentGuide_page_layout_page
 {
-	.show-grid [class*="span"]
-	{
-		background-color: #999;
-		@include border-radius(4px);
-		line-height: 40px;
-		margin-bottom: 20px;
-		text-align: center;
-	}
+	@import 'containers';
 }

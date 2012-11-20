@@ -76,6 +76,7 @@
                     success: function(data, textStatus, XMLHttpRequest) {
                         $('#thinkingDiv').empty();
                         $('#facilities').html(data);
+                        $('a[rel*=facebox]').facebox();
                     }
                 });
             },

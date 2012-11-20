@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<section id="style_guide_colors" class="guide">
+<section id="colors" class="guide">
     <div class="page-header">
         <h1>Colors</h1>
     </div>

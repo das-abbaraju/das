@@ -15,6 +15,7 @@ import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -27,6 +28,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
@@ -50,6 +52,8 @@ import com.picsauditing.util.log.PicsLogger;
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
 	@Autowired
 	private InvoiceDAO invoiceDAO;
+	@Autowired
+	private InvoiceCommissionDAO invoiceCommissionDAO;
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
@@ -435,6 +439,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public String getCountry() {
 		return country;
+	}
+	
+	public List<InvoiceCommission> getInvoiceCommissions() {
+		List<InvoiceCommission> commission = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
+		return commission;
 	}
 
 }

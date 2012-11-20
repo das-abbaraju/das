@@ -102,7 +102,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 		sql.addWhere("r.id IN (" + subSql.toString() + ")");
 
 		sql.addOrderBy(orderBy + " " + direction);
-		System.out.println(sql);
+
 		Query query = em.createNativeQuery(sql.toString(), Report.class);
 		query.setParameter("userId", permissions.getUserId());
 		query.setParameter("groupIds", permissions.getAllInheritedGroupIds());

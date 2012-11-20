@@ -1,17 +1,21 @@
 package com.picsauditing.actions.operators;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,31 +31,34 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.models.operators.FacilitiesEditModel;
 
 public class FacilitiesEditTest extends PicsTest {
 	private int NON_ZERO_OPERATOR_ID = 123;
 
-	FacilitiesEdit facilitiesEdit;
-	User user;
+	private FacilitiesEdit facilitiesEdit;
+	private User user;
 
-	@Mock
-	OperatorAccount operator;
-	@Mock
-	private Permissions permissions;
 	@Mock
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
 	private CountrySubdivision countrySubdivision;
+	@Mock
+	private FacilitiesEditModel facilitiesEditModel;
+	@Mock
+	private OperatorAccount operator;
+	@Mock
+	private Permissions permissions;
 	@Mock
 	private UserDAO userDAO;
 
@@ -68,8 +75,10 @@ public class FacilitiesEditTest extends PicsTest {
 		// loadPermissions which
 		// happens in login, which we are not doing here. stub it
 		when(permissions.getUserId()).thenReturn(user.getId());
-		PicsTestUtil.forceSetPrivateField(facilitiesEdit, "permissions", permissions);
-		PicsTestUtil.forceSetPrivateField(facilitiesEdit, "countrySubdivisionDAO", countrySubdivisionDAO);
+
+		Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
+		Whitebox.setInternalState(facilitiesEdit, "permissions", permissions);
+		Whitebox.setInternalState(facilitiesEdit, "countrySubdivisionDAO", countrySubdivisionDAO);
 
 		when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
 		facilitiesEdit.setOperator(operator);
@@ -201,7 +210,7 @@ public class FacilitiesEditTest extends PicsTest {
 	}
 
 	@Test
-	public void testGetPrimaryOperatorContactUsers() throws Exception{
+	public void testGetPrimaryOperatorContactUsers() throws Exception {
 		Set<User> primaryContactSet = new HashSet<User>();
 		List<User> findUser = new ArrayList<User>();
 		List<User> findGroup = new ArrayList<User>();
@@ -210,6 +219,32 @@ public class FacilitiesEditTest extends PicsTest {
 		List<User> userList = new ArrayList<User>();
 		Whitebox.invokeMethod(facilitiesEdit, "addParentPrimaryOperatorContactUsers", primaryContactSet);
 		assertEquals(userList.size(), primaryContactSet.size());
+	}
+
+	@Test
+	public void testSave_PreventSettingSelfAsParent() {
+		Country country = mock(Country.class);
+		CountrySubdivision countrySubdivision = mock(CountrySubdivision.class);
+
+		when(countrySubdivision.getCountry()).thenReturn(country);
+		when(em.merge(operator)).thenReturn(operator);
+		when(operator.getCountry()).thenReturn(country);
+		when(operator.getCountrySubdivision()).thenReturn(countrySubdivision);
+		when(operator.getDiscountPercent()).thenReturn(BigDecimal.ZERO);
+		when(operator.getParent()).thenReturn(operator);
+		when(operator.getName()).thenReturn("Operator");
+
+		List<Integer> facilities = new ArrayList<Integer>();
+		facilities.add(NON_ZERO_OPERATOR_ID);
+
+		facilitiesEdit.setOperator(operator);
+		facilitiesEdit.setFacilities(facilities);
+
+		assertEquals(PicsActionSupport.REDIRECT, facilitiesEdit.save());
+		assertFalse(facilitiesEdit.hasActionMessages());
+		assertTrue(facilitiesEdit.hasActionErrors());
+
+		verify(em, never()).merge(any(OperatorAccount.class));
 	}
 
 	private AccountUser accountRep() {
@@ -281,7 +316,7 @@ public class FacilitiesEditTest extends PicsTest {
 		Date updateDate = accountRep.getUpdateDate();
 		assertTrue("the update date is too far in the past", (now.getTime() - updateDate.getTime()) < 1000);
 	}
-	
+
 	// get account users by role instead of the comp loop
 	// Q: method assumes permissions have been loaded. is this a valid
 	// assumption?

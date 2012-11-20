@@ -1,15 +1,20 @@
 package com.picsauditing.auditBuilder;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Before;
@@ -46,6 +51,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.QuestionComparator;
 import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 
 public class AuditBuilderTest extends PicsTest {
@@ -207,8 +214,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void testBuildAudits_IsValidAudit_NullData() {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
-		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
-				AuditType.PQF, contractor);
+		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
@@ -239,8 +245,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void testBuildAudits_IsValidAudit_Cor_Yes() {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
-		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
-				AuditType.PQF, contractor);
+		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
@@ -273,8 +278,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void testBuildAudits_IsValidAudit_Cor_No() {
 		ContractorAudit corAudit = EntityFactory.makeContractorAudit(
 				AuditType.COR, contractor);
-		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
-				AuditType.PQF, contractor);
+		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
@@ -306,8 +310,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void testBuildAudits_IsValidAudit_Iec_Yes() {
 		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
 				AuditType.IEC_AUDIT, contractor);
-		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
-				AuditType.PQF, contractor);
+		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(iecAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
@@ -339,8 +342,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void testBuildAudits_IsValidAudit_Iec__No() {
 		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(
 				AuditType.IEC_AUDIT, contractor);
-		ContractorAudit pqfAudit = EntityFactory.makeContractorAudit(
-				AuditType.PQF, contractor);
+		ContractorAudit pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(iecAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
@@ -366,6 +368,85 @@ public class AuditBuilderTest extends PicsTest {
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(0, iecAudit.getOperatorsVisible().size());
+	}
+	
+	@Test
+	public void testNewOperatorPrevAllComplete() throws Exception {
+		ContractorAudit conAudit = setupTestAudit();
+
+		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		ContractorAuditOperator cao2 = EntityFactory.makeContractorAuditOperator(conAudit, AuditStatus.Pending);
+		cao2.setOperator(EntityFactory.makeOperator());
+		
+		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
+		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
+		
+		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
+		setupCaoCaop(cao2, caop2, AuditStatus.Pending);
+		
+		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
+		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
+		caops.add(cao1.getOperator());
+		caoMap.put(cao1.getOperator(), caops);
+		caops = new HashSet<OperatorAccount>();
+		caops.add(cao2.getOperator());
+		caoMap.put(cao2.getOperator(), caops);
+		
+		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
+		assertEquals(2, conAudit.getOperators().size());
+		
+		Set<AuditCategory> categoriesNeeded = new HashSet<AuditCategory>();
+		categoriesNeeded.addAll(conAudit.getAuditType().getCategories());
+		Whitebox.invokeMethod(auditBuilder, "fillAuditCategories", conAudit, categoriesNeeded);
+		for (AuditCatData catData:conAudit.getCategories()) {
+			assertTrue(catData.isApplies());
+		}
+
+	}
+
+	private ContractorAudit setupTestAudit() {
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+		WorkflowStep pendingStep = new WorkflowStep();
+		pendingStep.setNewStatus(AuditStatus.Pending);
+		
+		Workflow workflow = new Workflow();
+		workflow.getSteps().add(pendingStep);
+		audit.getAuditType().setWorkFlow(workflow);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		audit.setCreationDate(cal.getTime());
+		
+		AuditCategory cat1 = EntityFactory.makeAuditCategory(1);
+		AuditCategory cat2 = EntityFactory.makeAuditCategory(2);
+		
+		audit.getAuditType().getCategories().add(cat1);
+		audit.getAuditType().getCategories().add(cat2);
+		
+		AuditCatData catData1 = EntityFactory.addCategories(audit, 1);
+		AuditCatData catData2 = EntityFactory.addCategories(audit, 2);
+		
+		catData1.setNumAnswered(catData1.getNumRequired());
+		catData1.setApplies(true);
+		catData2.setApplies(false);
+		
+		audit.getCategories().add(catData1);
+		audit.getCategories().add(catData2);
+		
+		return audit;
+	}
+
+	private void setupCaoCaop(ContractorAuditOperator cao,
+			ContractorAuditOperatorPermission caop,
+			AuditStatus status) {
+		caop.setCao(cao);
+		caop.setOperator(cao.getOperator());
+		cao.getCaoPermissions().add(caop);
+		cao.setStatus(status);
+		if (status.isComplete()) {
+			cao.setPercentComplete(100);
+			cao.setPercentVerified(100);
+		}
 	}
 	
 	
