@@ -55,8 +55,6 @@ public class RegistrationTest {
 	private User mockUser;
     @Mock
     private VATValidator mockValidator;
-    @Mock
-    private CountryDAO mockCountryDao;
 
 	@AfterClass
 	public static void tearDown() {
@@ -75,7 +73,6 @@ public class RegistrationTest {
 		setInternalState(classUnderTest, "countrySubdivisionDAO", countrySubdivisionDAO);
 		setInternalState(classUnderTest, "invoiceFeeDAO", feeDAO);
 		setInternalState(classUnderTest, "operatorTagDAO", operatorTagDAO);
-        setInternalState(classUnderTest, "countryDao", mockCountryDao);
         setInternalState(classUnderTest, "vatValidator", mockValidator);
 		classUnderTest.setContractor(contractor);
 		classUnderTest.setUser(mockUser);
@@ -164,14 +161,6 @@ public class RegistrationTest {
 		verify(contractorTagDAO, never()).save(any(BaseTable.class));
 		verify(operatorTagDAO, never()).find(anyInt());
 	}
-
-    @Test
-    public void testValidVat_isUK() throws Exception{
-        when(contractor.getCountry()).thenReturn(new Country("GB"));
-        when(mockCountryDao.findbyISO(anyString())).thenReturn(new Country("GB"));
-        assertTrue(classUnderTest.isValidVAT());
-        verify(mockValidator, never()).validated(anyString());
-    }
 
 	private final static String DEMO_NAME = "^^^demo";
 	private final static String REAL_NAME = "fooBar";

@@ -1,13 +1,8 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Country;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VATValidator {
@@ -52,6 +47,14 @@ public class VATValidator {
             return country.getIsoCode().toUpperCase();
         else
             return "EU";
+    }
+
+    public boolean shouldValidate(Country registrationCountry) {
+    	if (registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
+    		return true;
+    	}
+
+    	return false;
     }
 
     public class ValidationException extends Exception {

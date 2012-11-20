@@ -35,7 +35,9 @@ import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
@@ -119,12 +121,13 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<Report> reports = new ArrayList<Report>();
 	private List<Locale> spokenLanguages = new ArrayList<Locale>();
 
+	@Autowired
+	private InputValidator inputValidator;
+
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
 	}
-
-	// TimeZone.getAvailableIDs();
 
 	public User() {
 	}
@@ -501,7 +504,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * This is a total HACK!! But we can add it to the DB later or something
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -584,7 +587,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * 
+	 *
 	 * @param permissions
 	 *            The new set of permission for this user (transient version of
 	 *            user.permissions)
@@ -708,7 +711,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	/**
 	 * Grants all allowable permission types for this OpPerm
-	 * 
+	 *
 	 * @param opPerm
 	 * @param grantorID
 	 *            who is granting the permission
@@ -789,7 +792,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * In UsersManage, another user (non-group) is inserted into this user's
 	 * groups for shadowing
-	 * 
+	 *
 	 * @return shadowed user or null
 	 */
 	@Transient
@@ -816,7 +819,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * Enables subscription if disabled or creates subscription if it does not
 	 * exist.
-	 * 
+	 *
 	 * @param subscription
 	 * @return
 	 */
@@ -902,5 +905,20 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public boolean isApi() {
 		return (this.apiKey != null) && hasPermission(OpPerms.RestApi, OpType.View);
+	}
+
+	@Transient
+	public boolean isUsernameValid(String username) {
+		return inputValidator.isUsernameValid(username);
+	}
+
+	@Transient
+	public boolean containsOnlySafeCharacters(String str) {
+		return inputValidator.containsOnlySafeCharacters(str);
+	}
+
+	@Transient
+	public boolean isUsernameNotTaken(String username) {
+		return !inputValidator.isUsernameTaken(username);
 	}
 }

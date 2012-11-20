@@ -15,15 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.PermissionBuilder;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorTagDAO;
@@ -37,7 +36,6 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -53,20 +51,15 @@ import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
 	private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
 	@Autowired
-	private ContractorAccountDAO contractorAccountDAO;
-	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
-	@Autowired
-	private CountryDAO countryDao;
 	@Autowired
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Autowired
@@ -336,18 +329,6 @@ public class Registration extends ContractorActionSupport {
 		}
 	}
 
-	private void checkVAT() {
-		if (!contractor.getCountry().isEuropeanUnion())
-			return;
-
-		try {
-			contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
-		} catch (Exception e) {
-			contractor.setVatId(null);
-			addActionError(getText("VAT.Required"));
-		}
-	}
-
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
@@ -417,29 +398,6 @@ public class Registration extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public boolean isUsernameInUse() {
-		return userDAO.duplicateUsername(user.getUsername(), 0);
-	}
-
-	public boolean isCompanyNameInUse() {
-		String indexedContractorName = Strings.indexName(contractor.getName());
-		List<ContractorAccount> duplicateAccounts = contractorAccountDAO.findWhere("a.nameIndex = '"
-				+ indexedContractorName + "'");
-		return !duplicateAccounts.isEmpty();
-	}
-
-	public boolean isValidVAT() {
-		Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
-		if (registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
-			try {
-				vatValidator.validated(/* registrationCountry, */contractor.getVatId());
-			} catch (Exception e) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
 		this.countrySubdivision = countrySubdivision;
 	}
@@ -447,4 +405,18 @@ public class Registration extends ContractorActionSupport {
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
 	}
+
+	private void checkVAT() {
+		if (!contractor.getCountry().isEuropeanUnion()) {
+			return;
+		}
+
+		try {
+			contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
+		} catch (Exception e) {
+			contractor.setVatId(null);
+			addActionError(getText("VAT.Required"));
+		}
+	}
+
 }

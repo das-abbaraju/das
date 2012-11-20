@@ -1,6 +1,7 @@
 <!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>
+
 	<field name="username">
 		<field-validator type="requiredstring" short-circuit="true">
 			<message>${getText("JS.Validation.Required")}</message>
@@ -13,15 +14,20 @@
 			<param name="maxLength">100</param>
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
-		<field-validator type="regex" short-circuit="true">
-			<param name="expression"><![CDATA[^[ a-zA-Z0-9+._@-]{5,100}$]]></param>
-			<message>${getText("JS.Validation.SpecialCharacters")}</message>
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[containsOnlySafeCharacters(username)]]></param>
+	       <message>${getText("JS.Validation.SpecialCharacters")}</message>
 		</field-validator>
-		<field-validator type="regex" short-circuit="true">
-			<param name="expression"><![CDATA[^[a-zA-Z0-9+._@-]{5,100}$]]></param>
-			<message>${getText("JS.Validation.Whitespace")}</message>
+		<field-validator type="fieldexpression" short-circuit="true">
+			<param name="expression"><![CDATA[isUsernameValid(username)]]></param>
+			<message>${getText("JS.Validation.UsernameInvalid")}</message>
+		</field-validator>
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[isUsernameNotTaken(username)]]></param>
+	       <message>${getText("JS.Validation.UsernameIsTaken")}</message>
 		</field-validator>
 	</field>
+
 	<field name="name">
 		<field-validator type="requiredstring" short-circuit="true">
 			<message>${getText("JS.Validation.Required")}</message>
@@ -31,10 +37,19 @@
 			<param name="trim">true</param>
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[containsOnlySafeCharacters(name)]]></param>
+	       <message>${getText("JS.Validation.SpecialCharacters")}</message>
+		</field-validator>
 	</field>
+
 	<field name="email">
 		<field-validator type="requiredstring" short-circuit="true">
 			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[containsOnlySafeCharacters(name)]]></param>
+	       <message>${getText("JS.Validation.SpecialCharacters")}</message>
 		</field-validator>
 		<field-validator type="email" short-circuit="true">
 			<message>${getText("JS.Validation.ValidEmail")}</message>
@@ -45,9 +60,14 @@
 			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
 	</field>
+
 	<field name="phone">
 		<field-validator type="requiredstring" short-circuit="true">
 			<message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[containsOnlySafeCharacters(name)]]></param>
+	       <message>${getText("JS.Validation.SpecialCharacters")}</message>
 		</field-validator>
 		<field-validator type="regex" short-circuit="true">
 			<!--
@@ -60,6 +80,7 @@
 			<message>${getText("JS.Validation.InvalidPhoneFormat")}</message>
 		</field-validator>
 	</field>
+
 	<field name="password">
 		<field-validator type="requiredstring" short-circuit="true">
 			<message>${getText("JS.Validation.Required")}</message>
@@ -74,4 +95,5 @@
 			<message>${getText("JS.Validation.CannotBeUsername")}</message>
 		</field-validator>
 	</field>
+
 </validators>

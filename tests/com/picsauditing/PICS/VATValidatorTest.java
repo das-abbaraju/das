@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -8,14 +7,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 public class VATValidatorTest {
     private static final String GREAT_BRITAIN_ISO = "GB";

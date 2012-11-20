@@ -31,17 +31,22 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
@@ -131,6 +136,14 @@ public class ContractorAccount extends Account implements JSONable {
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
 
+	@Autowired
+	private InputValidator inputValidator;
+	@Autowired
+	private VATValidator vatValidator;
+
+	@Autowired
+	private CountryDAO countryDao;
+
 	// Agreement Changed on Release date 6/3/2010
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
@@ -164,7 +177,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Only includes the Active/Pending/Demo operator accounts, not corporate accounts or Deleted/Deactivated Operators
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -461,7 +474,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Set to true if we have a credit card on file
-	 * 
+	 *
 	 * @return
 	 */
 	@ReportField(category = FieldCategory.Billing, type = FieldType.Boolean, requiredPermissions = OpPerms.Billing)
@@ -521,7 +534,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * The Payment methods are Credit Card and Check
-	 * 
+	 *
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
@@ -536,7 +549,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * The date the contractor was invoiced for their most recent activation/reactivation fee
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -564,7 +577,7 @@ public class ContractorAccount extends Account implements JSONable {
 	/**
 	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee. This should
 	 * NEVER be null.
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -580,7 +593,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Used to determine if we need to calculate the flagColor, audits and billing
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNeedsRecalculation() {
@@ -604,7 +617,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Sets the date and time when the calculator ran
-	 * 
+	 *
 	 * @return
 	 */
 	public Date getLastRecalculation() {
@@ -754,7 +767,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * All contractors should update their trades every 6 months
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -804,7 +817,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * Uses the OshaVisitor to gather all the data
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -880,7 +893,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * The last day someone added a facility to this contractor. This is used to prorate upgrade amounts
-	 * 
+	 *
 	 * @return
 	 */
 	@Temporal(TemporalType.DATE)
@@ -1158,7 +1171,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	/**
 	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel(); con.getFees().getDocuGUARD().getNewLevel();
-	 * 
+	 *
 	 * @return
 	 */
 	@OneToMany(mappedBy = "contractor", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
@@ -1221,7 +1234,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return a list of invoices sorted by creationDate DESC
 	 */
 	@Transient
@@ -1249,7 +1262,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * <b>Past Due</b> Inovice is open and not paid by due date
-	 * 
+	 *
 	 * @return A String of the current Billing Status
 	 */
 	@Transient
@@ -1465,7 +1478,7 @@ public class ContractorAccount extends Account implements JSONable {
 		// Low Risk Material Supplier Only
 		// or is Material Supplier who only works for CEDA
 		if (isMaterialSupplierOnly() && (
-			getProductRisk().equals(LowMedHigh.Low) 
+			getProductRisk().equals(LowMedHigh.Low)
 			|| onlyWorksFor(new int[] {OperatorAccount.CEDA_CANADA, OperatorAccount.CEDA_USA})))
 			return true;
 		// Low Safety Risk Offsite Services
@@ -1501,7 +1514,7 @@ public class ContractorAccount extends Account implements JSONable {
 		Set<Integer> IDs = new HashSet<Integer>(operatorIDs.length);
 		for (int id : operatorIDs)
 			IDs.add(id);
-		return onlyWorksFor(IDs);	
+		return onlyWorksFor(IDs);
 	}
 
 	@Transient
@@ -1777,4 +1790,34 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
+
+	@Transient
+	public boolean containsOnlySafeCharacters(String str) {
+		return inputValidator.containsOnlySafeCharacters(str);
+	}
+
+	@Transient
+	public boolean isCompanyNameNotTaken(String companyName) {
+		return !inputValidator.isCompanyNameTaken(companyName);
+	}
+
+	@Transient
+	public boolean isValidVAT(String vat) {
+		Country registrationCountry = countryDao.findbyISO(getCountry().getIsoCode());
+
+		if (vatValidator.shouldValidate(registrationCountry)) {
+			try {
+				vatValidator.validated(vat);
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
+		if (StringUtils.isNotEmpty(vat)) {
+			return inputValidator.containsOnlySafeCharacters(vat);
+		}
+
+		return true;
+	}
+
 }

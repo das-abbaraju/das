@@ -122,7 +122,6 @@
 	<bean id="BrainTreeService" class="com.picsauditing.util.braintree.BrainTreeService"/>
 	<bean id="BrainTreeRequest" class="com.picsauditing.util.braintree.BrainTreeResponse.BrainTreeRequest" />
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
-	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
 	<bean id="ContractorWatchlistHelper" class="com.picsauditing.PICS.ContractorWatchlistHelper" scope="prototype"/>
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
@@ -131,10 +130,14 @@
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
-	<bean id="PasswordValidator" class="com.picsauditing.PICS.PasswordValidator" scope="prototype"/>
 	<bean id="RegistrationRequestEmailHelper" class="com.picsauditing.PICS.RegistrationRequestEmailHelper" scope="prototype"/>
 	<bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
+
+	<!-- Validators -->
+	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
+	<bean id="InputValidator" class="com.picsauditing.PICS.InputValidator" scope="prototype"/>
+	<bean id="PasswordValidator" class="com.picsauditing.PICS.PasswordValidator" scope="prototype"/>
     <bean id="VATValidator" class="com.picsauditing.PICS.VATValidator" scope="prototype"/>
 	
 	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" scope="prototype"/>

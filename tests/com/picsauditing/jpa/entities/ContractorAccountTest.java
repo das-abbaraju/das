@@ -407,6 +407,15 @@ public class ContractorAccountTest {
 		assertFalse(contractorUnderTest.isListOnlyEligible());
 	}
 
+	@Ignore("TODO: fix this test to run")
+    @Test
+    public void testValidVat_isUK() throws Exception{
+//        when(contractor.getCountry()).thenReturn(new Country("GB"));
+//        when(mockCountryDao.findbyISO(anyString())).thenReturn(new Country("GB"));
+//        assertTrue(classUnderTest.isValidVAT());
+//        verify(mockValidator, never()).validated(anyString());
+    }
+
 	@After
 	public void cleanup() {
 		testOperator2.setParent(null);

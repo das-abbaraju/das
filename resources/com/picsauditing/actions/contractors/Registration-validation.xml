@@ -1,38 +1,29 @@
 <!DOCTYPE validators PUBLIC "-//Apache Struts//XWork Validator 1.0.3//EN" "http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
 
 <validators>
+
+	<!-- This references validation in ContractorAccount-valiation.xml -->
 	<field name="contractor">
 		<field-validator type="visitor">
 			<message></message>
 		</field-validator>
 	</field>
+
+	<!-- This references validation in User-valiation.xml -->
 	<field name="user">
 		<field-validator type="visitor">
 			<message></message>
 		</field-validator>
 	</field>
+
 	<field name="confirmPassword">
-		<field-validator type="fieldexpression" short-circuit="true">
+		<field-validator type="requiredstring" short-circuit="true">
+	       <message>${getText("JS.Validation.Required")}</message>
+		</field-validator>
+		<field-validator type="fieldexpression">
 	       <param name="expression"><![CDATA[user.password == confirmPassword]]></param>
 	       <message>${getText("JS.Validation.PasswordsMustMatch")}</message>
 		</field-validator>
 	</field>
-	<field name="user.username">
-		<field-validator type="fieldexpression" short-circuit="true">
-	       <param name="expression"><![CDATA[user.username == "" || !usernameInUse]]></param>
-	       <message>${getText("JS.Validation.UsernameIsTaken")}</message>
-		</field-validator>
-	</field>
-	<field name="contractor.name">
-		<field-validator type="fieldexpression" short-circuit="true">
-	       <param name="expression"><![CDATA[contractor.name == "" || !companyNameInUse]]></param>
-	       <message>${getText("JS.Validation.CompanyNameAlreadyExists")}</message>
-		</field-validator>
-	</field>
-    <field name="contractor.vatId">
-        <field-validator type="fieldexpression" short-circuit="true">
-            <param name="expression"><![CDATA[validVAT]]></param>
-            <message>${getText("JS.Validation.InvalidVAT")}</message>
-        </field-validator>
-    </field>
+
 </validators>

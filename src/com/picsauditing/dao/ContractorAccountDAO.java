@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,7 +34,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(ContractorAccountDAO.class);
 
 	public void remove(ContractorAccount row, String ftpDir) {
@@ -57,7 +58,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		logger.debug("ContractorAccountDAO.findAll() found {} contractors ids in {} ms", list.size(), elapsed);
 		return list;
 	}
-	
+
 	public List<ContractorAccount> findWhere(String where) {
 		return findWhere(where, NO_LIMIT);
 	}
@@ -65,17 +66,17 @@ public class ContractorAccountDAO extends PicsDAO {
 	public List<ContractorAccount> findWhere(String where, int limit) {
 		if (where == null)
 			where = "";
-		
+
 		if (where.length() > NO_LIMIT)
 			where = "WHERE " + where;
-		
+
 		Query query = em.createQuery("SELECT a from ContractorAccount a " + where + " ORDER BY a.name");
 		if (limit > 0) {
 			query.setMaxResults(limit);
 		}
-		
+
 		return query.getResultList();
-	}	
+	}
 
 	public List<ContractorAccount> findWhere(String where, Object... params) {
 		if (where == null)
@@ -91,7 +92,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	/**
 	 * Return a list of Contractors
-	 * 
+	 *
 	 * @param where
 	 * @param permissions
 	 * @return
@@ -120,7 +121,7 @@ public class ContractorAccountDAO extends PicsDAO {
 
 	/**
 	 * Alias a
-	 * 
+	 *
 	 * @param includeCorporate
 	 * @param where
 	 * @return
@@ -251,7 +252,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	 * Find ids for all active contractors who either need recalculation but
 	 * haven't been calculated in the past 15 minutes or haven't been calculated
 	 * in the past week
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Integer> findContractorsNeedingRecalculation(int limit, Set<Integer> contractorsToIgnore) {
@@ -435,5 +436,21 @@ public class ContractorAccountDAO extends PicsDAO {
 				+ "where a.status = 'PENDING' and i.status = 'Unpaid' and DATE(a.creationDate) < DATE_SUB(CURDATE(),INTERVAL 90 DAY) order by a.creationDate desc";
 		Query query = em.createNativeQuery(sql, ContractorAccount.class);
 		return query.getResultList();
+	}
+
+	public List<ContractorAccount> findByCompanyName(String companyName) {
+		String indexedContractorName = Strings.indexName(companyName);
+
+		String queryString = "SELECT a FROM ContractorAccount a WHERE a.nameIndex = :nameIndex";
+		Query query = em.createQuery(queryString);
+		query.setParameter("nameIndex", indexedContractorName);
+
+		List<ContractorAccount> accounts = query.getResultList();
+
+		if (accounts == null) {
+			accounts = new ArrayList<ContractorAccount>();
+		}
+
+		return accounts;
 	}
 }
