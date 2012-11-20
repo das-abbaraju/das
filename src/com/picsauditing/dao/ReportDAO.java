@@ -68,7 +68,7 @@ public class ReportDAO extends PicsDAO implements Paginatable<Report> {
 			Database db = new Database();
 			List<BasicDynaBean> results = db.select(sql.toString(), false);
 			
-			return results.size();
+			return Database.toInt(results.get(0), "count");
 		} catch (Exception e) {
 			logger.error("Unexpected exception in getPaginationOverallCount()", e);
 		}
