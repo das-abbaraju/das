@@ -104,6 +104,7 @@
             <result name="blank">/struts/blank.jsp</result>
             <result name="chartXML">struts/chart_xml.jsp</result>
             <result name="json" type="json"></result>
+            <result name="xml" type="xml"></result>
             <result name="jsonArray" type="jsonArray"></result>
             <result name="jsonp" type="jsonp"></result>
             <result name="plain-text" type="plain-text"></result>
