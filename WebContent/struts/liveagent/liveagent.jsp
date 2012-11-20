@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="robots" content="noindex">
+        <meta name="robots" content="noindex" />
         <meta http-equiv="content-type" content="text/html;charset=utf-8" />
         <title>LiveAgent Test Link</title>
     </head>
