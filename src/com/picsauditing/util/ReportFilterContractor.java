@@ -82,6 +82,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] riskLevel;
 	protected int[] productRiskLevel;
 	protected String[] service;
+	protected boolean onlySelectedServices = false;
 	protected int[] accountManager;
 	protected boolean assignedCon = false;
 	protected boolean inParentCorporation = false;
@@ -520,6 +521,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setService(String[] service) {
 		this.service = service;
+	}
+
+	public boolean isOnlySelectedServices() {
+		return onlySelectedServices;
+	}
+
+	public void setOnlySelectedServices(boolean onlySelectedServices) {
+		this.onlySelectedServices = onlySelectedServices;
 	}
 
 	public void setPermissions(Permissions permissions) {

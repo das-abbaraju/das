@@ -453,6 +453,13 @@
 					</a>
 				</span>
 			</div>
+			<div class="filterOption" id="onlySelectedServices">
+				<label>
+					<s:checkbox name="filter.OnlySelectedServices" />
+					<s:text name="Filters.label.OnlySelectedServices" />
+				</label>
+			</div>
+			
 		</s:if>
 
 		<s:if

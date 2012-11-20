@@ -566,20 +566,54 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	protected void filterOnServiceType() {
-		if (filterOn(getFilter().getService())) {
+		if (filterOn(getFilter().getService())
+				|| getFilter().isOnlySelectedServices()) {
 			List<String> clauses = new ArrayList<String>();
+
+			boolean filterOnsite = false;
+			boolean filterOffsite = false;
+			boolean filterTransportation = false;
+			boolean filterMaterial = false;
+
 			for (String service : getFilter().getService()) {
-				if ("Onsite".equals(service))
+				if ("Onsite".equals(service)) {
+					filterOnsite = true;
 					clauses.add("a.onsiteServices = 1");
-				else if ("Offsite".equals(service))
+				} else if ("Offsite".equals(service)) {
+					filterOffsite = true;
 					clauses.add("a.offsiteServices = 1");
-				else if ("Transportation".equals(service))
+				} else if ("Transportation".equals(service)) {
+					filterTransportation = true;
 					clauses.add("a.transportationServices = 1");
-				else if ("Material Supplier".equals(service))
+				} else if ("Material Supplier".equals(service)) {
+					filterMaterial = true;
 					clauses.add("a.materialSupplier = 1");
+				}
 			}
-			if (clauses.size() > 0) {
-				sql.addWhere(Strings.implode(clauses, " OR "));
+
+			if (!getFilter().isOnlySelectedServices()) {
+				if (clauses.size() > 0) {
+					sql.addWhere(Strings.implode(clauses, " OR "));
+					setFiltered(true);
+				}
+			} else if (!filterOnsite && !filterOffsite && !filterTransportation
+					&& !filterMaterial) {
+				clauses.add("a.onsiteServices = 1");
+				clauses.add("a.offsiteServices = 1");
+				clauses.add("a.transportationServices = 1");
+				clauses.add("a.materialSupplier = 1");
+				sql.addWhere(Strings.implode(clauses, " AND "));
+				setFiltered(true);
+			} else {
+				if (!filterOnsite)
+					clauses.add("a.onsiteServices = 0");
+				if (!filterOffsite)
+					clauses.add("a.offsiteServices = 0");
+				if (!filterTransportation)
+					clauses.add("a.transportationServices = 0");
+				if (!filterMaterial)
+					clauses.add("a.materialSupplier = 0");
+				sql.addWhere(Strings.implode(clauses, " AND "));
 				setFiltered(true);
 			}
 		}
