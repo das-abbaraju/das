@@ -74,7 +74,7 @@ public class ContractorValidator {
 			errorMessages.addElement(getText("ContractorValidator.error.NoAdCity"));
 		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoCountry"));
-		if (contractor.getCountry() != null && contractor.getCountry().hasCountrySubdivisions()) {
+		if (contractor.getCountry() != null && contractor.getCountry().isHasCountrySubdivisions()) {
 			if (contractor.getCountrySubdivision() == null || Strings.isEmpty(contractor.getCountrySubdivision().getIsoCode())) {
 				errorMessages.addElement(getText("ContractorValidator.error.NoCountrySubdivision"));
 			}

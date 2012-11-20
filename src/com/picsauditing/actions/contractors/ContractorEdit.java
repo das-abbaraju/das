@@ -286,7 +286,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			contractor.setCountry(country);
 		}
 
-        if (!contractor.getCountry().hasCountrySubdivisions()){
+        if (!contractor.getCountry().isHasCountrySubdivisions()){
             contractor.setCountrySubdivision(null);
             countrySubdivision = null;
         }
@@ -322,7 +322,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		system.setId(User.SYSTEM);
 		Note pqfOfficeLocationChange = new Note(contractor, system, getText("AuditData.officeLocationSet.summary"));
 		pqfOfficeLocationChange.setNoteCategory(NoteCategory.General);
-		if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
+		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
 			pqfOfficeLocationChange.setBody(getTextParameterized("AuditData.officeLocationSet",
 					getText(countrySubdivision.getI18nKey())));
 		}

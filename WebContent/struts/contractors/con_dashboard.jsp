@@ -657,9 +657,11 @@
     									<span class="locality">
     										<s:property value="contractor.city" />
     									</span>,
-    									<span class="region">
-    										<s:property value="contractor.countrySubdivision.simpleName" />
-    									</span>
+    									<s:if test="contractor.country.hasCountrySubdivisions">
+	    									<span class="region">
+	    										<s:property value="contractor.countrySubdivision.simpleName" />
+	    									</span>
+    									</s:if>
     									<span class="postal-code">
     										<s:property value="contractor.zip" />
     									</span>

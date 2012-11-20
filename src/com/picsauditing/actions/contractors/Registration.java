@@ -298,7 +298,7 @@ public class Registration extends ContractorActionSupport {
 			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
 
-		if (contractor.getCountry().hasCountrySubdivisions() && countrySubdivision != null) {
+		if (contractor.getCountry().isHasCountrySubdivisions() && countrySubdivision != null) {
 			if (!countrySubdivision.equals(contractor.getCountrySubdivision())) {
 				CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision
 						.toString());

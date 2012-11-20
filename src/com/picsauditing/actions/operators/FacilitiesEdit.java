@@ -715,7 +715,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
 		}
 
-		if (operator.getCountry().hasCountrySubdivisions()
+		if (operator.getCountry().isHasCountrySubdivisions()
 				&& (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
 			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
 		}

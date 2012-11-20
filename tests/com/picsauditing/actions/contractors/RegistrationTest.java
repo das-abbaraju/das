@@ -87,7 +87,7 @@ public class RegistrationTest {
 	@Test
 	public void testSetupContractorData_Demo_NoSubdivisions() {
 		when(contractor.getName()).thenReturn(DEMO_NAME);
-		when(country.hasCountrySubdivisions()).thenReturn(false);
+		when(country.isHasCountrySubdivisions()).thenReturn(false);
 		when(contractor.getUsers()).thenReturn(new ArrayList<User>());
 
 		classUnderTest.setupContractorData();
@@ -104,7 +104,7 @@ public class RegistrationTest {
 	public void testSetupContractorData_noDemo_HasSubdivisions_matchedInput() {
 		classUnderTest.setCountrySubdivision(countrySubdivision);
 		when(contractor.getName()).thenReturn(REAL_NAME);
-		when(country.hasCountrySubdivisions()).thenReturn(true);
+		when(country.isHasCountrySubdivisions()).thenReturn(true);
 		when(contractor.getCountrySubdivision()).thenReturn(countrySubdivision);
 
 		classUnderTest.setupContractorData();
@@ -120,7 +120,7 @@ public class RegistrationTest {
 	public void testSetupContractorData_noDemo_HasSubdivisions_unMatchedInput() {
 		classUnderTest.setCountrySubdivision(new CountrySubdivision("XX"));
 		when(contractor.getName()).thenReturn(REAL_NAME);
-		when(country.hasCountrySubdivisions()).thenReturn(true);
+		when(country.isHasCountrySubdivisions()).thenReturn(true);
 		when(contractor.getCountrySubdivision()).thenReturn(countrySubdivision);
 
 		classUnderTest.setupContractorData();
