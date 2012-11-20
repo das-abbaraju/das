@@ -81,14 +81,14 @@ public class OshaAudit implements OshaVisitable {
 	private ContractorAudit contractorAudit;
 
 	private Map<OshaType, SafetyStatistics> safetyStatisticsMap;
-	private Map<OshaType, Boolean> dispaySafetyStatisticsMap;
+	private Map<OshaType, Boolean> displaySafetyStatisticsMap;
 
 	public OshaAudit(ContractorAudit contractorAudit) {
 		assert (contractorAudit.getAuditType().isAnnualAddendum());
 
 		this.contractorAudit = contractorAudit;
-		dispaySafetyStatisticsMap = new HashMap<OshaType, Boolean>();
-		initializeDispaySafetyStatistics();
+		displaySafetyStatisticsMap = new HashMap<OshaType, Boolean>();
+		initializeDisplaySafetyStatistics();
 		safetyStatisticsMap = new HashMap<OshaType, SafetyStatistics>();
 		initializeStatistics();
 	}
@@ -97,19 +97,19 @@ public class OshaAudit implements OshaVisitable {
 		return contractorAudit;
 	}
 
-	private void initializeDispaySafetyStatistics() {
-		dispaySafetyStatisticsMap.put(OshaType.OSHA, false);
-		dispaySafetyStatisticsMap.put(OshaType.COHS, false);
-		dispaySafetyStatisticsMap.put(OshaType.UK_HSE, false);
+	private void initializeDisplaySafetyStatistics() {
+		displaySafetyStatisticsMap.put(OshaType.OSHA, false);
+		displaySafetyStatisticsMap.put(OshaType.COHS, false);
+		displaySafetyStatisticsMap.put(OshaType.UK_HSE, false);
 		for (AuditCatData category : getCategories()) {
 			if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
-				dispaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
+				displaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
 			}
 			if (category.getCategory().getId() == CAT_ID_COHS_PARENT) {
-				dispaySafetyStatisticsMap.put(OshaType.COHS, category.isApplies());
+				displaySafetyStatisticsMap.put(OshaType.COHS, category.isApplies());
 			}
 			if (category.getCategory().getId() == CAT_ID_UK_HSE_PARENT) {
-				dispaySafetyStatisticsMap.put(OshaType.UK_HSE, category.isApplies());
+				displaySafetyStatisticsMap.put(OshaType.UK_HSE, category.isApplies());
 			}
 		}
 	}
@@ -146,7 +146,7 @@ public class OshaAudit implements OshaVisitable {
 			}
 
 			OshaType oshaType = convertCategoryToOshaType(categoryId);
-			Boolean shouldDisplay = dispaySafetyStatisticsMap.get(oshaType);
+			Boolean shouldDisplay = displaySafetyStatisticsMap.get(oshaType);
 			if (shouldDisplay == null || shouldDisplay.equals(Boolean.FALSE)) {
 				continue;
 			}
