@@ -1202,6 +1202,10 @@
 		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
 			<result>struts/users/login.jsp</result>
 		</action>
+
+		<action name="Liveagent" class="com.picsauditing.actions.Liveagent">
+			<result>struts/liveagent/liveagent.jsp</result>
+		</action>
 	</package>
 
 	<!-- Reports & API -->

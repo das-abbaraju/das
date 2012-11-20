@@ -62,5 +62,6 @@
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/AuditFileUpload.action</pattern>
 		<pattern>/*External.action</pattern>
+		<pattern>/Liveagent.action</pattern>
 	</decorator>
 </decorators>
