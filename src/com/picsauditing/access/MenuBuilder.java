@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.jdt.internal.compiler.ast.ThisReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,8 @@ public final class MenuBuilder {
 
 	private static I18nCache i18nCache = I18nCache.getInstance();
 
+	private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
+	
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 
 	private MenuBuilder() {
@@ -308,6 +311,9 @@ public final class MenuBuilder {
 			if (permissions.hasPermission(OpPerms.RequestNewContractor))
 				legacyMenu.addChild(getText("ReportNewRequestedContractor.title"),
 						"ReportNewRequestedContractor.action", "ReportNewRequestedContractor");
+			if (permissions.hasPermission(OpPerms.SearchContractors)) {
+				legacyMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
+			}			
 			if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 				String statusFilter = "";
 				if (!permissions.getAccountStatus().isDemo())
