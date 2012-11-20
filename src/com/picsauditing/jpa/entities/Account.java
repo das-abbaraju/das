@@ -102,7 +102,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	private int sessionTimeout = 60;
 	private int rememberMeTime = 7;
 	private boolean rememberMeTimeEnabled = true;
-    private int passwordSecurityLevelId;
+	private int passwordSecurityLevelId;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -200,7 +200,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
-	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, type = FieldType.Country, width = 150)
+	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.ContactInformation, type = FieldType.Country, width = 150, importance = FieldImportance.Average)
 	public Country getCountry() {
 		return country;
 	}
@@ -212,7 +212,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "countrySubdivision")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.ContactInformation, type = FieldType.CountrySubdivision)
+	@ReportField(i18nKeyPrefix = "CountrySubdivision", category = FieldCategory.ContactInformation, type = FieldType.CountrySubdivision, importance = FieldImportance.Average)
 	public CountrySubdivision getCountrySubdivision() {
 		return countrySubdivision;
 	}
@@ -979,14 +979,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		return (status == AccountStatus.Deactivated || status == AccountStatus.Deleted);
 	}
 
-    @Transient
-    public PasswordSecurityLevel getPasswordSecurityLevel() {
-        return PasswordSecurityLevel.fromDbValue(passwordSecurityLevelId);
-    }
+	@Transient
+	public PasswordSecurityLevel getPasswordSecurityLevel() {
+		return PasswordSecurityLevel.fromDbValue(passwordSecurityLevelId);
+	}
 
-    public void setPasswordSecurityLevel(PasswordSecurityLevel passwordSecurityLevel) {
-        setPasswordSecurityLevelId(passwordSecurityLevel.dbValue);
-    }
+	public void setPasswordSecurityLevel(PasswordSecurityLevel passwordSecurityLevel) {
+		setPasswordSecurityLevelId(passwordSecurityLevel.dbValue);
+	}
 
 	/**
 	 * In minutes
@@ -1017,11 +1017,11 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.rememberMeTimeEnabled = rememberMeTimeEnabled;
 	}
 
-    private int getPasswordSecurityLevelId() {
-        return passwordSecurityLevelId;
-    }
+	private int getPasswordSecurityLevelId() {
+		return passwordSecurityLevelId;
+	}
 
-    protected void setPasswordSecurityLevelId(int passwordSecurityLevelId) {
-        this.passwordSecurityLevelId = passwordSecurityLevelId;
-    }
+	protected void setPasswordSecurityLevelId(int passwordSecurityLevelId) {
+		this.passwordSecurityLevelId = passwordSecurityLevelId;
+	}
 }
