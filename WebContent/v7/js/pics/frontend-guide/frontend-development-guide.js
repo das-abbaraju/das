@@ -7,12 +7,16 @@
                         body = $('body'),
                         hash = window.location.hash;
                     
-                    body.attr({
-                        'data-spy': 'scroll',
-                        'data-target': '.side-bar',
-                        'data-offset': '100'
+                    $('body').scrollspy({
+                        spy: 'scroll',
+                        target: '.side-bar',
+                        offset: 95
                     });
                     
+                    $('.side-bar .nav-list').affix({
+                        offset: 114
+                    });
+
                     if (hash) {
                         this.scrollTo(hash);
                     }
@@ -32,7 +36,7 @@
             scrollTo: function (selector) {
                 var body = $('body'),
                     target = $(selector),
-                    offset = 90,
+                    offset = 95,
                     target_offset_top = target && target.offset().top - offset;
             
                 setTimeout(function () {
