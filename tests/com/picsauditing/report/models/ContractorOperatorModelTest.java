@@ -23,7 +23,7 @@ public class ContractorOperatorModelTest extends ModelTest {
 		includedFields.add("AccountID");
 		includedFields.add("AccountName");
 
-		excludedFields.add("AccountCountry");
+//		excludedFields.add("AccountCountry");
 		excludedFields.add("ContractorScore");
 		excludedFields.add("ContractorOperatorOperatorStatus");
 		checkFields();
