@@ -524,10 +524,10 @@
 								</pics:fieldhelp>
 							</li>
 							<li>
-								<label>InsureGUARD&trade; Auto Approve/Reject Policies:</label>
+								<label>InsureGUARD&trade; Auto Approve Policies:</label>
 								<s:checkbox name="operator.autoApproveInsurance" />
 								<pics:fieldhelp title="InsureGUARD">
-									Check this box to approve Completed policies with a recommended status of Approve and reject Completed policies with a recommended status of Reject.
+									Check this box to automatically approve Completed policies when they have a recommended status of Approve.
 								</pics:fieldhelp>
 							</li>
 							<li>
