@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -77,6 +78,9 @@ public class Permissions implements Serializable {
 	private int shadowedUserID;
 	private String shadowedUserName;
 	
+	private boolean usingDynamicReports;
+	private Date usingDynamicReportsDate;
+	
 	public void clear() {
 		userID = 0;
 		loggedIn = false;
@@ -146,7 +150,9 @@ public class Permissions implements Serializable {
 
 			setAccountPerms(user);
 			LocaleController.setLocaleOfNearestSupported(this);
-
+			
+			usingDynamicReports = user.isUsingDynamicReports();
+			usingDynamicReportsDate = user.getUsingDynamicReportsDate();
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -676,6 +682,22 @@ public class Permissions implements Serializable {
 
 	public void setSessionCookieTimeoutInSeconds(int seconds) {
 		this.sessionCookieTimeoutInSeconds = seconds;
+	}
+	
+	public boolean isUsingDynamicReports() {
+		return usingDynamicReports;
+	}
+	
+	public void setUsingDynamicReports(boolean usingDynamicReports) {
+		this.usingDynamicReports = usingDynamicReports;
+	}
+	
+	public Date getUsingDynamicReportsDate() {
+		return usingDynamicReportsDate;
+	}
+	
+	public void setUsingDynamicReportsDate(Date usingDynamicReportsDate) {
+		this.usingDynamicReportsDate = usingDynamicReportsDate;
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {

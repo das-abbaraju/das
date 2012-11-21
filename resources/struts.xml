@@ -39,7 +39,7 @@
 			<interceptor name="jsonValidation"
 				class="org.apache.struts2.json.JSONValidationInterceptor" />
 			<interceptor name="ReportUsageInterceptor" class="com.picsauditing.interceptors.ReportUsageInterceptor" />
-			<interceptor name="FirstTimeDynamicReportUser" class="com.picsauditing.interceptors.FirstTimeDynamicReportUser" />
+			<interceptor name="FirstTimeDynamicReportUser" class="com.picsauditing.interceptors.FirstTimeUserInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
