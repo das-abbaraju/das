@@ -398,7 +398,7 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.ManageTrades))
 			referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
 
-		referenceMenu.addChild("Menu Navigation", "Tutorial.action", "menu_navigation");
+		referenceMenu.addChild("Navigation Menu", "Tutorial.action", "navigation_menu");
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
