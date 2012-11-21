@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PICS.VATValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
@@ -224,7 +223,7 @@ public class Registration extends ContractorActionSupport {
 		}
 	}
 
-	private void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
+	protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
 		emailBuilder.setUser(user);
@@ -238,6 +237,7 @@ public class Registration extends ContractorActionSupport {
 		emailBuilder.addToken("userName", user.getUsername());
 
 		EmailQueue emailQueue = emailBuilder.build();
+		emailQueue.setHtml(true);
 		emailQueue.setVeryHighPriority();
 		emailQueue.setViewableById(Account.EVERYONE);
 		emailSender.send(emailQueue);

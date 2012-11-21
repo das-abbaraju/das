@@ -1151,6 +1151,7 @@ public class UsersManage extends PicsActionSupport {
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
 			emailQueue.setCriticalPriority();
+			emailQueue.setHtml(true);
 
 			emailSender.send(emailQueue);
 
