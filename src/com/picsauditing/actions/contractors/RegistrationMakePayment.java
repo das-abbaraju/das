@@ -676,12 +676,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		billingService.calculateAnnualFees(contractor);
 		invoice = contractor.findLastUnpaidInvoice();
 		if (invoice == null) {
-			invoice = billingService.createInvoice(contractor, getUser());
-			
-			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
-			
+			invoice = billingService.createInvoice(contractor, getUser());			
 			contractor.getInvoices().add(invoice);
 			invoiceDAO.save(invoice);
+			notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
 			ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
