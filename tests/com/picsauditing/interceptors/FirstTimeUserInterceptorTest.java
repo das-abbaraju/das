@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Date;
 import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,6 +32,11 @@ public class FirstTimeUserInterceptorTest {
 	private ActionInvocation invocation;
 	@Mock
 	private ValueStack valueStack;
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		ActionContext.setContext((ActionContext) null);
+	}
 
 	@Before
 	public void setUp() throws Exception {
