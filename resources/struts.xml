@@ -21,12 +21,12 @@
                          class="com.picsauditing.strutsutil.MessageResult"/>
             <result-type name="json"
                          class="com.picsauditing.strutsutil.JSONResult"/>
-            <result-type name="xml"
-                         class="com.picsauditing.strutsutil.XMLResult"/>
             <result-type name="jsonp"
                          class="com.picsauditing.strutsutil.JSONPResult"/>
             <result-type name="jsonArray"
                          class="com.picsauditing.strutsutil.JSONArrayResult"/>
+            <result-type name="xml"
+                         class="com.picsauditing.strutsutil.XMLResult"/>
         </result-types>
 
         <interceptors>
@@ -104,7 +104,6 @@
             <result name="blank">/struts/blank.jsp</result>
             <result name="chartXML">struts/chart_xml.jsp</result>
             <result name="json" type="json"></result>
-            <result name="xml" type="xml"></result>
             <result name="jsonArray" type="jsonArray"></result>
             <result name="jsonp" type="jsonp"></result>
             <result name="plain-text" type="plain-text"></result>
@@ -112,6 +111,7 @@
             <result name="redirect" type="redirect">
                 ${url}
             </result>
+            <result name="xml" type="xml"></result>
         </global-results>
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="Exception"/>

@@ -1,14 +1,14 @@
-<ul class="nav nav-list" data-spy="affix" data-offset-top="100">
+<ul class="nav nav-list">
     <li>
-        <a href="#">Alerts <i class="icon-chevron-right"></i></a>
+        <a href="#alerts">Alerts <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Buttons <i class="icon-chevron-right"></i></a>
+        <a href="#buttons">Buttons <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Forms <i class="icon-chevron-right"></i></a>
+        <a href="#forms">Forms <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#">Pills <i class="icon-chevron-right"></i></a>
+        <a href="#pills">Pills <i class="icon-chevron-right"></i></a>
     </li>
 </ul>

@@ -8,59 +8,60 @@
     </decorator>
     <decorator name="simpleLayout" page="simple-layout.jsp">
         <pattern>/Login.action</pattern>
-		<pattern>/Tutorial*.action</pattern>
+        <pattern>/Tutorial*.action</pattern>
     </decorator>
-	<decorator name="dynamic-report" page="dynamic-report.jsp">
-		<pattern>/Report.action</pattern>
-	</decorator>
-	<decorator name="main" page="main.jsp">
-		<pattern>/*.jsp</pattern>
-		<pattern>/*.action</pattern>
-	</decorator>
-	<decorator name="registration" page="registration.jsp">
-		<pattern>/ContractorRegistration.action</pattern>
-		<pattern>/Registration.action</pattern>
-		<pattern>/RegistrationAddClientSite*.action</pattern>
-		<pattern>/RegistrationServiceEvaluation.action</pattern>
-		<pattern>/RegistrationMakePayment.action</pattern>
-	</decorator>
-	<decorator name="print" page="print.jsp">
-		<pattern>/*!print*.action</pattern>
-		<pattern>/ReportPrint.action</pattern>
-	</decorator>
-	<decorator name="simple" page="simple.jsp">
-		<pattern>/NoteEditor.action</pattern>
-		<pattern>/PrivacyPolicy.action</pattern>
-		<pattern>/RefundPolicy.action</pattern>
-		<pattern>/ContractorAgreement.action</pattern>
-		<pattern>/contractor_agreement.jsp</pattern>
-		<pattern>/ContractorPricing.action</pattern>
-		<pattern>/con_pricing.jsp</pattern>
-		<pattern>/pricing_matrix.jsp</pattern>
-	</decorator>
-	<decorator name="ignoreMe">
-		<pattern>/*Ajax.action</pattern>
-		<pattern>/*Ajax!*.action</pattern>
-		<pattern>/PyCron.action</pattern>
-		<pattern>/keepalive.jsp</pattern>
-		<pattern>/clearcache.jsp</pattern>
-		<pattern>/*ajax*</pattern>
-		<pattern>/*JSON.action</pattern>
-		<pattern>/*json*</pattern>
-		<pattern>/*Autocomplete.action</pattern>
-		<pattern>/*CSV.action</pattern>
-		<pattern>/Download*</pattern>
-		<pattern>/AuditDataUpload.action</pattern>
-		<pattern>/CertificateUpload.action</pattern>
-		<pattern>/ReportNewReqConImport.action</pattern>
-		<pattern>/ManageEmployeesUpload.action</pattern>
-		<pattern>/EmployeeNCCERUpload.action</pattern>
-		<pattern>/user_edit.jsp</pattern>
-		<pattern>/exception_handler.jsp</pattern>
-		<pattern>/reasons.html</pattern>
-		<pattern>/ChartXML*</pattern>
-		<pattern>/con_pricing.jsp</pattern>
-		<pattern>/AuditFileUpload.action</pattern>
-		<pattern>/*External.action</pattern>
-	</decorator>
+    <decorator name="dynamic-report" page="dynamic-report.jsp">
+        <pattern>/Report.action</pattern>
+    </decorator>
+    <decorator name="main" page="main.jsp">
+        <pattern>/*.jsp</pattern>
+        <pattern>/*.action</pattern>
+    </decorator>
+    <decorator name="registration" page="registration.jsp">
+        <pattern>/ContractorRegistration.action</pattern>
+        <pattern>/Registration.action</pattern>
+        <pattern>/RegistrationAddClientSite*.action</pattern>
+        <pattern>/RegistrationServiceEvaluation.action</pattern>
+        <pattern>/RegistrationMakePayment.action</pattern>
+    </decorator>
+    <decorator name="print" page="print.jsp">
+        <pattern>/*!print*.action</pattern>
+        <pattern>/ReportPrint.action</pattern>
+    </decorator>
+    <decorator name="simple" page="simple.jsp">
+        <pattern>/NoteEditor.action</pattern>
+        <pattern>/PrivacyPolicy.action</pattern>
+        <pattern>/RefundPolicy.action</pattern>
+        <pattern>/ContractorAgreement.action</pattern>
+        <pattern>/contractor_agreement.jsp</pattern>
+        <pattern>/ContractorPricing.action</pattern>
+        <pattern>/con_pricing.jsp</pattern>
+        <pattern>/pricing_matrix.jsp</pattern>
+    </decorator>
+    <decorator name="ignoreMe">
+        <pattern>/*Ajax.action</pattern>
+        <pattern>/*Ajax!*.action</pattern>
+        <pattern>/PyCron.action</pattern>
+        <pattern>/keepalive.jsp</pattern>
+        <pattern>/clearcache.jsp</pattern>
+        <pattern>/*ajax*</pattern>
+        <pattern>/*JSON.action</pattern>
+        <pattern>/*json*</pattern>
+        <pattern>/*Autocomplete.action</pattern>
+        <pattern>/*CSV.action</pattern>
+        <pattern>/Download*</pattern>
+        <pattern>/AuditDataUpload.action</pattern>
+        <pattern>/CertificateUpload.action</pattern>
+        <pattern>/ReportNewReqConImport.action</pattern>
+        <pattern>/ManageEmployeesUpload.action</pattern>
+        <pattern>/EmployeeNCCERUpload.action</pattern>
+        <pattern>/user_edit.jsp</pattern>
+        <pattern>/exception_handler.jsp</pattern>
+        <pattern>/reasons.html</pattern>
+        <pattern>/ChartXML*</pattern>
+        <pattern>/con_pricing.jsp</pattern>
+        <pattern>/AuditFileUpload.action</pattern>
+        <pattern>/*External.action</pattern>
+        <pattern>/Liveagent.action</pattern>
+    </decorator>
 </decorators>

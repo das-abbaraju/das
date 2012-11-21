@@ -1,17 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<section id="forms_component" class="guide">
+<section id="forms" class="guide">
     <div class="page-header">
         <h1>Forms</h1>
     </div>
-    
+
     <div class="example">
-    
-        <s:form cssClass="well form-horizontal" action="%{#frontend_development_guide_forms}" name="YOUR_FORM_NAME" id="YOUR_FORM_ID">
+
+        <s:form cssClass="well form-horizontal" action="%{#frontend_development_guide_forms}" name="YOUR_FORM_NAME"
+                id="YOUR_FORM_ID">
             <fieldset>
                 <div class="control-group">
                     <label class="control-label" for="field_1">Label 1</label>
+
                     <div class="controls">
                         <input type="text" name="field_1" id="field_1">
                     </div>
@@ -45,7 +47,7 @@
     &lt;/fieldset&gt;
 &lt;/s:form&gt;
 </pre>
-    
+
     </div>
-    
+
 </section>

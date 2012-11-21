@@ -2,7 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;
@@ -17,7 +17,6 @@ import com.picsauditing.util.excel.ExcelBuilder;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.interceptor.ParameterAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +26,9 @@ import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings({"unchecked", "serial"})
-public class ReportData extends PicsActionSupport implements ParameterAware {
+public class ReportData extends PicsApiSupport {
 
     private static final String PRINT = "print";
     @Autowired
@@ -45,7 +43,6 @@ public class ReportData extends PicsActionSupport implements ParameterAware {
     protected ReportDataConverter converter;
     protected int pageNumber = 1;
     private static final Logger logger = LoggerFactory.getLogger(ReportData.class);
-    protected String outputFormat = "";
 
     protected String initialize() throws Exception {
         logger.debug("initializing report " + report.getId());
@@ -215,20 +212,5 @@ public class ReportData extends PicsActionSupport implements ParameterAware {
 
     public void setPage(int page) {
         this.pageNumber = page;
-    }
-
-    public void setParameters(Map<String, String[]> parameters) {
-        logger.warn("Setting parameters");
-        for (String key : parameters.keySet()) {
-            logger.debug("{} = {}", key, parameters.get(key)[0].toString());
-            if ("format".equals(key)) {
-                outputFormat = parameters.get(key)[0].toString();
-                if (outputFormat == null || outputFormat.isEmpty() || !outputFormat.equalsIgnoreCase("xml")) {
-                    outputFormat = "json";
-                }
-
-            }
-        }
-
     }
 }

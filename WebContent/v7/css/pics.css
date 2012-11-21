@@ -8,274 +8,300 @@
  */
 /* line 2, ../sass/pics/layout/_layout.scss */
 body {
-  padding-top: 55px;
-  padding-bottom: 26px;
+    padding-top: 55px;
+    padding-bottom: 26px;
+    position: relative;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  /* line 9, ../sass/pics/layout/_layout.scss */
-  body {
-    padding-top: 0;
-  }
+    /* line 10, ../sass/pics/layout/_layout.scss */
+    body {
+        padding-top: 0;
+    }
 }
+
 /* line 2, ../sass/pics/layout/_environment.scss */
 #environment {
-  background: #333;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
-  background-image: -webkit-linear-gradient(#252525, #333333);
-  background-image: -moz-linear-gradient(#252525, #333333);
-  background-image: -o-linear-gradient(#252525, #333333);
-  background-image: linear-gradient(#252525, #333333);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff252525', endColorstr='#ff333333', GradientType=0);
-  color: #f1f1f2;
-  height: 26px;
-  line-height: 26px;
-  padding: 0 10px;
+    background: #333;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #252525), color-stop(100%, #333333));
+    background-image: -webkit-linear-gradient(#252525, #333333);
+    background-image: -moz-linear-gradient(#252525, #333333);
+    background-image: -o-linear-gradient(#252525, #333333);
+    background-image: linear-gradient(#252525, #333333);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ff252525', endColorstr = '#ff333333', GradientType = 0);
+    color: #f1f1f2;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 10px;
 }
+
 /* line 12, ../sass/pics/layout/_environment.scss */
 #environment a {
-  color: #ccc;
-  float: right;
-  padding: 0 10px;
-  text-decoration: none;
+    color: #ccc;
+    float: right;
+    padding: 0 10px;
+    text-decoration: none;
 }
+
 /* line 19, ../sass/pics/layout/_environment.scss */
 #environment a:hover {
-  color: #f1f1f2;
+    color: #f1f1f2;
 }
+
 /* line 27, ../sass/pics/layout/_environment.scss */
 #environment .active.localhost {
-  color: #f6303c;
+    color: #f6303c;
 }
+
 /* line 32, ../sass/pics/layout/_environment.scss */
 #environment .active.alpha {
-  color: #33c033;
+    color: #33c033;
 }
+
 /* line 37, ../sass/pics/layout/_environment.scss */
 #environment .active.config {
-  color: #fcc033;
+    color: #fcc033;
 }
+
 /* line 42, ../sass/pics/layout/_environment.scss */
 #environment .active.beta {
-  color: #73bbe8;
+    color: #73bbe8;
 }
+
 /* line 47, ../sass/pics/layout/_environment.scss */
 #environment .active.qa-beta {
-  color: #ff6600;
+    color: #ff6600;
 }
+
 /* line 52, ../sass/pics/layout/_environment.scss */
 #environment .active.qa-stable {
-  color: #996fff;
+    color: #996fff;
 }
 
 @media (max-width: 979px) {
-  /* line 60, ../sass/pics/layout/_environment.scss */
-  #environment.navbar-fixed-bottom {
-    margin: 0;
-    position: fixed;
-  }
+    /* line 60, ../sass/pics/layout/_environment.scss */
+    #environment.navbar-fixed-bottom {
+        margin: 0;
+        position: fixed;
+    }
 }
-@media (max-width: 767px) {
-  /* line 68, ../sass/pics/layout/_environment.scss */
-  #environment a {
-    display: none;
-  }
 
-  /* line 73, ../sass/pics/layout/_environment.scss */
-  #environment .active {
-    display: inline;
-  }
+@media (max-width: 767px) {
+    /* line 68, ../sass/pics/layout/_environment.scss */
+    #environment a {
+        display: none;
+    }
+
+    /* line 73, ../sass/pics/layout/_environment.scss */
+    #environment .active {
+        display: inline;
+    }
 }
+
 /* line 4, ../sass/pics/layout/_menu.scss */
 .navbar .brand {
-  background: url(../img/logo.png) no-repeat;
-  background: rgba(0, 0, 0, 0) url(../img/logo.svg) no-repeat;
-  display: block;
-  height: 32px;
-  margin: 10px 15px 10px 0;
-  padding: 0;
-  width: 32px;
+    background: url(../img/logo.png) no-repeat;
+    background: rgba(0, 0, 0, 0) url(../img/logo.svg) no-repeat;
+    display: block;
+    height: 32px;
+    margin: 10px 15px 10px 0;
+    padding: 0;
+    width: 32px;
 }
+
 /* line 16, ../sass/pics/layout/_menu.scss */
 .navbar .nav > li > a {
-  border: 1px solid transparent;
-  border-bottom: 0;
-  color: #002441;
-  font-size: 13px;
-  font-weight: bold;
-  padding: 16px 15px;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    color: #002441;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 16px 15px;
 }
+
 /* line 26, ../sass/pics/layout/_menu.scss */
 .navbar .nav > li > a:hover {
-  color: #C66603;
+    color: #C66603;
 }
+
 /* line 33, ../sass/pics/layout/_menu.scss */
 .navbar .nav li.dropdown.open > .dropdown-toggle,
 .navbar .nav li.dropdown.active > .dropdown-toggle,
 .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-  background: #f1f1f2;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
-  background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
-  background-image: linear-gradient(#eaeaea, #f1f1f2);
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  -ms-border-radius: 0px;
-  -o-border-radius: 0px;
-  border-radius: 0px;
-  border: 1px solid #aeaeae;
-  border-top: 1px solid #999999;
-  border-bottom: 0px;
-  color: #C66603;
+    background: #f1f1f2;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #f1f1f2));
+    background-image: -webkit-linear-gradient(#eaeaea, #f1f1f2);
+    background-image: -moz-linear-gradient(#eaeaea, #f1f1f2);
+    background-image: -o-linear-gradient(#eaeaea, #f1f1f2);
+    background-image: linear-gradient(#eaeaea, #f1f1f2);
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+    border: 1px solid #aeaeae;
+    border-top: 1px solid #999999;
+    border-bottom: 0px;
+    color: #C66603;
 }
+
 /* line 44, ../sass/pics/layout/_menu.scss */
 .navbar .navbar-search {
-  border-right: 1px solid #e7e7e7;
-  margin: 0;
-  padding: 11px 15px;
+    border-right: 1px solid #e7e7e7;
+    margin: 0;
+    padding: 11px 15px;
 }
+
 /* line 50, ../sass/pics/layout/_menu.scss */
 .navbar .navbar-search .icon-search {
-  color: #ccc;
-  margin-right: 2px;
-  position: relative;
-  top: 8px;
+    color: #ccc;
+    margin-right: 2px;
+    position: relative;
+    top: 8px;
 }
+
 /* line 58, ../sass/pics/layout/_menu.scss */
 .navbar .navbar-search .search-query {
-  line-height: normal;
+    line-height: normal;
 }
 
 /* line 65, ../sass/pics/layout/_menu.scss */
 .lt-ie9 .nav > li > a {
-  padding: 16px 10px;
+    padding: 16px 10px;
 }
 
 /* line 74, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user a {
-  font-size: 13px;
-  white-space: normal;
+    font-size: 13px;
+    white-space: normal;
 }
+
 /* line 80, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .name {
-  float: left;
-  font-weight: bold;
-  width: 175px;
+    float: left;
+    font-weight: bold;
+    width: 175px;
 }
+
 /* line 87, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .id {
-  float: right;
-  font-weight: bold;
+    float: right;
+    font-weight: bold;
 }
+
 /* line 93, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .location {
-  float: left;
-  width: 175px;
+    float: left;
+    width: 175px;
 }
+
 /* line 99, ../sass/pics/layout/_menu.scss */
 #user_searchbox .user .type {
-  float: right;
-  font-style: italic;
+    float: right;
+    font-style: italic;
 }
 
 /* line 109, ../sass/pics/layout/_menu.scss */
 #user_menu .icon-cog {
-  font-size: 16px;
-  position: relative;
-  top: 4px;
+    font-size: 16px;
+    position: relative;
+    top: 4px;
 }
 
 @media (max-width: 1199px) and (min-width: 980px) {
-  /* line 120, ../sass/pics/layout/_menu.scss */
-  .navbar .brand {
-    padding-right: 10px;
-  }
-  /* line 125, ../sass/pics/layout/_menu.scss */
-  .navbar .nav > li > a {
-    padding: 16px 10px;
-  }
+    /* line 120, ../sass/pics/layout/_menu.scss */
+    .navbar .brand {
+        padding-right: 10px;
+    }
+
+    /* line 125, ../sass/pics/layout/_menu.scss */
+    .navbar .nav > li > a {
+        padding: 16px 10px;
+    }
 }
+
 /* line 4, ../sass/pics/layout/_page-header.scss */
 .page-header.pics {
-  border: 0px;
-  margin: 20px 0px;
-  padding: 0px;
+    border: 0px;
+    margin: 20px 0px;
+    padding: 0px;
 }
+
 /* line 10, ../sass/pics/layout/_page-header.scss */
 .page-header.pics .title {
-  color: #73bbe8;
-  font-size: 36px;
-  font-weight: normal;
-  margin-bottom: 0;
+    color: #73bbe8;
+    font-size: 36px;
+    font-weight: normal;
+    margin-bottom: 0;
 }
+
 /* line 18, ../sass/pics/layout/_page-header.scss */
 .page-header.pics .subtitle {
-  color: #808285;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 20px;
-  margin: 0px;
+    color: #808285;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 20px;
+    margin: 0px;
 }
 
 /* line 2, ../sass/pics/widgets/pics/_example.scss */
 .example {
-  background-color: #fff;
-  border: 1px solid #e5e5e5;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  margin: 15px 0;
-  padding: 50px 20px 20px;
-  position: relative;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    border-radius: 4px;
+    margin: 15px 0;
+    padding: 50px 20px 20px;
+    position: relative;
 }
 
 /* line 12, ../sass/pics/widgets/pics/_example.scss */
 .example:after {
-  background-color: #f1f1f2;
-  border: 1px solid #e5e5e5;
-  -webkit-border-radius: 4px 0 4px 0;
-  -moz-border-radius: 4px 0 4px 0;
-  -ms-border-radius: 4px 0 4px 0;
-  -o-border-radius: 4px 0 4px 0;
-  border-radius: 4px 0 4px 0;
-  color: #999;
-  content: "Example";
-  font-weight: bold;
-  left: -1px;
-  padding: 3px 7px;
-  position: absolute;
-  top: -1px;
+    background-color: #f1f1f2;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 4px 0 4px 0;
+    -moz-border-radius: 4px 0 4px 0;
+    -ms-border-radius: 4px 0 4px 0;
+    -o-border-radius: 4px 0 4px 0;
+    border-radius: 4px 0 4px 0;
+    color: #999;
+    content: "Example";
+    font-weight: bold;
+    left: -1px;
+    padding: 3px 7px;
+    position: absolute;
+    top: -1px;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert {
-  background: #fcf3cc;
-  border: 1px solid #e67e1c;
-  color: #e67e1c;
+    background: #fcf3cc;
+    border: 1px solid #e67e1c;
+    color: #e67e1c;
 }
 
 /* line 9, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert-error {
-  background: #ffc6c9;
-  border: 1px solid #ff969c;
-  color: #ac030c;
+    background: #ffc6c9;
+    border: 1px solid #ff969c;
+    color: #ac030c;
 }
 
 /* line 16, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert-success {
-  background: #acf5ac;
-  border: 1px solid #229322;
-  color: #229322;
+    background: #acf5ac;
+    border: 1px solid #229322;
+    color: #229322;
 }
 
 /* line 23, ../sass/pics/widgets/twitter-bootstrap/_alert.scss */
 .alert-info {
-  background: #c3e0f9;
-  border: 1px solid #226396;
-  color: #226396;
+    background: #c3e0f9;
+    border: 1px solid #226396;
+    color: #226396;
 }
 
 /*
@@ -283,51 +309,51 @@ body {
  */
 /* line 119, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn {
-  border-color: #bcbcbc;
-  text-shadow: none;
-  color: #333333;
-  background: gainsboro;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f1f1f2, endColorstr=gainsboro);
+    border-color: #bcbcbc;
+    text-shadow: none;
+    color: #333333;
+    background: gainsboro;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
+    background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
+    background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
+    background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
+    background-image: linear-gradient(#f1f1f2, #dcdcdc);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #f1f1f2, endColorstr = gainsboro);
 }
 
 /* line 134, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn:hover {
-  color: #333333;
-  background: #ececec;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
-  background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
-  background-image: -moz-linear-gradient(#f7f7f8, #ececec);
-  background-image: -o-linear-gradient(#f7f7f8, #ececec);
-  background-image: linear-gradient(#f7f7f8, #ececec);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f7f7f8, endColorstr=#ececec);
+    color: #333333;
+    background: #ececec;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7f7f8), color-stop(100%, #ececec));
+    background-image: -webkit-linear-gradient(#f7f7f8, #ececec);
+    background-image: -moz-linear-gradient(#f7f7f8, #ececec);
+    background-image: -o-linear-gradient(#f7f7f8, #ececec);
+    background-image: linear-gradient(#f7f7f8, #ececec);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #f7f7f8, endColorstr = #ececec);
 }
 
 /* line 145, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn.active,
 .btn:active {
-  color: #333333;
-  background: #cdcdcd;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
-  background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
-  background-image: linear-gradient(#dcdcdc, #cdcdcd);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=gainsboro, endColorstr=#cdcdcd);
+    color: #333333;
+    background: #cdcdcd;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #dcdcdc), color-stop(100%, #cdcdcd));
+    background-image: -webkit-linear-gradient(#dcdcdc, #cdcdcd);
+    background-image: -moz-linear-gradient(#dcdcdc, #cdcdcd);
+    background-image: -o-linear-gradient(#dcdcdc, #cdcdcd);
+    background-image: linear-gradient(#dcdcdc, #cdcdcd);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = gainsboro, endColorstr = #cdcdcd);
 }
 
 /* line 155, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn.disabled {
-  background-color: #e6e6e6;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #e6e6e6;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -335,51 +361,51 @@ body {
  */
 /* line 166, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary {
-  border-color: #226396;
-  text-shadow: 0px -1px 1px #226396;
-  color: white;
-  background: #226396;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
-  background-image: -webkit-linear-gradient(#73bbe8, #226396);
-  background-image: -moz-linear-gradient(#73bbe8, #226396);
-  background-image: -o-linear-gradient(#73bbe8, #226396);
-  background-image: linear-gradient(#73bbe8, #226396);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73bbe8, endColorstr=#226396);
+    border-color: #226396;
+    text-shadow: 0px -1px 1px #226396;
+    color: white;
+    background: #226396;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73bbe8), color-stop(100%, #226396));
+    background-image: -webkit-linear-gradient(#73bbe8, #226396);
+    background-image: -moz-linear-gradient(#73bbe8, #226396);
+    background-image: -o-linear-gradient(#73bbe8, #226396);
+    background-image: linear-gradient(#73bbe8, #226396);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #73bbe8, endColorstr = #226396);
 }
 
 /* line 181, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary:hover {
-  color: white;
-  background: #396cc9;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
-  background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
-  background-image: -moz-linear-gradient(#60c9f3, #396cc9);
-  background-image: -o-linear-gradient(#60c9f3, #396cc9);
-  background-image: linear-gradient(#60c9f3, #396cc9);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#60c9f3, endColorstr=#396cc9);
+    color: white;
+    background: #396cc9;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #60c9f3), color-stop(100%, #396cc9));
+    background-image: -webkit-linear-gradient(#60c9f3, #396cc9);
+    background-image: -moz-linear-gradient(#60c9f3, #396cc9);
+    background-image: -o-linear-gradient(#60c9f3, #396cc9);
+    background-image: linear-gradient(#60c9f3, #396cc9);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #60c9f3, endColorstr = #396cc9);
 }
 
 /* line 192, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary.active,
 .btn-primary:active {
-  color: white;
-  background: #09366f;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
-  background-image: -webkit-linear-gradient(#336f9c, #09366f);
-  background-image: -moz-linear-gradient(#336f9c, #09366f);
-  background-image: -o-linear-gradient(#336f9c, #09366f);
-  background-image: linear-gradient(#336f9c, #09366f);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#336f9c, endColorstr=#09366f);
+    color: white;
+    background: #09366f;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #336f9c), color-stop(100%, #09366f));
+    background-image: -webkit-linear-gradient(#336f9c, #09366f);
+    background-image: -moz-linear-gradient(#336f9c, #09366f);
+    background-image: -o-linear-gradient(#336f9c, #09366f);
+    background-image: linear-gradient(#336f9c, #09366f);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #336f9c, endColorstr = #09366f);
 }
 
 /* line 202, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-primary.disabled {
-  background-color: #0044cc;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #0044cc;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -387,51 +413,51 @@ body {
  */
 /* line 213, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning {
-  border-color: #e67e1c;
-  text-shadow: 0px -1px 1px #e67e1c;
-  color: white;
-  background: #e67e1c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
-  background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
-  background-image: -moz-linear-gradient(#fcc033, #e67e1c);
-  background-image: -o-linear-gradient(#fcc033, #e67e1c);
-  background-image: linear-gradient(#fcc033, #e67e1c);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcc033, endColorstr=#e67e1c);
+    border-color: #e67e1c;
+    text-shadow: 0px -1px 1px #e67e1c;
+    color: white;
+    background: #e67e1c;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcc033), color-stop(100%, #e67e1c));
+    background-image: -webkit-linear-gradient(#fcc033, #e67e1c);
+    background-image: -moz-linear-gradient(#fcc033, #e67e1c);
+    background-image: -o-linear-gradient(#fcc033, #e67e1c);
+    background-image: linear-gradient(#fcc033, #e67e1c);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #fcc033, endColorstr = #e67e1c);
 }
 
 /* line 228, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning:hover {
-  color: white;
-  background: #f1a300;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
-  background-image: -webkit-linear-gradient(#fcd100, #f1a300);
-  background-image: -moz-linear-gradient(#fcd100, #f1a300);
-  background-image: -o-linear-gradient(#fcd100, #f1a300);
-  background-image: linear-gradient(#fcd100, #f1a300);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fcd100, endColorstr=#f1a300);
+    color: white;
+    background: #f1a300;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fcd100), color-stop(100%, #f1a300));
+    background-image: -webkit-linear-gradient(#fcd100, #f1a300);
+    background-image: -moz-linear-gradient(#fcd100, #f1a300);
+    background-image: -o-linear-gradient(#fcd100, #f1a300);
+    background-image: linear-gradient(#fcd100, #f1a300);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #fcd100, endColorstr = #f1a300);
 }
 
 /* line 239, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning.active,
 .btn-warning:active {
-  color: white;
-  background: #d66000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
-  background-image: -webkit-linear-gradient(#ea9000, #d66000);
-  background-image: -moz-linear-gradient(#ea9000, #d66000);
-  background-image: -o-linear-gradient(#ea9000, #d66000);
-  background-image: linear-gradient(#ea9000, #d66000);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ea9000, endColorstr=#d66000);
+    color: white;
+    background: #d66000;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ea9000), color-stop(100%, #d66000));
+    background-image: -webkit-linear-gradient(#ea9000, #d66000);
+    background-image: -moz-linear-gradient(#ea9000, #d66000);
+    background-image: -o-linear-gradient(#ea9000, #d66000);
+    background-image: linear-gradient(#ea9000, #d66000);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #ea9000, endColorstr = #d66000);
 }
 
 /* line 249, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-warning.disabled {
-  background-color: #f89406;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #f89406;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -439,51 +465,51 @@ body {
  */
 /* line 260, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info {
-  border-color: #6ca6f6;
-  text-shadow: 0px -1px 1px #6ca6f6;
-  color: white;
-  background: #6ca6f6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
-  background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
-  background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
-  background-image: -o-linear-gradient(#70cfff, #6ca6f6);
-  background-image: linear-gradient(#70cfff, #6ca6f6);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#70cfff, endColorstr=#6ca6f6);
+    border-color: #6ca6f6;
+    text-shadow: 0px -1px 1px #6ca6f6;
+    color: white;
+    background: #6ca6f6;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #70cfff), color-stop(100%, #6ca6f6));
+    background-image: -webkit-linear-gradient(#70cfff, #6ca6f6);
+    background-image: -moz-linear-gradient(#70cfff, #6ca6f6);
+    background-image: -o-linear-gradient(#70cfff, #6ca6f6);
+    background-image: linear-gradient(#70cfff, #6ca6f6);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #70cfff, endColorstr = #6ca6f6);
 }
 
 /* line 275, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info:hover {
-  color: white;
-  background: #73d0f6;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
-  background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
-  background-image: -moz-linear-gradient(#73ddff, #73d0f6);
-  background-image: -o-linear-gradient(#73ddff, #73d0f6);
-  background-image: linear-gradient(#73ddff, #73d0f6);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#73ddff, endColorstr=#73d0f6);
+    color: white;
+    background: #73d0f6;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #73ddff), color-stop(100%, #73d0f6));
+    background-image: -webkit-linear-gradient(#73ddff, #73d0f6);
+    background-image: -moz-linear-gradient(#73ddff, #73d0f6);
+    background-image: -o-linear-gradient(#73ddff, #73d0f6);
+    background-image: linear-gradient(#73ddff, #73d0f6);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #73ddff, endColorstr = #73d0f6);
 }
 
 /* line 286, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info.active,
 .btn-info:active {
-  color: white;
-  background: #5599fc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
-  background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
-  background-image: -moz-linear-gradient(#55a9ff, #5599fc);
-  background-image: -o-linear-gradient(#55a9ff, #5599fc);
-  background-image: linear-gradient(#55a9ff, #5599fc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#55a9ff, endColorstr=#5599fc);
+    color: white;
+    background: #5599fc;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #55a9ff), color-stop(100%, #5599fc));
+    background-image: -webkit-linear-gradient(#55a9ff, #5599fc);
+    background-image: -moz-linear-gradient(#55a9ff, #5599fc);
+    background-image: -o-linear-gradient(#55a9ff, #5599fc);
+    background-image: linear-gradient(#55a9ff, #5599fc);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #55a9ff, endColorstr = #5599fc);
 }
 
 /* line 296, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-info.disabled {
-  background-color: #2f96b4;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #2f96b4;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -491,51 +517,51 @@ body {
  */
 /* line 307, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success {
-  border-color: #229322;
-  text-shadow: 0px -1px 1px #229322;
-  color: white;
-  background: #229322;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
-  background-image: -webkit-linear-gradient(#33c033, #229322);
-  background-image: -moz-linear-gradient(#33c033, #229322);
-  background-image: -o-linear-gradient(#33c033, #229322);
-  background-image: linear-gradient(#33c033, #229322);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33c033, endColorstr=#229322);
+    border-color: #229322;
+    text-shadow: 0px -1px 1px #229322;
+    color: white;
+    background: #229322;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
+    background-image: -webkit-linear-gradient(#33c033, #229322);
+    background-image: -moz-linear-gradient(#33c033, #229322);
+    background-image: -o-linear-gradient(#33c033, #229322);
+    background-image: linear-gradient(#33c033, #229322);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #33c033, endColorstr = #229322);
 }
 
 /* line 322, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success:hover {
-  color: white;
-  background: #25b000;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
-  background-image: -webkit-linear-gradient(#33d000, #25b000);
-  background-image: -moz-linear-gradient(#33d000, #25b000);
-  background-image: -o-linear-gradient(#33d000, #25b000);
-  background-image: linear-gradient(#33d000, #25b000);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#33d000, endColorstr=#25b000);
+    color: white;
+    background: #25b000;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33d000), color-stop(100%, #25b000));
+    background-image: -webkit-linear-gradient(#33d000, #25b000);
+    background-image: -moz-linear-gradient(#33d000, #25b000);
+    background-image: -o-linear-gradient(#33d000, #25b000);
+    background-image: linear-gradient(#33d000, #25b000);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #33d000, endColorstr = #25b000);
 }
 
 /* line 333, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success.active,
 .btn-success:active {
-  color: white;
-  background: #1c7600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
-  background-image: -webkit-linear-gradient(#299600, #1c7600);
-  background-image: -moz-linear-gradient(#299600, #1c7600);
-  background-image: -o-linear-gradient(#299600, #1c7600);
-  background-image: linear-gradient(#299600, #1c7600);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#299600, endColorstr=#1c7600);
+    color: white;
+    background: #1c7600;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #299600), color-stop(100%, #1c7600));
+    background-image: -webkit-linear-gradient(#299600, #1c7600);
+    background-image: -moz-linear-gradient(#299600, #1c7600);
+    background-image: -o-linear-gradient(#299600, #1c7600);
+    background-image: linear-gradient(#299600, #1c7600);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #299600, endColorstr = #1c7600);
 }
 
 /* line 343, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-success.disabled {
-  background-color: #51a351;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #51a351;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -543,51 +569,51 @@ body {
  */
 /* line 354, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger {
-  border-color: #ac030c;
-  text-shadow: 0px -1px 1px #ac030c;
-  color: white;
-  background: #ac030c;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
-  background-image: -webkit-linear-gradient(#f6303c, #ac030c);
-  background-image: -moz-linear-gradient(#f6303c, #ac030c);
-  background-image: -o-linear-gradient(#f6303c, #ac030c);
-  background-image: linear-gradient(#f6303c, #ac030c);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f6303c, endColorstr=#ac030c);
+    border-color: #ac030c;
+    text-shadow: 0px -1px 1px #ac030c;
+    color: white;
+    background: #ac030c;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f6303c), color-stop(100%, #ac030c));
+    background-image: -webkit-linear-gradient(#f6303c, #ac030c);
+    background-image: -moz-linear-gradient(#f6303c, #ac030c);
+    background-image: -o-linear-gradient(#f6303c, #ac030c);
+    background-image: linear-gradient(#f6303c, #ac030c);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #f6303c, endColorstr = #ac030c);
 }
 
 /* line 369, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger:hover {
-  color: white;
-  background: #d00900;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
-  background-image: -webkit-linear-gradient(#f92626, #d00900);
-  background-image: -moz-linear-gradient(#f92626, #d00900);
-  background-image: -o-linear-gradient(#f92626, #d00900);
-  background-image: linear-gradient(#f92626, #d00900);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#f92626, endColorstr=#d00900);
+    color: white;
+    background: #d00900;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f92626), color-stop(100%, #d00900));
+    background-image: -webkit-linear-gradient(#f92626, #d00900);
+    background-image: -moz-linear-gradient(#f92626, #d00900);
+    background-image: -o-linear-gradient(#f92626, #d00900);
+    background-image: linear-gradient(#f92626, #d00900);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #f92626, endColorstr = #d00900);
 }
 
 /* line 380, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger.active,
 .btn-danger:active {
-  color: white;
-  background: #8c0600;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
-  background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
-  background-image: -moz-linear-gradient(#c60c0c, #8c0600);
-  background-image: -o-linear-gradient(#c60c0c, #8c0600);
-  background-image: linear-gradient(#c60c0c, #8c0600);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#c60c0c, endColorstr=#8c0600);
+    color: white;
+    background: #8c0600;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c60c0c), color-stop(100%, #8c0600));
+    background-image: -webkit-linear-gradient(#c60c0c, #8c0600);
+    background-image: -moz-linear-gradient(#c60c0c, #8c0600);
+    background-image: -o-linear-gradient(#c60c0c, #8c0600);
+    background-image: linear-gradient(#c60c0c, #8c0600);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #c60c0c, endColorstr = #8c0600);
 }
 
 /* line 390, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-danger.disabled {
-  background-color: #bd362f;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #bd362f;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -595,51 +621,51 @@ body {
  */
 /* line 401, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-inverse {
-  border-color: #222222 #222222 black;
-  text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.25);
-  color: white;
-  background: #222222;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
-  background-image: -webkit-linear-gradient(#444444, #222222);
-  background-image: -moz-linear-gradient(#444444, #222222);
-  background-image: -o-linear-gradient(#444444, #222222);
-  background-image: linear-gradient(#444444, #222222);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
+    border-color: #333333;
+    text-shadow: 0px -1px 1px rgba(0, 0, 0, 0.25);
+    color: white;
+    background: #333333;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #454545), color-stop(100%, #333333));
+    background-image: -webkit-linear-gradient(#454545, #333333);
+    background-image: -moz-linear-gradient(#454545, #333333);
+    background-image: -o-linear-gradient(#454545, #333333);
+    background-image: linear-gradient(#454545, #333333);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #454545, endColorstr = #333333);
 }
 
 /* line 416, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-inverse:hover {
-  color: white;
-  background: #222222;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
-  background-image: -webkit-linear-gradient(#444444, #222222);
-  background-image: -moz-linear-gradient(#444444, #222222);
-  background-image: -o-linear-gradient(#444444, #222222);
-  background-image: linear-gradient(#444444, #222222);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
+    color: white;
+    background: #222222;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
+    background-image: -webkit-linear-gradient(#444444, #222222);
+    background-image: -moz-linear-gradient(#444444, #222222);
+    background-image: -o-linear-gradient(#444444, #222222);
+    background-image: linear-gradient(#444444, #222222);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #444444, endColorstr = #222222);
 }
 
 /* line 427, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-inverse.active,
 .btn-inverse:active {
-  color: white;
-  background: #222222;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
-  background-image: -webkit-linear-gradient(#444444, #222222);
-  background-image: -moz-linear-gradient(#444444, #222222);
-  background-image: -o-linear-gradient(#444444, #222222);
-  background-image: linear-gradient(#444444, #222222);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#444444, endColorstr=#222222);
+    color: white;
+    background: #222222;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #444444), color-stop(100%, #222222));
+    background-image: -webkit-linear-gradient(#444444, #222222);
+    background-image: -moz-linear-gradient(#444444, #222222);
+    background-image: -o-linear-gradient(#444444, #222222);
+    background-image: linear-gradient(#444444, #222222);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = #444444, endColorstr = #222222);
 }
 
 /* line 437, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-inverse.disabled {
-  background-color: #222222;
-  background-image: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  opacity: 0.65;
+    background-color: #222222;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
 }
 
 /*
@@ -647,72 +673,74 @@ body {
  */
 /* line 448, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-link {
-  border-color: transparent;
-  text-shadow: none;
-  color: #226396;
-  background: transparent;
+    border-color: transparent;
+    text-shadow: none;
+    color: #226396;
+    background: transparent;
 }
 
 /* line 460, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-link:hover {
-  color: #73bbe8;
-  background: transparent;
-  text-decoration: none;
+    color: #73bbe8;
+    background: transparent;
+    text-decoration: none;
 }
 
 /* line 471, ../sass/pics/widgets/twitter-bootstrap/_button.scss */
 .btn-link.active,
 .btn-link:active {
-  color: #226396;
-  background: transparent;
+    color: #226396;
+    background: transparent;
 }
 
 /* line 4, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
 .btn-group .btn-link {
-  border: 0;
-  padding-bottom: 7px;
-  padding-top: 7px;
+    border: 0;
+    padding-bottom: 7px;
+    padding-top: 7px;
 }
 
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_button-group.scss */
 .btn-group > .btn:first-child.btn-link {
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-bottom-left-radius: 0;
-  border-bottom-left-radius: 0;
-  -moz-border-radius-topleft: 0;
-  -webkit-border-top-left-radius: 0;
-  border-top-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -webkit-border-bottom-left-radius: 0;
+    border-bottom-left-radius: 0;
+    -moz-border-radius-topleft: 0;
+    -webkit-border-top-left-radius: 0;
+    border-top-left-radius: 0;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-menu {
-  z-index: 9999;
+    z-index: 9999;
 }
+
 /* line 8, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-menu li > a:hover,
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
-  background-color: #a84d10;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
-  background-image: -webkit-linear-gradient(#c66603, #a84d10);
-  background-image: -moz-linear-gradient(#c66603, #a84d10);
-  background-image: -o-linear-gradient(#c66603, #a84d10);
-  background-image: linear-gradient(#c66603, #a84d10);
+    background-color: #a84d10;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
+    background-image: -webkit-linear-gradient(#c66603, #a84d10);
+    background-image: -moz-linear-gradient(#c66603, #a84d10);
+    background-image: -o-linear-gradient(#c66603, #a84d10);
+    background-image: linear-gradient(#c66603, #a84d10);
 }
+
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_dropdown.scss */
 .dropdown-menu .nav-header {
-  color: #999;
-  display: block;
-  font-weight: bold;
-  font-size: 11px;
-  margin-top: 9px;
-  padding: 3px 20px;
-  text-transform: uppercase;
+    color: #999;
+    display: block;
+    font-weight: bold;
+    font-size: 11px;
+    margin-top: 9px;
+    padding: 3px 20px;
+    text-transform: uppercase;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
 label {
-  color: #666;
+    color: #666;
 }
 
 /* line 23, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
@@ -733,143 +761,147 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input {
-  color: #333;
+    color: #333;
 }
 
 /* line 28, ../sass/pics/widgets/twitter-bootstrap/_form.scss */
 .form-actions {
-  background-color: transparent;
-  border-top: 0;
-  margin: 0;
-  padding: 0;
+    background-color: transparent;
+    border-top: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_hr.scss */
 hr {
-  margin: 40px 0 39px;
+    margin: 40px 0 39px;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list {
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -o-border-radius: 6px;
-  border-radius: 6px;
-  padding: 0;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+    border-radius: 6px;
+    padding: 0;
 }
+
 /* line 7, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list li > a {
-  border: 1px solid #e5e5e5;
-  margin: 0 0 -1px;
-  padding: 8px 14px;
+    border: 1px solid #e5e5e5;
+    margin: 0 0 -1px;
+    padding: 8px 14px;
 }
+
 /* line 14, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list li:first-child a {
-  -moz-border-radius-topleft: 6px;
-  -webkit-border-top-left-radius: 6px;
-  border-top-left-radius: 6px;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -webkit-border-top-left-radius: 6px;
+    border-top-left-radius: 6px;
+    -moz-border-radius-topright: 6px;
+    -webkit-border-top-right-radius: 6px;
+    border-top-right-radius: 6px;
 }
+
 /* line 20, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list li:last-child a {
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+    -moz-border-radius-bottomleft: 6px;
+    -webkit-border-bottom-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    -moz-border-radius-bottomright: 6px;
+    -webkit-border-bottom-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
+
 /* line 26, ../sass/pics/widgets/twitter-bootstrap/_nav-list.scss */
 .nav-list .icon-chevron-right {
-  color: #e5e5e5;
-  float: right;
+    color: #e5e5e5;
+    float: right;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */
 .navbar-inner {
-  background: #eaeaea;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
-  background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
-  background-image: -moz-linear-gradient(#ffffff, #eaeaea);
-  background-image: -o-linear-gradient(#ffffff, #eaeaea);
-  background-image: linear-gradient(#ffffff, #eaeaea);
+    background: #eaeaea;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
+    background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
+    background-image: -moz-linear-gradient(#ffffff, #eaeaea);
+    background-image: -o-linear-gradient(#ffffff, #eaeaea);
+    background-image: linear-gradient(#ffffff, #eaeaea);
 }
 
 /* line 10, ../sass/pics/widgets/twitter-bootstrap/_navbar.scss */
 .lt-ie9 .navbar .collapse {
-  overflow: visible;
+    overflow: visible;
 }
 
 /* line 3, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination li [class^=icon-],
 .pagination li [class*=icon-] {
-  line-height: 28px;
-  width: auto;
+    line-height: 28px;
+    width: auto;
 }
 
 /* line 9, ../sass/pics/widgets/twitter-bootstrap/_pagination.scss */
 .pagination a {
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
-  background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
-  background-image: linear-gradient(#f1f1f2, #dcdcdc);
-  color: #333;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #dcdcdc));
+    background-image: -webkit-linear-gradient(#f1f1f2, #dcdcdc);
+    background-image: -moz-linear-gradient(#f1f1f2, #dcdcdc);
+    background-image: -o-linear-gradient(#f1f1f2, #dcdcdc);
+    background-image: linear-gradient(#f1f1f2, #dcdcdc);
+    color: #333;
 }
 
 /* line 2, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs {
-  border-color: #ccc;
+    border-color: #ccc;
 }
 
 /* line 7, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > li {
-  margin-left: 5px;
-  margin-right: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 /* line 13, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > li > a {
-  background: #eaeaea;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #eaeaea));
-  background-image: -webkit-linear-gradient(#f1f1f2, #eaeaea);
-  background-image: -moz-linear-gradient(#f1f1f2, #eaeaea);
-  background-image: -o-linear-gradient(#f1f1f2, #eaeaea);
-  background-image: linear-gradient(#f1f1f2, #eaeaea);
-  border: 1px solid #ccc;
-  color: #808285;
-  font-size: 16px;
-  padding-bottom: 13px;
-  padding-top: 13px;
+    background: #eaeaea;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f2), color-stop(100%, #eaeaea));
+    background-image: -webkit-linear-gradient(#f1f1f2, #eaeaea);
+    background-image: -moz-linear-gradient(#f1f1f2, #eaeaea);
+    background-image: -o-linear-gradient(#f1f1f2, #eaeaea);
+    background-image: linear-gradient(#f1f1f2, #eaeaea);
+    border: 1px solid #ccc;
+    color: #808285;
+    font-size: 16px;
+    padding-bottom: 13px;
+    padding-top: 13px;
 }
 
 /* line 24, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > li > a:hover {
-  background: #f1f1f2;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
-  background-image: -webkit-linear-gradient(#ffffff, #f1f1f2);
-  background-image: -moz-linear-gradient(#ffffff, #f1f1f2);
-  background-image: -o-linear-gradient(#ffffff, #f1f1f2);
-  background-image: linear-gradient(#ffffff, #f1f1f2);
-  border-color: #ccc #ccc #ccc;
+    background: #f1f1f2;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
+    background-image: -webkit-linear-gradient(#ffffff, #f1f1f2);
+    background-image: -moz-linear-gradient(#ffffff, #f1f1f2);
+    background-image: -o-linear-gradient(#ffffff, #f1f1f2);
+    background-image: linear-gradient(#ffffff, #f1f1f2);
+    border-color: #ccc #ccc #ccc;
 }
 
 /* line 32, ../sass/pics/widgets/twitter-bootstrap/_tabs.scss */
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover {
-  background: #fff;
-  border-color: #ccc;
-  border-bottom-color: transparent;
-  color: #333;
+    background: #fff;
+    border-color: #ccc;
+    border-bottom-color: transparent;
+    color: #333;
 }
 
 /* line 5, ../sass/pics/widgets/twitter-bootstrap/_tooltip.scss */
 .tooltip ol,
 .tooltip ul {
-  margin: 0;
+    margin: 0;
 }
 
 /*
@@ -883,385 +915,424 @@ hr {
  */
 /* line 6, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .name {
-  width: 20%;
+    width: 20%;
 }
+
 /* line 11, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .value {
-  width: 70%;
+    width: 70%;
 }
+
 /* line 16, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .actions {
-  width: 10%;
+    width: 10%;
 }
+
 /* line 21, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_list .value p {
-  width: 400px;
-  word-wrap: break-word;
+    width: 400px;
+    word-wrap: break-word;
 }
+
 /* line 31, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_edit_form .form-actions,
 .ManageAppProperty-page #app_property_create_form .form-actions {
-  text-align: right;
-  width: 220px;
+    text-align: right;
+    width: 220px;
 }
+
 /* line 37, ../sass/pics/templates/app-property/_app-property.scss */
 .ManageAppProperty-page #app_property_edit_form .form-actions .btn,
 .ManageAppProperty-page #app_property_create_form .form-actions .btn {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 /* line 4, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
 .FrontendDevelopmentGuide-page .side-bar > .nav-list {
-  width: 220px;
+    width: 220px;
 }
+
 /* line 9, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
 .FrontendDevelopmentGuide-page .side-bar > .nav-list.affix {
-  top: 75px;
+    top: 75px;
 }
+
 /* line 14, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
 .FrontendDevelopmentGuide-page section {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 @media (min-width: 1200px) {
-  /* line 23, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
-  .FrontendDevelopmentGuide-page .span3 > .nav-list {
-    width: 270px;
-  }
+    /* line 23, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+    .FrontendDevelopmentGuide-page .span3 > .nav-list {
+        width: 270px;
+    }
 }
+
 /* line 4, ../sass/pics/templates/frontend-development-guide/page-layout/_containers.scss */
 #FrontendDevelopmentGuide_page_layout_page #containers .show-grid [class*="span"] {
-  background-color: #999;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  line-height: 40px;
-  margin-bottom: 20px;
-  text-align: center;
+    background-color: #999;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    border-radius: 4px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 /* line 4, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors {
-  margin-bottom: 30px;
-  overflow: hidden;
+    margin-bottom: 30px;
+    overflow: hidden;
 }
+
 /* line 9, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors li {
-  float: left;
-  margin-right: 20px;
-  margin-bottom: 20px;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
+
 /* line 16, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors a {
-  border: 1px solid #333;
-  display: block;
-  height: 90px;
-  line-height: 90px;
-  padding: 10px;
-  text-align: center;
-  width: 90px;
+    border: 1px solid #333;
+    display: block;
+    height: 90px;
+    line-height: 90px;
+    padding: 10px;
+    text-align: center;
+    width: 90px;
 }
+
 /* line 27, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors .pics-blue {
-  background: #002441;
-  color: #fff;
+    background: #002441;
+    color: #fff;
 }
+
 /* line 33, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors .burnt-orange {
-  background: #a84d10;
-  color: #fff;
+    background: #a84d10;
+    color: #fff;
 }
+
 /* line 39, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors .light-blue {
-  background: #73bbe8;
-  color: #fff;
+    background: #73bbe8;
+    color: #fff;
 }
+
 /* line 45, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors .warm-grey {
-  background: #808285;
-  color: #fff;
+    background: #808285;
+    color: #fff;
 }
+
 /* line 51, ../sass/pics/templates/frontend-development-guide/style-guide/_colors.scss */
 #FrontendDevelopmentGuide_style_guide_page #colors .colors .cool-grey {
-  background: #f1f1f2;
-  color: #333;
+    background: #f1f1f2;
+    color: #333;
 }
+
 /* line 7, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
 #FrontendDevelopmentGuide_style_guide_page #typography .example .lowercase,
 #FrontendDevelopmentGuide_style_guide_page #typography .example .uppercase {
-  font-size: 32px;
-  line-height: 1.2;
+    font-size: 32px;
+    line-height: 1.2;
 }
+
 /* line 13, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
 #FrontendDevelopmentGuide_style_guide_page #typography .lowercase {
-  text-transform: lowercase;
+    text-transform: lowercase;
 }
+
 /* line 18, ../sass/pics/templates/frontend-development-guide/style-guide/_typography.scss */
 #FrontendDevelopmentGuide_style_guide_page #typography .uppercase {
-  text-transform: uppercase;
+    text-transform: uppercase;
 }
 
 /* line 5, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description {
-  color: #808285;
-  margin-bottom: 60px;
-  text-align: center;
+    color: #808285;
+    margin-bottom: 60px;
+    text-align: center;
 }
+
 /* line 11, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description img {
-  margin: 60px 0;
+    margin: 60px 0;
 }
+
 /* line 16, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description .version {
-  font-size: 18px;
+    font-size: 18px;
 }
+
 /* line 21, ../sass/pics/templates/general/_about.scss */
 #About__page .product-description .copyright {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
+
 /* line 27, ../sass/pics/templates/general/_about.scss */
 #About__page .version-detail-tooltip {
-  text-align: left;
+    text-align: left;
 }
+
 /* line 31, ../sass/pics/templates/general/_about.scss */
 #About__page .version-detail-tooltip span {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 
 /* line 2, ../sass/pics/templates/login/_login.scss */
 #Login__page {
-  background: #454545;
-  padding-top: 0;
+    background: #454545;
+    padding-top: 0;
 }
+
 /* line 7, ../sass/pics/templates/login/_login.scss */
 #Login__page #server_id {
-  height: 25px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 25px;
 }
+
 /* line 16, ../sass/pics/templates/login/_login.scss */
 #Login__page .login-container {
-  text-align: center;
+    text-align: center;
 }
+
 /* line 21, ../sass/pics/templates/login/_login.scss */
 #Login__page #login_form {
-  background: #f1f1f2;
-  -webkit-box-shadow: #131313 0px 2px 8px;
-  -moz-box-shadow: #131313 0px 2px 8px;
-  box-shadow: #131313 0px 2px 8px;
-  margin: 100px auto 20px;
-  padding: 40px 60px;
-  text-align: left;
-  width: 220px;
+    background: #f1f1f2;
+    -webkit-box-shadow: #131313 0px 2px 8px;
+    -moz-box-shadow: #131313 0px 2px 8px;
+    box-shadow: #131313 0px 2px 8px;
+    margin: 100px auto 20px;
+    padding: 40px 60px;
+    text-align: left;
+    width: 220px;
 }
+
 /* line 31, ../sass/pics/templates/login/_login.scss */
 #Login__page .register {
-  color: #ccc;
-  text-decoration: none;
+    color: #ccc;
+    text-decoration: none;
 }
+
 /* line 37, ../sass/pics/templates/login/_login.scss */
 #Login__page .register:hover {
-  color: #73BBE8;
+    color: #73BBE8;
 }
 
 @media (max-width: 480px) {
-  /* line 44, ../sass/pics/templates/login/_login.scss */
-  #Login__page {
-    background: #f1f1f2;
-  }
-  /* line 48, ../sass/pics/templates/login/_login.scss */
-  #Login__page #login_form {
-    background: transparent;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    margin: 0;
-    padding: 40px 0;
-    text-align: center;
-    width: 100%;
-  }
-  /* line 57, ../sass/pics/templates/login/_login.scss */
-  #Login__page #login_form .logo {
-    width: 50%;
-  }
-  /* line 63, ../sass/pics/templates/login/_login.scss */
-  #Login__page #login_form #forgot_password,
-  #Login__page #login_form .form-actions {
-    text-align: center;
-  }
-  /* line 69, ../sass/pics/templates/login/_login.scss */
-  #Login__page .register {
-    display: none;
-  }
+    /* line 44, ../sass/pics/templates/login/_login.scss */
+    #Login__page {
+        background: #f1f1f2;
+    }
+
+    /* line 48, ../sass/pics/templates/login/_login.scss */
+    #Login__page #login_form {
+        background: transparent;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        margin: 0;
+        padding: 40px 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* line 57, ../sass/pics/templates/login/_login.scss */
+    #Login__page #login_form .logo {
+        width: 50%;
+    }
+
+    /* line 63, ../sass/pics/templates/login/_login.scss */
+    #Login__page #login_form #forgot_password,
+    #Login__page #login_form .form-actions {
+        text-align: center;
+    }
+
+    /* line 69, ../sass/pics/templates/login/_login.scss */
+    #Login__page .register {
+        display: none;
+    }
 }
+
 /* line 4, ../sass/pics/templates/login/_login-form.scss */
 #login_form .logo {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 }
+
 /* line 9, ../sass/pics/templates/login/_login-form.scss */
 #login_form .form-inline {
-  margin-bottom: 9px;
+    margin-bottom: 9px;
 }
+
 /* line 14, ../sass/pics/templates/login/_login-form.scss */
 #login_form .icon-globe {
-  font-size: 20px;
-  margin-right: 5px;
-  position: relative;
-  top: 3px;
+    font-size: 20px;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
 }
+
 /* line 22, ../sass/pics/templates/login/_login-form.scss */
 #login_form #supported_locales {
-  width: 195px;
+    width: 195px;
 }
+
 /* line 27, ../sass/pics/templates/login/_login-form.scss */
 #login_form #forgot_password {
-  margin: -5px 0 5px;
-  text-align: right;
+    margin: -5px 0 5px;
+    text-align: right;
 }
+
 /* line 32, ../sass/pics/templates/login/_login-form.scss */
 #login_form #forgot_password a {
-  color: #999;
+    color: #999;
 }
+
 /* line 38, ../sass/pics/templates/login/_login-form.scss */
 #login_form .form-actions {
-  text-align: right;
+    text-align: right;
 }
 
 /*** Login Modal Styling ***/
 /* line 4, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form {
-  left: 55%;
+    left: 55%;
 }
 
 /* line 9, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form h2 {
-  display: none;
+    display: none;
 }
 
 /* line 14, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form > .modal-header {
-  background-color: #454545;
-  text-align: left;
+    background-color: #454545;
+    text-align: left;
 }
 
 /* line 20, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form > .modal-header > h3 {
-  color: #FFF;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: bold;
-  line-height: 27px;
-  margin-bottom: 0px;
-  text-align: left;
+    color: #FFF;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 27px;
+    margin-bottom: 0px;
+    text-align: left;
 }
 
 /* line 31, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form > .modal-header > .close {
-  color: #666;
-  cursor: pointer;
-  filter: alpha(opacity=100);
-  font-size: 20px;
-  opacity: 1;
-  text-shadow: none;
+    color: #666;
+    cursor: pointer;
+    filter: alpha(opacity = 100);
+    font-size: 20px;
+    opacity: 1;
+    text-shadow: none;
 }
 
 /* line 41, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form > .modal-header > .close:hover {
-  color: #999;
+    color: #999;
 }
 
 /* line 46, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .modal-body {
-  background: #EAEAEA;
-  color: #666;
-  font-size: 13px;
-  text-align: left;
-  padding: 10px 15px 0px 15px;
+    background: #EAEAEA;
+    color: #666;
+    font-size: 13px;
+    text-align: left;
+    padding: 10px 15px 0px 15px;
 }
 
 /* line 55, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .well {
-  background: none;
-  border: none;
-  box-shadow: none;
-  padding: 0px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0px;
 }
 
 /* line 63, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .control-group {
-  padding-right: 25px;
+    padding-right: 25px;
 }
 
 /* line 68, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form #control_password {
-  margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 
 /* line 73, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .control-label {
-  width: 100px;
+    width: 100px;
 }
 
 /* line 78, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .controls {
-  margin-left: 109px;
+    margin-left: 109px;
 }
 
 /* line 83, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .icon-globe {
-  color: #666;
-  font-size: 20px;
-  text-align: right;
-  vertical-align: middle;
+    color: #666;
+    font-size: 20px;
+    text-align: right;
+    vertical-align: middle;
 }
 
 /* line 93, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form select,
 .modal-login-form input[type="text"],
 .modal-login-form input[type="password"] {
-  width: 200px;
+    width: 200px;
 }
 
 /* line 98, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form #forgotPassword {
-  margin: 10px 0px 5px 0px;
-  padding: 0px 25px;
-  text-align: right;
+    margin: 10px 0px 5px 0px;
+    padding: 0px 25px;
+    text-align: right;
 }
 
 /* line 105, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form #forgotPassword a {
-  color: #666;
-  font-size: 12px;
-  text-decoration: none;
+    color: #666;
+    font-size: 12px;
+    text-decoration: none;
 }
 
 /* line 112, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form #forgotPassword a:hover {
-  color: #226396;
+    color: #226396;
 }
 
 /* line 117, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .form-actions {
-  background: none;
-  border: none;
-  margin: 0px;
-  padding: 0px;
-  text-align: right;
+    background: none;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    text-align: right;
 }
 
 /* line 126, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .btn-primary {
-  margin-left: 6px;
+    margin-left: 6px;
 }
 
 /* line 131, ../sass/pics/templates/login/_login-modal.scss */
 .modal-login-form .modal-footer {
-  display: none;
+    display: none;
 }
 
 /*
@@ -1269,79 +1340,89 @@ hr {
  */
 /* line 6, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page {
-  /*
-   * Description
-   */
-  /*
-   * List
-   */
+    /*
+    * Description
+    */
+    /*
+    * List
+    */
 }
+
 /* line 12, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-subtitle {
-  color: #a84310;
-  font-size: 14px;
-  font-style: italic;
-  font-weight: normal;
-  line-height: 1;
-  margin: 0 0 20px;
+    color: #a84310;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 1;
+    margin: 0 0 20px;
 }
+
 /* line 26, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list {
-  margin-bottom: 20px;
-  text-align: left;
+    margin-bottom: 20px;
+    text-align: left;
 }
+
 /* line 31, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .report {
-  background: #f1f1f2;
-  border: 1px solid #ccc;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  line-height: 35px;
-  margin-bottom: 2px;
+    background: #f1f1f2;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    border-radius: 4px;
+    line-height: 35px;
+    margin-bottom: 2px;
 }
+
 /* line 40, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .favorite {
-  float: left;
-  margin: 0 5px;
-  text-decoration: none;
+    float: left;
+    margin: 0 5px;
+    text-decoration: none;
 }
+
 /* line 47, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star {
-  color: #ccc;
-  font-size: 12px;
-  position: relative;
-  top: 2px;
+    color: #ccc;
+    font-size: 12px;
+    position: relative;
+    top: 2px;
 }
+
 /* line 55, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .icon-star.selected {
-  color: #a84d10;
+    color: #a84d10;
 }
+
 /* line 60, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .summary {
-  float: left;
-  margin-right: 10px;
+    float: left;
+    margin-right: 10px;
 }
+
 /* line 66, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .name {
-  color: #333;
-  float: left;
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 10px;
+    color: #333;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
 }
+
 /* line 75, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .created-by {
-  color: #999;
-  font-size: 12px;
-  font-style: italic;
-  white-space: nowrap;
+    color: #999;
+    font-size: 12px;
+    font-style: italic;
+    white-space: nowrap;
 }
+
 /* line 83, ../sass/pics/templates/report/manage-report/_manage-report.scss */
 .ManageReports-page .report-list .description {
-  max-width: 400px;
+    max-width: 400px;
 }
 
 /*
@@ -1349,8 +1430,8 @@ hr {
  */
 /* line 8, ../sass/pics/templates/report/manage-report/_my-reports-list.scss */
 #ManageReports_myReportsList_page #my_reports_filter {
-  margin: 0px 0px 20px;
-  text-align: center;
+    margin: 0px 0px 20px;
+    text-align: center;
 }
 
 /*
@@ -1358,17 +1439,18 @@ hr {
  */
 /* line 6, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page {
-  /*
-   * Excluded Reports
-   */
+    /*
+    * Excluded Reports
+    */
 }
+
 /* line 12, ../sass/pics/templates/report/manage-report/_favorites-list.scss */
 #ManageReports_favoritesList_page h3 {
-  border-bottom: 1px solid #ccc;
-  color: #999;
-  font-size: 18px;
-  margin: 30px 0 20px;
-  text-align: left;
+    border-bottom: 1px solid #ccc;
+    color: #999;
+    font-size: 18px;
+    margin: 30px 0 20px;
+    text-align: left;
 }
 
 /*
@@ -1376,144 +1458,170 @@ hr {
  */
 /* line 6, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page {
-  /*
-   * Search box
-   */
+    /*
+    * Search box
+    */
 }
+
 /* line 12, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search {
-  margin: 30px 0px 40px;
-  text-align: center;
+    margin: 30px 0px 40px;
+    text-align: center;
 }
+
 /* line 18, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form {
-  margin: 0;
+    margin: 0;
 }
+
 /* line 22, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form .icon-search {
-  color: #666;
-  margin-right: 2px;
-  position: relative;
-  top: 8px;
+    color: #666;
+    margin-right: 2px;
+    position: relative;
+    top: 8px;
 }
+
 /* line 30, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page #report_search_form input {
-  background: #f1f1f2;
+    background: #f1f1f2;
 }
+
 /* line 36, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .lt-ie8 #report_search_form {
-  display: inline;
+    display: inline;
 }
+
 /* line 43, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .report {
-  line-height: 20px;
-  padding: 0px 20px;
+    line-height: 20px;
+    padding: 0px 20px;
 }
+
 /* line 49, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .summary {
-  padding-top: 8px;
+    padding-top: 8px;
 }
+
 /* line 54, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .name {
-  float: none;
+    float: none;
 }
+
 /* line 59, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .created-by {
-  line-height: normal;
+    line-height: normal;
 }
+
 /* line 64, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .description {
-  font-size: 12px;
-  margin: 0;
+    font-size: 12px;
+    margin: 0;
 }
+
 /* line 70, ../sass/pics/templates/report/manage-report/_search-list.scss */
 #ManageReports_searchList_page .report-list .number-favorites {
-  color: #a84d10;
-  font-size: 14px;
-  float: right;
-  margin: 18px 0px;
+    color: #a84d10;
+    font-size: 14px;
+    float: right;
+    margin: 18px 0px;
 }
 
 /* line 2, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page {
-  background-color: #454545;
-  padding-top: 0;
+    background-color: #454545;
+    padding-top: 0;
 }
+
 /* line 7, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .container {
-  background-color: #f1f1f2;
+    background-color: #f1f1f2;
 }
+
 /* line 14, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page #main .row {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
 /* line 19, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page #main > .row {
-  margin-top: 60px;
+    margin-top: 60px;
 }
+
 /* line 25, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .page-title {
-  float: left;
-  margin: 30px 30px 0 30px;
+    float: left;
+    margin: 30px 30px 0 30px;
 }
+
 /* line 30, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .page-title h1 {
-  color: #808285;
-  font-size: 60px;
-  font-weight: normal;
+    color: #808285;
+    font-size: 60px;
+    font-weight: normal;
 }
+
 /* line 37, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .page-title h2 {
-  color: #a84d10;
-  font-size: 14px;
+    color: #a84d10;
+    font-size: 14px;
 }
+
 /* line 44, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .logo {
-  float: right;
-  margin: 30px 30px 0 0;
-  width: 165px;
+    float: right;
+    margin: 30px 30px 0 0;
+    width: 165px;
 }
+
 /* line 53, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .overview h1 {
-  color: #73bbe8;
-  font-size: 24px;
-  font-weight: normal;
-  margin-top: 0;
+    color: #73bbe8;
+    font-size: 24px;
+    font-weight: normal;
+    margin-top: 0;
 }
+
 /* line 61, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .overview p {
-  color: #666;
+    color: #666;
 }
+
 /* line 67, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .dashboard {
-  text-align: right;
+    text-align: right;
 }
+
 /* line 72, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .settings {
-  text-align: left;
+    text-align: left;
 }
+
 /* line 77, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page .support {
-  text-align: center;
+    text-align: center;
 }
+
 /* line 84, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page footer .container {
-  background-color: #ccc;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
-  background-image: -webkit-linear-gradient(#eaeaea, #cccccc);
-  background-image: -moz-linear-gradient(#eaeaea, #cccccc);
-  background-image: -o-linear-gradient(#eaeaea, #cccccc);
-  background-image: linear-gradient(#eaeaea, #cccccc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
-  border: 1px solid #999;
-  padding: 30px 0;
-  text-align: center;
+    background-color: #ccc;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
+    background-image: -webkit-linear-gradient(#eaeaea, #cccccc);
+    background-image: -moz-linear-gradient(#eaeaea, #cccccc);
+    background-image: -o-linear-gradient(#eaeaea, #cccccc);
+    background-image: linear-gradient(#eaeaea, #cccccc);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffeaeaea', endColorstr = '#ffcccccc', GradientType = 0);
+    border: 1px solid #999;
+    padding: 30px 0;
+    text-align: center;
 }
+
 /* line 93, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page footer .container a {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
+
 /* line 98, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial__page footer .container p {
-  color: #808285;
+    color: #808285;
 }
