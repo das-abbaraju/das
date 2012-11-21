@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import org.apache.struts2.dispatcher.StreamResult;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -38,8 +39,9 @@ public class XMLResult extends StreamResult {
                 json.put("actionError", Joiner.on("\n").join(action.getActionErrors()));
         }
 
-        XStream xstream = new XStream();
-        String xml = xstream.toXML(json);
+        XStream xstream = new XStream(new JettisonMappedXmlDriver());
+        Object xmlObject = xstream.fromXML(json.toJSONString());
+        String xml = xstream.toXML(xmlObject);
         inputStream = new ByteArrayInputStream(xml.getBytes());
         contentType = "application/xml";
         super.doExecute(finalLocation, invocation);

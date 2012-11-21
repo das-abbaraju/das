@@ -25,6 +25,8 @@
                          class="com.picsauditing.strutsutil.JSONPResult"/>
             <result-type name="jsonArray"
                          class="com.picsauditing.strutsutil.JSONArrayResult"/>
+            <result-type name="xml"
+                         class="com.picsauditing.strutsutil.XMLResult"/>
         </result-types>
 
         <interceptors>
@@ -109,6 +111,7 @@
             <result name="redirect" type="redirect">
                 ${url}
             </result>
+            <result name="xml" type="xml"></result>
         </global-results>
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="Exception"/>
