@@ -4,7 +4,10 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.VATValidator;
-import com.picsauditing.dao.*;
+import com.picsauditing.dao.ContractorTagDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.search.Database;
 import org.junit.AfterClass;
@@ -17,7 +20,6 @@ import org.powermock.reflect.Whitebox;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -55,8 +57,6 @@ public class RegistrationTest {
     private User mockUser;
     @Mock
     private VATValidator mockValidator;
-    @Mock
-    private CountryDAO mockCountryDao;
 
     @AfterClass
     public static void tearDown() {
@@ -75,7 +75,6 @@ public class RegistrationTest {
         setInternalState(classUnderTest, "countrySubdivisionDAO", countrySubdivisionDAO);
         setInternalState(classUnderTest, "invoiceFeeDAO", feeDAO);
         setInternalState(classUnderTest, "operatorTagDAO", operatorTagDAO);
-        setInternalState(classUnderTest, "countryDao", mockCountryDao);
         setInternalState(classUnderTest, "vatValidator", mockValidator);
         classUnderTest.setContractor(contractor);
         classUnderTest.setUser(mockUser);
@@ -163,14 +162,6 @@ public class RegistrationTest {
 
         verify(contractorTagDAO, never()).save(any(BaseTable.class));
         verify(operatorTagDAO, never()).find(anyInt());
-    }
-
-    @Test
-    public void testValidVat_isUK() throws Exception {
-        when(contractor.getCountry()).thenReturn(new Country("GB"));
-        when(mockCountryDao.findbyISO(anyString())).thenReturn(new Country("GB"));
-        assertTrue(classUnderTest.isValidVAT());
-        verify(mockValidator, never()).validated(anyString());
     }
 
     private final static String DEMO_NAME = "^^^demo";

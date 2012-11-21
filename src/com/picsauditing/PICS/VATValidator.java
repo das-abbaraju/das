@@ -1,13 +1,8 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.Country;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VATValidator {
@@ -23,7 +18,7 @@ public class VATValidator {
 
     public String validated(Country country, String vatCode) throws ValidationException {
         String prefix = vatPrefixFor(country);
-        String finalCode = (vatCode.startsWith(prefix))? vatCode : prefix + vatCode;
+        String finalCode = (vatCode.startsWith(prefix)) ? vatCode : prefix + vatCode;
         return validated(finalCode);
     }
 
@@ -33,8 +28,8 @@ public class VATValidator {
         return vatCode;
     }
 
-    private void locallyValidate(String vatCode) throws  ValidationException{
-       getValidator(vatCode).validate();
+    private void locallyValidate(String vatCode) throws ValidationException {
+        getValidator(vatCode).validate();
     }
 
     private Validator getValidator(String vatCode) {
@@ -54,6 +49,14 @@ public class VATValidator {
             return "EU";
     }
 
+    public boolean shouldValidate(Country registrationCountry) {
+        if (registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
+            return true;
+        }
+
+        return false;
+    }
+
     public class ValidationException extends Exception {
 
     }
@@ -66,8 +69,8 @@ public class VATValidator {
 
         String vatNumber;
 
-        Validator (String vatNumber) {
-           this.vatNumber = vatNumber;
+        Validator(String vatNumber) {
+            this.vatNumber = vatNumber;
         }
 
         void validate() throws ValidationException {

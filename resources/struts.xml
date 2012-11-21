@@ -25,8 +25,6 @@
                          class="com.picsauditing.strutsutil.JSONPResult"/>
             <result-type name="jsonArray"
                          class="com.picsauditing.strutsutil.JSONArrayResult"/>
-            <result-type name="xml"
-                         class="com.picsauditing.strutsutil.XMLResult"/>
         </result-types>
 
         <interceptors>
@@ -111,7 +109,6 @@
             <result name="redirect" type="redirect">
                 ${url}
             </result>
-            <result name="xml" type="xml"></result>
         </global-results>
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="Exception"/>
@@ -1213,6 +1210,10 @@
 
         <action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
             <result>struts/users/login.jsp</result>
+        </action>
+
+        <action name="Liveagent" class="com.picsauditing.actions.Liveagent">
+            <result>struts/liveagent/liveagent.jsp</result>
         </action>
     </package>
 

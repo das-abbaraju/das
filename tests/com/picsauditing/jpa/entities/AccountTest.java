@@ -1,22 +1,28 @@
-
 package com.picsauditing.jpa.entities;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
+import static org.mockito.Mockito.when;
 
 public class AccountTest {
-
     public static final String PIPE_CHARACTER = "\\|";
     public static final String NEWLINE_CHARACTER = "\n";
     public static final String RETURN_TYPE = "account";
     Account account;
 
+    @Mock
+    private Country country;
+
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+
         account = new Account();
     }
 
@@ -41,7 +47,6 @@ public class AccountTest {
 
     @Test
     public void testGetSearchText_basicAccount() throws Exception {
-
         setupTestAccount("fooType", 123, "Acme Company", "Irvine", new CountrySubdivision("CA"), AccountStatus.Demo);
 
         String searchText = account.getSearchText();
@@ -58,7 +63,6 @@ public class AccountTest {
 
     @Test
     public void testGetSearchText_subdivisionWithoutCity() throws Exception {
-
         setupTestAccount("fooType", 123, "Acme Company", null, new CountrySubdivision("CA"), AccountStatus.Demo);
 
         String searchText = account.getSearchText();
@@ -92,13 +96,17 @@ public class AccountTest {
         assertEquals(PasswordSecurityLevel.Normal, account.getPasswordSecurityLevel());
     }
 
-    private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision, AccountStatus status) {
+    private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision,
+                                  AccountStatus status) {
         account.setType(type);
         account.setId(id);
         account.setName(name);
         account.setCity(city);
+        account.setCountry(country);
         account.setCountrySubdivision(countrySubdivision);
         account.setStatus(status);
+
+        when(country.isHasCountrySubdivisions()).thenReturn(true);
     }
 
     private String getReturnType(String searchText) {
@@ -139,7 +147,7 @@ public class AccountTest {
     private String getStatus(String searchText) {
         if (searchText != null) {
             String[] searchTextArray = searchText.split(PIPE_CHARACTER);
-            return searchTextArray[searchTextArray.length -2];
+            return searchTextArray[searchTextArray.length - 2];
         }
         return null;
     }
@@ -147,7 +155,7 @@ public class AccountTest {
     private String getLastElement(String searchText) {
         if (searchText != null) {
             String[] searchTextArray = searchText.split(PIPE_CHARACTER);
-            return searchTextArray[searchTextArray.length -1];
+            return searchTextArray[searchTextArray.length - 1];
         }
         return null;
     }

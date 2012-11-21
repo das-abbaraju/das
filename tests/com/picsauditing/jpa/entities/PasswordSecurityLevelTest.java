@@ -1,15 +1,8 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.PICS.PasswordValidator;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static junit.framework.Assert.*;
 
 public class PasswordSecurityLevelTest {
 
@@ -18,7 +11,7 @@ public class PasswordSecurityLevelTest {
         assertTrue(PasswordSecurityLevel.values().length == 3);
 
         assertTrue(PasswordSecurityLevel.Normal.dbValue == 0);
-        assertTrue(PasswordSecurityLevel.Normal.minLength == PasswordValidator.MINIMUM_LENGTH);
+        assertTrue(PasswordSecurityLevel.Normal.minLength == 5);
         assertTrue(PasswordSecurityLevel.Normal.enforceMixedCase == false);
         assertTrue(PasswordSecurityLevel.Normal.enforceSpecialCharacter == false);
         assertTrue(PasswordSecurityLevel.Normal.expirationMonths == 0);
@@ -26,12 +19,12 @@ public class PasswordSecurityLevelTest {
         assertTrue(PasswordSecurityLevel.Normal.entriesOfHistoryToDisallow == 0);
 
         assertTrue(PasswordSecurityLevel.High.dbValue == 1);
-        assertTrue(PasswordSecurityLevel.High.minLength == 6);
-        assertTrue(PasswordSecurityLevel.High.enforceMixedCase == true);
-        assertTrue(PasswordSecurityLevel.High.enforceSpecialCharacter == false);
-        assertTrue(PasswordSecurityLevel.High.expirationMonths == 12);
-        assertTrue(PasswordSecurityLevel.High.monthsOfHistoryToDisallow == 3);
-        assertTrue(PasswordSecurityLevel.High.entriesOfHistoryToDisallow == 0);
+        assertTrue(PasswordSecurityLevel.High.minLength == 7);
+        assertTrue(PasswordSecurityLevel.High.enforceMixedCase == false);
+        assertTrue(PasswordSecurityLevel.High.enforceSpecialCharacter == true);
+        assertTrue(PasswordSecurityLevel.High.expirationMonths == 3);
+        assertTrue(PasswordSecurityLevel.High.monthsOfHistoryToDisallow == 0);
+        assertTrue(PasswordSecurityLevel.High.entriesOfHistoryToDisallow == 4);
 
         assertTrue(PasswordSecurityLevel.Maximum.dbValue == 2);
         assertTrue(PasswordSecurityLevel.Maximum.minLength == 8);

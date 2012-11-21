@@ -32,13 +32,9 @@ public class Registration extends ContractorActionSupport {
     private static Logger logger = LoggerFactory.getLogger(Registration.class);
 
     @Autowired
-    private ContractorAccountDAO contractorAccountDAO;
-    @Autowired
     private ContractorRegistrationRequestDAO requestDAO;
     @Autowired
     private ContractorTagDAO contractorTagDAO;
-    @Autowired
-    private CountryDAO countryDao;
     @Autowired
     private CountrySubdivisionDAO countrySubdivisionDAO;
     @Autowired
@@ -203,7 +199,7 @@ public class Registration extends ContractorActionSupport {
         }
     }
 
-    private void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
+    protected void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
         EmailBuilder emailBuilder = new EmailBuilder();
         emailBuilder.setTemplate(2);
         emailBuilder.setUser(user);
@@ -217,6 +213,7 @@ public class Registration extends ContractorActionSupport {
         emailBuilder.addToken("userName", user.getUsername());
 
         EmailQueue emailQueue = emailBuilder.build();
+        emailQueue.setHtml(true);
         emailQueue.setVeryHighPriority();
         emailQueue.setViewableById(Account.EVERYONE);
         emailSender.send(emailQueue);
@@ -308,18 +305,6 @@ public class Registration extends ContractorActionSupport {
         }
     }
 
-    private void checkVAT() {
-        if (!contractor.getCountry().isEuropeanUnion())
-            return;
-
-        try {
-            contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
-        } catch (Exception e) {
-            contractor.setVatId(null);
-            addActionError(getText("VAT.Required"));
-        }
-    }
-
     public ContractorAccount getContractor() {
         return contractor;
     }
@@ -389,29 +374,6 @@ public class Registration extends ContractorActionSupport {
         return SUCCESS;
     }
 
-    public boolean isUsernameInUse() {
-        return userDAO.duplicateUsername(user.getUsername(), 0);
-    }
-
-    public boolean isCompanyNameInUse() {
-        String indexedContractorName = Strings.indexName(contractor.getName());
-        List<ContractorAccount> duplicateAccounts = contractorAccountDAO.findWhere("a.nameIndex = '"
-                + indexedContractorName + "'");
-        return !duplicateAccounts.isEmpty();
-    }
-
-    public boolean isValidVAT() {
-        Country registrationCountry = countryDao.findbyISO(contractor.getCountry().getIsoCode());
-        if (registrationCountry.isEuropeanUnion() && !registrationCountry.isUK()) {
-            try {
-                vatValidator.validated(/* registrationCountry, */contractor.getVatId());
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public void setCountrySubdivision(CountrySubdivision countrySubdivision) {
         this.countrySubdivision = countrySubdivision;
     }
@@ -419,4 +381,18 @@ public class Registration extends ContractorActionSupport {
     public CountrySubdivision getCountrySubdivision() {
         return countrySubdivision;
     }
+
+    private void checkVAT() {
+        if (!contractor.getCountry().isEuropeanUnion()) {
+            return;
+        }
+
+        try {
+            contractor.setVatId(vatValidator.validated(contractor.getCountry(), contractor.getVatId()));
+        } catch (Exception e) {
+            contractor.setVatId(null);
+            addActionError(getText("VAT.Required"));
+        }
+    }
+
 }

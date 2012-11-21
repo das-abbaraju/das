@@ -773,7 +773,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
             sb.append(this.city);
         }
 
-        if (this.countrySubdivision != null) {
+        if (this.country != null && this.country.isHasCountrySubdivisions() && this.countrySubdivision != null) {
             if (this.city != null) {
                 sb.append(", ");
             }

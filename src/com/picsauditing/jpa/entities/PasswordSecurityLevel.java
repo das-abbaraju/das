@@ -1,11 +1,9 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.PICS.PasswordValidator;
-
 public enum PasswordSecurityLevel {
 
-    Normal(0, PasswordValidator.MINIMUM_LENGTH, false, false, 0, 0, 0),
-    High(1, 6, true, false, 12, 3, 0),
+    Normal(0, 5, false, false, 0, 0, 0),
+    High(1, 7, false, true, 3, 0, 4),
     Maximum(2, 8, true, true, 3, 12, 0);
 
     public int dbValue;
@@ -28,11 +26,11 @@ public enum PasswordSecurityLevel {
 
     public boolean enforceHistory() {
         if (entriesOfHistoryToDisallow > 0) {
-        	return true;
+            return true;
         }
 
         if (monthsOfHistoryToDisallow > 0) {
-        	return true;
+            return true;
         }
 
         return false;

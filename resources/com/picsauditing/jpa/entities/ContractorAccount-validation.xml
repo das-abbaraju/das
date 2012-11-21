@@ -1,35 +1,73 @@
-<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+        "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>
-	<field name="name">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
-		</field-validator>
-		<field-validator type="stringlength" short-circuit="true">
-			<param name="minLength">2</param>
-			<param name="trim">true</param>
-			<message>${getText("JS.Validation.Minimum2Characters")}</message>
-		</field-validator>
-	</field>
-	<field name="country">
-		<field-validator type="required" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
-		</field-validator>
-	</field>
-	<field name="address">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
-		</field-validator>
-	</field>
-	<field name="city">
-		<field-validator type="requiredstring" short-circuit="true">
-			<message>${getText("JS.Validation.Required")}</message>
-		</field-validator>
-	</field>
-	<field name="zip">
-		<field-validator type="fieldexpression" short-circuit="true">
-			<param name="expression"><![CDATA[country.isoCode == "AE" || zip != ""]]></param>
-			<message>${getText("JS.Validation.Required")}</message>
-		</field-validator>
-	</field>
+
+    <field name="name">
+        <field-validator type="requiredstring" short-circuit="true">
+            <message>${getText("JS.Validation.Required")}</message>
+        </field-validator>
+        <field-validator type="stringlength" short-circuit="true">
+            <param name="minLength">2</param>
+            <param name="trim">true</param>
+            <message>${getText("JS.Validation.Minimum2Characters")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(name)]]></param>
+            <message>${getText("JS.Validation.SpecialCharacters")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[isCompanyNameNotTaken(name)]]></param>
+            <message>${getText("JS.Validation.CompanyNameAlreadyExists")}</message>
+        </field-validator>
+    </field>
+
+    <field name="country">
+        <field-validator type="required" short-circuit="true">
+            <message>${getText("JS.Validation.Required")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(country)]]></param>
+            <message>${getText("JS.Validation.SpecialCharacters")}</message>
+        </field-validator>
+    </field>
+
+    <field name="address">
+        <field-validator type="requiredstring" short-circuit="true">
+            <message>${getText("JS.Validation.Required")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(address)]]></param>
+            <message>${getText("JS.Validation.SpecialCharacters")}</message>
+        </field-validator>
+    </field>
+
+    <field name="city">
+        <field-validator type="requiredstring" short-circuit="true">
+            <message>${getText("JS.Validation.Required")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(city)]]></param>
+            <message>${getText("JS.Validation.SpecialCharacters")}</message>
+        </field-validator>
+    </field>
+
+    <field name="zip">
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[country.isoCode == "AE" || zip != ""]]></param>
+            <message>${getText("JS.Validation.Required")}</message>
+        </field-validator>
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[containsOnlySafeCharacters(zip)]]></param>
+            <message>${getText("JS.Validation.SpecialCharacters")}</message>
+        </field-validator>
+    </field>
+
+    <field name="vatId">
+        <field-validator type="fieldexpression" short-circuit="true">
+            <param name="expression"><![CDATA[isValidVAT(vatId)]]></param>
+            <message>${getText("JS.Validation.InvalidVAT")}</message>
+        </field-validator>
+    </field>
+
 </validators>

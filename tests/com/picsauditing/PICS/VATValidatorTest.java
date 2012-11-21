@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -8,14 +7,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 public class VATValidatorTest {
     private static final String GREAT_BRITAIN_ISO = "GB";
@@ -80,7 +73,7 @@ public class VATValidatorTest {
     }
 
     @Test(expected = VATValidator.ValidationException.class)
-    public void testValidate_singleDigitAnswer () throws VATValidator.ValidationException {
+    public void testValidate_singleDigitAnswer() throws VATValidator.ValidationException {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "0";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -88,7 +81,7 @@ public class VATValidatorTest {
     }
 
     @Test(expected = VATValidator.ValidationException.class)
-    public void testValidate_dualDigitBogusAnswer () throws VATValidator.ValidationException {
+    public void testValidate_dualDigitBogusAnswer() throws VATValidator.ValidationException {
         when(mockContractor.getCountry()).thenReturn(GERMANY);
         String testVat = "11";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -96,7 +89,7 @@ public class VATValidatorTest {
     }
 
     @Test
-    public void testValidate_dualDigitRealVAT () throws VATValidator.ValidationException {
+    public void testValidate_dualDigitRealVAT() throws VATValidator.ValidationException {
         when(mockContractor.getCountry()).thenReturn(IRELAND);
         String testVat = "00235";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -104,7 +97,7 @@ public class VATValidatorTest {
     }
 
     @Test
-    public void testValidate_GreeceSwap () throws Exception {
+    public void testValidate_GreeceSwap() throws Exception {
         when(mockContractor.getCountry()).thenReturn(GREECE);
         String testVat = "EL 225 110";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -112,7 +105,7 @@ public class VATValidatorTest {
     }
 
     @Test(expected = VATValidator.ValidationException.class)
-    public void testValidate_emptyAnswer () throws Exception {
+    public void testValidate_emptyAnswer() throws Exception {
         when(mockContractor.getCountry()).thenReturn(GERMANY);
         String testVat = "";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -128,7 +121,7 @@ public class VATValidatorTest {
     }
 
     @Test(expected = VATValidator.ValidationException.class)
-    public void testValidate_obfuscated () throws VATValidator.ValidationException {
+    public void testValidate_obfuscated() throws VATValidator.ValidationException {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "xxxxxx983";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -136,7 +129,7 @@ public class VATValidatorTest {
     }
 
     @Test(expected = VATValidator.ValidationException.class)
-    public void testValidate_noAnswer () throws VATValidator.ValidationException {
+    public void testValidate_noAnswer() throws VATValidator.ValidationException {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "no";
         when(mockData.getAnswer()).thenReturn(testVat);
@@ -144,7 +137,7 @@ public class VATValidatorTest {
     }
 
     @Test(expected = VATValidator.ValidationException.class)
-    public void testValidate_naAnswer () throws VATValidator.ValidationException {
+    public void testValidate_naAnswer() throws VATValidator.ValidationException {
         when(mockContractor.getCountry()).thenReturn(GREAT_BRITAIN);
         String testVat = "n/a";
         when(mockData.getAnswer()).thenReturn(testVat);

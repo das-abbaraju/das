@@ -25,19 +25,19 @@ public class PasswordValidatorTest {
 
     private User user;
     private Vector<String> errorMessages;
-	private PasswordValidator passwordValidator;
-	private List<PasswordHistory> recentEntries;
+    private PasswordValidator passwordValidator;
+    private List<PasswordHistory> recentEntries;
 
-	@Before
+    @Before
     public void setUp() throws Exception {
-		setupTestUser(PasswordSecurityLevel.Normal);
-		passwordValidator = new PasswordValidator();
-		PasswordDAO passwordDAO = setupPasswordDao();
-		passwordValidator.passwordDAO = passwordDAO;
-		errorMessages = new Vector<String>(0);
+        setupTestUser(PasswordSecurityLevel.Normal);
+        passwordValidator = new PasswordValidator();
+        PasswordDAO passwordDAO = setupPasswordDao();
+        passwordValidator.passwordDAO = passwordDAO;
+        errorMessages = new Vector<String>(0);
     }
 
-	@After
+    @After
     public void tearDown() throws Exception {
 
     }
@@ -55,7 +55,7 @@ public class PasswordValidatorTest {
     @Test
     public void testValidatePassword_validHighCases() throws Exception {
         setupTestUser(PasswordSecurityLevel.High);
-        String newPassword = "joeSi1";
+        String newPassword = "joeSi?1";
 
         errorMessages = passwordValidator.validatePassword(user, newPassword);
         assertTrue(errorMessages.size() == 0);
@@ -99,8 +99,8 @@ public class PasswordValidatorTest {
 
         setupTestUser(PasswordSecurityLevel.Normal);
         String newPassword = "joeSixpack";
-	    user.setPassword(encryptPassword(newPassword));
-	    errorMessages = passwordValidator.validatePassword(user, newPassword);
+        user.setPassword(encryptPassword(newPassword));
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
         assertTrue(errorMessages.contains("Please choose a different password than your current password."));
@@ -126,8 +126,8 @@ public class PasswordValidatorTest {
 
         assertTrue(errorMessages.size() > 0);
         assertTrue(errorMessages.contains("Please choose a password at least " + PasswordSecurityLevel.High.minLength + " characters in length."));
-        assertTrue(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
-        assertFalse(errorMessages.contains("Please choose a password with at least one special character."));
+        assertFalse(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
+        assertTrue(errorMessages.contains("Please choose a password with at least one special character."));
     }
 
     @Test
@@ -140,79 +140,79 @@ public class PasswordValidatorTest {
         assertTrue(errorMessages.size() > 0);
         assertTrue(errorMessages.contains("Please choose a password at least " + PasswordSecurityLevel.Maximum.minLength + " characters in length."));
         assertTrue(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
-	    assertTrue(errorMessages.contains("Please choose a password with at least one special character."));
+        assertTrue(errorMessages.contains("Please choose a password with at least one special character."));
     }
 
     @Test
     public void testValidatePassword_passwordHistory_Normal() throws Exception {
 
-	    setupTestUser(PasswordSecurityLevel.Normal);
+        setupTestUser(PasswordSecurityLevel.Normal);
 
-	    String newPassword = "hello1";
-	    errorMessages = passwordValidator.validatePassword(user, newPassword);
-	    assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        String newPassword = "hello1";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+        assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
     }
 
     @Test
     public void testValidatePassword_passwordHistory_High() throws Exception {
 
-	    setupTestUser(PasswordSecurityLevel.High);
+        setupTestUser(PasswordSecurityLevel.High);
 
-	    String newPassword = "hello1";
-	    errorMessages = passwordValidator.validatePassword(user, newPassword);
-	    assertTrue(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        String newPassword = "hello1";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+        assertTrue(errorMessages.contains("You have used this password too recently. Please choose a different password."));
 
-	    newPassword = "hello6";
-	    errorMessages = passwordValidator.validatePassword(user, newPassword);
-	    assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        newPassword = "hello6";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+        assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
     }
 
     @Test
     public void testValidatePassword_passwordHistory_Maximum() throws Exception {
 
-	    setupTestUser(PasswordSecurityLevel.Maximum);
+        setupTestUser(PasswordSecurityLevel.Maximum);
 
-	    String newPassword = "hello1";
-	    errorMessages = passwordValidator.validatePassword(user, newPassword);
-	    assertTrue(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        String newPassword = "hello1";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+        assertTrue(errorMessages.contains("You have used this password too recently. Please choose a different password."));
 
-	    newPassword = "hello6";
-	    errorMessages = passwordValidator.validatePassword(user, newPassword);
-	    assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        newPassword = "hello6";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+        assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
     }
 
     private void setupTestUser(PasswordSecurityLevel passwordSecurityLevel) {
         user = new User();
-	    user.setId(5);
+        user.setId(5);
         user.setUsername("joeSixpack");
         Account account = new Account();
         account.setPasswordSecurityLevel(passwordSecurityLevel);
         user.setAccount(account);
     }
 
-	private PasswordDAO setupPasswordDao() {
-		PasswordDAO passwordDAO = mock(PasswordDAO.class);
-		setupRecentEntries();
-		when(passwordDAO.findRecentEntriesByCount(anyInt(), anyInt())).thenReturn(recentEntries);
-		when(passwordDAO.findRecentEntriesByPreviousMonths(anyInt(), anyInt())).thenReturn(recentEntries);
-		return passwordDAO;
-	}
+    private PasswordDAO setupPasswordDao() {
+        PasswordDAO passwordDAO = mock(PasswordDAO.class);
+        setupRecentEntries();
+        when(passwordDAO.findRecentEntriesByCount(anyInt(), anyInt())).thenReturn(recentEntries);
+        when(passwordDAO.findRecentEntriesByPreviousMonths(anyInt(), anyInt())).thenReturn(recentEntries);
+        return passwordDAO;
+    }
 
-	private void setupRecentEntries() {
-		recentEntries = new ArrayList<PasswordHistory>();
-		recentEntries.add(new PasswordHistory(user, encryptPassword("hello1"), getDateXMonthsAgo(1)));
-		recentEntries.add(new PasswordHistory(user, encryptPassword("hello2"), getDateXMonthsAgo(2)));
-		recentEntries.add(new PasswordHistory(user, encryptPassword("hello3"), getDateXMonthsAgo(3)));
-		recentEntries.add(new PasswordHistory(user, encryptPassword("hello4"), getDateXMonthsAgo(4)));
-		recentEntries.add(new PasswordHistory(user, encryptPassword("hello5"), getDateXMonthsAgo(5)));
-	}
+    private void setupRecentEntries() {
+        recentEntries = new ArrayList<PasswordHistory>();
+        recentEntries.add(new PasswordHistory(user, encryptPassword("hello1"), getDateXMonthsAgo(1)));
+        recentEntries.add(new PasswordHistory(user, encryptPassword("hello2"), getDateXMonthsAgo(2)));
+        recentEntries.add(new PasswordHistory(user, encryptPassword("hello3"), getDateXMonthsAgo(3)));
+        recentEntries.add(new PasswordHistory(user, encryptPassword("hello4"), getDateXMonthsAgo(4)));
+        recentEntries.add(new PasswordHistory(user, encryptPassword("hello5"), getDateXMonthsAgo(5)));
+    }
 
-	private String encryptPassword(String password) {
-		return EncodedMessage.hash(password + user.getId());
-	}
+    private String encryptPassword(String password) {
+        return EncodedMessage.hash(password + user.getId());
+    }
 
-	private Date getDateXMonthsAgo(int monthsAgo) {
-		return DateBean.addMonths(new Date(), monthsAgo);
-	}
+    private Date getDateXMonthsAgo(int monthsAgo) {
+        return DateBean.addMonths(new Date(), monthsAgo);
+    }
 
 }

@@ -259,17 +259,17 @@ public final class MenuBuilder {
                     "report_activity_watch");
 
         if (permissions.has(OpPerms.WatchListManager))
-            manageMenu.addChild(getText("WatchListManager.title"), "WatchListManager.action", "watch_list_manager");
+            manageMenu.addChild(getText("WatchList.title"), "WatchListManager.action", "watch_list");
 
         if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
             manageMenu.addChild(getText("OperatorTags.title"), "OperatorTags.action", "OperatorTags");
 
         if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-            manageMenu.addChild(getText("ManageFlagCriteriaOperator.title"), "ManageFlagCriteriaOperator.action",
-                    "ManageFlagCriteriaOperator");
+            manageMenu.addChild(getText("FlagCriteriaOperator.title"), "ManageFlagCriteriaOperator.action",
+                    "FlagCriteriaOperator");
             if (permissions.isCanSeeInsurance())
-                manageMenu.addChild(getText("ManageInsuranceCriteriaOperator.title"),
-                        "ManageInsuranceCriteriaOperator.action", "ManageInsuranceCriteriaOperator");
+                manageMenu.addChild(getText("InsuranceCriteriaOperator.title"), "ManageInsuranceCriteriaOperator.action",
+                        "ManageInsuranceCriteriaOperator");
         }
 
         if (permissions.has(OpPerms.FormsAndDocs)) {
@@ -397,7 +397,7 @@ public final class MenuBuilder {
         if (permissions.hasPermission(OpPerms.ManageTrades))
             referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
 
-        referenceMenu.addChild("Menu Navigation", "Tutorial.action", "menu_navigation");
+        referenceMenu.addChild("Navigation Menu", "Tutorial.action", "navigation_menu");
     }
 
     private static void addUserMenu(MenuComponent menu, Permissions permissions) {
