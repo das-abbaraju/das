@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 
 /**
- * Custom result used to return JSON to the browser using the proper
+ * Custom result used to return XML to the browser using the proper
  * contentType.
  *
  * @author pschlesinger

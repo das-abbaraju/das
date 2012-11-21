@@ -44,7 +44,7 @@ public class DataFeed extends ReportData implements ParameterAware {
                 }
             }
         }
-        logger.warn("Output Format: " + outputFormat);
+        logger.debug("Output Format: " + outputFormat);
         return outputFormat;
     }
 }
