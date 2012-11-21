@@ -63,12 +63,15 @@ public class ReportModel {
 	}
 
 	public boolean canUserEdit(Permissions permissions, Report report) {
+		boolean editable = false;
+		
 		try {
-			return reportPermissionUserDao.findOneByPermissions(permissions, report.getId()).isEditable();
+			editable = reportPermissionUserDao.findOneByPermissions(permissions, report.getId()).isEditable();
 		} catch (NoResultException nre) {
 			logger.error("No results found for {} and reportId = {}", permissions.toString(), report.getId());
-			return isReportDevelopmentGroup(permissions);
 		}
+
+		return editable || isReportDevelopmentGroup(permissions);
 	}
 
 	private boolean isReportDevelopmentGroup(Permissions permissions) {
