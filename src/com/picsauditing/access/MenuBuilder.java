@@ -20,7 +20,7 @@ public final class MenuBuilder {
 	private static I18nCache i18nCache = I18nCache.getInstance();
 
 	private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 
 	private MenuBuilder() {
@@ -260,17 +260,17 @@ public final class MenuBuilder {
 					"report_activity_watch");
 
 		if (permissions.has(OpPerms.WatchListManager))
-			manageMenu.addChild(getText("WatchListManager.title"), "WatchListManager.action", "watch_list_manager");
+			manageMenu.addChild(getText("WatchList.title"), "WatchListManager.action", "watch_list");
 
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			manageMenu.addChild(getText("OperatorTags.title"), "OperatorTags.action", "OperatorTags");
 
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-			manageMenu.addChild(getText("ManageFlagCriteriaOperator.title"), "ManageFlagCriteriaOperator.action",
-					"ManageFlagCriteriaOperator");
+			manageMenu.addChild(getText("FlagCriteriaOperator.title"), "ManageFlagCriteriaOperator.action",
+					"FlagCriteriaOperator");
 			if (permissions.isCanSeeInsurance())
-				manageMenu.addChild(getText("ManageInsuranceCriteriaOperator.title"),
-						"ManageInsuranceCriteriaOperator.action", "ManageInsuranceCriteriaOperator");
+				manageMenu.addChild(getText("InsuranceCriteriaOperator.title"), "ManageInsuranceCriteriaOperator.action",
+						"ManageInsuranceCriteriaOperator");
 		}
 
 		if (permissions.has(OpPerms.FormsAndDocs)) {
@@ -312,7 +312,7 @@ public final class MenuBuilder {
 						"ReportNewRequestedContractor.action", "ReportNewRequestedContractor");
 			if (permissions.hasPermission(OpPerms.SearchContractors)) {
 				legacyMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
-			}			
+			}
 			if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 				String statusFilter = "";
 				if (!permissions.getAccountStatus().isDemo())
