@@ -308,8 +308,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
-                        title: 'Report Shared',
-                        html: 'Your report has been added to the selected user or users\' My Reports list.'
+                        title: result.title,
+                        html: result.html
                     });
 
                     alert_message.show();

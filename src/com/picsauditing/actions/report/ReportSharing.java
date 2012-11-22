@@ -35,11 +35,18 @@ public class ReportSharing extends PicsActionSupport {
 
 			if (type != null && reportModel.canUserEdit(permissions, report)
 					&& id != permissions.getUserId()) {
-				
-				if ("user".equalsIgnoreCase(type) || "group".equalsIgnoreCase(type)) {
+
+				json.put("title", "Report Shared");
+
+				if ("user".equalsIgnoreCase(type)) {
 					reportModel.connectReportPermissionUser(permissions, id, report.getId(), editable);
+					json.put("html", "Your report has been added to the user's My Reports.");
+				} else if ("group".equalsIgnoreCase(type)) {
+					reportModel.connectReportPermissionUser(permissions, id, report.getId(), editable);
+					json.put("html", "Your report has been added to the users' My Reports.");
 				} else if ("account".equalsIgnoreCase(type)) {
 					reportModel.connectReportPermissionAccount(id, report.getId(), permissions);
+					json.put("html", "Your report has been added to the users' My Reports.");
 				} else {
 					throw new IllegalArgumentException("Invalid type for sharing.");
 				}
