@@ -15,12 +15,16 @@ import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 
 public class UsersManageTest extends PicsActionTest {
-	private static int NOT_GROUP_CSR = User.GROUP_CSR++;
+
 	private UsersManage usersManage;
+
+	private static int NOT_GROUP_CSR = User.GROUP_CSR++;
+	private static int INVALID_USER_ID = 0;
 	private List<UserGroup> userGroups;
 	private List<UserGroup> members;
 
@@ -39,13 +43,13 @@ public class UsersManageTest extends PicsActionTest {
 		usersManage = new UsersManage();
 		super.setUp(usersManage);
 
-		Whitebox.setInternalState(usersManage, "userDAO", userDAO);		
+		Whitebox.setInternalState(usersManage, "userDAO", userDAO);
 	}
 
 	@Test
 	public void testSetUserResetHash() throws Exception {
 		user = new User();
-		Whitebox.setInternalState(usersManage, "user", user);		
+		Whitebox.setInternalState(usersManage, "user", user);
 		Whitebox.invokeMethod(usersManage, "setUserResetHash");
 		assertNotNull(user.getResetHash());
 		verify(userDAO).save(user);
@@ -87,5 +91,14 @@ public class UsersManageTest extends PicsActionTest {
 		assertThat(csrsNotIncludingCurrent, not(hasItem(userGroup)));
 	}
 
-	// test correct removal
+	@Test
+	public void testExecute_NoException() throws Exception {
+		Account account = new Account();
+		User user = new User(INVALID_USER_ID);
+		user.setAccount(account);
+		usersManage.setAccount(account);
+		usersManage.setUser(user);
+
+		usersManage.execute();
+	}
 }

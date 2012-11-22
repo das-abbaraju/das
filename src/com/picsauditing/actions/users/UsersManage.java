@@ -21,6 +21,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.UserAccess;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class UsersManage extends PicsActionSupport {
 
 	private String isGroup = "";
 	private String isActive = "Yes";
-	private YesNo userIsGroup;
+	private YesNo userIsGroup = YesNo.No;
 
 	private boolean conAdmin = false;
 	private boolean conBilling = false;
@@ -94,44 +95,55 @@ public class UsersManage extends PicsActionSupport {
 	public String execute() throws Exception {
 		startup();
 
-		if ("department".equalsIgnoreCase(button))
+		if ("department".equalsIgnoreCase(button)) {
 			return "department";
+		}
 
-		if (user == null)
+		if (user == null) {
 			return SUCCESS;
+		}
 
-		if ("Suggest".equalsIgnoreCase(button))
+		if ("Suggest".equalsIgnoreCase(button)) {
 			return "suggest";
+		}
 
-		if (user.getAccount() != null)
+		if (user.getAccount() != null) {
 			account = user.getAccount();
-		if (user.getId() > 0)
-			userIsGroup = user.getIsGroup();
+		}
 
-		if (!userIsGroup.isTrue() && user.getPermissions().size() == 0) {
+		if (user.getId() > 0) {
+			userIsGroup = user.getIsGroup();
+		}
+
+		if (!YesNo.toBoolean(userIsGroup) && CollectionUtils.isEmpty(user.getPermissions())) {
 			addAlertMessage(getText("UsersManage.AssignUserToGroup"));
 		}
 
-		for (UserAccess ua : user.getOwnedPermissions()) {
-			if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
-				conAdmin = true;
-			}
-			if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
-				conBilling = true;
-			}
-			if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
-				conSafety = true;
-			}
-			if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
-				conInsurance = true;
+		for (UserAccess userAccess : user.getOwnedPermissions()) {
+			switch (userAccess.getOpPerm()) {
+				case ContractorAdmin:
+					conAdmin = true;
+					break;
+				case ContractorBilling:
+					conBilling = true;
+					break;
+				case ContractorSafety:
+					conSafety = true;
+					break;
+				case ContractorInsurance:
+					conInsurance = true;
+					break;
 			}
 		}
+
 		if (user.equals(user.getAccount().getPrimaryContact())) {
 			addActionMessage(getTextParameterized("UsersManage.DeactivatePrimary", user.getAccount().getName()));
 		}
+
 		if (!user.isActiveB()) {
 			addAlertMessage(getTextParameterized("UsersManage.InactiveUser", user.getAccount().getName()));
 		}
+
 		return SUCCESS;
 	}
 
@@ -559,28 +571,32 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	private void startup() throws Exception {
-		if (permissions.isContractor())
+		if (permissions.isContractor()) {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else
+		} else {
 			permissions.tryPermission(OpPerms.EditUsers);
+		}
 
 		if (account == null) {
 			// This would happen if I'm looking at my own account, but not a
 			// user yet
 			account = accountDAO.find(permissions.getAccountId());
 		}
+
 		// Make sure we can edit users in this account
-		if (permissions.getAccountId() != account.getId())
+		if (permissions.getAccountId() != account.getId()) {
 			permissions.tryPermission(OpPerms.AllOperators);
+		}
 
 		// checking to see if primary account user is set
-		if (!isSaveAction && (!isPrimaryUserEstablished() || isUserPrimaryContact()))
+		if (!isSaveAction && (!isPrimaryUserEstablished() || isUserPrimaryContact())) {
 			setPrimaryAccount = true;
+		}
 
 		// Default isActive to show all for contractors
-		if (account != null && account.isContractor())
+		if (account != null && account.isContractor()) {
 			isActive = "All";
-
+		}
 	}
 
 	private boolean isPrimaryUserEstablished() {
