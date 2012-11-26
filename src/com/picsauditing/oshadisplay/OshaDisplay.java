@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.I18nCache;
@@ -27,14 +29,16 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 
 /**
- * This class is used for displaying safety statistics on the contractor dashboard.
+ * This class is used for displaying safety statistics on the contractor
+ * dashboard.
  * 
  * TODO: Turn this class into a bean and make it stateless.
  */
 public class OshaDisplay {
+	private static final Logger logger = LoggerFactory.getLogger(OshaDisplay.class);
 
-	private static final String EMPTY_CELL = ""; 
-	
+	private static final String EMPTY_CELL = "";
+
 	private OshaOrganizer oshaOrganizer;
 	private ContractorAccount contractor;
 	private Locale locale;
@@ -42,16 +46,14 @@ public class OshaDisplay {
 	private I18nCache i18nCache;
 	private List<String> columnNames;
 	private YearList yearList;
-	
+
 	@Autowired
 	private NaicsDAO naicsDao;
 
-	private static final MultiYearScope[] YEAR_SCOPES = {
-			MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
+	private static final MultiYearScope[] YEAR_SCOPES = { MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
 			MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage };
 
-	public OshaDisplay(OshaOrganizer oshaOrganizer, Locale locale,
-			List<ContractorOperator> contractorOperators,
+	public OshaDisplay(OshaOrganizer oshaOrganizer, Locale locale, List<ContractorOperator> contractorOperators,
 			ContractorAccount contractor, NaicsDAO naicsDao) {
 		this.oshaOrganizer = oshaOrganizer;
 		this.locale = locale;
@@ -74,11 +76,9 @@ public class OshaDisplay {
 			}
 		}
 		yearsForAverageLabel.delete(0, 1);
-		columnNames.add(i18nCache.getText(
-				"ContractorView.ContractorDashboard.AverageLabel", locale,
+		columnNames.add(i18nCache.getText("ContractorView.ContractorDashboard.AverageLabel", locale,
 				yearsForAverageLabel.toString()));
-		columnNames.add(i18nCache.getText(
-				"ContractorView.ContractorDashboard.Industry", locale));
+		columnNames.add(i18nCache.getText("ContractorView.ContractorDashboard.Industry", locale));
 
 		return columnNames;
 	}
@@ -93,18 +93,21 @@ public class OshaDisplay {
 	}
 
 	private List<OshaDisplayRow> getData(OshaType oshaType) {
+		logger.info("Generating OSHA display for contractor ({}) {}",
+				new Object[] { contractor.getId(), contractor.getName() });
+
 		List<OshaDisplayRow> rows = new ArrayList<OshaDisplayRow>();
 		for (OshaRateType rateType : oshaType.rates) {
-			if (!isShowRow(rateType))
+			if (!isShowRow(rateType)) {
 				continue;
-			StatisticsDisplayRow rateRow = new StatisticsDisplayRow();
+			}
 
+			StatisticsDisplayRow rateRow = new StatisticsDisplayRow();
 			rateRow.setOshaRateType(rateType);
 
 			for (MultiYearScope scope : YEAR_SCOPES) {
 				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
-				if (yearList.getYearForScope(scope) != null
-					|| scope == MultiYearScope.ThreeYearAverage) {
+				if (yearList.getYearForScope(scope) != null || scope == MultiYearScope.ThreeYearAverage) {
 					if (answer != null && answer >= 0) {
 						rateRow.addCell(Numbers.printDouble(answer));
 					} else {
@@ -117,7 +120,7 @@ public class OshaDisplay {
 			if (rateType != OshaRateType.Fatalities) {
 				hurdleRateRows = generateHurdleRates(rateType, oshaType);
 			}
-			
+
 			if (rateType.isHasIndustryAverage() && hurdleRateRows.size() > 0) {
 				String industryAverage = getIndustryAverage(oshaType, rateType);
 				rateRow.addCell(industryAverage);
@@ -126,7 +129,7 @@ public class OshaDisplay {
 			}
 
 			rows.add(rateRow);
-			
+
 			rows.addAll(hurdleRateRows);
 		}
 
@@ -136,14 +139,14 @@ public class OshaDisplay {
 	private boolean isShowRow(OshaRateType rateType) {
 		if (!rateType.equals(OshaRateType.SeverityRate))
 			return true;
-		for (ContractorOperator conOp:contractorOperators) {
+		for (ContractorOperator conOp : contractorOperators) {
 			if (conOp.getOperatorAccount().isOrIsDescendantOf(1436)) // Tesoro
 				return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private String getIndustryAverage(OshaType oshaType, OshaRateType rateType) {
 		if (rateType == OshaRateType.LwcrAbsolute) {
 			return String.valueOf(Utilities.getIndustryAverage(true, contractor));
@@ -151,7 +154,7 @@ public class OshaDisplay {
 			if (oshaType != OshaType.OSHA && oshaType != OshaType.MSHA) {
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 			}
-			if (contractor.getNaics() == null || Strings.isEmpty(contractor.getNaics().getCode()) )
+			if (contractor.getNaics() == null || Strings.isEmpty(contractor.getNaics().getCode()))
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 			return String.valueOf(Utilities.getIndustryAverage(false, contractor));
 		} else if (rateType == OshaRateType.TrirWIA) {
@@ -159,15 +162,13 @@ public class OshaDisplay {
 		}
 		return null;
 	}
-	
-	private List<OshaDisplayRow> generateHurdleRates(
-			OshaRateType oshaRateType, OshaType oshaType) {
+
+	private List<OshaDisplayRow> generateHurdleRates(OshaRateType oshaRateType, OshaType oshaType) {
 		List<OshaDisplayRow> hurdleRateRows = new ArrayList<OshaDisplayRow>();
 
 		Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 		for (ContractorOperator co : contractorOperators) {
-			inheritedOperators.add(co.getOperatorAccount()
-					.getInheritFlagCriteria());
+			inheritedOperators.add(co.getOperatorAccount().getInheritFlagCriteria());
 		}
 
 		for (OperatorAccount o : inheritedOperators) {
@@ -180,15 +181,11 @@ public class OshaDisplay {
 				boolean hasFlagCriteria = false;
 
 				for (MultiYearScope scope : YEAR_SCOPES) {
-					Set<FlagCriteriaOperator> flagCriteriaForThisYear = flagCriteriaForYear
-							.get(scope);
-					if (yearList.getYearForScope(scope) != null
-							|| scope == MultiYearScope.ThreeYearAverage) {
-						if (flagCriteriaForThisYear == null
-								|| flagCriteriaForThisYear.size() == 0) {
+					Set<FlagCriteriaOperator> flagCriteriaForThisYear = flagCriteriaForYear.get(scope);
+					if (yearList.getYearForScope(scope) != null || scope == MultiYearScope.ThreeYearAverage) {
+						if (flagCriteriaForThisYear == null || flagCriteriaForThisYear.size() == 0) {
 							hurdleRow.addCell(EMPTY_CELL);
-						} else if (yearList.getYearForScope(scope) != null
-									|| scope == MultiYearScope.ThreeYearAverage) {
+						} else if (yearList.getYearForScope(scope) != null || scope == MultiYearScope.ThreeYearAverage) {
 							StringBuilder display = new StringBuilder();
 							for (FlagCriteriaOperator fco : flagCriteriaForThisYear) {
 								display.append(", ");
@@ -196,7 +193,7 @@ public class OshaDisplay {
 							}
 							display.delete(0, 1);
 							hurdleRow.addCell(display.toString());
-	
+
 							hasFlagCriteria = true;
 						}
 					}
@@ -210,15 +207,14 @@ public class OshaDisplay {
 		return hurdleRateRows;
 	}
 
-	private Map<MultiYearScope, Set<FlagCriteriaOperator>> generateOperatorFlagCriteriaMap(
-			OshaRateType oshaRateType, OshaType oshaType, OperatorAccount o) {
+	private Map<MultiYearScope, Set<FlagCriteriaOperator>> generateOperatorFlagCriteriaMap(OshaRateType oshaRateType,
+			OshaType oshaType, OperatorAccount o) {
 		Map<MultiYearScope, Set<FlagCriteriaOperator>> flagCriteriaForYear = new HashMap<MultiYearScope, Set<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 			if (fco.getCriteria().getOshaType() == oshaType
 					&& isEquivalentRateTypes(fco.getCriteria().getOshaRateType(), oshaRateType)) {
 				MultiYearScope scope = fco.getCriteria().getMultiYearScope();
-				Set<FlagCriteriaOperator> flagCriteria = flagCriteriaForYear
-						.get(scope);
+				Set<FlagCriteriaOperator> flagCriteria = flagCriteriaForYear.get(scope);
 				if (flagCriteria == null) {
 					flagCriteria = new HashSet<FlagCriteriaOperator>();
 					flagCriteriaForYear.put(scope, flagCriteria);
@@ -230,8 +226,7 @@ public class OshaDisplay {
 		return flagCriteriaForYear;
 	}
 
-	private boolean isEquivalentRateTypes(OshaRateType flagCriteriaRateType,
-			OshaRateType requestedRateType) {
+	private boolean isEquivalentRateTypes(OshaRateType flagCriteriaRateType, OshaRateType requestedRateType) {
 		if (flagCriteriaRateType == null) {
 			return false;
 		}
@@ -245,45 +240,35 @@ public class OshaDisplay {
 
 	private String getFlagDescription(FlagCriteriaOperator fco) {
 		if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())) {
-			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco
-					.getHurdle()) : 100;
+			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
+			return "<nobr class=\""
+					+ fco.getFlag()
+					+ "\">"
+					+ fco.getCriteria().getComparison()
+					+ " "
+					+ Strings
+							.formatDecimalComma(Double.toString(hurdle / 100 * contractor.getWeightedIndustryAverage()))
+					+ "</nobr>";
+		} else if (OshaRateType.TrirNaics.equals(fco.getCriteria().getOshaRateType())) {
+			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
 			return "<nobr class=\""
 					+ fco.getFlag()
 					+ "\">"
 					+ fco.getCriteria().getComparison()
 					+ " "
 					+ Strings.formatDecimalComma(Double.toString(hurdle / 100
-							* contractor.getWeightedIndustryAverage()))
-					+ "</nobr>";
-		} else if (OshaRateType.TrirNaics.equals(fco.getCriteria()
-				.getOshaRateType())) {
-			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco
-					.getHurdle()) : 100;
+							* naicsDao.getIndustryAverage(false, contractor.getNaics()))) + "</nobr>";
+		} else if (OshaRateType.DartNaics.equals(fco.getCriteria().getOshaRateType())) {
+			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
 			return "<nobr class=\""
 					+ fco.getFlag()
 					+ "\">"
 					+ fco.getCriteria().getComparison()
 					+ " "
-					+ Strings.formatDecimalComma(Double.toString(hurdle
-							/ 100
-							* naicsDao.getIndustryAverage(false, contractor
-									.getNaics()))) + "</nobr>";
-		} else if (OshaRateType.DartNaics.equals(fco.getCriteria()
-				.getOshaRateType())) {
-			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco
-					.getHurdle()) : 100;
-			return "<nobr class=\""
-					+ fco.getFlag()
-					+ "\">"
-					+ fco.getCriteria().getComparison()
-					+ " "
-					+ Strings.formatDecimalComma(Double.toString(hurdle
-							/ 100
-							* naicsDao.getDartIndustryAverage(contractor
-									.getNaics()))) + "</nobr>";
+					+ Strings.formatDecimalComma(Double.toString(hurdle / 100
+							* naicsDao.getDartIndustryAverage(contractor.getNaics()))) + "</nobr>";
 		} else
-			return "<nobr class=\"" + fco.getFlag() + "\">"
-					+ fco.getShortDescription() + "</nobr>";
+			return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
