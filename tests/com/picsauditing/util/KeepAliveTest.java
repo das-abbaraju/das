@@ -19,8 +19,8 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.search.Database;
 
 public class KeepAliveTest {
-	
 	private KeepAlive keepAlive;
+	private float loadFactor = 4f;
 
 	@Mock
 	private Database database;
@@ -59,21 +59,21 @@ public class KeepAliveTest {
 	public void testLoadFactorIsEmpty() throws Exception {
 		when(request.getParameterValues("load_factor")).thenReturn(new String[] {});
 		keepAlive.getKeepAliveStatus();
-		assertEquals(3.0, keepAlive.getLoadFactor(), 0.0001f);
+		assertEquals(loadFactor, keepAlive.getLoadFactor(), 0.0001f);
 	}
 
 	@Test
 	public void testLoadFactorIsNull() {
 		when(request.getParameterValues("load_factor")).thenReturn(null);
 		keepAlive.getKeepAliveStatus();
-		assertEquals(3.0, keepAlive.getLoadFactor(), 0.0001f);
+		assertEquals(loadFactor, keepAlive.getLoadFactor(), 0.0001f);
 	}
 
 	@Test
 	public void testLoadFactorIsString() {
 		when(request.getParameterValues("load_factor")).thenReturn(new String[] { "Hello World" });
 		keepAlive.getKeepAliveStatus();
-		assertEquals(3.0, keepAlive.getLoadFactor(), 0.0001f);
+		assertEquals(loadFactor, keepAlive.getLoadFactor(), 0.0001f);
 	}
 
 	@Test
