@@ -16,7 +16,7 @@ public class KeepAlive {
 
 	private final static Logger logger = LoggerFactory.getLogger(KeepAlive.class);
 
-	private float loadFactor = 3f;
+	private float loadFactor = 4f;
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
