@@ -20,7 +20,7 @@ public class PicsApiSupport extends PicsActionSupport implements ParameterAware 
     protected String reportIdSpecified = "";
 
     public void setParameters(Map<String, String[]> parameters) {
-        logger.warn("Setting parameters");
+        logger.debug("Setting parameters");
         setApiKey(lookupParam(parameters, "apiKey"));
         /*
        * While we are here, let's memorize the report ID specified in the

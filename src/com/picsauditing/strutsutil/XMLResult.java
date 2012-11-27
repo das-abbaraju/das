@@ -3,14 +3,15 @@ package com.picsauditing.strutsutil;
 import com.google.common.base.Joiner;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import org.apache.struts2.dispatcher.StreamResult;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
+import net.sf.json.JSON;
+import net.sf.json.JSONSerializer;
+import net.sf.json.xml.JSONTypes;
+import net.sf.json.xml.XMLSerializer;
 
 /**
  * Custom result used to return XML to the browser using the proper
@@ -25,9 +26,13 @@ public class XMLResult extends StreamResult {
     @SuppressWarnings("unchecked")
     @Override
     protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
-        logger.debug("In XMLResult");
+        if (logger.isDebugEnabled()) {
+            logger.debug("In XMLResult");
+        }
         JSONObject json = (JSONObject) invocation.getStack().findValue("json");
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("Have JSON object");
+        }
         /*
            * Add in the action messages/errors if there are any.
            */
@@ -38,10 +43,25 @@ public class XMLResult extends StreamResult {
             if (action.hasActionErrors())
                 json.put("actionError", Joiner.on("\n").join(action.getActionErrors()));
         }
-
-        XStream xstream = new XStream(new JettisonMappedXmlDriver());
-        Object xmlObject = xstream.fromXML(json.toJSONString());
-        String xml = xstream.toXML(xmlObject);
+        if (logger.isDebugEnabled()) {
+            logger.debug("about to create xmlserializer");
+        }
+        net.sf.json.xml.XMLSerializer serializer = new net.sf.json.xml.XMLSerializer();
+        if (logger.isDebugEnabled()) {
+            logger.debug("about to create net.sf.JSON object");
+        }
+        net.sf.json.JSON netsfjson = net.sf.json.JSONSerializer.toJSON( json.toJSONString() );
+        if (logger.isDebugEnabled()) {
+            logger.debug("setting typehints to false");
+        }
+        serializer.setTypeHintsEnabled(false);
+        if (logger.isDebugEnabled()) {
+            logger.debug("writing XML");
+        }
+        String xml = serializer.write( netsfjson );
+        if (logger.isDebugEnabled()) {
+            logger.debug("converting to inputstream");
+        }
         inputStream = new ByteArrayInputStream(xml.getBytes());
         contentType = "application/xml";
         super.doExecute(finalLocation, invocation);
