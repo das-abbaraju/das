@@ -3,15 +3,12 @@
 	background-color: #454545;
 	padding-top: 0;
 	
-	.container
-	{
-		background-color: #f1f1f2;
-	}
-	
 	header
 	{
+		background-color: #f1f1f2;
+		margin: 0 -20px;
 		overflow: hidden;
-		padding: 30px 30px 0;
+		padding: 30px 20px;
 	}
 	
 	.page-title
@@ -42,12 +39,63 @@
 		width: 165px;
 	}
 	
-	#main
+	.content
 	{
+		background-color: #f1f1f2;
+		margin: 0 -20px;
+		padding: 20px;
+	
 		.row
 		{
 			margin-bottom: 60px;
 			margin-top: 60px;
+		}
+	}
+	
+	.row.dashboard
+	{
+		margin-top: 40px;
+	}
+	
+	.dashboard
+	{
+		.image-container
+		{
+			float: right;
+			text-align: right;
+		}
+		
+		img
+		{
+			margin-right: -20px;
+		}
+	}
+	
+	.settings
+	{
+		.image-container
+		{
+			text-align: left;
+		}
+		
+		img
+		{
+			margin-left: -20px;
+		}
+	}
+	
+	.row.support
+	{
+		margin-bottom: 40px;
+	}
+	
+	.support
+	{
+		
+		.image-container
+		{
+			float: right;
+			text-align: center;
 		}
 	}
 	
@@ -68,28 +116,14 @@
 		}
 	}
 	
-	.dashboard
-	{
-		text-align: right;
-	}
-	
-	.settings
-	{
-		text-align: left;
-	}
-	
-	.support
-	{
-		text-align: center;
-	}
-	
 	footer
 	{
 		background-color: #ccc;
 		@include background-image(linear-gradient(#eaeaea, #ccc));
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
 		border-top: 1px solid #999;
-		padding: 30px 0;
+		margin: 0 -20px;
+		padding: 30px 20px;
 		text-align: center;
 		
 		a
@@ -131,7 +165,7 @@
 			width: 100px;
 		}
 		
-		#main
+		.content
 		{
 			.row
 			{
@@ -142,7 +176,7 @@
 		
 		.dashboard img
 		{
-			margin-right: -20px;
+
 		}
 		
 		.settings
@@ -152,7 +186,7 @@
 		
 		.settings img
 		{
-			margin-left: -20px;
+
 		}
 		
 		.support
@@ -162,7 +196,7 @@
 		
 		.support img
 		{
-			margin-right: -20px;
+
 		}
 		
 		footer

@@ -1441,19 +1441,17 @@ hr {
   padding-top: 0;
 }
 /* line 7, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-#Tutorial_navigationMenu_page .container {
-  background-color: #f1f1f2;
-}
-/* line 12, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page header {
+  background-color: #f1f1f2;
+  margin: 0 -20px;
   overflow: hidden;
-  padding: 30px 30px 0;
+  padding: 30px 20px;
 }
-/* line 18, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 15, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page .page-title {
   float: left;
 }
-/* line 22, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 19, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page .page-title h1 {
   color: #808285;
   font-size: 60px;
@@ -1461,24 +1459,60 @@ hr {
   line-height: 1;
   margin: 0;
 }
-/* line 31, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 28, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page .page-title h2 {
   color: #a84d10;
   font-size: 14px;
   line-height: 1;
 }
-/* line 39, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 36, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page .logo {
   float: right;
   margin: 30px 30px 0 0;
   width: 165px;
 }
-/* line 48, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-#Tutorial_navigationMenu_page #main .row {
+/* line 43, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .content {
+  background-color: #f1f1f2;
+  margin: 0 -20px;
+  padding: 20px;
+}
+/* line 49, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .content .row {
   margin-bottom: 60px;
   margin-top: 60px;
 }
-/* line 57, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 56, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .row.dashboard {
+  margin-top: 40px;
+}
+/* line 63, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .dashboard .image-container {
+  float: right;
+  text-align: right;
+}
+/* line 69, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .dashboard img {
+  margin-right: -20px;
+}
+/* line 77, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .settings .image-container {
+  text-align: left;
+}
+/* line 82, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .settings img {
+  margin-left: -20px;
+}
+/* line 88, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .row.support {
+  margin-bottom: 40px;
+}
+/* line 96, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+#Tutorial_navigationMenu_page .support .image-container {
+  float: right;
+  text-align: center;
+}
+/* line 105, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page .overview h1 {
   color: #73bbe8;
   font-size: 24px;
@@ -1486,23 +1520,11 @@ hr {
   line-height: 1;
   margin-top: 0;
 }
-/* line 66, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 114, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page .overview p {
   color: #666;
 }
-/* line 72, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-#Tutorial_navigationMenu_page .dashboard {
-  text-align: right;
-}
-/* line 77, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-#Tutorial_navigationMenu_page .settings {
-  text-align: left;
-}
-/* line 82, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-#Tutorial_navigationMenu_page .support {
-  text-align: center;
-}
-/* line 87, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 120, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page footer {
   background-color: #ccc;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #eaeaea), color-stop(100%, #cccccc));
@@ -1512,67 +1534,56 @@ hr {
   background-image: linear-gradient(#eaeaea, #cccccc);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
   border-top: 1px solid #999;
-  padding: 30px 0;
+  margin: 0 -20px;
+  padding: 30px 20px;
   text-align: center;
 }
-/* line 96, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 130, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page footer a {
   margin-bottom: 10px;
 }
-/* line 101, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+/* line 135, ../sass/pics/templates/tutorial/_navigation-menu.scss */
 #Tutorial_navigationMenu_page footer p {
   color: #808285;
 }
 
 @media (max-width: 767px) {
-  /* line 109, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 143, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page {
     background-color: #f1f1f2;
   }
-  /* line 113, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 147, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page header {
     text-align: center;
   }
-  /* line 118, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 152, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page .page-title {
     float: none;
   }
-  /* line 122, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 156, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page .page-title h1 {
     font-size: 40px;
   }
-  /* line 128, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 162, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page .logo {
     float: none;
     margin-bottom: 30px;
     width: 100px;
   }
-  /* line 137, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-  #Tutorial_navigationMenu_page #main .row {
+  /* line 171, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  #Tutorial_navigationMenu_page .content .row {
     margin-bottom: 30px;
     margin-top: 30px;
   }
-  /* line 144, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-  #Tutorial_navigationMenu_page .dashboard img {
-    margin-right: -20px;
-  }
-  /* line 149, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 183, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page .settings {
     margin-bottom: 30px;
   }
-  /* line 154, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-  #Tutorial_navigationMenu_page .settings img {
-    margin-left: -20px;
-  }
-  /* line 159, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 193, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page .support {
     margin-top: 30px;
   }
-  /* line 164, ../sass/pics/templates/tutorial/_navigation-menu.scss */
-  #Tutorial_navigationMenu_page .support img {
-    margin-right: -20px;
-  }
-  /* line 169, ../sass/pics/templates/tutorial/_navigation-menu.scss */
+  /* line 203, ../sass/pics/templates/tutorial/_navigation-menu.scss */
   #Tutorial_navigationMenu_page footer {
     margin: 0 -20px;
   }
