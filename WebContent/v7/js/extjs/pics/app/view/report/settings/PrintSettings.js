@@ -9,11 +9,11 @@ Ext.define('PICS.view.report.settings.PrintSettings', {
     }],*/
     items: [{
         xtype: 'button',
-        action: 'print',
-        text : 'Print',
+        action: 'print-preview',
+        text : 'Print Preview',
         cls: 'primary print',
         id: 'print-button',
-        tooltip: 'Print this report',
+        tooltip: 'Preview a printable version of this report',
         margin: '100 0 0 0'
     }],
 

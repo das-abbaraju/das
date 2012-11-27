@@ -157,7 +157,7 @@
 						<s:textfield name="ESignatureTitle" />
 					</div>
 					
-					<s:submit type="button" value="Sign" cssClass="question-save" />
+					<s:submit type="button" value="%{getText('QuestionType.ESignature.sign')}" cssClass="question-save" />
 				</div>
 				
 				<s:if test="#a.answer != null">

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
@@ -13,7 +16,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 
 public class OshaOrganizer implements OshaVisitor {
-
+	private static final Logger logger = LoggerFactory.getLogger(OshaOrganizer.class);
 	// OSHA Audits will be sorted by their auditYears
 	Map<OshaType, Map<Integer, SafetyStatistics>> safetyStatisticsData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
 
@@ -100,7 +103,7 @@ public class OshaOrganizer implements OshaVisitor {
 			BigDecimal rate = new BigDecimal(0);
 
 			for (MultiYearScope yearScope : MultiYearScope.getListOfIndividualYearScopes()) {
-				BigDecimal value = getRateForSpecficYear(type, years.getYearForScope(yearScope), rateType);
+				BigDecimal value = getRateForSpecificYear(type, years.getYearForScope(yearScope), rateType);
 
 				if (value != null) {
 					rate = rate.add(value);
@@ -115,7 +118,8 @@ public class OshaOrganizer implements OshaVisitor {
 		} else {
 			Integer yearWeWant = years.getYearForScope(scope);
 			if (yearWeWant != null && yearWeWant > 0) {
-				BigDecimal rate = getRateForSpecficYear(type, yearWeWant, rateType);
+				BigDecimal rate = getRateForSpecificYear(type, yearWeWant, rateType);
+
 				if (rate != null) {
 					return rate.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
 				}
@@ -125,7 +129,7 @@ public class OshaOrganizer implements OshaVisitor {
 		}
 	}
 
-	public BigDecimal getRateForSpecficYear(OshaType type, Integer year, OshaRateType rateType) {
+	public BigDecimal getRateForSpecificYear(OshaType type, Integer year, OshaRateType rateType) {
 		if (year != null) {
 			Map<Integer, SafetyStatistics> typeMap = safetyStatisticsData.get(type);
 			SafetyStatistics stats = typeMap.get(year);
@@ -138,6 +142,9 @@ public class OshaOrganizer implements OshaVisitor {
 					if (QuestionFunction.MISSING_PARAMETER.equals(value)) {
 						return null;
 					}
+
+					logger.error("NumberFormatException for value {} with OSHA type {}, rate type {}, and year {}",
+							new Object[] { value, type, rateType, year });
 					throw valueIsNotAValidNumberSoJustReturnNull;
 				}
 			}

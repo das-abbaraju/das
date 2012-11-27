@@ -25,7 +25,7 @@ public class ManageEmployeeSite extends ManageEmployees {
 			EmployeeSite employeeSite = new EmployeeSite();
 			employeeSite.setEmployee(employee);
 
-			if (operator != null && jobSite == null) {
+			if (operator != null && jobSite.getId() == 0) {
 				employeeSite.setOperator(operator);
 			} else {
 				employeeSite.setJobSite(jobSite);

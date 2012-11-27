@@ -487,10 +487,12 @@
 									</tbody>
 								</table>
 							</li>
-							<li>
-								<label>TRANSLATE THIS - Assignment Capacity</label>
-								<s:textfield name="user.assignmentCapacity" size="3" />%
-							</li>
+							<pics:permission perm="UserZipcodeAssignment">
+								<li>
+									<label>Assignment Capacity</label>
+									<s:textfield name="user.assignmentCapacity" size="3" />%
+								</li>
+							</pics:permission>
 						</s:if>
 
 					</ol>

@@ -63,8 +63,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
                 click: this.onReportModalExportClick
             },
 
-            'reportsettingsmodal reportsettingsprint button[action=print]':  {
-                click: this.onReportModalPrintClick
+            'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
+                click: this.onReportModalPrintPreviewClick
             },
             
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
@@ -199,7 +199,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         window.open('ReportData!download.action?report=' + report.get('id'));
     },
 
-    onReportModalPrintClick: function (cmp, e, eOpts) {
+    onReportModalPrintPreviewClick: function (cmp, e, eOpts) {
         var store = this.getReportReportsStore(),
             report = store.first();
 
@@ -308,7 +308,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
-                        title: 'Report shared.'
+                        title: result.title,
+                        html: result.html
                     });
 
                     alert_message.show();
