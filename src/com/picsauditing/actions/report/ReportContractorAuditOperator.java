@@ -56,7 +56,13 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		super.buildQuery();
 
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
-		sql.addJoin("JOIN generalcontractors gc ON gc.subID=a.id AND gc.genID = cao.opID");
+
+		if (sql.hasJoin("generalcontractors gc")) {
+			sql.addWhere("gc.subID = a.id AND gc.genID = cao.opID");
+		} else {
+			sql.addJoin("JOIN generalcontractors gc ON gc.subID=a.id AND gc.genID = cao.opID");
+		}
+
 		sql.addWhere("cao.visible = 1");
 		sql.addJoin("JOIN accounts caoAccount ON cao.opID = caoAccount.id");
 		sql.addField("cao.id caoID");
@@ -91,19 +97,15 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		ReportFilterCAO f = getFilter();
 
 		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
-		if (filterOn(auditStatusList))
-		{
+		if (filterOn(auditStatusList)) {
 			boolean isFilteringExpiresDate = filterOn(f.getExpiredDate1()) || filterOn(f.getExpiredDate2());
 			ArrayList<AuditStatus> auditStatusValues = new ArrayList<AuditStatus>(Arrays.asList(f.getAuditStatus()));
-			if (auditStatusValues.contains(AuditStatus.Expired))
-			{
+			if (auditStatusValues.contains(AuditStatus.Expired)) {
 				if (!isFilteringExpiresDate)
 					sql.addWhere("ca.expiresDate <= NOW()");
 				auditStatusValues.remove(AuditStatus.Expired);
 				auditStatusList = Strings.implodeForDB(auditStatusValues, ",");
-			}
-			else if (!auditStatusValues.isEmpty() && !isFilteringExpiresDate)
-			{
+			} else if (!auditStatusValues.isEmpty() && !isFilteringExpiresDate) {
 				sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 			}
 
@@ -171,13 +173,13 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 	}
 
 	/**
-	 * returns the proper answer(s) of the questionData, which holds supplemental question data that is not returned in
-	 * the main query
+	 * returns the proper answer(s) of the questionData, which holds
+	 * supplemental question data that is not returned in the main query
 	 * 
 	 * @param auditId
 	 * @param purpose
-	 *            - kind of like a column name. Known keys for this are: policyFile, aiWaiverSub, aiName, aiMatches,
-	 *            aiOther or limits
+	 *            - kind of like a column name. Known keys for this are:
+	 *            policyFile, aiWaiverSub, aiName, aiMatches, aiOther or limits
 	 * @return List<AuditData>
 	 */
 	public List<AuditData> getDataForAudit(int auditId, String purpose) {
@@ -189,9 +191,9 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 			/***** Load our Policy Data *****/
 			List<AuditData> answers = new ArrayList<AuditData>();
-			for(int i=0; i<theseAudits.size(); i +=1000) {
+			for (int i = 0; i < theseAudits.size(); i += 1000) {
 				List<Integer> ids = new Vector<Integer>();
-				ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size())?i+1000:theseAudits.size() -1));
+				ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size()) ? i + 1000 : theseAudits.size() - 1));
 				answers.addAll(auditDataDao.findPolicyData(ids));
 			}
 
@@ -258,9 +260,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
 		excelSheet.addColumn(new ExcelColumn("name", getText("global.Contractor")));
 
-		excelSheet.addColumn(new ExcelColumn("auditID", getText("ReportCAOList.header.AuditID"), ExcelCellType.Integer));
+		excelSheet
+				.addColumn(new ExcelColumn("auditID", getText("ReportCAOList.header.AuditID"), ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("atype.name", getText("AuditType"), ExcelCellType.Translated));
-		
+
 		excelSheet.addColumn(new ExcelColumn("caoAccountName", getText("Audit.header.OperatorScope")));
 		excelSheet.addColumn(new ExcelColumn("auditStatus", getText("Filters.label.Status"), ExcelCellType.String));
 
@@ -268,9 +271,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 			excelSheet.addColumn(new ExcelColumn("auditStatus", getText("global.Status")));
 		}
-		
+
 		excelSheet.addColumn(new ExcelColumn("createdDate", getText("global.CreationDate"), ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("expiresDate", getText("ReportCAOList.header.ExpiredDate"), ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("expiresDate", getText("ReportCAOList.header.ExpiredDate"),
+				ExcelCellType.Date));
 
 		excelSheet.addColumn(new ExcelColumn("auditor_name", getText("global.SafetyProfessional")));
 	}
