@@ -680,6 +680,24 @@ public class OperatorAccount extends Account {
 		// All other operators
 		return 5;
 	}
+	
+	@Transient
+	public boolean isApplicableFlagOperator(OperatorAccount flagOperator) {
+		boolean isApplicable = false;
+		
+		isApplicable = isOrIsDescendantOf(flagOperator.getId());
+		
+		if (!isApplicable) {
+			for (Facility facility: flagOperator.getOperatorFacilities()) {
+				if (facility.getOperator().equals(this)) {
+					isApplicable = true;
+					break;
+				}
+			}
+		}
+		
+		return isApplicable;
+	}
 
 	@Transient
 	public boolean isGeneralContractorFree() {

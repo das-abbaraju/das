@@ -544,7 +544,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			List<FlagDataOverride> flOverride = flagDataOverrides.get(flagData.getCriteria());
 			if (flOverride != null && flOverride.size() > 0) {
 				for (FlagDataOverride flagDataOverride : flOverride) {
-					if (op.isOrIsDescendantOf(flagDataOverride.getOperator().getId()) && flagDataOverride.isInForce()) {
+					if (op.isApplicableFlagOperator(flagDataOverride.getOperator()) && flagDataOverride.isInForce()) {
 						return flagDataOverride;
 					}
 				}

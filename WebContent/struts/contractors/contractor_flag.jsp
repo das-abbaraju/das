@@ -225,7 +225,7 @@
 													<s:set name="flagoverride" value="%{isFlagDataOverride(#data, #data.operator)}" />
 	
 													<s:if test="#flagoverride != null">
-														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo">
+														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo2">
 															<s:param>
 																<s:property value="#flagoverride.criteria.label" />
 															</s:param>
@@ -246,7 +246,10 @@
 																	<s:text name="ContractorFlag.ForAllSites" />
 																</s:if>
 															</s:param>
-														</s:text>
+															<s:param>
+																<s:property value="#data.operator.name" />
+															</s:param>
+														</s:text><br />
 													</s:if>
 												</s:if>
 											</s:iterator>
@@ -259,7 +262,7 @@
 													<s:set name="flagoverride" value="%{isFlagDataOverride(#data, #data.operator)}" />
 	
 													<s:if test="#flagoverride != null">
-														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo">
+														<s:text name="ContractorFlag.ManualIndividualForceFlagInfo2">
 															<s:param>
 																<s:property value="#flagoverride.criteria.label" />
 															</s:param>
@@ -280,7 +283,10 @@
 																	<s:text name="ContractorFlag.ForAllSites" />
 																</s:if>
 															</s:param>
-														</s:text>
+															<s:param>
+																<s:property value="#data.operator.name" />
+															</s:param>
+														</s:text><br />
 													</s:if>
 												</s:if>
 											</s:iterator>
