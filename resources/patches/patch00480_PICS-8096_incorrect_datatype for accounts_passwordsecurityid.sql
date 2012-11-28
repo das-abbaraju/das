@@ -1,6 +1,6 @@
 -- Fix incorrect column type for passwordSecurityLevelId
-ALTER TABLE `accounts`
-DROP COLUMN `passwordSecurityLevelId`;
+-- ALTER TABLE `accounts`
+-- DROP COLUMN `passwordSecurityLevelId`;
 
 ALTER TABLE `accounts`
 ADD COLUMN `passwordSecurityLevelId` TINYINT(4) NULL DEFAULT 0;
