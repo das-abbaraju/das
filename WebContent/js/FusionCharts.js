@@ -1,6 +1,6 @@
 /**
- * FusionCharts: Flash Player detection and Chart embed 
- * 
+ * FusionCharts: Flash Player detection and Chart embed
+ *
  * Morphed from SWFObject (http://blog.deconcept.com/swfobject/) under MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  *
@@ -9,30 +9,30 @@ if(typeof infosoftglobal == "undefined") var infosoftglobal = new Object();
 if(typeof infosoftglobal.FusionChartsUtil == "undefined") infosoftglobal.FusionChartsUtil = new Object();
 infosoftglobal.FusionCharts = function(swf, id, w, h, debugMode, registerWithJS, c, scaleMode, lang){
 	if (!document.getElementById) { return; }
-	
+
 	//Flag to see whether data has been set initially
 	this.initialDataSet = false;
-	
+
 	//Create container objects
 	this.params = new Object();
 	this.variables = new Object();
 	this.attributes = new Array();
-	
+
 	//Set attributes for the SWF
 	if(swf) { this.setAttribute('swf', swf); }
 	if(id) { this.setAttribute('id', id); }
 	if(w) { this.setAttribute('width', w); }
 	if(h) { this.setAttribute('height', h); }
-	
+
 	//Set background color
 	if(c) { this.addParam('bgcolor', c); }
-	
-	//Set Quality	
+
+	//Set Quality
 	this.addParam('quality', 'high');
-	
+
 	//Add scripting access parameter
 	this.addParam('allowScriptAccess', 'always');
-	
+
 	//Pass width and height to be appended as chartWidth and chartHeight
 	this.addVariable('chartWidth', w);
 	this.addVariable('chartHeight', h);
@@ -45,7 +45,7 @@ infosoftglobal.FusionCharts = function(swf, id, w, h, debugMode, registerWithJS,
 	//Whether to registed with JavaScript
 	registerWithJS = registerWithJS ? registerWithJS : 0;
 	this.addVariable('registerWithJS', registerWithJS);
-	
+
 	//Scale Mode of chart
 	scaleMode = scaleMode ? scaleMode : 'noScale';
 	this.addVariable('scaleMode', scaleMode);
@@ -87,8 +87,8 @@ infosoftglobal.FusionCharts.prototype = {
 	},
 	getSWFHTML: function() {
 		var swfNode = "";
-		if (navigator.plugins && navigator.mimeTypes && navigator.mimeTypes.length) { 
-			// netscape plugin architecture			
+		if (navigator.plugins && navigator.mimeTypes && navigator.mimeTypes.length) {
+			// netscape plugin architecture
 			swfNode = '<embed type="application/x-shockwave-flash" wmode="opaque" src="'+ this.getAttribute('swf') +'" width="'+ this.getAttribute('width') +'" height="'+ this.getAttribute('height') +'"  ';
 			swfNode += ' id="'+ this.getAttribute('id') +'" name="'+ this.getAttribute('id') +'" ';
 			var params = this.getParams();
@@ -96,14 +96,16 @@ infosoftglobal.FusionCharts.prototype = {
 			var pairs = this.getVariablePairs().join("&");
 			 if (pairs.length > 0){ swfNode += 'flashvars="'+ pairs +'"'; }
 			swfNode += '/>';
-		} else { // PC IE			
+		} else { // PC IE
 			swfNode = '<object id="'+ this.getAttribute('id') +'" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="'+ this.getAttribute('width') +'" height="'+ this.getAttribute('height') +'">';
 			swfNode += '<param name="movie" value="'+ this.getAttribute('swf') +'" />';
+			swfNode += '<param name="wmode" value="opaque" />';
+
 			var params = this.getParams();
 			for(var key in params) {
 			 swfNode += '<param name="'+ key +'" value="'+ params[key] +'" />';
 			}
-			var pairs = this.getVariablePairs().join("&");			
+			var pairs = this.getVariablePairs().join("&");
 			if(pairs.length > 0) {swfNode += '<param name="flashvars" value="'+ pairs +'" />';}
 			swfNode += "</object>";
 		}
@@ -140,7 +142,7 @@ infosoftglobal.FusionCharts.prototype = {
 	render: function(elementId){
 		var n = (typeof elementId == 'string') ? document.getElementById(elementId) : elementId;
 		n.innerHTML = this.getSWFHTML();
-		return true;		
+		return true;
 	}
 }
 
@@ -193,7 +195,7 @@ infosoftglobal.FusionChartsUtil.getChartObject = function(id)
   }
   if (navigator.appName.indexOf("Microsoft Internet")==-1) {
     if (document.embeds && document.embeds[id])
-      return document.embeds[id]; 
+      return document.embeds[id];
   } else {
     return document.getElementById(id);
   }
