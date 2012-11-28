@@ -13,12 +13,6 @@ import net.sf.json.JSONSerializer;
 import net.sf.json.xml.JSONTypes;
 import net.sf.json.xml.XMLSerializer;
 
-/**
- * Custom result used to return XML to the browser using the proper
- * contentType.
- *
- * @author pschlesinger
- */
 public class XMLResult extends StreamResult {
     private static final Logger logger = LoggerFactory.getLogger(XMLResult.class);
     private static final long serialVersionUID = 7789432829226367722L;

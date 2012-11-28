@@ -8,10 +8,44 @@ import org.apache.struts2.interceptor.ParameterAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 @SuppressWarnings("serial")
 public class DataFeed extends ReportData implements ParameterAware {
 
     private static final Logger logger = LoggerFactory.getLogger(DataFeed.class);
+
+    public String getOutputFormat() {
+        return outputFormat;
+    }
+
+    public void setOutputFormat(String outputFormat) {
+        this.outputFormat = outputFormat;
+    }
+
+    public String getReportIdSpecified() {
+        return reportIdSpecified;
+    }
+
+    public void setReportIdSpecified(String reportIdSpecified) {
+        this.reportIdSpecified = reportIdSpecified;
+    }
+
+    protected String outputFormat = "";
+    protected String reportIdSpecified = "";
+
+    @Override
+    public void setParameters(Map<String, String[]> parameters) {
+        super.setParameters(parameters);
+        /*
+           * While we are here, let's memorize the report ID specified in the
+           * parameters, just in case the JpaEntityConverter cannot find the report
+           * in question, so that we can report on the requested ID number in the
+           * error message (above).
+           */
+        reportIdSpecified = lookupParam(parameters, "report");
+        outputFormat = lookupParam(parameters, "format");
+    }
 
     @Override
     @Api
