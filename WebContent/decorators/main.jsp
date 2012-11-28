@@ -258,35 +258,7 @@
 				<div id="notify"></div>
 
 				<div id="helpbox">
-					<%--
-						http://solutions.liveperson.com/tagGen/gallery/General3-Blue-fr.asp
-
-						Locales:
-
-						- English (e.g. https://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a)
-						- French
-						- German
-						- Hebrew
-						- Portuguese
-						- Spanish
-					--%>
-
-					<%
-						String chatIcon = protocol + "://server.iad.liveperson.net/hc/90511184/?" +
-							"cmd=repstate" +
-							"&amp;site=90511184" +
-							"&amp;channel=web" +
-							"&amp;ver=1" +
-							"&amp;imageUrl=" +
-							protocol +
-							"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
-							LocaleController.getValidLocale(locale).getDisplayLanguage() +
-							"/General/3a";
-
-						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
-							chatIcon = "";
-						}
-
+                <%      
 						String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
 
 						if (permissions.isOperatorCorporate()) {
@@ -298,8 +270,9 @@
 						}
 					%>
 					<div id="helpcenter" style="float:left;">
-					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
+					    <a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
 					</div>
+
 					<div id="helpchat" style="float:left;">
 						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
                             <script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/track.js"></script>
@@ -307,20 +280,30 @@
 						</pics:toggle>
 						<pics:toggleElse>
 							<%  if (liveChatEnabled) { %>
-								<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
+								<a href="javascript:;" class="liveperson-chat-toggle">
+                                    <%= i18nCache.getText("Header.Chat", locale) %>
+                                </a>
+                                <!-- BEGIN LivePerson Button Code -->
+                                <div id="lpButDivID-1354061301433" class="liveperson-chat"></div>
+                                <script type="text/javascript" charset="UTF-8" src="https://server.iad.liveperson.net/hc/90511184/?cmd=mTagRepstate&site=90511184&buttonID=1&divID=lpButDivID-1354061301433&bt=1&c=1"></script>
+                                <!-- END LivePerson Button code -->
+                                <!-- BEGIN LivePerson Monitor. -->
+                                <script language='javascript'> var lpMTagConfig = {'lpServer' : "server.iad.liveperson.net",'lpNumber' : "90511184",'lpProtocol' : (document.location.toString().indexOf('https:')==0) ? 'https' : 'http'}; function lpAddMonitorTag(src){if(typeof(src)=='undefined'||typeof(src)=='object'){src=lpMTagConfig.lpMTagSrc?lpMTagConfig.lpMTagSrc:'/hcp/html/mTag.js';}if(src.indexOf('http')!=0){src=lpMTagConfig.lpProtocol+"://"+lpMTagConfig.lpServer+src+'?site='+lpMTagConfig.lpNumber;}else{if(src.indexOf('site=')<0){if(src.indexOf('?')<0)src=src+'?';else src=src+'&';src=src+'site='+lpMTagConfig.lpNumber;}};var s=document.createElement('script');s.setAttribute('type','text/javascript');s.setAttribute('charset','iso-8859-1');s.setAttribute('src',src);document.getElementsByTagName('head').item(0).appendChild(s);} if (window.attachEvent) window.attachEvent('onload',lpAddMonitorTag); else window.addEventListener("load",lpAddMonitorTag,false);</script>
+                                <!-- END LivePerson Monitor. -->
+<%-- 								<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a> --%>
 		
-								<a id="_lpChatBtn"
-									class="liveperson-chat"
-									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a"
-									target="chat90511184"
-									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+<!-- 								<a id="_lpChatBtn" -->
+<!-- 									class="liveperson-chat" -->
+<%-- 									href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a" --%>
+<!-- 									target="chat90511184" -->
+<%-- 									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%= LocaleController.getValidLocale(locale).getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" > --%>
 		
-									<% if (!Strings.isEmpty(chatIcon)) { %>
-										<img src="<%= chatIcon %>" />
-									<% } else { %>
-										<%= i18nCache.getText("Header.Chat", locale) %>
-									<% } %>
-								</a>
+<%-- 									<% if (!Strings.isEmpty(chatIcon)) { %> --%>
+<%-- 										<img src="<%= chatIcon %>" /> --%>
+<%-- 									<% } else { %> --%>
+<%-- 										<%= i18nCache.getText("Header.Chat", locale) %> --%>
+<%-- 									<% } %> --%>
+<!-- 								</a> -->
 							<% } %>
 						</pics:toggleElse>
 					</div>					

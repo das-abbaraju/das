@@ -914,7 +914,7 @@ span.block:hover .hoverhelp {
 	z-index: 9;
 }
 
-#helpbox a
+#helpbox #helpcenter
 {
 	background: url('../images/help.gif') no-repeat left center;
 	margin-left: 2px;
@@ -922,7 +922,7 @@ span.block:hover .hoverhelp {
 	zoom: 1;
 }
 
-#helpbox a.liveperson-chat
+#helpbox .liveperson-chat
 {
 	background: none;
 	clear: both;
@@ -930,6 +930,11 @@ span.block:hover .hoverhelp {
 	height: 77px;
 	margin: 5px 0px 0px;
 	padding: 0px;
+}
+
+#helpbox .liveperson-chat-toggle:hover
+{
+	color: #000000;
 }
 
 #content div.helpOnRight {
