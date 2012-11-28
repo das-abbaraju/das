@@ -210,10 +210,7 @@ public final class MenuBuilder {
         cacheSubmenu.addChild(getText("menu.Dev.ClearCache"), "ClearCache.action", "clear_cache");
         cacheSubmenu.addChild(getText("menu.Dev.CacheStatistics"), "CacheStatistics.action", "cache_stats");
 
-        MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
-        cronSubmenu.addChild(getText("menu.Dev.ContractorCron"), "ContractorCron.action", "contractor_cron");
-        cronSubmenu.addChild(getText("menu.Dev.MailCron"), "MailCron.action", "mail_cron");
-        cronSubmenu.addChild(getText("menu.Dev.SubscriptionCron"), "SubscriptionCron.action", "subscription_cron");
+        buildCronSubmenu(devMenu);
 
         devMenu.addChild(getText("menu.Dev.ServerInformation"), "ServerInfo.action", "server_info");
         devMenu.addChild(getText("menu.Dev.AppProperties"), "ManageAppProperty.action", "manage_app_properties");
@@ -226,10 +223,17 @@ public final class MenuBuilder {
         devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
 
         devMenu.addChild("Report Tester", "ReportTester.action", "report_tester");
-
         devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
+        devMenu.addChild("Front-End Development Guide", "FrontendDevelopmentGuide", "front-end-dev-guide");      
 
     }
+
+	private static void buildCronSubmenu(MenuComponent devMenu) {
+		MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
+        cronSubmenu.addChild(getText("menu.Dev.ContractorCron"), "ContractorCron.action", "contractor_cron");
+        cronSubmenu.addChild(getText("menu.Dev.MailCron"), "MailCron.action", "mail_cron");
+        cronSubmenu.addChild(getText("menu.Dev.SubscriptionCron"), "SubscriptionCron.action", "subscription_cron");
+	}
 
     private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
         MenuComponent manageMenu = menubar.addChild(getText("menu.Manage"));
