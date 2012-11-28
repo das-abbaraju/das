@@ -16,7 +16,7 @@ public class KeepAlive {
 
 	private final static Logger logger = LoggerFactory.getLogger(KeepAlive.class);
 
-	private float loadFactor = 3f;
+	private float loadFactor = 4f;
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -51,7 +51,7 @@ public class KeepAlive {
 	private String getJsonOutput() {
 		// Assume it's JSONP for now. If we add more types we can modify
 		// this
-		//response.setContentType("application/jsonp");
+		// response.setContentType("application/jsonp");
 		// response.setContentType("application/json");
 		response.setContentType("application/javascript");
 
