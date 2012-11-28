@@ -224,7 +224,7 @@ public final class MenuBuilder {
 
         devMenu.addChild("Report Tester", "ReportTester.action", "report_tester");
         devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
-        devMenu.addChild("Front-End Development Guide", "FrontendDevelopmentGuide", "front-end-dev-guide");      
+        devMenu.addChild("Front-End Development Guide", "FrontendDevelopmentGuide.action", "front-end-dev-guide");      
 
     }
 
