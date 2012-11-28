@@ -170,6 +170,10 @@ public class ContractorCron extends PicsActionSupport {
 	@Transactional
 	private void run(int conID, int opID) throws Exception {
 		ContractorAccount contractor = contractorDAO.find(conID);
+		if (contractor == null) {
+			this.addActionError("Could not find contractor #" + conID);
+			return;
+		}
 
 		try {
 			runBilling(contractor);
