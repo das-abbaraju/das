@@ -36,6 +36,10 @@ public enum PasswordSecurityLevel {
         return false;
     }
 
+	public boolean enforcePasswordExpiration() {
+		return expirationMonths > 0;
+	}
+
     public static PasswordSecurityLevel fromDbValue(int passwordSecurityLevel) {
         for (PasswordSecurityLevel securityLevel : PasswordSecurityLevel.values()) {
             if (securityLevel.dbValue == passwordSecurityLevel) {

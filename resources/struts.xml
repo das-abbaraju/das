@@ -129,8 +129,10 @@
             <result name="Submitted">exception_handler_submitted.jsp</result>
         </action>
 
+        <!-- todo: Does it makes sense to add a global "error" result instead of at the action level? -->
         <action name="Login" class="com.picsauditing.access.LoginController">
             <result>struts/users/login.jsp</result>
+            <result name="error">struts/users/login.jsp</result>
             <result name="forgot">struts/users/account_recovery.jsp</result>
             <result name="overlay">/struts/users/login_form.jsp</result>
             <result name="loginform">/struts/users/login/_login-form.jsp</result>

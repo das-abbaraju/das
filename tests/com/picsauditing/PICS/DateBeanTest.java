@@ -2,10 +2,7 @@ package com.picsauditing.PICS;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -594,5 +591,30 @@ public class DateBeanTest {
 		assertEquals(1, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 23), new LocalDate(2012, 8, 24)));
 		assertEquals(4, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 20), new LocalDate(2012, 8, 24)));
 		assertEquals(5, DateBean.BusinessDaysBetween(new LocalDate(2012, 8, 14), new LocalDate(2012, 8, 21)));
+	}
+
+	@Test
+	public void testIsMoreThanXMonthsAgo() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -3);
+		Date threeMonthsAgo = cal.getTime();
+
+		cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -3);
+		cal.add(Calendar.DATE, 1);
+		Date justUnderThreeMonthsAgo = cal.getTime();
+
+		cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -3);
+		cal.add(Calendar.DATE, -1);
+		Date justOverThreeMonthsAgo = cal.getTime();
+
+		assertTrue(DateBean.isMoreThanXMonthsAgo(threeMonthsAgo, 2));
+		assertTrue(DateBean.isMoreThanXMonthsAgo(justOverThreeMonthsAgo, 3));
+
+		assertFalse(DateBean.isMoreThanXMonthsAgo(justUnderThreeMonthsAgo, 3));
+		assertFalse(DateBean.isMoreThanXMonthsAgo(threeMonthsAgo, 4));
+		assertFalse(DateBean.isMoreThanXMonthsAgo(threeMonthsAgo, 5));
+
 	}
 }
