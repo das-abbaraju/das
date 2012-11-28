@@ -26,78 +26,69 @@ Ext.define('PICS.view.report.settings.EditSettings', {
 
     listeners: {
         afterrender: function (cmp, eOpts) {
-            if (PICS.app.configuration.isFavorite()) {
-                this.updateFavorite();
-            }
-
             var config = PICS.app.configuration;
 
-            if (config.isEditable()) {
-                this.mon(this.el,'click', this.onEditableFavoriteClick, this, {
-                    delegate: '.icon-star'
-                });
-            } else {
-                this.mon(this.el,'click', this.onNonEditableFavoriteClick, this, {
-                    delegate: '.icon-star'
-                });
+            if (config.isFavorite()) {
+                this.favorite();
             }
+
+            this.mon(this.el,'click', this.onFavoriteClick, this, {
+                delegate: '.icon-star'
+            });
         }
     },
 
-    onEditableFavoriteClick: function (event, target) {
-        event.stopEvent();
+    favorite: function (favorite_elements) {
+        var favorite_elements = favorite_elements || this.getFavoriteElements();
 
-        var element = Ext.fly(target),
-            favorite_class = element.hasCls('selected');
+        favorite_elements.icon.addCls('selected');
+        favorite_elements.text.setHTML('is');
+    },
 
-        if (favorite_class) {
-            this.updateUnFavorite();
+    getFavoriteElements: function () {
+        var element = this.getEl();
+
+        return {
+            icon: element.down('.icon-star'),
+            text: element.down('.favorite-text')
+        };
+    },
+
+    isFavorited: function (favorite_elements) {
+        var favorite_elements = favorite_elements || this.getFavoriteElements();
+
+        return favorite_elements.icon.hasCls('selected');
+    },
+
+    onFavoriteClick: function (event, target) {
+        var favorite_elements = this.getFavoriteElements(),
+            is_favorited = this.isFavorited(favorite_elements),
+            is_editable = PICS.app.configuration.isEditable();
+
+        if (is_favorited) {
+            this.unfavorite(favorite_elements);
         } else {
-            this.updateFavorite();
+            this.favorite(favorite_elements);
+        }
+
+        if (!is_editable) {
+            this.saveFavoriteSetting(!is_favorited);
         }
     },
 
-    onNonEditableFavoriteClick: function (event, target) {
-        event.stopEvent();
-
-        var element = Ext.fly(target),
-            favorite_class = element.hasCls('selected'),
+    saveFavoriteSetting: function (setting) {
+        var event_name = setting ? 'favorite' : 'unfavorite',
             config = PICS.app.configuration;
 
-        if (favorite_class) {
-            this.updateUnFavorite();
-            this.fireEvent('unfavorite');
-            config.setIsFavorite(false);
-        } else {
-            this.updateFavorite();
-            this.fireEvent('favorite');
-            config.setIsFavorite(true);
-        }
+        this.fireEvent(event_name);
+        config.setIsFavorite(setting);
     },
 
-    checkFavoriteStatus: function () {
-        var element = this.getEl(),
-            favorite_icon = element.down('.icon-star');
+    unfavorite: function (favorite_elements) {
+        var favorite_elements = favorite_elements || this.getFavoriteElements();
 
-        return favorite_icon.hasCls('selected');
-    },
-
-    updateFavorite: function () {
-        var element = this.getEl(),
-            favorite_icon = element.down('.icon-star'),
-            favorite_text = element.down('.favorite-text');
-
-        favorite_icon.addCls('selected');
-        favorite_text.setHTML('is');
-    },
-
-    updateUnFavorite: function (element) {
-        var element = this.getEl();
-            favorite_icon = element.down('.icon-star'),
-            favorite_text = element.down('.favorite-text');
-
-        favorite_icon.removeCls('selected');
-        favorite_text.setHTML('is not');
+        favorite_elements.icon.removeCls('selected');
+        favorite_elements.text.setHTML('is not');
     },
 
     generateEditableSettings: function () {
@@ -139,7 +130,7 @@ Ext.define('PICS.view.report.settings.EditSettings', {
             name: 'report_description'
         }, {
             xtype: 'displayfield',
-            fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
+            fieldLabel: '<i class="favorite icon-star"></i>',
             labelAlign: 'right',
             labelSeparator: '',
             value: 'Report <strong class="favorite-text">is not</strong> a Favorite'

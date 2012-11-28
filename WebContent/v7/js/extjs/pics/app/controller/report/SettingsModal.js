@@ -143,10 +143,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameEdit().getValue(),
             report_description = this.getReportDescriptionEdit().getValue(),
             edit_settings = cmp.up('#report_edit'),
-            is_favorite = edit_settings.checkFavoriteStatus();
+            is_favorited = edit_settings.isFavorited(),
             config = PICS.app.configuration;
 
-        if (is_favorite) {
+        if (is_favorited) {
             edit_settings.fireEvent('favorite');
             config.setIsFavorite(true);
         } else {
