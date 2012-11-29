@@ -167,7 +167,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
     @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
     @Enumerated(EnumType.STRING)
-    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Required, sql = "CASE "
+    @ReportField(type = FieldType.Boolean, sql = "CASE "
             + ReportOnClause.ToAlias + ".isGroup WHEN 'Yes' THEN 1 ELSE 0 END")
     public YesNo getIsGroup() {
         return isGroup;
