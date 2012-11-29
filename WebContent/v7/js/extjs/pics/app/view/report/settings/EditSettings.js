@@ -2,6 +2,8 @@ Ext.define('PICS.view.report.settings.EditSettings', {
     extend: 'Ext.form.Panel',
     alias: ['widget.reportsettingsedit'],
 
+    requires: ['PICS.view.report.settings.FavoriteToggle'],
+
     border: 0,
     id: 'report_edit',
     // custom config
@@ -22,73 +24,6 @@ Ext.define('PICS.view.report.settings.EditSettings', {
         this.addEvents('favorite');
         this.addEvents('unfavorite');
 
-    },
-
-    listeners: {
-        afterrender: function (cmp, eOpts) {
-            var config = PICS.app.configuration;
-
-            if (config.isFavorite()) {
-                this.favorite();
-            }
-
-            this.mon(this.el,'click', this.onFavoriteClick, this, {
-                delegate: '.icon-star'
-            });
-        }
-    },
-
-    favorite: function (favorite_elements) {
-        var favorite_elements = favorite_elements || this.getFavoriteElements();
-
-        favorite_elements.icon.addCls('selected');
-        favorite_elements.text.setHTML('is');
-    },
-
-    getFavoriteElements: function () {
-        var element = this.getEl();
-
-        return {
-            icon: element.down('.icon-star'),
-            text: element.down('.favorite-text')
-        };
-    },
-
-    isFavorited: function (favorite_elements) {
-        var favorite_elements = favorite_elements || this.getFavoriteElements();
-
-        return favorite_elements.icon.hasCls('selected');
-    },
-
-    onFavoriteClick: function (event, target) {
-        var favorite_elements = this.getFavoriteElements(),
-            is_favorited = this.isFavorited(favorite_elements),
-            is_editable = PICS.app.configuration.isEditable();
-
-        if (is_favorited) {
-            this.unfavorite(favorite_elements);
-        } else {
-            this.favorite(favorite_elements);
-        }
-
-        if (!is_editable) {
-            this.saveFavoriteSetting(!is_favorited);
-        }
-    },
-
-    saveFavoriteSetting: function (setting) {
-        var event_name = setting ? 'favorite' : 'unfavorite',
-            config = PICS.app.configuration;
-
-        this.fireEvent(event_name);
-        config.setIsFavorite(setting);
-    },
-
-    unfavorite: function (favorite_elements) {
-        var favorite_elements = favorite_elements || this.getFavoriteElements();
-
-        favorite_elements.icon.removeCls('selected');
-        favorite_elements.text.setHTML('is not');
     },
 
     generateEditableSettings: function () {
@@ -129,28 +64,22 @@ Ext.define('PICS.view.report.settings.EditSettings', {
             labelAlign: 'right',
             name: 'report_description'
         }, {
-            xtype: 'displayfield',
-            fieldLabel: '<i class="favorite icon-star"></i>',
-            labelAlign: 'right',
-            labelSeparator: '',
-            value: 'Report <strong class="favorite-text">is not</strong> a Favorite'
-        }/*, {
-            xtype: 'displayfield',
-            fieldLabel: '<a href="javascript:;" class="private"><i class="icon-eye-open"></i></a>',
-            labelAlign: 'right',
-            labelSeparator: '',
-            value: 'Report <strong>is not</strong> Private'
-        }*/);
+            xtype: 'favoritetoggle'
+        });
 
         this.layout = 'form';
     },
 
     generateNonEditableSettings: function () {
-        this.html = new Ext.Template([
-            "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-            "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>",
-            "<p><a href='javascript:;' class='favorite'><i class='icon-star'></i></a> Report <strong class='favorite-text'>is not</strong> a Favorite</p>"
-        ]);
+        this.add({
+            xtype: 'panel',
+            html:  new Ext.Template([
+                "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
+                "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
+            ]),
+        },{
+            xtype: 'favoritetoggle'
+        });
 
         this.id = 'settings_no_permission';
     },

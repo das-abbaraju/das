@@ -25,6 +25,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'reportDescriptionCopy',
         selector: 'reportsettingscopy [name=report_description]'
+    }, {
+        ref: 'favoriteToggle',
+        selector: 'favoritetoggle'
     }],
 
     stores: [
@@ -128,6 +131,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
 
+        this.setFavoriteStatus();
+
         report.set('name', report_name);
         report.set('description', report_description);
 
@@ -141,18 +146,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var store = this.getReportReportsStore(),
             report = store.first(),
             report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue(),
-            edit_settings = cmp.up('#report_edit'),
-            is_favorited = edit_settings.isFavorited(),
-            config = PICS.app.configuration;
+            report_description = this.getReportDescriptionEdit().getValue();
 
-        if (is_favorited) {
-            edit_settings.fireEvent('favorite');
-            config.setIsFavorite(true);
-        } else {
-            edit_settings.fireEvent('unfavorite');
-            config.setIsFavorite(false);
-        }
+        this.setFavoriteStatus();
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -213,7 +209,15 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         modal.setTitle(title);
     },
-    
+
+    setFavoriteStatus: function () {
+        var favorite_toggle = this.getFavoriteToggle(),
+            favorite_selected = favorite_toggle.favoriteSelected();
+            config = PICS.app.configuration;
+
+        favorite_toggle.saveFavoriteStatus(favorite_selected);
+    },
+
     showSettingsModal: function (action) {
         var modal = Ext.create('PICS.view.report.settings.SettingsModal'),
             that = this;

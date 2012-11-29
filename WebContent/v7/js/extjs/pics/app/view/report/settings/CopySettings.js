@@ -39,7 +39,10 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         fieldLabel: 'Description',
         labelAlign: 'right',
         name: 'report_description'
-    }/*, {
+    }, {
+        xtype: 'favoritetoggle'
+    }
+/*, {
         xtype: 'displayfield',
         fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
         labelAlign: 'right',
