@@ -10,7 +10,7 @@
                         method : 'start'
                     }, this.controlWatch);
 
-                    contractor_dashboard.delegate('#start_watch_link', 'click', {
+                    contractor_dashboard.delegate('#stop_watch_link', 'click', {
                         action : 'Remove',
                         method : 'stop'
                     }, this.controlWatch);
