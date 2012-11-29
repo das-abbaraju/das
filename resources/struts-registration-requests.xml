@@ -19,21 +19,11 @@
 		<action name="RequestNewContractorMatchingList"
 			class="com.picsauditing.actions.contractors.RequestNewContractor" method="matchingList">
 			<result>/struts/blank.jsp</result>
-		</action>		
-
-		<action name="RequestingOperatorUserList"
-			class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
-			<result>/struts/contractors/request/operator_users.jsp</result>
 		</action>
-		
+
 		<action name="OperatorUserListAjax"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/users/operator_users.jsp</result>
-		</action>
-		
-		<action name="RequestingOperatorTagList"
-			class="com.picsauditing.actions.contractors.RequestNewContractorAccount" method="load">
-			<result>/struts/contractors/request/operator_tags.jsp</result>
 		</action>
 		
 		<action name="OperatorTagsAjax"
@@ -45,10 +35,6 @@
 			<result>struts/reports/report_con_new_registration.jsp</result>
 		</action>
 		
-		<action name="ReportRegistrationRequests" class="com.picsauditing.actions.report.ReportRegistrationRequests">
-			<result>struts/reports/report_registration_requests.jsp</result>
-		</action>
-
 		<action name="ReportNewRequestedContractorCSV"
 			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
 			<param name="download">true</param>
@@ -67,10 +53,31 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 		
+		<!-- "New" System using accounts -->
+		
+		<action name="ReportRegistrationRequests" class="com.picsauditing.actions.report.ReportRegistrationRequests">
+			<result>struts/reports/report_registration_requests.jsp</result>
+		</action>
+		
 		<action name="RequestNewContractorAccount" class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
 			<result>/struts/contractors/request/request_new_contractor.jsp</result>
 			<result name="input">/struts/contractors/request/request_new_contractor.jsp</result>
 			<result name="email">/struts/contractors/request/email_preview.jsp</result>
+		</action>
+		
+		<action name="RequestNewContractorSearch" class="com.picsauditing.actions.contractors.RequestNewContractorSearch"
+			method="search">
+			<result>/struts/contractors/request/request_new_contractor_search.jsp</result>
+		</action>
+		
+		<action name="RequestingOperatorUserList"
+			class="com.picsauditing.actions.contractors.RequestNewContractorAccount">
+			<result>/struts/contractors/request/operator_users.jsp</result>
+		</action>
+		
+		<action name="RequestingOperatorTagList"
+			class="com.picsauditing.actions.contractors.RequestNewContractorAccount" method="load">
+			<result>/struts/contractors/request/operator_tags.jsp</result>
 		</action>
 		
 		<action name="DataConversionRequestAccount" class="com.picsauditing.actions.DataConversionRequestAccount">

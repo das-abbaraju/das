@@ -5,6 +5,8 @@
                 var element = $('.RequestNewContractorAccount-page');
 
                 if (element.length) {
+                    var that = this;
+                    
                     element.delegate('.contact', 'click', this.showContactModal);
                     
                     element.delegate('#city', 'keyup', this.toggleAddressZip);
@@ -13,6 +15,7 @@
                     element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
                     element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
                     element.delegate('#request_status', 'change', this.toggleStatusFields);
+                    element.delegate('.check-matches', 'keyup', PICS.debounce(that.checkMatches, 250));
                     
                     $('.datepicker').datepicker({
                         changeMonth : true,
@@ -38,6 +41,47 @@
                     $('#city').trigger('keyup');
                     $('#request_status').trigger('change');
                 }
+            },
+            
+            checkMatches: function(event) {
+                var element = $(this);
+                var messageDiv = element.siblings('div.match-found');
+                var listDiv = element.siblings('div.match-list');
+                var type = element.attr('data-type');
+                var term = element.val();
+                
+                messageDiv.html('<img src="images/ajax_process.gif" alt="' + translate('JS.Loading') + '" /> '
+                        + translate('JS.RequestNewContractor.message.CheckingForMatches'));
+                
+                PICS.ajax({
+                    url: 'RequestNewContractorSearch.action',
+                    data: {
+                        term: term,
+                        type: type
+                    },
+                    success: function(data, textStatus, XMLHttpRequest) {
+                        if (data.indexOf("No matches") > -1) {
+                            messageDiv.empty();
+                            listDiv.empty();
+                        } else {
+                            listDiv.html(data);
+                            
+                            messageDiv.html('<a href="javascript:;">' 
+                                    + translate('JS.RequestNewContractor.message.PossibleMatches') 
+                                    + '</a>');
+                            
+                            messageDiv.delegate('a', 'click', function() {
+                                var modal = PICS.modal({
+                                    title: translate('JS.RequestNewContractor.message.PotentialMatches'),
+                                    content: listDiv.html()
+                                });
+                                
+                                element.blur();
+                                modal.show();
+                            });
+                        }
+                    }
+                });
             },
             
             loadCountrySubdivision: function(event) {

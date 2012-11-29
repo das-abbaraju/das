@@ -100,18 +100,6 @@
 					<div id="think_email"></div>
 					<div id="match_email"></div>
 				</li>
-				<li>
-					<s:textfield
-						cssClass="checkReq"
-						name="newContractor.taxID"
-						size="9"
-						maxLength="9"
-						id="taxID"
-						theme="formhelp"
-					/>
-					<div id="think_tax"></div>
-					<div id="match_tax"></div>
-				</li>
 			</ol>
 		</fieldset>
 		<fieldset class="form">

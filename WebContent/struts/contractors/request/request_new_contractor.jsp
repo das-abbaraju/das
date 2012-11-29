@@ -30,6 +30,11 @@
 			background-color: #EEE;
 			border: 1px solid #DDD;
 		}
+		
+		p.matched-on
+		{
+			color: #A84D10 !important;
+		}
 	</style>
 </head>
 <body>
@@ -98,56 +103,53 @@
 					<s:if test="#isEditable">
 						<li>
 							<s:textfield
-								cssClass="checkReq"
+								cssClass="check-matches"
 								id="company_name"
 								name="contractor.name"
 								size="35"
 								theme="formhelp"
 								required="true"
+								data-type="C"
 							/>
-							<div id="match_name"></div>
+							<div class="match-found"></div>
+							<div class="match-list hide"></div>
 						</li>
 						<li>
 							<s:textfield
-								cssClass="checkReq"
+								cssClass="check-matches"
 								id="contact_name"
 								name="primaryContact.name"
 								theme="formhelp"
 								required="true"
+								data-type="U"
 							/>
-							<div id="match_contact"></div>
+							<div class="match-found"></div>
+							<div class="match-list hide"></div>
 						</li>
 						<li>
 							<s:textfield
-								cssClass="checkReq"
+								cssClass="check-matches"
 								name="primaryContact.phone"
 								required="true"
 								size="20"
 								theme="formhelp"
+								data-type="U"
 							/>
-							<div id="match_phone"></div>
+							<div class="match-found"></div>
+							<div class="match-list hide"></div>
 						</li>
 						<li>
 							<s:textfield
-								cssClass="checkReq"
+								cssClass="check-matches"
 								id="email"
 								name="primaryContact.email"
 								required="true"
 								size="30"
 								theme="formhelp"
+								data-type="U"
 							/>
-							<div id="match_email"></div>
-						</li>
-						<li>
-							<s:textfield
-								cssClass="checkReq"
-								id="taxID"
-								maxLength="9"
-								name="contractor.taxId"
-								size="9"
-								theme="formhelp"
-							/>
-							<div id="match_tax"></div>
+							<div class="match-found"></div>
+							<div class="match-list hide"></div>
 						</li>
 					</s:if>
 					<s:else>
@@ -517,29 +519,28 @@
 				</s:if>
 			</fieldset>
 		</s:form>
-	</div>
-	
-	<div id="contact_form" class="hide">
-		<fieldset class="form">
-			<ol>
-				<li>
-					<s:select
-						cssClass="contact-type"
-						headerKey=""
-						headerValue="- %{getText('RequestNewContractor.ContactType')} -"
-						label="RequestNewContractor.ContactType"
-						list="@com.picsauditing.actions.contractors.RequestNewContractorAccount$RequestContactType@values()"
-						listValue="%{getText(i18nKey)}"
-						name="contactType"
-					/>
-				</li>
-				<li>
-					<label>
-						<s:text name="RequestNewContractor.label.AddAdditionalNotes" />
-					</label>
-					<s:textarea cssClass="contact-note" name="contactNote" />
-				</li>
-			</ol>
-		</fieldset>
+		<div id="contact_form" class="hide">
+			<fieldset class="form">
+				<ol>
+					<li>
+						<s:select
+							cssClass="contact-type"
+							headerKey=""
+							headerValue="- %{getText('RequestNewContractor.ContactType')} -"
+							label="RequestNewContractor.ContactType"
+							list="@com.picsauditing.actions.contractors.RequestNewContractorAccount$RequestContactType@values()"
+							listValue="%{getText(i18nKey)}"
+							name="contactType"
+						/>
+					</li>
+					<li>
+						<label>
+							<s:text name="RequestNewContractor.label.AddAdditionalNotes" />
+						</label>
+						<s:textarea cssClass="contact-note" name="contactNote" />
+					</li>
+				</ol>
+			</fieldset>
+		</div>
 	</div>
 </body>
