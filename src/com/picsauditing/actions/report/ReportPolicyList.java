@@ -37,6 +37,7 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 
 		if (permissions.isOperatorCorporate()) {
 			sql.addField("d.answer certID");
+			sql.addGroupBy("ca.id");
 
 			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id AND d.questionID IN "
 					+ "(SELECT aq.id FROM audit_question aq "
