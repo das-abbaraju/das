@@ -1928,6 +1928,7 @@ public class ContractorAccount extends Account implements JSONable {
 		setRegistrationHash(Strings.hashUrlSafe(seed));
 	}
 
+	@Transient
 	public ContractorOperator getContractorOperatorWithClosestDeadline() {
 		ContractorOperator closestDeadline = null;
 
