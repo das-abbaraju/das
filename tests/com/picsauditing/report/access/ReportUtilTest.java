@@ -49,7 +49,7 @@ public class ReportUtilTest {
 		Permissions permissions = EntityFactory.makePermission();
 		JSONObject json = ReportUtil.renderEnumFieldAsJson(FieldType.AccountStatus, permissions);
 		JSONArray results = (JSONArray)json.get("result");
-		assertEquals(4, results.size());
+		assertEquals(5, results.size());
 	}
 
 	@Test
