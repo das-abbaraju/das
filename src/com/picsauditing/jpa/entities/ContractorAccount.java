@@ -136,6 +136,7 @@ public class ContractorAccount extends Account implements JSONable {
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
 	// Registration Requests
+	private Date lastContactedByInsideSalesDate;
 	private Date followUpDate;
 	private int contactCountByEmail;
 	private int contactCountByPhone;
@@ -1845,6 +1846,14 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return true;
+	}
+
+	public Date getLastContactedByInsideSalesDate() {
+		return lastContactedByInsideSalesDate;
+	}
+
+	public void setLastContactedByInsideSalesDate(Date lastContactedByInsideSalesDate) {
+		this.lastContactedByInsideSalesDate = lastContactedByInsideSalesDate;
 	}
 
 	@Column(name = "followupDate")
