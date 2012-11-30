@@ -13,6 +13,7 @@ import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.VATValidator;
@@ -48,6 +49,9 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.general.TimezoneFinder;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -75,6 +79,9 @@ public class Registration extends ContractorActionSupport {
 	private VATValidator vatValidator;
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
+	@Autowired
+	@Qualifier("CsrAssignmentPublisher")
+	private Publisher csrAssignmentPublisher;
 
 	private User user;
 	private String username;
@@ -190,6 +197,9 @@ public class Registration extends ContractorActionSupport {
 		sendWelcomeEmail();
 		addNote(contractor, "Welcome Email Sent");
 		addNoteThatRequestRegistered();
+
+		// this is feature toggled in the publisher
+		csrAssignmentPublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
