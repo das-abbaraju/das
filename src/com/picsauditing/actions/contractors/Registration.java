@@ -346,7 +346,10 @@ public class Registration extends ContractorActionSupport {
 			contractor.setCountrySubdivision(null);
 		}
 
-		contractor.setStatus(AccountStatus.Pending);
+		if (contractor.getStatus().isRequested()) {
+			contractor.setStatus(AccountStatus.Pending);
+		}
+
 		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());
