@@ -1220,6 +1220,10 @@
         <action name="Liveagent" class="com.picsauditing.actions.Liveagent">
             <result>struts/liveagent/liveagent.jsp</result>
         </action>
+
+		<action name="SessionAjax" class="com.picsauditing.actions.users.SessionAjax">
+			<result type="json"></result>
+		</action>
     </package>
 
     <!-- Reports & API -->
