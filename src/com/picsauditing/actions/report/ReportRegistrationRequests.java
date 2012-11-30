@@ -123,14 +123,14 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		sql.addField("pics.id AS ContactedByID");
 		sql.addField("c.lastContactedByInsideSalesDate AS lastContactDate");
 		sql.addField("(c.contactCountByEmail + c.contactCountByPhone) AS contactCount");
+		sql.addField("'' AS matchCount");
 		sql.addField("c.expiresOnDate AS closedOnDate");
 		sql.addField("a.creationDate");
 		sql.addField("a.id AS conID");
 		sql.addField("a.name AS contractorName");
+		sql.addField("'' AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql.addField("'ACC' AS systemType");
-		sql.addField("'' AS matchCount");
-		sql.addField("'' AS Notes");
 
 		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL)");
 
