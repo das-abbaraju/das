@@ -173,7 +173,7 @@ public class PicsMenu {
 
 		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
 			subMenu.addChild(getTitle("ReportNewRequestedContractor"),
-					urlUtil.getActionUrl("ReportRegistrationRequests"));
+					urlUtil.getActionUrl("ReportRegistrationRequests"), "subMenu_ReportNewRequestedContractor");
 		} else if (permissions.hasPermission(OpPerms.RequestNewContractor)) {
 			addChildAction(subMenu, "ReportNewRequestedContractor");
 		}
