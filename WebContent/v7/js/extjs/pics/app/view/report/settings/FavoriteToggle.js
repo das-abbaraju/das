@@ -9,7 +9,6 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
 
     initComponent: function () {
         this.callParent(arguments);
-        console.log
     },
 
     listeners: {
