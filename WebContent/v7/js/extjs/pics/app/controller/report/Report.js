@@ -54,11 +54,14 @@ Ext.define('PICS.controller.report.Report', {
     createReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!copy.action';
+            url = 'ReportDynamic!copy.action'
+            request_params = report.toRequestParams();
+
+            request_params.favorite = PICS.app.configuration.isFavorite();
 
         Ext.Ajax.request({
             url: url,
-            params: report.toRequestParams(),
+            params: request_params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 

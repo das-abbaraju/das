@@ -26,8 +26,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
         ref: 'reportDescriptionCopy',
         selector: 'reportsettingscopy [name=report_description]'
     }, {
-        ref: 'favoriteToggle',
-        selector: 'favoritetoggle'
+        ref: 'editFavoriteToggle',
+        selector: 'reportsettingsedit favoritetoggle'
+    }, {
+        ref: 'copyFavoriteToggle',
+        selector: 'reportsettingscopy favoritetoggle'
     }],
 
     stores: [
@@ -131,7 +134,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
 
-        this.setFavoriteStatus();
+        this.setFavoriteStatus('Copy');
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -148,7 +151,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameEdit().getValue(),
             report_description = this.getReportDescriptionEdit().getValue();
 
-        this.setFavoriteStatus();
+        this.setFavoriteStatus('Edit');
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -210,12 +213,11 @@ Ext.define('PICS.controller.report.SettingsModal', {
         modal.setTitle(title);
     },
 
-    setFavoriteStatus: function () {
-        var favorite_toggle = this.getFavoriteToggle(),
-            favorite_selected = favorite_toggle.favoriteSelected();
-            config = PICS.app.configuration;
+    setFavoriteStatus: function (owner) {
+        var favorite_toggle = this['get' + owner + 'FavoriteToggle'](),
+            is_favorite_on = favorite_toggle.isFavoriteOn();
 
-        favorite_toggle.saveFavoriteStatus(favorite_selected);
+        favorite_toggle.saveFavoriteStatus(is_favorite_on);
     },
 
     showSettingsModal: function (action) {

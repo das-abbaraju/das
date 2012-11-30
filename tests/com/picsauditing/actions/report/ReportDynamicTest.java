@@ -36,11 +36,11 @@ public class ReportDynamicTest extends PicsActionTest {
 
 	@Test
 	public void testCopy_ProxiesToReportModelCopy() throws Exception {
-		when(reportModel.copy(report, permissions)).thenReturn(report);
+		when(reportModel.copy(report, permissions, false)).thenReturn(report);
 
 		reportDynamic.copy();
 
-		verify(reportModel).copy(report, permissions);
+		verify(reportModel).copy(report, permissions, false);
 	}
 
 	@Test

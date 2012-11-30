@@ -9,6 +9,7 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
 
     initComponent: function () {
         this.callParent(arguments);
+        console.log
     },
 
     listeners: {
@@ -25,53 +26,55 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
         }
     },
 
-    getFavoriteElements: function () {
-        var element = this.getEl();
-
-        return {
-            icon: element.down('.icon-star'),
-            text: element.down('.favorite-text')
-        };
-    },
-
-    favoriteSelected: function (favorite_elements) {
+    isFavoriteOn: function (favorite_elements) {
         var favorite_elements = favorite_elements || this.getFavoriteElements();
 
         return favorite_elements.icon.hasCls('selected');
     },
 
-    saveFavoriteStatus: function (setting) {
-        var event_name = setting ? 'favorite' : 'unfavorite',
-            config = PICS.app.configuration;
+    getFavoriteElements: function () {
+        var parentCmp = this.up('panel'),
+            parentEl = parentCmp.getEl();
 
-        this.fireEvent(event_name);
-        config.setIsFavorite(setting);
+        return {
+            parentCmp: parentCmp,
+            icon: parentEl.down('.icon-star'),
+            text: parentEl.down('.favorite-text')
+        };
     },
 
-    selectFavorite: function (favorite_elements) {
+    saveFavoriteStatus: function (status) {
+        var event_name = status ? 'favorite' : 'unfavorite',
+            config = PICS.app.configuration;
+
+        config.setIsFavorite(status);
+        this.fireEvent(event_name);
+    },
+
+    toggleFavoriteOn: function (favorite_elements) {
         var favorite_elements = favorite_elements || this.getFavoriteElements();
 
         favorite_elements.icon.addCls('selected');
         favorite_elements.text.setHTML('is');
     },
-    
-    selectNotFavorite: function (favorite_elements) {
+
+    toggleFavoriteOff: function (favorite_elements) {
         var favorite_elements = favorite_elements || this.getFavoriteElements();
 
         favorite_elements.icon.removeCls('selected');
         favorite_elements.text.setHTML('is not');
     },
-    
+
     toggleFavoriteStatus: function () {
         var favorite_elements = favorite_elements || this.getFavoriteElements(),
-            favorite_selected = this.favoriteSelected(favorite_elements),
+            is_favorite_on = this.isFavoriteOn(favorite_elements),
             is_editable = PICS.app.configuration.isEditable(),
-            duplicating = this.up('panel').$className == 'PICS.view.report.settings.CopySettings';
+            duplicating = Ext.getClassName(favorite_elements.parentCmp) == 'PICS.view.report.settings.CopySettings';
 
-        favorite_selected ? this.selectNotFavorite(favorite_elements) : this.selectFavorite(favorite_elements);
+        is_favorite_on ? this.toggleFavoriteOff(favorite_elements) : this.toggleFavoriteOn(favorite_elements);
 
         if (!is_editable && !duplicating) {
-            this.saveFavoriteStatus(!favorite_selected);
+            this.saveFavoriteStatus(!is_favorite_on);
         }
     }
 });
