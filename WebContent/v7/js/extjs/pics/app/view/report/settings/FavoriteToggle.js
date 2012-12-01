@@ -38,12 +38,11 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
 
     saveFavoriteStatus: function (status) {
         var event_name = status ? 'favorite' : 'unfavorite',
-            config = PICS.app.configuration,
-            parent = this.up('panel');
+            config = PICS.app.configuration;
 
         config.setIsFavorite(status);
 
-        parent.fireEvent(event_name);
+        this.fireEvent(event_name);
     },
 
     toggleFavoriteOn: function () {

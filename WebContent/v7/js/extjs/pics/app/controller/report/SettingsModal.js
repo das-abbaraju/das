@@ -48,7 +48,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender,
+                beforerender: this.onReportModalEditBeforeRender
+            },
+
+            'reportsettingsmodal favoritetoggle': {
                 favorite: this.onReportFavorite,
                 unfavorite: this.onReportUnFavorite
             },
@@ -72,7 +75,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
                 click: this.onReportModalPrintPreviewClick
             },
-            
+
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
                 beforerender: this.onReportModalShareSearchboxRender,
                 select: this.onReportModalShareSearchboxSelect,
