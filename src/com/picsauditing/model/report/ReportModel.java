@@ -91,8 +91,7 @@ public class ReportModel {
         reportPermissionUserDao.save(reportPermissionUser);
     }
 
-    public Report copy(Report sourceReport, Permissions permissions) throws NoRightsException,
-            ReportValidationException {
+    public Report copy(Report sourceReport, Permissions permissions, boolean favorite) throws NoResultException, NonUniqueResultException, SQLException, Exception {
         if (!canUserViewAndCopy(permissions, sourceReport.getId()))
             throw new NoRightsException("User " + permissions.getUserId() + " does not have permission to copy report "
                     + sourceReport.getId());
@@ -110,6 +109,10 @@ public class ReportModel {
         newReport.setAuditColumns(permissions);
         reportDao.save(newReport);
 
+        if (favorite) {
+        	favoriteReport(permissions.getUserId(), newReport.getId());
+        }
+        
         // This is a new report owned by the user, unconditionally give them
         // edit permission
         connectReportUser(permissions.getUserId(), newReport.getId());
