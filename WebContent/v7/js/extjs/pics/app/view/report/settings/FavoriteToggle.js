@@ -7,10 +7,6 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
     labelSeparator: '',
     value: 'Report <strong class="favorite-text">is not</strong> a Favorite',
 
-    initComponent: function () {
-        this.callParent(arguments);
-    },
-
     listeners: {
         afterrender: function(cmp, eOpts) {
             var config = PICS.app.configuration;
@@ -25,53 +21,55 @@ Ext.define('PICS.view.report.settings.FavoriteToggle', {
         }
     },
 
-    isFavoriteOn: function (favorite_elements) {
-        var favorite_elements = favorite_elements || this.getFavoriteElements();
+    isFavoriteOn: function () {
+        var favorite_elements = this.getFavoriteElements();
 
         return favorite_elements.icon.hasCls('selected');
     },
 
     getFavoriteElements: function () {
-        var parentCmp = this.up('panel'),
-            parentEl = parentCmp.getEl();
+        var element = this.getEl();
 
         return {
-            parentCmp: parentCmp,
-            icon: parentEl.down('.icon-star'),
-            text: parentEl.down('.favorite-text')
+            icon: element.down('.icon-star'),
+            text: element.down('.favorite-text')
         };
     },
 
     saveFavoriteStatus: function (status) {
         var event_name = status ? 'favorite' : 'unfavorite',
-            config = PICS.app.configuration;
+            config = PICS.app.configuration,
+            parent = this.up('panel');
 
         config.setIsFavorite(status);
-        this.fireEvent(event_name);
+
+        parent.fireEvent(event_name);
     },
 
-    toggleFavoriteOn: function (favorite_elements) {
-        var favorite_elements = favorite_elements || this.getFavoriteElements();
+    toggleFavoriteOn: function () {
+        var favorite_elements = this.getFavoriteElements();
 
         favorite_elements.icon.addCls('selected');
         favorite_elements.text.setHTML('is');
     },
 
-    toggleFavoriteOff: function (favorite_elements) {
-        var favorite_elements = favorite_elements || this.getFavoriteElements();
+    toggleFavoriteOff: function () {
+        var favorite_elements = this.getFavoriteElements();
 
         favorite_elements.icon.removeCls('selected');
         favorite_elements.text.setHTML('is not');
     },
 
     toggleFavoriteStatus: function () {
-        var favorite_elements = favorite_elements || this.getFavoriteElements(),
-            is_favorite_on = this.isFavoriteOn(favorite_elements),
-            is_editable = PICS.app.configuration.isEditable(),
-            duplicating = Ext.getClassName(favorite_elements.parentCmp) == 'PICS.view.report.settings.CopySettings';
+        var is_favorite_on = this.isFavoriteOn(),
+            config = PICS.app.configuration,
+            is_editable = config && config.isEditable(),
+            duplicating = Ext.getClassName(this) == 'PICS.view.report.settings.CopySettings';
 
-        is_favorite_on ? this.toggleFavoriteOff(favorite_elements) : this.toggleFavoriteOn(favorite_elements);
+        is_favorite_on ? this.toggleFavoriteOff() : this.toggleFavoriteOn();
 
+        // The Duplicate tab and the Edit tab of editable reports have Apply buttons.
+        // Without an apply button, we need to save immediately.
         if (!is_editable && !duplicating) {
             this.saveFavoriteStatus(!is_favorite_on);
         }

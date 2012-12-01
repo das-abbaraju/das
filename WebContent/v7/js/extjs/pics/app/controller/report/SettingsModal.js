@@ -106,8 +106,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
    
    onReportFavorite: function () {
        var report_id = this.getReportId();
-       
-        Ext.Ajax.request({
+
+       Ext.Ajax.request({
             url: 'ManageReports!favorite.action?reportId=' + report_id
         });
     },
@@ -134,7 +134,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
 
-        this.setFavoriteStatus('Copy');
+        this.setFavoriteStatus('copy');
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -151,7 +151,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameEdit().getValue(),
             report_description = this.getReportDescriptionEdit().getValue();
 
-        this.setFavoriteStatus('Edit');
+        this.setFavoriteStatus('edit');
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -213,9 +213,14 @@ Ext.define('PICS.controller.report.SettingsModal', {
         modal.setTitle(title);
     },
 
-    setFavoriteStatus: function (owner) {
-        var favorite_toggle = this['get' + owner + 'FavoriteToggle'](),
-            is_favorite_on = favorite_toggle.isFavoriteOn();
+    setFavoriteStatus: function (action) {
+        if (action == 'edit') {
+           favorite_toggle = this.getEditFavoriteToggle();
+        } else if (action == 'copy') {
+           favorite_toggle = this.getCopyFavoriteToggle();
+        }
+
+        var is_favorite_on = favorite_toggle.isFavoriteOn();
 
         favorite_toggle.saveFavoriteStatus(is_favorite_on);
     },

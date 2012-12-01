@@ -72,7 +72,7 @@ Ext.define('PICS.view.report.settings.EditSettings', {
 
     generateNonEditableSettings: function () {
         this.add({
-            xtype: 'panel',
+            xtype: 'component',
             html:  new Ext.Template([
                 "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
                 "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
