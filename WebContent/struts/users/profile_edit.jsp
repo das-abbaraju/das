@@ -192,7 +192,7 @@
 
 								<li>
 									<label><s:text name="global.CreationDate" />:</label>
-									<s:date name="u.creationDate" />
+									<s:date name="u.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 								</li>
 								<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
 									<li>
@@ -238,7 +238,7 @@
 
 							<s:iterator value="recentLogins">
 								<tr>
-									<td><s:date name="loginDate" /></td>
+									<td><s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 									<td><s:property value="remoteAddress" /></td>
 									<s:if test="permissions.isDeveloperEnvironment()">
 										<td>

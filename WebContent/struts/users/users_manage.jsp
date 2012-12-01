@@ -197,7 +197,7 @@
 											<s:property value="get('name')" />
 									</a></td>
 									<td><s:if test="get('lastLogin') != null">
-											<s:date name="get('lastLogin')" />
+											<s:date name="get('lastLogin')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
 										</s:if> <s:else>
 											<s:text name="UsersManage.never" />
 										</s:else></td>
@@ -394,12 +394,17 @@
 							</s:if>
 
 							<s:if test="user.id > 0">
-								<li><label> <s:text name="User.lastLogin" />
-								</label> <s:if test="user.lastLogin != null">
-										<s:date name="user.lastLogin" />
-									</s:if> <s:else>
+								<li>
+                                    <label>
+                                        <s:text name="User.lastLogin" />
+								    </label>
+                                    <s:if test="user.lastLogin != null">
+										<s:date name="user.lastLogin" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+									</s:if>
+                                    <s:else>
 										<s:text name="UsersManage.never" />
-									</s:else></li>
+									</s:else>
+                                </li>
 							</s:if>
 							
 							<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
@@ -569,7 +574,7 @@
 						<tbody>
 							<s:iterator value="recentLogins">
 								<tr>
-									<td><s:date name="loginDate" /></td>
+									<td><s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
 									<td><a
 										href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />">
 											<s:property value="remoteAddress" />
