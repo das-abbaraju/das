@@ -1145,11 +1145,6 @@
                     "path": "app/view/report/settings/"
                 },
                 {
-                    "clsName": "PICS.view.report.settings.EditSettings",
-                    "name": "EditSettings.js",
-                    "path": "app/view/report/settings/"
-                },
-                {
                     "clsName": "PICS.view.report.settings.ExportSettings",
                     "name": "ExportSettings.js",
                     "path": "app/view/report/settings/"
@@ -1157,6 +1152,16 @@
                 {
                     "clsName": "PICS.view.report.settings.PrintSettings",
                     "name": "PrintSettings.js",
+                    "path": "app/view/report/settings/"
+                },
+                {
+                    "clsName": "PICS.view.report.settings.FavoriteToggle",
+                    "name": "FavoriteToggle.js",
+                    "path": "app/view/report/settings/"
+                },
+                {
+                    "clsName": "PICS.view.report.settings.EditSettings",
+                    "name": "EditSettings.js",
                     "path": "app/view/report/settings/"
                 },
                 {
