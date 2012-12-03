@@ -20,6 +20,41 @@ import com.picsauditing.util.Strings;
 public class VerifyAudit extends AuditActionSupport {
 
 	private static final long serialVersionUID = -4976847934505647430L;
+	private static final ArrayList<String> EMR_PROBLEMS;
+	private static final ArrayList<String> OSHA_PROBLEMS;
+	private static final ArrayList<String> EMR_EXEMPTION_REASONS;
+	private static final ArrayList<String> OSHA_EXEMPTION_REASONS;
+	
+	
+	static {
+		EMR_PROBLEMS = new ArrayList<String>();
+		EMR_PROBLEMS.add("");
+		EMR_PROBLEMS.add("Need EMR");
+		EMR_PROBLEMS.add("Need Loss Run");
+		EMR_PROBLEMS.add("Not Insurance Issued");
+		EMR_PROBLEMS.add("Incorrect Upload");
+		EMR_PROBLEMS.add("Incorrect Year");
+		
+		EMR_EXEMPTION_REASONS = new ArrayList<String>();
+		EMR_EXEMPTION_REASONS.add("Insurance premium too small");
+		EMR_EXEMPTION_REASONS.add("Does not carry workers comp");
+		EMR_EXEMPTION_REASONS.add("Less than 3 years old");
+		
+		OSHA_PROBLEMS = new ArrayList<String>();
+		OSHA_PROBLEMS.add("");
+		OSHA_PROBLEMS.add("Contradicting Data");
+		OSHA_PROBLEMS.add("Missing 300");
+		OSHA_PROBLEMS.add("Missing 300a");
+		OSHA_PROBLEMS.add("Incomplete");
+		OSHA_PROBLEMS.add("Incorrect Form");
+		OSHA_PROBLEMS.add("Incorrect Year");
+		
+		OSHA_EXEMPTION_REASONS = new ArrayList<String>();
+		OSHA_EXEMPTION_REASONS.add("SIC code");
+		OSHA_EXEMPTION_REASONS.add("Number of Employees (10 or less)");
+	}
+	
+	
 	private List<AuditData> pqfQuestions = null;
 	private Map<OperatorAccount, ContractorAuditOperator> caos;
 	private List<Integer> allCaoIDs;
@@ -33,41 +68,20 @@ public class VerifyAudit extends AuditActionSupport {
 	}
 
 	public ArrayList<String> getOshaProblems() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("");
-		list.add("Contradicting Data");
-		list.add("Missing 300");
-		list.add("Missing 300a");
-		list.add("Incomplete");
-		list.add("Incorrect Form");
-		list.add("Incorrect Year");
-		return list;
+		return OSHA_PROBLEMS;
 	}
 
 	public ArrayList<String> getEmrProblems() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("");
-		list.add("Need EMR");
-		list.add("Need Loss Run");
-		list.add("Not Insurance Issued");
-		list.add("Incorrect Upload");
-		list.add("Incorrect Year");
-		return list;
+		return EMR_PROBLEMS;
 	}
+	
 
 	public ArrayList<String> getOshaExemptReason() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("SIC code");
-		list.add("Number of Employees (10 or less)");
-		return list;
+		return OSHA_EXEMPTION_REASONS;
 	}
 
 	public ArrayList<String> getEmrExemptReason() {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("Insurance premium to small");
-		list.add("Does not carry workers comp");
-		list.add("Less than 3 years old");
-		return list;
+		return EMR_EXEMPTION_REASONS;
 	}
 
 	public List<AuditData> getPqfQuestions() {
