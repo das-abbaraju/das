@@ -3,12 +3,18 @@
 	background-color: #454545;
 	padding-top: 0;
 	
+	header,
+	.content,
+	footer
+	{
+		margin: 0 -20px;
+		padding: 20px;
+		overflow: hidden;
+	}
+	
 	header
 	{
 		background-color: #f1f1f2;
-		margin: 0 -20px;
-		overflow: hidden;
-		padding: 30px 20px;
 	}
 	
 	.page-title
@@ -32,23 +38,14 @@
 		}
 	}
 	
-	.logo
-	{
-		float: right;
-		margin: 30px 30px 0 0;
-		width: 165px;
-	}
-	
 	.content
 	{
 		background-color: #f1f1f2;
-		margin: 0 -20px;
-		padding: 20px;
 	
 		.row
 		{
-			margin-bottom: 60px;
-			margin-top: 60px;
+			margin-bottom: 80px;
+			margin-top: 80px;
 		}
 	}
 	
@@ -86,7 +83,7 @@
 	
 	.row.support
 	{
-		margin-bottom: 40px;
+		margin-bottom: 60px;
 	}
 	
 	.support
@@ -122,13 +119,17 @@
 		@include background-image(linear-gradient(#eaeaea, #ccc));
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
 		border-top: 1px solid #999;
-		margin: 0 -20px;
-		padding: 30px 20px;
 		text-align: center;
 		
 		a
 		{
 			margin-bottom: 10px;
+		}
+		
+		.icon-circle-arrow-right
+		{
+			margin-left: 5px;
+			vertical-align: middle;
 		}
 		
 		p
@@ -138,70 +139,60 @@
 	}
 }
 
-@media (max-width: 767px) {
+@media (min-width: 1200px) {
 	#Tutorial_navigationMenu_page
 	{
-		background-color: #f1f1f2;
-		
-		header
+		header,
+		.content,
+		footer
 		{
-			text-align: center;
+			margin: 0 -30px;
+			padding: 30px;
 		}
 		
-		.page-title
+		.dashboard
 		{
-			float: none;
-			
-			h1
+			img
 			{
-				font-size: 40px;
+				margin-right: -30px;
 			}
-		}
-		
-		.logo
-		{
-			float: none;
-			margin-bottom: 30px;
-			width: 100px;
-		}
-		
-		.content
-		{
-			.row
-			{
-				margin-bottom: 30px;
-				margin-top: 30px;
-			}
-		}
-		
-		.dashboard img
-		{
-
 		}
 		
 		.settings
 		{
-			margin-bottom: 30px;
+			img
+			{
+				margin-left: -30px;
+			}
 		}
-		
-		.settings img
-		{
+	}
+}
 
+@media (max-width: 767px) {
+	#Tutorial_navigationMenu_page
+	{
+		.content
+		{
+			.row
+			{
+				margin-top: 40px;
+				margin-bottom: 40px;
+			}
 		}
 		
+		.row.dashboard
+		{
+			margin-top: 0;
+		}
+		
+		.dashboard,
+		.settings,
 		.support
 		{
-			margin-top: 30px;
-		}
-		
-		.support img
-		{
-
-		}
-		
-		footer
-		{
-			margin: 0 -20px;
+			.image-container
+			{
+				margin-bottom: 20px;
+			}
 		}
 	}
 }
