@@ -646,7 +646,7 @@ public class FlagDataCalculator {
 				continue;
 			if (flList.size() > 0) {
 				for (FlagDataOverride flagDataOverride : flList) {
-					if (operator.isOrIsDescendantOf(flagDataOverride.getOperator().getId())
+					if (operator.isApplicableFlagOperator(flagDataOverride.getOperator())
 							&& flagDataOverride.isInForce())
 						if (auditYear == null || Strings.isEqualNullSafe(auditYear, flagDataOverride.getYear())) {
 							if (flagDataOverride.getCriteria().getId() != key.getId())

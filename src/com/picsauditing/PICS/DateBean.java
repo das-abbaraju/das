@@ -396,6 +396,14 @@ public class DateBean {
 		return threeYearsAgo.before(testDate);
 	}
 
+	public static boolean isMoreThanXMonthsAgo(Date testDate, int monthsAgo) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -monthsAgo);
+		Date xMonthsAgo = cal.getTime();
+
+		return xMonthsAgo.after(testDate);
+	}
+
 	public static boolean isAfterToday(String dateString) throws Exception {
 		if (Strings.EMPTY_STRING.equals(dateString)) {
 			dateString = NULL_DATE;

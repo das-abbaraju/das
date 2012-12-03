@@ -25,6 +25,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'reportDescriptionCopy',
         selector: 'reportsettingscopy [name=report_description]'
+    }, {
+        ref: 'editFavoriteToggle',
+        selector: 'reportsettingsedit favoritetoggle'
+    }, {
+        ref: 'copyFavoriteToggle',
+        selector: 'reportsettingscopy favoritetoggle'
     }],
 
     stores: [
@@ -42,7 +48,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender,
+                beforerender: this.onReportModalEditBeforeRender
+            },
+
+            'reportsettingsmodal favoritetoggle': {
                 favorite: this.onReportFavorite,
                 unfavorite: this.onReportUnFavorite
             },
@@ -66,7 +75,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
                 click: this.onReportModalPrintPreviewClick
             },
-            
+
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
                 beforerender: this.onReportModalShareSearchboxRender,
                 select: this.onReportModalShareSearchboxSelect,
@@ -100,8 +109,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
    
    onReportFavorite: function () {
        var report_id = this.getReportId();
-       
-        Ext.Ajax.request({
+
+       Ext.Ajax.request({
             url: 'ManageReports!favorite.action?reportId=' + report_id
         });
     },
@@ -128,6 +137,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
 
+        this.setFavoriteStatus('copy');
+
         report.set('name', report_name);
         report.set('description', report_description);
 
@@ -141,18 +152,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var store = this.getReportReportsStore(),
             report = store.first(),
             report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue(),
-            edit_settings = cmp.up('#report_edit'),
-            is_favorite = edit_settings.checkFavoriteStatus();
-            config = PICS.app.configuration;
+            report_description = this.getReportDescriptionEdit().getValue();
 
-        if (is_favorite) {
-            edit_settings.fireEvent('favorite');
-            config.setIsFavorite(true);
-        } else {
-            edit_settings.fireEvent('unfavorite');
-            config.setIsFavorite(false);
-        }
+        this.setFavoriteStatus('edit');
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -213,7 +215,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         modal.setTitle(title);
     },
-    
+
+    setFavoriteStatus: function (action) {
+        if (action == 'edit') {
+           favorite_toggle = this.getEditFavoriteToggle();
+        } else if (action == 'copy') {
+           favorite_toggle = this.getCopyFavoriteToggle();
+        }
+
+        var is_favorite_on = favorite_toggle.isFavoriteOn();
+
+        favorite_toggle.saveFavoriteStatus(is_favorite_on);
+    },
+
     showSettingsModal: function (action) {
         var modal = Ext.create('PICS.view.report.settings.SettingsModal'),
             that = this;

@@ -57,7 +57,11 @@ public class LoginControllerTest extends PicsActionTest {
 	private FeatureToggle featureToggleChecker;
 	@Mock
 	private HierarchyBuilder hierarchyBuilder;
-	
+	@Mock
+	private UserService userService;
+
+	private LoginService loginService = new LoginService();
+
 	@Spy
 	private PermissionBuilder permissionBuilder;
 
@@ -84,6 +88,8 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
+		Whitebox.setInternalState(loginService, "userService", userService);
+		Whitebox.setInternalState(loginController, "loginService", loginService);
 		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 
 		session.put("somethingToTest", new Integer(21));
@@ -95,6 +101,8 @@ public class LoginControllerTest extends PicsActionTest {
 //		when(userDAO.find(anyInt())).thenReturn(user);
 //		when(user.getId()).thenReturn(1);
 //		when(permissionBuilder.login(user)).thenReturn(permissions);
+		when(userService.loadUserByUsername(anyString())).thenReturn(user);
+
 	}
 
 	// As a non-admin user
@@ -129,7 +137,7 @@ public class LoginControllerTest extends PicsActionTest {
 		String actionResult = loginController.execute();
 
 		assertThat(loginController.getActionMessages(), hasItem(testMessage));
-		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
+		assertThat(actionResult, is(equalTo(Action.ERROR)));
 		verify(permissions, never()).clear();
 		assertFalse(session.values().isEmpty());
 	}
@@ -242,31 +250,25 @@ public class LoginControllerTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testPasswordIsIncorrect_Locked() {
-		when(user.getFailedAttempts()).thenReturn(8);
-		when(user.getUsername()).thenReturn("test");
+	public void testLogAndMessageError_NullErrorReturnsFalse() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageError", (String) null));
 	}
 
 	@Test
-	public void testLogAndMessageIfError_NullErrorReturnsFalse() throws Exception {
-		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", (String) null));
+	public void testLogAndMessageError_EmptyErrorReturnsFalse() throws Exception {
+		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageError", ""));
 	}
 
 	@Test
-	public void testLogAndMessageIfError_EmptyErrorReturnsFalse() throws Exception {
-		assertFalse((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", ""));
-	}
-
-	@Test
-	public void testLogAndMessageIfError_ErrorClearsSession() throws Exception {
-		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", "Error"));
+	public void testLogAndMessageError_ErrorClearsSession() throws Exception {
+		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageError", "Error"));
 		assertTrue(session.isEmpty());
 	}
 
 	@Test
-	public void testLogAndMessageIfError_ErrorLogsAttempt() throws Exception {
+	public void testLogAndMessageError_ErrorLogsAttempt() throws Exception {
 		Whitebox.setInternalState(loginController, "user", user);
-		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageIfError", "Error"));
+		assertTrue((Boolean) Whitebox.invokeMethod(loginController, "logAndMessageError", "Error"));
 		verify(loginLogDAO).save((UserLoginLog) any());
 	}
 
@@ -283,7 +285,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Test
 	public void testExecuteReset_NullUserGivesErrorMessage() throws Exception {
-		when(userDAO.findName(anyString())).thenReturn(null);
+		when(userService.loadUserByUsername(anyString())).thenReturn(null);
 		when(i18nCache.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
 		when(i18nCache.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg()))
 				.thenReturn("Password incorrect");
@@ -361,12 +363,37 @@ public class LoginControllerTest extends PicsActionTest {
 		assertTrue("/ContractorDashboard.action?foo=1".equals(urlPreLogin));
 	}
 
+	@Test
+	public void testExecute_RedirectNormallyIfPasswordNotExpired() throws Exception {
+		normalLoginSetup();
+		when(userService.isPasswordExpired(user)).thenReturn(false);
+
+		String actionResult = loginController.execute();
+
+		assertEquals(actionResult, PicsActionSupport.REDIRECT);
+		assertEquals(loginController.getUrl(), LoginController.LOGIN_ACTION_BUTTON_LOGOUT);
+
+	}
+
+	@Test
+	public void testExecute_RedirectToAccountRecoveryIfPasswordExpired() throws Exception {
+		normalLoginSetup();
+		when(userService.isPasswordExpired(user)).thenReturn(true);
+
+		String actionResult = loginController.execute();
+
+		assertEquals(actionResult, PicsActionSupport.REDIRECT);
+		assertEquals(loginController.getUrl(), LoginController.ACCOUNT_RECOVERY_ACTION + user.getUsername());
+
+	}
+
 	private void normalLoginSetup() {
 		loginController.setButton("login");
 		loginController.setUsername("test");
 		loginController.setPassword("test password");
 		when(userDAO.findName("test")).thenReturn(user);
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
+		when(user.getUsername()).thenReturn("joesixpack");
 		when(user.isEncryptedPasswordEqual("test password")).thenReturn(true);
 		when(user.getId()).thenReturn(941);
 		when(user.getLocale()).thenReturn(Locale.ENGLISH);
@@ -374,6 +401,7 @@ public class LoginControllerTest extends PicsActionTest {
 		when(permissions.isLoggedIn()).thenReturn(true);
 		when(permissions.getAccountName()).thenReturn("test account");
 		when(permissions.hasPermission(OpPerms.Dashboard)).thenReturn(true);
+		when(userService.isUserActive(user)).thenReturn(true);
 	}
 
 }

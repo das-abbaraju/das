@@ -29,15 +29,22 @@
 			if ($('.Registration-page').length) {
 				$('.contractor-country').bind('change', this.events.update_countrySubdivision_list);
 
+				var selectedSubdivision = null;
+				
+				if ($('#requested_contractor').length) {
+			    	var countrySubdivision_element = $('.registration-form li.countrySubdivision');
+			    	selectedSubdivision = countrySubdivision_element.find('select option:selected').val();
+			    	
+			    }
 				//autofill Country Subdivision list
 				if ($('.contractor-country').length) {
-				    this.events.update_countrySubdivision_list();
+				    this.events.update_countrySubdivision_list(selectedSubdivision);
 				}
 			}
 		},
 
 		events: {
-			update_countrySubdivision_list: function () {
+			update_countrySubdivision_list: function (selectedSubdivision) {
 				var country_select = $('.contractor-country') || $(this);
 				var country_string = country_select.val();
 
@@ -69,6 +76,10 @@
 							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone.GB"));
 						} else {
 							$('.Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone"));
+						}
+						
+						if (selectedSubdivision) {
+							countrySubdivision_element.find("select").val(selectedSubdivision);
 						}
 					}
 				});

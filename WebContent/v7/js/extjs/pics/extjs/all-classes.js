@@ -82334,7 +82334,10 @@ Ext.define('PICS.view.report.settings.CopySettings', {
         fieldLabel: 'Description',
         labelAlign: 'right',
         name: 'report_description'
-    }/*, {
+    }, {
+        xtype: 'favoritetoggle'
+    }
+/*, {
         xtype: 'displayfield',
         fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
         labelAlign: 'right',
@@ -82351,192 +82354,6 @@ Ext.define('PICS.view.report.settings.CopySettings', {
     // custom config
     modal_title: 'Duplicate Report',
     title: '<i class="icon-copy icon-large"></i>Duplicate'
-});
-Ext.define('PICS.view.report.settings.EditSettings', {
-    extend: 'Ext.form.Panel',
-    alias: ['widget.reportsettingsedit'],
-
-    border: 0,
-    id: 'report_edit',
-    // custom config
-    modal_title: 'Edit Report',
-    title: '<i class="icon-cog icon-large"></i>Settings',
-
-    initComponent: function () {
-        this.callParent(arguments);
-
-        var config = PICS.app.configuration;
-
-        if (config.isEditable()) {
-            this.generateEditableSettings();
-        } else {
-            this.generateNonEditableSettings();
-        }
-
-        this.addEvents('favorite');
-        this.addEvents('unfavorite');
-
-    },
-
-    listeners: {
-        afterrender: function (cmp, eOpts) {
-            if (PICS.app.configuration.isFavorite()) {
-                this.updateFavorite();
-            }
-
-            var config = PICS.app.configuration;
-
-            if (config.isEditable()) {
-                this.mon(this.el,'click', this.onEditableFavoriteClick, this, {
-                    delegate: '.icon-star'
-                });
-            } else {
-                this.mon(this.el,'click', this.onNonEditableFavoriteClick, this, {
-                    delegate: '.icon-star'
-                });
-            }
-        }
-    },
-
-    onEditableFavoriteClick: function (event, target) {
-        event.stopEvent();
-
-        var element = Ext.fly(target),
-            favorite_class = element.hasCls('selected');
-
-        if (favorite_class) {
-            this.updateUnFavorite();
-        } else {
-            this.updateFavorite();
-        }
-    },
-
-    onNonEditableFavoriteClick: function (event, target) {
-        event.stopEvent();
-
-        var element = Ext.fly(target),
-            favorite_class = element.hasCls('selected'),
-            config = PICS.app.configuration;
-
-        if (favorite_class) {
-            this.updateUnFavorite();
-            this.fireEvent('unfavorite');
-            config.setIsFavorite(false);
-        } else {
-            this.updateFavorite();
-            this.fireEvent('favorite');
-            config.setIsFavorite(true);
-        }
-    },
-
-    checkFavoriteStatus: function () {
-        var element = this.getEl(),
-            favorite_icon = element.down('.icon-star');
-
-        return favorite_icon.hasCls('selected');
-    },
-
-    updateFavorite: function () {
-        var element = this.getEl(),
-            favorite_icon = element.down('.icon-star'),
-            favorite_text = element.down('.favorite-text');
-
-        favorite_icon.addCls('selected');
-        favorite_text.setHTML('is');
-    },
-
-    updateUnFavorite: function (element) {
-        var element = this.getEl();
-            favorite_icon = element.down('.icon-star'),
-            favorite_text = element.down('.favorite-text');
-
-        favorite_icon.removeCls('selected');
-        favorite_text.setHTML('is not');
-    },
-
-    generateEditableSettings: function () {
-        this.addDocked({
-            xtype: 'toolbar',
-            defaults: {
-                margin: '0 0 0 5'
-            },
-            dock: 'bottom',
-            items: [{
-                action: 'cancel',
-                cls: 'cancel default',
-                height: 28,
-                text: 'Cancel'
-            }, {
-                action: 'edit',
-                cls: 'edit primary',
-                formBind: true,
-                height: 28,
-                text: 'Apply'
-            }],
-            layout: {
-                pack: 'end'
-            },
-            ui: 'footer'
-        });
-
-        this.add({
-            xtype: 'textfield',
-            allowBlank: false,
-            fieldLabel: 'Report Name',
-            labelAlign: 'right',
-            name: 'report_name'
-        }, {
-            xtype: 'textarea',
-            allowBlank: false,
-            fieldLabel: 'Description',
-            labelAlign: 'right',
-            name: 'report_description'
-        }, {
-            xtype: 'displayfield',
-            fieldLabel: '<a href="javascript:;" class="favorite"><i class="icon-star"></i></a>',
-            labelAlign: 'right',
-            labelSeparator: '',
-            value: 'Report <strong class="favorite-text">is not</strong> a Favorite'
-        }/*, {
-            xtype: 'displayfield',
-            fieldLabel: '<a href="javascript:;" class="private"><i class="icon-eye-open"></i></a>',
-            labelAlign: 'right',
-            labelSeparator: '',
-            value: 'Report <strong>is not</strong> Private'
-        }*/);
-
-        this.layout = 'form';
-    },
-
-    generateNonEditableSettings: function () {
-        this.html = new Ext.Template([
-            "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
-            "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>",
-            "<p><a href='javascript:;' class='favorite'><i class='icon-star'></i></a> Report <strong class='favorite-text'>is not</strong> a Favorite</p>"
-        ]);
-
-        this.id = 'settings_no_permission';
-    },
-
-    update: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
-            Ext.Error.raise('Invalid report record');
-        }
-
-        var data = report ? report.data : {},
-            report_name_element = this.down('textfield[name=report_name]'),
-            report_description_element = this.down('textarea[name=report_description]');
-
-        if (data.name && report_name_element) {
-            report_name_element.setValue(data.name);
-        }
-
-        if (data.description && report_description_element) {
-            report_description_element.setValue(data.description);
-        }
-
-        this.callParent([data]);
-    }
 });
 Ext.define('PICS.view.report.settings.ExportSettings', {
     extend: 'Ext.form.Panel',
@@ -82595,6 +82412,188 @@ Ext.define('PICS.view.report.settings.PrintSettings', {
     title: '<i class="icon-print icon-large"></i>Print',
     // custom config
     modal_title: 'Print Report'
+});
+Ext.define('PICS.view.report.settings.FavoriteToggle', {
+    extend: 'Ext.form.field.Display',
+    alias: ['widget.favoritetoggle'],
+    
+    fieldLabel: '<i class="favorite icon-star"></i>',
+    labelAlign: 'right',
+    labelSeparator: '',
+    value: 'Report <strong class="favorite-text">is not</strong> a Favorite',
+
+    listeners: {
+        afterrender: function(cmp, eOpts) {
+            var config = PICS.app.configuration;
+
+            if (config.isFavorite()) {
+                this.toggleFavoriteStatus();
+            }
+            
+            this.mon(this.el,'click', this.toggleFavoriteStatus, this, {
+                delegate: '.icon-star'
+            });            
+        }
+    },
+
+    isFavoriteOn: function () {
+        var favorite_elements = this.getFavoriteElements();
+
+        return favorite_elements.icon.hasCls('selected');
+    },
+
+    getFavoriteElements: function () {
+        var element = this.getEl();
+
+        return {
+            icon: element.down('.icon-star'),
+            text: element.down('.favorite-text')
+        };
+    },
+
+    saveFavoriteStatus: function (status) {
+        var event_name = status ? 'favorite' : 'unfavorite',
+            config = PICS.app.configuration;
+
+        config.setIsFavorite(status);
+
+        this.fireEvent(event_name);
+    },
+
+    toggleFavoriteOn: function () {
+        var favorite_elements = this.getFavoriteElements();
+
+        favorite_elements.icon.addCls('selected');
+        favorite_elements.text.setHTML('is');
+    },
+
+    toggleFavoriteOff: function () {
+        var favorite_elements = this.getFavoriteElements();
+
+        favorite_elements.icon.removeCls('selected');
+        favorite_elements.text.setHTML('is not');
+    },
+
+    toggleFavoriteStatus: function () {
+        var is_favorite_on = this.isFavoriteOn(),
+            config = PICS.app.configuration,
+            is_editable = config && config.isEditable(),
+            duplicating = Ext.getClassName(this) == 'PICS.view.report.settings.CopySettings';
+
+        is_favorite_on ? this.toggleFavoriteOff() : this.toggleFavoriteOn();
+
+        // The Duplicate tab and the Edit tab of editable reports have Apply buttons.
+        // Without an apply button, we need to save immediately.
+        if (!is_editable && !duplicating) {
+            this.saveFavoriteStatus(!is_favorite_on);
+        }
+    }
+});
+Ext.define('PICS.view.report.settings.EditSettings', {
+    extend: 'Ext.form.Panel',
+    alias: ['widget.reportsettingsedit'],
+
+    requires: ['PICS.view.report.settings.FavoriteToggle'],
+
+    border: 0,
+    id: 'report_edit',
+    // custom config
+    modal_title: 'Edit Report',
+    title: '<i class="icon-cog icon-large"></i>Settings',
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        var config = PICS.app.configuration;
+
+        if (config.isEditable()) {
+            this.generateEditableSettings();
+        } else {
+            this.generateNonEditableSettings();
+        }
+
+        this.addEvents('favorite');
+        this.addEvents('unfavorite');
+
+    },
+
+    generateEditableSettings: function () {
+        this.addDocked({
+            xtype: 'toolbar',
+            defaults: {
+                margin: '0 0 0 5'
+            },
+            dock: 'bottom',
+            items: [{
+                action: 'cancel',
+                cls: 'cancel default',
+                height: 28,
+                text: 'Cancel'
+            }, {
+                action: 'edit',
+                cls: 'edit primary',
+                formBind: true,
+                height: 28,
+                text: 'Apply'
+            }],
+            layout: {
+                pack: 'end'
+            },
+            ui: 'footer'
+        });
+
+        this.add({
+            xtype: 'textfield',
+            allowBlank: false,
+            fieldLabel: 'Report Name',
+            labelAlign: 'right',
+            name: 'report_name'
+        }, {
+            xtype: 'textarea',
+            allowBlank: false,
+            fieldLabel: 'Description',
+            labelAlign: 'right',
+            name: 'report_description'
+        }, {
+            xtype: 'favoritetoggle'
+        });
+
+        this.layout = 'form';
+    },
+
+    generateNonEditableSettings: function () {
+        this.add({
+            xtype: 'component',
+            html:  new Ext.Template([
+                "<p class='permission-info'>You do not have permission to edit the settings of this report</p>",
+                "<p class='duplicate-info'>You can <strong>Duplicate</strong> the report to save it to your reports.  After it's saved you'll be able to edit everything.</p>"
+            ]),
+        },{
+            xtype: 'favoritetoggle'
+        });
+
+        this.id = 'settings_no_permission';
+    },
+
+    update: function (report) {
+        if (!report || report.modelName != 'PICS.model.report.Report') {
+            Ext.Error.raise('Invalid report record');
+        }
+
+        var data = report ? report.data : {},
+            report_name_element = this.down('textfield[name=report_name]'),
+            report_description_element = this.down('textarea[name=report_description]');
+
+        if (data.name && report_name_element) {
+            report_name_element.setValue(data.name);
+        }
+
+        if (data.description && report_description_element) {
+            report_description_element.setValue(data.description);
+        }
+
+        this.callParent([data]);
+    }
 });
 /**
  * Layout class for {@link Ext.form.field.ComboBox} fields. Handles sizing the input field.
@@ -100019,11 +100018,14 @@ Ext.define('PICS.controller.report.Report', {
     createReport: function () {
         var store = this.getReportReportsStore(),
             report = store.first(),
-            url = 'ReportDynamic!copy.action';
+            config = PICS.app.configuration,
+            request_params = report.toRequestParams();
+
+        request_params.favorite = config.isFavorite();
 
         Ext.Ajax.request({
-            url: url,
-            params: report.toRequestParams(),
+            url: 'ReportDynamic!copy.action',
+            params: request_params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 
@@ -100480,6 +100482,12 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'reportDescriptionCopy',
         selector: 'reportsettingscopy [name=report_description]'
+    }, {
+        ref: 'editFavoriteToggle',
+        selector: 'reportsettingsedit favoritetoggle'
+    }, {
+        ref: 'copyFavoriteToggle',
+        selector: 'reportsettingscopy favoritetoggle'
     }],
 
     stores: [
@@ -100497,7 +100505,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
             },
 
             'reportsettingsmodal reportsettingsedit': {
-                beforerender: this.onReportModalEditBeforeRender,
+                beforerender: this.onReportModalEditBeforeRender
+            },
+
+            'reportsettingsmodal favoritetoggle': {
                 favorite: this.onReportFavorite,
                 unfavorite: this.onReportUnFavorite
             },
@@ -100521,7 +100532,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
             'reportsettingsmodal reportsettingsprint button[action=print-preview]':  {
                 click: this.onReportModalPrintPreviewClick
             },
-            
+
             'reportsettingsmodal reportsettingsshare sharesearchbox': {
                 beforerender: this.onReportModalShareSearchboxRender,
                 select: this.onReportModalShareSearchboxSelect,
@@ -100555,8 +100566,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
    
    onReportFavorite: function () {
        var report_id = this.getReportId();
-       
-        Ext.Ajax.request({
+
+       Ext.Ajax.request({
             url: 'ManageReports!favorite.action?reportId=' + report_id
         });
     },
@@ -100583,6 +100594,8 @@ Ext.define('PICS.controller.report.SettingsModal', {
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
 
+        this.setFavoriteStatus('copy');
+
         report.set('name', report_name);
         report.set('description', report_description);
 
@@ -100596,18 +100609,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
         var store = this.getReportReportsStore(),
             report = store.first(),
             report_name = this.getReportNameEdit().getValue(),
-            report_description = this.getReportDescriptionEdit().getValue(),
-            edit_settings = cmp.up('#report_edit'),
-            is_favorite = edit_settings.checkFavoriteStatus();
-            config = PICS.app.configuration;
+            report_description = this.getReportDescriptionEdit().getValue();
 
-        if (is_favorite) {
-            edit_settings.fireEvent('favorite');
-            config.setIsFavorite(true);
-        } else {
-            edit_settings.fireEvent('unfavorite');
-            config.setIsFavorite(false);
-        }
+        this.setFavoriteStatus('edit');
 
         report.set('name', report_name);
         report.set('description', report_description);
@@ -100668,7 +100672,19 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
         modal.setTitle(title);
     },
-    
+
+    setFavoriteStatus: function (action) {
+        if (action == 'edit') {
+           favorite_toggle = this.getEditFavoriteToggle();
+        } else if (action == 'copy') {
+           favorite_toggle = this.getCopyFavoriteToggle();
+        }
+
+        var is_favorite_on = favorite_toggle.isFavoriteOn();
+
+        favorite_toggle.saveFavoriteStatus(is_favorite_on);
+    },
+
     showSettingsModal: function (action) {
         var modal = Ext.create('PICS.view.report.settings.SettingsModal'),
             that = this;

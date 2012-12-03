@@ -21,7 +21,9 @@ public class ReportDynamic extends PicsActionSupport {
 	
 	@Autowired
 	private ReportModel reportModel;
+
 	private Report report;
+	private boolean favorite;
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
@@ -36,7 +38,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private String save(boolean copy) {
 		try {
 			if (copy)
-				report = reportModel.copy(report, permissions);
+				report = reportModel.copy(report, permissions, favorite);
 			else
 				reportModel.edit(report, permissions);
 
@@ -83,5 +85,9 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setReport(Report report) {
 		this.report = report;
+	}
+
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
 	}
 }

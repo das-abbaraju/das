@@ -21,6 +21,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
+@Deprecated
 @SuppressWarnings("serial")
 public class ReportNewRequestedContractor extends ReportActionSupport {
 	@Autowired
@@ -31,6 +32,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	protected SelectSQL sql;
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
 
+	@Deprecated
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
 		setDefaultFilterDisplay();
@@ -60,8 +62,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		return SUCCESS;
 	}
 
-	protected void buildQuery() {
-		sql = new SelectSQL("contractor_registration_request cr");
+	@Deprecated
+	public static SelectSQL buildLegacyQuery() {
+		SelectSQL sql = new SelectSQL("contractor_registration_request cr");
 		sql.addJoin("JOIN accounts op ON op.id = cr.requestedByID");
 		sql.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
 		sql.addJoin("LEFT JOIN users uc ON uc.id = cr.lastContactedBy");
@@ -79,7 +82,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.countrySubdivision AS CountrySubdivision");
 		sql.addField("cr.zip AS Zip");
 		sql.addField("cr.country AS Country");
-		sql.addField("cr.notes AS notes");
 		sql.addField("op.name AS RequestedBy");
 		sql.addField("op.id AS RequestedByID");
 		sql.addField("u.name AS RequestedUser");
@@ -97,10 +99,16 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
+		sql.addField("'CRR' AS systemType");
 
 		sql.addGroupBy("cr.id");
 
-		orderByDefault = "cr.deadline, cr.name";
+		return sql;
+	}
+
+	@Deprecated
+	private void buildQuery() {
+		sql = buildLegacyQuery();
 
 		if (permissions.isOperatorCorporate()) {
 			if (permissions.isCorporate()) {
@@ -123,9 +131,12 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
 			}
 		}
+
+		orderByDefault = "deadline, name";
 	}
 
-	protected void addFilterToSQL() {
+	@Deprecated
+	private void addFilterToSQL() {
 		ReportFilterNewContractor f = getFilter();
 
 		if (filterOn(f.getStartsWith()))
@@ -140,7 +151,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		if (filterOn(locationList)) {
 			sql.addWhere("cr.countrySubdivision IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
 			sql.addOrderBy("CASE WHEN cr.country IN (" + locationList + ") THEN 1 ELSE 2 END, cr.country");
-			sql.addOrderBy("CASE WHEN cr.countrySubdivision IN (" + locationList + ") THEN 1 ELSE 2 END, cr.countrySubdivision");
+			sql.addOrderBy("CASE WHEN cr.countrySubdivision IN (" + locationList
+					+ ") THEN 1 ELSE 2 END, cr.countrySubdivision");
 			sql.addOrderBy("cr.country");
 			sql.addOrderBy("cr.countrySubdivision");
 			setFiltered(true);
@@ -212,7 +224,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		return filter;
 	}
 
-	protected void addExcelColumns() {
+	@Deprecated
+	private void addExcelColumns() {
 		excelSheet.setData(data);
 
 		excelSheet.addColumn(new ExcelColumn("name", getText("global.CompanyName")));
@@ -222,7 +235,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("TaxID", getText("ContractorRegistrationRequest.taxID")));
 		excelSheet.addColumn(new ExcelColumn("Address", getText("ContractorRegistrationRequest.address")));
 		excelSheet.addColumn(new ExcelColumn("City", getText("ContractorRegistrationRequest.city")));
-		excelSheet.addColumn(new ExcelColumn("CountrySubdivision", getText("ContractorRegistrationRequest.countrySubdivision")));
+		excelSheet.addColumn(new ExcelColumn("CountrySubdivision",
+				getText("ContractorRegistrationRequest.countrySubdivision")));
 		excelSheet.addColumn(new ExcelColumn("Zip", getText("ContractorRegistrationRequest.zip")));
 		excelSheet.addColumn(new ExcelColumn("Country", getText("ContractorRegistrationRequest.country")));
 
@@ -260,10 +274,12 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("operatorTags", getText("RequestNewContractor.OperatorTags")));
 	}
 
+	@Deprecated
 	public boolean isAmSales() {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 
+	@Deprecated
 	private void setDefaultFilterDisplay() {
 		getFilter().setShowOperator(permissions.isPicsEmployee());
 		getFilter().setShowLocation(false);

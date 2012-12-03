@@ -7,12 +7,12 @@
 </s:if>
 <s:elseif test="report.allRows == 0">
 	<div class="alert">
-        <s:text name="NewContractorSearch.message.NoCompaniesFound" />
+        <s:text name="NewContractorSearch.message.NoCompanyAccountsFound" />
     </div>
     
 	<pics:permission perm="RequestNewContractor" type="Edit">
 		<div class="info">
-            <s:text name="NewContractorSearch.message.SubmitNewContractorRequest" />
+            <s:text name="NewContractorSearch.message.SubmitNewContractorAccountRequest" />
         </div>
 	</pics:permission>
 </s:elseif>
@@ -121,7 +121,19 @@
     					${stat.index + report.firstRowNumber}
                     </td>
     				<td>
-    					${row.get('name')}
+    					<s:if test="#row.get('showInDirectory') == 1">
+    						<s:url action="ContractorView" var="limited_contractor_view">
+    							<s:param name="id">
+	    							${row.get('id')}
+    							</s:param>
+    						</s:url>
+    						<a href="${limited_contractor_view}">
+    							${row.get('name')}
+    						</a>
+    					</s:if>
+    					<s:else>
+    						${row.get('name')}
+    					</s:else>
                         
     					<s:if test="get('dbaName') > '' && get('name') != get('dbaName')">
                             <br />
@@ -155,6 +167,11 @@
     				</pics:permission>
                     
     				<td class="center">
+   						<s:url action="ContractorFacilities" var="contractor_facilities">
+   							<s:param name="id">
+   								${row.get('id')}
+   							</s:param>
+   						</s:url>
     					<s:if test="get('genID') > 0">
     						<s:url action="ContractorView" var="contractor_view">
     							<s:param name="id">
@@ -167,7 +184,9 @@
 	  							</s:param>
 	  						</s:url>
 	  						
-    						<a href="${contractor_view}" class="preview"><s:text name="button.View" /></a>
+    						<a href="${contractor_view}" class="preview">
+    							<s:text name="button.View" />
+    						</a>
                             
     						<pics:permission perm="RemoveContractors">
     							<br />
@@ -176,27 +195,45 @@
     								<a class="remove" href="${contractor_facilities}"><s:text name="button.Remove" /></a>
     							</s:if>
     							<s:else>
-    								<s:url action="NewContractorSearch" method="remove" var="new_contractor_search_remove">
-		    							<s:param name="contractor">
-		    								${row.get('id')}
-		    							</s:param>
-		    						</s:url>
-    								<a class="remove" href="${new_contractor_search_remove}"><s:text name="button.Remove" /></a>
+    								<s:url method="remove" var="remove_contractor">
+    									<s:param name="contractor">
+    										${row.get('id')}
+    									</s:param>
+    								</s:url>
+    								<a class="remove" href="${remove_contractor}">
+    									<s:text name="button.Remove" />
+    								</a>
     							</s:else>
     						</pics:permission>
     					</s:if>
     					<s:else>
     						<pics:permission perm="AddContractors">
-    							<s:if test="permissions.corporate">
-    								<a class="add" href="${contractor_facilities}"><s:text name="button.Add" /></a>
+    							<s:if test="get('status') == 'Requested'">
+    								<s:url action="RequestNewContractorAccount" var="request_contractor">
+    									<s:param name="requestedContractor">
+    										${row.get('id')}
+    									</s:param>
+    								</s:url>
+    								<a href="${request_contractor}" class="add">
+    									<s:text name="NewContractorSearch.button.Request" />
+    								</a>
     							</s:if>
     							<s:else>
-    								<s:url action="NewContractorSearch" method="add" var="new_contractor_search_add">
-		    							<s:param name="contractor">
-		    								${row.get('id')}
-		    							</s:param>
-		    						</s:url>
-    								<a class="add" href="${new_contractor_search_add}"><s:text name="button.Add" /></a>
+	    							<s:if test="permissions.corporate">
+	    								<a class="add" href="${contractor_facilities}">
+	    									<s:text name="button.Add" />
+	    								</a>
+	    							</s:if>
+	    							<s:else>
+	    								<s:url method="add" var="add_contractor">
+	    									<s:param name="contractor">
+	    										${row.get('id')}
+	    									</s:param>
+	    								</s:url>
+	    								<a class="add" href="${add_contractor}">
+	    									<s:text name="button.Add" />
+	    								</a>
+    								</s:else>
     							</s:else>
     						</pics:permission>
     					</s:else>
@@ -270,7 +307,12 @@
     </div>
     
     <div class="info">
-        <s:text name="NewContractorSearch.message.CompanyNotListed" />
+    	<pics:toggle name="RequestNewContractorAccount">
+	        <s:text name="NewContractorSearch.message.CompanyAccountNotListed" />
+    	</pics:toggle>
+    	<pics:toggleElse>
+	        <s:text name="NewContractorSearch.message.CompanyNotListed" />
+    	</pics:toggleElse>
     </div>
 </s:else>
 

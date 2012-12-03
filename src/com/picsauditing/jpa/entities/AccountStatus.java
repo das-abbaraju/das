@@ -7,7 +7,11 @@ import com.picsauditing.access.PermissionAware;
 import com.picsauditing.access.Permissions;
 
 public enum AccountStatus implements Translatable, PermissionAware {
-	Active, Pending, Requested, Demo, Deleted, Deactivated;
+	Active, Pending, Requested, Demo, Deleted, Deactivated, Declined;
+
+	public boolean isRequested() {
+		return this.equals(Requested);
+	}
 
 	public boolean isActive() {
 		return this.equals(Active);
@@ -36,13 +40,17 @@ public enum AccountStatus implements Translatable, PermissionAware {
 	public boolean isActiveDemo() {
 		return this.equals(Active) || this.equals(Demo);
 	}
-	
+
+	public boolean isDeclined() {
+		return this.equals(Declined);
+	}
+
 	@Transient
 	@Override
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.name();
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey(String property) {
@@ -52,7 +60,7 @@ public enum AccountStatus implements Translatable, PermissionAware {
 	public boolean isVisibleTo(Permissions permissions) {
 		if (this == Deleted || this == Demo)
 			return permissions.hasPermission(OpPerms.AllContractors);
-		
+
 		return true;
 	}
 }

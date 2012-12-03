@@ -106,15 +106,4 @@ public class PicsDateFormatTest {
 		assertEquals("201012041535", scheduleAudit);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
 }

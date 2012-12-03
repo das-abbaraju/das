@@ -20,7 +20,13 @@
 	</h1>
 	<s:include value="../actionMessages.jsp" />
 	<pics:permission perm="RequestNewContractor">
-		<a href="ReportNewRequestedContractor.action">&lt;&lt;
+		<pics:toggle name="RequestNewContractorAccount">
+			<s:url action="ReportRegistrationRequests" var="report_registration_requests" />
+		</pics:toggle>
+		<pics:toggleElse>
+			<s:url action="ReportNewRequestedContractor" var="report_registration_requests" />
+		</pics:toggleElse>
+		<a href="${report_registration_requests}">&lt;&lt;
 			<s:text name="RequestNewContractor.link.BackToRequests" />
 		</a>
 	</pics:permission>
@@ -93,18 +99,6 @@
 					<span class="redMain">*</span>
 					<div id="think_email"></div>
 					<div id="match_email"></div>
-				</li>
-				<li>
-					<s:textfield
-						cssClass="checkReq"
-						name="newContractor.taxID"
-						size="9"
-						maxLength="9"
-						id="taxID"
-						theme="formhelp"
-					/>
-					<div id="think_tax"></div>
-					<div id="match_tax"></div>
 				</li>
 			</ol>
 		</fieldset>

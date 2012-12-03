@@ -11,8 +11,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-@SuppressWarnings("serial")
+import com.picsauditing.util.Strings;
+
+@Deprecated
 @Entity
+@SuppressWarnings("serial")
 @Table(name = "contractor_registration_request")
 public class ContractorRegistrationRequest extends BaseTable implements java.io.Serializable {
 	private String name;
@@ -29,7 +32,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String zip;
 	private Country country;
 	private String reasonForRegistration;
-	private ContractorRegistrationRequestStatus status;
+	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 	private String reasonForDecline;
 	private Date deadline;
 	private Date holdDate;
@@ -40,9 +43,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private int contactCountByPhone;
 	private int matchCount;
 	private String notes;
-
 	private ContractorAccount contractor;
-
 	private String operatorTags;
 
 	public String getName() {
@@ -175,8 +176,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.reasonForRegistration = reasonForRegistration;
 	}
 
-	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	public ContractorRegistrationRequestStatus getStatus() {
 		return status;
 	}
@@ -219,9 +220,12 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.lastContactDate = lastContactDate;
 	}
 
-	@Transient
-	public int getContactCount() {
-		return contactCountByEmail + contactCountByPhone;
+	public Date getLastContactedByAutomatedEmailDate() {
+		return lastContactedByAutomatedEmailDate;
+	}
+
+	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
+		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
 	}
 
 	public int getContactCountByEmail() {
@@ -240,6 +244,11 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.contactCountByPhone = contactCountByPhone;
 	}
 
+	@Transient
+	public int getContactCount() {
+		return contactCountByEmail + contactCountByPhone;
+	}
+
 	public int getMatchCount() {
 		return matchCount;
 	}
@@ -256,8 +265,14 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.notes = notes;
 	}
 
-	@ManyToOne
+	@Transient
+	public void addToNotes(String note, User user) {
+		setNotes(String.format("%tD - %s - %s\n\n%s", new Date(), user.getName(), note,
+				Strings.isEmpty(getNotes()) ? "" : getNotes()));
+	}
+
 	@JoinColumn(name = "conID")
+	@ManyToOne
 	public ContractorAccount getContractor() {
 		return contractor;
 	}
@@ -290,16 +305,29 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	}
 
 	@Transient
-	public String getRegistrationLink() {
-		return "https://www.picsorganizer.com/Registration.action?button=request&requestID=" + getId();
-	}
+	public boolean isCreatedUpdatedAfter(ContractorAccount contractor) {
+		if (contractor != null) {
+			if (this.getUpdateDate() != null) {
+				if (contractor.getUpdateDate() != null) {
+					return this.getUpdateDate().after(contractor.getUpdateDate());
+				}
 
-	public Date getLastContactedByAutomatedEmailDate() {
-		return lastContactedByAutomatedEmailDate;
-	}
+				if (contractor.getCreationDate() != null) {
+					return this.getUpdateDate().after(contractor.getCreationDate());
+				}
+			}
 
-	public void setLastContactedByAutomatedEmailDate(Date lastContactedByAutomatedEmailDate) {
-		this.lastContactedByAutomatedEmailDate = lastContactedByAutomatedEmailDate;
-	}
+			if (this.getCreationDate() != null) {
+				if (contractor.getUpdateDate() != null) {
+					return this.getCreationDate().after(contractor.getUpdateDate());
+				}
 
+				if (contractor.getCreationDate() != null) {
+					return this.getCreationDate().after(contractor.getCreationDate());
+				}
+			}
+		}
+
+		return false;
+	}
 }

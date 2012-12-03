@@ -111,12 +111,6 @@ public class RequestNewContractorTest {
 		assertEquals(0, requestNewContractor.getOpID());
 	}
 
-	@Test(expected = NoRightsException.class)
-	public void testExecute_OperatorCorporateWithoutPermission() throws Exception {
-		when(permissions.isOperatorCorporate()).thenReturn(true);
-		requestNewContractor.execute();
-	}
-
 	@Test
 	public void testExecute_OperatorCorporateWithPermission() throws Exception {
 		OperatorAccount operator = EntityFactory.makeOperator();

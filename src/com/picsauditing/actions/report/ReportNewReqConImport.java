@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.RegistrationRequestEmailHelper;
+import com.picsauditing.actions.DataConversionRequestAccount;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -34,6 +35,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
@@ -47,6 +49,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	private CountryDAO countryDAO;
 	@Autowired
 	private CountrySubdivisionDAO countrySubdivisionDAO;
+	@Autowired
+	private FeatureToggle featureToggle;
 	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
@@ -152,13 +156,20 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			for (ContractorRegistrationRequest crr : requests) {
 				int matches = findGap(crr);
 				crr.setMatchCount(matches);
-				crr.contactByEmail();
-				crrDAO.save(crr);
 
-				if (crr.getRequestedBy().getId() != 23325) {
+				if (crr.getRequestedBy().getId() != OperatorAccount.SALES) {
+					crr.contactByEmail();
 					prependToRequestNotes(notes, crr);
 					emailHelper.sendInitialEmail(crr, getFtpDir());
 				}
+
+				crrDAO.save(crr);
+			}
+
+			if (permissions.isOperatorCorporate()
+					&& featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+				DataConversionRequestAccount justInTimeConversion = new DataConversionRequestAccount(dao, permissions);
+				justInTimeConversion.upgrade();
 			}
 
 			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));

@@ -16,6 +16,7 @@ public interface FeatureToggle {
 	String TOGGLE_CONTRACTOR_CAMPAIGN = "Toggle.ContractorCampaign";
 	String TOGGLE_PERMISSION_GROUPS = "Toggle.PermissionGroups";
 	String TOGGLE_INVOICE_COMMISSION = "Toggle.InvoiceCommission";
+	String TOGGLE_REQUESTNEWCONTRACTORACCOUNT = "Toggle.RequestNewContractorAccount";
 
 	boolean isFeatureEnabled(String toggleName);
 

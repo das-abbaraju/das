@@ -201,6 +201,8 @@
     <bean id="CountrySubdivisionAutocompleteService"
           class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
+    <bean id="UserService" class=" com.picsauditing.access.UserService" />
+    <bean id="LoginService" class=" com.picsauditing.access.LoginService" />
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>

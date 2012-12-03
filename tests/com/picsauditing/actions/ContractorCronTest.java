@@ -632,4 +632,10 @@ public class ContractorCronTest {
 		assertTrue(audit.getScheduledDate() == null);
 	
 	}
+	
+	@Test
+	public void testContractorNotFound() throws Exception {
+		Whitebox.invokeMethod(contractorCron, "run", 0, 0);
+		assertTrue(contractorCron.getActionErrors().size() > 0);
+	}
 }

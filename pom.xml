@@ -227,6 +227,7 @@
                         <excludes>
                             <exclude>**/*Test.class</exclude>
                             <exclude>com/picsauditing/quickbooks/**/*.class</exclude>
+                            <exclude>com/picsauditing/actions/imports/**/*.class</exclude>
                             <exclude>org/nace/webservices/services/*.class</exclude>
                             <exclude>com/intuit/developer/**/*.class</exclude>
                         </excludes>

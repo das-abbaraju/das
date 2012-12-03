@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.NoResultException;
+import javax.security.auth.login.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
@@ -22,13 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.toggle.FeatureToggle;
@@ -43,9 +42,11 @@ public class LoginController extends PicsActionSupport {
 	private static final int ONE_SECOND = 1;
 	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
 			+ CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
+	public static final String ACCOUNT_RECOVERY_ACTION = "AccountRecovery.action?username=";
+	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 
 	@Autowired
-	protected UserDAO userDAO;
+	private LoginService loginService;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
 	@Autowired
@@ -85,11 +86,10 @@ public class LoginController extends PicsActionSupport {
 			return switchBack();
 		} else if ("reset".equalsIgnoreCase(button)) {
 			return loginForResetPassword();
-		} else { // normal login
-			if (switchToUser > 0) {
-				return switchTo();
-			}
-			return login();
+		} else if (switchToUser > 0) {
+			return switchTo();
+		} else {
+			return loginNormally();
 		}
 	}
 
@@ -231,41 +231,82 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private String loginForResetPassword() throws Exception {
-		loadUser();
-		if (logAndMessageIfError(checkResetHash())) {
-			return SUCCESS;
+		if (!verifyCookiesAreEnabled()) {
+			return ERROR;
 		}
-		if (user != null) {
-			user.setForcePasswordReset(true);
-			user.setResetHash("");
-			user.unlockLogin();
+
+		try {
+			user = loginService.loginForResetPassword(username, key);
+
+		} catch (InvalidResetKeyException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getTextParameterized("Login.ResetCodeExpired", e.getUsername()));
+			return ERROR;
+		} catch (AccountNotFoundException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getText("Login.PasswordIncorrect"));
+			return ERROR;
+		} catch (AccountLockedException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getTextParameterized("Login.TooManyFailedAttempts"));
+			return ERROR;
+		} catch (AccountInactiveException e) {
+			logAndMessageError(getTextParameterized("Login.AccountNotActive", e.getUsername()));
+			return ERROR;
+		} catch (PasswordExpiredException e) {
+			logAndMessageError(getText("Login.PasswordExpired"));
+			setUrlForRedirect(ACCOUNT_RECOVERY_ACTION + e.getUsername());
+			return REDIRECT;
 		}
-		return doLogin(true);
+
+		// todo: Continue to move the rest of this method to services as needed.
+		return doLogin();
 	}
 
-	private String login() throws Exception {
-		loadUser();
-		return doLogin(false);
+	private String loginNormally() throws Exception {
+		if (!verifyCookiesAreEnabled()) {
+			return ERROR;
+		}
+
+		try {
+			user = loginService.loginNormally(username, password);
+
+		} catch (AccountNotFoundException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getText("Login.PasswordIncorrect"));
+			return ERROR;
+		} catch (AccountLockedException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getTextParameterized("Login.TooManyFailedAttempts"));
+			return ERROR;
+		} catch (AccountInactiveException e) {
+			logAndMessageError(getTextParameterized("Login.AccountNotActive", e.getUsername()));
+			return ERROR;
+		} catch (FailedLoginException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getText("Login.PasswordIncorrect"));
+			return ERROR;
+		} catch (FailedLoginAndLockedException e) {
+			setActionErrorHeader(getText("Login.Failed"));
+			logAndMessageError(getTextParameterized("Login.PasswordIncorrectAccountLocked", e.getUsername()));
+			return ERROR;
+		} catch (PasswordExpiredException e) {
+			logAndMessageError(getText("Login.PasswordExpired"));
+			setUrlForRedirect(ACCOUNT_RECOVERY_ACTION + e.getUsername());
+			return REDIRECT;
+		}
+
+		// todo: Continue to move the rest of this method to services as needed.
+		return doLogin();
 	}
 
-	private String doLogin(boolean isReset) throws Exception {
-		if (ServletActionContext.getRequest().getCookies() == null) {
-			addActionMessage(getText("Login.CookiesAreDisabled"));
-			return SUCCESS;
-		}
-
-		if (logAndMessageIfError(canLogin(isReset))) {
-			return SUCCESS;
-		}
-
+	private String doLogin() throws Exception {
 		permissions = permissionBuilder.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
 		addClientSessionCookieToResponse(rememberMe, switchToUser);
 
-		user.unlockLogin();
-		user.setLastLogin(new Date());
-		userDAO.save(user);
+		updateUserForSuccessfulLogin();
 
 		setBetaTestingCookie();
 		logAttempt();
@@ -274,12 +315,12 @@ public class LoginController extends PicsActionSupport {
 			return setRedirectUrlPostLogin();
 		} else {
 			addActionMessage(getText("Login.NoGroupOrPermission"));
-			return super.setUrlForRedirect("Login.action?button=logout");
+			return super.setUrlForRedirect(LOGIN_ACTION_BUTTON_LOGOUT);
 		}
 	}
 
-	private boolean logAndMessageIfError(String error) throws Exception {
-		if (error != null && error.length() > 0) {
+	private boolean logAndMessageError(String error) throws Exception {
+		if (StringUtils.isNotEmpty(error)) {
 			logAttempt();
 			addActionError(error);
 			ActionContext.getContext().getSession().clear();
@@ -288,76 +329,18 @@ public class LoginController extends PicsActionSupport {
 		return false;
 	}
 
-	private String canLogin(boolean isReset) throws Exception {
-		// there is no user for the supplied username, but don't tell hackers
-		// that
-		if (user == null) {
-			setActionErrorHeader(getText("Login.Failed"));
-			return getText("Login.PasswordIncorrect");
-		}
-
-		if (user.isLocked()) {
-			setActionErrorHeader(getText("Login.Failed"));
-			return getTextParameterized("Login.TooManyFailedAttempts");
-		}
-
-		// do not check password if they're resetting their password
-		if (!isReset && !user.isEncryptedPasswordEqual(password)) {
-			setActionErrorHeader(getText("Login.Failed"));
-			return passwordIsIncorrect();
-		}
-
-		if (!isUserActive()) {
-			return getTextParameterized("Login.AccountNotActive", user.getUsername());
-		}
-
-		return Strings.EMPTY_STRING;
-	}
-
-	private String checkResetHash() {
-		if (Strings.isNotEmpty(key) && user != null) {
-			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
-				setActionErrorHeader(getText("Login.Failed"));
-				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
-			}
-		}
-		return Strings.EMPTY_STRING;
-	}
-
-	private void loadUser() {
-		try {
-			user = userDAO.findName(username);
-		} catch (NoResultException e) {
-			user = null;
-		}
-	}
-
-	private boolean isUserActive() {
-		if (user.getAccount().isOperatorCorporate()) {
-			if (!user.getAccount().getStatus().isActiveDemo()) {
-				return false;
-			}
-		}
-		if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted()) {
-			return false;
-		}
-		if (user.getIsActive() != YesNo.Yes) {
+	private boolean verifyCookiesAreEnabled() {
+		if (ServletActionContext.getRequest().getCookies() == null) {
+			addActionMessage(getText("Login.CookiesAreDisabled"));
 			return false;
 		}
 		return true;
 	}
 
-	private String passwordIsIncorrect() {
-		user.setFailedAttempts(user.getFailedAttempts() + 1);
-		if (user.getFailedAttempts() > MAX_FAILED_ATTEMPTS) {
-			// Lock this user out for 1 hour
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.HOUR, 1);
-			user.setFailedAttempts(0);
-			user.setLockUntil(calendar.getTime());
-			return getTextParameterized("Login.PasswordIncorrectAccountLocked", user.getUsername());
-		}
-		return getText("Login.PasswordIncorrect");
+	private void updateUserForSuccessfulLogin() {
+		user.unlockLogin();
+		user.setLastLogin(new Date());
+		userDAO.save(user);
 	}
 
 	private String setRedirectUrlPostLogin() throws Exception {

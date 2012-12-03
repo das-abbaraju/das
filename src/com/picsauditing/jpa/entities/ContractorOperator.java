@@ -40,7 +40,6 @@ import com.picsauditing.util.Strings;
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
-	private ContractorOperatorRelationshipType type;
 	private ApprovalStatus workStatus = ApprovalStatus.P;
 	private FlagColor flagColor;
 	private FlagColor baselineFlag;
@@ -59,6 +58,11 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private String flagDetail;
 	private String baselineFlagDetail;
 	private Date lastStepToGreenDate;
+	// Registration Requests
+	private User requestedBy;
+	private String requestedByOther;
+	private Date deadline; // TODO Rename as registrationDeadline
+	private String reasonForRegistration;
 
 	@ManyToOne
 	@JoinColumn(name = "genID", nullable = false, updatable = false)
@@ -78,26 +82,6 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setContractorAccount(ContractorAccount contractor) {
 		this.contractorAccount = contractor;
-	}
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "type")
-	public ContractorOperatorRelationshipType getType() {
-		return type;
-	}
-
-	public void setType(ContractorOperatorRelationshipType type) {
-		this.type = type;
-	}
-
-	@Transient
-	public boolean isGeneralContractorType() {
-		return ContractorOperatorRelationshipType.GeneralContractor.equals(getType());
-	}
-
-	@Transient
-	public boolean isContractorOperatorType() {
-		return ContractorOperatorRelationshipType.ContractorOperator.equals(getType());
 	}
 
 	/**
@@ -391,5 +375,53 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setLastStepToGreenDate(Date lastStepToGreenDate) {
 		this.lastStepToGreenDate = lastStepToGreenDate;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "requestedByUserID", nullable = true)
+	public User getRequestedBy() {
+		return requestedBy;
+	}
+
+	public void setRequestedBy(User requestedBy) {
+		this.requestedBy = requestedBy;
+	}
+
+	@Column(name = "requestedByUser", nullable = true)
+	public String getRequestedByOther() {
+		return requestedByOther;
+	}
+
+	public void setRequestedByOther(String requestedByOther) {
+		this.requestedByOther = requestedByOther;
+	}
+
+	@Transient
+	public String getRequestedByName() {
+		if (getRequestedBy() != null) {
+			return getRequestedBy().getName();
+		}
+
+		if (!Strings.isEmpty(getRequestedByOther())) {
+			return getRequestedByOther();
+		}
+
+		return null;
+	}
+
+	public Date getDeadline() {
+		return deadline;
+	}
+
+	public void setDeadline(Date deadline) {
+		this.deadline = deadline;
+	}
+
+	public String getReasonForRegistration() {
+		return reasonForRegistration;
+	}
+
+	public void setReasonForRegistration(String reasonForRegistration) {
+		this.reasonForRegistration = reasonForRegistration;
 	}
 }

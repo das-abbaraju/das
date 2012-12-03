@@ -1,12 +1,15 @@
 package com.picsauditing.jpa.entities;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.picsauditing.EntityFactory;
 
 public class OperatorAccountTest {
 
@@ -91,5 +94,25 @@ public class OperatorAccountTest {
 		when(parentOperator.getId()).thenReturn(10);
 		when(parentOperator.isDescendantOf(OperatorAccount.CEDA_USA)).thenReturn(true);
 		assertTrue(classUnderTest.isAcceptsList());
+	}
+
+	@Test
+	public void testIsApplicableFlagOperator() {
+		OperatorAccount operator = EntityFactory.makeOperator();
+		OperatorAccount parent = EntityFactory.makeOperator();
+		OperatorAccount facilityop = EntityFactory.makeOperator();
+		OperatorAccount notapplicable = EntityFactory.makeOperator();
+		Facility facility = EntityFactory.makeFacility(facilityop, parent);
+		
+		facility.setOperator(operator);
+		operator.setParent(parent);
+		parent.setType("Corporate");
+		parent.setPrimaryCorporate(true);
+		facilityop.getOperatorFacilities().add(facility);
+		
+		assertTrue(operator.isApplicableFlagOperator(operator));
+		assertTrue(operator.isApplicableFlagOperator(parent));
+		assertTrue(operator.isApplicableFlagOperator(facilityop));
+		assertFalse(operator.isApplicableFlagOperator(notapplicable));
 	}
 }

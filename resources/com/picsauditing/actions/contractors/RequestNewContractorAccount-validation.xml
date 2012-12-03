@@ -1,0 +1,114 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+	<field name="contractor.name">
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillContractorName")}</message>
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="minLength">2</param>
+			<param name="trim">true</param>
+			<message>${getText("JS.Validation.Minimum2Characters")}</message>
+		</field-validator>
+	</field>
+
+	<field name="primaryContact.name">
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillContactName")}</message>
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="maxLength">100</param>
+			<param name="trim">true</param>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
+		</field-validator>
+	</field>
+
+	<field name="primaryContact.phone">
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillPhoneNumber")}</message>
+		</field-validator>
+		<field-validator type="regex" short-circuit="true">
+			<!--
+				Allow NANP phones with leadings 1s and potential x1234 extensions as
+				well as international formatted phone numbers. Modified from
+				http://blog.stevenlevithan.com/archives/validate-phone-number and
+				shown in the Regular Expressions Cookbook (O'Reilly, 2009)
+			-->
+			<param name="expression"><![CDATA[^(\+?(?:\(?[0-9]\)?[-. ]{0,2}){9,14}[0-9])((\s){0,4}((?i)x|(?i)ext)(\s){0,4}[\d]{1,5})?$]]></param>
+			<message>${getText("JS.Validation.InvalidPhoneFormat")}</message>
+		</field-validator>
+	</field>
+
+	<field name="primaryContact.email">
+		<field-validator type="requiredstring">
+			<message>${getText("RequestNewContractor.error.FillValidEmail")}</message>
+		</field-validator>
+		<field-validator type="email">
+			<message>${getText("JS.Validation.ValidEmail")}</message>
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="maxLength">100</param>
+			<param name="trim">true</param>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
+		</field-validator>
+	</field>
+
+	<field name="contractor.country">
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ contractor.country.isoCode.length() > 0 ]]></param>
+			<message>${getText("RequestNewContractor.error.SelectCountry")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="contractor.countrySubdivision">
+		<field-validator type="required">
+			<message>${getText("RequestNewContractor.error.SelectCountrySubdivision")}</message>
+		</field-validator>
+	</field>
+
+	<field name="requestRelationship.operatorAccount">
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ requestRelationship.operatorAccount.id > 0 ]]></param>
+			<message>${getText("RequestNewContractor.error.SelectRequestedByAccount")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestRelationship.requestedBy">
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ (requestRelationship.requestedByName != null) ]]></param>
+			<message>${getText("RequestNewContractor.error.SelectRequestedUser")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestRelationship.deadline">
+		<field-validator type="required">
+			<message>${getText("RequestNewContractor.error.SelectDeadline")}</message>
+		</field-validator>
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ (requestRelationship.id == 0 && requestRelationship.deadline.after(today)) || (requestRelationship.id > 0) ]]></param>
+			<message>${getText("RequestNewContractor.error.PastDeadline")}</message>
+		</field-validator>
+	</field>
+	
+	<field name="requestRelationship.reasonForRegistration">
+		<field-validator type="fieldexpression">
+			<param name="expression"><![CDATA[ !isStringEmpty(requestRelationship.reasonForRegistration) ]]></param>
+			<message>${getText("RequestNewContractor.error.EnterRegistrationReason")}</message>
+		</field-validator>
+	</field>
+	
+	<validator type="expression">
+		<param name="expression"><![CDATA[ !status.hold || (status.hold && contractor.followUpDate != null) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterHoldDate")}</message>
+	</validator>
+	
+	<validator type="expression">
+		<param name="expression"><![CDATA[ !status.closedUnsuccessful || (status.closedUnsuccessful && !isStringEmpty(contractor.reason)) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterReasonDeclined")}</message>
+	</validator>
+	
+	<validator type="expression">
+		<param name="expression"><![CDATA[ (contactType != null && !isStringEmpty(contactNote)) || (contactType == null && isStringEmpty(contactNote)) ]]></param>
+		<message>${getText("RequestNewContractor.error.EnterAdditionalNotes")}</message>
+	</validator>
+</validators>

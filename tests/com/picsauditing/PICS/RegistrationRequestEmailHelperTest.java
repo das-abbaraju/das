@@ -24,11 +24,13 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
@@ -37,7 +39,9 @@ public class RegistrationRequestEmailHelperTest {
 	private RegistrationRequestEmailHelper emailHelper;
 
 	@Mock
-	private ContractorRegistrationRequest request;
+	private ContractorAccount contractor;
+	@Mock
+	private ContractorOperator relationship;
 	@Mock
 	private Database database;
 	@Mock
@@ -54,6 +58,8 @@ public class RegistrationRequestEmailHelperTest {
 	private OperatorAccount operator;
 	@Mock
 	private OperatorForm form;
+	@Mock
+	private User user;
 
 	@Before
 	public void setUp() throws Exception {
@@ -78,7 +84,7 @@ public class RegistrationRequestEmailHelperTest {
 	public void testBuildInitialEmail() throws Exception {
 		when(entityManager.find(eq(EmailTemplate.class), anyInt())).thenReturn(template);
 
-		emailHelper.buildInitialEmail(request);
+		emailHelper.buildInitialEmail(contractor, user, relationship);
 
 		verify(builder).build();
 		verify(entityManager).find(eq(EmailTemplate.class), anyInt());
@@ -86,7 +92,7 @@ public class RegistrationRequestEmailHelperTest {
 
 	@Test
 	public void testBuildInitialEmail_NullRequest() throws Exception {
-		emailHelper.buildInitialEmail(null);
+		emailHelper.buildInitialEmail(null, null, null);
 
 		verify(builder, never()).build();
 		verify(entityManager, never()).find(eq(EmailTemplate.class), anyInt());
@@ -99,16 +105,16 @@ public class RegistrationRequestEmailHelperTest {
 
 		when(form.getFormName()).thenReturn("Letter*");
 		when(operator.getOperatorForms()).thenReturn(forms);
-		when(request.getRequestedBy()).thenReturn(operator);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
 
-		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(request);
+		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(contractor, relationship);
 		assertNotNull(contractorLetter);
 		assertEquals(form, contractorLetter);
 	}
 
 	@Test
 	public void testGetContractorLetterFromHierarchy_NullRequestedBy() throws Exception {
-		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(request);
+		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(contractor, relationship);
 		assertNull(contractorLetter);
 	}
 
@@ -127,9 +133,9 @@ public class RegistrationRequestEmailHelperTest {
 		when(operator.getId()).thenReturn(2);
 		when(operator.getParent()).thenReturn(corporate);
 		when(operator.getOperatorForms()).thenReturn(new ArrayList<OperatorForm>());
-		when(request.getRequestedBy()).thenReturn(operator);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
 
-		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(request);
+		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(contractor, relationship);
 		assertNotNull(contractorLetter);
 		assertEquals(form, contractorLetter);
 	}
@@ -142,9 +148,9 @@ public class RegistrationRequestEmailHelperTest {
 		when(builder.build()).thenReturn(email);
 		when(form.getFormName()).thenReturn("Letter*");
 		when(operator.getOperatorForms()).thenReturn(forms);
-		when(request.getRequestedBy()).thenReturn(operator);
+		when(relationship.getOperatorAccount()).thenReturn(operator);
 
-		emailHelper.sendInitialEmail(request, "ftpdir");
+		emailHelper.sendInitialEmail(contractor, user, relationship, "ftpdir");
 
 		verify(builder).build();
 		verify(entityManager).find(eq(EmailTemplate.class), anyInt());

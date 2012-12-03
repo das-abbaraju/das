@@ -89,3 +89,7 @@
 </#if>
  />
 </#if>
+
+<#if parameters.required??><span class="redMain">*</span></#if>
+
+<@s.fielderror fieldName="${parameters.name}" />

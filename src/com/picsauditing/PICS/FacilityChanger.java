@@ -23,7 +23,6 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorOperatorRelationshipType;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
@@ -82,7 +81,6 @@ public class FacilityChanger {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-		co.setType(ContractorOperatorRelationshipType.ContractorOperator);
 
 		if (addedByOperatorCorporate() || operator.isAutoApproveRelationships()) {
 			// This could be controversial, but we're going to always approve if

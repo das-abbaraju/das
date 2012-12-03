@@ -135,13 +135,14 @@ public class EmailBuilder {
 		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity());
 		body = velocityAdaptor.merge(body, tokens);
 
-		if (!body.contains("SubscriptionFooter")) {
-			if (email.isHtml()) {
-				body = body + getHTMLFooter(email.getToAddresses());
-			} else {
-				body = body + getFooter(email.getToAddresses());
-			}
-		}
+// TODO See reopened PICS-6588
+//		if (!body.contains("SubscriptionFooter")) {
+//			if (email.isHtml()) {
+//				body = body + getHTMLFooter(email.getToAddresses());
+//			} else {
+//				body = body + getFooter(email.getToAddresses());
+//			}
+//		}
 
 		email.setBody(body);
 
@@ -159,22 +160,24 @@ public class EmailBuilder {
 
 	}
 
-	private String getHTMLFooter(String email) {
-		translationActionSupport = new TranslationActionSupport();
-		return translationActionSupport.getText("EmailTemplate.footer.frontHTML") + " " + email + ", "
-				+ translationActionSupport.getText("EmailTemplate.footer.middle")
-				+ " <a href='/EmailOptOut.action?email=" + email + "'>" + getHost() + "/EmailOptOut.action?email="
-				+ email + "</a>.  " + translationActionSupport.getText("EmailTemplate.footer.back") + ".";
-	}
+// TODO See reopened PICS-6588
+//	private String getHTMLFooter(String email) {
+//		translationActionSupport = new TranslationActionSupport();
+//		return translationActionSupport.getText("EmailTemplate.footer.frontHTML") + " " + email + ", "
+//				+ translationActionSupport.getText("EmailTemplate.footer.middle")
+//				+ " <a href='/EmailOptOut.action?email=" + email + "'>" + getHost() + "/EmailOptOut.action?email="
+//				+ email + "</a>.  " + translationActionSupport.getText("EmailTemplate.footer.back") + ".";
+//	}
 
-	private String getFooter(String email) {
-		translationActionSupport = new TranslationActionSupport();
-		return translationActionSupport.getText("EmailTemplate.footer.frontNonHTML") + " " + email + ", "
-				+ translationActionSupport.getText("EmailTemplate.footer.middle") + " " + getHost()
-				+ "/EmailOptOut.action?email=" + email + ".  "
-				+ translationActionSupport.getText("EmailTemplate.footer.back") + ".";
-
-	}
+// TODO See reopened PICS-6588
+//	private String getFooter(String email) {
+//		translationActionSupport = new TranslationActionSupport();
+//		return translationActionSupport.getText("EmailTemplate.footer.frontNonHTML") + " " + email + ", "
+//				+ translationActionSupport.getText("EmailTemplate.footer.middle") + " " + getHost()
+//				+ "/EmailOptOut.action?email=" + email + ".  "
+//				+ translationActionSupport.getText("EmailTemplate.footer.back") + ".";
+//
+//	}
 
 	// Custom token setters here
 	// We may consider moving this to another class or back to the controllers

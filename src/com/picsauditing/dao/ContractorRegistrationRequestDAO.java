@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.util.Strings;
 
@@ -58,9 +60,23 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<ContractorRegistrationRequest> findActiveByDate(String whereClause) {
-		String sql = "SELECT * FROM contractor_registration_request c " + "WHERE c.status = 'Active' AND "
+	public List<ContractorAccount> findActiveByDate(String whereClause, Object... parameters) {
+		String sql = "FROM ContractorAccount c WHERE c.status = 'Requested' AND c.followUpDate IS NULL AND "
 				+ whereClause;
+		Query query = em.createQuery(sql);
+
+		if (parameters != null) {
+			for (int index = 0; index < parameters.length; index++) {
+				query.setParameter(index + 1, parameters[index]);
+			}
+		}
+
+		return query.getResultList();
+	}
+
+	public List<ContractorRegistrationRequest> findLegacyActiveByDate(String whereClause) {
+		String sql = "SELECT * FROM contractor_registration_request c WHERE c.status = 'Active' "
+				+ "AND c.conID IS NULL AND " + whereClause;
 		Query query = em.createNativeQuery(sql, ContractorRegistrationRequest.class);
 		return query.getResultList();
 	}

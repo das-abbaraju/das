@@ -107,6 +107,11 @@
 	<s:form cssClass="registration-form" theme="pics" method="POST">
 		<s:hidden name="requestID" />
 	
+		<s:if test="contractor.status.requested">
+			<s:hidden name="contractor" id="requested_contractor" />
+			<s:hidden name="user" />
+		</s:if>
+		
 		<div class="company-information">
 			<section>
 				<h1>
@@ -161,6 +166,7 @@
 							name="countrySubdivision" 
 							listKey="isoCode" 
 							listValue="simpleName" 
+							value="%{contractor.countrySubdivision.isoCode}"
 						/>
 					</li>
 					<li class="zip" style="${zip_display}">

@@ -8,11 +8,11 @@ import java.util.Iterator;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.URLUtils;
 
 public class PicsMenu {
 
@@ -57,8 +57,10 @@ public class PicsMenu {
 
 	static public MenuComponent getMenu(Permissions permissions) {
 		MenuComponent menu = new MenuComponent();
-
 		MenuComponent subMenu;
+		URLUtils urlUtil = new URLUtils();
+
+		FeatureToggle featureToggleChecker = SpringUtils.getBean("FeatureToggle");
 
 		if (!permissions.isLoggedIn()) {
 			subMenu = menu.addChild(getText("global.Home"), "index.jsp");
@@ -168,8 +170,17 @@ public class PicsMenu {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild(getTitle("NewContractorSearch"), url, "NewContractorSearch");
 		}
-		if (permissions.hasPermission(OpPerms.RequestNewContractor))
+
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_REQUESTNEWCONTRACTORACCOUNT)) {
+			subMenu.addChild(getTitle("ReportNewRequestedContractor"),
+					urlUtil.getActionUrl("ReportRegistrationRequests"), "ReportNewRequestedContractor");
+		} else if (permissions.hasPermission(OpPerms.RequestNewContractor)) {
 			addChildAction(subMenu, "ReportNewRequestedContractor");
+		}
+
+		if (permissions.isPicsEmployee()) {
+			addChildAction(subMenu, "RegistrationGapAnalysis");
+		}
 
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 			String statusFilter = "";
@@ -512,19 +523,13 @@ public class PicsMenu {
 			subMenu.addChild("Flag Changes", "ReportFlagChanges.action" + custom, "FlagChanges");
 		}
 
-		// Temporary inclusion for Dynamic Reports preview for BASF users
-		try {
-			FeatureToggle featureToggleChecker = SpringUtils.getBean("FeatureToggle");
-			if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
-				subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
-				subMenu.addChild(getText("menu.NonApprovedPolicyAnalysis"), "Report.action?report=8",
-						"NonApprovedPolicyAnalysisDRPreview");
-				subMenu.addChild(getText("menu.NonApprovedPolicyAnalysisExpanded"), "Report.action?report=9",
-						"NonApprovedPolicyAnalysisExpandedDRPreview");
-				subMenu.addChild("Contractor Statuses", "Report.action?report=68", "ContractorStatusesDRPreview");
-			}
-		} catch (Exception e) {
-			// This is a temporary preview, we don't care
+		if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+			subMenu.addChild(getText("menu.StepsToGreen"), "Report.action?report=7", "StepsToGreenDRPreview");
+			subMenu.addChild(getText("menu.NonApprovedPolicyAnalysis"), "Report.action?report=8",
+					"NonApprovedPolicyAnalysisDRPreview");
+			subMenu.addChild(getText("menu.NonApprovedPolicyAnalysisExpanded"), "Report.action?report=9",
+					"NonApprovedPolicyAnalysisExpandedDRPreview");
+			subMenu.addChild("Contractor Statuses", "Report.action?report=68", "ContractorStatusesDRPreview");
 		}
 
 		if (permissions.isRequiresCompetencyReview() && !permissions.isSecurity()) {
