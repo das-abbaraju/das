@@ -24,20 +24,20 @@ public enum PasswordSecurityLevel {
         this.entriesOfHistoryToDisallow = entriesOfHistoryToDisallow;
     }
 
-    public boolean enforceHistory() {
-        if (entriesOfHistoryToDisallow > 0) {
-            return true;
-        }
-
-        if (monthsOfHistoryToDisallow > 0) {
-            return true;
-        }
-
-        return false;
-    }
-
 	public boolean enforcePasswordExpiration() {
 		return expirationMonths > 0;
+	}
+
+	public boolean enforceEntriesOfHistory() {
+		return entriesOfHistoryToDisallow > 0;
+	}
+
+	public boolean enforceMonthsOfHistory() {
+		return monthsOfHistoryToDisallow > 0;
+	}
+
+	public boolean enforceHistory() {
+		return (enforceEntriesOfHistory() || enforceMonthsOfHistory());
 	}
 
     public static PasswordSecurityLevel fromDbValue(int passwordSecurityLevel) {

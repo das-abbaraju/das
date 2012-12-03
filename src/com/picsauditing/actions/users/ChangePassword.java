@@ -8,7 +8,7 @@ import java.util.Vector;
 
 import com.picsauditing.jpa.entities.PasswordHistory;
 
-import org.apache.commons.collections.CollectionUtils;
+import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,6 +43,7 @@ public class ChangePassword extends PicsActionSupport {
 	protected String source;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
+	private PasswordSecurityLevel passwordSecurityLevel;
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -56,6 +57,7 @@ public class ChangePassword extends PicsActionSupport {
 		else
 			user = userDAO.find(user.getId());
 
+		passwordSecurityLevel = user.getAccount().getPasswordSecurityLevel();
 		return SUCCESS;
 	}
 
@@ -197,5 +199,13 @@ public class ChangePassword extends PicsActionSupport {
 
 	public void setPassword2(String password2) {
 		this.password2 = password2;
+	}
+
+	public PasswordSecurityLevel getPasswordSecurityLevel() {
+		return passwordSecurityLevel;
+	}
+
+	public void setPasswordSecurityLevel(PasswordSecurityLevel passwordSecurityLevel) {
+		this.passwordSecurityLevel = passwordSecurityLevel;
 	}
 }
