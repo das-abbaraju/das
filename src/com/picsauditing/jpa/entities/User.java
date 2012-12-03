@@ -446,7 +446,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.reports = reports;
 	}
 
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.LAZY)
 	@CollectionTable(name = "user_language", joinColumns = @JoinColumn(name = "userID"))
 	@Column(name = "locale")
 	public List<Locale> getSpokenLanguages() {
