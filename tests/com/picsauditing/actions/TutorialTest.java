@@ -44,11 +44,11 @@ public class TutorialTest extends PicsActionTest {
         when(permissions.getUsingDynamicReportsDate()).thenReturn(null);
         when(userDAO.find(anyInt())).thenReturn(new User());
 
-        String result = tutorial.execute();
+        String result = tutorial.navigationMenu();
 
         verify(permissions, times(1)).setUsingDynamicReportsDate(any(Date.class));
         verify(userDAO, times(1)).save(any(User.class));
-        assertEquals("success", result);
+        assertEquals("navigation-menu", result);
     }
 
     @Test
@@ -56,11 +56,11 @@ public class TutorialTest extends PicsActionTest {
         when(permissions.isUsingDynamicReports()).thenReturn(true);
         when(permissions.getUsingDynamicReportsDate()).thenReturn(new Date());
 
-        String result = tutorial.execute();
+        String result = tutorial.navigationMenu();
 
         verifyZeroInteractions(userDAO);
         verify(permissions, never()).setUsingDynamicReportsDate(any(Date.class));
-        assertEquals("success", result);
+        assertEquals("navigation-menu", result);
     }
 
 }
