@@ -46,9 +46,11 @@ public class XMLResult extends StreamResult {
         }
         net.sf.json.JSON netsfjson = net.sf.json.JSONSerializer.toJSON( json.toJSONString() );
         if (logger.isDebugEnabled()) {
-            logger.debug("setting typehints to false");
+            logger.debug("Configuring serializer");
         }
         serializer.setTypeHintsEnabled(false);
+		serializer.setRootName("datafeed");
+		serializer.setElementName("record");
         if (logger.isDebugEnabled()) {
             logger.debug("writing XML");
         }
