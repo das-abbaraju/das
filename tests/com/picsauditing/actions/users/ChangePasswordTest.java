@@ -48,11 +48,6 @@ public class ChangePasswordTest extends PicsActionTest {
 		when(account.getPasswordSecurityLevel()).thenReturn(PasswordSecurityLevel.Maximum);
 	}
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		Whitebox.setInternalState(SpringUtils.class, "applicationContext", (ApplicationContext) null);
-	}
-
 	@Test
 	public void testExecute_PasswordSecurityLevelShouldBeSet() throws Exception {
 		changePassword.execute();
