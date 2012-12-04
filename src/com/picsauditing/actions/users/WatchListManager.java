@@ -97,7 +97,7 @@ public class WatchListManager extends PicsActionSupport {
 
 	public List<ContractorWatch> getWatchLists() {
 		List<Integer> contractorIds = coDAO.getContractorIdsForOperator("operatorAccount.id = " + permissions.getAccountId() 
-				+ " AND workStatus in ('" + ApprovalStatus.C + "', '" + ApprovalStatus.Y + "')");
+				+ " AND workStatus IN ('" + ApprovalStatus.C + "', '" + ApprovalStatus.Y + "', '" + ApprovalStatus.YF + "')");
 		
 		String baseQuery = "c.contractor.status = '" + AccountStatus.Active + "' " 
 					+ "AND c.contractor.id IN (" + Strings.implode(contractorIds) + ") ";

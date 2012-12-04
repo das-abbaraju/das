@@ -680,22 +680,22 @@ public class OperatorAccount extends Account {
 		// All other operators
 		return 5;
 	}
-	
+
 	@Transient
 	public boolean isApplicableFlagOperator(OperatorAccount flagOperator) {
 		boolean isApplicable = false;
-		
+
 		isApplicable = isOrIsDescendantOf(flagOperator.getId());
-		
+
 		if (!isApplicable) {
-			for (Facility facility: flagOperator.getOperatorFacilities()) {
+			for (Facility facility : flagOperator.getOperatorFacilities()) {
 				if (facility.getOperator().equals(this)) {
 					isApplicable = true;
 					break;
 				}
 			}
 		}
-		
+
 		return isApplicable;
 	}
 
@@ -715,5 +715,19 @@ public class OperatorAccount extends Account {
 		}
 
 		return false;
+	}
+
+	@Transient
+	public boolean areAllContractorRelationshipsUniform() {
+		ApprovalStatus workStatus = null;
+		for (ContractorOperator contractorOperator : contractorOperators) {
+			if (!contractorOperator.getOperatorAccount().getApprovesRelationships().isTrue())
+				continue;
+			if (workStatus == null)
+				workStatus = contractorOperator.getWorkStatus();
+			else if (workStatus != contractorOperator.getWorkStatus())
+				return false;
+		}
+		return true;
 	}
 }

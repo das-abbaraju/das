@@ -711,7 +711,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected void filterOnWorkStatus() {
 		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
-			sql.addWhere("gc.workStatus = '" + getFilter().getWorkStatus() + "'");
+			sql.addWhere("gc.workStatus LIKE '" + getFilter().getWorkStatus() + "%'");
 		}
 	}
 

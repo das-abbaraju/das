@@ -161,7 +161,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			ContractorOperator contractorOperator = contractor.getContractorOperatorForOperator(gc);
 			if (contractorOperator != null
 					&& contractorOperator.getOperatorAccount().getId() == permissions.getAccountId()
-					&& contractorOperator.getWorkStatus() != ApprovalStatus.Y) {
+					&& !contractorOperator.getWorkStatus().isYes()) {
 				throw new GeneralContractorNotApprovedException(getTextParameterized(
 						"ContractorView.ContractorHasNotApprovedGC", contractor.getName()));
 			}
@@ -208,6 +208,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
 					if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
 						cOperator.setWorkStatus(ApprovalStatus.Y);
+						cOperator.cascadeWorkStatusToParent();
 						cOperator.setAuditColumns(permissions);
 						contractorOperatorDAO.save(cOperator);
 						break;

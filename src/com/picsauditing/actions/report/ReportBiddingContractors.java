@@ -200,6 +200,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		for (ContractorOperator cOperator : cAccount.getNonCorporateOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
 				cOperator.setWorkStatus(ApprovalStatus.Y);
+				cOperator.cascadeWorkStatusToParent();
 				cOperator.setAuditColumns(permissions);
 				contractorOperatorDAO.save(cOperator);
 				break;

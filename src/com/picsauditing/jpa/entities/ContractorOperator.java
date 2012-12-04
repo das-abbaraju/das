@@ -99,6 +99,15 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.workStatus = workStatus;
 	}
 
+	public void setForcedWorkStatus(ApprovalStatus workStatus) {
+		if (workStatus.isYes())
+			this.workStatus = ApprovalStatus.YF;
+		else if (workStatus.isNo())
+			this.workStatus = ApprovalStatus.NF;
+		else
+			setWorkStatus(workStatus);
+	}
+
 	@Transient
 	public boolean isWorkStatusApproved() {
 		if (!getOperatorAccount().isCorporate())
@@ -423,5 +432,28 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	public void setReasonForRegistration(String reasonForRegistration) {
 		this.reasonForRegistration = reasonForRegistration;
+	}
+
+	public void cascadeWorkStatusToParent() {
+		ContractorOperator contractorCorporate = contractorAccount.getContractorOperatorForOperator(operatorAccount.getParent());
+		if (contractorCorporate != null) {
+			if (contractorCorporate.getWorkStatus().isForced() || workStatus == contractorCorporate.getWorkStatus())
+				return;
+			
+			else if (workStatus.ordinal() > contractorCorporate.getWorkStatus().ordinal() || contractorCorporate.getOperatorAccount().areAllContractorRelationshipsUniform()) {
+				contractorCorporate.setWorkStatus(workStatus);
+			}
+		}
+	}
+
+	@Transient
+	public void setDefaultWorkStatus() {
+		ContractorOperator contractorCorporate = contractorAccount.getContractorOperatorForOperator(operatorAccount.getParent());
+		if (contractorCorporate != null) {
+			if (contractorCorporate.getWorkStatus().isNoForced())
+				workStatus = ApprovalStatus.N;
+			if (contractorCorporate.getWorkStatus().isYesForced())
+				workStatus = ApprovalStatus.Y;
+		}
 	}
 }

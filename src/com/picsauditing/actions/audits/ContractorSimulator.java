@@ -72,6 +72,7 @@ public class ContractorSimulator extends PicsActionSupport {
 			operators.add(operator);
 			co.setContractorAccount(contractor);
 			co.setOperatorAccount(operator);
+			co.setDefaultWorkStatus();
 			contractor.getOperators().add(co);
 		}
 		contractor.setAuditColumns();

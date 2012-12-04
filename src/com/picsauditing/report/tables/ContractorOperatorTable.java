@@ -33,6 +33,7 @@ public class ContractorOperatorTable extends AbstractTable {
 			SelectCase caseConnectedStatus = new SelectCase();
 			caseConnectedStatus.addCondition(statusActive, caseWorkStatusApproved.toString());
 			caseConnectedStatus.addCondition(statusRequestedPending, NetworkLevel.Requested.ordinal());
+			caseWorkStatusApproved.setElse(NetworkLevel.Other.ordinal());
 
 			SelectCase caseNotConnectedStatus = new SelectCase();
 			caseNotConnectedStatus.addCondition(statusActive, NetworkLevel.Member.ordinal());
