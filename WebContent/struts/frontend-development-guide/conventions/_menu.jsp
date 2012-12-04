@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <ul class="nav nav-list" data-spy="affix" data-offset-top="100">
     <li class="nav-header">
         Folder Structure
