@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
@@ -91,9 +89,10 @@ public class I18nCache implements Serializable {
 	}
 
 	private String findAnyLocale(String key) {
-		Map<String, String> locales = cache.row(key.toUpperCase());
-		if (locales == null)
+		Map<String, String> locales = cache.row(prepareKeyForCache(key));
+		if (locales == null) {
 			return null;
+		}
 
 		if (locales.size() > 0) {
 			for (String locale : locales.keySet()) {
@@ -106,7 +105,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private boolean hasKey(String key, String locale) {
-		return cache.contains(key.toUpperCase(), locale);
+		return cache.contains(prepareKeyForCache(key), locale);
 	}
 
 	public boolean hasKey(String key, Locale locale) {
@@ -114,13 +113,13 @@ public class I18nCache implements Serializable {
 	}
 
 	public Map<String, String> getText(String key) {
-		return cache.row(key.toUpperCase());
+		return cache.row(prepareKeyForCache(key));
 	}
 
 	private String getText(String key, String locale) {
 		updateCacheUsed(key);
 
-		String value = cache.get(key.toUpperCase(), locale);
+		String value = cache.get(prepareKeyForCache(key), locale);
 
 		value = getTranslationFallback(key, value, locale);
 
@@ -197,7 +196,7 @@ public class I18nCache implements Serializable {
 
 			for (BasicDynaBean message : messages) {
 				String key = String.valueOf(message.get("msgKey"));
-				newCache.put(key.toUpperCase(), String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+				newCache.put(prepareKeyForCache(key), String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
 				Date lastUsed = (Date) message.get("lastUsed");
 				newCacheUsage.put(key, lastUsed);
 			}
@@ -244,53 +243,50 @@ public class I18nCache implements Serializable {
 
 	private String getLocaleFallback(String key, Locale locale) {
 		String localeString = locale.toString();
-		if (hasKey(key, localeString))
+		if (hasKey(key, localeString)) {
 			return localeString;
+		}
 
 		String languageString = locale.getLanguage();
-		if (hasKey(key, languageString))
+		if (hasKey(key, languageString)) {
 			return languageString;
+		}
 
 		if (!hasKey(key, DEFAULT_LANGUAGE)) {
 			String anyLocale = findAnyLocale(key);
 
-			if (anyLocale != null)
+			if (anyLocale != null) {
 				return anyLocale;
+			}
 		}
 
 		return DEFAULT_LANGUAGE;
 	}
 
 	private String getTranslationFallback(String key, String translatedValue, String locale) {
-		if (isValidTranslation(translatedValue))
+		if (isValidTranslation(translatedValue)) {
 			return translatedValue;
-
-		Permissions permissions = null;
-
-		try {
-			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
-		} catch (Exception e) {
-			logger.error("Error trying to get permissions object in I18nCache: ", e);
 		}
 
-		// Default fallback is blank if there is no good translation
-		String fallbackTranslation = "";
+		String fallbackTranslation = key;
 
-		// Translation key is the fallback for PICS employees only
-		if (permissions != null && permissions.isPicsEmployee()) {
-			fallbackTranslation = key;
+		// TODO this should be temporary because we probably need a new column in the DB
+		// that flags whether a translation is ready for primetime. This would require us to
+		// change all the logic that automatically inserts translations into the DB.
+		if (key.toLowerCase().endsWith("helptext")) {
+			fallbackTranslation = "";
 		}
 
-		if (locale.equals(DEFAULT_LANGUAGE)) {
-			logger.error("Translation key '" + key + "' has no translation whatsoever.");
+		if (DEFAULT_LANGUAGE.equals(locale)) {
+			logger.error("Translation key '{}' has no english translation.", key);
 		} else {
 			// If a foreign translation was invalid, check the English translation
-			String englishValue = cache.get(key.toUpperCase(), DEFAULT_LANGUAGE);
+			String englishValue = cache.get(prepareKeyForCache(key), DEFAULT_LANGUAGE);
 
 			if (isValidTranslation(englishValue)) {
 				fallbackTranslation = englishValue;
 			} else {
-				logger.error("Translation key '" + key + "' has no translation whatsoever.");
+				logger.error("Translation key '{}' has no english translation.", key);
 			}
 		}
 
@@ -334,7 +330,7 @@ public class I18nCache implements Serializable {
 				String sql = String.format("DELETE FROM app_translation WHERE msgKey = '%s' AND locale = '%s'", key,
 						translationFromCache.getLocale());
 				db.executeUpdate(sql);
-				cache.remove(newTranslation.getKey().toUpperCase(), newTranslation.getLocale());
+				cache.remove(prepareKeyForCache(newTranslation.getKey()), newTranslation.getLocale());
 				iterator.remove();
 			} else if (translationFromCache.isModified()) {
 				db.executeUpdate(buildUpdateStatement(newTranslation));
@@ -344,7 +340,6 @@ public class I18nCache implements Serializable {
 				if (insert != null) {
 					db.executeInsert(insert);
 				}
-				// basicDao.save(newTranslation);
 			}
 
 			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
@@ -358,7 +353,7 @@ public class I18nCache implements Serializable {
 			return;
 
 		for (String key : keys) {
-			cache.row(key.toUpperCase()).clear();
+			cache.row(prepareKeyForCache(key)).clear();
 		}
 
 		String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
@@ -429,7 +424,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private void updateCacheWithTranslation(AppTranslation newTranslation) {
-		cache.put(newTranslation.getKey().toUpperCase(), newTranslation.getLocale(), newTranslation.getValue());
+		cache.put(prepareKeyForCache(newTranslation.getKey()), newTranslation.getLocale(), newTranslation.getValue());
 	}
 
 	private void insertUpdateRequiredLanguages(List<String> requiredLanguages, String key, String source)
@@ -443,8 +438,9 @@ public class I18nCache implements Serializable {
 			insertUpdateTranslation.setSourceLanguage(source);
 			insertUpdateTranslation.setApplicable(true);
 
-			if (insertUpdateTranslation.isKeyContentDriven())
+			if (insertUpdateTranslation.isKeyContentDriven()) {
 				insertUpdateTranslation.setContentDriven(true);
+			}
 
 			if (hasKey(key, requiredLanguage)) {
 				updateRequiredLanguage(requiredLanguage, insertUpdateTranslation);
@@ -497,15 +493,31 @@ public class I18nCache implements Serializable {
 	}
 
 	private boolean isValidTranslation(String translation) {
-		if (translation == null)
+		if (translation == null) {
 			return false;
+		}
 
-		if (DEFAULT_TRANSLATION.equals(translation))
+		if (DEFAULT_TRANSLATION.equals(translation)) {
 			return false;
+		}
 
-		if ("Translation Missing".equalsIgnoreCase(translation))
+		// TODO remove this once we have scrubbed the database of "Translation Missing"s
+		if ("Translation Missing".equalsIgnoreCase(translation)) {
 			return false;
+		}
 
 		return true;
+	}
+
+	public String prepareKeyForCache(String key) {
+		String keyUppercase = "";
+
+		try {
+			keyUppercase = key.toUpperCase();
+		} catch (Exception e) {
+			logger.warn("Null passed to I18nCache to be translated. Is this OK?");
+		}
+
+		return keyUppercase;
 	}
 }
