@@ -1,6 +1,7 @@
 package com.picsauditing.salecommission.strategy.invoice;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -127,7 +128,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			int totalSitesWithService = totalSites.get(feeClass);
 			BigDecimal invoiceRevenueForService = fees.get(feeClass);
 			if (invoiceRevenueForService != null && totalSitesWithService > 0) {
-				result += invoiceRevenueForService.divide(new BigDecimal(totalSitesWithService)).doubleValue();
+				result += invoiceRevenueForService.divide(new BigDecimal(totalSitesWithService), 5, RoundingMode.HALF_UP).doubleValue();
 			}
 		}
 		
@@ -197,8 +198,8 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		for (ClientSiteServiceLevel clientSiteServiceLevel : clientSiteServiceLevels) {
 			for (FeeClass feeClass : clientSiteServiceLevel.getServiceLevels()) {
 				if (totalSites.containsKey(feeClass)) {
-					Integer count = totalSites.get(feeClass);
-					count++;
+					int count = totalSites.get(feeClass);
+					totalSites.put(feeClass, ++count);
 				} else {
 					totalSites.put(feeClass, 1);
 				}
