@@ -118,7 +118,6 @@ public class BillingCalculatorSingle {
 	public void calculateAnnualFees (ContractorAccount contractor) {
 		this.calculateContractorInvoiceFees(contractor);
 	}
-
 	
 	public void calculateContractorInvoiceFees (ContractorAccount contractor) {
 		if (contractor.getStatus().isRequested()) {
@@ -146,7 +145,7 @@ public class BillingCalculatorSingle {
 		boolean hasHseCompetency = false;
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
-
+		
 		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
@@ -204,7 +203,7 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
 		}
 
-		if (hasOq || hasHseCompetency || hasEmployeeAudits) {
+		if ((hasOq || hasHseCompetency || hasEmployeeAudits)) {
 			// EmployeeGUARD HSE Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
 			BigDecimal newAmount = contractor.getCountry().getAmount(newLevel);
@@ -272,7 +271,7 @@ public class BillingCalculatorSingle {
 		}
 
 	}
-
+	
 	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
 		return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
 	}

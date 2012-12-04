@@ -5,18 +5,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.collections.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -27,7 +26,6 @@ import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
 
 public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
@@ -51,12 +49,11 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	@Override
 	public void buildInvoiceCommissions(Invoice invoice) {
 		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
-		List<ClientSiteServiceLevel> clientSiteServiceLevels = calculateServiceForEachClientSite(contractor);
+		List<ClientSiteServiceLevel> clientSiteServiceLevels = calculateServiceForEachClientSite(contractor, invoice);
 		Map<FeeClass, Integer> totalSites = getTotalSitesForService(clientSiteServiceLevels);
 		Map<FeeClass, BigDecimal> fees = invoice.getCommissionEligibleFees(false);
 		Map<ContractorOperator, Double> clientRevenueWeights = calculateAllClientRevenueWeights(invoice, clientSiteServiceLevels, totalSites, fees);
-		
-		
+		generateInvoiceCommissions(invoice, clientRevenueWeights);		
 	}
 	
 	private void generateInvoiceCommissions(Invoice invoice, Map<ContractorOperator, Double> clientRevenueWeights) {
@@ -64,10 +61,12 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			List<AccountUser> accountUsers = getActiveAccountUsersForClientSite(individualClientRevenueWeight.getKey().getOperatorAccount());
 			for (AccountUser accountUser : accountUsers) {
 				InvoiceCommission invoiceCommission = new InvoiceCommission();
+				invoiceCommission.setUser(accountUser.getUser());
 				invoiceCommission.setAuditColumns(invoice.getUpdatedBy());
 				invoiceCommission.setInvoice(invoice);
 				invoiceCommission.setPoints(calculatePoints(invoice, accountUser, individualClientRevenueWeight.getValue()));
 				invoiceCommission.setRevenuePercent(calculateRevenueSplit(accountUser, individualClientRevenueWeight.getValue()));
+				invoiceCommissionDAO.save(invoiceCommission);
 			}
 		}
 	}
@@ -85,6 +84,16 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	}
 	
 	private boolean isActivationInvoice(Invoice invoice) {
+		if (invoice == null || CollectionUtils.isEmpty(invoice.getItems())) {
+			return false;
+		}
+		
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (invoiceItem.getInvoiceFee().isActivation()) {
+				return true;
+			}
+		}
+		
 		return false;
 	}
 	
@@ -117,39 +126,66 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			// I am now looking at a specific service level
 			int totalSitesWithService = totalSites.get(feeClass);
 			BigDecimal invoiceRevenueForService = fees.get(feeClass);
-			result += invoiceRevenueForService.divide(new BigDecimal(totalSitesWithService)).doubleValue();
+			if (invoiceRevenueForService != null && totalSitesWithService > 0) {
+				result += invoiceRevenueForService.divide(new BigDecimal(totalSitesWithService)).doubleValue();
+			}
 		}
 		
-		result /= invoice.getTotalCommissionEligibleInvoice(false).doubleValue();
+		double totalCommissionEligible = invoice.getTotalCommissionEligibleInvoice(true).doubleValue();
+		if (totalCommissionEligible > 0) {
+			result /= invoice.getTotalCommissionEligibleInvoice(true).doubleValue();
+		}
 		
 		return result;
 	}
 	
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-	private List<ClientSiteServiceLevel> calculateServiceForEachClientSite(ContractorAccount contractor) {
+	private List<ClientSiteServiceLevel> calculateServiceForEachClientSite(ContractorAccount contractor, Invoice invoice) {
 		List<ContractorOperator> clientSites = getListOfAllOperatorSites(contractor);
 		if (CollectionUtils.isEmpty(clientSites)) {
 			return Collections.emptyList();
 		}
 
+		if (isActivationInvoice(invoice)) {
+			contractor.setMembershipDate(null);
+		}
+		
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = new ArrayList<ClientSiteServiceLevel>();
 		for (ContractorOperator clientSite : clientSites) {
 			List<ContractorOperator> oneClientSite = new ArrayList<ContractorOperator>(Arrays.asList(clientSite));
 			contractor.setOperators(oneClientSite);
 			
 			billingService.calculateContractorInvoiceFees(contractor);
-			buildFromContractorFees(contractor, clientSite);		
+			List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
+
+			clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));		
 		}
 
 		return clientSiteServiceLevels;
 	}
 	
-	private ClientSiteServiceLevel buildFromContractorFees(ContractorAccount contractor, ContractorOperator clientSite) {
+	private ClientSiteServiceLevel buildFromContractorFees(List<InvoiceItem> invoiceItems, ContractorOperator clientSite) {
 		ClientSiteServiceLevel clientSiteServiceLevel = new ClientSiteServiceLevel();
-		clientSiteServiceLevel.setServiceLevels(contractor.getFees().keySet());
+		clientSiteServiceLevel.setServiceLevels(getFeesForInvoiceItems(invoiceItems));
 		clientSiteServiceLevel.setClientSite(clientSite);
 		
 		return clientSiteServiceLevel;
+	}
+	
+	private Set<FeeClass> getFeesForInvoiceItems(List<InvoiceItem> invoiceItems) {
+		if (CollectionUtils.isEmpty(invoiceItems)) {
+			return Collections.emptySet();
+		}
+		
+		Set<FeeClass> invoiceFees = new HashSet<FeeClass>();
+		for (InvoiceItem invoiceItem : invoiceItems) {
+			InvoiceFee invoiceFee = invoiceItem.getInvoiceFee(); 
+			if (invoiceFee != null && invoiceFee.isCommissionEligible()) {
+				invoiceFees.add(invoiceFee.getFeeClass());
+			}
+		}
+		
+		return invoiceFees;
 	}
 	
 	private Map<FeeClass, Integer> getTotalSitesForService(List<ClientSiteServiceLevel> clientSiteServiceLevels) {
@@ -187,113 +223,20 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		return accountUsers;
 	}
 	
-
-	
-// ==========================================================	
-	
-	
-
-//	@Override
-//	protected void buildInvoiceCommissions(Invoice invoice) {
-//		// find account users
-//		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
-//		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
-//
-//		// Client Sites
-//		List<OperatorAccount> operators = contractor.getOperatorAccounts();
-//
-//		for (OperatorAccount op : operators) {
-//			accountUsers.addAll(op.getAccountUsers());
-//		}
-//
-//		removeInactiveAccountUsers(accountUsers);
-//
-//		int numberAMs = countNumberOfAccountManagers(accountUsers);
-//		int numberSRs = countNumberOfSalesRepresentatives(numberAMs, accountUsers == null ? 0 : accountUsers.size());
-//
-//		float accountManagerFactor = calculateFactor(numberAMs);
-//		float salesRepresentativeFactor = calculateFactor(numberSRs);
-//
-//		buildInvoiceCommissions(invoice, accountUsers, accountManagerFactor, salesRepresentativeFactor);
-//	}
-
-	private void buildInvoiceCommissions(Invoice invoice, List<AccountUser> accountUsers,
-			float accountManagerFactor, float salesRepresentativeFactor) {
-		
-		InvoiceCommission invoiceCommission = null;
-		Map<User, Float> revenuePercentage = calculateRevenuePercent(invoice,
-				buildUserSetFromAccountUserList(accountUsers));
-
-		for (AccountUser accountUser : accountUsers) {
-			invoiceCommission = new InvoiceCommission();
-			invoiceCommission.setInvoice(invoice);
-			invoiceCommission.setUser(accountUser.getUser());
-			invoiceCommission.setPoints(0);
-			invoiceCommission.setRevenuePercent(getRevenuePercentage(revenuePercentage, accountUser));
-			invoiceCommission.setAuditColumns(invoice.getUpdatedBy());
-			
-			invoiceCommissionDAO.save(invoiceCommission);
-		}
-	}
-
-	protected float getRevenuePercentage(Map<User, Float> revenuePercentage, AccountUser accountUser) {
-		if (MapUtils.isEmpty(revenuePercentage) || !revenuePercentage.containsKey(accountUser.getUser())) {
-			return 0.0f;
+	private List<ContractorOperator> getListOfAllOperatorSites(ContractorAccount contractor) {
+		if (CollectionUtils.isEmpty(contractor.getNonCorporateOperators())) {
+			return Collections.emptyList();
 		}
 
-		return revenuePercentage.get(accountUser.getUser());
-	}
-
-	private float calculateFactor(int numberOfAccountUserType) {
-		if (numberOfAccountUserType < 0) {
-			throw new IllegalArgumentException("Argument 'numberOfAccountUserType' cannot be less than 0.");
-		} else if (numberOfAccountUserType == 0) {
-			return 0;
-		}
-
-		return (1.0f / numberOfAccountUserType);
-	}
-
-	private int countNumberOfAccountManagers(List<AccountUser> accountUsers) {
-		if (CollectionUtils.isEmpty(accountUsers)) {
-			return 0;
-		}
-
-		int total = 0;
-		for (AccountUser accountUser : accountUsers) {
-			if (isAccountManager(accountUser)) {
-				total++;
+		List<ContractorOperator> clientSites = new ArrayList<ContractorOperator>();
+		for (ContractorOperator clientSite : contractor.getNonCorporateOperators()) {
+			String doContractorsPay = clientSite.getOperatorAccount().getDoContractorsPay();
+			if ("Yes".equals(doContractorsPay) || !"Multiple".equals(doContractorsPay)) {
+				clientSites.add(clientSite);
 			}
 		}
 
-		return total;
+		return clientSites;
 	}
-
-	private boolean isAccountManager(AccountUser accountUser) {
-		return (accountUser != null && accountUser.getRole() != null && accountUser.getRole().isAccountManager());
-	}
-
-	/**
-	 * This method determine the number of Sales Representatives based on the
-	 * number of account managers, because the UserAccountRole Enum has only 2
-	 * values, and if you know how many you have of Account Managers then you
-	 * can determine the number of Sales Representatives through subtraction.
-	 * 
-	 * Includes runtime exceptions in the case where the UserAccountRole changes
-	 * (someone adds in a third Role).
-	 */
-	private int countNumberOfSalesRepresentatives(int numberOfAccountManagers, int totalActiveAccountUsers) {
-		if (UserAccountRole.values().length != 2) {
-			throw new IllegalStateException("The UserAccountRole Enum type is expected to have only 2 values for "
-					+ "this method to execute properly (Sales Representative and Account Manager).");
-		}
-
-		if (numberOfAccountManagers < 0 || numberOfAccountManagers < 0) {
-			throw new IllegalArgumentException("Invalid input to method.");
-		}
-
-		return (totalActiveAccountUsers - numberOfAccountManagers);
-	}
-
 
 }
