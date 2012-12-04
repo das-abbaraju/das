@@ -1118,6 +1118,7 @@ public class ContractorAccount extends Account implements JSONable {
 				if (foundPaymentExpires) {
 					foundMembership = true;
 				}
+				invoice.getCommissionEligibleFees(true);
 			}
 		}
 

@@ -12,12 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class DBBean implements InitializingBean {
 	
+	private static final String PICS_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/pics";
+	private static final String PICS_READ_ONLY_JDBC_RESOURCE_NAME = "java:comp/env/jdbc/picsro";
+	
 	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
 	private static DataSource dataSource;
 	
 	// volatile to use as part of the double-locking pattern
 	static volatile DataSource staticDataSource;
-	static AtomicInteger instantiationCount = new AtomicInteger(0); 
+	static volatile DataSource readOnlyDataSource;
+	static AtomicInteger instantiationCount = new AtomicInteger(0);
+	static AtomicInteger readOnlyDataSourceInstantiationCount = new AtomicInteger(0);
 	
 	/**
 	 * Enforce the singleton nature of this class by making the 
@@ -51,13 +56,44 @@ public class DBBean implements InitializingBean {
 		
 		return result.getConnection();
 	}
+	
+	/**
+	 * Use double-locking to improve the performance and ensure that only one
+	 * instance of the readOnlyDataSource is created.
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Connection getReadOnlyConnection() throws SQLException {
+		DataSource dataSource = readOnlyDataSource;
+		if (dataSource == null) {
+			synchronized(DBBean.class) {
+				dataSource = readOnlyDataSource;
+				if (dataSource == null) {
+					try {
+						readOnlyDataSource = dataSource = getJdbcReadOnlyPics();
+						DBBean.readOnlyDataSourceInstantiationCount.getAndIncrement();
+					} catch (NamingException ne) {
+						ne.printStackTrace();
+						return null;
+					}
+				}
+			}
+		}
+		
+		return dataSource.getConnection();
+	}
 
 	private static DataSource getJdbcPics() throws NamingException {
 		if (dataSource == null) {
-			return (DataSource) getServiceLocator().getDataSource("java:comp/env/jdbc/pics");
+			return (DataSource) getServiceLocator().getDataSource(PICS_JDBC_RESOURCE_NAME);
 		}
 		
 		return dataSource;
+	}
+	
+	private static DataSource getJdbcReadOnlyPics() throws NamingException {
+		return (DataSource) getServiceLocator().getDataSource(PICS_READ_ONLY_JDBC_RESOURCE_NAME);
 	}
 	
 	private static com.picsauditing.PICS.PICSDBLocator getServiceLocator() {

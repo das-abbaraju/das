@@ -24,6 +24,7 @@ public class ReportUser extends BaseTable {
 	private Date lastViewedDate;
 	private int viewCount;
 	private int sortOrder;
+	private boolean visibleOnMyReports;
 
 	public ReportUser() {
 	}
@@ -89,6 +90,14 @@ public class ReportUser extends BaseTable {
 
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
+	}
+	
+	public boolean isVisibleOnMyReports() {
+		return visibleOnMyReports;
+	}
+
+	public void setVisibleOnMyReports(boolean visibleOnMyReports) {
+		this.visibleOnMyReports = visibleOnMyReports;
 	}
 	
 	@Override

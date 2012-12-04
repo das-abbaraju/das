@@ -32,6 +32,7 @@ public class InvoiceFee extends BaseTable {
 	private int maxFacilities;
 	private String qbFullName;
 	private Integer displayOrder = 999;
+	private boolean commissionEligible;
 
 	public InvoiceFee() {
 	}
@@ -119,6 +120,14 @@ public class InvoiceFee extends BaseTable {
 
 	public Integer getDisplayOrder() {
 		return displayOrder;
+	}
+	
+	public boolean isCommissionEligible() {
+		return commissionEligible;
+	}
+
+	public void setCommissionEligible(boolean commissionEligible) {
+		this.commissionEligible = commissionEligible;
 	}
 
 	@Transient

@@ -20,7 +20,7 @@ public class PaymentCommission extends BaseTable {
 	private InvoiceCommission invoiceCommission;
 	private Payment payment;
 	private BigDecimal paymentAmount = BigDecimal.ZERO;
-	private float activationPoints;
+	private double activationPoints;
 	
 	@ManyToOne
 	@JoinColumn(name = "commissionID", nullable = false, updatable = false)
@@ -52,11 +52,11 @@ public class PaymentCommission extends BaseTable {
 	}
 	
 	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.Billing)
-	public float getActivationPoints() {
+	public double getActivationPoints() {
 		return activationPoints;
 	}
 	
-	public void setActivationPoints(float activationPoints) {
+	public void setActivationPoints(double activationPoints) {
 		this.activationPoints = activationPoints;
 	}
 

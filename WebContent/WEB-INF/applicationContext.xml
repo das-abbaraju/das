@@ -117,7 +117,7 @@
 
     <bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
     <bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
-    <bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle" init-method="initService"/>
+    <!-- <bean id="BillingService" class="com.picsauditing.PICS.BillingCalculatorSingle" init-method="initService"/> -->
     <bean id="BrainTreeService" class="com.picsauditing.util.braintree.BrainTreeService"/>
     <bean id="BrainTreeRequest" class="com.picsauditing.util.braintree.BrainTreeResponse.BrainTreeRequest"/>
     <bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"/>
@@ -206,9 +206,13 @@
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
+    <bean id="PaymentObserver" class="com.picsauditing.salecommission.PaymentObserver" />
     <bean id="InvoiceStrategy" class="com.picsauditing.salecommission.strategy.invoice.InvoiceStrategy"/>
+    <bean id="UpdateInvoiceStrategy" class="com.picsauditing.salecommission.strategy.invoice.UpdateInvoiceStrategy" />
     <bean id="VoidInvoiceCommissionStrategy"
           class="com.picsauditing.salecommission.strategy.invoice.VoidInvoiceCommissionStrategy"/>
+    <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.strategy.payment.PaymentRemoveStrategy" />
+    <bean id="PaymentStrategy" class="com.picsauditing.salecommission.strategy.payment.PaymentStrategy" />
 
     <bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
     <bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder"/>

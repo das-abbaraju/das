@@ -87,7 +87,7 @@ public abstract class AbstractInvoiceCommissionStrategy implements InvoiceCommis
 				accountUsersForOperator = clientSite.getOperatorAccount().getAccountUsers();
 			}
 
-			removeInactiveAccountUsers(accountUsersForOperator);
+//			removeInactiveAccountUsers(accountUsersForOperator);
 			if (CollectionUtils.isEmpty(accountUsersForOperator)) {
 				return invoicePercentage;
 			}
@@ -99,21 +99,21 @@ public abstract class AbstractInvoiceCommissionStrategy implements InvoiceCommis
 		return invoicePercentage;
 	}
 
-	protected void removeInactiveAccountUsers(List<AccountUser> accountUsers) {
-		if (CollectionUtils.isEmpty(accountUsers)) {
-			return;
-		}
-
-		CollectionUtils.filter(accountUsers, new Predicate() {
-
-			@Override
-			public boolean evaluate(Object object) {
-				AccountUser accountUser = (AccountUser) object;
-				return accountUser.isCurrent();
-			}
-
-		});
-	}
+//	protected void removeInactiveAccountUsers(List<AccountUser> accountUsers) {
+//		if (CollectionUtils.isEmpty(accountUsers)) {
+//			return;
+//		}
+//
+//		CollectionUtils.filter(accountUsers, new Predicate() {
+//
+//			@Override
+//			public boolean evaluate(Object object) {
+//				AccountUser accountUser = (AccountUser) object;
+//				return accountUser.isCurrent();
+//			}
+//
+//		});
+//	}
 
 	// TODO: Clean up and rename this method
 	private Map<User, Float> calculateRevenuePerClientSite(Map<ContractorOperator, BigDecimal> revenuePerClientSite,
@@ -188,7 +188,8 @@ public abstract class AbstractInvoiceCommissionStrategy implements InvoiceCommis
 			
 			List<ContractorOperator> oneClientSite = new ArrayList<ContractorOperator>(Arrays.asList(clientSite));
 			contractor.setOperators(oneClientSite);
-			Invoice invoice = billingService.createInvoiceWithoutSave(contractor, user);
+//			Invoice invoice = billingService.createInvoiceWithoutSave(contractor, user);
+			Invoice invoice = new Invoice();
 			revenuePerClientSite.put(clientSite, invoice.getTotalAmount());
 		}
 
@@ -204,7 +205,7 @@ public abstract class AbstractInvoiceCommissionStrategy implements InvoiceCommis
 		return user;
 	}
 
-	private List<ContractorOperator> getListOfAllOperatorSites(ContractorAccount contractor) {
+	protected List<ContractorOperator> getListOfAllOperatorSites(ContractorAccount contractor) {
 		if (CollectionUtils.isEmpty(contractor.getNonCorporateOperators())) {
 			return Collections.emptyList();
 		}
