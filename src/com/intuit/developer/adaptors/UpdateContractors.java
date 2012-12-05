@@ -1,29 +1,22 @@
 package com.intuit.developer.adaptors;
 
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.quickbooks.qbxml.CustomerMod;
-import com.picsauditing.quickbooks.qbxml.CustomerModRqType;
-import com.picsauditing.quickbooks.qbxml.CustomerModRsType;
-import com.picsauditing.quickbooks.qbxml.CustomerRet;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+import com.picsauditing.quickbooks.qbxml.*;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
+import org.apache.commons.collections.CollectionUtils;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UpdateContractors extends CustomerAdaptor {
 
@@ -99,11 +92,14 @@ public class UpdateContractors extends CustomerAdaptor {
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
 				customer.setEmail(EmailAddressUtils.validate(primary.getEmail()));
-
-				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
-						.getName(), 0, 41));
-				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
-						.getPhone()));
+				List<User> altContactUserList = contractor.getUsersByRole(OpPerms.ContractorBilling);
+				if (CollectionUtils.isEmpty(altContactUserList)) {       // PICS-8332
+					customer.setAltContact(customer.getContact());
+					customer.setAltPhone(customer.getPhone());
+				} else {
+					customer.setAltContact(nullSafeSubString(altContactUserList.get(0).getName(), 0, 41));
+					customer.setAltPhone(nullSafePhoneFormat(altContactUserList.get(0).getPhone()));
+				}
 
 				customer.setTermsRef(factory.createTermsRef());
 				customer.getTermsRef().setFullName("Net 30");
