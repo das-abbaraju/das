@@ -14,6 +14,19 @@
         Decorators control the overarching page layout and are typically responsible for including general components such as: header, primary navigation, breadcrumbs, sidebar, footer, etc.  It is also responsible for determining the number of columns in a page (e.g. Is this page a one, two or three column layout).  The control over which decorator files a particular jsp uses is controlled by decorators.xml.
     </p>
     
+    <p>
+        The two layouts that should be used for all new styles should be:
+    </p>
+    
+    <ul>
+        <li>layout.jsp</li>
+        <li>simple-layout.jsp</li>
+    </ul>
+    
+    <p>
+        <strong>Since these files are used by every template, or jsp, no one is allowed to modify this file without prior authorization.</strong>
+    </p>
+    
     <div class="example">
 <pre class="prettyprint linenums">
 &lt;!DOCTYPE html&gt;
@@ -36,15 +49,4 @@
     ...
 </pre>
     </div>
-    
-    <p>
-        The two layouts that should be used for all new styles should be:
-    </p>
-    
-    <ul>
-        <li>layout.jsp</li>
-        <li>simple-layout.jsp</li>
-    </ul>
-    
-    <p><strong>Since these files are used by every template, or jsp, no one is allowed to modify this file without prior authorization.</strong></p>
 </section>
