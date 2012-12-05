@@ -2,8 +2,7 @@ package com.picsauditing.PICS;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +100,15 @@ public class ContractorValidatorTest extends PicsTest {
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(null);
 	}
 	
+	@Test
+	public void testSetOfficeLocationInPqfBasedOffOfAddress_NullCountrySubdivision() {
+		when(contractor.getCountrySubdivision()).thenReturn(null);
+
+		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
+
+		verify(auditQuestionDao, never()).findQuestionsByUniqueCodes(anyListOf(String.class));
+	}
+
 	@Test
 	public void testSetOfficeLocationInPqfBasedOffOfAddress_ValidateQuestionUniqeCode() {
 		setupOfficeLocationTest(new CountrySubdivision("US-CA"), new CountrySubdivision("US-TX"), false);

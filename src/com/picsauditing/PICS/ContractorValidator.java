@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -19,6 +20,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
@@ -201,16 +203,23 @@ public class ContractorValidator {
 	}
 
 	public void setOfficeLocationInPqfBasedOffOfAddress(ContractorAccount contractor) {
-
-		if (contractor == null)
+		if (contractor == null) {
 			return;
+		}
 
 		List<String> uniqueCodes = new ArrayList<String>();
-		uniqueCodes.add(contractor.getCountrySubdivision().toString());
+		CountrySubdivision countrySubdivision = contractor.getCountrySubdivision();
 
-		List<AuditQuestion> officeLocationResultSet = auditQuestionDao.findQuestionsByUniqueCodes(uniqueCodes);
-		if (officeLocationResultSet.isEmpty())
+		if (countrySubdivision == null) {
 			return;
+		}
+
+		uniqueCodes.add(countrySubdivision.toString());
+		List<AuditQuestion> officeLocationResultSet = auditQuestionDao.findQuestionsByUniqueCodes(uniqueCodes);
+
+		if (CollectionUtils.isEmpty(officeLocationResultSet)) {
+			return;
+		}
 
 		AuditQuestion officeLocationQuestion = officeLocationResultSet.get(0);
 
