@@ -54,6 +54,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.salecommission.InvoiceObserver;
+import com.picsauditing.salecommission.PaymentObserver;
 import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
@@ -88,11 +89,14 @@ public class BillingCalculatorSingle {
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private InvoiceObserver invoiceObserver;
+	@Autowired
+	private PaymentObserver paymentObserver;
 
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
 	public void initService() {
 		salesCommissionDataObservable.addObserver(invoiceObserver);
+		salesCommissionDataObservable.addObserver(paymentObserver);
 	}
 
 	public void setPayingFacilities(ContractorAccount contractor) {
@@ -114,6 +118,9 @@ public class BillingCalculatorSingle {
 		contractor.setPayingFacilities(payingOperators.size());
 	}
 	
+	/**
+	 * Please start using the method with the more descriptive name "calculateContractorInvoiceFees". 
+	 */
 	@Deprecated
 	public void calculateAnnualFees (ContractorAccount contractor) {
 		this.calculateContractorInvoiceFees(contractor);

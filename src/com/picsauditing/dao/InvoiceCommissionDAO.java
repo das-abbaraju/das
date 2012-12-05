@@ -17,7 +17,7 @@ public class InvoiceCommissionDAO extends BaseTableDAO<InvoiceCommission> {
 	
 	private static final String FIND_INVOICE_COMMISSIONS_NOT_VOID = "SELECT ic FROM InvoiceCommission ic " +
 			"WHERE ic.invoice.id = :invoiceId " +
-			"AND ic.revenuePercent != 0 AND ic.points != 0";
+			"AND ic.revenuePercent != 0 OR ic.points != 0";
 	
 	private static final String FIND_BY_INVOICE_IDS = "SELECT ic FROM InvoiceCommission ic WHERE ic.invoice.id in (:invoiceIds)";
 	

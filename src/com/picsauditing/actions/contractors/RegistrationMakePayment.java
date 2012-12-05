@@ -654,13 +654,14 @@ public class RegistrationMakePayment extends ContractorActionSupport {
     private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
         billingService.calculateAnnualFees(contractor);
         invoice = contractor.findLastUnpaidInvoice();
+        
         if (invoice == null) {
             invoice = billingService.createInvoice(contractor, getUser());
             contractor.getInvoices().add(invoice);
             invoiceDAO.save(invoice);
-            notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
             contractor.syncBalance();
             contractorAccountDao.save(contractor);
+            notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
             ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
             return true;
         }
@@ -669,9 +670,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
         if (contractor.isHasMembershipChanged()
                 || (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
             billingService.updateInvoice(invoice, newInvoice, getUser());
-            notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.ACTIVATION));
             contractor.syncBalance();
             contractorAccountDao.save(contractor);
+            notifyDataChange(new InvoiceDataEvent(invoice, InvoiceDataEvent.InvoiceEventType.NEW));
             ServletActionContext.getResponse().sendRedirect("RegistrationMakePayment.action");
             return true;
         }

@@ -13,6 +13,12 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.data.DataEvent;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PICS.data.InvoiceDataEvent;
+import com.picsauditing.PICS.data.InvoiceDataEvent.InvoiceEventType;
+import com.picsauditing.PICS.data.PaymentDataEvent;
+import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.InvoiceCommissionDAO;
@@ -68,6 +74,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private BrainTreeService paymentService;
 	@Autowired
 	private EmailSender emailSender;
+	@Autowired
+	private DataObservable salesCommissionDataObservable;
 
 	private boolean edit = false;
 	private int newFeeId;
@@ -169,6 +177,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				invoice.setNotes(billingService.getOperatorsString(contractor));
 				contractor.syncBalance();
+				
+				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
 			}
 
 			if ("email".equals(button)) {
@@ -225,7 +235,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				contractorAccountDao.save(contractor);
 
 				message = getText("InvoiceDetail.message.CanceledInvoice");
-
+				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.VOID));
+				
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
 						+ contractor.getCountry().getCurrency().getSymbol() + invoice.getTotalAmount().toString();
 				addNote(noteText, getUser());
@@ -254,9 +265,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							billingService.activateContractor(contractor, invoice);
 							contractorAccountDao.save(contractor);
 
+							notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
+							
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), getUser());
-
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 
@@ -293,6 +305,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							payment.setStatus(TransactionStatus.Unpaid);
 							paymentDAO.save(payment);
 
+							notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
+							
 							return SUCCESS;
 						} catch (Exception e) {
 							addNote("Credit Card transaction failed: " + e.getMessage(), getUser());
@@ -315,6 +329,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				addActionMessage(message);
 			}
 
+			if ("save".equals(button) && !invoice.getStatus().isPaid()) {
+				notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.UPDATE));
+			}
+			
 			return this.setUrlForRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit);
 		}
 
@@ -444,6 +462,11 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	public List<InvoiceCommission> getInvoiceCommissions() {
 		List<InvoiceCommission> commission = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
 		return commission;
+	}
+	
+	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
+		salesCommissionDataObservable.setChanged();
+		salesCommissionDataObservable.notifyObservers(dataEvent);
 	}
 
 }

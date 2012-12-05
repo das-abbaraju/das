@@ -13,6 +13,10 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.data.DataEvent;
+import com.picsauditing.PICS.data.DataObservable;
+import com.picsauditing.PICS.data.PaymentDataEvent;
+import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.NoteDAO;
@@ -52,6 +56,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private EmailSender emailSender;
 	@Autowired
 	private BrainTreeService paymentService;
+	@Autowired
+	private DataObservable salesCommissionDataObservable;
 
 	private Payment payment;
 	private PaymentMethod method = null;
@@ -173,6 +179,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						// or void manually.
 						payment.setStatus(TransactionStatus.Unpaid);
 						paymentDAO.save(payment);
+						
+						notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.PAYMENT));
 
 						return SUCCESS;
 					} catch (Exception e) {
@@ -190,6 +198,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					addActionError("You can't delete a payment that has already been synced with QuickBooks.");
 					return SUCCESS;
 				}
+				
+				notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
 				paymentDAO.remove(payment);
 
 				addActionMessage("Successfully Deleted Payment");
@@ -205,7 +215,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					transactionCondition = null;
 
 					unapplyAll();
-
+					notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REMOVE));
 					paymentDAO.remove(payment); // per Aaron's request
 
 					if (message != null) {
@@ -218,11 +228,13 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 			}
+			
 			if (button.startsWith("Refund")) {
 				if (refundAmount.compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("You can't refund negative amounts");
 					return SUCCESS;
 				}
+				
 				if (refundAmount.compareTo(payment.getBalance()) > 0) {
 					addActionError("You can't refund more than the remaining balance");
 					return SUCCESS;
@@ -245,7 +257,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setQbSync(true);
 					PaymentProcessor.ApplyPaymentToRefund(payment, refund, getUser(), refundAmount);
 					paymentDAO.save(refund);
-
+					
+					notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.REFUND));
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
 					return SUCCESS;
@@ -271,6 +284,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToInvoice pa = iterInvoice.next();
 							if (pa.getInvoice().getId() == txnID) {
 								paymentDAO.removePaymentInvoice(pa, getUser());
+								notifyDataChange(new PaymentDataEvent(pa.getPayment(), PaymentEventType.REMOVE));
 								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
@@ -280,6 +294,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							PaymentAppliedToRefund pa = iterRefund.next();
 							if (pa.getRefund().getId() == txnID) {
 								paymentDAO.removePaymentRefund(pa, getUser());
+								notifyDataChange(new PaymentDataEvent(pa.getPayment(), PaymentEventType.REMOVE));
 								return setUrlForRedirect("PaymentDetail.action?payment.id=" + payment.getId());
 							}
 						}
@@ -316,6 +331,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 									}
 								}
 							}
+							
 							for (Refund txn : contractor.getRefunds()) {
 								if (txn.getId() == txnID) {
 									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
@@ -330,6 +346,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.updateAmountApplied();
 			payment.setQbSync(true);
 			paymentDAO.save(payment);
+			
+			notifyDataChange(new PaymentDataEvent(payment, PaymentEventType.SAVE));
 
 			if (message != null) {
 				addActionMessage(message);
@@ -472,5 +490,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 	public void setChangePaymentMethodOnAccount(boolean changePaymentMethodOnAccount) {
 		this.changePaymentMethodOnAccount = changePaymentMethodOnAccount;
+	}
+	
+	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
+		salesCommissionDataObservable.setChanged();
+		salesCommissionDataObservable.notifyObservers(dataEvent);
 	}
 }

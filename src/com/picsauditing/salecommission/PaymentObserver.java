@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.salecommission.strategy.payment.PaymentCommissionStrategy;
-import com.picsauditing.salecommission.strategy.payment.PaymentRemoveStrategy;
-import com.picsauditing.salecommission.strategy.payment.PaymentStrategy;
+import com.picsauditing.salecommission.payment.strategy.PaymentCommissionStrategy;
+import com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy;
+import com.picsauditing.salecommission.payment.strategy.PaymentStrategy;
 import com.picsauditing.toggle.FeatureToggle;
 
 public class PaymentObserver implements Observer {
@@ -36,12 +36,12 @@ public class PaymentObserver implements Observer {
 		
 		PaymentCommissionStrategy<Payment> strategy = null;
 		switch (event.getPaymentEventType()) {
-			case REFUND:
 			case PAYMENT:
 			case SAVE:
 				strategy = paymentStrategy;
 				break;
-				
+			
+			case REFUND:
 			case REMOVE:
 				strategy = paymentRemoveStrategy;
 				break;

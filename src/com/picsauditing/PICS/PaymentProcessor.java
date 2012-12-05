@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.User;
 
+// TODO: This should be part of a TransactionVisitor
 public class PaymentProcessor {
 	public static void ApplyPaymentToInvoice(Payment payment, Invoice invoice, User user, BigDecimal amount) {
 		payment.setCurrency(invoice.getCurrency());
