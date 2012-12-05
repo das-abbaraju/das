@@ -16,10 +16,6 @@ import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
-import com.picsauditing.access.*;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.jpa.entities.UserAccess;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
@@ -27,11 +23,31 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.UserAccessDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserGroupDAO;
+import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.UserSwitch;
+import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
@@ -585,7 +601,8 @@ public class UsersManage extends PicsActionSupport {
 
         // Make sure we can edit users in this account
         if (permissions.getAccountId() != account.getId()) {
-            permissions.tryPermission(OpPerms.AllOperators);
+        	if (!permissions.getOperatorChildren().contains(account.getId()))
+        		permissions.tryPermission(OpPerms.AllOperators);
         }
 
         // checking to see if primary account user is set
