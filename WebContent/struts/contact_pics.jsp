@@ -6,9 +6,12 @@
 <%@ page import="com.picsauditing.util.URLUtils"%>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+<%@ page import="com.picsauditing.PICS.I18nCache" %>
 
 <%
 	Locale locale = TranslationActionSupport.getLocaleStatic();
+    I18nCache i18nCache = I18nCache.getInstance();
+    String mibew_language_code = i18nCache.getText("Mibew.LanguageCode", locale);
 %>
 <head>
 <title><s:text name="Contact.title" /></title>
@@ -66,10 +69,9 @@
 							<s:text name="Header.HelpCenter" />
 						</a>
 					</li>
-						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
+						<pics:toggle name="<%= FeatureToggle.TOGGLE_MIBEW_CHAT %>">
 							<li><label><s:text name="Header.Chat" />:</label>
-								<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/trackjs.php"></script>
-								<img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode"/>', this);"/>
+                                <a href="https://mibew.picsorganizer.com/client.php?locale=<%= mibew_language_code %>&amp;style=PICS" target="_blank" onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('https://mibew.picsorganizer.com/client.php?locale=<%= mibew_language_code %>&amp;style=PICS&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%= i18nCache.getText("Header.Chat", locale) %></a>
 							</li>
  						</pics:toggle>
 						<pics:toggleElse>
