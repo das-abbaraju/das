@@ -334,8 +334,11 @@ public class SearchEngine {
 
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
-			sb.append("(a.name LIKE '").append(searchTerm).append("%' OR a.nameIndex LIKE '").append(searchTerm)
-					.append("%' OR a.id = '").append(searchTerm).append("'");
+			sb.append("(a.name LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.dbaName LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.nameIndex LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.id LIKE '").append(searchTerm).append("'");
+			sb.append(" OR a.id LIKE '").append(searchTerm).append("'");
 			sb.append(" OR a.country LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR a.city LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR rc.english LIKE '").append(searchTerm).append("%'");
