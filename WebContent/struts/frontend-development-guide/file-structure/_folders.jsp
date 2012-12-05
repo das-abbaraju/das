@@ -16,8 +16,14 @@
 # java files (controllers, models)
 /Java Resources/src
 
+# decorator files
+/WebContent/decorators
+
 # jsp files (templates)
 /WebContent/struts
+
+# images
+/WebContent/img
 
 # js
 /WebContent/js

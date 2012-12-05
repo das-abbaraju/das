@@ -923,9 +923,13 @@ hr {
 .FrontendDevelopmentGuide-page section {
   margin-bottom: 60px;
 }
+/* line 18, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+.FrontendDevelopmentGuide-page section h2 {
+  margin: 20px 0;
+}
 
 @media (min-width: 1200px) {
-  /* line 23, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
+  /* line 28, ../sass/pics/templates/frontend-development-guide/_frontend-development-guide.scss */
   .FrontendDevelopmentGuide-page .span3 > .nav-list {
     width: 270px;
   }
