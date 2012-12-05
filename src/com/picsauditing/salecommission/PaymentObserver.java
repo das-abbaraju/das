@@ -49,7 +49,7 @@ public class PaymentObserver implements Observer {
 			default:
 				throw new IllegalArgumentException("Unhandled Payment Event Type.");
 		}
-				
+		
 		strategy.processPaymentCommission(event.getData());
 	}
 }

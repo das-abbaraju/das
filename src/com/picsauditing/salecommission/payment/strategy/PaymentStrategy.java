@@ -111,7 +111,7 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 		}
 		
 		double revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, payment) * invoiceCommission.getRevenuePercent();
-		double revenueAmount = invoiceCommission.getInvoice().getTotalAmount().floatValue() * revenuePercent;
+		double revenueAmount = invoiceCommission.getInvoice().getTotalCommissionEligibleInvoice(true).doubleValue() * revenuePercent;
 		return new BigDecimal(revenueAmount);
 	}
 	
@@ -120,7 +120,7 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 		BigDecimal amountApplied = payment.getAmountApplied();
 		
 		if (totalAmount != null && amountApplied != null) {
-			return amountApplied.floatValue() / totalAmount.floatValue(); 
+			return amountApplied.doubleValue() / totalAmount.doubleValue();
 		}
 		
 		return 0;

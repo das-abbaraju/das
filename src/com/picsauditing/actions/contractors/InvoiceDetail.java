@@ -109,7 +109,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 		country = invoice.getAccount().getCountry().toString();
 		invoice.updateAmountApplied();
-		// http://localhost:8080/picsWeb2/InvoiceDetail.action?invoice.id=85858&edit=true#
+
 		for (PaymentApplied ip : invoice.getPayments())
 			ip.getPayment().updateAmountApplied();
 

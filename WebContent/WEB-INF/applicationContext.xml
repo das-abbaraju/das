@@ -207,12 +207,12 @@
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>
     <bean id="PaymentObserver" class="com.picsauditing.salecommission.PaymentObserver" />
-    <bean id="InvoiceStrategy" class="com.picsauditing.salecommission.strategy.invoice.InvoiceStrategy"/>
-    <bean id="UpdateInvoiceStrategy" class="com.picsauditing.salecommission.strategy.invoice.UpdateInvoiceStrategy" />
+    <bean id="InvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.InvoiceStrategy"/>
+    <bean id="UpdateInvoiceStrategy" class="com.picsauditing.salecommission.invoice.strategy.UpdateInvoiceStrategy" />
     <bean id="VoidInvoiceCommissionStrategy"
-          class="com.picsauditing.salecommission.strategy.invoice.VoidInvoiceCommissionStrategy"/>
-    <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.strategy.payment.PaymentRemoveStrategy" />
-    <bean id="PaymentStrategy" class="com.picsauditing.salecommission.strategy.payment.PaymentStrategy" />
+          class="com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy"/>
+    <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy" />
+    <bean id="PaymentStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentStrategy" />
 
     <bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
     <bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder"/>
