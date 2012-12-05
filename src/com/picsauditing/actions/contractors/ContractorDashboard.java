@@ -76,7 +76,8 @@ import com.picsauditing.util.business.NoteFactory;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
-	private static Logger logger = LoggerFactory.getLogger(ContractorDashboard.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(ContractorDashboard.class);
 
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
@@ -145,7 +146,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		try {
 			findContractor();
 		} catch (NoRightsException noRights) {
-			if (permissions.isOperatorCorporate() && contractor.isShowInDirectory()) {
+			if (permissions.isOperatorCorporate()
+					&& contractor.isShowInDirectory()) {
 				showBasicsOnly = true;
 			} else {
 				throw noRights;
@@ -154,16 +156,21 @@ public class ContractorDashboard extends ContractorActionSupport {
 			throw e;
 		}
 
-		if (permissions.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
+		if (permissions.isGeneralContractor()
+				&& !contractor.isAutoApproveRelationships()) {
 			OperatorAccount gc = new OperatorAccount();
 			gc.setId(permissions.getAccountId());
 
-			ContractorOperator contractorOperator = contractor.getContractorOperatorForOperator(gc);
+			ContractorOperator contractorOperator = contractor
+					.getContractorOperatorForOperator(gc);
 			if (contractorOperator != null
-					&& contractorOperator.getOperatorAccount().getId() == permissions.getAccountId()
+					&& contractorOperator.getOperatorAccount().getId() == permissions
+							.getAccountId()
 					&& !contractorOperator.getWorkStatus().isYes()) {
-				throw new GeneralContractorNotApprovedException(getTextParameterized(
-						"ContractorView.ContractorHasNotApprovedGC", contractor.getName()));
+				throw new GeneralContractorNotApprovedException(
+						getTextParameterized(
+								"ContractorView.ContractorHasNotApprovedGC",
+								contractor.getName()));
 			}
 		}
 
@@ -181,9 +188,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				contractor.incrementRecalculation(10);
 				contractorAccountDao.save(contractor);
-				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag, permissions));
+				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag,
+						permissions));
 				auditTypeRuleCache.initialize(auditRuleDAO);
-				for (AuditTypeRule atr : auditTypeRuleCache.getRules(contractor)) {
+				for (AuditTypeRule atr : auditTypeRuleCache
+						.getRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
 						runTagConCronAjax = true;
 						break;
@@ -193,7 +202,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("RemoveTag".equals(button)) {
-			noteDAO.save(NoteFactory.generateNoteForRemovingTagFromContractor(tagId, permissions));
+			noteDAO.save(NoteFactory.generateNoteForRemovingTagFromContractor(
+					tagId, permissions));
 			contractorTagDAO.remove(tagId);
 			contractor.incrementRecalculation(10);
 			contractorAccountDao.save(contractor);
@@ -202,11 +212,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if ("Upgrade to Full Membership".equals(button)) {
 
 			accountLevelAdjuster.upgradeToFullAccount(contractor, permissions);
-			addNote(contractor, "Upgraded the Bid Only Account to a full membership.", NoteCategory.General);
+			addNote(contractor,
+					"Upgraded the Bid Only Account to a full membership.",
+					NoteCategory.General);
 
 			if (permissions.isOperator()) {
-				for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
-					if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
+				for (ContractorOperator cOperator : contractor
+						.getNonCorporateOperators()) {
+					if (cOperator.getOperatorAccount().getId() == permissions
+							.getAccountId()) {
 						cOperator.setWorkStatus(ApprovalStatus.Y);
 						cOperator.cascadeWorkStatusToParent();
 						cOperator.setAuditColumns(permissions);
@@ -228,7 +242,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
+			emailQueue.setFromAddress(EmailAddressUtils
+					.getBillingEmail(contractor.getCurrency()));
 			if (permissions.isOperator())
 				emailQueue.setViewableById(permissions.getTopAccountID());
 			else
@@ -237,14 +252,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			if (permissions.isContractor()) {
 				ServletActionContext.getResponse().sendRedirect(
-						"BillingDetail.action?id=" + contractor.getId() + "&button=Create");
+						"BillingDetail.action?id=" + contractor.getId()
+								+ "&button=Create");
 				return BLANK;
 			}
 		}
 
 		if ("Synchronize Contractor".equals(button)) {
 			String redirectUrl = "ContractorView.action?id=" + id;
-			return setUrlForRedirect("ContractorCronAjax.action?conID=" + id + "&steps=All&redirectUrl=" + redirectUrl);
+			return setUrlForRedirect("ContractorCronAjax.action?conID=" + id
+					+ "&steps=All&redirectUrl=" + redirectUrl);
 		}
 
 		if (permissions.isOperatorCorporate()) {
@@ -272,10 +289,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 		calculateEarliestIndividualFlagSummaries();
 
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
-			if (permissions.canSeeAudit(audit.getAuditType()) && !audit.hasOnlyInvisibleCaos()) {
+			if (permissions.canSeeAudit(audit.getAuditType())
+					&& !audit.hasOnlyInvisibleCaos()) {
 				if (audit.getAuditType().getClassType().isPolicy())
 					insureGUARD.add(audit);
-				else if (audit.getAuditType().getClassType().isPqf() || audit.getAuditType().isAnnualAddendum())
+				else if (audit.getAuditType().getClassType().isPqf()
+						|| audit.getAuditType().isAnnualAddendum())
 					docuGUARD.add(audit);
 				else if (audit.getAuditType().getClassType().isImEmployee())
 					employeeGUARD.add(audit);
@@ -286,7 +305,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		oshaOrganizer = contractor.getOshaOrganizer();
 
-		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(), getActiveOperators(), contractor, naicsDao);
+		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(),
+				getActiveOperators(), contractor, naicsDao);
 		determineOshaTypesToDisplay();
 
 		return SUCCESS;
@@ -297,15 +317,23 @@ public class ContractorDashboard extends ContractorActionSupport {
 		displayOsha.put(OshaType.OSHA, false);
 		displayOsha.put(OshaType.COHS, false);
 		displayOsha.put(OshaType.UK_HSE, false);
+		displayOsha.put(OshaType.EMR, false);
 
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isAnnualAddendum() && audit.hasCaoStatus(AuditStatus.Complete)) {
-				if (audit.isDataExpectedAnswer(AuditQuestion.OSHA_KEPT_ID, "Yes"))
+			if (audit.getAuditType().isAnnualAddendum()
+					&& audit.hasCaoStatus(AuditStatus.Complete)) {
+				if (audit.isDataExpectedAnswer(AuditQuestion.OSHA_KEPT_ID,
+						"Yes"))
 					displayOsha.put(OshaType.OSHA, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.COHS_KEPT_ID, "Yes"))
+				if (audit.isDataExpectedAnswer(AuditQuestion.COHS_KEPT_ID,
+						"Yes"))
 					displayOsha.put(OshaType.COHS, true);
-				if (audit.isDataExpectedAnswer(AuditQuestion.UK_HSE_KEPT_ID, "Yes"))
+				if (audit.isDataExpectedAnswer(AuditQuestion.UK_HSE_KEPT_ID,
+						"Yes"))
 					displayOsha.put(OshaType.UK_HSE, true);
+				if (audit
+						.isDataExpectedAnswer(AuditQuestion.EMR_KEPT_ID, "Yes"))
+					displayOsha.put(OshaType.EMR, true);
 			}
 		}
 	}
@@ -366,9 +394,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		if (!hasActionErrors()) {
 			addNote(contractor, permissions.getName()
-					+ (approveGeneralContractorRelationship ? " approved " : " rejected ") + "the work status for "
+					+ (approveGeneralContractorRelationship ? " approved "
+							: " rejected ") + "the work status for "
 					+ co.getOperatorAccount().getName());
-			co.setWorkStatus(approveGeneralContractorRelationship ? ApprovalStatus.Y : ApprovalStatus.D);
+			co.setWorkStatus(approveGeneralContractorRelationship ? ApprovalStatus.Y
+					: ApprovalStatus.D);
 			co.setAuditColumns(permissions);
 			contractorOperatorDAO.save(co);
 		}
@@ -448,7 +478,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			for (AuditData auditData : dataDAO.findServicesPerformed(id)) {
-				if (!auditData.getAnswer().startsWith("C") && auditData.getAnswer().endsWith("S"))
+				if (!auditData.getAnswer().startsWith("C")
+						&& auditData.getAnswer().endsWith("S"))
 					servicesPerformed.add(auditData);
 			}
 		}
@@ -468,7 +499,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public ContractorFlagCriteriaList getProblems() {
 		if (problems == null)
-			problems = new ContractorFlagCriteriaList(flagDataDAO.findProblems(id, opID));
+			problems = new ContractorFlagCriteriaList(flagDataDAO.findProblems(
+					id, opID));
 
 		return problems;
 	}
@@ -477,7 +509,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (fccMap == null) {
 			fccMap = new HashMap<Integer, FlagCriteriaContractor>();
 
-			List<FlagCriteriaContractor> flagCriteriaConList = flagCriteriaContractorDAO.findByContractor(id);
+			List<FlagCriteriaContractor> flagCriteriaConList = flagCriteriaContractorDAO
+					.findByContractor(id);
 
 			for (FlagCriteriaContractor fcc : flagCriteriaConList) {
 				fccMap.put(fcc.getCriteria().getId(), fcc);
@@ -491,7 +524,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (!Strings.isEmpty(fcc.getAnswer2())) {
 				String answer = fcc.getAnswer2().split("<br/>")[0];
 
-				if (answer != null && fcc.getCriteria().getMultiYearScope() != null) {
+				if (answer != null
+						&& fcc.getCriteria().getMultiYearScope() != null) {
 					if (fcc.getCriteria().getMultiYearScope() != null) {
 						if (answer.contains("for")) {
 							result = answer;
@@ -506,14 +540,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 			if (fcc.getCriteria().getId() == FlagCriteria.ANNUAL_UPDATE_ID) {
-				result += getIncompleteAnnualUpdates(fcc.getContractor(), operatorId);
+				result += getIncompleteAnnualUpdates(fcc.getContractor(),
+						operatorId);
 			}
 		}
 
 		return result;
 	}
 
-	private String getIncompleteAnnualUpdates(ContractorAccount con, int operatorId) {
+	private String getIncompleteAnnualUpdates(ContractorAccount con,
+			int operatorId) {
 		String years = "";
 
 		ArrayList<String> forYears = new ArrayList<String>();
@@ -521,7 +557,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (audit.getAuditType().isAnnualAddendum()) {
 				for (ContractorAuditOperator cao : audit.getOperators()) {
 					if (!cao.getStatus().equals(AuditStatus.Complete)) {
-						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+						for (ContractorAuditOperatorPermission caop : cao
+								.getCaoPermissions()) {
 							if (caop.getOperator().getId() == operatorId) {
 								forYears.add(audit.getAuditFor());
 								break;
@@ -549,7 +586,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (ContractorOperator co : activeOperators) {
 				operatorIds[index++] = co.getOperatorAccount().getId();
 			}
-			criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, operatorIds));
+			criteriaList = new ContractorFlagCriteriaList(
+					flagDataDAO.findByContractorAndOperator(id, operatorIds));
 		}
 		return criteriaList;
 	}
@@ -565,25 +603,36 @@ public class ContractorDashboard extends ContractorActionSupport {
 		// Intersection between contractor's operators and gc's operators
 		if (permissions.isGeneralContractor()) {
 			Set<Integer> clientSites = permissions.getLinkedClients();
-			List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>(contractor.getOperators());
+			List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>(
+					contractor.getOperators());
 
-			Iterator<ContractorOperator> contractorOperatorIterator = contractorOperators.iterator();
+			Iterator<ContractorOperator> contractorOperatorIterator = contractorOperators
+					.iterator();
 			while (contractorOperatorIterator.hasNext()) {
-				ContractorOperator contractorOperator = contractorOperatorIterator.next();
-				int operatorID = contractorOperator.getOperatorAccount().getId();
+				ContractorOperator contractorOperator = contractorOperatorIterator
+						.next();
+				int operatorID = contractorOperator.getOperatorAccount()
+						.getId();
 
 				if (!clientSites.contains(operatorID)
-						|| (permissions.isGeneralContractorFree() && operatorID == permissions.getAccountId())) {
+						|| (permissions.isGeneralContractorFree() && operatorID == permissions
+								.getAccountId())) {
 					contractorOperatorIterator.remove();
 				}
 			}
 
-			Collections.sort(contractorOperators, new Comparator<ContractorOperator>() {
-				@Override
-				public int compare(ContractorOperator o1, ContractorOperator o2) {
-					return o1.getOperatorAccount().getName().compareTo(o2.getOperatorAccount().getName());
-				}
-			});
+			Collections.sort(contractorOperators,
+					new Comparator<ContractorOperator>() {
+						@Override
+						public int compare(ContractorOperator o1,
+								ContractorOperator o2) {
+							return o1
+									.getOperatorAccount()
+									.getName()
+									.compareTo(
+											o2.getOperatorAccount().getName());
+						}
+					});
 
 			return contractorOperators;
 		} else {
@@ -611,7 +660,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return approveGeneralContractorRelationship;
 	}
 
-	public void setApproveGeneralContractorRelationship(Boolean approveGeneralContractorRelationship) {
+	public void setApproveGeneralContractorRelationship(
+			Boolean approveGeneralContractorRelationship) {
 		this.approveGeneralContractorRelationship = approveGeneralContractorRelationship;
 	}
 
@@ -622,7 +672,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (permissions.seesAllContractors())
 			return true;
 
-		if (permissions.isOperator() && permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
+		if (permissions.isOperator()
+				&& permissions.hasPermission(OpPerms.ViewTrialAccounts,
+						OpType.Edit))
 			return true;
 
 		return false;
@@ -642,11 +694,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 			flagCounts.put(FlagColor.Green, 0);
 
 			for (ContractorOperator contractorOperator : getActiveOperators()) {
-				flagCounts
-						.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
+				flagCounts.put(contractorOperator.getFlagColor(),
+						flagCounts.get(contractorOperator.getFlagColor()) + 1);
 			}
 
-			Iterator<Map.Entry<FlagColor, Integer>> iter = flagCounts.entrySet().iterator();
+			Iterator<Map.Entry<FlagColor, Integer>> iter = flagCounts
+					.entrySet().iterator();
 			while (iter.hasNext()) {
 				Map.Entry<FlagColor, Integer> entry = iter.next();
 				if (entry.getValue() <= 0)
@@ -660,7 +713,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return earliestIndividualFlagOverride;
 	}
 
-	public void setEarliestIndividualFlagOverride(Date earliestIndividualFlagOverride) {
+	public void setEarliestIndividualFlagOverride(
+			Date earliestIndividualFlagOverride) {
 		this.earliestIndividualFlagOverride = earliestIndividualFlagOverride;
 	}
 
@@ -676,7 +730,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return corporateFlagOverride;
 	}
 
-	public void setCorporateFlagOverride(ContractorOperator corporateFlagOverride) {
+	public void setCorporateFlagOverride(
+			ContractorOperator corporateFlagOverride) {
 		this.corporateFlagOverride = corporateFlagOverride;
 	}
 
@@ -711,11 +766,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public Map<ContractorAuditOperator, AuditStatus> getCaoStats(Integer opID) {
 		if (prevStats == null) {
-			prevStats = new TreeMap<ContractorAuditOperator, AuditStatus>(new Comparator<ContractorAuditOperator>() {
-				public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
-					return o2.getStatusChangedDate().compareTo(o1.getStatusChangedDate());
-				}
-			});
+			prevStats = new TreeMap<ContractorAuditOperator, AuditStatus>(
+					new Comparator<ContractorAuditOperator>() {
+						public int compare(ContractorAuditOperator o1,
+								ContractorAuditOperator o2) {
+							return o2.getStatusChangedDate().compareTo(
+									o1.getStatusChangedDate());
+						}
+					});
 			for (ContractorAudit ca : this.getActiveAudits()) {
 				for (ContractorAuditOperator cao : ca.getOperators()) {
 					if (cao.hasCaop(opID)) {
@@ -724,15 +782,26 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 						// finding previous status from workflow if it exists
 						if (cao.getCaoWorkflow().size() > 0) {
-							List<ContractorAuditOperatorWorkflow> caow = cao.getCaoWorkflow();
-							Collections.sort(caow, new Comparator<ContractorAuditOperatorWorkflow>() {
-								public int compare(ContractorAuditOperatorWorkflow o1,
-										ContractorAuditOperatorWorkflow o2) {
-									return o1.getCreationDate().compareTo(o2.getCreationDate());
-								}
-							});
-							prevStats.put(cao, cao.getCaoWorkflow().get(cao.getCaoWorkflow().size() - 1)
-									.getPreviousStatus());
+							List<ContractorAuditOperatorWorkflow> caow = cao
+									.getCaoWorkflow();
+							Collections
+									.sort(caow,
+											new Comparator<ContractorAuditOperatorWorkflow>() {
+												public int compare(
+														ContractorAuditOperatorWorkflow o1,
+														ContractorAuditOperatorWorkflow o2) {
+													return o1
+															.getCreationDate()
+															.compareTo(
+																	o2.getCreationDate());
+												}
+											});
+							prevStats
+									.put(cao,
+											cao.getCaoWorkflow()
+													.get(cao.getCaoWorkflow()
+															.size() - 1)
+													.getPreviousStatus());
 						}
 
 					}
@@ -744,11 +813,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public List<ContractorTag> getTagsViewableByUser() {
 		if (permissions.isOperator()) {
-			List<ContractorTag> tags = new ArrayList<ContractorTag>(contractor.getOperatorTags());
+			List<ContractorTag> tags = new ArrayList<ContractorTag>(
+					contractor.getOperatorTags());
 			Iterator<ContractorTag> iterator = tags.iterator();
 			while (iterator.hasNext()) {
 				int id = iterator.next().getTag().getOperator().getId();
-				if (permissions.getAccountId() != id && !permissions.getCorporateParent().contains(id)) {
+				if (permissions.getAccountId() != id
+						&& !permissions.getCorporateParent().contains(id)) {
 					iterator.remove();
 				}
 			}
@@ -762,7 +833,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public String getCommaSeparatedContractorTypes() {
 		if (contractor != null) {
 			List<String> commaSeparatedContractorTypes = new ArrayList<String>();
-			List<ContractorType> sortedContractorTypes = new ArrayList<ContractorType>(contractor.getAccountTypes());
+			List<ContractorType> sortedContractorTypes = new ArrayList<ContractorType>(
+					contractor.getAccountTypes());
 
 			Collections.sort(sortedContractorTypes);
 
@@ -790,8 +862,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (generalContractorsNeedingApproval == null) {
 			generalContractorsNeedingApproval = new ArrayList<ContractorOperator>();
 
-			for (OperatorAccount operator : contractor.getGeneralContractorOperatorAccounts()) {
-				ContractorOperator contractorOperator = contractor.getContractorOperatorForOperator(operator);
+			for (OperatorAccount operator : contractor
+					.getGeneralContractorOperatorAccounts()) {
+				ContractorOperator contractorOperator = contractor
+						.getContractorOperatorForOperator(operator);
 				if (ApprovalStatus.C.equals(contractorOperator.getWorkStatus())) {
 					generalContractorsNeedingApproval.add(contractorOperator);
 				}
@@ -808,7 +882,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public boolean isViewableByGC() {
 		if (permissions.isGeneralContractorFree()) {
 			if (getActiveOperators().size() == 1
-					&& getActiveOperators().get(0).getOperatorAccount().getId() == permissions.getAccountId()) {
+					&& getActiveOperators().get(0).getOperatorAccount().getId() == permissions
+							.getAccountId()) {
 				return false;
 			}
 		}
@@ -820,7 +895,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		String generalContractorListing = "";
 		boolean start = true;
 
-		for (OperatorAccount generalContractor : contractor.getGeneralContractorOperatorAccounts()) {
+		for (OperatorAccount generalContractor : contractor
+				.getGeneralContractorOperatorAccounts()) {
 			if (!start) {
 				generalContractorListing += ", ";
 			}
@@ -839,13 +915,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 				if (audit.getAuditType().equals(criteria.getAuditType())) {
 					if (percentComplete.length() > 0)
 						percentComplete += ", ";
-					percentComplete += getPercentCompleteForOperator(audit, operatorId);
+					percentComplete += getPercentCompleteForOperator(audit,
+							operatorId);
 				}
 			}
 		}
 
 		if (percentComplete.length() > 0)
-			percentComplete = this.getTextParameterized("ContractorView.Complete", percentComplete);
+			percentComplete = this.getTextParameterized(
+					"ContractorView.Complete", percentComplete);
 		return percentComplete;
 	}
 
@@ -870,7 +948,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public User getPicsRepresentativeForOperator() {
 		if (co != null) {
-			for (AccountUser accountUser : co.getOperatorAccount().getAccountUsers()) {
+			for (AccountUser accountUser : co.getOperatorAccount()
+					.getAccountUsers()) {
 				if (accountUser.isCurrent()) {
 					return accountUser.getUser();
 				}
@@ -881,7 +960,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	private void setOpIDToFirstClientSiteIfGCFree() {
-		if (permissions.isGeneralContractorFree() && permissions.getLinkedClients().size() > 0) {
+		if (permissions.isGeneralContractorFree()
+				&& permissions.getLinkedClients().size() > 0) {
 			for (OperatorAccount client : contractor.getOperatorAccounts()) {
 				if (permissions.getLinkedClients().contains(client.getId())) {
 					opID = client.getId();
@@ -901,14 +981,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return;
 		}
 
-		List<ContractorOperator> contractorOperators = contractorOperatorDAO.findByContractor(contractor.getId(),
-				permissions);
+		List<ContractorOperator> contractorOperators = contractorOperatorDAO
+				.findByContractor(contractor.getId(), permissions);
 		for (ContractorOperator contractorOperator : contractorOperators) {
 			if (contractorOperator.equals(co))
 				continue;
 			if (contractorOperator.isForcedFlag()) {
-				for (Facility facility : co.getOperatorAccount().getCorporateFacilities()) {
-					if (facility.getCorporate() == contractorOperator.getOperatorAccount()) {
+				for (Facility facility : co.getOperatorAccount()
+						.getCorporateFacilities()) {
+					if (facility.getCorporate() == contractorOperator
+							.getOperatorAccount()) {
 						corporateFlagOverride = contractorOperator;
 						break;
 					}
@@ -927,25 +1009,32 @@ public class ContractorDashboard extends ContractorActionSupport {
 		for (FlagDataOverride fdo : co.getOverrides()) {
 			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now)) {
 				individualFlagOverrideCount++;
-				if (earliestIndividualFlagOverride == null || fdo.getForceEnd().before(earliestIndividualFlagOverride)) {
+				if (earliestIndividualFlagOverride == null
+						|| fdo.getForceEnd().before(
+								earliestIndividualFlagOverride)) {
 					earliestIndividualFlagOverride = fdo.getForceEnd();
 				}
 			}
 		}
 	}
 
-	private String getPercentCompleteForOperator(ContractorAudit audit, int operatorId) {
+	private String getPercentCompleteForOperator(ContractorAudit audit,
+			int operatorId) {
 		int lowestPercentComplete = 101;
 		String answer = "";
 		for (ContractorAuditOperator cao : audit.getOperators()) {
 			if (cao.isVisible() && cao.getPercentComplete() <= 100) {
 				if (lowestPercentComplete > cao.getPercentComplete())
 					lowestPercentComplete = cao.getPercentComplete();
-				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				for (ContractorAuditOperatorPermission caop : cao
+						.getCaoPermissions()) {
 					if (caop.getOperator().getId() == operatorId
-							|| caop.getOperator().getOperatorHeirarchy().contains(operatorId)) {
+							|| caop.getOperator().getOperatorHeirarchy()
+									.contains(operatorId)) {
 						if (audit.getAuditType().isAnnualAddendum()) {
-							return audit.getAuditFor() + ": " + String.valueOf(cao.getPercentComplete()) + "%";
+							return audit.getAuditFor() + ": "
+									+ String.valueOf(cao.getPercentComplete())
+									+ "%";
 						}
 						return String.valueOf(cao.getPercentComplete()) + "%";
 					}
@@ -958,7 +1047,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			prefix = audit.getAuditFor() + ": ";
 		}
 
-		return (lowestPercentComplete <= 100) ? prefix + lowestPercentComplete + "%" : "";
+		return (lowestPercentComplete <= 100) ? prefix + lowestPercentComplete
+				+ "%" : "";
 	}
 
 	private ContractorWatch getExistingContractorWatch() {
@@ -973,7 +1063,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	private void checkIfGeneralContractorRecordIsValid() {
-		if (co == null || (co.getOperatorAccount() != null && !co.getOperatorAccount().isGeneralContractor())) {
+		if (co == null
+				|| (co.getOperatorAccount() != null && !co.getOperatorAccount()
+						.isGeneralContractor())) {
 			addActionError(getText("ContractorView.SelectGeneralContractor"));
 		}
 	}

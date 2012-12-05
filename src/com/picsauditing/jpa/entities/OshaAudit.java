@@ -19,6 +19,7 @@ public class OshaAudit implements OshaVisitable {
     public static final int CAT_ID_COHS = 2086; // Canada
     public static final int CAT_ID_UK_HSE = 2092; // U.K.
     public static final int CAT_ID_FRANCE_NRIS = 1691; // France
+    public static final int CAT_ID_EMR = 152; // EMR
 
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
@@ -31,7 +32,7 @@ public class OshaAudit implements OshaVisitable {
                     CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
     public static final Set<Integer> OSHA_COHS_UK_HSE =
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
-                    CAT_ID_COHS, CAT_ID_UK_HSE)));
+                    CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR)));
 
     private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
 
@@ -51,6 +52,9 @@ public class OshaAudit implements OshaVisitable {
             case CAT_ID_OSHA:
             case CAT_ID_OSHA_ADDITIONAL:
                 type = OshaType.OSHA;
+                break;
+            case CAT_ID_EMR:
+                type = OshaType.EMR;
                 break;
             case CAT_ID_MSHA:
                 type = OshaType.MSHA;
@@ -92,9 +96,11 @@ public class OshaAudit implements OshaVisitable {
         displaySafetyStatisticsMap.put(OshaType.OSHA, false);
         displaySafetyStatisticsMap.put(OshaType.COHS, false);
         displaySafetyStatisticsMap.put(OshaType.UK_HSE, false);
+        displaySafetyStatisticsMap.put(OshaType.EMR, false);
         for (AuditCatData category : getCategories()) {
             if (category.getCategory().getId() == CAT_ID_OSHA_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.OSHA, category.isApplies());
+                displaySafetyStatisticsMap.put(OshaType.EMR, category.isApplies());
             }
             if (category.getCategory().getId() == CAT_ID_COHS_PARENT) {
                 displaySafetyStatisticsMap.put(OshaType.COHS, category.isApplies());
@@ -149,6 +155,8 @@ public class OshaAudit implements OshaVisitable {
                 safetyStatistics = new CohsStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.UK_HSE) {
                 safetyStatistics = new UkStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.EMR) {
+                safetyStatistics = new EmrStatistics(year, contractorAudit.getData(), category.isApplies());
             }
 
             if (safetyStatistics != null) {
