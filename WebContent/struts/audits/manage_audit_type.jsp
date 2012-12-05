@@ -242,6 +242,26 @@
                         <s:checkbox name="auditType.canOperatorView" />
                     </li>
                     <li>
+                        <label>Group ID Who Can Assign Audit:</label>
+                        <s:textfield name="auditType.assignAudit" />
+                        
+                        <pics:fieldhelp title="Description">
+                            <p>
+                                Group Id of who can assign this audit to auditors.
+                            </p>
+                        </pics:fieldhelp>
+                    </li>
+                    <li>
+                        <label>Group ID Who Are Auditors:</label>
+                        <s:textfield name="auditType.editAudit" />
+                        
+                        <pics:fieldhelp title="Description">
+                            <p>
+                                Group Id of who are auditors of this audit.
+                            </p>
+                        </pics:fieldhelp>
+                    </li>
+                    <li>
                         <label>Permission to Edit:</label>
                         <s:select
                             name="editPerm"

@@ -85,6 +85,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	protected OpPerms editPermission;
 	protected Workflow workFlow;
 	protected ScoreType scoreType;
+	protected User assignAudit;
+	protected User editAudit;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
@@ -237,6 +239,26 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "assignAudit", nullable = true)
+	public User getAssignAudit() {
+		return assignAudit;
+	}
+
+	public void setAssignAudit(User assignAudit) {
+		this.assignAudit = assignAudit;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "editAudit", nullable = true)
+	public User getEditAudit() {
+		return editAudit;
+	}
+
+	public void setEditAudit(User editAudit) {
+		this.editAudit = editAudit;
 	}
 
 	@OneToMany(mappedBy = "auditType")
