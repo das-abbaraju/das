@@ -1,7 +1,6 @@
 package com.picsauditing.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -13,6 +12,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.util.Strings;
 
+@Deprecated
 @SuppressWarnings("unchecked")
 public class ContractorRegistrationRequestDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)

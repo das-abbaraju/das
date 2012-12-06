@@ -110,6 +110,7 @@
 		<s:if test="contractor.status.requested">
 			<s:hidden name="contractor" id="requested_contractor" />
 			<s:hidden name="user" />
+			<s:hidden name="registrationKey" />
 		</s:if>
 		
 		<div class="company-information">
