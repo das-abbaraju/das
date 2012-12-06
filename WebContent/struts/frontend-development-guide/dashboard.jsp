@@ -7,7 +7,7 @@
 
 <s:include value="/struts/frontend-development-guide/_menu.jsp" />
 
-<section class="guide">
+<section id="overview" class="guide">
     <div class="page-header">
         <h1>Overview</h1>
     </div>
@@ -131,7 +131,7 @@
     <h2>Partials</h2>
     
     <p>
-        Partial Templates are and should be used to define the page's <strong>sub-content</strong>.  Any information that will make up a portion of a View Template, used for ajax or is a shared among multiple View Templates should be a partial. 
+        Partial Templates are and should be used to define the page's <strong>sub-content</strong>.  Any information that will make up a portion of a <code>View Template</code>, used for ajax or is a shared among multiple <code>View Templates</code> should be a partial. 
     </p>
     
     <div class="example">
@@ -168,12 +168,29 @@
 &lt;div class="hit"&gt;
     &lt;span class="honorific"&gt;\${honorific}&lt;/span&gt;
     &lt;span class="name"&gt;\${name}&lt;/span&gt;
-    &lt;span class="is-alive"&gt;\${isAlive}&lt;/span&gt;
+    &lt;span class="is-alive"&gt;
+        &lt;s:if test="isAlive == 'true'"&gt;
+            &lt;i class="icon-ok"&gt;&lt;/i&gt;
+        &lt;/s:if&gt;
+    &lt;/span&gt;
 &lt;/div&gt;
 </pre>
 
     </div>
+</section>
+
+<section id="" class="guide">
+    <div class="page-header">
+        <h1>Creating Variables in HTML</h1>
+    </div>
     
+    <div class="example">
+    
+<pre class="prettyprint linenums">
+
+</pre>
+    
+    </div>
 </section>
 
 Creating a JSP
