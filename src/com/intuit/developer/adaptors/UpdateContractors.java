@@ -9,6 +9,8 @@ import com.picsauditing.quickbooks.qbxml.*;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -20,6 +22,8 @@ import java.util.Map;
 
 public class UpdateContractors extends CustomerAdaptor {
 
+	private static final Logger logger = LoggerFactory.getLogger(UpdateContractors.class);
+	
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
@@ -75,11 +79,20 @@ public class UpdateContractors extends CustomerAdaptor {
 
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 
+				List<User> billingUsersInContractorAccount = contractor.getUsersByRole(OpPerms.ContractorBilling);
+				
 				User primary = null;
 				if (contractor.getPrimaryContact() != null)
 					primary = contractor.getPrimaryContact();
-				else
-					primary = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
+				else {
+					
+					if (CollectionUtils.isEmpty(billingUsersInContractorAccount)) {
+						logger.warn("Invalid data for contractor ID = {}", contractor.getId());
+						continue;
+					}
+					
+					primary = billingUsersInContractorAccount.get(0);
+				}
 
 				customer.setContact(nullSafeSubString(primary.getName(), 0, 41));
 				customer.setFirstName(nullSafeSubString(getFirstName(primary.getName()), 0, 25));
@@ -92,13 +105,13 @@ public class UpdateContractors extends CustomerAdaptor {
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
 				customer.setEmail(EmailAddressUtils.validate(primary.getEmail()));
-				List<User> altContactUserList = contractor.getUsersByRole(OpPerms.ContractorBilling);
-				if (CollectionUtils.isEmpty(altContactUserList)) {       // PICS-8332
+
+				if (CollectionUtils.isEmpty(billingUsersInContractorAccount)) {       // PICS-8332
 					customer.setAltContact(customer.getContact());
 					customer.setAltPhone(customer.getPhone());
 				} else {
-					customer.setAltContact(nullSafeSubString(altContactUserList.get(0).getName(), 0, 41));
-					customer.setAltPhone(nullSafePhoneFormat(altContactUserList.get(0).getPhone()));
+					customer.setAltContact(nullSafeSubString(billingUsersInContractorAccount.get(0).getName(), 0, 41));
+					customer.setAltPhone(nullSafePhoneFormat(billingUsersInContractorAccount.get(0).getPhone()));
 				}
 
 				customer.setTermsRef(factory.createTermsRef());

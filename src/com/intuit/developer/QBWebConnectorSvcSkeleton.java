@@ -25,6 +25,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class QBWebConnectorSvcSkeleton {
@@ -345,7 +346,7 @@ public class QBWebConnectorSvcSkeleton {
 			try {
 				currentAdaptor.parseQbXml(currentSession, receiveResponseXML.getResponse());
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.warn("An error occured while parsing QuickBooks XML {} ", Strings.nullToBlank(receiveResponseXML.getResponse()), e);
 				currentAdaptor.setProceed(false);
 			}
 
@@ -389,7 +390,7 @@ public class QBWebConnectorSvcSkeleton {
 			currentSession.setLastRequest(new Date());
 		}
 
-		PicsLogger.stop();
+		LOG.info("Stopped session.");
 	}
 
 	private boolean shouldWeRunThisStep() {
