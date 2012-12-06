@@ -501,8 +501,7 @@
 		</s:form>
 	</div>
 	
-	<div style="padding-top:10px">
+	<div style="margin-top: 10px">
 		<s:include value="_commission_detail.jsp" />
 	</div>
-	
 </html>
