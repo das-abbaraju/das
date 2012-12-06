@@ -3,6 +3,8 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -14,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -128,4 +131,15 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		this.caosSave = caosSave;
 	}
 
+	@Override
+	public Set<User> getAuditorList() {
+		Set<User> list = super.getAuditorList();
+		
+		if (conAudit != null && conAudit.getAuditType().getEditAudit() != null) {
+			TreeSet<User> auditors = new TreeSet<User>();
+			auditors.addAll(userDAO.findByGroup(conAudit.getAuditType().getEditAudit().getId()));
+			return auditors;
+		}
+		return list;
+	}
 }

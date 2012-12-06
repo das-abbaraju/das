@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditSubStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -397,6 +398,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return canEdit;
 		}
 
+		if (type.getClassType().equals(AuditTypeClass.Audit)
+				&& permissions.isOperatorCorporate()) {
+			if (type.getEditAudit() != null
+					&& permissions.hasGroup(type.getEditAudit().getId())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
 		if (type.getEditPermission() != null) {
 			if (permissions.hasPermission(type.getEditPermission())) {
 				return true;
@@ -411,7 +422,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanSystemEdit() {
-		if (permissions.hasPermission(OpPerms.AuditEdit)) {
+		if (permissions.hasPermission(OpPerms.AuditEdit) && permissions.isAdmin()) {
 			return true;
 		}
 

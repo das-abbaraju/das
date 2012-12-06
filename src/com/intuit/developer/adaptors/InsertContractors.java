@@ -8,6 +8,8 @@ import java.util.List;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -24,6 +26,7 @@ import com.picsauditing.util.EmailAddressUtils;
 
 public class InsertContractors extends CustomerAdaptor {
 
+	// FIXME This is practically identical to the same method in UpdateContractors.java
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
@@ -103,10 +106,14 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
 				customer.setEmail(EmailAddressUtils.validate(primary.getEmail()));
 
-				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
-						.getName(), 0, 41));
-				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
-						.getPhone()));
+				List<User> altContactUserList = contractor.getUsersByRole(OpPerms.ContractorBilling);
+				if (CollectionUtils.isEmpty(altContactUserList)) {       // PICS-8332
+					customer.setAltContact(customer.getContact());
+					customer.setAltPhone(customer.getPhone());
+				} else {
+					customer.setAltContact(nullSafeSubString(altContactUserList.get(0).getName(), 0, 41));
+					customer.setAltPhone(nullSafePhoneFormat(altContactUserList.get(0).getPhone()));
+				}
 
 				customer.setTermsRef(factory.createTermsRef());
 				customer.getTermsRef().setFullName("Net 30");
