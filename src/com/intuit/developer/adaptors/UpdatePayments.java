@@ -129,7 +129,12 @@ public class UpdatePayments extends PaymentAdaptor {
 
 	@Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
-
+		
+		if (qbXml == null || qbXml.isEmpty()) {
+			throw new Exception("qbXml is null or empty");
+		}
+		PicsLogger.log("Entering parseQbXml with qbXml: "+qbXml);
+		
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 		StringReader stringReader = new StringReader(qbXml);
