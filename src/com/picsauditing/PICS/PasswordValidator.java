@@ -14,27 +14,29 @@ import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-public class PasswordValidator {
+public class PasswordValidator extends BasicTranslationSupport {
 
-    @Autowired
-    protected PasswordDAO passwordDAO;
+	public static final String REGEX_ALL_LETTERS = ".*[a-zA-Z].*";
+	public static final String REGEX_ALL_NUMBERS = ".*[0-9].*";
+	public static final String REGEX_NON_WORD_CHARACTER = "[^\\w\\*]";
 
-    public static final String REGEX_NON_WORD_CHARACTER = "[^\\w\\*]";
+	@Autowired
+    private PasswordDAO passwordDAO;
 
     public Vector<String> validatePassword(User user, String newPassword) {
         Vector<String> errorMessages = new Vector<String>();
 
         if (newPassword.equalsIgnoreCase(user.getUsername())) {
-            errorMessages.addElement("Please choose a password different from your username.");
+            errorMessages.addElement(getText("PasswordValidator.error.PasswordCannotBeUserName", user));
         }
 
-        if (!newPassword.matches(".*[a-zA-Z].*") || !newPassword.matches(".*[0-9].*")) {
-            errorMessages.addElement("Your password should contain digits and letters");
+        if (!newPassword.matches(REGEX_ALL_LETTERS) || !newPassword.matches(REGEX_ALL_NUMBERS)) {
+            errorMessages.addElement(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters", user));
         }
 
         String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getId());
         if (encryptedNewPassword.equals(user.getPassword())) {
-            errorMessages.addElement("Please choose a different password than your current password.");
+            errorMessages.addElement(getText("PasswordValidator.error.PasswordCannotBeCurrentPassword", user));
         }
 
         enforceAccountPasswordPreferences(user, newPassword, errorMessages);
@@ -47,12 +49,12 @@ public class PasswordValidator {
         PasswordSecurityLevel passwordSecurityLevel = account.getPasswordSecurityLevel();
 
         if (newPassword.length() < passwordSecurityLevel.minLength) {
-            errorMessages.addElement("Please choose a password at least " + passwordSecurityLevel.minLength + " characters in length.");
+            errorMessages.addElement(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user, passwordSecurityLevel.minLength));
         }
 
         if (passwordSecurityLevel.enforceMixedCase) {
             if (!Strings.isMixedCase(newPassword)) {
-                errorMessages.addElement("Please choose a password with at least one upper case and one lower case character.");
+                errorMessages.addElement(getText("PasswordValidator.error.PasswordMustBeMixedCase", user));
             }
         }
 
@@ -60,13 +62,13 @@ public class PasswordValidator {
             boolean found = Pattern.compile(REGEX_NON_WORD_CHARACTER).matcher(newPassword).find();
 
             if (!found) {
-                errorMessages.addElement("Please choose a password with at least one special character.");
+                errorMessages.addElement(getText("PasswordValidator.error.PasswordMustContainSpecialCharacter", user));
             }
         }
 
         if (passwordSecurityLevel.enforceHistory()) {
             if (passwordHistoryListContainsPassword(newPassword, user, passwordSecurityLevel)) {
-                errorMessages.add("You have used this password too recently. Please choose a different password.");
+                errorMessages.add(getText("PasswordValidator.error.PasswordUsedTooRecently", user));
             }
         }
     }

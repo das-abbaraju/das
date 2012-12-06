@@ -6,19 +6,18 @@ import com.picsauditing.jpa.entities.PasswordHistory;
 import com.picsauditing.jpa.entities.PasswordSecurityLevel;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.EncodedMessage;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 public class PasswordValidatorTest {
@@ -27,20 +26,28 @@ public class PasswordValidatorTest {
     private Vector<String> errorMessages;
     private PasswordValidator passwordValidator;
     private List<PasswordHistory> recentEntries;
+	@Mock private I18nCache i18nCache;
+	@Mock PasswordDAO passwordDAO;
 
-    @Before
+
+	@Before
     public void setUp() throws Exception {
-        setupTestUser(PasswordSecurityLevel.Normal);
-        passwordValidator = new PasswordValidator();
-        PasswordDAO passwordDAO = setupPasswordDao();
-        passwordValidator.passwordDAO = passwordDAO;
-        errorMessages = new Vector<String>(0);
+		MockitoAnnotations.initMocks(this);
+
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", i18nCache);
+		when(i18nCache.getText(anyString(), any(Locale.class), anyList())).then(returnArgumentsToString());
+		when(i18nCache.getText(anyString(), any(Locale.class))).then(returnArgumentsToString());
+		passwordValidator = new PasswordValidator();
+		Whitebox.setInternalState(passwordValidator, "passwordDAO", passwordDAO);
+		setupTestUser(PasswordSecurityLevel.Normal);
+		setupPasswordDao();
+		errorMessages = new Vector<String>(0);
     }
 
-    @After
+	@After
     public void tearDown() throws Exception {
-
-    }
+		Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
+	}
 
     @Test
     public void testValidatePassword_validNormalCases() throws Exception {
@@ -79,8 +86,7 @@ public class PasswordValidatorTest {
         errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
-        // todo: Currently, PasswordValidator uses hard-coded error strings. Update this when we fix the error messages.
-        assertTrue(errorMessages.contains("Please choose a password different from your username."));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordCannotBeUserName", user)));
     }
 
     @Test
@@ -91,7 +97,18 @@ public class PasswordValidatorTest {
         errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
-        assertTrue(errorMessages.contains("Your password should contain digits and letters"));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters", user)));
+
+        newPassword = "1234567890";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+
+        assertTrue(errorMessages.size() > 0);
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters", user)));
+
+        newPassword = "1234567abc";
+        errorMessages = passwordValidator.validatePassword(user, newPassword);
+
+        assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainNumbersAndCharacters", user)));
     }
 
     @Test
@@ -103,7 +120,7 @@ public class PasswordValidatorTest {
         errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
-        assertTrue(errorMessages.contains("Please choose a different password than your current password."));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordCannotBeCurrentPassword", user)));
     }
 
     @Test
@@ -114,7 +131,7 @@ public class PasswordValidatorTest {
         errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
-        assertTrue(errorMessages.contains("Please choose a password at least " + PasswordSecurityLevel.Normal.minLength + " characters in length."));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user, PasswordSecurityLevel.Normal.minLength)));
     }
 
     @Test
@@ -125,9 +142,9 @@ public class PasswordValidatorTest {
         errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
-        assertTrue(errorMessages.contains("Please choose a password at least " + PasswordSecurityLevel.High.minLength + " characters in length."));
-        assertFalse(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
-        assertTrue(errorMessages.contains("Please choose a password with at least one special character."));
+	    assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user, PasswordSecurityLevel.High.minLength)));
+	    assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordMustBeMixedCase", user)));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainSpecialCharacter", user)));
     }
 
     @Test
@@ -138,9 +155,9 @@ public class PasswordValidatorTest {
         errorMessages = passwordValidator.validatePassword(user, newPassword);
 
         assertTrue(errorMessages.size() > 0);
-        assertTrue(errorMessages.contains("Please choose a password at least " + PasswordSecurityLevel.Maximum.minLength + " characters in length."));
-        assertTrue(errorMessages.contains("Please choose a password with at least one upper case and one lower case character."));
-        assertTrue(errorMessages.contains("Please choose a password with at least one special character."));
+	    assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustMeetMinimumLength", user, PasswordSecurityLevel.Maximum.minLength)));
+	    assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustBeMixedCase", user)));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordMustContainSpecialCharacter", user)));
     }
 
     @Test
@@ -150,7 +167,7 @@ public class PasswordValidatorTest {
 
         String newPassword = "hello1";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
-        assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
     }
 
     @Test
@@ -160,11 +177,11 @@ public class PasswordValidatorTest {
 
         String newPassword = "hello1";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
-        assertTrue(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
 
         newPassword = "hello6";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
-        assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
     }
 
     @Test
@@ -174,28 +191,27 @@ public class PasswordValidatorTest {
 
         String newPassword = "hello1";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
-        assertTrue(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        assertTrue(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
 
         newPassword = "hello6";
         errorMessages = passwordValidator.validatePassword(user, newPassword);
-        assertFalse(errorMessages.contains("You have used this password too recently. Please choose a different password."));
+        assertFalse(errorMessages.contains(getText("PasswordValidator.error.PasswordUsedTooRecently", user)));
     }
 
     private void setupTestUser(PasswordSecurityLevel passwordSecurityLevel) {
         user = new User();
         user.setId(5);
         user.setUsername("joeSixpack");
+	    user.setLocale(Locale.ENGLISH);
         Account account = new Account();
         account.setPasswordSecurityLevel(passwordSecurityLevel);
         user.setAccount(account);
     }
 
-    private PasswordDAO setupPasswordDao() {
-        PasswordDAO passwordDAO = mock(PasswordDAO.class);
+    private void setupPasswordDao() {
         setupRecentEntries();
         when(passwordDAO.findRecentEntriesByCount(anyInt(), anyInt())).thenReturn(recentEntries);
         when(passwordDAO.findRecentEntriesByPreviousMonths(anyInt(), anyInt())).thenReturn(recentEntries);
-        return passwordDAO;
     }
 
     private void setupRecentEntries() {
@@ -214,5 +230,23 @@ public class PasswordValidatorTest {
     private Date getDateXMonthsAgo(int monthsAgo) {
         return DateBean.addMonths(new Date(), monthsAgo);
     }
+
+	private String getText(String key, User user) {
+		return passwordValidator.getText(key, user);
+	}
+
+	private String getText(String key, User user, Object... args) {
+		return passwordValidator.getText(key, user, args);
+	}
+
+	private Answer<String> returnArgumentsToString() {
+		return new Answer<String>() {
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return Arrays.toString(args);
+			}
+		};
+	}
 
 }

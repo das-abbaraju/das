@@ -128,27 +128,6 @@ public class ContractorValidator {
 		if (!Strings.isValidEmail(user.getEmail()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoEmail"));
 
-		// Passwords
-		if (!Strings.isEmpty(password2)) {
-			// They are trying to set/reset the password
-
-			if (!password1.equals(password2))
-				errorMessages.addElement(getText("ContractorValidator.error.PasswordsDontMatch"));
-
-			if (password1.length() < MIN_PASSWORD_LENGTH)
-				errorMessages.addElement(getTextParameterized("ContractorValidator.error.InvalidPasswordLength",
-						MIN_PASSWORD_LENGTH));
-			if (password1.equalsIgnoreCase(user.getUsername()))
-				errorMessages.addElement(getText("ContractorValidator.error.InvalidPassword2"));
-			if (password1.equalsIgnoreCase("password"))
-				errorMessages.addElement(getText("ContractorValidator.error.InvalidPassword1"));
-			// TODO - Remove Side-effect
-			if (errorMessages.size() == 0) {
-				user.setPassword(password1);
-				user.setPasswordChanged(new Date());
-			}
-		}
-
 		return errorMessages;
 	}
 

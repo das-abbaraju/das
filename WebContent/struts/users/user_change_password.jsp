@@ -8,6 +8,7 @@
 	<s:form cssClass="form" id="userSavePassword">
 		<s:hidden name="url" />
 		<s:hidden name="source" value="%{source}" />
+		<s:hidden name="passwordSecurityLevel" value="%{passwordSecurityLevel}" />
 		<fieldset>
 			<h2 class="formLegend">
 				<s:text name="ProfileEdit.Password.heading" />
