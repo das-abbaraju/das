@@ -175,8 +175,11 @@ public class ContractorFacilities extends ContractorActionSupport {
 					where += " AND ";
 				}
 
-				where += "nameIndex LIKE '%"
-						+ Strings.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "") + "%'";
+                String safeString = Strings.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "");
+
+				where += "( nameIndex LIKE '%" + safeString + "%'";
+                where += " OR name LIKE '%" + safeString + "%'";
+                where += " OR dbaName LIKE '%" + safeString + "%')";
 			}
 
 			String status = "'Active'";
