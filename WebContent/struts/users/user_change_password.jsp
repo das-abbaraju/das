@@ -32,15 +32,40 @@
 				</s:else>
 				<li>
 					<s:password name="password1" label="global.Password.new" theme="form" />
-					<pics:fieldhelp title="Password Requirement">
-						<p>
-							<s:text name="global.Password.fieldhelp" />
-						</p>  
+					<pics:fieldhelp title="Password Requirements">
+                        <p>
+                        <ul>
+                            <li><s:text name="PasswordRequirement.CannotBeUsername"/></li>
+                            <li><s:text name="PasswordRequirement.NumbersAndCharacters"/></li>
+                            <li><s:text name="PasswordRequirement.MinimumLength">
+                                <s:param><s:property value="passwordSecurityLevel.minLength"/></s:param>
+                            </s:text>
+                            </li>
+                            <s:if test="passwordSecurityLevel.enforceMixedCase">
+                                <li><s:text name="PasswordRequirement.MixedCase"/></li>
+                            </s:if>
+                            <s:if test="passwordSecurityLevel.enforceSpecialCharacter">
+                                <li><s:text name="PasswordRequirement.SpecialCharacter"/></li>
+                            </s:if>
+                            <s:if test="passwordSecurityLevel.enforceMonthsOfHistory()">
+                                <li><s:text name="PasswordRequirement.MonthsOfHistory">
+                                    <s:param><s:property value="passwordSecurityLevel.monthsOfHistoryToDisallow"/></s:param>
+                                </s:text>
+                                </li>
+                            </s:if>
+                            <s:if test="passwordSecurityLevel.enforceEntriesOfHistory()">
+                                <li><s:text name="PasswordRequirement.EntriesOfHistory">
+                                    <s:param><s:property value="passwordSecurityLevel.entriesOfHistoryToDisallow"/></s:param>
+                                </s:text>
+                                </li>
+                            </s:if>
+                        </ul>
+                        </p>
 					</pics:fieldhelp>
 				</li>
 				<li>
 					<s:password name="password2" label="ProfileEdit.ConfirmPassword" theme="form" />
-					<pics:fieldhelp title="Password Requirement">
+					<pics:fieldhelp title="Password Requirements">
 						<p>
 							<s:text name="global.ConfirmPassword.fieldhelp" />
 						</p>  

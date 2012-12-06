@@ -67,6 +67,8 @@ public class RegistrationRequestEmailHelper {
 	public void sendInitialEmail(ContractorAccount contractor, User contact, ContractorOperator relationship,
 			String fileDirectory) throws Exception {
 		EmailQueue email = buildInitialEmail(contractor, contact, relationship);
+		email.setContractorAccount(contractor);
+
 		OperatorForm form = getContractorLetterFromHierarchy(contractor, relationship);
 
 		sendInitialEmail(email, form, fileDirectory);

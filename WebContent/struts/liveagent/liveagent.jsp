@@ -7,7 +7,6 @@
     <title>LiveAgent Test Link</title>
 </head>
 <body>
-<script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/track.js"></script>
-<img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('5025d6c4', this);"/>
+<!-- webim button --><a href="http://mibew.picsorganizer.com/client.php?locale=de" target="_blank" onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('http://mibew.picsorganizer.com/client.php?locale=de&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><img src="http://mibew.picsorganizer.com/b.php?i=webim&amp;lang=de" border="0" width="163" height="61" alt=""/></a><!-- / webim button -->
 </body>
 </html>

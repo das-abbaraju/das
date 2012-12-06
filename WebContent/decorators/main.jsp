@@ -296,14 +296,16 @@
 						} else {
 							helpUrl += "os_username=admin&os_password=ad9870mins";
 						}
+
+						String mibew_language_code = i18nCache.getText("Mibew.LanguageCode", locale);
 					%>
+
 					<div id="helpcenter" style="float:left;">
-					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
+    					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
 					</div>
 					<div id="helpchat" style="float:left;">
-						<pics:toggle name="<%= FeatureToggle.TOGGLE_LIVEAGENT %>">
-                            <script type="text/javascript" id="la_x2s6df8d" src="//chat.picsorganizer.com/scripts/track.js"></script>
-                            <img src="//chat.picsorganizer.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('<s:text name="LiveAgent.ButtonCode" />', this);"/>
+						<pics:toggle name="<%= FeatureToggle.TOGGLE_MIBEW_CHAT %>">
+                            <a href="https://mibew.picsorganizer.com/client.php?locale=<%= mibew_language_code %>&amp;style=PICS" target="_blank" onclick="if(navigator.userAgent.toLowerCase().indexOf('opera') != -1 &amp;&amp; window.event.preventDefault) window.event.preventDefault();this.newWindow = window.open('https://mibew.picsorganizer.com/client.php?locale=<%= mibew_language_code %>&amp;style=PICS&amp;url='+escape(document.location.href)+'&amp;referrer='+escape(document.referrer), 'webim', 'toolbar=0,scrollbars=0,location=0,status=1,menubar=0,width=640,height=480,resizable=1');this.newWindow.focus();this.newWindow.opener=window;return false;"><%= i18nCache.getText("Header.Chat", locale) %></a>
 						</pics:toggle>
 						<pics:toggleElse>
 							<%  if (liveChatEnabled) { %>

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.salecommission.strategy.invoice.InvoiceCommissionStrategy;
-import com.picsauditing.salecommission.strategy.invoice.InvoiceStrategy;
-import com.picsauditing.salecommission.strategy.invoice.VoidInvoiceCommissionStrategy;
+import com.picsauditing.salecommission.invoice.strategy.InvoiceCommissionStrategy;
+import com.picsauditing.salecommission.invoice.strategy.InvoiceStrategy;
+import com.picsauditing.salecommission.invoice.strategy.UpdateInvoiceStrategy;
+import com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy;
 import com.picsauditing.toggle.FeatureToggle;
 
 public class InvoiceObserver implements Observer {
@@ -20,6 +21,8 @@ public class InvoiceObserver implements Observer {
 	private InvoiceStrategy invoiceStrategy;
 	@Autowired
 	private VoidInvoiceCommissionStrategy voidInvoiceCommissionStrategy;
+	@Autowired
+	private UpdateInvoiceStrategy updateInvoiceStrategy;
 	@Autowired
 	private FeatureToggle featureToggle;
 	
@@ -36,18 +39,16 @@ public class InvoiceObserver implements Observer {
 		
 		InvoiceCommissionStrategy<Invoice> strategy = null;
 		switch (event.getEventType()) {
-			case ACTIVATION:
-			case REACTIVATION:
-			case UPGRADE:
-			case RENEW:
 			case NEW:
-			case ADD_LINE_ITEM:
 				strategy = invoiceStrategy;
 				break;
 				
 			case VOID:
 				strategy = voidInvoiceCommissionStrategy;
 				break;
+				
+			case UPDATE:
+				strategy = updateInvoiceStrategy;
 			
 			default:
 				throw new IllegalArgumentException("Unhandled Invoice Event Type.");

@@ -354,6 +354,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
         for (ContractorOperator co : operator.getContractorOperators()) {
             if (co.getWorkStatus().isPending() || co.getWorkStatus().isNo()) {
                 co.setWorkStatus(ApprovalStatus.Y);
+                co.cascadeWorkStatusToParent();
             }
         }
     }

@@ -74,16 +74,14 @@ public class PasswordValidator {
     private boolean passwordHistoryListContainsPassword(String newPassword, User user, PasswordSecurityLevel passwordSecurityLevel) {
         String encryptedNewPassword = EncodedMessage.hash(newPassword + user.getId());
 
-        int entriesToDisallow = passwordSecurityLevel.entriesOfHistoryToDisallow;
-        if (entriesToDisallow > 0) {
-            if (findRecentPasswordsByCount(user, entriesToDisallow).contains(encryptedNewPassword)) {
+        if (passwordSecurityLevel.enforceEntriesOfHistory()) {
+	        if (findRecentPasswordsByCount(user, passwordSecurityLevel.entriesOfHistoryToDisallow).contains(encryptedNewPassword)) {
                 return true;
             }
         }
 
-        int monthsToDisallow = passwordSecurityLevel.monthsOfHistoryToDisallow;
-        if (monthsToDisallow > 0) {
-            if (findRecentPasswordsByPreviousMonths(user, monthsToDisallow).contains(encryptedNewPassword)) {
+	    if (passwordSecurityLevel.enforceMonthsOfHistory()) {
+            if (findRecentPasswordsByPreviousMonths(user, passwordSecurityLevel.monthsOfHistoryToDisallow).contains(encryptedNewPassword)) {
                 return true;
             }
         }

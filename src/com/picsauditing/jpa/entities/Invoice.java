@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -17,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.velocity.tools.generic.DateTool;
 
 import com.picsauditing.report.fields.FieldType;
@@ -34,6 +37,8 @@ public class Invoice extends Transaction {
 	private String poNumber;
 	private String notes;
 	private Date paidDate; // MAX(Payment.creationDate)
+	private Map<FeeClass, BigDecimal> commissionEligibleFeeMap;
+	private BigDecimal totalCommissionEligibleFees;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
@@ -208,11 +213,45 @@ public class Invoice extends Transaction {
 		return dateTool.format(PicsDateFormat.Iso, getDueDate());
 	}
 
-    public boolean containsATaxLineItem() {
-        for (InvoiceItem item : getItems()) {
-           if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT())
-               return true;
-        }
-        return false;
-    }
+	public boolean containsATaxLineItem() {
+		for (InvoiceItem item : getItems()) {
+			if (item.getInvoiceFee().isGST() || item.getInvoiceFee().isVAT())
+				return true;
+		}
+		return false;
+	}
+
+	@Transient
+	public Map<FeeClass, BigDecimal> getCommissionEligibleFees(boolean forceRecalc) {
+		if (!forceRecalc && this.commissionEligibleFeeMap != null) {
+			return this.commissionEligibleFeeMap;
+		}
+
+		if (CollectionUtils.isEmpty(this.getItems())) {
+			return Collections.emptyMap();
+		}
+		
+		this.totalCommissionEligibleFees = new BigDecimal(0.00);
+
+		this.commissionEligibleFeeMap = new HashMap<FeeClass, BigDecimal>();
+		for (InvoiceItem invoiceItem : this.getItems()) {
+			InvoiceFee invoiceFee = invoiceItem.getInvoiceFee();
+			if (invoiceFee != null && invoiceItem.getInvoiceFee().isCommissionEligible()) {
+				FeeClass feeClass = invoiceFee.getFeeClass();
+				this.commissionEligibleFeeMap.put(feeClass, invoiceFee.getAmount());
+				this.totalCommissionEligibleFees = this.totalCommissionEligibleFees.add(invoiceItem.getAmount());
+			}
+		}
+
+		return this.commissionEligibleFeeMap;
+	}
+
+	@Transient
+	public BigDecimal getTotalCommissionEligibleInvoice(boolean forceRecalc) {
+		if (this.totalCommissionEligibleFees == null || forceRecalc) {
+			this.getCommissionEligibleFees(true);
+		}
+
+		return this.totalCommissionEligibleFees;
+	}
 }

@@ -86,6 +86,7 @@ public class FacilityChanger {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
 			co.setWorkStatus(ApprovalStatus.Y);
+			co.cascadeWorkStatusToParent();
 		}
 
 		if (operator.isGeneralContractor()) {

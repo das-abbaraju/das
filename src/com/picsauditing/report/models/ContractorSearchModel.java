@@ -1,8 +1,10 @@
 package com.picsauditing.report.models;
 
+import java.util.List;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorTable;
@@ -43,5 +45,10 @@ public class ContractorSearchModel extends AbstractModel {
 		networkLevel.setFilterable(true);
 
 		return fields;
+	}
+
+	@Override
+	public String getWhereClause(List<Filter> filters) {
+		return "Account.status NOT IN ('Demo','Deleted')";
 	}
 }

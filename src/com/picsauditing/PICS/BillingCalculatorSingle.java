@@ -54,9 +54,11 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.salecommission.InvoiceObserver;
+import com.picsauditing.salecommission.PaymentObserver;
 import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
+	
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
@@ -87,11 +89,14 @@ public class BillingCalculatorSingle {
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private InvoiceObserver invoiceObserver;
+	@Autowired
+	private PaymentObserver paymentObserver;
 
 	private final I18nCache i18nCache = I18nCache.getInstance();
 
 	public void initService() {
 		salesCommissionDataObservable.addObserver(invoiceObserver);
+		salesCommissionDataObservable.addObserver(paymentObserver);
 	}
 
 	public void setPayingFacilities(ContractorAccount contractor) {
@@ -112,18 +117,21 @@ public class BillingCalculatorSingle {
 
 		contractor.setPayingFacilities(payingOperators.size());
 	}
-
-	public void calculateAnnualFees(ContractorAccount contractor) {
-		calculateAnnualFees(contractor, true);
+	
+	/**
+	 * Please start using the method with the more descriptive name "calculateContractorInvoiceFees". 
+	 */
+	@Deprecated
+	public void calculateAnnualFees (ContractorAccount contractor) {
+		this.calculateContractorInvoiceFees(contractor);
 	}
-
-	private void calculateAnnualFees(ContractorAccount contractor, boolean persistChanges) {
+	
+	public void calculateContractorInvoiceFees (ContractorAccount contractor) {
 		if (contractor.getStatus().isRequested()) {
 			return;
 		}
 
 		setPayingFacilities(contractor);
-
 		int payingFacilities = contractor.getPayingFacilities();
 
 		if (payingFacilities == 0) {
@@ -144,7 +152,7 @@ public class BillingCalculatorSingle {
 		boolean hasHseCompetency = false;
 		boolean hasCorOrIec = false;
 		boolean hasImportPQF = false;
-
+		
 		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
@@ -202,7 +210,7 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
 		}
 
-		if (hasOq || hasHseCompetency || hasEmployeeAudits) {
+		if ((hasOq || hasHseCompetency || hasEmployeeAudits)) {
 			// EmployeeGUARD HSE Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
 			BigDecimal newAmount = contractor.getCountry().getAmount(newLevel);
@@ -259,7 +267,7 @@ public class BillingCalculatorSingle {
 				importConFee.setCurrentLevel(currentLevel);
 				importConFee.setCurrentAmount(contractor.getCountry().getAmount(currentLevel));
 				importConFee.setFeeClass(FeeClass.ImportFee);
-				saveContractorImportPqfFee(importConFee, persistChanges);
+				invoiceFeeDAO.save(importConFee);
 
 				contractor.getFees().put(FeeClass.ImportFee, importConFee);
 			} else {
@@ -270,13 +278,7 @@ public class BillingCalculatorSingle {
 		}
 
 	}
-
-	private void saveContractorImportPqfFee(ContractorFee importPqfFee, boolean persistChanges) {
-		if (persistChanges) {
-			invoiceFeeDAO.save(importPqfFee);
-		}
-	}
-
+	
 	protected boolean qualifiesForInsureGuard(Set<OperatorAccount> operatorsRequiringInsureGUARD) {
 		return (!(IGisExemptedFor(operatorsRequiringInsureGUARD)));
 	}
@@ -343,20 +345,10 @@ public class BillingCalculatorSingle {
 	}
 
 	public Invoice createInvoice(ContractorAccount contractor, User user) {
-		return createInvoice(contractor, contractor.getBillingStatus(), user, true);
+		return createInvoice(contractor, contractor.getBillingStatus(), user);
 	}
 
 	public Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user) {
-		return createInvoice(contractor, billingStatus, user, true);
-	}
-
-	public Invoice createInvoiceWithoutSave(ContractorAccount contractor, User user) {
-		return createInvoice(contractor, contractor.getBillingStatus(), user, false);
-	}
-
-	private Invoice createInvoice(ContractorAccount contractor, BillingStatus billingStatus, User user,
-			boolean persistChanges) {
-		calculateAnnualFees(contractor, persistChanges);
 
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
 

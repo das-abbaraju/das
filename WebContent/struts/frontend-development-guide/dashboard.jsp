@@ -7,140 +7,179 @@
 
 <s:include value="/struts/frontend-development-guide/_menu.jsp" />
 
-<section id="overview" class="guide">
+<section class="guide">
     <div class="page-header">
         <h1>Overview</h1>
     </div>
     
     <p>
-        Routing is an important subject. It determines how incoming requests are handled and processed. The routing process controls whether or not you get the response you want, but also provides a couple of other benefits:
+        Creating a template or HTML file for a page is easy. It is important, however, to understand how the page you are create effects the system. When creating a template one should properly evaluate the files content and location. In addition, it is important to understand the difference between a <code>View Template</code> and a <code>Partial Template</code>.
+    </p>
+    
+    <p>
+        <strong>When creating a file ask yourself four questions:</strong>
     </p>
     
     <ol>
-        <li>
-            Single point of entry for URL management — Removing the need for hard coded URLs
-        </li>
-        <li>
-            Abstracts the defined URL from the path on the file system (E.g. /login goes to Login Java Class and not to a folder called "login")
-        </li>
-        <li>
-            Validation for URLs (E.g. /login?hack=true does not match /login and will result in a 404 page)
-        </li>
-        <li>
-            Validation for URL request parameters (E.g. /contractor/ancon-marine must accept a [A-Za-z\-], /contractor/1 will result in a 404 page)
-        </li>
+        <li><a href="#">Is the file I am creating in the correct location?</a></li>
+        <li><a href="#">Is the file and or folder name I am creating following convention?</a></li>
+        <li>Do I want a <code>View Template</code> or a <code>Partial Template</code>?</li>
+        <li>Have I included the appropriate content type / taglibs?</li>
     </ol>
     
     <p>
-        This guide will explain how a response is returned when a user makes a request to the application. Struts 2 has a few different configurations on Routing, be sure to investigate them on your own. <strong>This is a basic guide and is not meant to be comprehensive.</strong> 
+        <em>If you are unsure of the content type and taglibs to should be included in your HTML file, include the code below:</em>
     </p>
-    
-</section>
-
-<section id="routing" class="guide">
-    <div class="page-header">
-        <h1>Routing</h1>
-    </div>
     
     <div class="example">
     
         <p>
-            <strong>Example of an end to end request:</strong>
+            <strong>With comments:</strong>
         </p>
         
-<pre class="prettyprint linenums lang-sh">
-# User requests a specified URL from his/her browser
-https://www.picsorganizer.com/Login.action
+<pre class="prettyprint linenums">
+&lt;!-- Set the content type to UTF-8 to enable international charset --&gt;
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;
 
-# Catches all requests that end with .action and applies the Struts filter
-web.xml
+&lt;!-- Include struts tags --&gt;
+&lt;%@ taglib prefix="s" uri="/struts-tags" %&gt;
 
-# Forwards to URL management
-struts.xml
-
-# Regex pattern matches to appropriate action and associates the request to a Java Class
-&lt;action name="Login" class="com.picsauditing.access.LoginController"&gt;&lt;/action&gt;
-
-# Default action handler is execute()
-public String execute() throws Exception {}
-
-# Alternate example for https://www.picsorganizer.com/Login!logout.action
-public String logout() throws Exception {}
-
-# Obtain a return String from the action method to determine the appropriate response and response headers.
-# com.opensymphony.xwork2.Action interface contains a list of provided constants
-public String execute() throws Exception {
-    return SUCCESS;
-}
-
-# Alternate example for https://www.picsorganizer.com/Login!logout.action
-public String logout() throws Exception {
-    return "logout";
-}
-
-# Match the constant back to struts.xml to obtain available template (if there is one)
-&lt;action name="Login" class="com.picsauditing.access.LoginController"&gt;&lt;/action&gt;
-    &lt;result&gt;/struts/users/login.jsp&lt;/result&gt;
-    &lt;result name="logout"&gt;/some-other-file.jsp&lt;/result&gt;
-&lt;/action&gt;
-
-# Obtain an appropriate layout file
-decorators.xml
-
-# Regex match the return to a layout file
-&lt;decorator name="simpleLayout" page="simple-layout.jsp"&gt;
-    &lt;pattern&gt;/Login.action&lt;/pattern&gt;
-&lt;/decorator&gt;
-
-# Apply the content returned to the layout file using SiteMesh
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-    &lt;header&gt;
-        &lt;!-- TITLE REPLACEMENT --&gt;
-        &lt;decorator:title default="PICS" /&gt;
-    &lt;/header&gt;
-    &lt;body&gt;
-        &lt;!-- CONTENT REPLACEMENT --&gt;
-        &lt;decorator:body /&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-
-# Enjoy a cup of tea along with your response
+&lt;!-- Add appropriate page title --&gt;
+&lt;title&gt;{{YOUR_PAGE_TITLE}}&lt;/title&gt;
 </pre>
+
+        <p>
+            <strong>Without comments:</strong>
+        </p>
     
+<pre class="prettyprint linenums">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;
+&lt;%@ taglib prefix="s" uri="/struts-tags" %&gt;
+
+&lt;title&gt;{{YOUR_PAGE_TITLE}}&lt;/title&gt;
+</pre>
+
     </div>
 </section>
 
-<section id="links" class="guide">
+<section id="templates" class="guide">
     <div class="page-header">
-        <h1>Links</h1>
+        <h1>Creating a Template</h1>
     </div>
     
     <p>
-        It is important to utilize the routing capabilities to generate appropriate URLs. The power of generating URLs comes from a single point of entry for URL management. By allowing the routing system to generate and control our URLs it will be a rare case in which a URL would need to be hard coded. Links can then be changed in a centralized location that is not in the templates. 
+        Template files are the views that are seen on every page. Each template file makes up the visual mark up that you want to display on a given page. The goal for creating maintainable templates is to split up the content being rendered into display logic that is brief, but comprehensive. We can achieve this goal by defining two template types where each template type will allow us to define manageable and reusable, semantic mark up.  
+    </p>
+    
+    <p>
+        There are two types of template files:
+    </p>
+    
+    <ul>
+        <li>Views</li>
+        <li>Partials</li>
+    </ul>
+    
+    <p>
+        <em>It is important to know that a template represents a specific page's content and nothing more. The menu, header, and footer, for example, should <strong>NOT</strong> be included in a template file. Items such as those should be included in a <code>Decorator</code>.</em>
+    </p>
+    
+    <h2>Views</h2>
+    
+    <p>
+        <code>View Templates</code> are and should be used to define the page's content.  It is the <code>View Template's</code> responsibility to organize the layout of the content within itself. Note: each <code>View Template</code> may be composed of multiple <code>Partial Templates</code>.
     </p>
     
     <div class="example">
     
-<pre class="prettyprint linenums">
-&lt;!-- Generating a link to a Action --&gt;
-&lt;s:url action="Home" var="dashboard_url" /&gt;
-&lt;a href="\${dashboard_url}" class="dashboard"&gt;Go to my Dashboard&lt;/a&gt;
-
-&lt;!-- Generating a link to a Action/Method --&gt;
-&lt;s:url action="Login" method="logout" var="logout_url" /&gt;
-&lt;a href="\${logout_url}" class="logout"&gt;Logout&lt;/a&gt;
-
-&lt;!-- Generating a link to a Action with parameters --&gt;
-&lt;s:url action="Report" var="report_url"&gt;
-    &lt;s:param name="id"&gt;\${report.id}&lt;/s:param&gt;
-&lt;/s:url&gt;
-
-&lt;form action="\${report_url}" method="post"&gt;&lt;/form&gt;
-
-&lt;!-- Generating a link to an external source --&gt;
-&lt;a href="//www.twitter.com/chemoish"&gt;Twitter&lt;/a&gt;
-</pre>
+        <p>
+            <strong>/WebContent/struts/hit/hit-list.jsp</strong>
+        </p>
     
+<pre class="prettyprint linenums">
+&lt;!-- Set the content type to UTF-8 to enable international charset --&gt;
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;
+
+&lt;!-- Include struts tags --&gt;
+&lt;%@ taglib prefix="s" uri="/struts-tags" %&gt;
+
+&lt;!-- Browser tab will display "PICS - My Example Page" --&gt;
+&lt;title&gt;My Hit List&lt;/title&gt;
+
+&lt;!-- Add "My Hit List" page header --&gt;
+&lt;s:include value="/struts/layout/_page-header.jsp"&gt;
+    &lt;s:param name="title"&gt;My Hit List&lt;/s:param&gt;
+&lt;/s:include&gt;
+
+&lt;ul&gt;
+    &lt;s:iterator value="hitList" var="hit"&gt;
+        &lt;li&gt;
+            &lt;s:include value="/struts/hit/_hit.jsp" /&gt;
+                &lt;s:param name="honorific"&gt;\${hit.honorific}&lt;/s:param&gt;
+                &lt;s:param name="name"&gt;\${hit.name}&lt;/s:param&gt;
+                &lt;s:param name="isAlive"&gt;\${hit.isAlive}&lt;/s:param&gt;
+            &lt;/s:include&gt;
+        &lt;/li&gt;
+    &lt;/s:iterator&gt;
+&lt;/ul&gt;
+</pre>
+
     </div>
+    
+    <hr />
+    
+    <h2>Partials</h2>
+    
+    <p>
+        Partial Templates are and should be used to define the page's <strong>sub-content</strong>.  Any information that will make up a portion of a View Template, used for ajax or is a shared among multiple View Templates should be a partial. 
+    </p>
+    
+    <div class="example">
+    
+        <p>
+            <strong>/WebContent/struts/hit/_hit.jsp</strong>
+        </p>
+    
+<pre class="prettyprint linenums">
+&lt;!-- Set the content type to UTF-8 to enable international charset --&gt;
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;
+
+&lt;!-- Include struts tags --&gt;
+&lt;%@ taglib prefix="s" uri="/struts-tags" %&gt;
+
+&lt;% if (request.getParameter("honorific") != null) { %&gt;
+    &lt;s:set name="honorific"&gt;\${param.honorific}&lt;/s:set&gt;
+&lt;% } else { %&gt;
+    &lt;s:set name="honorific"&gt;Captain&lt;/s:set&gt;
+&lt;% } %&gt;
+
+&lt;% if (request.getParameter("name") != null) { %&gt;
+    &lt;s:set name="name"&gt;\${param.name}&lt;/s:set&gt;
+&lt;% } else { %&gt;
+    &lt;s:set name="name"&gt;Douglas&lt;/s:set&gt;
+&lt;% } %&gt;
+
+&lt;% if (request.getParameter("isAlive") != null) { %&gt;
+    &lt;s:set name="isAlive"&gt;\${param.isAlive}&lt;/s:set&gt;
+&lt;% } else { %&gt;
+    &lt;s:set name="isAlive"&gt;true&lt;/s:set&gt;
+&lt;% } %&gt;
+
+&lt;div class="hit"&gt;
+    &lt;span class="honorific"&gt;\${honorific}&lt;/span&gt;
+    &lt;span class="name"&gt;\${name}&lt;/span&gt;
+    &lt;span class="is-alive"&gt;\${isAlive}&lt;/span&gt;
+&lt;/div&gt;
+</pre>
+
+    </div>
+    
 </section>
+
+Creating a JSP
+
+Creating variables in JSP
+
+Logic in JSP
+
+Iterating over objects in JSP

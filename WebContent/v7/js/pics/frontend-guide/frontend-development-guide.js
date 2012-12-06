@@ -10,11 +10,11 @@
                     $('body').scrollspy({
                         spy:'scroll',
                         target:'.side-bar',
-                        offset:95
+                        offset: 96 // no idea how to calculate this
                     });
 
                     $('.side-bar .nav-list').affix({
-                        offset:114
+                        offset: 114
                     });
 
                     if (hash) {
@@ -34,9 +34,9 @@
             },
 
             scrollTo:function (selector) {
-                var body = $('body'),
+                var body = $('html, body'),
                     target = $(selector),
-                    offset = 95,
+                    offset = 95, // no idea how to calculate this
                     target_offset_top = target && target.offset().top - offset;
 
                 setTimeout(function () {

@@ -1,4 +1,4 @@
-package com.picsauditing.salecommission.strategy.invoice;
+package com.picsauditing.salecommission.invoice.strategy;
 
 import java.math.BigDecimal;
 import java.util.Date;

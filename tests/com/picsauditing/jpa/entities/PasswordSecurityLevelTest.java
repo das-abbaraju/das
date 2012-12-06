@@ -35,12 +35,26 @@ public class PasswordSecurityLevelTest {
         assertTrue(PasswordSecurityLevel.Maximum.entriesOfHistoryToDisallow == 0);
     }
 
+	@Test
+	public void testEnforceMonthsOfHistory() throws Exception {
+		assertFalse(PasswordSecurityLevel.Normal.enforceMonthsOfHistory());
+		assertFalse(PasswordSecurityLevel.High.enforceMonthsOfHistory());
+		assertTrue(PasswordSecurityLevel.Maximum.enforceMonthsOfHistory());
+	}
+
     @Test
-    public void testEnforceHistory() throws Exception {
-        assertFalse(PasswordSecurityLevel.Normal.enforceHistory());
-        assertTrue(PasswordSecurityLevel.High.enforceHistory());
-        assertTrue(PasswordSecurityLevel.Maximum.enforceHistory());
+    public void testEnforceEntriesOfHistory() throws Exception {
+        assertFalse(PasswordSecurityLevel.Normal.enforceEntriesOfHistory());
+	    assertTrue(PasswordSecurityLevel.High.enforceEntriesOfHistory());
+	    assertFalse(PasswordSecurityLevel.Maximum.enforceEntriesOfHistory());
     }
+
+	@Test
+	public void testEnforceHistory() throws Exception {
+		assertFalse(PasswordSecurityLevel.Normal.enforceHistory());
+		assertTrue(PasswordSecurityLevel.High.enforceHistory());
+		assertTrue(PasswordSecurityLevel.Maximum.enforceHistory());
+	}
 
     @Test
     public void testFromDbValue_found() throws Exception {

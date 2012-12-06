@@ -3,27 +3,43 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum ApprovalStatus implements Translatable {
-	/** No - "Not Approved" **/
-	N,
 	/** Pending - "Pending Approval" **/
 	P,
+	/** No - "Not Approved" **/
+	N,
+	/** Yes - "Approved" **/
+	Y,
+	/** Yes and Forced - "Default to Approved" **/
+	YF,
+	/** No and Forced - "Default to Not Approved" **/
+	NF,
 	/** Contractor - "Contractor in General Contractor Relationship" **/
 	C,
 	/** Contractor Denied - "Contractor denied General Contractor Relationship" **/
-	D,
-	/** Yes - "Approved" **/
-	Y;
+	D;
 
 	public boolean isPending() {
 		return this.equals(P);
 	}
 
 	public boolean isYes() {
-		return this.equals(Y);
+		return this.equals(Y) || this.equals(YF);
 	}
 
 	public boolean isNo() {
-		return this.equals(N);
+		return this.equals(N) || this.equals(NF);
+	}
+
+	public boolean isYesForced() {
+		return this.equals(NF);
+	}
+
+	public boolean isNoForced() {
+		return this.equals(NF);
+	}
+
+	public boolean isForced() {
+		return this.equals(NF) || this.equals(YF);
 	}
 
 	public boolean isContractor() {

@@ -12,6 +12,10 @@ public class FrontendDevelopmentGuide extends PicsActionSupport {
 		return "technology";
 	}
 
+	public String routing() {
+		return "routing";
+	}
+
 	public String file_structure() {
 		return "file-structure";
 	}

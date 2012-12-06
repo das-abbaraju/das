@@ -14,10 +14,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -75,23 +73,11 @@ public class ReportContractorApproval extends ReportAccount {
 
 	@RequiredPermission(value = OpPerms.ContractorApproval, type = OpType.Edit)
 	public String save() {
-		OperatorAccount corporate = null;
-		if (permissions.isCorporate())
-			corporate = operatorAccountDAO.find(permissions.getAccountId());
-
 		if (conids != null && conids.size() > 0) {
 			List<ContractorAccount> cAccounts = contractorAccountDAO.findWhere("a.id IN (" + Strings.implode(conids)
 					+ ")");
 			for (ContractorAccount cAccount : cAccounts) {
-				if (permissions.isOperator()) {
-					approveContractor(cAccount, permissions.getAccountId(), getWorkStatus());
-				}
-
-				if (permissions.isCorporate()) {
-					for (Facility facility : corporate.getOperatorFacilities()) {
-						approveContractor(cAccount, facility.getOperator().getId(), getWorkStatus());
-					}
-				}
+				approveContractor(cAccount, permissions.getAccountId(), getWorkStatus());
 
 				cAccount.incrementRecalculation();
 				cAccount.setAuditColumns(permissions);
@@ -141,7 +127,12 @@ public class ReportContractorApproval extends ReportAccount {
 	public void approveContractor(ContractorAccount cAccount, int operatorID, ApprovalStatus workStatus) {
 		for (ContractorOperator cOperator : cAccount.getOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
-				cOperator.setWorkStatus(workStatus);
+				if (permissions.isOperator()) {
+					cOperator.setWorkStatus(workStatus);
+					cOperator.cascadeWorkStatusToParent();
+				} else
+					cOperator.setForcedWorkStatus(workStatus);
+
 				cOperator.setAuditColumns(permissions);
 				contractorOperatorDAO.save(cOperator);
 				break;

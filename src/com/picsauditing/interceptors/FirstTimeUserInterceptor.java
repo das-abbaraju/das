@@ -24,7 +24,7 @@ public class FirstTimeUserInterceptor extends AbstractInterceptor {
             Permissions permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
 
             if (redirectUserToTutorial(permissions)) {
-                invocation.getStack().set("url", "Tutorial.action");
+                invocation.getStack().set("url", "Tutorial!navigationMenu.action");
                 return "redirect";
             }
         } catch (Exception e) {

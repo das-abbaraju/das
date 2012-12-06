@@ -132,22 +132,22 @@ public class Registration extends ContractorActionSupport {
 					return SUCCESS;
 				}
 			}
+		}
 
-			if (!Strings.isEmpty(registrationKey)) {
-				List<ContractorAccount> requestsByHash = contractorAccountDao.findWhere("a.registrationHash = '"
-						+ registrationKey + "'");
+		if (!Strings.isEmpty(registrationKey)) {
+			List<ContractorAccount> requestsByHash = contractorAccountDao.findWhere("a.registrationHash = '"
+					+ registrationKey + "'");
 
-				if (requestsByHash != null && !requestsByHash.isEmpty()) {
-					contractor = requestsByHash.get(0);
-					user = contractor.getPrimaryContact();
-					user.setUsername(user.getEmail());
+			if (requestsByHash != null && !requestsByHash.isEmpty()) {
+				contractor = requestsByHash.get(0);
+				user = contractor.getPrimaryContact();
+				user.setUsername(user.getEmail());
 
-					if (!contractor.getStatus().isRequested()) {
-						permissions = logInUser();
-						setLoginLog(permissions);
+				if (!contractor.getStatus().isRequested()) {
+					permissions = logInUser();
+					setLoginLog(permissions);
 
-						return setUrlForRedirect(getRegistrationStep().getUrl());
-					}
+					return setUrlForRedirect(getRegistrationStep().getUrl());
 				}
 			}
 		}

@@ -127,13 +127,11 @@ public class QBXmlAdaptor {
 		if (in == null)
 			return "";
 
-		String escapedIn = StringEscapeUtils.escapeXml(in);
-
-		if (escapedIn.length() < start + end) {
-			return escapedIn.substring(start);
+		if (in.length() < start + end) {
+			return in.substring(start);
 		}
 
-		return escapedIn.substring(start, end);
+		return in.substring(start, end);
 	}
 
 	static public String nullSafeZip(String zipCode, Country country) {

@@ -6,8 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class AccountTest {
@@ -96,7 +95,16 @@ public class AccountTest {
         assertEquals(PasswordSecurityLevel.Normal, account.getPasswordSecurityLevel());
     }
 
-    private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision,
+    @Test
+    public void testIsContractor() {
+	    account.setType("Contractor");
+	    assertTrue(account.isContractor());
+
+	    account.setType("Admin");
+	    assertFalse(account.isContractor());
+    }
+
+	private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision,
                                   AccountStatus status) {
         account.setType(type);
         account.setId(id);

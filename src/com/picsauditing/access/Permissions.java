@@ -509,8 +509,7 @@ public class Permissions implements Serializable {
      * @return
      */
     public boolean isAuditor() {
-        // FIXME This should be checking for a permission, not a group -- and most certainly not by the group's ID number as it haapens to been assigned in one particular database instance
-        return hasGroup(11);
+    	return hasPermission(OpPerms.AuditEdit);
     }
 
     public boolean isMarketing() {

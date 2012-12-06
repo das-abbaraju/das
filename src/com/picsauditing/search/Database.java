@@ -50,6 +50,38 @@ public class Database {
 			DatabaseUtil.closeConnection(Conn);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<BasicDynaBean> selectReadOnly(String sql, boolean countRows) throws SQLException {
+		Connection Conn = null;
+		Statement stmt = null;
+		ResultSet tempRS = null;
+		ResultSet rs = null;
+		RowSetDynaClass rsdc;
+
+		try {
+			Conn = DBBean.getReadOnlyConnection();
+			
+			stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			rs = stmt.executeQuery(sql);
+			rsdc = new RowSetDynaClass(rs, false, true);
+			if (countRows) {
+				tempRS = stmt.executeQuery("SELECT FOUND_ROWS()");
+				tempRS.next();
+				allRows = tempRS.getInt(1);
+			}
+
+			return rsdc.getRows();
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw e;
+		} finally {
+			DatabaseUtil.closeResultSet(rs);
+			DatabaseUtil.closeResultSet(tempRS);
+			DatabaseUtil.closeStatement(stmt);
+			DatabaseUtil.closeConnection(Conn);
+		}
+	}
 
 	public long executeInsert(String sql) throws SQLException {
 		Connection Conn = null;
@@ -96,6 +128,20 @@ public class Database {
 		Statement stmt = null;
 		try {
 			Conn = DBBean.getDBConnection();
+			stmt = Conn.createStatement();
+			
+			return stmt.execute(sql);
+		} finally {
+			DatabaseUtil.closeStatement(stmt);
+			DatabaseUtil.closeConnection(Conn);
+		}
+	}
+	
+	public boolean executeReadOnly(String sql) throws SQLException {
+		Connection Conn = null;
+		Statement stmt = null;
+		try {
+			Conn = DBBean.getReadOnlyConnection();
 			stmt = Conn.createStatement();
 			
 			return stmt.execute(sql);

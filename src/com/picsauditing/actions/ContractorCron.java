@@ -901,6 +901,7 @@ public class ContractorCron extends PicsActionSupport {
 			newCo.setContractorAccount(contractor);
 			newCo.setCreatedBy(new User(User.SYSTEM));
 			newCo.setUpdatedBy(new User(User.SYSTEM));
+			newCo.setDefaultWorkStatus();
 			contractorOperatorDAO.save(newCo);
 		}
 
