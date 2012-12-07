@@ -261,7 +261,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (permissions.isOperator() || permissions.isCorporate()) {
 			return operatorAccountDAO.getContractorCount(permissions.getAccountId(), permissions);
 		}
-		return contractorAccountDAO.getActiveContractorCounts("");
+		// FIXME: this method call used to be getActiveContractorCounts("") which had nothing to do 
+		// with "active" contractors but was instead with the "" a count of all contractors 
+		// (unrestricted). This seems to me to be in contradiction with the comment above. Is the
+		// comment wrong? Or was the implementation of the method?
+		return contractorAccountDAO.findTotalContractorCount();
 	}
 
 	public List<Integer> getIds() {

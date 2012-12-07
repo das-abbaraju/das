@@ -37,8 +37,8 @@ public class CorporateWidget extends PicsActionSupport {
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 
-		totalContractorCount = cAccountDAO.getActiveContractorCounts("");
-		activeContractorCount = cAccountDAO.getActiveContractorCounts("c.status = 'Active'");
+		totalContractorCount = cAccountDAO.findTotalContractorCount();
+		activeContractorCount = cAccountDAO.findActiveContractorCount();
 		operatorCount = opAccountDAO.getOperatorCounts("o.type = 'Operator'");
 		corporateCount = opAccountDAO.getOperatorCounts("o.type = 'Corporate'");
 		userCount = userDAO.getUsersCounts();
@@ -55,7 +55,7 @@ public class CorporateWidget extends PicsActionSupport {
 					amCorporateCount++;
 			}
 
-			amContractorCount = cAccountDAO.getActiveContractorCounts("c IN (SELECT contractorAccount FROM "
+			amContractorCount = cAccountDAO.findCountWhere("c IN (SELECT contractorAccount FROM "
 					+ "ContractorOperator WHERE operatorAccount IN (SELECT account FROM AccountUser "
 					+ "WHERE user.id = " + permissions.getUserId() + "))");
 
