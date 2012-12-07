@@ -17,7 +17,7 @@ public class InputValidator {
     private ContractorAccountDAO contractorAccountDao;
 
     // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
-    public final static String SPECIAL_CHAR_REGEX = "(?s).*[<>&`\"].*";
+    public final static String SPECIAL_CHAR_REGEX = "(?s).*[;<>&`\"].*";
 
     public final static String VALID_USERNAME_REGEX = "[\\w+.@-]{5,100}";
 

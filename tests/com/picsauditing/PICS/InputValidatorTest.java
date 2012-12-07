@@ -112,6 +112,11 @@ public class InputValidatorTest {
     }
 
     @Test
+    public void testContainsOnlySafeCharacters_semicolonReturnsFalse() {
+        assertFalse(inputValidator.containsOnlySafeCharacters("foo;bar"));
+    }
+
+    @Test
     public void testIsUsernameValid_NullReturnsFalse() {
         boolean result = inputValidator.isUsernameValid(null);
 
