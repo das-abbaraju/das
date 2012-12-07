@@ -947,6 +947,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 
+		// Note: audit.setAuditor() is the final arbitor of which auditor is assigned to do an audit. UserAssignment is merely the intermediate "rules" for pre-determining the assignments. 
 		UserAssignment ua = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (!audit.isExpired() && audit.getAuditor() == null) {

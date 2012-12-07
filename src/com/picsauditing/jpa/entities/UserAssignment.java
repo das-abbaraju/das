@@ -9,6 +9,34 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/**
+ * 
+ * This is the old way of defining CSR assignment rules, and how we still 
+ * define Auditor assignment rules.
+ * 
+ * A 'rule" is a way to match a contracor to a CSR or Audtor. It could be by 
+ * location (country, or state, or zipcode range) or by a contractor-specific 
+ * override. 
+ *
+ * This is not the definitive arbitor who who is actually assigned to a 
+ * particular audit.  It's just a planning intermediary.
+ * 
+ * There are several places where this table is consulted:
+ *
+ * 1. UserAssignmentMatrix -- UI for how the rules are defined.
+ *
+ * 2. ContractorCron.runCSRAssignment() -- (the 7th step of contracor cron) 
+ *    -- being replaced by the new Drools code
+ *
+ * 3. ContractorCron.runAssignAudit() -- (the 4th step of contracor cron) This 
+ *    table is specifically only consulted for auto-assigning 
+ *    AuditType.WA_STATE_VERIFICATION and AuditType.DESKTOP
+ *
+ * 4. BillingCalculatorSingle.performInvoiceStatusChangeActions() -- ensures 
+ *    that an Import PQF audit is actually assigned before we charge the 
+ *    contractor for doing the import.
+ *
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "user_assignment")
