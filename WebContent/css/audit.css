@@ -1046,3 +1046,13 @@ a.gray {color: #A4A3A4;} /*** N/A or Expired ***/
 {
 	width: 400px;
 }
+
+/* audit override */
+#AuditOverride .form .radio
+{
+    overflow: visible;
+}
+#AuditOverride .form .radio li
+{
+   float: none;
+}
