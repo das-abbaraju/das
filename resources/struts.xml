@@ -159,7 +159,7 @@
             <result name="privacy-policy">/struts/general/_privacy-policy.jsp</result>
         </action>
 
-        <action name="RefundPolicy" class="com.picsauditing.actions.PicsPolicy">
+        <action name="RefundPolicy" class="com.picsauditing.actions.RefundPolicy">
             <result>refund_policy.jsp</result>
         </action>
 
