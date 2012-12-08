@@ -1,14 +1,16 @@
 package com.picsauditing.actions.rest.api;
 
-import com.picsauditing.access.Api;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.ReportValidationException;
-import com.picsauditing.actions.report.ReportData;
+import java.util.Map;
+
 import org.apache.struts2.interceptor.ParameterAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import com.picsauditing.access.Api;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.ReportValidationException;
+import com.picsauditing.actions.report.ReportData;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class DataFeed extends ReportData implements ParameterAware {
@@ -44,7 +46,7 @@ public class DataFeed extends ReportData implements ParameterAware {
            * error message (above).
            */
         reportIdSpecified = lookupParam(parameters, "report");
-        outputFormat = lookupParam(parameters, "format");
+        outputFormat = lookupParam(parameters,"format",JSON);
     }
 
     @Override
@@ -52,15 +54,21 @@ public class DataFeed extends ReportData implements ParameterAware {
     public String execute() {
         try {
             initialize();
-            runQuery();
+            if (org.apache.commons.lang3.ArrayUtils.contains(DATAFEED_FORMATS, outputFormat)) {
+				runQuery();
 
-            converter.convertForExtJS();
-            json.put("data", converter.getReportResults().toJson());
+				converter.convertForExtJS();
+				json.put("data", converter.getReportResults().toJson());
 
-            if (permissions.isAdmin() || permissions.getAdminID() > 0) {
-                json.put("sql", debugSQL);
-            }
-            json.put("success", true);
+				if (permissions.isAdmin() || permissions.getAdminID() > 0) {
+					json.put("sql", debugSQL);
+				}
+				json.put("success", true);
+			} else {
+				writeJsonError("Invalid format. Choices are: "+Strings.implodeForDB(DATAFEED_FORMATS, ", ")+".");
+				// The error message itself needs to be presented somehow...
+				outputFormat = JSON;
+			}
         } catch (ReportValidationException error) {
             writeJsonError(error.getMessage());
         } catch (Exception e) {

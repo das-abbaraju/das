@@ -24,7 +24,10 @@ public class PicsApiSupport extends PicsActionSupport implements ParameterAware 
     }
 
     protected String lookupParam(Map<String, String[]> parameters, String key) {
-        String paramValue = null;
+    	return lookupParam(parameters, key, null);
+    }
+    protected String lookupParam(Map<String, String[]> parameters, String key, String defaultValue) {
+        String paramValue = defaultValue;
         String[] param = parameters.get(key);
         if (param != null && param.length > 0) {
             paramValue = param[0];
