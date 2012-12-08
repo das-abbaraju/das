@@ -3,6 +3,7 @@ package com.picsauditing.integration.google;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URLEncoder;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -12,14 +13,33 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.picsauditing.util.Strings;
+
 public class GoogleApiOverHttp {
 	private static final Logger logger = LoggerFactory.getLogger(GoogleApiOverHttp.class);
 
 	private HttpClient httpClient;
 	private HttpMethod httpMethod;
 
+	String googleClientId;
+
 	String createUrl(String urlFormat, String... data) {
 		return String.format(urlFormat, encodeData(data));
+	}
+
+	// if the google client id is not set, we will not sign it and we'll be
+	// using the free/open API which has strict limits - this is not a good
+	// longterm idea but it will keep the application running
+	String signUrlIfGoogleIdSet(String url) {
+		if (Strings.isEmpty(googleClientId)) {
+			return url;
+		}
+		try {
+			return UrlSigner.signRequest(url, googleClientId);
+		} catch (MalformedURLException e) {
+			logger.error("Cannot sign url, returning unsigned (should use public API): {}", e.getLocalizedMessage());
+			return url;
+		}
 	}
 
 	private Object[] encodeData(String... data) {

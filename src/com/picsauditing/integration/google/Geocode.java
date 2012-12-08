@@ -16,10 +16,20 @@ public class Geocode extends GoogleApiOverHttp {
 	private static final Logger logger = LoggerFactory.getLogger(Geocode.class);
 	private static final String urlFormat = "https://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false";
 
+	public Geocode() {
+	}
+
+	// if the google api client id is supplied, we'll sign the url: however, we
+	// also MUST have the google key set in system properties ("gk")
+	public Geocode(String googleClientId) {
+		this.googleClientId = googleClientId;
+	}
+
 	public LatLong latLongFromAddress(String address) {
 		LatLong latLong = null;
 		if (address != null) {
 			String url = createUrl(urlFormat, address);
+			url = signUrlIfGoogleIdSet(url);
 			InputStream response = executeUrl(url);
 			latLong = latLongFromResponse(response);
 		}

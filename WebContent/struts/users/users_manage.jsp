@@ -352,7 +352,7 @@
 
 							<li><s:select name="user.timezone" value="user.timezone.iD"
 									theme="form"
-									list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" /></li>
+									list="@com.picsauditing.util.TimeZoneUtil@timeZones()" /></li>
 
 							<s:if test="user.account.id != 1100">
 								<li><label><s:text name="global.ContactPrimary" />:</label>

@@ -157,7 +157,7 @@
     								name="contractor.timezone"
     								value="contractor.timezone.iD"
     								theme="form"
-    								list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
+    								list="@com.picsauditing.util.TimeZoneUtil@timeZones()" />
     						</li>
     
     						<s:if test="contractor.demo || configEnvironment || i18nReady">

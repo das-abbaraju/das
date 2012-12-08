@@ -7,11 +7,12 @@ import com.picsauditing.integration.google.Geocode;
 import com.picsauditing.integration.google.TimezoneLookup;
 
 public class GoogleApiTimezoneFinder implements TimezoneFinder {
-	private static Geocode geocode;
-	private static TimezoneLookup timezoneLookup;
+	private Geocode geocode;
+	private TimezoneLookup timezoneLookup;
+	private String googleClientId;
 
 	@Override
-	public TimeZone timezoneIdFromAddress(String address) {
+	public TimeZone timezoneFromAddress(String address) {
 		Geocode geocode = geocode();
 		TimezoneLookup timezoneLookup = timezoneLookup();
 		LatLong latLong = geocode.latLongFromAddress(address);
@@ -23,16 +24,24 @@ public class GoogleApiTimezoneFinder implements TimezoneFinder {
 		}
 	}
 
+	public String getGoogleClientId() {
+		return googleClientId;
+	}
+
+	public void setGoogleClientId(String googleClientId) {
+		this.googleClientId = googleClientId;
+	}
+
 	private Geocode geocode() {
 		if (geocode == null) {
-			return new Geocode();
+			return new Geocode(googleClientId);
 		}
 		return geocode;
 	}
 
 	private TimezoneLookup timezoneLookup() {
 		if (timezoneLookup == null) {
-			return new TimezoneLookup();
+			return new TimezoneLookup(googleClientId);
 		}
 		return timezoneLookup;
 	}

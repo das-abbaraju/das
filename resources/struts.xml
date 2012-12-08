@@ -1227,6 +1227,11 @@
 		<action name="SessionAjax" class="com.picsauditing.actions.users.SessionAjax">
 			<result type="json"></result>
 		</action>
+		
+		<action name="AccountTimezonePopulator" class="com.picsauditing.actions.dev.AccountTimezonePopulatorController">
+			<result>struts/dev/account_timezone_populator.jsp</result>
+        </action>
+		
     </package>
 
     <!-- Reports & API -->

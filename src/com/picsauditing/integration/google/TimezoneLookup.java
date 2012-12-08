@@ -16,12 +16,21 @@ public class TimezoneLookup extends GoogleApiOverHttp {
 	private static final Logger logger = LoggerFactory.getLogger(TimezoneLookup.class);
 	private static final String urlFormat = "https://maps.googleapis.com/maps/api/timezone/json?location=%s&timestamp=%s&sensor=false";
 
+	public TimezoneLookup() {
+	}
+
+	// if the google api client id is supplied, we'll sign the url: however, we
+	// also MUST have the google key set in system properties ("gk")
+	public TimezoneLookup(String googleClientId) {
+		this.googleClientId = googleClientId;
+	}
 
 	public String timezoneFromLatLong(LatLong latLong) {
 		String timezone = "";
 		if (latLong != null) {
 			String epoch = (new Date().getTime() / 1000) + "";
 			String url = createUrl(urlFormat, latLong.toString(), epoch);
+			url = signUrlIfGoogleIdSet(url);
 			InputStream response = executeUrl(url);
 			timezone = timezoneFromResponse(response);
 		}
