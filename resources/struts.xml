@@ -861,75 +861,6 @@
             <result name="table">struts/audits/audit_cat_matrix_table.jsp</result>
         </action>
 
-        <!-- Users -->
-        <action name="UserProfileAjax" class="com.picsauditing.actions.users.ProfileEdit">
-            <result>struts/widgets/user_profile.jsp</result>
-            <result name="department">struts/users/users_department_suggest.jsp
-            </result>
-        </action>
-
-        <action name="ProfileEdit" class="com.picsauditing.actions.users.ProfileEdit">
-            <result>struts/users/profile_edit.jsp</result>
-        </action>
-
-        <action name="UserEmailSubscriptionSaveAjax" class="com.picsauditing.mail.EmailSubscriptionSave">
-            <result>struts/mail/email_subscription_save.jsp</result>
-        </action>
-
-        <action name="UsersManage" class="com.picsauditing.actions.users.UsersManage">
-            <result>struts/users/users_manage.jsp</result>
-        </action>
-
-        <action name="NewUserManage" class="com.picsauditing.actions.users.UsersManage">
-            <result>struts/users/users_groups.jsp</result>
-        </action>
-
-        <action name="UsersManageAjax" class="com.picsauditing.actions.users.UsersManage">
-            <result name="suggest">struts/users/users_manage_move_suggest.jsp
-            </result>
-            <result name="department">struts/users/users_department_suggest.jsp
-            </result>
-        </action>
-
-        <action name="UserAccessSaveAjax" class="com.picsauditing.actions.users.UserAccessSave">
-            <result>struts/users/user_save_permissions.jsp</result>
-        </action>
-
-        <action name="UserAccessUpdateAjax" class="com.picsauditing.actions.users.UserAccessUpdate">
-            <result>struts/blank.jsp</result>
-        </action>
-
-        <action name="UserGroupSaveAjax" class="com.picsauditing.actions.users.UserGroupSave">
-            <result>struts/users/user_save_groups.jsp</result>
-            <result name="member">
-                struts/users/user_save_members.jsp
-            </result>
-            <result name="userswitch">
-                struts/users/user_save_userswitch.jsp
-            </result>
-        </action>
-
-        <action name="ManageUserPermissions"
-                class="com.picsauditing.actions.users.ManageUserPermissions">
-            <result>/struts/users/user_manage_permissions.jsp</result>
-        </action>
-
-        <action name="ManageUserPermissionsAjax" class="com.picsauditing.actions.users.UserAccessSave">
-            <result type="json"></result>
-        </action>
-
-        <action name="{type}AssignmentMatrix"
-                class="com.picsauditing.actions.users.UserAssignmentMatrix">
-            <result name="input">struts/blank.jsp</result>
-            <result>struts/users/user_assignment.jsp</result>
-        </action>
-
-        <action name="CSRAssignmentMatrixCSV"
-                class="com.picsauditing.actions.users.UserAssignmentMatrix">
-            <param name="download">true</param>
-            <result>struts/blank.jsp</result>
-        </action>
-
         <!-- Office Audit Scheduling -->
         <action name="AuditScheduleBuilderCron"
                 class="com.picsauditing.actions.users.AuditScheduleBuilderCron">
@@ -1242,6 +1173,9 @@
     <!-- Registration -->
     <include file="struts-registration.xml"/>
 
+    <!-- Users -->
+    <include file="struts-users.xml"/>
+
     <!-- Widgets / Charts / Graphs -->
     <include file="struts-widgets.xml"/>
 
@@ -1269,4 +1203,5 @@
 
     <!-- Crons and Scheduled Tasks -->
     <include file="struts-crons.xml"/>
+
 </struts>

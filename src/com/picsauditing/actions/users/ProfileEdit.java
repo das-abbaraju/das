@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -43,6 +44,8 @@ public class ProfileEdit extends PicsActionSupport {
 	private EmailSubscriptionDAO emailSubscriptionDAO;
 	@Autowired
 	private UserLoginLogDAO loginLogDao;
+	@Autowired
+	private InputValidator inputValidator;
 
 	private User u;
 
@@ -115,11 +118,12 @@ public class ProfileEdit extends PicsActionSupport {
 
 		u = dao.save(u);
 
+		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 		/*
-		 * This redirct is required if the user happened to change their locale,
+		 * This redirect is required if the user happened to change their locale,
 		 * as we would be stuck in a request for the previous locale.
 		 */
-		return this.setUrlForRedirect("ProfileEdit.action?success");
+		return setUrlForRedirect("ProfileEdit.action");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -286,15 +290,20 @@ public class ProfileEdit extends PicsActionSupport {
 		this.usingDynamicReports = usingDynamicReports;
 	}
 
-	/**
-	 * This method is triggered as a result of a redirect when the user saves
-	 * his/her profile.
-	 * 
-	 * @param success
-	 *            this parameter is not used.
-	 */
-	public void setSuccess(boolean success) {
-		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
+	public boolean containsOnlySafeCharacters(String str) {
+		return inputValidator.containsOnlySafeCharacters(str);
+	}
+
+	public boolean isUsernameValid(String username) {
+		return inputValidator.isUsernameValid(username);
+	}
+
+	public boolean isUsernameNotTakenOrUnchanged(String username) {
+		if (username != null && username.equals(u.getUsername())) {
+			return true;
+		}
+
+		return !inputValidator.isUsernameTaken(username);
 	}
 
 }

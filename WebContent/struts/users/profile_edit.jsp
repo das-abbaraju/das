@@ -161,22 +161,28 @@
 								</li>
 								<li>
 									<s:textfield name="u.name" theme="form" />
+                                    <s:fielderror fieldName="name" theme="form" />
 								</li>
 								<li>
 									<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
+                                    <s:fielderror fieldName="department" theme="form" />
 								</li>
 								<li>
 									<s:textfield name="u.email" theme="form" />
+                                    <s:fielderror fieldName="email" theme="form" />
 								</li>
 								<li>
 									<s:textfield name="u.username" size="30" onchange="checkUsername(this.value);" theme="form" /> 
 									<span id="username_status"></span>
+                                    <s:fielderror fieldName="username" theme="form" />
 								</li>
 								<li>
 									<s:textfield name="u.phone" theme="form" />
+                                    <s:fielderror fieldName="phone" theme="form" />
 								</li>
 								<li>
 									<s:textfield name="u.fax" theme="form" />
+                                    <s:fielderror fieldName="fax" theme="form" />
 								</li>
 
 								<s:if test="u.account.demo || u.account.admin || i18nReady">

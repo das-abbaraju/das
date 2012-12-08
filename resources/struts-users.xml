@@ -2,14 +2,18 @@
     "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
+
 	<package name="com.picsauditing.users" extends="com.picsauditing">
+
 		<action name="UserProfileAjax" class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/widgets/user_profile.jsp</result>
 			<result name="department">struts/users/users_department_suggest.jsp</result>
+			<result name="input">struts/users/users_department_suggest.jsp</result>
 		</action>
 
 		<action name="ProfileEdit" class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/users/profile_edit.jsp</result>
+			<result name="input">struts/users/profile_edit.jsp</result>
 		</action>
 
 		<action name="UserEmailSubscriptionSaveAjax" class="com.picsauditing.mail.EmailSubscriptionSave">
@@ -63,24 +67,7 @@
 			<param name="download">true</param>
 			<result>struts/blank.jsp</result>
 		</action>
-		
-		<action name="UserList" class="com.picsauditing.actions.report.ReportUser">
-			<param name="filter.ajax">true</param>
-			<param name="filter.destinationAction">UserList</param>
-			<result>struts/reports/report_users.jsp</result>
-		</action>
-		
-		<action name="UserListAjax" class="com.picsauditing.actions.report.ReportUser">
-			<result>struts/reports/report_users_data.jsp</result>
-		</action>
-		
-		<action name="UserSearchAjax" class="com.picsauditing.actions.report.ReportUser2">
-			<result>struts/reports/report_user_search.jsp</result>
-		</action>
-		
-		<action name="UserListCSV" class="com.picsauditing.actions.report.ReportUser">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
-		</action>
+
 	</package>
+
 </struts>

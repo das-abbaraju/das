@@ -36,8 +36,12 @@ public class InputValidator {
     }
 
     public boolean containsOnlySafeCharacters(String str) {
+    	if (str == null) {
+    		return false;
+    	}
+
         if (StringUtils.isEmpty(str)) {
-            return false;
+            return true;
         }
 
         if (str.matches(SPECIAL_CHAR_REGEX)) {

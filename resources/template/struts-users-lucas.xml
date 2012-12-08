@@ -1,0 +1,30 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="com.picsauditing.users" extends="com.picsauditing">
+
+		<!-- NOTE: this file is not being included currently. -->
+		<action name="UserList" class="com.picsauditing.actions.report.ReportUser">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">UserList</param>
+			<result>struts/reports/report_users.jsp</result>
+		</action>
+		
+		<action name="UserListAjax" class="com.picsauditing.actions.report.ReportUser">
+			<result>struts/reports/report_users_data.jsp</result>
+		</action>
+		
+		<action name="UserSearchAjax" class="com.picsauditing.actions.report.ReportUser2">
+			<result>struts/reports/report_user_search.jsp</result>
+		</action>
+		
+		<action name="UserListCSV" class="com.picsauditing.actions.report.ReportUser">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+	</package>
+
+</struts>

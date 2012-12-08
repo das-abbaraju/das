@@ -3,14 +3,14 @@
 
 <validators>
 
-    <!-- This references validation in ContractorAccount-valiation.xml -->
+    <!-- This references validation in ContractorAccount-validation.xml -->
     <field name="contractor">
         <field-validator type="visitor">
             <message></message>
         </field-validator>
     </field>
 
-    <!-- This references validation in User-valiation.xml -->
+    <!-- This references validation in User-validation.xml -->
     <field name="user">
         <field-validator type="visitor">
             <message></message>

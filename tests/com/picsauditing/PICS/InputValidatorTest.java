@@ -70,10 +70,10 @@ public class InputValidatorTest {
     }
 
     @Test
-    public void testContainsOnlySafeCharacters_EmptyStringReturnsFalse() {
+    public void testContainsOnlySafeCharacters_EmptyStringReturnsTrue() {
         boolean result = inputValidator.containsOnlySafeCharacters("");
 
-        assertFalse(result);
+        assertTrue(result);
     }
 
     @Test
