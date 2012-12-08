@@ -58,7 +58,7 @@ public class I18nCacheTest extends PicsActionTest {
 		String key = "AuditQuestion.54.name";
 		String locale = "en";
 		String value = "Lucas' Insurance Requirements";
-		String expectedValue = "Lucas\\' Insurance Requirements";
+		String expectedValue = "Lucas'' Insurance Requirements";
 
 		String expectedQuery = "INSERT INTO app_translation "
 				+ "(msgKey, locale, msgValue, qualityRating, sourceLanguage, "

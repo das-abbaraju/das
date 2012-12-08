@@ -93,9 +93,8 @@ public class Strings {
 			return EMPTY_STRING;
 
 		String singleQuote = "\'";
-		String backSlash = "\\";
 
-		return value.replace(singleQuote, backSlash + singleQuote);
+		return value.replace(singleQuote, singleQuote + singleQuote);
 	}
 
 	public static String implode(int[] array) {

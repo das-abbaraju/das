@@ -65,7 +65,7 @@ public class FilterTest {
 		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
 		filter.getValues().add("Trevor's");
 
-		assertEquals("fieldName = 'Trevor\\'s'", filter.getSqlForFilter());
+		assertEquals("fieldName = 'Trevor''s'", filter.getSqlForFilter());
 	}
 
 	@Test

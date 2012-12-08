@@ -237,12 +237,12 @@ public class StringsTest {
 
 	@Test
 	public void testSingleQuote() {
-		assertEquals("ab" + backSlash + singleQuote, Strings.escapeQuotes("ab" + singleQuote));
+		assertEquals("ab" + singleQuote + singleQuote, Strings.escapeQuotes("ab" + singleQuote));
 	}
 
 	@Test
 	public void testDoubleSingleQuote() {
-		assertEquals("ab" + backSlash + singleQuote + backSlash + singleQuote,
+		assertEquals("ab" + singleQuote + singleQuote + singleQuote + singleQuote,
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
 

@@ -99,7 +99,7 @@ public class SqlBuilderTest {
 
 		initializeSql();
 
-		assertContains("WHERE ((Account.nameIndex LIKE 'Trevor\\'s%'))", sql.toString());
+		assertContains("WHERE ((Account.nameIndex LIKE 'Trevor''s%'))", sql.toString());
 		assertAllFiltersHaveFields();
 	}
 
