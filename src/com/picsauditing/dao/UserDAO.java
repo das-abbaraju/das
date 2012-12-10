@@ -2,6 +2,7 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
@@ -51,6 +53,27 @@ public class UserDAO extends PicsDAO {
 
 	public List<User> findAuditors() {
 		return findByGroup(User.GROUP_AUDITOR);
+	}
+	
+	public List<User> findAuditors(Set<Integer> assignerGroupIds) {
+		List<User> userList = new ArrayList<User>();
+
+		Query query = em.createNativeQuery("select * from users u "
+				+ "join usergroup grp on u.id=grp.userID "
+				+ "join audit_type atype on atype.assignAudit in (" 
+				+ Strings.implode(assignerGroupIds)+ ") " 
+				+ "where grp.groupID = atype.editAudit", User.class);
+		userList.addAll(query.getResultList());
+
+		/* 
+		 * SELECT *
+from users u
+Join usergroup grp on u.id=grp.userID
+join audit_type atype on atype.assignAudit in (84453)
+where grp.groupID = atype.editAudit;
+
+		 */
+		return userList;
 	}
 
 	public List<User> findByGroup(int groupID) {

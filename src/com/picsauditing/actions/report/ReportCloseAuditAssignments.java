@@ -1,5 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -11,6 +14,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
@@ -39,7 +43,12 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		sql.addWhere("ca.auditTypeID IN (2,3)");
+		if (permissions.isOperatorCorporate()) {
+			String groupIds = Strings.implode(permissions.getAllInheritedGroupIds());
+			sql.addWhere("atype.assignAudit in (" + groupIds + ")");
+		} else {
+			sql.addWhere("ca.auditTypeID IN (2,3)");
+		}
 		sql.addWhere("cao.status = 'Submitted'");
 		sql.addField("ca.closingAuditorID");
 
@@ -49,7 +58,16 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 		getFilter().setShowAuditFor(false);
 	}
 
-	public String save() throws Exception {
+	@Override
+    public Set<User> getAuditorList() {
+		if (permissions.isAdmin())
+			return super.getAuditorList();
+        Set<User> auditorList = new TreeSet<User>();
+        auditorList.addAll(userDAO.findAuditors(permissions.getAllInheritedGroupIds()));
+        return auditorList;
+    }
+
+    public String save() throws Exception {
 		if (audit != null) {
 			Note note = new Note();
 
