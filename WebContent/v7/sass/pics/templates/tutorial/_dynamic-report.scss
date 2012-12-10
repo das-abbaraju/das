@@ -1,13 +1,19 @@
-#Tutorial_navigationMenu_page
+#Tutorial_dynamicReport_page
 {
 	background-color: #454545;
 	padding-top: 0;
-	
-	p
+
+	p, dt, dd
 	{
 		line-height: 24px;
 	}
-
+		
+	.section-separator
+	{
+		height: 2px;
+		border-bottom: 1px solid #dcdcdc;
+	}
+	
 	header,
 	.content,
 	footer
@@ -20,7 +26,7 @@
 	header
 	{
 		background-color: #f1f1f2;
-
+		
 		h1
 		{
 			color: #808285;
@@ -40,8 +46,18 @@
 	
 	.content
 	{
-		background-color: #f1f1f2;
-	
+		background-color: #f1f1f2;	
+
+		.row.report-overview
+		{
+			margin-top: 40px;
+		}
+
+		.row.report-formula
+		{
+			margin-bottom: 60px;
+		}
+
 		.row
 		{
 			margin-bottom: 80px;
@@ -49,50 +65,23 @@
 		}
 	}
 	
-	.row.dashboard
+	.row.section-header
 	{
-		margin-top: 40px;
-	}
-	
-	.dashboard
-	{
-		.image-container
-		{
-			float: right;
-			text-align: right;
-		}
 		
-		img
-		{
-			margin-right: -20px;
-		}
-	}
-	
-	.settings
-	{
-		.image-container
-		{
-			text-align: left;
-		}
-		
-		img
-		{
-			margin-left: -20px;
-		}
-	}
-	
-	.row.support
-	{
 		margin-bottom: 60px;
-	}
-	
-	.support
-	{
+		
+		h2
+		{
+			color: #808285;
+			font-size: 60px;
+			font-weight: normal;
+			line-height: 80px;
+			margin: 0;
+		}
 		
 		.image-container
 		{
-			float: right;
-			text-align: center;
+			text-align: right;
 		}
 	}
 	
@@ -112,6 +101,65 @@
 			color: #666;
 		}
 	}
+
+	.report-overview
+	{
+		.image-container
+		{
+			float: right;
+			text-align: center;
+		}
+	}
+	
+	.report-summary,
+	.report-data
+	{
+		.image-container
+		{
+			float: right;
+			text-align: right;
+		}
+		
+		img
+		{
+			margin-right: -20px;
+		}
+	}
+
+	.row.report-data-options
+	{
+		margin-top: 30px;
+	}
+
+	.report-settings
+	{
+		img
+		{
+			margin-left: -20px;
+		}
+	}
+	
+	.report-toolbar
+	{
+		text-align: center;
+	}
+	
+	.report-filters
+	{
+		.image-container
+		{
+			text-align: center;
+		}
+	}
+		
+	.report-formula
+	{
+	
+		.image-container
+		{
+			float: right;
+		}
+	}
 	
 	footer
 	{
@@ -120,27 +168,21 @@
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffeaeaea', endColorstr='#ffcccccc', GradientType=0);
 		border-top: 1px solid #999;
 		text-align: center;
-		
 		a
 		{
 			margin-bottom: 10px;
 		}
-		
+
 		.icon-circle-arrow-right
 		{
 			margin-left: 5px;
 			vertical-align: middle;
 		}
-		
-		p
-		{
-			color: #808285;
-		}
 	}
 }
 
 @media (min-width: 1200px) {
-	#Tutorial_navigationMenu_page
+	#Tutorial_dynamicReport_page
 	{
 		header,
 		.content,
@@ -150,15 +192,16 @@
 			padding: 30px;
 		}
 		
-		.dashboard
+		.report-summary,
+		.report-data
 		{
 			img
 			{
 				margin-right: -30px;
 			}
 		}
-		
-		.settings
+
+		.report-settings
 		{
 			img
 			{
@@ -169,7 +212,7 @@
 }
 
 @media (max-width: 767px) {
-	#Tutorial_navigationMenu_page
+	#Tutorial_dynamicReport_page
 	{
 		.content
 		{
@@ -179,12 +222,17 @@
 				margin-bottom: 40px;
 			}
 		}
-		
-		.row.dashboard
+
+		.row.report-overview
 		{
 			margin-top: 0;
 		}
-		
+
+		.section-header .image-container
+		{
+			display: none;
+		}
+
 		.image-container
 		{
 			margin-bottom: 20px;

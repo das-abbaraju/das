@@ -194,6 +194,7 @@
         </action>
 		
         <action name="Tutorial" class="com.picsauditing.actions.Tutorial">
+			<result name="dynamic-report">/struts/tutorial/dynamic-report.jsp</result>
 			<result name="navigation-menu">/struts/tutorial/navigation-menu.jsp</result>
 			
 			<interceptor-ref name="validation">

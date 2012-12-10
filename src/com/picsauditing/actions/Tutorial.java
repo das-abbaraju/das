@@ -23,6 +23,10 @@ public class Tutorial extends PicsActionSupport {
 		return "navigation-menu";
 	}
 
+	public String dynamicReport() throws Exception {
+		return "dynamic-report";
+	}
+
 	/**
 	 * Determines whether or not the user logged in is a first-time Dynamic Report
 	 * user that needs their user updated so they do not see the Tutorial page again.
