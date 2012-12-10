@@ -1,6 +1,7 @@
 package com.picsauditing.auditBuilder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,12 +80,20 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 				operatorAccounts.add(operator);
 			}
 		}
+
 		for (AuditType auditType : allCandidateAuditTypes) {
+			List<AuditTypeRule> rulesForThisAuditType = new ArrayList<AuditTypeRule>();
+			for (AuditTypeRule rule : rules) {
+				if (auditType.equals(rule.getAuditType())) {
+					rulesForThisAuditType.add(rule);
+				}
+			}
+			
 			AuditTypeDetail detail = new AuditTypeDetail();
 			for (Trade trade : trades) {
 				for (ContractorType type : contractorTypes) {
 					for (OperatorAccount operator : operatorAccounts) {
-						AuditTypeRule rule = getApplicable(rules, auditType, trade, type, operator);
+						AuditTypeRule rule = getApplicable(rulesForThisAuditType, auditType, trade, type, operator);
 						if (rule != null && rule.isInclude()) {
 							// We need to add this category to the audit
 							detail.operators.add(operator);
@@ -96,7 +105,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 				}
 			}
 		}
-
+		
 		return types;
 	}
 
