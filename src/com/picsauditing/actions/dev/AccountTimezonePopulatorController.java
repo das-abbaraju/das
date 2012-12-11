@@ -3,6 +3,7 @@ package com.picsauditing.actions.dev;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.model.general.AccountTimezonePopulator;
 
@@ -16,10 +17,12 @@ public class AccountTimezonePopulatorController extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
+		checkPermissions();
 		return SUCCESS;
 	}
 
-	public String startConversion() {
+	public String startConversion() throws Exception {
+		checkPermissions();
 		if (conversionIsNotRunning()) {
 			taskExecutor.execute(accountAndUserTimezonePopulator);
 		}
@@ -47,4 +50,13 @@ public class AccountTimezonePopulatorController extends PicsActionSupport {
 	public void setTotalAccountsWillRun(int totalAccountsWillRun) {
 		accountAndUserTimezonePopulator.setTotalAccountsWillRun(totalAccountsWillRun);
 	}
+
+	private void checkPermissions() throws NoRightsException {
+		loadPermissions();
+
+		if (!permissions.isAdmin()) {
+			throw new NoRightsException("Admin");
+		}
+	}
+
 }
