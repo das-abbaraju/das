@@ -1,12 +1,5 @@
 package com.intuit.developer.adaptors;
 
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.Unmarshaller;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.quickbooks.qbxml.QBXML;
@@ -15,13 +8,19 @@ import com.picsauditing.quickbooks.qbxml.ReceivePaymentQueryRsType;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
 import com.picsauditing.util.log.PicsLogger;
 
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class GetPaymentsForUpdate extends PaymentAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
-		String where = "p.account."+currentSession.getQbID()+" is not null AND p.qbListID is not null " +
-				" AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency like '"+currentSession.getCurrencyCode()+"'";
+		String where = "p.account."+currentSession.getQbID()+" is not null AND p.qbListID is not null" +
+				" AND p.account.+"+currentSession.getQbID()+" not like 'NOLOAD%' AND p.qbSync = true and p.status != 'Demo' AND p.currency like '"+currentSession.getCurrencyCode()+"'";
 		List<Payment> payments = getPaymentDao().findWhere(where, 10);
 
 		if (payments.size() > 0) {

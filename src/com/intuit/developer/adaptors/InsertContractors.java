@@ -1,30 +1,21 @@
 package com.intuit.developer.adaptors;
 
-import java.io.StringReader;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.quickbooks.qbxml.CustomerAdd;
-import com.picsauditing.quickbooks.qbxml.CustomerAddRqType;
-import com.picsauditing.quickbooks.qbxml.CustomerAddRsType;
-import com.picsauditing.quickbooks.qbxml.CustomerRet;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+import com.picsauditing.quickbooks.qbxml.*;
 import com.picsauditing.util.EmailAddressUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
 
 public class InsertContractors extends CustomerAdaptor {
 
@@ -35,7 +26,7 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true and a." + currentSession.getQbID() + " is null and a.country.currency = '"
+				"a.qbSync = true and a." + currentSession.getQbID() + " is null and a.status != 'Demo' and a.country.currency = '"
 						+ currentSession.getCurrencyCode() + "'");
 
 		// no work to do

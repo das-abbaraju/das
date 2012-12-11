@@ -1,30 +1,21 @@
 package com.intuit.developer.adaptors;
 
-import java.io.StringReader;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.quickbooks.qbxml.InvoiceAdd;
-import com.picsauditing.quickbooks.qbxml.InvoiceAddRqType;
-import com.picsauditing.quickbooks.qbxml.InvoiceAddRsType;
-import com.picsauditing.quickbooks.qbxml.InvoiceLineAdd;
-import com.picsauditing.quickbooks.qbxml.InvoiceRet;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
+import com.picsauditing.quickbooks.qbxml.*;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.Writer;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
 
 public class InsertInvoices extends CustomerAdaptor {
 
@@ -34,7 +25,7 @@ public class InsertInvoices extends CustomerAdaptor {
 		List<Invoice> invoices = getInvoiceDao().findWhere(
 				"i.account." + currentSession.getQbID()
 						+ " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-						+ "AND i.account." + currentSession.getQbID() + " not like 'NOLOAD%' AND i.currency like '"
+						+ "AND i.account." + currentSession.getQbID() + " not like 'NOLOAD%'  and i.account.status != 'Demo' AND i.currency like '"
 						+ currentSession.getCurrencyCode() + "'", 10);
 
 		// no work to do

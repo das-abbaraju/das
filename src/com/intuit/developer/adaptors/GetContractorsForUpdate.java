@@ -1,12 +1,12 @@
 package com.intuit.developer.adaptors;
 
+import com.intuit.developer.QBSession;
+import com.picsauditing.jpa.entities.ContractorAccount;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class GetContractorsForUpdate extends CustomerAdaptor {
 
@@ -14,7 +14,7 @@ public class GetContractorsForUpdate extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a."+currentSession.getQbID()+" is not null and a."+currentSession.getQbID()+" not like 'NOLOAD%' and a.qbSync = true and a.country.currency = '"+currentSession.getCurrencyCode()+"'");
+				"a."+currentSession.getQbID()+" is not null and a."+currentSession.getQbID()+" not like 'NOLOAD%' and a.qbSync = true and a.status != 'Demo' and a.country.currency = '"+currentSession.getCurrencyCode()+"'");
 
 		if (contractors.size() > 0) {
 			currentSession.getPossibleUpdates().addAll(contractors);

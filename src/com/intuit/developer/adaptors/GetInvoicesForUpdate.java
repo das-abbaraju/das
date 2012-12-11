@@ -1,10 +1,10 @@
 package com.intuit.developer.adaptors;
 
-import java.util.List;
-import java.util.Map;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Invoice;
+
+import java.util.List;
+import java.util.Map;
 
 public class GetInvoicesForUpdate extends InvoiceAdaptor {
 
@@ -12,7 +12,7 @@ public class GetInvoicesForUpdate extends InvoiceAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		String where = "i.account."+currentSession.getQbID()+" is not null AND i.qbListID is not null " +
-				" AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true AND i.currency like '"+currentSession.getCurrencyCode()+"'";
+				" AND i.qbListID not like 'NOLOAD%' and i.account.status != 'Demo' AND i.qbSync = true AND i.currency like '"+currentSession.getCurrencyCode()+"'";
 		List<Invoice> invoices = getInvoiceDao().findWhere(where, 10);
 
 		if (invoices.size() > 0) {

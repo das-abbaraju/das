@@ -1,31 +1,22 @@
 package com.intuit.developer.adaptors;
 
+import com.intuit.developer.QBSession;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
+import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.quickbooks.qbxml.*;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.braintree.CreditCard;
+import com.picsauditing.util.log.PicsLogger;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.quickbooks.qbxml.AppliedToTxnAdd;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentAdd;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRqType;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRsType;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.braintree.CreditCard;
-import com.picsauditing.util.log.PicsLogger;
 
 public class InsertPayments extends PaymentAdaptor {
 
@@ -35,7 +26,7 @@ public class InsertPayments extends PaymentAdaptor {
 		List<Payment> payments = getPaymentDao().findWhere(
 				"p.account." + currentSession.getQbID()
 						+ " is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account." + currentSession.getQbID() + " not like 'NOLOAD%' AND p.currency like '"
+						+ "AND p.account." + currentSession.getQbID() + " not like 'NOLOAD%' and p.account.status != 'Demo' AND p.currency like '"
 						+ currentSession.getCurrencyCode() + "'", 10);
 
 		// no work to do
