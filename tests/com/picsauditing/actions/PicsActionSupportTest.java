@@ -1,10 +1,9 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,10 +11,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.util.hierarchy.HierarchyBuilder;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class PicsActionSupportTest extends PicsActionTest {
 
@@ -33,6 +31,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 		super.setUp(picsActionSupport);
 
 		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
+        Whitebox.setInternalState(PicsActionSupport.class, "CONFIG",(Object) null);
 	}
 
 	@After
@@ -73,7 +72,7 @@ public class PicsActionSupportTest extends PicsActionTest {
 	public void testIsConfigEnvironment_True() throws Exception {
 		when(propertyDAO.getProperty("PICS.config")).thenReturn("1");
 
-		assertFalse(picsActionSupport.isConfigEnvironment());
+		assertTrue(picsActionSupport.isConfigEnvironment());
 	}
 
 	@Test
