@@ -11,13 +11,15 @@ package com.picsauditing.jpa.entities;
 public enum OshaType implements Translatable {
 
 	OSHA(OshaAudit.CAT_ID_OSHA, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart, OshaRateType.SeverityRate, 
-			OshaRateType.Fatalities, OshaRateType.Hours, OshaRateType.EMR }),
+			OshaRateType.Fatalities, OshaRateType.Hours }),
 	MSHA(OshaAudit.CAT_ID_MSHA, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
 	COHS(OshaAudit.CAT_ID_COHS, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),
 	UK_HSE(OshaAudit.CAT_ID_UK_HSE, new OshaRateType[] { OshaRateType.IFR, OshaRateType.DOFR, OshaRateType.LTIFR, OshaRateType.Fatalities }),
-	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, null);
+	FRANCE_NRIS(OshaAudit.CAT_ID_FRANCE_NRIS, null),
+	EMR(OshaAudit.CAT_ID_EMR, new OshaRateType[] { OshaRateType.EMR });
+	
 
 	public final OshaRateType[] rates;
 	public final int categoryId;
