@@ -16,6 +16,14 @@ public class FrontendDevelopmentGuide extends PicsActionSupport {
 		return "routing";
 	}
 
+	public String html() {
+		return "html";
+	}
+
+	public String decorators() {
+		return "decorators";
+	}
+
 	public String file_structure() {
 		return "file-structure";
 	}
@@ -30,23 +38,6 @@ public class FrontendDevelopmentGuide extends PicsActionSupport {
 
 	public String component() {
 		return "component";
-	}
-
-
-	public String alerts() {
-		return "alerts";
-	}
-
-	public String buttons() {
-		return "buttons";
-	}
-
-	public String forms() {
-		return "forms";
-	}
-
-	public String pills() {
-		return "pills";
 	}
 
 	public String css_javascript_conventions() {

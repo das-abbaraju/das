@@ -4,8 +4,10 @@
 <%-- URL --%>
 <s:url action="FrontendDevelopmentGuide" var="dashboard" />
 <s:url action="FrontendDevelopmentGuide" method="technology" var="technology" />
-<s:url action="FrontendDevelopmentGuide" method="routing" var="routing" />
 <s:url action="FrontendDevelopmentGuide" method="file_structure" var="file_structure" />
+<s:url action="FrontendDevelopmentGuide" method="routing" var="routing" />
+<s:url action="FrontendDevelopmentGuide" method="html" var="html" />
+<s:url action="FrontendDevelopmentGuide" method="decorators" var="decorators" />
 <s:url action="FrontendDevelopmentGuide" method="style_guide" var="style_guide" />
 <s:url action="FrontendDevelopmentGuide" method="page_layout" var="page_layout" />
 <s:url action="FrontendDevelopmentGuide" method="component" var="component" />
@@ -22,11 +24,17 @@
     <li class="${methodName == 'technology' ? 'active' : ''}">
         <a href="${technology}">Technology</a>
     </li>
+    <li class="${methodName == 'file_structure' ? 'active' : ''}">
+        <a href="${file_structure}">File Structure</a>
+    </li>
     <li class="${methodName == 'routing' ? 'active' : ''}">
         <a href="${routing}">Routing</a>
     </li>
-    <li class="${methodName == 'file_structure' ? 'active' : ''}">
-        <a href="${file_structure}">File Structure</a>
+    <li class="${methodName == 'html' ? 'active' : ''}">
+        <a href="${html}">HTML</a>
+    </li>
+    <li class="${methodName == 'decorators' ? 'active' : ''}">
+        <a href="${decorators}">Decorators</a>
     </li>
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Conventions &amp; Standards <b class="caret"></b></a>

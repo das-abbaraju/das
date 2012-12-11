@@ -14,9 +14,7 @@
     <div class="span9">
         <s:include value="_folders.jsp" />
         
-        <s:include value="_decorators.jsp" />
-        
-        <s:include value="_templates.jsp" />
+        <s:include value="_files.jsp" />
         
         <s:include value="_css.jsp" />
         

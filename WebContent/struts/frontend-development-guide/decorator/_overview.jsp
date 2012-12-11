@@ -1,17 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<section id="decorators" class="guide">
+<section id="overview" class="guide">
     <div class="page-header">
-        <h1>Decorators</h1>
+        <h1>Overview</h1>
     </div>
     
     <p>
-        Decorator templates "decorate" JavaServer Pages or jsp's. Decorators are selected after executing a Controller, but before outputing content to the output buffer. Decorator files include elements that are typically shared between multiple templates.  These shared items include <code>&lt;html&gt;</code>, <code>&lt;body&gt;</code>, <code>&lt;link&gt;</code> and <code>&lt;script&gt;</code> tags. 
+        <code>Decorator templates</code> "decorate" JavaServer Pages or jsp's. <code>Decorators</code> are selected after executing a Controller, but before outputing content to the output buffer. <code>Decorator</code> files include elements that are typically shared between multiple templates.  These shared items include <code>&lt;html&gt;</code>, <code>&lt;body&gt;</code>, <code>&lt;link&gt;</code> and <code>&lt;script&gt;</code> tags. 
     </p>
     
     <p>
-        Decorators control the overarching page layout and are typically responsible for including general components such as: header, primary navigation, breadcrumbs, sidebar, footer, etc.  It is also responsible for determining the number of columns in a page (e.g. Is this page a one, two or three column layout).  The control over which decorator files a particular jsp uses is controlled by decorators.xml.
+        <code>Decorators</code> control the over arching page layout and are typically responsible for including general components such as: header, primary navigation, breadcrumbs, sidebar, footer, etc.  It is also responsible for determining the number of columns in a page (e.g. Is this page a one, two or three column layout).  The control over which <code>decorator file</code> a particular jsp uses is controlled by decorators.xml.
     </p>
     
     <p>

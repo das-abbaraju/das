@@ -7,11 +7,11 @@
     </div>
     
     <p>
-        It is important to utilize the routing capabilities to generate appropriate URLs. The power of generating URLs comes from a single point of entry for URL management. By allowing the routing system to generate and control our URLs it will be a rare case in which a URL would need to be hard coded. Links can then be changed in a centralized location that is not in the templates. This way the routing file can determine how links should be formatted and displayed.
+        It is important to utilize the <code>routing</code> capabilities to generate appropriate URLs. The power of generating URLs comes from a single point of entry for URL management. By allowing the <code>routing</code> system to generate and control our URLs it will be a rare case in which a URL would need to be hard coded. Links can then be changed in a centralized location that is not in the templates. This way the <code>routing</code> file can determine how links should be formatted and displayed.
     </p>
     
     <p>
-        If the homepage is <code>https://www.picsorganizer.com/</code> today, but tomorrow it is <code>https://www.picsorganizer.com/dashboard/</code>, the only thing that would have to be changed is the Routing file and all of the links would update appropriately.
+        If the homepage is <em>https://www.picsorganizer.com/</em> today, but tomorrow it is <em>https://www.picsorganizer.com/dashboard/</em>, the only thing that would have to be changed is the <code>Routing</code> file and all of the links would update appropriately.
     </p>
     
     <div class="example">

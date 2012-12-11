@@ -7,7 +7,7 @@
     </div>
     
     <p>
-        Routing is an important subject. It determines how incoming requests are handled and processed. The routing process controls whether or not you get the response you want, but also provides a couple of other benefits:
+        <code>Routing</code> is an important subject. It determines how incoming requests are handled and processed. The <code>routing</code> process controls whether or not you get the response you want, but also provides a couple of other benefits:
     </p>
     
     <ol>

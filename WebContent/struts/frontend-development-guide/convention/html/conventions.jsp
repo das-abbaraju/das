@@ -12,6 +12,8 @@
         <s:include value="_menu.jsp" />
     </div>
     <div class="span9">
-        <s:include value="_html.jsp" />
+        <s:include value="_overview.jsp" />
+        
+        <s:include value="_xml.jsp" />
     </div>
 </div>
