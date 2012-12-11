@@ -144,8 +144,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private LowMedHigh insideSalesPriority;
 	private String registrationHash;
 
-	@Autowired
 	private InputValidator inputValidator;
+
 	@Autowired
 	private VATValidator vatValidator;
 
@@ -1822,12 +1822,12 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean containsOnlySafeCharacters(String str) {
-		return inputValidator.containsOnlySafeCharacters(str);
+		return getInputValidator().containsOnlySafeCharacters(str);
 	}
 
 	@Transient
 	public boolean isCompanyNameNotTaken(String companyName) {
-		return !inputValidator.isCompanyNameTaken(companyName);
+		return !getInputValidator().isCompanyNameTaken(companyName);
 	}
 
 	@Transient
@@ -1843,7 +1843,7 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		if (StringUtils.isNotEmpty(vat)) {
-			return inputValidator.containsOnlySafeCharacters(vat);
+			return getInputValidator().containsOnlySafeCharacters(vat);
 		}
 
 		return true;
@@ -1942,5 +1942,14 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return closestDeadline;
+	}
+
+	@Transient
+	public InputValidator getInputValidator() {
+		if (inputValidator == null) {
+			inputValidator = SpringUtils.getBean("InputValidator");
+		}
+
+		return inputValidator;
 	}
 }
