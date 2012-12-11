@@ -178,6 +178,8 @@
           class="com.picsauditing.model.events.ContractorOperatorWaitingOnChangedListener" scope="prototype"/>
     <bean id="TranslationKeysGenerator" class="com.picsauditing.models.audits.TranslationKeysGenerator"
           scope="prototype"/>
+    <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder"  scope="prototype" />
+	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
 
     <bean id="AuditCategoryAutocompleteService"
           class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>
@@ -222,6 +224,13 @@
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="25" />
+	</bean>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"

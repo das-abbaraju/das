@@ -188,7 +188,7 @@
 
 								<li><s:select name="u.timezone" id="timezone"
 										value="u.timezone.iD" theme="form"
-										list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" /></li>
+										list="@com.picsauditing.util.TimeZoneUtil@timeZones()" /></li>
 
 								<li>
 									<label><s:text name="global.CreationDate" />:</label>

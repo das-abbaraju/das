@@ -50,6 +50,8 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.Publisher;
+import com.picsauditing.model.general.TimezoneFinder;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 
@@ -77,6 +79,10 @@ public class Registration extends ContractorActionSupport {
 	private VATValidator vatValidator;
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
+	@Autowired
+	private TimezoneFinder timezoneFinder;
+	@Autowired
+	private FeatureToggle featureToggle;
 	@Autowired
 	@Qualifier("CsrAssignmentPublisher")
 	private Publisher csrAssignmentPublisher;
@@ -171,6 +177,11 @@ public class Registration extends ContractorActionSupport {
 		}
 		permissions = null;
 
+		// do this before setupUserData so the timezone is shared
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_TIMEZONE_LOOKUP)) {
+			contractor.setTimezone(timezoneFinder.timezoneIdFromAddress(contractor.getFullAddress()));
+		}
+
 		setupUserData();
 		setupContractorData();
 		contractorAccountDao.save(contractor);
@@ -184,6 +195,7 @@ public class Registration extends ContractorActionSupport {
 
 		contractor.setAgreedBy(user);
 		contractor.setPrimaryContact(user);
+
 		contractorAccountDao.save(contractor);
 
 		permissions = logInUser();
@@ -195,9 +207,6 @@ public class Registration extends ContractorActionSupport {
 		sendWelcomeEmail();
 		addNote(contractor, "Welcome Email Sent");
 		addNoteThatRequestRegistered();
-
-		// this is feature toggled in the publisher
-		csrAssignmentPublisher.publish(contractor.getId());
 
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
@@ -235,8 +244,15 @@ public class Registration extends ContractorActionSupport {
 		return username;
 	}
 
+<<<<<<< HEAD
 	public int getRequestID() {
 		return requestID;
+=======
+		// this is feature toggled in the publisher
+		csrAssignmentPublisher.publish(contractor.getId());
+
+		return setUrlForRedirect(getRegistrationStep().getUrl());
+>>>>>>> PICS-7884: temp commit (waiting for google api key)
 	}
 
 	public void setRequestID(int requestID) {

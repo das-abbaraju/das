@@ -47,6 +47,14 @@
 	  </bindings>
 	</direct-exchange>
 	
+	<queue id="csr-assignments" name="csr-assignments" />
+	
+	<direct-exchange name="csr-assignments-exchange" xmlns="http://www.springframework.org/schema/rabbit">
+	  <bindings>
+	    <binding queue="csr-assignments"/>
+	  </bindings>
+	</direct-exchange>		
+	
 	<template message-converter="messageConverter" id="FlagChangeTemplate" connection-factory="connectionFactory" exchange="flag-changes-exchange" queue="flag-changes"/>
 	<beans:bean id="FlagChangePublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
 		<beans:property name="amqpTemplate" ref="FlagChangeTemplate" />
@@ -59,6 +67,13 @@
 		<beans:property name="amqpTemplate" ref="EmailQueueTemplate" />
 		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
 		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.EmailQueue" />
+	</beans:bean>
+
+	<template message-converter="messageConverter" id="CsrAssignmentTemplate" connection-factory="connectionFactory" exchange="csr-assignments-exchange" queue="csr-assignments"/>
+	<beans:bean id="CsrAssignmentPublisher" class="com.picsauditing.messaging.PublisherRabbitMq" scope="prototype">
+		<beans:property name="amqpTemplate" ref="CsrAssignmentTemplate" />
+		<beans:property name="featureToggleChecker" ref="FeatureToggle" />
+		<beans:property name="featureToggleName" value="Toggle.BackgroundProcesses.Csr_SingleAssignment" />
 	</beans:bean>
 
 	<template message-converter="messageConverter" id="EmailSubscriptionTemplate" connection-factory="connectionFactory" exchange="subscription-exchange" queue="subscription" routing-key="subscription"/>

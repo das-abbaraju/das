@@ -391,7 +391,7 @@
                     name="operator.timezone"
                     value="operator.timezone.iD"
                     theme="form"
-                    list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"
+                    list="@com.picsauditing.util.TimeZoneUtil@timeZones()"
                     />
         </li>
         <li>
