@@ -9,3 +9,4 @@
 *.log.1
 *.tmp
 *.bak
+/src/rebel.xml
