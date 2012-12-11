@@ -6,6 +6,10 @@
         <h1>Primary Navigation</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         The navigation component is bootstrap built and responsive.
     </p>

@@ -6,6 +6,10 @@
         <h1>Overview</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         <code>Decorator templates</code> "decorate" JavaServer Pages or jsp's. <code>Decorators</code> are selected after executing a Controller, but before outputing content to the output buffer. <code>Decorator</code> files include elements that are typically shared between multiple templates.  These shared items include <code>&lt;html&gt;</code>, <code>&lt;body&gt;</code>, <code>&lt;link&gt;</code> and <code>&lt;script&gt;</code> tags. 
     </p>

@@ -6,6 +6,10 @@
         <h1>Folders</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         It is very important that a user gains context by folder structure.  Structuring and organizing files is just as important as structuring and organizing code.  Nest folders when appropriate and make sure you are not forking the project internally by creating multiple directories to achieve similar purpose <strong>(e.g. i18n and translation)</strong>.
     </p>

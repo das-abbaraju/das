@@ -6,6 +6,10 @@
         <h1>Folders</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         Folders are an important part for understanding application architecture.  Folders help provide organizational clarity.  Some Folder structures can even hint / indicate a Web Framework, Technology or implementation strategy.
     </p>

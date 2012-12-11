@@ -6,6 +6,10 @@
         <h1>Links</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         It is important to utilize the <code>routing</code> capabilities to generate appropriate URLs. The power of generating URLs comes from a single point of entry for URL management. By allowing the <code>routing</code> system to generate and control our URLs it will be a rare case in which a URL would need to be hard coded. Links can then be changed in a centralized location that is not in the templates. This way the <code>routing</code> file can determine how links should be formatted and displayed.
     </p>

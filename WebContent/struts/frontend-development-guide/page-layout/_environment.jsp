@@ -6,6 +6,10 @@
         <h1>Environment Toolbar</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         The environment toolbar is docked at the bottom of the screen and is responsive.  It is only available to non-stable environments.  The purpose of it is to indicate context and to provide debug information.
     </p>

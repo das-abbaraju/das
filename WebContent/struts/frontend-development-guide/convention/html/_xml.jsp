@@ -6,6 +6,10 @@
         <h1>No XML in HTML</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         HTML is hard enough to read. Don't make it any harder than it already is!
     </p>

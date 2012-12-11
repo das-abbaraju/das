@@ -6,6 +6,10 @@
         <h1>Colors</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <ul class="unstyled colors">
         <li>
             <a href="#" class="pics-blue" title="PICS Blue">PICS Blue</a>

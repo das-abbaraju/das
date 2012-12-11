@@ -6,6 +6,10 @@
         <h1>Javascript</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         Javascript is used to unobtrusively add sophisticated functionality to our HTML.  Javascript should not control page layout or styles.  Those jobs are better suited for Templates and CSS.  Javascript can and should be used for adding interaction to a web application or to fetch "extra" data asynchronously.
     </p>

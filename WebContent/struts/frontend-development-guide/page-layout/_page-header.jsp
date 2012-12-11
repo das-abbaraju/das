@@ -6,6 +6,10 @@
         <h1>Page Header</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         This is the standard header that is to be include on every page.  The title is mandatory. The subtitle is optional.
     </p>

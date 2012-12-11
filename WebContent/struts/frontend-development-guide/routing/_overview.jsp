@@ -6,6 +6,10 @@
         <h1>Overview</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         <code>Routing</code> is an important subject. It determines how incoming requests are handled and processed. The <code>routing</code> process controls whether or not you get the response you want, but also provides a couple of other benefits:
     </p>

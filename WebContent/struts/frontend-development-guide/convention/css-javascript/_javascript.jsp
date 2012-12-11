@@ -6,6 +6,10 @@
         <h1>Javascript</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <h4>Variable Requirements:</h4>
     <ul>
         <li>Lower case</li>

@@ -6,6 +6,10 @@
         <h1>Offsets</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         Offsets are good for offset designs. <strong>This example is not a substitute for understanding grid systems or scaffolding. It is only meant to be a preview to it.</strong>
     </p>

@@ -6,6 +6,10 @@
         <h1>Templates</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         These naming conventions should apply to all HTML, CSS and Javascript files.  These files come under the <code>struts</code>, <code>css</code> and <code>js</code> directories respectively.
     </p>

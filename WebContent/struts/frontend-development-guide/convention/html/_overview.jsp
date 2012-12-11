@@ -6,6 +6,10 @@
         <h1>HTML</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         HTML is XML. Organization and maintenance of HTML is just as important as any other code.  HTML is the language we use to tell the computer what type of content we are trying to convey and we do so by writing semantic markup. Semantic markup allows us to describe our content, to the computer, through a list of comprehensive tags.
     </p>

@@ -6,6 +6,10 @@
         <h1>Typography</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         When producing materials for the web, PICS takes in consideration the different browsers and operating systems.
     </p>

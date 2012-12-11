@@ -6,6 +6,10 @@
         <h1>ExtJS</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         ExtJS4 is a large <code>MV*</code> Javascript framework that is used for Dynamic Reports.  ExtJS4 works very different from the typical web stack.  It is responsible for page layout, interaction and styles, but also handles client side database storage.
     </p>

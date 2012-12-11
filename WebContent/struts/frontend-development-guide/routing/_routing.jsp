@@ -6,6 +6,10 @@
         <h1>Routing</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         It is important to note that incoming requests can be manipulated at different levels, from <code>DNS</code> to <code>.htaccess</code>. Struts 2 has a few different configurations on <code>Routing</code>, be sure to investigate them on your own. This guide will explain how a response is returned when a user makes a request to the application. This is a basic guide and is not meant to be comprehensive. 
     </p>

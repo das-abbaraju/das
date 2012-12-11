@@ -6,6 +6,10 @@
         <h1>Files</h1>
     </div>
     
+    <div class="alert alert-info">
+        <strong>BETA</strong> This section is currently under development.
+    </div>
+    
     <p>
         There are some key files that control the application's configuration. It is crucial that you understand what they are for and how they effect your development.
     </p>

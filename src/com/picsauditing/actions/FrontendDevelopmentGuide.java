@@ -24,6 +24,10 @@ public class FrontendDevelopmentGuide extends PicsActionSupport {
 		return "decorators";
 	}
 
+	public String forms() {
+		return "forms";
+	}
+
 	public String file_structure() {
 		return "file-structure";
 	}

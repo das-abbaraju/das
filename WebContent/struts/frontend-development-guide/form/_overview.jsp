@@ -11,6 +11,5 @@
     </div>
     
     <p>
-        The PICS brand is more than just a name.  It's a set of values, attributes and artwork that reflects the spirit of our company.  USing it consistently will reinforce our strategic positioning and build brand recognition.
     </p>
 </section>

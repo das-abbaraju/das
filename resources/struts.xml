@@ -1131,6 +1131,7 @@
             <result name="routing">/struts/frontend-development-guide/routing/routing.jsp</result>
             <result name="html">/struts/frontend-development-guide/html/html.jsp</result>
             <result name="decorators">/struts/frontend-development-guide/decorator/decorators.jsp</result>
+            <result name="forms">/struts/frontend-development-guide/form/forms.jsp</result>
             <result name="file-structure">/struts/frontend-development-guide/file-structure/file-structure.jsp</result>
             <result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
             <result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
