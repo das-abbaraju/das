@@ -225,9 +225,18 @@ public class PicsMenu {
 			addChildAction(subMenu, "ReportCAOByStatusList");
 
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Sched. &amp; Assign",
-					"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
-					"AuditAssignments");
+			if (permissions.isOperatorCorporate()) {
+				subMenu.addChild(
+						"Sched. &amp; Assign",
+						"AuditAssignments.action?filter.status=Active",
+						"AuditAssignments");
+
+			} else {
+				subMenu.addChild(
+						"Sched. &amp; Assign",
+						"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
+						"AuditAssignments");
+			}
 		if (permissions.isAdmin())
 			subMenu.addChild("Cancelled Sched. Audits", "CancelledScheduledAudits.action", "CancShedAudits");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
