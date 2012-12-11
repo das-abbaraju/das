@@ -1,19 +1,14 @@
 package com.picsauditing.jpa.entities;
 
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.util.SpringUtils;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * The business logic in FeeClass needs to be pulled out into a service to make
@@ -99,6 +94,10 @@ public enum FeeClass implements Translatable {
 					}
 				}
 			}
+
+            //This happens if there are no operators attached to this contractor.
+            //Unlikely, but if it never happened, I wouldn't be writing this.
+            if (discounts.isEmpty()) return contractor.getCountry().getAmount(fee);
 
 			BigDecimal minimumDiscount = Collections.min(discounts);
 			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
