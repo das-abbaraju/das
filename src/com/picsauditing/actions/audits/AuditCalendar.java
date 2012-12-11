@@ -32,7 +32,7 @@ public class AuditCalendar extends PicsActionSupport {
 		JSONArray events = new JSONArray();
 		List<ContractorAudit> audits = contractorAuditDAO.findScheduledAudits(0, start, end, permissions);
 		int totalCount = 0;
-		
+
 		for (ContractorAudit audit : audits) {
 			if (auditorCount.get(audit.getAuditor().getName()) == null)
 				auditorCount.put(audit.getAuditor().getName(), 0);
@@ -41,7 +41,7 @@ public class AuditCalendar extends PicsActionSupport {
 			JSONObject o = new JSONObject();
 			o.put("id", audit.getId());
 			o.put("title", audit.getContractorAccount().getName() + " (" + audit.getAuditor().getName() + ")");
-			o.put("start", formatDate(audit.getScheduledDate(), PicsDateFormat.Datetime));
+			o.put("start", formatDate(audit.getScheduledDate()));
 			o.put("allDay", false);
 			if (!permissions.isOperatorCorporate())
 				o.put("url", "ScheduleAudit.action?auditID=" + audit.getId());
@@ -51,7 +51,7 @@ public class AuditCalendar extends PicsActionSupport {
 				o.put("className", "cal-webcam");
 			events.add(o);
 		}
-		
+
 		auditorCount.put(getText("JS.AuditCalendar.Total"), totalCount);
 		json.put("events", events);
 		json.put("auditorCount", auditorCount);
