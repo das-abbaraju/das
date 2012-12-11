@@ -3,6 +3,9 @@ package com.picsauditing.model.general;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -46,7 +49,7 @@ public class AccountTimezonePopulatorTest {
 	@Test
 	public void testRun_ExceededDailyMapApiLimit() throws Exception {
 		int count = AccountTimezonePopulator.lookupLimit + 10;
-		String json = "{\"count\":" + count + ",\"date\":\"12/7/12 2:47 PM\"}";
+		String json = "{\"count\":" + count + ",\"date\":\"" + new SimpleDateFormat().format(new Date()) + "\"}";
 		when(appPropertyDAO.getProperty(AccountTimezonePopulator.limitPropertyName)).thenReturn(json);
 
 		accountTimezonePopulator.run();
@@ -75,7 +78,7 @@ public class AccountTimezonePopulatorTest {
 	}
 
 	private boolean doTestExceededOurDailyMapApiCount(int count) throws Exception {
-		String json = "{\"count\":" + count + ",\"date\":\"12/7/12 2:47 PM\"}";
+		String json = "{\"count\":" + count + ",\"date\":\"" + new SimpleDateFormat().format(new Date()) + "\"}";
 		when(appPropertyDAO.getProperty(AccountTimezonePopulator.limitPropertyName)).thenReturn(json);
 
 		Boolean result = Whitebox.invokeMethod(accountTimezonePopulator, "exceededOurDailyMapApiCount");
