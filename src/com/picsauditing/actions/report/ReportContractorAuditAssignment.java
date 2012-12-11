@@ -2,6 +2,8 @@ package com.picsauditing.actions.report;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
@@ -9,6 +11,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditAssignment extends ReportContractorAudits {
@@ -69,6 +72,11 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 					+ " and i.dueDate < NOW())");
 
 		}
+		
+		if (permissions.isOperatorCorporate()) {
+			String groupIds = Strings.implode(permissions.getAllInheritedGroupIds());
+			sql.addWhere("atype.assignAudit in (" + groupIds + ")");
+		}
 		orderByDefault = "ca.creationDate";
 
 		getFilter().setShowUnConfirmedAudits(true);
@@ -112,4 +120,15 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 			return FileUtils.size(file);
 		return "";
 	}
+	
+	@Override
+    public Set<User> getSafetyList() {
+    	if (permissions.isAdmin())
+    		return super.getSafetyList();
+        Set<User> auditorList = new TreeSet<User>();
+        auditorList.addAll(userDAO.findAuditors(permissions.getAllInheritedGroupIds()));
+        return auditorList;
+    }
+
+
 }
