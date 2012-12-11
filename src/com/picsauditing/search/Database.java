@@ -1,6 +1,7 @@
 package com.picsauditing.search;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,10 +16,13 @@ import com.picsauditing.PICS.DBBean;
 import com.picsauditing.util.DatabaseUtil;
 
 public class Database {
-	private final Logger logger = LoggerFactory.getLogger(Database.class);
+		
+	private static final int BATCH_SIZE = 500;
 	
 	private int allRows = 0;
 
+	private final Logger logger = LoggerFactory.getLogger(Database.class);
+	
 	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> select(String sql, boolean countRows) throws SQLException {
 		Connection Conn = null;
@@ -187,5 +191,41 @@ public class Database {
 		}
 
 		return databaseName;
+	}
+	
+	public static <T> void executeBatch(String sql, List<T> items, QueryMapper<T> queryMapper) throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			connection = DBBean.getDBConnection();
+			preparedStatement = connection.prepareStatement(sql);
+			
+			int count = 0;
+			for (T item : items) {
+				queryMapper.mapObject(item, preparedStatement);
+				preparedStatement.addBatch();
+				
+				// once we hit the batch size maximum, run the batch
+				if(++count % BATCH_SIZE == 0) {
+			        preparedStatement.executeBatch();
+			    }				
+			}
+			
+			preparedStatement.executeBatch();			
+		} finally {
+			DatabaseUtil.closeStatement(preparedStatement);
+			DatabaseUtil.closeConnection(connection);
+		}
+	}
+	
+	/**
+	 * Generic mapper for mapping any object type to the prepared statement, for any type of
+	 * query operation.
+	 */
+	public static abstract class QueryMapper<T> {
+		
+		public abstract void mapObject(T object, PreparedStatement preparedStatement) throws SQLException;
+		
 	}
 }

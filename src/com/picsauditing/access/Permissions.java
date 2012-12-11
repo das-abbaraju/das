@@ -221,7 +221,7 @@ public class Permissions implements Serializable {
                     }
                 }
             }
-
+            
             for (com.picsauditing.jpa.entities.UserAccess ua : user.getPermissions()) {
                 permissions.add(new UserAccess(ua));
             }

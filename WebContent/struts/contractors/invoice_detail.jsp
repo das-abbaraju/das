@@ -77,6 +77,10 @@
 			</s:if>		
 		</s:if>
 		
+		<div style="margin-top: 10px">
+			<s:include value="_commission_detail.jsp" />
+		</div>
+		
 		<s:form id="save" name="save" method="POST">
 			<s:hidden name="id"></s:hidden>
 			<s:hidden name="invoice.id"></s:hidden>
@@ -501,7 +505,4 @@
 		</s:form>
 	</div>
 	
-	<div style="margin-top: 10px">
-		<s:include value="_commission_detail.jsp" />
-	</div>
 </html>

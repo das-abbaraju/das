@@ -95,6 +95,7 @@ public enum OpPerms implements Translatable {
 	BillingUpgrades("Billing Upgrades", "Upgrade contractor subscriptions and send them invoices", true, false, true, false, false),
 	DelinquentAccounts("Delinquent Accounts", "Allows users to view Delinquent Contractor Accounts", false, false, true, false, true),
 	InvoiceEdit("Edit Invoice", "Can view and edit all fields related to an invoice", true, true, true, false, false),
+	SalesCommission("Sales Commission", "View Sales Commission Break-Down on an invoice", true, true, false, false, false),
 
 	ContractorTags("Contractor Tags", "Allow operators to tag and categorize their contractors into searchable groups.", true, true, true, false, true),
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false, true, false, true),

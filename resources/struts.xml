@@ -1,4 +1,3 @@
-
 <!DOCTYPE struts PUBLIC
         "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
         "http://struts.apache.org/dtds/struts-2.0.dtd">
@@ -1157,6 +1156,9 @@
 			<result>struts/dev/account_timezone_populator.jsp</result>
         </action>
 		
+		<action name="DownloadCommissionAudit" class="com.picsauditing.actions.DownloadCommissionAudit">
+            <result>/struts/blank.jsp</result>
+        </action>
     </package>
 
     <!-- Reports & API -->

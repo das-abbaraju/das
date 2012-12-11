@@ -19,7 +19,7 @@ public class InvoiceCommissionModel extends AbstractModel {
 				account.join(AccountTable.Contractor);
 				account.join(AccountTable.Contact);
 			}
-		}
+		}		
 		return spec;
 	}
 }

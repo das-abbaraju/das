@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +54,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
@@ -460,8 +463,23 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 	
 	public List<InvoiceCommission> getInvoiceCommissions() {
-		List<InvoiceCommission> commission = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
-		return commission;
+		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
+		Collections.sort(invoiceCommissions, new Comparator<InvoiceCommission>() {
+
+			@Override
+			public int compare(InvoiceCommission commission1, InvoiceCommission commission2) {
+				if (commission1 != null && commission2 != null && 
+						Strings.isNotEmpty(commission1.getAccountUser().getAccount().getName()) && 
+						Strings.isNotEmpty(commission2.getAccountUser().getAccount().getName())) {
+					return commission1.getAccountUser().getAccount().getName().compareTo(commission2.getAccountUser().getAccount().getName());
+				}
+				
+				return 0;
+			}
+			
+		});
+		
+		return invoiceCommissions;
 	}
 	
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {

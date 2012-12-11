@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,7 +21,7 @@ import com.picsauditing.report.tables.FieldCategory;
 public class InvoiceCommission extends BaseTable {
 	
 	private Invoice invoice;
-	private User user; // Sales Representatives or Account Managers
+	private AccountUser accountUser;
 	private double points;
 	private double revenuePercent;
 
@@ -39,13 +38,13 @@ public class InvoiceCommission extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "userID", nullable = false)
-	public User getUser() {
-		return user;
+	@JoinColumn(name = "accountUserID", nullable = false, updatable = false)
+	public AccountUser getAccountUser() {
+		return accountUser;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setAccountUser(AccountUser accountUser) {
+		this.accountUser = accountUser;
 	}
 
 	@Column(name = "activationPoints")

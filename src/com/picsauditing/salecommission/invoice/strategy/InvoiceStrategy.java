@@ -2,6 +2,8 @@ package com.picsauditing.salecommission.invoice.strategy;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +15,8 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +31,15 @@ import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.Database.QueryMapper;
 
 public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 	@Autowired
 	private InvoiceCommissionDAO invoiceCommissionDAO;
+	
+	private static final Logger logger = LoggerFactory.getLogger(InvoiceStrategy.class);
 
 	@Override
 	protected boolean hasStrategyAlreadyProcessed(Invoice invoice) {
@@ -51,8 +59,11 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	public void buildInvoiceCommissions(Invoice invoice) {
 		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = calculateServiceForEachClientSite(contractor, invoice);
-		Map<FeeClass, Integer> totalSites = getTotalSitesForService(clientSiteServiceLevels);
+		Map<FeeClass, Integer> totalSites = getTotalSitesForService(clientSiteServiceLevels, invoice.getId());
 		Map<FeeClass, BigDecimal> fees = invoice.getCommissionEligibleFees(false);
+		
+		System.out.println("Fees = " + fees.toString());
+		
 		Map<ContractorOperator, Double> clientRevenueWeights = calculateAllClientRevenueWeights(invoice, clientSiteServiceLevels, totalSites, fees);
 		generateInvoiceCommissions(invoice, clientRevenueWeights);		
 	}
@@ -62,7 +73,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			List<AccountUser> accountUsers = getActiveAccountUsersForClientSite(individualClientRevenueWeight.getKey().getOperatorAccount());
 			for (AccountUser accountUser : accountUsers) {
 				InvoiceCommission invoiceCommission = new InvoiceCommission();
-				invoiceCommission.setUser(accountUser.getUser());
+				invoiceCommission.setAccountUser(accountUser);
 				invoiceCommission.setAuditColumns(invoice.getUpdatedBy());
 				invoiceCommission.setInvoice(invoice);
 				invoiceCommission.setPoints(calculatePoints(invoice, accountUser, individualClientRevenueWeight.getValue()));
@@ -159,7 +170,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			billingService.calculateContractorInvoiceFees(contractor);
 			List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
 
-			clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));		
+			clientSiteServiceLevels.add(buildFromContractorFees(invoiceItems, clientSite));
 		}
 
 		return clientSiteServiceLevels;
@@ -189,11 +200,12 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		return invoiceFees;
 	}
 	
-	private Map<FeeClass, Integer> getTotalSitesForService(List<ClientSiteServiceLevel> clientSiteServiceLevels) {
+	private Map<FeeClass, Integer> getTotalSitesForService(List<ClientSiteServiceLevel> clientSiteServiceLevels, int invoiceId) {
 		if (CollectionUtils.isEmpty(clientSiteServiceLevels)) {
 			return Collections.emptyMap();
 		}
 		
+		List<ClientSiteServices> clientSiteServices = new ArrayList<ClientSiteServices>();
 		Map<FeeClass, Integer> totalSites = new HashMap<FeeClass, Integer>();
 		for (ClientSiteServiceLevel clientSiteServiceLevel : clientSiteServiceLevels) {
 			for (FeeClass feeClass : clientSiteServiceLevel.getServiceLevels()) {
@@ -203,12 +215,50 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 				} else {
 					totalSites.put(feeClass, 1);
 				}
+				
+				ClientSiteServices services = buildClientSiteService(invoiceId, 
+						clientSiteServiceLevel.getClientSite().getOperatorAccount().getId(), feeClass);
+				clientSiteServices.add(services);
 			}
 		}
+		
+		saveClientSiteServices(clientSiteServices);
+		
+		System.out.println("Total Sites = " + totalSites.toString());
 		
 		return totalSites;
 	}
 	
+	private ClientSiteServices buildClientSiteService(int invoiceId, int clientSiteId, FeeClass feeClass) {
+		ClientSiteServices clientSiteServices = new ClientSiteServices();
+		clientSiteServices.setInvoiceId(invoiceId);
+		clientSiteServices.setClientSiteId(clientSiteId);
+		clientSiteServices.setFeeClass(feeClass);
+		
+		return clientSiteServices;
+	}
+	
+	private void saveClientSiteServices(List<ClientSiteServices> clientSiteServices) {
+		String sql = "INSERT INTO commission_breakdown_auditing (invoiceID, clientSiteID, feeClass) values (?, ?, ?)";
+		
+		QueryMapper<ClientSiteServices> queryMapper = new QueryMapper<ClientSiteServices>() {
+
+			@Override
+			public void mapObject(ClientSiteServices clientSiteServices, PreparedStatement preparedStatement) throws SQLException {
+				preparedStatement.setInt(1, clientSiteServices.getInvoiceId());
+				preparedStatement.setInt(2, clientSiteServices.getClientSiteId());
+				preparedStatement.setString(3, clientSiteServices.getFeeClass().name());
+			}
+			
+		};
+		
+		try {
+			Database.executeBatch(sql, clientSiteServices, queryMapper);
+		} catch (Exception e) {
+			logger.error("An error occurred while performing a batch insert for invoice commissions", e);
+		}
+	}
+		
 	private List<AccountUser> getActiveAccountUsersForClientSite(OperatorAccount clientSite) {
 		if (clientSite == null) {
 			return Collections.emptyList();

@@ -149,21 +149,25 @@ public class UserAccess implements java.io.Serializable, Comparable<UserAccess> 
 		StringBuilder s = new StringBuilder();
 		if (Boolean.TRUE.equals(getViewFlag()))
 			s.append("V");
+		
 		if (Boolean.TRUE.equals(getEditFlag())) {
 			if (s.length() > 0)
 				s.append(" ");
 			s.append("E");
 		}
+		
 		if (Boolean.TRUE.equals(getDeleteFlag())) {
 			if (s.length() > 0)
 				s.append(" ");
 			s.append("D");
 		}
+		
 		if (Boolean.TRUE.equals(getGrantFlag())) {
 			if (s.length() > 0)
 				s.append(" ");
 			s.append("G");
 		}
+		
 		return s.toString();
 	}
 }

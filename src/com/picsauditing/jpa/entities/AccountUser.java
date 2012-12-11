@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.actions.users.UserAccountRole;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "account_user")
 public class AccountUser extends BaseTable {
