@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
+import com.picsauditing.report.tables.ContractorAuditTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.ContractorTable;
 import com.picsauditing.report.tables.FieldCategory;
@@ -27,6 +28,10 @@ public class AccountContractorModel extends AbstractModel {
 			account.join(AccountTable.Naics);
 		}
 		contractor.join(ContractorTable.PQF);
+		if (permissions.isAdmin()) {
+			ModelSpec welcomeCall = contractor.join(ContractorTable.WelcomeCall);
+			welcomeCall.join(ContractorAuditTable.SingleCAO);
+		}
 		if (permissions.isOperatorCorporate()) {
 			ModelSpec flag = contractor.join(ContractorTable.Flag);
 			flag.join(ContractorOperatorTable.ForcedByUser);

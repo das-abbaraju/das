@@ -10,6 +10,12 @@ public class ContractorAuditTable extends AbstractTable {
 	public static final String Type = "Type";
 	public static final String Auditor = "Auditor";
 	public static final String ClosingAuditor = "ClosingAuditor";
+	/**
+	 * This is here ONLY for use when the audit type only has a single cao such
+	 * as Welcome Calls, Manual Audits, Implementation Audits, and PQF Specfic.
+	 * With any other audits, please use the ContractorAudit Model
+	 */
+	public static final String SingleCAO = "Cao";
 
 	public ContractorAuditTable() {
 		super("contractor_audit");
@@ -21,24 +27,18 @@ public class ContractorAuditTable extends AbstractTable {
 		auditTypeName = new Field("TypeName", "auditTypeID", FieldType.AuditType);
 		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + ReportOnClause.ToAlias + "ID}");
-		auditTypeName.setImportance(FieldImportance.Average);
+		auditTypeName.setImportance(FieldImportance.Required);
 		auditTypeName.setCategory(FieldCategory.Audits);
 		auditTypeName.setWidth(200);
 		addField(auditTypeName);
 	}
 
 	public void addJoins() {
-		{
-			ReportForeignKey contractorJoin = new ReportForeignKey(Contractor, new ContractorTable(),
-					new ReportOnClause("conID"));
-			// contractorJoin.setMinimumImportance(FieldImportance.Average);
-			// We may not need this either if the Entity Fields are set correctly
-			// contractorJoin.setCategory(FieldCategory.AccountInformation);
-			addJoinKey(contractorJoin);
-		}
-		
+		addJoinKey(new ReportForeignKey(Contractor, new ContractorTable(), new ReportOnClause("conID")));
+
 		addJoinKey(new ReportForeignKey(Type, new AuditTypeTable(), new ReportOnClause("auditTypeID")))
 				.setMinimumImportance(FieldImportance.Average);
+		
 		{
 			ReportForeignKey auditorKey = addOptionalKey(new ReportForeignKey(Auditor, new UserTable(),
 					new ReportOnClause("auditorID")));
@@ -52,5 +52,10 @@ public class ContractorAuditTable extends AbstractTable {
 			auditorKey.setMinimumImportance(FieldImportance.Required);
 			auditorKey.setCategory(FieldCategory.Auditors);
 		}
+
+		ReportForeignKey caoKey = addOptionalKey(new ReportForeignKey(SingleCAO, new ContractorAuditOperatorTable(),
+				new ReportOnClause("id", "auditID")));
+		caoKey.setCategory(FieldCategory.Audits);
+		caoKey.setMinimumImportance(FieldImportance.Required);
 	}
 }

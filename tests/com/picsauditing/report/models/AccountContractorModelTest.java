@@ -31,7 +31,7 @@ public class AccountContractorModelTest extends ModelTest {
 
 		excludedFields.add("ContractorRequestedByOperatorCity");
 		includedFields.add("ContractorPQFID");
-		includedFields.add("contractorPQFExpiresDate");
+		includedFields.add("ContractorPQFTypeName");
 		includedFields.add("ContractorProductRisk");
 		includedFields.add("AccountFax");
 		includedFields.add("AccountContactEmail");

@@ -22,6 +22,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -69,7 +70,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.AuditStatus, category = FieldCategory.ClientSiteMonitoringAnAudit)
+	@ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required, category = FieldCategory.ClientSiteMonitoringAnAudit)
 	public AuditStatus getStatus() {
 		return status;
 	}

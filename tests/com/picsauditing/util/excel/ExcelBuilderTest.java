@@ -48,7 +48,7 @@ public class ExcelBuilderTest {
 		addColumn("AccountCity");
 		addColumn("ContractorScore");
 		addColumn("ContractorBalance");
-		addColumn("ContractorPQFExpiresDate");
+		addColumn("AccountCreationDate");
 		builder.addColumns(columns);
 		
 		addDataRow(AccountStatus.Active, "Irvine");
@@ -99,7 +99,7 @@ public class ExcelBuilderTest {
 
 		row.put(getColumn("AccountStatus"), status.toString());
 		row.put(getColumn("AccountCity"), city);
-		row.put(getColumn("ContractorPQFExpiresDate"), new Date());
+		row.put(getColumn("AccountCreationDate"), new Date());
 		row.put(getColumn("ContractorScore"), 850);
 		row.put(getColumn("ContractorBalance"), 123.45);
 
