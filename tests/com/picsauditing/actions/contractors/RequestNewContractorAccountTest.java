@@ -503,11 +503,38 @@ public class RequestNewContractorAccountTest {
 		verify(entityManager).persist(any(ContractorTag.class));
 	}
 
+	@Test
+	public void testIsContactNoteMissing() {
+		testContactType(RequestContactType.EMAIL);
+		testContactType(RequestContactType.PHONE);
+		testContactType(RequestContactType.DECLINED);
+
+		requestNewContractorAccount.setContactType(null);
+		assertFalse(requestNewContractorAccount.isContactNoteMissing());
+
+		requestNewContractorAccount.setContactNote("Test");
+		assertFalse(requestNewContractorAccount.isContactNoteMissing());
+	}
+
 	private void setPermissionsAsOperator() {
 		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
 		when(operator.getId()).thenReturn(1);
 		when(permissions.getAccountId()).thenReturn(1);
 		when(permissions.isOperator()).thenReturn(true);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
+	}
+
+	private void testContactType(RequestContactType type) {
+		requestNewContractorAccount.setContactType(type);
+		assertTrue(requestNewContractorAccount.isContactNoteMissing());
+
+		requestNewContractorAccount.setContactNote("Note");
+		assertFalse(requestNewContractorAccount.isContactNoteMissing());
+
+		requestNewContractorAccount.setContactNote("");
+		assertTrue(requestNewContractorAccount.isContactNoteMissing());
+		// reset
+		requestNewContractorAccount.setContactType(null);
+		requestNewContractorAccount.setContactNote(null);
 	}
 }

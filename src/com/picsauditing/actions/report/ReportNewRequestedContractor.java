@@ -100,6 +100,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.notes AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql.addField("'CRR' AS systemType");
+		sql.addField("'' AS priority");
 
 		sql.addGroupBy("cr.id");
 

@@ -54,6 +54,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 
 		List<SelectSQL> unions = new ArrayList<SelectSQL>();
 		if (permissions.isPicsEmployee()) {
+			getFilter().setShowInsideSalesPriority(true);
 			unions.add(legacy);
 		}
 
@@ -131,6 +132,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		sql.addField("'' AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql.addField("'ACC' AS systemType");
+		sql.addField("CASE c.insideSalesPriority WHEN 1 THEN 'Low' WHEN 2 THEN 'Med' WHEN 3 THEN 'High' ELSE 'None' END AS priority");
 		// Find requested or denied or pending but not active that have been
 		// requested
 		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL) "
@@ -276,6 +278,15 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		if (filterOn(f.getOperatorTags())) {
 			sql.addWhere(String.format("ot.id IN (%s)", Strings.implode(f.getOperatorTags())));
 			legacy.addWhere(String.format("ot.id IN (%s)", Strings.implode(f.getOperatorTags())));
+
+			setFiltered(true);
+		}
+
+		if (filterOn(f.getInsideSalesPriority())) {
+			sql.addWhere(String.format("c.insideSalesPriority = %d", f.getInsideSalesPriority().ordinal()));
+			// TODO Do we want to filter out old registration requests?
+			// Old reg requests do not have priority
+			legacy.addWhere("1<>1");
 
 			setFiltered(true);
 		}

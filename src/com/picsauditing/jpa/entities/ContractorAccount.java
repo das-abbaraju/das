@@ -141,7 +141,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private int contactCountByEmail;
 	private int contactCountByPhone;
 	private Date registrationRequestExpiresOn;
-	private LowMedHigh insideSalesPriority;
+	private LowMedHigh insideSalesPriority = LowMedHigh.None;
 	private String registrationHash;
 
 	private InputValidator inputValidator;
@@ -1906,7 +1906,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.registrationRequestExpiresOn = registrationRequestExpiresOn;
 	}
 
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.ORDINAL)
 	public LowMedHigh getInsideSalesPriority() {
 		return insideSalesPriority;
 	}

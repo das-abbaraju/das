@@ -254,6 +254,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return RequestContactType.values();
 	}
 
+	public boolean isContactNoteMissing() {
+		if (contactType != null) {
+			return Strings.isEmpty(contactNote);
+		}
+
+		return false;
+	}
+
 	private void initializeRequest() {
 		if (contractor.getId() == 0) {
 			contractor.setStatus(AccountStatus.Requested);
@@ -492,14 +500,5 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 			contractor.getOperatorTags().add(tag);
 		}
-	}
-
-	// Used in validation
-	private boolean isContactNoteMissing() {
-		if (contactType != null) {
-			return Strings.isEmpty(contactNote);
-		}
-
-		return false;
 	}
 }

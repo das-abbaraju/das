@@ -66,6 +66,9 @@
 							</a>
 						</td>
 						<td>
+							<s:text name="global.Priority" />
+						</td>
+						<td>
 							<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
 						</td>
 						<td>
@@ -125,6 +128,12 @@
 							</td>
 							<td>
 								<s:date name="get('deadline')" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
+							</td>
+							<td>
+								<s:set var="inside_sales_priority" value="@com.picsauditing.jpa.entities.LowMedHigh@valueOf(get('priority').toString())" />
+								<s:if test="#inside_sales_priority != null">
+									<s:text name="%{#inside_sales_priority.i18nKey}" />
+								</s:if>
 							</td>
 							<td>
 								${crr.get('ContactedBy')}

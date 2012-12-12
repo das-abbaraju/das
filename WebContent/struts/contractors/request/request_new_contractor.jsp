@@ -423,14 +423,32 @@
 				</ol>
 			</fieldset>
 			
-			<s:if test="contractor.id > 0 && contactable">
+			<s:if test="!permissions.operatorCorporate">
 				<fieldset class="form">
 					<h2 class="formLegend">
 						<s:text name="ContractorRegistrationRequest.label.status" />
 					</h2>
 					
 					<ol>
-						<s:if test="!permissions.operatorCorporate">
+						<li>
+							<label for="inside_sales_priority">
+								<s:text name="global.Priority" />
+							</label>
+							<select name="contractor.insideSalesPriority" id="inside_sales_priority">
+								<s:iterator value="@com.picsauditing.jpa.entities.LowMedHigh@values()" var="sales_priority">
+									<s:if test="contractor.insideSalesPriority == #sales_priority">
+										<s:set var="priority_selected" value="%{' selected=\"selected\"'}" />
+									</s:if>
+									<s:else>
+										<s:set var="priority_selected" value="%{''}" />
+									</s:else>
+									<option value="${sales_priority}"${priority_selected}>
+										<s:text name="%{i18nKey}" />
+									</option>
+								</s:iterator>
+							</select>
+						</li>
+						<s:if test="contactable">
 							<li>
 								<label>
 									<s:text name="RequestNewContractor.LogContactBy" />
@@ -450,6 +468,7 @@
 												<s:text name="%{button}" />
 											</a>
 										</s:if>
+										<%-- else show nothing --%>
 									</s:if>
 									<s:else>
 										<a

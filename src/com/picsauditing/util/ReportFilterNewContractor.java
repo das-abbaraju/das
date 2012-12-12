@@ -6,13 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 
@@ -26,6 +27,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showExcludeOperators = false;
 	protected boolean showOperatorTags = false;
 	protected boolean showMarketingUsers = false;
+	protected boolean showInsideSalesPriority = false;
 
 	protected String handledBy;
 	protected Date followUpDate;
@@ -38,6 +40,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected int[] excludeOperators;
 	protected int[] operatorTags;
 	protected int[] marketingUsers;
+	protected LowMedHigh insideSalesPriority;
 
 	@Override
 	public void setPermissions(Permissions permissions) {
@@ -106,6 +109,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setShowMarketingUsers(boolean showMarketingUsers) {
 		this.showMarketingUsers = showMarketingUsers;
+	}
+
+	public boolean isShowInsideSalesPriority() {
+		return showInsideSalesPriority;
+	}
+
+	public void setShowInsideSalesPriority(boolean showInsideSalesPriority) {
+		this.showInsideSalesPriority = showInsideSalesPriority;
 	}
 
 	public String getHandledBy() {
@@ -196,6 +207,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.marketingUsers = marketingUsers;
 	}
 
+	public LowMedHigh getInsideSalesPriority() {
+		return insideSalesPriority;
+	}
+
+	public void setInsideSalesPriority(LowMedHigh insideSalesPriority) {
+		this.insideSalesPriority = insideSalesPriority;
+	}
+
 	// Lists
 	public WaitingOn[] getHandledByList() throws Exception {
 		return new WaitingOn[] { WaitingOn.PICS, WaitingOn.Operator };
@@ -221,7 +240,8 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	}
 
 	public List<CountrySubdivision> getCountrySubdivisionList() {
-		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils.getBean("CountrySubdivisionDAO");
+		CountrySubdivisionDAO countrySubdivisionDAO = (CountrySubdivisionDAO) SpringUtils
+				.getBean("CountrySubdivisionDAO");
 		return countrySubdivisionDAO.findAll();
 	}
 
@@ -246,5 +266,9 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	public List<User> getMarketingUsersList() {
 		UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 		return userDAO.findByGroup(User.GROUP_MARKETING);
+	}
+
+	public LowMedHigh[] getInsideSalesPriorities() {
+		return LowMedHigh.values();
 	}
 }
