@@ -131,8 +131,11 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 		sql.addField("'' AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
 		sql.addField("'ACC' AS systemType");
-
-		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL)");
+		// Find requested or denied or pending but not active that have been
+		// requested
+		sql.addWhere("a.status = 'Requested' OR (a.status = 'Declined' AND a.reason IS NOT NULL) "
+				+ "OR (a.status = 'Pending' AND a.id IN (SELECT subID FROM generalcontractors "
+				+ "WHERE (requestedByUser IS NOT NULL OR requestedByUserID > 0)))");
 
 		sql.addGroupBy("c.id, gc.id");
 
@@ -206,7 +209,7 @@ public class ReportRegistrationRequests extends ReportActionSupport {
 					getFilter().getRequestStatus())) {
 				sql.addWhere("a.status IN ('Active') AND c.contactCountByPhone > 0");
 			} else {
-				sql.addWhere("a.status IN ('Denied') AND a.reason IS NOT NULL");
+				sql.addWhere("a.status IN ('Declined') AND a.reason IS NOT NULL");
 			}
 
 			setFiltered(true);

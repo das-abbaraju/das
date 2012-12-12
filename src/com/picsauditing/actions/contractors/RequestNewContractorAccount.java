@@ -22,10 +22,10 @@ import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -35,7 +35,6 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.toggle.FeatureToggle;
@@ -65,7 +64,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 	private ContractorOperator requestRelationship = new ContractorOperator();
 	private User primaryContact = new User();
-	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 	// Logged in as corporate or PICS user
 	private List<ContractorOperator> visibleRelationships = new ArrayList<ContractorOperator>();
 	// Contacting Information
@@ -79,18 +77,29 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	// Links
 	private URLUtils urlUtil = new URLUtils();
 
-	public enum RequestContactType implements Translatable {
-		EMAIL, PHONE;
+	public enum RequestContactType {
+		EMAIL("RequestNewContractor.button.ContactedByEmail", "User.email"), PHONE(
+				"RequestNewContractor.button.ContactedByPhone", "User.phone"), DECLINED(
+				"ContractorRegistrationRequest.reasonForDecline", "AccountStatus.Declined");
 
-		@Override
-		public String getI18nKey() {
-			return "RequestNewContractor.button.ContactedBy" + this.toString().substring(0, 1).toUpperCase()
-					+ this.toString().substring(1).toLowerCase();
+		private String note;
+		private String button;
+
+		private RequestContactType(String note, String button) {
+			this.note = note;
+			this.button = button;
 		}
 
-		@Override
-		public String getI18nKey(String property) {
-			return getI18nKey() + "." + property;
+		public String getNote() {
+			return note;
+		}
+
+		public String getButton() {
+			return button;
+		}
+
+		public boolean isDeclined() {
+			return this == DECLINED;
 		}
 	}
 
@@ -116,11 +125,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		loadTags();
 
 		return SUCCESS;
-	}
-
-	@SkipValidation
-	public String contact() {
-		return "contactModal";
 	}
 
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
@@ -212,14 +216,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return email;
 	}
 
-	public ContractorRegistrationRequestStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(ContractorRegistrationRequestStatus status) {
-		this.status = status;
-	}
-
 	public boolean isContactable() {
 		if (permissions.isOperatorCorporate()) {
 			return false;
@@ -254,6 +250,10 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		return new Date();
 	}
 
+	public RequestContactType[] getContactTypes() {
+		return RequestContactType.values();
+	}
+
 	private void initializeRequest() {
 		if (contractor.getId() == 0) {
 			contractor.setStatus(AccountStatus.Requested);
@@ -265,8 +265,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 		} else {
 			account = contractor;
 			primaryContact = contractor.getPrimaryContact();
-
-			setRequestStatus();
 		}
 	}
 
@@ -301,26 +299,6 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 					requestRelationship = relationship;
 				}
 			}
-		}
-	}
-
-	private void setRequestStatus() {
-		AccountStatus requestedContractorStatus = contractor.getStatus();
-
-		if (requestedContractorStatus.isRequested()) {
-			if (contractor.getFollowUpDate() == null) {
-				status = ContractorRegistrationRequestStatus.Active;
-			} else {
-				status = ContractorRegistrationRequestStatus.Hold;
-			}
-		} else if (requestedContractorStatus.isActive() || requestedContractorStatus.isPending()) {
-			if (contractor.getContactCountByPhone() > 0) {
-				status = ContractorRegistrationRequestStatus.ClosedContactedSuccessful;
-			} else {
-				status = ContractorRegistrationRequestStatus.ClosedSuccessful;
-			}
-		} else {
-			status = ContractorRegistrationRequestStatus.ClosedUnsuccessful;
 		}
 	}
 
@@ -360,10 +338,9 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	private void saveRequestComponentsAndEmailIfNew(boolean newRequest) throws Exception {
 		saveRequiredFieldsAndSaveEntities();
 
-		if (status.isClosedUnsuccessful()) {
+		if (RequestContactType.DECLINED == contactType) {
 			contractor.setStatus(AccountStatus.Declined);
-		} else if (status.isClosedSuccessful() || status.isClosedContactedSuccessful()) {
-			contractor.setStatus(AccountStatus.Active);
+			contractor.setReason(contactNote);
 		} else {
 			contractor.setStatus(AccountStatus.Requested);
 		}
@@ -450,13 +427,13 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 	@Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
 	private void saveNoteIfContacted() {
 		if (contactType != null) {
-			addNote(getText(contactType.getI18nKey()) + ": " + contactNote);
+			addNote(getText(contactType.getNote()) + ": " + contactNote);
 
 			Date now = new Date();
 
 			if (RequestContactType.EMAIL == contactType) {
 				contractor.contactByEmail();
-			} else {
+			} else if (RequestContactType.PHONE == contactType) {
 				contractor.contactByPhone();
 			}
 
@@ -515,5 +492,14 @@ public class RequestNewContractorAccount extends ContractorActionSupport {
 
 			contractor.getOperatorTags().add(tag);
 		}
+	}
+
+	// Used in validation
+	private boolean isContactNoteMissing() {
+		if (contactType != null) {
+			return Strings.isEmpty(contactNote);
+		}
+
+		return false;
 	}
 }

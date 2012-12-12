@@ -692,7 +692,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected void filterOnMinorityQuestions() {
 		if (filterOn(getFilter().getMinorityQuestion(), 0)) {
 			int[] questions = getFilter().getMinorityQuestion();
-			sql.addJoin("JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
+			sql.addJoin("LEFT JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
 			for (int question : questions) {
 				sql.addJoin("LEFT JOIN pqfdata pdsd" + question + " on casd.id = pdsd" + question + ".auditID AND pdsd"
 						+ question + ".questionID = " + question);

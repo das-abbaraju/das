@@ -954,7 +954,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 */
 	@Transient
 	public void syncBalance() {
-		if (this.getStatus().isRequested()) {
+		if (this.getStatus().isRequested() || this.getStatus().isDeclined()) {
 			return;
 		}
 

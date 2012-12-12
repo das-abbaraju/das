@@ -208,23 +208,25 @@
     					</s:if>
     					<s:else>
     						<pics:permission perm="AddContractors">
-    							<s:if test="get('status') == 'Requested'">
-    								<s:url action="RequestNewContractorAccount" var="request_contractor">
-    									<s:param name="requestedContractor">
-    										${row.get('id')}
-    									</s:param>
-    								</s:url>
-    								<a href="${request_contractor}" class="add">
-    									<s:text name="NewContractorSearch.button.Request" />
+    							<s:if test="permissions.corporate">
+    								<a class="add" href="${contractor_facilities}">
+    									<s:text name="button.Add" />
     								</a>
     							</s:if>
     							<s:else>
-	    							<s:if test="permissions.corporate">
-	    								<a class="add" href="${contractor_facilities}">
-	    									<s:text name="button.Add" />
-	    								</a>
-	    							</s:if>
-	    							<s:else>
+		    						<s:if test="get('status') == 'Requested'">
+		    							<pics:toggle name="RequestNewContractorAccount">
+			   								<s:url action="RequestNewContractorAccount" var="request_contractor">
+			   									<s:param name="contractor">
+			   										${row.get('id')}
+			   									</s:param>
+			   								</s:url>
+			   								<a href="${request_contractor}" class="add">
+			   									<s:text name="NewContractorSearch.button.Request" />
+			   								</a>
+		    							</pics:toggle>
+		   							</s:if>
+		   							<s:else>
 	    								<s:url method="add" var="add_contractor">
 	    									<s:param name="contractor">
 	    										${row.get('id')}
@@ -234,7 +236,7 @@
 	    									<s:text name="button.Add" />
 	    								</a>
     								</s:else>
-    							</s:else>
+   								</s:else>
     						</pics:permission>
     					</s:else>
     				</td>

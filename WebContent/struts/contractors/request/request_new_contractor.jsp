@@ -78,6 +78,7 @@
 		
 		<s:form action="RequestNewContractorAccount" validate="true" id="request_form">
 			<s:hidden name="contractor" />
+			<s:hidden name="id" />
 			<s:hidden name="contractor.status" />
 			<s:hidden name="requestRelationship" />
 			
@@ -86,8 +87,6 @@
 			</s:if>
 			
 			<s:hidden name="primaryContact" />
-			<s:hidden name="contactType" id="contact_type_field" />
-			<s:hidden name="contactNote" id="contact_note_field" />
 			
 			<fieldset class="form">
 				<h2 class="formLegend">
@@ -397,9 +396,15 @@
 					<s:if test="contractor.id > 0">
 						<li>
 							<label>
-								<s:text name="RequestNewContractor.label.TimesContacted" />:
+								<s:text name="RequestNewContractor.label.TimesContacted">
+									<s:param>
+										${contractor.totalContactCount}
+									</s:param>
+								</s:text>:
 							</label>
-							<s:property value="contractor.totalContactCount" />
+							${contractor.contactCountByPhone} <s:text name="User.phone" />
+							<br />
+							${contractor.contactCountByEmail} <s:text name="User.email" />
 						</li>
 						<li>
 							<label>
@@ -418,7 +423,7 @@
 				</ol>
 			</fieldset>
 			
-			<s:if test="contractor.id > 0">
+			<s:if test="contractor.id > 0 && contactable">
 				<fieldset class="form">
 					<h2 class="formLegend">
 						<s:text name="ContractorRegistrationRequest.label.status" />
@@ -428,69 +433,39 @@
 						<s:if test="!permissions.operatorCorporate">
 							<li>
 								<label>
-									<s:text name="ContractorRegistrationRequest.label.status" />:
+									<s:text name="RequestNewContractor.LogContactBy" />
 								</label>
-								<s:select 
-									id="request_status" 
-									list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
-									listValue="getText(i18nKey)"
-									name="status"
-									value="%{status}"
-								/>
 							</li>
-							<li id="hold_date">
-								<s:textfield
-									id="holdDate"
-									label="ContractorRegistrationRequest.holdDate"
-									name="contractor.followUpDate"
-									cssClass="datepicker"
-									required="true"
-									size="10"
-									theme="formhelp"
-								/>
+							<li>
+								<input type="hidden" id="contact_type" name="contactType" value="" />
+								
+								<s:iterator value="contactTypes" var="contact_type">
+									<s:if test="declined">
+										<s:if test="contractor.status.requested">
+											<a
+												href="javascript:;"
+												class="picsbutton negative contact-note-required"
+												data-type="${contact_type}"
+												data-placeholder="<s:text name="%{note}" />">
+												<s:text name="%{button}" />
+											</a>
+										</s:if>
+									</s:if>
+									<s:else>
+										<a
+											href="javascript:;"
+											class="picsbutton contact-note-required"
+											data-type="${contact_type}"
+											data-placeholder="<s:text name="%{note}" />">
+											<s:text name="%{button}" />
+										</a>
+									</s:else>
+								</s:iterator>
 							</li>
-							<li id="reason_declined">
-								<s:textarea
-									id="reasonForDecline"
-									label="ContractorRegistrationRequest.reasonForDecline"
-									name="contractor.reason"
-									required="true"
-									theme="formhelp"
-								/>
-								<div class="fieldhelp">
-									<h3>
-										<s:text name="RequestNewContractor.label.reasonForDecline" />
-									</h3>
-									<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
-								</div>
+							<li id="contact_note" class="hide">
+								<textarea name="contactNote" cols="80" rows="3"></textarea>
 							</li>
 						</s:if>
-						<s:else>
-							<li>
-								<label>
-									<s:text name="ContractorRegistrationRequest.label.status" />:
-								</label>
-								<s:text name="%{status.I18nKey}" />
-							</li>
-							
-							<s:if test="status.hold">
-								<li>
-									<label>
-										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
-									</label>
-									<s:date name="contractor.followUpDate" format="%{getText('date.short')}"/>
-								</li>
-							</s:if>
-							
-							<s:if test="status.closedUnsuccessful">
-								<li>
-									<label>
-										<s:text name="RequestNewContractor.label.reasonForDecline" />:
-									</label>
-									${contractor.reason}
-								</li>
-							</s:if>
-						</s:else>
 					</ol>
 				</fieldset>
 			</s:if>
@@ -502,42 +477,7 @@
 					method="save"
 					value="%{getText('button.Save')}"
 				/>
-				<s:if test="contactable">
-					<input
-						class="picsbutton contact phone"
-						type="button"
-						value="<s:text name="RequestNewContractor.button.ContactedByPhone" />"
-					/>
-					<input
-						class="picsbutton contact email"
-						type="button"
-						value="<s:text name="RequestNewContractor.button.ContactedByEmail" />"
-					/>
-				</s:if>
 			</fieldset>
 		</s:form>
-		<div id="contact_form" class="hide">
-			<fieldset class="form">
-				<ol>
-					<li>
-						<s:select
-							cssClass="contact-type"
-							headerKey=""
-							headerValue="- %{getText('RequestNewContractor.ContactType')} -"
-							label="RequestNewContractor.ContactType"
-							list="@com.picsauditing.actions.contractors.RequestNewContractorAccount$RequestContactType@values()"
-							listValue="%{getText(i18nKey)}"
-							name="contactType"
-						/>
-					</li>
-					<li>
-						<label>
-							<s:text name="RequestNewContractor.label.AddAdditionalNotes" />
-						</label>
-						<s:textarea cssClass="contact-note" name="contactNote" />
-					</li>
-				</ol>
-			</fieldset>
-		</div>
 	</div>
 </body>

@@ -7,15 +7,13 @@
                 if (element.length) {
                     var that = this;
                     
-                    element.delegate('.contact', 'click', this.showContactModal);
-                    
                     element.delegate('#city', 'keyup', this.toggleAddressZip);
                     element.delegate('#country', 'change', this.loadCountrySubdivision);
                     element.delegate('#email_preview', 'click', this.previewEmail);
                     element.delegate('#operator_list', 'change', this.loadOperatorUsersAndTags);
                     element.delegate('#requesting_user', 'change', this.toggleOtherTextfield);
-                    element.delegate('#request_status', 'change', this.toggleStatusFields);
                     element.delegate('.check-matches', 'keyup', PICS.debounce(that.checkMatches, 250));
+                    element.delegate('.contact-note-required', 'click', this.showContactNote);
                     
                     $('.datepicker').datepicker({
                         changeMonth : true,
@@ -145,32 +143,26 @@
                     }
                 });
             },
-            
-            showContactModal: function(event) {
-                var modal = PICS.modal({
-                    title: translate('JS.RequestNewContractor.label.AddAdditionalNotes'),
-                    content: $('#contact_form').html(),
-                    buttons: [
-                        { html: '<a href="javascript:;" class="btn success">' + translate('JS.button.Accept') + '</a>' }
-                    ]
-                });
-                
-                var element = modal.getElement();
-                
-                element.find('.success').bind('click', function() {
-                    $('#contact_note_field').val(element.find('.contact-note').val());
-                    $('#contact_type_field').val(element.find('.contact-type').val());
-                    
-                    $('#save_request_form').trigger('click');
-                });
-                
-                if ($(this).hasClass('phone')) {
-                    element.find('.contact-type').val('PHONE');
-                } else if ($(this).hasClass('email')) {
-                    element.find('.contact-type').val('EMAIL');
+
+            showContactNote: function (event) {
+                var declined = $(this).hasClass('negative');
+                var type = $(this).attr('data-type');
+                var placeholder = $(this).attr('data-placeholder');
+
+                if (type) {
+                    $('#contact_type').val(type);
+                } else {
+                    $('#contact_type').val('');
                 }
-                
-                modal.show();
+
+                if (declined) {
+                    $('#declined_value').val('true');
+                } else {
+                    $('#declined_value').val('false');
+                }
+
+                $('#contact_note').find('textarea').attr('placeholder', placeholder);
+                $('#contact_note').removeClass('hide');
             },
             
             toggleAddressZip: function(event) {
@@ -188,19 +180,6 @@
                     $('#requesting_other').hide();
                 } else {
                     $('#requesting_other').show();
-                }
-            },
-            
-            toggleStatusFields: function(event) {
-                var status = $(this).val();
-                
-                $('#hold_date').hide();
-                $('#reason_declined').hide();
-                
-                if (status.indexOf('Unsuccessful') > -1) {
-                    $('#reason_declined').show();
-                } else if (status.indexOf('Hold') > -1) {
-                    $('#hold_date').show();
                 }
             }
         }
