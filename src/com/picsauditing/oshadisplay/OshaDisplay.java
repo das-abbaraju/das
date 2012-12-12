@@ -1,6 +1,7 @@
 package com.picsauditing.oshadisplay;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
@@ -270,10 +273,33 @@ public class OshaDisplay {
 		} else
 			return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 	}
+	
+	public List<OshaType> getSortedKeySet() {
+		List<OshaType> list = new ArrayList<OshaType>();
+		list.addAll(getStats().keySet());
+		int index = list.indexOf(OshaType.OSHA);
+		if (index > 0) {
+			OshaType osha = list.get(index);
+			list.remove(OshaType.OSHA);
+			list.add(0, osha);
+		}
+		return list;
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map getStats() {
 		Map stats = new HashMap();
+//		Map stats = new TreeMap<OshaType, Map>(new Comparator<OshaType>() {
+//			@Override
+//			public int compare(OshaType o1, OshaType o2) {
+//				if (o1.equals(OshaType.OSHA))
+//					return -1;
+//				if (o2.equals(OshaType.OSHA))
+//					return 1;
+//				return o1.name().compareTo(o2.name());
+//			}
+//			
+//		});
 		for (OshaType oshaType : OshaType.values()) {
 			try {
 				if (oshaOrganizer.hasOshaType(oshaType)) {
@@ -282,6 +308,10 @@ public class OshaDisplay {
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
+		}	
+		for (Object o:stats.keySet()) {
+			int k=0;
+			k++;
 		}
 		return stats;
 	}

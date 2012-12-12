@@ -13,7 +13,7 @@
 			<s:text name="global.Statistics" />
 		</div>
 		<div class="panel_content">
-			<s:iterator value="oshaDisplay.stats.keySet()" var="stat">
+			<s:iterator value="oshaDisplay.sortedKeySet" var="stat">
 				<s:if test="displayOsha.get(#stat)">
 				<table class="table">
 					<thead>
