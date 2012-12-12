@@ -49,6 +49,7 @@ public class RequestedConWidget extends PicsActionSupport {
 			current.addField("crr.requestedByUser RequestedByUserOther");
 			current.addField("requestedByUser.name RequestedUser");
 			current.addField("op.id RequestedByID");
+			current.addField("op.name RequestedBy");
 
 			current.addWhere("crr.holdDate IS NULL");
 			current.addWhere("crr.status = 'Active'");
