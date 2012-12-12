@@ -379,7 +379,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		boolean isLcCorNotify = false;
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, 120);
+		cal.add(Calendar.DATE, 180);
 		if (corAudit.getExpiresDate() != null && corAudit.getExpiresDate().before(cal.getTime())) {
 			if (contractor.getLcCorPhase() == null) {
 				isLcCorNotify = true;
