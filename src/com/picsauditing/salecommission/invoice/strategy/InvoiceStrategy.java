@@ -61,9 +61,6 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = calculateServiceForEachClientSite(contractor, invoice);
 		Map<FeeClass, Integer> totalSites = getTotalSitesForService(clientSiteServiceLevels, invoice.getId());
 		Map<FeeClass, BigDecimal> fees = invoice.getCommissionEligibleFees(false);
-		
-		System.out.println("Fees = " + fees.toString());
-		
 		Map<ContractorOperator, Double> clientRevenueWeights = calculateAllClientRevenueWeights(invoice, clientSiteServiceLevels, totalSites, fees);
 		generateInvoiceCommissions(invoice, clientRevenueWeights);		
 	}
@@ -223,8 +220,6 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		}
 		
 		saveClientSiteServices(clientSiteServices);
-		
-		System.out.println("Total Sites = " + totalSites.toString());
 		
 		return totalSites;
 	}
