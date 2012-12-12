@@ -131,8 +131,9 @@ jQuery(function(){
 	$('div.fieldhelp').helpstay();
 	$('required :input:not(:checkbox)').requiredfields();
 	
-	$('fieldset.form ol > li, form.form ol > li').live('click', function() {
-		$(this).not('.fieldhelp-focused').find(':input:visible:first:not(:disabled)').focus();
+	$('fieldset.form li, form.form li').live('click', function() {
+		$(this).not('.fieldhelp-focused').find(':input:visible:not(:disabled)').focus();
+		e.stopPropagation();
 	});
 	
 	$('fieldset.form h2:not(.noJump), form.form h2:not(.noJump)').jumpTo();
