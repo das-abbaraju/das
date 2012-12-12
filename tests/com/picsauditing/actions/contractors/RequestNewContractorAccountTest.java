@@ -45,7 +45,6 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -351,37 +350,6 @@ public class RequestNewContractorAccountTest {
 
 		assertTrue(requestNewContractorAccount.getOperatorUsers().containsAll(opUserList1));
 		assertTrue(requestNewContractorAccount.getOperatorUsers().containsAll(opUserList2));
-	}
-
-	@Test
-	public void testSetRequestStatus() throws Exception {
-		requestNewContractorAccount.setContractor(contractor);
-
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.Active, requestNewContractorAccount.getStatus());
-
-		when(contractor.getFollowUpDate()).thenReturn(new Date());
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.Hold, requestNewContractorAccount.getStatus());
-
-		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.ClosedSuccessful, requestNewContractorAccount.getStatus());
-
-		when(contractor.getStatus()).thenReturn(AccountStatus.Deactivated);
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.ClosedUnsuccessful, requestNewContractorAccount.getStatus());
-
-		when(contractor.getContactCountByPhone()).thenReturn(1);
-		when(contractor.getTotalContactCount()).thenReturn(1);
-		when(contractor.getStatus()).thenReturn(AccountStatus.Pending);
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.ClosedContactedSuccessful,
-				requestNewContractorAccount.getStatus());
-
-		when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
-		Whitebox.invokeMethod(requestNewContractorAccount, "setRequestStatus");
-		assertEquals(ContractorRegistrationRequestStatus.ClosedUnsuccessful, requestNewContractorAccount.getStatus());
 	}
 
 	@Test
