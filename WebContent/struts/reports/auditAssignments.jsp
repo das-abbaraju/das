@@ -23,7 +23,9 @@
 <h1>Schedule &amp; Assign Audits</h1>
 
 <s:include value="filters.jsp" />
+<s:if test="!permissions.operatorCorporate">
 <div class="blueMain"><a href="AuditCalendar.action" target="_BLANK">Audit Calendar</a></div>
+</s:if>
 
 <div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <s:form id="assignScheduleAuditsForm" method="post" cssClass="forms">

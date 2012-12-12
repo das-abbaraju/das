@@ -20,6 +20,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	// Filter parameters
 	protected boolean showAuditType = true;
+	protected boolean showPqfType = true;
 	protected boolean showPolicyType = false;
 	protected boolean showRecommendedFlag = false;
 	protected boolean showAuditor = true;
@@ -85,6 +86,14 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	public void setShowAuditType(boolean showAuditType) {
 		this.showAuditType = showAuditType;
+	}
+
+	public boolean isShowPqfType() {
+		return showPqfType;
+	}
+
+	public void setShowPqfType(boolean showPqfType) {
+		this.showPqfType = showPqfType;
 	}
 
 	public boolean isShowAuditor() {

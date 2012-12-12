@@ -18,6 +18,10 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 	private int[] auditIDs;
 	private User auditor;
 
+	public ReportContractorAuditAssignment() {
+		super();
+	}
+	
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.AssignAudits);
@@ -50,7 +54,8 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
 		sql.addField("manual.dateVerified");
-		sql.addWhere("manual.dateVerified IS NOT NULL");
+		if (!permissions.isOperatorCorporate())
+			sql.addWhere("manual.dateVerified IS NOT NULL");
 		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 		if (getFilter().isNotRenewingContractors())
 			sql.addWhere("c.renew = 0");
@@ -83,6 +88,20 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		getFilter().setShowAuditFor(false);
 		getFilter().setShowNotRenewingContractors(true);
 		getFilter().setShowContractorsWithPendingMembership(true);
+		if (permissions.isOperatorCorporate()) {
+			getFilter().setShowTaxID(false);
+			getFilter().setShowTrade(false);
+			getFilter().setShowUnConfirmedAudits(false);
+			getFilter().setShowContractorsWithPendingMembership(false);
+			getFilter().setShowTradeInformation(false);
+			getFilter().setShowExpiredDate(false);
+			getFilter().setShowRegistrationDate(false);
+			getFilter().setShowSoleProprietership(false);
+			getFilter().setShowDeactivationReason(false);
+			getFilter().setShowNotRenewingContractors(false);
+			getFilter().setShowPqfType(false);
+		}
+
 	}
 
 	public int[] getAuditIDs() {

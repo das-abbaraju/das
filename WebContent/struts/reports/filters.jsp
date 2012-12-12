@@ -720,7 +720,7 @@
     </div>
 </s:if>
 
-<s:if test="filter.showAuditType">
+<s:if test="filter.showPqdType">
     <div class="filterOption">
         <a href="#" class="filterBox">
             <s:text name="Filters.label.PQFType"/>
