@@ -2,11 +2,10 @@ package com.picsauditing.salecommission.invoice.strategy;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,8 +30,8 @@ import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.search.CommissionAuditQueryMapper;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.Database.QueryMapper;
 
 public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
@@ -155,14 +154,22 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			return Collections.emptyList();
 		}
 
+		Date paymentExpires = findPaymentExpirationDateFromPreviousInvoice(contractor);
+		
+		boolean isActivation = false;
 		if (isActivationInvoice(invoice)) {
-			contractor.setMembershipDate(null);
+			isActivation = true;
 		}
 		
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = new ArrayList<ClientSiteServiceLevel>();
 		for (ContractorOperator clientSite : clientSites) {
 			List<ContractorOperator> oneClientSite = new ArrayList<ContractorOperator>(Arrays.asList(clientSite));
 			contractor.setOperators(oneClientSite);
+			contractor.setPaymentExpires(paymentExpires);
+			
+			if (isActivation) {
+				contractor.setMembershipDate(null);
+			}
 			
 			billingService.calculateContractorInvoiceFees(contractor);
 			List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
@@ -202,7 +209,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			return Collections.emptyMap();
 		}
 		
-		List<ClientSiteServices> clientSiteServices = new ArrayList<ClientSiteServices>();
+		List<CommissionAudit> commissionAudits = new ArrayList<CommissionAudit>();
 		Map<FeeClass, Integer> totalSites = new HashMap<FeeClass, Integer>();
 		for (ClientSiteServiceLevel clientSiteServiceLevel : clientSiteServiceLevels) {
 			for (FeeClass feeClass : clientSiteServiceLevel.getServiceLevels()) {
@@ -213,19 +220,19 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 					totalSites.put(feeClass, 1);
 				}
 				
-				ClientSiteServices services = buildClientSiteService(invoiceId, 
+				CommissionAudit commissionAudit = buildCommissionAudit(invoiceId, 
 						clientSiteServiceLevel.getClientSite().getOperatorAccount().getId(), feeClass);
-				clientSiteServices.add(services);
+				commissionAudits.add(commissionAudit);
 			}
 		}
 		
-		saveClientSiteServices(clientSiteServices);
+		saveClientSiteServices(commissionAudits);
 		
 		return totalSites;
 	}
 	
-	private ClientSiteServices buildClientSiteService(int invoiceId, int clientSiteId, FeeClass feeClass) {
-		ClientSiteServices clientSiteServices = new ClientSiteServices();
+	private CommissionAudit buildCommissionAudit(int invoiceId, int clientSiteId, FeeClass feeClass) {
+		CommissionAudit clientSiteServices = new CommissionAudit();
 		clientSiteServices.setInvoiceId(invoiceId);
 		clientSiteServices.setClientSiteId(clientSiteId);
 		clientSiteServices.setFeeClass(feeClass);
@@ -233,22 +240,11 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		return clientSiteServices;
 	}
 	
-	private void saveClientSiteServices(List<ClientSiteServices> clientSiteServices) {
+	private void saveClientSiteServices(List<CommissionAudit> clientSiteServices) {
 		String sql = "INSERT INTO commission_breakdown_auditing (invoiceID, clientSiteID, feeClass) values (?, ?, ?)";
 		
-		QueryMapper<ClientSiteServices> queryMapper = new QueryMapper<ClientSiteServices>() {
-
-			@Override
-			public void mapObject(ClientSiteServices clientSiteServices, PreparedStatement preparedStatement) throws SQLException {
-				preparedStatement.setInt(1, clientSiteServices.getInvoiceId());
-				preparedStatement.setInt(2, clientSiteServices.getClientSiteId());
-				preparedStatement.setString(3, clientSiteServices.getFeeClass().name());
-			}
-			
-		};
-		
 		try {
-			Database.executeBatch(sql, clientSiteServices, queryMapper);
+			Database.executeBatch(sql, clientSiteServices, new CommissionAuditQueryMapper());
 		} catch (Exception e) {
 			logger.error("An error occurred while performing a batch insert for invoice commissions", e);
 		}
@@ -283,6 +279,41 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		}
 
 		return clientSites;
+	}
+	
+	private Date findPaymentExpirationDateFromPreviousInvoice(ContractorAccount contractor) {
+		List<Invoice> invoices = contractor.getSortedInvoices();
+		if (CollectionUtils.isEmpty(invoices)) {
+			return null;
+		}
+		
+		Invoice invoice = findPreviousNonVoidedInvoice(invoices);
+		if (invoice == null) {
+			return null;
+		}
+		
+		for (InvoiceItem invoiceItem : invoice.getItems()) {
+			if (invoiceItem != null && invoiceItem.getPaymentExpires() != null) {
+				return invoiceItem.getPaymentExpires();				
+			}
+		}
+		
+		return null;
+	}
+	
+	private Invoice findPreviousNonVoidedInvoice(List<Invoice> orderedInvoices) {
+		if (orderedInvoices.size() < 3) {
+			return null;
+		}
+		
+		for (int index = 2; index < orderedInvoices.size(); index++) {
+			Invoice invoice = orderedInvoices.get(index);
+			if (!invoice.getStatus().isVoid()) {
+				return invoice;
+			}
+		}
+		
+		return null;
 	}
 
 }

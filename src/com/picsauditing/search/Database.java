@@ -11,9 +11,11 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.util.DatabaseUtil;
+import com.picsauditing.util.Strings;
 
 public class Database {
 		
@@ -194,6 +196,10 @@ public class Database {
 	}
 	
 	public static <T> void executeBatch(String sql, List<T> items, QueryMapper<T> queryMapper) throws SQLException {
+		if (Strings.isEmpty(sql) || CollectionUtils.isEmpty(items) || queryMapper == null) {
+			return;
+		}
+		
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		
@@ -203,13 +209,13 @@ public class Database {
 			
 			int count = 0;
 			for (T item : items) {
-				queryMapper.mapObject(item, preparedStatement);
+				queryMapper.mapObjectToPreparedStatement(item, preparedStatement);
 				preparedStatement.addBatch();
 				
 				// once we hit the batch size maximum, run the batch
 				if(++count % BATCH_SIZE == 0) {
 			        preparedStatement.executeBatch();
-			    }				
+			    }
 			}
 			
 			preparedStatement.executeBatch();			
@@ -219,13 +225,4 @@ public class Database {
 		}
 	}
 	
-	/**
-	 * Generic mapper for mapping any object type to the prepared statement, for any type of
-	 * query operation.
-	 */
-	public static abstract class QueryMapper<T> {
-		
-		public abstract void mapObject(T object, PreparedStatement preparedStatement) throws SQLException;
-		
-	}
 }

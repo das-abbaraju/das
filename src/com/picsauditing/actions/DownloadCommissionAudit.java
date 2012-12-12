@@ -60,8 +60,8 @@ public class DownloadCommissionAudit extends PicsActionSupport {
 	
 	private String buildSqlForCommissionBreakdown() {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT a.name, cba.* FROM commission_breakdown_auditing cba ");
-		sql.append("JOIN accounts a ON a.id = cba.clientSiteID ");
+		sql.append("SELECT a.name, cba.* FROM commission_audit ca ");
+		sql.append("JOIN accounts a ON a.id = ca.clientSiteID ");
 		sql.append("WHERE invoiceID = ");
 		sql.append(invoiceId);
 		
