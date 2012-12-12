@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<s:url action="ManageReports" var="manage_reports_url" />
+
 <title>Dynamic Reporting</title>
 
 <div id="main" class="container">
@@ -187,6 +189,6 @@
     </div>
     
     <footer>
-        <a href="#" class="btn btn-success btn-large">Start Dynamic Reporting <i class="icon-circle-arrow-right icon-large"></i></a>
+        <a href="${manage_reports_url}" class="btn btn-success btn-large">Start Dynamic Reporting <i class="icon-circle-arrow-right icon-large"></i></a>
     </footer>
 </div>

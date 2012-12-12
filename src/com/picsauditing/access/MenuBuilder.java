@@ -402,6 +402,7 @@ public final class MenuBuilder {
             referenceMenu.addChild(getText("TradeTaxonomy.title"), "TradeTaxonomy.action", "TradeTaxonomy");
 
         referenceMenu.addChild("Navigation Menu", "Tutorial!navigationMenu.action", "navigation_menu");
+        referenceMenu.addChild("Dynamic Reports", "Tutorial!dynamicReport.action", "dynamic_report");
     }
 
     private static void addUserMenu(MenuComponent menu, Permissions permissions) {
