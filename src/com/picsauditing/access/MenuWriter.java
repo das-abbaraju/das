@@ -24,7 +24,7 @@ public class MenuWriter {
         }
 
         if (menuItem.hasHtmlID()) {
-        	json.put("id", menuItem.getHtmlId());
+        	json.put("id", menuItem.getHtmlId() + "_menu");
         }
 
     	if (menuItem.hasTarget()) {

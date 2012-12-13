@@ -82,8 +82,7 @@ public class MenuWriterTest {
 
     @Test
     public void testConvertToSimpleJSON () {
-    	//String json = "{'id':'parent_id','text':'parent_name','menu':[{'text':'child_name','target':'child_target','menu':[{'text':'subChild_name'}],'href':'child_url'}]}";
-    	String json = "{'id':'parent_id','text':'parent_name','menu':{'items':[{'text':'child_name','menu':{'items':[{'text':'subChild_name'}]},'target':'child_target','url':'child_url'}]}}";
+    	String json = "{'id':'parent_id_menu','text':'parent_name','menu':{'items':[{'text':'child_name','menu':{'items':[{'text':'subChild_name'}]},'target':'child_target','url':'child_url'}]}}";
     	json = convertQuotes(json);
 
     	MenuComponent parent = new MenuComponent();
