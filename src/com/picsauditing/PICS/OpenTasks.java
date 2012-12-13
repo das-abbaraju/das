@@ -598,7 +598,12 @@ public class OpenTasks extends TranslationActionSupport {
 							needed++;
 						}
 					} 
-					if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
+					if (conAudit.getAuditType().getId() == AuditType.COR || conAudit.getAuditType().getId() == AuditType.IEC_AUDIT) {
+						if (conAudit.hasCaoStatus(AuditStatus.Resubmitted)
+									|| conAudit .hasCaoStatus(AuditStatus.Incomplete) || conAudit
+									.hasCaoStatus(AuditStatus.Pending))
+									needed++;
+					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
 						if (conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
 								&& cao.getStatus().isPending()) {
 							needed++;
@@ -606,11 +611,6 @@ public class OpenTasks extends TranslationActionSupport {
 						if (cao.getStatus().before(AuditStatus.Complete)) {
 							needed++;
 						}
-					}
-					if ((conAudit.getAuditType().getId() == AuditType.COR || conAudit.getAuditType().getId() == AuditType.IEC_AUDIT)
-							&& (conAudit.hasCaoStatus(AuditStatus.Resubmitted) || conAudit
-									.hasCaoStatus(AuditStatus.Incomplete))) {
-						needed++;
 					}
 
 				}
