@@ -27,6 +27,8 @@
                          class="com.picsauditing.strutsutil.JSONArrayResult"/>
             <result-type name="xml"
                          class="com.picsauditing.strutsutil.XMLResult"/>
+            <result-type name="file"
+                         class="com.picsauditing.strutsutil.FileResult"/>
         </result-types>
 
         <interceptors>
@@ -112,6 +114,7 @@
                 ${url}
             </result>
             <result name="xml" type="xml"></result>
+            <result name="file" type="file"></result>
         </global-results>
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="Exception"/>
@@ -1157,7 +1160,7 @@
         </action>
 		
 		<action name="DownloadCommissionAudit" class="com.picsauditing.actions.DownloadCommissionAudit">
-            <result>/struts/blank.jsp</result>
+            <result type="file" />
         </action>
     </package>
 

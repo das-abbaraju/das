@@ -3,14 +3,12 @@ package com.picsauditing.actions;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
-
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.picsauditing.search.Database;
+import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -28,16 +26,14 @@ public class DownloadCommissionAudit extends PicsActionSupport {
 			getCommissionAuditingData(getFileName(), csvOutput);
 		}
 		
-		return SUCCESS;
+		return FILE_DOWNLOAD;
 	}
 	
 	private void getCommissionAuditingData(String fileName, StringBuilder csvOutput) throws IOException {
-		ServletActionContext.getResponse().setContentType("text/csv");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + fileName);
-		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		outstream.write(csvOutput.toString().getBytes());
-		outstream.flush();
-		ServletActionContext.getResponse().flushBuffer();
+		fileContainer = new FileDownloadContainer.Builder()
+				.contentType("text/csv")
+				.contentDisposition("attachment; filename=" + fileName)
+				.file(csvOutput.toString().getBytes()).build();
 	}
 	
 	private StringBuilder buildCsvFile() {
@@ -60,7 +56,7 @@ public class DownloadCommissionAudit extends PicsActionSupport {
 	
 	private String buildSqlForCommissionBreakdown() {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT a.name, cba.* FROM commission_audit ca ");
+		sql.append("SELECT a.name, ca.* FROM commission_audit ca ");
 		sql.append("JOIN accounts a ON a.id = ca.clientSiteID ");
 		sql.append("WHERE invoiceID = ");
 		sql.append(invoiceId);

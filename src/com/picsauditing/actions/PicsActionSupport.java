@@ -17,6 +17,7 @@ import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -61,6 +62,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     public static final String JSON = "json";
     public static final String JSONP = "jsonp";
     public static final String XML = "xml";
+    public static final String FILE_DOWNLOAD = "file";
     public static final String JSON_ARRAY = "jsonArray";
     public static final String CHART_XML = "chartXML";
     public static final String REDIRECT = "redirect";
@@ -126,6 +128,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
      */
     protected JSONArray jsonArray = new JSONArray();
 
+    /**
+     * Container to hold a file being downloaded by the user.
+     * 
+     * @see com.picsauditing.strutsutil.CsvFileResult
+     */
+    protected FileDownloadContainer fileContainer = null;
+    
     /**
      * Current logged in user
      */
@@ -204,6 +213,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
         if (CONFIG == null) {
             CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
         }
+        
         return CONFIG;
     }
 
@@ -692,6 +702,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     public void setJsonArray(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
+    }
+    
+    public FileDownloadContainer getFileContainer() {
+    	return fileContainer;
+    }
+    
+    public void setFileContainer(FileDownloadContainer fileContainer) {
+    	this.fileContainer = fileContainer;
     }
 
     protected int getParameter(String name) {
