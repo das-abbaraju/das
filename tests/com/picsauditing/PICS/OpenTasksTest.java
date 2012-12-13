@@ -787,4 +787,28 @@ public class OpenTasksTest {
 
 		Whitebox.setInternalState(openTasks, "contractor", contractor);
 	}
+	
+	@Test
+	public void testCorOpenTaskNeeded() throws Exception {
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
+		contractor.getAudits().add(audit);
+		audit.getAuditType().setCanContractorEdit(true);
+		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+//		audit.getOperators().add(cao);
+		
+		when(permissions.hasPermission(OpPerms.ContractorSafety)).thenReturn(true);
+		
+		cao.setStatus(AuditStatus.Pending);
+		Boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		assertTrue(result);
+		
+		cao.setStatus(AuditStatus.Submitted);
+		result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		assertFalse(result);
+
+		cao.setStatus(AuditStatus.Resubmitted);
+		result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		assertTrue(result);
+}
 }
