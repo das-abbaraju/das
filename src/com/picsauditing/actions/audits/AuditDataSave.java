@@ -64,15 +64,15 @@ public class AuditDataSave extends AuditActionSupport {
 		AuditCatData catData;
 		try {
 			getUser();
-			AuditData newCopy = null;
+			AuditData databaseCopy = null;
 			if (auditData.getId() > 0) {
-				newCopy = auditDataDAO.find(auditData.getId());
+				databaseCopy = auditDataDAO.find(auditData.getId());
 			} else {
 				if (auditData.getAudit() == null)
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDAO.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+				databaseCopy = auditDataDAO.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
 						.getId());
 			}
 
@@ -83,8 +83,8 @@ public class AuditDataSave extends AuditActionSupport {
 			 * prevent the object from saving.
 			 */
 			if ("reload".equals(button)) {
-				if (auditData.getId() == 0 && newCopy != null) {
-					auditData = newCopy;
+				if (auditData.getId() == 0 && databaseCopy != null) {
+					auditData = databaseCopy;
 				}
 				loadAnswerMap();
 
@@ -94,19 +94,20 @@ public class AuditDataSave extends AuditActionSupport {
 			boolean verifyButton = ("verify".equals(button));
 			boolean commentChanged = false;
 			boolean answerChanged = false;
-
-			AuditQuestion dataQuestion = questionDao.find(auditData.getQuestion().getId());
+//TODO kirk
+//			AuditQuestion dataQuestion = questionDao.find(auditData.getQuestion().getId());
 			// get by lazy load
-			dataQuestion.setCategory(dataQuestion.getCategory());
-			auditData.setQuestion(dataQuestion);
+//			dataQuestion.setCategory(dataQuestion.getCategory());
+//			auditData.setQuestion(dataQuestion);
 
 			/*
-			 * If the `newCopy` is not set, then this is the first time the
+			 * If the `databaseCopy` is not set, then this is the first time the
 			 * question is being answered.
 			 */
-			if (newCopy == null) {
+			if (databaseCopy == null) {
 				// insert mode
 				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
+				loadCategoryIfNeeded();
 				auditData.setAudit(audit);
 				if (!answerFormatValid(auditData, null)) {
 					return SUCCESS;
@@ -114,26 +115,27 @@ public class AuditDataSave extends AuditActionSupport {
 				SpringUtils.publishEvent(new AuditDataSaveEvent(auditData));
 			} else {
 				// update mode
-				if (!answerFormatValid(auditData, newCopy)) {
+				if (!answerFormatValid(auditData, databaseCopy)) {
 					return SUCCESS;
 				}
 
-				commentChanged = hasCommentChanged(newCopy);
-				answerChanged = hasAnswerChanged(newCopy);
+				commentChanged = hasCommentChanged(databaseCopy);
+				answerChanged = hasAnswerChanged(databaseCopy);
 
 				if (commentChanged) {
-					newCopy.setComment(auditData.getComment());
+					databaseCopy.setComment(auditData.getComment());
 				}
 
 				if (answerChanged) {
-					changeAuditDataAnswer(newCopy);
+					changeAuditDataAnswer(databaseCopy);
 				}
 
 				if (verifyButton) {
-					verifyAuditData(newCopy);
+					verifyAuditData(databaseCopy);
 				}
 
-				auditData = newCopy;
+				auditData = databaseCopy;
+				loadCategoryIfNeeded();
 			}
 
 			loadAnswerMap();
@@ -291,6 +293,15 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 		autoFillRelatedOshaIncidentsQuestions(auditData);
 		return SUCCESS;
+	}
+	
+	private void loadCategoryIfNeeded() {
+		if (auditData.getQuestion().getCategory() == null) {
+			AuditQuestion dataQuestion = questionDao.find(auditData
+					.getQuestion().getId());
+			dataQuestion.setCategory(dataQuestion.getCategory());
+			auditData.getQuestion().setCategory(dataQuestion.getCategory());
+		}
 	}
 
 	private void checkNaicsQuestionAndValidity(int currentQuestionId) {
@@ -565,7 +576,6 @@ public class AuditDataSave extends AuditActionSupport {
 	private void loadAnswerMap() {
 		List<Integer> questionIds = new ArrayList<Integer>();
 		AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
-		auditData.setQuestion(question);
 		questionIds.add(auditData.getQuestion().getId());
 		if (auditData.getQuestion().getRequiredQuestion() != null) {
 			AuditQuestion q = auditData.getQuestion().getRequiredQuestion();
