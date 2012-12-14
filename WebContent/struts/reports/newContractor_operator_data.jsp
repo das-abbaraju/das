@@ -173,20 +173,28 @@
    							</s:param>
    						</s:url>
     					<s:if test="get('genID') > 0">
-    						<s:url action="ContractorView" var="contractor_view">
-    							<s:param name="id">
-    								${row.get('id')}
-    							</s:param>
-    						</s:url>
-							<s:url action="ContractorFacilities" var="contractor_facilities">
-	  							<s:param name="id">
-	  								${row.get('id')}
-	  							</s:param>
-	  						</s:url>
-	  						
-    						<a href="${contractor_view}" class="preview">
-    							<s:text name="button.View" />
-    						</a>
+    						<s:if test="get('status') == 'Requested'">
+    							<s:url action="RequestNewContractorAccount" var="requested_contractor">
+	    							<s:param name="contractor">
+	    								${row.get('id')}
+	    							</s:param>
+	    						</s:url>
+		  						
+	    						<a href="${requested_contractor}" class="preview">
+	    							<s:text name="button.View" />
+	    						</a>
+    						</s:if>
+    						<s:else>
+	    						<s:url action="ContractorView" var="contractor_view">
+	    							<s:param name="id">
+	    								${row.get('id')}
+	    							</s:param>
+	    						</s:url>
+		  						
+	    						<a href="${contractor_view}" class="preview">
+	    							<s:text name="button.View" />
+	    						</a>
+    						</s:else>
                             
     						<pics:permission perm="RemoveContractors">
     							<br />
