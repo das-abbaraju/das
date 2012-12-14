@@ -286,6 +286,7 @@ public class PicsMenu {
 			subMenu.addChild("QuickBooks Sync Canada", "QBSyncList.action?currency=CAD", "QuickBooksSync_CAD");
 			subMenu.addChild("QuickBooks Sync UK", "QBSyncList.action?currency=GBP", "QuickBooksSync_GBP");
 			subMenu.addChild("QuickBooks Sync EUR", "QBSyncList.action?currency=EUR", "QuickBooksSync_EUR");
+			subMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
 		}
 
 		subMenu = menu.addChild(getText("global.InsureGUARD"));
