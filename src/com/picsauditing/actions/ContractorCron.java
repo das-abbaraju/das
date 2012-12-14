@@ -366,30 +366,23 @@ public class ContractorCron extends PicsActionSupport {
 		if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_LCCOR))
 			return;
 
-		ContractorAudit corAudit = null;
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getId() == AuditType.COR) {
-				corAudit = audit;
-				break;
-			}
-		}
-
-		if (corAudit == null)
-			return;
-
 		boolean isLcCorNotify = false;
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 180);
-		if (corAudit.getExpiresDate() != null && corAudit.getExpiresDate().before(cal.getTime())) {
-			if (contractor.getLcCorPhase() == null) {
-				isLcCorNotify = true;
-			} else if (!contractor.getLcCorPhase().isAuditPhase()) {
-				isLcCorNotify = true;
-			} else if (contractor.getLcCorPhase().equals(LcCorPhase.Done)) {
-				if (contractor.getLcCorNotification() == null) {
-					isLcCorNotify = true;
-				} else if (contractor.getLcCorNotification().before(corAudit.getExpiresDate())) {
-					isLcCorNotify = true;
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.COR) {
+				if (audit.getExpiresDate() != null && audit.getExpiresDate().before(cal.getTime())) {
+					if (contractor.getLcCorPhase() == null) {
+						isLcCorNotify = true;
+					} else if (!contractor.getLcCorPhase().isAuditPhase()) {
+						isLcCorNotify = true;
+					} else if (contractor.getLcCorPhase().equals(LcCorPhase.Done)) {
+						if (contractor.getLcCorNotification() == null) {
+							isLcCorNotify = true;
+						} else if (contractor.getLcCorNotification().before(audit.getExpiresDate())) {
+							isLcCorNotify = true;
+						}
+					}
 				}
 			}
 		}
