@@ -9,7 +9,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
+@Deprecated
+// This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public final class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
 
@@ -19,14 +20,9 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 	@Override
 	protected Collection<OperatorAccount> getItems() {
 		// HSE specific -- We want operators to search for sibling operators
-		if (!permissions.isAdmin() && !permissions.isCorporate() && !permissions.isRequiresCompetencyReview()
-				&& !permissions.isGeneralContractor() && permissions.getLinkedGeneralContractors().isEmpty()) {
+		if (!permissions.isAdmin() && !permissions.isCorporate() && !permissions.isRequiresCompetencyReview()) {
 			// TODO Non admin/corporate queries not supported yet
 			return Collections.emptyList();
-		}
-
-		if (!permissions.getLinkedGeneralContractors().isEmpty()) {
-			return dao.findWhere(false, "a.id IN (" + Strings.implode(permissions.getLinkedGeneralContractors()) + ")");
 		}
 
 		String corpPerms = "";
@@ -39,12 +35,13 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(q)) {
-				if (isSearchDigit())
+				if (isSearchDigit()) {
 					return dao.findWhere(showCorporates, "a.id LIKE '%" + Strings.escapeQuotes(q) + "%'" + corpPerms,
 							permissions);
-				else
+				} else {
 					return dao.findWhere(showCorporates, "a.name LIKE '%" + Strings.escapeQuotes(q) + "%'" + corpPerms,
 							permissions);
+				}
 			}
 		} else if (itemKeys.length > 0) {
 			return dao.findWhere(true, "a.id IN (" + Strings.implodeForDB(itemKeys, ",") + ")" + corpPerms, limit);
