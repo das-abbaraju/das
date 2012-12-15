@@ -61,5 +61,10 @@
 &lt;s:set var="{{YOUR_VARIABLE_NAME}}" value="%{''}" /&gt;
 </pre>
     
+    PASSING IN OBJECTS INTO PARTIALS<br />
+    
+    PASSING IN STRINGS INTO PARTIALS<br />
+    
+    USING SPARAMS FOR SURLS, ETC
     </div>
 </section>

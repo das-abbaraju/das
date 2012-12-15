@@ -6,6 +6,6 @@
         <a href="#overview">Overview <i class="icon-chevron-right"></i></a>
     </li>
     <li>
-        <a href="#xml">XML <i class="icon-chevron-right"></i></a>
+        <a href="#xml">Struts 2.x<i class="icon-chevron-right"></i></a>
     </li>
 </ul>

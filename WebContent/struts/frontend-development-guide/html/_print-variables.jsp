@@ -102,5 +102,13 @@
 &lt;s:property value="name" escape="true" /&gt;
 </pre>
 
+    DOES SPROPERTY SEARCH ENTIRE VALUE STACK AND EXPRESSION LANGUAGE DOES NOT?<br />
+    
+    STEXT AND GETTEXT DIFFERENCE?<br />
+        STEXT - ACTIONCONTEXTLOCALE (LOCALE IN SESSION? MAYBE)<br />
+        GETTEXT - CAN SPECIFY LOCALE SPROPERTY VALUE="GETTEXT" KEY, LOCALE<br />
+
+    WHAT IS %{
+
     </div>
 </section>

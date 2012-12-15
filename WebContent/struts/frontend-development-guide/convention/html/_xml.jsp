@@ -3,7 +3,7 @@
 
 <section id="xml" class="guide">
     <div class="page-header">
-        <h1>No XML in HTML</h1>
+        <h1>Struts 2.x</h1>
     </div>
     
     <div class="alert alert-info">
