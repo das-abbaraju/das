@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
 import com.picsauditing.quickbooks.qbxml.CurrencyRef;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -67,7 +68,14 @@ public class QBXmlAdaptor {
 
 		Marshaller createMarshaller = jc.createMarshaller();
 		createMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		// createMarshaller.setProperty(Marshaller.JAXB_ENCODING, "US-ASCII");       // PICS-7937
+		
+		// This is for the stupidity of QuickBooks, delete under penalty of death while 
+		// we are still using QuickBooks.
+		AppProperty property = getAppPropertyDao().find("QuickBooks.JAXB.ASCII.Encoding");
+		if ("Y".equals(property.getValue())) {
+			createMarshaller.setProperty(Marshaller.JAXB_ENCODING, "US-ASCII"); // PICS-7937
+		}
+		
 		return createMarshaller;
 	}
 

@@ -152,6 +152,7 @@ public class InsertPayments extends PaymentAdaptor {
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
+//		logger.error("XML after marshalling: " + writer.toString());
 		PicsLogger.stop();
 
 		return writer.toString();

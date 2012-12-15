@@ -128,6 +128,7 @@ public class UpdateContractors extends CustomerAdaptor {
 		Marshaller m = makeMarshaller();
 
 		m.marshal(xml, writer);
+//		logger.error("XML after marshalling: " + writer.toString());
 		return writer.toString();
 
 	}
