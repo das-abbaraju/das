@@ -7,6 +7,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 public class InputValidator {
@@ -16,10 +17,29 @@ public class InputValidator {
     @Autowired
     private ContractorAccountDAO contractorAccountDao;
 
-    // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
-    public final static String SPECIAL_CHAR_REGEX = "(?s).*[;<>&`\"].*";
+    private static final int MAX_STRING_LENGTH = 100;
 
-    public final static String VALID_USERNAME_REGEX = "[\\w+.@-]{5,100}";
+    public static final String NO_ERROR = "";
+    public static final String REQUIRED_KEY = "JS.Validation.Required";
+    public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
+    public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
+    public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
+    public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
+    public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
+
+    // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
+    public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>&`\"].*";
+
+    public static final String VALID_USERNAME_REGEX = "[\\w+.@-]+";
+
+    // I'd like to keep this simple. The user knows their email address.
+    // Our other option is to use this monster: http://www.ex-parrot.com/pdw/Mail-RFC822-Address.html
+    public static final String EMAIL_REGEX = ".+@.+\\..+";
+
+    // Allow NANP phones with leadings 1s and potential x1234 extensions as well as international
+    // formatted phone numbers. Modified from http://blog.stevenlevithan.com/archives/validate-phone-number
+    // and shown in the Regular Expressions Cookbook (O'Reilly, 2009)
+    public static final String PHONE_NUMBER_REGEX = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}((?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
 
     public boolean isUsernameTaken(String username) {
         return userDao.duplicateUsername(username, 0);
@@ -56,11 +76,100 @@ public class InputValidator {
             return false;
         }
 
-        if (username.matches(VALID_USERNAME_REGEX)) {
-            return true;
+        if (!username.matches(VALID_USERNAME_REGEX)) {
+            return false;
         }
 
-        return false;
+        if (username.length() > MAX_STRING_LENGTH) {
+        	return false;
+        }
+
+        return true;
+    }
+
+    public String validateDate(Date date) {
+    	return validateDate(date, true);
+    }
+
+    public String validateDate(Date date, boolean required) {
+    	if (date == null) {
+    		if (required) {
+    			return REQUIRED_KEY;
+    		}
+
+    		return NO_ERROR;
+    	}
+
+    	int yearsSince1900 = date.getYear();
+    	if (yearsSince1900 < (1000 - 1900) || yearsSince1900 > (9999 - 1900)) {
+    		return INVALID_DATE_KEY;
+    	}
+
+    	int zeroIndexedMonth = date.getMonth();
+    	if (zeroIndexedMonth < 0 || zeroIndexedMonth > 11) {
+    		return INVALID_DATE_KEY;
+    	}
+
+    	int oneIndexedDayOfMonth = date.getDate();
+    	if (oneIndexedDayOfMonth < 1 || oneIndexedDayOfMonth > 31) {
+    		return INVALID_DATE_KEY;
+    	}
+
+    	return NO_ERROR;
+    }
+
+    public String validateName(String name) {
+    	return validateName(name, true);
+    }
+
+    public String validateName(String name, boolean required) {
+    	return validateString(name, required, true, true, false, false);
+    }
+
+    public String validateEmail(String email) {
+    	return validateEmail(email, true);
+    }
+
+    public String validateEmail(String email, boolean required) {
+    	return validateString(email, required, true, true, true, false);
+    }
+
+    public String validatePhoneNumber(String phoneNumber) {
+    	return validatePhoneNumber(phoneNumber, true);
+    }
+
+    public String validatePhoneNumber(String phoneNumber, boolean required) {
+    	return validateString(phoneNumber, required, true, true, false, true);
+    }
+
+    private String validateString(String str, boolean required, boolean maxLengthCheck, boolean dangerousCharsCheck,
+    		boolean emailFormatCheck, boolean phoneFormatCheck) {
+
+    	if (StringUtils.isEmpty(str)) {
+    		if (required) {
+    			return REQUIRED_KEY;
+    		}
+
+    		return NO_ERROR;
+    	}
+
+    	if (maxLengthCheck && str.length() > MAX_STRING_LENGTH) {
+    		return MAX_100_CHARS_KEY;
+    	}
+
+    	if (dangerousCharsCheck && !containsOnlySafeCharacters(str)) {
+    		return NO_SPECIAL_CHARS_KEY;
+    	}
+
+    	if (emailFormatCheck && !str.matches(EMAIL_REGEX)) {
+    		return INVALID_EMAIL_FORMAT_KEY;
+    	}
+
+    	if (phoneFormatCheck && !str.matches(PHONE_NUMBER_REGEX)) {
+    		return INVALID_PHONE_FORMAT_KEY;
+    	}
+
+    	return NO_ERROR;
     }
 
 }

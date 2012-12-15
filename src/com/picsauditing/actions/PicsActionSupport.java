@@ -21,6 +21,7 @@ import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
@@ -1089,4 +1090,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     public void setActionErrorHeader(String header) {
         actionErrorHeader = header;
     }
+
+	protected void addFieldErrorIfMessage(String fieldName, String errorMessageKey) {
+		if (StringUtils.isNotEmpty(errorMessageKey)) {
+			addFieldError(fieldName, getText(errorMessageKey));
+		}
+	}
+
 }

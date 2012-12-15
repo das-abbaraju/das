@@ -2,60 +2,18 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<%-- URLS --%>
-<s:url action="EmployeeDashboard" var="employee_dashboard">
-	<s:param name="id">
-		${account.id}
-	</s:param>
-</s:url>
-<s:url action="ManageEmployees" method="add" var="add_employee">
-	<s:param name="account">
-		${account.id}
-	</s:param>
-	<s:param name="audit">
-		${audit.id}
-	</s:param>
-	<s:param name="questionId">
-		${questionId}
-	</s:param>
-</s:url>
 <s:url action="EmployeeList" method="download" var="employee_list_download">
-	<s:param name="filter.accountName">
-		${account.id}
-	</s:param>
+	<s:param name="filter.accountName">${account.id}</s:param>
 </s:url>
 
-<head>
-	<title>
-		<s:text name="ManageEmployees.title" />
-	</title>
+<s:url action="ManageEmployees" method="add" var="add_employee">
+	<s:param name="account">${account.id}</s:param>
+	<s:param name="audit">${audit.id}</s:param>
+	<s:param name="questionId">${questionId}</s:param>
+</s:url>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
-	<link rel="stylesheet" type="text/css" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
-	<style>
-		.sites-label
-		{
-			display: inline !important;
-			font-weight: normal !important;
-		}
-		
-		.layout td
-		{
-			vertical-align: top;
-		}
-		
-		#new_project_div,
-		.qualified-tasks
-		{
-			display: none;
-		}
-	</style>
-	
-	<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
-	<script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js?v=${version}"></script>
-	<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js?v=${version}"></script>
-</head>
+<s:include value="_manage-employees-head.jsp" />
+
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 		<s:if test="audit.id > 0">
@@ -84,42 +42,28 @@
 				</div>
 			</s:elseif>
 		</s:if>
-	
-		<h1>
-			<s:property value="account.name" />
-			<span class="sub">
-				<s:text name="ManageEmployees.title" />
-			</span>
-		</h1>
-		
-		<s:include value="../../actionMessages.jsp"/>
-	
-		<s:if test="audit == null" >
-			<div>
-				<a href="${employee_dashboard}">
-					<s:text name="global.EmployeeGUARD" />
-				</a>
-			</div>
-		</s:if>
-		
-		<s:if test="account.employees.size() == 0 && employee == null">
-			<div class="info">
-				<s:text name="ManageEmployees.message.NoEmployees">
-					<s:param>
-						<s:text name="ManageEmployees.link.Add" />
-					</s:param>
-				</s:text>
-			</div>
-		</s:if>
-	
-		<a href="${add_employee}" class="add" id="addNewEmployee">
-			<s:text name="ManageEmployees.link.Add" />
-		</a>
-		<br />
-		<a href="javascript:;" class="add" id="import_excel" data-account="${account.id}">
-			<s:text name="ManageEmployees.link.Import" />
-		</a>
-		
+
+        <s:include value="_manage-employees-header.jsp" />
+
+        <s:if test="account.employees.size() == 0">
+        	<div class="info">
+        		<s:text name="ManageEmployees.message.NoEmployees">
+        			<s:param>
+        				<s:text name="ManageEmployees.link.Add" />
+        			</s:param>
+        		</s:text>
+        	</div>
+        </s:if>
+
+        <a href="${add_employee}" class="add" id="addNewEmployee">
+        	<s:text name="ManageEmployees.link.Add" />
+        </a>
+        <br />
+
+        <a href="javascript:;" class="add" id="import_excel" data-account="${account.id}">
+        	<s:text name="ManageEmployees.link.Import" />
+        </a>
+
 		<table class="layout">
 			<tr>
 				<s:if test="account.employees.size > 0">
@@ -138,7 +82,7 @@
 										<s:text name="Employee.title" />
 									</th>
 									<th>
-										<s:text name="EmployeeClassification" />
+										<s:text name="Employee.classification" />
 									</th>
 									<th>
 										<s:text name="button.Edit" />
@@ -148,57 +92,68 @@
 									</th>
 								</tr>
 							</thead>
+
 							<tbody>
-								<s:iterator value="activeEmployees" id="e">
-									<tr id="employee_${e.id}">
+								<s:iterator value="activeEmployees" id="currentEmployee">
+
+                                    <s:url action="ManageEmployees" method="edit" var="edit_employee">
+                                    	<s:param name="account">${account.id}</s:param>
+                                    	<s:param name="employee">${currentEmployee.id}</s:param>
+                                    	<s:param name="audit">${audit.id}</s:param>
+                                    	<s:param name="questionId">${questionId}</s:param>
+                                    </s:url>
+
+                                    <s:set var="edit_profile_title" value="%{getText('ManageEmployees.title.EditProfile')}" />
+
+									<tr id="employee_${currentEmployee.id}">
 										<td>
-											<s:property value="#e.id" />
+											<s:property value="#currentEmployee.id" />
 										</td>
 										<td>
 											<a
-												href="#employee=<s:property value="#e.id" />"
+												href="${edit_employee}"
 												class="load-employee"
-												title="<s:text name="ManageEmployees.title.EditProfile" />"
+												title="${edit_profile_title}"
 												data-audit="${audit.id}"
-												data-employee="${e.id}"
+												data-employee="${currentEmployee.id}"
 												data-questionId="${questionId}"
 											>
-												<s:property value="#e.lastName" />
+												<s:property value="#currentEmployee.lastName" />
 											</a>
 										</td>
 										<td>
 											<a
-												href="#employee=<s:property value="#e.id" />"
+												href="${edit_employee}"
 												class="load-employee"
-												title="<s:text name="ManageEmployees.title.EditProfile" />"
+												title="${edit_profile_title}"
 												data-audit="${audit.id}"
-												data-employee="${e.id}"
+												data-employee="${currentEmployee.id}"
 												data-questionId="${questionId}"
 											>
-												<s:property value="#e.firstName" />
+												<s:property value="#currentEmployee.firstName" />
 											</a>
 										</td>
 										<td>
-											<s:property value="#e.title" />
+											<s:property value="#currentEmployee.title" />
 										</td>
 										<td>
-											<s:if test="#e.classification != null">
-												<s:text name="%{#e.classification.getI18nKey('description')}" />
+											<s:if test="#currentEmployee.classification != null">
+												<s:text name="%{#currentEmployee.classification.getI18nKey('description')}" />
 											</s:if>
 										</td>
 										<td class="center">
 											<a
-												href="#employee=<s:property value="#e.id" />"
+												href="${edit_employee}"
 												class="load-employee edit"
-												title="<s:text name="ManageEmployees.title.EditProfile" />"
+												title="${edit_profile_title}"
 												data-audit="${audit.id}"
-												data-employee="${e.id}"
+												data-employee="${currentEmployee.id}"
 												data-questionId="${questionId}"
 											></a>
 										</td>
 										<td class="center">
 											<a
-												href="EmployeeDetail.action?employee=<s:property value="#e.id" />"
+												href="EmployeeDetail.action?employee=<s:property value="#currentEmployee.id" />"
 												class="preview"
 											></a>
 										</td>
@@ -206,22 +161,18 @@
 								</s:iterator>
 							</tbody>
 						</table>
-						
+
 						<br clear="both" />
-						<a href="${employee_list_download}" class="excel"><s:text name="global.Download" /></a>
+
+						<a href="${employee_list_download}" class="excel">
+                            <s:text name="global.Download" />
+                        </a>
 					</td>
 					<td style="width: 20px;"></td>
 				</s:if>
-				<td>
-					<div id="employee_form"<s:if test="employee.id > 0"> data-employee="${employee.id}"</s:if>>
-						<s:if test="employee != null && employee.id == 0">
-							<s:include value="manage_employees_form.jsp" />
-						</s:if>
-					</div>
-				</td>
 			</tr>
 		</table>
-		
+
 		<div id="siteEditBox"></div>
 	</div>
 </body>

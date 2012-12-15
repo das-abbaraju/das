@@ -1,5 +1,6 @@
 package com.picsauditing.actions.employees;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -51,12 +53,17 @@ import com.picsauditing.util.URLUtils;
 
 @SuppressWarnings("serial")
 public class ManageEmployees extends AccountActionSupport implements Preparable {
+
 	@Autowired
 	protected EmployeeDAO employeeDAO;
 	@Autowired
 	protected JobSiteDAO jobSiteDAO;
 	@Autowired
 	protected JobSiteTaskDAO siteTaskDAO;
+
+	public static final String ADD = "add";
+	public static final String EDIT = "edit";
+	public static final String LOAD = "load";
 
 	protected Employee employee;
 	protected String ssn;
@@ -72,6 +79,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private List<OperatorSite> allEmployeeGUARDOperators;
 
 	private URLUtils urlUtil = new URLUtils();
+
+	@Autowired
+	private InputValidator inputValidator;
 
 	public ManageEmployees() {
 		noteCategory = NoteCategory.Employee;
@@ -138,12 +148,31 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String add() {
+		// TODO fix this wonkiness with an employee having to exist for the add page to work properly
 		employee = new Employee();
-		return SUCCESS;
+
+		return ADD;
 	}
 
-	public String save() throws Exception {
-		boolean employeeIsNew = employee.getId() == 0;
+	public String edit() {
+		return EDIT;
+	}
+
+	public String save() throws IOException {
+		boolean employeeIsNew = employee == null || employee.getId() == 0;
+
+		validateInput();
+		if (hasFieldErrors()) {
+			String result = "editInputError";
+
+			if (employeeIsNew) {
+				result = "addInputError";
+				// TODO fix this wonkiness with an employee having to exist for the add page to work properly
+				employee = new Employee();
+			}
+
+			return result;
+		}
 
 		if (employee.getAccount() == null) {
 			employee.setAccount(account);
@@ -219,8 +248,38 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return SUCCESS;
 	}
 
+	public String cancel() {
+		return SUCCESS;
+	}
+
 	public String load() {
-		return "edit";
+		return LOAD;
+	}
+
+	public void validateInput() {
+		String errorMessageKey = inputValidator.validateName(employee.getFirstName());
+		addFieldErrorIfMessage("employee.firstName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateName(employee.getLastName());
+		addFieldErrorIfMessage("employee.lastName", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateName(employee.getTitle(), false);
+		addFieldErrorIfMessage("employee.title", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateDate(employee.getHireDate(), false);
+		addFieldErrorIfMessage("employee.hireDate", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateDate(employee.getFireDate(), false);
+		addFieldErrorIfMessage("employee.fireDate", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateEmail(employee.getEmail(), false);
+		addFieldErrorIfMessage("employee.email", errorMessageKey);
+
+		errorMessageKey = inputValidator.validatePhoneNumber(employee.getPhone(), false);
+		addFieldErrorIfMessage("employee.phone", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateDate(employee.getTwicExpiration(), false);
+		addFieldErrorIfMessage("employee.twicExpiration", errorMessageKey);
 	}
 
 	public List<Employee> getActiveEmployees() {
@@ -404,7 +463,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	 * Gets all job tasks across all associated operators (if you're a
 	 * contractor). Returns the list of job tasks per project you have under
 	 * your umbrella if you're an operator.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<JobTask> getAllJobTasks() {

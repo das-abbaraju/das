@@ -18,7 +18,12 @@
 		<action name="ManageEmployees"
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage/manage_employees.jsp</result>
-			<result name="edit">struts/employees/manage/manage_employees_form.jsp</result>
+			<result name="add">struts/employees/manage/manage_employees_add.jsp</result>
+			<result name="addInputError">struts/employees/manage/manage_employees_add.jsp</result>
+			<result name="edit">struts/employees/manage/manage_employees_edit.jsp</result>
+			<result name="editInputError">struts/employees/manage/manage_employees_edit.jsp</result>
+			<!-- TODO see if this is actually being used anywhere -->
+			<result name="load">struts/employees/manage/manage_employees.jsp</result>
 		</action>
 		
 		<action name="ManageEmployeeRole"
