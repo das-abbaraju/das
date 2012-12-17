@@ -51,13 +51,11 @@
             <s:set var="recalculation" value="get('lastRecalculation')" />
             
 			<tr>
-				<td>
-                    ${from_flag}
-                    <%-- <s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString())" escape="false"/> --%>
+				<td class="center">
+                    <s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString(), 'Old Flag: ')" escape="false"/>
                 </td>
-				<td>
-                    ${to_flag}
-                    <%-- <s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString())" escape="false"/> --%>
+				<td class="center">
+                    <s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString(), 'New Flag: ')" escape="false"/>
                 </td>
 				<td>
                     <a href="${contractor_url}" class="${contractor_class}" title="${contractor_name}">${contractor_name}</a>
