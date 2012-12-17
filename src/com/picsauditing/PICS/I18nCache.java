@@ -212,6 +212,9 @@ public class I18nCache implements Serializable {
 			if (cache == null) {
 				cache = TreeBasedTable.create();
 			}
+            if (cacheUsage == null) {
+                cacheUsage = new HashMap<String, Date>();
+            }
 		}
 	}
 

@@ -31,12 +31,12 @@ public class PicsActionSupportTest extends PicsActionTest {
 		super.setUp(picsActionSupport);
 
 		Whitebox.setInternalState(picsActionSupport, "propertyDAO", propertyDAO);
-        Whitebox.setInternalState(PicsActionSupport.class, "CONFIG",(Object) null);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		System.setProperty("pics.env", "");
+        Whitebox.setInternalState(PicsActionSupport.class, "CONFIG",(Object) null);
 	}
 
 	@Test

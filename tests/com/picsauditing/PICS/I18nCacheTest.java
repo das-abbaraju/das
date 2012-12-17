@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -29,6 +30,11 @@ public class I18nCacheTest extends PicsActionTest {
 	private I18nCache i18nCache;
 
 	private final Locale FOREIGN_LOCALE = Locale.CANADA;
+
+    @BeforeClass
+    public static void preSetup() {
+        Whitebox.setInternalState(I18nCache.class, "INSTANCE", (I18nCache) null);
+    }
 
 	@Before
 	public void setup() {
