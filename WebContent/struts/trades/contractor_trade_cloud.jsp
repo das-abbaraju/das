@@ -32,7 +32,7 @@
 <s:if test="contractor.trades.size() > 0">
 	<div id="trade_cloud">
 		<ul>
-			<s:set var="works_for_operator" value="%{permissions.picsEmployee || (permissions.operatorCorporate && contractor.isWorksForOperator(permissions.accountId))}" />
+			<s:set var="works_for_operator" value="%{permissions.picsEmployee || permissions.contractor || (permissions.operatorCorporate && contractor.isWorksForOperator(permissions.accountId))}" />
 			<s:iterator value="contractor.tradesSorted" var="con_trade" status="status">
 				<li>
 					<s:if test="#works_for_operator">
