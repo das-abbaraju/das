@@ -6,9 +6,6 @@
  */
 package com.intuit.developer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.util.SpringUtils;
@@ -133,7 +130,7 @@ public class QBWebConnectorSvcMessageReceiverInOut extends org.apache.axis2.rece
 				// we are still using QuickBooks.				
 				AppPropertyDAO appPropertyDAO = SpringUtils.getBean("AppPropertyDAO");
 				if (appPropertyDAO != null) {
-					AppProperty property = appPropertyDAO.find("QuickBooks.Axis.ASCII.Encoding");
+					AppProperty property = appPropertyDAO.find(AppProperty.QB_AXIS_ENCODING);
 					if ("Y".equals(property.getValue())) {
 						newMsgContext.getOptions().setProperty(org.apache.axis2.Constants.Configuration.CHARACTER_SET_ENCODING, "US-ASCII");
 					}

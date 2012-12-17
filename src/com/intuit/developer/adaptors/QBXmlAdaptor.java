@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
 import com.picsauditing.quickbooks.qbxml.CurrencyRef;
-import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -71,7 +69,7 @@ public class QBXmlAdaptor {
 		
 		// This is for the stupidity of QuickBooks, delete under penalty of death while 
 		// we are still using QuickBooks.
-		AppProperty property = getAppPropertyDao().find("QuickBooks.JAXB.ASCII.Encoding");
+		AppProperty property = getAppPropertyDao().find(AppProperty.QB_JAXB_ENCODING);
 		if ("Y".equals(property.getValue())) {
 			createMarshaller.setProperty(Marshaller.JAXB_ENCODING, "US-ASCII"); // PICS-7937
 		}
