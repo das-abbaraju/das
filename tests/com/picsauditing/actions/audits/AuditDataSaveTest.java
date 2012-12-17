@@ -306,5 +306,19 @@ public class AuditDataSaveTest {
 		returnValue = Whitebox.invokeMethod(auditDataSave, "isInvalidNegativeNumber", new BigDecimal(-1), question);
 		assertFalse(returnValue);
 	}
+	
+	@Test
+	public void testEmptyTagit() throws Exception {
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.setQuestionType("Tagit");
+		AuditData data = EntityFactory.makeAuditData("[]", question);
+		
+		Whitebox.invokeMethod(auditDataSave, "answerFormatValid", data, data);
+		assertTrue("".equals(data.getAnswer()));
+		
+		data.setAnswer("[test, 1, 2, 3]");
+		Whitebox.invokeMethod(auditDataSave, "answerFormatValid", data, data);
+		assertTrue("[test, 1, 2, 3]".equals(data.getAnswer()));
+	}
 
 }

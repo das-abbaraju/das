@@ -677,6 +677,11 @@ public class AuditDataSave extends AuditActionSupport {
 			auditData.setAnswer(eSignatureName + " / " + eSignatureTitle);
 			auditData.setComment(getIP());
 		}
+		
+		if ("Tagit".equals(questionType) && "[]".equals(answer)) {
+			auditData.setAnswer("");
+			return true;
+		}
 
 		// Null or blank answers are always OK
 		if (Strings.isEmpty(answer))
