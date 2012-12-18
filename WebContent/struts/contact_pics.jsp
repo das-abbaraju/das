@@ -2,16 +2,12 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<head>
-    <title><s:text name="Contact.title" /></title>
-
-    <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-</head>
+<title><s:text name="Contact.title" /></title>
 
 <h1><s:text name="Contact.title" /></h1>
 
 <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
-    <form action="Contact">
+    <form action="INVALIDACTION">
     	<fieldset class="form">
         	<h2 class="formLegend"><s:text name="Contact.PICSinfo" /></h2>
             
@@ -104,7 +100,6 @@
 				</li>
 
 				<pics:toggle name="${MibewChatEnabled}">
-                
                     <s:set var="mibew_language_code" value="getText('Mibew.LanguageCode')" />
                 
                     <s:url value="https://chat.picsorganizer.com/client.php" var="mibew_href_url">
