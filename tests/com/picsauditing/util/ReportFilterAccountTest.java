@@ -252,6 +252,17 @@ public class ReportFilterAccountTest extends PicsActionTest {
 	}
 
 	@Test
+	public void testGetLocation_Empty_IE9() {
+		assertNull(accountFilter.getLocation());
+
+		// IE9 always sets the location, even if it doesn't know it.  The other browsers don't try to set it.
+		String[] locations = new String[] { "" };
+		accountFilter.setLocation(locations);
+		// The new setter code ignores a String[] with one empty string, so the field should still be null:
+		assertNull(accountFilter.getLocation());
+	}
+
+	@Test
 	public void testGetZip_Null() {
 		accountFilter.setZip(null);
 

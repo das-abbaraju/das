@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class PicsDateFormatTest {
@@ -104,6 +105,24 @@ public class PicsDateFormatTest {
 		String scheduleAudit = dateFormat.format(calendar.getTime());
 
 		assertEquals("201012041535", scheduleAudit);
+	}
+
+	@Test
+	public void testFormatDateIsoOrBlank_NullDateReturnsBlank() {
+		Date date = null;
+
+		String result = PicsDateFormat.formatDateIsoOrBlank(date);
+
+		assertEquals("", result);
+	}
+
+	@Test
+	public void testFormatDateIsoOrBlank_NormalDateReturnsNonBlank() {
+		Date date = new Date();
+
+		String result = PicsDateFormat.formatDateIsoOrBlank(date);
+
+		assertNotSame("", result);
 	}
 
 }

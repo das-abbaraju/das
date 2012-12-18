@@ -1,19 +1,9 @@
 package com.picsauditing.actions.employees;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +26,7 @@ import org.powermock.reflect.Whitebox;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
@@ -76,6 +67,8 @@ public class ManageEmployeesTest extends PicsActionTest {
 	private Query query;
 	@Mock
 	private URLUtils urlUtil;
+	@Mock
+	private InputValidator inputValidator;
 
 	@Before
 	public void setUp() throws Exception {
@@ -90,6 +83,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 		setUpEmployeeAndAccount();
 
 		Whitebox.setInternalState(manageEmployees, "urlUtil", urlUtil);
+		Whitebox.setInternalState(manageEmployees, "inputValidator", inputValidator);
 
 		doAnswer(new Answer<Object>() {
 			@Override
@@ -214,56 +208,90 @@ public class ManageEmployeesTest extends PicsActionTest {
 	public void testAdd() {
 		manageEmployees.setAccount(contractor);
 
-		assertEquals(ActionSupport.SUCCESS, manageEmployees.add());
+		assertEquals(ManageEmployees.ADD, manageEmployees.add());
 		assertEquals(0, manageEmployees.getEmployee().getId());
 	}
 
 	@Test
 	public void testSave() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
+
 		saveCommonBehaviors(employee);
+
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
 	public void testSave_New() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
+
 		saveCommonBehaviors(employee);
+
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
 	public void testSave_SetAccount() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
 		manageEmployees.setAccount(contractor);
+
 		saveCommonBehaviors(employee);
+
 		assertEquals(contractor, manageEmployees.getEmployee().getAccount());
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
 	public void testSave_SSNCheck9Characters() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
 		manageEmployees.setSsn("999999999");
+
 		saveCommonBehaviors(employee);
+
 		verify(employee).setSsn("999999999");
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
 	public void testSave_SSNCheckInvalidFormat() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
 		manageEmployees.setSsn("Hello1 World9");
+
 		saveCommonBehaviors(employee);
+
 		assertTrue(manageEmployees.hasActionErrors());
 		verify(employee, never()).setSsn(anyString());
-
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
 	public void testSave_EmailInvalidFormat() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
 		when(employee.getEmail()).thenReturn("Hello World");
+
 		saveCommonBehaviors(employee);
+
 		verify(employee).setEmail("info@picsauditing.com");
 		verify(employee, never()).setEmail("Hello World");
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
 	public void testSave_EmailValidFormat() throws Exception {
+		ManageEmployees manageEmployeesSpy = spy(manageEmployees);
+		manageEmployees = manageEmployeesSpy;
 		when(employee.getEmail()).thenReturn("lani@test.com");
+
 		saveCommonBehaviors(employee);
+
 		assertEquals("lani@test.com", manageEmployees.getEmployee().getEmail());
+		verify(manageEmployees).validateInput();
 	}
 
 	@Test
@@ -362,7 +390,7 @@ public class ManageEmployeesTest extends PicsActionTest {
 
 	@Test
 	public void testLoad() {
-		assertEquals("edit", manageEmployees.load());
+		assertEquals(ManageEmployees.LOAD, manageEmployees.load());
 	}
 
 	@Test

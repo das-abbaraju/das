@@ -39,9 +39,9 @@
 	                        </pics:fieldhelp>
 						</li>
 						<li>
-							<label>Syncronize with QB?</label> 
+							<label>Synchronize with QB?</label>
 							<s:radio list="#{true:'Yes',false:'No'}" name="needSync" value="needSync" theme="pics" cssClass="inline" />
-	                        <pics:fieldhelp title="Syncronize?">
+	                        <pics:fieldhelp title="Synchronize?">
 	                            <p>
 	                                If Yes, this will be available to be synced by the web connector. If No, this will be ignored. 
 	                            </p>

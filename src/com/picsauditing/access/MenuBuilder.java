@@ -300,6 +300,11 @@ public final class MenuBuilder {
         }
 
         addEmailSubmenu(manageMenu, permissions);
+
+		if (permissions.hasPermission(OpPerms.Billing)) {
+			manageMenu.addChild("QuickBooks Sync", "QBSyncList.action?currency=USD", "QuickBooksSync_USD");
+			manageMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
+		}
     }
 
     private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
@@ -309,6 +314,15 @@ public final class MenuBuilder {
 
         {
             MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
+            // BILLING
+    		if (permissions.hasPermission(OpPerms.Billing)) {
+    			legacyMenu.addChild("Billing Report", "ReportBilling.action?filter.status=Active&filter.status=Pending",
+    					"BillingReport");
+    			legacyMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action", "UnpaidInvoices");
+    			legacyMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action", "InvoiceSearch");
+    			legacyMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active", "ExpiredCCs");
+    			legacyMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action", "LifetimeMembers");
+    		}
             // CONTRACTORS
             if (permissions.hasPermission(OpPerms.RequestNewContractor))
                 legacyMenu.addChild(getText("ReportNewRequestedContractor.title"),

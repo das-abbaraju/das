@@ -1,5 +1,8 @@
 package com.picsauditing.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * This class is prefaced with 'Pics' due to the naming collision with java.text.DateFormat.
  * 
@@ -31,4 +34,15 @@ public abstract class PicsDateFormat {
 	public static final String AmericanShort = "M/d/yyyy";
 
 	private PicsDateFormat() { }
+
+	public static String formatDateIsoOrBlank(Date date) {
+		try {
+			SimpleDateFormat isoFormat = new SimpleDateFormat(PicsDateFormat.Iso);
+			return isoFormat.format(date);
+		} catch (Exception e) {
+			// We don't care
+		}
+
+		return "";
+	}
 }

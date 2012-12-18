@@ -71,7 +71,9 @@ public final class ReportUtil {
 
 			field.setText(translateLabel(field, locale));
 
+			applyFunctionsToField(locale, field);
 			JSONObject obj = field.toJSONObject();
+
 			obj.put("category", translateCategory(field.getCategory().toString(), locale));
 
 			String help = getText("Report." + field.getName() + ".help", locale);
@@ -113,16 +115,20 @@ public final class ReportUtil {
 						+ translateLabel;
 			}
 
-			List<QueryMethod> functions = field.getType().getDisplayType().getFunctions();
-			Map<String,String> translatedFunctions = new TreeMap<String, String>();
-			for (QueryMethod function : functions) {
-				translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
-			}
-			
-			field.setFunctions(translatedFunctions);
+			applyFunctionsToField(locale, field);
 			field.setText(translateLabel);
 			field.setHelp(translateHelp);
 		}
+	}
+
+	private static void applyFunctionsToField(Locale locale, Field field) {
+		List<QueryMethod> functions = field.getType().getDisplayType().getFunctions();
+		Map<String,String> translatedFunctions = new TreeMap<String, String>();
+		for (QueryMethod function : functions) {
+			translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
+		}
+		
+		field.setFunctions(translatedFunctions);
 	}
 
 	private static void addTranslationLabelsToFilters(Definition definition, Locale locale) {
