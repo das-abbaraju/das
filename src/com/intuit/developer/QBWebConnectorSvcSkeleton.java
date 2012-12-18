@@ -164,16 +164,20 @@ public class QBWebConnectorSvcSkeleton {
 			session.setCurrencyCode("EUR");
 			session.setQbID("qbListEUID");
 		} else if ("PICSQBLOADERDKK".equals(authenticate.getStrUserName())) {
-			session.setCurrencyCode("DKK");
+			//session.setCurrencyCode("DKK");
+            session.setCurrencyCode("EUR");
 			session.setQbID("qbListEUID");
 		} else if ("PICSQBLOADERNOK".equals(authenticate.getStrUserName())) {
-			session.setCurrencyCode("NOK");
+//			session.setCurrencyCode("NOK");
+            session.setCurrencyCode("EUR");
 			session.setQbID("qbListEUID");
 		} else if ("PICSQBLOADERZAR".equals(authenticate.getStrUserName())) {
-			session.setCurrencyCode("ZAR");
+//			session.setCurrencyCode("ZAR");
+            session.setCurrencyCode("EUR");
 			session.setQbID("qbListEUID");
 		} else if ("PICSQBLOADERSEK".equals(authenticate.getStrUserName())) {
-			session.setCurrencyCode("SEK");
+//			session.setCurrencyCode("SEK");
+            session.setCurrencyCode("EUR");
 			session.setQbID("qbListEUID");
 		}
 		session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
