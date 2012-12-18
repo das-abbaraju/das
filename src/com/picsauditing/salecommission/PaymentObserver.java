@@ -22,34 +22,39 @@ public class PaymentObserver implements Observer {
 	private PaymentRemoveStrategy paymentRemoveStrategy;
 	@Autowired
 	private FeatureToggle featureToggle;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(PaymentObserver.class);
-	
+
 	@Override
 	public void update(Observable o, Object arg) {
-		if (!(arg instanceof PaymentDataEvent) || !featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_INVOICE_COMMISSION)) {
+		if (!(arg instanceof PaymentDataEvent)
+				|| !featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_INVOICE_COMMISSION)) {
 			return;
 		}
-		
-		PaymentDataEvent event = (PaymentDataEvent) arg;
-		logger.info("Got payment id = {}", event.getData().getId());
-		
-		PaymentCommissionStrategy<Payment> strategy = null;
-		switch (event.getPaymentEventType()) {
-			case PAYMENT:
-			case SAVE:
-				strategy = paymentStrategy;
-				break;
-			
-			case REFUND:
-			case REMOVE:
-				strategy = paymentRemoveStrategy;
-				break;
-				
-			default:
-				throw new IllegalArgumentException("Unhandled Payment Event Type.");
+
+		try {
+			PaymentDataEvent event = (PaymentDataEvent) arg;
+			logger.info("Got payment id = {}", event.getData().getId());
+
+			PaymentCommissionStrategy<Payment> strategy = null;
+			switch (event.getPaymentEventType()) {
+				case PAYMENT:
+				case SAVE:
+					strategy = paymentStrategy;
+					break;
+	
+				case REFUND:
+				case REMOVE:
+					strategy = paymentRemoveStrategy;
+					break;
+	
+				default:
+					throw new IllegalArgumentException("Unhandled Payment Event Type.");
+			}
+
+			strategy.processPaymentCommission(event.getData());
+		} catch (Exception e) {
+			logger.error("An error occured during processing in PaymentObserver", e);
 		}
-		
-		strategy.processPaymentCommission(event.getData());
 	}
 }
