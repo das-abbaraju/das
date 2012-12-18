@@ -131,7 +131,7 @@ jQuery(function(){
 	$('div.fieldhelp').helpstay();
 	$('required :input:not(:checkbox)').requiredfields();
 	
-	$('fieldset.form li, form.form li').live('click', function() {
+	$('fieldset.form li, form.form li').live('click', function(e) {
 		$(this).not('.fieldhelp-focused').find(':input:visible:not(:disabled)').focus();
 		e.stopPropagation();
 	});

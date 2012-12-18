@@ -99,16 +99,15 @@
 					<s:if test="#isEditable">
 						<li>
 							<s:textfield
-								cssClass="check-matches"
+								cssClass="popup-on-match"
 								id="company_name"
 								name="contractor.name"
 								size="35"
 								theme="formhelp"
 								required="true"
 								data-type="C"
+								data-class="contractor-name"
 							/>
-							<div class="match-found"></div>
-							<div class="match-list hide"></div>
 						</li>
 						<li>
 							<s:textfield
@@ -118,10 +117,10 @@
 								theme="formhelp"
 								required="true"
 								data-type="U"
+								data-class="contact-name"
 							/>
-							<div class="match-found"></div>
-							<div class="match-list hide"></div>
 						</li>
+						<li class="match-found contact-name"></li>
 						<li>
 							<s:textfield
 								cssClass="check-matches"
@@ -130,10 +129,10 @@
 								size="20"
 								theme="formhelp"
 								data-type="U"
+								data-class="contact-phone"
 							/>
-							<div class="match-found"></div>
-							<div class="match-list hide"></div>
 						</li>
+						<li class="match-found contact-phone"></li>
 						<li>
 							<s:textfield
 								cssClass="check-matches"
@@ -143,10 +142,10 @@
 								size="30"
 								theme="formhelp"
 								data-type="U"
+								data-class="contact-email"
 							/>
-							<div class="match-found"></div>
-							<div class="match-list hide"></div>
 						</li>
+						<li class="match-found contact-email"></li>
 					</s:if>
 					<s:else>
 						<li>
@@ -181,6 +180,11 @@
 						</li>
 					</s:else>
 				</ol>
+				
+				<div class="match-list hide contact-phone"></div>
+				<div class="match-list hide contractor-name"></div>
+				<div class="match-list hide contact-name"></div>
+				<div class="match-list hide contact-email"></div>
 			</fieldset>
 			<fieldset class="form">
 				<h2 class="formLegend">
