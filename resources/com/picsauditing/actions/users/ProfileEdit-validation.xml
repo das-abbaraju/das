@@ -59,10 +59,6 @@
             <message>${getText("JS.Validation.Required")}</message>
         </field-validator>
         <field-validator type="stringlength" short-circuit="true">
-            <param name="minLength">5</param>
-            <message>${getText("JS.Validation.Minimum5Characters")}</message>
-        </field-validator>
-        <field-validator type="stringlength" short-circuit="true">
             <param name="maxLength">100</param>
             <message>${getText("JS.Validation.Maximum100Characters")}</message>
         </field-validator>

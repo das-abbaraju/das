@@ -96,16 +96,13 @@ public class ProfileEdit extends PicsActionSupport {
 		if (Strings.isEmpty(username)) {
 			addActionError(getText("User.username.error.Empty"));
 			return SUCCESS;
-		} else if (username.length() < 3) {
-			addActionError(getText("User.username.error.Short"));
-			return SUCCESS;
 		} else if (username.length() > 100) {
 			addActionError(getText("User.username.error.Long"));
 			return SUCCESS;
 		} else if (username.contains(" ")) {
 			addActionError(getText("User.username.error.Space"));
 			return SUCCESS;
-		} else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$")) {
+		} else if (!username.matches("^[a-zA-Z0-9+._@-]{1,50}$")) {
 			addActionError(getText("User.username.error.Special"));
 			return SUCCESS;
 		}

@@ -18,13 +18,11 @@
 			
 			if (Strings.isEmpty(username))
 				message = cache.getText("User.username.error.Empty", locale);
-			else if (username.length() < 3)
-				message = cache.getText("User.username.error.Short", locale);
 			else if (username.length() > 100)
 				message = cache.getText("User.username.error.Long", locale);
 			else if (username.contains(" "))
 				message = cache.getText("User.username.error.Space", locale);
-			else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
+			else if (!username.matches("^[a-zA-Z0-9+._@-]{1,50}$"))
 				message = cache.getText("User.username.error.Special", locale);
 			
 			if (!Strings.isEmpty(message)) {
