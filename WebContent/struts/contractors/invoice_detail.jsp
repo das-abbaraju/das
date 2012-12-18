@@ -298,7 +298,6 @@
 											<s:text name="InvoiceDetail.OptionalDescription" />
 										</td>
 										<td class="right">
-                                            <s:property value="invoice.currency.symbol" />
 											<s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" />
 											<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
 												<s:property value="invoice.currency"/>
@@ -310,7 +309,6 @@
 											<s:property value="description" />
 										</td>
 										<td class="right">
-                                            <s:property value="invoice.currency.symbol" />
 											<s:property value="amount" />
 											<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
 												<s:property value="invoice.currency"/>
@@ -334,7 +332,6 @@
 									<s:text name="InvoiceDetail.InvoiceTotal" />
 								</th>
 								<td class="big right">
-                                    <s:property value="invoice.currency.symbol" />
 									<s:property value="invoice.totalAmount" />
 									<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
 										<s:property value="invoice.currency"/>
@@ -374,7 +371,6 @@
 												</s:else>
 											</span>
 											<span class="big">
-                                                <s:property value="invoice.currency.symbol" />
 												(<s:property value="amount" />
 												<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
 													<s:property value="invoice.currency"/>
@@ -389,7 +385,6 @@
 										<s:text name="InvoiceDetail.Balance" />
 									</th>
 									<td class="big right">
-                                        <s:property value="invoice.currency.symbol" />
 										<s:property value="invoice.balance" />
 										<s:if test="!(invoice.currency.EUR||invoice.currency.GBP)">
 											<s:property value="invoice.currency"/>

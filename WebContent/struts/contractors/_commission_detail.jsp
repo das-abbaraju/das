@@ -41,7 +41,7 @@
 							<s:param name="operator" value="clientSiteId" />
 						</s:url>
 						
-                        <a href="${operator_url}" title="<s:property value="serviceLevels" />" >
+                        <a href="${operator_url}">
                         	<s:property value="clientSite" />
                         </a>
                     </td>

@@ -646,7 +646,7 @@
             	Service Level
             </td>
             <td>
-                Percent
+                Ownership
             </td>
             <td>
                 Start
@@ -676,10 +676,10 @@
                         <s:property value="ownerPercent"/>%
                     </td>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:date name="startDate"/>
+                        <s:date name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
                     </td>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:date name="endDate"/>
+                        <s:date name="endDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
                     </td>
                     <td>
                         <s:url var="facilities_edit_remove" action="FacilitiesEdit" method="remove">
@@ -767,7 +767,7 @@
             	Service Level
             </td>
             <td>
-                Percent
+                Ownership
             </td>
             <td>
                 Start
@@ -796,10 +796,10 @@
                         <s:property value="ownerPercent"/>%
                     </td>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:date name="startDate"/>
+                        <s:date name="startDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
                     </td>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
-                        <s:date name="endDate"/>
+                        <s:date name="endDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
                     </td>
                     <td>
                         <s:url var="facilities_edit_remove" action="FacilitiesEdit" method="remove">
@@ -886,7 +886,7 @@
             		Service Level
             	</td>
                 <td>
-                    Percent
+                    Ownership
                 </td>
                 <td>
                     Start

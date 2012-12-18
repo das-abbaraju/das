@@ -248,7 +248,6 @@
 												${contractor.fees.get(feeClass).currentLevel.fee}:&nbsp;
 											</td>
 											<td class="right">
-												${contractor.country.currency.symbol}
 												${contractor.fees.get(feeClass).currentAmount}
 											</td>
 											<td>
@@ -272,7 +271,6 @@
 													${contractor.fees.get(feeClass).newLevel.fee}:&nbsp;
 												</td>
 												<td class="right">
-													${contractor.country.currency.symbol}
 													${contractor.fees.get(feeClass).newAmount}
 												</td>
 												<td>
