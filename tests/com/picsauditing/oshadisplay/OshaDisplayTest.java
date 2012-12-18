@@ -103,26 +103,26 @@ public class OshaDisplayTest {
 	@Test
 	public void testIsEquivalentRateTypes_NullFlagCriteriaRateTypeIsFalse() throws Exception {
 		Boolean result = Whitebox
-				.invokeMethod(oshaDisplay, "isEquivalentRateTypes", (OshaRateType) null, OshaRateType.EMR);
+				.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaType.OSHA, (OshaRateType) null, OshaRateType.EMR);
 		assertFalse(result);
 	}
 
 	@Test
 	public void testIsEquivalentRateTypes_EqualIsTrue() throws Exception {
-		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaRateType.EMR, OshaRateType.EMR);
+		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaType.EMR, OshaRateType.EMR, OshaRateType.EMR);
 		assertTrue(result);
 	}
 
 	@Test
 	public void testIsEquivalentRateTypes_NotEqualIsTrue() throws Exception {
-		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaRateType.Fatalities,
+		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaType.OSHA, OshaRateType.Fatalities,
 				OshaRateType.EMR);
 		assertFalse(result);
 	}
 	
 	@Test
 	public void testIsEquivalentRateTypes_TrirTypesAreEquivalent() throws Exception {
-		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes",
+		Boolean result = Whitebox.invokeMethod(oshaDisplay, "isEquivalentRateTypes", OshaType.OSHA,
 				OshaRateType.TrirAbsolute,
 				OshaRateType.TrirNaics);
 		assertTrue(result);

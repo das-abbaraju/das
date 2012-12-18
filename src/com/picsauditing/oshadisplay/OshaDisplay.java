@@ -21,6 +21,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -175,7 +176,7 @@ public class OshaDisplay {
 		}
 
 		for (OperatorAccount o : inheritedOperators) {
-			if (oshaType == o.getOshaType()) {
+			if (oshaType == o.getOshaType() || (oshaType.equals(OshaType.EMR) && hasOperatorEmrCriteria(o))) {
 				Map<MultiYearScope, Set<FlagCriteriaOperator>> flagCriteriaForYear = generateOperatorFlagCriteriaMap(
 						oshaRateType, oshaType, o);
 				HurdleRateDisplayRow hurdleRow = new HurdleRateDisplayRow();
@@ -209,13 +210,22 @@ public class OshaDisplay {
 
 		return hurdleRateRows;
 	}
+	
+	private boolean hasOperatorEmrCriteria(OperatorAccount operator) {
+		for (FlagCriteriaOperator fco:operator.getFlagCriteriaInherited(false)) {
+			if (FlagCriteria.EMR_IDS.contains(fco.getCriteria().getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private Map<MultiYearScope, Set<FlagCriteriaOperator>> generateOperatorFlagCriteriaMap(OshaRateType oshaRateType,
 			OshaType oshaType, OperatorAccount o) {
 		Map<MultiYearScope, Set<FlagCriteriaOperator>> flagCriteriaForYear = new HashMap<MultiYearScope, Set<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
-			if (fco.getCriteria().getOshaType() == oshaType
-					&& isEquivalentRateTypes(fco.getCriteria().getOshaRateType(), oshaRateType)) {
+			if ((fco.getCriteria().getOshaType() == oshaType || (oshaType.equals(OshaType.EMR) && hasOperatorEmrCriteria(o)))
+					&& isEquivalentRateTypes(oshaType, fco.getCriteria().getOshaRateType(), oshaRateType)) {
 				MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 				Set<FlagCriteriaOperator> flagCriteria = flagCriteriaForYear.get(scope);
 				if (flagCriteria == null) {
@@ -229,11 +239,14 @@ public class OshaDisplay {
 		return flagCriteriaForYear;
 	}
 
-	private boolean isEquivalentRateTypes(OshaRateType flagCriteriaRateType, OshaRateType requestedRateType) {
+	private boolean isEquivalentRateTypes(OshaType oshaType, OshaRateType flagCriteriaRateType, OshaRateType requestedRateType) {
+		if (flagCriteriaRateType == null && oshaType.equals(OshaType.EMR)) {
+			return true;
+		}
+
 		if (flagCriteriaRateType == null) {
 			return false;
 		}
-
 		if (flagCriteriaRateType == requestedRateType || (flagCriteriaRateType.isTrir() && requestedRateType.isTrir())) {
 			return true;
 		}
