@@ -195,7 +195,12 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public void setLocation(String[] location) {
-		this.location = location;
+		// IE9 always sets the location, even if it doesn't know it, whereas the
+		// other browsers don't try to set it. So, to be consisitent, we'll
+		// ignore a String[] with one empty string.
+		if (location.length > 1 || (location.length == 1 &&  location[0].length() > 0)) {
+			this.location = location;
+		}
 	}
 
 	public String getZip() {
