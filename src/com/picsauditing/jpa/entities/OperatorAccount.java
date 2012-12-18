@@ -522,7 +522,12 @@ public class OperatorAccount extends Account {
 	public List<OperatorAccount> getLinkedClientSites() {
 		List<OperatorAccount> linkedClientSites = new ArrayList<OperatorAccount>();
 		for (Facility facility : getLinkedClients()) {
-			linkedClientSites.add(facility.getCorporate());
+			OperatorAccount linkedClientSite = facility.getCorporate();
+
+			if (linkedClientSite.getStatus().isActive()
+					|| (this.status.isDemo() && linkedClientSite.getStatus().isDemo())) {
+				linkedClientSites.add(linkedClientSite);
+			}
 		}
 
 		return linkedClientSites;
@@ -542,7 +547,12 @@ public class OperatorAccount extends Account {
 	public List<OperatorAccount> getLinkedGeneralContractorOperatorAccounts() {
 		List<OperatorAccount> linkedGeneralContractorOperatorAccounts = new ArrayList<OperatorAccount>();
 		for (Facility facility : getLinkedGeneralContractors()) {
-			linkedGeneralContractorOperatorAccounts.add(facility.getOperator());
+			OperatorAccount linkedGeneralContractor = facility.getOperator();
+
+			if (linkedGeneralContractor.getStatus().isActive()
+					|| (this.status.isDemo() && linkedGeneralContractor.getStatus().isDemo())) {
+				linkedGeneralContractorOperatorAccounts.add(linkedGeneralContractor);
+			}
 		}
 
 		return linkedGeneralContractorOperatorAccounts;
@@ -550,7 +560,7 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public boolean isRequiresClientSiteOrGeneralContractorSelection() {
-		return !getLinkedClients().isEmpty() || !getLinkedGeneralContractors().isEmpty();
+		return !getLinkedClientSites().isEmpty() || !getLinkedGeneralContractorOperatorAccounts().isEmpty();
 	}
 
 	@Transient
