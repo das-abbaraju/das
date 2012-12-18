@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -25,16 +26,19 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import com.opensymphony.xwork2.validator.ValidationException;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Country;
@@ -48,19 +52,18 @@ public class FacilitiesEditTest extends PicsTest {
 
 	private FacilitiesEdit facilitiesEdit;
 	private User user;
+	private OperatorAccount operator;
 
 	@Mock
 	private CountrySubdivisionDAO countrySubdivisionDAO;
 	@Mock
-	private CountrySubdivision countrySubdivision;
-	@Mock
 	private FacilitiesEditModel facilitiesEditModel;
-	@Mock
-	private OperatorAccount operator;
 	@Mock
 	private Permissions permissions;
 	@Mock
 	private UserDAO userDAO;
+	@Mock
+	private OperatorAccountDAO operatorDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -79,8 +82,14 @@ public class FacilitiesEditTest extends PicsTest {
 		Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
 		Whitebox.setInternalState(facilitiesEdit, "permissions", permissions);
 		Whitebox.setInternalState(facilitiesEdit, "countrySubdivisionDAO", countrySubdivisionDAO);
+		
+		// specific call the real method in the FacilitiesEditMode when adding roles.
+		Whitebox.setInternalState(facilitiesEditModel, "operatorDAO", operatorDAO);
+		doCallRealMethod().when(facilitiesEditModel).addRole(any(Permissions.class), any(OperatorAccount.class),
+				any(AccountUser.class));
 
-		when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
+		operator = new OperatorAccount();
+		operator.setId(NON_ZERO_OPERATOR_ID);
 		facilitiesEdit.setOperator(operator);
 	}
 
@@ -88,7 +97,17 @@ public class FacilitiesEditTest extends PicsTest {
 	public void testAddRoleAccountRep() throws Exception {
 		AccountUser rep = accountRep();
 		facilitiesEdit.setAccountRep(rep);
-		accountUserRolesCommonAssertions(rep);
+
+		Whitebox.setInternalState(facilitiesEditModel, "operatorDAO", operatorDAO);
+		doCallRealMethod().when(facilitiesEditModel).addRole(any(Permissions.class), any(OperatorAccount.class),
+				any(AccountUser.class));
+
+		ArgumentCaptor<OperatorAccount> argument = ArgumentCaptor.forClass(OperatorAccount.class);
+		String strutsReturn = facilitiesEdit.addRole();
+		verify(operatorDAO).save(argument.capture());
+		rep = getAccountUserFromOperator(argument);
+
+		accountUserRolesCommonAssertions(strutsReturn, rep);
 		datesConformToBusinessRulesAccountRep(rep);
 	}
 
@@ -111,16 +130,24 @@ public class FacilitiesEditTest extends PicsTest {
 		accountRep.setUser(user);
 		facilitiesEdit.setAccountRep(accountRep);
 
-		accountUserRolesCommonAssertions(rep);
+		ArgumentCaptor<OperatorAccount> argument = ArgumentCaptor.forClass(OperatorAccount.class);
+		String strutsReturn = facilitiesEdit.addRole();
+		verify(operatorDAO).save(argument.capture());
+		rep = getAccountUserFromOperator(argument);
 
+		accountUserRolesCommonAssertions(strutsReturn, rep);
 		datesConformToBusinessRulesSalesRep(rep);
 	}
 
-	private void accountUserRolesCommonAssertions(AccountUser rep) {
-		Date now = new Date();
-		String strutsReturn = facilitiesEdit.addRole();
-		assertEquals(PicsActionSupport.REDIRECT, strutsReturn);
+	private AccountUser getAccountUserFromOperator(ArgumentCaptor<OperatorAccount> argument) {
+		List<AccountUser> accountUsers = argument.getValue().getAccountUsers();
+		return accountUsers.get(0);
+	}
 
+	private void accountUserRolesCommonAssertions(String strutsReturn, AccountUser rep) {
+		Date now = new Date();
+
+		assertEquals(PicsActionSupport.REDIRECT, strutsReturn);
 		assertEquals("didn't get the expected operator back from the account rep", operator, rep.getAccount());
 		assertNotNull("start date should not be null", rep.getStartDate());
 		assertNotNull("end date should not be null", rep.getEndDate());
@@ -128,7 +155,7 @@ public class FacilitiesEditTest extends PicsTest {
 		auditColumnsAreSet(rep, now);
 
 		// not a new operator, so merged not persisted
-		verify(em, atLeast(1)).merge(operator);
+		verify(operatorDAO, atLeast(1)).save(operator);
 		assertNull("account rep should have been nulled at end of use case", facilitiesEdit.getAccountRep());
 	}
 
@@ -154,7 +181,7 @@ public class FacilitiesEditTest extends PicsTest {
 	}
 
 	@Test
-	public void testAddRoleOwnerPercentViolatesBusinessRule() {
+	public void testAddRoleOwnerPercentViolatesBusinessRule() throws ValidationException {
 		// error: account users with same role owner percentage < 100 trigger
 		// action message
 		// error: account users with same role owner percentage > 100 trigger
@@ -172,7 +199,8 @@ public class FacilitiesEditTest extends PicsTest {
 		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 		accountUsers.add(accountRep2);
 
-		when(operator.getAccountUsers()).thenReturn(accountUsers);
+		operator.setAccountUsers(accountUsers);
+		doCallRealMethod().when(facilitiesEditModel).addRoleValidation(operator, accountRep);
 
 		facilitiesEditSpy.setOperator(operator);
 
@@ -183,7 +211,7 @@ public class FacilitiesEditTest extends PicsTest {
 	}
 
 	@Test
-	public void testAddRoleOwnerPercentViolatesBusinessRuleRightWay() {
+	public void testAddRoleOwnerPercentViolatesBusinessRuleRightWay() throws ValidationException {
 		// error: account users with same role owner percentage < 100 trigger
 		// action message
 		// error: account users with same role owner percentage > 100 trigger
@@ -199,7 +227,8 @@ public class FacilitiesEditTest extends PicsTest {
 		List<AccountUser> accountUsers = new ArrayList<AccountUser>();
 		accountUsers.add(accountRep2);
 
-		when(operator.getAccountUsers()).thenReturn(accountUsers);
+		operator.setAccountUsers(accountUsers);
+		doCallRealMethod().when(facilitiesEditModel).addRoleValidation(operator, accountRep);
 
 		facilitiesEdit.addRole();
 
@@ -228,11 +257,12 @@ public class FacilitiesEditTest extends PicsTest {
 
 		when(countrySubdivision.getCountry()).thenReturn(country);
 		when(em.merge(operator)).thenReturn(operator);
-		when(operator.getCountry()).thenReturn(country);
-		when(operator.getCountrySubdivision()).thenReturn(countrySubdivision);
-		when(operator.getDiscountPercent()).thenReturn(BigDecimal.ZERO);
-		when(operator.getParent()).thenReturn(operator);
-		when(operator.getName()).thenReturn("Operator");
+
+		operator.setCountry(country);
+		operator.setCountrySubdivision(countrySubdivision);
+		operator.setDiscountPercent(BigDecimal.ZERO);
+		operator.setParent(operator);
+		operator.setName("Operator");
 
 		List<Integer> facilities = new ArrayList<Integer>();
 		facilities.add(NON_ZERO_OPERATOR_ID);

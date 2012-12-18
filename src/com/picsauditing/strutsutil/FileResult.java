@@ -1,7 +1,5 @@
 package com.picsauditing.strutsutil;
 
-import java.io.ByteArrayInputStream;
-
 import org.apache.struts2.dispatcher.StreamResult;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -18,7 +16,7 @@ public class FileResult extends StreamResult {
 		}
 		
 		contentDisposition = fileContainer.getContentDisposition();
-		inputStream = new ByteArrayInputStream(fileContainer.getFile());
+		inputStream = fileContainer.getFileInputStream();
 		contentType = fileContainer.getContentType();
 		
 		super.doExecute(finalLocation, invocation);

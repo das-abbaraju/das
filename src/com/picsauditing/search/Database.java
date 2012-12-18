@@ -5,12 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.RowSetDynaClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.DBBean;
@@ -193,6 +195,33 @@ public class Database {
 		}
 
 		return databaseName;
+	}
+	
+	public static <T, E> List<T> select(String sql, E queryObject, QueryMapper<E> queryMapper, RowMapper<T> rowMapper) throws SQLException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		List<T> results = new ArrayList<T>();
+		try {
+			connection = DBBean.getDBConnection();
+			preparedStatement = connection.prepareStatement(sql);
+			queryMapper.mapObjectToPreparedStatement(queryObject, preparedStatement);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			int row = 0;
+			while (resultSet.next()) {
+				results.add(rowMapper.mapRow(resultSet, row));
+				row++;
+			}
+		} finally {
+			DatabaseUtil.closeResultSet(resultSet);
+			DatabaseUtil.closeStatement(preparedStatement);
+			DatabaseUtil.closeConnection(connection);
+		}
+		
+		return results;
 	}
 	
 	public static <T> void executeBatch(String sql, List<T> items, QueryMapper<T> queryMapper) throws SQLException {

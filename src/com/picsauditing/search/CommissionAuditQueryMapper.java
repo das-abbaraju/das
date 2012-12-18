@@ -10,7 +10,7 @@ public class CommissionAuditQueryMapper implements QueryMapper<CommissionAudit> 
 	@Override
 	public void mapObjectToPreparedStatement(CommissionAudit commissionAudit, PreparedStatement preparedStatement) throws SQLException {
 		if (commissionAudit == null || preparedStatement == null) {
-			return;
+			throw new IllegalArgumentException("CommissionAudit and PreparedStatement cannot be null.");
 		}
 		
 		preparedStatement.setInt(1, commissionAudit.getInvoiceId());

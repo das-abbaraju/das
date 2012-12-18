@@ -241,7 +241,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 	}
 	
 	private void saveClientSiteServices(List<CommissionAudit> clientSiteServices) {
-		String sql = "INSERT INTO commission_breakdown_auditing (invoiceID, clientSiteID, feeClass) values (?, ?, ?)";
+		String sql = "INSERT INTO commission_audit (invoiceID, clientSiteID, feeClass) values (?, ?, ?)";
 		
 		try {
 			Database.executeBatch(sql, clientSiteServices, new CommissionAuditQueryMapper());

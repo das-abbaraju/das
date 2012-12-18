@@ -180,6 +180,7 @@
           scope="prototype"/>
     <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder"  scope="prototype" />
 	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
+	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
 
     <bean id="AuditCategoryAutocompleteService"
           class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>

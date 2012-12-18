@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@SalesCommission)">
-	<s:if test="invoiceCommissions.isEmpty()">
+	<s:if test="commissionDetails.isEmpty()">
 		<p>
             No Commission Details for this invoice.
         </p>
@@ -23,7 +23,7 @@
                         Role
                     </th>
                     <th>
-                        Weight
+                        Ownership
                     </th>
 					<th>
                         Points
@@ -34,36 +34,39 @@
 				</tr>
 			</thead>
             
-			<s:iterator value="invoiceCommissions">
+			<s:iterator value="commissionDetails">
 				<tr>
 					<td>
-                        <s:property value="accountUser.account.name" />
+						<s:url action="FacilitiesEdit" var="operator_url">
+							<s:param name="operator" value="clientSiteId" />
+						</s:url>
+						
+                        <a href="${operator_url}" title="<s:property value="serviceLevels" />" >
+                        	<s:property value="clientSite" />
+                        </a>
                     </td>
 					<td>
-                        <s:property value="accountUser.user.name" />
+                        <s:property value="accountRepresentativeName" />
                     </td>
                     <td>
-                        <s:property value="accountUser.role.description" />
+                        <s:property value="role.description" />
                     </td>
                     <td>
-                        <s:property value="accountUser.ownerPercent" />
+                        <s:property value="weight" />%
                     </td>
 					<td class="number">
 						 <s:number name="points" 
                         		type="number" 
-                        		maximumFractionDigits="5" 
+                        		maximumFractionDigits="2" 
                         		minimumFractionDigits="2" 
                         		roundingMode="half-up" />
                     </td>
 					<td class="number">
-                        <s:set var="invoiceTotal" value="%{invoice.getTotalCommissionEligibleInvoice(false)}" />
-                        <s:set var="revenuePercent" value="revenuePercent" />
-                        <s:set var="calculatedTotal" value="%{(#invoiceTotal.doubleValue() * revenuePercent)}" />
-                        <s:number name="calculatedTotal" 
+                        <s:number name="revenue" 
                         		type="number" 
                         		maximumFractionDigits="2" 
                         		minimumFractionDigits="2" 
-                        		roundingMode="half-up" />
+                        		roundingMode="half-up" /> <s:property value="invoice.currency"/>
                     </td>
 				</tr>
 			</s:iterator>

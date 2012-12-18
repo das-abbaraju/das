@@ -22,6 +22,7 @@ public class AccountUser extends BaseTable {
 	private Date startDate;
 	private Date endDate;
 	private int ownerPercent = 100;
+	private String serviceLevel;
 
 	@ManyToOne
 	@JoinColumn(name = "accountID", nullable = false, updatable = false)
@@ -74,6 +75,14 @@ public class AccountUser extends BaseTable {
 
 	public void setOwnerPercent(int ownerPercent) {
 		this.ownerPercent = ownerPercent;
+	}
+	
+	public String getServiceLevel() {
+		return serviceLevel;
+	}
+	
+	public void setServiceLevel(String serviceLevel) {
+		this.serviceLevel = serviceLevel;
 	}
 	
 	@Transient

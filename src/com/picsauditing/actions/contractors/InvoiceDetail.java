@@ -3,11 +3,12 @@ package com.picsauditing.actions.contractors;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
@@ -35,7 +36,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.Note;
@@ -49,13 +49,13 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.model.billing.CommissionDetail;
+import com.picsauditing.model.billing.InvoiceModel;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.braintree.BrainTreeService;
 import com.picsauditing.util.braintree.CreditCard;
 import com.picsauditing.util.log.PicsLogger;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
@@ -79,12 +79,16 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private EmailSender emailSender;
 	@Autowired
 	private DataObservable salesCommissionDataObservable;
+	@Autowired
+	private InvoiceModel invoiceModel;
 
 	private boolean edit = false;
 	private int newFeeId;
 	private Invoice invoice;
 	private List<InvoiceFee> feeList = null;
 	private String country;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ContractorActionSupport.class);
 
 	@Override
 	public void prepare() {
@@ -462,24 +466,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		return country;
 	}
 	
-	public List<InvoiceCommission> getInvoiceCommissions() {
-		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
-		Collections.sort(invoiceCommissions, new Comparator<InvoiceCommission>() {
-
-			@Override
-			public int compare(InvoiceCommission commission1, InvoiceCommission commission2) {
-				if (commission1 != null && commission2 != null && 
-						Strings.isNotEmpty(commission1.getAccountUser().getAccount().getName()) && 
-						Strings.isNotEmpty(commission2.getAccountUser().getAccount().getName())) {
-					return commission1.getAccountUser().getAccount().getName().compareTo(commission2.getAccountUser().getAccount().getName());
-				}
-				
-				return 0;
-			}
-			
-		});
-		
-		return invoiceCommissions;
+	public List<CommissionDetail> getCommissionDetails() {
+		return invoiceModel.getCommissionDetails(invoice);
 	}
 	
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {

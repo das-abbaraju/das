@@ -1,23 +1,48 @@
 package com.picsauditing.actions.operators;
 
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.actions.users.UserAccountRole;
-import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.models.operators.FacilitiesEditModel;
-import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.util.Strings;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.naming.NoPermissionException;
+
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.naming.NoPermissionException;
-import java.math.BigDecimal;
-import java.util.*;
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.dao.AccountUserDAO;
+import com.picsauditing.dao.CountrySubdivisionDAO;
+import com.picsauditing.dao.FacilitiesDAO;
+import com.picsauditing.dao.OperatorFormDAO;
+import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.ApprovalStatus;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.CountrySubdivision;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorForm;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.models.operators.FacilitiesEditModel;
+import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
@@ -114,40 +139,28 @@ public class FacilitiesEdit extends OperatorActionSupport {
     }
 
     public String addRole() {
-        AccountUser accountUser = new AccountUser();
-        if (accountRep != null && accountRep.getUser().getId() > 0)
-            accountUser = accountRep;
-        else
-            accountUser = salesRep;
-        accountUser.setAccount(operator);
-        // First of this month to next year, minus a day
-        // Feb 1st, 2010 to Jan 31st, 2011
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DATE, 1);
-        accountUser.setStartDate(calendar.getTime());
-        if (accountUser.getRole() != null && accountUser.getRole().isAccountManager())
-            calendar.add(Calendar.YEAR, 20);
-        else {
-            calendar.add(Calendar.YEAR, 1);
-            calendar.add(Calendar.DATE, -1);
-        }
-        accountUser.setEndDate(calendar.getTime());
-        accountUser.setAuditColumns(permissions);
-        operator.getAccountUsers().add(accountUser);
-        operatorDao.save(operator);
-        int completePercent = 0;
-        for (AccountUser accountUser2 : operator.getAccountUsers()) {
-            if (accountUser2.getRole().equals(accountUser.getRole())) {
-                completePercent += accountUser2.getOwnerPercent();
-            }
-        }
-        if (completePercent != 100) {
-            addActionMessage(accountUser.getRole().getDescription() + " is not 100 percent");
-        }
-        accountRep = null;
-        salesRep = null;
-
-        return REDIRECT;
+    	// TODO: delete this once everything has been refactored to correctly send
+    	//       only one accountUser, instead of multiple
+    	AccountUser newAccountUser = null;
+    	if (accountRep != null && accountRep.getUser().getId() > 0) {
+    		newAccountUser = accountRep;
+    	} else {
+        	newAccountUser = salesRep;
+    	}
+    	
+    	try {
+			facilitiesEditModel.addRoleValidation(operator, newAccountUser);
+		} catch (com.opensymphony.xwork2.validator.ValidationException e) {
+			addActionMessage(e.getMessage());
+			return REDIRECT;
+		}
+    	
+    	facilitiesEditModel.addRole(permissions, operator, newAccountUser);
+    	
+    	// TODO: Fix tests and remove because this will be null after the redirect
+    	accountRep = null;
+    	
+    	return REDIRECT;
     }
 
     public String copyToChildAccounts() throws Exception {
@@ -164,6 +177,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
                         }
                     }
                 }
+                
                 if (!hasAccountRep) {
                     AccountUser au = new AccountUser();
                     au.setUser(accountUser.getUser());
@@ -794,5 +808,5 @@ public class FacilitiesEdit extends OperatorActionSupport {
         childOperatorList = operator.getChildOperators();
         return childOperatorList;
     }
-
+    
 }

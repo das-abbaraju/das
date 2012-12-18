@@ -643,6 +643,9 @@
                 User
             </td>
             <td>
+            	Service Level
+            </td>
+            <td>
                 Percent
             </td>
             <td>
@@ -660,12 +663,14 @@
         </thead>
         <tbody>
         <s:iterator value="operator.accountUsers" status="role">
-            <%-- <s:hidden value="%{role}" name="accountRole" /> --%>
 
             <s:if test="role.description == 'Sales Representative' && current">
                 <tr>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="user.name"/>
+                    </td>
+                    <td onclick="$('#show_<s:property value="id"/>').show();">
+                    	<s:property value="serviceLevel" /> 
                     </td>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="ownerPercent"/>%
@@ -699,8 +704,10 @@
                     </s:if>
                 </tr>
                 <tr id="show_<s:property value="id"/>" style="display: none;">
-                    <td colspan="4">
+                    <td colspan="5">
                         <nobr>
+                        	<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel">
+                        	</s:select>
                             <s:textfield
                                     name="operator.accountUsers[%{#role.index}].ownerPercent"
                                     value="%{ownerPercent}" size="3"
@@ -729,7 +736,7 @@
             </s:if>
         </s:iterator>
         <tr>
-            <td colspan="4">
+            <td colspan="5">
                 <s:select
                         name="salesRep.user.id"
                         list="userList"
@@ -739,7 +746,7 @@
                         headerValue="- Select a User -"
                         />
             </td>
-            <td <s:if test="operator.corporate">colspan="2"</s:if>>
+            <td <s:if test="operator.corporate">colspan="2"</s:if> >
                 <s:hidden value="PICSSalesRep" name="salesRep.role"/>
                 <s:submit cssClass="picsbutton positive" method="addRole" value="Add Role"/>
             </td>
@@ -755,6 +762,9 @@
         <tr>
             <td>
                 User
+            </td>
+            <td>
+            	Service Level
             </td>
             <td>
                 Percent
@@ -778,6 +788,9 @@
                 <tr>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="user.name"/>
+                    </td>
+                    <td onclick="$('#show_<s:property value="id"/>').show();">
+                    	<s:property value="serviceLevel" />
                     </td>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="ownerPercent"/>%
@@ -811,8 +824,10 @@
                     </s:if>
                 </tr>
                 <tr id="show_<s:property value="id"/>" style="display: none;">
-                    <td colspan="4">
+                    <td colspan="5">
                         <nobr>
+                        	<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel">
+                        	</s:select>
                             <s:textfield
                                     name="operator.accountUsers[%{#role.index}].ownerPercent"
                                     value="%{ownerPercent}" size="3"
@@ -841,7 +856,7 @@
         </s:iterator>
 
         <tr>
-            <td colspan="4">
+            <td colspan="5">
                 <s:select name="accountRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0"
                           headerValue="- Select a User -"/>
             </td>
@@ -868,6 +883,9 @@
                     Role
                 </td>
                 <td>
+            		Service Level
+            	</td>
+                <td>
                     Percent
                 </td>
                 <td>
@@ -887,6 +905,9 @@
                         </td>
                         <td>
                             <s:property value="#key.description"/>
+                        </td>
+                        <td>
+                            <s:property value="serviceLevel" />
                         </td>
                         <td>
                             <s:property value="ownerPercent"/>%

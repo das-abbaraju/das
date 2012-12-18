@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class DownloadCommissionAudit extends PicsActionSupport {
 		fileContainer = new FileDownloadContainer.Builder()
 				.contentType("text/csv")
 				.contentDisposition("attachment; filename=" + fileName)
-				.file(csvOutput.toString().getBytes()).build();
+				.fileInputStream(new ByteArrayInputStream(csvOutput.toString().getBytes())).build();
 	}
 	
 	private StringBuilder buildCsvFile() {
