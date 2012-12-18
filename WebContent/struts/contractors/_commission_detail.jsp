@@ -66,7 +66,7 @@
                         		type="number" 
                         		maximumFractionDigits="2" 
                         		minimumFractionDigits="2" 
-                        		roundingMode="half-up" /> <s:property value="invoice.currency"/>
+                        		roundingMode="half-up" />&nbsp;<s:property value="invoice.currency"/>
                     </td>
 				</tr>
 			</s:iterator>
