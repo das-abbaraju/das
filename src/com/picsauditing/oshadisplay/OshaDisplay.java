@@ -224,7 +224,7 @@ public class OshaDisplay {
 			OshaType oshaType, OperatorAccount o) {
 		Map<MultiYearScope, Set<FlagCriteriaOperator>> flagCriteriaForYear = new HashMap<MultiYearScope, Set<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
-			if ((fco.getCriteria().getOshaType() == oshaType || (oshaType.equals(OshaType.EMR) && hasOperatorEmrCriteria(o)))
+			if ((fco.getCriteria().getOshaType() == oshaType || (oshaType.equals(OshaType.EMR) && FlagCriteria.EMR_IDS.contains(fco.getCriteria().getId())))
 					&& isEquivalentRateTypes(oshaType, fco.getCriteria().getOshaRateType(), oshaRateType)) {
 				MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 				Set<FlagCriteriaOperator> flagCriteria = flagCriteriaForYear.get(scope);
