@@ -51,7 +51,7 @@
                     <td>
                         <s:property value="role.description" />
                     </td>
-                    <td>
+                    <td class="number">
                         <s:property value="weight" />%
                     </td>
 					<td class="number">
