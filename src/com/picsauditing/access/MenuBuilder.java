@@ -330,13 +330,6 @@ public final class MenuBuilder {
             if (permissions.hasPermission(OpPerms.SearchContractors)) {
                 legacyMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
             }
-            if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
-                String statusFilter = "";
-                if (!permissions.getAccountStatus().isDemo())
-                    statusFilter = "?filter.status=Active";
-                legacyMenu.addChild(getText("BiddingContractorSearch.title"), "BiddingContractorSearch.action"
-                        + statusFilter, "BiddingContractorSearch");
-            }
             if (permissions.hasPermission(OpPerms.DelinquentAccounts)) {
                 legacyMenu.addChild(getText("ArchivedContractorAccounts.title"), "ArchivedContractorAccounts.action",
                         "ArchivedContractorAccounts");
