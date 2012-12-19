@@ -238,7 +238,7 @@ public class Invoice extends Transaction {
 			InvoiceFee invoiceFee = invoiceItem.getInvoiceFee();
 			if (invoiceFee != null && invoiceItem.getInvoiceFee().isCommissionEligible()) {
 				FeeClass feeClass = invoiceFee.getFeeClass();
-				this.commissionEligibleFeeMap.put(feeClass, invoiceFee.getAmount());
+				this.commissionEligibleFeeMap.put(feeClass, invoiceItem.getAmount());
 				this.totalCommissionEligibleFees = this.totalCommissionEligibleFees.add(invoiceItem.getAmount());
 			}
 		}
