@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.InputValidator;
@@ -29,7 +32,6 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.security.EncodedKey;
-import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -50,10 +52,11 @@ public class ProfileEdit extends PicsActionSupport {
 	private User u;
 
 	private List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
-	private String url;
 
 	private boolean goEmailSub = false;
 	private boolean usingDynamicReports = false;
+
+	public static final String INPUT_ERROR = "inputError";
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -61,8 +64,8 @@ public class ProfileEdit extends PicsActionSupport {
 	 */
 	@Anonymous
 	public String execute() throws Exception {
-
 		String loginResult = checkProfileEditLogin();
+
 		if (loginResult != null) {
 			return loginResult;
 		}
@@ -72,9 +75,7 @@ public class ProfileEdit extends PicsActionSupport {
 
 	@Anonymous
 	public String save() throws Exception {
-
-		// Need to clear the user dao to prevent Hibernate from flushing the
-		// changes.
+		// Need to clear the user dao to prevent Hibernate from flushing the changes.
 		dao.clear();
 
 		String loginResult = checkProfileEditLogin();
@@ -82,29 +83,9 @@ public class ProfileEdit extends PicsActionSupport {
 			return loginResult;
 		}
 
-		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
-			addActionError(getText("ProfileEdit.error.UsernameInUse", u.getUsername()));
-			return SUCCESS;
-		}
-
-		// TODO: Move this into User-validation.xml and use struts 2 for this
-		// validation
-		String username = u.getUsername().trim();
-		if (u.getEmail().length() > 0)
-			u.setEmail(EmailAddressUtils.validate(u.getEmail()));
-
-		if (Strings.isEmpty(username)) {
-			addActionError(getText("User.username.error.Empty"));
-			return SUCCESS;
-		} else if (username.length() > 100) {
-			addActionError(getText("User.username.error.Long"));
-			return SUCCESS;
-		} else if (username.contains(" ")) {
-			addActionError(getText("User.username.error.Space"));
-			return SUCCESS;
-		} else if (!username.matches("^[a-zA-Z0-9+._@-]{1,50}$")) {
-			addActionError(getText("User.username.error.Special"));
-			return SUCCESS;
+		validateInput();
+		if (hasFieldErrors()) {
+			return INPUT_ERROR;
 		}
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
@@ -116,11 +97,43 @@ public class ProfileEdit extends PicsActionSupport {
 		u = dao.save(u);
 
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
-		/*
-		 * This redirect is required if the user happened to change their locale,
-		 * as we would be stuck in a request for the previous locale.
-		 */
+
+		// We have to redirect to refresh the locale, if it has been changed
 		return setUrlForRedirect("ProfileEdit.action");
+	}
+
+	public void validateInput() {
+		String errorMessageKey = inputValidator.validateName(u.getName());
+		addFieldErrorIfMessage("u.name", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateName(u.getDepartment(), false);
+		addFieldErrorIfMessage("u.department", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateEmail(u.getEmail(), false);
+		addFieldErrorIfMessage("u.email", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateUsername(u.getUsername());
+		addFieldErrorIfMessage("u.username", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateUsernameAvailable(u.getUsername(), permissions.getUserId());
+		addFieldErrorIfMessage("u.username", errorMessageKey);
+
+		errorMessageKey = inputValidator.validatePhoneNumber(u.getPhone(), false);
+		addFieldErrorIfMessage("u.phone", errorMessageKey);
+
+		errorMessageKey = inputValidator.validatePhoneNumber(u.getFax(), false);
+		addFieldErrorIfMessage("u.fax", errorMessageKey);
+
+		Locale locale = u.getLocale();
+		if (locale == null || StringUtils.isEmpty(locale.toString())) {
+			addFieldErrorIfMessage("u.locale", InputValidator.REQUIRED_KEY);
+			u.setLocale(new Locale("en"));
+		}
+
+		if (u.getTimezone() == null) {
+			addFieldErrorIfMessage("u.timezone", InputValidator.REQUIRED_KEY);
+			u.setTimezone(TimeZone.getTimeZone("US/Pacific"));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -142,7 +155,7 @@ public class ProfileEdit extends PicsActionSupport {
 	 * This method is used instead of the {@link SecurityInterceptor} method,
 	 * since the user cannot be redirected on this page due to the possibility
 	 * of a `forcePasswordReset`.
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -153,7 +166,7 @@ public class ProfileEdit extends PicsActionSupport {
 		/*
 		 * This should only be null on the `execute` method, since there are no
 		 * querystring parameters.
-		 * 
+		 *
 		 * If the user is set, we have to leave it alone, since the `u` object
 		 * could be modified.
 		 */
@@ -161,8 +174,7 @@ public class ProfileEdit extends PicsActionSupport {
 			u = dao.find(permissions.getUserId());
 		}
 
-		// If the user is not logged in, they should be redirected to the login
-		// page.
+		// If the user is not logged in, they should be redirected to the login page.
 		if (!permissions.isLoggedIn()) {
 			addActionMessage(getText("ProfileEdit.error.SessionTimeout"));
 			return setUrlForRedirect("Login.action?button=logout");
@@ -258,19 +270,6 @@ public class ProfileEdit extends PicsActionSupport {
 		return users;
 	}
 
-	/**
-	 * This is used primarily for redirecting after `forcePasswordReset`.
-	 * 
-	 * @return
-	 */
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public void setGoEmailSub(boolean goEmailSub) {
 		this.goEmailSub = goEmailSub;
 	}
@@ -285,22 +284,6 @@ public class ProfileEdit extends PicsActionSupport {
 
 	public void setUsingDynamicReports(boolean usingDynamicReports) {
 		this.usingDynamicReports = usingDynamicReports;
-	}
-
-	public boolean containsOnlySafeCharacters(String str) {
-		return inputValidator.containsOnlySafeCharacters(str);
-	}
-
-	public boolean isUsernameValid(String username) {
-		return inputValidator.isUsernameValid(username);
-	}
-
-	public boolean isUsernameNotTakenOrUnchanged(String username) {
-		if (username != null && username.equals(u.getUsername())) {
-			return true;
-		}
-
-		return !inputValidator.isUsernameTaken(username);
 	}
 
 }

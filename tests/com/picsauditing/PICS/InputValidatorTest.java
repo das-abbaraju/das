@@ -116,49 +116,49 @@ public class InputValidatorTest {
 	}
 
 	@Test
-	public void testIsUsernameValid_NullReturnsFalse() {
-		boolean result = inputValidator.isUsernameValid(null);
+	public void testValidateUsername_Null_ReturnsNotEmpty() {
+		String errorMessageKey = inputValidator.validateUsername(null);
 
-		assertFalse(result);
+		assertNotSame("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_EmptyStringReturnsFalse() {
-		boolean result = inputValidator.isUsernameValid("");
+	public void testValidateUsername_EmptyString_ReturnsNotEmpty() {
+		String errorMessageKey = inputValidator.validateUsername("");
 
-		assertFalse(result);
+		assertNotSame("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_EmailAddressReturnsTrue() {
-		boolean result = inputValidator.isUsernameValid("me@here.com");
+	public void testValidateUsername_EmailAddress_ReturnsEmpty() {
+		String errorMessageKey = inputValidator.validateUsername("me@here.com");
 
-		assertTrue(result);
+		assertEquals("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_UnderscoreDashAndPlusAreValid() {
-		boolean result = inputValidator.isUsernameValid("abc-_+");
+	public void testValidateUsername_UnderscoreDashAndPlusAreValid() {
+		String errorMessageKey = inputValidator.validateUsername("abc-_+");
 
-		assertTrue(result);
+		assertEquals("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_SingleCharacterReturnsTrue() {
-		boolean result = inputValidator.isUsernameValid("1");
+	public void testValidateUsername_SingleCharacter_ReturnsEmpty() {
+		String errorMessageKey = inputValidator.validateUsername("1");
 
-		assertTrue(result);
+		assertEquals("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_FiveCharactersReturnsTrue() {
-		boolean result = inputValidator.isUsernameValid("12345");
+	public void testValidateUsername_FiveCharacters_ReturnsEmpty() {
+		String errorMessageKey = inputValidator.validateUsername("12345");
 
-		assertTrue(result);
+		assertEquals("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_OneHundredCharactersReturnsTrue() {
+	public void testValidateUsername_OneHundredCharacters_ReturnsEmpty() {
 		String string100CharactersLong =
 				"0123456789" + // 1
 				"0123456789" + // 2
@@ -171,13 +171,13 @@ public class InputValidatorTest {
 				"0123456789" + // 9
 				"0123456789"; // 10
 
-		boolean result = inputValidator.isUsernameValid(string100CharactersLong);
+		String errorMessageKey = inputValidator.validateUsername(string100CharactersLong);
 
-		assertTrue(result);
+		assertEquals("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_OverOneHundredCharactersReturnsFalse() {
+	public void testValidateUsername_OverOneHundredCharacters_ReturnsNotEmpty() {
 		String string101CharactersLong =
 				"0123456789" + // 1
 				"0123456789" + // 2
@@ -190,13 +190,13 @@ public class InputValidatorTest {
 				"0123456789" + // 9
 				"01234567890"; // 10
 
-		boolean result = inputValidator.isUsernameValid(string101CharactersLong);
+		String errorMessageKey = inputValidator.validateUsername(string101CharactersLong);
 
-		assertFalse(result);
+		assertNotSame("", errorMessageKey);
 	}
 
 	@Test
-	public void testIsUsernameValid_InvalidCharactersReturnFalse() {
+	public void testValidateUsername_InvalidCharactersReturnFalse() {
 		String[] invalidChars = {
 				"`", "~", "!", "#", "$", "%", "^", "&", "*", "(", ")",
 				"=", "[", "]", "{", "}", "\\", "|", ":", ";", "'", "\"",
@@ -204,8 +204,8 @@ public class InputValidatorTest {
 		};
 
 		for (String invalidChar : invalidChars) {
-			boolean result = inputValidator.isUsernameValid("abcd" + invalidChar);
-			assertFalse(result);
+			String errorMessageKey = inputValidator.validateUsername("abcd" + invalidChar);
+			assertNotSame("", errorMessageKey);
 		}
 	}
 

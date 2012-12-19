@@ -23,6 +23,8 @@ public class InputValidator {
     public static final String REQUIRED_KEY = "JS.Validation.Required";
     public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
     public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
+    public static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
+    public static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
     public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
     public static final String INVALID_EMAIL_FORMAT_KEY = "JS.Validation.ValidEmail";
     public static final String INVALID_DATE_KEY = "AuditData.error.InvalidDate";
@@ -30,7 +32,7 @@ public class InputValidator {
     // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
     public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>&`\"].*";
 
-    public static final String VALID_USERNAME_REGEX = "[\\w+.@-]+";
+    public static final String USERNAME_REGEX = "[\\w+.@-]+";
 
     // I'd like to keep this simple. The user knows their email address.
     // Our other option is to use this monster: http://www.ex-parrot.com/pdw/Mail-RFC822-Address.html
@@ -41,8 +43,8 @@ public class InputValidator {
     // and shown in the Regular Expressions Cookbook (O'Reilly, 2009)
     public static final String PHONE_NUMBER_REGEX = "^(\\+?(?:\\(?[0-9]\\)?[-. ]{0,2}){9,14}[0-9])((\\s){0,4}((?i)x|(?i)ext)(\\s){0,4}[\\d]{1,5})?$";
 
-    public boolean isUsernameTaken(String username) {
-        return userDao.duplicateUsername(username, 0);
+    public boolean isUsernameTaken(String username, int currentUserId) {
+        return userDao.duplicateUsername(username, currentUserId);
     }
 
     public boolean isCompanyNameTaken(String companyName) {
@@ -71,12 +73,14 @@ public class InputValidator {
         return true;
     }
 
+    /** Use validateUsername() instead */
+    @Deprecated
     public boolean isUsernameValid(String username) {
         if (StringUtils.isEmpty(username)) {
             return false;
         }
 
-        if (!username.matches(VALID_USERNAME_REGEX)) {
+        if (!username.matches(USERNAME_REGEX)) {
             return false;
         }
 
@@ -85,6 +89,18 @@ public class InputValidator {
         }
 
         return true;
+    }
+
+    public String validateUsernameAvailable(String username, int currentUserId) {
+    	if (StringUtils.isEmpty(username)) {
+    		return NO_ERROR;
+    	}
+
+    	if (isUsernameTaken(username, currentUserId)) {
+    		return USERNAME_TAKEN_KEY;
+    	}
+
+    	return NO_ERROR;
     }
 
     public String validateDate(Date date) {
@@ -123,7 +139,15 @@ public class InputValidator {
     }
 
     public String validateName(String name, boolean required) {
-    	return validateString(name, required, true, true, false, false);
+    	return validateString(name, required, true, true, false, false, false);
+    }
+
+    public String validateUsername(String username) {
+    	return validateUsername(username, true);
+    }
+
+    public String validateUsername(String username, boolean required) {
+    	return validateString(username, required, true, true, true, false, false);
     }
 
     public String validateEmail(String email) {
@@ -131,7 +155,7 @@ public class InputValidator {
     }
 
     public String validateEmail(String email, boolean required) {
-    	return validateString(email, required, true, true, true, false);
+    	return validateString(email, required, true, true, false, true, false);
     }
 
     public String validatePhoneNumber(String phoneNumber) {
@@ -139,11 +163,11 @@ public class InputValidator {
     }
 
     public String validatePhoneNumber(String phoneNumber, boolean required) {
-    	return validateString(phoneNumber, required, true, true, false, true);
+    	return validateString(phoneNumber, required, true, true, false, false, true);
     }
 
     private String validateString(String str, boolean required, boolean maxLengthCheck, boolean dangerousCharsCheck,
-    		boolean emailFormatCheck, boolean phoneFormatCheck) {
+    		boolean usernameCheck, boolean emailFormatCheck, boolean phoneFormatCheck) {
 
     	if (StringUtils.isEmpty(str)) {
     		if (required) {
@@ -159,6 +183,10 @@ public class InputValidator {
 
     	if (dangerousCharsCheck && !containsOnlySafeCharacters(str)) {
     		return NO_SPECIAL_CHARS_KEY;
+    	}
+
+    	if (usernameCheck && !str.matches(USERNAME_REGEX)) {
+    		return INVALID_USERNAME_KEY;
     	}
 
     	if (emailFormatCheck && !str.matches(EMAIL_REGEX)) {

@@ -918,6 +918,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Transient
 	public boolean isUsernameNotTaken(String username) {
-		return !inputValidator.isUsernameTaken(username);
+		// TODO see if we want to pass something other than 0 in
+		return !inputValidator.isUsernameTaken(username, 0);
 	}
 }

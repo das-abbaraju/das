@@ -8,12 +8,12 @@
 		<action name="UserProfileAjax" class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/widgets/user_profile.jsp</result>
 			<result name="department">struts/users/users_department_suggest.jsp</result>
-			<result name="input">struts/users/users_department_suggest.jsp</result>
+			<result name="inputError">struts/users/users_department_suggest.jsp</result>
 		</action>
 
 		<action name="ProfileEdit" class="com.picsauditing.actions.users.ProfileEdit">
 			<result>struts/users/profile_edit.jsp</result>
-			<result name="input">struts/users/profile_edit.jsp</result>
+			<result name="inputError">struts/users/profile_edit.jsp</result>
 		</action>
 
 		<action name="UserEmailSubscriptionSaveAjax" class="com.picsauditing.mail.EmailSubscriptionSave">

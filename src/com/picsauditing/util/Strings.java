@@ -31,6 +31,8 @@ public class Strings {
 
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
 
+	/** Use StringUtils.isEmpty() instead */
+	@Deprecated
 	public static boolean isEmpty(String value) {
 		if (value == null) {
 			return true;
@@ -40,18 +42,14 @@ public class Strings {
 		return value.length() == 0;
 	}
 
+	/** Use StringUtils.isNotEmpty() instead */
+	@Deprecated
 	public static boolean isNotEmpty(String value) {
 		return !isEmpty(value);
 	}
 
-	/**
-	 * Are two strings equal to each other. One or both can be null. If both are
-	 * null, then return true.
-	 * 
-	 * @param value1
-	 * @param value2
-	 * @return
-	 */
+	/** Use StringUtils.equals() instead */
+	@Deprecated
 	public static boolean isEqualNullSafe(String value1, String value2) {
 		if (value1 != null)
 			return value1.equals(value2);
@@ -348,6 +346,9 @@ public class Strings {
 		return name;
 	}
 
+	// TODO This function is useless. We should either properly validate input
+	// with InputValidator or properly escape HTML for display
+	@Deprecated
 	public static String htmlStrip(String input) {
 		if (Strings.isEmpty(input))
 			return null;
@@ -356,6 +357,7 @@ public class Strings {
 	}
 
 	@Deprecated
+	// TODO Remove this function because it's duplicated in EmailAddressUtils
 	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
 		Set<String> validEmail = new HashSet<String>();
 
@@ -379,6 +381,7 @@ public class Strings {
 		return input.substring(0, maxlength - 3) + "...";
 	}
 
+	// TODO Remove this function, because it's duplicated in EmailAddressUtils
 	@Deprecated
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
@@ -389,9 +392,9 @@ public class Strings {
 			int pindex = email.indexOf(".", index);
 			if ((pindex > index + 1) && (email.length() > pindex + 1))
 				result = true;
-		}// if
+		}
 		return result;
-	}// isValidEmail
+	}
 
 	public static String formatShort(float value) {
 		if (value < 0)

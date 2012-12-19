@@ -5,11 +5,14 @@ import java.util.Set;
 
 import com.picsauditing.jpa.entities.Currency;
 
+// TODO pull out email addresses into their own file
+@Deprecated
 public class EmailAddressUtils {
 	
 	// TODO: This should be further refactored into a configuration file
 	public static final String PICS_INFO_EMAIL_ADDRESS = "info@picsauditing.com";
 	public static final String PICS_INFO_EMAIL_ADDRESS_WITH_NAME = "PICS Info <" + PICS_INFO_EMAIL_ADDRESS + ">";
+	// TODO Don't store plaintext passwords in source code
 	public static final String PICS_INFO_EMAIL_ADDRESS_PASSWORD = "PicsS@fety1";
 	
 	public static final String PICS_ERROR_EMAIL_ADDRESS = "errors@picsauditing.com";
@@ -49,6 +52,8 @@ public class EmailAddressUtils {
 		return validEmail;
 	}
 
+	/** Use InputValidator::validateEmail() going forward */
+	@Deprecated
 	public static boolean isValidEmail(String email) {
 		boolean result = false;
 		if (Strings.isEmpty(email) || email.trim().contains(" "))
@@ -64,6 +69,8 @@ public class EmailAddressUtils {
 		return result;
 	}
 
+	/** Use InputValidator::validateEmail() going forward */
+	@Deprecated
 	public static String validate(final String email) {
 		String tempEmail = email.trim();
 
@@ -76,6 +83,8 @@ public class EmailAddressUtils {
 
 	}
 
+	// TODO possibly move this to I18nCache, or some other localization class
+	@Deprecated
 	public static String getBillingEmail(Currency currency) {
 		if (currency != null && (currency.isEUR() || currency.isGBP())){
 			return "\"PICS Billing\"<eubilling@picsauditing.com>";

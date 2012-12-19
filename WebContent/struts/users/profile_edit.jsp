@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
-<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
 
 <head>
 	<title><s:text name="ProfileEdit.title"></s:text></title>
@@ -89,6 +88,7 @@
 		});
 	</script>
 </head>
+
 <body>
 	<h1>
 		<s:text name="ProfileEdit.title" />
@@ -144,125 +144,14 @@
 	<div id="tab_profile">
 		<table style="width: 100%">
 			<tr>
-				<td style="width: 50%;">
-					<s:form id="saveProfileForm" cssClass="form">
-						<s:hidden name="url" />
-						<s:hidden name="u" value="%{u.id}" />
+                <td style="width: 50%;">
+                    <s:include value="_profile-edit-forms.jsp" />
+                </td>
 
-						<fieldset>
-							<h2>
-								<s:text name="ProfileEdit.Profile.heading" />
-							</h2>
-
-							<ol>
-								<li>
-									<label><s:text name="ProfileEdit.AssignedToAccount"></s:text>:</label>
-									<s:property value="u.account.name" />
-								</li>
-								<li>
-									<s:textfield name="u.name" theme="form" />
-                                    <s:fielderror fieldName="name" theme="form" />
-								</li>
-								<li>
-									<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
-                                    <s:fielderror fieldName="department" theme="form" />
-								</li>
-								<li>
-									<s:textfield name="u.email" theme="form" />
-                                    <s:fielderror fieldName="email" theme="form" />
-								</li>
-								<li>
-									<s:textfield name="u.username" size="30" onchange="checkUsername(this.value);" theme="form" /> 
-									<span id="username_status"></span>
-                                    <s:fielderror fieldName="username" theme="form" />
-								</li>
-								<li>
-									<s:textfield name="u.phone" theme="form" />
-                                    <s:fielderror fieldName="phone" theme="form" />
-								</li>
-								<li>
-									<s:textfield name="u.fax" theme="form" />
-                                    <s:fielderror fieldName="fax" theme="form" />
-								</li>
-
-								<s:if test="u.account.demo || u.account.admin || i18nReady">
-									<li><s:select name="u.locale"
-											list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-											listValue="@org.apache.commons.lang3.StringUtils@capitalize(getDisplayName(language))"
-											theme="form" /></li>
-								</s:if>
-
-								<li><s:select name="u.timezone" id="timezone"
-										value="u.timezone.iD" theme="form"
-										list="@com.picsauditing.util.TimeZoneUtil@timeZones()" /></li>
-
-								<li>
-									<label><s:text name="global.CreationDate" />:</label>
-									<s:date name="u.creationDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" />
-								</li>
-								<pics:toggle name="<%= FeatureToggle.TOGGLE_V7MENUS %>">
-									<li>
-										<label> <s:text name="User.useDynamicReport" /></label>
-										<s:checkbox id="usingDynamicReports" name="usingDynamicReports" value="u.usingDynamicReports" />
-									</li>
-								</pics:toggle>
-							</ol>
-						</fieldset>
-
-						<fieldset class="form submit">
-							<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save" />						
-								
-							<a class="change-password btn" href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>" id="profile_edit_changePassword2">
-								<s:text name="button.password" />
-							</a>
-						</fieldset>
-						
-					</s:form>
-					<!-- See if this user has the RestApi permission, which means it is a special (non-human) API user. If so, allow it to (re)generate the API key. -->				
-					<s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@RestApi)">
-						<s:include value="user_api_key.jsp" />
-					</s:if>
-				</td>
 				<td style="width: 20px;">&nbsp;</td>
+
 				<td style="vertical-align: top;">
-					<h3>
-						<s:text name="ProfileEdit.RecentLogins" />
-					</h3>
-
-					<table class="report" style="position: static;">
-						<thead>
-							<tr>
-								<th><s:text name="Login.LoginDate" /></th>
-								<th><s:text name="Login.IPAddress" /></th>
-								<s:if test="permissions.isDeveloperEnvironment()">
-									<th><s:text name="Login.Server" /></th>
-								</s:if>
-								<th><s:text name="global.Notes" /></th>
-							</tr>
-						</thead>
-						<tbody>
-
-							<s:iterator value="recentLogins">
-								<tr>
-									<td><s:date name="loginDate" format="%{@com.picsauditing.util.PicsDateFormat@Iso}" /></td>
-									<td><s:property value="remoteAddress" /></td>
-									<s:if test="permissions.isDeveloperEnvironment()">
-										<td>
-											<s:property value="serverAddress" />
-										</td>
-									</s:if>
-									<td><s:if test="admin.id > 0">
-											<s:text name="Login.LoginBy">
-												<s:param value="admin.name" />
-												<s:param value="admin.account.name" />
-											</s:text>
-										</s:if> <s:if test="successful == 'N'">
-											<s:text name="ProfileEdit.message.IncorrectPasswordAttempt" />
-										</s:if></td>
-								</tr>
-							</s:iterator>
-						</tbody>
-					</table>
+                    <s:include value="_profile-edit-recent-logins.jsp" />
 				</td>
 			</tr>
 		</table>
@@ -275,98 +164,7 @@
 	</s:if>
 
 	<s:if test="!permissions.contractor">
-		<div id="tab_permissions" style="display: none;">
-			<table style="width: 100%">
-				<tr>
-					<td>
-						<h3>
-							<s:text name="ProfileEdit.label.Permissions" />
-						</h3>
-
-						<table class="report">
-							<thead>
-								<tr>
-									<th><s:text name="ProfileEdit.header.PermissionName" /></th>
-									<th><s:text name="OpType.View" /></th>
-									<th><s:text name="OpType.Edit" /></th>
-									<th><s:text name="OpType.Delete" /></th>
-								</tr>
-							</thead>
-							<tbody>
-								<s:iterator value="permissions.permissions">
-									<tr>
-										<td title="<s:property value="opPerm.helpText" />"><s:property
-												value="opPerm.description" /></td>
-										<td><s:if test="viewFlag">
-												<s:text name="OpType.View" />
-											</s:if></td>
-										<td><s:if test="editFlag">
-												<s:text name="OpType.Edit" />
-											</s:if></td>
-										<td><s:if test="deleteFlag">
-												<s:text name="OpType.Delete" />
-											</s:if></td>
-									</tr>
-								</s:iterator>
-							</tbody>
-						</table>
-					</td>
-					<td>
-						<h3>
-							<s:text name="ProfileEdit.header.VisibleAuditAndPolicyTypes" />
-						</h3>
-
-						<div>
-							<s:if test="permissions.operatorCorporate">
-								<ul>
-									<s:iterator value="viewableAuditsList">
-										<li><s:property value="name" /></li>
-									</s:iterator>
-								</ul>
-							</s:if>
-							<s:else>
-								<s:text name="ProfileEdit.message.YouAreAPICSEmployee" />
-							</s:else>
-						</div> <s:if
-							test="permissions.admin && permissions.shadowedUserID != permissions.userId">
-							<h3>
-								<s:text name="ProfileEdit.header.Shadowing" />
-							</h3>
-
-							<div>
-								<s:text name="ProfileEdit.message.YouAreCurrentlyShadowing">
-									<s:param value="%{permissions.shadowedUserName}" />
-								</s:text>
-							</div>
-						</s:if>
-					</td>
-				</tr>
-			</table>
-			<table>
-				<tr>
-					<td>
-						<h3>
-							<s:text name="UsersManage.Groups" />
-						</h3>
-
-						<table class="report">
-							<thead>
-								<tr>
-									<th><s:text name="ProfileEdit.label.MemberOf" /></th>
-								</tr>
-							</thead>
-							<tbody>
-								<s:iterator value="allInheritedGroups">
-									<tr>
-										<td><s:property value="name" /></td>
-									</tr>
-								</s:iterator>
-							</tbody>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</div>
+        <s:include value="_profile-edit-non-contractor.jsp" />
 	</s:if>
 
 	<s:if test="goEmailSub">
