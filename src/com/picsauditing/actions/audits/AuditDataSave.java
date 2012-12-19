@@ -576,6 +576,7 @@ public class AuditDataSave extends AuditActionSupport {
 	private void loadAnswerMap() {
 		List<Integer> questionIds = new ArrayList<Integer>();
 		AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+		auditData.setQuestion(question);
 		questionIds.add(auditData.getQuestion().getId());
 		if (auditData.getQuestion().getRequiredQuestion() != null) {
 			AuditQuestion q = auditData.getQuestion().getRequiredQuestion();
