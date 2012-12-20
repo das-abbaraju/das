@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +36,8 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 	@Autowired
 	private InvoiceCommissionDAO invoiceCommissionDAO;
+	@Autowired
+	private ContractorInvoiceStateBuilder contractorStateBuilder;
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceStrategy.class);
 
@@ -79,16 +80,17 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		}
 	}
 	
-	private double calculatePoints(Invoice invoice, AccountUser accountUser, double weight) {
+	private BigDecimal calculatePoints(Invoice invoice, AccountUser accountUser, double weight) {
 		if (isActivationInvoice(invoice)) {
 			return calculateRevenueSplit(accountUser, weight);
 		}
 		
-		return 0;
+		return BigDecimal.ZERO;
 	}
 	
-	private double calculateRevenueSplit(AccountUser accountUser, double weight) {
-		return (accountUser.getOwnerPercent() / 100) * weight;
+	private BigDecimal calculateRevenueSplit(AccountUser accountUser, double weight) {
+		BigDecimal result = BigDecimal.valueOf(accountUser.getOwnerPercent()).divide(BigDecimal.valueOf(100));
+		return result.multiply(BigDecimal.valueOf(weight));
 	}
 	
 	private boolean isActivationInvoice(Invoice invoice) {
@@ -154,22 +156,14 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			return Collections.emptyList();
 		}
 
-		Date paymentExpires = findPaymentExpirationDateFromPreviousInvoice(contractor);
-		
-		boolean isActivation = false;
-		if (isActivationInvoice(invoice)) {
-			isActivation = true;
-		}
+		ContractorInvoiceState contractorState = contractorStateBuilder.buildCommandObject(invoice);
 		
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = new ArrayList<ClientSiteServiceLevel>();
 		for (ContractorOperator clientSite : clientSites) {
 			List<ContractorOperator> oneClientSite = new ArrayList<ContractorOperator>(Arrays.asList(clientSite));
 			contractor.setOperators(oneClientSite);
-			contractor.setPaymentExpires(paymentExpires);
 			
-			if (isActivation) {
-				contractor.setMembershipDate(null);
-			}
+			ContractorResetter.resetContractor(contractor, contractorState);
 			
 			billingService.calculateContractorInvoiceFees(contractor);
 			List<InvoiceItem> invoiceItems = billingService.createInvoiceItems(contractor, invoice.getCreatedBy());
@@ -279,41 +273,6 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 		}
 
 		return clientSites;
-	}
-	
-	private Date findPaymentExpirationDateFromPreviousInvoice(ContractorAccount contractor) {
-		List<Invoice> invoices = contractor.getSortedInvoices();
-		if (CollectionUtils.isEmpty(invoices)) {
-			return null;
-		}
-		
-		Invoice invoice = findPreviousNonVoidedInvoice(invoices);
-		if (invoice == null) {
-			return null;
-		}
-		
-		for (InvoiceItem invoiceItem : invoice.getItems()) {
-			if (invoiceItem != null && invoiceItem.getPaymentExpires() != null) {
-				return invoiceItem.getPaymentExpires();				
-			}
-		}
-		
-		return null;
-	}
-	
-	private Invoice findPreviousNonVoidedInvoice(List<Invoice> orderedInvoices) {
-		if (orderedInvoices.size() < 3) {
-			return null;
-		}
-		
-		for (int index = 2; index < orderedInvoices.size(); index++) {
-			Invoice invoice = orderedInvoices.get(index);
-			if (!invoice.getStatus().isVoid()) {
-				return invoice;
-			}
-		}
-		
-		return null;
 	}
 
 }

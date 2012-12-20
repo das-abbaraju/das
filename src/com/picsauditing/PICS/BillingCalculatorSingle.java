@@ -506,7 +506,7 @@ public class BillingCalculatorSingle {
 				} else
 					upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
-				// If not membership fee, don't prorate amount
+				// If not membership fee, don't pro-rate amount
 			} else {
 				upgradeAmount = upgrade.getNewAmount();
 			}

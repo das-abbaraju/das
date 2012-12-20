@@ -181,6 +181,7 @@
     <bean id="TimezoneFinder" class="com.picsauditing.model.general.GoogleApiTimezoneFinder"  scope="prototype" />
 	<bean id="AccountTimezonePopulator" class="com.picsauditing.model.general.AccountTimezonePopulator" scope="singleton"/>
 	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
+	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
 
     <bean id="AuditCategoryAutocompleteService"
           class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>
@@ -216,6 +217,7 @@
           class="com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy"/>
     <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy" />
     <bean id="PaymentStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentStrategy" />
+    <bean id="ContractorInvoiceStateBuilder" class="com.picsauditing.salecommission.invoice.strategy.ContractorInvoiceStateBuilder" init-method="init" />
 
     <bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
     <bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder"/>

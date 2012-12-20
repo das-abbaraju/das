@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,8 +23,8 @@ public class InvoiceCommission extends BaseTable {
 	
 	private Invoice invoice;
 	private AccountUser accountUser;
-	private double points;
-	private double revenuePercent;
+	private BigDecimal points;
+	private BigDecimal revenuePercent;
 
 	private List<PaymentCommission> paymentCommissions;
 
@@ -48,21 +49,21 @@ public class InvoiceCommission extends BaseTable {
 	}
 
 	@Column(name = "activationPoints")
-	public double getPoints() {
+	public BigDecimal getPoints() {
 		return points;
 	}
 
-	public void setPoints(double points) {
+	public void setPoints(BigDecimal points) {
 		this.points = points;
 	}
 
 	@Column(name = "revenue")
 	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.Billing)
-	public double getRevenuePercent() {
+	public BigDecimal getRevenuePercent() {
 		return revenuePercent;
 	}
 
-	public void setRevenuePercent(double revenuePercent) {
+	public void setRevenuePercent(BigDecimal revenuePercent) {
 		this.revenuePercent = revenuePercent;
 	}
 

@@ -98,32 +98,32 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 		return CollectionUtils.isNotEmpty(paymentCommissionDAO.findWhere("t.payment.id IN (" + Strings.implode(ids) + ")"));
 	}
 
-	private double calculateActivationPoints(InvoiceCommission invoiceCommission, Payment payment) {
-		if (invoiceCommission.getPoints() == 0)
-			return 0;
+	private BigDecimal calculateActivationPoints(InvoiceCommission invoiceCommission, Payment payment) {
+		if (invoiceCommission.getPoints().equals(BigDecimal.ZERO))
+			return BigDecimal.ZERO;
 		
-		return calculatePaymentPercentOfInvoice(invoiceCommission, payment) * invoiceCommission.getPoints();
+		return calculatePaymentPercentOfInvoice(invoiceCommission, payment).multiply(invoiceCommission.getPoints());
 	}
 
 	private BigDecimal calculateRevenueAmount(InvoiceCommission invoiceCommission, Payment payment) {
-		if (invoiceCommission.getRevenuePercent() == 0) {
+		if (invoiceCommission.getRevenuePercent().equals(BigDecimal.ZERO)) {
 			return BigDecimal.ZERO;
 		}
 		
-		double revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, payment) * invoiceCommission.getRevenuePercent();
-		double revenueAmount = invoiceCommission.getInvoice().getTotalCommissionEligibleInvoice(true).doubleValue() * revenuePercent;
-		return new BigDecimal(revenueAmount);
+		BigDecimal revenuePercent = calculatePaymentPercentOfInvoice(invoiceCommission, payment).multiply(invoiceCommission.getRevenuePercent());
+		BigDecimal revenueAmount = invoiceCommission.getInvoice().getTotalCommissionEligibleInvoice(true).multiply(revenuePercent);
+		return revenueAmount;
 	}
 	
-	private double calculatePaymentPercentOfInvoice(InvoiceCommission invoiceCommission, Payment payment) {
+	private BigDecimal calculatePaymentPercentOfInvoice(InvoiceCommission invoiceCommission, Payment payment) {
 		BigDecimal totalAmount = invoiceCommission.getInvoice().getTotalAmount();
 		BigDecimal amountApplied = payment.getAmountApplied();
 		
 		if (totalAmount != null && amountApplied != null) {
-			return amountApplied.doubleValue() / totalAmount.doubleValue();
+			return amountApplied.divide(totalAmount);
 		}
 		
-		return 0;
+		return BigDecimal.ZERO;
 	}
 	
 	private <T> void notifyDataChange(DataEvent<T> dataEvent) {

@@ -42,8 +42,8 @@ public class VoidInvoiceCommissionStrategy extends AbstractInvoiceCommissionStra
 		for (InvoiceCommission invoiceCommission : invoiceCommissions) {
 			invoiceCommission.setUpdateDate(new Date());
 			invoiceCommission.setUpdatedBy(new User(User.SYSTEM));
-			invoiceCommission.setPoints(0);
-			invoiceCommission.setRevenuePercent(0);
+			invoiceCommission.setPoints(BigDecimal.ZERO);
+			invoiceCommission.setRevenuePercent(BigDecimal.ZERO);
 			zeroOutPaymentCommissions(invoiceCommission.getPaymentCommissions());
 			invoiceCommissionDAO.save(invoiceCommission);
 		}
@@ -57,7 +57,7 @@ public class VoidInvoiceCommissionStrategy extends AbstractInvoiceCommissionStra
 		for (PaymentCommission paymentCommission : paymentCommissions) {
 			paymentCommission.setUpdateDate(new Date());
 			paymentCommission.setUpdatedBy(new User(User.SYSTEM));
-			paymentCommission.setActivationPoints(0);
+			paymentCommission.setActivationPoints(BigDecimal.ZERO);
 			paymentCommission.setPaymentAmount(BigDecimal.ZERO);
 			paymentCommissionDAO.save(paymentCommission);
 		}

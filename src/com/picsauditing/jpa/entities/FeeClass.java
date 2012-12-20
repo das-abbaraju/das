@@ -18,7 +18,7 @@ import java.util.*;
  * 
  */
 public enum FeeClass implements Translatable {
-	
+
 	// TODO combine some of these fees
 	Deprecated, Free, BidOnly, ListOnly, DocuGUARD, InsureGUARD {
 		@Override
@@ -96,9 +96,11 @@ public enum FeeClass implements Translatable {
 				}
 			}
 
-            //This happens if there are no operators attached to this contractor.
-            //Unlikely, but if it never happened, I wouldn't be writing this.
-            if (discounts.isEmpty()) return contractor.getCountry().getAmount(fee);
+			// This happens if there are no operators attached to this
+			// contractor.
+			// Unlikely, but if it never happened, I wouldn't be writing this.
+			if (discounts.isEmpty())
+				return contractor.getCountry().getAmount(fee);
 
 			BigDecimal minimumDiscount = Collections.min(discounts);
 			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
@@ -166,14 +168,14 @@ public enum FeeClass implements Translatable {
 
 		return true;
 	}
-	
+
 	public static List<String> getCommissionableServiceLines() {
 		List<String> commissionableServiceLines = new ArrayList<String>();
 		commissionableServiceLines.add("All");
 		commissionableServiceLines.add(AuditGUARD.name());
 		commissionableServiceLines.add(EmployeeGUARD.name());
 		commissionableServiceLines.add(InsureGUARD.name());
-		
+
 		return commissionableServiceLines;
 	}
 

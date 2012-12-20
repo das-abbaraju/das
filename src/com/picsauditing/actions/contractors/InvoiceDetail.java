@@ -23,7 +23,6 @@ import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent.PaymentEventType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -61,8 +60,6 @@ import com.picsauditing.util.log.PicsLogger;
 public class InvoiceDetail extends ContractorActionSupport implements Preparable {
 	@Autowired
 	private InvoiceDAO invoiceDAO;
-	@Autowired
-	private InvoiceCommissionDAO invoiceCommissionDAO;
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired

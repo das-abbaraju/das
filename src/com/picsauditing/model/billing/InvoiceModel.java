@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.InvoiceCommissionDAO;
+import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
@@ -29,9 +30,15 @@ import com.picsauditing.util.Strings;
 public final class InvoiceModel {
 	
 	@Autowired
+	private InvoiceDAO invoiceDAO;
+	@Autowired
 	private InvoiceCommissionDAO invoiceCommissionDAO;
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceModel.class);
+	
+	public Invoice findInvoiceById(int invoiceId) {
+		return invoiceDAO.find(invoiceId);
+	}
 	
 	public List<CommissionDetail> getCommissionDetails(Invoice invoice) {
 		List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
@@ -39,7 +46,8 @@ public final class InvoiceModel {
 			return Collections.emptyList();
 		}
 		
-		Map<Integer, List<FeeClass>> clientServices = getClientSiteServiceLevels(invoice.getId());
+		List<CommissionAudit> commissionAudits = findCommissionAudits(invoice.getId());
+		Map<Integer, List<FeeClass>> clientServices = getClientSiteServiceLevels(commissionAudits);
 		
 		List<CommissionDetail> commissionDetails = new ArrayList<CommissionDetail>();
 		for (InvoiceCommission invoiceCommission : invoiceCommissions) {
@@ -61,8 +69,8 @@ public final class InvoiceModel {
 		commissionDetail.setAccountRepresentativeName(accountUser.getUser().getName());
 		commissionDetail.setClientSite(accountUser.getAccount().getName());
 		commissionDetail.setClientSiteId(accountUser.getAccount().getId());
-		commissionDetail.setPoints(invoiceCommission.getPoints());
-		commissionDetail.setRevenue(invoiceCommission.getRevenuePercent() * invoice.getTotalCommissionEligibleInvoice(false).doubleValue());
+		commissionDetail.setPoints(invoiceCommission.getPoints().doubleValue());
+		commissionDetail.setRevenue(invoiceCommission.getRevenuePercent().doubleValue() * invoice.getTotalCommissionEligibleInvoice(false).doubleValue());
 		commissionDetail.setRole(invoiceCommission.getAccountUser().getRole());
 		commissionDetail.setServiceLevels(getServiceLevels(clientServices, invoiceCommission));					
 		commissionDetail.setWeight(invoiceCommission.getAccountUser().getOwnerPercent());
@@ -94,10 +102,9 @@ public final class InvoiceModel {
 		});
 	}
 	
-	private Map<Integer, List<FeeClass>> getClientSiteServiceLevels(int invoiceId) {
+	public Map<Integer, List<FeeClass>> getClientSiteServiceLevels(List<CommissionAudit> commissionAudits) {
 		Map<Integer, List<FeeClass>> clientSiteServiceLevels = new HashMap<Integer, List<FeeClass>>();
 		
-		List<CommissionAudit> commissionAudits = findCommissionAudits(invoiceId);
 		if (CollectionUtils.isEmpty(commissionAudits)) {
 			return clientSiteServiceLevels;
 		}
@@ -116,7 +123,26 @@ public final class InvoiceModel {
 		return clientSiteServiceLevels;
 	}
 	
-	private List<CommissionAudit> findCommissionAudits(int invoiceId) {
+	public Map<FeeClass, Integer> getNumberOfSitesUsingService(List<CommissionAudit> commissionAudits) {
+		Map<FeeClass, Integer> sitesUsingService = new HashMap<FeeClass, Integer>();		
+		if (CollectionUtils.isEmpty(commissionAudits)) {
+			return sitesUsingService;
+		}
+		
+		for (CommissionAudit commissionAudit : commissionAudits) {
+			FeeClass feeClass = commissionAudit.getFeeClass();
+			if (sitesUsingService.containsKey(feeClass)) {
+				int value = sitesUsingService.get(feeClass);
+				sitesUsingService.put(feeClass, ++value);
+			} else {
+				sitesUsingService.put(feeClass, 1);
+			}
+		}
+		
+		return sitesUsingService;
+	}
+	
+	public List<CommissionAudit> findCommissionAudits(int invoiceId) {
 		List<CommissionAudit> commissionAudits = null;
 		try {
 			commissionAudits = Database.select("SELECT * FROM commission_audit ca WHERE ca.invoiceID = ?", invoiceId, 
