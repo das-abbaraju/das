@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.model.billing.CommissionModel;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 
@@ -17,6 +19,7 @@ public class DownloadCommissionAudit extends PicsActionSupport {
 	private int invoiceId;
 	
 	@Override
+	@RequiredPermission(value = OpPerms.SalesCommission)
 	public String execute() throws Exception {
 		if (invoiceId != 0) {
 			StringBuilder csvOutput = commissionModel.buildCommissionAuditCsvFile(invoiceId);
