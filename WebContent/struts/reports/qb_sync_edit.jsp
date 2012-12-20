@@ -59,10 +59,8 @@
 					</ol>
 			</td>
 		</tr>
-		<tr>
-			<button name="button" class="save" value="save">Save</button>
-		</tr>
 	</table>
+	<button name="button" class="save" value="save">Save</button>
 </s:form>
 
 </body>
