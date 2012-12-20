@@ -28,9 +28,6 @@
 <s:if test="contractor.country.isoCode == 'CA'">
 	<s:set var="countrySubdivision_label_display" value="%{getText('global.Province')}" />
 </s:if>
-<s:elseif test="contractor.country.isoCode == 'GB'">
-	<s:set var="countrySubdivision_label_display" value="%{getText('global.Country')}" />
-</s:elseif>
 <s:else>
 	<s:set var="countrySubdivision_label_display" value="%{getText('global.CountrySubdivision')}" />
 </s:else>
