@@ -51,6 +51,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
+import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.ReportOnClause;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -1468,7 +1469,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, type = FieldType.AccountLevel)
+	@ReportField(category = FieldCategory.Billing, type = FieldType.AccountLevel, importance = FieldImportance.Average)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
 	}
