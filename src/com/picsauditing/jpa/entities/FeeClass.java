@@ -20,7 +20,7 @@ import java.util.*;
 public enum FeeClass implements Translatable {
 
 	// TODO combine some of these fees
-	Deprecated, Free, BidOnly, ListOnly, DocuGUARD, InsureGUARD {
+	Deprecated, Free, BidOnly, ListOnly, TaxGST, DocuGUARD, InsureGUARD {
 		@Override
 		public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel, Set<OperatorAccount> operators) {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty()) {
