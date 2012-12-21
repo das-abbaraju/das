@@ -139,7 +139,7 @@ public class CommissionModel {
 				
 				BigDecimal weightedValue = BigDecimal.ZERO;
 				if (totalSitesUsingService != 0) {
-					weightedValue = serviceFeeOnInvoice.divide(BigDecimal.valueOf(totalSitesUsingService));
+					weightedValue = calculateWeightedValue(serviceFeeOnInvoice, totalSitesUsingService);
 				}
 				
 				commissionEligibleSum = commissionEligibleSum.add(weightedValue);
@@ -161,6 +161,10 @@ public class CommissionModel {
 			BigDecimal revenueCredit = points.multiply(totalCommissionEligible).multiply(BigDecimal.valueOf(ownershipPercent / 100));
 			mathForBreakdown.append(revenueCredit.doubleValue()).append(",").append(Strings.NEW_LINE);
 		}
+	}
+	
+	private BigDecimal calculateWeightedValue(BigDecimal serviceFeeOnInvoice, int totalSitesUsingService) {
+		return BigDecimal.valueOf(serviceFeeOnInvoice.doubleValue() / totalSitesUsingService);
 	}
 	
 	private boolean clientSiteHasService(Map<Integer, List<FeeClass>> clientServiceLevels, FeeClass serviceLevel, int clientSiteId) {
