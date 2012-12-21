@@ -14,7 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.actions.contractors.ServiceRiskCalculator.RiskCategory;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -309,7 +310,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private void calculateRiskLevels() {
 		Collection<AuditData> auditList = answerMap.values();
 		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevel(auditList);
+		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(auditList);
 		
 		// Calculated assessments
 		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);

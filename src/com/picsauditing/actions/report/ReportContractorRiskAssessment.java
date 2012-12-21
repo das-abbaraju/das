@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.contractors.ProductAssessment;
-import com.picsauditing.actions.contractors.SafetyAssessment;
-import com.picsauditing.actions.contractors.ServiceRiskCalculator;
-import com.picsauditing.actions.contractors.ServiceRiskCalculator.RiskCategory;
+import com.picsauditing.actions.contractors.risk.ProductAssessment;
+import com.picsauditing.actions.contractors.risk.RiskAssessment;
+import com.picsauditing.actions.contractors.risk.SafetyAssessment;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
+import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator.RiskCategory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -258,7 +259,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
 		if (SAFETY.equals(type)) {
-			for (SafetyAssessment safetyAssessment : SafetyAssessment.values()) {
+			for (RiskAssessment safetyAssessment : SafetyAssessment.values()) {
 				if (safetyAssessment.isSelfEvaluation()) {
 					questionIDs.add(safetyAssessment.getQuestionID());
 				}
@@ -280,7 +281,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			
 			for (ContractorAudit contractorAudit : con.getAudits()) {
 				if (contractorAudit.getAuditType().isPqf()) {
-					highestRisks = serviceRiskCalculator.getHighestRiskLevel(contractorAudit.getData());
+					highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(contractorAudit.getData());
 				}
 			}
 		}

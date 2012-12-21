@@ -3,6 +3,8 @@ package com.picsauditing.jpa.entities;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.picsauditing.util.Strings;
+
 /*
  * Contractor Risk Level
  */
@@ -20,10 +22,23 @@ public enum LowMedHigh implements Translatable {
 
 	static public String getName(int id) {
 		for (LowMedHigh value : LowMedHigh.values()) {
-			if (value.ordinal() == id)
+			if (value.ordinal() == id) {
 				return value.toString();
+			}
 		}
 		return "";
+	}
+
+	public static LowMedHigh parseLowMedHigh(String value) {
+		if (!Strings.isEmpty(value.trim())) {
+			if ("Medium".equals(value)) {
+				return LowMedHigh.Med;
+			}
+
+			return LowMedHigh.valueOf(value);
+		}
+
+		return null;
 	}
 
 	@Override

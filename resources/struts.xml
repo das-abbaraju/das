@@ -358,7 +358,7 @@
         </action>
 
         <action name="ContractorEditRiskLevel"
-                class="com.picsauditing.actions.contractors.ContractorEditRiskLevel">
+                class="com.picsauditing.actions.contractors.risk.ContractorEditRiskLevel">
             <result>struts/contractors/con_edit_risk.jsp</result>
         </action>
 
