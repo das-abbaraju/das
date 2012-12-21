@@ -346,11 +346,13 @@
                 var question_id = element.attr('data-question-id');
                 var option_group_id = element.attr('data-option-group-id');
 
-                element.tagit({
-                    postType: 'string',
-                    source: 'OptionGroupTagit!getItemsInJson.action?optionGroupId=' + option_group_id,
-                    source_selected: 'OptionGroupTagit!getItemsSelected.action?auditId=' + audit_id + '&questionId=' + question_id
-                });
+                if (typeof element.data('Tagit') != 'object') {
+                    element.tagit({
+                        postType: 'string',
+                        source: 'OptionGroupTagit!getItemsInJson.action?optionGroupId=' + option_group_id,
+                        source_selected: 'OptionGroupTagit!getItemsSelected.action?auditId=' + audit_id + '&questionId=' + question_id
+                    });
+                }
             });
 		}
 	};
