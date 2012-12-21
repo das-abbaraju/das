@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.contractors.risk.ProductAssessment;
 import com.picsauditing.actions.contractors.risk.RiskAssessment;
 import com.picsauditing.actions.contractors.risk.SafetyAssessment;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
@@ -49,17 +48,13 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@Autowired
 	private EmailBuilder emailBuilder;
 
-	public static String SAFETY = "Safety";
-	public static String PRODUCT = "Product";
-	public static String TRANSPORTATION = "Transportation";
-
 	protected int conID;
 	protected String auditorNotes;
 	protected Note note;
 	protected String type;
 	protected ContractorAccount con;
 	protected LowMedHigh manuallySetRisk;
-	
+
 	Map<RiskCategory, LowMedHigh> highestRisks = null;
 
 	public ReportContractorRiskAssessment() {
@@ -74,18 +69,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 
-		String safetyRisk = getRiskSQL(SAFETY, "d.answer");
-		String productRisk = getRiskSQL(PRODUCT, "GROUP_CONCAT(CONCAT(CASE d.questionID "
-				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
-				+ "d.answer) SEPARATOR '<br />') answer");
+		String safetyRisk = getRiskSQL("Safety", "d.answer");
 
-		if (SAFETY.equals(getFilter().getRiskType())) {
-			sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
-		} else if (PRODUCT.equals(getFilter().getRiskType())) {
-			sql.addJoin("JOIN (" + productRisk + ") r ON r.id = a.id");
-		} else {
-			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
-		}
+		sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
 
 		sql.addField("r.riskType");
 		sql.addField("r.risk");
@@ -101,14 +87,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			}
 
 			String noteMessage = type + " risk adjusted from ";
-
-			if (SAFETY.equals(type)) {
-				noteMessage = updateSafetyRisk(noteMessage);
-			} else if (PRODUCT.equals(type)) {
-				noteMessage = updateProductRisk(noteMessage);
-			} else if (TRANSPORTATION.equals(type)) {
-				noteMessage = updateTransportationRisk(noteMessage);
-			}
+			noteMessage = updateSafetyRisk(noteMessage);
 
 			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
 			note.setNoteCategory(NoteCategory.RiskRanking);
@@ -140,18 +119,10 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			}
 
 			String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
+			LowMedHigh safetyRisk = getHighestRiskLevels().get(RiskCategory.SELF_SAFETY);
 
-			if (type.equals(SAFETY)) {
-				LowMedHigh safetyRisk = getHighestRiskLevels().get(RiskCategory.SELF_SAFETY);
-
-				noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
-				con.setSafetyRiskVerified(new Date());
-			} else {
-				LowMedHigh productRisk = getHighestRiskLevels().get(RiskCategory.SELF_PRODUCT);
-
-				noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
-				con.setProductRiskVerified(new Date());
-			}
+			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+			con.setSafetyRiskVerified(new Date());
 
 			contractorAccountDAO.save(con);
 			Note note = new Note(con, getUser(), noteMessage
@@ -199,15 +170,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		this.manuallySetRisk = manuallySetRisk;
 	}
 
-	public List<String> getRiskList() {
-		List<String> risks = new ArrayList<String>();
-		risks.add(getText("JS.Filters.status.All"));
-		risks.add(SAFETY);
-		risks.add(PRODUCT);
-
-		return risks;
-	}
-
 	private void recallWizardSessionFilter() {
 		// TODO: I have a feeling that this is not the way that Wizard Session
 		// should be used. Need to find a better
@@ -230,13 +192,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		String where = String.format("(d.answer = 'Low' AND c.%1$sRisk != 1) OR "
 				+ "(d.answer = 'Medium' AND c.%1$sRisk != 2) OR (c.%1$sRisk = 0)", type.toLowerCase());
 
-		if (PRODUCT.equals(type)) {
-			sql2.addWhere("a.materialSupplier = 1");
-		} else if (TRANSPORTATION.equals(type)) {
-			sql2.addWhere("a.transportationServices = 1");
-		} else {
-			sql2.addWhere("a.onsiteServices = 1 OR a.offsiteServices = 1");
-		}
+		sql2.addWhere("a.onsiteServices = 1 OR a.offsiteServices = 1");
 
 		sql2.addField("'" + type + "' riskType");
 		sql2.addField("c." + type.toLowerCase() + "Risk risk");
@@ -258,34 +214,26 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	private List<Integer> getQuestionIDsFor(String type) {
 		List<Integer> questionIDs = new ArrayList<Integer>();
 
-		if (SAFETY.equals(type)) {
-			for (RiskAssessment safetyAssessment : SafetyAssessment.values()) {
-				if (safetyAssessment.isSelfEvaluation()) {
-					questionIDs.add(safetyAssessment.getQuestionID());
-				}
-			}
-		} else if (PRODUCT.equals(type)) {
-			for (ProductAssessment productAssessment : ProductAssessment.values()) {
-				if (productAssessment.isSelfEvaluation()) {
-					questionIDs.add(productAssessment.getQuestionID());
-				}
+		for (RiskAssessment safetyAssessment : SafetyAssessment.values()) {
+			if (safetyAssessment.isSelfEvaluation()) {
+				questionIDs.add(safetyAssessment.getQuestionID());
 			}
 		}
 
 		return questionIDs;
 	}
-	
+
 	private Map<RiskCategory, LowMedHigh> getHighestRiskLevels() {
 		if (highestRisks == null) {
 			ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-			
+
 			for (ContractorAudit contractorAudit : con.getAudits()) {
 				if (contractorAudit.getAuditType().isPqf()) {
 					highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(contractorAudit.getData());
 				}
 			}
 		}
-		
+
 		return highestRisks;
 	}
 
@@ -304,31 +252,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		con.setSafetyRisk(newSafetyRisk);
 		con.setSafetyRiskVerified(new Date());
-		return noteMessage;
-	}
-
-	private String updateProductRisk(String noteMessage) {
-		LowMedHigh productRisk = getHighestRiskLevels().get(RiskCategory.SELF_PRODUCT);
-		noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
-
-		// How can this happen?
-		if (productRisk.ordinal() > con.getProductRisk().ordinal())
-			con.setLastUpgradeDate(new Date());
-
-		con.setProductRisk(productRisk);
-		con.setProductRiskVerified(new Date());
-
-		return noteMessage;
-	}
-
-	private String updateTransportationRisk(String noteMessage) {
-		LowMedHigh currentTransportationRisk = con.getTransportationRisk();
-
-		noteMessage += currentTransportationRisk.name() + " to " + manuallySetRisk.name();
-
-		con.setTransportationRisk(manuallySetRisk);
-		con.setTransportationRiskVerified(new Date());
-
 		return noteMessage;
 	}
 

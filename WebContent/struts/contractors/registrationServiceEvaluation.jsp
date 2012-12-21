@@ -131,14 +131,14 @@
 		</section>
 		
 		<%-- service safety evaluation display toggle --%>
-		<s:if test="contractor.onsiteServices || contractor.offsiteServices || requireOnsite || requireOffsite">
+		<s:if test="showSafetyAssessment">
 			<s:set var="service_safety_evaluation_display" value="" /> 
 		</s:if>
 		<s:else>
 			<s:set var="service_safety_evaluation_display" value="'display: none;'" />
 		</s:else>
 		
-		<div class="service-safety-evaluation" style="display: none;">
+		<div class="service-safety-evaluation">
 		
 			<div class="separator"></div>
 			
@@ -175,7 +175,7 @@
 		</div>
 		
 		<%-- product safety evaluation display toggle --%>
-		<s:if test="contractor.materialSupplier || contractor.transportationServices">
+		<s:if test="contractor.materialSupplier">
 			<s:set var="product_safety_evaluation_display" value="" /> 
 		</s:if>
 		<s:else>
@@ -236,6 +236,51 @@
 				<ul>
 					<s:iterator value="infoQuestions" var="question">
 						<s:if test="#question.category.id == 1682 && #question.questionType=='MultipleChoice'">
+							<li class="audit-question" data-audit-id="${conAudit.id}" data-question-id="${question.id}">
+								<label><s:property value="#question.name" /></label>
+							
+								<s:if test="#question.option.uniqueCode == 'YesNo'">
+									<s:set var="radio_class" value="'inline'" />
+								</s:if>
+								<s:else>
+									<s:set var="radio_class" value="" />
+								</s:else>
+								
+								<s:radio 
+									list="#question.option.values"
+									listKey="uniqueCode" 
+									listValue="name" 
+									name="answerMap[%{#question.id}].answer"
+									value="answerMap[#question.id].answer"
+									cssClass="%{#radio_class}" 
+								/>
+							</li>
+						</s:if>
+					</s:iterator>
+				</ul>
+			</section>
+			
+		</div>
+		
+		<%-- transportation evaluation display toggle --%>
+		<s:if test="contractor.transportationServices">
+			<s:set var="transportation_evaluation_display" value="" /> 
+		</s:if>
+		<s:else>
+			<s:set var="transportation_evaluation_display" value="'display: none;'" />
+		</s:else>
+		
+		<div class="transportation_evaluation" style="${transportation_evaluation_display}">
+		
+			<div class="separator"></div>
+			
+			<section>
+				<s:set var="transportation_category_id" value="%{@com.picsauditing.jpa.entities.AuditCategory@TRANSPORTATION_SAFETY_EVAL}" />
+				<h1><s:text name="%{'AuditCategory.' + #transportation_category_id + '.name'}" /></h1>
+				
+				<ul>
+					<s:iterator value="infoQuestions" var="question">
+						<s:if test="#question.category.id == #transportation_category_id && #question.questionType=='MultipleChoice'">
 							<li class="audit-question" data-audit-id="${conAudit.id}" data-question-id="${question.id}">
 								<label><s:property value="#question.name" /></label>
 							

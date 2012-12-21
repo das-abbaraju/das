@@ -1,22 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<html>
+
 <head>
-<title>Report Contractor Risk</title>
-<s:include value="reportHeader.jsp" />
-<style type="text/css">
-.red {
-	color: red;
-}
-</style>
-</head>
+	<title>Report Contractor Risk</title>
+		<s:include value="reportHeader.jsp" />
+		<style type="text/css">
+			.red
+			{
+				color: red;
+			}
+		</style>
+	</head>
 <body>
 	<h1>Contractor Risk Assessment</h1>
-	
-	<a href="#" class="cluetip help" rel="#approve_cluetip" title="Approve Risk Level">Approving Product risk levels</a>
-	<div id="approve_cluetip">If approved, the highest of the Contractor selected product risk Levels will be 
-		set as their new product risk level.</div>
 	
 	<div id="search">
 		<s:form id="form1">
@@ -28,15 +25,24 @@
 			<s:hidden name="orderBy" />
 			
 			<div>
-				<button id="searchfilter" type="submit" name="button" value="Search" onclick="return clickSearch('form1');" class="picsbutton positive">
+				<button
+					id="searchfilter"
+					type="submit"
+					name="button"
+					value="Search"
+					onclick="return clickSearch('form1');"
+					class="picsbutton positive">
 					<s:text name="button.Search" />
 				</button>
 			</div>
 			
 			<div class="filterOption">
-				<a href="#" class="filterBox"><s:text name="global.Operators" /></a> =
+				<a href="#" class="filterBox">
+					<s:text name="global.Operators" />
+				</a> =
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
+				
 				<span class="clearLink q_box select">
 					<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
@@ -48,17 +54,14 @@
 					/>
 				</span>
 			</div>
-			
-			<div class="filterOption">
-				<a href="#" class="filterBox">Risk Type</a>
-				<s:select list="riskList" cssClass="forms" name="filter.riskType" />
-			</div>
 		</s:form>
 		<div class="clear"></div>
 	</div>
+	
 	<div>
 		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 	</div>
+	
 	<table class="report" style="clear: none;">
 		<thead>
 			<tr>
@@ -73,45 +76,46 @@
 				<td></td>
 			</tr>
 		</thead>
-		<s:iterator value="data" status="stat">
+		<s:iterator value="data" status="stat" var="contractor">
 			<tr>
 				<td class="right"><s:property value="#stat.count" /></td>
 				<td>
-					<a href="ContractorView.action?id=<s:property value="get('id')"/>"
-						rel="ContractorQuick.action?id=<s:property value="get('id')"/>"
+					<s:url action="ContractorView" var="contractor_view">
+						<s:param name="id">
+							${contractor.get('id')}
+						</s:param>
+					</s:url>
+					<s:url action="ContractorQuick" var="contractor_quick">
+						<s:param name="id">
+							${contractor.get('id')}
+						</s:param>
+					</s:url>
+					
+					<a href="${contractor_view}"
+						rel="${contractor_quick}"
 						class="contractorQuick"
-						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
+						title="${contractor.get('name')}">
+						${contractor.get('name')}
+					</a>
 				</td>
 				<td>
 					<s:date name="get('creationDate')" />
 				</td>
 				<td>
-					<s:property value="get('riskType')" />
+					${contractor.get('riskType')}
 				</td>
 				<td>
 					<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))" />
 				</td>
 				<s:form action="ReportContractorRiskLevel" method="POST">
 					<td>
-						<s:if test="get('riskType').toString() != 'Transportation'">
-							<s:property value="get('answer')" escape="false" />
-						</s:if>
-						<s:else>
-							<s:select 
-								list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
-								listKey="name()"
-								listValue="name()"
-								name="manuallySetRisk"
-							/>
-						</s:else>
+						<s:property value="get('answer')" escape="false" />
 					</td>
 					<td>
 						<s:textarea name="auditorNotes" cols="15" rows="4" />
 					</td>
 					<td>
-						<s:if test="get('riskType').toString() != 'Transportation'">
-							<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />
-						</s:if>
+						<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />
 					</td>
 					<td>
 						<s:hidden value="%{get('id')}" name="conID" />
@@ -123,4 +127,3 @@
 		</s:iterator>
 	</table>
 </body>
-</html>

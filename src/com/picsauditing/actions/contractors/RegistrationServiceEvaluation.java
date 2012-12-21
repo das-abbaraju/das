@@ -184,27 +184,32 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		ContractorAudit ca = new ContractorAudit();
 		List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
 
-		if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
+		if (contractor.isOnsiteServices() || contractor.isOffsiteServices()) {
 			catIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
+		}
+
 		if (contractor.isMaterialSupplier()) {
 			catIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
 			catIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
 		}
-		if (contractor.isTransportationServices())
-			catIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+
+		if (contractor.isTransportationServices()) {
+			catIds.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
+		}
 
 		ca = getContractorPQF(catIds);
 
 		for (AuditCatData catData : ca.getCategories()) {
-			if (catIds.contains(catData.getCategory().getId()))
+			if (catIds.contains(catData.getCategory().getId())) {
 				cats.put(catData.getCategory(), catData);
-
+			}
 		}
 
 		for (AuditCategory cat : cats.keySet()) {
 			for (AuditQuestion q : cat.getQuestions()) {
-				if (q.isValidQuestion(new Date()))
+				if (q.isValidQuestion(new Date())) {
 					questions.add(q);
+				}
 			}
 		}
 
@@ -214,6 +219,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -355,6 +361,20 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		this.isBidOnly = isBidOnly;
 	}
 
+	public boolean isShowSafetyAssessment() {
+		if (contractor != null
+				&& (contractor.isOnsiteServices() || contractor.isOffsiteServices() || contractor.isMaterialSupplier() || contractor
+						.isTransportationServices())) {
+			return true;
+		}
+
+		if (requireOnsite || requireOffsite || requireMaterialSupplier || requireTransportation) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void setServicesHelpText() {
 		if (requireOnsite) {
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
@@ -455,6 +475,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		// Calculated assessments
 		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
 		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
+		LowMedHigh transportation = highestRisks.get(RiskCategory.TRANSPORTATION);
 		// Self assessments
 		LowMedHigh conSafety = highestRisks.get(RiskCategory.SELF_SAFETY);
 		LowMedHigh conProduct = highestRisks.get(RiskCategory.SELF_PRODUCT);
@@ -482,32 +503,16 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 
 		if (contractor.isTransportationServices()) {
-			contractor.setTransportationRisk(LowMedHigh.Low);
-		} else {
-			contractor.setTransportationRisk(LowMedHigh.None);
+			// Safety risk also now includes transportation calculations
+			if (transportation.ordinal() > safety.ordinal()) {
+				contractor.setSafetyRisk(transportation);
+			}
+
+			contractor.setTransportationRisk(transportation);
 		}
 
 		contractor.setAuditColumns(permissions);
 		contractorAccountDao.save(contractor);
-
-		if (!safetyRiskEqualOrBelowSelfRating || !productRiskEqualOrBelowSelfRating) {
-			String safetyAssessment = getText(safety.getI18nKey());
-			String productAssessment = getText(product.getI18nKey());
-
-			List<String> increases = new ArrayList<String>();
-			if (!safetyRiskEqualOrBelowSelfRating && !contractor.isMaterialSupplierOnly()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation",
-						safetyAssessment));
-			}
-
-			if (!productRiskEqualOrBelowSelfRating && contractor.isMaterialSupplier()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
-						productAssessment));
-			}
-
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
-					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
-		}
 	}
 
 	private void setAccountLevelByListOnlyEligibility() {
