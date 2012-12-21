@@ -51,7 +51,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected int conID;
 	protected String auditorNotes;
 	protected Note note;
-	protected String type;
 	protected ContractorAccount con;
 	protected LowMedHigh manuallySetRisk;
 
@@ -81,31 +80,27 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String accept() throws Exception {
 		recallWizardSessionFilter();
-		if (!Strings.isEmpty(type)) {
-			if (con == null) {
-				con = contractorAccountDAO.find(conID);
-			}
 
-			String noteMessage = type + " risk adjusted from ";
-			noteMessage = updateSafetyRisk(noteMessage);
-
-			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
-			note.setNoteCategory(NoteCategory.RiskRanking);
-			noteDAO.save(note);
-
-			if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible()) {
-				con.setAccountLevel(AccountLevel.Full);
-			}
-
-			con.setAuditColumns(permissions);
-			con.syncBalance();
-			contractorAccountDAO.save(con);
-
-			auditorNotes = "";
-			manuallySetRisk = LowMedHigh.None;
-		} else {
-			addActionError("Missing Risk Assessment Type");
+		if (con == null) {
+			con = contractorAccountDAO.find(conID);
 		}
+
+		String noteMessage = updateSafetyRisk("Safety risk adjusted from ");
+
+		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
+		note.setNoteCategory(NoteCategory.RiskRanking);
+		noteDAO.save(note);
+
+		if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible()) {
+			con.setAccountLevel(AccountLevel.Full);
+		}
+
+		con.setAuditColumns(permissions);
+		con.syncBalance();
+		contractorAccountDAO.save(con);
+
+		auditorNotes = "";
+		manuallySetRisk = LowMedHigh.None;
 
 		return setUrlForRedirect("ReportContractorRiskLevel.action");
 	}
@@ -113,27 +108,23 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
 		recallWizardSessionFilter();
-		if (!Strings.isEmpty(type)) {
-			if (con == null) {
-				con = contractorAccountDAO.find(conID);
-			}
 
-			String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
-			LowMedHigh safetyRisk = getHighestRiskLevels().get(RiskCategory.SELF_SAFETY);
-
-			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
-			con.setSafetyRiskVerified(new Date());
-
-			contractorAccountDAO.save(con);
-			Note note = new Note(con, getUser(), noteMessage
-					+ (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
-			note.setNoteCategory(NoteCategory.RiskRanking);
-			noteDAO.save(note);
-
-			auditorNotes = "";
-		} else {
-			addActionError("Missing Risk Assessment Type");
+		if (con == null) {
+			con = contractorAccountDAO.find(conID);
 		}
+
+		LowMedHigh safetyRisk = getHighestRiskLevels().get(RiskCategory.SELF_SAFETY);
+
+		String noteMessage = "Rejected safety adjustment from " + con.getSafetyRisk().toString() + " to "
+				+ safetyRisk.toString();
+		con.setSafetyRiskVerified(new Date());
+
+		contractorAccountDAO.save(con);
+		Note note = new Note(con, getUser(), noteMessage + (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
+		note.setNoteCategory(NoteCategory.RiskRanking);
+		noteDAO.save(note);
+
+		auditorNotes = "";
 
 		return setUrlForRedirect("ReportContractorRiskLevel.action");
 	}
@@ -152,14 +143,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	public void setAuditorNotes(String auditorNotes) {
 		this.auditorNotes = auditorNotes;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public LowMedHigh getManuallySetRisk() {

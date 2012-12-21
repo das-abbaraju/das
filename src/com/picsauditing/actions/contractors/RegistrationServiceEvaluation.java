@@ -477,34 +477,30 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
 		LowMedHigh transportation = highestRisks.get(RiskCategory.TRANSPORTATION);
 		// Self assessments
-		LowMedHigh conSafety = highestRisks.get(RiskCategory.SELF_SAFETY);
-		LowMedHigh conProduct = highestRisks.get(RiskCategory.SELF_PRODUCT);
+		LowMedHigh safetySelfRating = highestRisks.get(RiskCategory.SELF_SAFETY);
+		LowMedHigh productSelfRating = highestRisks.get(RiskCategory.SELF_PRODUCT);
 
-		boolean safetyRiskEqualOrBelowSelfRating = true;
-		boolean productRiskEqualOrBelowSelfRating = true;
 		// Contractor's assessments are the same (or higher?) than what
 		// we've calculated
 		if (!contractor.isMaterialSupplierOnly()) {
-			safetyRiskEqualOrBelowSelfRating = conSafety.ordinal() >= safety.ordinal();
-			if (!safetyRiskEqualOrBelowSelfRating) {
+			if (safetySelfRating.ordinal() < safety.ordinal()) {
 				contractor.setSafetyRisk(safety);
 			} else {
-				contractor.setSafetyRisk(conSafety);
+				contractor.setSafetyRisk(safetySelfRating);
 			}
 		}
 
 		if (contractor.isMaterialSupplier()) {
-			productRiskEqualOrBelowSelfRating = conProduct.ordinal() >= product.ordinal();
-			if (!productRiskEqualOrBelowSelfRating) {
+			if (productSelfRating.ordinal() < product.ordinal()) {
 				contractor.setProductRisk(product);
 			} else {
-				contractor.setProductRisk(conProduct);
+				contractor.setProductRisk(productSelfRating);
 			}
 		}
 
 		if (contractor.isTransportationServices()) {
 			// Safety risk also now includes transportation calculations
-			if (transportation.ordinal() > safety.ordinal()) {
+			if (safety.ordinal() < transportation.ordinal()) {
 				contractor.setSafetyRisk(transportation);
 			}
 

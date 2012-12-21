@@ -4,14 +4,16 @@
 
 <head>
 	<title>Report Contractor Risk</title>
-		<s:include value="reportHeader.jsp" />
-		<style type="text/css">
-			.red
-			{
-				color: red;
-			}
-		</style>
-	</head>
+	
+	<s:include value="reportHeader.jsp" />
+	
+	<style type="text/css">
+		.red
+		{
+			color: red;
+		}
+	</style>
+</head>
 <body>
 	<h1>Contractor Risk Assessment</h1>
 	
@@ -68,12 +70,9 @@
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.ContractorName" /></a></td>
 				<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Registration Date</a></td>
-				<td>Type</td>
 				<td>Calculated Risk</td>
 				<td>Contractor Risk</td>
 				<td>Notes</td>
-				<td></td>
-				<td></td>
 			</tr>
 		</thead>
 		<s:iterator value="data" status="stat" var="contractor">
@@ -102,27 +101,20 @@
 					<s:date name="get('creationDate')" />
 				</td>
 				<td>
-					${contractor.get('riskType')}
-				</td>
-				<td>
 					<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))" />
 				</td>
-				<s:form action="ReportContractorRiskLevel" method="POST">
-					<td>
-						<s:property value="get('answer')" escape="false" />
-					</td>
-					<td>
-						<s:textarea name="auditorNotes" cols="15" rows="4" />
-					</td>
-					<td>
-						<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />
-					</td>
-					<td>
+				<td>
+					<s:property value="get('answer')" escape="false" />
+				</td>
+				<td>
+					<s:form action="ReportContractorRiskLevel" method="POST">
 						<s:hidden value="%{get('id')}" name="conID" />
-						<s:hidden value="%{get('riskType')}" name="type" />
+						<s:textarea name="auditorNotes" cols="15" rows="4" />
+						<br />
+						<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />
 						<s:submit method="accept" cssClass="picsbutton negative" value="%{getText('button.Accept')}" />
-					</td>
-				</s:form>
+					</s:form>
+				</td>
 			</tr>
 		</s:iterator>
 	</table>

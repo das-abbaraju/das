@@ -34,9 +34,9 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.util.PermissionToViewContractor;
 
-public class RegistrationServiceEvaluationTest extends PicsTest{
+public class RegistrationServiceEvaluationTest extends PicsTest {
 	RegistrationServiceEvaluation serviceEvaluation;
-	
+
 	@Mock
 	private Permissions permissions;
 	@Mock
@@ -62,54 +62,34 @@ public class RegistrationServiceEvaluationTest extends PicsTest{
 		contractor.setAccountLevel(AccountLevel.Full);
 		contractor.setStatus(AccountStatus.Pending);
 		serviceEvaluation.setId(contractor.getId());
-		
+
 		when(permissionToViewContractor.check(Matchers.anyBoolean())).thenReturn(true);
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.getAccountId()).thenReturn(contractor.getId());
 		when(contractorAccountDao.find(Matchers.anyInt())).thenReturn(contractor);
-		
-		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissions",
-				permissions);
-		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractorAccountDao",
-				contractorAccountDao);
-		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor",
-				permissionToViewContractor);
-}
+
+		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissions", permissions);
+		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractorAccountDao", contractorAccountDao);
+		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor", permissionToViewContractor);
+	}
 
 	@Test
-	public void testNextStep_MaterialSupplier() throws Exception  {
+	public void testNextStep_MaterialSupplier() throws Exception {
 		contractor.setProductRisk(LowMedHigh.None);
 		List<ContractorType> serviceTypes = new ArrayList<ContractorType>();
 		serviceTypes.add(ContractorType.Supplier);
 		contractor.setAccountTypes(serviceTypes);
-		
+
 		Map<Integer, AuditData> answerMap = new HashMap<Integer, AuditData>();
 		answerMap.put(7679, EntityFactory.makeAuditData("High", 7679));
-		
+
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "answerMap", answerMap);
-		
+
 		Whitebox.invokeMethod(serviceEvaluation, "calculateRiskLevels");
 		assertEquals("High", contractor.getProductRisk().toString());
 	}
 
-	@Test
-	public void testNextStep_TransportationServices() throws Exception  {
-		contractor.setTransportationRisk(LowMedHigh.None);
-		List<ContractorType> serviceTypes = new ArrayList<ContractorType>();
-		serviceTypes.add(ContractorType.Transportation);
-		contractor.setAccountTypes(serviceTypes);
-		
-//		Map<Integer, AuditData> answerMap = new HashMap<Integer, AuditData>();
-//		answerMap.put(7679, EntityFactory.makeAuditData("High", 7679));
-		
-		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
-//		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "answerMap", answerMap);
-		
-		Whitebox.invokeMethod(serviceEvaluation, "calculateRiskLevels");
-		assertEquals("Low", contractor.getTransportationRisk().toString());
-	}
-	
 	@Test
 	public void testValidateAnswers_MaterialSupplier() {
 		contractor.setProductRisk(LowMedHigh.High);
@@ -121,11 +101,11 @@ public class RegistrationServiceEvaluationTest extends PicsTest{
 		productCategory.setId(1683);
 		AuditCategory businessCategory = new AuditCategory();
 		businessCategory.setId(1682);
-		
+
 		productCategory.getQuestions().add(createQuestion(7679));
 		businessCategory.getQuestions().add(createQuestion(7660));
 		businessCategory.getQuestions().add(createQuestion(7661));
-		
+
 		Map<Integer, AuditData> answerMap = new HashMap<Integer, AuditData>();
 		answerMap.put(7679, EntityFactory.makeAuditData("High", 7679));
 		answerMap.put(7660, EntityFactory.makeAuditData("Yes", 7660));
@@ -141,7 +121,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest{
 		boolean valid = serviceEvaluation.validateAnswers();
 		assertTrue(valid);
 	}
-	
+
 	private AuditQuestion createQuestion(int id) {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(id);
@@ -151,7 +131,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest{
 		Calendar expires = Calendar.getInstance();
 		expires.add(Calendar.YEAR, 10);
 		question.setExpirationDate(expires.getTime());
-		
+
 		return question;
 	}
 }
