@@ -167,6 +167,25 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public boolean isNeedsWelcomeCall(int conID) {
+		Query query = em.createNativeQuery("SELECT a.id FROM accounts a " +
+				"JOIN contractor_info ci ON ci.id = a.id " +
+				"LEFT JOIN contractor_audit ca2 ON ca2.conID = a.id AND ca2.auditTypeID = 9 AND ca2.creationDate >= DATE_SUB(ci.membershipDate, INTERVAL 1 YEAR) " +
+				"LEFT JOIN contractor_audit ca3 ON ca3.conID = a.id AND ca3.auditTypeID = 9 " +
+				"WHERE ca2.id is null " +
+				"AND a.type = 'Contractor' " +
+				"AND a.status = 'Active' " +
+				"AND ci.accountLevel = 'Full' " +
+				"AND ci.membershipDate > DATE_SUB(NOW(), INTERVAL 6 MONTH) " +
+				"AND a.id=" + conID);
+		
+		List<Integer> list = query.getResultList();
+		if (list.size() > 0)
+			return true;
+		
+		return false;
+	}
+	
 	public List<ContractorAudit> findByAuditType(int conID, AuditTypeClass classType) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
 				+ "WHERE t.contractorAccount.id = ? AND t.auditType.classType = '?'" + "ORDER BY auditTypeID");

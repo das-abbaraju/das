@@ -31,6 +31,7 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -70,6 +71,8 @@ public class AuditBuilderTest extends PicsTest {
 	AuditPercentCalculator auditPercentCalculator;
 	@Mock
 	AuditDataDAO auditDataDao;
+	@Mock
+	ContractorAuditDAO auditDao;
 
 	ContractorAccount contractor;
 	OperatorAccount operator;
@@ -151,7 +154,27 @@ public class AuditBuilderTest extends PicsTest {
 		auditBuilder.buildAudits(contractor);
 		assertEquals(3, contractor.getAudits().size());
 	}
-		
+	
+	@Test
+	public void testWelcomCalls() {
+		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
+		EntityFactory.addCategories(auditType, 101, "Welcome Category 1");
+		// set up rules
+		addTypeRules((new RuleParameters()).setAuditType(auditType));
+		for (AuditCategory category : auditType.getCategories()) {
+			addCategoryRules((new RuleParameters()).setAuditType(auditType)
+					.setAuditCategory(category));
+		}
+
+		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache,
+				contractor);
+		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(
+				catRuleCache, contractor);
+
+		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
+		assertEquals(1, auditTypes.size());		
+	}
+	
 	@Test
 	public void testAuditTypeBuilderCategoryBuildere() {
 		// set up audit type
@@ -179,6 +202,31 @@ public class AuditBuilderTest extends PicsTest {
 		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit,
 				contractor.getOperatorAccounts());
 		assertEquals(2, categories.size());
+	}
+
+	@Test
+	public void testBuildAudits_WelcomeCall() {
+		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
+		WorkflowStep pendingStep = new WorkflowStep();
+		pendingStep.setNewStatus(AuditStatus.Pending);
+		
+		Workflow workflow = new Workflow();
+		workflow.getSteps().add(pendingStep);
+		auditType.setWorkFlow(workflow);
+		
+		addTypeRules((new RuleParameters())
+				.setAuditTypeId(auditType.getId()));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(auditType);
+		PicsTestUtil.forceSetPrivateField(auditBuilder,
+				"conAuditDao", auditDao);
+		when(auditDao.isNeedsWelcomeCall(anyInt())).thenReturn(true);
+		when(auditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(auditType);
+		
+		auditBuilder.buildAudits(contractor);
+		assertEquals(1, contractor.getAudits().size());
 	}
 
 	@Test

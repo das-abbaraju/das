@@ -81,6 +81,11 @@ public class AuditBuilder {
 		for (AuditTypeDetail detail : requiredAuditTypeDetails) {
 			if (!detail.rule.isManuallyAdded()) {
 				AuditType auditType = detail.rule.getAuditType();
+				
+				if (auditType.getId() == AuditType.WELCOME
+						&& !conAuditDao.isNeedsWelcomeCall(contractor.getId()))
+					continue;
+				
 				requiredAuditTypes.add(auditType);
 				if (auditType.isAnnualAddendum()) {
 					auditType = reconnectAuditType(auditType);
@@ -96,9 +101,6 @@ public class AuditBuilder {
 							if (auditType.isRenewable()) {
 								// This audit should not be renewed but we already
 								// have one
-								found = true;
-							} else if (auditType.getId() == AuditType.WELCOME) {
-								// we should never add another welcome call audit
 								found = true;
 							} else if (auditType.isWCB()) {
 								found = foundCurrentYearWCB(conAudit);

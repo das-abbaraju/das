@@ -89,6 +89,26 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 				}
 			}
 			
+			// Welcome Audits do not csre about trades or contractor types
+			if (auditType.getId() == AuditType.WELCOME) {
+				Trade blank = new Trade();
+				blank.setId(-1);
+				
+				AuditTypeDetail detail = new AuditTypeDetail();
+				for (OperatorAccount operator : operatorAccounts) {
+					AuditTypeRule rule = getApplicable(rulesForThisAuditType, auditType, blank, null, operator);
+					if (rule != null && rule.isInclude()) {
+						// We need to add this category to the audit
+						detail.operators.add(operator);
+						if (rule.isMoreSpecific(detail.rule))
+							detail.rule = rule;
+						types.add(detail);
+					}
+				}
+			
+				continue;
+			}
+			
 			AuditTypeDetail detail = new AuditTypeDetail();
 			for (Trade trade : trades) {
 				for (ContractorType type : contractorTypes) {
@@ -124,10 +144,6 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers,
 			Map<Integer, OperatorTag> opTags) {
 		AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
-		if (auditTypeRule.getAuditType() != null && auditTypeRule.getAuditType().getId() == AuditType.WELCOME) {
-			if (DateBean.getDateDifference(contractor.getCreationDate()) < -90)
-				return false;
-		}
 		
 		// Based on PICS-2734, we're going to check for ManuallyAdded in AuditBuilder line 62
 		//if (auditTypeRule.isManuallyAdded())
