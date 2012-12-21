@@ -36,7 +36,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class RegistrationServiceEvaluation extends ContractorActionSupport {
-
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
@@ -69,15 +68,17 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		findContractor();
-		if (redirectIfNotReadyForThisStep())
+		if (redirectIfNotReadyForThisStep()) {
 			return SUCCESS;
+		}
 
 		showBidOnly = true;
 		showCompetitor = true;
 
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-			if (!operator.isAcceptsBids())
+			if (!operator.isAcceptsBids()) {
 				showBidOnly = false;
+			}
 		}
 
 		setRequiredContractorTypes();
@@ -97,34 +98,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		requireOffsite = contractor.isContractorTypeRequired(ContractorType.Offsite);
 		requireMaterialSupplier = contractor.isContractorTypeRequired(ContractorType.Supplier);
 		requireTransportation = contractor.isContractorTypeRequired(ContractorType.Transportation);
-	}
-
-	public void setServicesHelpText() {
-		if (requireOnsite) {
-			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
-		}
-		
-		if (requireOffsite) {
-			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
-		}
-		
-		if (requireMaterialSupplier) {
-			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
-		}
-		
-		if (requireTransportation) {
-			servicesHelpText += getTextParameterized(
-					"RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Transportation.getI18nKey()),
-					StringUtils.join(
-							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
-		}
 	}
 
 	public boolean conTypesOK() {
@@ -244,148 +217,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		return true;
 	}
 
-	private void loadQuestions() {
-		// get the categories for a contractor based on their
-		// Onsite/Offsite/Material Supplier status
-		Set<Integer> categoryIds = new HashSet<Integer>();
-
-		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
-		categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
-		categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
-
-		conAudit = getContractorPQF(categoryIds);
-
-		for (AuditCatData catData : conAudit.getCategories()) {
-			if (categoryIds.contains(catData.getCategory().getId())) {
-				categories.put(catData.getCategory(), catData);
-			}
-		}
-
-		// find the questions for the above categories
-		for (AuditCategory category : categories.keySet()) {
-			for (AuditQuestion question : category.getQuestions()) {
-				if (question.isValidQuestion(new Date())) {
-					infoQuestions.add(question);
-				}
-			}
-		}
-	}
-
-	private void loadAnswers() {
-		Set<Integer> questionIds = new HashSet<Integer>();
-		for (AuditQuestion question : infoQuestions) {
-			questionIds.add(question.getId());
-		}
-
-		// find the answers to the questions
-		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
-
-		for (AuditQuestion question : infoQuestions) {
-			if (answerMap.get(question.getId()) == null) {
-				AuditData answer = new AuditData();
-				answer.setAnswer("");
-				answer.setAudit(conAudit);
-				answer.setQuestion(question);
-				answer.setAuditColumns(permissions);
-				answerMap.put(question.getId(), answer);
-			}
-		}
-	}
-
-	private void saveAnswers() throws Exception {
-		for (Integer qid : answerMap.keySet()) {
-			AuditData data = answerMap.get(qid);
-			AuditData newData = auditDataDAO.findAnswerByAuditQuestion(conAudit.getId(), qid);
-			if (!Strings.isEmpty(data.getAnswer())) {
-				if (newData != null)
-					data.setId(newData.getId());
-				data.setAudit(conAudit);
-				data.setQuestion(questionDao.find(qid));
-				data.setAuditColumns(permissions);
-				auditDataDAO.save(data);
-			}
-		}
-	}
-	
-	private void calculateRiskLevels() {
-		Collection<AuditData> auditList = answerMap.values();
-		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
-		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(auditList);
-		
-		// Calculated assessments
-		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
-		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
-		// Self assessments
-		LowMedHigh conSafety = highestRisks.get(RiskCategory.SELF_SAFETY);
-		LowMedHigh conProduct = highestRisks.get(RiskCategory.SELF_PRODUCT);
-
-		boolean safetyRiskEqualOrBelowSelfRating = true;
-		boolean productRiskEqualOrBelowSelfRating = true;
-		// Contractor's assessments are the same (or higher?) than what
-		// we've calculated
-		if (!contractor.isMaterialSupplierOnly()) {
-			safetyRiskEqualOrBelowSelfRating = conSafety.ordinal() >= safety.ordinal();
-			if (!safetyRiskEqualOrBelowSelfRating) {
-				contractor.setSafetyRisk(safety);
-			} else {
-				contractor.setSafetyRisk(conSafety);
-			}
-		}
-		
-		if (contractor.isMaterialSupplier()) {
-			productRiskEqualOrBelowSelfRating = conProduct.ordinal() >= product.ordinal();
-			if (!productRiskEqualOrBelowSelfRating) {
-				contractor.setProductRisk(product);
-			} else {
-				contractor.setProductRisk(conProduct);
-			}
-		}
-		
-		if (contractor.isTransportationServices()) {
-			contractor.setTransportationRisk(LowMedHigh.Low);
-		} else {
-			contractor.setTransportationRisk(LowMedHigh.None);
-		}
-
-		contractor.setAuditColumns(permissions);
-		contractorAccountDao.save(contractor);
-
-		if (!safetyRiskEqualOrBelowSelfRating || !productRiskEqualOrBelowSelfRating) {
-			String safetyAssessment = getText(safety.getI18nKey());
-			String productAssessment = getText(product.getI18nKey());
-
-			List<String> increases = new ArrayList<String>();
-			if (!safetyRiskEqualOrBelowSelfRating && !contractor.isMaterialSupplierOnly()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation", safetyAssessment));
-			}
-			
-			if (!productRiskEqualOrBelowSelfRating && contractor.isMaterialSupplier()) {
-				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
-						productAssessment));
-			}
-
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
-					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
-		}
-	}
-
-	private void setAccountLevelByListOnlyEligibility() {
-		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
-				&& contractor.getAccountLevel().isFull()) {
-			boolean canBeListed = true;
-			
-			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
-				if (!conOp.getOperatorAccount().isAcceptsList())
-					canBeListed = false;
-			}
-			
-			if (canBeListed) {
-				contractor.setAccountLevel(AccountLevel.ListOnly);
-			}
-		} else if (contractor.getAccountLevel().isListOnly())
-			contractor.setAccountLevel(AccountLevel.Full);
-	}
-
 	public Map<Integer, AuditData> getAnswerMap() {
 		return answerMap;
 	}
@@ -410,72 +241,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		if (oRiskLevel.compareTo(qRiskLevel) < 0)
 			return qRiskLevel;
 		return oRiskLevel;
-	}
-
-	/**
-	 * This method finds a contractor's PQF. If it does not exists, it will
-	 * create a new one and save it to the database.
-	 * 
-	 * It will also add all categories required for registration.
-	 * 
-	 * @param categoryIds
-	 *            The categories required by the contractor based on the types
-	 *            of trades selected.
-	 */
-	private ContractorAudit getContractorPQF(Set<Integer> categoryIds) {
-		ContractorAudit pqf = null;
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().isPqf()) {
-				pqf = audit;
-				break;
-			}
-		}
-
-		// The pqf doesn't exist yet, it should be created.
-		if (pqf == null) {
-			pqf = new ContractorAudit();
-			pqf.setContractorAccount(contractor);
-			pqf.setAuditType(new AuditType(AuditType.PQF));
-			pqf.setAuditColumns(new User(User.SYSTEM));
-		}
-
-		// Add the categories that are required for this contractor
-		Set<Integer> categoriesToAdd = new HashSet<Integer>(categoryIds);
-		for (AuditCatData catData : pqf.getCategories()) {
-			int catID = catData.getCategory().getId();
-			if (categoriesToAdd.contains(catID)) {
-				categoriesToAdd.remove(catID);
-			}
-		}
-
-		// If there are categories left in the categoryIds set, then they need
-		// to be added now.
-		for (Integer catID : categoriesToAdd) {
-			addAuditCategories(pqf, catID);
-		}
-
-		auditDao.save(pqf);
-
-		// refresh the audit to force the categories to reload
-		auditDao.refresh(conAudit);
-
-		return pqf;
-	}
-
-	/**
-	 * Adds an AuditCatData to an audit.
-	 * 
-	 * @param audit
-	 * @param categoryId
-	 */
-	private void addAuditCategories(ContractorAudit audit, int categoryId) {
-		AuditCatData catData = new AuditCatData();
-		catData.setCategory(dao.find(AuditCategory.class, categoryId));
-		catData.setAudit(audit);
-		catData.setApplies(true);
-		catData.setOverride(false);
-		catData.setAuditColumns(new User(User.SYSTEM));
-		audit.getCategories().add(catData);
 	}
 
 	public boolean isCanEditCategory(AuditCategory category) {
@@ -588,5 +353,243 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 	public void setBidOnly(boolean isBidOnly) {
 		this.isBidOnly = isBidOnly;
+	}
+
+	private void setServicesHelpText() {
+		if (requireOnsite) {
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
+		}
+
+		if (requireOffsite) {
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
+		}
+
+		if (requireMaterialSupplier) {
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
+		}
+
+		if (requireTransportation) {
+			servicesHelpText += getTextParameterized(
+					"RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Transportation.getI18nKey()),
+					StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
+		}
+	}
+
+	private void loadQuestions() {
+		// get the categories for a contractor based on their
+		// Onsite/Offsite/Material Supplier status
+		Set<Integer> categoryIds = new HashSet<Integer>();
+
+		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
+		categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+		categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
+		categoryIds.add(AuditCategory.TRANSPORTATION_SAFETY_EVAL);
+
+		conAudit = getContractorPQF(categoryIds);
+
+		for (AuditCatData catData : conAudit.getCategories()) {
+			if (categoryIds.contains(catData.getCategory().getId())) {
+				categories.put(catData.getCategory(), catData);
+			}
+		}
+
+		// find the questions for the above categories
+		for (AuditCategory category : categories.keySet()) {
+			for (AuditQuestion question : category.getQuestions()) {
+				if (question.isValidQuestion(new Date())) {
+					infoQuestions.add(question);
+				}
+			}
+		}
+	}
+
+	private void loadAnswers() {
+		Set<Integer> questionIds = new HashSet<Integer>();
+		for (AuditQuestion question : infoQuestions) {
+			questionIds.add(question.getId());
+		}
+
+		// find the answers to the questions
+		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
+
+		for (AuditQuestion question : infoQuestions) {
+			if (answerMap.get(question.getId()) == null) {
+				AuditData answer = new AuditData();
+				answer.setAnswer("");
+				answer.setAudit(conAudit);
+				answer.setQuestion(question);
+				answer.setAuditColumns(permissions);
+				answerMap.put(question.getId(), answer);
+			}
+		}
+	}
+
+	private void saveAnswers() throws Exception {
+		for (Integer qid : answerMap.keySet()) {
+			AuditData data = answerMap.get(qid);
+			AuditData newData = auditDataDAO.findAnswerByAuditQuestion(conAudit.getId(), qid);
+			if (!Strings.isEmpty(data.getAnswer())) {
+				if (newData != null)
+					data.setId(newData.getId());
+				data.setAudit(conAudit);
+				data.setQuestion(questionDao.find(qid));
+				data.setAuditColumns(permissions);
+				auditDataDAO.save(data);
+			}
+		}
+	}
+
+	private void calculateRiskLevels() {
+		Collection<AuditData> auditList = answerMap.values();
+		ServiceRiskCalculator serviceRiskCalculator = new ServiceRiskCalculator();
+		Map<RiskCategory, LowMedHigh> highestRisks = serviceRiskCalculator.getHighestRiskLevelMap(auditList);
+
+		// Calculated assessments
+		LowMedHigh safety = highestRisks.get(RiskCategory.SAFETY);
+		LowMedHigh product = highestRisks.get(RiskCategory.PRODUCT);
+		// Self assessments
+		LowMedHigh conSafety = highestRisks.get(RiskCategory.SELF_SAFETY);
+		LowMedHigh conProduct = highestRisks.get(RiskCategory.SELF_PRODUCT);
+
+		boolean safetyRiskEqualOrBelowSelfRating = true;
+		boolean productRiskEqualOrBelowSelfRating = true;
+		// Contractor's assessments are the same (or higher?) than what
+		// we've calculated
+		if (!contractor.isMaterialSupplierOnly()) {
+			safetyRiskEqualOrBelowSelfRating = conSafety.ordinal() >= safety.ordinal();
+			if (!safetyRiskEqualOrBelowSelfRating) {
+				contractor.setSafetyRisk(safety);
+			} else {
+				contractor.setSafetyRisk(conSafety);
+			}
+		}
+
+		if (contractor.isMaterialSupplier()) {
+			productRiskEqualOrBelowSelfRating = conProduct.ordinal() >= product.ordinal();
+			if (!productRiskEqualOrBelowSelfRating) {
+				contractor.setProductRisk(product);
+			} else {
+				contractor.setProductRisk(conProduct);
+			}
+		}
+
+		if (contractor.isTransportationServices()) {
+			contractor.setTransportationRisk(LowMedHigh.Low);
+		} else {
+			contractor.setTransportationRisk(LowMedHigh.None);
+		}
+
+		contractor.setAuditColumns(permissions);
+		contractorAccountDao.save(contractor);
+
+		if (!safetyRiskEqualOrBelowSelfRating || !productRiskEqualOrBelowSelfRating) {
+			String safetyAssessment = getText(safety.getI18nKey());
+			String productAssessment = getText(product.getI18nKey());
+
+			List<String> increases = new ArrayList<String>();
+			if (!safetyRiskEqualOrBelowSelfRating && !contractor.isMaterialSupplierOnly()) {
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation",
+						safetyAssessment));
+			}
+
+			if (!productRiskEqualOrBelowSelfRating && contractor.isMaterialSupplier()) {
+				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
+						productAssessment));
+			}
+
+			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
+					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
+		}
+	}
+
+	private void setAccountLevelByListOnlyEligibility() {
+		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
+				&& contractor.getAccountLevel().isFull()) {
+			boolean canBeListed = true;
+
+			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+				if (!conOp.getOperatorAccount().isAcceptsList())
+					canBeListed = false;
+			}
+
+			if (canBeListed) {
+				contractor.setAccountLevel(AccountLevel.ListOnly);
+			}
+		} else if (contractor.getAccountLevel().isListOnly())
+			contractor.setAccountLevel(AccountLevel.Full);
+	}
+
+	/**
+	 * This method finds a contractor's PQF. If it does not exists, it will
+	 * create a new one and save it to the database.
+	 * 
+	 * It will also add all categories required for registration.
+	 * 
+	 * @param categoryIds
+	 *            The categories required by the contractor based on the types
+	 *            of trades selected.
+	 */
+	private ContractorAudit getContractorPQF(Set<Integer> categoryIds) {
+		ContractorAudit pqf = null;
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().isPqf()) {
+				pqf = audit;
+				break;
+			}
+		}
+
+		// The pqf doesn't exist yet, it should be created.
+		if (pqf == null) {
+			pqf = new ContractorAudit();
+			pqf.setContractorAccount(contractor);
+			pqf.setAuditType(new AuditType(AuditType.PQF));
+			pqf.setAuditColumns(new User(User.SYSTEM));
+		}
+
+		// Add the categories that are required for this contractor
+		Set<Integer> categoriesToAdd = new HashSet<Integer>(categoryIds);
+		for (AuditCatData catData : pqf.getCategories()) {
+			int catID = catData.getCategory().getId();
+			if (categoriesToAdd.contains(catID)) {
+				categoriesToAdd.remove(catID);
+			}
+		}
+
+		// If there are categories left in the categoryIds set, then they need
+		// to be added now.
+		for (Integer catID : categoriesToAdd) {
+			addAuditCategories(pqf, catID);
+		}
+
+		auditDao.save(pqf);
+
+		// refresh the audit to force the categories to reload
+		auditDao.refresh(conAudit);
+
+		return pqf;
+	}
+
+	/**
+	 * Adds an AuditCatData to an audit.
+	 * 
+	 * @param audit
+	 * @param categoryId
+	 */
+	private void addAuditCategories(ContractorAudit audit, int categoryId) {
+		AuditCatData catData = new AuditCatData();
+		catData.setCategory(dao.find(AuditCategory.class, categoryId));
+		catData.setAudit(audit);
+		catData.setApplies(true);
+		catData.setOverride(false);
+		catData.setAuditColumns(new User(User.SYSTEM));
+		audit.getCategories().add(catData);
 	}
 }

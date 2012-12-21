@@ -338,7 +338,7 @@
 					var element_id = element.attr('id');
 					var is_checked = element.is(':checked');
 
-					if ($.inArray(element_id, ['onSite', 'offSite']) != -1 && is_checked) {
+					if (is_checked) {
 						service_safety_evaluation_display = true;
 					}
 					if($.inArray(element_id, ['materialSupplier']) != -1 && is_checked) {

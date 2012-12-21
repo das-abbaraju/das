@@ -45,6 +45,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	public static final int BUSINESS_INTERRUPTION_EVAL = 1682;
 	public static final int PRODUCT_SAFETY_EVAL = 1683;
 	public static final int SERVICE_SAFETY_EVAL = 1721;
+	public static final int TRANSPORTATION_SAFETY_EVAL = 3251;
 
 	private AuditType auditType;
 	private AuditCategory parent;
@@ -348,7 +349,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 		if (cmp != 0)
 			return cmp;
-		
+
 		return getFullNumber().compareTo(other.getFullNumber());
 	}
 

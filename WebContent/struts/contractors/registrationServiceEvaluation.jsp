@@ -16,12 +16,12 @@
 	<s:actionerror cssClass="action-error alert-message error" />
 </s:if>
 	
-<s:if test="getServicesHelpText() != ''">
+<s:if test="!isStringEmpty(servicesHelpText)">
 	<div class="alert-error alert-message warning">
 		<span class="icon warn"></span>
 		
 		<p>
-			<s:property value="getServicesHelpText()" escape="false" />
+			<s:property value="servicesHelpText" escape="false" />
 		</p>
 	</div>
 </s:if>
@@ -138,7 +138,7 @@
 			<s:set var="service_safety_evaluation_display" value="'display: none;'" />
 		</s:else>
 		
-		<div class="service-safety-evaluation" style="${service_safety_evaluation_display}">
+		<div class="service-safety-evaluation" style="display: none;">
 		
 			<div class="separator"></div>
 			
