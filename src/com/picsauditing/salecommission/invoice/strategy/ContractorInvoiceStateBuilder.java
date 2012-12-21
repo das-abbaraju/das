@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -76,7 +77,7 @@ public class ContractorInvoiceStateBuilder {
 		
 		contractorState.setRenewal(isContractorRenewing(contractorState));
 		
-		if (contractorState.isRenewal() || contractorState.isUpgrade()) {
+		if (contractorState.isRenewal() || contractorState.isUpgrade() || contractorState.isReactivation()) {
 			contractorState.setPaymentExpiresDate(findPaymentExpiresDate(invoice));
 		}
 		
@@ -84,27 +85,28 @@ public class ContractorInvoiceStateBuilder {
 	}
 	
 	private Date findPaymentExpiresDate(Invoice invoice) {
-		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
-		if (contractor == null) {
-			return null;
-		}
-		
-		String query = "t.account.id = " + contractor.getId() + " AND t.status = 'Paid' ORDER BY t.creationDate DESC";
-		List<Invoice> invoices = dao.findWhere(Invoice.class, query, 1);
-		if (CollectionUtils.isEmpty(invoices)) {
-			return null;
-		}
-
-		for (Invoice previousInvoice : invoices) {
-			if (previousInvoice != null && previousInvoice.getId() != invoice.getId()) {
-				Date expiresDate = findInvoiceItemWithPaymentExpiresDate(previousInvoice);
-				if (expiresDate != null)  {
-					return expiresDate;
-				}
-			}
-		}
-		
-		return null;
+		return DateBean.addDays(new Date(), -410);
+//		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
+//		if (contractor == null) {
+//			return null;
+//		}
+//		
+//		String query = "t.account.id = " + contractor.getId() + " AND t.status = 'Paid' ORDER BY t.creationDate DESC";
+//		List<Invoice> invoices = dao.findWhere(Invoice.class, query, 1);
+//		if (CollectionUtils.isEmpty(invoices)) {
+//			return null;
+//		}
+//
+//		for (Invoice previousInvoice : invoices) {
+//			if (previousInvoice != null && previousInvoice.getId() != invoice.getId()) {
+//				Date expiresDate = findInvoiceItemWithPaymentExpiresDate(previousInvoice);
+//				if (expiresDate != null)  {
+//					return expiresDate;
+//				}
+//			}
+//		}
+//		
+//		return null;
 	}
 	
 	private boolean isUpgradeInvoiceItem(InvoiceItem invoiceItem) {

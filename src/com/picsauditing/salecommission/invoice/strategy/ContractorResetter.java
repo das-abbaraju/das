@@ -13,6 +13,7 @@ public class ContractorResetter {
 		resetForActivation(contractor, contractorState);
 		resetForRenewal(contractor, contractorState);
 		resetForUpgrade(contractor, contractorState);
+		resetForReactivation(contractor, contractorState);
 	}
 	
 	private static void resetForActivation(ContractorAccount contractor, ContractorInvoiceState contractorState) {
@@ -37,6 +38,12 @@ public class ContractorResetter {
 	
 	private static void resetForUpgrade(ContractorAccount contractor, ContractorInvoiceState contractorState) {
 		if (contractorState.isUpgrade()) {
+			contractor.setPaymentExpires(contractorState.getPaymentExpiresDate());
+		}
+	}
+	
+	private static void resetForReactivation(ContractorAccount contractor, ContractorInvoiceState contractorState) {
+		if (contractorState.isReactivation()) {
 			contractor.setPaymentExpires(contractorState.getPaymentExpiresDate());
 		}
 	}
