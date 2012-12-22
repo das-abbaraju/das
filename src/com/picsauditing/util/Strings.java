@@ -32,7 +32,6 @@ public class Strings {
 	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
 
 	/** Use StringUtils.isEmpty() instead */
-	@Deprecated
 	public static boolean isEmpty(String value) {
 		if (value == null) {
 			return true;
@@ -43,21 +42,14 @@ public class Strings {
 	}
 
 	/** Use StringUtils.isNotEmpty() instead */
-	@Deprecated
 	public static boolean isNotEmpty(String value) {
 		return !isEmpty(value);
 	}
 
-	/** Use StringUtils.equals() instead */
+	/** Use StringUtils.equals() going forward */
 	@Deprecated
 	public static boolean isEqualNullSafe(String value1, String value2) {
-		if (value1 != null)
-			return value1.equals(value2);
-
-		if (value2 != null)
-			return value2.equals(value1);
-
-		return true;
+		return StringUtils.equals(value1, value2);
 	}
 
 	public static String[] convertListToArray(List<String> list) {

@@ -6,7 +6,6 @@ import java.util.Set;
 import com.picsauditing.jpa.entities.Currency;
 
 // TODO pull out email addresses into their own file
-@Deprecated
 public class EmailAddressUtils {
 	
 	// TODO: This should be further refactored into a configuration file
