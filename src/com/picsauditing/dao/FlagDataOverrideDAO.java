@@ -22,6 +22,15 @@ public class FlagDataOverrideDAO extends PicsDAO {
 		return em.find(FlagDataOverride.class, id);
 	}
 
+	public List<FlagDataOverride> findWhere(String where) {
+		if (where == null)
+			where = "";
+		if (where.length() > 0)
+			where = "WHERE " + where;
+		Query query = em.createQuery("FROM FlagDataOverride " + where);
+		return query.getResultList();
+	}
+
 	public Map<FlagCriteria, List<FlagDataOverride>> findByContractorAndOperator(ContractorAccount contractor,
 			OperatorAccount operator) {
 		String where = operator.getIdString();
