@@ -16,10 +16,12 @@ import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceCommission;
+import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.salecommission.invoice.strategy.CommissionAudit;
 import com.picsauditing.search.CommissionAuditRowMapper;
 import com.picsauditing.search.Database;
@@ -31,6 +33,8 @@ public final class InvoiceModel {
 	
 	@Autowired
 	private InvoiceDAO invoiceDAO;
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private InvoiceCommissionDAO invoiceCommissionDAO;
 	
@@ -152,6 +156,22 @@ public final class InvoiceModel {
 		}
 		
 		return commissionAudits;
+	}
+	
+	/**
+	 * Returns the list of all available fees for an invoice.
+	 * 
+	 * @return
+	 */
+	public List<InvoiceFee> getFeeList() {
+		List<InvoiceFee> invoiceFees = Collections.emptyList();
+		try {
+			invoiceFees= invoiceFeeDAO.findWhere(InvoiceFee.class, "t.visible = true", 100);
+		} catch (Exception e) {
+			logger.error("Error while retrieving the invoiceFeeList", e);
+		}
+
+		return invoiceFees;
 	}
 
 }

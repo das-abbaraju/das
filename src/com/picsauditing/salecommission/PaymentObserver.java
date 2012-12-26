@@ -42,12 +42,12 @@ public class PaymentObserver implements Observer {
 				case SAVE:
 					strategy = paymentStrategy;
 					break;
-	
+
 				case REFUND:
 				case REMOVE:
 					strategy = paymentRemoveStrategy;
 					break;
-	
+
 				default:
 					throw new IllegalArgumentException("Unhandled Payment Event Type.");
 			}

@@ -59,6 +59,10 @@ import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
 	
+	public static final int DAYS_FOR_PAST_DUE_STATUS = 30;
+	public static final int DAYS_BEFORE_CONSIDERED_RENEWAL = 45;
+	public static final int DAYS_FOR_CONSIDERED_FOR_DEACTIVATION = 90;
+	
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired

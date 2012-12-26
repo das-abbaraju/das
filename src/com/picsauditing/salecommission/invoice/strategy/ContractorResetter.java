@@ -24,7 +24,7 @@ public class ContractorResetter {
 	}
 	
 	/*
-	 * I am currently leaving the two methods, even though they both do the same thing, because
+	 * I am currently leaving the three methods, even though they do the same thing, because
 	 * we may determine through testing that more needs to be done to the contractor account
 	 * for these two cases.
 	 */

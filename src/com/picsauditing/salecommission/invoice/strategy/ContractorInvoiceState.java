@@ -2,6 +2,7 @@ package com.picsauditing.salecommission.invoice.strategy;
 
 import java.util.Date;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.Invoice;
 
 public class ContractorInvoiceState {
@@ -9,6 +10,7 @@ public class ContractorInvoiceState {
 	private Invoice invoice;
 	private Date paymentExpiresDate;
 	private boolean activation;
+	private boolean delinquent; // has a Late Fee
 	private boolean reactivation;
 	private boolean renewal;
 	private boolean upgrade;
@@ -22,11 +24,19 @@ public class ContractorInvoiceState {
 	}
 
 	public Date getPaymentExpiresDate() {
+		if (paymentExpiresDate == null) {
+			paymentExpiresDate = calculatePaymentExpiresDate();
+		}
+		
 		return paymentExpiresDate;
 	}
-
-	protected void setPaymentExpiresDate(Date paymentExpiresDate) {
-		this.paymentExpiresDate = paymentExpiresDate;
+	
+	private Date calculatePaymentExpiresDate() {
+		if (delinquent) {
+			return DateBean.addDays(new Date(), -425);
+		}
+		
+		return DateBean.addDays(new Date(), -360);
 	}
 
 	public boolean isActivation() {
@@ -37,6 +47,14 @@ public class ContractorInvoiceState {
 		this.activation = activation;
 	}
 
+	public boolean isDelinquent() {
+		return delinquent;
+	}
+	
+	protected void setDelinquent(boolean delinquent) {
+		this.delinquent = delinquent;
+	}
+	
 	public boolean isReactivation() {
 		return reactivation;
 	}

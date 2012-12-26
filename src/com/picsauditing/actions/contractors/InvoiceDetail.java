@@ -413,9 +413,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	}
 
 	public List<InvoiceFee> getFeeList() {
-		if (feeList == null)
-			feeList = invoiceFeeDAO.findWhere(InvoiceFee.class, "t.visible = true", 100);
-
+		if (feeList == null) {
+			feeList = invoiceModel.getFeeList();
+		}
+		
 		return feeList;
 	}
 
