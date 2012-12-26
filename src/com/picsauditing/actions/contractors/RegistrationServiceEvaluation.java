@@ -51,6 +51,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private boolean showCompetitor;
 	private boolean isSoleProprietor;
 	private boolean isBidOnly;
+    private boolean hasTransportationQuestions;
 
 	private boolean requireOnsite;
 	private boolean requireOffsite;
@@ -254,8 +255,10 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	}
 
 	public List<AuditQuestion> getInfoQuestions() {
-		if (infoQuestions == null || infoQuestions.size() == 0)
+		if (infoQuestions == null || infoQuestions.size() == 0) {
 			loadQuestions();
+        }
+
 		return infoQuestions;
 	}
 
@@ -263,7 +266,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		this.infoQuestions = infoQuestions;
 	}
 
-	public void setAnswerMap(Map<Integer, AuditData> answerMap) {
+    public void setAnswerMap(Map<Integer, AuditData> answerMap) {
 		this.answerMap = answerMap;
 	}
 
@@ -361,6 +364,10 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		this.isBidOnly = isBidOnly;
 	}
 
+    public boolean isHasTransportationQuestions() {
+        return hasTransportationQuestions;
+    }
+
 	public boolean isShowSafetyAssessment() {
 		if (contractor != null
 				&& (contractor.isOnsiteServices() || contractor.isOffsiteServices() || contractor.isMaterialSupplier() || contractor
@@ -425,7 +432,11 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		for (AuditCategory category : categories.keySet()) {
 			for (AuditQuestion question : category.getQuestions()) {
 				if (question.isValidQuestion(new Date())) {
-					infoQuestions.add(question);
+                    infoQuestions.add(question);
+
+                    if (question.getCategory().getId() == AuditCategory.TRANSPORTATION_SAFETY_EVAL) {
+                        hasTransportationQuestions = true;
+                    }
 				}
 			}
 		}

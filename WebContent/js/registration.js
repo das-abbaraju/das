@@ -325,12 +325,10 @@
 		events: {
 			toggle: function (event) {
 				var services = $('.services-list input[type=checkbox]');
-				var service_safety_evaluation = $('.service-safety-evaluation');
 				var product_safety_evaluation = $('.product-safety-evaluation');
                 var business_interruption_evaluation = $('.business_interruption_evaluation');
                 var transportation_evaluation = $('.transportation_evaluation');
 
-				var service_safety_evaluation_display = false;
 				var product_safety_evaluation_display = false;
                 var business_interruption_evaluation_display = false;
                 var transportation_evaluation_display = false;
@@ -340,9 +338,6 @@
 					var element_id = element.attr('id');
 					var is_checked = element.is(':checked');
 
-					if (is_checked) {
-						service_safety_evaluation_display = true;
-					}
 					if($.inArray(element_id, ['materialSupplier']) != -1 && is_checked) {
 						product_safety_evaluation_display = true;
 						business_interruption_evaluation_display = true;
@@ -351,12 +346,6 @@
 					    transportation_evaluation_display = true;
 					}
 				});
-
-				if (service_safety_evaluation_display) {
-					service_safety_evaluation.slideDown(400);
-				} else {
-					service_safety_evaluation.slideUp(400);
-				}
 
 				if (product_safety_evaluation_display) {
 					product_safety_evaluation.slideDown(400);
