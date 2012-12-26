@@ -32,6 +32,9 @@
 					<s:if test="!isWorksForOperator(#result)">
 						<span class="add btn success">+ <s:text name="JS.RegistrationAddClientSite.AddSite"/></span>
 					</s:if>
+                    <s:if test="isWorksForOperator(#result)">
+						<span class="already-selected btn success info"><s:text name="RegistrationAddClientSite.AlreadySelected" /></span>
+					</s:if>
 				</s:elseif>
 				<s:else>
 					<span class="remove btn error">- <s:text name="JS.RegistrationAddClientSite.RemoveSite"/></span>

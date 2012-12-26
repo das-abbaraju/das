@@ -364,6 +364,17 @@
 
                         PICS.getClass('modal.Modal').hide();
                     });
+
+                    modal.delegate('.already-selected', 'click', function () {
+                        that.add(general_contractor_id, function () {
+                            that.add_to_selected_client_site_list(general_contractor_element.closest('li'));
+                            that.trigger_client_help_removal();
+                        });
+
+                        general_contractor_element.closest('li').hide();
+
+                        PICS.getClass('modal.Modal').hide();
+                    });
                 }
 
                 PICS.ajax({

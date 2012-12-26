@@ -560,7 +560,7 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public boolean isRequiresClientSiteOrGeneralContractorSelection() {
-		return !getLinkedClientSites().isEmpty() || !getLinkedGeneralContractorOperatorAccounts().isEmpty();
+		return !getLinkedClientSites().isEmpty();
 	}
 
 	@Transient

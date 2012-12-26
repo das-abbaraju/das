@@ -739,8 +739,10 @@ footer .footer-menu a {
 	display: none;
 }
 
-.client-site .client-site-list li a:hover .add,.client-site .client-site-list li a:hover .remove,.client-site .client-site-list li a:hover .info
-	{
+.client-site .client-site-list li a:hover .add,
+.client-site .client-site-list li a:hover .remove,
+.client-site .client-site-list li a:hover .info
+{
 	display: block;
 }
 
