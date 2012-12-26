@@ -1,0 +1,1 @@
+insert into `widget_user` (`id`, `widgetID`, `userID`, `expanded`, `column`, `sortOrder`, `customConfig`) values('68','5','61460','1','2','15',NULL);
