@@ -18,6 +18,10 @@ table.report td,table.report th {
 	line-height: 15px;
 }
 
+table.report td.report-date {
+    white-space: nowrap;
+}
+
 table.report td.icon {
 	padding-top: 2px;
 	padding-bottom: 0px;
@@ -39,6 +43,10 @@ table.report thead a {
 	padding-right: 12px;
 	padding-top: 0;
 	padding-bottom: 0;
+}
+
+#ReportNewRequestedContractor__page table.report thead a {
+    background: none;
 }
 
 table.report thead a:hover {
