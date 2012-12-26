@@ -1,18 +1,30 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.report.fields.ReportField;
-import com.picsauditing.util.Strings;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.json.simple.JSONObject;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONObject;
+
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "ref_country")
@@ -41,8 +53,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
     protected String isoCode;
     protected TranslatableString name;
     protected String english;
-    protected String spanish;
-    protected String french;
     protected Double corruptionPerceptionIndex;
     protected Currency currency = Currency.USD;
     protected User csr;
@@ -82,37 +92,12 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
         this.name = name;
     }
 
-    @Transient
-    public String getName(Locale locale) {
-        if (locale.getLanguage().equals("es"))
-            return spanish;
-        if (locale.getLanguage().equals("fr"))
-            return french;
-        return english;
-    }
-
     public String getEnglish() {
         return english;
     }
 
     public void setEnglish(String english) {
         this.english = english;
-    }
-
-    public String getSpanish() {
-        return spanish;
-    }
-
-    public void setSpanish(String spanish) {
-        this.spanish = spanish;
-    }
-
-    public String getFrench() {
-        return french;
-    }
-
-    public void setFrench(String french) {
-        this.french = french;
     }
 
     public static String convertToCode(String tempCountry) {
@@ -212,8 +197,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
         if (full) {
             obj.put("english", english);
-            obj.put("french", french);
-            obj.put("spanish", spanish);
             obj.put("CSR", csr == null ? null : csr.toJSON());
         }
         return obj;
