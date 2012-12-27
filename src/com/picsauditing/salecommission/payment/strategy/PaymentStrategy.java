@@ -8,10 +8,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.PICS.data.DataEvent;
-import com.picsauditing.PICS.data.DataObservable;
-import com.picsauditing.PICS.data.InvoiceDataEvent;
-import com.picsauditing.PICS.data.InvoiceDataEvent.InvoiceEventType;
 import com.picsauditing.dao.InvoiceCommissionDAO;
 import com.picsauditing.dao.PaymentCommissionDAO;
 import com.picsauditing.jpa.entities.Invoice;
@@ -33,8 +29,6 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 	private InvoiceCommissionDAO invoiceCommissionDAO;
 	@Autowired
 	private PaymentCommissionDAO paymentCommissionDAO;
-	@Autowired
-	private DataObservable salesCommissionDataObservable;
 
 	/**
 	 * This will generate Invoice Commissions, if they do not exist
@@ -50,8 +44,6 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 			return;
 		}
 
-		processInvoiceCommissions(payment);
-
 		for (PaymentAppliedToInvoice paymentForInvoice : paymentsForInvoices) {
 			Invoice invoice = paymentForInvoice.getInvoice();
 			List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
@@ -59,25 +51,11 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 		}
 	}
 
-	/**
-	 * This method is responsible for generating the InvoiceCommission for any
-	 * invoices created before the InvoiceCommissions were out on Live.
-	 */
-	private void processInvoiceCommissions(Payment payment) {
-		List<PaymentAppliedToInvoice> paymentAppliedToInvoices = payment.getInvoices();
-		for (PaymentAppliedToInvoice appliedToInvoice : paymentAppliedToInvoices) {
-			Invoice invoice = appliedToInvoice.getInvoice();
-			if (invoice != null) {
-				List<InvoiceCommission> invoiceCommissions = invoiceCommissionDAO.findByInvoiceId(invoice.getId());
-				if (CollectionUtils.isEmpty(invoiceCommissions)) {
-					notifyDataChange(new InvoiceDataEvent(invoice, InvoiceEventType.NEW));
-				}
-			}
+	protected void processPaymentCommissions(final Payment payment, final List<InvoiceCommission> invoiceCommissions) {
+		if (CollectionUtils.isEmpty(invoiceCommissions)) {
+			return;
 		}
 
-	}
-
-	protected void processPaymentCommissions(final Payment payment, final List<InvoiceCommission> invoiceCommissions) {
 		for (InvoiceCommission invoiceCommission : invoiceCommissions) {
 			PaymentCommission paymentCommission = new PaymentCommission();
 			paymentCommission.setInvoiceCommission(invoiceCommission);
@@ -127,8 +105,4 @@ public class PaymentStrategy extends AbstractPaymentCommissionStrategy {
 		return BigDecimal.ZERO;
 	}
 
-	private <T> void notifyDataChange(DataEvent<T> dataEvent) {
-		salesCommissionDataObservable.setChanged();
-		salesCommissionDataObservable.notifyObservers(dataEvent);
-	}
 }
