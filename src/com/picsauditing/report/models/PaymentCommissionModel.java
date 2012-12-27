@@ -2,40 +2,72 @@ package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.tables.AccountTable;
+import com.picsauditing.report.tables.AccountUserTable;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
 import com.picsauditing.report.tables.InvoiceTable;
 import com.picsauditing.report.tables.PaymentCommissionTable;
 
 public class PaymentCommissionModel extends AbstractModel {
+
 	public PaymentCommissionModel(Permissions permissions) {
 		super(permissions, new PaymentCommissionTable());
 	}
 
 	public ModelSpec getJoinSpec() {
-		ModelSpec spec = new ModelSpec(null, "PaymentCommission");
+		ModelSpec paymentCommission = new ModelSpec(null, "PaymentCommission");
 
-		{
-			ModelSpec invoiceCommission = spec.join(PaymentCommissionTable.Commission);
-			invoiceCommission.alias = "InvoiceCommission";
-			{
-				ModelSpec invoice = invoiceCommission.join(InvoiceCommissionTable.Invoice);
-				invoice.alias = "Invoice";
-				{
-					ModelSpec account = invoice.join(InvoiceTable.Account);
-					account.alias = "Account";
-					account.join(AccountTable.Contact);
-					// ModelSpec contractor =
-					// account.join(AccountTable.Contractor);
-					// contractor.alias = "Contractor";
-					// contractor.minimumImportance = FieldImportance.Average;
-				}
-			}
-			ModelSpec recipientUser = invoiceCommission.join(InvoiceCommissionTable.User);
-			recipientUser.alias = "InvoiceCommissionRecipientUser";
-		}
-		ModelSpec payment = spec.join(PaymentCommissionTable.Payment);
-		payment.alias = "PaymentCommissionPayment";
+		ModelSpec invoiceCommission = joinToInvoiceCommission(paymentCommission);
+		ModelSpec invoice = joinToInvoice(invoiceCommission);
+		ModelSpec account = joinToAccount(invoice);
 
-		return spec;
+		joinToUserForContact(account);
+		joinToPayment(paymentCommission);
+
+		ModelSpec accountUser = joinToAccountUser(invoiceCommission);
+		joinToUser(accountUser);
+
+		return paymentCommission;
 	}
+
+	private ModelSpec joinToInvoiceCommission(ModelSpec paymentCommission) {
+		ModelSpec invoiceCommission = paymentCommission.join(PaymentCommissionTable.Commission);
+		invoiceCommission.alias = "InvoiceCommission";
+		return invoiceCommission;
+	}
+
+	private ModelSpec joinToPayment(ModelSpec paymentCommission) {
+		ModelSpec payment = paymentCommission.join(PaymentCommissionTable.Payment);
+		payment.alias = "PaymentCommission";
+		return payment;
+	}
+
+	private ModelSpec joinToInvoice(ModelSpec invoiceCommission) {
+		ModelSpec invoice = invoiceCommission.join(InvoiceCommissionTable.Invoice);
+		invoice.alias = "Invoice";
+		return invoice;
+	}
+
+	private ModelSpec joinToAccountUser(ModelSpec invoiceCommission) {
+		ModelSpec accountUser = invoiceCommission.join(InvoiceCommissionTable.AccountUser);
+		accountUser.alias = "AccountUser";
+		return accountUser;
+	}
+
+	private ModelSpec joinToAccount(ModelSpec invoice) {
+		ModelSpec account = invoice.join(InvoiceTable.Account);
+		account.alias = "Account";
+		return account;
+	}
+
+	private ModelSpec joinToUser(ModelSpec accountUser) {
+		ModelSpec user = accountUser.join(AccountUserTable.User);
+		user.alias = "User";
+		return user;
+	}
+
+	private ModelSpec joinToUserForContact(ModelSpec account) {
+		ModelSpec contactUser = account.join(AccountTable.Contact);
+		return contactUser;
+	}
+
 }

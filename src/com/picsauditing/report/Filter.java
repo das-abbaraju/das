@@ -123,7 +123,7 @@ public class Filter extends ReportElement implements JSONable {
 	
 	private void parseAdvancedFilter(JSONObject json) {
 		String advancedFilterOption = (String)  json.get(JSON_FIELD_FOR_COMPARISON_KEY);
-		// TODO: HACK!!!!
+		// FIXME: HACK!!!!
 		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false"))
 			advancedFilter = false;
 		else {

@@ -18,6 +18,10 @@ public class InvoiceTable extends AbstractTable {
 		Field currency = new Field("Currency", "currency", FieldType.String);
 		currency.setCategory(FieldCategory.Invoicing);
 		addField(currency);
+		
+		Field invoiceID = new Field("InvoiceID", "id", FieldType.Number);
+		invoiceID.setCategory(FieldCategory.Invoicing);
+		addField(invoiceID);
 	}
 
 	protected void addJoins() {

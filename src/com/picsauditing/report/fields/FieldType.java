@@ -10,6 +10,7 @@ public enum FieldType {
 	AccountLevel(EnumType.STRING),
 	AccountStatus(EnumType.STRING), 
 	AccountType(EnumType.STRING),
+	AccountUser(FilterType.Autocomplete),
 	ApprovalStatus(EnumType.STRING),
 	AuditStatus(EnumType.STRING),
 	AuditSubStatus(EnumType.STRING),
@@ -43,6 +44,7 @@ public enum FieldType {
 	String,
 	Trade(FilterType.Autocomplete), 
 	TransactionStatus(EnumType.STRING),
+	UserAccountRole(EnumType.STRING),
 	UserID,
 	WaitingOn(EnumType.ORDINAL);
 

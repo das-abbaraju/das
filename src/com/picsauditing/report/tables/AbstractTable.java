@@ -88,6 +88,7 @@ public abstract class AbstractTable {
 					+ keys.keySet());
 			return null;
 		}
+		
 		return foreignKey;
 	}
 

@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.picsauditing.actions.users.UserAccountRole;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
 @Entity
@@ -36,6 +39,7 @@ public class AccountUser extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
+	@ReportField(type = FieldType.AccountUser, importance = FieldImportance.Average)
 	public User getUser() {
 		return user;
 	}
@@ -45,6 +49,7 @@ public class AccountUser extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@ReportField(type = FieldType.UserAccountRole, importance = FieldImportance.Average)
 	public UserAccountRole getRole() {
 		return role;
 	}
@@ -92,10 +97,12 @@ public class AccountUser extends BaseTable {
 			// This hasn't started yet
 			return false;
 		}
+		
 		if (endDate != null && endDate.before(now)) {
 			// This already ended
 			return false;
 		}
+		
 		return true;
 	}
 }
