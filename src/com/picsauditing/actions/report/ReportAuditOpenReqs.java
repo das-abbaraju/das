@@ -32,7 +32,6 @@ public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 
 		orderByDefault = "ca.assignedDate DESC";
 
-		getFilter().setShowAuditor(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
