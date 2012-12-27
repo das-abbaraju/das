@@ -80974,7 +80974,7 @@ Ext.define('PICS.store.report.ReportDatas', {
 
                 fields: model_fields
             });
-
+            
             return model;
         }
 
@@ -91475,11 +91475,6 @@ Ext.define('PICS.view.report.report.ReportData', {
         dock: 'top'
     }],
     id: 'report_data',
-    listeners: {
-        reconfigure: function (cmp) {
-            cmp.columns[0].setHeight(23);
-        }
-    },
     margin: '0 30 0 0',
     rowLines: false,
 
@@ -91498,22 +91493,6 @@ Ext.define('PICS.view.report.report.ReportData', {
             var menu = header.getMenu();
 
             this.createHeaderMenu(menu);
-        }, this);
-
-        this.on('reconfigure', function (cmp) {
-            var store = cmp.getStore();
-
-            cmp.columns[0].setHeight(23);
-
-            store.on('load', function () {
-                if (store.getCount() == 0) {
-                    cmp.view.emptyText = '<div class="x-grid-empty">no results</div>';
-                } else {
-                    cmp.view.emptyText = '';
-                }
-
-                cmp.view.refresh();
-            });
         }, this);
     },
 
@@ -91541,6 +91520,26 @@ Ext.define('PICS.view.report.report.ReportData', {
             name: 'remove_column',
             text: 'Remove'
         });
+    },
+    
+    // method to override column header height
+    // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
+    updateColumnHeaderHeight: function (height) {
+        this.columns[0].setHeight(height);
+    },
+    
+    // update or reset no results message
+    updateNoResultsMessage: function () {
+        var store = this.getStore(),
+            view = this.getView();
+        
+        if (store.getCount() == 0) {
+            view.emptyText = '<div class="x-grid-empty">no results</div>';
+        } else {
+            view.emptyText = '';
+        }
+
+        view.refresh();
     }
 });
 /**
@@ -99550,8 +99549,6 @@ Ext.define('PICS.controller.report.Filter', {
     }],
 
     stores: [
-        'report.AvailableFields',
-        'report.AvailableFieldsByCategory',
         'report.Reports'
     ],
 
@@ -100118,22 +100115,11 @@ Ext.define('PICS.controller.report.Report', {
     extend: 'Ext.app.Controller',
 
     stores: [
-        'report.AvailableFields',
         'report.ReportDatas',
         'report.Reports'
     ],
 
-    views: [
-        'PICS.view.report.alert-message.AlertMessage'
-    ],
-
     init: function () {
-    	this.control({
-    		'reportdata': {
-    			beforerender: this.onReportDataBeforeRender
-    		}
-    	});
-
         this.application.on({
             createreport: this.createReport,
             scope: this
@@ -100148,18 +100134,6 @@ Ext.define('PICS.controller.report.Report', {
             savereport: this.saveReport,
             scope: this
         });
-    },
-
-    onReportDataBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore();
-
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
-                this.application.fireEvent('refreshreport');
-            }, this);
-        } else {
-            this.application.fireEvent('refreshreport');
-        }
     },
 
     createReport: function () {
@@ -100190,10 +100164,8 @@ Ext.define('PICS.controller.report.Report', {
             report = report_store.first(),
             report_name = report.get('name'),
             report_data_store = this.getReportReportDatasStore();
-
-        this.application.fireEvent('noresultsmessageremove');
         
-        this.setPageTitle(report_name);
+        this.updatePageTitle(report_name);
         
         report_data_store.reload();
     },
@@ -100224,7 +100196,7 @@ Ext.define('PICS.controller.report.Report', {
         });
     },
 
-    setPageTitle: function(title) {
+    updatePageTitle: function(title) {
         document.title = 'PICS - ' + title;
     }
 });
@@ -100248,7 +100220,8 @@ Ext.define('PICS.controller.report.ReportData', {
     init: function () {
         this.control({
             'reportdata': {
-                reconfigure: this.onReportReconfigure
+                beforerender: this.onReportDataBeforeRender,
+                reconfigure: this.onReportDataReconfigure
             },
 
             'reportdata headercontainer': {
@@ -100292,11 +100265,6 @@ Ext.define('PICS.controller.report.ReportData', {
             refreshreportdisplayinfo: this.onRefreshReportDisplayInfo,
             scope: this
         });
-
-        this.application.on({
-            noresultsmessageremove: this.onNoResultsMessageRemove,
-            scope: this
-        })
     },
 
     // find index position of the grid column starting after the row numberer (row number)
@@ -100449,16 +100417,6 @@ Ext.define('PICS.controller.report.ReportData', {
         this.application.fireEvent('refreshreport');
     },
 
-    onNoResultsMessageRemove: function (cmp, eOpts) {
-        var report_data_view = this.getReportData().view,
-            store = report_data_view.getStore();
-
-        if (store.getCount() == 0) {
-            report_data_view.emptyText = '';
-            report_data_view.refresh();
-        }
-    },
-
     onRefreshReportDisplayInfo: function () {
         var store = this.getReportReportDatasStore(),
             report_paging_toolbar = this.getReportPagingToolbar(),
@@ -100479,9 +100437,32 @@ Ext.define('PICS.controller.report.ReportData', {
         }
     },
 
-    onReportReconfigure: function (cmp, eOpts) {
-        var report_paging_toolbar = this.getReportPagingToolbar();
+    onReportDataBeforeRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore();
+
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                this.application.fireEvent('refreshreport');
+            }, this);
+        } else {
+            this.application.fireEvent('refreshreport');
+        }
+    },
+    
+    onReportDataReconfigure: function (cmp, eOpts) {
+        var store = cmp.getStore(), 
+            report_paging_toolbar = this.getReportPagingToolbar();
             report_paging_toolbar.moveFirst();
+            
+        cmp.updateColumnHeaderHeight(23);
+            
+        if (!store.isLoaded()) {
+            store.on('load', function () {
+                cmp.updateNoResultsMessage();
+            });
+        } else {
+            cmp.updateNoResultsMessage();
+        }
 
         this.application.fireEvent('refreshreportdisplayinfo');
     },
@@ -100538,13 +100519,13 @@ Ext.define('PICS.controller.report.ReportHeader', {
         selector: 'reportsettingscopy [name=report_description]'
     }],
 
-    views: [
-        'PICS.view.report.settings.SettingsModal'
-    ],
-
     stores: [
-             'report.Reports'
-             ],
+        'report.Reports'
+    ],
+             
+    views: [
+        'PICS.view.report.alert-message.AlertMessage'
+    ],
              
     init: function () {
         this.control({
@@ -100639,6 +100620,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
 
     stores: [
         'report.Reports'
+    ],
+    
+    views: [
+        'PICS.view.report.settings.SettingsModal'
     ],
 
     init: function () {
