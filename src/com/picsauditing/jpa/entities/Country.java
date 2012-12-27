@@ -22,7 +22,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 
 @Entity
@@ -73,7 +76,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Id
 	@Column(nullable = false, length = 2)
-	@ReportField()
 	public String getIsoCode() {
 		return isoCode;
 	}
@@ -83,7 +85,6 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	}
 
 	@Transient
-	@ReportField()
 	public String getName() {
 		return name.toString();
 	}
@@ -126,7 +127,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	@ReportField()
+	@ReportField(category = FieldCategory.Billing, type = FieldType.Currency, requiredPermissions = OpPerms.Billing)
 	public Currency getCurrency() {
 		return currency;
 	}

@@ -10,6 +10,7 @@ public class AccountTable extends AbstractTable {
 	public static final String ContractorOperator = "ContractorOperator";
 	public static final String Contact = "Contact";
 	public static final String Naics = "Naics";
+	public static final String Country = "Country";
 
 	public AccountTable() {
 		super("accounts");
@@ -40,5 +41,8 @@ public class AccountTable extends AbstractTable {
 				.setMinimumImportance(FieldImportance.Average);
 		addOptionalKey(new ReportForeignKey(Naics, new NaicsTable(), new ReportOnClause("naics", "code")))
 				.setMinimumImportance(FieldImportance.Average);
+
+		addOptionalKey(new ReportForeignKey(Country, new CountryTable(), new ReportOnClause("country",
+				"isoCode")));
 	}
 }
