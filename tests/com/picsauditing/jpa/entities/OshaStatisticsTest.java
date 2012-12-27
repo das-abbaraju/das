@@ -1,25 +1,37 @@
 package com.picsauditing.jpa.entities;
 
+import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 
 public class OshaStatisticsTest {
-	OshaStatistics stat;
+	private OshaStatistics stat;
+	private List<AuditData> list;
+
+	@Mock
+	private AuditData auditData;
 	
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		list = new ArrayList<AuditData>();
+
+		stat = new OshaStatistics(2012, list, true);
 	}
 
 	@Test
 	public void testGetStats() {
-		List<AuditData> list = new ArrayList<AuditData>();
-		
 		AuditQuestion trirQuestion = new AuditQuestion();
 		AuditQuestion lwcrQuestion = new AuditQuestion();
 		trirQuestion.setId(OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
@@ -36,5 +48,26 @@ public class OshaStatisticsTest {
 		assertEquals(stat.getStats(OshaRateType.TrirAbsolute), "14000");
 		assertEquals(stat.getStats(OshaRateType.LwcrAbsolute), "14000");
 	}
+
+	@Test
+	public void testGetStats_NullAuditData() throws Exception {
+		HashMap<OshaRateType, AuditData> answerMap = stat.getAnswerMap();
+		answerMap.put(OshaRateType.TrirAbsolute, null);
+
+		String stats = stat.getStats(OshaRateType.TrirAbsolute);
+
+		assertTrue(stats == null);
 	}
+
+	@Test
+	public void testGetStats_NullAnswer() throws Exception {
+		when(auditData.getAnswer()).thenReturn((String) null);
+		HashMap<OshaRateType, AuditData> answerMap = stat.getAnswerMap();
+		answerMap.put(OshaRateType.TrirAbsolute, auditData);
+
+		String stats = stat.getStats(OshaRateType.TrirAbsolute);
+
+		assertTrue(stats == null);
+	}
+}
 

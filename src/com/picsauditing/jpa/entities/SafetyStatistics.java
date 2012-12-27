@@ -37,11 +37,11 @@ public abstract class SafetyStatistics {
 	 */
 	public String getStats(OshaRateType rateType) {
 		AuditData auditData = answerMap.get(rateType);
-		if (auditData == null) {
+		if (auditData == null || auditData.getAnswer() == null) {
 			return null;
 		}
 		
-		return answerMap.get(rateType).getAnswer().replace(",", "");
+		return auditData.getAnswer().replace(",", "");
 	}
 	
 	public HashMap<OshaRateType, AuditData> getAnswerMap() {
