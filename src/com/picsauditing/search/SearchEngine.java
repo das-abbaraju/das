@@ -342,8 +342,6 @@ public class SearchEngine {
 			sb.append(" OR a.country LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR a.city LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR rc.english LIKE '").append(searchTerm).append("%'");
-			sb.append(" OR rc.spanish LIKE '").append(searchTerm).append("%'");
-			sb.append(" OR rc.french LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR a.countrySubdivision LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR rs.english LIKE '").append(searchTerm).append("%'");
 			sb.append(" OR a.zip LIKE '").append(searchTerm).append("%'");
