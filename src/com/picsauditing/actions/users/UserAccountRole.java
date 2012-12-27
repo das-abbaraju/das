@@ -1,7 +1,12 @@
 package com.picsauditing.actions.users;
 
+import javax.persistence.Transient;
 
-public enum UserAccountRole {
+import com.picsauditing.jpa.entities.Translatable;
+import com.picsauditing.util.Strings;
+
+// FIXME: Move to entities package
+public enum UserAccountRole implements Translatable {
 	PICSSalesRep("Sales Representative"), 
 	PICSAccountRep("Account Manager");
 
@@ -20,7 +25,8 @@ public enum UserAccountRole {
 			if (value.equals(role))
 				return value.description;
 		}
-		return "";
+		
+		return Strings.EMPTY_STRING;
 	}
 	
 	public boolean isAccountManager() {
@@ -29,5 +35,15 @@ public enum UserAccountRole {
 	
 	public boolean isSalesRep() {
 		return this == PICSSalesRep;
+	}
+
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.name();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

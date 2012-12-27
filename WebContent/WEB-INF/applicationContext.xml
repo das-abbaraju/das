@@ -183,30 +183,31 @@
 	<bean id="InvoiceModel" class="com.picsauditing.model.billing.InvoiceModel" />
 	<bean id="CommissionModel" class="com.picsauditing.model.billing.CommissionModel" />
 
+    <bean id="AccountUserAutocompleteService" class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService" />
     <bean id="AuditCategoryAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService"/>
+          class="com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
     <bean id="AuditQuestionAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService"/>
+          class="com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />
     <bean id="AuditTypeAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService"/>
-    <bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete"/>
+          class="com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService" />
+    <bean id="Autocomplete" class="com.picsauditing.model.general.Autocomplete" />
     <bean id="ContractorAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
-    <bean id="CountryAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
-    <bean id="LocationAutocompleteService" class=" com.picsauditing.actions.autocomplete.LocationAutocompleteService"/>
-    <bean id="OperatorAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorAutocompleteService"/>
+          class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService" />
+    <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService" />
+    <bean id="LocationAutocompleteService" class="com.picsauditing.actions.autocomplete.LocationAutocompleteService" />
+    <bean id="OperatorAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorAutocompleteService" />
     <bean id="OperatorTagAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService"/>
+          class="com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
     <bean id="OptionGroupAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService"/>
+          class="com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
     <bean id="OptionValueAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService"/>
-    <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel"/>
+          class="com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
+    <bean id="ReportModel" class="com.picsauditing.model.report.ReportModel" />
     <bean id="CountrySubdivisionAutocompleteService"
-          class=" com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
-    <bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
-    <bean id="UserService" class=" com.picsauditing.access.UserService" />
-    <bean id="LoginService" class=" com.picsauditing.access.LoginService" />
+          class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService" />
+    <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
+    <bean id="UserService" class="com.picsauditing.access.UserService" />
+    <bean id="LoginService" class="com.picsauditing.access.LoginService" />
 
     <bean id="DataObservable" class="com.picsauditing.PICS.data.DataObservable"/>
     <bean id="InvoiceObserver" class="com.picsauditing.salecommission.InvoiceObserver"/>

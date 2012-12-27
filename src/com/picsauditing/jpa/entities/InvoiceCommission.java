@@ -58,7 +58,7 @@ public class InvoiceCommission extends BaseTable {
 	}
 
 	@Column(name = "revenue")
-	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getRevenuePercent() {
 		return revenuePercent;
 	}

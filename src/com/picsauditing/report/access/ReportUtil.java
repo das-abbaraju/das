@@ -329,7 +329,7 @@ public final class ReportUtil {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject json = new JSONObject();
 
-		Class enumClass = Class.forName("com.picsauditing.jpa.entities." + fieldType.toString());
+		Class enumClass = getEnumClassForName(fieldType);
 		for (Object enumValue : enumClass.getEnumConstants()) {
 			if (enumValue instanceof PermissionAware) {
 				if (!((PermissionAware) enumValue).isVisibleTo(permissions)) {
@@ -345,6 +345,14 @@ public final class ReportUtil {
 		json.put("result", jsonArray);
 
 		return json;
+	}
+	
+	private static Class getEnumClassForName(FieldType fieldType) throws ClassNotFoundException {
+		if (fieldType == FieldType.UserAccountRole) {
+			return Class.forName("com.picsauditing.actions.users." + fieldType.name());
+		}
+		
+		return Class.forName("com.picsauditing.jpa.entities." + fieldType.toString());
 	}
 
 	private static Object setKeyForEnum(FieldType fieldType, Object enumValue) {

@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -14,9 +16,11 @@ import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 
@@ -29,6 +33,8 @@ public class FacilitiesEditModel {
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
 	@Autowired
+	private UserDAO userDAO;
+	@Autowired
 	private FeatureToggle featureToggle;
 
 	public static final int PICS_US = 5;
@@ -37,6 +43,8 @@ public class FacilitiesEditModel {
 	public static final int PICS_UK = 9;
 	public static final int PICS_FRANCE = 10;
 	public static final int PICS_GERMANY = 11;
+	
+	private static final Logger logger = LoggerFactory.getLogger(FacilitiesEditModel.class);
 
 	public void addPicsGlobal(OperatorAccount operator, Permissions permissions) {
 		for (Facility f : operator.getCorporateFacilities()) {
@@ -174,5 +182,16 @@ public class FacilitiesEditModel {
 		}
 
 		newAccountUser.setEndDate(calendar.getTime());
+	}
+	
+	public List<User> getAllPossibleAccountUsers() {
+		List<User> possibleAccountUsers = Collections.emptyList();
+		try {
+			possibleAccountUsers = userDAO.findByGroup(User.GROUP_MARKETING);
+		} catch (Exception e) {
+			logger.error("Error while looking up possible account users.", e);
+		}
+		
+		return possibleAccountUsers;
 	}
 }

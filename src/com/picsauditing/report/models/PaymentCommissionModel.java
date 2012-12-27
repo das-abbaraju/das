@@ -1,6 +1,9 @@
 package com.picsauditing.report.models;
 
+import java.util.Map;
+
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.AccountUserTable;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
@@ -68,6 +71,20 @@ public class PaymentCommissionModel extends AbstractModel {
 	private ModelSpec joinToUserForContact(ModelSpec account) {
 		ModelSpec contactUser = account.join(AccountTable.Contact);
 		return contactUser;
+	}
+	
+	@Override
+	public Map<String, Field> getAvailableFields() {
+		Map<String, Field> fields = super.getAvailableFields();
+		setUrlForField(fields, "InvoiceInvoiceID", "InvoiceDetail.action?invoice.id={InvoiceInvoiceID}");
+		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
+		return fields;
+	}
+	
+	private Field setUrlForField(Map<String, Field> availableFields, String fieldKey, String url) {
+		Field field = availableFields.get(fieldKey.toUpperCase());
+		field.setUrl(url);
+		return field;
 	}
 
 }

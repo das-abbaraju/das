@@ -85,6 +85,12 @@ where grp.groupID = atype.editAudit;
 
 		return userList;
 	}
+	
+	public List<User> findByGroupAndUserName(int groupId, String name) {
+		Query query = em.createQuery("FROM User u " + "WHERE u.isActive = 'Yes' " + "AND u.isGroup = 'No' AND u.name LIKE '%" + name + "%'"
+				+ "AND u IN (SELECT user FROM UserGroup WHERE group.id = " + groupId + ") " + "ORDER BY u.name");
+		return query.getResultList();
+	}
 
 	/**
 	 * 

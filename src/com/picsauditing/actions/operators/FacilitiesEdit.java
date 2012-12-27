@@ -405,8 +405,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
     }
 
     public List<User> getUserList() throws Exception {
-        return userDAO.findByGroup(10801); // only showing users from marketing
-        // group
+        return facilitiesEditModel.getAllPossibleAccountUsers();
     }
 
     public List<Integer> getFacilities() {

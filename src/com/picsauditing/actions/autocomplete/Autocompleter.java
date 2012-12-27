@@ -14,55 +14,57 @@ import com.picsauditing.report.fields.FieldType;
 public class Autocompleter extends PicsActionSupport {
 
 	@Autowired
-	private Autocomplete autocomplete; 
-	
+	private Autocomplete autocomplete;
+
 	private FieldType fieldType;
 	private String searchQuery = "";
 
 	private static final Logger logger = LoggerFactory.getLogger(Autocompleter.class);
 
 	/**
-	 * For the general Autocomplete cases that are simple key-value pairs in the JSON.
+	 * For the general Autocomplete cases that are simple key-value pairs in the
+	 * JSON.
 	 */
+	@Override
 	public String execute() {
-		try {			
+		try {
 			json.put("success", true);
 			switch (fieldType.getFilterType()) {
 				case Autocomplete:
 					json = fieldType.getAutocompleteService().getJson(searchQuery, permissions);
 					break;
-				
+
 				case ShortList:
 					json = ReportUtil.renderEnumFieldAsJson(fieldType, permissions);
 					break;
-					
+
 				default:
 					throw new Exception(fieldType + " not supported for autocomplete.");
 			}
 		} catch (Exception e) {
 			logger.error("Unexpected exception in Autocompleter.", e);
-			writeJsonErrorMessage(e);			
+			writeJsonErrorMessage(e);
 		}
-		
+
 		return JSON;
 	}
-	
+
 	public String reportSharingAutocomplete() {
 		try {
 			int reportId = NumberUtils.toInt(getRequest().getParameter("reportId"));
 			if (reportId <= 0) {
 				throw new Exception("Invalid reportId parameter.");
 			}
-			
+
 			json = autocomplete.sharingAutocomplete(reportId, searchQuery, permissions);
 		} catch (Exception e) {
 			logger.error("Unexpected exception in reportSharingAutocomplete.", e);
 			writeJsonErrorMessage(e);
 		}
-		
+
 		return JSON;
 	}
-	
+
 	private void writeJsonErrorMessage(Exception e) {
 		json.put("success", false);
 		json.put("error", e.getCause() + " " + e.getMessage());
