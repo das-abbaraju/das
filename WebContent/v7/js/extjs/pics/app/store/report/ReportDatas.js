@@ -91,7 +91,7 @@ Ext.define('PICS.store.report.ReportDatas', {
 
                 fields: model_fields
             });
-
+            
             return model;
         }
 

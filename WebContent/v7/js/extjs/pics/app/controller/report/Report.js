@@ -7,22 +7,11 @@ Ext.define('PICS.controller.report.Report', {
     extend: 'Ext.app.Controller',
 
     stores: [
-        'report.AvailableFields',
         'report.ReportDatas',
         'report.Reports'
     ],
 
-    views: [
-        'PICS.view.report.alert-message.AlertMessage'
-    ],
-
     init: function () {
-    	this.control({
-    		'reportdata': {
-    			beforerender: this.onReportDataBeforeRender
-    		}
-    	});
-
         this.application.on({
             createreport: this.createReport,
             scope: this
@@ -37,18 +26,6 @@ Ext.define('PICS.controller.report.Report', {
             savereport: this.saveReport,
             scope: this
         });
-    },
-
-    onReportDataBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore();
-
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
-                this.application.fireEvent('refreshreport');
-            }, this);
-        } else {
-            this.application.fireEvent('refreshreport');
-        }
     },
 
     createReport: function () {
@@ -79,10 +56,8 @@ Ext.define('PICS.controller.report.Report', {
             report = report_store.first(),
             report_name = report.get('name'),
             report_data_store = this.getReportReportDatasStore();
-
-        this.application.fireEvent('noresultsmessageremove');
         
-        this.setPageTitle(report_name);
+        this.updatePageTitle(report_name);
         
         report_data_store.reload();
     },
@@ -113,7 +88,7 @@ Ext.define('PICS.controller.report.Report', {
         });
     },
 
-    setPageTitle: function(title) {
+    updatePageTitle: function(title) {
         document.title = 'PICS - ' + title;
     }
 });

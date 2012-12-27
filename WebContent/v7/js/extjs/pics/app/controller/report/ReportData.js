@@ -18,7 +18,8 @@ Ext.define('PICS.controller.report.ReportData', {
     init: function () {
         this.control({
             'reportdata': {
-                reconfigure: this.onReportReconfigure
+                beforerender: this.onReportDataBeforeRender,
+                reconfigure: this.onReportDataReconfigure
             },
 
             'reportdata headercontainer': {
@@ -62,11 +63,6 @@ Ext.define('PICS.controller.report.ReportData', {
             refreshreportdisplayinfo: this.onRefreshReportDisplayInfo,
             scope: this
         });
-
-        this.application.on({
-            noresultsmessageremove: this.onNoResultsMessageRemove,
-            scope: this
-        })
     },
 
     // find index position of the grid column starting after the row numberer (row number)
@@ -219,16 +215,6 @@ Ext.define('PICS.controller.report.ReportData', {
         this.application.fireEvent('refreshreport');
     },
 
-    onNoResultsMessageRemove: function (cmp, eOpts) {
-        var report_data_view = this.getReportData().view,
-            store = report_data_view.getStore();
-
-        if (store.getCount() == 0) {
-            report_data_view.emptyText = '';
-            report_data_view.refresh();
-        }
-    },
-
     onRefreshReportDisplayInfo: function () {
         var store = this.getReportReportDatasStore(),
             report_paging_toolbar = this.getReportPagingToolbar(),
@@ -249,9 +235,32 @@ Ext.define('PICS.controller.report.ReportData', {
         }
     },
 
-    onReportReconfigure: function (cmp, eOpts) {
-        var report_paging_toolbar = this.getReportPagingToolbar();
+    onReportDataBeforeRender: function (cmp, eOpts) {
+        var store = this.getReportReportsStore();
+
+        if (!store.isLoaded()) {
+            store.on('load', function (store, records, successful, eOpts) {
+                this.application.fireEvent('refreshreport');
+            }, this);
+        } else {
+            this.application.fireEvent('refreshreport');
+        }
+    },
+    
+    onReportDataReconfigure: function (cmp, eOpts) {
+        var store = cmp.getStore(), 
+            report_paging_toolbar = this.getReportPagingToolbar();
             report_paging_toolbar.moveFirst();
+            
+        cmp.updateColumnHeaderHeight(23);
+            
+        if (!store.isLoaded()) {
+            store.on('load', function () {
+                cmp.updateNoResultsMessage();
+            });
+        } else {
+            cmp.updateNoResultsMessage();
+        }
 
         this.application.fireEvent('refreshreportdisplayinfo');
     },

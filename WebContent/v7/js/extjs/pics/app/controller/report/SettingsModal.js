@@ -36,6 +36,10 @@ Ext.define('PICS.controller.report.SettingsModal', {
     stores: [
         'report.Reports'
     ],
+    
+    views: [
+        'PICS.view.report.settings.SettingsModal'
+    ],
 
     init: function () {
         this.control({

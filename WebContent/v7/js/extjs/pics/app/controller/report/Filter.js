@@ -25,8 +25,6 @@ Ext.define('PICS.controller.report.Filter', {
     }],
 
     stores: [
-        'report.AvailableFields',
-        'report.AvailableFieldsByCategory',
         'report.Reports'
     ],
 

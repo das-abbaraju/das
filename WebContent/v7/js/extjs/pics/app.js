@@ -1,5 +1,6 @@
 Ext.Loader.setConfig({
-    enabled: true
+    enabled: true,
+    disableCaching: false
 });
 
 Ext.application({
@@ -41,7 +42,7 @@ Ext.application({
             ['NotEmpty', 'is not empty']
         ]
     },
-
+    
     controllers: [
         'report.AvailableFieldModal',
         'report.ColumnFunctionModal',
@@ -93,7 +94,6 @@ Ext.application({
                        setIsFavorite: function (bool) {
                            result.favorite = bool;
                        }
-
                    };
                }());
 

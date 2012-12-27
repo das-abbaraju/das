@@ -18,11 +18,6 @@ Ext.define('PICS.view.report.report.ReportData', {
         dock: 'top'
     }],
     id: 'report_data',
-    listeners: {
-        reconfigure: function (cmp) {
-            cmp.columns[0].setHeight(23);
-        }
-    },
     margin: '0 30 0 0',
     rowLines: false,
 
@@ -41,22 +36,6 @@ Ext.define('PICS.view.report.report.ReportData', {
             var menu = header.getMenu();
 
             this.createHeaderMenu(menu);
-        }, this);
-
-        this.on('reconfigure', function (cmp) {
-            var store = cmp.getStore();
-
-            cmp.columns[0].setHeight(23);
-
-            store.on('load', function () {
-                if (store.getCount() == 0) {
-                    cmp.view.emptyText = '<div class="x-grid-empty">no results</div>';
-                } else {
-                    cmp.view.emptyText = '';
-                }
-
-                cmp.view.refresh();
-            });
         }, this);
     },
 
@@ -84,5 +63,25 @@ Ext.define('PICS.view.report.report.ReportData', {
             name: 'remove_column',
             text: 'Remove'
         });
+    },
+    
+    // method to override column header height
+    // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
+    updateColumnHeaderHeight: function (height) {
+        this.columns[0].setHeight(height);
+    },
+    
+    // update or reset no results message
+    updateNoResultsMessage: function () {
+        var store = this.getStore(),
+            view = this.getView();
+        
+        if (store.getCount() == 0) {
+            view.emptyText = '<div class="x-grid-empty">no results</div>';
+        } else {
+            view.emptyText = '';
+        }
+
+        view.refresh();
     }
 });
