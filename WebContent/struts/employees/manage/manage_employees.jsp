@@ -16,32 +16,6 @@
 
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
-		<s:if test="audit.id > 0">
-			<s:if test="questionId == 3673">
-				<div class="info">
-					<s:text name="ManageEmployees.Step3">
-						<s:param>
-							<s:property value="audit.id" />
-						</s:param>
-						<s:param>
-							<s:text name="AuditType.99.name" />
-						</s:param>
-					</s:text>
-				</div>
-			</s:if>
-			<s:elseif test="questionId == 3674">
-				<div class="info">
-					<s:text name="ManageEmployees.Step4">
-						<s:param>
-							<s:property value="audit.id" />
-						</s:param>
-						<s:param>
-							<s:text name="AuditType.99.name" />
-						</s:param>
-					</s:text>
-				</div>
-			</s:elseif>
-		</s:if>
 
         <s:include value="_manage-employees-header.jsp" />
 
