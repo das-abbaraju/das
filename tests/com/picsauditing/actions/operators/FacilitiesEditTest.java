@@ -46,6 +46,7 @@ import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.models.operators.FacilitiesEditModel;
+import com.picsauditing.toggle.FeatureToggle;
 
 public class FacilitiesEditTest extends PicsTest {
 	private int NON_ZERO_OPERATOR_ID = 123;
@@ -64,6 +65,8 @@ public class FacilitiesEditTest extends PicsTest {
 	private UserDAO userDAO;
 	@Mock
 	private OperatorAccountDAO operatorDAO;
+	@Mock
+	private FeatureToggle featureToggle;
 
 	@Before
 	public void setUp() throws Exception {
@@ -82,8 +85,12 @@ public class FacilitiesEditTest extends PicsTest {
 		Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
 		Whitebox.setInternalState(facilitiesEdit, "permissions", permissions);
 		Whitebox.setInternalState(facilitiesEdit, "countrySubdivisionDAO", countrySubdivisionDAO);
-		
-		// specific call the real method in the FacilitiesEditMode when adding roles.
+
+		// specific call the real method in the FacilitiesEditMode when adding
+		// roles.
+		Whitebox.setInternalState(facilitiesEditModel, "featureToggle", featureToggle);
+		when(featureToggle.isFeatureEnabled(any(String.class))).thenReturn(true);
+
 		Whitebox.setInternalState(facilitiesEditModel, "operatorDAO", operatorDAO);
 		doCallRealMethod().when(facilitiesEditModel).addRole(any(Permissions.class), any(OperatorAccount.class),
 				any(AccountUser.class));
