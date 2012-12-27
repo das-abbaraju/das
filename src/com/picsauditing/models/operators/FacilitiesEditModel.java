@@ -17,6 +17,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 
 public class FacilitiesEditModel {
@@ -27,6 +28,8 @@ public class FacilitiesEditModel {
 	protected BasicDAO dao;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
+	@Autowired
+	private FeatureToggle featureToggle;
 
 	public static final int PICS_US = 5;
 	public static final int PICS_CANADA = 6;
@@ -146,6 +149,10 @@ public class FacilitiesEditModel {
 	}
 
 	private void setCommissionableServiceLevel(AccountUser newAccountUser, String commissionableServiceLevel) {
+		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2)) {
+			return;
+		}
+		
 		if (Strings.isEmpty(commissionableServiceLevel)) {
 			newAccountUser.setServiceLevel("All");
 		} else {

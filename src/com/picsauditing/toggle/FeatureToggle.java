@@ -17,6 +17,7 @@ public interface FeatureToggle {
 	String TOGGLE_CONTRACTOR_CAMPAIGN = "Toggle.ContractorCampaign";
 	String TOGGLE_PERMISSION_GROUPS = "Toggle.PermissionGroups";
 	String TOGGLE_INVOICE_COMMISSION = "Toggle.InvoiceCommission";
+	String TOGGLE_INVOICE_COMMISSION_PHASE2 = "Toggle.InvoiceCommission.Phase2";
 	String TOGGLE_REQUESTNEWCONTRACTORACCOUNT = "Toggle.RequestNewContractorAccount";
 	String TOGGLE_TIMEZONE_LOOKUP = "Toggle.TimezoneLookup";
 	String TOGGLE_CSR_SINGLE_ASSIGNMENT = "Toggle.BackgroundProcesses.Csr_SingleAssignment";

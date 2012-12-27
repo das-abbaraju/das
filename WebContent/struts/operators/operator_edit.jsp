@@ -3,6 +3,8 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
+<%@ page import="com.picsauditing.toggle.FeatureToggle" %>
+
 <html>
 <head>
     <title>
@@ -642,9 +644,11 @@
             <td>
                 User
             </td>
-            <td>
-            	Service Level
-            </td>
+            <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+            	<td>
+            		Service Level
+            	</td>
+            </pics:toggle>
             <td>
                 Ownership
             </td>
@@ -669,9 +673,11 @@
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="user.name"/>
                     </td>
-                    <td onclick="$('#show_<s:property value="id"/>').show();">
-                    	<s:property value="serviceLevel" /> 
-                    </td>
+                    <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                    	<td onclick="$('#show_<s:property value="id"/>').show();">
+                    		<s:property value="serviceLevel" /> 
+                    	</td>
+                    </pics:toggle>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="ownerPercent"/>%
                     </td>
@@ -704,10 +710,16 @@
                     </s:if>
                 </tr>
                 <tr id="show_<s:property value="id"/>" style="display: none;">
-                    <td colspan="5">
+                	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                    	<td colspan="5">
+                    </pics:toggle>
+                    <pics:toggleElse>
+                    	<td colspan="4">
+                    </pics:toggleElse>
                         <nobr>
-                        	<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel">
-                        	</s:select>
+                        	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                        		<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel" />
+                            </pics:toggle>
                             <s:textfield
                                     name="operator.accountUsers[%{#role.index}].ownerPercent"
                                     value="%{ownerPercent}" size="3"
@@ -736,7 +748,12 @@
             </s:if>
         </s:iterator>
         <tr>
-            <td colspan="5">
+        	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+            	<td colspan="5">
+            </pics:toggle>
+            <pics:toggleElse>
+               	<td colspan="4">
+            </pics:toggleElse>
                 <s:select
                         name="salesRep.user.id"
                         list="userList"
@@ -763,9 +780,11 @@
             <td>
                 User
             </td>
-            <td>
-            	Service Level
-            </td>
+            <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+            	<td>
+            		Service Level
+            	</td>
+            </pics:toggle>
             <td>
                 Ownership
             </td>
@@ -789,9 +808,11 @@
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="user.name"/>
                     </td>
-                    <td onclick="$('#show_<s:property value="id"/>').show();">
-                    	<s:property value="serviceLevel" />
-                    </td>
+                    <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                    	<td onclick="$('#show_<s:property value="id"/>').show();">
+                    		<s:property value="serviceLevel" />
+                    	</td>
+                    </pics:toggle>
                     <td onclick="$('#show_<s:property value="id"/>').show();">
                         <s:property value="ownerPercent"/>%
                     </td>
@@ -824,10 +845,16 @@
                     </s:if>
                 </tr>
                 <tr id="show_<s:property value="id"/>" style="display: none;">
-                    <td colspan="5">
+                	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                    	<td colspan="5">
+                    </pics:toggle>
+                    <pics:toggleElse>
+                    	<td colspan="4">
+                    </pics:toggleElse>
                         <nobr>
-                        	<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel">
-                        	</s:select>
+                        	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                        		<s:select list="%{@com.picsauditing.jpa.entities.FeeClass@getCommissionableServiceLines()}" name="operator.accountUsers[%{#role.index}].serviceLevel" />
+                            </pics:toggle>
                             <s:textfield
                                     name="operator.accountUsers[%{#role.index}].ownerPercent"
                                     value="%{ownerPercent}" size="3"
@@ -856,7 +883,12 @@
         </s:iterator>
 
         <tr>
-            <td colspan="5">
+        	<pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+            	<td colspan="5">
+            </pics:toggle>
+            <pics:toggleElse>
+            	<td colspan="4">
+            </pics:toggleElse>
                 <s:select name="accountRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0"
                           headerValue="- Select a User -"/>
             </td>
@@ -882,9 +914,11 @@
                 <td>
                     Role
                 </td>
-                <td>
-            		Service Level
-            	</td>
+                <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                	<td>
+            			Service Level
+            		</td>
+            	</pics:toggle>
                 <td>
                     Ownership
                 </td>
@@ -906,9 +940,11 @@
                         <td>
                             <s:property value="#key.description"/>
                         </td>
-                        <td>
-                            <s:property value="serviceLevel" />
-                        </td>
+                        <pics:toggle name="<%= FeatureToggle.TOGGLE_INVOICE_COMMISSION_PHASE2 %>">
+                        	<td>
+                            	<s:property value="serviceLevel" />
+                        	</td>
+                        </pics:toggle>
                         <td>
                             <s:property value="ownerPercent"/>%
                         </td>
