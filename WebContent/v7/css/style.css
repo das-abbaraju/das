@@ -8463,14 +8463,14 @@ body {
 
 /* line 74, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .user a {
+#user_searchbox li a {
   font-size: 13px;
   white-space: normal;
 }
 
 /* line 80, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .user .name {
+#user_searchbox li .name {
   float: left;
   width: 175px;
   font-weight: bold;
@@ -8478,21 +8478,21 @@ body {
 
 /* line 87, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .user .id {
+#user_searchbox li .id {
   float: right;
   font-weight: bold;
 }
 
 /* line 93, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .user .location {
+#user_searchbox li .location {
   float: left;
   width: 175px;
 }
 
 /* line 99, ../sass/pics/layout/_menu.scss */
 
-#user_searchbox .user .type {
+#user_searchbox li .type {
   float: right;
   font-style: italic;
 }
