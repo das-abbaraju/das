@@ -9,6 +9,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -379,7 +380,16 @@ public class PicsMenu {
 
 			if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 				menuItems.put("Import/Export Translations", new String[] { "TranslationETL.action", "ImExTrans" });
-				menuItems.put("Unsynced Translations", new String[] { "UnsyncedTranslations.action", "UnsyncdTrans" });
+
+                try {
+                    String databaseName = Database.getDatabaseName();
+
+                    if (databaseName.contains("alpha")) {
+                        menuItems.put("Unsynced Translations", new String[] { "UnsyncedTranslations.action", "UnsyncdTrans" });
+                    }
+                } catch (Exception e) {
+                    // Don't show menu item
+                }
 			}
 		}
 		if (permissions.hasPermission(OpPerms.ManageTrades)) {

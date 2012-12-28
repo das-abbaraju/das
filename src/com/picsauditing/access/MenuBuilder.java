@@ -6,6 +6,7 @@ import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -158,8 +159,17 @@ public final class MenuBuilder {
             if (permissions.has(OpPerms.DevelopmentEnvironment)) {
                 translationMenu.addChild(getText("menu.Configure.ImportExportTranslations"), "TranslationETL.action",
                         "im_ex_trans");
-                translationMenu.addChild(getText("menu.Configure.UnsyncedTranslations"), "UnsyncedTranslations.action",
-                        "unsynced_translations");
+
+                try {
+                    String databaseName = Database.getDatabaseName();
+
+                    if (databaseName.contains("alpha")) {
+                        translationMenu.addChild(getText("menu.Configure.UnsyncedTranslations"), "UnsyncedTranslations.action",
+                                "unsynced_translations");
+                    }
+                } catch (Exception e) {
+                    // Don't show menu item
+                }
             }
 
             translationMenu.addChild(getText("menu.Configure.ViewTracedTranslations"),
@@ -224,16 +234,16 @@ public final class MenuBuilder {
 
         devMenu.addChild("Report Tester", "ReportTester.action", "report_tester");
         devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
-        devMenu.addChild("Front-End Development Guide", "FrontendDevelopmentGuide.action", "front-end-dev-guide");      
+        devMenu.addChild("Front-End Development Guide", "FrontendDevelopmentGuide.action", "front-end-dev-guide");
 
     }
 
-	private static void buildCronSubmenu(MenuComponent devMenu) {
-		MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
+    private static void buildCronSubmenu(MenuComponent devMenu) {
+        MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
         cronSubmenu.addChild(getText("menu.Dev.ContractorCron"), "ContractorCron.action", "contractor_cron");
         cronSubmenu.addChild(getText("menu.Dev.MailCron"), "MailCron.action", "mail_cron");
         cronSubmenu.addChild(getText("menu.Dev.SubscriptionCron"), "SubscriptionCron.action", "subscription_cron");
-	}
+    }
 
     private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
         MenuComponent manageMenu = menubar.addChild(getText("menu.Manage"));
@@ -301,10 +311,10 @@ public final class MenuBuilder {
 
         addEmailSubmenu(manageMenu, permissions);
 
-		if (permissions.hasPermission(OpPerms.Billing)) {
-			manageMenu.addChild("QuickBooks Sync", "QBSyncList.action?currency=USD", "QuickBooksSync_USD");
-			manageMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
-		}
+        if (permissions.hasPermission(OpPerms.Billing)) {
+            manageMenu.addChild("QuickBooks Sync", "QBSyncList.action?currency=USD", "QuickBooksSync_USD");
+            manageMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
+        }
     }
 
     private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {
@@ -315,14 +325,14 @@ public final class MenuBuilder {
         {
             MenuComponent legacyMenu = reportsMenu.addChild("Legacy Reports");
             // BILLING
-    		if (permissions.hasPermission(OpPerms.Billing)) {
-    			legacyMenu.addChild("Billing Report", "ReportBilling.action?filter.status=Active&filter.status=Pending",
-    					"BillingReport");
-    			legacyMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action", "UnpaidInvoices");
-    			legacyMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action", "InvoiceSearch");
-    			legacyMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active", "ExpiredCCs");
-    			legacyMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action", "LifetimeMembers");
-    		}
+            if (permissions.hasPermission(OpPerms.Billing)) {
+                legacyMenu.addChild("Billing Report", "ReportBilling.action?filter.status=Active&filter.status=Pending",
+                        "BillingReport");
+                legacyMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action", "UnpaidInvoices");
+                legacyMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action", "InvoiceSearch");
+                legacyMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active", "ExpiredCCs");
+                legacyMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action", "LifetimeMembers");
+            }
             // CONTRACTORS
             if (permissions.hasPermission(OpPerms.RequestNewContractor))
                 legacyMenu.addChild(getText("ReportNewRequestedContractor.title"),
