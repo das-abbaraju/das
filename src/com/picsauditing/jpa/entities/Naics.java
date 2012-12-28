@@ -14,6 +14,7 @@ public class Naics implements java.io.Serializable {
 	private String code;
 	private float trir;
 	private float lwcr;
+	private float dart;
 
 	@Id
 	@Column(nullable = false, length = 6)
@@ -42,5 +43,14 @@ public class Naics implements java.io.Serializable {
 
 	public void setLwcr(float lwcr) {
 		this.lwcr = lwcr;
+	}
+
+	@ReportField(category = FieldCategory.CompanyStatistics, importance = FieldImportance.Average)
+	public float getDart() {
+		return dart;
+	}
+
+	public void setDart(float dart) {
+		this.dart = dart;
 	}
 }
