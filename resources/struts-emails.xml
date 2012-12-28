@@ -70,5 +70,9 @@
 		<action name="EditEmailExclusions" class="com.picsauditing.mail.EmailExclusion">
 			<result>struts/mail/email_exclusion.jsp</result>
 		</action>
+		
+		<action name="NewYearMailer" class="com.picsauditing.mail.NewYearMailer">
+			<result>struts/mail/new_year_mailer.jsp</result>
+		</action>
 	</package>
 </struts>

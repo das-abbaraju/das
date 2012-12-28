@@ -5,6 +5,7 @@
         <pattern>/ManageAppProperty*.action</pattern>
         <pattern>/FrontendDevelopmentGuide*.action</pattern>
         <pattern>/ReportTester.action</pattern>
+        <pattern>/NewYearMailer*.action</pattern>
     </decorator>
     <decorator name="simpleLayout" page="simple-layout.jsp">
         <pattern>/Login.action</pattern>
