@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
@@ -36,6 +38,8 @@ public class UsersManageTest extends PicsActionTest {
 	private UserGroup userGroup;
 	@Mock
 	private UserDAO userDAO;
+	@Mock
+	private InputValidator inputValidator;
 
 	@Before
 	public void setUp() throws Exception {
@@ -44,6 +48,7 @@ public class UsersManageTest extends PicsActionTest {
 		super.setUp(usersManage);
 
 		Whitebox.setInternalState(usersManage, "userDAO", userDAO);
+		Whitebox.setInternalState(usersManage, "inputValidator", inputValidator);
 	}
 
 	@Test
@@ -100,5 +105,33 @@ public class UsersManageTest extends PicsActionTest {
 		usersManage.setUser(user);
 
 		usersManage.execute();
+	}
+
+	@Test
+	public void testSave_ShouldCallValidateInput() throws Exception {
+		setUpUserAndAccount();
+		UsersManage usersManageSpy = spy(usersManage);
+
+		usersManageSpy.save();
+
+		verify(usersManageSpy).validateInput();
+		verify(inputValidator).validateName(anyString());
+		verify(inputValidator).validateEmail(anyString());
+		verify(inputValidator).validateUsername(anyString());
+		verify(inputValidator).validateUsernameAvailable(anyString(), anyInt());
+		verify(inputValidator, times(2)).validatePhoneNumber(anyString(), anyBoolean());
+		verify(inputValidator).validateLocale((Locale) any());
+	}
+
+	private void setUpUserAndAccount() {
+		// Just seed some data so we don't get NPEs when calling functions
+		User user = new User(123);
+		user.setName("USER NAME");
+		user.setUsername("USERNAME");
+		user.setEmail("me@here.com");
+		Account account = new Account();
+		user.setAccount(account);
+		usersManage.setUser(user);
+		usersManage.setAccount(account);
 	}
 }

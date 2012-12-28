@@ -67,6 +67,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
     public static final String JSON_ARRAY = "jsonArray";
     public static final String CHART_XML = "chartXML";
     public static final String REDIRECT = "redirect";
+	public static final String INPUT_ERROR = "inputError";
     public static final String[] DATAFEED_FORMATS = {JSON,XML};
 
     @Autowired

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class InputValidator {
 
@@ -32,7 +33,7 @@ public class InputValidator {
     // (?s) turns on single-line mode, which makes '.' also match line terminators (DOTALL)
     public static final String SPECIAL_CHAR_REGEX = "(?s).*[;<>&`\"].*";
 
-    public static final String USERNAME_REGEX = "[\\w+.@-]+";
+    public static final String USERNAME_REGEX = "[\\w+._@-]+";
 
     // I'd like to keep this simple. The user knows their email address.
     // Our other option is to use this monster: http://www.ex-parrot.com/pdw/Mail-RFC822-Address.html
@@ -129,6 +130,26 @@ public class InputValidator {
     	int oneIndexedDayOfMonth = date.getDate();
     	if (oneIndexedDayOfMonth < 1 || oneIndexedDayOfMonth > 31) {
     		return INVALID_DATE_KEY;
+    	}
+
+    	return NO_ERROR;
+    }
+
+    public String validateLocale(Locale locale) {
+    	return validateLocale(locale, true);
+    }
+
+    public String validateLocale(Locale locale, boolean required) {
+    	if (locale == null) {
+    		if (required) {
+    			return REQUIRED_KEY;
+    		}
+
+    		return NO_ERROR;
+    	}
+
+    	if (StringUtils.isEmpty(locale.toString())) {
+    		return REQUIRED_KEY;
     	}
 
     	return NO_ERROR;

@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.InputValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -103,6 +104,8 @@ public class UsersManage extends PicsActionSupport {
     private EmailSender emailSender;
     @Autowired
     private EmailQueueDAO emailQueueDAO;
+	@Autowired
+	private InputValidator inputValidator;
 
     private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
@@ -179,12 +182,16 @@ public class UsersManage extends PicsActionSupport {
         user.setIsGroup(userIsGroup);
 
         // Lazy init fix for isOk method
+        // isOk is now validateInput
         user.getGroups().size();
         user.getOwnedPermissions().size();
-        if (!isOK()) {
+
+        validateInput();
+        if (hasFieldErrors() || hasActionErrors()) {
             userDAO.refresh(user); // Clear out ALL changes for the user
-            return SUCCESS;
+            return INPUT_ERROR;
         }
+
         // a contractor user.
         if (user.getId() > 0 && account.isContractor()) {
             if (!user.isActiveB()) {
@@ -204,7 +211,8 @@ public class UsersManage extends PicsActionSupport {
                 }
             }
         }
-        // a user
+
+        // TODO remove this nonsense
         if (user.getId() < 0) {
             // We want to save a new user
             final String randomPassword = EncodedKey.randomPassword();
@@ -222,7 +230,7 @@ public class UsersManage extends PicsActionSupport {
                 user.getAccount().setId(permissions.getAccountId());
             }
         }
-        // a group
+
         if (user.isGroup()) {
             // Create a unique username for this group
             String username = "GROUP";
@@ -239,7 +247,7 @@ public class UsersManage extends PicsActionSupport {
         } else {
             user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
         }
-        // a contractor
+
         if (user.getAccount().isContractor()) {
             Set<OpPerms> userPerms = getUserPerms();
 
@@ -261,8 +269,9 @@ public class UsersManage extends PicsActionSupport {
         updateShadowCSR();
 
         // Send activation email if set
-        if (sendActivationEmail && user.getId() == 0)
+        if (sendActivationEmail && user.getId() == 0) {
             addActionMessage(sendActivationEmail(user, permissions));
+        }
 
         if (user.getId() == 0) {
             newUser = true;
@@ -276,9 +285,9 @@ public class UsersManage extends PicsActionSupport {
             user.setUsingDynamicReports(isUsingDynamicReports());
             user = userDAO.save(user);
 
-            if (!user.isGroup())
+            if (!user.isGroup()) {
                 addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
-
+            }
         } catch (ConstraintViolationException e) {
             addActionError(getText("UsersManage.UsernameInUse"));
         } catch (DataIntegrityViolationException e) {
@@ -385,7 +394,8 @@ public class UsersManage extends PicsActionSupport {
     public String unlock() throws Exception {
         startup();
 
-        if (!isOK()) {
+        validateInput();
+        if (hasFieldErrors() || hasActionErrors()) {
             userDAO.clear();
             return SUCCESS;
         }
@@ -624,40 +634,43 @@ public class UsersManage extends PicsActionSupport {
         return (account != null && account.getPrimaryContact() != null && account.getPrimaryContact().equals(user));
     }
 
-    private boolean isOK() throws Exception {
+    public void validateInput() {
         if (user == null) {
             addActionError(getText("UsersManage.NoUserFound"));
-            return false;
+            return;
         }
 
-        String displayName = user.getName().trim();
-        if (displayName == null || displayName.length() == 0 || displayName.length() < 3)
-            addActionError(getText("UsersManage.EnterDisplayName"));
+		String errorMessageKey = inputValidator.validateName(user.getName());
+		addFieldErrorIfMessage("user.name", errorMessageKey);
 
-        if (user.isGroup())
-            return (getActionErrors().size() == 0);
-
-        boolean hasduplicate = userDAO.duplicateUsername(user.getUsername().trim(), user.getId());
-        if (hasduplicate) {
-            addActionError(getText("UsersManage.UsernameNotAvailable"));
+        if (user.isGroup()) {
+            return;
         }
 
-        // TODO: Move this into User-validation.xml and use struts 2 for this
-        // validation
-        String username = user.getUsername().trim();
-        if (Strings.isEmpty(username))
-            addActionError(getText("User.username.error.Empty"));
-        else if (username.length() < 3)
-            addActionError(getText("User.username.error.Short"));
-        else if (username.length() > 100)
-            addActionError(getText("User.username.error.Long"));
-        else if (username.contains(" "))
-            addActionError(getText("User.username.error.Space"));
-        else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
-            addActionError(getText("User.username.error.Special"));
+		errorMessageKey = inputValidator.validateName(user.getDepartment(), false);
+		addFieldErrorIfMessage("user.department", errorMessageKey);
 
-        if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
-            addActionError(getText("UsersManage.EnterValidEmail"));
+		errorMessageKey = inputValidator.validateEmail(user.getEmail());
+		addFieldErrorIfMessage("user.email", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateUsername(user.getUsername());
+		addFieldErrorIfMessage("user.username", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateUsernameAvailable(user.getUsername(), user.getId());
+		addFieldErrorIfMessage("user.username", errorMessageKey);
+
+		errorMessageKey = inputValidator.validatePhoneNumber(user.getPhone(), false);
+		addFieldErrorIfMessage("user.phone", errorMessageKey);
+
+		errorMessageKey = inputValidator.validatePhoneNumber(user.getFax(), false);
+		addFieldErrorIfMessage("user.fax", errorMessageKey);
+
+		errorMessageKey = inputValidator.validateLocale(user.getLocale());
+		addFieldErrorIfMessage("user.locale", errorMessageKey);
+
+		if (user.getTimezone() == null) {
+			addFieldErrorIfMessage("user.timezone", InputValidator.REQUIRED_KEY);
+		}
 
         if (user.getId() > 0 && account.isContractor()) {
             // Could not find an OpPerms type for the Primary User, so just
@@ -669,7 +682,6 @@ public class UsersManage extends PicsActionSupport {
                 addActionError(getText("UsersManage.Error.AdminUser"));
             }
         }
-        return getActionErrors().size() == 0;
     }
 
     private boolean userRoleExists(OpPerms op) {
@@ -682,8 +694,9 @@ public class UsersManage extends PicsActionSupport {
             } else {
                 return false;
             }
-        } else
+        } else {
             return false;
+        }
     }
 
     private boolean validUserForRoleExists(User user, OpPerms userRole) {
@@ -1125,7 +1138,7 @@ public class UsersManage extends PicsActionSupport {
         return false;
     }
 
-    // TODO: Move this to Event Subscription Builder
+    // TODO: Move this email logic to Event Subscription Builder
     public String sendRecoveryEmail(User user) {
         try {
             String serverName = ServletActionContext.getRequest().getServerName();
@@ -1165,6 +1178,7 @@ public class UsersManage extends PicsActionSupport {
         userDAO.save(user);
     }
 
+    // TODO consolidate email to one class, or at the very least pull it into a service
     public String sendActivationEmail(User user, Permissions permission) {
         try {
             String serverName = ServletActionContext.getRequest().getServerName();

@@ -4,7 +4,9 @@
 <%@page import="com.picsauditing.util.SpringUtils"%>
 <%@page import="java.util.Locale"%>
 <%@page import="com.picsauditing.PICS.I18nCache"%>
+<%@page import="com.picsauditing.PICS.InputValidator"%>
 <%@ page language="java" import="com.picsauditing.dao.UserDAO"%>
+<!-- FIXME Clean up this validation, possibly moving it into a controller solely for AJAX validation -->
 <%
 	try {
 		String username = request.getParameter("username".trim());
@@ -12,18 +14,17 @@
 		String companyName = request.getParameter("companyName");
 		I18nCache cache = I18nCache.getInstance();
 		Locale locale = Locale.getDefault();
-		
+
 		if (!Strings.isEmpty(username)) {
 			String message = null;
-			
-			if (Strings.isEmpty(username))
-				message = cache.getText("User.username.error.Empty", locale);
-			else if (username.length() > 100)
-				message = cache.getText("User.username.error.Long", locale);
-			else if (username.contains(" "))
-				message = cache.getText("User.username.error.Space", locale);
-			else if (!username.matches("^[a-zA-Z0-9+._@-]{1,50}$"))
-				message = cache.getText("User.username.error.Special", locale);
+
+            InputValidator inputValidator = SpringUtils.getBean("InputValidator");
+            if (inputValidator != null) {
+                String errorMessageKey = inputValidator.validateUsername(username);
+                if (Strings.isNotEmpty(errorMessageKey)) {
+                    message = cache.getText(errorMessageKey, locale);
+                }
+            }
 			
 			if (!Strings.isEmpty(message)) {
 				%> <%= message %> <%
@@ -43,7 +44,8 @@
 					%><img src="images/okCheck.gif" title="Username is available" /> <%=msg%><%
 				}
 			} catch (NumberFormatException e) {}
-		}	
+		}
+
 		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
 		if (!Strings.isEmpty(taxId)) {
 			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId, "US");
