@@ -481,6 +481,8 @@ public final class MenuBuilder {
                         "edit_email_exclusions");
             }
         }
+        if (permissions.hasPermission(OpPerms.DevelopmentEnvironment))
+        	emailMenu.addChild("New Year Mailer", "NewYearMailer.action", "NewYearMailer");
     }
 
     private static void handleSingleChildMenu(MenuComponent menu) {
