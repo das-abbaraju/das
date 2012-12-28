@@ -42,52 +42,69 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     addColumnToReport: function(cmp, event, eOpts) {
-        var list = this.getAvailableFieldList(),
-            selected = list.getSelectionModel().getSelection();
+        var available_field_list = this.getAvailableFieldList(),
+            available_field_checkbox_model = available_field_list.getSelectionModel();
 
-        if (selected.length > 0) {
-            var column_store = this.getReportReportsStore().first().columns();
-
-            Ext.Array.forEach(selected, function (field) {
-                column_store.add(field.toColumn());
+        if (available_field_checkbox_model.getCount() > 0) {
+            var available_fields = available_field_checkbox_model.getSelection(),
+                report_store = this.getReportReportsStore(),
+                report = report_store.first(),
+                columns = [];
+            
+            Ext.Array.forEach(available_fields, function (available_field) {
+                var column = available_field.toColumn();
+                
+                columns.push(column);
             });
+            
+            report.addColumns(columns);
 
             this.application.fireEvent('refreshreport');
         }
     },
 
     addFilterToReport: function(cmp, event, eOpts) {
-        var list = this.getAvailableFieldList(),
-            selected = list.getSelectionModel().getSelection();
+        var available_field_list = this.getAvailableFieldList(),
+            available_field_checkbox_model = available_field_list.getSelectionModel();
+    
+        if (available_field_checkbox_model.getCount() > 0) {
+            var available_fields = available_field_checkbox_model.getSelection(),
+                report_store = this.getReportReportsStore(),
+                report = report_store.first(),
+                filters = [];
 
-        if (selected.length > 0) {
-            var filter_store = this.getReportReportsStore().first().filters();
-
-            Ext.Array.forEach(selected, function (field) {
-                filter_store.add(field.toFilter());
+            Ext.Array.forEach(available_fields, function (available_field) {
+                var filter = available_field.toFilter();
+                
+                filters.push(filter);
             });
+            
+            report.addFilters(filters);
 
             this.application.fireEvent('refreshfilters');
         }
     },
 
     onAvailableFieldAdd: function (cmp, event, eOpts) {
-        var modal = this.getAvailableFieldModal(),
-            list = this.getAvailableFieldList(),
-            search_box = this.getAvailableFieldSearchBox(),
-            type = modal.type;
+        var available_field_modal = this.getAvailableFieldModal(),
+            available_field_list = this.getAvailableFieldList(),
+            available_field_search_box = this.getAvailableFieldSearchBox(),
+            available_field_checkbox_model = available_field_list.getSelectionModel(),
+            type = available_field_modal.type;
 
         if (type === 'column') {
             this.addColumnToReport();
         } else if (type === 'filter') {
             this.addFilterToReport();
         } else {
-            Ext.Error.raise('Invalid type:' + modal.type + ' - must be (filter|column)');
+            Ext.Error.raise('Invalid type:' + available_field_modal.type + ' - must be (filter|column)');
         }
 
-        list.getSelectionModel().clearSelections();
+        // clear selected available fields
+        available_field_checkbox_model.clearSelections();
 
-        modal.destroy();
+        // remove modal
+        available_field_modal.destroy();
     },
 
     onAvailableFieldCancel: function (cmp, event, eOpts) {
@@ -95,33 +112,30 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     onAvailableFieldSearch: function (cmp, event, eOpts) {
-        var store = this.getReportAvailableFieldsByCategoryStore(),
-            search_box = this.getAvailableFieldSearchBox();
+        var available_field_by_category_store = this.getReportAvailableFieldsByCategoryStore(),
+            available_field_search_box = this.getAvailableFieldSearchBox(),
+            value = available_field_search_box.getValue();
 
-        store.clearFilter();
-        store.filter(Ext.create('PICS.ux.util.FilterMultipleColumn', {
-            anyMatch: true,
-            property: [
-                'category',
-                'text'
-            ],
-            root: 'data',
-            value: search_box.getValue()
+        // clear store filters
+        available_field_by_category_store.clearFilter();
+        
+        // filter store on value
+        available_field_by_category_store.filter(Ext.create('PICS.ux.util.FilterMultipleColumn', {
+            value: value
         }));
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore(),
-            that = this;
+        var available_field_by_category_store = this.getReportAvailableFieldsByCategoryStore();
 
-        store.clearFilter();
-        store.sort();
+        // clear store filters
+        available_field_by_category_store.clearFilter();
 
-        var modal = Ext.create('PICS.view.report.available-field.AvailableFieldModal', {
+        var available_field_modal = Ext.create('PICS.view.report.available-field.AvailableFieldModal', {
             defaultFocus: 'textfield[name=search_box]',
             type: type
         });
 
-        modal.show();
+        available_field_modal.show();
     }
 });

@@ -34,7 +34,11 @@ Ext.define('PICS.store.report.AvailableFields', {
         this.on('load', function (store, records, successful, options) {
             var available_fields_by_category_store = Ext.StoreManager.get('report.AvailableFieldsByCategory');
 
+            // load data
             available_fields_by_category_store.data = store.data;
+            
+            // sort data
+            available_fields_by_category_store.sort();
         });
     }
 });

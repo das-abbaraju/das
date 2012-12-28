@@ -78,17 +78,17 @@ Ext.define('PICS.controller.report.ReportHeader', {
     },
 
     onUpdateReportSummary: function () {
-        var store = this.getReportReportsStore(),
+        var report_store = this.getReportReportsStore(),
             report_header_summary = this.getReportHeaderSummary();
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
+        if (!report_store.isLoaded()) {
+            report_store.on('load', function (store, records, successful, eOpts) {
                 var report = store.first();
 
                 report_header_summary.update(report);
             });
         } else {
-            var report = store.first();
+            var report = report_store.first();
 
             report_header_summary.update(report);
         }

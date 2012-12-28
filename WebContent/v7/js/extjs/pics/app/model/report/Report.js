@@ -29,7 +29,8 @@ Ext.define('PICS.model.report.Report', {
     }, {
         // report limit
         name: 'rowsPerPage',
-        type: 'int'
+        type: 'int',
+        defaultValue: 50
     }],
     hasMany: [{
         model: 'PICS.model.report.Column',
@@ -88,5 +89,95 @@ Ext.define('PICS.model.report.Report', {
         report['report.rowsPerPage'] = this.get('rowsPerPage');
 
         return report;
+    },
+    
+    
+    
+    
+    addColumn: function (column) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
+        var column_store = this.columns();
+        
+        column_store.add(column);
+    },
+    
+    addColumns: function (columns) {
+        Ext.Array.forEach(columns, function (column) {
+            if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+                Ext.Error.raise('Invalid column');
+            }
+        });
+        
+        var column_store = this.columns();
+        
+        column_store.add(columns);
+    },
+    
+    addFilter: function (filter) {
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter');
+        }
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filter);
+    },
+    
+    addFilters: function (filters) {
+        Ext.Array.forEach(filters, function (filter) {
+            if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+                Ext.Error.raise('Invalid filter');
+            }
+        });
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filters);
+    },
+    
+    addSort: function (column, direction) {
+        var sort_store = this.sorts(),
+            column_name = column.getAvailableField().get('name');
+        
+        sort_store.add({
+            name: column_name,
+            direction: direction
+        });
+    },
+    
+    removeColumns: function () {
+        this.columns().removeAll();
+    },
+    
+    removeSorts: function () {
+        this.sorts().removeAll();
+    },
+    
+    // reorder columns
+    moveColumnByIndex: function (from_index, to_index) {
+        var column_store = this.columns(),
+            columns = [];
+
+        // generate an array of columns from column store
+        column_store.each(function (column, index) {
+            columns[index] = column;
+        });
+    
+        // splice out the column store - column your moving
+        var spliced_column = columns.splice(from_index, 1);
+    
+        // insert the column store - column to the position you moved it to
+        columns.splice(to_index, 0, spliced_column);
+    
+        // remove all column store records
+        column_store.removeAll();
+        
+        // re-insert column store records in the new position
+        Ext.each(columns, function (column, index) {
+            column_store.add(column);
+        });
     }
 });

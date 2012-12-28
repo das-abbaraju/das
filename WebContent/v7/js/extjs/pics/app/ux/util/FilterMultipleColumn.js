@@ -1,10 +1,17 @@
 Ext.define('PICS.ux.util.FilterMultipleColumn', {
     extend: 'Ext.util.Filter',
     
+    anyMatch: true,
+    property: [
+        'category',
+        'text'
+    ],
+    root: 'data',
+    
     createFilterFn: function () {
-        var me = this;
-        var matcher  = me.createValueMatcher();
-        var property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
+        var me = this,
+            matcher = me.createValueMatcher(),
+            property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
 
         return function(item) {
             var hasmatch = false;

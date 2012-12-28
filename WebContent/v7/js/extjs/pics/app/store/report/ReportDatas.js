@@ -13,7 +13,6 @@ Ext.define('PICS.store.report.ReportDatas', {
     // there is no preset Model - we must place empty fields [] as a default
     // we dynamically create / attach Model which has the actual fields
     fields: [],
-    pageSize: 50,
     proxy: {
         actionMethods: {
             create: 'POST',
@@ -41,9 +40,8 @@ Ext.define('PICS.store.report.ReportDatas', {
     reload: function () {
         var store = Ext.StoreManager.get('report.Reports'),
             report = store.first();
-
-        // initialize store page size
-        report.set('rowsPerPage', this.pageSize);
+        
+        this.pageSize = report.get('rowsPerPage');
 
         this.configureProxyUrl(report);
 
@@ -69,7 +67,7 @@ Ext.define('PICS.store.report.ReportDatas', {
     },
 
     configureReportDataModel: function (report) {
-        if (!(report && report.$className == 'PICS.model.report.Report')) {
+        if (!(report && Ext.getClassName(report) == 'PICS.model.report.Report')) {
             Ext.Error.raise('Invalid report record');
         }
 
