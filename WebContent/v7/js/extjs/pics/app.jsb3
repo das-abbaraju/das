@@ -835,6 +835,11 @@
                     "path": "app/view/report/filter/"
                 },
                 {
+                    "clsName": "PICS.view.report.report.ReportColumnTooltip",
+                    "name": "ReportColumnTooltip.js",
+                    "path": "app/view/report/report/"
+                },
+                {
                     "clsName": "PICS.view.report.alert-message.AlertMessage",
                     "name": "AlertMessage.js",
                     "path": "app/view/report/alert-message/"

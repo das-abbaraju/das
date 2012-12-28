@@ -66449,10 +66449,17 @@ Ext.define('Ext.resizer.BorderSplitter', {
 Ext.define('PICS.ux.util.FilterMultipleColumn', {
     extend: 'Ext.util.Filter',
     
+    anyMatch: true,
+    property: [
+        'category',
+        'text'
+    ],
+    root: 'data',
+    
     createFilterFn: function () {
-        var me = this;
-        var matcher  = me.createValueMatcher();
-        var property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
+        var me = this,
+            matcher = me.createValueMatcher(),
+            property = !Ext.isArray(me.property) ? me.property.split(',') : me.property;
 
         return function(item) {
             var hasmatch = false;
@@ -66486,6 +66493,14 @@ Ext.define('PICS.view.report.filter.FilterToolbar', {
         type: 'vbox',
         align: 'center'
     }
+});
+Ext.define('PICS.view.report.report.ReportColumnTooltip', {
+    extend: 'Ext.tip.ToolTip',
+    alias: 'widget.reportcolumntooltip',
+    
+    anchor: 'bottom',
+    showDelay: 0,
+    tpl: '<div><h3>{text}</h3><p>{help}</p></div>'
 });
 Ext.define('PICS.view.report.alert-message.AlertMessage', {
     extend: 'Ext.window.Window',
@@ -80896,7 +80911,6 @@ Ext.define('PICS.store.report.ReportDatas', {
     // there is no preset Model - we must place empty fields [] as a default
     // we dynamically create / attach Model which has the actual fields
     fields: [],
-    pageSize: 50,
     proxy: {
         actionMethods: {
             create: 'POST',
@@ -80924,9 +80938,8 @@ Ext.define('PICS.store.report.ReportDatas', {
     reload: function () {
         var store = Ext.StoreManager.get('report.Reports'),
             report = store.first();
-
-        // initialize store page size
-        report.set('rowsPerPage', this.pageSize);
+        
+        this.pageSize = report.get('rowsPerPage');
 
         this.configureProxyUrl(report);
 
@@ -80952,7 +80965,7 @@ Ext.define('PICS.store.report.ReportDatas', {
     },
 
     configureReportDataModel: function (report) {
-        if (!(report && report.$className == 'PICS.model.report.Report')) {
+        if (!(report && Ext.getClassName(report) == 'PICS.model.report.Report')) {
             Ext.Error.raise('Invalid report record');
         }
 
@@ -98355,7 +98368,11 @@ Ext.define('PICS.store.report.AvailableFields', {
         this.on('load', function (store, records, successful, options) {
             var available_fields_by_category_store = Ext.StoreManager.get('report.AvailableFieldsByCategory');
 
+            // load data
             available_fields_by_category_store.data = store.data;
+            
+            // sort data
+            available_fields_by_category_store.sort();
         });
     }
 });
@@ -99305,7 +99322,8 @@ Ext.define('PICS.model.report.Report', {
     }, {
         // report limit
         name: 'rowsPerPage',
-        type: 'int'
+        type: 'int',
+        defaultValue: 50
     }],
     hasMany: [{
         model: 'PICS.model.report.Column',
@@ -99364,6 +99382,96 @@ Ext.define('PICS.model.report.Report', {
         report['report.rowsPerPage'] = this.get('rowsPerPage');
 
         return report;
+    },
+    
+    
+    
+    
+    addColumn: function (column) {
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            Ext.Error.raise('Invalid column');
+        }
+        
+        var column_store = this.columns();
+        
+        column_store.add(column);
+    },
+    
+    addColumns: function (columns) {
+        Ext.Array.forEach(columns, function (column) {
+            if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+                Ext.Error.raise('Invalid column');
+            }
+        });
+        
+        var column_store = this.columns();
+        
+        column_store.add(columns);
+    },
+    
+    addFilter: function (filter) {
+        if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+            Ext.Error.raise('Invalid filter');
+        }
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filter);
+    },
+    
+    addFilters: function (filters) {
+        Ext.Array.forEach(filters, function (filter) {
+            if (Ext.getClassName(filter) != 'PICS.model.report.Filter') {
+                Ext.Error.raise('Invalid filter');
+            }
+        });
+        
+        var filter_store = this.filters();
+        
+        filter_store.add(filters);
+    },
+    
+    addSort: function (column, direction) {
+        var sort_store = this.sorts(),
+            column_name = column.getAvailableField().get('name');
+        
+        sort_store.add({
+            name: column_name,
+            direction: direction
+        });
+    },
+    
+    removeColumns: function () {
+        this.columns().removeAll();
+    },
+    
+    removeSorts: function () {
+        this.sorts().removeAll();
+    },
+    
+    // reorder columns
+    moveColumnByIndex: function (from_index, to_index) {
+        var column_store = this.columns(),
+            columns = [];
+
+        // generate an array of columns from column store
+        column_store.each(function (column, index) {
+            columns[index] = column;
+        });
+    
+        // splice out the column store - column your moving
+        var spliced_column = columns.splice(from_index, 1);
+    
+        // insert the column store - column to the position you moved it to
+        columns.splice(to_index, 0, spliced_column);
+    
+        // remove all column store records
+        column_store.removeAll();
+        
+        // re-insert column store records in the new position
+        Ext.each(columns, function (column, index) {
+            column_store.add(column);
+        });
     }
 });
 /**
@@ -99439,52 +99547,69 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     addColumnToReport: function(cmp, event, eOpts) {
-        var list = this.getAvailableFieldList(),
-            selected = list.getSelectionModel().getSelection();
+        var available_field_list = this.getAvailableFieldList(),
+            available_field_checkbox_model = available_field_list.getSelectionModel();
 
-        if (selected.length > 0) {
-            var column_store = this.getReportReportsStore().first().columns();
-
-            Ext.Array.forEach(selected, function (field) {
-                column_store.add(field.toColumn());
+        if (available_field_checkbox_model.getCount() > 0) {
+            var available_fields = available_field_checkbox_model.getSelection(),
+                report_store = this.getReportReportsStore(),
+                report = report_store.first(),
+                columns = [];
+            
+            Ext.Array.forEach(available_fields, function (available_field) {
+                var column = available_field.toColumn();
+                
+                columns.push(column);
             });
+            
+            report.addColumns(columns);
 
             this.application.fireEvent('refreshreport');
         }
     },
 
     addFilterToReport: function(cmp, event, eOpts) {
-        var list = this.getAvailableFieldList(),
-            selected = list.getSelectionModel().getSelection();
+        var available_field_list = this.getAvailableFieldList(),
+            available_field_checkbox_model = available_field_list.getSelectionModel();
+    
+        if (available_field_checkbox_model.getCount() > 0) {
+            var available_fields = available_field_checkbox_model.getSelection(),
+                report_store = this.getReportReportsStore(),
+                report = report_store.first(),
+                filters = [];
 
-        if (selected.length > 0) {
-            var filter_store = this.getReportReportsStore().first().filters();
-
-            Ext.Array.forEach(selected, function (field) {
-                filter_store.add(field.toFilter());
+            Ext.Array.forEach(available_fields, function (available_field) {
+                var filter = available_field.toFilter();
+                
+                filters.push(filter);
             });
+            
+            report.addFilters(filters);
 
             this.application.fireEvent('refreshfilters');
         }
     },
 
     onAvailableFieldAdd: function (cmp, event, eOpts) {
-        var modal = this.getAvailableFieldModal(),
-            list = this.getAvailableFieldList(),
-            search_box = this.getAvailableFieldSearchBox(),
-            type = modal.type;
+        var available_field_modal = this.getAvailableFieldModal(),
+            available_field_list = this.getAvailableFieldList(),
+            available_field_search_box = this.getAvailableFieldSearchBox(),
+            available_field_checkbox_model = available_field_list.getSelectionModel(),
+            type = available_field_modal.type;
 
         if (type === 'column') {
             this.addColumnToReport();
         } else if (type === 'filter') {
             this.addFilterToReport();
         } else {
-            Ext.Error.raise('Invalid type:' + modal.type + ' - must be (filter|column)');
+            Ext.Error.raise('Invalid type:' + available_field_modal.type + ' - must be (filter|column)');
         }
 
-        list.getSelectionModel().clearSelections();
+        // clear selected available fields
+        available_field_checkbox_model.clearSelections();
 
-        modal.destroy();
+        // remove modal
+        available_field_modal.destroy();
     },
 
     onAvailableFieldCancel: function (cmp, event, eOpts) {
@@ -99492,34 +99617,31 @@ Ext.define('PICS.controller.report.AvailableFieldModal', {
     },
 
     onAvailableFieldSearch: function (cmp, event, eOpts) {
-        var store = this.getReportAvailableFieldsByCategoryStore(),
-            search_box = this.getAvailableFieldSearchBox();
+        var available_field_by_category_store = this.getReportAvailableFieldsByCategoryStore(),
+            available_field_search_box = this.getAvailableFieldSearchBox(),
+            value = available_field_search_box.getValue();
 
-        store.clearFilter();
-        store.filter(Ext.create('PICS.ux.util.FilterMultipleColumn', {
-            anyMatch: true,
-            property: [
-                'category',
-                'text'
-            ],
-            root: 'data',
-            value: search_box.getValue()
+        // clear store filters
+        available_field_by_category_store.clearFilter();
+        
+        // filter store on value
+        available_field_by_category_store.filter(Ext.create('PICS.ux.util.FilterMultipleColumn', {
+            value: value
         }));
     },
 
     showAvailableFieldModal: function(type) {
-        var store = this.getReportAvailableFieldsByCategoryStore(),
-            that = this;
+        var available_field_by_category_store = this.getReportAvailableFieldsByCategoryStore();
 
-        store.clearFilter();
-        store.sort();
+        // clear store filters
+        available_field_by_category_store.clearFilter();
 
-        var modal = Ext.create('PICS.view.report.available-field.AvailableFieldModal', {
+        var available_field_modal = Ext.create('PICS.view.report.available-field.AvailableFieldModal', {
             defaultFocus: 'textfield[name=search_box]',
             type: type
         });
 
-        modal.show();
+        available_field_modal.show();
     }
 });
 Ext.define('PICS.controller.report.Filter', {
@@ -100113,6 +100235,14 @@ Ext.define('PICS.controller.report.Filter', {
  */
 Ext.define('PICS.controller.report.Report', {
     extend: 'Ext.app.Controller',
+    
+    refs: [{
+        ref: 'reportAlertMessage',
+        selector: 'reportalertmessage'
+    }, {
+        ref: 'reportSettingsModal',
+        selector: 'reportsettingsmodal'
+    }],
 
     stores: [
         'report.ReportDatas',
@@ -100122,6 +100252,21 @@ Ext.define('PICS.controller.report.Report', {
     init: function () {
         this.application.on({
             createreport: this.createReport,
+            scope: this
+        });
+        
+        this.application.on({
+            downloadreport: this.downloadReport,
+            scope: this
+        });
+        
+        this.application.on({
+            favoritereport: this.favoriteReport,
+            scope: this
+        });
+        
+        this.application.on({
+            printreport: this.printReport,
             scope: this
         });
 
@@ -100134,19 +100279,29 @@ Ext.define('PICS.controller.report.Report', {
             savereport: this.saveReport,
             scope: this
         });
+        
+        this.application.on({
+            sharereport: this.shareReport,
+            scope: this
+        });
+        
+        this.application.on({
+            unfavoritereport: this.unfavoriteReport,
+            scope: this
+        });
     },
 
     createReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
             config = PICS.app.configuration,
-            request_params = report.toRequestParams();
-
-        request_params.favorite = config.isFavorite();
+            params = report.toRequestParams();
+        
+        params['favorite'] = config.isFavorite();
 
         Ext.Ajax.request({
             url: 'ReportDynamic!copy.action',
-            params: request_params,
+            params: params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 
@@ -100158,7 +100313,35 @@ Ext.define('PICS.controller.report.Report', {
             }
         });
     },
-
+    
+    downloadReport: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id');
+    
+        //TODO: Change this to a post and include parameters.
+        window.open('ReportData!download.action?report=' + report_id);
+    },
+    
+    favoriteReport: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id');
+        
+        Ext.Ajax.request({
+            url: 'ManageReports!favorite.action?reportId=' + report_id
+        });
+    },
+    
+    printReport: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id');
+    
+        //TODO: Change this to a post and include parameters.
+        window.open('ReportData!print.action?report=' + report_id);
+    },
+    
     refreshReport: function () {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
@@ -100171,19 +100354,26 @@ Ext.define('PICS.controller.report.Report', {
     },
 
     saveReport: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            url = 'ReportDynamic!save.action';
-
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            params = report.toRequestParams(),
+            that = this;
+        
         Ext.Ajax.request({
-            url: url,
-            params: report.toRequestParams(),
+            url: 'ReportDynamic!save.action',
+            params: params,
             success: function (result) {
                 var result = Ext.decode(result.responseText);
 
                 if (result.error) {
                     Ext.Msg.alert('Status', result.error);
                 } else {
+                    var alert_message = that.getReportAlertMessage();
+                    
+                    if (alert_message) {
+                        alert_message.destroy();
+                    }
+                    
                     var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
                         cls: 'alert alert-success',
                         html: 'to My Reports in Manage Reports.',
@@ -100193,6 +100383,56 @@ Ext.define('PICS.controller.report.Report', {
                     alert_message.show();
                 }
             }
+        });
+    },
+    
+    shareReport: function (options) {
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_settings_modal = this.getReportSettingsModal(),
+            that = this;
+        
+        Ext.Ajax.request({
+            url: 'ReportSharing!share.action',
+            params: {
+                report: options.report_id,
+                id: options.account_id,
+                type: options.account_type,
+                editable: options.is_editable
+            },
+            success: function (result) {
+                var result = Ext.decode(result.responseText);
+        
+                if (result.error) {
+                    Ext.Msg.alert('Status', result.error);
+                } else {
+                    var alert_message = that.getReportAlertMessage();
+                    
+                    if (alert_message) {
+                        alert_message.destroy();
+                    }
+        
+                    var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
+                        cls: 'alert alert-success',
+                        title: result.title,
+                        html: result.html
+                    });
+        
+                    alert_message.show();
+                    
+                    report_settings_modal.close();
+                }
+            }
+        });
+    },
+    
+    unfavoriteReport: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first(),
+            report_id = report.get('id');
+        
+        Ext.Ajax.request({
+            url: 'ManageReports!unfavorite.action?reportId=' + report_id
         });
     },
 
@@ -100215,6 +100455,10 @@ Ext.define('PICS.controller.report.ReportData', {
         'report.AvailableFields',
         'report.Reports',
         'report.ReportDatas'
+    ],
+    
+    views: [
+        'PICS.view.report.report.ReportColumnTooltip'
     ],
 
     init: function () {
@@ -100260,31 +100504,6 @@ Ext.define('PICS.controller.report.ReportData', {
                 click: this.onColumnSortDesc
             }
         });
-
-        this.application.on({
-            refreshreportdisplayinfo: this.onRefreshReportDisplayInfo,
-            scope: this
-        });
-    },
-
-    // find index position of the grid column starting after the row numberer (row number)
-    findGridColumnIndexPosition: function (column) {
-        var grid_columns = Ext.ComponentQuery.query('reportdata gridcolumn'),
-            num_grid_columns = grid_columns.length,
-            index_position = -1;
-
-        // remove first grid column - row numberer
-        grid_columns = grid_columns.slice(1, num_grid_columns);
-
-        Ext.each(grid_columns, function (grid_column, index) {
-            if (column.id == grid_column.id) {
-                index_position = index;
-
-                return;
-            }
-        });
-
-        return index_position;
     },
 
     onAddColumn: function (cmp, event, eOpts) {
@@ -100295,17 +100514,12 @@ Ext.define('PICS.controller.report.ReportData', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             column_store = report.columns(),
-            selected_grid_column = cmp.up('menu').activeHeader,
-            selected_grid_column_index,
+            column = cmp.up('menu').activeHeader,
+            // off by one due to rownumberer
+            column_index = column.getIndex() - 1,
             selected_column;
-
-        selected_grid_column_index = this.findGridColumnIndexPosition(selected_grid_column);
-
-        if (selected_grid_column_index == -1) {
-            Ext.Error.raise('Invalid Grid column');
-        }
-
-        selected_column = column_store.getAt(selected_grid_column_index);
+        
+        selected_column = column_store.getAt(column_index);
 
         this.application.fireEvent('showcolumnfunctionmodal', selected_column);
     },
@@ -100313,128 +100527,76 @@ Ext.define('PICS.controller.report.ReportData', {
     onColumnMove: function (cmp, column, fromIdx, toIdx, eOpts) {
 		var report_store = this.getReportReportsStore(),
 			report = report_store.first(),
-			column_store = report.columns(),
-			columns = [];
-
-		// generate an array of columns from column store
-		column_store.each(function (column, index) {
-			columns[index] = column;
-		});
-
-		// splice out the column store - column your moving
-		var spliced_column = columns.splice((fromIdx - 1), 1);
-
-		// insert the column store - column to the position you moved it to
-		columns.splice((toIdx - 1), 0, spliced_column);
-
-		// remove all column store records
-		column_store.removeAll();
-
-		// re-insert column store records in the new position
-		Ext.each(columns, function (column, index) {
-			column_store.add(column);
-		});
+			// off by one due to rownumberer
+			from_index = fromIdx - 1,
+			// off by one due to rownumberer
+			to_index = toIdx - 1;
+		
+		report.moveColumnByIndex(from_index, to_index);
 	},
 
     onColumnRemove: function (cmp, event, eOpts) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             column_store = report.columns(),
-            selected_grid_column = cmp.up('menu').activeHeader,
-            selected_grid_column_index,
-            selected_column;
+            column = cmp.up('menu').activeHeader,
+            // off by one due to rownumberer
+            column_index = column.getIndex() - 1;
 
-        selected_grid_column_index = this.findGridColumnIndexPosition(selected_grid_column);
-
-        if (selected_grid_column_index == -1) {
-            Ext.Error.raise('Invalid Grid column');
-        }
-
-        column_store.removeAt(selected_grid_column_index);
+        column_store.removeAt(column_index);
 
         this.application.fireEvent('refreshreport');
     },
 
     onColumnRender: function (cmp, eOpts) {
-        var store = this.getReportAvailableFieldsStore();
-
-        function createTooltip(store) {
-            var field = store.findRecord('name', cmp.dataIndex);
-
-            if (!field) {
-                return false;
-            }
-
-            var help = field.get('help');
-
-            Ext.create('Ext.tip.ToolTip', {
-                anchor: 'bottom',
-                showDelay: 0,
-                target: cmp.el,
-                html: [
-                    '<div>',
-                        '<h3>' + field.get('text') + '</h3>',
-                        '<p>' + field.get('help') + '</p>',
-                    '</div>'
-                ].join('')
-            });
-
-            Ext.QuickTips.init();
+        var column = cmp.record;
+        
+        // do not apply any tooltips on rownumberers, etc
+        if (Ext.getClassName(column) != 'PICS.model.report.Column') {
+            return;
         }
-
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
-                createTooltip(store);
-            });
-        } else {
-            createTooltip(store);
-        }
+        
+        var target = cmp.el,
+            field = column.getAvailableField(),
+            text = field.get('text'),
+            help = field.get('help');
+        
+        var tooltip = Ext.create('PICS.view.report.report.ReportColumnTooltip', {
+            target: target
+        });
+        
+        tooltip.update({
+            text: text,
+            help: help
+        });
     },
 
     onColumnSortAsc: function (cmp, event, eOpts) {
-        var sort_store = this.getReportReportsStore().first().sorts(),
-            name = cmp.up('menu').activeHeader.dataIndex;
-
-        sort_store.removeAll();
-        sort_store.add(Ext.create('PICS.model.report.Sort', {
-            name: name,
-            direction: 'SUPERMAN' // lawl could be anything (ASC)
-        }));
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.record;
+        
+        // clear sorts
+        report.removeSorts();
+        
+        // add sort
+        report.addSort(column, 'ASC');
 
         this.application.fireEvent('refreshreport');
     },
 
     onColumnSortDesc: function (cmp, event, eOpts) {
-        var sort_store = this.getReportReportsStore().first().sorts(),
-            name = cmp.up('menu').activeHeader.dataIndex;
-
-        sort_store.removeAll();
-        sort_store.add(Ext.create('PICS.model.report.Sort', {
-            name: name,
-            direction: 'DESC'
-        }));
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            column = cmp.up('menu').activeHeader.record;
+        
+        // clear sorts
+        report.removeSorts();
+        
+        // add sort
+        report.addSort(column, 'DESC');
 
         this.application.fireEvent('refreshreport');
-    },
-
-    onRefreshReportDisplayInfo: function () {
-        var store = this.getReportReportDatasStore(),
-            report_paging_toolbar = this.getReportPagingToolbar(),
-            count;
-
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
-                count = store.getTotalCount();
-
-                report_paging_toolbar.updateDisplayInfo(count);
-            }, this, {
-                single: true
-            });
-        } else {
-            count = store.getTotalCount();
-
-            report_paging_toolbar.updateDisplayInfo(count);
-        }
     },
 
     onReportDataBeforeRender: function (cmp, eOpts) {
@@ -100450,21 +100612,27 @@ Ext.define('PICS.controller.report.ReportData', {
     },
     
     onReportDataReconfigure: function (cmp, eOpts) {
-        var store = cmp.getStore(), 
+        var report_data_store = cmp.getStore(), 
             report_paging_toolbar = this.getReportPagingToolbar();
-            report_paging_toolbar.moveFirst();
-            
+        
+        // load store - first page
+        report_paging_toolbar.moveFirst();
+
+        // update grid column header size
         cmp.updateColumnHeaderHeight(23);
-            
-        if (!store.isLoaded()) {
-            store.on('load', function () {
+
+        // remove no results message if one exists
+        if (!report_data_store.isLoaded()) {
+            report_data_store.on('load', function (store, records, successful, eOpts) {
                 cmp.updateNoResultsMessage();
+                
+                report_paging_toolbar.updateDisplayInfo(store.getTotalCount());
             });
         } else {
             cmp.updateNoResultsMessage();
+            
+            report_paging_toolbar.updateDisplayInfo(report_data_store.getTotalCount());
         }
-
-        this.application.fireEvent('refreshreportdisplayinfo');
     },
 
     onReportRefreshClick: function (cmp, event, eOpts) {
@@ -100478,12 +100646,10 @@ Ext.define('PICS.controller.report.ReportData', {
             rows_per_page = parseInt(cmp.getValue()),
             report_paging_toolbar = this.getReportPagingToolbar();
 
+        // update rows per page in the report
         report.set('rowsPerPage', rows_per_page);
-
-        report_data_store.pageSize = rows_per_page;
-        report_data_store.configureProxyUrl(report);
-
-        report_paging_toolbar.moveFirst();
+        
+        this.application.fireEvent('refreshreport');
     }
 });
 
@@ -100567,17 +100733,17 @@ Ext.define('PICS.controller.report.ReportHeader', {
     },
 
     onUpdateReportSummary: function () {
-        var store = this.getReportReportsStore(),
+        var report_store = this.getReportReportsStore(),
             report_header_summary = this.getReportHeaderSummary();
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
+        if (!report_store.isLoaded()) {
+            report_store.on('load', function (store, records, successful, eOpts) {
                 var report = store.first();
 
                 report_header_summary.update(report);
             });
         } else {
-            var report = store.first();
+            var report = report_store.first();
 
             report_header_summary.update(report);
         }
@@ -100595,6 +100761,9 @@ Ext.define('PICS.controller.report.SettingsModal', {
     }, {
         ref: 'reportSettingsEdit',
         selector: 'reportsettingsedit'
+    }, {
+        ref: 'reportSettingsShare',
+        selector: 'reportsettingsshare'
     }, {
         ref: 'reportSettingsNoPermission',
         selector: 'reportsettingsmodal #settings_no_permission'
@@ -100682,244 +100851,191 @@ Ext.define('PICS.controller.report.SettingsModal', {
         });
     },
 
-   showMoreResults: function (e, t, eOpts) {
-       var cmp = Ext.ComponentQuery.query('searchbox')[0];
-       var term = cmp.inputEl.getValue();
+    getReportId: function () {
+        var store = this.getReportReportsStore(),
+            report = store.first();
 
-       cmp.search(term);
-   },
-
-   getReportId: function () {
-       var store = this.getReportReportsStore(),
-           report = store.first();
-
-       return report.get('id');
-   },
+        return report.get('id');
+    },
    
-   onReportFavorite: function () {
-       var report_id = this.getReportId();
-
-       Ext.Ajax.request({
-            url: 'ManageReports!favorite.action?reportId=' + report_id
-        });
+    onReportFavorite: function () {
+        this.application.fireEvent('favoritereport');
     },
 
     onReportUnFavorite: function () {
-        var store = this.getReportReportsStore(),
-            report = store.first(),
-            report_id = report.get('id');
-
-        Ext.Ajax.request({
-            url: 'ManageReports!unfavorite.action?reportId=' + report_id
-        });
+        this.application.fireEvent('unfavoritereport');
     },
     
     onReportModalCancelClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal();
-
+    
         modal.close();
     },
-
+    
     onReportModalCopyClick: function (cmp, e, eOpts) {
         var store = this.getReportReportsStore(),
             report = store.first(),
             report_name = this.getReportNameCopy().getValue(),
             report_description = this.getReportDescriptionCopy().getValue();
-
+    
         this.setFavoriteStatus('copy');
-
+    
         report.set('name', report_name);
         report.set('description', report_description);
-
-        this.application.fireEvent('createreport');
-
+        
         // form reset
         cmp.up('form').getForm().reset();
+        
+        this.application.fireEvent('createreport');
     },
-
+    
     onReportModalEditClick: function (cmp, e, eOpts) {
         var store = this.getReportReportsStore(),
             report = store.first(),
             report_name = this.getReportNameEdit().getValue(),
             report_description = this.getReportDescriptionEdit().getValue();
-
+    
         this.setFavoriteStatus('edit');
-
+    
         report.set('name', report_name);
         report.set('description', report_description);
-
+        
+        this.getReportSettingsModal().close();
+        
         this.application.fireEvent('updatereportsummary');
         this.application.fireEvent('savereport');
-
-        this.getReportSettingsModal().close();
     },
-
+    
     onReportModalEditBeforeRender: function (cmp, eOpts) {
         var store = this.getReportReportsStore(),
             report_settings_edit = this.getReportSettingsEdit(),
             report_no_permission_edit = this.getReportSettingsNoPermission();
-
+    
         // if there is no form - do nothing
         if (!report_no_permission_edit) {
             if (!store.isLoaded()) {
                 store.on('load', function (store, records, successful, eOpts) {
                     var report = store.first();
-
+    
                     report_settings_edit.update(report);
                 });
             } else {
                 var report = store.first();
-
+    
                 report_settings_edit.update(report);
             }
         }
     },
-
+    
     onReportModalTabClick: function (cmp, e, eOpts) {
         var modal = this.getReportSettingsModal(),
             title = cmp.card.modal_title;
-
+    
         modal.setTitle(title);        
     },
-
+    
     onReportModalExportClick: function (cmp, e, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first();
-
-        //TODO: Change this to a post and include parameters.
-        window.open('ReportData!download.action?report=' + report.get('id'));
+        this.application.fireEvent('downloadreport');
     },
-
+    
     onReportModalPrintPreviewClick: function (cmp, e, eOpts) {
-        var store = this.getReportReportsStore(),
-            report = store.first();
-
-        //TODO: Change this to a post and include parameters.
-        window.open('ReportData!print.action?report=' + report.get('id'));
+        this.application.fireEvent('printreport');
     },
-
+    
     onReportSettingsTabsBeforeRender: function (cmp, eOpts) {
         var modal = this.getReportSettingsModal(),
             title = cmp.getActiveTab().modal_title;
-
+    
         modal.setTitle(title);
     },
-
+    
     setFavoriteStatus: function (action) {
         if (action == 'edit') {
-           favorite_toggle = this.getEditFavoriteToggle();
+            favorite_toggle = this.getEditFavoriteToggle();
         } else if (action == 'copy') {
-           favorite_toggle = this.getCopyFavoriteToggle();
+            favorite_toggle = this.getCopyFavoriteToggle();
         }
-
+    
         var is_favorite_on = favorite_toggle.isFavoriteOn();
-
+    
         favorite_toggle.saveFavoriteStatus(is_favorite_on);
     },
-
+    
     showSettingsModal: function (action) {
-        var modal = Ext.create('PICS.view.report.settings.SettingsModal'),
-            that = this;
-
+        var settings_modal = Ext.create('PICS.view.report.settings.SettingsModal');
+    
         if (action == 'edit') {
             this.getReportSettingsTabs().setActiveTab(0);
         } else if (action == 'copy') {
             this.getReportSettingsTabs().setActiveTab(1);
         }
-
-        modal.show();
+    
+        settings_modal.show();
     },
     
     /**
      * Share
      */
-
+    
     onReportModalShareSearchboxRender: function (cmp, eOpts) {
         cmp.store.getProxy().url = 'Autocompleter!reportSharingAutocomplete.action?reportId=' + this.getReportId();
         cmp.store.load();
     },
-
+    
     onReportModalShareSearchboxSelect: function (combo, records, eOpts) {
         var record = records[0];
-
+    
         if (record) {
-            var cmp = Ext.ComponentQuery.query('reportsettingsshare')[0];
+            var report_settings_share = this.getReportSettingsShare();
+            
             var account = {
                 name: record.get('result_name'),
                 at: record.get('result_at')
             };
-
+    
             // Save the record data needed for sharing.
-            cmp.request_data = {
+            report_settings_share.request_data = {
                 account_id: record.get('result_id'),
                 account_type: record.get('search_type')
             };
-            
+        
             // Show the selection.
-            cmp.update(account);
+            report_settings_share.update(account);
         }
     },
-
-    onReportModalShareSearchboxSpecialKey: function (base, e, eOpts) {
+    
+    onReportModalShareSearchboxSpecialKey: function (cmp, e, eOpts) {
         if (e.getKey() === e.ENTER) {
-            var term = base.getValue();
+            var term = cmp.getValue();
+            
             this.search(term);
-        } else if (e.getKey() === e.BACKSPACE && base.getRawValue().length <= 1) {
-            base.collapse();
+        } else if (e.getKey() === e.BACKSPACE && cmp.getRawValue().length <= 1) {
+            cmp.collapse();
         }
     },
-
+    
     onReportModalShareClick: function (cmp, e, eOpts) {
-        // Get the share component.
-        var cmp =  Ext.ComponentQuery.query('reportsettingsmodal reportsettingsshare')[0];
-
+        var report_settings_share = this.getReportSettingsShare(),
+            data = report_settings_share.request_data;
+        
         // Abort if no account has been selected.
-        if (typeof cmp.request_data == 'undefined') {
+        if (typeof data == 'undefined') {
             return;
         }
-
-        // Get the editable value.
-        var el = cmp.getEl(),
-            editable = el.down('.icon-edit.selected') ? true : false;
-
-        // Get the report id and account data.
-        var report_id = this.getReportId(),
-            account_id = cmp.request_data.account_id,
-            account_type = cmp.request_data.account_type;
-
-        // Construct the URL and send the request.
-        var that = this;
-        Ext.Ajax.request({
-            url: 'ReportSharing!share.action',
-            params: {
-                report: report_id,
-                id: account_id,
-                type: account_type,
-                editable: editable
-            },
-            success: function (result) {
-                var result = Ext.decode(result.responseText);
-
-                if (result.error) {
-                    Ext.Msg.alert('Status', result.error);
-                } else {
-                    var alert_message = Ext.getCmp('alert_message');
-                    
-                    if (alert_message) {
-                        alert_message.destroy();
-                    }
-
-                    var alert_message = Ext.create('PICS.view.report.alert-message.AlertMessage', {
-                        cls: 'alert alert-success',
-                        title: result.title,
-                        html: result.html
-                    });
-
-                    alert_message.show();
-                    
-                    that.getReportSettingsModal().close();
-                }
-            }
+        
+        var report_store = this.getReportReportsStore(),
+            report = report_store.first(),
+            report_id = report.get('id'),
+            report_settings_share_element = report_settings_share.getEl(),
+            account_id = data.account_id,
+            account_type = data.account_type,
+            is_editable = report_settings_share_element.down('.icon-edit.selected') ? true : false;
+    
+        this.application.fireEvent('sharereport', {
+            report_id: report_id,
+            account_id: account_id,
+            account_type: account_type,
+            is_editable: is_editable
         });
     }
 });
