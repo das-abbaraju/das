@@ -935,6 +935,11 @@
                     "path": "extjs/src/panel/"
                 },
                 {
+                    "clsName": "PICS.view.report.filter.base.AccountIDFilter",
+                    "name": "AccountIDFilter.js",
+                    "path": "app/view/report/filter/base/"
+                },
+                {
                     "clsName": "PICS.view.report.filter.base.BooleanFilter",
                     "name": "BooleanFilter.js",
                     "path": "app/view/report/filter/base/"
@@ -952,6 +957,11 @@
                 {
                     "clsName": "PICS.view.report.filter.base.StringFilter",
                     "name": "StringFilter.js",
+                    "path": "app/view/report/filter/base/"
+                },
+                {
+                    "clsName": "PICS.view.report.filter.base.UserIDFilter",
+                    "name": "UserIDFilter.js",
                     "path": "app/view/report/filter/base/"
                 },
                 {

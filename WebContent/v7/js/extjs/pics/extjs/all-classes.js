@@ -71424,6 +71424,66 @@ Ext.define('Ext.panel.Table', {
     }
 });
 
+Ext.define('PICS.view.report.filter.base.AccountIDFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbaseaccountidfilter'],
+
+    border: 0,
+    layout: 'hbox',
+
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        var numberfield = this.createNumberfield(this.record);
+
+        this.add([
+            combobox,
+            numberfield
+        ]);
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            record.set('operator', 'Equals');
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: [
+                ['Equals', 'equals'],
+                ['NotEquals', 'does not equal'],
+                ['CurrentAccount', 'current account']
+            ],
+            value: operator
+        };
+    },
+
+    createNumberfield: function (record) {
+        var value = record.get('value');
+
+        return {
+            xtype: 'numberfield',
+            allowDecimals: false,
+            flex: 2,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'filter_value',
+            value: value
+        };
+    }
+});
 Ext.define('PICS.view.report.filter.base.BooleanFilter', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportfilterbasebooleanfilter'],
@@ -71623,6 +71683,91 @@ Ext.define('PICS.view.report.filter.base.StringFilter', {
             name: 'filter_value',
             value: value
         };
+    }
+});
+Ext.define('PICS.view.report.filter.base.UserIDFilter', {
+    extend: 'Ext.panel.Panel',
+    alias: ['widget.reportfilterbaseuseridfilter'],
+
+    border: 0,
+    layout: 'hbox',
+    
+    initComponent: function () {
+        this.callParent(arguments);
+
+        if (!this.record) {
+            Ext.Error.raise('Invalid filter record');
+        }
+
+        var combobox = this.createCombobox(this.record);
+        
+        this.add(combobox);
+        
+        if (this.record.get('fieldCompare')) {
+            this.createFieldSelect(this.record);
+        } else {
+            this.createNumberfield(this.record);
+        }
+    },
+
+    createCombobox: function (record) {
+        var operator = record.get('operator');
+
+        if (!operator) {
+            record.set('operator', 'equals');
+        }
+
+        return {
+            xtype: 'combobox',
+            editable: false,
+            flex: 1.5,
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: [
+                ['Equals', 'equals'],
+                ['NotEquals', 'does not equal'],
+                ['CurrentUser', 'current user']
+            ],
+            value: operator
+        };
+    },
+
+    createNumberfield: function (record) {
+        if (this.value_field) {
+            this.remove(this.value_field);
+        }
+
+        var value = record.get('value');
+
+        // TODO: COMMENT
+        this.value_field = this.add({
+            xtype: 'numberfield',
+            allowDecimals: false,
+            blankText: 'Number',
+            flex: 2,
+            hideTrigger: true,
+            keyNavEnabled: false,
+            mouseWheelEnabled: false,
+            name: 'filter_value',
+            value: value
+        });
+    },
+    
+    createFieldSelect: function (record) {
+
+        if (this.value_field) {
+            this.remove(this.value_field);
+        }
+
+        var value = record.get('fieldCompare');
+        
+        this.value_field = this.add({
+            xtype: 'textfield',
+            blankText: 'Field',
+            flex: 2,
+            name: 'filter_field_compare',
+            value: value
+        });
     }
 });
 /**
@@ -93753,13 +93898,15 @@ Ext.define('PICS.view.report.filter.Filter', {
     alias: ['widget.reportfilter'],
 
     requires: [
+        'PICS.view.report.filter.base.AccountIDFilter',
         'PICS.view.report.filter.base.AutocompleteFilter',
         'PICS.view.report.filter.base.BooleanFilter',
         'PICS.view.report.filter.base.DateFilter',
         'PICS.view.report.filter.base.FloatFilter',
         'PICS.view.report.filter.base.IntegerFilter',
         'PICS.view.report.filter.base.ListFilter',
-        'PICS.view.report.filter.base.StringFilter'
+        'PICS.view.report.filter.base.StringFilter',
+        'PICS.view.report.filter.base.UserIDFilter'
     ],
 
     bodyCls: 'filter-body',

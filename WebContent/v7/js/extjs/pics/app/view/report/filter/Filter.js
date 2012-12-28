@@ -3,13 +3,15 @@ Ext.define('PICS.view.report.filter.Filter', {
     alias: ['widget.reportfilter'],
 
     requires: [
+        'PICS.view.report.filter.base.AccountIDFilter',
         'PICS.view.report.filter.base.AutocompleteFilter',
         'PICS.view.report.filter.base.BooleanFilter',
         'PICS.view.report.filter.base.DateFilter',
         'PICS.view.report.filter.base.FloatFilter',
         'PICS.view.report.filter.base.IntegerFilter',
         'PICS.view.report.filter.base.ListFilter',
-        'PICS.view.report.filter.base.StringFilter'
+        'PICS.view.report.filter.base.StringFilter',
+        'PICS.view.report.filter.base.UserIDFilter'
     ],
 
     bodyCls: 'filter-body',
