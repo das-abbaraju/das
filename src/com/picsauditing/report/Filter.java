@@ -25,18 +25,19 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 public class Filter extends ReportElement implements JSONable {
-	
+
 	private static final String JSON_FIELD_FOR_COMPARISON_KEY = "fieldCompare";
 
 	private static final Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 
 	private QueryFilterOperator operator = QueryFilterOperator.Equals;
 	List<String> values = new ArrayList<String>();
-	
+
 	private boolean advancedFilter;
 	private Field fieldForComparison;
 
-	// TODO: Needs to be modified to serialize to JSON with the new advanced filter
+	// TODO: Needs to be modified to serialize to JSON with the new advanced
+	// filter
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
@@ -48,21 +49,23 @@ public class Filter extends ReportElement implements JSONable {
 			valueArray.addAll(values);
 			json.put("values", valueArray);
 
-			// Until we phase out the old code, we need this for backwards compatibility
+			// Until we phase out the old code, we need this for backwards
+			// compatibility
 			if (values.size() == 1) {
 				json.put("value", values.get(0));
 			} else {
 				json.put("value", StringUtils.join(values, ", "));
 			}
 		}
-		
+
 		if (isAdvancedFilter())
 			json.put(JSON_FIELD_FOR_COMPARISON_KEY, fieldForComparison.getName());
-		
+
 		return json;
 	}
 
-	// TODO: Needs to be deserialized from JSON with the new advanced filter option
+	// TODO: Needs to be deserialized from JSON with the new advanced filter
+	// option
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
@@ -71,8 +74,8 @@ public class Filter extends ReportElement implements JSONable {
 
 		parseOperator(json);
 
-		parseValues(json);		
-		
+		parseValues(json);
+
 		parseAdvancedFilter(json);
 	}
 
@@ -107,10 +110,10 @@ public class Filter extends ReportElement implements JSONable {
 			if (Strings.isEmpty(value))
 				return;
 
-			logger.warn("Still using filter.value instead of filter.values");
-
 			if (value.contains(",")) {
-				logger.warn("Old style filter value found with commas separating multiple values. Until we phase out the old code, we need this for backwards compatibility");
+				logger.warn("Old style filter value found with commas separating multiple values. " +
+						"Until we phase out the old code, we need this for backwards compatibility");
+				
 				String[] valueSplit = value.split(", ");
 				if (valueSplit.length == 1 && value.contains(","))
 					valueSplit = value.split(",");
@@ -120,9 +123,9 @@ public class Filter extends ReportElement implements JSONable {
 			}
 		}
 	}
-	
+
 	private void parseAdvancedFilter(JSONObject json) {
-		String advancedFilterOption = (String)  json.get(JSON_FIELD_FOR_COMPARISON_KEY);
+		String advancedFilterOption = (String) json.get(JSON_FIELD_FOR_COMPARISON_KEY);
 		// FIXME: HACK!!!!
 		if (Strings.isEmpty(advancedFilterOption) || advancedFilterOption.equals("false"))
 			advancedFilter = false;
@@ -179,18 +182,20 @@ public class Filter extends ReportElement implements JSONable {
 	public List<String> getValues() {
 		return values;
 	}
-	
+
 	public boolean isAdvancedFilter() {
 		return advancedFilter;
 	}
-	
+
 	public void setAdvancedFilter(boolean advancedFilter) {
-		this.advancedFilter = advancedFilter; 
+		this.advancedFilter = advancedFilter;
 	}
 
 	public String getSql() {
 		if (fieldName.equalsIgnoreCase("accountName")) {
 			field.setDatabaseColumnName("Account.nameIndex");
+		} else if (fieldName.equalsIgnoreCase("AccountUserUser")) {
+			field.setDatabaseColumnName("user.id");
 		}
 
 		return super.getSql();
@@ -234,7 +239,7 @@ public class Filter extends ReportElement implements JSONable {
 		if (isAdvancedFilter()) {
 			return fieldForComparison.getDatabaseColumnName();
 		}
-		
+
 		String filterValue = getValues().get(0);
 
 		if (fieldType.equals(DisplayType.Date)) {
@@ -261,7 +266,8 @@ public class Filter extends ReportElement implements JSONable {
 
 		if (fieldType.equals(DisplayType.Integer)) {
 			filterValue = Integer.parseInt(filterValue) + "";
-			// Make sure we incorporate the filter strategy when using function dates
+			// Make sure we incorporate the filter strategy when using function
+			// dates
 			// return "DATE_SUB(CURDATE(), INTERVAL " + filterValue + " DAY)";
 			return filterValue;
 		}
@@ -273,15 +279,19 @@ public class Filter extends ReportElement implements JSONable {
 			case NotBeginsWith:
 			case BeginsWith:
 				return "'" + filterValue + "%'";
+				
 			case NotEndsWith:
 			case EndsWith:
 				return "'%" + filterValue + "'";
+				
 			case NotContains:
 			case Contains:
 				return "'%" + filterValue + "%'";
+				
 			case NotEmpty:
 			case Empty:
 				return "";
+				
 			default:
 				return "'" + filterValue + "'";
 			}
@@ -295,7 +305,7 @@ public class Filter extends ReportElement implements JSONable {
 		if (hasMethodWithDifferentFieldType()) {
 			fieldType = method.getDisplayType();
 		}
-		
+
 		return fieldType;
 	}
 
@@ -309,13 +319,13 @@ public class Filter extends ReportElement implements JSONable {
 	public boolean isValid() {
 		if (field == null)
 			return false;
-		
+
 		if (!operator.isValueUsed())
 			return true;
 
 		if (values.isEmpty() && fieldForComparison == null)
 			return false;
-		
+
 		// TODO This should be fleshed out some more to validate all the
 		// different filter types to make sure they are all properly defined.
 
@@ -333,7 +343,7 @@ public class Filter extends ReportElement implements JSONable {
 			values.add(permissions.getUserIdString());
 		}
 	}
-	
+
 	@Override
 	public void addFieldCopy(Map<String, Field> availableFields) {
 		super.addFieldCopy(availableFields);
@@ -342,8 +352,8 @@ public class Filter extends ReportElement implements JSONable {
 			fieldForComparison = null;
 			return;
 		}
-		
-		String fieldName = fieldForComparison.getName();		
+
+		String fieldName = fieldForComparison.getName();
 		Field field = availableFields.get(fieldName.toUpperCase());
 
 		if (field == null) {
@@ -359,6 +369,7 @@ public class Filter extends ReportElement implements JSONable {
 		String display = values.toString();
 		if (fieldForComparison != null)
 			display = fieldForComparison.toString();
+		
 		return super.toString() + " " + operator + " " + display;
 	}
 

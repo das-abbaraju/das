@@ -42,7 +42,7 @@ public class PaymentCommission extends BaseTable {
 		this.payment = payment;
 	}
 
-	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getPaymentAmount() {
 		return paymentAmount;
 	}
@@ -51,7 +51,7 @@ public class PaymentCommission extends BaseTable {
 		this.paymentAmount = paymentAmount;
 	}
 	
-	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.Billing)
+	@ReportField(category = FieldCategory.Commission, type = FieldType.Float, requiredPermissions = OpPerms.SalesCommission)
 	public BigDecimal getActivationPoints() {
 		return activationPoints;
 	}

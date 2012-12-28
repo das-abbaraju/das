@@ -218,7 +218,6 @@
           class="com.picsauditing.salecommission.invoice.strategy.VoidInvoiceCommissionStrategy"/>
     <bean id="PaymentRemoveStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentRemoveStrategy" />
     <bean id="PaymentStrategy" class="com.picsauditing.salecommission.payment.strategy.PaymentStrategy" />
-    <bean id="ContractorInvoiceStateBuilder" class="com.picsauditing.salecommission.invoice.strategy.ContractorInvoiceStateBuilder" init-method="init" />
 
     <bean id="FeatureToggle" class="com.picsauditing.toggle.FeatureToggleCheckerGroovy" scope="prototype"/>
     <bean id="HierarchyBuilder" class="com.picsauditing.util.hierarchy.GroupHierarchyBuilder"/>

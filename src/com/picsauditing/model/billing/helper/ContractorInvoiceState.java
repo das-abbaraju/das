@@ -1,4 +1,4 @@
-package com.picsauditing.salecommission.invoice.strategy;
+package com.picsauditing.model.billing.helper;
 
 import java.util.Date;
 
@@ -27,15 +27,15 @@ public class ContractorInvoiceState {
 		if (paymentExpiresDate == null) {
 			paymentExpiresDate = calculatePaymentExpiresDate();
 		}
-		
+
 		return paymentExpiresDate;
 	}
-	
+
 	private Date calculatePaymentExpiresDate() {
 		if (delinquent) {
 			return DateBean.addDays(new Date(), -425);
 		}
-		
+
 		return DateBean.addDays(new Date(), -360);
 	}
 
@@ -50,11 +50,11 @@ public class ContractorInvoiceState {
 	public boolean isDelinquent() {
 		return delinquent;
 	}
-	
+
 	protected void setDelinquent(boolean delinquent) {
 		this.delinquent = delinquent;
 	}
-	
+
 	public boolean isReactivation() {
 		return reactivation;
 	}

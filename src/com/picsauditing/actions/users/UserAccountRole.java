@@ -1,7 +1,5 @@
 package com.picsauditing.actions.users;
 
-import javax.persistence.Transient;
-
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.util.Strings;
 

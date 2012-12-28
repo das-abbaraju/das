@@ -28,6 +28,9 @@ import com.picsauditing.jpa.entities.InvoiceCommission;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.model.billing.helper.ContractorInvoiceState;
+import com.picsauditing.model.billing.helper.ContractorResetter;
+import com.picsauditing.model.billing.helper.InvoiceHelper;
 import com.picsauditing.search.CommissionAuditQueryMapper;
 import com.picsauditing.search.Database;
 
@@ -35,8 +38,6 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 
 	@Autowired
 	private InvoiceCommissionDAO invoiceCommissionDAO;
-	@Autowired
-	private ContractorInvoiceStateBuilder contractorStateBuilder;
 
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceStrategy.class);
 
@@ -164,7 +165,7 @@ public class InvoiceStrategy extends AbstractInvoiceCommissionStrategy {
 			return Collections.emptyList();
 		}
 
-		ContractorInvoiceState contractorState = contractorStateBuilder.buildCommandObject(invoice);
+		ContractorInvoiceState contractorState = InvoiceHelper.buildContractorInvoiceState(invoice);
 
 		List<ClientSiteServiceLevel> clientSiteServiceLevels = new ArrayList<ClientSiteServiceLevel>();
 		for (ContractorOperator clientSite : clientSites) {

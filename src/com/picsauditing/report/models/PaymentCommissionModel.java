@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.AccountUserTable;
 import com.picsauditing.report.tables.InvoiceCommissionTable;
 import com.picsauditing.report.tables.InvoiceTable;
@@ -21,9 +20,8 @@ public class PaymentCommissionModel extends AbstractModel {
 
 		ModelSpec invoiceCommission = joinToInvoiceCommission(paymentCommission);
 		ModelSpec invoice = joinToInvoice(invoiceCommission);
-		ModelSpec account = joinToAccount(invoice);
-
-		joinToUserForContact(account);
+		
+		joinToAccount(invoice);
 		joinToPayment(paymentCommission);
 
 		ModelSpec accountUser = joinToAccountUser(invoiceCommission);
@@ -66,11 +64,6 @@ public class PaymentCommissionModel extends AbstractModel {
 		ModelSpec user = accountUser.join(AccountUserTable.User);
 		user.alias = "User";
 		return user;
-	}
-
-	private ModelSpec joinToUserForContact(ModelSpec account) {
-		ModelSpec contactUser = account.join(AccountTable.Contact);
-		return contactUser;
 	}
 	
 	@Override
