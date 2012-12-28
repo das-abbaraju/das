@@ -436,10 +436,11 @@ public class Cron extends PicsActionSupport {
 
 		String where = "a.country IN ('US','CA') AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
 
-		if (!emailExclusionList.isEmpty())
+		if (!emailExclusionList.isEmpty()) {
 			where = "u.email NOT IN ("
 					+ exclude
-					+ ") AND (c.lastContactedByAutomatedEmailDate != CURDATE() OR c.lastContactedByAutomatedEmailDate IS NULL) AND ";
+					+ ") AND " + where;
+		}
 
 		String whereReminder = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String whereLastChance = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 WEEK)";

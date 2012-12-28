@@ -1,10 +1,8 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +13,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -48,12 +47,18 @@ public class CronTest {
 //	private List<Certificate> certList;
 //	private Map<Integer, List<Integer>> opIdsByCertIds;
 	
-	@Mock private EmailQueueDAO emailQueueDAO;
-	@Mock private ContractorAccountDAO contractoAccountDAO;
-	@Mock private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
-	@Mock private EmailBuilder emailBuilder;
-	@Mock protected NoteDAO noteDAO;
-	@Mock private Database databaseForTesting;
+	@Mock
+	private EmailQueueDAO emailQueueDAO;
+	@Mock
+	private ContractorAccountDAO contractoAccountDAO;
+	@Mock
+	private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
+	@Mock
+	private EmailBuilder emailBuilder;
+	@Mock
+	protected NoteDAO noteDAO;
+	@Mock
+	private Database databaseForTesting;
 	
 	@AfterClass
 	public static void classTearDown() {
@@ -79,6 +84,42 @@ public class CronTest {
 		operators.add(EntityFactory.addContractorOperator(contractor, operator));
 		operators.add(EntityFactory.addContractorOperator(contractor, anotherOperator));
 	}
+
+	@Test
+	public void testSendEmailPendingAccounts_SqlHasCountryRestrictionWhenEmailExclusionsExist() throws Exception {
+		doTestSqlHasCountryRestriction();
+	}
+
+	@Test
+	public void testSendEmailPendingAccounts_SqlHasCountryRestrictionWhenNoEmailExclusions() throws Exception {
+		@SuppressWarnings("serial")
+		List<String> emailExclusionList = new ArrayList<String>() {
+			{
+				add("123");
+				add("124");
+			}
+		};
+		Whitebox.setInternalState(cron, "emailExclusionList", emailExclusionList);
+		doTestSqlHasCountryRestriction();
+	}
+
+	private void doTestSqlHasCountryRestriction() throws Exception {
+		List<ContractorAccount> emptyList = new ArrayList<ContractorAccount>();
+		when(contractoAccountDAO.findPendingAccounts(anyString())).thenReturn(emptyList);
+
+		Whitebox.invokeMethod(cron, "sendEmailPendingAccounts");
+
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+		verify(contractoAccountDAO, times(3)).findPendingAccounts(captor.capture());
+
+		List<String> allSql = captor.getAllValues();
+
+		for (String sql : allSql) {
+			assertTrue(sql.contains("a.country IN ('US','CA')"));
+		}
+	}
+
 
 	@Test
 	public void testSumFlagChanges_EmptyBasicDynaBeanList() throws Exception {
