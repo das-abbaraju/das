@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.report.tables.FieldImportance;
 
 @SuppressWarnings("serial")
@@ -39,7 +40,7 @@ public class AccountUser extends BaseTable {
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
-	@ReportField(type = FieldType.AccountUser, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.AccountUser, category = FieldCategory.Commission, importance = FieldImportance.Average)
 	public User getUser() {
 		return user;
 	}
@@ -49,7 +50,7 @@ public class AccountUser extends BaseTable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.UserAccountRole, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.UserAccountRole, category = FieldCategory.Commission, importance = FieldImportance.Average)
 	public UserAccountRole getRole() {
 		return role;
 	}

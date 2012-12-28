@@ -20,7 +20,7 @@ public class PaymentCommissionModel extends AbstractModel {
 
 		ModelSpec invoiceCommission = joinToInvoiceCommission(paymentCommission);
 		ModelSpec invoice = joinToInvoice(invoiceCommission);
-		
+
 		joinToAccount(invoice);
 		joinToPayment(paymentCommission);
 
@@ -38,7 +38,7 @@ public class PaymentCommissionModel extends AbstractModel {
 
 	private ModelSpec joinToPayment(ModelSpec paymentCommission) {
 		ModelSpec payment = paymentCommission.join(PaymentCommissionTable.Payment);
-		payment.alias = "PaymentCommission";
+		payment.alias = "Payment";
 		return payment;
 	}
 
@@ -65,19 +65,44 @@ public class PaymentCommissionModel extends AbstractModel {
 		user.alias = "User";
 		return user;
 	}
-	
+
 	@Override
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
 		setUrlForField(fields, "InvoiceInvoiceID", "InvoiceDetail.action?invoice.id={InvoiceInvoiceID}");
 		setUrlForField(fields, "AccountName", "ContractorView.action?id={AccountID}");
+		
+		Field commissionuser = fields.get("AccountUserUser".toUpperCase());
+		commissionuser.setDatabaseColumnName("user.name");
+
+		removeUnnecessaryFields(fields);
+
 		return fields;
 	}
-	
-	private Field setUrlForField(Map<String, Field> availableFields, String fieldKey, String url) {
+
+	private void setUrlForField(Map<String, Field> availableFields, String fieldKey, String url) {
 		Field field = availableFields.get(fieldKey.toUpperCase());
+		if (field == null) {
+			return;
+		}
+
 		field.setUrl(url);
-		return field;
+	}
+
+	private void removeUnnecessaryFields(Map<String, Field> availableFields) {
+		availableFields.remove("USEREMAIL");
+		availableFields.remove("USERISACTIVE");
+		availableFields.remove("USERPHONE");
+		availableFields.remove("INVOICENOTES");
+		availableFields.remove("USERCREATIONDATE");
+		availableFields.remove("USERLASTLOGIN");
+		availableFields.remove("USERISGROUP");
+		availableFields.remove("USERUSERNAME");
+		availableFields.remove("USERFAX");
+		availableFields.remove("INVOICEDUEDATE");
+		availableFields.remove("INVOICEPONUMBER");
+		availableFields.remove("INVOICEPAIDDATE");
+		availableFields.remove("INVOICECOMMISSIONREVENUEPERCENT");
 	}
 
 }
