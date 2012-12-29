@@ -29,7 +29,7 @@ public class PublisherRabbitMq implements Publisher {
 	@Override
 	public void publish(Object message) {
 		try {
-			if (featureToggleChecker.isFeatureEnabled(featureToggleName)) {
+			if (featureToggleChecker == null || featureToggleChecker.isFeatureEnabled(featureToggleName)) {
 				amqpTemplate.convertAndSend(message);
 			}
 			
