@@ -7,6 +7,7 @@ import javax.servlet.ServletOutputStream;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.ibm.icu.text.DateFormat;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.BaseFont;
@@ -31,10 +32,10 @@ public class ContractorCertificate extends ContractorActionSupport {
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 		PdfStamper writer = new PdfStamper(reader, outstream);
 
-		SimpleDateFormat dateGeneratedFormat = new SimpleDateFormat(PicsDateFormat.IsoLongMonth);
-		String dateGenerated = dateGeneratedFormat.format(new Date());
-		SimpleDateFormat dateMemberSinceFormat = new SimpleDateFormat(PicsDateFormat.Iso);
-		String dateMemberSince = dateMemberSinceFormat.format((contractor.getMembershipDate() == null) ? new Date()
+		DateFormat shortDate = DateFormat.getDateInstance(DateFormat.SHORT, contractor.getLocale());
+		DateFormat longDate = DateFormat.getDateInstance(DateFormat.LONG, contractor.getLocale());
+		String dateGenerated = longDate.format(new Date());
+		String dateMemberSince = shortDate.format((contractor.getMembershipDate() == null) ? new Date()
 				: contractor.getMembershipDate());
 
 		PdfContentByte cb = writer.getOverContent(1);
