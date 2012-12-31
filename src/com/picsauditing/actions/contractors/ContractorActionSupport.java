@@ -398,8 +398,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 						&& audit.getOperators().size() > 0) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
-						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
+						String linkText = getText(audit.getAuditType().getI18nKey("name"));
+						if (audit.getEffectiveDate() != null || audit.getAuditType().isWCB()) {
+							String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
+							linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
+						}
 						childMenu.setName(linkText);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					}

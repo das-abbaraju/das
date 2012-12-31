@@ -126,7 +126,7 @@ public class AuditDataSaveTest {
 	}
 
 	@Test
-	public void testCheckUniqueCode() throws Exception {
+	public void testCheckUniqueCode_ExpiresMonth() throws Exception {
 		Date date;
 		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
 
@@ -139,7 +139,22 @@ public class AuditDataSaveTest {
 		assertEquals("2026-01-31", format.format(date));
 	}
 
+	@Test
+	public void testCheckUniqueCode_PolicyEffectiveDate() throws Exception {
+		Date date;
+		SimpleDateFormat format = new SimpleDateFormat(PicsDateFormat.Iso);
+
+		auditData.setAnswer("2025-01-31");
+
+		setupCheckUniqueCode("policyEffectiveDate");
+		Whitebox.invokeMethod(auditDataSave, "checkUniqueCode", audit);
+		assertNotNull(audit.getEffectiveDate());
+		date = audit.getEffectiveDate();
+		assertEquals("2025-01-31", format.format(date));
+	}
+
 	private void setupCheckUniqueCode(String code) {
+		audit.setCreationDate(new Date());
 		audit.setExpiresDate(null);
 		audit.setEffectiveDate(null);
 		auditData.getQuestion().setUniqueCode(code);
