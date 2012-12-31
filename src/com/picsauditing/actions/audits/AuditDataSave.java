@@ -309,6 +309,9 @@ public class AuditDataSave extends AuditActionSupport {
 				contractor.setNeedsRecalculation(ContractorAccount.MAX_RECALC);
 			}
 
+			// refresh auditData since it might be not a complete representation
+			auditData = auditDataDAO.find(auditData.getId());
+			
 			if (checkDependentQuestions() || checkOtherRules()) {
 				auditBuilder.recalculateCategories(conAudit);
 				auditPercentCalculator.percentCalculateComplete(conAudit, true);
