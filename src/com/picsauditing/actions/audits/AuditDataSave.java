@@ -310,7 +310,11 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			// refresh auditData since it might be not a complete representation
+			// this is okay at this time because auditData has a valid id
+			// and setting the question will not conflict with database key contraints
 			auditData = auditDataDAO.find(auditData.getId());
+			AuditQuestion auditDataQuestion = questionDao.find(auditData.getQuestion().getId());
+			auditData.setQuestion(auditDataQuestion);
 			
 			if (checkDependentQuestions() || checkOtherRules()) {
 				auditBuilder.recalculateCategories(conAudit);
