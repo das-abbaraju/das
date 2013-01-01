@@ -140,12 +140,39 @@ Ext.define('PICS.model.report.Report', {
     
     addSort: function (column, direction) {
         var sort_store = this.sorts(),
-            column_name = column.getAvailableField().get('name');
+            available_field = column.getAvailableField(),
+            column_name = available_field.get('name');
         
         sort_store.add({
             name: column_name,
             direction: direction
         });
+    },
+    
+    convertColumnsToModelFields: function () {
+        var column_store = this.columns(),
+            model_fields = [];
+        
+        column_store.each(function (column) {
+            var model_field = column.toModelField();
+            
+            model_fields.push(model_field);
+        });
+        
+        return model_fields;
+    },
+    
+    convertColumnsToGridColumns: function () {
+        var column_store = this.columns(),
+            grid_columns = [];
+        
+        column_store.each(function (column) {
+            var grid_column = column.toGridColumn();
+            
+            grid_columns.push(grid_column);
+        });
+        
+        return grid_columns;
     },
     
     removeColumns: function () {

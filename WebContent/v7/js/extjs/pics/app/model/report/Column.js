@@ -30,6 +30,9 @@ Ext.define('PICS.model.report.Column', {
         type: 'string'
     }],
 
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     toModelField: function () {
         var field = this.getAvailableField();
 
@@ -49,6 +52,10 @@ Ext.define('PICS.model.report.Column', {
         return model_field;
     },
 
+    // ALERT: Ext.grid.column.Column is DEFAULT
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
     toGridColumn: function () {
         var field = this.getAvailableField(),
             url = field.get('url'),

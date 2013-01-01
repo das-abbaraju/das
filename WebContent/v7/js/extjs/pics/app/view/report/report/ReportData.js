@@ -65,10 +65,19 @@ Ext.define('PICS.view.report.report.ReportData', {
         });
     },
     
-    // method to override column header height
+    // column header height is dictated by the height of the rownumberer column
+    // more information on how to override header height:
     // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
-    updateColumnHeaderHeight: function (height) {
-        this.columns[0].setHeight(height);
+    updateGridColumns: function (new_grid_columns) {
+        var grid_columns = [{
+            xtype: 'rownumberer',
+            height: 23,
+            width: 50
+        }];
+        
+        grid_columns = grid_columns.concat(new_grid_columns);
+        
+        this.reconfigure(null, grid_columns);
     },
     
     // update or reset no results message

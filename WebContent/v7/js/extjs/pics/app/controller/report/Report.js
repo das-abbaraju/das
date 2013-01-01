@@ -10,6 +10,9 @@ Ext.define('PICS.controller.report.Report', {
         ref: 'reportAlertMessage',
         selector: 'reportalertmessage'
     }, {
+        ref: 'reportData',
+        selector: 'reportdata'
+    }, {
         ref: 'reportSettingsModal',
         selector: 'reportsettingsmodal'
     }],
@@ -116,11 +119,25 @@ Ext.define('PICS.controller.report.Report', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_name = report.get('name'),
-            report_data_store = this.getReportReportDatasStore();
+            report_data_store = this.getReportReportDatasStore(),
+            report_data = this.getReportData(),
+            params = report.toRequestParams(),
+            model_fields = report.convertColumnsToModelFields(),
+            grid_columns = report.convertColumnsToGridColumns(),
+            limit = report.get('rowsPerPage');
         
         this.updatePageTitle(report_name);
         
-        report_data_store.reload();
+        report_data_store.setLimit(limit);
+        
+        // update data store proxy
+        report_data_store.updateProxyParameters(params);
+        
+        // update data store model
+        report_data_store.updateReportDataModelFields(model_fields);
+        
+        // update report data grid columns
+        report_data.updateGridColumns(grid_columns);
     },
 
     saveReport: function () {

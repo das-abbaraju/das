@@ -4,7 +4,7 @@ Ext.define('PICS.controller.report.ReportData', {
     refs: [{
         ref: 'reportPagingToolbar',
         selector: 'reportpagingtoolbar'
-    },{
+    }, {
         ref: 'reportData',
         selector: 'reportdata'
     }],
@@ -158,10 +158,10 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onReportDataBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore();
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
+        if (!report_store.isLoaded()) {
+            report_store.on('load', function (store, records, successful, eOpts) {
                 this.application.fireEvent('refreshreport');
             }, this);
         } else {
@@ -170,43 +170,44 @@ Ext.define('PICS.controller.report.ReportData', {
     },
     
     onReportDataReconfigure: function (cmp, eOpts) {
-        var report_data_store = cmp.getStore(), 
+        var report_data = cmp,
+            report_data_store = cmp.getStore(),
             report_paging_toolbar = this.getReportPagingToolbar();
         
-        // load store - first page
-        report_paging_toolbar.moveFirst();
-
-        // update grid column header size
-        cmp.updateColumnHeaderHeight(23);
-
-        // remove no results message if one exists
-        if (!report_data_store.isLoaded()) {
-            report_data_store.on('load', function (store, records, successful, eOpts) {
-                cmp.updateNoResultsMessage();
+        // load new data
+        report_data_store.loadPage(1, {
+            callback: function (records, operation, success) {
+                // remove no results message if one exists
+                report_data.updateNoResultsMessage();
                 
-                report_paging_toolbar.updateDisplayInfo(store.getTotalCount());
-            });
-        } else {
-            cmp.updateNoResultsMessage();
-            
-            report_paging_toolbar.updateDisplayInfo(report_data_store.getTotalCount());
-        }
+                // update display count
+                report_paging_toolbar.updateDisplayInfo(this.getTotalCount());
+            }
+        });
     },
 
     onReportRefreshClick: function (cmp, event, eOpts) {
-        this.application.fireEvent('refreshreport');
+        var report_data = this.getReportData(),
+            report_data_store = report_data.store;
+        
+        report_data_store.loadPage(1);
     },
 
     onRowsPerPageSelect: function (cmp, records, options) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_data_store = this.getReportReportDatasStore(),
-            rows_per_page = parseInt(cmp.getValue()),
-            report_paging_toolbar = this.getReportPagingToolbar();
+            report_data = this.getReportData(),
+            report_data_store = report_data.store,
+            value = cmp.getValue();
 
-        // update rows per page in the report
-        report.set('rowsPerPage', rows_per_page);
+        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
+        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
+        report.set('rowsPerPage', value);
+        report_data_store.updateProxyParameters(report.toRequestParams());
         
-        this.application.fireEvent('refreshreport');
+        report_data_store.setLimit(value);
+        
+        // load new data
+        report_data_store.loadPage(1);
     }
 });
