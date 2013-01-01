@@ -155,6 +155,7 @@ public class ContractorAccountTest {
 		assertFalse(contractor.isOnlyAssociatedWith(OperatorAccount.SUNCOR));
 	}
 
+	@Ignore
 	@Test
 	public void testGetCompleteAnnualUpdates() {
 		OperatorAccount operator = EntityFactory.makeOperator();
