@@ -11,6 +11,7 @@
 
 	<s:if test="#cao.percentVerified < 100" >
 		<s:set name="fullyVerified" value="false" />
+		<s:set name="showApproveButton" value="false" />
 	</s:if>
 </s:iterator>
 
