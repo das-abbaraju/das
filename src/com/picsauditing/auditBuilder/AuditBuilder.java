@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -61,6 +62,7 @@ public class AuditBuilder {
 	
 	private User systemUser = new User(User.SYSTEM);
 	
+	HashSet<ContractorAuditOperator> caosToMoveToApprove = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToResubmit = new HashSet<ContractorAuditOperator>();
 	HashSet<ContractorAuditOperator> caosToMoveToSubmit = new HashSet<ContractorAuditOperator>();
@@ -363,6 +365,7 @@ public class AuditBuilder {
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
 		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = new HashMap<OperatorAccount, ContractorAuditOperator>();
+		caosToMoveToApprove = new HashSet<ContractorAuditOperator>();
 		caosToMoveToComplete = new HashSet<ContractorAuditOperator>();
 		caosToMoveToResubmit = new HashSet<ContractorAuditOperator>();
 		caosToMoveToSubmit = new HashSet<ContractorAuditOperator>();
@@ -425,7 +428,11 @@ public class AuditBuilder {
 				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
 				if (prevCao != null && cao.getId() != prevCao.getId()) {
 					caop.setPreviousCao(prevCao);
-					if (prevCao.getStatus().isComplete()
+					if (prevCao.getStatus().isApproved()
+							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds
+									.contains(cao.getOperator().getId()))) {
+						caosToMoveToApprove.add(cao);
+					} else if (prevCao.getStatus().isComplete()
 							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds
 									.contains(cao.getOperator().getId()))) {
 						caosToMoveToComplete.add(cao);
@@ -449,6 +456,9 @@ public class AuditBuilder {
 
 	private void adjustCaoStatus(ContractorAudit conAudit) {
 		if (isAuditThatCanAdjustStatus(conAudit)) {
+			if (!caosToMoveToApprove.isEmpty()) {
+				adjustCaosToStatus(conAudit, caosToMoveToApprove, AuditStatus.Approved);
+			}
 			if (!caosToMoveToComplete.isEmpty()) {
 				adjustCaosToStatus(conAudit, caosToMoveToComplete, AuditStatus.Complete);
 			}
@@ -464,7 +474,8 @@ public class AuditBuilder {
 	private boolean isAuditThatCanAdjustStatus(ContractorAudit conAudit) {
 		return conAudit.getAuditType().isPqf()
 				|| conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
-				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM;
+				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM
+				|| conAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy);
 	}
 
 	private void adjustCaosToStatus(ContractorAudit conAudit, HashSet<ContractorAuditOperator> caosToChange, AuditStatus status) {
