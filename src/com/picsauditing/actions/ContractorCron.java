@@ -182,7 +182,8 @@ public class ContractorCron extends PicsActionSupport {
 			runAssignAudit(contractor);
 			runTradeETL(contractor);
 			runContractorETL(contractor);
-			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT)) {
+			if (!featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_CSR_SINGLE_ASSIGNMENT) &&
+					contractor.getAuditor() == null) {
 				runCSRAssignment(contractor);
 			}
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
