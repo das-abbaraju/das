@@ -133,6 +133,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         report.set('description', report_description);
         
         // form reset
+        // TODO: put this in the view
         cmp.up('form').getForm().reset();
         
         this.application.fireEvent('createreport');
