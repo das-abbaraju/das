@@ -107,7 +107,7 @@ public enum FeeClass implements Translatable {
 			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(0, BigDecimal.ROUND_DOWN);
 		}
 	},
-	Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, VAT, Misc;
+	Reactivation, LateFee, ReschedulingFee, ScanningFee, WebcamFee, ExpediteFee, ImportFee, SuncorDiscount, GST, CanadianTax, VAT, Misc;
 
 	// after 2013-01-01, we can remove the insureGuard date-based pricing logic.
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
