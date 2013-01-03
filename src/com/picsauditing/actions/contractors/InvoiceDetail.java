@@ -343,7 +343,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		updateTotals();
 		invoiceDAO.save(invoice);
 
-		billingService.calculateAnnualFees(contractor);
+		billingService.calculateContractorInvoiceFees(contractor);
 		contractor.syncBalance();
 
 		contractor.setAuditColumns(permissions);
