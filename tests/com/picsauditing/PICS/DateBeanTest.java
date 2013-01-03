@@ -657,27 +657,27 @@ public class DateBeanTest {
 	@Test
 	public void testGetEffectiveWCBYear() throws Exception {
 		Date now = new Date("8/31/2012");
-		int result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
-		assertEquals(2012, result);
+		Integer result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
+		assertEquals(2012, result.intValue());
 		
 		now = new Date("9/1/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
-		assertEquals(2012, result);
+		assertEquals(2012, result.intValue());
 		
 		now = new Date("12/31/2012");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
-		assertEquals(2012, result);
+		assertEquals(2012, result.intValue());
 		
 		now = new Date("1/1/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
-		assertEquals(2012, result);
+		assertEquals(2012, result.intValue());
 		
 		now = new Date("1/15/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
-		assertEquals(2012, result);
+		assertEquals(2012, result.intValue());
 		
 		now = new Date("1/16/2013");
 		result = Whitebox.invokeMethod(DateBean.class, "getEffectiveWCBYear", now);
-		assertEquals(2013, result);
+		assertEquals(2013, result.intValue());
 	}
 }
