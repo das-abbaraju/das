@@ -46,7 +46,7 @@
                     items = $(items).map(function (i, item) {
                         i = $(that.options.item).attr({
                             'data-name': item.name,
-                            'data-id': item.id,
+                            'data-value': item.id,
                             'data-search': item.search
                         });
 
@@ -87,7 +87,7 @@
                 search_query_element.data('typeahead').select = function () {
                     var item = this.$menu.find('.active'),
                         name = item.attr('data-name'),
-                        id = item.attr('data-id'),
+                        id = item.attr('data-value'),
                         search = item.attr('data-search');
 
                     if (item.find('a').hasClass('more-results')) {
