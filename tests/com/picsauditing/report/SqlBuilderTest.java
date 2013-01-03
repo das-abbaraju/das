@@ -95,7 +95,7 @@ public class SqlBuilderTest {
 	@Test
 	public void testFilters() throws Exception {
 		Column column = addColumn("AccountName");
-		addFilter(column.getFieldName(), QueryFilterOperator.BeginsWith, "Trevor's");
+		addFilter(column.getId(), QueryFilterOperator.BeginsWith, "Trevor's");
 
 		initializeSql();
 
@@ -107,7 +107,7 @@ public class SqlBuilderTest {
 	public void testFiltersWithComplexColumn() throws Exception {
 		Column column = addColumn("AccountCreationDate__Year");
 
-		addFilter(column.getFieldName(), QueryFilterOperator.GreaterThan, "2010");
+		addFilter(column.getId(), QueryFilterOperator.GreaterThan, "2010");
 
 		initializeSql();
 
@@ -120,7 +120,7 @@ public class SqlBuilderTest {
 		Column column = addColumn("AccountName");
 		Column columnCompare = addColumn("AccountContactName");
 		
-		addFilter(column.getFieldName(), QueryFilterOperator.Equals, columnCompare.getFieldName(), true);
+		addFilter(column.getId(), QueryFilterOperator.Equals, columnCompare.getId(), true);
 				
 		initializeSql();
 		
@@ -147,7 +147,7 @@ public class SqlBuilderTest {
 	@Test
 	public void testInvalidFilters() throws Exception {
 		Column column = addColumn("AccountName");
-		addFilter(column.getFieldName(), QueryFilterOperator.BeginsWith, null);
+		addFilter(column.getId(), QueryFilterOperator.BeginsWith, null);
 		when(permissions.has(OpPerms.AllOperators)).thenReturn(true);
 		
 		initializeSql();
@@ -215,7 +215,7 @@ public class SqlBuilderTest {
 
 	private Filter addFilter(String fieldName, QueryFilterOperator operator, String value, boolean advanced) {
 		Filter filter = new Filter();
-		filter.setFieldName(fieldName);
+		filter.setId(fieldName);
 		filter.setOperator(operator);
 		filter.values.add(value);
 		if (advanced) {

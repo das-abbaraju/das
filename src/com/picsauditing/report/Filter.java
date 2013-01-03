@@ -97,7 +97,7 @@ public class Filter extends ReportElement implements JSONable {
 		} catch (ClassCastException cce) {
 			logger.warn("A filter's values field is not a JSONArray", cce);
 		} catch (Exception e) {
-			logger.warn("Old format report that doesn't have 'values' in filter for fieldName = {0}", fieldName);
+			logger.warn("Old format report that doesn't have 'values' in filter for fieldName = {0}", id);
 		}
 
 		if (valuesJsonArray != null && valuesJsonArray.size() > 0) {
@@ -192,9 +192,9 @@ public class Filter extends ReportElement implements JSONable {
 	}
 
 	public String getSql() {
-		if (fieldName.equalsIgnoreCase("accountName")) {
+		if (id.equalsIgnoreCase("accountName")) {
 			field.setDatabaseColumnName("Account.nameIndex");
-		} else if (fieldName.equalsIgnoreCase("AccountUserUser")) {
+		} else if (id.equalsIgnoreCase("AccountUserUser")) {
 			field.setDatabaseColumnName("AccountUser.userID");
 		}
 
@@ -224,7 +224,7 @@ public class Filter extends ReportElement implements JSONable {
 
 	private String toValueSql() throws ReportValidationException {
 		if (operator == null)
-			throw new ReportValidationException("missing operator for field " + fieldName);
+			throw new ReportValidationException("missing operator for field " + id);
 
 		if (operator.isSingleValue()) {
 			return buildFilterSingleValue();

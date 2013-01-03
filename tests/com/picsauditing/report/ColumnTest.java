@@ -18,7 +18,7 @@ public class ColumnTest {
 	public void testNameOnly() {
 		jsonObj.put("name", "AccountName");
 		column = new Column(jsonObj);
-		assertEquals("AccountName", column.getFieldName());
+		assertEquals("AccountName", column.getId());
 
 		String expected = "\"name\":\"AccountName\"";
 		assertContains(expected, column.toJSON(true).toJSONString());
@@ -47,24 +47,24 @@ public class ColumnTest {
 
 	@Test
 	public void testGetFieldName() {
-		column.setFieldName("AccountName");
-		assertEquals("AccountName", column.getFieldName());
+		column.setId("AccountName");
+		assertEquals("AccountName", column.getId());
 	}
 
 	@Test
 	public void testGetFieldNameWithoutMethod() {
-		column.setFieldName("FacilityCount__Count");
-		assertEquals("FacilityCount__Count", column.getFieldName());
+		column.setId("FacilityCount__Count");
+		assertEquals("FacilityCount__Count", column.getId());
 		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
 		assertEquals(QueryMethod.Count, column.getMethod());
 	}
 
 	@Test
 	public void testToJsonWithNonAutoMethod() {
-		column.setFieldName("FacilityCount__Count");
+		column.setId("FacilityCount__Count");
 		JSONObject json = column.toJSON(true);
 		Column column2 = new Column(json);
-		assertEquals(column.getFieldName(), column2.getFieldName());
+		assertEquals(column.getId(), column2.getId());
 	}
 
 }

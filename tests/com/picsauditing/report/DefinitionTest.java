@@ -23,7 +23,7 @@ public class DefinitionTest {
 		definition = new Definition(jsonObj.toString());
 
 		assertEquals(2, definition.getColumns().size());
-		assertEquals("AccountID", definition.getColumns().get(0).getFieldName());
+		assertEquals("AccountID", definition.getColumns().get(0).getId());
 
 		String definitionJson = definition.toJSON(true).toJSONString();
 		assertContains("\"name\":\"AccountID\"", definitionJson);
@@ -39,7 +39,7 @@ public class DefinitionTest {
 
 		definition.fromJSON(jsonObj);
 		assertEquals(1, definition.getFilters().size());
-		assertEquals("AccountID", definition.getFilters().get(0).getFieldName());
+		assertEquals("AccountID", definition.getFilters().get(0).getId());
 
 		String expected = "{\"filters\":[";
 		assertContains(expected, definition.toJSON(true).toJSONString());
@@ -47,7 +47,7 @@ public class DefinitionTest {
 
 	private void addFilter(JSONArray list, String name, String value) {
 		Filter filter = new Filter();
-		filter.setFieldName(name);
+		filter.setId(name);
 		filter.getValues().add(value);
 		list.add(filter.toJSON(true));
 	}
@@ -61,7 +61,7 @@ public class DefinitionTest {
 
 		definition.fromJSON(jsonObj);
 		assertEquals(1, definition.getSorts().size());
-		assertEquals("AccountID", definition.getSorts().get(0).getFieldName());
+		assertEquals("AccountID", definition.getSorts().get(0).getId());
 
 		String expected = "{\"sorts\":[";
 		assertContains(expected, definition.toJSON(true).toJSONString());

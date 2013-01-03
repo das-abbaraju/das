@@ -42,7 +42,7 @@ public class Sort extends ReportElement implements JSONable {
 
 	// We might want to consider moving this to QueryField
 	public String toSQL(Map<String, Field> availableFields) {
-		String fieldSQL = availableFields.get(fieldName).getDatabaseColumnName();
+		String fieldSQL = availableFields.get(id).getDatabaseColumnName();
 		return fieldSQL;
 	}
 

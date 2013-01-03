@@ -34,7 +34,7 @@ public class FilterTest {
 		jsonObj.put("operator", "BeginsWith");
 		jsonObj.put("value", "Trevor's");
 		filter.fromJSON(jsonObj);
-		assertEquals("AccountName", filter.getFieldName());
+		assertEquals("AccountName", filter.getId());
 		assertEquals(QueryFilterOperator.BeginsWith, filter.getOperator());
 		assertEquals("Trevor's", filter.getValues().get(0));
 
@@ -52,8 +52,8 @@ public class FilterTest {
 
 	@Test
 	public void testFilterEmpty() throws ReportValidationException {
-		filter.setFieldName("FieldName");
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
+		filter.setId("FieldName");
+		filter.setField(new Field(filter.getId(), "fieldName", FieldType.String));
 		filter.setOperator(QueryFilterOperator.Empty);
 
 		assertEquals("fieldName IS NULL OR fieldName = ''", filter.getSqlForFilter());
@@ -61,8 +61,8 @@ public class FilterTest {
 
 	@Test
 	public void testFilterWithValue() throws ReportValidationException {
-		filter.setFieldName("FieldName");
-		filter.setField(new Field(filter.getFieldName(), "fieldName", FieldType.String));
+		filter.setId("FieldName");
+		filter.setField(new Field(filter.getId(), "fieldName", FieldType.String));
 		filter.getValues().add("Trevor's");
 
 		assertEquals("fieldName = 'Trevor''s'", filter.getSqlForFilter());

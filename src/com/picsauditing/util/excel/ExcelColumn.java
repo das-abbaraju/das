@@ -31,7 +31,7 @@ public class ExcelColumn {
 
 	public ExcelColumn(Column reportColumn) {
 		this.reportColumn = reportColumn;
-		this.name = reportColumn.getFieldName();
+		this.name = reportColumn.getId();
 		this.columnHeader = reportColumn.getField().getText();
 		this.cellType = ExcelCellType.convert(reportColumn.getField());
 		this.hidden = !reportColumn.getField().isVisible();

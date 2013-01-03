@@ -60,7 +60,7 @@ public class ContractorNumberModel extends AbstractModel {
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
 		for (Filter filter : filters) {
-			if (filter.getFieldName().equals("AccountStatus") && filter.isValid()) {
+			if (filter.getId().equals("AccountStatus") && filter.isValid()) {
 				return filter;
 			}
 		}

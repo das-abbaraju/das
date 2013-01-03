@@ -52,7 +52,7 @@ public class ReportDataConverter {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}
-			if (column.getFieldName().contains("StatusSubstatus")) {
+			if (column.getId().contains("StatusSubstatus")) {
 				String[] valueString = ((String) value).split(":");
 
 				String statusI18nKey = "AuditStatus." + valueString[0];
@@ -71,7 +71,7 @@ public class ReportDataConverter {
 			if (column.getField() == null) {
 				// This really shouldn't happen but just in case, this message
 				// is better than an NPE
-				return column.getFieldName() + ": Field not available";
+				return column.getId() + ": Field not available";
 			}
 			
 			if (column.getField().isTranslated()) {
@@ -113,13 +113,13 @@ public class ReportDataConverter {
 		Column column = cell.getColumn();
 
 		if (column != null) {
-			logger.info("Converting {} value: {}", cell.getColumn().getFieldName(), value );
+			logger.info("Converting {} value: {}", cell.getColumn().getId(), value );
 			
 			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}
-			if (column.getFieldName().contains("StatusSubstatus")) {
+			if (column.getId().contains("StatusSubstatus")) {
 				String[] valueString = ((String) value).split(":");
 
 				String statusI18nKey = "AuditStatus." + valueString[0];
@@ -138,7 +138,7 @@ public class ReportDataConverter {
 			if (column.getField() == null) {
 				// This really shouldn't happen but just in case, this message
 				// is better than an NPE
-				return column.getFieldName() + ": Field not available";
+				return column.getId() + ": Field not available";
 			}
 			if (column.getField().isTranslated()) {
 				String key = column.getField().getI18nKey(value.toString());

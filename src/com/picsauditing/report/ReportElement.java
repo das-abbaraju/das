@@ -18,7 +18,7 @@ public class ReportElement implements JSONable {
 
 	public static String METHOD_SEPARATOR = "__";
 
-	protected String fieldName;
+	protected String id;
 	protected Field field;
 
 	private String originalFieldName;
@@ -28,15 +28,15 @@ public class ReportElement implements JSONable {
 	}
 
 	public ReportElement(String fieldName) {
-		setFieldName(fieldName);
+		setId(fieldName);
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		json.put("name", fieldName);
+		json.put("name", id);
 		if (field == null) {
-			Field fakeField = new Field(fieldName, "", FieldType.String);
+			Field fakeField = new Field(id, "", FieldType.String);
 			json.put("field", fakeField.toJSONObject());
 		} else {
 			json.put("field", field.toJSONObject());
@@ -48,41 +48,41 @@ public class ReportElement implements JSONable {
 		if (json == null)
 			return;
 
-		setFieldName((String) json.get("name"));
+		setId((String) json.get("name"));
 
 		// this.field = (Field) json.get("field");
 		// We are going to ignore the field and set this each time from
 		// availableFields in SqlBuilder
 	}
 
-	public String getFieldName() {
-		return Strings.escapeQuotes(fieldName);
+	public String getId() {
+		return Strings.escapeQuotes(id);
 	}
 
 	public void setMethodToFieldName() {
-		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
+		int startOfMethod = id.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod >= 0 || method == null)
 			return;
 
-		this.fieldName = fieldName + METHOD_SEPARATOR + method;
+		this.id = id + METHOD_SEPARATOR + method;
 		parseFieldNameMethod();
 	}
 
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
+	public void setId(String id) {
+		this.id = id;
 		parseFieldNameMethod();
 	}
 
 	private void parseFieldNameMethod() {
 		method = null;
-		originalFieldName = fieldName;
+		originalFieldName = id;
 
-		int startOfMethod = fieldName.lastIndexOf(METHOD_SEPARATOR);
+		int startOfMethod = id.lastIndexOf(METHOD_SEPARATOR);
 		if (startOfMethod < 0)
 			return;
 
-		originalFieldName = fieldName.substring(0, startOfMethod);
-		String methodName = fieldName.substring(startOfMethod + 2);
+		originalFieldName = id.substring(0, startOfMethod);
+		String methodName = id.substring(startOfMethod + 2);
 		method = QueryMethod.valueOf(methodName);
 	}
 
@@ -100,7 +100,7 @@ public class ReportElement implements JSONable {
 
 	public void setField(Field field) {
 		this.field = field;
-		this.field.setName(fieldName);
+		this.field.setName(id);
 	}
 
 	public boolean isHasAggregateMethod() {
@@ -112,7 +112,7 @@ public class ReportElement implements JSONable {
 
 	public String getSql() {
 		if (field == null) {
-			throw new RuntimeException(fieldName + " is missing from available fields");
+			throw new RuntimeException(id + " is missing from available fields");
 		}
 		String fieldSql = field.getDatabaseColumnName();
 		if (method == null)
@@ -175,10 +175,10 @@ public class ReportElement implements JSONable {
 		}
 
 		setField(field.clone());
-		this.field.setName(fieldName);
+		this.field.setName(id);
 	}
 
 	public String toString() {
-		return fieldName;
+		return id;
 	}
 }

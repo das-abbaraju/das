@@ -58,7 +58,7 @@ public class ContractorStatisticsModel extends AbstractModel {
 
 	private Filter getValidAccountStatusFilter(List<Filter> filters) {
 		for (Filter filter : filters) {
-			if (filter.getFieldName().equalsIgnoreCase("AccountStatus") && filter.isValid()) {
+			if (filter.getId().equalsIgnoreCase("AccountStatus") && filter.isValid()) {
 				return filter;
 			}
 		}

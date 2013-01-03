@@ -57,7 +57,7 @@ public class ReportDataConverterTest {
 		columns.add(createColumn(availableFields.get("ACCOUNTCREATIONDATE")));
 		columns.add(createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE")));
 		Column membershipMonth = createColumn(availableFields.get("CONTRACTORMEMBERSHIPDATE"));
-		membershipMonth.setFieldName("ContractorMembershipDate__Month");
+		membershipMonth.setId("ContractorMembershipDate__Month");
 		membershipMonth.getField().setUrl("Test.action?id={AccountZip}");
 		columns.add(membershipMonth);
 		columns.add(createColumn(availableFields.get("CONTRACTORLASTUPGRADEDATE")));
@@ -103,7 +103,7 @@ public class ReportDataConverterTest {
 		assertEquals(1, results.getRows().size());
 		ReportRow row1 = results.getRows().get(0);
 		for (ReportCell cell : row1.getCells()) {
-			String fieldName = cell.getColumn().getFieldName();
+			String fieldName = cell.getColumn().getId();
 			if ("ContractorMembershipDate".equals(fieldName)) {
 				assertEquals(new java.sql.Date(1234567890), cell.getValue());
 			}
