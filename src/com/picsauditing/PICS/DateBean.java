@@ -213,29 +213,52 @@ public class DateBean {
 	}
 
 	public static int getPreviousWCBYear() {
-		if (isGracePeriodForWCB())
-			return getCurrentYear();
-
-		return getCurrentYear() - 1;
+		return getEffectiveWCBYear(new Date());
 	}
-
-	public static boolean isGracePeriodForWCB() {
-		int year = getCurrentYear();
-
+	
+	/**
+	 * Called when it's already been determined that the current year WCB is
+	 * incomplete and we are trying to see if it's okay to look back to last
+	 * year's WCB, or if they are stuck with this year's
+	 */
+	private static int getEffectiveWCBYear(Date now) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DATE, 1);
-		calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
-		calendar.set(Calendar.YEAR, year);
-
-		Date now = new Date();
-		Date startOfGracePeriod = calendar.getTime();
-		Date endOfGracePeriod = getWCBExpirationDate(Integer.toString(year));
-
-		return (now.compareTo(startOfGracePeriod) >= 0 && now.compareTo(endOfGracePeriod) <= 0);
+		calendar.setTime(now);
+		
+		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 15) {
+			return calendar.get(Calendar.YEAR) - 1;
+		}
+		
+		return calendar.get(Calendar.YEAR);
 	}
 
 	/**
-	 * expiration date is December 31st.
+	 * The Grace Period is from September 1 - January 15 of next year.
+	 * 
+	 * @return
+	 */
+	public static boolean isGracePeriodForWCB() {
+		return isGracePeriodForWCB(new Date());
+	}
+	
+	private static boolean isGracePeriodForWCB(Date now) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(now);
+		
+		int month = calendar.get(Calendar.MONTH);
+		if (month >= Calendar.SEPTEMBER && month <= Calendar.DECEMBER) {
+			return true;
+		}
+		
+		if (month == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 15) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * expiration date is January 31st.
 	 */
 	public static Date getWCBExpirationDate(String year) {
 		Calendar expirationDate = Calendar.getInstance();
@@ -273,7 +296,6 @@ public class DateBean {
 
 	public static int getCurrentYear() {
 		Calendar cal = Calendar.getInstance();
-
 		return cal.get(Calendar.YEAR);
 	}
 
@@ -773,4 +795,6 @@ public class DateBean {
 
 		return workDays;
 	}
+
+	
 }
