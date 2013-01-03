@@ -1,6 +1,6 @@
 package com.picsauditing.report.fields;
 
-public enum QueryMethod {
+public enum SqlFunction {
 	// None,
 	Count(true, DisplayType.Integer),
 	CountDistinct(true, DisplayType.Integer),
@@ -29,14 +29,14 @@ public enum QueryMethod {
 	private boolean aggregate;
 	private DisplayType displayType = null;
 
-	private QueryMethod() {
+	private SqlFunction() {
 	}
 
-	private QueryMethod(boolean aggregate) {
+	private SqlFunction(boolean aggregate) {
 		this.aggregate = aggregate;
 	}
 
-	private QueryMethod(boolean aggregate, DisplayType type) {
+	private SqlFunction(boolean aggregate, DisplayType type) {
 		this.aggregate = aggregate;
 		this.displayType = type;
 	}

@@ -36,7 +36,7 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.QueryMethod;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.util.Strings;
 
@@ -129,9 +129,9 @@ public final class ReportUtil {
 	}
 
 	private static void applyFunctionsToField(Locale locale, Field field) {
-		List<QueryMethod> functions = field.getType().getDisplayType().getFunctions();
+		List<SqlFunction> functions = field.getType().getDisplayType().getFunctions();
 		Map<String,String> translatedFunctions = new TreeMap<String, String>();
-		for (QueryMethod function : functions) {
+		for (SqlFunction function : functions) {
 			translatedFunctions.put(function.toString(), getText("Report.Function." + function.toString(), locale));
 		}
 		
@@ -210,7 +210,7 @@ public final class ReportUtil {
 		// Set up
 		Map<String, String> translations = new TreeMap<String, String>();
 		Locale[] locales = TranslationActionSupport.getSupportedLocales();
-		QueryMethod[] methods = QueryMethod.values();
+		SqlFunction[] methods = SqlFunction.values();
 		String fileName = "Column translations for DR";
 
 		// Excel setup
@@ -296,7 +296,7 @@ public final class ReportUtil {
 	}
 
 	private static void populateTranslationToPrint(Map<String, String> translations, List<Report> reports,
-			QueryMethod[] methods, Locale locale) {
+			SqlFunction[] methods, Locale locale) {
 		for (Report report : reports) {
 			Map<String, Field> availableFields = ModelFactory
 					.build(report.getModelType(), createSuperUserPermissions()).getAvailableFields();
@@ -313,7 +313,7 @@ public final class ReportUtil {
 			}
 		}
 
-		for (QueryMethod queryMethod : methods) {
+		for (SqlFunction queryMethod : methods) {
 			String fieldSuffixKey = "Report.Function." + queryMethod.name();
 			translations.put(fieldSuffixKey, getText(fieldSuffixKey, locale));
 		}

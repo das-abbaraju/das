@@ -6,7 +6,8 @@ import static org.junit.Assert.assertEquals;
 import org.json.simple.JSONObject;
 import org.junit.Test;
 
-import com.picsauditing.report.fields.QueryMethod;
+import com.picsauditing.report.fields.SqlFunction;
+import com.picsauditing.report.tables.FieldCategory;
 
 @SuppressWarnings("unchecked")
 public class ColumnTest {
@@ -14,31 +15,41 @@ public class ColumnTest {
 	private Column column = new Column();
 	private JSONObject jsonObj = new JSONObject();
 
+	private void fillColumn() {
+		column.setId("CompanyStatus__Count");
+		column.getField().setCategory(FieldCategory.CompanyStatus);
+		column.getField().setText("Company Status");
+		column.getField().setHelp("This is the help text for company status.");
+		column.getField().setUrl("Contractor.action?id=[AccountID]");
+		// Set Type
+		// Set Width
+	}
+
 	@Test
-	public void testNameOnly() {
-		jsonObj.put("name", "AccountName");
+	public void testId() {
+		jsonObj.put("id", "AccountName");
 		column = new Column(jsonObj);
 		assertEquals("AccountName", column.getId());
 
-		String expected = "\"name\":\"AccountName\"";
+		String expected = "\"id\":\"AccountName\"";
 		assertContains(expected, column.toJSON(true).toJSONString());
 	}
 
 	@Test
 	public void testMethod() {
-		jsonObj.put("name", "AccountName__Count");
+		jsonObj.put("id", "AccountName__Count");
 		jsonObj.put("method", "UpperCase");
 		column = new Column(jsonObj);
-		assertEquals(QueryMethod.UpperCase, column.getMethod());
+		assertEquals(SqlFunction.UpperCase, column.getMethod());
 
-		String expected = "\"method\":\"UpperCase\"";
+		String expected = "\"sql_function\":\"UpperCase\"";
 		assertContains(expected, column.toJSON(true).toJSONString());
 	}
 
 	@Test
 	public void testBadMethodName() throws Exception {
 		try {
-			jsonObj.put("name", "AccountName__BadMethodThatDoesNotExist");
+			jsonObj.put("id", "AccountName__BadMethodThatDoesNotExist");
 			column = new Column(jsonObj);
 		} catch (Exception weWantToThrowException) {
 			return;
@@ -47,17 +58,11 @@ public class ColumnTest {
 	}
 
 	@Test
-	public void testGetFieldName() {
-		column.setId("AccountName");
-		assertEquals("AccountName", column.getId());
-	}
-
-	@Test
 	public void testGetFieldNameWithoutMethod() {
 		column.setId("FacilityCount__Count");
 		assertEquals("FacilityCount__Count", column.getId());
 		assertEquals("FacilityCount", column.getFieldNameWithoutMethod());
-		assertEquals(QueryMethod.Count, column.getMethod());
+		assertEquals(SqlFunction.Count, column.getMethod());
 	}
 
 	@Test

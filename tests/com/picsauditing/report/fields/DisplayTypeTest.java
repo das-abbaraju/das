@@ -34,7 +34,7 @@ public class DisplayTypeTest {
 	}
 
 	private void log(DisplayType type) {
-		for (QueryMethod function : type.getFunctions()) {
+		for (SqlFunction function : type.getFunctions()) {
 			LOG.info(type + " " + function);
 		}
 	}

@@ -6,9 +6,9 @@ import java.util.List;
 public enum DisplayType {
 	String, Integer, Float, Number, Boolean, Date, DateTime, Flag;
 
-	public List<QueryMethod> getFunctions() {
-		List<QueryMethod> list = new ArrayList<QueryMethod>();
-		for (QueryMethod function : QueryMethod.values()) {
+	public List<SqlFunction> getFunctions() {
+		List<SqlFunction> list = new ArrayList<SqlFunction>();
+		for (SqlFunction function : SqlFunction.values()) {
 			if (isCanUseFunction(function)) {
 				list.add(function);
 			}
@@ -16,7 +16,7 @@ public enum DisplayType {
 		return list;
 	}
 
-	private boolean isCanUseFunction(QueryMethod function) {
+	private boolean isCanUseFunction(SqlFunction function) {
 		if (isFunctionValidForAllTypes(function)) {
 			return true;
 		}
@@ -29,7 +29,7 @@ public enum DisplayType {
 			return this == String;
 		}
 
-		if (function == QueryMethod.Round) {
+		if (function == SqlFunction.Round) {
 			return this == Float;
 		}
 
@@ -40,15 +40,15 @@ public enum DisplayType {
 		return false;
 	}
 
-	private boolean isNumericOnlyFunction(QueryMethod function) {
-		if (function == QueryMethod.Average)
+	private boolean isNumericOnlyFunction(SqlFunction function) {
+		if (function == SqlFunction.Average)
 			return true;
-		if (function == QueryMethod.Sum)
+		if (function == SqlFunction.Sum)
 			return true;
 		return false;
 	}
 
-	private boolean isStringOnlyFunction(QueryMethod function) {
+	private boolean isStringOnlyFunction(SqlFunction function) {
 //		if (function == QueryMethod.LowerCase)
 //			return true;
 //		if (function == QueryMethod.UpperCase)
@@ -60,21 +60,21 @@ public enum DisplayType {
 		return false;
 	}
 
-	private boolean isFunctionValidForAllTypes(QueryMethod function) {
-		if (function == QueryMethod.Count)
+	private boolean isFunctionValidForAllTypes(SqlFunction function) {
+		if (function == SqlFunction.Count)
 			return true;
 //		if (function == QueryMethod.CountDistinct)
 //			return true;
 //		if (function == QueryMethod.GroupConcat)
 //			return true;
-		if (function == QueryMethod.Max)
+		if (function == SqlFunction.Max)
 			return true;
-		if (function == QueryMethod.Min)
+		if (function == SqlFunction.Min)
 			return true;
 		return false;
 	}
 
-	private boolean isDateOnlyFunction(QueryMethod function) {
+	private boolean isDateOnlyFunction(SqlFunction function) {
 //		if (function == QueryMethod.Year)
 //			return true;
 //		if (function == QueryMethod.YearMonth)

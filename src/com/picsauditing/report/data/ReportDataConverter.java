@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.fields.DisplayType;
-import com.picsauditing.report.fields.QueryMethod;
+import com.picsauditing.report.fields.SqlFunction;
 
 public class ReportDataConverter {
 	
@@ -48,7 +48,7 @@ public class ReportDataConverter {
 		Column column = cell.getColumn();
 
 		if (column != null) {
-			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
+			if (column.getMethod() != null && column.getMethod() == SqlFunction.Month) {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}
@@ -115,7 +115,7 @@ public class ReportDataConverter {
 		if (column != null) {
 			logger.info("Converting {} value: {}", cell.getColumn().getId(), value );
 			
-			if (column.getMethod() != null && column.getMethod() == QueryMethod.Month) {
+			if (column.getMethod() != null && column.getMethod() == SqlFunction.Month) {
 				int month = Integer.parseInt(value.toString());
 				return new DateFormatSymbols(locale).getMonths()[month - 1];
 			}

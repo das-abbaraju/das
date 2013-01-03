@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.QueryMethod;
+import com.picsauditing.report.fields.SqlFunction;
 import com.picsauditing.util.Strings;
 
 public class ReportElement implements JSONable {
@@ -22,7 +22,7 @@ public class ReportElement implements JSONable {
 	protected Field field;
 
 	private String originalFieldName;
-	protected QueryMethod method;
+	protected SqlFunction method;
 
 	public ReportElement() {
 	}
@@ -83,14 +83,14 @@ public class ReportElement implements JSONable {
 
 		originalFieldName = id.substring(0, startOfMethod);
 		String methodName = id.substring(startOfMethod + 2);
-		method = QueryMethod.valueOf(methodName);
+		method = SqlFunction.valueOf(methodName);
 	}
 
 	public String getFieldNameWithoutMethod() {
 		return originalFieldName;
 	}
 
-	public QueryMethod getMethod() {
+	public SqlFunction getMethod() {
 		return method;
 	}
 
