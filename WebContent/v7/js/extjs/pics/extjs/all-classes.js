@@ -80897,133 +80897,6 @@ Ext.define('Ext.window.MessageBox', {
     Ext.MessageBox = Ext.Msg = new this();
 });
 /**
- * ReportDatas Class
- *
- * Dynamically generates associated Data Model Class
- */
-Ext.define('PICS.store.report.ReportDatas', {
-    extend : 'PICS.store.report.base.Store',
-
-    requires: [
-        'Ext.window.MessageBox'
-    ],
-
-    // there is no preset Model - we must place empty fields [] as a default
-    // we dynamically create / attach Model which has the actual fields
-    fields: [],
-    proxy: {
-        actionMethods: {
-            create: 'POST',
-            read: 'POST',
-            update: 'POST',
-            destroy: 'POST'
-        },
-        listeners: {
-            exception: function (proxy, response, operation, eOpts) {
-                if (operation.success == false) {
-                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
-                }
-            }
-        },
-        reader: {
-            messageProperty: 'message',
-            root: 'data',
-            type: 'json'
-        },
-        timeout: 60000,
-        type: 'ajax',
-        url: '/ReportData!extjs.action'
-    },
-
-    reload: function () {
-        var store = Ext.StoreManager.get('report.Reports'),
-            report = store.first();
-        
-        this.pageSize = report.get('rowsPerPage');
-
-        this.configureProxyUrl(report);
-
-        this.configureReportDataModel(report);
-
-        this.reconfigureReportData(report);
-    },
-
-    /**
-     * Configure Proxy Url
-     *
-     * Build the remote proxy url so the store data can be properly fetched by the server
-     *
-     * @param report
-     */
-    configureProxyUrl: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
-            Ext.Error.raise('Invalid report record');
-        }
-
-        //set initial request parameters, values get overwritten by params object on later requests
-        this.proxy.extraParams = report.toRequestParams();
-    },
-
-    configureReportDataModel: function (report) {
-        if (!(report && Ext.getClassName(report) == 'PICS.model.report.Report')) {
-            Ext.Error.raise('Invalid report record');
-        }
-
-        function generateReportDataModelFieldsFromColumnStore() {
-            var column_store = report.columns(),
-                model_fields = [];
-
-            // generate model fields
-            column_store.each(function (record) {
-                model_fields.push(record.toModelField());
-            });
-
-            return model_fields;
-        }
-
-        function generateReportDataModel(model_fields) {
-            var model = Ext.define('PICS.model.report.ReportData', {
-                extend: 'Ext.data.Model',
-
-                fields: model_fields
-            });
-            
-            return model;
-        }
-
-        // dynamically create model for ReportDatas Store
-        var model_fields = generateReportDataModelFieldsFromColumnStore();
-        var model = generateReportDataModel(model_fields);
-
-        // remove all data from ReportDatas Store
-        this.removeAll(true);
-        this.proxy.reader.setModel(model);
-    },
-
-    reconfigureReportData: function (report) {
-        if (!report || report.modelName != 'PICS.model.report.Report') {
-            Ext.Error.raise('Invalid report record');
-        }
-
-        var report_data = Ext.ComponentQuery.query('reportdata')[0],
-            column_store = report.columns();
-
-        var report_data_columns = [{
-            xtype: 'rownumberer',
-            height: 28,
-            width: 50
-        }];
-
-        // See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
-        // generate data grid columns
-        column_store.each(function (record) {
-            report_data_columns.push(record.toGridColumn());
-        });
-
-        report_data.reconfigure(null, report_data_columns);
-    }
-});
-/**
  * Provides input field management, validation, submission, and form loading services for the collection
  * of {@link Ext.form.field.Field Field} instances within a {@link Ext.container.Container}. It is recommended
  * that you use a {@link Ext.form.Panel} as the form container, as that has logic to automatically
@@ -91535,10 +91408,19 @@ Ext.define('PICS.view.report.report.ReportData', {
         });
     },
     
-    // method to override column header height
+    // column header height is dictated by the height of the rownumberer column
+    // more information on how to override header height:
     // http://stackoverflow.com/questions/11676084/extjs-4-1-how-to-change-grid-panel-header-height/11695543#11695543
-    updateColumnHeaderHeight: function (height) {
-        this.columns[0].setHeight(height);
+    updateGridColumns: function (new_grid_columns) {
+        var grid_columns = [{
+            xtype: 'rownumberer',
+            height: 23,
+            width: 50
+        }];
+        
+        grid_columns = grid_columns.concat(new_grid_columns);
+        
+        this.reconfigure(null, grid_columns);
     },
     
     // update or reset no results message
@@ -93654,6 +93536,7 @@ Ext.define('PICS.view.layout.Menu', {
 
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
+        dashboard_menu.cls = 'dashboard';
     },
 
     styleReportsMenu: function (report_menu) {
@@ -97411,6 +97294,13 @@ Ext.define('PICS.model.report.AvailableField', {
         return filter;
     }
 });
+Ext.define('PICS.model.report.ReportData', {
+    extend: 'Ext.data.Model',
+    
+    // there is no preset Model - we must place empty fields [] as a default
+    // we dynamically create / attach Model which has the actual fields
+    fields: []
+});
 Ext.define('PICS.ux.grid.column.Float', {
 	extend: 'Ext.grid.column.Number',
 	
@@ -98376,6 +98266,58 @@ Ext.define('PICS.store.report.AvailableFields', {
         });
     }
 });
+/**
+ * ReportDatas Class
+ *
+ * Dynamically generates associated Data Model Class
+ */
+Ext.define('PICS.store.report.ReportDatas', {
+    extend : 'PICS.store.report.base.Store',
+    model : 'PICS.model.report.ReportData',
+
+    requires: [
+        'Ext.window.MessageBox'
+    ],
+
+    proxy: {
+        actionMethods: {
+            create: 'POST',
+            read: 'POST',
+            update: 'POST',
+            destroy: 'POST'
+        },
+        listeners: {
+            exception: function (proxy, response, operation, eOpts) {
+                if (operation.success == false) {
+                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                }
+            }
+        },
+        reader: {
+            messageProperty: 'message',
+            root: 'data',
+            type: 'json'
+        },
+        timeout: 60000,
+        type: 'ajax',
+        url: '/ReportData!extjs.action'
+    },
+
+    setLimit: function (limit) {
+        this.pageSize = limit;
+    },
+    
+    updateProxyParameters: function (params) {
+        this.proxy.extraParams = params;
+    },
+    
+    updateReportDataModelFields: function (model_fields) {
+        var report_data_model = Ext.ModelManager.getModel('PICS.model.report.ReportData');
+        
+        // update model fields
+        report_data_model.setFields(model_fields);
+    }
+});
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
@@ -98627,6 +98569,9 @@ Ext.define('PICS.model.report.Column', {
         type: 'string'
     }],
 
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
+    // ALERT: Ext.data.Field.type (auto, string, int, float, boolean, date)
     toModelField: function () {
         var field = this.getAvailableField();
 
@@ -98646,6 +98591,10 @@ Ext.define('PICS.model.report.Column', {
         return model_field;
     },
 
+    // ALERT: Ext.grid.column.Column is DEFAULT
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
+    // ALERT: Ext.grid.column.* (Action, Boolean, Column, Date, Number, Template)
     toGridColumn: function () {
         var field = this.getAvailableField(),
             url = field.get('url'),
@@ -99433,12 +99382,39 @@ Ext.define('PICS.model.report.Report', {
     
     addSort: function (column, direction) {
         var sort_store = this.sorts(),
-            column_name = column.getAvailableField().get('name');
+            available_field = column.getAvailableField(),
+            column_name = available_field.get('name');
         
         sort_store.add({
             name: column_name,
             direction: direction
         });
+    },
+    
+    convertColumnsToModelFields: function () {
+        var column_store = this.columns(),
+            model_fields = [];
+        
+        column_store.each(function (column) {
+            var model_field = column.toModelField();
+            
+            model_fields.push(model_field);
+        });
+        
+        return model_fields;
+    },
+    
+    convertColumnsToGridColumns: function () {
+        var column_store = this.columns(),
+            grid_columns = [];
+        
+        column_store.each(function (column) {
+            var grid_column = column.toGridColumn();
+            
+            grid_columns.push(grid_column);
+        });
+        
+        return grid_columns;
     },
     
     removeColumns: function () {
@@ -100240,6 +100216,9 @@ Ext.define('PICS.controller.report.Report', {
         ref: 'reportAlertMessage',
         selector: 'reportalertmessage'
     }, {
+        ref: 'reportData',
+        selector: 'reportdata'
+    }, {
         ref: 'reportSettingsModal',
         selector: 'reportsettingsmodal'
     }],
@@ -100346,11 +100325,25 @@ Ext.define('PICS.controller.report.Report', {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
             report_name = report.get('name'),
-            report_data_store = this.getReportReportDatasStore();
+            report_data_store = this.getReportReportDatasStore(),
+            report_data = this.getReportData(),
+            params = report.toRequestParams(),
+            model_fields = report.convertColumnsToModelFields(),
+            grid_columns = report.convertColumnsToGridColumns(),
+            limit = report.get('rowsPerPage');
         
         this.updatePageTitle(report_name);
         
-        report_data_store.reload();
+        report_data_store.setLimit(limit);
+        
+        // update data store proxy
+        report_data_store.updateProxyParameters(params);
+        
+        // update data store model
+        report_data_store.updateReportDataModelFields(model_fields);
+        
+        // update report data grid columns
+        report_data.updateGridColumns(grid_columns);
     },
 
     saveReport: function () {
@@ -100446,7 +100439,7 @@ Ext.define('PICS.controller.report.ReportData', {
     refs: [{
         ref: 'reportPagingToolbar',
         selector: 'reportpagingtoolbar'
-    },{
+    }, {
         ref: 'reportData',
         selector: 'reportdata'
     }],
@@ -100600,10 +100593,10 @@ Ext.define('PICS.controller.report.ReportData', {
     },
 
     onReportDataBeforeRender: function (cmp, eOpts) {
-        var store = this.getReportReportsStore();
+        var report_store = this.getReportReportsStore();
 
-        if (!store.isLoaded()) {
-            store.on('load', function (store, records, successful, eOpts) {
+        if (!report_store.isLoaded()) {
+            report_store.on('load', function (store, records, successful, eOpts) {
                 this.application.fireEvent('refreshreport');
             }, this);
         } else {
@@ -100612,44 +100605,45 @@ Ext.define('PICS.controller.report.ReportData', {
     },
     
     onReportDataReconfigure: function (cmp, eOpts) {
-        var report_data_store = cmp.getStore(), 
+        var report_data = cmp,
+            report_data_store = cmp.getStore(),
             report_paging_toolbar = this.getReportPagingToolbar();
         
-        // load store - first page
-        report_paging_toolbar.moveFirst();
-
-        // update grid column header size
-        cmp.updateColumnHeaderHeight(23);
-
-        // remove no results message if one exists
-        if (!report_data_store.isLoaded()) {
-            report_data_store.on('load', function (store, records, successful, eOpts) {
-                cmp.updateNoResultsMessage();
+        // load new data
+        report_data_store.loadPage(1, {
+            callback: function (records, operation, success) {
+                // remove no results message if one exists
+                report_data.updateNoResultsMessage();
                 
-                report_paging_toolbar.updateDisplayInfo(store.getTotalCount());
-            });
-        } else {
-            cmp.updateNoResultsMessage();
-            
-            report_paging_toolbar.updateDisplayInfo(report_data_store.getTotalCount());
-        }
+                // update display count
+                report_paging_toolbar.updateDisplayInfo(this.getTotalCount());
+            }
+        });
     },
 
     onReportRefreshClick: function (cmp, event, eOpts) {
-        this.application.fireEvent('refreshreport');
+        var report_data = this.getReportData(),
+            report_data_store = report_data.store;
+        
+        report_data_store.loadPage(1);
     },
 
     onRowsPerPageSelect: function (cmp, records, options) {
         var report_store = this.getReportReportsStore(),
             report = report_store.first(),
-            report_data_store = this.getReportReportDatasStore(),
-            rows_per_page = parseInt(cmp.getValue()),
-            report_paging_toolbar = this.getReportPagingToolbar();
+            report_data = this.getReportData(),
+            report_data_store = report_data.store,
+            value = cmp.getValue();
 
-        // update rows per page in the report
-        report.set('rowsPerPage', rows_per_page);
+        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
+        // TODO: THIS IS TOTALLY NOT NEEDED, EVERYTHING SHOULD BE BASED ON LIMIT NOT ROWS PER PAGE, DELETE THAT SHIT
+        report.set('rowsPerPage', value);
+        report_data_store.updateProxyParameters(report.toRequestParams());
         
-        this.application.fireEvent('refreshreport');
+        report_data_store.setLimit(value);
+        
+        // load new data
+        report_data_store.loadPage(1);
     }
 });
 
@@ -100884,6 +100878,7 @@ Ext.define('PICS.controller.report.SettingsModal', {
         report.set('description', report_description);
         
         // form reset
+        // TODO: put this in the view
         cmp.up('form').getForm().reset();
         
         this.application.fireEvent('createreport');

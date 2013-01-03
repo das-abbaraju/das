@@ -1135,11 +1135,6 @@
                     "path": "extjs/src/window/"
                 },
                 {
-                    "clsName": "PICS.store.report.ReportDatas",
-                    "name": "ReportDatas.js",
-                    "path": "app/store/report/"
-                },
-                {
                     "clsName": "Ext.form.Basic",
                     "name": "Basic.js",
                     "path": "extjs/src/form/"
@@ -1410,6 +1405,11 @@
                     "path": "app/model/report/"
                 },
                 {
+                    "clsName": "PICS.model.report.ReportData",
+                    "name": "ReportData.js",
+                    "path": "app/model/report/"
+                },
+                {
                     "clsName": "PICS.ux.grid.column.Float",
                     "name": "Float.js",
                     "path": "app/ux/grid/column/"
@@ -1452,6 +1452,11 @@
                 {
                     "clsName": "PICS.store.report.AvailableFields",
                     "name": "AvailableFields.js",
+                    "path": "app/store/report/"
+                },
+                {
+                    "clsName": "PICS.store.report.ReportDatas",
+                    "name": "ReportDatas.js",
                     "path": "app/store/report/"
                 },
                 {

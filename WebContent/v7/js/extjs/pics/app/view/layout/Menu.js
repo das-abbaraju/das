@@ -202,6 +202,7 @@ Ext.define('PICS.view.layout.Menu', {
 
         dashboard_menu.padding = '0px 10px 0px 20px';
         dashboard_menu.scale = 'large';
+        dashboard_menu.cls = 'dashboard';
     },
 
     styleReportsMenu: function (report_menu) {

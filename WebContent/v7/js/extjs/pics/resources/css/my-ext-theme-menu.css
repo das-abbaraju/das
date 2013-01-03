@@ -700,7 +700,8 @@ tr.x-container:before {
   padding: 2px;
   border: 1px solid;
   border-color: #99bce8;
-  background: #dfe9f6; }
+  background-image: none;
+  background-color: #dfe9f6; }
   /* line 38, ../themes/stylesheets/ext4/default/widgets/_loadmask.scss */
   .x-mask-msg div {
     padding: 5px 10px 5px 25px;
@@ -2511,8 +2512,7 @@ tr.x-container:before {
   line-height: 24px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-medium-icon button,
-.x-btn-default-medium-icon a {
+.x-btn-default-medium-icon button, .x-btn-default-medium-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-medium-icon .x-btn-inner {
@@ -2529,8 +2529,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-medium-icon-text-left button,
-.x-btn-default-medium-icon-text-left a {
+.x-btn-default-medium-icon-text-left button, .x-btn-default-medium-icon-text-left a {
   height: 24px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-medium-icon-text-left .x-btn-inner {
@@ -2550,8 +2549,7 @@ tr.x-container:before {
     height: 24px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-medium-icon-text-right button,
-.x-btn-default-medium-icon-text-right a {
+.x-btn-default-medium-icon-text-right button, .x-btn-default-medium-icon-text-right a {
   height: 24px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-medium-icon-text-right .x-btn-inner {
@@ -2841,8 +2839,7 @@ tr.x-container:before {
   line-height: 32px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-large-icon button,
-.x-btn-default-large-icon a {
+.x-btn-default-large-icon button, .x-btn-default-large-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-large-icon .x-btn-inner {
@@ -2859,8 +2856,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-large-icon-text-left button,
-.x-btn-default-large-icon-text-left a {
+.x-btn-default-large-icon-text-left button, .x-btn-default-large-icon-text-left a {
   height: 32px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-large-icon-text-left .x-btn-inner {
@@ -2880,8 +2876,7 @@ tr.x-container:before {
     height: 32px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-large-icon-text-right button,
-.x-btn-default-large-icon-text-right a {
+.x-btn-default-large-icon-text-right button, .x-btn-default-large-icon-text-right a {
   height: 32px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-large-icon-text-right .x-btn-inner {
@@ -3161,8 +3156,7 @@ tr.x-container:before {
   line-height: 16px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-small-icon button,
-.x-btn-default-toolbar-small-icon a {
+.x-btn-default-toolbar-small-icon button, .x-btn-default-toolbar-small-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-small-icon .x-btn-inner {
@@ -3179,8 +3173,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-small-icon-text-left button,
-.x-btn-default-toolbar-small-icon-text-left a {
+.x-btn-default-toolbar-small-icon-text-left button, .x-btn-default-toolbar-small-icon-text-left a {
   height: 16px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-small-icon-text-left .x-btn-inner {
@@ -3200,8 +3193,7 @@ tr.x-container:before {
     height: 16px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-small-icon-text-right button,
-.x-btn-default-toolbar-small-icon-text-right a {
+.x-btn-default-toolbar-small-icon-text-right button, .x-btn-default-toolbar-small-icon-text-right a {
   height: 16px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-small-icon-text-right .x-btn-inner {
@@ -3464,8 +3456,7 @@ tr.x-container:before {
   line-height: 24px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-medium-icon button,
-.x-btn-default-toolbar-medium-icon a {
+.x-btn-default-toolbar-medium-icon button, .x-btn-default-toolbar-medium-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-medium-icon .x-btn-inner {
@@ -3482,8 +3473,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-medium-icon-text-left button,
-.x-btn-default-toolbar-medium-icon-text-left a {
+.x-btn-default-toolbar-medium-icon-text-left button, .x-btn-default-toolbar-medium-icon-text-left a {
   height: 24px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-medium-icon-text-left .x-btn-inner {
@@ -3503,8 +3493,7 @@ tr.x-container:before {
     height: 24px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-medium-icon-text-right button,
-.x-btn-default-toolbar-medium-icon-text-right a {
+.x-btn-default-toolbar-medium-icon-text-right button, .x-btn-default-toolbar-medium-icon-text-right a {
   height: 24px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-medium-icon-text-right .x-btn-inner {
@@ -3767,8 +3756,7 @@ tr.x-container:before {
   line-height: 32px; }
 
 /* line 665, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-large-icon button,
-.x-btn-default-toolbar-large-icon a {
+.x-btn-default-toolbar-large-icon button, .x-btn-default-toolbar-large-icon a {
   padding: 0; }
 /* line 669, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-large-icon .x-btn-inner {
@@ -3785,8 +3773,7 @@ tr.x-container:before {
   right: 0; }
 
 /* line 687, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-large-icon-text-left button,
-.x-btn-default-toolbar-large-icon-text-left a {
+.x-btn-default-toolbar-large-icon-text-left button, .x-btn-default-toolbar-large-icon-text-left a {
   height: 32px; }
 /* line 690, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-large-icon-text-left .x-btn-inner {
@@ -3806,8 +3793,7 @@ tr.x-container:before {
     height: 32px; }
 
 /* line 713, ../themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-large-icon-text-right button,
-.x-btn-default-toolbar-large-icon-text-right a {
+.x-btn-default-toolbar-large-icon-text-right button, .x-btn-default-toolbar-large-icon-text-right a {
   height: 32px; }
 /* line 716, ../themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-default-toolbar-large-icon-text-right .x-btn-inner {
@@ -4385,6 +4371,39 @@ tr.x-container:before {
   background-image: -moz-linear-gradient(right, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: -o-linear-gradient(right, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: linear-gradient(right, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3); }
+
+/* line 416, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-default-top {
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  border-bottom-left-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  border-bottom-right-radius: null; }
+/* line 420, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-default-right {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-bottomleft: null;
+  -webkit-border-bottom-left-radius: null;
+  border-bottom-left-radius: null; }
+/* line 424, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-default-bottom {
+  -moz-border-radius-topleft: null;
+  -webkit-border-top-left-radius: null;
+  border-top-left-radius: null;
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  border-top-right-radius: null; }
+/* line 428, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
+.x-panel-collapsed .x-panel-header-default-left {
+  -moz-border-radius-topright: null;
+  -webkit-border-top-right-radius: null;
+  border-top-right-radius: null;
+  -moz-border-radius-bottomright: null;
+  -webkit-border-bottom-right-radius: null;
+  border-bottom-right-radius: null; }
 
 /* line 434, ../themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-top {
@@ -5598,7 +5617,7 @@ textarea.x-form-invalid-field {
     border-right: 0px; }
 
 /* line 116, ../sass/my-ext-theme/layout/menu/_menu.scss */
-#logo .x-btn-inner {
+.dashboard .x-btn-inner {
   padding: 0px 0px 0px 50px; }
 
 /* line 123, ../sass/my-ext-theme/layout/menu/_menu.scss */
@@ -5697,7 +5716,7 @@ textarea.x-form-invalid-field {
 
 /* line 14, ../sass/my-ext-theme/layout/menu/_menus.scss */
 .x-menu-body {
-  border: 1px solid gainsboro;
+  border: 1px solid #dcdcdc;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
