@@ -18,7 +18,7 @@
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%@ page import="com.picsauditing.PICS.MainPage" %>
 <%@ page import="com.picsauditing.util.LocaleController"%>
-<%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
+<%@ page import="com.picsauditing.util.AppVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
 <%@ page import="com.picsauditing.util.URLUtils" %>
@@ -30,7 +30,7 @@
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 	Locale locale = TranslationActionSupport.getLocaleStatic();
-	String version = PicsOrganizerVersion.getVersion();
+	String version = AppVersion.current.getVersion();
 	MainPage mainPage = new MainPage(request, session);
 
 	String protocol = mainPage.isPageSecure() ? "https" : "http";
@@ -45,7 +45,7 @@
 		User user = userDao.find(permissions.getUserId());
 
 		if (user != null)
-			useDynamicReports = user.isUsingDynamicReports();
+	useDynamicReports = user.isUsingDynamicReports();
 	}
 
 	MenuComponent menu = new MenuComponent();

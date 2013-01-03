@@ -22,7 +22,6 @@ import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
@@ -151,11 +150,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
     private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
 
-    @Deprecated
-    public static final String getVersion() {
-        return PicsOrganizerVersion.getVersion();
-    }
-
     public boolean isShowConfigMessage() {
         return !isConfigEnvironment();
     }
@@ -236,10 +230,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
      * then it's more advanced, i.e. a Beta version.
      */
     public boolean isBetaVersion() {
-        int major = NumberUtils.toInt(propertyDAO.getProperty("VERSION.major"), 0);
-        int minor = NumberUtils.toInt(propertyDAO.getProperty("VERSION.minor"), 0);
-
-        return PicsOrganizerVersion.greaterThan(major, minor);
+    	AppVersion dbVersion = new AppVersion(propertyDAO.getProperty("VERSION.major"), propertyDAO.getProperty("VERSION.minor"));
+        return AppVersion.current.greaterThan(dbVersion);
     }
 
     public boolean isConfigurationEnvironment() {

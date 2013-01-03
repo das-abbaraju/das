@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.util.PicsOrganizerVersion;
+import com.picsauditing.util.AppVersion;
 import com.picsauditing.util.Strings;
 
 /**
@@ -20,7 +20,7 @@ public class DataConversion extends PicsActionSupport {
 	@Anonymous
 	public String execute() throws Exception {
 		if (applicationNeedsUpgrade()) {
-			addActionMessage("Database needs upgrading to " + PicsOrganizerVersion.getVersion());
+			addActionMessage("Database needs upgrading to " + AppVersion.current.getVersion());
 			return SUCCESS;
 		} else {
 			addAlertMessage("Application is already up to date");
@@ -37,7 +37,7 @@ public class DataConversion extends PicsActionSupport {
 		if (Strings.isEmpty(versionMajor))
 			return true;
 
-		if (PicsOrganizerVersion.greaterThan(Integer.parseInt(versionMajor), Integer.parseInt(versionMinor))) {
+		if (AppVersion.current.greaterThan(Integer.parseInt(versionMajor), Integer.parseInt(versionMinor))) {
 			return true;
 		}
 		return false;
@@ -58,8 +58,8 @@ public class DataConversion extends PicsActionSupport {
 	}
 
 	private void updateDatabaseVersions() {
-		appPropertyDAO.setProperty("VERSION.major", PicsOrganizerVersion.major + "");
-		appPropertyDAO.setProperty("VERSION.minor", PicsOrganizerVersion.minor + "");
+		appPropertyDAO.setProperty("VERSION.major", AppVersion.current.getMajor() + "");
+		appPropertyDAO.setProperty("VERSION.minor", AppVersion.current.getMinor() + "");
 	}
 
 	/*
