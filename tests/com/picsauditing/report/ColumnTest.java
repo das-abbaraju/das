@@ -26,7 +26,8 @@ public class ColumnTest {
 
 	@Test
 	public void testMethod() {
-		jsonObj.put("name", "AccountName__UpperCase");
+		jsonObj.put("name", "AccountName__Count");
+		jsonObj.put("method", "UpperCase");
 		column = new Column(jsonObj);
 		assertEquals(QueryMethod.UpperCase, column.getMethod());
 
