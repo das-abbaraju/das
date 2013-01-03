@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.report.Column;
 
@@ -28,6 +29,14 @@ public class ReportResults {
 
 	public List<ReportRow> getRows() {
 		return rows;
+	}
+	
+	public int size() {
+		if (CollectionUtils.isEmpty(rows)) {
+			return 0;
+		}
+		
+		return rows.size();
 	}
 
 	public Collection<ReportCell> getCells() {

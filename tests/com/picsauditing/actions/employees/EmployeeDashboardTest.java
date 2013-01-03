@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -230,6 +231,7 @@ public class EmployeeDashboardTest {
 		assertTrue(employeeDashboard.isCanEditCompetencies());
 	}
 
+	@Ignore
 	@Test
 	public void testGetYearsDescending() throws Exception {
 		employeeDashboard.startup();

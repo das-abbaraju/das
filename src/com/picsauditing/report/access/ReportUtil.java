@@ -46,10 +46,17 @@ import com.picsauditing.util.Strings;
  */
 public final class ReportUtil {
 
+	public static final String REPORT = "report";
+	public static final String REPORT_DATA = "report_data";
+	public static final String DATA = "data";
+	public static final String TOTAL = "total";
 	public static final String COLUMNS = "columns";
 	public static final String FILTERS = "filters";
 	public static final String SORTS = "sorts";
 	public static final String FILTER_EXPRESSION = "filterExpression";
+	public static final String SQL = "sql";
+	public static final String SUCCESS = "success";
+	public static final String MESSAGE = "message";
 
 	private final static I18nCache i18nCache = I18nCache.getInstance();
 

@@ -24,8 +24,6 @@ public class ReportDataTest extends PicsActionTest {
 	private ReportDAO reportDao;
 	@Mock
 	private ReportModel reportModel;
-	@Mock
-	private ReportUserDAO reportUserDao;
 
 	@Before
 	public void setUp() throws Exception {
@@ -45,7 +43,7 @@ public class ReportDataTest extends PicsActionTest {
 	public void testReport_NullModelTypeFailsValidationSetsSuccessToFalse() throws Exception {
 		report.setModelType(null);
 
-		String strutsResult = reportAction.report();
+		String strutsResult = reportAction.execute();
 
 		JSONObject json = reportAction.getJson();
 		assertThat((Boolean) json.get("success"), is(equalTo(Boolean.FALSE)));
